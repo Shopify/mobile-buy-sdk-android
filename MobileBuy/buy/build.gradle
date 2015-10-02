@@ -1,0 +1,174 @@
+apply plugin: 'com.android.library'
+apply plugin: 'maven'
+
+android {
+    compileSdkVersion 23
+    buildToolsVersion "21.1.2"
+    com.android.ddmlib.DdmPreferences.setTimeOut(60000) // https://code.google.com/p/android/issues/detail?id=104305
+
+    defaultConfig {
+        minSdkVersion 14
+        targetSdkVersion 23
+        versionName "1.2.0"
+        version "1.2.0"
+    }
+
+    buildTypes {
+        debug {
+            buildConfigField 'retrofit.RestAdapter.LogLevel', 'RETROFIT_LOG_LEVEL', 'retrofit.RestAdapter.LogLevel.FULL'
+
+            // for legacy http support
+            useLibrary  'org.apache.http.legacy'
+
+            // We pull the shop settings either from the Environment or a file called shop.properties at the root of the project.
+            // Environment variables will take precedence, we will attempt to read those first.
+            def shopDomain
+            def apiKey
+            def channelId
+            def useMockResponses
+
+            // get the shop setting from the environment if there any
+            shopDomain = System.getenv("SHOP_DOMAIN")
+            apiKey = System.getenv("API_KEY")
+            channelId = System.getenv("CHANNEL_ID")
+
+            // pull the store properties from the local file if it exists.  Environment variables take precedence
+            def shopProperties = new Properties();
+            File shopPropertiesFile = project.rootProject.file('shop.properties')
+
+            if (shopPropertiesFile.exists()) {
+                shopProperties.load(new FileInputStream(shopPropertiesFile))
+                shopDomain = shopDomain ?: shopProperties["SHOP_DOMAIN"]
+                apiKey = apiKey ?: shopProperties["API_KEY"]
+                channelId = channelId ?: shopProperties["CHANNEL_ID"]
+            }
+
+            if (!shopDomain) {
+                shopDomain = ""
+            }
+            if (!apiKey) {
+                apiKey = ""
+            }
+            if (!channelId) {
+                channelId = ""
+            }
+
+            buildConfigField "String", "SHOP_DOMAIN", "\"" + shopDomain.toString() + "\""
+            buildConfigField "String", "API_KEY", "\"" + apiKey.toString() + "\""
+            buildConfigField "String", "CHANNEL_ID", "\"" + channelId.toString() + "\""
+
+        }
+
+        release {
+            minifyEnabled = false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            buildConfigField 'retrofit.RestAdapter.LogLevel', 'RETROFIT_LOG_LEVEL', 'retrofit.RestAdapter.LogLevel.NONE'
+        }
+    }
+
+    libraryVariants.all { variant ->
+        variant.outputs.each { output ->
+            def outputFile = output.outputFile
+            if (outputFile != null && outputFile.name.endsWith('.aar')) {
+                def fileName = "${archivesBaseName}-${version}.aar"
+                output.outputFile = new File(outputFile.parent, fileName)
+            }
+        }
+    }
+
+    sourceSets { main { assets.srcDirs = ['src/main/assets', 'src/androidTest/assets/'] } }
+}
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile 'com.squareup.retrofit:retrofit:1.9.0'
+    compile 'com.squareup.okhttp:okhttp:2.4.0'
+    compile 'com.squareup.okhttp:okhttp-urlconnection:2.4.0'
+    compile 'com.squareup.picasso:picasso:2.5.2'
+
+    compile 'com.android.support:design:23.0.1'
+    compile 'com.android.support:support-v4:23.0.1'
+    compile 'com.android.support:appcompat-v7:23.0.1'
+    compile 'com.android.support:palette-v7:23.0.1'
+
+    androidTestCompile 'org.mockito:mockito-core:1.9.5'
+    androidTestCompile 'com.google.dexmaker:dexmaker:1.1'
+    androidTestCompile 'com.google.dexmaker:dexmaker-mockito:1.1'
+}
+
+sourceSets {
+    javadoc {
+        java.srcDirs = ['src/main/java']
+    }
+}
+
+task javadoc(type: Javadoc) {
+    source = sourceSets.javadoc.allSource
+    title = "Mobile Buy SDK"
+
+    exclude('**/internal/**')
+    exclude('**/ui/ProductDetailsImageAreaTouchHandler.java')
+    exclude('**/ui/ProductDetailsListener.java')
+    exclude('**/ui/ProductVariantOptionView.java')
+    exclude('**/ui/ProductImagePagerAdapter.java')
+    exclude('**/ui/ScrollFlingGestureListener.java')
+    exclude('**/ui/VariantSelectionController.java')
+    exclude('**/ui/ViewPagerAdapter.java')
+    
+    classpath = configurations.compile
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+
+    def designLib = "${android.sdkDirectory}/extras/android/support/design/libs/android-support-design.jar"
+    classpath += project.files(designLib)
+
+    options {
+        linksOffline("http://d.android.com/reference", "${android.sdkDirectory}/docs/reference")
+        links("http://square.github.io/retrofit/javadoc")
+    }
+}
+
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    baseName = 'buy'
+    from javadoc.destinationDir
+}
+
+
+task archiveReleasePackage(type: Zip, dependsOn: [assembleRelease, javadocJar]) {
+    baseName = "mobile-buy-sdk-android"
+
+    from("./build/libs") {
+        include javadocJar.getArchiveName()
+    }
+
+    from("./build/docs") {
+        include 'javadoc/**'
+    }
+
+    from("./build/outputs/aar") {
+        include "buy-" + version + ".aar"
+    }
+
+    from("..") {
+        include "sample/src/main/**"
+        include "sample/.gitignore"
+        include "sample/build.gradle.packaging"
+        include "sample/proguard-rules.pro"
+
+        rename "build.gradle.packaging", "build.gradle"
+    }
+
+    from("../..") {
+        include "LICENSE"
+        include "NOTICE"
+    }
+
+    into(baseName + "-" + version)
+}
+
+project.gradle.taskGraph.whenReady {
+    connectedDebugAndroidTest {
+        ignoreFailures = false
+    }
+}

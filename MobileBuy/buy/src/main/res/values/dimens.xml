@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--Common Text Sizes-->
+    <dimen name="text_large">20sp</dimen>
+    <dimen name="text_medium">18sp</dimen>
+    <dimen name="text_small">14sp</dimen>
+
+    <!-- Common Padding Values-->
+    <dimen name="spacing_4dp">4dp</dimen>
+    <dimen name="spacing_6dp">6dp</dimen>
+    <dimen name="spacing_12dp">12dp</dimen>
+    <dimen name="spacing_16dp">16dp</dimen>
+    <dimen name="dialog_rounded_corner">2dp</dimen>
+
+    <!--Custom Dimensions-->
+    <dimen name="product_details_indicator_height">3dp</dimen>
+    <dimen name="dialog_title_view_gap">32dp</dimen>
+    <dimen name="checkout_button_height">54dp</dimen>
+    <dimen name="scroll_view_bottom_padding">110dp</dimen>
+    <dimen name="action_bar_height">56dp</dimen>
+    <dimen name="loading_indicator_size">24dp</dimen>
+    <dimen name="image_top_gradient_size">108dp</dimen>
+    <dimen name="drop_shadow_size">2dp</dimen>
+</resources>

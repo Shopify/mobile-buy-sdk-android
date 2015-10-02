@@ -1,0 +1,36 @@
+---
+general:
+  build_dir: MobileBuy
+
+dependencies:
+  pre:
+    - git submodule update --init --recursive
+    - ./gradlew --no-color --refresh-dependencies
+
+  override:
+    - $ANDROID_HOME/platform-tools/adb logcat -v threadtime > $CIRCLE_ARTIFACTS/logcat.txt:
+        background: true
+        
+test:
+  pre:
+    - ping 8.8.8.8 > $CIRCLE_ARTIFACTS/ping.log:
+        background: true
+    - $ANDROID_HOME/tools/mksdcard -l sdcard 512M sdcard.img
+    - emulator -avd circleci-android21 -sdcard sdcard.img -no-audio -no-window:
+        background: true
+        parallel: true
+    - circle-android wait-for-boot
+
+  override:
+    - ./gradlew :buy:archiveReleasePackage
+    - ./gradlew :buy:connectedAndroidTest -PdisablePreDex:
+        timeout: 1800
+
+  post:
+    - cp -r buy/build/outputs/androidTest-results/connected/* $CI_REPORTS/*
+    - cp buy/build/distributions/* $CIRCLE_ARTIFACTS
+
+experimental:
+  notify:
+    branches:
+      only: ["master", "develop"]

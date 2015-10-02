@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/product_details_container"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/product_title_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/spacing_16dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/product_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left|top"
+                android:layout_weight="1"
+                android:gravity="left|top"
+                android:textSize="@dimen/text_large"
+                android:fontFamily="sans-serif-medium" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/product_price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right|top"
+                    android:gravity="right|top"
+                    android:lines="1"
+                    android:textSize="@dimen/text_large"
+                    android:fontFamily="sans-serif-medium" />
+
+                <TextView
+                    android:id="@+id/product_compare_at_price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right|top"
+                    android:gravity="right|top"
+                    android:lines="1"
+                    android:textSize="@dimen/text_small" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <View
+            android:id="@+id/divider1"
+            style="@style/Divider" />
+
+        <TableLayout
+            android:id="@+id/product_variant_selection_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/spacing_12dp"
+            android:paddingLeft="@dimen/spacing_16dp"
+            android:paddingRight="@dimen/spacing_16dp"
+            android:paddingTop="@dimen/spacing_12dp">
+
+            <TableRow>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/product_option_name_0"
+                        style="@style/VariantOptionName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="@dimen/spacing_16dp"/>
+
+                    <TextView
+                        android:id="@+id/product_option_value_0"
+                        style="@style/VariantOptionValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="@dimen/spacing_16dp"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/product_option_name_1"
+                        style="@style/VariantOptionName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="@dimen/spacing_16dp"/>
+
+                    <TextView
+                        android:id="@+id/product_option_value_1"
+                        style="@style/VariantOptionValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="@dimen/spacing_16dp"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/product_option_name_2"
+                        style="@style/VariantOptionName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="@dimen/spacing_16dp"/>
+
+                    <TextView
+                        android:id="@+id/product_option_value_2"
+                        style="@style/VariantOptionValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="@dimen/spacing_16dp"/>
+
+                </LinearLayout>
+
+            </TableRow>
+        </TableLayout>
+
+        <View
+            android:id="@+id/divider2"
+            style="@style/Divider" />
+
+        <TextView
+            android:id="@+id/product_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/spacing_16dp"
+            android:paddingRight="@dimen/spacing_16dp"
+            android:paddingTop="@dimen/spacing_12dp"
+            android:textSize="@dimen/text_small" />
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/dialog_title_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="@dimen/spacing_16dp">
+
+        <ImageView
+            android:id="@+id/dialog_title_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start|center_vertical"
+            android:layout_marginRight="@dimen/dialog_title_view_gap"/>
+
+        <TextView
+            android:id="@+id/dialog_title_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start|center_vertical"
+            android:fontFamily="sans-serif-medium"
+            android:textSize="@dimen/text_large"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/dialog_breadcrumbs_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/spacing_6dp"
+        android:paddingLeft="@dimen/spacing_16dp"
+        android:paddingTop="@dimen/spacing_6dp"
+        android:textColor="@color/body_grey"
+        android:textSize="@dimen/text_small"/>
+
+</LinearLayout>

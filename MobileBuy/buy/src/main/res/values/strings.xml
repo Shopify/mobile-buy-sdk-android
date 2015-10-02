@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">MobileBuy</string>
+    <string name="checkout">CHECKOUT</string>
+    <string name="default_checkout_error">Could not checkout at this time</string>
+    <string name="loading">Loading</string>
+    <string name="loading_product_details">Loading product details</string>
+    <string name="loading_checkout_page">Loading checkout</string>
+    <string name="sold_out">Sold Out</string>
+    <string name="selected">Selected</string>
+</resources>
