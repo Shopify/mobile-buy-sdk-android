@@ -14,9 +14,9 @@ Please find all documentation on the [Mobile Buy SDK for Android page](https://d
 
 ### Requirements
 
-- ** SDK Level 9** (Gingerbread 2.3.x) or higher
+- ** Android SDK Level 14 (Ice Cream Sandwich 4.0) or higher
 - ** JDK 1.7 **
-- **Android studio 1.2.x** recommended
+- **Android studio 1.3.x** recommended
 - The **Mobile App** sales channel [added to your Shopify store](https://docs.shopify.com/mobile-buy-sdk/adding-mobile-app-sales-channel)
 
 ** Google Wallet **
