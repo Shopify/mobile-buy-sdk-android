@@ -24,6 +24,8 @@
 
 package com.shopify.buy.model;
 
+import android.text.TextUtils;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
@@ -34,9 +36,12 @@ import com.google.gson.annotations.SerializedName;
 import com.shopify.buy.utils.DateUtility;
 import com.shopify.buy.utils.DateUtility.DateDeserializer;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.lang.reflect.Type;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * A {@code Product} is an individual item for sale in a Shopify store.
@@ -75,6 +80,10 @@ public class Product extends ShopifyObject {
     private List<Image> images;
 
     private List<Option> options;
+
+    private String tags;
+
+    private Set<String> tagSet;
 
     private boolean available;
 
@@ -180,6 +189,11 @@ public class Product extends ShopifyObject {
     public String getProductType() {
         return productType;
     }
+
+    /**
+     * @return A list of additional categorizations that a product can be tagged with, commonly used for filtering and searching. Each tag has a character limit of 255.
+     */
+    public Set<String> getTags() { return tagSet; }
 
     /**
      * @return A list {@link ProductVariant} objects, each one representing a different version of this product.
@@ -297,6 +311,18 @@ public class Product extends ShopifyObject {
                 variant.productId = Long.parseLong(product.productId);
             }
         }
+
+        // Create the tagSet.
+        product.tagSet = new HashSet<>();
+
+        // Populate the tagSet from the comma separated list.
+        if (!TextUtils.isEmpty(product.tags)) {
+            for (String tag : product.tags.split(",")) {
+                String myTag = tag.trim();
+                product.tagSet.add(myTag);
+            }
+        }
+
         return product;
     }
 

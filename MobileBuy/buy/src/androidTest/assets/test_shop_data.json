@@ -41,5 +41,9 @@
       "code": "12_dollar_discount",
       "value": 12
     }
-  }
+  },
+  "tags": [
+    "cotton",
+    "not_a_tag"
+  ]
 }

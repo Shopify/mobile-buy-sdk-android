@@ -53,6 +53,22 @@ public class TestData {
         return data.get("product_ids").getAsJsonArray().get(1).getAsString();
     }
 
+    public String getProductIdWithTags() {
+        return data.get("product_ids").getAsJsonArray().get(1).getAsString();
+    }
+
+    public String getProductIdWithoutTags() {
+        return data.get("product_ids").getAsJsonArray().get(0).getAsString();
+    }
+
+    public String getValidTag() {
+        return data.get("tags").getAsJsonArray().get(0).getAsString();
+    }
+
+    public String getInvalidTag() {
+        return data.get("tags").getAsJsonArray().get(1).getAsString();
+    }
+
     public List<String> getProductIds() {
         ArrayList<String> productIds = new ArrayList<>();
         productIds.add(data.get("product_ids").getAsJsonArray().get(0).getAsString());
