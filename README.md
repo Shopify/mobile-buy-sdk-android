@@ -38,7 +38,7 @@ The workspace includes the Mobile Buy SDK project and a sample app which demonst
 The Mobile Buy SDK includes a two modules.
 
 * `buy`: This is the Mobile Buy SDK framework. This is an Android library project.
-* `sample_app`: This is an Android app module which demonstrates how to use the SDK. For more details please refer to the [Sample App Guide](https://docs.shopify.com/mobile-buy-sdk/android/sample-app-guide).
+* `sample`: This is an Android app module which demonstrates how to use the SDK. For more details please refer to the [Sample App Guide](https://docs.shopify.com/mobile-buy-sdk/android/sample-app-guide).
 
 ### Gradle Targets
 There are a number of custom gradle targets defined in the `buy` module.
@@ -47,10 +47,15 @@ These can be invoked on the command line with ./gradlew <target>
 * `javadoc` - generates the javadoc for the project
 * `javadocJar` - generates the javadoc, and wraps it in a jar
 * `archiveReleasePackage` - builds the release `buy` release aar, javadoc, and bundles it all together in a zip file ready for distribution.  The output will be in buy/build/distributions
+* `bintrayUpload` - publishes a new release to Bintray's jCenter repository (for Shopify internal use only).
 
 ### Integration
 
-The [Integration Guide](https://docs.shopify.com/mobile-buy-sdk/android/integration-guide) contains step-by-step instructions and sample code for integrating the Mobile Buy SDK into your application. The `sample_app` module in the Android Studio project is also a great resource.
+The simplest way to use the Mobile Buy SDK in your project is to add the following jCenter dependency to your `build.gradle` file:
+
+	compile 'com.shopify.mobilebuysdk:buy:1.2.0'
+
+The [Integration Guide](https://docs.shopify.com/mobile-buy-sdk/android/integration-guide) also contains step-by-step instructions and sample code for integrating the Mobile Buy SDK into your application. The `sample` module in the Android Studio project is also a great resource.
 
 ### Running the Tests
 
