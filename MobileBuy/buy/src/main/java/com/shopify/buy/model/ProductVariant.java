@@ -58,6 +58,8 @@ public class ProductVariant extends ShopifyObject {
 
     long productId;
 
+    String productTitle;
+
     @SerializedName("created_at")
     private Date createdAtDate;
 
@@ -134,6 +136,13 @@ public class ProductVariant extends ShopifyObject {
      */
     public long getProductId() {
         return productId;
+    }
+
+    /**
+     * @return The title of the {@link Product} to which this variant belongs.
+     */
+    public String getProductTitle() {
+        return productTitle;
     }
 
     /**
