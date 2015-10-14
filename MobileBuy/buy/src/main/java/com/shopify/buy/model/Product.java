@@ -309,6 +309,7 @@ public class Product extends ShopifyObject {
         if (variants != null) {
             for (ProductVariant variant : variants) {
                 variant.productId = Long.parseLong(product.productId);
+                variant.productTitle = product.getTitle();
             }
         }
 
