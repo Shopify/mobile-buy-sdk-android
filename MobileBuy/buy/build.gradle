@@ -1,5 +1,32 @@
 apply plugin: 'com.android.library'
 apply plugin: 'maven'
+apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'com.jfrog.bintray'
+apply plugin: 'maven-publish'
+
+def VERSION_NAME = '1.2.1'
+
+// Params for bintrayUpload
+ext {
+    bintrayOrg = 'shopify'
+    bintrayRepo = 'shopify-android'
+    bintrayName = 'mobile-buy-sdk'
+
+    publishedGroupId = 'com.shopify.mobilebuysdk'
+    libraryName = 'MobileBuySDK'
+    artifact = 'buy'
+
+    libraryDescription = 'Shopify\'s Mobile Buy SDK makes it simple to sell physical products inside your mobile app.'
+
+    siteUrl = 'https://github.com/Shopify/mobile-buy-sdk-android'
+    gitUrl = 'https://github.com/Shopify/mobile-buy-sdk-android.git'
+
+    libraryVersion = VERSION_NAME
+
+    licenseName = 'The MIT License'
+    licenseUrl = 'https://opensource.org/licenses/MIT'
+    allLicenses = ["MIT"]
+}
 
 android {
     compileSdkVersion 23
@@ -9,8 +36,8 @@ android {
     defaultConfig {
         minSdkVersion 14
         targetSdkVersion 23
-        versionName "1.2.0"
-        version "1.2.0"
+        versionName VERSION_NAME
+        version VERSION_NAME
     }
 
     buildTypes {
@@ -114,7 +141,7 @@ task javadoc(type: Javadoc) {
     exclude('**/ui/ScrollFlingGestureListener.java')
     exclude('**/ui/VariantSelectionController.java')
     exclude('**/ui/ViewPagerAdapter.java')
-    
+
     classpath = configurations.compile
     classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
 
@@ -133,7 +160,6 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
     baseName = 'buy'
     from javadoc.destinationDir
 }
-
 
 task archiveReleasePackage(type: Zip, dependsOn: [assembleRelease, javadocJar]) {
     baseName = "mobile-buy-sdk-android"
@@ -170,5 +196,88 @@ task archiveReleasePackage(type: Zip, dependsOn: [assembleRelease, javadocJar]) 
 project.gradle.taskGraph.whenReady {
     connectedDebugAndroidTest {
         ignoreFailures = false
+    }
+}
+
+
+/*
+Great guide for publishing to JCenter:
+http://inthecheesefactory.com/blog/how-to-upload-library-to-jcenter-maven-central-as-dependency/en
+
+Also search for 'userOrg' here (we need this to publish to the Shopify organization on Bintray):
+https://github.com/bintray/gradle-bintray-plugin
+*/
+
+group = publishedGroupId
+
+install {
+    repositories.mavenInstaller {
+        // This generates POM.xml with proper parameters
+        pom {
+            project {
+                packaging 'aar'
+                groupId publishedGroupId
+                artifactId artifact
+
+                // Add your description here
+                name libraryName
+                description libraryDescription
+                url siteUrl
+
+                // Set your license
+                licenses {
+                    license {
+                        name licenseName
+                        url licenseUrl
+                    }
+                }
+
+                scm {
+                    connection gitUrl
+                    developerConnection gitUrl
+                    url siteUrl
+
+                }
+            }
+        }
+    }
+}
+
+version = VERSION_NAME
+
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+
+artifacts {
+    archives javadocJar
+    archives sourcesJar
+}
+
+File localProperties = project.rootProject.file('local.properties')
+Properties properties = new Properties()
+if (localProperties.exists()) {
+    properties.load(localProperties.newDataInputStream())
+}
+
+bintray {
+    user = properties.getProperty("bintray.user")
+    key = properties.getProperty("bintray.apikey")
+
+    configurations = ['archives']
+    pkg {
+        userOrg = bintrayOrg
+        repo = bintrayRepo
+        name = bintrayName
+        desc = libraryDescription
+        websiteUrl = siteUrl
+        vcsUrl = gitUrl
+        licenses = allLicenses
+        publish = true
+        publicDownloadNumbers = true
+        version {
+            desc = libraryDescription
+        }
     }
 }

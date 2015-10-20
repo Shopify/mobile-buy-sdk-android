@@ -151,6 +151,8 @@ public class Checkout extends ShopifyObject {
     @SerializedName("source_identifier")
     private String sourceIdentifier;
 
+    private String note;
+
     public Checkout(Cart cart) {
         lineItems = new ArrayList<LineItem>(cart.getLineItems());
     }
@@ -379,6 +381,12 @@ public class Checkout extends ShopifyObject {
     public String getWebUrl() { return webUrl; }
 
     /**
+     *
+     * @return An optional note attached to the order.
+     */
+    public String getNote() { return note; }
+
+    /**
      * For internal use only.
      */
     public MarketingAttribution getMarketingAttribution() { return marketingAttribution ;}
@@ -484,6 +492,14 @@ public class Checkout extends ShopifyObject {
      */
     public void setWebReturnToLabel(String webReturnToLabel) {
         this.webReturnToLabel = webReturnToLabel;
+    }
+
+    /**
+     *
+     * @param note An optional note attached to the order.
+     */
+    public void setNote(String note) {
+        this.note = note;
     }
 
     /**

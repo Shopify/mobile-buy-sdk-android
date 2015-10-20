@@ -80,7 +80,7 @@ public class BuyClientFactory {
         RequestInterceptor requestInterceptor = new RequestInterceptor() {
             @Override
             public void intercept(RequestFacade request) {
-                request.addHeader("Authorization", "Basic " + Base64.encodeToString(apiKey.getBytes(), Base64.DEFAULT));
+                request.addHeader("Authorization", "Basic " + Base64.encodeToString(apiKey.getBytes(), Base64.NO_WRAP));
 
                 // Using the full package name for BuildConfig here as a work around for Javadoc.  The source paths need to be adjusted
                 request.addHeader("User-Agent", "Mobile Buy SDK Android/" + com.shopify.buy.BuildConfig.VERSION_NAME);
