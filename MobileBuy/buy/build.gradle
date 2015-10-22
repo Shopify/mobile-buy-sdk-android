@@ -117,6 +117,7 @@ dependencies {
     compile 'com.android.support:support-v4:23.0.1'
     compile 'com.android.support:appcompat-v7:23.0.1'
     compile 'com.android.support:palette-v7:23.0.1'
+    compile 'com.android.support:customtabs:23.0.1'
 
     androidTestCompile 'org.mockito:mockito-core:1.9.5'
     androidTestCompile 'com.google.dexmaker:dexmaker:1.1'
@@ -141,6 +142,7 @@ task javadoc(type: Javadoc) {
     exclude('**/ui/ScrollFlingGestureListener.java')
     exclude('**/ui/VariantSelectionController.java')
     exclude('**/ui/ViewPagerAdapter.java')
+    exclude('**/customTabs/**')
 
     classpath = configurations.compile
     classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
