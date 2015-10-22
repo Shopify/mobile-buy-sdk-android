@@ -472,7 +472,7 @@ public class BuyClient {
                 Request request = new Request.Builder()
                         .url(checkout.getPaymentUrl())
                         .post(body)
-                        .addHeader("Authorization", "Basic " + Base64.encodeToString(apiKey.getBytes(), Base64.DEFAULT))
+                        .addHeader("Authorization", "Basic " + Base64.encodeToString(apiKey.getBytes(), Base64.NO_WRAP))
                         .addHeader("Content-Type", "application/json")
                         .addHeader("Accept", "application/json")
                         .build();
