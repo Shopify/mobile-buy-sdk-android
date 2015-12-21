@@ -226,11 +226,25 @@ public class BuyTest extends ShopifyAndroidTestCase {
     public void testCheckoutFlowUsingCreditCard() throws InterruptedException {
         createValidCheckout();
         fetchShippingRates(HttpStatus.SC_OK);
-        updateCheckout();
+        setShippingRate();
         addCreditCardToCheckout();
         completeCheckout();
         pollCheckoutCompletionStatus();
         getCheckout();
+    }
+
+    public void testChangedShippingAddress() throws InterruptedException {
+        createValidCheckout();
+        fetchShippingRates(HttpStatus.SC_OK);
+        setShippingRate();
+
+        checkout.setShippingAddress(getShippingAddressTwo());
+        updateCheckout();
+
+        fetchShippingRates(HttpStatus.SC_OK);
+        setShippingRate();
+
+        assertEquals(checkout.getShippingAddress().getCity(), "Toronto" );
     }
 
     public void testCreateCheckoutWithValidDiscount() throws InterruptedException {
@@ -535,6 +549,21 @@ public class BuyTest extends ShopifyAndroidTestCase {
         return shippingAddress;
     }
 
+    private Address getShippingAddressTwo() {
+        Address shippingAddress = new Address();
+        shippingAddress.setAddress1("150 Elgin Street");
+        shippingAddress.setAddress2("8th Floor");
+        shippingAddress.setCity("Toronto");
+        shippingAddress.setProvinceCode("ON");
+        shippingAddress.setCompany("Shopify Inc.");
+        shippingAddress.setFirstName("MobileBuy");
+        shippingAddress.setLastName("TestBot");
+        shippingAddress.setPhone("1-555-555-5555");
+        shippingAddress.setCountryCode("CA");
+        shippingAddress.setZip("K1N5T5");
+        return shippingAddress;
+    }
+
     private void applyGiftCardToCheckout(final String code, final float value) throws InterruptedException {
         final CountDownLatch latch = new CountDownLatch(1);
 
@@ -642,15 +671,18 @@ public class BuyTest extends ShopifyAndroidTestCase {
         buyClient.getShippingRates(checkout.getToken(), callback);
     }
 
-    private void updateCheckout() throws InterruptedException {
+    private void setShippingRate() throws InterruptedException {
         checkout.setShippingRate(shippingRates.get(0));
+        updateCheckout();
+    }
+
+    private void updateCheckout() throws InterruptedException {
         final CountDownLatch latch = new CountDownLatch(1);
         buyClient.updateCheckout(checkout, new Callback<Checkout>() {
             @Override
             public void success(Checkout checkout, Response response) {
                 assertEquals(HttpStatus.SC_OK, response.getStatus());
                 assertNotNull(checkout);
-                assertNotNull(checkout.getShippingRate());
                 assertEquals("test@test.com", checkout.getEmail());
                 BuyTest.this.checkout = checkout;
                 latch.countDown();
