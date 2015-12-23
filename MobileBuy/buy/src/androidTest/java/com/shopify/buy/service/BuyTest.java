@@ -241,7 +241,7 @@ public class BuyTest extends ShopifyAndroidTestCase {
         Address address = checkout.getShippingAddress();
         address.setCity("Toronto");
 
-        checkout.setShippingAddress(address);
+        checkout.setShippingRate(null);
         updateCheckout();
 
         fetchShippingRates(HttpStatus.SC_OK);

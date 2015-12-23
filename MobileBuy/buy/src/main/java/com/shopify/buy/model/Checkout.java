@@ -431,11 +431,10 @@ public class Checkout extends ShopifyObject {
     }
 
     /**
-     * @param shippingAddress The mailing address that the order will be shipped to. If a {@link ShippingRate} has been set on this {@link Checkout} previously using {@link #setShippingRate(ShippingRate)}, it will be cleared.
+     * @param shippingAddress The mailing address that the order will be shipped to.
      */
     public void setShippingAddress(Address shippingAddress) {
         this.shippingAddress = shippingAddress;
-        setShippingRate(null);
     }
 
     /**
@@ -443,7 +442,6 @@ public class Checkout extends ShopifyObject {
      */
     public void setShippingRate(ShippingRate shippingRate) {
         this.shippingRate = shippingRate;
-        this.shippingRateId = (shippingRate == null ? null : shippingRate.getId());
     }
 
     /**
