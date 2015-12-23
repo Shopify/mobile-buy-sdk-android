@@ -238,13 +238,16 @@ public class BuyTest extends ShopifyAndroidTestCase {
         fetchShippingRates(HttpStatus.SC_OK);
         setShippingRate();
 
-        checkout.setShippingAddress(getShippingAddressTwo());
+        Address address = checkout.getShippingAddress();
+        address.setCity("Toronto");
+
+        checkout.setShippingAddress(address);
         updateCheckout();
 
         fetchShippingRates(HttpStatus.SC_OK);
         setShippingRate();
 
-        assertEquals(checkout.getShippingAddress().getCity(), "Toronto" );
+        assertEquals(checkout.getShippingAddress().getCity(), "Toronto");
     }
 
     public void testCreateCheckoutWithValidDiscount() throws InterruptedException {
