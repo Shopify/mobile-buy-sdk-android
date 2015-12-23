@@ -552,21 +552,6 @@ public class BuyTest extends ShopifyAndroidTestCase {
         return shippingAddress;
     }
 
-    private Address getShippingAddressTwo() {
-        Address shippingAddress = new Address();
-        shippingAddress.setAddress1("150 Elgin Street");
-        shippingAddress.setAddress2("8th Floor");
-        shippingAddress.setCity("Toronto");
-        shippingAddress.setProvinceCode("ON");
-        shippingAddress.setCompany("Shopify Inc.");
-        shippingAddress.setFirstName("MobileBuy");
-        shippingAddress.setLastName("TestBot");
-        shippingAddress.setPhone("1-555-555-5555");
-        shippingAddress.setCountryCode("CA");
-        shippingAddress.setZip("K1N5T5");
-        return shippingAddress;
-    }
-
     private void applyGiftCardToCheckout(final String code, final float value) throws InterruptedException {
         final CountDownLatch latch = new CountDownLatch(1);
 
