@@ -226,11 +226,28 @@ public class BuyTest extends ShopifyAndroidTestCase {
     public void testCheckoutFlowUsingCreditCard() throws InterruptedException {
         createValidCheckout();
         fetchShippingRates(HttpStatus.SC_OK);
-        updateCheckout();
+        setShippingRate();
         addCreditCardToCheckout();
         completeCheckout();
         pollCheckoutCompletionStatus();
         getCheckout();
+    }
+
+    public void testChangedShippingAddress() throws InterruptedException {
+        createValidCheckout();
+        fetchShippingRates(HttpStatus.SC_OK);
+        setShippingRate();
+
+        Address address = checkout.getShippingAddress();
+        address.setCity("Toronto");
+
+        checkout.setShippingRate(null);
+        updateCheckout();
+
+        fetchShippingRates(HttpStatus.SC_OK);
+        setShippingRate();
+
+        assertEquals(checkout.getShippingAddress().getCity(), "Toronto");
     }
 
     public void testCreateCheckoutWithValidDiscount() throws InterruptedException {
@@ -642,15 +659,18 @@ public class BuyTest extends ShopifyAndroidTestCase {
         buyClient.getShippingRates(checkout.getToken(), callback);
     }
 
-    private void updateCheckout() throws InterruptedException {
+    private void setShippingRate() throws InterruptedException {
         checkout.setShippingRate(shippingRates.get(0));
+        updateCheckout();
+    }
+
+    private void updateCheckout() throws InterruptedException {
         final CountDownLatch latch = new CountDownLatch(1);
         buyClient.updateCheckout(checkout, new Callback<Checkout>() {
             @Override
             public void success(Checkout checkout, Response response) {
                 assertEquals(HttpStatus.SC_OK, response.getStatus());
                 assertNotNull(checkout);
-                assertNotNull(checkout.getShippingRate());
                 assertEquals("test@test.com", checkout.getEmail());
                 BuyTest.this.checkout = checkout;
                 latch.countDown();
