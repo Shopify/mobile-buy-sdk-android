@@ -253,7 +253,7 @@ public class Product extends ShopifyObject {
         }
 
         for (Image image : images) {
-            if (image.getVariantIds().contains(variant.getId())) {
+            if (image.getVariantIds() != null && image.getVariantIds().contains(variant.getId())) {
                 return image;
             }
         }
