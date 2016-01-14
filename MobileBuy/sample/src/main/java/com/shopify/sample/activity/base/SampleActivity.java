@@ -176,6 +176,11 @@ public class SampleActivity extends Activity {
      */
     protected void updateOrderSummary() {
         final Checkout checkout = getSampleApplication().getCheckout();
+
+        if (checkout == null) {
+            return;
+        }
+
         ((TextView) findViewById(R.id.line_item_price_value)).setText('$' + checkout.getLineItems().get(0).getPrice());
 
         double totalDiscount = 0;
@@ -195,10 +200,14 @@ public class SampleActivity extends Activity {
             }
         }
         ((TextView) findViewById(R.id.gift_card_value)).setText("-$" + Double.toString(totalGiftCards));
-
-        ((TextView) findViewById(R.id.shipping_value)).setText('$' + checkout.getShippingRate().getPrice());
         ((TextView) findViewById(R.id.taxes_value)).setText('$' + checkout.getTotalTax());
         ((TextView) findViewById(R.id.total_value)).setText('$' + checkout.getPaymentDue());
+
+        if (checkout.getShippingRate() != null) {
+            ((TextView) findViewById(R.id.shipping_value)).setText('$' + checkout.getShippingRate().getPrice());
+        } else {
+            ((TextView) findViewById(R.id.shipping_value)).setText("N/A");
+        }
     }
 
     /**
