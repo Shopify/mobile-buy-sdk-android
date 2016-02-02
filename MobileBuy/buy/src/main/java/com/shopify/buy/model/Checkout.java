@@ -24,13 +24,30 @@
 
 package com.shopify.buy.model;
 
+import android.text.TextUtils;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
 import com.google.gson.annotations.SerializedName;
+import com.google.gson.reflect.TypeToken;
 import com.shopify.buy.dataprovider.BuyClientFactory;
 import com.shopify.buy.model.internal.MarketingAttribution;
+import com.shopify.buy.utils.DateUtility;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 import retrofit.Callback;
 
@@ -40,6 +57,8 @@ import retrofit.Callback;
  * {@link com.shopify.buy.dataprovider.BuyClient#updateCheckout(Checkout, Callback) updateCheckout}.
  */
 public class Checkout extends ShopifyObject {
+
+    private static final String ATTRIBUTES_JSON_KEY = "attributes";
 
     private String email;
 
@@ -152,6 +171,8 @@ public class Checkout extends ShopifyObject {
     private String sourceIdentifier;
 
     private String note;
+
+    private transient List<CheckoutAttribute> attributes;
 
     public Checkout(Cart cart) {
         lineItems = new ArrayList<LineItem>(cart.getLineItems());
@@ -387,6 +408,16 @@ public class Checkout extends ShopifyObject {
     public String getNote() { return note; }
 
     /**
+     * @return An optional list of {@link CheckoutAttribute} attached to the checkout
+     */
+    public List<CheckoutAttribute> getAttributes() {
+        if (attributes == null) {
+            attributes = new ArrayList<>();
+        }
+        return attributes;
+    }
+
+    /**
      * For internal use only.
      */
     public MarketingAttribution getMarketingAttribution() { return marketingAttribution ;}
@@ -527,7 +558,68 @@ public class Checkout extends ShopifyObject {
      * @return A checkout object created using the values in the JSON string.
      */
     public static Checkout fromJson(String json) {
-        return BuyClientFactory.createDefaultGson().fromJson(json, Checkout.class);
+        Gson gson = BuyClientFactory.createDefaultGson(Checkout.class);
+
+        JsonObject checkoutElement = gson.fromJson(json, JsonElement.class).getAsJsonObject();
+
+        Checkout checkout = gson.fromJson(checkoutElement, Checkout.class);
+
+        JsonElement attributeElement = checkoutElement.get(ATTRIBUTES_JSON_KEY);
+
+        if (attributeElement != null) {
+            List<CheckoutAttribute> attributes;
+
+            // The attributes are an array of CheckoutAttributes when received from the server, and are flattened and serialized as a hash map
+            // when serializing for the server, or internally.  We have to check to see which case it is and deserialize appropriately.
+            if (attributeElement.isJsonArray()) {
+                attributes = gson.fromJson(attributeElement, new TypeToken<List<CheckoutAttribute>>() {}.getType());
+            } else {
+                // We serialize the CheckoutAttributes to a hash map internally, and for sending to the server
+                HashMap<String, String> attributesHashMap = gson.fromJson(attributeElement, HashMap.class);
+                attributes = new ArrayList<>();
+
+                for (Map.Entry<String, String> pair : attributesHashMap.entrySet()) {
+                    attributes.add(new CheckoutAttribute(pair.getKey(), pair.getValue()));
+                }
+            }
+            checkout.attributes = attributes;
+        }
+
+        return checkout;
+    }
+
+
+    public static class CheckoutSerializer implements JsonSerializer<Checkout> {
+
+        @Override
+        public JsonElement serialize(final Checkout checkout, final Type typeOfSrc, final JsonSerializationContext context) {
+            Gson gson = BuyClientFactory.createDefaultGson(Checkout.class);
+
+            JsonObject checkoutObject = gson.toJsonTree(checkout).getAsJsonObject();
+
+            // Replace the CheckoutAttributes List with a hash map which is the input expected by the server
+            if (checkout.getAttributes() != null) {
+                HashMap<String, String> attributesHashMap = new HashMap<>();
+                for (CheckoutAttribute attribute : checkout.attributes) {
+                    attributesHashMap.put(attribute.getName(), attribute.getValue());
+                }
+
+                JsonElement attributesElement = context.serialize(attributesHashMap);
+                checkoutObject.remove(ATTRIBUTES_JSON_KEY);
+                checkoutObject.add(ATTRIBUTES_JSON_KEY, attributesElement);
+            }
+
+            return checkoutObject;
+        }
+    }
+
+    public static class CheckoutDeserializer implements JsonDeserializer<Checkout> {
+
+        @Override
+        public Checkout deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+            return fromJson(json.toString());
+        }
+
     }
 
 }

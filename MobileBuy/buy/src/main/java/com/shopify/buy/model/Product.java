@@ -33,6 +33,7 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.google.gson.annotations.SerializedName;
+import com.shopify.buy.dataprovider.BuyClientFactory;
 import com.shopify.buy.utils.DateUtility;
 import com.shopify.buy.utils.DateUtility.DateDeserializer;
 
@@ -298,9 +299,7 @@ public class Product extends ShopifyObject {
      * A product object created using the values in the JSON string.
      */
     public static Product fromJson(String json) {
-        Gson gson = new GsonBuilder()
-                .registerTypeAdapter(Date.class, new DateDeserializer())
-                .create();
+        Gson gson = BuyClientFactory.createDefaultGson(Product.class);
 
         Product product = gson.fromJson(json, Product.class);
 

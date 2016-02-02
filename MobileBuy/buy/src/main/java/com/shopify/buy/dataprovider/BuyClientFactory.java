@@ -31,6 +31,9 @@ import android.util.Base64;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.shopify.buy.BuildConfig;
+import com.shopify.buy.model.Checkout;
+import com.shopify.buy.model.Checkout.CheckoutSerializer;
+import com.shopify.buy.model.Checkout.CheckoutDeserializer;
 import com.shopify.buy.model.Product;
 import com.shopify.buy.model.Product.ProductDeserializer;
 import com.shopify.buy.utils.DateUtility;
@@ -101,10 +104,25 @@ public class BuyClientFactory {
     }
 
     public static Gson createDefaultGson() {
-        return new GsonBuilder().setDateFormat(DateUtility.DEFAULT_DATE_PATTERN)
-                .registerTypeAdapter(Product.class, new ProductDeserializer())
-                .registerTypeAdapter(Date.class, new DateDeserializer())
-                .create();
+        return createDefaultGson(null);
+    }
+
+    public static Gson createDefaultGson(Class forClass) {
+
+        GsonBuilder builder = new GsonBuilder()
+                .setDateFormat(DateUtility.DEFAULT_DATE_PATTERN)
+                .registerTypeAdapter(Date.class, new DateDeserializer());
+
+        if (!Product.class.equals(forClass)) {
+            builder.registerTypeAdapter(Product.class, new ProductDeserializer());
+        }
+
+        if (!Checkout.class.equals(forClass)) {
+            builder.registerTypeAdapter(Checkout.class, new CheckoutSerializer());
+            builder.registerTypeAdapter(Checkout.class, new CheckoutDeserializer());
+        }
+
+        return builder.create();
     }
 
 }
