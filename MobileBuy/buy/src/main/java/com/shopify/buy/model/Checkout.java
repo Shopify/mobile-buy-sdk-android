@@ -562,26 +562,28 @@ public class Checkout extends ShopifyObject {
 
         JsonObject checkoutElement = gson.fromJson(json, JsonElement.class).getAsJsonObject();
 
+        Checkout checkout = gson.fromJson(checkoutElement, Checkout.class);
+
         JsonElement attributeElement = checkoutElement.get(ATTRIBUTES_JSON_KEY);
 
-        List<CheckoutAttribute> attributes;
+        if (attributeElement != null) {
+            List<CheckoutAttribute> attributes;
 
-        // The attributes are an array of CheckoutAttributes when received from the server, and are flattened and serialized as a hash map
-        // when serializing for the server, or internally.  We have to check to see which case it is and deserialize appropriately.
-        if (attributeElement.isJsonArray()) {
-            attributes = gson.fromJson(attributeElement, new TypeToken<List<CheckoutAttribute>>(){}.getType());
-        } else {
-            // We serialize the CheckoutAttributes to a hash map internally, and for sending to the server
-            HashMap<String, String> attributesHashMap = gson.fromJson(attributeElement, HashMap.class);
-            attributes = new ArrayList<>();
+            // The attributes are an array of CheckoutAttributes when received from the server, and are flattened and serialized as a hash map
+            // when serializing for the server, or internally.  We have to check to see which case it is and deserialize appropriately.
+            if (attributeElement.isJsonArray()) {
+                attributes = gson.fromJson(attributeElement, new TypeToken<List<CheckoutAttribute>>() {}.getType());
+            } else {
+                // We serialize the CheckoutAttributes to a hash map internally, and for sending to the server
+                HashMap<String, String> attributesHashMap = gson.fromJson(attributeElement, HashMap.class);
+                attributes = new ArrayList<>();
 
-            for(Map.Entry<String, String> pair: attributesHashMap.entrySet()) {
-                attributes.add(new CheckoutAttribute(pair.getKey(), pair.getValue()));
+                for (Map.Entry<String, String> pair : attributesHashMap.entrySet()) {
+                    attributes.add(new CheckoutAttribute(pair.getKey(), pair.getValue()));
+                }
             }
+            checkout.attributes = attributes;
         }
-
-        Checkout checkout = gson.fromJson(checkoutElement, Checkout.class);
-        checkout.attributes = attributes;
 
         return checkout;
     }
