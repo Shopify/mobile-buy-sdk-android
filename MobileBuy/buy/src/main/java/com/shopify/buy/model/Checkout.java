@@ -119,9 +119,6 @@ public class Checkout extends ShopifyObject {
     @SerializedName("shipping_rate")
     private ShippingRate shippingRate;
 
-    @SerializedName("shipping_rate_id")
-    private String shippingRateId;
-
     @SerializedName("marketing_attribution")
     private MarketingAttribution marketingAttribution;
 
