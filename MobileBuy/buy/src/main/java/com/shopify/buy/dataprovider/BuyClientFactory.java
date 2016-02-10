@@ -60,7 +60,7 @@ public class BuyClientFactory {
      * @param shopDomain      the domain of the shop to checkout with, in the format 'shopname.myshopify.com'
      * @param apiKey          a valid Shopify API key
      * @param channelId       a valid Shopify Channel ID
-     * @param applicationName the name to attribute orders to. The suggested value for {@code applicationName} is the value returned by {@link Activity#getPackageName()}.
+     * @param applicationName the name to attribute orders to. The value for {@code applicationName} should be the application package name, as used to publish your application on the Play Store.  This is usually the value returned by {@link Activity#getPackageName()}, or BuildConfig.APPLICATION_ID if you are using gradle.
      * @return a {@link BuyClient}
      */
     public static BuyClient getBuyClient(final String shopDomain, final String apiKey, final String channelId, final String applicationName) throws IllegalArgumentException {
@@ -86,7 +86,7 @@ public class BuyClientFactory {
                 request.addHeader("Authorization", "Basic " + Base64.encodeToString(apiKey.getBytes(), Base64.NO_WRAP));
 
                 // Using the full package name for BuildConfig here as a work around for Javadoc.  The source paths need to be adjusted
-                request.addHeader("User-Agent", "Mobile Buy SDK Android/" + com.shopify.buy.BuildConfig.VERSION_NAME);
+                request.addHeader("User-Agent", "Mobile Buy SDK Android/" + com.shopify.buy.BuildConfig.VERSION_NAME + "/" + applicationName);
             }
         };
 
