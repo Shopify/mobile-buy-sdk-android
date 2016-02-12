@@ -31,6 +31,9 @@ import android.util.Base64;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.shopify.buy.BuildConfig;
+import com.shopify.buy.model.Checkout;
+import com.shopify.buy.model.Checkout.CheckoutSerializer;
+import com.shopify.buy.model.Checkout.CheckoutDeserializer;
 import com.shopify.buy.model.Product;
 import com.shopify.buy.model.Product.ProductDeserializer;
 import com.shopify.buy.utils.DateUtility;
@@ -57,7 +60,7 @@ public class BuyClientFactory {
      * @param shopDomain      the domain of the shop to checkout with, in the format 'shopname.myshopify.com'
      * @param apiKey          a valid Shopify API key
      * @param channelId       a valid Shopify Channel ID
-     * @param applicationName the name to attribute orders to. The suggested value for {@code applicationName} is the value returned by {@link Activity#getPackageName()}.
+     * @param applicationName the name to attribute orders to. The value for {@code applicationName} should be the application package name, as used to publish your application on the Play Store.  This is usually the value returned by {@link Activity#getPackageName()}, or BuildConfig.APPLICATION_ID if you are using gradle.
      * @return a {@link BuyClient}
      */
     public static BuyClient getBuyClient(final String shopDomain, final String apiKey, final String channelId, final String applicationName) throws IllegalArgumentException {
@@ -83,7 +86,7 @@ public class BuyClientFactory {
                 request.addHeader("Authorization", "Basic " + Base64.encodeToString(apiKey.getBytes(), Base64.NO_WRAP));
 
                 // Using the full package name for BuildConfig here as a work around for Javadoc.  The source paths need to be adjusted
-                request.addHeader("User-Agent", "Mobile Buy SDK Android/" + com.shopify.buy.BuildConfig.VERSION_NAME);
+                request.addHeader("User-Agent", "Mobile Buy SDK Android/" + com.shopify.buy.BuildConfig.VERSION_NAME + "/" + applicationName);
             }
         };
 
@@ -101,10 +104,25 @@ public class BuyClientFactory {
     }
 
     public static Gson createDefaultGson() {
-        return new GsonBuilder().setDateFormat(DateUtility.DEFAULT_DATE_PATTERN)
-                .registerTypeAdapter(Product.class, new ProductDeserializer())
-                .registerTypeAdapter(Date.class, new DateDeserializer())
-                .create();
+        return createDefaultGson(null);
+    }
+
+    public static Gson createDefaultGson(Class forClass) {
+
+        GsonBuilder builder = new GsonBuilder()
+                .setDateFormat(DateUtility.DEFAULT_DATE_PATTERN)
+                .registerTypeAdapter(Date.class, new DateDeserializer());
+
+        if (!Product.class.equals(forClass)) {
+            builder.registerTypeAdapter(Product.class, new ProductDeserializer());
+        }
+
+        if (!Checkout.class.equals(forClass)) {
+            builder.registerTypeAdapter(Checkout.class, new CheckoutSerializer());
+            builder.registerTypeAdapter(Checkout.class, new CheckoutDeserializer());
+        }
+
+        return builder.create();
     }
 
 }
