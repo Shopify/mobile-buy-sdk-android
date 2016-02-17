@@ -224,6 +224,30 @@ public class BuyTest extends ShopifyAndroidTestCase {
         fetchShippingRates(HttpStatus.SC_NOT_FOUND);
     }
 
+    public void testCreateCheckoutWithVariantID() throws InterruptedException {
+        final CountDownLatch latch = new CountDownLatch(1);
+        Checkout checkout = new Checkout(new LineItem(getVariantID(), true, 1));
+        checkout.setShippingAddress(getShippingAddress());
+        checkout.setBillingAddress(checkout.getShippingAddress());
+        checkout.setEmail("test@test.com");
+
+        buyClient.createCheckout(checkout, new Callback<Checkout>() {
+            @Override
+            public void success(Checkout checkout, Response response) {
+                validateCheckoutCreatedWithVariantID(checkout, response);
+                BuyTest.this.checkout = checkout;
+                latch.countDown();
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                fail(BuyClient.getErrorBody(error));
+          }
+        });
+      
+        latch.await();
+    }
+
     public void testCheckoutFlowUsingCreditCard() throws InterruptedException {
         createValidCheckout();
         fetchShippingRates(HttpStatus.SC_OK);
@@ -482,6 +506,28 @@ public class BuyTest extends ShopifyAndroidTestCase {
         return cart;
     }
 
+    private Long getVariantID() throws InterruptedException {
+      final CountDownLatch latch = new CountDownLatch(1);
+
+      final AtomicReference<Product> productRef = new AtomicReference<>();
+      buyClient.getProduct(data.getProductId(), new Callback<Product>() {
+        @Override
+        public void success(Product product, Response response) {
+          productRef.set(product);
+          latch.countDown();
+        }
+
+        @Override
+        public void failure(RetrofitError error) {
+          fail(BuyClient.getErrorBody(error));
+        }
+      });
+
+      latch.await();
+
+      return productRef.get().getVariants().get(0).getId();
+    }
+
     private void createValidCheckout() throws InterruptedException {
         final CountDownLatch latch = new CountDownLatch(1);
         Checkout checkout = new Checkout(createCart());
@@ -536,6 +582,17 @@ public class BuyTest extends ShopifyAndroidTestCase {
         if (!USE_MOCK_RESPONSES) {
             assertEquals(checkout.getSourceIdentifier(), buyClient.getChannelId());
         }
+    }
+
+    private void validateCheckoutCreatedWithVariantID(Checkout checkout, Response response) {
+      assertEquals(HttpStatus.SC_CREATED, response.getStatus());
+      assertNotNull(checkout.getLineItems());
+      assertEquals(1, checkout.getLineItems().size());
+      assertEquals(checkout.getSourceName(), "mobile_app");
+
+      if (!USE_MOCK_RESPONSES) {
+        assertEquals(checkout.getSourceIdentifier(), buyClient.getChannelId());
+      }
     }
 
     private Address getShippingAddress() {
