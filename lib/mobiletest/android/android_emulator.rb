@@ -11,6 +11,14 @@ class AndroidEmulator
     set_default_config
   end
 
+  def exists?(name)
+    emulator_check = shell("get-state")
+    if emulator_check != "device"
+      puts "📲 Testing requires a connected Android device, booting shift"
+      start
+    end
+  end
+
   def set_default_config
     @config[:name]            ||= "screenshot"
     @config[:android_version] ||= "android-21"
@@ -52,7 +60,7 @@ class AndroidEmulator
   def create_sd_card
     unless File.exist?(@config[:sd_path] )
       puts "Creating sdcard"
-      system "mksdcard -l sdcard #{@config[:sd_card_size]} \"#{@config[:sd_path] }\" </dev/null &>/dev/null"
+      system "mksdcard -l sdcard #{@config[:sd_card_size]} \"#{@config[:sd_path]}\" </dev/null &>/dev/null"
     else
       puts "SD Card already exists"
     end
