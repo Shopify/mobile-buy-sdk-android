@@ -7,11 +7,11 @@ Gem::Specification.new do |spec|
   spec.name          = "mobiletest"
   spec.version       = Mobiletest::VERSION
   spec.authors       = ["Julian Nadeau"]
-  spec.email         = ["julian@jnadeau.ca"]
+  spec.email         = ["julian@shopify.com"]
 
-  spec.summary       = %q{TODO: Write a short summary, because Rubygems requires one.}
-  spec.description   = %q{TODO: Write a longer description or delete this line.}
-  spec.homepage      = "TODO: Put your gem's website or public repo URL here."
+  spec.summary       = "Mobile Testing scripts"
+  spec.description   = "Mobile Testing scripts"
+  spec.homepage      = "https://github.com/Shopify/mobiletest"
   spec.license       = "MIT"
 
   # Prevent pushing this gem to RubyGems.org by setting 'allowed_push_host', or
