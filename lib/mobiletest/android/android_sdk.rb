@@ -1,4 +1,4 @@
-#!/bin/ruby
+#!/usr/bin/env ruby
 
 class AndroidSDK
 
@@ -8,8 +8,9 @@ class AndroidSDK
   end
 
   def update!
-    puts "Updating SDK..."
+    puts "Updating SDK"
     @config[:android_versions].each do |version|
+      puts "Updating #{version}"
       system "echo y | android --silent update sdk --no-ui --all --filter \"#{version}\" &>/dev/null"
     end
   end

@@ -1,4 +1,4 @@
-#!/bin/ruby
+#!/usr/bin/env ruby
 
 require 'ADB'
 
@@ -31,7 +31,7 @@ class AndroidEmulator
 
     unless Dir.exist?(@config[:avd_path] )
       Process.fork do
-        puts "Creating Android Virtual Device (AVD) for screenshot testing..."
+        puts "Creating Android Virtual Device (AVD) for screenshot testing"
         emulator_args = [
           'android',
           'create',
@@ -51,7 +51,7 @@ class AndroidEmulator
 
   def create_sd_card
     unless File.exist?(@config[:sd_path] )
-      puts "Creating sdcard..."
+      puts "Creating sdcard"
       system "mksdcard -l sdcard #{@config[:sd_card_size]} \"#{@config[:sd_path] }\" </dev/null &>/dev/null"
     else
       puts "SD Card already exists"
@@ -69,8 +69,8 @@ class AndroidEmulator
 
   def setup
     puts "--- Set up emulator"
-    puts "Unlock the emulator..." and shell("input keyevent 82")
-    puts "Don't show passwords..." and shell("settings put system show_password 0")
+    puts "Unlock the emulator" and shell("input keyevent 82")
+    puts "Don't show passwords" and shell("settings put system show_password 0")
   end
 
   def start
@@ -92,9 +92,11 @@ class AndroidEmulator
   end
 
   def disable_animations
-    puts "Disable emulator animations..."
+    puts "Disable emulator animations"
     begin
-      install("lib/mobiletest/AnimationDisabler.apk") # TODO: Fix path
+      apk = File.expand_path("../AnimationDisabler.apk", __FILE__)
+      puts "Installing from #{apk}"
+      install(apk)
     rescue ADB::ADBError => err
       if err.message.include?("INSTALL_FAILED_ALREADY_EXISTS")
         puts "Animation Disabled already installed"
