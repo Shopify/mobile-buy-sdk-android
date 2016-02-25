@@ -8,11 +8,7 @@ ANDROID_HOME = ENV["ANDROID_HOME"]
 platform :android do
   desc "Runs all the Android tests"
   lane :test do
-    r1_exit = unit_tests
-    r2_exit = start_emulator
-    r3_exit = instrumentation_tests
-
-    if [r1_exit, r2_exit, r3_exit].all?
+    if [unit_tests, instrumentation_tests].all?
       puts "🎉 Successful test run"
       exit 0
     else
@@ -58,6 +54,7 @@ platform :android do
 
   desc "Runs all the Android snapshot tests"
   lane :snapshot_tests do
+    create_emulator
     start_emulator
     puts "--- Screenshot tests"
     env_var = "export PATH=${ANDROID_HOME}/platform-tools:$PATH"
