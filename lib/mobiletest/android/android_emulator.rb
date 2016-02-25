@@ -12,11 +12,6 @@ class AndroidEmulator
     set_default_config
   end
 
-  def exists?(name)
-    emulator_check = shell("get-state")
-    emulator_check != "device"
-  end
-
   def set_default_config
     @config[:name]            ||= "screenshot"
     @config[:android_version] ||= "android-21"
@@ -41,7 +36,7 @@ class AndroidEmulator
       Process.fork do
         puts "Creating Android Virtual Device (AVD) for screenshot testing"
         emulator_args = [
-          '#{@config[:android_home]}/tools/android',
+          "#{@config[:android_home]}/tools/android",
           'create',
           'avd',
           '-n', @config[:name],

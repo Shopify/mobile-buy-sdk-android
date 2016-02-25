@@ -125,7 +125,7 @@ platform :android do
     AVD_PATH = File.expand_path("~/.android/avd/screenshot.avd")
     SD_PATH = "#{AVD_PATH}/screenshot-sdcard.img"
     emulator = AndroidEmulator.new(avd_path: AVD_PATH, sd_path: SD_PATH)
-    emulator.create unless emulator.exists?("screenshot")
+    emulator.create
   end
 
   desc "Updates SDK with Packages"
