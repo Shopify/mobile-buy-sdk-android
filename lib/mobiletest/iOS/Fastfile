@@ -1,3 +1,6 @@
+#!/usr/bin/env ruby
+# encoding: utf-8
+
 platform :ios do
   desc "Runs all the iOS tests"
   lane :test do

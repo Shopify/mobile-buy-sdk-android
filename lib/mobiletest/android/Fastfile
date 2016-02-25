@@ -1,3 +1,6 @@
+#!/usr/bin/env ruby
+# encoding: utf-8
+
 ANDROID_PATH = File.expand_path "../Android"
 BUILDKITE_ARTIFACTS = File.expand_path "../BuildKiteArtifacts"
 ANDROID_HOME = ENV["ANDROID_HOME"]
