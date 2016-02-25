@@ -24,6 +24,8 @@ class AndroidEmulator
     @config[:emulator_port]   ||= 5560
     @config[:avd_path]        ||= File.expand_path("~/.android/avd/screenshot.avd")
     @config[:sd_path]         ||= "#{@config[:avd_path]}/screenshot-sdcard.img"
+    @config[:android_home]    ||= ENV["ANDROID_HOME"]
+    puts "Android Home is at #{@config[:android_home]}"
   end
 
   def create(should_force=false)
@@ -38,7 +40,7 @@ class AndroidEmulator
       Process.fork do
         puts "Creating Android Virtual Device (AVD) for screenshot testing"
         emulator_args = [
-          'android',
+          '#{@config[:android_home]}/tools/android',
           'create',
           'avd',
           '-n', @config[:name],
@@ -48,16 +50,20 @@ class AndroidEmulator
         system "echo 'n' | #{emulator_args.join(" ")}"
       end
       Process.wait
-      open("#{@config[:avd_path] }/config.ini", 'a') { |f| f.puts "hw.keyboard=yes" }
+      open("#{@config[:avd_path]}/config.ini", 'a') { |f| f.puts "hw.keyboard=yes" }
     else
       puts "Emulator image already exists"
     end
   end
 
   def create_sd_card
-    unless File.exist?(@config[:sd_path])
+    unless !File.exist?(@config[:sd_path])
       puts "Creating sdcard"
-      system "mksdcard -l sdcard #{@config[:sd_card_size]} \"#{@config[:sd_path]}\" </dev/null &>/dev/null"
+      Process.fork do
+        puts "Spawning child procress to start emulator"
+        exec "#{@config[:android_home]}/tools/mksdcard -l sdcard #{@config[:sd_card_size]} \"#{@config[:sd_path]}\""
+      end
+      Process.wait
     else
       puts "SD Card already exists"
     end
@@ -79,8 +85,9 @@ class AndroidEmulator
   end
 
   def start
-    emulator_args = ['emulator', 
-                     '-avd', @config[:name], 
+    emulator_args = ['#{@config[:android_home]}/tools/emulator', 
+                     '-avd', @config[:name],
+                     '-sdcard', @config[:sd_path],
                      '-port', @config[:emulator_port].to_s,                    
                      '-no-audio', '-gpu on']
     
