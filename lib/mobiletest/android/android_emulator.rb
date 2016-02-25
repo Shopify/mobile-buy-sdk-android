@@ -13,10 +13,7 @@ class AndroidEmulator
 
   def exists?(name)
     emulator_check = shell("get-state")
-    if emulator_check != "device"
-      puts "📲 Testing requires a connected Android device, booting shift"
-      start
-    end
+    emulator_check != "device"
   end
 
   def set_default_config
@@ -37,7 +34,7 @@ class AndroidEmulator
   def create_emulator(force=false)
     destroy! if force
 
-    unless Dir.exist?(@config[:avd_path] )
+    unless Dir.exist?(@config[:avd_path])
       Process.fork do
         puts "Creating Android Virtual Device (AVD) for screenshot testing"
         emulator_args = [
@@ -58,7 +55,7 @@ class AndroidEmulator
   end
 
   def create_sd_card
-    unless File.exist?(@config[:sd_path] )
+    unless File.exist?(@config[:sd_path])
       puts "Creating sdcard"
       system "mksdcard -l sdcard #{@config[:sd_card_size]} \"#{@config[:sd_path]}\" </dev/null &>/dev/null"
     else
@@ -68,11 +65,11 @@ class AndroidEmulator
 
   def destroy!(name=@config[:name])
     system "android delete avd -n #{name}"
-    FileUtils.rm_rf(@config[:avd_path] )
+    FileUtils.rm_rf(@config[:avd_path])
   end
 
   def destroy_sd_card!
-    FileUtils.rm_rf(@config[:sd_path] )
+    FileUtils.rm_rf(@config[:sd_path])
   end
 
   def setup
@@ -107,7 +104,7 @@ class AndroidEmulator
       install(apk)
     rescue ADB::ADBError => err
       if err.message.include?("INSTALL_FAILED_ALREADY_EXISTS")
-        puts "Animation Disabled already installed"
+        puts "AnimationDisabler.apk already installed"
       else
         puts err
       end
