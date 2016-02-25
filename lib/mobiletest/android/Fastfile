@@ -8,6 +8,9 @@ ANDROID_HOME = ENV["ANDROID_HOME"]
 platform :android do
   desc "Runs all the Android tests"
   lane :test do
+    create_emulator
+    start_emulator
+    
     if [unit_tests, instrumentation_tests].all?
       puts "🎉 Successful test run"
       exit 0
