@@ -7,10 +7,9 @@ platform :android do
   lane :test do
     r1_exit = unit_tests
     r2_exit = start_emulator
-    r3_exit = snapshot_tests
-    r4_exit = instrumentation_tests
+    r3_exit = instrumentation_tests
 
-    if [r1_exit, r2_exit, r3_exit, r4_exit].all?
+    if [r1_exit, r2_exit, r3_exit].all?
       puts "🎉 Successful test run"
       exit 0
     else
