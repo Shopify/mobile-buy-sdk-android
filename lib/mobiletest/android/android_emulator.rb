@@ -27,6 +27,7 @@ class AndroidEmulator
     @config[:emulator_port]   ||= 5560
     @config[:avd_path]        ||= File.expand_path("~/.android/avd/screenshot.avd")
     @config[:sd_path]         ||= "#{@config[:avd_path]}/screenshot-sdcard.img"
+    puts @config[:sd_path]
   end
 
   def create(should_force=false)
@@ -85,8 +86,7 @@ class AndroidEmulator
     emulator_args = ['emulator', 
                      '-avd', @config[:name], 
                      '-port', @config[:emulator_port].to_s,                    
-                     '-no-audio', '-gpu on',
-                     '</dev/null &>/dev/null']
+                     '-no-audio', '-gpu on']
     
     Process.fork do
       puts "Spawning child procress to start emulator"
