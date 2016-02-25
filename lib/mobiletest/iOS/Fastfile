@@ -5,7 +5,6 @@ platform :ios do
   desc "Runs all the iOS tests"
   lane :test do
     unit_tests
-    snapshot_tests
   end
 
   desc "Runs all the iOS unit tests"

@@ -58,6 +58,7 @@ platform :android do
 
   desc "Runs all the Android snapshot tests"
   lane :snapshot_tests do
+    start_emulator
     puts "--- Screenshot tests"
     env_var = "export PATH=${ANDROID_HOME}/platform-tools:$PATH"
     args = %w(
