@@ -85,7 +85,7 @@ class AndroidEmulator
   end
 
   def start
-    emulator_args = ['#{@config[:android_home]}/tools/emulator', 
+    emulator_args = ["#{@config[:android_home]}/tools/emulator", 
                      '-avd', @config[:name],
                      '-sdcard', @config[:sd_path],
                      '-port', @config[:emulator_port].to_s,                    
@@ -93,7 +93,6 @@ class AndroidEmulator
     
     Process.fork do
       puts "Spawning child procress to start emulator"
-      puts emulator_args.join(" ")
       exec emulator_args.join(" ")
     end
 
