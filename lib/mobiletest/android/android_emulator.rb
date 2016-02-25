@@ -100,7 +100,6 @@ class AndroidEmulator
     wait_for_device({serial: devices[0]}, 360)
     setup
     disable_animations
-    Process.wait
   end
 
   def disable_animations
