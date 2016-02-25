@@ -93,6 +93,7 @@ class AndroidEmulator
     
     Process.fork do
       puts "Spawning child procress to start emulator"
+      puts emulator_args.join(" ")
       exec emulator_args.join(" ")
     end
 
