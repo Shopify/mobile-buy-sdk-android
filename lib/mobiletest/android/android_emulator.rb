@@ -27,7 +27,6 @@ class AndroidEmulator
     @config[:emulator_port]   ||= 5560
     @config[:avd_path]        ||= File.expand_path("~/.android/avd/screenshot.avd")
     @config[:sd_path]         ||= "#{@config[:avd_path]}/screenshot-sdcard.img"
-    puts @config[:sd_path]
   end
 
   def create(should_force=false)
@@ -97,6 +96,7 @@ class AndroidEmulator
     wait_for_device({serial: devices[0]}, 360)
     setup
     disable_animations
+    Process.wait
   end
 
   def disable_animations
