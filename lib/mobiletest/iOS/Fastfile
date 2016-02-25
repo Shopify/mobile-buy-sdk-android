@@ -1,0 +1,59 @@
+platform :ios do
+  desc "Runs all the iOS tests"
+  lane :test do
+    unit_tests
+    snapshot_tests
+  end
+
+  desc "Runs all the iOS unit tests"
+  lane :unit_tests do
+    scan(
+      project: "iOS/Shopify.xcodeproj",
+      scheme: "Shopify",
+      device: "iPhone 6 (9.1)",
+      clean: false,
+      code_coverage: true
+    )
+  end
+
+  desc "Runs all the iOS snapshot tests"
+  lane :snapshot_tests do
+    scan(
+      project: "iOS/Shopify.xcodeproj",
+      scheme: "ShopifySnapshotTests",
+      device: "iPhone 6 (9.1)",
+      clean: false,
+      code_coverage: true
+    )
+  end
+
+  desc "Bumps the version number"
+  lane :bump_version_number do
+    commit_version_bump(
+      message: 'Bump Version Number',
+      xcodeproj: 'iOS/Shopify.xcodeproj'
+    )
+  end
+
+  desc "Release a new beta version on Hockey"
+  desc "This action does the following:"
+  desc ""
+  desc "- Ensures a clean git status"
+  desc "- Increment the build number"
+  desc "- Build and sign the app"
+  desc "- Upload the ipa file to hockey"
+  lane :hockey_deploy do 
+    ensure_git_status_clean
+    increment_build_number build_number: Time.new.strftime("%Y.%m.%d")
+    ipa(
+      project: "iOS/Shopify.xcodeproj",
+      configuration: "Internal",
+      scheme: "Shopify",
+      clean: true,
+      ipa: "Shopify.ipa",
+      archive: true 
+    )
+    hockey(app_id: "7d5c092c95524c83932c59a68c211f7e", api_token: ENV['HOCKEY_API_TOKEN']) # TODO: does app_id work?
+    clean_build_artifacts
+  end
+end

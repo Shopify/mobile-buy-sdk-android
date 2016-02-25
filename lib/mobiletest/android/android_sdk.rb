@@ -11,7 +11,7 @@ class AndroidSDK
     puts "Updating SDK"
     @config[:sdk_packages].each do |package|
       puts "Updating #{package}"
-      system "echo y | android --silent update sdk --no-ui --all --filter \"#{package}\" &>/dev/null"
+      system "echo y | android --silent update sdk --no-ui --all --filter \"#{version}\" &>/dev/null"
     end
   end
 

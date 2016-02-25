@@ -1,0 +1,133 @@
+ANDROID_PATH = File.expand_path "../Android"
+BUILDKITE_ARTIFACTS = File.expand_path "../BuildKiteArtifacts"
+ANDROID_HOME = ENV["ANDROID_HOME"]
+
+platform :android do
+  desc "Runs all the Android tests"
+  lane :test do
+    r1_exit = unit_tests
+    r2_exit = start_emulator
+    r3_exit = snapshot_tests
+    r4_exit = instrumentation_tests
+
+    if [r1_exit, r2_exit, r3_exit, r4_exit].all?
+      puts "🎉 Successful test run"
+      exit 0
+    else
+      puts "💥 Some tests produced errors, check build artifacts"
+      exit 1
+    end
+  end
+
+  desc "Runs all the Android unit tests"
+  lane :unit_tests do
+    passed = system "cd \"#{ANDROID_PATH}\" && ./gradlew :Shopify:test --continue"
+
+    # if [ -n "$BUILDKITE_ARTIFACTS" ]; then
+    #   (cd $android_path && cp -r Shopify/build/reports/tests "../$BUILDKITE_ARTIFACTS")
+    # fi
+
+    unless passed
+      puts "^^^ +++"
+      puts "💥 Unit test errors"
+    end
+    passed
+  end
+
+  desc "Runs all the Android Instrumentation tests"
+  lane :instrumentation_tests do
+    puts "--- Instrumentation tests"
+    args = %w(
+      clean 
+      connectedAndroidTest 
+      -Pandroid.testInstrumentationRunnerArguments.notAnnotation=com.shopify.shopify.test.annotation.ScreenshotInstrumentation )
+    passed = system "cd \"#{ANDROID_PATH}\" && ./gradlew #{args.join(" ")}"
+
+    # if [ -n "$BUILDKITE_ARTIFACTS" ]; then
+    #   (cd $android_path && cp -r Shopify/build/reports/androidTests "../$BUILDKITE_ARTIFACTS")
+    # fi
+
+    unless passed
+      puts "^^^ +++"
+      puts "💥 Instrumentation test errors"
+    end
+    passed
+  end
+
+  desc "Runs all the Android snapshot tests"
+  lane :snapshot_tests do
+    puts "--- Screenshot tests"
+    env_var = "export PATH=${ANDROID_HOME}/platform-tools:$PATH"
+    args = %w(
+      clean 
+      clearScreenshots 
+      connectedAndroidTest 
+      -Pandroid.testInstrumentationRunnerArguments.annotation=com.shopify.shopify.test.annotation.ScreenshotInstrumentation )
+    passed = system "#{env_var} && cd #{ANDROID_PATH} && ./gradlew #{args.join(" ")}"
+    upload_and_inline_snapshot_images unless passed
+    passed
+  end
+
+  desc "Lint the code"
+  lane :upload_and_inline_snapshot_images do
+    puts "💥 Screenshot test errors"
+    sh "cd \"#{ANDROID_PATH}\" && ./gradlew pullScreenshots"
+
+    puts "Archive failed screenshots"
+    screenshot_directory="#{BUILDKITE_ARTIFACTS}/ScreenshotFailures/"
+    FileUtils.mkdir_p screenshot_directory
+
+    image_path = File.expand_path "../Android/Shopify/src/androidTest/assets/screenshots"
+    FileUtils.rm_rf "#{image_path}/*"
+
+    for f in Dir["#{image_path}/**/*.png"]
+      name = File.basename(f)
+      printf("** %s **\n", name)
+      printf('\033]1338;url='"%s"';alt='"%s"'\a\n', "artifact://BuildKiteArtifacts/ScreenshotFailures/#{name}", name)
+    end
+
+    puts "^^^ +++"
+    puts '💥 \033[Snapshot errors\033[0m\n'
+  end
+
+  desc "Lint the code"
+  lane :lint do
+    puts "--- Lint"
+    passed = system "cd \"#{ANDROID_PATH}\" && ./gradlew :Shopify:lintRelease"
+
+    # if [ -n "$BUILDKITE_ARTIFACTS" ]; then
+    #   # copy lint ouputs to results
+    #   mkdir $BUILDKITE_ARTIFACTS/Lint
+    #   (cd $android_path && cp -r Shopify/build/outputs/lint-results-release_files "../$BUILDKITE_ARTIFACTS/Lint")
+    #   (cd $android_path && cp Shopify/build/outputs/lint-results-release.html "../$BUILDKITE_ARTIFACTS/Lint/")
+    # fi
+
+    unless passed
+      puts "^^^ +++"
+      puts '💥 \033[31mLint errors\033[0m\n'
+    end
+    passed
+  end
+
+  desc "Starts a screenshot emulator"
+  lane :start_emulator do
+    AVD_PATH = File.expand_path("~/.android/avd/screenshot.avd")
+    SD_PATH = "#{AVD_PATH}/screenshot-sdcard.img"
+    emulator = AndroidEmulator.new(avd_path: AVD_PATH, sd_path: SD_PATH)
+    emulator.start
+  end
+
+  desc "Creates a screenshot emulator"
+  lane :create_emulator do
+    AVD_PATH = File.expand_path("~/.android/avd/screenshot.avd")
+    SD_PATH = "#{AVD_PATH}/screenshot-sdcard.img"
+    emulator = AndroidEmulator.new(avd_path: AVD_PATH, sd_path: SD_PATH)
+    emulator.create unless emulator.exists?("screenshot")
+  end
+
+  desc "Updates SDK with Packages"
+  lane :update_sdk do
+    sdk = AndroidSDK.new
+    sdk.update!
+  end
+end
