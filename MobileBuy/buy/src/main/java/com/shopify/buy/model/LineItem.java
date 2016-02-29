@@ -79,6 +79,12 @@ public class LineItem {
         quantity = 1;
     }
 
+    public LineItem(Long variantId, boolean requiresShipping, long quantity) {
+        this.variantId = variantId;
+        this.requiresShipping = requiresShipping;
+        this.quantity = quantity;
+    }
+
     /**
      * @return The title for the {@link ProductVariant} on this line item.
      */

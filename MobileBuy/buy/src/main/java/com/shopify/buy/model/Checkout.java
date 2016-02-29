@@ -175,6 +175,11 @@ public class Checkout extends ShopifyObject {
         lineItems = new ArrayList<LineItem>(cart.getLineItems());
     }
 
+    public Checkout(LineItem lineItem) {
+        lineItems = new ArrayList<>();
+        lineItems.add(lineItem);
+    }
+
     /**
      * @return The identifier of the source of this checkout (used  for tracking purposes). For the Mobile Buy SDK, this is set to the Mobile App Channel ID of the shop, which you can find in your shop's admin portal by navigating to Integration under Mobile App.
      */
