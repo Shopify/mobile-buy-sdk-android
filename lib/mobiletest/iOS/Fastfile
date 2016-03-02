@@ -2,7 +2,7 @@
 # encoding: utf-8
 
 require 'yaml'
-yml_config = YAML.load_file(File.expand_path(".config.yml")) rescue nil
+yml_config = YAML.load_file(File.expand_path("../.config.yml")) rescue nil
 raise "Yaml Config was not found at .config.yml, have you run dev init?" if yml_config.nil?
 
 platform :ios do
@@ -16,7 +16,7 @@ platform :ios do
     scan(
       project: yml_config['xcodeproj'],
       scheme: yml_config['scheme']['test']['name'],
-      device: yml_config[['scheme']['test']['device'],
+      device: yml_config['scheme']['test']['device'],
       clean: false,
       code_coverage: true
     )
@@ -27,7 +27,7 @@ platform :ios do
     scan(
       project: yml_config['xcodeproj'],
       scheme: yml_config['scheme']['snapshot_test']['name'],
-      device: yml_config[['scheme']['snapshot_test']['device'],
+      device: yml_config['scheme']['snapshot_test']['device'],
       clean: false,
       code_coverage: true
     )
