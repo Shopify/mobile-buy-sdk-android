@@ -75,13 +75,19 @@ platform :ios do
       scheme: yml_config['scheme']['hockey']['name'],
       clean: true,
       ipa: "#{yml_config['title']}.ipa",
-      archive: true 
+      archive: true,
     }
 
     if yml_config['xcworkspace']
       args[:workspace] = yml_config['xcworkspace']
+      if yml_config['xcworkspace'].split("/").length > 0
+        args[:destination] = yml_config['xcworkspace'].split("/").first
+      end
     else
       args[:project] = yml_config['xcodeproj']
+      if yml_config['xcodeproj'].split("/").length > 0
+        args[:destination] = yml_config['xcworkspace'].split("/").first
+      end
     end
 
     ipa(args)
