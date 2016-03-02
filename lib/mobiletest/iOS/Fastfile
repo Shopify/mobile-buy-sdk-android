@@ -15,8 +15,8 @@ platform :ios do
   lane :unit_tests do
     scan(
       project: yml_config['xcodeproj'],
-      scheme: yml_config['test_scheme'],
-      device: yml_config['device'],
+      scheme: yml_config['scheme']['test'],
+      device: yml_config[['scheme']['test']['device'],
       clean: false,
       code_coverage: true
     )
@@ -26,8 +26,8 @@ platform :ios do
   lane :snapshot_tests do
     scan(
       project: yml_config['xcodeproj'],
-      scheme: yml_config['snapshot_test_scheme'],
-      device: yml_config['device'],
+      scheme: yml_config['scheme']['snapshot_test'],
+      device: yml_config[['scheme']['snapshot_test']['device'],
       clean: false,
       code_coverage: true
     )
@@ -54,7 +54,7 @@ platform :ios do
     ipa(
       project: yml_config['xcodeproj'],
       configuration: "Internal",
-      scheme: yml_config['scheme'],
+      scheme: yml_config['scheme']['hockey'],
       clean: true,
       ipa: "#{yml_config['title']}.ipa",
       archive: true 
