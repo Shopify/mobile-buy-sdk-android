@@ -551,7 +551,11 @@ public class Checkout extends ShopifyObject {
         }
     }
 
-    public Checkout forUpdate() {
+    /**
+     * Creates a copy of the Checkout for use in updates, filtering out properties that should not be sent.
+     * @return A checkout suitable for sending in an update.
+     */
+    public Checkout copyForUpdate() {
         Checkout copy = Checkout.fromJson(this.toJsonString());
         copy.giftCards = null;
         return copy;

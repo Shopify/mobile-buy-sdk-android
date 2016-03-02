@@ -400,7 +400,7 @@ public class BuyClient {
             throw new NullPointerException("checkout cannot be null");
         }
 
-        Checkout cleanCheckout = checkout.forUpdate();
+        Checkout cleanCheckout = checkout.copyForUpdate();
 
         retrofitService.updateCheckout(new CheckoutWrapper(cleanCheckout), cleanCheckout.getToken(), new Callback<CheckoutWrapper>() {
             @Override
