@@ -1,6 +1,10 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
 
+require 'yaml'
+yml_config = YAML.load_file(File.expand_path(".config.yml")) rescue nil
+raise "Yaml Config was not found at .config.yml, have you run dev init?" if yml_config.nil?
+
 platform :ios do
   desc "Runs all the iOS tests"
   lane :test do
@@ -10,9 +14,9 @@ platform :ios do
   desc "Runs all the iOS unit tests"
   lane :unit_tests do
     scan(
-      project: "iOS/Shopify.xcodeproj",
-      scheme: "Shopify",
-      device: "iPhone 6 (9.1)",
+      project: yml_config['xcodeproj'],
+      scheme: yml_config['test_scheme'],
+      device: yml_config['device'],
       clean: false,
       code_coverage: true
     )
@@ -21,9 +25,9 @@ platform :ios do
   desc "Runs all the iOS snapshot tests"
   lane :snapshot_tests do
     scan(
-      project: "iOS/Shopify.xcodeproj",
-      scheme: "ShopifySnapshotTests",
-      device: "iPhone 6 (9.1)",
+      project: yml_config['xcodeproj'],
+      scheme: yml_config['snapshot_test_scheme'],
+      device: yml_config['device'],
       clean: false,
       code_coverage: true
     )
@@ -33,7 +37,7 @@ platform :ios do
   lane :bump_version_number do
     commit_version_bump(
       message: 'Bump Version Number',
-      xcodeproj: 'iOS/Shopify.xcodeproj'
+      xcodeproj: yml_config['xcodeproj']
     )
   end
 
@@ -48,14 +52,14 @@ platform :ios do
     ensure_git_status_clean
     increment_build_number build_number: Time.new.strftime("%Y.%m.%d")
     ipa(
-      project: "iOS/Shopify.xcodeproj",
+      project: yml_config['xcodeproj'],
       configuration: "Internal",
-      scheme: "Shopify",
+      scheme: yml_config['scheme'],
       clean: true,
-      ipa: "Shopify.ipa",
+      ipa: "#{yml_config['title']}.ipa",
       archive: true 
     )
-    hockey(app_id: "7d5c092c95524c83932c59a68c211f7e", api_token: ENV['HOCKEY_API_TOKEN']) # TODO: does app_id work?
+    hockey(app_id: yml_config['hockey']['public_identifier'], api_token: ENV['HOCKEY_API_TOKEN']) # TODO: does app_id work?
     clean_build_artifacts
   end
 end
