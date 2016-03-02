@@ -13,32 +13,50 @@ platform :ios do
 
   desc "Runs all the iOS unit tests"
   lane :unit_tests do
-    scan(
-      project: yml_config['xcodeproj'],
+    args = {
       scheme: yml_config['scheme']['test']['name'],
       device: yml_config['scheme']['test']['device'],
       clean: false,
       code_coverage: true
-    )
+    }
+
+    if yml_config['xcworkspace']
+      args[:workspace] = yml_config['xcworkspace']
+    else
+      args[:project] = yml_config['xcodeproj']
+    end
+
+    scan(args)
   end
 
   desc "Runs all the iOS snapshot tests"
   lane :snapshot_tests do
-    scan(
-      project: yml_config['xcodeproj'],
+    args = {
       scheme: yml_config['scheme']['snapshot_test']['name'],
       device: yml_config['scheme']['snapshot_test']['device'],
-      clean: false,
-      code_coverage: true
-    )
+      clean: false
+    }
+    
+    if yml_config['xcworkspace']
+      args[:workspace] = yml_config['xcworkspace']
+    else
+      args[:project] = yml_config['xcodeproj']
+    end
+
+    scan(args)
   end
 
   desc "Bumps the version number"
   lane :bump_version_number do
-    commit_version_bump(
-      message: 'Bump Version Number',
-      xcodeproj: yml_config['xcodeproj']
-    )
+    args = { message: 'Bump Version Number' }
+    
+    if yml_config['xcworkspace']
+      args[:workspace] = yml_config['xcworkspace']
+    else
+      args[:project] = yml_config['xcodeproj']
+    end
+
+    commit_version_bump(args)
   end
 
   desc "Release a new beta version on Hockey"
@@ -51,14 +69,22 @@ platform :ios do
   lane :hockey_deploy do 
     ensure_git_status_clean
     increment_build_number build_number: Time.new.strftime("%Y.%m.%d")
-    ipa(
-      project: yml_config['xcodeproj'],
+
+    args = {
       configuration: "Internal",
       scheme: yml_config['scheme']['hockey']['name'],
       clean: true,
       ipa: "#{yml_config['title']}.ipa",
       archive: true 
-    )
+    }
+
+    if yml_config['xcworkspace']
+      args[:workspace] = yml_config['xcworkspace']
+    else
+      args[:project] = yml_config['xcodeproj']
+    end
+
+    ipa(args)
     hockey(app_id: yml_config['hockey']['public_identifier'], api_token: ENV['HOCKEY_API_TOKEN']) # TODO: does app_id work?
     clean_build_artifacts
   end
