@@ -395,12 +395,14 @@ public class BuyClient {
      * @param checkout the {@link Checkout} to update
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      */
-    public void updateCheckout(Checkout checkout, final Callback<Checkout> callback) {
+    public void updateCheckout(final Checkout checkout, final Callback<Checkout> callback) {
         if (checkout == null) {
             throw new NullPointerException("checkout cannot be null");
         }
 
-        retrofitService.updateCheckout(new CheckoutWrapper(checkout), checkout.getToken(), new Callback<CheckoutWrapper>() {
+        Checkout cleanCheckout = checkout.forUpdate();
+
+        retrofitService.updateCheckout(new CheckoutWrapper(cleanCheckout), cleanCheckout.getToken(), new Callback<CheckoutWrapper>() {
             @Override
             public void success(CheckoutWrapper checkoutWrapper, Response response) {
                 callback.success(checkoutWrapper.getCheckout(), response);

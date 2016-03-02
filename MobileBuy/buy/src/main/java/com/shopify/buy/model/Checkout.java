@@ -24,10 +24,7 @@
 
 package com.shopify.buy.model;
 
-import android.text.TextUtils;
-
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
@@ -39,13 +36,11 @@ import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
 import com.shopify.buy.dataprovider.BuyClientFactory;
 import com.shopify.buy.model.internal.MarketingAttribution;
-import com.shopify.buy.utils.DateUtility;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -554,6 +549,12 @@ public class Checkout extends ShopifyObject {
         if (giftCards != null && giftCard != null) {
             giftCards.remove(giftCard);
         }
+    }
+
+    public Checkout forUpdate() {
+        Checkout copy = Checkout.fromJson(this.toJsonString());
+        copy.giftCards = null;
+        return copy;
     }
 
     /**
