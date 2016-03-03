@@ -63,13 +63,10 @@ platform :ios do
 
   desc "Sets up CI for tests and for hockey deploys"
   lane :setup_ci do
-    puts system("git config --get remote.origin.url")
     app_params = {
       'public_identifier' => yml_config['hockey']['public_identifier'],
-      'git_repo' => system("git config --get remote.origin.url")
+      'git_repo' => `git config --get remote.origin.url`.strip
     }.to_json
-
-    puts app_params
 
     uri = URI("https://mobile.shopify.io/apps/buildkite/create_pipeline.json")
     http = Net::HTTP.new(uri.host, uri.port)
