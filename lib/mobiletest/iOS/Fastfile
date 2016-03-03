@@ -68,7 +68,6 @@ platform :ios do
   desc "- Upload the ipa file to hockey"
   lane :hockey_deploy do 
     ensure_git_status_clean
-    increment_build_number build_number: Time.new.strftime("%Y.%m.%d")
 
     args = {
       configuration: "Internal",
@@ -89,6 +88,8 @@ platform :ios do
         args[:destination] = yml_config['xcworkspace'].split("/").first
       end
     end
+
+    increment_build_number(build_number: Time.new.strftime("%Y.%m.%d"), xcodeproj: yml_config['xcodeproj'])
 
     ipa(args)
     hockey(app_id: yml_config['hockey']['public_identifier'], api_token: ENV['HOCKEY_API_TOKEN']) # TODO: does app_id work?
