@@ -9,7 +9,6 @@ import com.shopify.buy.extensions.ShopifyAndroidTestCase;
 import com.shopify.buy.model.Address;
 import com.shopify.buy.model.Cart;
 import com.shopify.buy.model.Checkout;
-import com.shopify.buy.model.CheckoutAttribute;
 import com.shopify.buy.model.CreditCard;
 import com.shopify.buy.model.Discount;
 import com.shopify.buy.model.GiftCard;
@@ -39,6 +38,9 @@ public class BuyTest extends ShopifyAndroidTestCase {
     public void testApplyingGiftCardToCheckout() throws InterruptedException {
         createValidCheckout();
         applyGiftCardToCheckout(data.getGiftCardCode(TestData.GiftCardType.VALID11), data.getGiftCardValue(TestData.GiftCardType.VALID11));
+
+        updateCheckout();
+        assertEquals(1, checkout.getGiftCards().size());
     }
 
     public void testApplyingInvalidGiftCardToCheckout() throws InterruptedException {
