@@ -4,6 +4,8 @@
 require 'yaml'
 yml_config = YAML.load_file(File.expand_path("../.config.yml")) rescue nil
 raise "Yaml Config was not found at .config.yml, have you run dev init?" if yml_config.nil?
+secret_yml_config = YAML.load_file(File.expand_path("../.secret_config.yml")) rescue nil
+raise "Yaml Config was not found at .secret_config.yml, have you run dev init?" if secret_yml_config.nil?
 
 platform :ios do
   desc "Runs all the iOS tests"
@@ -57,6 +59,27 @@ platform :ios do
     end
 
     commit_version_bump(args)
+  end
+
+  desc "Sets up CI for tests and for hockey deploys"
+  lane :setup_ci do
+    app_params = {
+      'public_identifier' => yml_config['hockey']['public_identifier'],
+      'git_repo' => system("git config --get remote.origin.url")
+    }
+
+    uri = URI("https://mobile.shopify.io/apps/buildkite/create_pipeline.json")
+    http = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl = true
+
+    headers = {
+      'X-Authorization' => secret_yml_config['mobile_token'],
+      'Content-Type' => 'application/json'
+    }
+
+    response = http.post(uri.path, app_params, headers)
+    json_response = JSON.parse(response.body)
+    puts response.body
   end
 
   desc "Release a new beta version on Hockey"
