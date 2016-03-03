@@ -66,7 +66,7 @@ platform :ios do
     app_params = {
       'public_identifier' => yml_config['hockey']['public_identifier'],
       'git_repo' => system("git config --get remote.origin.url")
-    }
+    }.to_json
 
     uri = URI("https://mobile.shopify.io/apps/buildkite/create_pipeline.json")
     http = Net::HTTP.new(uri.host, uri.port)
