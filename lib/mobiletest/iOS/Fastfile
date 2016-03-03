@@ -4,8 +4,6 @@
 require 'yaml'
 yml_config = YAML.load_file(File.expand_path("../.config.yml")) rescue nil
 raise "Yaml Config was not found at .config.yml, have you run dev init?" if yml_config.nil?
-secret_yml_config = YAML.load_file(File.expand_path("../.secret_config.yml")) rescue nil
-raise "Yaml Config was not found at .secret_config.yml, have you run dev init?" if secret_yml_config.nil?
 
 platform :ios do
   desc "Runs all the iOS tests"
@@ -63,6 +61,9 @@ platform :ios do
 
   desc "Sets up CI for tests and for hockey deploys"
   lane :setup_ci do
+    secret_yml_config = YAML.load_file(File.expand_path("../.secret_config.yml")) rescue nil
+    raise "Yaml Config was not found at .secret_config.yml, have you run dev init?" if secret_yml_config.nil?
+    
     app_params = {
       'public_identifier' => yml_config['hockey']['public_identifier'],
       'git_repo' => `git config --get remote.origin.url`.strip
