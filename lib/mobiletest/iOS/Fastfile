@@ -63,10 +63,13 @@ platform :ios do
   lane :setup_ci do
     secret_yml_config = YAML.load_file(File.expand_path("../.secret_config.yml")) rescue nil
     raise "Yaml Config was not found at .secret_config.yml, have you run dev init?" if secret_yml_config.nil?
-    
+
+    git_repo = `git config --get remote.origin.url`.strip
+    raise "You need to setup a git origin before setting up CI" if git_repo.nil?
+
     app_params = {
       'public_identifier' => yml_config['hockey']['public_identifier'],
-      'git_repo' => `git config --get remote.origin.url`.strip
+      'git_repo' => git_repo
     }.to_json
 
     uri = URI("https://mobile.shopify.io/apps/buildkite/create_pipeline.json")
