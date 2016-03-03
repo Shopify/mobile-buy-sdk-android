@@ -74,7 +74,8 @@ platform :ios do
       scheme: yml_config['scheme']['hockey']['name'],
       silent: true,
       clean: true,
-      output_name: "#{yml_config['title']}.ipa"
+      output_name: "#{yml_config['title']}.ipa",
+      destination: 'generic/platform=iOS'
     }
 
     if yml_config['xcworkspace']
