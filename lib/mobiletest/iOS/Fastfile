@@ -48,14 +48,7 @@ platform :ios do
 
   desc "Bumps the version number"
   lane :bump_version_number do
-    args = { message: 'Bump Version Number' }
-    
-    if yml_config['xcworkspace']
-      args[:workspace] = yml_config['xcworkspace']
-    else
-      args[:project] = yml_config['xcodeproj']
-    end
-
+    args = { message: 'Bump Version Number', project: yml_config['xcodeproj'] }
     commit_version_bump(args)
   end
 
