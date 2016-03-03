@@ -70,11 +70,11 @@ platform :ios do
     ensure_git_status_clean
 
     args = {
-      configuration: "Internal",
+      configuration: "Debug",
       scheme: yml_config['scheme']['hockey']['name'],
+      silent: true,
       clean: true,
-      ipa: "#{yml_config['title']}.ipa",
-      archive: true,
+      output_name: "#{yml_config['title']}.ipa"
     }
 
     if yml_config['xcworkspace']
@@ -91,8 +91,8 @@ platform :ios do
 
     increment_build_number(build_number: Time.new.strftime("%Y.%m.%d"), xcodeproj: yml_config['xcodeproj'])
 
-    ipa(args)
-    hockey(app_id: yml_config['hockey']['public_identifier'], api_token: ENV['HOCKEY_API_TOKEN']) # TODO: does app_id work?
+    gym(args)
+    hockey(app_id: yml_config['hockey']['public_identifier'], ipa: "./#{yml_config['title']}.ipa", api_token: ENV['HOCKEY_API_TOKEN']) # TODO: does app_id work?
     clean_build_artifacts
   end
 end
