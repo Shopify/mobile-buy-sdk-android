@@ -1,5 +1,6 @@
 package com.shopify.buy.service;
 
+import com.google.gson.Gson;
 import com.shopify.buy.data.TestData;
 import com.shopify.buy.dataprovider.BuyClient;
 import com.shopify.buy.dataprovider.BuyClientFactory;
@@ -9,7 +10,6 @@ import com.shopify.buy.extensions.ShopifyAndroidTestCase;
 import com.shopify.buy.model.Address;
 import com.shopify.buy.model.Cart;
 import com.shopify.buy.model.Checkout;
-import com.shopify.buy.model.CheckoutAttribute;
 import com.shopify.buy.model.CreditCard;
 import com.shopify.buy.model.Discount;
 import com.shopify.buy.model.GiftCard;
@@ -39,6 +39,9 @@ public class BuyTest extends ShopifyAndroidTestCase {
     public void testApplyingGiftCardToCheckout() throws InterruptedException {
         createValidCheckout();
         applyGiftCardToCheckout(data.getGiftCardCode(TestData.GiftCardType.VALID11), data.getGiftCardValue(TestData.GiftCardType.VALID11));
+
+        updateCheckout();
+        assertEquals(1, checkout.getGiftCards().size());
     }
 
     public void testApplyingInvalidGiftCardToCheckout() throws InterruptedException {
@@ -242,9 +245,9 @@ public class BuyTest extends ShopifyAndroidTestCase {
             @Override
             public void failure(RetrofitError error) {
                 fail(BuyClient.getErrorBody(error));
-          }
+            }
         });
-      
+
         latch.await();
     }
 
@@ -450,13 +453,22 @@ public class BuyTest extends ShopifyAndroidTestCase {
 
     public void testExpiringCheckout() throws InterruptedException {
         createValidCheckout();
+
         assertEquals(checkout.getReservationTime().longValue(), 300);
+
+        // Create a copy of the checkout before we do the update so we can ensure that only the reservation time changed
+        final Checkout before = copyCheckout(checkout);
+        before.setReservationTime(0);
 
         final CountDownLatch latch = new CountDownLatch(1);
         buyClient.removeProductReservationsFromCheckout(checkout, new Callback<Checkout>() {
             @Override
             public void success(Checkout checkout, Response response) {
                 assertEquals(checkout.getReservationTime().longValue(), 0);
+
+                // make sure that only the reservation time changed.
+                assertEquals(before, checkout);
+
                 latch.countDown();
             }
 
@@ -506,26 +518,31 @@ public class BuyTest extends ShopifyAndroidTestCase {
         return cart;
     }
 
+    private Checkout copyCheckout(Checkout checkout) {
+        Gson gson = BuyClientFactory.createDefaultGson();
+        return gson.fromJson(checkout.toJsonString(), Checkout.class);
+    }
+
     private Long getVariantID() throws InterruptedException {
-      final CountDownLatch latch = new CountDownLatch(1);
+        final CountDownLatch latch = new CountDownLatch(1);
 
-      final AtomicReference<Product> productRef = new AtomicReference<>();
-      buyClient.getProduct(data.getProductId(), new Callback<Product>() {
-        @Override
-        public void success(Product product, Response response) {
-          productRef.set(product);
-          latch.countDown();
-        }
+        final AtomicReference<Product> productRef = new AtomicReference<>();
+        buyClient.getProduct(data.getProductId(), new Callback<Product>() {
+            @Override
+            public void success(Product product, Response response) {
+                productRef.set(product);
+                latch.countDown();
+            }
 
-        @Override
-        public void failure(RetrofitError error) {
-          fail(BuyClient.getErrorBody(error));
-        }
-      });
+            @Override
+            public void failure(RetrofitError error) {
+                fail(BuyClient.getErrorBody(error));
+            }
+        });
 
-      latch.await();
+        latch.await();
 
-      return productRef.get().getVariants().get(0).getId();
+        return productRef.get().getVariants().get(0).getId();
     }
 
     private void createValidCheckout() throws InterruptedException {
@@ -585,14 +602,14 @@ public class BuyTest extends ShopifyAndroidTestCase {
     }
 
     private void validateCheckoutCreatedWithVariantID(Checkout checkout, Response response) {
-      assertEquals(HttpStatus.SC_CREATED, response.getStatus());
-      assertNotNull(checkout.getLineItems());
-      assertEquals(1, checkout.getLineItems().size());
-      assertEquals(checkout.getSourceName(), "mobile_app");
+        assertEquals(HttpStatus.SC_CREATED, response.getStatus());
+        assertNotNull(checkout.getLineItems());
+        assertEquals(1, checkout.getLineItems().size());
+        assertEquals(checkout.getSourceName(), "mobile_app");
 
-      if (!USE_MOCK_RESPONSES) {
-        assertEquals(checkout.getSourceIdentifier(), buyClient.getChannelId());
-      }
+        if (!USE_MOCK_RESPONSES) {
+            assertEquals(checkout.getSourceIdentifier(), buyClient.getChannelId());
+        }
     }
 
     private Address getShippingAddress() {
