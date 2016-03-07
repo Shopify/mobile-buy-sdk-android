@@ -655,7 +655,11 @@ public class BuyClient {
             callback.failure(null);
         } else {
             checkout.setReservationTime(0);
-            updateCheckout(checkout, callback);
+
+            Checkout expiredCheckout = new Checkout();
+            expiredCheckout.setToken(checkout.getToken());
+            expiredCheckout.setReservationTime(0);
+            updateCheckout(expiredCheckout, callback);
         }
     }
 
