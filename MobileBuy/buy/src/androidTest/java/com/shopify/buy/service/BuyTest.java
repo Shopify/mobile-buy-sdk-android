@@ -455,11 +455,8 @@ public class BuyTest extends ShopifyAndroidTestCase {
 
         assertEquals(checkout.getReservationTime().longValue(), 300);
 
-        Checkout expiredCheckout = new Checkout();
-        expiredCheckout.setToken(checkout.getToken());
-
         final CountDownLatch latch = new CountDownLatch(1);
-        buyClient.removeProductReservationsFromCheckout(expiredCheckout, new Callback<Checkout>() {
+        buyClient.removeProductReservationsFromCheckout(checkout, new Callback<Checkout>() {
             @Override
             public void success(Checkout checkout, Response response) {
                 assertEquals(checkout.getReservationTime().longValue(), 0);
