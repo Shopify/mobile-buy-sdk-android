@@ -135,7 +135,8 @@ public class ProductListActivity extends SampleListActivity {
             if (collectionId != null) {
                 getSampleApplication().getProducts(collectionId, callback);
             } else {
-                getSampleApplication().getAllProducts(callback);
+                List<Product> allProducts = new ArrayList<>();
+                getSampleApplication().getAllProducts(1, allProducts, callback);
             }
         }
     }
