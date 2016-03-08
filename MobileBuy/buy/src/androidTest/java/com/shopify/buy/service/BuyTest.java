@@ -457,8 +457,9 @@ public class BuyTest extends ShopifyAndroidTestCase {
         assertEquals(checkout.getReservationTime().longValue(), 300);
 
         // Create a copy of the checkout before we do the update so we can ensure that only the reservation time changed
-        final Checkout before = copyCheckout(checkout);
+        final CheckoutPrivateAPIs before = CheckoutPrivateAPIs.fromCheckout(checkout);
         before.setReservationTime(0);
+        before.setReservationTimeLeft(0l);
 
         final CountDownLatch latch = new CountDownLatch(1);
         buyClient.removeProductReservationsFromCheckout(checkout, new Callback<Checkout>() {
@@ -467,7 +468,7 @@ public class BuyTest extends ShopifyAndroidTestCase {
                 assertEquals(checkout.getReservationTime().longValue(), 0);
 
                 // make sure that only the reservation time changed.
-                assertEquals(before, checkout);
+                assertEquals(before.toJsonString(), checkout.toJsonString());
 
                 latch.countDown();
             }
