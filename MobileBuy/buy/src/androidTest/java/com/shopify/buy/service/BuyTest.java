@@ -1,6 +1,5 @@
 package com.shopify.buy.service;
 
-import com.google.gson.Gson;
 import com.shopify.buy.data.TestData;
 import com.shopify.buy.dataprovider.BuyClient;
 import com.shopify.buy.dataprovider.BuyClientFactory;
@@ -517,11 +516,6 @@ public class BuyTest extends ShopifyAndroidTestCase {
         properties.put("size", "large");
 
         return cart;
-    }
-
-    private Checkout copyCheckout(Checkout checkout) {
-        Gson gson = BuyClientFactory.createDefaultGson();
-        return gson.fromJson(checkout.toJsonString(), Checkout.class);
     }
 
     private Long getVariantID() throws InterruptedException {
