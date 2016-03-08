@@ -106,9 +106,25 @@ public class SampleApplication extends Application {
         buyClient.getCollections(callback);
     }
 
-    public void getAllProducts(final Callback<List<Product>> callback) {
-        // For this sample app, "all" products will just be the first page of products
-        buyClient.getProductPage(1, callback);
+
+    public void getAllProducts(final int page, final List<Product> allProducts, final Callback<List<Product>> callback) {
+
+        buyClient.getProductPage(page, new Callback<List<Product>>() {
+            @Override
+            public void success(List<Product> products, Response response) {
+                if (products.size() > 0) {
+                    allProducts.addAll(products);
+                    getAllProducts(page + 1, allProducts, callback );
+                } else {
+                    callback.success(allProducts, response);
+                }
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                callback.failure(error);
+            }
+        });
     }
 
     public void getProducts(String collectionId, Callback<List<Product>> callback) {
