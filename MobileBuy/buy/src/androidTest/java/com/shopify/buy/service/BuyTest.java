@@ -1,6 +1,5 @@
 package com.shopify.buy.service;
 
-import com.google.gson.Gson;
 import com.shopify.buy.data.TestData;
 import com.shopify.buy.dataprovider.BuyClient;
 import com.shopify.buy.dataprovider.BuyClientFactory;
@@ -457,8 +456,9 @@ public class BuyTest extends ShopifyAndroidTestCase {
         assertEquals(checkout.getReservationTime().longValue(), 300);
 
         // Create a copy of the checkout before we do the update so we can ensure that only the reservation time changed
-        final Checkout before = copyCheckout(checkout);
+        final CheckoutPrivateAPIs before = CheckoutPrivateAPIs.fromCheckout(checkout);
         before.setReservationTime(0);
+        before.setReservationTimeLeft(0l);
 
         final CountDownLatch latch = new CountDownLatch(1);
         buyClient.removeProductReservationsFromCheckout(checkout, new Callback<Checkout>() {
@@ -467,7 +467,7 @@ public class BuyTest extends ShopifyAndroidTestCase {
                 assertEquals(checkout.getReservationTime().longValue(), 0);
 
                 // make sure that only the reservation time changed.
-                assertEquals(before, checkout);
+                assertEquals(before.toJsonString(), checkout.toJsonString());
 
                 latch.countDown();
             }
@@ -516,11 +516,6 @@ public class BuyTest extends ShopifyAndroidTestCase {
         properties.put("size", "large");
 
         return cart;
-    }
-
-    private Checkout copyCheckout(Checkout checkout) {
-        Gson gson = BuyClientFactory.createDefaultGson();
-        return gson.fromJson(checkout.toJsonString(), Checkout.class);
     }
 
     private Long getVariantID() throws InterruptedException {

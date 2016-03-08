@@ -24,4 +24,7 @@ public class CheckoutPrivateAPIs extends Checkout {
         return gson.fromJson(checkoutJson, CheckoutPrivateAPIs.class);
     }
 
+    public void setReservationTimeLeft(Long reservationTimeLeft) {
+        this.reservationTimeLeft = reservationTimeLeft;
+    }
 }
