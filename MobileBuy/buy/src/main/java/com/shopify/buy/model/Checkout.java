@@ -95,7 +95,7 @@ public class Checkout extends ShopifyObject {
     private Long reservationTime;
 
     @SerializedName("reservation_time_left")
-    private Long reservationTimeLeft;
+    protected Long reservationTimeLeft;
 
     @SerializedName("line_items")
     private List<LineItem> lineItems;
