@@ -22,7 +22,6 @@ class AndroidSDK
     
     package_path = package_info[:install_path] ? package_info[:install_path] : package_info[:type]
     path_to_check = File.join(ENV['ANDROID_HOME'], package_path, package_info[:name])
-    puts path_to_check
     Dir.exist?(path_to_check)
   end
 

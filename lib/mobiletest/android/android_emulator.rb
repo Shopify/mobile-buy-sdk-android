@@ -21,13 +21,9 @@ class AndroidEmulator
     @config[:avd_path]        ||= File.expand_path("~/.android/avd/screenshot.avd")
     @config[:sd_path]         ||= "#{@config[:avd_path]}/screenshot-sdcard.img"
     @config[:android_home]    ||= ENV["ANDROID_HOME"]
-    puts "Android Home is at #{@config[:android_home]}"
   end
 
   def exists?
-    puts Dir.exist?(@config[:avd_path])
-    puts File.exist?(@config[:sd_path])
-    puts @config[:sd_path]
     Dir.exist?(@config[:avd_path]) && File.exist?(@config[:sd_path])
   end
 
