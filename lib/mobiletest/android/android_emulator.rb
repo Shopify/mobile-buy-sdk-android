@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
 
-require 'ADB'
+require_relative 'ADB/ADB'
 
 class AndroidEmulator
   include ADB
@@ -22,6 +22,10 @@ class AndroidEmulator
     @config[:sd_path]         ||= "#{@config[:avd_path]}/screenshot-sdcard.img"
     @config[:android_home]    ||= ENV["ANDROID_HOME"]
     puts "Android Home is at #{@config[:android_home]}"
+  end
+
+  def exists?
+    Dir.exist?(@config[:avd_path]) && File.exist?(@config[:sd_path])
   end
 
   def create(should_force=false)
