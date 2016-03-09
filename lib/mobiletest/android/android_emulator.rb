@@ -25,6 +25,9 @@ class AndroidEmulator
   end
 
   def exists?
+    puts Dir.exist?(@config[:avd_path])
+    puts File.exist?(@config[:sd_path])
+    puts @config[:sd_path]
     Dir.exist?(@config[:avd_path]) && File.exist?(@config[:sd_path])
   end
 
@@ -57,7 +60,7 @@ class AndroidEmulator
   end
 
   def create_sd_card
-    unless !File.exist?(@config[:sd_path])
+    if !File.exist?(@config[:sd_path])
       puts "Creating sdcard"
       Process.fork do
         puts "Spawning child procress to start emulator"
