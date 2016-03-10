@@ -186,4 +186,41 @@ public class StorefrontTest extends ShopifyAndroidTestCase {
         latch.await();
     }
 
+    public void testGetCollectionPage() throws InterruptedException {
+        final CountDownLatch latch = new CountDownLatch(1);
+
+        buyClient.getCollectionPage(1, new Callback<List<Collection>>() {
+            @Override
+            public void success(List<Collection> collections, Response response) {
+                assertNotNull(collections);
+                assertFalse(collections.isEmpty());
+                latch.countDown();
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                fail();
+            }
+        });
+        latch.await();
+    }
+
+    public void testGetOutOfIndexCollectionPage() throws InterruptedException {
+        final CountDownLatch latch = new CountDownLatch(1);
+
+        buyClient.getCollectionPage(999, new Callback<List<Collection>>() {
+            @Override
+            public void success(List<Collection> collections, Response response) {
+                assertNotNull(collections);
+                assertEquals(collections.size(), 0);
+                latch.countDown();
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                fail();
+            }
+        });
+        latch.await();
+    }
 }
