@@ -194,6 +194,7 @@ public class StorefrontTest extends ShopifyAndroidTestCase {
             public void success(List<Collection> collections, Response response) {
                 assertNotNull(collections);
                 assertFalse(collections.isEmpty());
+                assertEquals(collections.get(0).getHandle(), "frontpage");
                 latch.countDown();
             }
 

@@ -329,23 +329,7 @@ public class BuyClient {
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      */
     public void getCollections(final Callback<List<Collection>> callback) {
-        retrofitService.getCollections(channelId, new Callback<CollectionPublication>() {
-            @Override
-            public void success(CollectionPublication collectionPublication, Response response) {
-                List<Collection> collections = null;
-
-                if (collectionPublication != null) {
-                    collections = collectionPublication.getCollections();
-                }
-
-                callback.success(collections, response);
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                callback.failure(error);
-            }
-        });
+        getCollectionPage(1, callback);
     }
 
     /**
