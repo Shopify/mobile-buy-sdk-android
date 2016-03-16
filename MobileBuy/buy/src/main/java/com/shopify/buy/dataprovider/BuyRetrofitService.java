@@ -68,6 +68,9 @@ interface BuyRetrofitService {
     @GET("/api/channels/{channel}/collection_publications.json")
     void getCollections(@Path("channel") String channelId, Callback<CollectionPublication> callback);
 
+    @GET("/api/channels/{channel}/collection_publications.json")
+    void getCollectionPage(@Path("channel") String channelId, @Query("page") int page, @Query("limit") int pageSize, Callback<CollectionPublication> callback);
+
     /*
      * Checkout Anywhere API
      */
