@@ -9,7 +9,6 @@ import com.shopify.buy.extensions.ShopifyAndroidTestCase;
 import com.shopify.buy.model.Address;
 import com.shopify.buy.model.Cart;
 import com.shopify.buy.model.Checkout;
-import com.shopify.buy.model.CheckoutAttribute;
 import com.shopify.buy.model.CreditCard;
 import com.shopify.buy.model.Discount;
 import com.shopify.buy.model.GiftCard;
@@ -39,6 +38,9 @@ public class BuyTest extends ShopifyAndroidTestCase {
     public void testApplyingGiftCardToCheckout() throws InterruptedException {
         createValidCheckout();
         applyGiftCardToCheckout(data.getGiftCardCode(TestData.GiftCardType.VALID11), data.getGiftCardValue(TestData.GiftCardType.VALID11));
+
+        updateCheckout();
+        assertEquals(1, checkout.getGiftCards().size());
     }
 
     public void testApplyingInvalidGiftCardToCheckout() throws InterruptedException {
@@ -222,6 +224,30 @@ public class BuyTest extends ShopifyAndroidTestCase {
         privateCheckout.setToken("bananaaaa");
         checkout = privateCheckout;
         fetchShippingRates(HttpStatus.SC_NOT_FOUND);
+    }
+
+    public void testCreateCheckoutWithVariantID() throws InterruptedException {
+        final CountDownLatch latch = new CountDownLatch(1);
+        Checkout checkout = new Checkout(new LineItem(getVariantID(), true, 1));
+        checkout.setShippingAddress(getShippingAddress());
+        checkout.setBillingAddress(checkout.getShippingAddress());
+        checkout.setEmail("test@test.com");
+
+        buyClient.createCheckout(checkout, new Callback<Checkout>() {
+            @Override
+            public void success(Checkout checkout, Response response) {
+                validateCheckoutCreatedWithVariantID(checkout, response);
+                BuyTest.this.checkout = checkout;
+                latch.countDown();
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                fail(BuyClient.getErrorBody(error));
+            }
+        });
+
+        latch.await();
     }
 
     public void testCheckoutFlowUsingCreditCard() throws InterruptedException {
@@ -426,13 +452,23 @@ public class BuyTest extends ShopifyAndroidTestCase {
 
     public void testExpiringCheckout() throws InterruptedException {
         createValidCheckout();
+
         assertEquals(checkout.getReservationTime().longValue(), 300);
+
+        // Create a copy of the checkout before we do the update so we can ensure that only the reservation time changed
+        final CheckoutPrivateAPIs before = CheckoutPrivateAPIs.fromCheckout(checkout);
+        before.setReservationTime(0);
+        before.setReservationTimeLeft(0l);
 
         final CountDownLatch latch = new CountDownLatch(1);
         buyClient.removeProductReservationsFromCheckout(checkout, new Callback<Checkout>() {
             @Override
             public void success(Checkout checkout, Response response) {
                 assertEquals(checkout.getReservationTime().longValue(), 0);
+
+                // make sure that only the reservation time changed.
+                assertEquals(before.toJsonString(), checkout.toJsonString());
+
                 latch.countDown();
             }
 
@@ -480,6 +516,28 @@ public class BuyTest extends ShopifyAndroidTestCase {
         properties.put("size", "large");
 
         return cart;
+    }
+
+    private Long getVariantID() throws InterruptedException {
+        final CountDownLatch latch = new CountDownLatch(1);
+
+        final AtomicReference<Product> productRef = new AtomicReference<>();
+        buyClient.getProduct(data.getProductId(), new Callback<Product>() {
+            @Override
+            public void success(Product product, Response response) {
+                productRef.set(product);
+                latch.countDown();
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                fail(BuyClient.getErrorBody(error));
+            }
+        });
+
+        latch.await();
+
+        return productRef.get().getVariants().get(0).getId();
     }
 
     private void createValidCheckout() throws InterruptedException {
@@ -531,6 +589,17 @@ public class BuyTest extends ShopifyAndroidTestCase {
         assertEquals(1, checkout.getLineItems().size());
         assertNotNull(checkout.getLineItems().get(0).getProperties());
         assertEquals(2, checkout.getLineItems().get(0).getProperties().size());
+        assertEquals(checkout.getSourceName(), "mobile_app");
+
+        if (!USE_MOCK_RESPONSES) {
+            assertEquals(checkout.getSourceIdentifier(), buyClient.getChannelId());
+        }
+    }
+
+    private void validateCheckoutCreatedWithVariantID(Checkout checkout, Response response) {
+        assertEquals(HttpStatus.SC_CREATED, response.getStatus());
+        assertNotNull(checkout.getLineItems());
+        assertEquals(1, checkout.getLineItems().size());
         assertEquals(checkout.getSourceName(), "mobile_app");
 
         if (!USE_MOCK_RESPONSES) {

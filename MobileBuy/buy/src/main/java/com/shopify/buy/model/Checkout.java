@@ -24,10 +24,7 @@
 
 package com.shopify.buy.model;
 
-import android.text.TextUtils;
-
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
@@ -39,13 +36,11 @@ import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
 import com.shopify.buy.dataprovider.BuyClientFactory;
 import com.shopify.buy.model.internal.MarketingAttribution;
-import com.shopify.buy.utils.DateUtility;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -100,7 +95,7 @@ public class Checkout extends ShopifyObject {
     private Long reservationTime;
 
     @SerializedName("reservation_time_left")
-    private Long reservationTimeLeft;
+    protected Long reservationTimeLeft;
 
     @SerializedName("line_items")
     private List<LineItem> lineItems;
@@ -171,8 +166,16 @@ public class Checkout extends ShopifyObject {
 
     private transient List<CheckoutAttribute> attributes;
 
+    public Checkout() {
+    }
+
     public Checkout(Cart cart) {
         lineItems = new ArrayList<LineItem>(cart.getLineItems());
+    }
+
+    public Checkout(LineItem lineItem) {
+        lineItems = new ArrayList<>();
+        lineItems.add(lineItem);
     }
 
     /**
@@ -287,10 +290,11 @@ public class Checkout extends ShopifyObject {
     /**
      * @return The list of {@link GiftCard} objects that have been added to this checkout.
      */
-    public List<GiftCard> getGiftCards() { return giftCards; }
+    public List<GiftCard> getGiftCards() {
+        return giftCards;
+    }
 
     /***
-     *
      * @return Price of the order before shipping and taxes.
      */
     public String getSubtotalPrice() {
@@ -298,7 +302,6 @@ public class Checkout extends ShopifyObject {
     }
 
     /**
-     *
      * @return The sum of all the taxes applied to the line items in the order.
      */
     public String getTotalTax() {
@@ -327,10 +330,11 @@ public class Checkout extends ShopifyObject {
     }
 
     /**
-     *
      * @return The payment due after applying giftcards or other methods of partial payment
      */
-    public String getPaymentDue() { return paymentDue; }
+    public String getPaymentDue() {
+        return paymentDue;
+    }
 
     /**
      * @return The reservation time on this checkout (in seconds).
@@ -391,18 +395,23 @@ public class Checkout extends ShopifyObject {
     /**
      * @return Channel ID where the checkout was created.
      */
-    public String getChannelId() { return channelId; }
+    public String getChannelId() {
+        return channelId;
+    }
 
     /**
      * @return URL which is used for completing checkout in browser.
      */
-    public String getWebUrl() { return webUrl; }
+    public String getWebUrl() {
+        return webUrl;
+    }
 
     /**
-     *
      * @return An optional note attached to the order.
      */
-    public String getNote() { return note; }
+    public String getNote() {
+        return note;
+    }
 
     /**
      * @return An optional list of {@link CheckoutAttribute} attached to the checkout
@@ -417,7 +426,9 @@ public class Checkout extends ShopifyObject {
     /**
      * For internal use only.
      */
-    public MarketingAttribution getMarketingAttribution() { return marketingAttribution ;}
+    public MarketingAttribution getMarketingAttribution() {
+        return marketingAttribution;
+    }
 
     /**
      * For internal use only.
@@ -522,11 +533,20 @@ public class Checkout extends ShopifyObject {
     }
 
     /**
-     *
      * @param note An optional note attached to the order.
      */
     public void setNote(String note) {
         this.note = note;
+    }
+
+
+    /**
+     * Set the token for the Checkout.
+     *
+     * @param token
+     */
+    public void setToken(String token) {
+        this.token = token;
     }
 
     /**
@@ -549,6 +569,17 @@ public class Checkout extends ShopifyObject {
         if (giftCards != null && giftCard != null) {
             giftCards.remove(giftCard);
         }
+    }
+
+    /**
+     * Creates a copy of the Checkout for use in updates, filtering out properties that should not be sent.
+     *
+     * @return A checkout suitable for sending in an update.
+     */
+    public Checkout copyForUpdate() {
+        Checkout copy = Checkout.fromJson(this.toJsonString());
+        copy.giftCards = null;
+        return copy;
     }
 
     /**
@@ -595,7 +626,7 @@ public class Checkout extends ShopifyObject {
             JsonObject checkoutObject = gson.toJsonTree(checkout).getAsJsonObject();
 
             // Replace the CheckoutAttributes List with a hash map which is the input expected by the server
-            if (checkout.getAttributes() != null) {
+            if (checkout.getAttributes() != null && checkout.getAttributes().size() > 0) {
                 HashMap<String, String> attributesHashMap = new HashMap<>();
                 for (CheckoutAttribute attribute : checkout.attributes) {
                     attributesHashMap.put(attribute.getName(), attribute.getValue());

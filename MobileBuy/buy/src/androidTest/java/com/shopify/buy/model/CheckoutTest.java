@@ -1,13 +1,9 @@
 package com.shopify.buy.model;
 
-import android.util.Log;
-
 import com.google.gson.Gson;
 import com.shopify.buy.dataprovider.BuyClientFactory;
 import com.shopify.buy.extensions.ProductVariantPrivateAPIs;
 import com.shopify.buy.extensions.ShopifyAndroidTestCase;
-
-import org.json.JSONObject;
 
 /**
  * Basic unit test for initializing a checkout and adding {@code LineItems}
