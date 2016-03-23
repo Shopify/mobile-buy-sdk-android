@@ -329,15 +329,30 @@ public class BuyClient {
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      */
     public void getCollections(final Callback<List<Collection>> callback) {
-        retrofitService.getCollections(channelId, new Callback<CollectionPublication>() {
+        getCollectionPage(1, callback);
+    }
+
+    /**
+     * Fetch a page of collections
+     *
+     * @param page     the 1-based page index. The page size can be set with
+     *                 {@link #setPageSize(int)}
+     * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
+     */
+    public void getCollectionPage(int page, final Callback<List<Collection>> callback) {
+        if (page < 1) {
+            throw new IllegalArgumentException("page is a 1-based index, value cannot be less than 1");
+        }
+
+        // All collection responses from the server are wrapped in a CollectionPublication object which contains and array of collections
+        // For this call, we will clamp the size of the collection array returned to the page size
+        retrofitService.getCollectionPage(channelId, page, pageSize, new Callback<CollectionPublication>() {
             @Override
-            public void success(CollectionPublication collectionPublication, Response response) {
+            public void success(CollectionPublication collectionPage, Response response) {
                 List<Collection> collections = null;
-
-                if (collectionPublication != null) {
-                    collections = collectionPublication.getCollections();
+                if (collectionPage != null) {
+                    collections = collectionPage.getCollections();
                 }
-
                 callback.success(collections, response);
             }
 
