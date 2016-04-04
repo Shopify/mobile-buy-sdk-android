@@ -53,7 +53,7 @@ These can be invoked on the command line with ./gradlew <target>
 
 The simplest way to use the Mobile Buy SDK in your project is to add the following jCenter dependency to your `build.gradle` file:
 
-	compile 'com.shopify.mobilebuysdk:buy:1.2.2'
+	compile 'com.shopify.mobilebuysdk:buy:1.2.4'
 
 The [Integration Guide](https://docs.shopify.com/api/sdks/mobile-buy-sdk/android/integration-guide) also contains step-by-step instructions and sample code for integrating the Mobile Buy SDK into your application. The `sample` module in the Android Studio project is also a great resource.
 
