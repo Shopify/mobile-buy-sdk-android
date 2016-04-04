@@ -69,7 +69,7 @@ public class ImageUtility {
             int extensionSeparatorPos = path.lastIndexOf('.');
             if (-1 == extensionSeparatorPos) {
                 // Shopify should always store the images in the CDN with an extension, even if you upload
-                // the file without one. But just in case…
+                // the file without one. But just in case.
                 suffixedPath = path + sizeSuffix;
             } else {
                 suffixedPath = path.substring(0, extensionSeparatorPos) + sizeSuffix + path.substring(extensionSeparatorPos);
