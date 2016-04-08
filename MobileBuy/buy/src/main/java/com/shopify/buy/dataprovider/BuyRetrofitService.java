@@ -72,31 +72,31 @@ interface BuyRetrofitService {
     void getCollectionPage(@Path("channel") String channelId, @Query("page") int page, @Query("limit") int pageSize, Callback<CollectionPublication> callback);
 
     /*
-     * Checkout Anywhere API
+     * Checkout API
      */
 
-    @POST("/anywhere/checkouts.json")
+    @POST("/api/checkouts.json")
     void createCheckout(@Body CheckoutWrapper checkoutWrapper, Callback<CheckoutWrapper> callback);
 
-    @PATCH("/anywhere/checkouts/{token}.json")
+    @PATCH("/api/checkouts/{token}.json")
     void updateCheckout(@Body CheckoutWrapper checkoutWrapper, @Path("token") String token, Callback<CheckoutWrapper> callback);
 
-    @GET("/anywhere/checkouts/{token}/shipping_rates.json")
+    @GET("/api/checkouts/{token}/shipping_rates.json")
     void getShippingRates(@Path("token") String token, Callback<ShippingRatesWrapper> callback);
 
-    @POST("/anywhere/checkouts/{token}/complete.json")
+    @POST("/api/checkouts/{token}/complete.json")
     void completeCheckout(@Body HashMap<String, String> paymentSessionIdMap, @Path("token") String token, Callback<CheckoutWrapper> callback);
 
-    @GET("/anywhere/checkouts/{token}/processing.json")
+    @GET("/api/checkouts/{token}/processing.json")
     void getCheckoutCompletionStatus(@Path("token") String token, ResponseCallback callback);
 
-    @GET("/anywhere/checkouts/{token}.json")
+    @GET("/api/checkouts/{token}.json")
     void getCheckout(@Path("token") String token, Callback<CheckoutWrapper> callback);
 
-    @POST("/anywhere/checkouts/{token}/gift_cards.json")
+    @POST("/api/checkouts/{token}/gift_cards.json")
     void applyGiftCard(@Body GiftCardWrapper giftCardWrapper, @Path("token") String token, Callback<GiftCardWrapper> callback);
 
-    @DELETE("/anywhere/checkouts/{token}/gift_cards/{identifier}.json")
+    @DELETE("/api/checkouts/{token}/gift_cards/{identifier}.json")
     void removeGiftCard(@Path("identifier") String giftCardIdentifier, @Path("token") String token, Callback<GiftCardWrapper> callback);
 
     /*

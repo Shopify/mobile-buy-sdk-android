@@ -17,7 +17,7 @@ Please find all documentation on the [Mobile Buy SDK for Android page](https://d
 - ** Android SDK Level 14 (Ice Cream Sandwich 4.0) or higher
 - ** JDK 1.7 **
 - **Android studio 1.3.x** or greater recommended
-- The **Mobile App** sales channel [added to your Shopify store](https://docs.shopify.com/mobile-buy-sdk/adding-mobile-app-sales-channel)
+- The **Mobile App** sales channel [added to your Shopify store](https://docs.shopify.com/api/sdks/mobile-buy-sdk/add-mobile-app-sales-channel)
 
 ** Google Wallet **
 
@@ -38,7 +38,7 @@ The workspace includes the Mobile Buy SDK project and a sample app which demonst
 The Mobile Buy SDK includes a two modules.
 
 * `buy`: This is the Mobile Buy SDK framework. This is an Android library project.
-* `sample`: This is an Android app module which demonstrates how to use the SDK. For more details please refer to the [Sample App Guide](https://docs.shopify.com/mobile-buy-sdk/android/sample-app-guide).
+* `sample`: This is an Android app module which demonstrates how to use the SDK. For more details please refer to the [Sample App Guide](https://docs.shopify.com/api/sdks/mobile-buy-sdk/android/sample-app-guide).
 
 ### Gradle Targets
 There are a number of custom gradle targets defined in the `buy` module.
@@ -53,7 +53,7 @@ These can be invoked on the command line with ./gradlew <target>
 
 The simplest way to use the Mobile Buy SDK in your project is to add the following jCenter dependency to your `build.gradle` file:
 
-	compile 'com.shopify.mobilebuysdk:buy:1.2.2'
+	compile 'com.shopify.mobilebuysdk:buy:1.2.4'
 
 The [Integration Guide](https://docs.shopify.com/api/sdks/mobile-buy-sdk/android/integration-guide) also contains step-by-step instructions and sample code for integrating the Mobile Buy SDK into your application. The `sample` module in the Android Studio project is also a great resource.
 
