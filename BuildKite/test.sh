@@ -15,9 +15,12 @@ git submodule update --init --recursive
 echo "--- Downloading sdk updates"
 echo y | ./gradlew --no-color --refresh-dependencies
 
+echo "--- Restarting ADB server"
+${ANDROID_HOME}/platform-tools/adb kill-server
+${ANDROID_HOME}/platform-tools/adb start-server
+
 echo "--- Booting emulator"
-${ANDROID_HOME}/tools/mksdcard -l sdcard 512M sdcard.img
-${ANDROID_HOME}/tools/emulator -port ${PORT} -avd ${EMULATOR_NAME} -sdcard sdcard.img -no-audio &
+${ANDROID_HOME}/tools/emulator -port ${PORT} -avd ${EMULATOR_NAME} -no-audio &
 
 OUT=""
 while [[ ${OUT:0:7}  != 'stopped' ]]; do
@@ -35,7 +38,7 @@ echo "--- Setting up emulator"
 # ${ANDROID_HOME}/platform-tools/adb -s ${SERIAL} shell am start -n com.shopify.AnimationDisabler/com.shopify.AnimationDisabler.DisableAnimationActivity
 
 echo "--- Removing previous installs"
-#${ANDROID_HOME}/platform-tools/adb -s ${SERIAL} shell pm uninstall com.shopify.pos.debug
+${ANDROID_HOME}/platform-tools/adb -s ${SERIAL} shell pm uninstall com.shopify.buy
 
 echo "--- Setting up artifacts"
 export BUILDKITE_ARTIFACTS="../BuildKiteArtifacts"
