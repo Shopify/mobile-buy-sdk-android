@@ -15,6 +15,10 @@ git submodule update --init --recursive
 echo "--- Downloading sdk updates"
 echo y | ./gradlew --no-color --refresh-dependencies
 
+echo "--- Restarting ADB server"
+${ANDROID_HOME}/platform-tools/adb kill-server
+${ANDROID_HOME}/platform-tools/adb start-server
+
 echo "--- Booting emulator"
 ${ANDROID_HOME}/tools/emulator -port ${PORT} -avd ${EMULATOR_NAME} -no-audio &
 
