@@ -38,7 +38,7 @@ echo "--- Setting up emulator"
 # ${ANDROID_HOME}/platform-tools/adb -s ${SERIAL} shell am start -n com.shopify.AnimationDisabler/com.shopify.AnimationDisabler.DisableAnimationActivity
 
 echo "--- Removing previous installs"
-#${ANDROID_HOME}/platform-tools/adb -s ${SERIAL} shell pm uninstall com.shopify.pos.debug
+${ANDROID_HOME}/platform-tools/adb -s ${SERIAL} shell pm uninstall com.shopify.buy
 
 echo "--- Setting up artifacts"
 export BUILDKITE_ARTIFACTS="../BuildKiteArtifacts"
