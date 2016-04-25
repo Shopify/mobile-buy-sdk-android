@@ -27,33 +27,41 @@ package com.shopify.sample.application;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Intent;
+import android.net.Uri;
 import android.text.TextUtils;
 import android.widget.Toast;
 
-import com.shopify.sample.R;
+import com.shopify.buy.dataprovider.Callback;
 import com.shopify.buy.dataprovider.BuyClient;
 import com.shopify.buy.dataprovider.BuyClientFactory;
+import com.shopify.buy.dataprovider.RetrofitError;
 import com.shopify.buy.model.Address;
 import com.shopify.buy.model.Cart;
 import com.shopify.buy.model.Checkout;
 import com.shopify.buy.model.Collection;
 import com.shopify.buy.model.CreditCard;
+import com.shopify.buy.model.LineItem;
 import com.shopify.buy.model.Product;
 import com.shopify.buy.model.ShippingRate;
 import com.shopify.buy.model.Shop;
-import com.shopify.buy.ui.ProductDetailsBuilder;
-import com.shopify.buy.ui.ProductDetailsTheme;
+import com.shopify.sample.ui.ProductDetailsBuilder;
+import com.shopify.sample.ui.ProductDetailsTheme;
+import com.shopify.sample.BuildConfig;
+import com.shopify.sample.R;
 
 import java.util.List;
 
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
+import retrofit2.Response;
 
 /**
  * Application class that maintains instances of BuyClient and Checkout for the lifetime of the app.
  */
 public class SampleApplication extends Application {
+
+    private static final String SHOP_PROPERTIES_INSTRUCTION =
+            "\n\tAdd your shop credentials to a shop.properties file in the main app folder (e.g. 'app/shop.properties'). Include these keys:\n" +
+                    "\t\tSHOP_DOMAIN=<myshop>.myshopify.com\n" +
+                    "\t\tAPI_KEY=0123456789abcdefghijklmnopqrstuvw\n";
 
     private BuyClient buyClient;
     private Checkout checkout;
@@ -67,19 +75,19 @@ public class SampleApplication extends Application {
     }
 
     private void initializeBuyClient() {
-        String shopUrl = getString(R.string.shop_url);
+        String shopUrl = BuildConfig.SHOP_DOMAIN;
         if (TextUtils.isEmpty(shopUrl)) {
-            throw new IllegalArgumentException("You must populate the 'shop_url' entry in strings.xml, in the form '<myshop>.myshopify.com'");
+            throw new IllegalArgumentException(SHOP_PROPERTIES_INSTRUCTION + "You must add 'SHOP_DOMAIN' entry in app/shop.properties, in the form '<myshop>.myshopify.com'");
         }
 
-        String shopifyApiKey = getString(R.string.shopify_api_key);
+        String shopifyApiKey = BuildConfig.API_KEY;
         if (TextUtils.isEmpty(shopifyApiKey)) {
-            throw new IllegalArgumentException("You must populate the 'shopify_api_key' entry in strings.xml");
+            throw new IllegalArgumentException(SHOP_PROPERTIES_INSTRUCTION + "You must populate the 'API_KEY' entry in app/shop.properties");
         }
 
-        String channelId = getString(R.string.channel_id);
-        if (TextUtils.isEmpty(channelId)) {
-            throw new IllegalArgumentException("You must populate the 'channel_id' entry in the strings.xml");
+        String shopifyAppId = BuildConfig.APP_ID;
+        if (TextUtils.isEmpty(shopifyAppId)) {
+            throw new IllegalArgumentException(SHOP_PROPERTIES_INSTRUCTION + "You must populate the 'APP_ID' entry in app/shop.properties");
         }
 
         String applicationName = getPackageName();
@@ -87,7 +95,7 @@ public class SampleApplication extends Application {
         /**
          * Create the BuyClient
          */
-        buyClient = BuyClientFactory.getBuyClient(shopUrl, shopifyApiKey, channelId, applicationName);
+        buyClient = BuyClientFactory.getBuyClient(shopUrl, shopifyApiKey, shopifyAppId, applicationName);
 
         buyClient.getShop(new Callback<Shop>() {
             @Override
@@ -161,6 +169,37 @@ public class SampleApplication extends Application {
         checkout.setWebReturnToLabel(getString(R.string.web_return_to_label));
 
         buyClient.createCheckout(checkout, wrapCheckoutCallback(callback));
+    }
+
+    public String getCartPermalink() {
+        Uri.Builder uri = new Uri.Builder();
+        uri.scheme("http").path(buyClient.getShopDomain()).appendPath("cart");
+
+        StringBuilder lineItemsStr = new StringBuilder();
+        String prefix = "";
+        for (LineItem lineItem : checkout.getLineItems()) {
+            lineItemsStr.append(prefix);
+            lineItemsStr.append(Long.toString(lineItem.getVariantId()));
+            lineItemsStr.append(":");
+            lineItemsStr.append(Long.toString(lineItem.getQuantity()));
+            prefix = ",";
+        }
+        uri.appendPath(lineItemsStr.toString());
+
+        uri.appendQueryParameter("channel", "mobile_app");
+        uri.appendQueryParameter("checkout[email]", "email@domain.com");
+
+        uri.appendQueryParameter("checkout[shipping_address][address1]", "Cart Permalink");
+        uri.appendQueryParameter("checkout[shipping_address][city]", "Toronto");
+        uri.appendQueryParameter("checkout[shipping_address][company]", "Shopify");
+        uri.appendQueryParameter("checkout[shipping_address][first_name]", "Dinosaur");
+        uri.appendQueryParameter("checkout[shipping_address][last_name]", "Banana");
+        uri.appendQueryParameter("checkout[shipping_address][phone]", "416-555-1234");
+        uri.appendQueryParameter("checkout[shipping_address][country]", "Canada");
+        uri.appendQueryParameter("checkout[shipping_address][province]", "Ontario");
+        uri.appendQueryParameter("checkout[shipping_address][zip]", "M5V2J4");
+
+        return uri.build().toString();
     }
 
     public Checkout getCheckout() {

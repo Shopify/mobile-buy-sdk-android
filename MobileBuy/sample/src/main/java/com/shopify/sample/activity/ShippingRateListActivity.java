@@ -33,6 +33,8 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.shopify.buy.dataprovider.Callback;
+import com.shopify.buy.dataprovider.RetrofitError;
 import com.shopify.sample.R;
 import com.shopify.sample.activity.base.SampleListActivity;
 import com.shopify.buy.model.Checkout;
@@ -41,9 +43,7 @@ import com.shopify.buy.model.ShippingRate;
 import java.net.HttpURLConnection;
 import java.util.List;
 
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
+import retrofit2.Response;
 
 /**
  * If the selected product requires shipping, this activity allows the user to select a list of shipping rates.
@@ -77,7 +77,7 @@ public class ShippingRateListActivity extends SampleListActivity {
         getSampleApplication().getShippingRates(new Callback<List<ShippingRate>>() {
             @Override
             public void success(List<ShippingRate> shippingRates, Response response) {
-                if (response.getStatus() == HttpURLConnection.HTTP_ACCEPTED) {
+                if (response.code() == HttpURLConnection.HTTP_ACCEPTED) {
 
                     // Poll until the server either fails or returns HttpStatus.SC_ACCEPTED
                     pollingHandler.postDelayed(new Runnable() {
@@ -87,7 +87,7 @@ public class ShippingRateListActivity extends SampleListActivity {
                         }
                     }, POLL_DELAY);
 
-                } else if (response.getStatus() == HttpURLConnection.HTTP_OK) {
+                } else if (response.code() == HttpURLConnection.HTTP_OK) {
                     isFetching = false;
 
                     // The application should surface to the user that their items cannot be shipped to that location
@@ -103,7 +103,7 @@ public class ShippingRateListActivity extends SampleListActivity {
                     isFetching = false;
 
                     // Handle error
-                    onError(response.getReason());
+                    onError(response.message());
                 }
             }
 

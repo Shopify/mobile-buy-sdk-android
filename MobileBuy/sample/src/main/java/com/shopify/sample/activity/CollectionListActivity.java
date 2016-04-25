@@ -30,6 +30,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 
+import com.shopify.buy.dataprovider.Callback;
+import com.shopify.buy.dataprovider.RetrofitError;
 import com.shopify.sample.R;
 import com.shopify.sample.activity.base.SampleListActivity;
 import com.shopify.buy.model.Collection;
@@ -37,9 +39,8 @@ import com.shopify.buy.model.Collection;
 import java.util.ArrayList;
 import java.util.List;
 
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
+import retrofit2.Response;
+
 
 /**
  * The first activity in the app flow. Allows the user to browse the list of collections and drill down into a list of products.

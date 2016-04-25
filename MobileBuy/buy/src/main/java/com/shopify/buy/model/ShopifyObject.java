@@ -41,15 +41,14 @@ public abstract class ShopifyObject {
     }
 
     @Override
-    public boolean equals(Object other) {
-        if (this == other) return true;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ShopifyObject)) return false;
 
-        if (other == null) return false;
-        if (other.getClass() != this.getClass()) return false;
+        ShopifyObject object = (ShopifyObject) o;
 
-        ShopifyObject that = (ShopifyObject) other;
+        return id.equals(object.id);
 
-        return !(id != null ? !id.equals(that.id) : that.id != null);
     }
 
     /**

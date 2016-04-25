@@ -25,27 +25,37 @@
 package com.shopify.buy.dataprovider;
 
 import com.shopify.buy.model.Shop;
+import com.shopify.buy.model.internal.AccountCredentialsWrapper;
+import com.shopify.buy.model.internal.AddressWrapper;
+import com.shopify.buy.model.internal.AddressesWrapper;
 import com.shopify.buy.model.internal.CheckoutWrapper;
-import com.shopify.buy.model.internal.CollectionPublication;
+import com.shopify.buy.model.internal.CollectionListings;
+import com.shopify.buy.model.internal.CustomerTokenWrapper;
+import com.shopify.buy.model.internal.CustomerWrapper;
+import com.shopify.buy.model.internal.EmailWrapper;
 import com.shopify.buy.model.internal.GiftCardWrapper;
-import com.shopify.buy.model.internal.ProductPublication;
+import com.shopify.buy.model.internal.OrderWrapper;
+import com.shopify.buy.model.internal.OrdersWrapper;
+import com.shopify.buy.model.internal.ProductListings;
 import com.shopify.buy.model.internal.ShippingRatesWrapper;
 
 import java.util.HashMap;
 
-import retrofit.Callback;
-import retrofit.ResponseCallback;
-import retrofit.http.Body;
-import retrofit.http.DELETE;
-import retrofit.http.GET;
-import retrofit.http.PATCH;
-import retrofit.http.POST;
-import retrofit.http.Path;
-import retrofit.http.Query;
-import retrofit.RestAdapter;
+import retrofit2.Call;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.http.Body;
+import retrofit2.http.DELETE;
+import retrofit2.http.GET;
+import retrofit2.http.PATCH;
+import retrofit2.http.POST;
+import retrofit2.http.PUT;
+import retrofit2.http.Path;
+import retrofit2.http.Query;
+import rx.Observable;
 
 /**
- * Provides the interface for {@link RestAdapter} describing the endpoints and responses for the Mobile Buy endpoints
+ * Provides the interface for {@link Retrofit} describing the endpoints and responses for the Mobile Buy endpoints
  */
 interface BuyRetrofitService {
 
@@ -53,57 +63,130 @@ interface BuyRetrofitService {
      * Storefront API
      */
 
-    @GET("/meta.json")
-    void getShop(Callback<Shop> callback);
+    @GET("meta.json")
+    Observable<Response<Shop>> getShop();
 
-    @GET("/api/channels/{channel}/product_publications.json")
-    void getProductPage(@Path("channel") String channelId, @Query("page") int page, @Query("limit") int pageSize, Callback<ProductPublication> callback);
+    @GET("api/apps/{appId}/product_listings.json")
+    Observable<Response<ProductListings>> getProductPage(@Path("appId") String appId, @Query("page") int page, @Query("limit") int pageSize);
 
-    @GET("/api/channels/{channel}/product_publications.json")
-    void getProducts(@Path("channel") String channelId, @Query("product_ids") String productId, Callback<ProductPublication> callback);
+    @GET("api/apps/{appId}/product_listings.json")
+    Observable<Response<ProductListings>>  getProducts(@Path("appId") String appId, @Query("product_ids") String productId);
 
-    @GET("/api/channels/{channel}/product_publications.json")
-    void getProducts(@Path("channel") String channelId, @Query("collection_id") String collectionId, @Query("limit") int pageSize, @Query("page") int page, @Query("sort_by") String sortOrder, Callback<ProductPublication> callback);
+    @GET("api/apps/{appId}/product_listings.json")
+    Observable<Response<ProductListings>>  getProductWithHandle(@Path("appId") String appId, @Query("handle") String handle);
 
-    @GET("/api/channels/{channel}/collection_publications.json")
-    void getCollections(@Path("channel") String channelId, Callback<CollectionPublication> callback);
+    @GET("api/apps/{appId}/product_listings.json")
+    Observable<Response<ProductListings>>  getProducts(@Path("appId") String appId, @Query("collection_id") String collectionId, @Query("limit") int pageSize, @Query("page") int page, @Query("sort_by") String sortOrder);
 
-    @GET("/api/channels/{channel}/collection_publications.json")
-    void getCollectionPage(@Path("channel") String channelId, @Query("page") int page, @Query("limit") int pageSize, Callback<CollectionPublication> callback);
+    @GET("api/apps/{appId}/collection_listings.json")
+    Observable<Response<CollectionListings>> getCollections(@Path("appId") String appId);
+
+    @GET("api/apps/{appId}/collection_listings.json")
+    Observable<Response<CollectionListings>> getCollectionPage(@Path("appId") String appId, @Query("page") int page, @Query("limit") int pageSize);
 
     /*
      * Checkout API
      */
 
-    @POST("/api/checkouts.json")
-    void createCheckout(@Body CheckoutWrapper checkoutWrapper, Callback<CheckoutWrapper> callback);
+    @POST("anywhere/checkouts.json")
+    Observable<Response<CheckoutWrapper>> createCheckout(@Body CheckoutWrapper checkoutWrapper);
 
-    @PATCH("/api/checkouts/{token}.json")
-    void updateCheckout(@Body CheckoutWrapper checkoutWrapper, @Path("token") String token, Callback<CheckoutWrapper> callback);
+    @PATCH("anywhere/checkouts/{token}.json")
+    Observable<Response<CheckoutWrapper>> updateCheckout(@Body CheckoutWrapper checkoutWrapper, @Path("token") String token);
 
-    @GET("/api/checkouts/{token}/shipping_rates.json")
-    void getShippingRates(@Path("token") String token, Callback<ShippingRatesWrapper> callback);
+    @GET("anywhere/checkouts/{token}/shipping_rates.json")
+    Observable<Response<ShippingRatesWrapper>> getShippingRates(@Path("token") String token);
 
-    @POST("/api/checkouts/{token}/complete.json")
-    void completeCheckout(@Body HashMap<String, String> paymentSessionIdMap, @Path("token") String token, Callback<CheckoutWrapper> callback);
+    @POST("anywhere/checkouts/{token}/complete.json")
+    Observable<Response<CheckoutWrapper>> completeCheckout(@Body HashMap<String, String> paymentSessionIdMap, @Path("token") String token);
 
-    @GET("/api/checkouts/{token}/processing.json")
-    void getCheckoutCompletionStatus(@Path("token") String token, ResponseCallback callback);
+    @GET("anywhere/checkouts/{token}/processing.json")
+    Observable<Response<Void>> getCheckoutCompletionStatus(@Path("token") String token);
 
-    @GET("/api/checkouts/{token}.json")
-    void getCheckout(@Path("token") String token, Callback<CheckoutWrapper> callback);
+    @GET("anywhere/checkouts/{token}.json")
+    Observable<Response<CheckoutWrapper>> getCheckout(@Path("token") String token);
 
-    @POST("/api/checkouts/{token}/gift_cards.json")
-    void applyGiftCard(@Body GiftCardWrapper giftCardWrapper, @Path("token") String token, Callback<GiftCardWrapper> callback);
+    @POST("anywhere/checkouts/{token}/gift_cards.json")
+    Observable<Response<GiftCardWrapper>> applyGiftCard(@Body GiftCardWrapper giftCardWrapper, @Path("token") String token);
 
-    @DELETE("/api/checkouts/{token}/gift_cards/{identifier}.json")
-    void removeGiftCard(@Path("identifier") String giftCardIdentifier, @Path("token") String token, Callback<GiftCardWrapper> callback);
+    @DELETE("anywhere/checkouts/{token}/gift_cards/{identifier}.json")
+    Observable<Response<GiftCardWrapper>> removeGiftCard(@Path("identifier") String giftCardIdentifier, @Path("token") String token);
 
     /*
-     * Testing Integration
+     * Customer API
      */
 
-    // http://SHOP_DOMAIN/mobile_app/verify?api_key=API_KEY&channel_id=CHANNEL_ID
-    @GET("/mobile_app/verify")
-    void testIntegration(@Query("api_key") String apiKey, @Query("channel_id") String channelId, Callback<Void> callback);
+    @POST("api/customers.json")
+    Observable<Response<CustomerWrapper>> createCustomer(@Body AccountCredentialsWrapper accountCredentialsWrapper);
+
+    @PUT("api/customers/{customerId}/activate.json")
+    Observable<Response<CustomerWrapper>> activateCustomer(@Query("token") String activationToken, @Body AccountCredentialsWrapper accountCredentialsWrapper, @Path("customerId") Long customerId);
+
+    @PUT("api/customers/{customerId}/reset.json")
+    Observable<Response<CustomerWrapper>> resetPassword(@Query("token") String resetToken, @Body AccountCredentialsWrapper accountCredentialsWrapper, @Path("customerId") Long customerId);
+
+    @POST("api/customers/login.json")
+    Observable<Response<CustomerWrapper>> loginCustomer(@Body CustomerWrapper customerWrapper);
+
+    @POST("api/customers/logout.json")
+    Observable<Response<Void>> logoutCustomer(@Body String empty);
+
+    @POST("api/customers/recover.json")
+    Observable<Response<Void>> recoverCustomer(@Body EmailWrapper emailWrapper);
+
+    @PUT("api/customers/renew.json")
+    Observable<Response<CustomerWrapper>> renewCustomer(@Body String empty);
+
+    @GET("api/customers.json")
+    Observable<Response<CustomerWrapper>> getCustomer();
+
+    @PUT("api/customers.json")
+    Observable<Response<CustomerWrapper>> updateCustomer(@Body CustomerWrapper customer);
+
+    @GET("api/customers/{customerId}.json")
+    Observable<Response<CustomerWrapper>> getCustomer(@Path("customerId") Long customerId);
+
+    @PUT("api/customers/{customerId}.json")
+    Observable<Response<CustomerWrapper>> updateCustomer(@Path("customerId") Long customerId, @Body CustomerWrapper customer);
+
+    /*
+     * Customer Token API
+     */
+
+    @POST("api/customers/customer_token.json")
+    Observable<Response<CustomerTokenWrapper>> getCustomerToken(@Body AccountCredentialsWrapper accountCredentialsWrapper);
+
+    @DELETE("api/customers/{customerId}/customer_token.json")
+    Observable<Response<Void>> removeCustomerToken(@Path("customerId") Long customerId);
+
+    @PUT("api/customers/{customerId}/customer_token/renew.json")
+    Observable<Response<CustomerTokenWrapper>> renewCustomerToken(@Body String empty, @Path("customerId") Long customerId);
+
+    /*
+     * Customer Orders API
+     */
+
+    @GET("api/customers/{customerId}/orders.json")
+    Observable<Response<OrdersWrapper>> getOrders(@Path("customerId") Long customerId);
+
+    @GET("api/customers/{customerId}/orders/{orderId}")
+    Observable<Response<OrderWrapper>> getOrder(@Path("customerId") Long customerId, @Path("orderId") String orderId);
+
+
+    /*
+     * Customer Address API
+     */
+
+    @GET("api/customers/{customerId}/addresses")
+    Observable<Response<AddressesWrapper>> getAddresses(@Path("customerId") Long customerId);
+
+    @POST("api/customers/{customerId}/addresses")
+    Observable<Response<AddressWrapper>> createAddress(@Path("customerId") Long customerId, @Body AddressWrapper address);
+
+    @GET("api/customers/{customerId}/addresses/{addressId}")
+    Observable<Response<AddressWrapper>> getAddress(@Path("customerId") Long customerId, @Path("addressId") String addressId);
+
+    @PATCH("api/customers/{customerId}/addresses/{addressId}")
+    Observable<Response<AddressWrapper>> updateAddress(@Path("customerId") Long customerId, @Body AddressWrapper address, @Path("addressId") String addressId);
+
 }

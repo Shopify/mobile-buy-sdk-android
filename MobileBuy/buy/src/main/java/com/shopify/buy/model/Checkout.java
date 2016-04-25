@@ -35,7 +35,10 @@ import com.google.gson.JsonSerializer;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
 import com.shopify.buy.dataprovider.BuyClientFactory;
+import com.shopify.buy.dataprovider.Callback;
 import com.shopify.buy.model.internal.MarketingAttribution;
+import com.shopify.buy.utils.CollectionUtils;
+import com.shopify.buy.utils.StringUtils;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -43,8 +46,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import retrofit.Callback;
 
 /**
  * The checkout object. This is the main object that you will interact with when creating orders on Shopify.
@@ -117,9 +118,6 @@ public class Checkout extends ShopifyObject {
     @SerializedName("marketing_attribution")
     private MarketingAttribution marketingAttribution;
 
-    @SerializedName("channel_id")
-    private String channelId;
-
     @SerializedName("web_url")
     private String webUrl;
 
@@ -176,6 +174,11 @@ public class Checkout extends ShopifyObject {
     public Checkout(LineItem lineItem) {
         lineItems = new ArrayList<>();
         lineItems.add(lineItem);
+    }
+
+    public void setLineItems(Cart cart) {
+        this.lineItems.clear();
+        this.lineItems.addAll(cart.getLineItems());
     }
 
     /**
@@ -262,8 +265,18 @@ public class Checkout extends ShopifyObject {
         return orderId;
     }
 
+    /**
+     * @return This value is null until the checkout is complete. Once it is completed, it will containin the {@link Order#name}, {@link Order#id}, and {@link Order#statusUrl}
+     */
     public Order getOrder() {
         return order;
+    }
+
+    /**
+     * @return {@code true} if checkout has been completed and there's an order with an id, {@code false} otherwise.
+     */
+    public boolean hasOrderId() {
+        return order != null && order.getId() != null && order.getId() > 0;
     }
 
     /**
@@ -393,13 +406,6 @@ public class Checkout extends ShopifyObject {
     }
 
     /**
-     * @return Channel ID where the checkout was created.
-     */
-    public String getChannelId() {
-        return channelId;
-    }
-
-    /**
      * @return URL which is used for completing checkout in browser.
      */
     public String getWebUrl() {
@@ -442,6 +448,13 @@ public class Checkout extends ShopifyObject {
      */
     public void setSourceName(String sourceName) {
         this.sourceName = sourceName;
+    }
+
+    /**
+     * @param customerId The customer's id.
+     */
+    public void setCustomerId(String customerId) {
+        this.customerId = customerId;
     }
 
     /**
@@ -502,13 +515,6 @@ public class Checkout extends ShopifyObject {
      */
     public void setDiscountCode(String code) {
         discount = new Discount(code);
-    }
-
-    /**
-     * @param channelId Channel ID where the checkout was created
-     */
-    public void setChannelId(String channelId) {
-        this.channelId = channelId;
     }
 
     /**
@@ -579,13 +585,47 @@ public class Checkout extends ShopifyObject {
     public Checkout copyForUpdate() {
         Checkout copy = Checkout.fromJson(this.toJsonString());
         copy.giftCards = null;
+
+        if (StringUtils.isEmpty(copy.email)) {
+            copy.email = null;
+        }
+
         return copy;
+    }
+
+    /**
+     * Creates an identical copy of the Checkout for use in updates.
+     *
+     * @return A checkout suitable for sending in an update.
+     */
+    public Checkout copy() {
+        Checkout copy = Checkout.fromJson(this.toJsonString());
+        return copy;
+    }
+
+    /**
+     * @return The total number of product variants in the cart (the sum of quantities across all line items).
+     */
+    public Integer getTotalQuantity() {
+        if (CollectionUtils.isEmpty(lineItems)) {
+            return 0;
+        }
+
+        int quantity = 0;
+        for (LineItem lineItem : lineItems) {
+            quantity += lineItem.getQuantity();
+        }
+        return quantity;
     }
 
     /**
      * @return A checkout object created using the values in the JSON string.
      */
     public static Checkout fromJson(String json) {
+        if (StringUtils.isEmpty(json)) {
+            return null;
+        }
+
         Gson gson = BuyClientFactory.createDefaultGson(Checkout.class);
 
         JsonObject checkoutElement = gson.fromJson(json, JsonElement.class).getAsJsonObject();
@@ -600,7 +640,8 @@ public class Checkout extends ShopifyObject {
             // The attributes are an array of CheckoutAttributes when received from the server, and are flattened and serialized as a hash map
             // when serializing for the server, or internally.  We have to check to see which case it is and deserialize appropriately.
             if (attributeElement.isJsonArray()) {
-                attributes = gson.fromJson(attributeElement, new TypeToken<List<CheckoutAttribute>>() {}.getType());
+                attributes = gson.fromJson(attributeElement, new TypeToken<List<CheckoutAttribute>>() {
+                }.getType());
             } else {
                 // We serialize the CheckoutAttributes to a hash map internally, and for sending to the server
                 HashMap<String, String> attributesHashMap = gson.fromJson(attributeElement, HashMap.class);
@@ -647,7 +688,6 @@ public class Checkout extends ShopifyObject {
         public Checkout deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
             return fromJson(json.toString());
         }
-
     }
 
 }

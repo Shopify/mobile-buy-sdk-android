@@ -1,4 +1,4 @@
-<com.shopify.buy.ui.ProductDetailsFragmentView
+<com.shopify.sample.ui.ProductDetailsFragmentView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -106,4 +106,4 @@
         android:layout_above="@id/checkout_button_container" >
     </android.support.design.widget.CoordinatorLayout>
 
-</com.shopify.buy.ui.ProductDetailsFragmentView>
+</com.shopify.sample.ui.ProductDetailsFragmentView>

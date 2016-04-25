@@ -25,27 +25,25 @@
 package com.shopify.buy.dataprovider;
 
 import android.app.Activity;
-import android.text.TextUtils;
-import android.util.Base64;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.shopify.buy.BuildConfig;
 import com.shopify.buy.model.Checkout;
-import com.shopify.buy.model.Checkout.CheckoutSerializer;
 import com.shopify.buy.model.Checkout.CheckoutDeserializer;
+import com.shopify.buy.model.Checkout.CheckoutSerializer;
+import com.shopify.buy.model.Customer;
+import com.shopify.buy.model.Customer.CustomerDeserializer;
+import com.shopify.buy.model.CustomerToken;
 import com.shopify.buy.model.Product;
 import com.shopify.buy.model.Product.ProductDeserializer;
 import com.shopify.buy.utils.DateUtility;
 import com.shopify.buy.utils.DateUtility.DateDeserializer;
-import com.squareup.okhttp.OkHttpClient;
+import com.shopify.buy.utils.StringUtils;
 
 import java.util.Date;
 
-import retrofit.RequestInterceptor;
-import retrofit.RestAdapter;
-import retrofit.client.OkClient;
-import retrofit.converter.GsonConverter;
+import okhttp3.Interceptor;
 
 /**
  * Provides the factory to initialize and build a {@link BuyClient}.
@@ -59,48 +57,53 @@ public class BuyClientFactory {
      *
      * @param shopDomain      the domain of the shop to checkout with, in the format 'shopname.myshopify.com'
      * @param apiKey          a valid Shopify API key
-     * @param channelId       a valid Shopify Channel ID
+     * @param appId           a valid Shopify App Id (unique per store)
      * @param applicationName the name to attribute orders to. The value for {@code applicationName} should be the application package name, as used to publish your application on the Play Store.  This is usually the value returned by {@link Activity#getPackageName()}, or BuildConfig.APPLICATION_ID if you are using gradle.
+     * @param customerToken   the token for a currently logged in {@link Customer}
+     * @param interceptors    optional request/response interceptors
      * @return a {@link BuyClient}
      */
-    public static BuyClient getBuyClient(final String shopDomain, final String apiKey, final String channelId, final String applicationName) throws IllegalArgumentException {
-        if (TextUtils.isEmpty(shopDomain) || shopDomain.contains(":") || shopDomain.contains("/") || !shopDomain.contains(".myshopify.com")) {
-            throw new IllegalArgumentException("shopDomain must be of the form 'shopname.myshopify.com' and cannot start with 'http://'");
+    public static BuyClient getBuyClient(final String shopDomain, final String apiKey, final String appId, final String applicationName, CustomerToken customerToken, Interceptor... interceptors) throws IllegalArgumentException {
+
+        if (BuildConfig.DEBUG) {
+            if (StringUtils.isEmpty(shopDomain) || shopDomain.contains(":") || shopDomain.contains("/")) {
+                throw new IllegalArgumentException("shopDomain must be a valid URL and cannot start with 'http://'");
+            }
+        } else {
+            if (StringUtils.isEmpty(shopDomain) || shopDomain.contains(":") || shopDomain.contains("/") || !shopDomain.contains(".myshopify.com")) {
+                throw new IllegalArgumentException("shopDomain must be of the form 'shopname.myshopify.com' and cannot start with 'http://'");
+            }
         }
 
-        if (TextUtils.isEmpty(apiKey)) {
+        if (StringUtils.isEmpty(apiKey)) {
             throw new IllegalArgumentException("apiKey must be provided, and cannot be empty");
         }
 
-        if (TextUtils.isEmpty(channelId)) {
-            throw new IllegalArgumentException("channelId must be provided, and cannot be empty");
+        if (StringUtils.isEmpty(appId)) {
+            throw new IllegalArgumentException("appId must be provided, and cannot be empty");
         }
 
-        if (TextUtils.isEmpty(applicationName)) {
+        if (StringUtils.isEmpty(applicationName)) {
             throw new IllegalArgumentException("applicationName must be provided, and cannot be empty");
         }
 
-        RequestInterceptor requestInterceptor = new RequestInterceptor() {
-            @Override
-            public void intercept(RequestFacade request) {
-                request.addHeader("Authorization", "Basic " + Base64.encodeToString(apiKey.getBytes(), Base64.NO_WRAP));
+        return new BuyClient(apiKey, appId, applicationName, shopDomain, customerToken, interceptors);
+    }
 
-                // Using the full package name for BuildConfig here as a work around for Javadoc.  The source paths need to be adjusted
-                request.addHeader("User-Agent", "Mobile Buy SDK Android/" + com.shopify.buy.BuildConfig.VERSION_NAME + "/" + applicationName);
-            }
-        };
-
-        OkHttpClient httpClient = new OkHttpClient();
-
-        RestAdapter adapter = new RestAdapter.Builder()
-                .setEndpoint("https://" + shopDomain)
-                .setConverter(new GsonConverter(createDefaultGson()))
-                .setClient(new OkClient(httpClient))
-                .setLogLevel(BuildConfig.RETROFIT_LOG_LEVEL)
-                .setRequestInterceptor(requestInterceptor)
-                .build();
-
-        return new BuyClient(adapter.create(BuyRetrofitService.class), apiKey, channelId, applicationName, shopDomain, httpClient);
+    /**
+     * Returns a BuyClient initialized with the given shop domain and API key.
+     * After you have <a href="https://docs.shopify.com/api/mobile-buy-sdk/adding-mobile-app-sales-channel">added the mobile sales channel to your store</a>,
+     * you can find the API Key and Channel ID in your store admin page. Click on Mobile App and then click on Integration.
+     *
+     * @param shopDomain      the domain of the shop to checkout with, in the format 'shopname.myshopify.com'
+     * @param apiKey          a valid Shopify API key
+     * @param appId           a valid Shopify App Id (unique per store)
+     * @param applicationName the name to attribute orders to. The value for {@code applicationName} should be the application package name, as used to publish your application on the Play Store.  This is usually the value returned by {@link Activity#getPackageName()}, or BuildConfig.APPLICATION_ID if you are using gradle.
+     * @param interceptors    optional request/response interceptors
+     * @return a {@link BuyClient}
+     */
+    public static BuyClient getBuyClient(final String shopDomain, final String apiKey, final String appId, final String applicationName, Interceptor... interceptors) throws IllegalArgumentException {
+        return getBuyClient(shopDomain, apiKey, appId, applicationName, null, interceptors);
     }
 
     public static Gson createDefaultGson() {
@@ -117,6 +120,10 @@ public class BuyClientFactory {
             builder.registerTypeAdapter(Product.class, new ProductDeserializer());
         }
 
+        if (!Customer.class.equals(forClass)) {
+            builder.registerTypeAdapter(Customer.class, new CustomerDeserializer());
+        }
+
         if (!Checkout.class.equals(forClass)) {
             builder.registerTypeAdapter(Checkout.class, new CheckoutSerializer());
             builder.registerTypeAdapter(Checkout.class, new CheckoutDeserializer());
@@ -124,5 +131,4 @@ public class BuyClientFactory {
 
         return builder.create();
     }
-
 }

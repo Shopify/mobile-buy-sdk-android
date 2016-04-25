@@ -24,22 +24,81 @@
 
 package com.shopify.buy.utils;
 
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.text.TextUtils;
 import android.util.Log;
 import android.widget.ImageView;
 
+import com.shopify.buy.model.Collection;
 import com.shopify.buy.model.Product;
+import com.shopify.buy.model.ShopifyObject;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Downloads {@link Product} images.
  */
 public class ImageUtility {
+
     private static final String LOG_TAG = ImageUtility.class.getSimpleName();
+
+    /**
+     * Pre-loads a set of images into the cache. Useful for warming up recycler view holders that are below the fold.
+     *
+     * @param imageLoader      The image loader to use.
+     * @param objects          A list of Collection and/or Product objects.
+     * @param lastVisibleIndex The index of the last visible item on the screen (we need to start pre-loading from the next index).
+     * @param numberToLoad     The number of images to pre-load.
+     */
+    public static void preLoadImages(final Picasso imageLoader, final List<? extends ShopifyObject> objects, final int lastVisibleIndex, final int numberToLoad, int parentWidth, int parentHeight, final boolean crop) {
+        if (CollectionUtils.isEmpty(objects)) {
+            return;
+        }
+
+        List<String> imageUrls = new ArrayList<>();
+
+        for (int i = lastVisibleIndex + 1; i < (lastVisibleIndex + 1 + numberToLoad) && i < objects.size(); i++) {
+            ShopifyObject object = objects.get(i);
+            String url = null;
+            if (object instanceof Collection) {
+                url = stripQueryFromUrl(((Collection) object).getImageUrl());
+            } else if (object instanceof Product) {
+                url = stripQueryFromUrl(((Product) object).getFirstImageUrl());
+            }
+            if (!TextUtils.isEmpty(url)) {
+                imageUrls.add(url);
+            }
+        }
+
+        for (String imageUrl : imageUrls) {
+            imageUrl = getSizedImageUrl(imageUrl, parentWidth, parentHeight);
+            RequestCreator c = imageLoader.load(imageUrl).resize(parentWidth, parentHeight);
+            if (crop) {
+                c = c.centerCrop();
+            } else {
+                c = c.centerInside();
+            }
+            c.fetch();
+        }
+    }
+
+    /**
+     * Pre-loads a set of images into the cache. Useful for warming up recycler view holders that are below the fold.
+     * Use this version of pre-loading sparingly as it will load everything image in the list.
+     * It's better to use {@link #preLoadImages(Picasso, List, int, int, int, int, boolean)}.
+     *
+     * @param imageLoader The image loader to use.
+     * @param objects     A list of Collection and/or Product objects.
+     */
+    public static void preLoadImages(final Picasso imageLoader, final List<? extends ShopifyObject> objects, int parentWidth, int parentHeight, final boolean crop) {
+        preLoadImages(imageLoader, objects, -1, objects.size(), parentWidth, parentHeight, crop);
+    }
 
     /**
      * Return the URL of an appropriate file to display for the given product image. This method
@@ -86,9 +145,42 @@ public class ImageUtility {
      * Fetches and loads an image into an ImageView that has layout params with MATCH_PARENT as width and/or height. You must pass in non-zero values for
      * {@code parentWidth} and {@code parentHeight} so that an appropriately sized image can be fetched from the server.
      */
-    public static void loadRemoteImageIntoViewWithoutSize(final Picasso imageLoader, String imageSrc, final ImageView imageView, int parentWidth, int parentHeight, boolean crop, Callback callback) {
+    public static void loadRemoteImageIntoViewWithoutSize(final Picasso imageLoader, String imageSrc, final ImageView imageView, int parentWidth, int parentHeight, boolean crop, Drawable placeholderDrawable, Drawable errorDrawable, Callback callback) {
         String imageUrl = getSizedImageUrl(imageSrc, parentWidth, parentHeight);
         RequestCreator c = imageLoader.load(imageUrl).fit();
+
+        if (placeholderDrawable != null) {
+            c.placeholder(placeholderDrawable);
+        }
+
+        if (errorDrawable != null) {
+            c.error(errorDrawable);
+        }
+
+        if (crop) {
+            c = c.centerCrop();
+        } else {
+            c = c.centerInside();
+        }
+        c.into(imageView, callback);
+    }
+
+    /**
+     * Fetches and loads an image into an ImageView that has layout params with MATCH_PARENT as width and/or height. You must pass in non-zero values for
+     * {@code parentWidth} and {@code parentHeight} so that an appropriately sized image can be fetched from the server.
+     */
+    public static void loadRemoteImageIntoViewWithoutSize(final Picasso imageLoader, String imageSrc, final ImageView imageView, int parentWidth, int parentHeight, boolean crop, Callback callback) {
+        loadRemoteImageIntoViewWithoutSize(imageLoader, imageSrc, imageView, parentWidth, parentHeight, crop, null, null, callback);
+    }
+
+    /**
+     * Load image into an ImageView where the layout has a fixed size
+     */
+    public static void loadImageResourceIntoSizedView(final Picasso imageLoader, String imageSrc, final ImageView imageView, boolean crop, Callback callback) {
+        final int imageWidthPx = imageView.getLayoutParams().width;
+        final int imageHeightPx = imageView.getLayoutParams().height;
+        String imageUrl = getSizedImageUrl(imageSrc, imageWidthPx, imageHeightPx);
+        RequestCreator c = imageLoader.load(imageUrl).resize(imageWidthPx, imageHeightPx);
         if (crop) {
             c = c.centerCrop();
         } else {
@@ -127,4 +219,12 @@ public class ImageUtility {
             return "_2048x2048";
         }
     }
+
+    public static String stripQueryFromUrl(String url) {
+        if (url == null || !url.contains("?")) {
+            return url;
+        }
+        return url.substring(0, url.lastIndexOf('?'));
+    }
+    
 }

@@ -31,20 +31,22 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
 import android.widget.Switch;
+import android.widget.Toast;
 
+import com.shopify.buy.dataprovider.Callback;
+import com.shopify.buy.dataprovider.RetrofitError;
+import com.shopify.buy.model.Checkout;
+import com.shopify.buy.model.Product;
+import com.shopify.sample.ui.ProductDetailsTheme;
 import com.shopify.sample.R;
 import com.shopify.sample.activity.base.SampleListActivity;
 import com.shopify.sample.dialog.HSVColorPickerDialog;
-import com.shopify.buy.model.Checkout;
-import com.shopify.buy.model.Product;
-import com.shopify.buy.ui.ProductDetailsTheme;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
+import retrofit2.Response;
+
 
 /**
  * This activity allows the user to select a product to purchase from a list of all products in a collection.
@@ -203,7 +205,10 @@ public class ProductListActivity extends SampleListActivity {
 
             @Override
             public void failure(RetrofitError error) {
-                onError(error);
+                // If we can't create a checkout, we still want to give the user the cart permalink option in the CheckoutActivity
+                dismissLoadingDialog();
+                Toast.makeText(ProductListActivity.this, getString(R.string.unsupported_gateway), Toast.LENGTH_LONG).show();
+                startActivity(new Intent(ProductListActivity.this, CheckoutActivity.class));
             }
         });
     }

@@ -35,13 +35,13 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.shopify.buy.dataprovider.Callback;
+import com.shopify.buy.dataprovider.RetrofitError;
 import com.shopify.sample.R;
 import com.shopify.sample.activity.base.SampleActivity;
 import com.shopify.buy.model.Checkout;
 
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
+import retrofit2.Response;
 
 /**
  * After a shipping rate is selected, this activity allows the user to add discount codes or gift card codes to the order.

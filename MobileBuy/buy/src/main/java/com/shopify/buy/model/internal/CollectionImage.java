@@ -45,4 +45,9 @@ public class CollectionImage {
         return createdAt;
     }
 
+    public CollectionImage(String createdAt, String src) {
+        this.createdAt = createdAt;
+        this.src = src;
+    }
+
 }

@@ -36,18 +36,18 @@ import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.shopify.sample.R;
-import com.shopify.sample.application.SampleApplication;
+import com.shopify.buy.dataprovider.Callback;
 import com.shopify.buy.dataprovider.BuyClient;
+import com.shopify.buy.dataprovider.RetrofitError;
 import com.shopify.buy.model.Checkout;
 import com.shopify.buy.model.Discount;
 import com.shopify.buy.model.GiftCard;
+import com.shopify.sample.R;
+import com.shopify.sample.application.SampleApplication;
 
 import java.util.List;
 
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
+import retrofit2.Response;
 
 /**
  * Base class for all activities in the app. Manages the ProgressDialog that is displayed while network activity is occurring.

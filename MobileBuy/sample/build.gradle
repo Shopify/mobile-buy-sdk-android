@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "21.1.2"
+    buildToolsVersion "23.0.1"
 
     defaultConfig {
         applicationId "com.shopify.sample"
@@ -12,20 +12,52 @@ android {
         versionName "1.0"
     }
     buildTypes {
-        release {
-            minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
+        all {
+            // We pull the shop settings either from the Environment or a file called shop.properties at the root of the project.
+            // Environment variables will take precedence, we will attempt to read those first.
+            def shopDomain
+            def apiKey
+            def appId
 
-        debug { }
+            // get the shop setting from the environment if there any
+            shopDomain = System.getenv("SHOP_DOMAIN")
+            apiKey = System.getenv("API_KEY")
+            appId = System.getenv("APP_ID")
+
+            // pull the store properties from the local file if it exists.  Environment variables take precedence
+            def shopProperties = new Properties();
+            File shopPropertiesFile = project.file('shop.properties')
+
+            if (shopPropertiesFile.exists()) {
+                shopProperties.load(new FileInputStream(shopPropertiesFile))
+                shopDomain = shopDomain ?: shopProperties["SHOP_DOMAIN"]
+                apiKey = apiKey ?: shopProperties["API_KEY"]
+                appId = appId ?: shopProperties["APP_ID"]
+            }
+
+            if (!shopDomain) {
+                shopDomain = ""
+            }
+            if (!apiKey) {
+                apiKey = ""
+            }
+            if (!appId) {
+                appId = ""
+            }
+
+            buildConfigField "String", "SHOP_DOMAIN", "\"" + shopDomain.toString() + "\""
+            buildConfigField "String", "API_KEY", "\"" + apiKey.toString() + "\""
+            buildConfigField "String", "APP_ID", "\"" + appId.toString() + "\""
+        }
+    }
+
+    lintOptions {
+        abortOnError false
     }
 }
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.squareup.picasso:picasso:2.5.2'
-    compile 'com.squareup.okhttp:okhttp-urlconnection:2.5.0'
-    compile 'com.squareup.okhttp:okhttp:2.5.0'
-    compile 'com.squareup.retrofit:retrofit:1.9.0'
     compile project(':buy')
 }
