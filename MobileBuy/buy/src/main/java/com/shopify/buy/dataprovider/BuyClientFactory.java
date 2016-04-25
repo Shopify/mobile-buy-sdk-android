@@ -25,6 +25,7 @@
 package com.shopify.buy.dataprovider;
 
 import android.app.Activity;
+import android.text.TextUtils;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -39,7 +40,6 @@ import com.shopify.buy.model.Product;
 import com.shopify.buy.model.Product.ProductDeserializer;
 import com.shopify.buy.utils.DateUtility;
 import com.shopify.buy.utils.DateUtility.DateDeserializer;
-import com.shopify.buy.utils.StringUtils;
 
 import java.util.Date;
 
@@ -66,24 +66,24 @@ public class BuyClientFactory {
     public static BuyClient getBuyClient(final String shopDomain, final String apiKey, final String appId, final String applicationName, CustomerToken customerToken, Interceptor... interceptors) throws IllegalArgumentException {
 
         if (BuildConfig.DEBUG) {
-            if (StringUtils.isEmpty(shopDomain) || shopDomain.contains(":") || shopDomain.contains("/")) {
+            if (TextUtils.isEmpty(shopDomain) || shopDomain.contains(":") || shopDomain.contains("/")) {
                 throw new IllegalArgumentException("shopDomain must be a valid URL and cannot start with 'http://'");
             }
         } else {
-            if (StringUtils.isEmpty(shopDomain) || shopDomain.contains(":") || shopDomain.contains("/") || !shopDomain.contains(".myshopify.com")) {
+            if (TextUtils.isEmpty(shopDomain) || shopDomain.contains(":") || shopDomain.contains("/") || !shopDomain.contains(".myshopify.com")) {
                 throw new IllegalArgumentException("shopDomain must be of the form 'shopname.myshopify.com' and cannot start with 'http://'");
             }
         }
 
-        if (StringUtils.isEmpty(apiKey)) {
+        if (TextUtils.isEmpty(apiKey)) {
             throw new IllegalArgumentException("apiKey must be provided, and cannot be empty");
         }
 
-        if (StringUtils.isEmpty(appId)) {
+        if (TextUtils.isEmpty(appId)) {
             throw new IllegalArgumentException("appId must be provided, and cannot be empty");
         }
 
-        if (StringUtils.isEmpty(applicationName)) {
+        if (TextUtils.isEmpty(applicationName)) {
             throw new IllegalArgumentException("applicationName must be provided, and cannot be empty");
         }
 

@@ -24,12 +24,9 @@
 
 package com.shopify.buy.data;
 
+import android.content.Context;
+
 import com.google.gson.JsonObject;
-import okhttp3.Interceptor;
-import okhttp3.MediaType;
-import okhttp3.Request;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -39,6 +36,12 @@ import java.io.PrintWriter;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
+
+import okhttp3.Interceptor;
+import okhttp3.MediaType;
+import okhttp3.Request;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
 
 public class MockResponseGenerator implements Interceptor {
 
@@ -62,7 +65,11 @@ public class MockResponseGenerator implements Interceptor {
         currentTestRequestIndex.set(0);
     }
 
-    final File file = new File("src/test/resources/mocked_responses_gen.json");
+    final File file;
+
+    public MockResponseGenerator(Context context){
+        file = new File(context.getExternalFilesDir(null), "MobileBuy.json");
+    }
 
 
     @Override

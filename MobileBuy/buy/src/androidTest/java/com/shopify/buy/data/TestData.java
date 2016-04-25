@@ -1,9 +1,10 @@
 package com.shopify.buy.data;
 
+import android.content.Context;
+
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -30,8 +31,8 @@ public class TestData {
         EXPIRED
     }
 
-    public TestData() throws IOException {
-        InputStream in = new FileInputStream(getClass().getResource("/test_shop_data.json").getFile());
+    public TestData(Context context) throws IOException {
+        InputStream in = context.getAssets().open("test_shop_data.json");
         data = (JsonObject) new JsonParser().parse(new InputStreamReader(in));
     }
 

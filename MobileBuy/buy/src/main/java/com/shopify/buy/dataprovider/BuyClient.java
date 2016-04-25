@@ -24,7 +24,8 @@
 
 package com.shopify.buy.dataprovider;
 
-import org.apache.commons.codec.binary.Base64;
+import android.text.TextUtils;
+import android.util.Base64;
 
 import com.google.gson.Gson;
 import com.shopify.buy.BuildConfig;
@@ -58,7 +59,6 @@ import com.shopify.buy.model.internal.PaymentSessionCheckoutWrapper;
 import com.shopify.buy.model.internal.ProductListings;
 import com.shopify.buy.model.internal.ShippingRatesWrapper;
 import com.shopify.buy.utils.CollectionUtils;
-import com.shopify.buy.utils.StringUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -150,9 +150,9 @@ public class BuyClient {
                 Request.Builder builder = original.newBuilder()
                         .method(original.method(), original.body());
 
-                builder.header("Authorization", "Basic " + StringUtils.convertToBase64String(apiKey));
+                builder.header("Authorization", "Basic " + Base64.encodeToString(apiKey.getBytes(), Base64.NO_WRAP));
 
-                if (BuyClient.this.customerToken != null && !StringUtils.isEmpty(BuyClient.this.customerToken.getAccessToken())) {
+                if (BuyClient.this.customerToken != null && !TextUtils.isEmpty(BuyClient.this.customerToken.getAccessToken())) {
                     builder.header(CUSTOMER_TOKEN_HEADER, BuyClient.this.customerToken.getAccessToken());
                 }
 
@@ -373,7 +373,7 @@ public class BuyClient {
         if (productIds.size() < 1) {
             throw new IllegalArgumentException("productIds List cannot be empty");
         }
-        String queryString = StringUtils.join(",", productIds.toArray());
+        String queryString = TextUtils.join(",", productIds.toArray());
 
         // All product responses from the server are wrapped in a ProductListings object
         // The same endpoint is used for single and multiple product queries.
@@ -618,7 +618,7 @@ public class BuyClient {
                 Request request = new Request.Builder()
                         .url(checkout.getPaymentUrl())
                         .post(body)
-                        .addHeader("Authorization", "Basic " + StringUtils.convertToBase64String(apiKey))
+                        .addHeader("Authorization", "Basic " + Base64.encodeToString(apiKey.getBytes(), Base64.NO_WRAP))
                         .addHeader("Content-Type", "application/json")
                         .addHeader("Accept", "application/json")
                         .build();
@@ -652,7 +652,7 @@ public class BuyClient {
         HashMap<String, String> requestBodyMap = new HashMap<>();
 
         String paymentSessionId = checkout.getPaymentSessionId();
-        if (!StringUtils.isEmpty(paymentSessionId)) {
+        if (!TextUtils.isEmpty(paymentSessionId)) {
             requestBodyMap.put("payment_session_id", checkout.getPaymentSessionId());
         }
 
@@ -823,7 +823,7 @@ public class BuyClient {
      * @param callback           the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      */
     public void activateCustomer(final Long customerId, final String activationToken, final AccountCredentials accountCredentials, final Callback<Customer> callback) {
-        if (StringUtils.isEmpty(activationToken)) {
+        if (TextUtils.isEmpty(activationToken)) {
             throw new IllegalArgumentException("activation token cannot be empty");
         }
 
@@ -855,7 +855,7 @@ public class BuyClient {
      * @param callback           the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      */
     public void resetPassword(final Long customerId, final String resetToken, final AccountCredentials accountCredentials, final Callback<Customer> callback) {
-        if (StringUtils.isEmpty(resetToken)) {
+        if (TextUtils.isEmpty(resetToken)) {
             throw new IllegalArgumentException("reset token cannot be empty");
         }
 
@@ -1008,7 +1008,7 @@ public class BuyClient {
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      */
     public void recoverPassword(final String email, final Callback<Void> callback) {
-        if (StringUtils.isEmpty(email)) {
+        if (TextUtils.isEmpty(email)) {
             throw new IllegalArgumentException("email cannot be empty");
         }
 
@@ -1057,7 +1057,7 @@ public class BuyClient {
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      */
     public void getOrder(final Customer customer, final String orderId, final Callback<Order> callback) {
-        if (StringUtils.isEmpty(orderId)) {
+        if (TextUtils.isEmpty(orderId)) {
             throw new IllegalArgumentException("orderId cannot be empty");
         }
 
@@ -1139,7 +1139,7 @@ public class BuyClient {
      * @param callback  the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      */
     public void getAddress(final Customer customer, final String addressId, final Callback<Address> callback) {
-        if (StringUtils.isEmpty(addressId)) {
+        if (TextUtils.isEmpty(addressId)) {
             throw new IllegalArgumentException("addressId cannot be empty");
         }
 
@@ -1197,7 +1197,7 @@ public class BuyClient {
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      */
     public void removeProductReservationsFromCheckout(final Checkout checkout, final Callback<Checkout> callback) {
-        if (checkout == null || StringUtils.isEmpty(checkout.getToken())) {
+        if (checkout == null || TextUtils.isEmpty(checkout.getToken())) {
             callback.failure(null);
         } else {
             checkout.setReservationTime(0);

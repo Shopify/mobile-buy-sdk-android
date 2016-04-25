@@ -24,10 +24,18 @@
 
 package com.shopify.buy.data;
 
+import android.content.Context;
+
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.shopify.buy.dataprovider.RetrofitError;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 import okhttp3.Interceptor;
 import okhttp3.MediaType;
@@ -36,16 +44,9 @@ import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
-
 public class MockResponder implements Interceptor {
 
-    private static final String FILE_NAME = "/mocked_responses.json";
+    private static final String FILE_NAME = "mocked_responses.json";
 
     public static final String KEY_CODE = "code";
     public static final String KEY_MESSAGE = "message";
@@ -61,10 +62,10 @@ public class MockResponder implements Interceptor {
 
     private final JsonObject data;
 
-    public MockResponder() {
+    public MockResponder(Context context) {
         InputStream in = null;
         try {
-            in = new FileInputStream(getClass().getResource(FILE_NAME).getFile());
+            in = context.getAssets().open(FILE_NAME);
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -24,6 +24,8 @@
 
 package com.shopify.buy.model;
 
+import android.text.TextUtils;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
@@ -38,7 +40,6 @@ import com.shopify.buy.dataprovider.BuyClientFactory;
 import com.shopify.buy.dataprovider.Callback;
 import com.shopify.buy.model.internal.MarketingAttribution;
 import com.shopify.buy.utils.CollectionUtils;
-import com.shopify.buy.utils.StringUtils;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -586,7 +587,7 @@ public class Checkout extends ShopifyObject {
         Checkout copy = Checkout.fromJson(this.toJsonString());
         copy.giftCards = null;
 
-        if (StringUtils.isEmpty(copy.email)) {
+        if (TextUtils.isEmpty(copy.email)) {
             copy.email = null;
         }
 
@@ -622,7 +623,7 @@ public class Checkout extends ShopifyObject {
      * @return A checkout object created using the values in the JSON string.
      */
     public static Checkout fromJson(String json) {
-        if (StringUtils.isEmpty(json)) {
+        if (TextUtils.isEmpty(json)) {
             return null;
         }
 

@@ -1,11 +1,9 @@
 package com.shopify.buy.model;
 
-import com.shopify.buy.dataprovider.Callback;
 import com.shopify.buy.dataprovider.BuyClient;
+import com.shopify.buy.dataprovider.Callback;
 import com.shopify.buy.dataprovider.RetrofitError;
 import com.shopify.buy.extensions.ShopifyAndroidTestCase;
-
-import org.junit.Test;
 
 import java.util.List;
 import java.util.Set;
@@ -13,14 +11,11 @@ import java.util.concurrent.CountDownLatch;
 
 import retrofit2.Response;
 
-import static junit.framework.TestCase.*;
-
 /**
  * Created by davepelletier on 15-08-25.
  */
 public class ProductTest extends ShopifyAndroidTestCase {
 
-    @Test
     public void testGetVariantForOptionValues() throws InterruptedException {
         final CountDownLatch latch = new CountDownLatch(1);
         buyClient.getProduct(data.getProductIdWithVariants(), new Callback<Product>() {
@@ -41,7 +36,6 @@ public class ProductTest extends ShopifyAndroidTestCase {
         latch.await();
     }
 
-    @Test
     public void testGetValidTag() throws InterruptedException {
         final CountDownLatch latch = new CountDownLatch(1);
         buyClient.getProduct(data.getProductIdWithTags(), new Callback<Product>() {
@@ -64,7 +58,6 @@ public class ProductTest extends ShopifyAndroidTestCase {
         latch.await();
     }
 
-    @Test
     public void testGetInvalidTag() throws InterruptedException {
         final CountDownLatch latch = new CountDownLatch(1);
         buyClient.getProduct(data.getProductIdWithoutTags(), new Callback<Product>() {

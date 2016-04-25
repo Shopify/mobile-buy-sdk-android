@@ -7,16 +7,12 @@ import com.shopify.buy.model.internal.MarketingAttribution;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.junit.Test;
-
-import static junit.framework.TestCase.*;
 
 /**
  * Unit test for {@code MarketingAttribution}
  */
 public class MarketingAttributionTest extends ShopifyAndroidTestCase {
 
-    @Test
     public void testSerialization() throws JSONException {
         Gson gson = BuyClientFactory.createDefaultGson();
 

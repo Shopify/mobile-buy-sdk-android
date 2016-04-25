@@ -24,6 +24,8 @@
 
 package com.shopify.buy.model;
 
+import android.text.TextUtils;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
@@ -33,7 +35,6 @@ import com.google.gson.annotations.SerializedName;
 import com.shopify.buy.dataprovider.BuyClientFactory;
 import com.shopify.buy.utils.CollectionUtils;
 import com.shopify.buy.utils.DateUtility;
-import com.shopify.buy.utils.StringUtils;
 
 import java.lang.reflect.Type;
 import java.util.Date;
@@ -379,7 +380,7 @@ public class Product extends ShopifyObject {
         product.tagSet = new HashSet<>();
 
         // Populate the tagSet from the comma separated list.
-        if (!StringUtils.isEmpty(product.tags)) {
+        if (!TextUtils.isEmpty(product.tags)) {
             for (String tag : product.tags.split(",")) {
                 String myTag = tag.trim();
                 product.tagSet.add(myTag);
