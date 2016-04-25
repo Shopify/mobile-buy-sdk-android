@@ -79,6 +79,8 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * The {@code BuyClient} provides all requests needed to perform request on the Shopify Checkout API. Use this class to perform tasks such as getting a shop, getting collections and products for a shop, creating a {@link Checkout} on Shopify and completing Checkouts.
@@ -181,7 +183,7 @@ public class BuyClient {
         Retrofit adapter = new Retrofit.Builder()
                 .baseUrl("https://" + shopDomain + "/")
                 .addConverterFactory(GsonConverterFactory.create(BuyClientFactory.createDefaultGson()))
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.createWithScheduler(Schedulers.io()))
                 .client(httpClient)
                 .build();
 
@@ -245,7 +247,7 @@ public class BuyClient {
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      */
     public void getShop(final Callback<Shop> callback) {
-        retrofitService.getShop().subscribe(new InternalCallback<Shop>() {
+        retrofitService.getShop().observeOn(AndroidSchedulers.mainThread()).subscribe(new InternalCallback<Shop>() {
             @Override
             public void success(Shop body, Response response) {
                 callback.success(body, response);
@@ -272,7 +274,7 @@ public class BuyClient {
 
         // All product responses from the server are wrapped in a ProductListings object which contains and array of products
         // For this call, we will clamp the size of the product array returned to the page size
-        retrofitService.getProductPage(appId, page, pageSize).subscribe(new InternalCallback<ProductListings>() {
+        retrofitService.getProductPage(appId, page, pageSize).observeOn(AndroidSchedulers.mainThread()).subscribe(new InternalCallback<ProductListings>() {
 
             @Override
             public void success(ProductListings productPage, Response response) {
@@ -301,7 +303,7 @@ public class BuyClient {
             throw new NullPointerException("handle cannot be null");
         }
 
-        retrofitService.getProductWithHandle(appId, handle).subscribe(new InternalCallback<ProductListings>() {
+        retrofitService.getProductWithHandle(appId, handle).observeOn(AndroidSchedulers.mainThread()).subscribe(new InternalCallback<ProductListings>() {
             @Override
             public void success(ProductListings productPublications, Response response) {
                 List<Product> products = null;
@@ -337,7 +339,7 @@ public class BuyClient {
         // The same endpoint is used for single and multiple product queries.
         // For this call we will query with a single id, and the returned product array
         // If the id was found the array will contain a single object, otherwise it will be empty
-        retrofitService.getProducts(appId, productId).subscribe(new InternalCallback<ProductListings>() {
+        retrofitService.getProducts(appId, productId).observeOn(AndroidSchedulers.mainThread()).subscribe(new InternalCallback<ProductListings>() {
 
             @Override
             public void success(ProductListings productPublications, Response response) {
@@ -380,7 +382,7 @@ public class BuyClient {
         // For this call we will query with multiple ids.
         // The returned product array will contain products for each id found.
         // If no ids were found, the array will be empty
-        retrofitService.getProducts(appId, queryString).subscribe(new InternalCallback<ProductListings>() {
+        retrofitService.getProducts(appId, queryString).observeOn(AndroidSchedulers.mainThread()).subscribe(new InternalCallback<ProductListings>() {
 
             @Override
             public void success(ProductListings productPublications, Response response) {
@@ -427,7 +429,7 @@ public class BuyClient {
             throw new IllegalArgumentException("collectionId cannot be null");
         }
 
-        retrofitService.getProducts(appId, collectionId, pageSize, page, sortOrder.toString()).subscribe(new InternalCallback<ProductListings>() {
+        retrofitService.getProducts(appId, collectionId, pageSize, page, sortOrder.toString()).observeOn(AndroidSchedulers.mainThread()).subscribe(new InternalCallback<ProductListings>() {
 
             @Override
             public void success(ProductListings productPublications, Response response) {
@@ -470,7 +472,7 @@ public class BuyClient {
 
         // All collection responses from the server are wrapped in a CollectionListings object which contains and array of collections
         // For this call, we will clamp the size of the collection array returned to the page size
-        retrofitService.getCollectionPage(appId, page, pageSize).subscribe(new InternalCallback<CollectionListings>() {
+        retrofitService.getCollectionPage(appId, page, pageSize).observeOn(AndroidSchedulers.mainThread()).subscribe(new InternalCallback<CollectionListings>() {
 
             @Override
             public void success(CollectionListings collectionPage, Response response) {
@@ -514,7 +516,7 @@ public class BuyClient {
             checkout.setWebReturnToLabel(webReturnToLabel);
         }
 
-        retrofitService.createCheckout(new CheckoutWrapper(checkout)).subscribe(new InternalCallback<CheckoutWrapper>() {
+        retrofitService.createCheckout(new CheckoutWrapper(checkout)).observeOn(AndroidSchedulers.mainThread()).subscribe(new InternalCallback<CheckoutWrapper>() {
 
             @Override
             public void success(CheckoutWrapper checkoutWrapper, Response response) {
@@ -546,7 +548,7 @@ public class BuyClient {
 
         Checkout cleanCheckout = checkout.copyForUpdate();
 
-        retrofitService.updateCheckout(new CheckoutWrapper(cleanCheckout), cleanCheckout.getToken()).subscribe(new InternalCallback<CheckoutWrapper>() {
+        retrofitService.updateCheckout(new CheckoutWrapper(cleanCheckout), cleanCheckout.getToken()).observeOn(AndroidSchedulers.mainThread()).subscribe(new InternalCallback<CheckoutWrapper>() {
             @Override
             public void success(CheckoutWrapper checkoutWrapper, Response response) {
                 callback.success(checkoutWrapper.getCheckout(), response);
@@ -570,7 +572,7 @@ public class BuyClient {
             throw new NullPointerException("checkoutToken cannot be null");
         }
 
-        retrofitService.getShippingRates(checkoutToken).subscribe(new InternalCallback<ShippingRatesWrapper>() {
+        retrofitService.getShippingRates(checkoutToken).observeOn(AndroidSchedulers.mainThread()).subscribe(new InternalCallback<ShippingRatesWrapper>() {
             @Override
             public void success(ShippingRatesWrapper shippingRatesWrapper, Response response) {
                 if (HttpURLConnection.HTTP_OK == response.code() && shippingRatesWrapper != null) {
@@ -656,7 +658,7 @@ public class BuyClient {
             requestBodyMap.put("payment_session_id", checkout.getPaymentSessionId());
         }
 
-        retrofitService.completeCheckout(requestBodyMap, checkout.getToken()).subscribe(new InternalCallback<CheckoutWrapper>() {
+        retrofitService.completeCheckout(requestBodyMap, checkout.getToken()).observeOn(AndroidSchedulers.mainThread()).subscribe(new InternalCallback<CheckoutWrapper>() {
             @Override
             public void success(CheckoutWrapper checkoutWrapper, Response response) {
                 callback.success(checkoutWrapper.getCheckout(), response);
@@ -682,7 +684,7 @@ public class BuyClient {
             throw new NullPointerException("checkout cannot be null");
         }
 
-        retrofitService.getCheckoutCompletionStatus(checkout.getToken()).subscribe(new InternalCallback<Void>() {
+        retrofitService.getCheckoutCompletionStatus(checkout.getToken()).observeOn(AndroidSchedulers.mainThread()).subscribe(new InternalCallback<Void>() {
 
             @Override
             public void success(Void aVoid, Response response) {
@@ -712,7 +714,7 @@ public class BuyClient {
             throw new NullPointerException("checkoutToken cannot be null");
         }
 
-        retrofitService.getCheckout(checkoutToken).subscribe(new InternalCallback<CheckoutWrapper>() {
+        retrofitService.getCheckout(checkoutToken).observeOn(AndroidSchedulers.mainThread()).subscribe(new InternalCallback<CheckoutWrapper>() {
             @Override
             public void success(CheckoutWrapper checkoutWrapper, Response response) {
                 callback.success(checkoutWrapper.getCheckout(), response);
@@ -742,7 +744,7 @@ public class BuyClient {
 
         final GiftCard giftCard = new GiftCard(giftCardCode);
 
-        retrofitService.applyGiftCard(new GiftCardWrapper(giftCard), checkout.getToken()).subscribe(new InternalCallback<GiftCardWrapper>() {
+        retrofitService.applyGiftCard(new GiftCardWrapper(giftCard), checkout.getToken()).observeOn(AndroidSchedulers.mainThread()).subscribe(new InternalCallback<GiftCardWrapper>() {
             @Override
             public void success(GiftCardWrapper giftCardWrapper, Response response) {
                 GiftCard updatedGiftCard = giftCardWrapper.getGiftCard();
@@ -774,7 +776,7 @@ public class BuyClient {
             throw new NullPointerException("giftCard cannot be null");
         }
 
-        retrofitService.removeGiftCard(giftCard.getId(), checkout.getToken()).subscribe(new InternalCallback<GiftCardWrapper>() {
+        retrofitService.removeGiftCard(giftCard.getId(), checkout.getToken()).observeOn(AndroidSchedulers.mainThread()).subscribe(new InternalCallback<GiftCardWrapper>() {
             @Override
             public void success(GiftCardWrapper giftCardWrapper, Response response) {
                 GiftCard updatedGiftCard = giftCardWrapper.getGiftCard();
@@ -802,7 +804,7 @@ public class BuyClient {
 
         final AccountCredentialsWrapper accountCredentialsWrapper = new AccountCredentialsWrapper(accountCredentials);
 
-        retrofitService.createCustomer(accountCredentialsWrapper).subscribe(new InternalCallback<CustomerWrapper>() {
+        retrofitService.createCustomer(accountCredentialsWrapper).observeOn(AndroidSchedulers.mainThread()).subscribe(new InternalCallback<CustomerWrapper>() {
             @Override
             public void success(CustomerWrapper customerWrapper, Response response) {
                 callback.success(customerWrapper.getCustomer(), response);
@@ -833,7 +835,7 @@ public class BuyClient {
 
         AccountCredentialsWrapper accountCredentialsWrapper = new AccountCredentialsWrapper(accountCredentials);
 
-        retrofitService.activateCustomer(activationToken, accountCredentialsWrapper, customerId).subscribe(new InternalCallback<CustomerWrapper>() {
+        retrofitService.activateCustomer(activationToken, accountCredentialsWrapper, customerId).observeOn(AndroidSchedulers.mainThread()).subscribe(new InternalCallback<CustomerWrapper>() {
             @Override
             public void success(CustomerWrapper customerWrapper, Response response) {
                 callback.success(customerWrapper.getCustomer(), response);
@@ -865,7 +867,7 @@ public class BuyClient {
 
         AccountCredentialsWrapper accountCredentialsWrapper = new AccountCredentialsWrapper(accountCredentials);
 
-        retrofitService.resetPassword(resetToken, accountCredentialsWrapper, customerId).subscribe(new InternalCallback<CustomerWrapper>() {
+        retrofitService.resetPassword(resetToken, accountCredentialsWrapper, customerId).observeOn(AndroidSchedulers.mainThread()).subscribe(new InternalCallback<CustomerWrapper>() {
             @Override
             public void success(CustomerWrapper customerWrapper, Response response) {
                 callback.success(customerWrapper.getCustomer(), response);
@@ -891,7 +893,7 @@ public class BuyClient {
 
         final AccountCredentialsWrapper accountCredentialsWrapper = new AccountCredentialsWrapper(accountCredentials);
 
-        retrofitService.getCustomerToken(accountCredentialsWrapper).subscribe(new InternalCallback<CustomerTokenWrapper>() {
+        retrofitService.getCustomerToken(accountCredentialsWrapper).observeOn(AndroidSchedulers.mainThread()).subscribe(new InternalCallback<CustomerTokenWrapper>() {
             @Override
             public void success(CustomerTokenWrapper customerTokenWrapper, Response response) {
                 customerToken = customerTokenWrapper.getCustomerToken();
@@ -915,7 +917,7 @@ public class BuyClient {
             return;
         }
 
-        retrofitService.removeCustomerToken(customerToken.getCustomerId()).subscribe(new InternalCallback<Void>() {
+        retrofitService.removeCustomerToken(customerToken.getCustomerId()).observeOn(AndroidSchedulers.mainThread()).subscribe(new InternalCallback<Void>() {
             @Override
             public void success(Void aVoid, Response response) {
                 customerToken = null;
@@ -940,7 +942,7 @@ public class BuyClient {
             throw new NullPointerException("customer cannot be null");
         }
 
-        retrofitService.updateCustomer(customer.getId(), new CustomerWrapper(customer)).subscribe(new InternalCallback<CustomerWrapper>() {
+        retrofitService.updateCustomer(customer.getId(), new CustomerWrapper(customer)).observeOn(AndroidSchedulers.mainThread()).subscribe(new InternalCallback<CustomerWrapper>() {
             @Override
             public void success(CustomerWrapper customerWrapper, Response response) {
                 callback.success(customerWrapper.getCustomer(), response);
@@ -964,7 +966,7 @@ public class BuyClient {
             throw new NullPointerException("customer Id cannot be null");
         }
 
-        retrofitService.getCustomer(customerId).subscribe(new InternalCallback<CustomerWrapper>() {
+        retrofitService.getCustomer(customerId).observeOn(AndroidSchedulers.mainThread()).subscribe(new InternalCallback<CustomerWrapper>() {
             @Override
             public void success(CustomerWrapper customerWrapper, Response response) {
                 callback.success(customerWrapper.getCustomer(), response);
@@ -987,7 +989,7 @@ public class BuyClient {
             return;
         }
 
-        retrofitService.renewCustomerToken(EMPTY_BODY, customerToken.getCustomerId()).subscribe(new InternalCallback<CustomerTokenWrapper>() {
+        retrofitService.renewCustomerToken(EMPTY_BODY, customerToken.getCustomerId()).observeOn(AndroidSchedulers.mainThread()).subscribe(new InternalCallback<CustomerTokenWrapper>() {
             @Override
             public void success(CustomerTokenWrapper customerTokenWrapper, Response response) {
                 customerToken = customerTokenWrapper.getCustomerToken();
@@ -1012,7 +1014,7 @@ public class BuyClient {
             throw new IllegalArgumentException("email cannot be empty");
         }
 
-        retrofitService.recoverCustomer(new EmailWrapper(email)).subscribe(new InternalCallback<Void>() {
+        retrofitService.recoverCustomer(new EmailWrapper(email)).observeOn(AndroidSchedulers.mainThread()).subscribe(new InternalCallback<Void>() {
             @Override
             public void success(Void aVoid, Response response) {
                 callback.success(aVoid, response);
@@ -1036,7 +1038,7 @@ public class BuyClient {
             throw new NullPointerException("customer cannot be null");
         }
 
-        retrofitService.getOrders(customer.getId()).subscribe(new InternalCallback<OrdersWrapper>() {
+        retrofitService.getOrders(customer.getId()).observeOn(AndroidSchedulers.mainThread()).subscribe(new InternalCallback<OrdersWrapper>() {
             @Override
             public void success(OrdersWrapper ordersWrapper, Response response) {
                 callback.success(ordersWrapper.getOrders(), response);
@@ -1065,7 +1067,7 @@ public class BuyClient {
             throw new NullPointerException("customer cannot be null");
         }
 
-        retrofitService.getOrder(customer.getId(), orderId).subscribe(new InternalCallback<OrderWrapper>() {
+        retrofitService.getOrder(customer.getId(), orderId).observeOn(AndroidSchedulers.mainThread()).subscribe(new InternalCallback<OrderWrapper>() {
             @Override
             public void success(OrderWrapper orderWrapper, Response response) {
                 callback.success(orderWrapper.getOrder(), response);
@@ -1094,7 +1096,7 @@ public class BuyClient {
             throw new NullPointerException("customer cannot be null");
         }
 
-        retrofitService.createAddress(customer.getId(), new AddressWrapper(address)).subscribe(new InternalCallback<AddressWrapper>() {
+        retrofitService.createAddress(customer.getId(), new AddressWrapper(address)).observeOn(AndroidSchedulers.mainThread()).subscribe(new InternalCallback<AddressWrapper>() {
             @Override
             public void success(AddressWrapper addressWrapper, Response response) {
                 callback.success(addressWrapper.getAddress(), response);
@@ -1118,7 +1120,7 @@ public class BuyClient {
             throw new NullPointerException("customer cannot be null");
         }
 
-        retrofitService.getAddresses(customer.getId()).subscribe(new InternalCallback<AddressesWrapper>() {
+        retrofitService.getAddresses(customer.getId()).observeOn(AndroidSchedulers.mainThread()).subscribe(new InternalCallback<AddressesWrapper>() {
             @Override
             public void success(AddressesWrapper addressesWrapper, Response response) {
                 callback.success(addressesWrapper.getAddresses(), response);
@@ -1147,7 +1149,7 @@ public class BuyClient {
             throw new NullPointerException("customer cannot be null");
         }
 
-        retrofitService.getAddress(customer.getId(), addressId).subscribe(new InternalCallback<AddressWrapper>() {
+        retrofitService.getAddress(customer.getId(), addressId).observeOn(AndroidSchedulers.mainThread()).subscribe(new InternalCallback<AddressWrapper>() {
             @Override
             public void success(AddressWrapper addressWrapper, Response response) {
                 callback.success(addressWrapper.getAddress(), response);
@@ -1176,7 +1178,7 @@ public class BuyClient {
             throw new NullPointerException("customer cannot be null");
         }
 
-        retrofitService.updateAddress(customer.getId(), new AddressWrapper(address), address.getAddressId()).subscribe(new InternalCallback<AddressWrapper>() {
+        retrofitService.updateAddress(customer.getId(), new AddressWrapper(address), address.getAddressId()).observeOn(AndroidSchedulers.mainThread()).subscribe(new InternalCallback<AddressWrapper>() {
             @Override
             public void success(AddressWrapper addressWrapper, Response response) {
                 callback.success(addressWrapper.getAddress(), response);
