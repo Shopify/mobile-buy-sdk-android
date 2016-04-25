@@ -15,6 +15,9 @@ git submodule update --init --recursive
 echo "--- Downloading sdk updates"
 echo y | ./gradlew --no-color --refresh-dependencies
 
+echo "--- Shutting down emulator"
+${ANDROID_HOME}/platform-tools/adb -s ${SERIAL} emu kill || true
+
 echo "--- Restarting ADB server"
 ${ANDROID_HOME}/platform-tools/adb kill-server
 ${ANDROID_HOME}/platform-tools/adb start-server
