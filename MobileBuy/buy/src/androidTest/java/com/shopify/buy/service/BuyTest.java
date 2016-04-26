@@ -15,6 +15,7 @@ import com.shopify.buy.model.CreditCard;
 import com.shopify.buy.model.Discount;
 import com.shopify.buy.model.GiftCard;
 import com.shopify.buy.model.LineItem;
+import com.shopify.buy.model.Payment;
 import com.shopify.buy.model.Product;
 import com.shopify.buy.model.ShippingRate;
 
@@ -697,10 +698,12 @@ public class BuyTest extends ShopifyAndroidTestCase {
 
     private void completeCheckout() throws InterruptedException {
         final CountDownLatch latch = new CountDownLatch(1);
-        buyClient.completeCheckout(checkout, new Callback<Checkout>() {
+        buyClient.completeCheckout(checkout, new Callback<Payment>() {
             @Override
-            public void success(Checkout checkout, Response response) {
+            public void success(Payment payment, Response response) {
                 assertEquals(HttpStatus.SC_OK, response.code());
+                assertNotNull(payment);
+                assertNotNull(payment.getCheckout());
                 latch.countDown();
             }
 

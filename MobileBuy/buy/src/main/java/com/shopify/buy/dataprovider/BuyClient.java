@@ -39,7 +39,8 @@ import com.shopify.buy.model.Customer;
 import com.shopify.buy.model.CustomerToken;
 import com.shopify.buy.model.GiftCard;
 import com.shopify.buy.model.Order;
-import com.shopify.buy.model.PaymentRequest;
+import com.shopify.buy.model.Payment;
+import com.shopify.buy.model.internal.PaymentRequest;
 import com.shopify.buy.model.Product;
 import com.shopify.buy.model.ShippingRate;
 import com.shopify.buy.model.Shop;
@@ -527,7 +528,7 @@ public class BuyClient {
             @Override
             public void success(CheckoutWrapper checkoutWrapper, Response response) {
                 Checkout checkout = null;
-                if(checkoutWrapper != null){
+                if (checkoutWrapper != null) {
                     checkout = checkoutWrapper.getCheckout();
                 }
 
@@ -646,7 +647,7 @@ public class BuyClient {
      * @param checkout a {@link Checkout} that has had a {@link CreditCard} associated with it using {@link #storeCreditCard(CreditCard, Checkout, Callback)}
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      */
-    public void completeCheckout(Checkout checkout, final Callback<Checkout> callback) {
+    public void completeCheckout(Checkout checkout, final Callback<Payment> callback) {
         if (checkout == null) {
             throw new NullPointerException("checkout cannot be null");
         }
@@ -657,13 +658,13 @@ public class BuyClient {
         if (!TextUtils.isEmpty(paymentSessionId)) {
             paymentRequest.setPaymentSessionId(paymentSessionId);
         }
-        
+
         PaymentRequestWrapper paymentRequestWrapper = new PaymentRequestWrapper(paymentRequest);
 
         retrofitService.completeCheckout(paymentRequestWrapper, checkout.getToken()).observeOn(getCallbackScheduler()).subscribe(new InternalCallback<PaymentWrapper>() {
             @Override
             public void success(PaymentWrapper paymentWrapper, Response response) {
-                callback.success(paymentWrapper.getPayment().getCheckout(), response);
+                callback.success(paymentWrapper.getPayment(), response);
             }
 
             @Override

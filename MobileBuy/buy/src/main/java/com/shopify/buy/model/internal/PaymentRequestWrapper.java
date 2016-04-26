@@ -25,7 +25,6 @@
 package com.shopify.buy.model.internal;
 
 import com.google.gson.annotations.SerializedName;
-import com.shopify.buy.model.PaymentRequest;
 
 /**
  * Wrapper class used by Gson Serialization

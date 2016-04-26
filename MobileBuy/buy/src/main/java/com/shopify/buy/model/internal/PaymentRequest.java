@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-package com.shopify.buy.model;
+package com.shopify.buy.model.internal;
 
 import com.google.gson.annotations.SerializedName;
 
