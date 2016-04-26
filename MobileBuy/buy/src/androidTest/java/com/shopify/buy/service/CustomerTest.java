@@ -25,8 +25,10 @@
 package com.shopify.buy.service;
 
 import android.support.test.runner.AndroidJUnit4;
+import android.test.suitebuilder.annotation.Suppress;
 
 import com.shopify.buy.dataprovider.BuyClient;
+import com.shopify.buy.dataprovider.BuyError;
 import com.shopify.buy.dataprovider.Callback;
 import com.shopify.buy.dataprovider.RetrofitError;
 import com.shopify.buy.extensions.ShopifyAndroidTestCase;
@@ -40,6 +42,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.List;
+import java.util.Random;
+import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 
 import retrofit2.Response;
@@ -52,7 +56,11 @@ import static junit.framework.Assert.fail;
 @RunWith(AndroidJUnit4.class)
 public class CustomerTest extends ShopifyAndroidTestCase {
 
-    private static final boolean ENABLED = false;
+    private static final String PASSWORD = "asdasd";
+    private static final String EMAIL = "asd@asda.com";
+    private static final String FIRSTNAME = "Testy";
+    private static final String LASTNAME = "McTesterson2";
+    private static final String WRONG_PASSWORD = "iiiiii";
 
     private Customer customer;
     private List<Order> orders;
@@ -62,20 +70,18 @@ public class CustomerTest extends ShopifyAndroidTestCase {
 
     @Test
 	public void testCustomerCreation() throws InterruptedException {
-        if (!ENABLED) {
-            return;
-        }
 
         final CountDownLatch latch = new CountDownLatch(1);
-        final Customer customer = getCustomer();
-        final AccountCredentials accountCredentials = new AccountCredentials(customer.getEmail(), "password", customer.getFirstName(), customer.getLastName());
+        final Customer randomCustomer = USE_MOCK_RESPONSES ? getExistingCustomer() : generateRandomCustomer();
+        final AccountCredentials accountCredentials = new AccountCredentials(randomCustomer.getEmail(), PASSWORD, randomCustomer.getFirstName(), randomCustomer.getLastName());
 
         buyClient.createCustomer(accountCredentials, new Callback<Customer>() {
             @Override
             public void success(Customer customer, Response response) {
                 assertNotNull(customer);
-                assertNotNull(buyClient.getCustomerToken());
-                assertEquals(false, buyClient.getCustomerToken().getAccessToken().isEmpty());
+                assertEquals(randomCustomer.getEmail(), customer.getEmail());
+                assertEquals(randomCustomer.getFirstName(), customer.getFirstName());
+                assertEquals(randomCustomer.getLastName(), customer.getLastName());
                 latch.countDown();
             }
 
@@ -87,25 +93,20 @@ public class CustomerTest extends ShopifyAndroidTestCase {
         latch.await();
     }
 
+    @Suppress
     @Test
 	public void testCustomerActivation() throws InterruptedException {
-        if (!ENABLED) {
-            return;
-        }
-
+        
         testCustomerLogin();
-        buyClient.setCustomerToken(customerToken);
 
         final CountDownLatch latch = new CountDownLatch(1);
-        final AccountCredentials accountCredentials = new AccountCredentials("notapassword");
+        final AccountCredentials accountCredentials = new AccountCredentials(customer.getEmail(), PASSWORD, customer.getFirstName(), customer.getLastName());
 
         // TODO update this test when we start to get real tokens
-        buyClient.activateCustomer(customer.getId(), "notanactivationtoken", accountCredentials, new Callback<Customer>() {
+        buyClient.activateCustomer(customer.getId(), "need activation token not access token", accountCredentials, new Callback<Customer>() {
             @Override
             public void success(Customer customer, Response response) {
                 assertNotNull(customer);
-                assertNotNull(buyClient.getCustomerToken());
-                assertEquals(false, buyClient.getCustomerToken().getAccessToken().isEmpty());
                 latch.countDown();
             }
 
@@ -120,20 +121,18 @@ public class CustomerTest extends ShopifyAndroidTestCase {
 
     @Test
 	public void testCustomerLogin() throws InterruptedException {
-        if (!ENABLED) {
-            return;
-        }
-
-        customer = getCustomer();
+        
+        customer = getExistingCustomer();
 
         final CountDownLatch latch = new CountDownLatch(1);
-        final AccountCredentials accountCredentials = new AccountCredentials(customer.getEmail(), "password");
+        final AccountCredentials accountCredentials = new AccountCredentials(customer.getEmail(), PASSWORD, customer.getFirstName(), customer.getLastName());
 
         buyClient.loginCustomer(accountCredentials, new Callback<CustomerToken>() {
             @Override
             public void success(CustomerToken customerToken, Response response) {
                 assertNotNull(buyClient.getCustomerToken());
                 assertEquals(false, buyClient.getCustomerToken().getAccessToken().isEmpty());
+                CustomerTest.this.customerToken = buyClient.getCustomerToken();
                 getCustomerAfterLogin(latch);
             }
 
@@ -147,10 +146,7 @@ public class CustomerTest extends ShopifyAndroidTestCase {
 
     @Test
 	public void testCustomerLogout() throws InterruptedException {
-        if (!ENABLED) {
-            return;
-        }
-
+        
         testCustomerLogin();
         buyClient.setCustomerToken(customerToken);
 
@@ -172,10 +168,7 @@ public class CustomerTest extends ShopifyAndroidTestCase {
 
     @Test
 	public void testCustomerRenew() throws InterruptedException {
-        if (!ENABLED) {
-            return;
-        }
-
+        
         testCustomerLogin();
         buyClient.setCustomerToken(customerToken);
 
@@ -197,15 +190,12 @@ public class CustomerTest extends ShopifyAndroidTestCase {
 
     @Test
 	public void testCustomerRecover() throws InterruptedException {
-        if (!ENABLED) {
-            return;
-        }
-
+        
         final CountDownLatch latch = new CountDownLatch(1);
 
-        Customer customer = getCustomer();
+        customer = getExistingCustomer();
 
-        buyClient.recoverPassword("email", new Callback<Void>() {
+        buyClient.recoverPassword(EMAIL, new Callback<Void>() {
             @Override
             public void success(Void aVoid, Response response) {
                 latch.countDown();
@@ -221,10 +211,7 @@ public class CustomerTest extends ShopifyAndroidTestCase {
 
     @Test
 	public void testCustomerUpdate() throws InterruptedException {
-        if (!ENABLED) {
-            return;
-        }
-
+        
         testCustomerLogin();
         buyClient.setCustomerToken(customerToken);
 
@@ -251,10 +238,7 @@ public class CustomerTest extends ShopifyAndroidTestCase {
 
     @Test
 	public void testGetCustomerOrders() throws InterruptedException {
-        if (!ENABLED) {
-            return;
-        }
-
+        
         testCustomerLogin();
         buyClient.setCustomerToken(customerToken);
 
@@ -280,10 +264,7 @@ public class CustomerTest extends ShopifyAndroidTestCase {
 
     @Test
 	public void testGetOrder() throws InterruptedException {
-        if (!ENABLED) {
-            return;
-        }
-
+        
         testGetCustomerOrders();
         buyClient.setCustomerToken(customerToken);
 
@@ -309,10 +290,7 @@ public class CustomerTest extends ShopifyAndroidTestCase {
 
     @Test
 	public void testGetCustomer() throws InterruptedException {
-        if (!ENABLED) {
-            return;
-        }
-
+        
         testCustomerLogin();
         buyClient.setCustomerToken(customerToken);
 
@@ -333,33 +311,21 @@ public class CustomerTest extends ShopifyAndroidTestCase {
         latch.await();
     }
 
-    private Customer getCustomer() {
-        Customer customer = new Customer();
-        customer.setEmail("krisorr@gmail.com");
-        customer.setFirstName("Kristopher");
-        customer.setLastName("Orr");
-
-        return customer;
-    }
-
     @Test
 	public void testCreateAddress() throws InterruptedException {
-        if (!ENABLED) {
-            return;
-        }
-
+        
         testCustomerLogin();
         buyClient.setCustomerToken(customerToken);
 
         final CountDownLatch latch = new CountDownLatch(1);
+        final Address inputAddress = USE_MOCK_RESPONSES ? getExistingAddress() : generateAddress();
 
-        buyClient.createAddress(customer, getAddress(), new Callback<Address>() {
+        buyClient.createAddress(customer, inputAddress, new Callback<Address>() {
             @Override
             public void success(Address address, Response response) {
-                Address input = getAddress();
-                assertEquals(input.getAddress1(), address.getAddress1());
-                assertEquals(input.getAddress2(), address.getAddress2());
-                assertEquals(input.getCity(), address.getCity());
+                assertEquals(inputAddress.getAddress1(), address.getAddress1());
+                assertEquals(inputAddress.getAddress2(), address.getAddress2());
+                assertEquals(inputAddress.getCity(), address.getCity());
                 latch.countDown();
             }
 
@@ -373,10 +339,7 @@ public class CustomerTest extends ShopifyAndroidTestCase {
 
     @Test
 	public void testGetAddresses() throws InterruptedException {
-        if (!ENABLED) {
-            return;
-        }
-
+        
         testCustomerLogin();
         buyClient.setCustomerToken(customerToken);
 
@@ -402,10 +365,7 @@ public class CustomerTest extends ShopifyAndroidTestCase {
 
     @Test
 	public void testGetAddress() throws InterruptedException {
-        if (!ENABLED) {
-            return;
-        }
-
+        
         testGetAddresses();
         buyClient.setCustomerToken(customerToken);
 
@@ -432,10 +392,7 @@ public class CustomerTest extends ShopifyAndroidTestCase {
 
     @Test
 	public void testUpdateAddress() throws InterruptedException {
-        if (!ENABLED) {
-            return;
-        }
-
+        
         testGetAddress();
         buyClient.setCustomerToken(customerToken);
 
@@ -447,6 +404,7 @@ public class CustomerTest extends ShopifyAndroidTestCase {
             @Override
             public void success(Address address, Response response) {
                 assertNotNull(address);
+                latch.countDown();
             }
 
             @Override
@@ -458,15 +416,57 @@ public class CustomerTest extends ShopifyAndroidTestCase {
         latch.await();
     }
 
-    private Address getAddress() {
+    private Customer getExistingCustomer() {
+        Customer customer = new Customer();
+        customer.setEmail(EMAIL);
+        customer.setFirstName(FIRSTNAME);
+        customer.setLastName(LASTNAME);
+
+        return customer;
+    }
+
+    private Customer generateRandomCustomer() {
+        Customer customer = new Customer();
+        customer.setEmail(generateRandomString() + "customer" + generateRandomString() + "@example.com");
+        customer.setFirstName("Customer");
+        customer.setLastName("Randomly Generated");
+        return customer;
+    }
+
+    private String generateRandomString() {
+        return UUID.randomUUID().toString().substring(0, 8);
+    }
+
+    private int generateRandomInt(int min, int max) {
+        Random random = new Random();
+        return random.nextInt((max - min) + 1) + min;
+    }
+
+
+    private Address generateAddress() {
+        Address shippingAddress = new Address();
+        shippingAddress.setAddress1(String.format("%d - 150 Elgin Street", generateRandomInt(0, 9999)));
+        shippingAddress.setAddress2("8th Floor");
+        shippingAddress.setCity("Ottawa");
+        shippingAddress.setProvinceCode("ON");
+        shippingAddress.setCompany(String.format("Shopify Inc. (%s)", generateRandomString()));
+        shippingAddress.setFirstName(String.format("%s (%s)", generateRandomString(), FIRSTNAME));
+        shippingAddress.setLastName(String.format("%s (%s)", generateRandomString(), LASTNAME));
+        shippingAddress.setPhone("1-555-555-5555");
+        shippingAddress.setCountryCode("CA");
+        shippingAddress.setZip("K1N5T5");
+        return shippingAddress;
+    }
+
+    private Address getExistingAddress() {
         Address shippingAddress = new Address();
         shippingAddress.setAddress1("150 Elgin Street");
         shippingAddress.setAddress2("8th Floor");
         shippingAddress.setCity("Ottawa");
         shippingAddress.setProvinceCode("ON");
         shippingAddress.setCompany("Shopify Inc.");
-        shippingAddress.setFirstName("MobileBuy");
-        shippingAddress.setLastName("TestBot");
+        shippingAddress.setFirstName(FIRSTNAME);
+        shippingAddress.setLastName(LASTNAME);
         shippingAddress.setPhone("1-555-555-5555");
         shippingAddress.setCountryCode("CA");
         shippingAddress.setZip("K1N5T5");
@@ -491,5 +491,53 @@ public class CustomerTest extends ShopifyAndroidTestCase {
             }
         });
 
+    }
+
+    @Suppress
+    @Test
+    public void testCustomerCreationDuplicateEmail() throws InterruptedException {
+
+        final CountDownLatch latch = new CountDownLatch(1);
+        final Customer input = getExistingCustomer();
+        final AccountCredentials accountCredentials = new AccountCredentials(input.getEmail(), PASSWORD, input.getFirstName(), input.getLastName());
+
+        buyClient.createCustomer(accountCredentials, new Callback<Customer>() {
+            @Override
+            public void success(Customer customer, Response response) {
+                fail("Should not be able to create multiple accounts with same email");
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                if (BuyError.isEmailAlreadyTakenError(error, input.getEmail())) {
+                    latch.countDown();
+                } else {
+                    fail(String.format("Should be getting email already taken error. \nGot \"%s\"", error.getMessage()));
+                }
+            }
+        });
+        latch.await();
+    }
+
+    @Test
+    public void testCustomerInvalidLogin() throws InterruptedException {
+
+        final CountDownLatch latch = new CountDownLatch(1);
+        final Customer customer = getExistingCustomer();
+        final AccountCredentials accountCredentials = new AccountCredentials(customer.getEmail(), WRONG_PASSWORD);
+
+        buyClient.loginCustomer(accountCredentials, new Callback<CustomerToken>() {
+
+            @Override
+            public void success(CustomerToken customerToken, Response response) {
+                fail("Invalid credentials should not be able to login");
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                latch.countDown();
+            }
+        });
+        latch.await();
     }
 }

@@ -829,6 +829,7 @@ public class BuyClient {
      * @param accountCredentials the account credentials with a password of the {@link Customer} to be activated, not null
      * @param callback           the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      */
+    @Deprecated
     public void activateCustomer(final Long customerId, final String activationToken, final AccountCredentials accountCredentials, final Callback<Customer> callback) {
         if (TextUtils.isEmpty(activationToken)) {
             throw new IllegalArgumentException("activation token cannot be empty");
@@ -840,7 +841,7 @@ public class BuyClient {
 
         AccountCredentialsWrapper accountCredentialsWrapper = new AccountCredentialsWrapper(accountCredentials);
 
-        retrofitService.activateCustomer(activationToken, accountCredentialsWrapper, customerId).observeOn(getCallbackScheduler()).subscribe(new InternalCallback<CustomerWrapper>() {
+        retrofitService.activateCustomer(customerId, activationToken, accountCredentialsWrapper).observeOn(getCallbackScheduler()).subscribe(new InternalCallback<CustomerWrapper>() {
             @Override
             public void success(CustomerWrapper customerWrapper, Response response) {
                 callback.success(customerWrapper.getCustomer(), response);
@@ -872,7 +873,7 @@ public class BuyClient {
 
         AccountCredentialsWrapper accountCredentialsWrapper = new AccountCredentialsWrapper(accountCredentials);
 
-        retrofitService.resetPassword(resetToken, accountCredentialsWrapper, customerId).observeOn(getCallbackScheduler()).subscribe(new InternalCallback<CustomerWrapper>() {
+        retrofitService.resetPassword(customerId, resetToken, accountCredentialsWrapper).observeOn(getCallbackScheduler()).subscribe(new InternalCallback<CustomerWrapper>() {
             @Override
             public void success(CustomerWrapper customerWrapper, Response response) {
                 callback.success(customerWrapper.getCustomer(), response);
@@ -1228,26 +1229,25 @@ public class BuyClient {
      * @return the body of the response, or the error message if the body is null
      */
     public static String getErrorBody(RetrofitError errorResponse) {
-        return getErrorBody(errorResponse.getResponse());
-    }
-
-    /**
-     * Extracts the body of the {@code Response} associated with this error
-     *
-     * @param error the {@link Response}
-     * @return the body of the response, or the error message if the body is null
-     */
-    public static String getErrorBody(Response error) {
-        if (error == null || error.isSuccessful()) {
-            return "null";
+        if (errorResponse == null) {
+            return "Error was null";
         }
+        if(errorResponse.getResponse() != null && errorResponse.getResponse().isSuccessful()){
+            return String.format("Tried to parse error on successful response! Code: %d", errorResponse.getResponse().code());
+        }
+
+        if(errorResponse.getResponse() == null){
+            return String.format("\n\tMessage: %s\n\tCode: %d\n\tResponse error body: %s", errorResponse.getMessage(), errorResponse.getCode(), "null");
+        }
+
         try {
-            return error.errorBody().string();
+            return String.format("\n\tMessage: %s\n\tCode: %d\n\tResponse error body: %s", errorResponse.getMessage(), errorResponse.getCode(), errorResponse.getResponse().errorBody().string());
         } catch (Throwable e) {
             // ignore
         }
-        return error.message();
+        return errorResponse.getMessage();
     }
+
 
     private String parsePaymentSessionResponse(okhttp3.Response response) throws IOException {
         String paymentSessionId = null;
