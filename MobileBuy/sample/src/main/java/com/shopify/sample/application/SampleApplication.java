@@ -51,6 +51,7 @@ import com.shopify.sample.R;
 
 import java.util.List;
 
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Response;
 
 /**
@@ -92,10 +93,12 @@ public class SampleApplication extends Application {
 
         String applicationName = getPackageName();
 
+        final HttpLoggingInterceptor logging = new HttpLoggingInterceptor().setLevel(BuildConfig.OKHTTP_LOG_LEVEL);
+
         /**
          * Create the BuyClient
          */
-        buyClient = BuyClientFactory.getBuyClient(shopUrl, shopifyApiKey, shopifyAppId, applicationName);
+        buyClient = BuyClientFactory.getBuyClient(shopUrl, shopifyApiKey, shopifyAppId, applicationName, logging);
 
         buyClient.getShop(new Callback<Shop>() {
             @Override

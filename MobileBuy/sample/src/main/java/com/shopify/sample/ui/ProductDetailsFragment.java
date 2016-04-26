@@ -55,12 +55,14 @@ import com.shopify.buy.model.Product;
 import com.shopify.buy.model.ProductVariant;
 import com.shopify.buy.model.Shop;
 import com.shopify.buy.utils.CurrencyFormatter;
+import com.shopify.sample.BuildConfig;
 
 import java.net.HttpURLConnection;
 import java.text.NumberFormat;
 import java.util.Locale;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Response;
 
 /**
@@ -223,8 +225,10 @@ public class ProductDetailsFragment extends Fragment {
         String webReturnToUrl = bundle.getString(ProductDetailsConfig.EXTRA_WEB_RETURN_TO_URL);
         String webReturnToLabel = bundle.getString(ProductDetailsConfig.EXTRA_WEB_RETURN_TO_LABEL);
 
+        final HttpLoggingInterceptor logging = new HttpLoggingInterceptor().setLevel(BuildConfig.OKHTTP_LOG_LEVEL);
+
         // Create the BuyClient
-        buyClient = BuyClientFactory.getBuyClient(shopDomain, apiKey, appId, applicationName);
+        buyClient = BuyClientFactory.getBuyClient(shopDomain, apiKey, appId, applicationName, logging);
 
         // Set the optional web return to values
         if (!TextUtils.isEmpty(webReturnToUrl)) {

@@ -27,8 +27,6 @@ package com.shopify.buy.dataprovider;
 import android.text.TextUtils;
 import android.util.Base64;
 
-import com.google.gson.Gson;
-import com.shopify.buy.BuildConfig;
 import com.shopify.buy.model.AccountCredentials;
 import com.shopify.buy.model.Address;
 import com.shopify.buy.model.Checkout;
@@ -54,36 +52,29 @@ import com.shopify.buy.model.internal.GiftCardWrapper;
 import com.shopify.buy.model.internal.MarketingAttribution;
 import com.shopify.buy.model.internal.OrderWrapper;
 import com.shopify.buy.model.internal.OrdersWrapper;
+import com.shopify.buy.model.internal.PaymentSession;
 import com.shopify.buy.model.internal.PaymentSessionCheckout;
 import com.shopify.buy.model.internal.PaymentSessionCheckoutWrapper;
 import com.shopify.buy.model.internal.ProductListings;
 import com.shopify.buy.model.internal.ShippingRatesWrapper;
 import com.shopify.buy.utils.CollectionUtils;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Interceptor;
-import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
+import rx.Observable;
 import rx.Scheduler;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.Observable;
-import rx.Subscriber;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
@@ -101,10 +92,8 @@ public class BuyClient implements IBuyClient {
     public static final String EMPTY_BODY = "";
 
     private static final String CUSTOMER_TOKEN_HEADER = "X-Shopify-Customer-Access-Token";
-    private static final MediaType jsonMediateType = MediaType.parse("application/json; charset=utf-8");
 
     private final BuyRetrofitService retrofitService;
-    private final OkHttpClient httpClient;
     private int pageSize = DEFAULT_PAGE_SIZE;
 
     private final String shopDomain;
@@ -178,9 +167,6 @@ public class BuyClient implements IBuyClient {
             }
         };
 
-        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-        logging.setLevel(BuildConfig.OKHTTP_LOG_LEVEL);
-
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
                 .connectTimeout(30, TimeUnit.SECONDS)
                 .readTimeout(60, TimeUnit.SECONDS)
@@ -191,7 +177,7 @@ public class BuyClient implements IBuyClient {
             builder.addInterceptor(interceptor);
         }
 
-        httpClient = builder.build();
+        final OkHttpClient httpClient = builder.build();
 
         Retrofit adapter = new Retrofit.Builder()
                 .baseUrl("https://" + shopDomain + "/")
@@ -917,39 +903,29 @@ public class BuyClient implements IBuyClient {
             throw new NullPointerException("checkout cannot be null");
         }
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                PaymentSessionCheckoutWrapper dataWrapper = new PaymentSessionCheckoutWrapper();
-                PaymentSessionCheckout data = new PaymentSessionCheckout();
-                data.setToken(checkout.getToken());
-                data.setCreditCard(card);
-                data.setBillingAddress(checkout.getBillingAddress());
-                dataWrapper.setCheckout(data);
+        final PaymentSessionCheckoutWrapper dataWrapper = new PaymentSessionCheckoutWrapper();
 
-                RequestBody body = RequestBody.create(jsonMediateType, new Gson().toJson(dataWrapper));
+        final PaymentSessionCheckout data = new PaymentSessionCheckout();
+        data.setToken(checkout.getToken());
+        data.setCreditCard(card);
+        data.setBillingAddress(checkout.getBillingAddress());
+        dataWrapper.setCheckout(data);
 
-                Request request = new Request.Builder()
-                        .url(checkout.getPaymentUrl())
-                        .post(body)
-                        .addHeader("Authorization", "Basic " + Base64.encodeToString(apiKey.getBytes(), Base64.NO_WRAP))
-                        .addHeader("Content-Type", "application/json")
-                        .addHeader("Accept", "application/json")
-                        .build();
-                try {
-                    okhttp3.Response httpResponse = httpClient.newCall(request).execute();
-                    String paymentSessionId = parsePaymentSessionResponse(httpResponse);
-                    checkout.setPaymentSessionId(paymentSessionId);
+        retrofitService
+                .storeCreditCard(checkout.getPaymentUrl(), dataWrapper, "Basic " + Base64.encodeToString(apiKey.getBytes(), Base64.NO_WRAP))
+                .observeOn(getCallbackScheduler())
+                .subscribe(new InternalCallback<PaymentSession>() {
+                    @Override
+                    protected void success(PaymentSession paymentSession, Response response) {
+                        checkout.setPaymentSessionId(paymentSession.getId());
+                        callback.success(checkout, response);
+                    }
 
-                    Response retrofitResponse = Response.success(checkout, httpResponse);
-                    callback.success(checkout, retrofitResponse);
-                } catch (IOException e) {
-                    e.printStackTrace();
-
-                    callback.failure(RetrofitError.exception(e));
-                }
-            }
-        }).start();
+                    @Override
+                    protected void failure(RetrofitError error) {
+                        callback.failure(error);
+                    }
+                });
     }
 
     /**
@@ -969,49 +945,34 @@ public class BuyClient implements IBuyClient {
             throw new NullPointerException("checkout cannot be null");
         }
 
-        return Observable
-                .create(new Observable.OnSubscribe<Checkout>() {
+        final PaymentSessionCheckoutWrapper dataWrapper = new PaymentSessionCheckoutWrapper();
+
+        final PaymentSessionCheckout data = new PaymentSessionCheckout();
+        data.setToken(checkout.getToken());
+        data.setCreditCard(card);
+        data.setBillingAddress(checkout.getBillingAddress());
+        dataWrapper.setCheckout(data);
+
+        return retrofitService
+                .storeCreditCard(checkout.getPaymentUrl(), dataWrapper, "Basic " + Base64.encodeToString(apiKey.getBytes(), Base64.NO_WRAP))
+                .map(new Func1<Response<PaymentSession>, String>() {
                     @Override
-                    public void call(final Subscriber<? super Checkout> subscriber) {
-                        final PaymentSessionCheckoutWrapper dataWrapper = new PaymentSessionCheckoutWrapper();
-
-                        final PaymentSessionCheckout data = new PaymentSessionCheckout();
-                        data.setToken(checkout.getToken());
-                        data.setCreditCard(card);
-                        data.setBillingAddress(checkout.getBillingAddress());
-                        dataWrapper.setCheckout(data);
-
-                        final RequestBody body = RequestBody.create(jsonMediateType, new Gson().toJson(dataWrapper));
-
-                        final Request request = new Request.Builder()
-                                .url(checkout.getPaymentUrl())
-                                .post(body)
-                                .addHeader("Authorization", "Basic " + Base64.encodeToString(apiKey.getBytes(Charset.forName("UTF-8")), Base64.NO_WRAP))
-                                .addHeader("Content-Type", "application/json")
-                                .addHeader("Accept", "application/json")
-                                .build();
-
-                        if (subscriber.isUnsubscribed()) {
-                            return;
-                        }
-
-                        try {
-                            final okhttp3.Response httpResponse = httpClient.newCall(request).execute();
-                            final String paymentSessionId = parsePaymentSessionResponse(httpResponse);
-                            checkout.setPaymentSessionId(paymentSessionId);
-
-                            if (!subscriber.isUnsubscribed()) {
-                                subscriber.onNext(checkout);
-                                subscriber.onCompleted();
-                            }
-                        } catch (IOException e) {
-                            if (!subscriber.isUnsubscribed()) {
-                                subscriber.onError(RetrofitError.exception(e));
-                            }
-                        }
+                    public String call(Response<PaymentSession> response) {
+                        return response.body() != null ? response.body().getId() : null;
                     }
                 })
-                .subscribeOn(Schedulers.io())
+                .doOnNext(new Action1<String>() {
+                    @Override
+                    public void call(String paymentSessionId) {
+                        checkout.setPaymentSessionId(paymentSessionId);
+                    }
+                })
+                .map(new Func1<String, Checkout>() {
+                    @Override
+                    public Checkout call(String s) {
+                        return checkout;
+                    }
+                })
                 .observeOn(getCallbackScheduler());
     }
 
@@ -2201,20 +2162,6 @@ public class BuyClient implements IBuyClient {
             // ignore
         }
         return error.message();
-    }
-
-    private String parsePaymentSessionResponse(okhttp3.Response response) throws IOException {
-        String paymentSessionId = null;
-        if (response.isSuccessful()) {
-            String jsonString = response.body().string();
-            try {
-                JSONObject json = new JSONObject(jsonString);
-                paymentSessionId = (String) json.get("id");
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-        return paymentSessionId;
     }
 
 }
