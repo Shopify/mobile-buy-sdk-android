@@ -129,10 +129,10 @@ interface BuyRetrofitService {
     Observable<Response<CustomerWrapper>> createCustomer(@Body AccountCredentialsWrapper accountCredentialsWrapper);
 
     @PUT("api/customers/{customerId}/activate.json")
-    Observable<Response<CustomerWrapper>> activateCustomer(@Query("token") String activationToken, @Body AccountCredentialsWrapper accountCredentialsWrapper, @Path("customerId") Long customerId);
+    Observable<Response<CustomerWrapper>> activateCustomer(@Path("customerId") Long customerId, @Query("token") String activationToken, @Body AccountCredentialsWrapper accountCredentialsWrapper);
 
     @PUT("api/customers/{customerId}/reset.json")
-    Observable<Response<CustomerWrapper>> resetPassword(@Query("token") String resetToken, @Body AccountCredentialsWrapper accountCredentialsWrapper, @Path("customerId") Long customerId);
+    Observable<Response<CustomerWrapper>> resetPassword(@Path("customerId") Long customerId, @Query("token") String resetToken, @Body AccountCredentialsWrapper accountCredentialsWrapper);
 
     @POST("api/customers/login.json")
     Observable<Response<CustomerWrapper>> loginCustomer(@Body CustomerWrapper customerWrapper);
