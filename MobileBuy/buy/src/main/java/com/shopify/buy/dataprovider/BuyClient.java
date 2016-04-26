@@ -203,7 +203,7 @@ public class BuyClient implements IBuyClient {
         retrofitService = adapter.create(BuyRetrofitService.class);
     }
 
-    public Scheduler getCallbackScheduler(){
+    public Scheduler getCallbackScheduler() {
         return AndroidSchedulers.mainThread();
     }
 
@@ -297,7 +297,8 @@ public class BuyClient implements IBuyClient {
                     public Shop call(Response<Shop> response) {
                         return response.body();
                     }
-                });
+                })
+                .observeOn(getCallbackScheduler());
     }
 
     /**
@@ -353,7 +354,8 @@ public class BuyClient implements IBuyClient {
                     public List<Product> call(Response<ProductListings> response) {
                         return response.body() != null ? response.body().getProducts() : null;
                     }
-                });
+                })
+                .observeOn(getCallbackScheduler());
     }
 
     /**
@@ -409,7 +411,8 @@ public class BuyClient implements IBuyClient {
                         final List<Product> products = response.body() != null ? response.body().getProducts() : null;
                         return !CollectionUtils.isEmpty(products) ? products.get(0) : null;
                     }
-                });
+                })
+                .observeOn(getCallbackScheduler());
     }
 
     /**
@@ -471,7 +474,8 @@ public class BuyClient implements IBuyClient {
                         final List<Product> products = response.body() != null ? response.body().getProducts() : null;
                         return !CollectionUtils.isEmpty(products) ? products.get(0) : null;
                     }
-                });
+                })
+                .observeOn(getCallbackScheduler());
     }
 
     /**
@@ -543,7 +547,8 @@ public class BuyClient implements IBuyClient {
                     public List<Product> call(Response<ProductListings> response) {
                         return response.body() != null ? response.body().getProducts() : null;
                     }
-                });
+                })
+                .observeOn(getCallbackScheduler());
     }
 
     /**
@@ -631,7 +636,8 @@ public class BuyClient implements IBuyClient {
                     public List<Product> call(Response<ProductListings> response) {
                         return response.body() != null ? response.body().getProducts() : null;
                     }
-                });
+                })
+                .observeOn(getCallbackScheduler());
     }
 
     /**
@@ -709,7 +715,8 @@ public class BuyClient implements IBuyClient {
                     public List<Collection> call(Response<CollectionListings> response) {
                         return response.body() != null ? response.body().getCollections() : null;
                     }
-                });
+                })
+                .observeOn(getCallbackScheduler());
     }
 
     /*
@@ -786,7 +793,8 @@ public class BuyClient implements IBuyClient {
                     public Checkout call(Response<CheckoutWrapper> response) {
                         return response.body() != null ? response.body().getCheckout() : null;
                     }
-                });
+                })
+                .observeOn(getCallbackScheduler());
     }
 
     /**
@@ -836,7 +844,8 @@ public class BuyClient implements IBuyClient {
                     public Checkout call(Response<CheckoutWrapper> response) {
                         return response.body() != null ? response.body().getCheckout() : null;
                     }
-                });
+                })
+                .observeOn(getCallbackScheduler());
     }
 
     /**
@@ -887,7 +896,8 @@ public class BuyClient implements IBuyClient {
                     public List<ShippingRate> call(Response<ShippingRatesWrapper> response) {
                         return (HttpURLConnection.HTTP_OK == response.code() && response.body() != null) ? response.body().getShippingRates() : null;
                     }
-                });
+                })
+                .observeOn(getCallbackScheduler());
     }
 
     /**
@@ -959,47 +969,50 @@ public class BuyClient implements IBuyClient {
             throw new NullPointerException("checkout cannot be null");
         }
 
-        return Observable.create(new Observable.OnSubscribe<Checkout>() {
-            @Override
-            public void call(final Subscriber<? super Checkout> subscriber) {
-                final PaymentSessionCheckoutWrapper dataWrapper = new PaymentSessionCheckoutWrapper();
+        return Observable
+                .create(new Observable.OnSubscribe<Checkout>() {
+                    @Override
+                    public void call(final Subscriber<? super Checkout> subscriber) {
+                        final PaymentSessionCheckoutWrapper dataWrapper = new PaymentSessionCheckoutWrapper();
 
-                final PaymentSessionCheckout data = new PaymentSessionCheckout();
-                data.setToken(checkout.getToken());
-                data.setCreditCard(card);
-                data.setBillingAddress(checkout.getBillingAddress());
-                dataWrapper.setCheckout(data);
+                        final PaymentSessionCheckout data = new PaymentSessionCheckout();
+                        data.setToken(checkout.getToken());
+                        data.setCreditCard(card);
+                        data.setBillingAddress(checkout.getBillingAddress());
+                        dataWrapper.setCheckout(data);
 
-                final RequestBody body = RequestBody.create(jsonMediateType, new Gson().toJson(dataWrapper));
+                        final RequestBody body = RequestBody.create(jsonMediateType, new Gson().toJson(dataWrapper));
 
-                final Request request = new Request.Builder()
-                        .url(checkout.getPaymentUrl())
-                        .post(body)
-                        .addHeader("Authorization", "Basic " + Base64.encodeToString(apiKey.getBytes(Charset.forName("UTF-8")), Base64.NO_WRAP))
-                        .addHeader("Content-Type", "application/json")
-                        .addHeader("Accept", "application/json")
-                        .build();
+                        final Request request = new Request.Builder()
+                                .url(checkout.getPaymentUrl())
+                                .post(body)
+                                .addHeader("Authorization", "Basic " + Base64.encodeToString(apiKey.getBytes(Charset.forName("UTF-8")), Base64.NO_WRAP))
+                                .addHeader("Content-Type", "application/json")
+                                .addHeader("Accept", "application/json")
+                                .build();
 
-                if (subscriber.isUnsubscribed()) {
-                    return;
-                }
+                        if (subscriber.isUnsubscribed()) {
+                            return;
+                        }
 
-                try {
-                    final okhttp3.Response httpResponse = httpClient.newCall(request).execute();
-                    final String paymentSessionId = parsePaymentSessionResponse(httpResponse);
-                    checkout.setPaymentSessionId(paymentSessionId);
+                        try {
+                            final okhttp3.Response httpResponse = httpClient.newCall(request).execute();
+                            final String paymentSessionId = parsePaymentSessionResponse(httpResponse);
+                            checkout.setPaymentSessionId(paymentSessionId);
 
-                    if (!subscriber.isUnsubscribed()) {
-                        subscriber.onNext(checkout);
-                        subscriber.onCompleted();
+                            if (!subscriber.isUnsubscribed()) {
+                                subscriber.onNext(checkout);
+                                subscriber.onCompleted();
+                            }
+                        } catch (IOException e) {
+                            if (!subscriber.isUnsubscribed()) {
+                                subscriber.onError(RetrofitError.exception(e));
+                            }
+                        }
                     }
-                } catch (IOException e) {
-                    if (!subscriber.isUnsubscribed()) {
-                        subscriber.onError(RetrofitError.exception(e));
-                    }
-                }
-            }
-        }).subscribeOn(Schedulers.io());
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(getCallbackScheduler());
     }
 
     /**
@@ -1060,7 +1073,8 @@ public class BuyClient implements IBuyClient {
                     public Checkout call(Response<CheckoutWrapper> response) {
                         return response.body() != null ? response.body().getCheckout() : null;
                     }
-                });
+                })
+                .observeOn(getCallbackScheduler());
     }
 
     /**
@@ -1117,7 +1131,8 @@ public class BuyClient implements IBuyClient {
                     public Boolean call(Response<Void> response) {
                         return HttpURLConnection.HTTP_OK == response.code();
                     }
-                });
+                })
+                .observeOn(getCallbackScheduler());
     }
 
     /**
@@ -1164,7 +1179,8 @@ public class BuyClient implements IBuyClient {
                     public Checkout call(Response<CheckoutWrapper> response) {
                         return response.body() != null ? response.body().getCheckout() : null;
                     }
-                });
+                })
+                .observeOn(getCallbackScheduler());
     }
 
     /**
@@ -1227,7 +1243,8 @@ public class BuyClient implements IBuyClient {
                         }
                         return cleanCheckout;
                     }
-                });
+                })
+                .observeOn(getCallbackScheduler());
     }
 
     /**
@@ -1292,7 +1309,8 @@ public class BuyClient implements IBuyClient {
                         }
                         return checkout;
                     }
-                });
+                })
+                .observeOn(getCallbackScheduler());
     }
 
     /**
@@ -1342,7 +1360,8 @@ public class BuyClient implements IBuyClient {
                     public Customer call(Response<CustomerWrapper> response) {
                         return response.body() != null ? response.body().getCustomer() : null;
                     }
-                });
+                })
+                .observeOn(getCallbackScheduler());
     }
 
     /**
@@ -1405,7 +1424,8 @@ public class BuyClient implements IBuyClient {
                     public Customer call(Response<CustomerWrapper> response) {
                         return response.body() != null ? response.body().getCustomer() : null;
                     }
-                });
+                })
+                .observeOn(getCallbackScheduler());
     }
 
     /**
@@ -1468,7 +1488,8 @@ public class BuyClient implements IBuyClient {
                     public Customer call(Response<CustomerWrapper> response) {
                         return response.body() != null ? response.body().getCustomer() : null;
                     }
-                });
+                })
+                .observeOn(getCallbackScheduler());
     }
 
     /**
@@ -1525,7 +1546,8 @@ public class BuyClient implements IBuyClient {
                     public void call(CustomerToken token) {
                         customerToken = token;
                     }
-                });
+                })
+                .observeOn(getCallbackScheduler());
     }
 
     /**
@@ -1572,6 +1594,7 @@ public class BuyClient implements IBuyClient {
                         return response.body();
                     }
                 })
+                .observeOn(getCallbackScheduler())
                 .doOnNext(new Action1<Void>() {
                     @Override
                     public void call(Void aVoid) {
@@ -1624,7 +1647,8 @@ public class BuyClient implements IBuyClient {
                     public Customer call(Response<CustomerWrapper> response) {
                         return response.body() != null ? response.body().getCustomer() : null;
                     }
-                });
+                })
+                .observeOn(getCallbackScheduler());
     }
 
     /**
@@ -1671,7 +1695,8 @@ public class BuyClient implements IBuyClient {
                     public Customer call(Response<CustomerWrapper> response) {
                         return response.body() != null ? response.body().getCustomer() : null;
                     }
-                });
+                })
+                .observeOn(getCallbackScheduler());
     }
 
     /**
@@ -1718,6 +1743,7 @@ public class BuyClient implements IBuyClient {
                         return response.body() != null ? response.body().getCustomerToken() : null;
                     }
                 })
+                .observeOn(getCallbackScheduler())
                 .doOnNext(new Action1<CustomerToken>() {
                     @Override
                     public void call(CustomerToken token) {
@@ -1770,7 +1796,8 @@ public class BuyClient implements IBuyClient {
                     public Void call(Response<Void> response) {
                         return response.body();
                     }
-                });
+                })
+                .observeOn(getCallbackScheduler());
     }
 
     /**
@@ -1817,7 +1844,8 @@ public class BuyClient implements IBuyClient {
                     public List<Order> call(Response<OrdersWrapper> response) {
                         return response.body() != null ? response.body().getOrders() : null;
                     }
-                });
+                })
+                .observeOn(getCallbackScheduler());
     }
 
     /**
@@ -1874,7 +1902,8 @@ public class BuyClient implements IBuyClient {
                     public Order call(Response<OrderWrapper> response) {
                         return response.body() != null ? response.body().getOrder() : null;
                     }
-                });
+                })
+                .observeOn(getCallbackScheduler());
     }
 
     /**
@@ -1931,7 +1960,8 @@ public class BuyClient implements IBuyClient {
                     public Address call(Response<AddressWrapper> response) {
                         return response.body() != null ? response.body().getAddress() : null;
                     }
-                });
+                })
+                .observeOn(getCallbackScheduler());
     }
 
     /**
@@ -1978,7 +2008,8 @@ public class BuyClient implements IBuyClient {
                     public List<Address> call(Response<AddressesWrapper> response) {
                         return response.body() != null ? response.body().getAddresses() : null;
                     }
-                });
+                })
+                .observeOn(getCallbackScheduler());
     }
 
     /**
@@ -2035,7 +2066,8 @@ public class BuyClient implements IBuyClient {
                     public Address call(Response<AddressWrapper> response) {
                         return response.body() != null ? response.body().getAddress() : null;
                     }
-                });
+                })
+                .observeOn(getCallbackScheduler());
     }
 
     /**
@@ -2092,7 +2124,8 @@ public class BuyClient implements IBuyClient {
                     public Address call(Response<AddressWrapper> response) {
                         return response.body() != null ? response.body().getAddress() : null;
                     }
-                });
+                })
+                .observeOn(getCallbackScheduler());
     }
 
     /**
