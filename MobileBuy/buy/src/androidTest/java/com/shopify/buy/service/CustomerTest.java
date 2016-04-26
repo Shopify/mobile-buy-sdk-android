@@ -493,7 +493,6 @@ public class CustomerTest extends ShopifyAndroidTestCase {
 
     }
 
-    @Suppress
     @Test
     public void testCustomerCreationDuplicateEmail() throws InterruptedException {
 
@@ -535,6 +534,8 @@ public class CustomerTest extends ShopifyAndroidTestCase {
 
             @Override
             public void failure(RetrofitError error) {
+                assertEquals(401, error.getCode());
+                assertEquals("Unauthorized", error.getMessage());
                 latch.countDown();
             }
         });

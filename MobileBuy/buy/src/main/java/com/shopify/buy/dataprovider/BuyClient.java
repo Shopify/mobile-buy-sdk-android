@@ -1241,7 +1241,7 @@ public class BuyClient {
         }
 
         try {
-            return String.format("\n\tMessage: %s\n\tCode: %d\n\tResponse error body: %s", errorResponse.getMessage(), errorResponse.getCode(), errorResponse.getResponse().errorBody().string());
+            return errorResponse.getResponse().errorBody().string();
         } catch (Throwable e) {
             // ignore
         }
