@@ -28,7 +28,7 @@ import static junit.framework.Assert.fail;
 public class SerializationTest extends ShopifyAndroidTestCase {
 
     @Test
-	public void testSerializeProductAndCart() throws InterruptedException {
+    public void testSerializeProductAndCart() throws InterruptedException {
         final CountDownLatch latch = new CountDownLatch(1);
         buyClient.getProduct(data.getProductId(), new Callback<Product>() {
             @Override
@@ -51,7 +51,7 @@ public class SerializationTest extends ShopifyAndroidTestCase {
     }
 
     @Test
-	public void testSerializeShop() throws InterruptedException {
+    public void testSerializeShop() throws InterruptedException {
         final CountDownLatch latch = new CountDownLatch(1);
         buyClient.getShop(new Callback<Shop>() {
             @Override

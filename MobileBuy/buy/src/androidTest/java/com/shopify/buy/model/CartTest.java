@@ -32,27 +32,27 @@ public class CartTest extends ShopifyAndroidTestCase {
     }
 
     @Test
-	public void testCartIsEmpty() {
-        assert(cart.isEmpty());
+    public void testCartIsEmpty() {
+        assert (cart.isEmpty());
     }
 
     @Test
-	public void testCartIsNotEmpty() {
+    public void testCartIsNotEmpty() {
         addVariant(variantId1);
-        assert(!cart.isEmpty());
+        assert (!cart.isEmpty());
     }
 
     @Test
-	public void testClear() {
+    public void testClear() {
         addVariant(variantId1);
-        assert(!cart.isEmpty());
+        assert (!cart.isEmpty());
 
         cart.clear();
-        assert(cart.isEmpty());
+        assert (cart.isEmpty());
     }
 
     @Test
-	public void testAddVariantWillAddALineItem() {
+    public void testAddVariantWillAddALineItem() {
         addVariant(variantId1);
 
         assertEquals(cart.getLineItems().get(0).getVariantId(), variantId1);
@@ -60,7 +60,7 @@ public class CartTest extends ShopifyAndroidTestCase {
     }
 
     @Test
-	public void testAddingTwoDifferentVariantsWillAddDifferentLineItems() {
+    public void testAddingTwoDifferentVariantsWillAddDifferentLineItems() {
         addVariant(variantId1);
         addVariant(variantId2);
 
@@ -71,7 +71,7 @@ public class CartTest extends ShopifyAndroidTestCase {
     }
 
     @Test
-	public void testAddingAVariantOfTheSameTypeWillNotAddAnotherLineItem() {
+    public void testAddingAVariantOfTheSameTypeWillNotAddAnotherLineItem() {
         addVariant(variantId1);
         addVariant(variantId1);
 
@@ -81,7 +81,7 @@ public class CartTest extends ShopifyAndroidTestCase {
     }
 
     @Test
-	public void testRemovingAVariantDecrementsQuantity() {
+    public void testRemovingAVariantDecrementsQuantity() {
         addVariant(variantId1);
         addVariant(variantId1);
 
@@ -93,7 +93,7 @@ public class CartTest extends ShopifyAndroidTestCase {
     }
 
     @Test
-	public void testRemovingAllVariantsOfASingleTypeRemovesItsLineItem() {
+    public void testRemovingAllVariantsOfASingleTypeRemovesItsLineItem() {
         addVariant(variantId1);
         decrementVariant(variantId1);
 
@@ -103,7 +103,7 @@ public class CartTest extends ShopifyAndroidTestCase {
 
     // This test is only here to make sure that Mockito got pulled in properly.  We are not using it for anything real yet
     @Test
-	public void testUsingMockito() {
+    public void testUsingMockito() {
         Cart mockCart = mock(Cart.class);
         when(mockCart.isEmpty()).thenReturn(false);
 
@@ -113,7 +113,7 @@ public class CartTest extends ShopifyAndroidTestCase {
 
     // Make sure the new CartLineItem class works
     @Test
-	public void testCartLineItemClass() {
+    public void testCartLineItemClass() {
         ProductVariantPrivateAPIs variant = new ProductVariantPrivateAPIs();
         variant.setId(variantId1);
 
@@ -125,7 +125,7 @@ public class CartTest extends ShopifyAndroidTestCase {
     }
 
     @Test
-	public void testSetVariantQuantity() {
+    public void testSetVariantQuantity() {
         ProductVariantPrivateAPIs variant1 = new ProductVariantPrivateAPIs();
         ProductVariantPrivateAPIs variant2 = new ProductVariantPrivateAPIs();
         variant1.setId(variantId1);

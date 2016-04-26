@@ -93,7 +93,6 @@ public class CustomerTest extends ShopifyAndroidTestCase {
         latch.await();
     }
 
-    @Suppress
     @Test
 	public void testCustomerActivation() throws InterruptedException {
         
