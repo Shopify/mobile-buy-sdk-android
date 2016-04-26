@@ -19,14 +19,6 @@ Please find all documentation on the [Mobile Buy SDK for Android page](https://d
 - **Android studio 1.3.x** or greater recommended
 - The **Mobile App** sales channel [added to your Shopify store](https://docs.shopify.com/api/sdks/mobile-buy-sdk/add-mobile-app-sales-channel)
 
-** Google Wallet **
-
-To enable Google Wallet payments in the sample app there are a couple of extra requirements:
-
-1. Your shop must be based in the US
-2. Your shop must use USD currency
-3. Your shop must accept Discover Cards for payment
-
 ### Building the SDK
 
 Clone this repo or download as .zip and import the build.gradle file into Android Studio.
