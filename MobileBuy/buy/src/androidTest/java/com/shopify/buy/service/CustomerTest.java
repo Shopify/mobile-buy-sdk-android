@@ -24,6 +24,8 @@
 
 package com.shopify.buy.service;
 
+import android.support.test.runner.AndroidJUnit4;
+
 import com.shopify.buy.dataprovider.BuyClient;
 import com.shopify.buy.dataprovider.Callback;
 import com.shopify.buy.dataprovider.RetrofitError;
@@ -34,12 +36,20 @@ import com.shopify.buy.model.Customer;
 import com.shopify.buy.model.CustomerToken;
 import com.shopify.buy.model.Order;
 
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 import retrofit2.Response;
 
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.fail;
 
+
+@RunWith(AndroidJUnit4.class)
 public class CustomerTest extends ShopifyAndroidTestCase {
 
     private static final boolean ENABLED = false;
@@ -50,7 +60,8 @@ public class CustomerTest extends ShopifyAndroidTestCase {
     private Address address;
     private CustomerToken customerToken;
 
-    public void testCustomerCreation() throws InterruptedException {
+    @Test
+	public void testCustomerCreation() throws InterruptedException {
         if (!ENABLED) {
             return;
         }
@@ -76,7 +87,8 @@ public class CustomerTest extends ShopifyAndroidTestCase {
         latch.await();
     }
 
-    public void testCustomerActivation() throws InterruptedException {
+    @Test
+	public void testCustomerActivation() throws InterruptedException {
         if (!ENABLED) {
             return;
         }
@@ -106,7 +118,8 @@ public class CustomerTest extends ShopifyAndroidTestCase {
     }
 
 
-    public void testCustomerLogin() throws InterruptedException {
+    @Test
+	public void testCustomerLogin() throws InterruptedException {
         if (!ENABLED) {
             return;
         }
@@ -132,7 +145,8 @@ public class CustomerTest extends ShopifyAndroidTestCase {
         latch.await();
     }
 
-    public void testCustomerLogout() throws InterruptedException {
+    @Test
+	public void testCustomerLogout() throws InterruptedException {
         if (!ENABLED) {
             return;
         }
@@ -156,7 +170,8 @@ public class CustomerTest extends ShopifyAndroidTestCase {
         latch.await();
     }
 
-    public void testCustomerRenew() throws InterruptedException {
+    @Test
+	public void testCustomerRenew() throws InterruptedException {
         if (!ENABLED) {
             return;
         }
@@ -180,7 +195,8 @@ public class CustomerTest extends ShopifyAndroidTestCase {
         latch.await();
     }
 
-    public void testCustomerRecover() throws InterruptedException {
+    @Test
+	public void testCustomerRecover() throws InterruptedException {
         if (!ENABLED) {
             return;
         }
@@ -203,7 +219,8 @@ public class CustomerTest extends ShopifyAndroidTestCase {
         latch.await();
     }
 
-    public void testCustomerUpdate() throws InterruptedException {
+    @Test
+	public void testCustomerUpdate() throws InterruptedException {
         if (!ENABLED) {
             return;
         }
@@ -232,7 +249,8 @@ public class CustomerTest extends ShopifyAndroidTestCase {
         latch.await();
     }
 
-    public void testGetCustomerOrders() throws InterruptedException {
+    @Test
+	public void testGetCustomerOrders() throws InterruptedException {
         if (!ENABLED) {
             return;
         }
@@ -260,7 +278,8 @@ public class CustomerTest extends ShopifyAndroidTestCase {
         latch.await();
     }
 
-    public void testGetOrder() throws InterruptedException {
+    @Test
+	public void testGetOrder() throws InterruptedException {
         if (!ENABLED) {
             return;
         }
@@ -288,7 +307,8 @@ public class CustomerTest extends ShopifyAndroidTestCase {
         latch.await();
     }
 
-    public void testGetCustomer() throws InterruptedException {
+    @Test
+	public void testGetCustomer() throws InterruptedException {
         if (!ENABLED) {
             return;
         }
@@ -322,7 +342,8 @@ public class CustomerTest extends ShopifyAndroidTestCase {
         return customer;
     }
 
-    public void testCreateAddress() throws InterruptedException {
+    @Test
+	public void testCreateAddress() throws InterruptedException {
         if (!ENABLED) {
             return;
         }
@@ -350,7 +371,8 @@ public class CustomerTest extends ShopifyAndroidTestCase {
         latch.await();
     }
 
-    public void testGetAddresses() throws InterruptedException {
+    @Test
+	public void testGetAddresses() throws InterruptedException {
         if (!ENABLED) {
             return;
         }
@@ -378,7 +400,8 @@ public class CustomerTest extends ShopifyAndroidTestCase {
         latch.await();
     }
 
-    public void testGetAddress() throws InterruptedException {
+    @Test
+	public void testGetAddress() throws InterruptedException {
         if (!ENABLED) {
             return;
         }
@@ -407,7 +430,8 @@ public class CustomerTest extends ShopifyAndroidTestCase {
         latch.await();
     }
 
-    public void testUpdateAddress() throws InterruptedException {
+    @Test
+	public void testUpdateAddress() throws InterruptedException {
         if (!ENABLED) {
             return;
         }

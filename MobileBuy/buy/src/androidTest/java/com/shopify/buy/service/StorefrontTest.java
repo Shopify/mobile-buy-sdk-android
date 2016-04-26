@@ -1,5 +1,7 @@
 package com.shopify.buy.service;
 
+import android.support.test.runner.AndroidJUnit4;
+
 import com.shopify.buy.dataprovider.Callback;
 import com.shopify.buy.dataprovider.RetrofitError;
 import com.shopify.buy.extensions.ShopifyAndroidTestCase;
@@ -7,18 +9,29 @@ import com.shopify.buy.model.Collection;
 import com.shopify.buy.model.Product;
 import com.shopify.buy.model.Shop;
 
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 import retrofit2.Response;
 
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertNull;
+import static junit.framework.Assert.fail;
+
 /**
  * Unit test for retrieving store and product information
  */
+@RunWith(AndroidJUnit4.class)
 public class StorefrontTest extends ShopifyAndroidTestCase {
 
-    public void testGetProductPage() throws InterruptedException {
+    @Test
+	public void testGetProductPage() throws InterruptedException {
         final CountDownLatch latch = new CountDownLatch(1);
         buyClient.getProductPage(1, new Callback<List<Product>>() {
             @Override
@@ -35,7 +48,8 @@ public class StorefrontTest extends ShopifyAndroidTestCase {
         latch.await();
     }
 
-    public void testGetShop() throws InterruptedException {
+    @Test
+	public void testGetShop() throws InterruptedException {
         final CountDownLatch latch = new CountDownLatch(1);
         buyClient.getShop(new Callback<Shop>() {
             @Override
@@ -52,7 +66,8 @@ public class StorefrontTest extends ShopifyAndroidTestCase {
         latch.await();
     }
 
-    public void testGetProduct() throws InterruptedException {
+    @Test
+	public void testGetProduct() throws InterruptedException {
         final String productId = data.getProductId();
         final CountDownLatch latch = new CountDownLatch(1);
         buyClient.getProduct(productId, new Callback<Product>() {
@@ -71,7 +86,8 @@ public class StorefrontTest extends ShopifyAndroidTestCase {
         latch.await();
     }
 
-    public void testGetProducts() throws InterruptedException {
+    @Test
+	public void testGetProducts() throws InterruptedException {
         final CountDownLatch latch = new CountDownLatch(1);
         final List<String> productIds = data.getProductIds();
 
@@ -91,7 +107,8 @@ public class StorefrontTest extends ShopifyAndroidTestCase {
         latch.await();
     }
 
-    public void testGetNonexistentProduct() throws InterruptedException {
+    @Test
+	public void testGetNonexistentProduct() throws InterruptedException {
         final CountDownLatch latch = new CountDownLatch(1);
         buyClient.getProduct("1337", new Callback<Product>() {
             @Override
@@ -108,7 +125,8 @@ public class StorefrontTest extends ShopifyAndroidTestCase {
         latch.await();
     }
 
-    public void testGetOutOfIndexProductPage() throws InterruptedException {
+    @Test
+	public void testGetOutOfIndexProductPage() throws InterruptedException {
         final CountDownLatch latch = new CountDownLatch(1);
         buyClient.getProductPage(999, new Callback<List<Product>>() {
             @Override
@@ -125,7 +143,8 @@ public class StorefrontTest extends ShopifyAndroidTestCase {
         latch.await();
     }
 
-    public void testGetProductsWithOneInvalidId() throws InterruptedException {
+    @Test
+	public void testGetProductsWithOneInvalidId() throws InterruptedException {
         final CountDownLatch latch = new CountDownLatch(1);
         final List<String> productIds = new ArrayList<>();
 
@@ -148,7 +167,8 @@ public class StorefrontTest extends ShopifyAndroidTestCase {
         latch.await();
     }
 
-    public void testGetCollection() throws InterruptedException {
+    @Test
+	public void testGetCollection() throws InterruptedException {
         final CountDownLatch latch = new CountDownLatch(1);
 
         buyClient.getCollections(new Callback<List<Collection>>() {
@@ -167,7 +187,8 @@ public class StorefrontTest extends ShopifyAndroidTestCase {
         latch.await();
     }
 
-    public void testGetProductsInCollection() throws InterruptedException {
+    @Test
+	public void testGetProductsInCollection() throws InterruptedException {
         final CountDownLatch latch = new CountDownLatch(1);
 
         buyClient.getProducts(1, data.getCollectionId(), Collection.SortOrder.COLLECTION_DEFAULT, new Callback<List<Product>>() {
@@ -186,7 +207,8 @@ public class StorefrontTest extends ShopifyAndroidTestCase {
         latch.await();
     }
 
-    public void testGetCollectionPage() throws InterruptedException {
+    @Test
+	public void testGetCollectionPage() throws InterruptedException {
         final CountDownLatch latch = new CountDownLatch(1);
 
         buyClient.getCollectionPage(1, new Callback<List<Collection>>() {
@@ -206,7 +228,8 @@ public class StorefrontTest extends ShopifyAndroidTestCase {
         latch.await();
     }
 
-    public void testGetOutOfIndexCollectionPage() throws InterruptedException {
+    @Test
+	public void testGetOutOfIndexCollectionPage() throws InterruptedException {
         final CountDownLatch latch = new CountDownLatch(1);
 
         buyClient.getCollectionPage(999, new Callback<List<Collection>>() {
