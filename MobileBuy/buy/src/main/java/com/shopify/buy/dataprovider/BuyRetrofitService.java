@@ -88,28 +88,28 @@ interface BuyRetrofitService {
      * Checkout API
      */
 
-    @POST("anywhere/checkouts.json")
+    @POST("api/checkouts.json")
     Observable<Response<CheckoutWrapper>> createCheckout(@Body CheckoutWrapper checkoutWrapper);
 
-    @PATCH("anywhere/checkouts/{token}.json")
+    @PATCH("api/checkouts/{token}.json")
     Observable<Response<CheckoutWrapper>> updateCheckout(@Body CheckoutWrapper checkoutWrapper, @Path("token") String token);
 
-    @GET("anywhere/checkouts/{token}/shipping_rates.json")
+    @GET("api/checkouts/{token}/shipping_rates.json")
     Observable<Response<ShippingRatesWrapper>> getShippingRates(@Path("token") String token);
 
     @POST("api/checkouts/{token}/payments.json")
     Observable<Response<PaymentWrapper>> completeCheckout(@Body PaymentRequestWrapper paymentRequestWrapper, @Path("token") String token);
 
-    @GET("anywhere/checkouts/{token}/processing.json")
+    @GET("api/checkouts/{token}/processing.json")
     Observable<Response<Void>> getCheckoutCompletionStatus(@Path("token") String token);
 
-    @GET("anywhere/checkouts/{token}.json")
+    @GET("api/checkouts/{token}.json")
     Observable<Response<CheckoutWrapper>> getCheckout(@Path("token") String token);
 
-    @POST("anywhere/checkouts/{token}/gift_cards.json")
+    @POST("api/checkouts/{token}/gift_cards.json")
     Observable<Response<GiftCardWrapper>> applyGiftCard(@Body GiftCardWrapper giftCardWrapper, @Path("token") String token);
 
-    @DELETE("anywhere/checkouts/{token}/gift_cards/{identifier}.json")
+    @DELETE("api/checkouts/{token}/gift_cards/{identifier}.json")
     Observable<Response<GiftCardWrapper>> removeGiftCard(@Path("identifier") String giftCardIdentifier, @Path("token") String token);
 
     /*
