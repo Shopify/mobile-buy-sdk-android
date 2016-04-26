@@ -39,6 +39,7 @@ import com.shopify.buy.model.Customer;
 import com.shopify.buy.model.CustomerToken;
 import com.shopify.buy.model.GiftCard;
 import com.shopify.buy.model.Order;
+import com.shopify.buy.model.PaymentRequest;
 import com.shopify.buy.model.Product;
 import com.shopify.buy.model.ShippingRate;
 import com.shopify.buy.model.Shop;
@@ -47,6 +48,7 @@ import com.shopify.buy.model.internal.AddressWrapper;
 import com.shopify.buy.model.internal.AddressesWrapper;
 import com.shopify.buy.model.internal.CheckoutWrapper;
 import com.shopify.buy.model.internal.CollectionListings;
+import com.shopify.buy.model.internal.CreditCardWrapper;
 import com.shopify.buy.model.internal.CustomerTokenWrapper;
 import com.shopify.buy.model.internal.CustomerWrapper;
 import com.shopify.buy.model.internal.EmailWrapper;
@@ -54,8 +56,8 @@ import com.shopify.buy.model.internal.GiftCardWrapper;
 import com.shopify.buy.model.internal.MarketingAttribution;
 import com.shopify.buy.model.internal.OrderWrapper;
 import com.shopify.buy.model.internal.OrdersWrapper;
-import com.shopify.buy.model.internal.PaymentSessionCheckout;
-import com.shopify.buy.model.internal.PaymentSessionCheckoutWrapper;
+import com.shopify.buy.model.internal.PaymentRequestWrapper;
+import com.shopify.buy.model.internal.PaymentWrapper;
 import com.shopify.buy.model.internal.ProductListings;
 import com.shopify.buy.model.internal.ShippingRatesWrapper;
 import com.shopify.buy.utils.CollectionUtils;
@@ -65,7 +67,6 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -613,14 +614,8 @@ public class BuyClient {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                PaymentSessionCheckoutWrapper dataWrapper = new PaymentSessionCheckoutWrapper();
-                PaymentSessionCheckout data = new PaymentSessionCheckout();
-                data.setToken(checkout.getToken());
-                data.setCreditCard(card);
-                data.setBillingAddress(checkout.getBillingAddress());
-                dataWrapper.setCheckout(data);
-
-                RequestBody body = RequestBody.create(jsonMediateType, new Gson().toJson(dataWrapper));
+                CreditCardWrapper creditCardWrapper = new CreditCardWrapper(card);
+                RequestBody body = RequestBody.create(jsonMediateType, new Gson().toJson(creditCardWrapper));
 
                 Request request = new Request.Builder()
                         .url(checkout.getPaymentUrl())
@@ -656,17 +651,19 @@ public class BuyClient {
             throw new NullPointerException("checkout cannot be null");
         }
 
-        HashMap<String, String> requestBodyMap = new HashMap<>();
+        PaymentRequest paymentRequest = new PaymentRequest();
 
         String paymentSessionId = checkout.getPaymentSessionId();
         if (!TextUtils.isEmpty(paymentSessionId)) {
-            requestBodyMap.put("payment_session_id", checkout.getPaymentSessionId());
+            paymentRequest.setPaymentSessionId(paymentSessionId);
         }
+        
+        PaymentRequestWrapper paymentRequestWrapper = new PaymentRequestWrapper(paymentRequest);
 
-        retrofitService.completeCheckout(requestBodyMap, checkout.getToken()).observeOn(getCallbackScheduler()).subscribe(new InternalCallback<CheckoutWrapper>() {
+        retrofitService.completeCheckout(paymentRequestWrapper, checkout.getToken()).observeOn(getCallbackScheduler()).subscribe(new InternalCallback<PaymentWrapper>() {
             @Override
-            public void success(CheckoutWrapper checkoutWrapper, Response response) {
-                callback.success(checkoutWrapper.getCheckout(), response);
+            public void success(PaymentWrapper paymentWrapper, Response response) {
+                callback.success(paymentWrapper.getPayment().getCheckout(), response);
             }
 
             @Override

@@ -36,10 +36,10 @@ import com.shopify.buy.model.internal.EmailWrapper;
 import com.shopify.buy.model.internal.GiftCardWrapper;
 import com.shopify.buy.model.internal.OrderWrapper;
 import com.shopify.buy.model.internal.OrdersWrapper;
+import com.shopify.buy.model.internal.PaymentRequestWrapper;
+import com.shopify.buy.model.internal.PaymentWrapper;
 import com.shopify.buy.model.internal.ProductListings;
 import com.shopify.buy.model.internal.ShippingRatesWrapper;
-
-import java.util.HashMap;
 
 import retrofit2.Call;
 import retrofit2.Response;
@@ -97,8 +97,8 @@ interface BuyRetrofitService {
     @GET("anywhere/checkouts/{token}/shipping_rates.json")
     Observable<Response<ShippingRatesWrapper>> getShippingRates(@Path("token") String token);
 
-    @POST("anywhere/checkouts/{token}/complete.json")
-    Observable<Response<CheckoutWrapper>> completeCheckout(@Body HashMap<String, String> paymentSessionIdMap, @Path("token") String token);
+    @POST("api/checkouts/{token}/payments.json")
+    Observable<Response<PaymentWrapper>> completeCheckout(@Body PaymentRequestWrapper paymentRequestWrapper, @Path("token") String token);
 
     @GET("anywhere/checkouts/{token}/processing.json")
     Observable<Response<Void>> getCheckoutCompletionStatus(@Path("token") String token);
