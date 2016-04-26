@@ -65,6 +65,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -81,13 +82,17 @@ import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import rx.Scheduler;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.Observable;
+import rx.Subscriber;
+import rx.functions.Action1;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
  * The {@code BuyClient} provides all requests needed to perform request on the Shopify Checkout API. Use this class to perform tasks such as getting a shop, getting collections and products for a shop, creating a {@link Checkout} on Shopify and completing Checkouts.
  * All API methods presented here run asynchronously and return results via callback on the Main thread.
  */
-public class BuyClient {
+public class BuyClient implements IBuyClient {
 
     public static final int MAX_PAGE_SIZE = 250;
     public static final int MIN_PAGE_SIZE = 1;
@@ -110,30 +115,37 @@ public class BuyClient {
     private String webReturnToLabel;
     private CustomerToken customerToken;
 
+    @Override
     public String getApiKey() {
         return apiKey;
     }
 
+    @Override
     public String getAppId() {
         return appId;
     }
 
+    @Override
     public String getApplicationName() {
         return applicationName;
     }
 
+    @Override
     public String getWebReturnToUrl() {
         return webReturnToUrl;
     }
 
+    @Override
     public String getWebReturnToLabel() {
         return webReturnToLabel;
     }
 
+    @Override
     public String getShopDomain() {
         return shopDomain;
     }
 
+    @Override
     public int getPageSize() {
         return pageSize;
     }
@@ -175,7 +187,7 @@ public class BuyClient {
                 .writeTimeout(60, TimeUnit.SECONDS)
                 .addInterceptor(requestInterceptor);
 
-        for(Interceptor interceptor : interceptors){
+        for (Interceptor interceptor : interceptors) {
             builder.addInterceptor(interceptor);
         }
 
@@ -200,6 +212,7 @@ public class BuyClient {
      *
      * @param customerToken
      */
+    @Override
     public void setCustomerToken(CustomerToken customerToken) {
         this.customerToken = customerToken;
     }
@@ -209,6 +222,7 @@ public class BuyClient {
      *
      * @return customer token
      */
+    @Override
     public CustomerToken getCustomerToken() {
         return customerToken;
     }
@@ -218,6 +232,7 @@ public class BuyClient {
      *
      * @param webReturnToUrl a url defined as a custom scheme in the Android Manifest file.
      */
+    @Override
     public void setWebReturnToUrl(String webReturnToUrl) {
         this.webReturnToUrl = webReturnToUrl;
     }
@@ -227,6 +242,7 @@ public class BuyClient {
      *
      * @param webReturnToLabel the text to display on the button.
      */
+    @Override
     public void setWebReturnToLabel(String webReturnToLabel) {
         this.webReturnToLabel = webReturnToLabel;
     }
@@ -238,6 +254,7 @@ public class BuyClient {
      *                 If the page size is less than {@code MIN_PAGE_SIZE}, it will be set to {@code MIN_PAGE_SIZE}.  If the page size is greater than MAX_PAGE_SIZE it will be set to {@code MAX_PAGE_SIZE}.
      *                 The default value is {@link #DEFAULT_PAGE_SIZE}
      */
+    @Override
     public void setPageSize(int pageSize) {
         this.pageSize = Math.max(Math.min(pageSize, MAX_PAGE_SIZE), MIN_PAGE_SIZE);
     }
@@ -251,6 +268,7 @@ public class BuyClient {
      *
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      */
+    @Override
     public void getShop(final Callback<Shop> callback) {
         retrofitService.getShop().observeOn(getCallbackScheduler()).subscribe(new InternalCallback<Shop>() {
             @Override
@@ -266,12 +284,30 @@ public class BuyClient {
     }
 
     /**
+     * Fetch metadata about your shop
+     *
+     * @return cold observable that emits requested shop metadata
+     */
+    @Override
+    public Observable<Shop> getShop() {
+        return retrofitService
+                .getShop()
+                .map(new Func1<Response<Shop>, Shop>() {
+                    @Override
+                    public Shop call(Response<Shop> response) {
+                        return response.body();
+                    }
+                });
+    }
+
+    /**
      * Fetch a page of products
      *
      * @param page     the 1-based page index. The page size can be set with
      *                 {@link #setPageSize(int)}
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      */
+    @Override
     public void getProductPage(int page, final Callback<List<Product>> callback) {
         if (page < 1) {
             throw new IllegalArgumentException("page is a 1-based index, value cannot be less than 1");
@@ -298,11 +334,35 @@ public class BuyClient {
     }
 
     /**
+     * Fetch a page of products
+     *
+     * @param page the 1-based page index. The page size can be set with
+     *             {@link #setPageSize(int)}
+     * @return cold observable that emits the requested list of products
+     */
+    @Override
+    public Observable<List<Product>> getProductPage(final int page) {
+        if (page < 1) {
+            throw new IllegalArgumentException("page is a 1-based index, value cannot be less than 1");
+        }
+
+        return retrofitService
+                .getProductPage(appId, page, pageSize)
+                .map(new Func1<Response<ProductListings>, List<Product>>() {
+                    @Override
+                    public List<Product> call(Response<ProductListings> response) {
+                        return response.body() != null ? response.body().getProducts() : null;
+                    }
+                });
+    }
+
+    /**
      * Fetch the product with the specified handle
      *
      * @param handle   the handle for the product to fetch
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      */
+    @Override
     public void getProductWithHandle(String handle, final Callback<Product> callback) {
         if (handle == null) {
             throw new NullPointerException("handle cannot be null");
@@ -330,11 +390,35 @@ public class BuyClient {
     }
 
     /**
+     * Fetch the product with the specified handle
+     *
+     * @param handle the handle for the product to fetch
+     * @return cold observable that emits requested product with the specified handle
+     */
+    @Override
+    public Observable<Product> getProductWithHandle(final String handle) {
+        if (handle == null) {
+            throw new NullPointerException("handle cannot be null");
+        }
+
+        return retrofitService
+                .getProductWithHandle(appId, handle)
+                .map(new Func1<Response<ProductListings>, Product>() {
+                    @Override
+                    public Product call(Response<ProductListings> response) {
+                        final List<Product> products = response.body() != null ? response.body().getProducts() : null;
+                        return !CollectionUtils.isEmpty(products) ? products.get(0) : null;
+                    }
+                });
+    }
+
+    /**
      * Fetch a single Product
      *
      * @param productId the productId for the product to fetch
      * @param callback  the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      */
+    @Override
     public void getProduct(String productId, final Callback<Product> callback) {
         if (productId == null) {
             throw new NullPointerException("productId cannot be null");
@@ -368,11 +452,35 @@ public class BuyClient {
     }
 
     /**
+     * Fetch a single Product
+     *
+     * @param productId the productId for the product to fetch
+     * @return cold observable that emits requested single product
+     */
+    @Override
+    public Observable<Product> getProduct(final String productId) {
+        if (productId == null) {
+            throw new NullPointerException("productId cannot be null");
+        }
+
+        return retrofitService
+                .getProducts(appId, productId)
+                .map(new Func1<Response<ProductListings>, Product>() {
+                    @Override
+                    public Product call(Response<ProductListings> response) {
+                        final List<Product> products = response.body() != null ? response.body().getProducts() : null;
+                        return !CollectionUtils.isEmpty(products) ? products.get(0) : null;
+                    }
+                });
+    }
+
+    /**
      * Fetch a list of Products
      *
      * @param productIds a List of the productIds to fetch
      * @param callback   the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      */
+    @Override
     public void getProducts(List<String> productIds, final Callback<List<Product>> callback) {
         if (productIds == null) {
             throw new NullPointerException("productIds List cannot be null");
@@ -408,14 +516,58 @@ public class BuyClient {
     }
 
     /**
+     * Fetch a list of Products
+     *
+     * @param productIds a List of the productIds to fetch
+     * @return cold observable that emits requested list of products
+     */
+    @Override
+    public Observable<List<Product>> getProducts(final List<String> productIds) {
+        if (productIds == null) {
+            throw new NullPointerException("productIds List cannot be null");
+        }
+        if (productIds.size() < 1) {
+            throw new IllegalArgumentException("productIds List cannot be empty");
+        }
+
+        // All product responses from the server are wrapped in a ProductListings object
+        // The same endpoint is used for single and multiple product queries.
+        // For this call we will query with multiple ids.
+        // The returned product array will contain products for each id found.
+        // If no ids were found, the array will be empty
+        final String queryString = TextUtils.join(",", productIds.toArray());
+        return retrofitService
+                .getProducts(appId, queryString)
+                .map(new Func1<Response<ProductListings>, List<Product>>() {
+                    @Override
+                    public List<Product> call(Response<ProductListings> response) {
+                        return response.body() != null ? response.body().getProducts() : null;
+                    }
+                });
+    }
+
+    /**
      * Fetch the list of Products in a Collection using the sort order defined in the shop admin
      *
      * @param page         the 1-based page index. The page size can be set with {@link #setPageSize(int)}
      * @param collectionId the collectionId that we want to fetch products for
      * @param callback     the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      */
+    @Override
     public void getProducts(int page, String collectionId, final Callback<List<Product>> callback) {
         getProducts(page, collectionId, SortOrder.COLLECTION_DEFAULT, callback);
+    }
+
+    /**
+     * Fetch the list of Products in a Collection using the sort order defined in the shop admin
+     *
+     * @param page         the 1-based page index. The page size can be set with {@link #setPageSize(int)}
+     * @param collectionId the collectionId that we want to fetch products for
+     * @return cold observable that emits requested list of products
+     */
+    @Override
+    public Observable<List<Product>> getProducts(final int page, final String collectionId) {
+        return getProducts(page, collectionId, SortOrder.COLLECTION_DEFAULT);
     }
 
     /**
@@ -426,6 +578,7 @@ public class BuyClient {
      * @param sortOrder    the sort order for the collection.
      * @param callback     the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      */
+    @Override
     public void getProducts(int page, String collectionId, SortOrder sortOrder, final Callback<List<Product>> callback) {
         if (page < 1) {
             throw new IllegalArgumentException("page is a 1-based index, value cannot be less than 1");
@@ -455,12 +608,50 @@ public class BuyClient {
     }
 
     /**
+     * Fetch the list of Products in a Collection
+     *
+     * @param page         the 1-based page index. The page size can be set with {@link #setPageSize(int)}
+     * @param collectionId the collectionId that we want to fetch products for
+     * @param sortOrder    the sort order for the collection.
+     * @return cold observable that emits requested list of products
+     */
+    @Override
+    public Observable<List<Product>> getProducts(final int page, final String collectionId, final SortOrder sortOrder) {
+        if (page < 1) {
+            throw new IllegalArgumentException("page is a 1-based index, value cannot be less than 1");
+        }
+        if (collectionId == null) {
+            throw new IllegalArgumentException("collectionId cannot be null");
+        }
+
+        return retrofitService
+                .getProducts(appId, collectionId, pageSize, page, sortOrder.toString())
+                .map(new Func1<Response<ProductListings>, List<Product>>() {
+                    @Override
+                    public List<Product> call(Response<ProductListings> response) {
+                        return response.body() != null ? response.body().getProducts() : null;
+                    }
+                });
+    }
+
+    /**
      * Fetch a list of Collections
      *
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      */
+    @Override
     public void getCollections(final Callback<List<Collection>> callback) {
         getCollectionPage(1, callback);
+    }
+
+    /**
+     * Fetch a list of Collections
+     *
+     * @return cold observable that emits requested list of collections
+     */
+    @Override
+    public Observable<List<Collection>> getCollections() {
+        return getCollections(1);
     }
 
     /**
@@ -470,6 +661,7 @@ public class BuyClient {
      *                 {@link #setPageSize(int)}
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      */
+    @Override
     public void getCollectionPage(int page, final Callback<List<Collection>> callback) {
         if (page < 1) {
             throw new IllegalArgumentException("page is a 1-based index, value cannot be less than 1");
@@ -495,6 +687,31 @@ public class BuyClient {
         });
     }
 
+    /**
+     * Fetch a page of collections
+     *
+     * @param page the 1-based page index. The page size can be set with
+     *             {@link #setPageSize(int)}
+     * @return cold observable that emits requested list of collections
+     */
+    @Override
+    public Observable<List<Collection>> getCollections(final int page) {
+        if (page < 1) {
+            throw new IllegalArgumentException("page is a 1-based index, value cannot be less than 1");
+        }
+
+        // All collection responses from the server are wrapped in a CollectionListings object which contains and array of collections
+        // For this call, we will clamp the size of the collection array returned to the page size
+        return retrofitService
+                .getCollectionPage(appId, page, pageSize)
+                .map(new Func1<Response<CollectionListings>, List<Collection>>() {
+                    @Override
+                    public List<Collection> call(Response<CollectionListings> response) {
+                        return response.body() != null ? response.body().getCollections() : null;
+                    }
+                });
+    }
+
     /*
      * Buy API
      */
@@ -505,6 +722,7 @@ public class BuyClient {
      * @param checkout the {@link Checkout} object to use for initiating the checkout process
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      */
+    @Override
     public void createCheckout(Checkout checkout, final Callback<Checkout> callback) {
         if (checkout == null) {
             throw new NullPointerException("checkout cannot be null");
@@ -526,7 +744,7 @@ public class BuyClient {
             @Override
             public void success(CheckoutWrapper checkoutWrapper, Response response) {
                 Checkout checkout = null;
-                if(checkoutWrapper != null){
+                if (checkoutWrapper != null) {
                     checkout = checkoutWrapper.getCheckout();
                 }
 
@@ -541,11 +759,43 @@ public class BuyClient {
     }
 
     /**
+     * Initiate the Shopify checkout process with a new Checkout object.
+     *
+     * @param checkout the {@link Checkout} object to use for initiating the checkout process
+     * @return cold observable that emits created checkout object
+     */
+    @Override
+    public Observable<Checkout> createCheckout(final Checkout checkout) {
+        if (checkout == null) {
+            throw new NullPointerException("checkout cannot be null");
+        }
+
+        checkout.setMarketingAttribution(new MarketingAttribution(applicationName));
+        checkout.setSourceName("mobile_app");
+        if (webReturnToUrl != null) {
+            checkout.setWebReturnToUrl(webReturnToUrl);
+        }
+        if (webReturnToLabel != null) {
+            checkout.setWebReturnToLabel(webReturnToLabel);
+        }
+
+        return retrofitService
+                .createCheckout(new CheckoutWrapper(checkout))
+                .map(new Func1<Response<CheckoutWrapper>, Checkout>() {
+                    @Override
+                    public Checkout call(Response<CheckoutWrapper> response) {
+                        return response.body() != null ? response.body().getCheckout() : null;
+                    }
+                });
+    }
+
+    /**
      * Update an existing Checkout's attributes
      *
      * @param checkout the {@link Checkout} to update
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      */
+    @Override
     public void updateCheckout(final Checkout checkout, final Callback<Checkout> callback) {
         if (checkout == null) {
             throw new NullPointerException("checkout cannot be null");
@@ -567,11 +817,35 @@ public class BuyClient {
     }
 
     /**
+     * Update an existing Checkout's attributes
+     *
+     * @param checkout the {@link Checkout} to update
+     * @return cold observable that emits updated checkout object
+     */
+    @Override
+    public Observable<Checkout> updateCheckout(final Checkout checkout) {
+        if (checkout == null) {
+            throw new NullPointerException("checkout cannot be null");
+        }
+
+        final Checkout cleanCheckout = checkout.copyForUpdate();
+        return retrofitService
+                .updateCheckout(new CheckoutWrapper(cleanCheckout), cleanCheckout.getToken())
+                .map(new Func1<Response<CheckoutWrapper>, Checkout>() {
+                    @Override
+                    public Checkout call(Response<CheckoutWrapper> response) {
+                        return response.body() != null ? response.body().getCheckout() : null;
+                    }
+                });
+    }
+
+    /**
      * Fetch shipping rates for a given Checkout
      *
      * @param checkoutToken the {@link Checkout#token} from an existing Checkout
      * @param callback      the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      */
+    @Override
     public void getShippingRates(String checkoutToken, final Callback<List<ShippingRate>> callback) {
         if (checkoutToken == null) {
             throw new NullPointerException("checkoutToken cannot be null");
@@ -595,12 +869,35 @@ public class BuyClient {
     }
 
     /**
+     * Fetch shipping rates for a given Checkout
+     *
+     * @param checkoutToken the {@link Checkout#token} from an existing Checkout
+     * @return cold observable that emits requested list of shipping rates for a given checkout
+     */
+    @Override
+    public Observable<List<ShippingRate>> getShippingRates(final String checkoutToken) {
+        if (checkoutToken == null) {
+            throw new NullPointerException("checkoutToken cannot be null");
+        }
+
+        return retrofitService
+                .getShippingRates(checkoutToken)
+                .map(new Func1<Response<ShippingRatesWrapper>, List<ShippingRate>>() {
+                    @Override
+                    public List<ShippingRate> call(Response<ShippingRatesWrapper> response) {
+                        return (HttpURLConnection.HTTP_OK == response.code() && response.body() != null) ? response.body().getShippingRates() : null;
+                    }
+                });
+    }
+
+    /**
      * Post a credit card to Shopify's card server and associate it with a Checkout
      *
      * @param card     the {@link CreditCard} to associate
      * @param checkout the {@link Checkout} to associate the card with
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      */
+    @Override
     public void storeCreditCard(final CreditCard card, final Checkout checkout, final Callback<Checkout> callback) {
         if (card == null) {
             throw new NullPointerException("card cannot be null");
@@ -646,11 +943,72 @@ public class BuyClient {
     }
 
     /**
+     * Post a credit card to Shopify's card server and associate it with a Checkout
+     *
+     * @param card     the {@link CreditCard} to associate
+     * @param checkout the {@link Checkout} to associate the card with
+     * @return cold observable that emits updated checkout with posted credit card
+     */
+    @Override
+    public Observable<Checkout> storeCreditCard(final CreditCard card, final Checkout checkout) {
+        if (card == null) {
+            throw new NullPointerException("card cannot be null");
+        }
+
+        if (checkout == null) {
+            throw new NullPointerException("checkout cannot be null");
+        }
+
+        return Observable.create(new Observable.OnSubscribe<Checkout>() {
+            @Override
+            public void call(final Subscriber<? super Checkout> subscriber) {
+                final PaymentSessionCheckoutWrapper dataWrapper = new PaymentSessionCheckoutWrapper();
+
+                final PaymentSessionCheckout data = new PaymentSessionCheckout();
+                data.setToken(checkout.getToken());
+                data.setCreditCard(card);
+                data.setBillingAddress(checkout.getBillingAddress());
+                dataWrapper.setCheckout(data);
+
+                final RequestBody body = RequestBody.create(jsonMediateType, new Gson().toJson(dataWrapper));
+
+                final Request request = new Request.Builder()
+                        .url(checkout.getPaymentUrl())
+                        .post(body)
+                        .addHeader("Authorization", "Basic " + Base64.encodeToString(apiKey.getBytes(Charset.forName("UTF-8")), Base64.NO_WRAP))
+                        .addHeader("Content-Type", "application/json")
+                        .addHeader("Accept", "application/json")
+                        .build();
+
+                if (subscriber.isUnsubscribed()) {
+                    return;
+                }
+
+                try {
+                    final okhttp3.Response httpResponse = httpClient.newCall(request).execute();
+                    final String paymentSessionId = parsePaymentSessionResponse(httpResponse);
+                    checkout.setPaymentSessionId(paymentSessionId);
+
+                    if (!subscriber.isUnsubscribed()) {
+                        subscriber.onNext(checkout);
+                        subscriber.onCompleted();
+                    }
+                } catch (IOException e) {
+                    if (!subscriber.isUnsubscribed()) {
+                        subscriber.onError(RetrofitError.exception(e));
+                    }
+                }
+            }
+        }).subscribeOn(Schedulers.io());
+    }
+
+    /**
      * Complete the checkout and process the payment session
      *
-     * @param checkout a {@link Checkout} that has had a {@link CreditCard} associated with it using {@link #storeCreditCard(CreditCard, Checkout, Callback)}
+     * @param checkout a {@link Checkout} that has had a {@link CreditCard} associated with it using {@link #storeCreditCard(CreditCard, Checkout)}
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      */
+    @Override
     public void completeCheckout(Checkout checkout, final Callback<Checkout> callback) {
         if (checkout == null) {
             throw new NullPointerException("checkout cannot be null");
@@ -676,6 +1034,35 @@ public class BuyClient {
         });
     }
 
+
+    /**
+     * Complete the checkout and process the payment session
+     *
+     * @param checkout a {@link Checkout} that has had a {@link CreditCard} associated with it using {@link #storeCreditCard(CreditCard, Checkout)}
+     * @return cold observable that emits completed checkout
+     */
+    @Override
+    public Observable<Checkout> completeCheckout(final Checkout checkout) {
+        if (checkout == null) {
+            throw new NullPointerException("checkout cannot be null");
+        }
+
+        final HashMap<String, String> requestBodyMap = new HashMap<>();
+        final String paymentSessionId = checkout.getPaymentSessionId();
+        if (!TextUtils.isEmpty(paymentSessionId)) {
+            requestBodyMap.put("payment_session_id", checkout.getPaymentSessionId());
+        }
+
+        return retrofitService
+                .completeCheckout(requestBodyMap, checkout.getToken())
+                .map(new Func1<Response<CheckoutWrapper>, Checkout>() {
+                    @Override
+                    public Checkout call(Response<CheckoutWrapper> response) {
+                        return response.body() != null ? response.body().getCheckout() : null;
+                    }
+                });
+    }
+
     /**
      * Get the status of the payment session associated with {@code checkout}. {@code callback} will be
      * called with a boolean value indicating whether the session has completed or not. This method
@@ -684,6 +1071,7 @@ public class BuyClient {
      * @param checkout a {@link Checkout} that has been passed as a parameter to {@link #completeCheckout(Checkout, Callback)}
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      */
+    @Override
     public void getCheckoutCompletionStatus(Checkout checkout, final Callback<Boolean> callback) {
         if (checkout == null) {
             throw new NullPointerException("checkout cannot be null");
@@ -709,11 +1097,36 @@ public class BuyClient {
     }
 
     /**
+     * Get the status of the payment session associated with {@code checkout}. {@code callback} will be
+     * called with a boolean value indicating whether the session has completed or not. This method
+     * should be polled until the {@code callback} response is {@code true}
+     *
+     * @param checkout a {@link Checkout} that has been passed as a parameter to {@link #completeCheckout(Checkout, Callback)}
+     * @return cold observable that emits the requested status for specified checkout
+     */
+    @Override
+    public Observable<Boolean> getCheckoutCompletionStatus(final Checkout checkout) {
+        if (checkout == null) {
+            throw new NullPointerException("checkout cannot be null");
+        }
+
+        return retrofitService
+                .getCheckoutCompletionStatus(checkout.getToken())
+                .map(new Func1<Response<Void>, Boolean>() {
+                    @Override
+                    public Boolean call(Response<Void> response) {
+                        return HttpURLConnection.HTTP_OK == response.code();
+                    }
+                });
+    }
+
+    /**
      * Fetch an existing Checkout from Shopify
      *
      * @param checkoutToken the token associated with the existing {@link Checkout}
      * @param callback      the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      */
+    @Override
     public void getCheckout(String checkoutToken, final Callback<Checkout> callback) {
         if (checkoutToken == null) {
             throw new NullPointerException("checkoutToken cannot be null");
@@ -732,6 +1145,27 @@ public class BuyClient {
         });
     }
 
+    /**
+     * Fetch an existing Checkout from Shopify
+     *
+     * @param checkoutToken the token associated with the existing {@link Checkout}
+     * @return cold observable that emits requested existing checkout
+     */
+    @Override
+    public Observable<Checkout> getCheckout(final String checkoutToken) {
+        if (checkoutToken == null) {
+            throw new NullPointerException("checkoutToken cannot be null");
+        }
+
+        return retrofitService
+                .getCheckout(checkoutToken)
+                .map(new Func1<Response<CheckoutWrapper>, Checkout>() {
+                    @Override
+                    public Checkout call(Response<CheckoutWrapper> response) {
+                        return response.body() != null ? response.body().getCheckout() : null;
+                    }
+                });
+    }
 
     /**
      * Apply a gift card to a Checkout
@@ -740,6 +1174,7 @@ public class BuyClient {
      * @param checkout     the {@link Checkout} object to apply the gift card to
      * @param callback     the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      */
+    @Override
     public void applyGiftCard(String giftCardCode, final Checkout checkout, final Callback<Checkout> callback) {
         if (checkout == null) {
             throw new NullPointerException("checkout cannot be null");
@@ -766,12 +1201,43 @@ public class BuyClient {
     }
 
     /**
+     * Apply a gift card to a Checkout
+     *
+     * @param giftCardCode the gift card code for a gift card associated with the current Shop
+     * @param checkout     the {@link Checkout} object to apply the gift card to
+     * @return cold observable that emits updated checkout
+     */
+    @Override
+    public Observable<Checkout> applyGiftCard(final String giftCardCode, final Checkout checkout) {
+        if (checkout == null) {
+            throw new NullPointerException("checkout cannot be null");
+        }
+
+        final Checkout cleanCheckout = checkout.copy();
+        final GiftCard giftCard = new GiftCard(giftCardCode);
+        return retrofitService
+                .applyGiftCard(new GiftCardWrapper(giftCard), checkout.getToken())
+                .map(new Func1<Response<GiftCardWrapper>, Checkout>() {
+                    @Override
+                    public Checkout call(Response<GiftCardWrapper> response) {
+                        if (response.body() != null) {
+                            final GiftCard updatedGiftCard = response.body().getGiftCard();
+                            cleanCheckout.addGiftCard(updatedGiftCard);
+                            cleanCheckout.setPaymentDue(updatedGiftCard.getCheckout().getPaymentDue());
+                        }
+                        return cleanCheckout;
+                    }
+                });
+    }
+
+    /**
      * Remove a gift card that was previously applied to a Checkout
      *
      * @param giftCard the {@link GiftCard} to remove from the {@link Checkout}
      * @param checkout the {@code Checkout} to remove the {@code GiftCard} from
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      */
+    @Override
     public void removeGiftCard(final GiftCard giftCard, final Checkout checkout, final Callback<Checkout> callback) {
         if (checkout == null) {
             throw new NullPointerException("checkout cannot be null");
@@ -798,10 +1264,44 @@ public class BuyClient {
     }
 
     /**
-     * Create a new Customer on Shopify
-     * @param accountCredentials the account credentials with an email, password, first name, and last name of the {@link Customer} to be created, not null
-     * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
+     * Remove a gift card that was previously applied to a Checkout
+     *
+     * @param giftCard the {@link GiftCard} to remove from the {@link Checkout}
+     * @param checkout the {@code Checkout} to remove the {@code GiftCard} from
+     * @return cold observable that emits updated checkout
      */
+    @Override
+    public Observable<Checkout> removeGiftCard(final GiftCard giftCard, final Checkout checkout) {
+        if (checkout == null) {
+            throw new NullPointerException("checkout cannot be null");
+        }
+
+        if (giftCard == null) {
+            throw new NullPointerException("giftCard cannot be null");
+        }
+
+        return retrofitService
+                .removeGiftCard(giftCard.getId(), checkout.getToken())
+                .map(new Func1<Response<GiftCardWrapper>, Checkout>() {
+                    @Override
+                    public Checkout call(Response<GiftCardWrapper> response) {
+                        if (response.body() != null) {
+                            GiftCard updatedGiftCard = response.body().getGiftCard();
+                            checkout.removeGiftCard(updatedGiftCard);
+                            checkout.setPaymentDue(updatedGiftCard.getCheckout().getPaymentDue());
+                        }
+                        return checkout;
+                    }
+                });
+    }
+
+    /**
+     * Create a new Customer on Shopify
+     *
+     * @param accountCredentials the account credentials with an email, password, first name, and last name of the {@link Customer} to be created, not null
+     * @param callback           the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
+     */
+    @Override
     public void createCustomer(final AccountCredentials accountCredentials, final Callback<Customer> callback) {
         if (accountCredentials == null) {
             throw new NullPointerException("accountCredentials cannot be null");
@@ -823,12 +1323,37 @@ public class BuyClient {
     }
 
     /**
+     * Create a new Customer on Shopify
+     *
+     * @param accountCredentials the account credentials with an email, password, first name, and last name of the {@link Customer} to be created, not null
+     * @return cold observable that emits created new customer
+     */
+    @Override
+    public Observable<Customer> createCustomer(final AccountCredentials accountCredentials) {
+        if (accountCredentials == null) {
+            throw new NullPointerException("accountCredentials cannot be null");
+        }
+
+        final AccountCredentialsWrapper accountCredentialsWrapper = new AccountCredentialsWrapper(accountCredentials);
+        return retrofitService
+                .createCustomer(accountCredentialsWrapper)
+                .map(new Func1<Response<CustomerWrapper>, Customer>() {
+                    @Override
+                    public Customer call(Response<CustomerWrapper> response) {
+                        return response.body() != null ? response.body().getCustomer() : null;
+                    }
+                });
+    }
+
+    /**
      * Activate the customer account.
+     *
      * @param customerId         the id of the {@link Customer} to activate
      * @param activationToken    the activation token for the Customer, not null or empty
      * @param accountCredentials the account credentials with a password of the {@link Customer} to be activated, not null
      * @param callback           the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      */
+    @Override
     public void activateCustomer(final Long customerId, final String activationToken, final AccountCredentials accountCredentials, final Callback<Customer> callback) {
         if (TextUtils.isEmpty(activationToken)) {
             throw new IllegalArgumentException("activation token cannot be empty");
@@ -855,12 +1380,43 @@ public class BuyClient {
     }
 
     /**
+     * Activate the customer account.
+     *
+     * @param customerId         the id of the {@link Customer} to activate
+     * @param activationToken    the activation token for the Customer, not null or empty
+     * @param accountCredentials the account credentials with a password of the {@link Customer} to be activated, not null
+     * @return cold observable that emits activated customer account
+     */
+    @Override
+    public Observable<Customer> activateCustomer(final Long customerId, final String activationToken, final AccountCredentials accountCredentials) {
+        if (TextUtils.isEmpty(activationToken)) {
+            throw new IllegalArgumentException("activation token cannot be empty");
+        }
+
+        if (accountCredentials == null) {
+            throw new NullPointerException("accountCredentials cannot be null");
+        }
+
+        final AccountCredentialsWrapper accountCredentialsWrapper = new AccountCredentialsWrapper(accountCredentials);
+        return retrofitService
+                .activateCustomer(activationToken, accountCredentialsWrapper, customerId)
+                .map(new Func1<Response<CustomerWrapper>, Customer>() {
+                    @Override
+                    public Customer call(Response<CustomerWrapper> response) {
+                        return response.body() != null ? response.body().getCustomer() : null;
+                    }
+                });
+    }
+
+    /**
      * Reset the password for the customer account.
+     *
      * @param customerId         the id of the {@link Customer} to activate
      * @param resetToken         the reset token for the Customer, not null or empty
      * @param accountCredentials the account credentials with the new password of the {@link Customer}. not null
      * @param callback           the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      */
+    @Override
     public void resetPassword(final Long customerId, final String resetToken, final AccountCredentials accountCredentials, final Callback<Customer> callback) {
         if (TextUtils.isEmpty(resetToken)) {
             throw new IllegalArgumentException("reset token cannot be empty");
@@ -887,10 +1443,41 @@ public class BuyClient {
     }
 
     /**
-     * Log an existing Customer into Shopify
-     * @param accountCredentials the account credentials with an email and password of the {@link Customer}, not null
-     * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
+     * Reset the password for the customer account.
+     *
+     * @param customerId         the id of the {@link Customer} to activate
+     * @param resetToken         the reset token for the Customer, not null or empty
+     * @param accountCredentials the account credentials with the new password of the {@link Customer}. not null
+     * @return cold observable that emits customer account with reset password
      */
+    @Override
+    public Observable<Customer> resetPassword(final Long customerId, final String resetToken, final AccountCredentials accountCredentials) {
+        if (TextUtils.isEmpty(resetToken)) {
+            throw new IllegalArgumentException("reset token cannot be empty");
+        }
+
+        if (accountCredentials == null) {
+            throw new NullPointerException("accountCredentials cannot be null");
+        }
+
+        final AccountCredentialsWrapper accountCredentialsWrapper = new AccountCredentialsWrapper(accountCredentials);
+        return retrofitService
+                .resetPassword(resetToken, accountCredentialsWrapper, customerId)
+                .map(new Func1<Response<CustomerWrapper>, Customer>() {
+                    @Override
+                    public Customer call(Response<CustomerWrapper> response) {
+                        return response.body() != null ? response.body().getCustomer() : null;
+                    }
+                });
+    }
+
+    /**
+     * Log an existing Customer into Shopify
+     *
+     * @param accountCredentials the account credentials with an email and password of the {@link Customer}, not null
+     * @param callback           the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
+     */
+    @Override
     public void loginCustomer(final AccountCredentials accountCredentials, final Callback<CustomerToken> callback) {
         if (accountCredentials == null) {
             throw new NullPointerException("accountCredentials cannot be null");
@@ -913,10 +1500,40 @@ public class BuyClient {
     }
 
     /**
+     * Log an existing Customer into Shopify
+     *
+     * @param accountCredentials the account credentials with an email and password of the {@link Customer}, not null
+     * @return cold observable that emits logged in customer token
+     */
+    @Override
+    public Observable<CustomerToken> loginCustomer(final AccountCredentials accountCredentials) {
+        if (accountCredentials == null) {
+            throw new NullPointerException("accountCredentials cannot be null");
+        }
+
+        final AccountCredentialsWrapper accountCredentialsWrapper = new AccountCredentialsWrapper(accountCredentials);
+        return retrofitService
+                .getCustomerToken(accountCredentialsWrapper)
+                .map(new Func1<Response<CustomerTokenWrapper>, CustomerToken>() {
+                    @Override
+                    public CustomerToken call(Response<CustomerTokenWrapper> response) {
+                        return response.body() != null ? response.body().getCustomerToken() : null;
+                    }
+                })
+                .doOnNext(new Action1<CustomerToken>() {
+                    @Override
+                    public void call(CustomerToken token) {
+                        customerToken = token;
+                    }
+                });
+    }
+
+    /**
      * Log a Customer out from Shopify
      *
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      */
+    @Override
     public void logoutCustomer(final Callback<Void> callback) {
         if (customerToken == null) {
             return;
@@ -937,11 +1554,39 @@ public class BuyClient {
     }
 
     /**
+     * Log a Customer out from Shopify
+     *
+     * @return cold observable that log customer out and emits nothing
+     */
+    @Override
+    public Observable<Void> logoutCustomer() {
+        if (customerToken == null) {
+            return Observable.just(null);
+        }
+
+        return retrofitService
+                .removeCustomerToken(customerToken.getCustomerId())
+                .map(new Func1<Response<Void>, Void>() {
+                    @Override
+                    public Void call(Response<Void> response) {
+                        return response.body();
+                    }
+                })
+                .doOnNext(new Action1<Void>() {
+                    @Override
+                    public void call(Void aVoid) {
+                        customerToken = null;
+                    }
+                });
+    }
+
+    /**
      * Update an existing Customer's attributes.
      *
      * @param customer the {@link Customer} to update
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      */
+    @Override
     public void updateCustomer(final Customer customer, final Callback<Customer> callback) {
         if (customer == null) {
             throw new NullPointerException("customer cannot be null");
@@ -961,11 +1606,34 @@ public class BuyClient {
     }
 
     /**
+     * Update an existing Customer's attributes.
+     *
+     * @param customer the {@link Customer} to update
+     * @return cold observable that emits updated existent customer attributes
+     */
+    @Override
+    public Observable<Customer> updateCustomer(final Customer customer) {
+        if (customer == null) {
+            throw new NullPointerException("customer cannot be null");
+        }
+
+        return retrofitService
+                .updateCustomer(customer.getId(), new CustomerWrapper(customer))
+                .map(new Func1<Response<CustomerWrapper>, Customer>() {
+                    @Override
+                    public Customer call(Response<CustomerWrapper> response) {
+                        return response.body() != null ? response.body().getCustomer() : null;
+                    }
+                });
+    }
+
+    /**
      * Retrieve a Customer's details from Shopify.
      *
      * @param customerId the identifier of a {@link CustomerToken} or {@link Customer}
-     * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
+     * @param callback   the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      */
+    @Override
     public void getCustomer(final Long customerId, final Callback<Customer> callback) {
         if (customerId == null) {
             throw new NullPointerException("customer Id cannot be null");
@@ -985,10 +1653,33 @@ public class BuyClient {
     }
 
     /**
+     * Retrieve a Customer's details from Shopify.
+     *
+     * @param customerId the identifier of a {@link CustomerToken} or {@link Customer}
+     * @return cold observable tha emits requested customer details
+     */
+    @Override
+    public Observable<Customer> getCustomer(final Long customerId) {
+        if (customerId == null) {
+            throw new NullPointerException("customer Id cannot be null");
+        }
+
+        return retrofitService
+                .getCustomer(customerId)
+                .map(new Func1<Response<CustomerWrapper>, Customer>() {
+                    @Override
+                    public Customer call(Response<CustomerWrapper> response) {
+                        return response.body() != null ? response.body().getCustomer() : null;
+                    }
+                });
+    }
+
+    /**
      * Renew a Customer login.  This should be called periodically to keep the token up to date.
      *
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      */
+    @Override
     public void renewCustomer(final Callback<CustomerToken> callback) {
         if (customerToken == null) {
             return;
@@ -1009,11 +1700,39 @@ public class BuyClient {
     }
 
     /**
+     * Renew a Customer login.  This should be called periodically to keep the token up to date.
+     *
+     * @return cold observable that emits renewed customer token
+     */
+    @Override
+    public Observable<CustomerToken> renewCustomer() {
+        if (customerToken == null) {
+            return Observable.just(null);
+        }
+
+        return retrofitService
+                .renewCustomerToken(EMPTY_BODY, customerToken.getCustomerId())
+                .map(new Func1<Response<CustomerTokenWrapper>, CustomerToken>() {
+                    @Override
+                    public CustomerToken call(Response<CustomerTokenWrapper> response) {
+                        return response.body() != null ? response.body().getCustomerToken() : null;
+                    }
+                })
+                .doOnNext(new Action1<CustomerToken>() {
+                    @Override
+                    public void call(CustomerToken token) {
+                        customerToken = token;
+                    }
+                });
+    }
+
+    /**
      * Send a password recovery email. An email will be sent to the email address specified if a customer with that email address exists on Shopify.
      *
      * @param email    the email address to send the password recovery email to
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      */
+    @Override
     public void recoverPassword(final String email, final Callback<Void> callback) {
         if (TextUtils.isEmpty(email)) {
             throw new IllegalArgumentException("email cannot be empty");
@@ -1033,11 +1752,34 @@ public class BuyClient {
     }
 
     /**
+     * Send a password recovery email. An email will be sent to the email address specified if a customer with that email address exists on Shopify.
+     *
+     * @param email the email address to send the password recovery email to
+     * @return cold observable that sends a password recovery email and emits nothing
+     */
+    @Override
+    public Observable<Void> recoverPassword(final String email) {
+        if (TextUtils.isEmpty(email)) {
+            throw new IllegalArgumentException("email cannot be empty");
+        }
+
+        return retrofitService
+                .recoverCustomer(new EmailWrapper(email))
+                .map(new Func1<Response<Void>, Void>() {
+                    @Override
+                    public Void call(Response<Void> response) {
+                        return response.body();
+                    }
+                });
+    }
+
+    /**
      * Fetch the Orders associated with a Customer.
      *
      * @param customer the {@link Customer} to fetch the orders for, not null
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      */
+    @Override
     public void getOrders(final Customer customer, final Callback<List<Order>> callback) {
         if (customer == null) {
             throw new NullPointerException("customer cannot be null");
@@ -1057,12 +1799,35 @@ public class BuyClient {
     }
 
     /**
+     * Fetch the Orders associated with a Customer.
+     *
+     * @param customer the {@link Customer} to fetch the orders for, not null
+     * @return cold observable that emits requested list of orders associated with a customer
+     */
+    @Override
+    public Observable<List<Order>> getOrders(final Customer customer) {
+        if (customer == null) {
+            throw new NullPointerException("customer cannot be null");
+        }
+
+        return retrofitService
+                .getOrders(customer.getId())
+                .map(new Func1<Response<OrdersWrapper>, List<Order>>() {
+                    @Override
+                    public List<Order> call(Response<OrdersWrapper> response) {
+                        return response.body() != null ? response.body().getOrders() : null;
+                    }
+                });
+    }
+
+    /**
      * Fetch an existing Order from Shopify
      *
      * @param customer the {@link Customer} to fetch the order for
      * @param orderId  the identifier of the {@link Order} to retrieve
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      */
+    @Override
     public void getOrder(final Customer customer, final String orderId, final Callback<Order> callback) {
         if (TextUtils.isEmpty(orderId)) {
             throw new IllegalArgumentException("orderId cannot be empty");
@@ -1086,12 +1851,40 @@ public class BuyClient {
     }
 
     /**
+     * Fetch an existing Order from Shopify
+     *
+     * @param customer the {@link Customer} to fetch the order for
+     * @param orderId  the identifier of the {@link Order} to retrieve
+     * @return cold observable that emits requested existing order
+     */
+    @Override
+    public Observable<Order> getOrder(final Customer customer, final String orderId) {
+        if (TextUtils.isEmpty(orderId)) {
+            throw new IllegalArgumentException("orderId cannot be empty");
+        }
+
+        if (customer == null) {
+            throw new NullPointerException("customer cannot be null");
+        }
+
+        return retrofitService
+                .getOrder(customer.getId(), orderId)
+                .map(new Func1<Response<OrderWrapper>, Order>() {
+                    @Override
+                    public Order call(Response<OrderWrapper> response) {
+                        return response.body() != null ? response.body().getOrder() : null;
+                    }
+                });
+    }
+
+    /**
      * Create an Address and associate it with a Customer
      *
      * @param customer the {@link Customer} to create and address for, not null
      * @param address  the {@link Address} to create, not null
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      */
+    @Override
     public void createAddress(final Customer customer, final Address address, final Callback<Address> callback) {
         if (address == null) {
             throw new NullPointerException("address cannot be null");
@@ -1115,11 +1908,39 @@ public class BuyClient {
     }
 
     /**
+     * Create an Address and associate it with a Customer
+     *
+     * @param customer the {@link Customer} to create and address for, not null
+     * @param address  the {@link Address} to create, not null
+     * @return cold observable that emits created address associated with a customer
+     */
+    @Override
+    public Observable<Address> createAddress(final Customer customer, final Address address) {
+        if (address == null) {
+            throw new NullPointerException("address cannot be null");
+        }
+
+        if (customer == null) {
+            throw new NullPointerException("customer cannot be null");
+        }
+
+        return retrofitService
+                .createAddress(customer.getId(), new AddressWrapper(address))
+                .map(new Func1<Response<AddressWrapper>, Address>() {
+                    @Override
+                    public Address call(Response<AddressWrapper> response) {
+                        return response.body() != null ? response.body().getAddress() : null;
+                    }
+                });
+    }
+
+    /**
      * Fetch all of the Addresses associated with a Customer.
      *
      * @param customer the {@link Customer} to fetch addresses for, not null
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      */
+    @Override
     public void getAddresses(final Customer customer, final Callback<List<Address>> callback) {
         if (customer == null) {
             throw new NullPointerException("customer cannot be null");
@@ -1139,12 +1960,35 @@ public class BuyClient {
     }
 
     /**
+     * Fetch all of the Addresses associated with a Customer.
+     *
+     * @param customer the {@link Customer} to fetch addresses for, not null
+     * @return cold observable that emits the requested list of addresses associated with a customer
+     */
+    @Override
+    public Observable<List<Address>> getAddresses(final Customer customer) {
+        if (customer == null) {
+            throw new NullPointerException("customer cannot be null");
+        }
+
+        return retrofitService
+                .getAddresses(customer.getId())
+                .map(new Func1<Response<AddressesWrapper>, List<Address>>() {
+                    @Override
+                    public List<Address> call(Response<AddressesWrapper> response) {
+                        return response.body() != null ? response.body().getAddresses() : null;
+                    }
+                });
+    }
+
+    /**
      * Fetch an existing Address from Shopify
      *
-     * @param customer the {@link Customer} to fetch an address for, not null
+     * @param customer  the {@link Customer} to fetch an address for, not null
      * @param addressId the identifier of the {@link Address}
      * @param callback  the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      */
+    @Override
     public void getAddress(final Customer customer, final String addressId, final Callback<Address> callback) {
         if (TextUtils.isEmpty(addressId)) {
             throw new IllegalArgumentException("addressId cannot be empty");
@@ -1168,12 +2012,40 @@ public class BuyClient {
     }
 
     /**
+     * Fetch an existing Address from Shopify
+     *
+     * @param customer  the {@link Customer} to fetch an address for, not null
+     * @param addressId the identifier of the {@link Address}
+     * @return cold observable that emits requested existing address
+     */
+    @Override
+    public Observable<Address> getAddress(final Customer customer, final String addressId) {
+        if (TextUtils.isEmpty(addressId)) {
+            throw new IllegalArgumentException("addressId cannot be empty");
+        }
+
+        if (customer == null) {
+            throw new NullPointerException("customer cannot be null");
+        }
+
+        return retrofitService
+                .getAddress(customer.getId(), addressId)
+                .map(new Func1<Response<AddressWrapper>, Address>() {
+                    @Override
+                    public Address call(Response<AddressWrapper> response) {
+                        return response.body() != null ? response.body().getAddress() : null;
+                    }
+                });
+    }
+
+    /**
      * Update the attributes of an existing Address
      *
      * @param customer the {@link Customer} to updatne an address for, not null
      * @param address  the {@link Address} to update
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      */
+    @Override
     public void updateAddress(final Customer customer, final Address address, final Callback<Address> callback) {
         if (address == null) {
             throw new NullPointerException("address cannot be null");
@@ -1197,12 +2069,40 @@ public class BuyClient {
     }
 
     /**
+     * Update the attributes of an existing Address
+     *
+     * @param customer the {@link Customer} to updatne an address for, not null
+     * @param address  the {@link Address} to update
+     * @return returns cold observable that emits updated existing address
+     */
+    @Override
+    public Observable<Address> updateAddress(final Customer customer, final Address address) {
+        if (address == null) {
+            throw new NullPointerException("address cannot be null");
+        }
+
+        if (customer == null) {
+            throw new NullPointerException("customer cannot be null");
+        }
+
+        return retrofitService
+                .updateAddress(customer.getId(), new AddressWrapper(address), address.getAddressId())
+                .map(new Func1<Response<AddressWrapper>, Address>() {
+                    @Override
+                    public Address call(Response<AddressWrapper> response) {
+                        return response.body() != null ? response.body().getAddress() : null;
+                    }
+                });
+    }
+
+    /**
      * Convenience method to release all product inventory reservations by setting the `reservationTime` of the checkout `0` and calling {@link #updateCheckout(Checkout, Callback) updateCheckout(Checkout, Callback)}.
      * We recommend creating a new `Checkout` object from a `Cart` for further API calls.
      *
      * @param checkout the {@link Checkout} to expire
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      */
+    @Override
     public void removeProductReservationsFromCheckout(final Checkout checkout, final Callback<Checkout> callback) {
         if (checkout == null || TextUtils.isEmpty(checkout.getToken())) {
             callback.failure(null);
@@ -1216,6 +2116,27 @@ public class BuyClient {
         }
     }
 
+    /**
+     * Convenience method to release all product inventory reservations by setting the `reservationTime` of the checkout `0` and calling {@link #updateCheckout(Checkout, Callback) updateCheckout(Checkout, Callback)}.
+     * We recommend creating a new `Checkout` object from a `Cart` for further API calls.
+     *
+     * @param checkout the {@link Checkout} to expire
+     * @return cold observable that emits updated checkout
+     */
+    @Override
+    public Observable<Checkout> removeProductReservationsFromCheckout(final Checkout checkout) {
+        if (checkout == null || TextUtils.isEmpty(checkout.getToken())) {
+            return Observable.error(new RuntimeException("Missing checkout token"));
+        } else {
+            checkout.setReservationTime(0);
+
+            final Checkout expiredCheckout = new Checkout();
+            expiredCheckout.setToken(checkout.getToken());
+            expiredCheckout.setReservationTime(0);
+
+            return updateCheckout(expiredCheckout);
+        }
+    }
 
     /**
      * Helper methods
