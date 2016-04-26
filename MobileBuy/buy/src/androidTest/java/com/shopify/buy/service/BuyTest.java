@@ -47,7 +47,7 @@ public class BuyTest extends ShopifyAndroidTestCase {
     private List<ShippingRate> shippingRates;
 
     @Test
-	public void testApplyingGiftCardToCheckout() throws InterruptedException {
+    public void testApplyingGiftCardToCheckout() throws InterruptedException {
         createValidCheckout();
         applyGiftCardToCheckout(data.getGiftCardCode(TestData.GiftCardType.VALID11), data.getGiftCardValue(TestData.GiftCardType.VALID11));
 
@@ -56,7 +56,7 @@ public class BuyTest extends ShopifyAndroidTestCase {
     }
 
     @Test
-	public void testApplyingInvalidGiftCardToCheckout() throws InterruptedException {
+    public void testApplyingInvalidGiftCardToCheckout() throws InterruptedException {
         createValidCheckout();
         final CountDownLatch latch = new CountDownLatch(1);
 
@@ -76,7 +76,7 @@ public class BuyTest extends ShopifyAndroidTestCase {
     }
 
     @Test
-	public void testApplyingExpiredGiftCardToCheckout() throws InterruptedException {
+    public void testApplyingExpiredGiftCardToCheckout() throws InterruptedException {
         createValidCheckout();
         final CountDownLatch latch = new CountDownLatch(1);
         buyClient.applyGiftCard(data.getGiftCardCode(TestData.GiftCardType.EXPIRED), checkout, new Callback<Checkout>() {
@@ -95,14 +95,14 @@ public class BuyTest extends ShopifyAndroidTestCase {
     }
 
     @Test
-	public void testRemovingGiftCardFromCheckout() throws InterruptedException {
+    public void testRemovingGiftCardFromCheckout() throws InterruptedException {
         createValidCheckout();
         applyGiftCardToCheckout(data.getGiftCardCode(TestData.GiftCardType.VALID11), data.getGiftCardValue(TestData.GiftCardType.VALID11));
         removeGiftCardFromCheckout(checkout.getGiftCards().get(0));
     }
 
     @Test
-	public void testRemovingInvalidGiftCardFromCheckout() throws InterruptedException {
+    public void testRemovingInvalidGiftCardFromCheckout() throws InterruptedException {
         createValidCheckout();
         final CountDownLatch latch = new CountDownLatch(1);
         GiftCardPrivateAPIs invalidGiftCard = new GiftCardPrivateAPIs(data.getGiftCardCode(TestData.GiftCardType.INVALID));
@@ -123,7 +123,7 @@ public class BuyTest extends ShopifyAndroidTestCase {
     }
 
     @Test
-	public void testRemovingExpiredGiftCardFromCheckout() throws InterruptedException {
+    public void testRemovingExpiredGiftCardFromCheckout() throws InterruptedException {
         createValidCheckout();
         final CountDownLatch latch = new CountDownLatch(1);
         GiftCardPrivateAPIs expiredGiftCard = new GiftCardPrivateAPIs(data.getGiftCardCode(TestData.GiftCardType.EXPIRED));
@@ -144,7 +144,7 @@ public class BuyTest extends ShopifyAndroidTestCase {
     }
 
     @Test
-	public void testApplyingTwoGiftCardsToCheckout() throws InterruptedException {
+    public void testApplyingTwoGiftCardsToCheckout() throws InterruptedException {
         createValidCheckout();
         applyGiftCardToCheckout(data.getGiftCardCode(TestData.GiftCardType.VALID11), data.getGiftCardValue(TestData.GiftCardType.VALID11));
         applyGiftCardToCheckout(data.getGiftCardCode(TestData.GiftCardType.VALID25), data.getGiftCardValue(TestData.GiftCardType.VALID25));
@@ -152,7 +152,7 @@ public class BuyTest extends ShopifyAndroidTestCase {
     }
 
     @Test
-	public void testApplyingThreeGiftCardsToCheckout() throws InterruptedException {
+    public void testApplyingThreeGiftCardsToCheckout() throws InterruptedException {
         createValidCheckout();
         applyGiftCardToCheckout(data.getGiftCardCode(TestData.GiftCardType.VALID11), data.getGiftCardValue(TestData.GiftCardType.VALID11));
         applyGiftCardToCheckout(data.getGiftCardCode(TestData.GiftCardType.VALID25), data.getGiftCardValue(TestData.GiftCardType.VALID25));
@@ -161,21 +161,21 @@ public class BuyTest extends ShopifyAndroidTestCase {
     }
 
     @Test
-	public void testRemovingSecondGiftCard() throws InterruptedException {
+    public void testRemovingSecondGiftCard() throws InterruptedException {
         testApplyingThreeGiftCardsToCheckout();
         removeGiftCardFromCheckout(checkout.getGiftCards().get(1));
         assertEquals(checkout.getGiftCards().size(), 2);
     }
 
     @Test
-	public void testRemovingFirstGiftCard() throws InterruptedException {
+    public void testRemovingFirstGiftCard() throws InterruptedException {
         testRemovingSecondGiftCard();
         removeGiftCardFromCheckout(checkout.getGiftCards().get(0));
         assertEquals(checkout.getGiftCards().size(), 1);
     }
 
     @Test
-	public void testRemovingAllGiftCards() throws InterruptedException {
+    public void testRemovingAllGiftCards() throws InterruptedException {
         testRemovingFirstGiftCard();
         removeGiftCardFromCheckout(checkout.getGiftCards().get(0));
         assertEquals(checkout.getGiftCards().size(), 0);
@@ -184,7 +184,7 @@ public class BuyTest extends ShopifyAndroidTestCase {
     }
 
     @Test
-	public void testGetCheckoutWithInvalidToken() throws InterruptedException {
+    public void testGetCheckoutWithInvalidToken() throws InterruptedException {
         final CountDownLatch latch = new CountDownLatch(1);
         buyClient.getCheckout("ZZZZZZZZZZZZZZZ", new Callback<Checkout>() {
             @Override
@@ -202,7 +202,7 @@ public class BuyTest extends ShopifyAndroidTestCase {
     }
 
     @Test
-	public void testWithoutShop() {
+    public void testWithoutShop() {
         try {
             BuyClientFactory.getBuyClient("", getApiKey(), getAppId(), data.getApplicationName());
         } catch (IllegalArgumentException e) {
@@ -212,7 +212,7 @@ public class BuyTest extends ShopifyAndroidTestCase {
     }
 
     @Test
-	public void testWithoutAuthToken() {
+    public void testWithoutAuthToken() {
         try {
             BuyClientFactory.getBuyClient(getShopDomain(), "", getAppId(), data.getApplicationName());
         } catch (IllegalArgumentException e) {
@@ -222,7 +222,7 @@ public class BuyTest extends ShopifyAndroidTestCase {
     }
 
     @Test
-	public void testWithoutApplicationName() {
+    public void testWithoutApplicationName() {
         try {
             BuyClientFactory.getBuyClient(getShopDomain(), getApiKey(), getAppId(), "");
         } catch (IllegalArgumentException e) {
@@ -232,13 +232,13 @@ public class BuyTest extends ShopifyAndroidTestCase {
     }
 
     @Test
-	public void testFetchingShippingRatesWithoutShippingAddress() throws InterruptedException {
+    public void testFetchingShippingRatesWithoutShippingAddress() throws InterruptedException {
         createCheckoutWithNoShippingAddress();
         fetchShippingRates(HttpStatus.SC_PRECONDITION_FAILED);
     }
 
     @Test
-	public void testFetchingShippingRatesWithInvalidCheckout() throws InterruptedException {
+    public void testFetchingShippingRatesWithInvalidCheckout() throws InterruptedException {
         CheckoutPrivateAPIs privateCheckout = new CheckoutPrivateAPIs(createCart());
         privateCheckout.setToken("bananaaaa");
         checkout = privateCheckout;
@@ -246,7 +246,7 @@ public class BuyTest extends ShopifyAndroidTestCase {
     }
 
     @Test
-	public void testCreateCheckoutWithVariantID() throws InterruptedException {
+    public void testCreateCheckoutWithVariantID() throws InterruptedException {
         final CountDownLatch latch = new CountDownLatch(1);
         Checkout checkout = new Checkout(new LineItem(getVariantID(), true, 1));
         checkout.setShippingAddress(getShippingAddress());
@@ -271,7 +271,7 @@ public class BuyTest extends ShopifyAndroidTestCase {
     }
 
     @Test
-	public void testCheckoutFlowUsingCreditCard() throws InterruptedException {
+    public void testCheckoutFlowUsingCreditCard() throws InterruptedException {
         createValidCheckout();
         fetchShippingRates(HttpStatus.SC_OK);
         setShippingRate();
@@ -282,7 +282,7 @@ public class BuyTest extends ShopifyAndroidTestCase {
     }
 
     @Test
-	public void testChangedShippingAddress() throws InterruptedException {
+    public void testChangedShippingAddress() throws InterruptedException {
         createValidCheckout();
         fetchShippingRates(HttpStatus.SC_OK);
         setShippingRate();
@@ -300,7 +300,7 @@ public class BuyTest extends ShopifyAndroidTestCase {
     }
 
     @Test
-	public void testCreateCheckoutWithValidDiscount() throws InterruptedException {
+    public void testCreateCheckoutWithValidDiscount() throws InterruptedException {
         final String discountCode = data.getDiscountCode(TestData.DiscountType.VALID);
 
         final CountDownLatch latch = new CountDownLatch(1);
@@ -330,7 +330,7 @@ public class BuyTest extends ShopifyAndroidTestCase {
     }
 
     @Test
-	public void testCreateCheckoutWithExpiredDiscount() throws InterruptedException {
+    public void testCreateCheckoutWithExpiredDiscount() throws InterruptedException {
         final CountDownLatch latch = new CountDownLatch(1);
         Checkout checkout = new Checkout(createCart());
         checkout.setShippingAddress(getShippingAddress());
@@ -352,7 +352,7 @@ public class BuyTest extends ShopifyAndroidTestCase {
     }
 
     @Test
-	public void testCreateCheckoutWithNonExistentDiscount() throws InterruptedException {
+    public void testCreateCheckoutWithNonExistentDiscount() throws InterruptedException {
         final CountDownLatch latch = new CountDownLatch(1);
         Checkout checkout = new Checkout(createCart());
         checkout.setShippingAddress(getShippingAddress());
@@ -374,7 +374,7 @@ public class BuyTest extends ShopifyAndroidTestCase {
     }
 
     @Test
-	public void testUpdateCheckoutWithValidDiscount() throws InterruptedException {
+    public void testUpdateCheckoutWithValidDiscount() throws InterruptedException {
         final String discountCode = data.getDiscountCode(TestData.DiscountType.VALID);
 
         createValidCheckout();
@@ -406,7 +406,7 @@ public class BuyTest extends ShopifyAndroidTestCase {
     }
 
     @Test
-	public void testExpiringCheckout() throws InterruptedException {
+    public void testExpiringCheckout() throws InterruptedException {
         createValidCheckout();
 
         assertEquals(checkout.getReservationTime().longValue(), 300);

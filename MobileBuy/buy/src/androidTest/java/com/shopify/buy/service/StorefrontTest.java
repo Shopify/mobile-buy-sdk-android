@@ -31,7 +31,7 @@ import static junit.framework.Assert.fail;
 public class StorefrontTest extends ShopifyAndroidTestCase {
 
     @Test
-	public void testGetProductPage() throws InterruptedException {
+    public void testGetProductPage() throws InterruptedException {
         final CountDownLatch latch = new CountDownLatch(1);
         buyClient.getProductPage(1, new Callback<List<Product>>() {
             @Override
@@ -49,7 +49,7 @@ public class StorefrontTest extends ShopifyAndroidTestCase {
     }
 
     @Test
-	public void testGetShop() throws InterruptedException {
+    public void testGetShop() throws InterruptedException {
         final CountDownLatch latch = new CountDownLatch(1);
         buyClient.getShop(new Callback<Shop>() {
             @Override
@@ -67,7 +67,7 @@ public class StorefrontTest extends ShopifyAndroidTestCase {
     }
 
     @Test
-	public void testGetProduct() throws InterruptedException {
+    public void testGetProduct() throws InterruptedException {
         final String productId = data.getProductId();
         final CountDownLatch latch = new CountDownLatch(1);
         buyClient.getProduct(productId, new Callback<Product>() {
@@ -87,7 +87,7 @@ public class StorefrontTest extends ShopifyAndroidTestCase {
     }
 
     @Test
-	public void testGetProducts() throws InterruptedException {
+    public void testGetProducts() throws InterruptedException {
         final CountDownLatch latch = new CountDownLatch(1);
         final List<String> productIds = data.getProductIds();
 
@@ -108,7 +108,7 @@ public class StorefrontTest extends ShopifyAndroidTestCase {
     }
 
     @Test
-	public void testGetNonexistentProduct() throws InterruptedException {
+    public void testGetNonexistentProduct() throws InterruptedException {
         final CountDownLatch latch = new CountDownLatch(1);
         buyClient.getProduct("1337", new Callback<Product>() {
             @Override
@@ -126,7 +126,7 @@ public class StorefrontTest extends ShopifyAndroidTestCase {
     }
 
     @Test
-	public void testGetOutOfIndexProductPage() throws InterruptedException {
+    public void testGetOutOfIndexProductPage() throws InterruptedException {
         final CountDownLatch latch = new CountDownLatch(1);
         buyClient.getProductPage(999, new Callback<List<Product>>() {
             @Override
@@ -144,7 +144,7 @@ public class StorefrontTest extends ShopifyAndroidTestCase {
     }
 
     @Test
-	public void testGetProductsWithOneInvalidId() throws InterruptedException {
+    public void testGetProductsWithOneInvalidId() throws InterruptedException {
         final CountDownLatch latch = new CountDownLatch(1);
         final List<String> productIds = new ArrayList<>();
 
@@ -168,7 +168,7 @@ public class StorefrontTest extends ShopifyAndroidTestCase {
     }
 
     @Test
-	public void testGetCollection() throws InterruptedException {
+    public void testGetCollection() throws InterruptedException {
         final CountDownLatch latch = new CountDownLatch(1);
 
         buyClient.getCollections(new Callback<List<Collection>>() {
@@ -188,7 +188,7 @@ public class StorefrontTest extends ShopifyAndroidTestCase {
     }
 
     @Test
-	public void testGetProductsInCollection() throws InterruptedException {
+    public void testGetProductsInCollection() throws InterruptedException {
         final CountDownLatch latch = new CountDownLatch(1);
 
         buyClient.getProducts(1, data.getCollectionId(), Collection.SortOrder.COLLECTION_DEFAULT, new Callback<List<Product>>() {
@@ -208,7 +208,7 @@ public class StorefrontTest extends ShopifyAndroidTestCase {
     }
 
     @Test
-	public void testGetCollectionPage() throws InterruptedException {
+    public void testGetCollectionPage() throws InterruptedException {
         final CountDownLatch latch = new CountDownLatch(1);
 
         buyClient.getCollectionPage(1, new Callback<List<Collection>>() {
@@ -229,7 +229,7 @@ public class StorefrontTest extends ShopifyAndroidTestCase {
     }
 
     @Test
-	public void testGetOutOfIndexCollectionPage() throws InterruptedException {
+    public void testGetOutOfIndexCollectionPage() throws InterruptedException {
         final CountDownLatch latch = new CountDownLatch(1);
 
         buyClient.getCollectionPage(999, new Callback<List<Collection>>() {

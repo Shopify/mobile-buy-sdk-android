@@ -61,7 +61,7 @@ public class CustomerTest extends ShopifyAndroidTestCase {
     private CustomerToken customerToken;
 
     @Test
-	public void testCustomerCreation() throws InterruptedException {
+    public void testCustomerCreation() throws InterruptedException {
         if (!ENABLED) {
             return;
         }
@@ -88,7 +88,7 @@ public class CustomerTest extends ShopifyAndroidTestCase {
     }
 
     @Test
-	public void testCustomerActivation() throws InterruptedException {
+    public void testCustomerActivation() throws InterruptedException {
         if (!ENABLED) {
             return;
         }
@@ -119,7 +119,7 @@ public class CustomerTest extends ShopifyAndroidTestCase {
 
 
     @Test
-	public void testCustomerLogin() throws InterruptedException {
+    public void testCustomerLogin() throws InterruptedException {
         if (!ENABLED) {
             return;
         }
@@ -146,7 +146,7 @@ public class CustomerTest extends ShopifyAndroidTestCase {
     }
 
     @Test
-	public void testCustomerLogout() throws InterruptedException {
+    public void testCustomerLogout() throws InterruptedException {
         if (!ENABLED) {
             return;
         }
@@ -171,7 +171,7 @@ public class CustomerTest extends ShopifyAndroidTestCase {
     }
 
     @Test
-	public void testCustomerRenew() throws InterruptedException {
+    public void testCustomerRenew() throws InterruptedException {
         if (!ENABLED) {
             return;
         }
@@ -196,7 +196,7 @@ public class CustomerTest extends ShopifyAndroidTestCase {
     }
 
     @Test
-	public void testCustomerRecover() throws InterruptedException {
+    public void testCustomerRecover() throws InterruptedException {
         if (!ENABLED) {
             return;
         }
@@ -220,7 +220,7 @@ public class CustomerTest extends ShopifyAndroidTestCase {
     }
 
     @Test
-	public void testCustomerUpdate() throws InterruptedException {
+    public void testCustomerUpdate() throws InterruptedException {
         if (!ENABLED) {
             return;
         }
@@ -250,7 +250,7 @@ public class CustomerTest extends ShopifyAndroidTestCase {
     }
 
     @Test
-	public void testGetCustomerOrders() throws InterruptedException {
+    public void testGetCustomerOrders() throws InterruptedException {
         if (!ENABLED) {
             return;
         }
@@ -279,7 +279,7 @@ public class CustomerTest extends ShopifyAndroidTestCase {
     }
 
     @Test
-	public void testGetOrder() throws InterruptedException {
+    public void testGetOrder() throws InterruptedException {
         if (!ENABLED) {
             return;
         }
@@ -308,7 +308,7 @@ public class CustomerTest extends ShopifyAndroidTestCase {
     }
 
     @Test
-	public void testGetCustomer() throws InterruptedException {
+    public void testGetCustomer() throws InterruptedException {
         if (!ENABLED) {
             return;
         }
@@ -343,7 +343,7 @@ public class CustomerTest extends ShopifyAndroidTestCase {
     }
 
     @Test
-	public void testCreateAddress() throws InterruptedException {
+    public void testCreateAddress() throws InterruptedException {
         if (!ENABLED) {
             return;
         }
@@ -372,7 +372,7 @@ public class CustomerTest extends ShopifyAndroidTestCase {
     }
 
     @Test
-	public void testGetAddresses() throws InterruptedException {
+    public void testGetAddresses() throws InterruptedException {
         if (!ENABLED) {
             return;
         }
@@ -401,7 +401,7 @@ public class CustomerTest extends ShopifyAndroidTestCase {
     }
 
     @Test
-	public void testGetAddress() throws InterruptedException {
+    public void testGetAddress() throws InterruptedException {
         if (!ENABLED) {
             return;
         }
@@ -431,7 +431,7 @@ public class CustomerTest extends ShopifyAndroidTestCase {
     }
 
     @Test
-	public void testUpdateAddress() throws InterruptedException {
+    public void testUpdateAddress() throws InterruptedException {
         if (!ENABLED) {
             return;
         }

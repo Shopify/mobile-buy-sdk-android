@@ -20,7 +20,7 @@ import static junit.framework.Assert.assertEquals;
 public class CheckoutTest extends ShopifyAndroidTestCase {
 
     @Test
-	public void testInitializeWithCart() {
+    public void testInitializeWithCart() {
         Cart cart = new Cart();
 
         ProductVariantPrivateAPIs variant1 = new ProductVariantPrivateAPIs();
@@ -57,7 +57,7 @@ public class CheckoutTest extends ShopifyAndroidTestCase {
 
     // Tests both serialization of attributes as a hash map, and deserialization of attributes from a hash map
     @Test
-	public void testAttributesSerialization() {
+    public void testAttributesSerialization() {
         Cart cart = new Cart();
         ProductVariantPrivateAPIs variant1 = new ProductVariantPrivateAPIs();
         variant1.setId(1l);
@@ -79,7 +79,7 @@ public class CheckoutTest extends ShopifyAndroidTestCase {
 
     // Tests deserialization of the JSON returned over the wire from the server
     @Test
-	public void testAttributeDeserialization() {
+    public void testAttributeDeserialization() {
         String jsonString = "{\"channel\":\"mobile_app\",\"line_items\":[{\"variant\":{\"available\":false,\"grams\":0,\"position\":0,\"productId\":0,\"requires_shipping\":false,\"taxable\":false,\"id\":1},\"grams\":0,\"quantity\":1,\"requires_shipping\":false,\"taxable\":false,\"variant_id\":1}],\"attributes\":[{\"name\":\"foo\",\"value\":\"bar\"}]}";
 
         Gson gson = BuyClientFactory.createDefaultGson();

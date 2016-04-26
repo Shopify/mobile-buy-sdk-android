@@ -27,7 +27,7 @@ import static junit.framework.Assert.fail;
 public class ProductTest extends ShopifyAndroidTestCase {
 
     @Test
-	public void testGetVariantForOptionValues() throws InterruptedException {
+    public void testGetVariantForOptionValues() throws InterruptedException {
         final CountDownLatch latch = new CountDownLatch(1);
         buyClient.getProduct(data.getProductIdWithVariants(), new Callback<Product>() {
             @Override
@@ -48,7 +48,7 @@ public class ProductTest extends ShopifyAndroidTestCase {
     }
 
     @Test
-	public void testGetValidTag() throws InterruptedException {
+    public void testGetValidTag() throws InterruptedException {
         final CountDownLatch latch = new CountDownLatch(1);
         buyClient.getProduct(data.getProductIdWithTags(), new Callback<Product>() {
             @Override
@@ -71,7 +71,7 @@ public class ProductTest extends ShopifyAndroidTestCase {
     }
 
     @Test
-	public void testGetInvalidTag() throws InterruptedException {
+    public void testGetInvalidTag() throws InterruptedException {
         final CountDownLatch latch = new CountDownLatch(1);
         buyClient.getProduct(data.getProductIdWithoutTags(), new Callback<Product>() {
             @Override
