@@ -28,6 +28,7 @@ import com.shopify.buy.model.Shop;
 import com.shopify.buy.model.internal.CheckoutWrapper;
 import com.shopify.buy.model.internal.CollectionPublication;
 import com.shopify.buy.model.internal.GiftCardWrapper;
+import com.shopify.buy.model.internal.PaymentTokenWrapper;
 import com.shopify.buy.model.internal.ProductPublication;
 import com.shopify.buy.model.internal.ShippingRatesWrapper;
 
@@ -35,6 +36,7 @@ import java.util.HashMap;
 
 import retrofit.Callback;
 import retrofit.ResponseCallback;
+import retrofit.RestAdapter;
 import retrofit.http.Body;
 import retrofit.http.DELETE;
 import retrofit.http.GET;
@@ -42,7 +44,6 @@ import retrofit.http.PATCH;
 import retrofit.http.POST;
 import retrofit.http.Path;
 import retrofit.http.Query;
-import retrofit.RestAdapter;
 
 /**
  * Provides the interface for {@link RestAdapter} describing the endpoints and responses for the Mobile Buy endpoints
@@ -86,6 +87,9 @@ interface BuyRetrofitService {
 
     @POST("/api/checkouts/{token}/complete.json")
     void completeCheckout(@Body HashMap<String, String> paymentSessionIdMap, @Path("token") String token, Callback<CheckoutWrapper> callback);
+
+    @POST("/anywhere/checkouts/{token}/complete.json")
+    void  completeCheckout(@Body PaymentTokenWrapper paymentTokenWrapper, @Path("token") String token, Callback<CheckoutWrapper> callback);
 
     @GET("/api/checkouts/{token}/processing.json")
     void getCheckoutCompletionStatus(@Path("token") String token, ResponseCallback callback);

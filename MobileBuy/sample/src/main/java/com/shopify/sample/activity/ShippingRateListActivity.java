@@ -33,10 +33,11 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.shopify.sample.R;
-import com.shopify.sample.activity.base.SampleListActivity;
 import com.shopify.buy.model.Checkout;
 import com.shopify.buy.model.ShippingRate;
+import com.shopify.sample.R;
+import com.shopify.sample.activity.base.SampleListActivity;
+import com.shopify.sample.application.SampleApplication;
 
 import java.net.HttpURLConnection;
 import java.util.List;
@@ -47,15 +48,24 @@ import retrofit.client.Response;
 
 /**
  * If the selected product requires shipping, this activity allows the user to select a list of shipping rates.
- * For the sample app, the shipping address has been hardcoded and we will only see the shipping rates applicable to that address.
+ * For the sample app native and web checkouts, the shipping address has been hardcoded and we will only see the shipping rates applicable to that address.
+ * For Android Pay the address will be supplied by Android Pay.
  */
 public class ShippingRateListActivity extends SampleListActivity {
+
+    private boolean isAndroidPayFlow;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setTitle(R.string.choose_shipping_rate);
+
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            isAndroidPayFlow = bundle.getBoolean(SampleApplication.ANDROID_PAY_FLOW);
+        }
+
     }
 
     @Override
@@ -162,7 +172,12 @@ public class ShippingRateListActivity extends SampleListActivity {
             @Override
             public void success(Checkout checkout, Response response) {
                 dismissLoadingDialog();
-                startActivity(new Intent(ShippingRateListActivity.this, DiscountActivity.class));
+
+                if (isAndroidPayFlow) {
+                    startActivity(new Intent(ShippingRateListActivity.this, AndroidPayCheckoutActivity.class));
+                } else {
+                    startActivity(new Intent(ShippingRateListActivity.this, CheckoutActivity.class));
+                }
             }
 
             @Override

@@ -72,4 +72,7 @@ public class ShopifyAndroidTestCase extends AndroidTestCase {
         return USE_MOCK_RESPONSES ? "placeholderChannelId" : BuildConfig.CHANNEL_ID;
     }
 
+    protected String getAndroidPayPublicKey() {
+        return USE_MOCK_RESPONSES ? "placeholderAndroidPayPublicKey" : BuildConfig.ANDROID_PAY_PUBLIC_KEY;
+    }
 }

@@ -797,6 +797,7 @@ public class BuyTest extends ShopifyAndroidTestCase {
         latch.await();
     }
 
+
     private void pollCheckoutCompletionStatus() throws InterruptedException {
         final CountDownLatch latch = new CountDownLatch(1);
         recurseCheckoutCompletionPoll(latch);

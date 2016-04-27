@@ -24,6 +24,8 @@
 
 package com.shopify.buy.model;
 
+import android.text.TextUtils;
+
 import com.google.gson.annotations.SerializedName;
 
 /**
@@ -190,5 +192,45 @@ public class Address {
 
     public void setZip(String zip) {
         this.zip = zip;
+    }
+
+
+    /**
+     * Compares the location portion of the addresses
+     *
+     * @param otherAddress The address to compare to
+     * @return true if the address lines, city, country code, province code, and zip are equivalent
+     */
+    public boolean locationsAreEqual(Address otherAddress) {
+
+        if (this == otherAddress) {
+            return true;
+        }
+
+        if (!TextUtils.equals(address1, otherAddress.address1)) {
+            return false;
+        }
+
+        if (!TextUtils.equals(address2, otherAddress.address2)) {
+            return false;
+        }
+
+        if (!TextUtils.equals(city, otherAddress.city)) {
+            return false;
+        }
+
+        if (!TextUtils.equals(countryCode, otherAddress.countryCode)) {
+            return false;
+        }
+
+        if (!TextUtils.equals(provinceCode, otherAddress.provinceCode)) {
+            return false;
+        }
+
+        if (!TextUtils.equals(zip, otherAddress.zip)) {
+            return false;
+        }
+
+        return true;
     }
 }

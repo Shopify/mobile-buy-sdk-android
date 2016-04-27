@@ -27,7 +27,6 @@ package com.shopify.buy.model;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
@@ -35,11 +34,9 @@ import com.google.gson.JsonParseException;
 import com.google.gson.annotations.SerializedName;
 import com.shopify.buy.dataprovider.BuyClientFactory;
 import com.shopify.buy.utils.DateUtility;
-import com.shopify.buy.utils.DateUtility.DateDeserializer;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.lang.reflect.Type;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;

@@ -45,7 +45,6 @@ import android.widget.Button;
 
 import com.shopify.buy.R;
 import com.shopify.buy.customTabs.CustomTabActivityHelper;
-import com.shopify.buy.customTabs.CustomTabsHelper;
 import com.shopify.buy.dataprovider.BuyClient;
 import com.shopify.buy.dataprovider.BuyClientFactory;
 import com.shopify.buy.model.Cart;
@@ -463,7 +462,6 @@ public class ProductDetailsFragment extends Fragment {
 
                 } catch (Exception launchOtherException) {
                     onCheckoutFailure();
-                    return;
                 }
             }
 

@@ -4,6 +4,8 @@
               android:layout_height="match_parent"
               android:orientation="vertical">
 
+    <include layout="@layout/order_summary"/>
+
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -27,7 +29,5 @@
             style="@style/Button"
             android:text="@string/web_checkout"/>
     </FrameLayout>
-
-    <include layout="@layout/order_summary"/>
 
 </LinearLayout>

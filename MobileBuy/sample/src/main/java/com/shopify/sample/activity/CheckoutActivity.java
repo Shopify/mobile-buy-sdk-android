@@ -30,9 +30,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-import com.shopify.sample.R;
 import com.shopify.buy.model.Checkout;
 import com.shopify.buy.model.CreditCard;
+import com.shopify.sample.R;
 import com.shopify.sample.activity.base.SampleActivity;
 
 import retrofit.Callback;
@@ -41,8 +41,8 @@ import retrofit.client.Response;
 
 /**
  * The final activity in the app flow. Allows the user to choose between:
- * 1. A native checkout where the payment info is hardcoded and the chekcout is completed within the app; or
- * 2. A web checkout where the user enters their payment info and completes the checkout in a web browser
+ * 1. A native checkout where the payment info is hardcoded and the checkout is completed within the app; or
+ * 2. A web checkout where the user enters their payment info and completes the checkout in a web browser;
  */
 public class CheckoutActivity extends SampleActivity {
 

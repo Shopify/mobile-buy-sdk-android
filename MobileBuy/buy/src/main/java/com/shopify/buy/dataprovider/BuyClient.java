@@ -42,6 +42,8 @@ import com.shopify.buy.model.internal.GiftCardWrapper;
 import com.shopify.buy.model.internal.MarketingAttribution;
 import com.shopify.buy.model.internal.PaymentSessionCheckout;
 import com.shopify.buy.model.internal.PaymentSessionCheckoutWrapper;
+import com.shopify.buy.model.internal.PaymentToken;
+import com.shopify.buy.model.internal.PaymentTokenWrapper;
 import com.shopify.buy.model.internal.ProductPublication;
 import com.shopify.buy.model.internal.ShippingRatesWrapper;
 import com.squareup.okhttp.Interceptor;
@@ -54,7 +56,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -76,6 +81,8 @@ public class BuyClient {
     public static final int MIN_PAGE_SIZE = 1;
     public static final int DEFAULT_PAGE_SIZE = 25;
 
+    private static final String PAYMENT_TOKEN_TYPE_ANDROID_PAY = "android_pay";
+
     private static final MediaType jsonMediateType = MediaType.parse("application/json; charset=utf-8");
     private final BuyRetrofitService retrofitService;
     private final OkHttpClient httpClient;
@@ -87,6 +94,9 @@ public class BuyClient {
     private final String applicationName;
     private String webReturnToUrl;
     private String webReturnToLabel;
+
+    private String androidPayPublicKey;
+    private String androidPayPublicKeyHash;
 
     public String getApiKey() {
         return apiKey;
@@ -144,6 +154,42 @@ public class BuyClient {
      */
     public void setWebReturnToLabel(String webReturnToLabel) {
         this.webReturnToLabel = webReturnToLabel;
+    }
+
+    /**
+     * Enables Android Pay support in the {@link BuyClient}
+     * @param androidPayPublicKey The base64 encoded public key associated with Android Pay.
+     */
+    public void enableAndroidPay(String androidPayPublicKey) {
+        if (TextUtils.isEmpty(androidPayPublicKey)) {
+            throw new IllegalArgumentException("androidPayPublicKey cannot be empty");
+        }
+
+        byte[] digest;
+        try {
+            MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
+            digest = messageDigest.digest(androidPayPublicKey.getBytes("UTF-8"));
+        } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
+            // Do not enable Android Pay if the hash could not be computed
+            return;
+        }
+
+        // Enable Android Pay by setting the hash and key
+        this.androidPayPublicKeyHash = Base64.encodeToString(digest, Base64.DEFAULT);
+        this.androidPayPublicKey = androidPayPublicKey;
+    }
+
+    public boolean androidPayIsEnabled() {
+        return !TextUtils.isEmpty(androidPayPublicKey);
+    }
+
+    public void disableAndroidPay() {
+        androidPayPublicKeyHash = null;
+        androidPayPublicKey = null;
+    }
+
+    public String getAndroidPayPublicKey() {
+        return androidPayPublicKey;
     }
 
     /**
@@ -541,6 +587,39 @@ public class BuyClient {
     }
 
     /**
+     * Complete the checkout and process the Android Pay Token for payment
+     *
+     * @param androidPayToken the token returned in the {@link com.google.android.gms.wallet.FullWallet}
+     * @param checkout the {@link Checkout} to complete
+     * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
+     */
+    public void completeCheckout(String androidPayToken, Checkout checkout, final Callback<Checkout> callback) {
+        if (!androidPayIsEnabled()) {
+            throw new UnsupportedOperationException("Android Pay is not enabled");
+        }
+        if (checkout == null) {
+            throw new NullPointerException("checkout cannot be null");
+        }
+        if (TextUtils.isEmpty(androidPayToken)) {
+            throw new IllegalArgumentException("androidPayToken cannot be null");
+        }
+
+        PaymentToken paymentToken = new PaymentToken(androidPayToken, PAYMENT_TOKEN_TYPE_ANDROID_PAY, androidPayPublicKeyHash);
+
+        retrofitService.completeCheckout(new PaymentTokenWrapper(paymentToken), checkout.getToken(), new Callback<CheckoutWrapper>() {
+            @Override
+            public void success(CheckoutWrapper checkoutWrapper, Response response) {
+                callback.success(checkoutWrapper.getCheckout(), response);
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                callback.failure(error);
+            }
+        });
+    }
+
+    /**
      * Get the status of the payment session associated with {@code checkout}. {@code callback} will be
      * called with a boolean value indicating whether the session has completed or not. This method
      * should be polled until the {@code callback} response is {@code true}
@@ -659,7 +738,7 @@ public class BuyClient {
     }
 
     /**
-     *  Convenience method to release all product inventory reservations by setting the `reservationTime` of the checkout `0` and calling {@link #updateCheckout(Checkout, Callback) updateCheckout(Checkout, Callback)}.
+     *  Convenience method to release all product inventory reservations by setting the `reservationTime` of the checkout `0` and calling {@link #updateCheckout(Checkout, Callback) updateCheckoutAddressAndEmail(Checkout, Callback)}.
      *  We recommend creating a new `Checkout` object from a `Cart` for further API calls.
      *
      *  @param checkout the {@link Checkout} to expire

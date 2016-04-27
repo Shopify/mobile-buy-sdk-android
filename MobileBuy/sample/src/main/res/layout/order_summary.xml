@@ -6,9 +6,10 @@
              android:orientation="vertical">
 
     <TableRow>
+
         <TextView
             style="@style/OrderSummaryTextView"
-            android:text="@string/line_item_price"/>
+            android:text="@string/subtotal"/>
 
         <TextView
             android:id="@+id/line_item_price_value"
@@ -16,7 +17,8 @@
             android:gravity="right"/>
     </TableRow>
 
-    <TableRow>
+    <TableRow android:id="@+id/discount_row">
+
         <TextView
             style="@style/OrderSummaryTextView"
             android:text="@string/discount"/>
@@ -27,7 +29,8 @@
             android:gravity="right"/>
     </TableRow>
 
-    <TableRow>
+    <TableRow android:id="@+id/gift_card_row">
+
         <TextView
             style="@style/OrderSummaryTextView"
             android:text="@string/gift_card"/>
@@ -39,6 +42,7 @@
     </TableRow>
 
     <TableRow>
+
         <TextView
             style="@style/OrderSummaryTextView"
             android:text="@string/shipping"/>
@@ -50,6 +54,7 @@
     </TableRow>
 
     <TableRow>
+
         <TextView
             style="@style/OrderSummaryTextView"
             android:text="@string/taxes"/>
@@ -61,6 +66,7 @@
     </TableRow>
 
     <TableRow>
+
         <TextView
             style="@style/OrderSummaryTextView"
             android:text="@string/total"/>
