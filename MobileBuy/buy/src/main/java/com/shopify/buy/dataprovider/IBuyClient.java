@@ -40,6 +40,7 @@ import com.shopify.buy.model.Shop;
 import java.util.List;
 
 import rx.Observable;
+import rx.Scheduler;
 
 public interface IBuyClient {
 
@@ -58,6 +59,10 @@ public interface IBuyClient {
     int getPageSize();
 
     void setCustomerToken(CustomerToken customerToken);
+
+    Scheduler getCallbackScheduler();
+
+    void setCallbackScheduler(Scheduler callbackScheduler);
 
     CustomerToken getCustomerToken();
 

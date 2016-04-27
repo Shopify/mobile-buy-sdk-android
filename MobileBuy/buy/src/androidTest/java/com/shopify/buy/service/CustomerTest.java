@@ -38,15 +38,20 @@ import com.shopify.buy.model.Customer;
 import com.shopify.buy.model.CustomerToken;
 import com.shopify.buy.model.Order;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
-import java.util.concurrent.CountDownLatch;
 
 import retrofit2.Response;
+import rx.Scheduler;
+import rx.plugins.RxJavaPlugins;
+import rx.plugins.RxJavaSchedulersHook;
+import rx.plugins.RxJavaTestPlugins;
+import rx.schedulers.Schedulers;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
@@ -70,8 +75,6 @@ public class CustomerTest extends ShopifyAndroidTestCase {
 
     @Test
 	public void testCustomerCreation() throws InterruptedException {
-
-        final CountDownLatch latch = new CountDownLatch(1);
         final Customer randomCustomer = USE_MOCK_RESPONSES ? getExistingCustomer() : generateRandomCustomer();
         final AccountCredentials accountCredentials = new AccountCredentials(randomCustomer.getEmail(), PASSWORD, randomCustomer.getFirstName(), randomCustomer.getLastName());
 
@@ -82,7 +85,6 @@ public class CustomerTest extends ShopifyAndroidTestCase {
                 assertEquals(randomCustomer.getEmail(), customer.getEmail());
                 assertEquals(randomCustomer.getFirstName(), customer.getFirstName());
                 assertEquals(randomCustomer.getLastName(), customer.getLastName());
-                latch.countDown();
             }
 
             @Override
@@ -90,7 +92,6 @@ public class CustomerTest extends ShopifyAndroidTestCase {
                 fail(BuyClient.getErrorBody(error));
             }
         });
-        latch.await();
     }
 
     @Suppress
@@ -99,7 +100,6 @@ public class CustomerTest extends ShopifyAndroidTestCase {
         
         testCustomerLogin();
 
-        final CountDownLatch latch = new CountDownLatch(1);
         final AccountCredentials accountCredentials = new AccountCredentials(customer.getEmail(), PASSWORD, customer.getFirstName(), customer.getLastName());
 
         // TODO update this test when we start to get real tokens
@@ -107,7 +107,6 @@ public class CustomerTest extends ShopifyAndroidTestCase {
             @Override
             public void success(Customer customer, Response response) {
                 assertNotNull(customer);
-                latch.countDown();
             }
 
             @Override
@@ -115,7 +114,6 @@ public class CustomerTest extends ShopifyAndroidTestCase {
                 fail(BuyClient.getErrorBody(error));
             }
         });
-        latch.await();
     }
 
 
@@ -124,7 +122,6 @@ public class CustomerTest extends ShopifyAndroidTestCase {
         
         customer = getExistingCustomer();
 
-        final CountDownLatch latch = new CountDownLatch(1);
         final AccountCredentials accountCredentials = new AccountCredentials(customer.getEmail(), PASSWORD, customer.getFirstName(), customer.getLastName());
 
         buyClient.loginCustomer(accountCredentials, new Callback<CustomerToken>() {
@@ -133,7 +130,7 @@ public class CustomerTest extends ShopifyAndroidTestCase {
                 assertNotNull(buyClient.getCustomerToken());
                 assertEquals(false, buyClient.getCustomerToken().getAccessToken().isEmpty());
                 CustomerTest.this.customerToken = buyClient.getCustomerToken();
-                getCustomerAfterLogin(latch);
+                getCustomerAfterLogin();
             }
 
             @Override
@@ -141,7 +138,6 @@ public class CustomerTest extends ShopifyAndroidTestCase {
                 fail(BuyClient.getErrorBody(error));
             }
         });
-        latch.await();
     }
 
     @Test
@@ -150,12 +146,9 @@ public class CustomerTest extends ShopifyAndroidTestCase {
         testCustomerLogin();
         buyClient.setCustomerToken(customerToken);
 
-        final CountDownLatch latch = new CountDownLatch(1);
-
         buyClient.logoutCustomer(new Callback<Void>() {
             @Override
             public void success(Void aVoid, Response response) {
-                latch.countDown();
             }
 
             @Override
@@ -163,7 +156,6 @@ public class CustomerTest extends ShopifyAndroidTestCase {
                 fail(BuyClient.getErrorBody(error));
             }
         });
-        latch.await();
     }
 
     @Test
@@ -172,12 +164,9 @@ public class CustomerTest extends ShopifyAndroidTestCase {
         testCustomerLogin();
         buyClient.setCustomerToken(customerToken);
 
-        final CountDownLatch latch = new CountDownLatch(1);
-
         buyClient.renewCustomer(new Callback<CustomerToken>() {
             @Override
             public void success(CustomerToken customerToken, Response response) {
-                latch.countDown();
             }
 
             @Override
@@ -185,20 +174,16 @@ public class CustomerTest extends ShopifyAndroidTestCase {
                 fail(BuyClient.getErrorBody(error));
             }
         });
-        latch.await();
     }
 
     @Test
 	public void testCustomerRecover() throws InterruptedException {
         
-        final CountDownLatch latch = new CountDownLatch(1);
-
         customer = getExistingCustomer();
 
         buyClient.recoverPassword(EMAIL, new Callback<Void>() {
             @Override
             public void success(Void aVoid, Response response) {
-                latch.countDown();
             }
 
             @Override
@@ -206,7 +191,6 @@ public class CustomerTest extends ShopifyAndroidTestCase {
                 fail(BuyClient.getErrorBody(error));
             }
         });
-        latch.await();
     }
 
     @Test
@@ -218,14 +202,11 @@ public class CustomerTest extends ShopifyAndroidTestCase {
 
         customer.setLastName("Foo");
 
-        final CountDownLatch latch = new CountDownLatch(1);
-
         buyClient.updateCustomer(customer, new Callback<Customer>() {
             @Override
             public void success(Customer customer, Response response) {
                 assertNotNull(customer);
                 assertEquals("Foo", customer.getLastName());
-                latch.countDown();
             }
 
             @Override
@@ -233,7 +214,6 @@ public class CustomerTest extends ShopifyAndroidTestCase {
                 fail(BuyClient.getErrorBody(error));
             }
         });
-        latch.await();
     }
 
     @Test
@@ -242,15 +222,12 @@ public class CustomerTest extends ShopifyAndroidTestCase {
         testCustomerLogin();
         buyClient.setCustomerToken(customerToken);
 
-        final CountDownLatch latch = new CountDownLatch(1);
-
         buyClient.getOrders(customer, new Callback<List<Order>>() {
             @Override
             public void success(List<Order> orders, Response response) {
                 assertNotNull(orders);
                 assertEquals(true, orders.size() > 0);
                 CustomerTest.this.orders = orders;
-                latch.countDown();
             }
 
             @Override
@@ -259,7 +236,6 @@ public class CustomerTest extends ShopifyAndroidTestCase {
             }
 
         });
-        latch.await();
     }
 
     @Test
@@ -269,15 +245,12 @@ public class CustomerTest extends ShopifyAndroidTestCase {
         buyClient.setCustomerToken(customerToken);
 
 
-        final CountDownLatch latch = new CountDownLatch(1);
-
         String orderId = orders.get(0).getOrderId();
 
         buyClient.getOrder(customer, orderId, new Callback<Order>() {
             @Override
             public void success(Order order, Response response) {
                 assertNotNull(order);
-                latch.countDown();
             }
 
             @Override
@@ -285,7 +258,6 @@ public class CustomerTest extends ShopifyAndroidTestCase {
                 fail(BuyClient.getErrorBody(error));
             }
         });
-        latch.await();
     }
 
     @Test
@@ -294,13 +266,10 @@ public class CustomerTest extends ShopifyAndroidTestCase {
         testCustomerLogin();
         buyClient.setCustomerToken(customerToken);
 
-        final CountDownLatch latch = new CountDownLatch(1);
-
         buyClient.getCustomer(customerToken.getCustomerId(), new Callback<Customer>() {
             @Override
             public void success(Customer customer, Response response) {
                 assertNotNull(customer);
-                latch.countDown();
             }
 
             @Override
@@ -308,7 +277,6 @@ public class CustomerTest extends ShopifyAndroidTestCase {
                 fail(BuyClient.getErrorBody(error));
             }
         });
-        latch.await();
     }
 
     @Test
@@ -317,7 +285,6 @@ public class CustomerTest extends ShopifyAndroidTestCase {
         testCustomerLogin();
         buyClient.setCustomerToken(customerToken);
 
-        final CountDownLatch latch = new CountDownLatch(1);
         final Address inputAddress = USE_MOCK_RESPONSES ? getExistingAddress() : generateAddress();
 
         buyClient.createAddress(customer, inputAddress, new Callback<Address>() {
@@ -326,7 +293,6 @@ public class CustomerTest extends ShopifyAndroidTestCase {
                 assertEquals(inputAddress.getAddress1(), address.getAddress1());
                 assertEquals(inputAddress.getAddress2(), address.getAddress2());
                 assertEquals(inputAddress.getCity(), address.getCity());
-                latch.countDown();
             }
 
             @Override
@@ -334,7 +300,6 @@ public class CustomerTest extends ShopifyAndroidTestCase {
                 fail(BuyClient.getErrorBody(error));
             }
         });
-        latch.await();
     }
 
     @Test
@@ -343,15 +308,12 @@ public class CustomerTest extends ShopifyAndroidTestCase {
         testCustomerLogin();
         buyClient.setCustomerToken(customerToken);
 
-        final CountDownLatch latch = new CountDownLatch(1);
-
         buyClient.getAddresses(customer, new Callback<List<Address>>() {
             @Override
             public void success(List<Address> addresses, Response response) {
                 assertNotNull(addresses);
                 assertEquals(true, addresses.size() > 0);
                 CustomerTest.this.addresses = addresses;
-                latch.countDown();
             }
 
             @Override
@@ -359,8 +321,6 @@ public class CustomerTest extends ShopifyAndroidTestCase {
                 fail(BuyClient.getErrorBody(error));
             }
         });
-
-        latch.await();
     }
 
     @Test
@@ -369,8 +329,6 @@ public class CustomerTest extends ShopifyAndroidTestCase {
         testGetAddresses();
         buyClient.setCustomerToken(customerToken);
 
-        final CountDownLatch latch = new CountDownLatch(1);
-
         String addressId = addresses.get(0).getAddressId();
 
         buyClient.getAddress(customer, addressId, new Callback<Address>() {
@@ -378,7 +336,6 @@ public class CustomerTest extends ShopifyAndroidTestCase {
             public void success(Address address, Response response) {
                 assertNotNull(address);
                 CustomerTest.this.address = address;
-                latch.countDown();
             }
 
             @Override
@@ -386,8 +343,6 @@ public class CustomerTest extends ShopifyAndroidTestCase {
                 fail(BuyClient.getErrorBody(error));
             }
         });
-
-        latch.await();
     }
 
     @Test
@@ -396,15 +351,12 @@ public class CustomerTest extends ShopifyAndroidTestCase {
         testGetAddress();
         buyClient.setCustomerToken(customerToken);
 
-        final CountDownLatch latch = new CountDownLatch(1);
-
         address.setCity("Toledo");
 
         buyClient.updateAddress(customer, address, new Callback<Address>() {
             @Override
             public void success(Address address, Response response) {
                 assertNotNull(address);
-                latch.countDown();
             }
 
             @Override
@@ -412,8 +364,6 @@ public class CustomerTest extends ShopifyAndroidTestCase {
                 fail(BuyClient.getErrorBody(error));
             }
         });
-
-        latch.await();
     }
 
     private Customer getExistingCustomer() {
@@ -473,7 +423,7 @@ public class CustomerTest extends ShopifyAndroidTestCase {
         return shippingAddress;
     }
 
-    private void getCustomerAfterLogin(final CountDownLatch latch) {
+    private void getCustomerAfterLogin(){
 
         buyClient.getCustomer(customerToken.getCustomerId(), new Callback<Customer>() {
 
@@ -482,7 +432,6 @@ public class CustomerTest extends ShopifyAndroidTestCase {
                 assertNotNull(customer);
                 CustomerTest.this.customer = customer;
                 CustomerTest.this.customerToken = buyClient.getCustomerToken();
-                latch.countDown();
             }
 
             @Override
@@ -497,7 +446,6 @@ public class CustomerTest extends ShopifyAndroidTestCase {
     @Test
     public void testCustomerCreationDuplicateEmail() throws InterruptedException {
 
-        final CountDownLatch latch = new CountDownLatch(1);
         final Customer input = getExistingCustomer();
         final AccountCredentials accountCredentials = new AccountCredentials(input.getEmail(), PASSWORD, input.getFirstName(), input.getLastName());
 
@@ -510,19 +458,15 @@ public class CustomerTest extends ShopifyAndroidTestCase {
             @Override
             public void failure(RetrofitError error) {
                 if (BuyError.isEmailAlreadyTakenError(error, input.getEmail())) {
-                    latch.countDown();
                 } else {
                     fail(String.format("Should be getting email already taken error. \nGot \"%s\"", error.getMessage()));
                 }
             }
         });
-        latch.await();
     }
 
     @Test
     public void testCustomerInvalidLogin() throws InterruptedException {
-
-        final CountDownLatch latch = new CountDownLatch(1);
         final Customer customer = getExistingCustomer();
         final AccountCredentials accountCredentials = new AccountCredentials(customer.getEmail(), WRONG_PASSWORD);
 
@@ -535,9 +479,7 @@ public class CustomerTest extends ShopifyAndroidTestCase {
 
             @Override
             public void failure(RetrofitError error) {
-                latch.countDown();
             }
         });
-        latch.await();
     }
 }

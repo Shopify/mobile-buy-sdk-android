@@ -104,6 +104,8 @@ public class BuyClient implements IBuyClient {
     private String webReturnToLabel;
     private CustomerToken customerToken;
 
+    private Scheduler callbackScheduler = AndroidSchedulers.mainThread();
+
     @Override
     public String getApiKey() {
         return apiKey;
@@ -189,8 +191,14 @@ public class BuyClient implements IBuyClient {
         retrofitService = adapter.create(BuyRetrofitService.class);
     }
 
+    @Override
     public Scheduler getCallbackScheduler() {
-        return AndroidSchedulers.mainThread();
+        return callbackScheduler;
+    }
+
+    @Override
+    public void setCallbackScheduler(Scheduler callbackScheduler) {
+        this.callbackScheduler = callbackScheduler;
     }
 
     /**
