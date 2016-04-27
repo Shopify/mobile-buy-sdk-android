@@ -53,8 +53,6 @@ import com.shopify.sample.R;
 import com.shopify.sample.ui.ProductDetailsBuilder;
 import com.shopify.sample.ui.ProductDetailsTheme;
 
-import org.w3c.dom.Text;
-
 import java.util.List;
 
 import retrofit2.Response;

@@ -742,7 +742,7 @@ public class BuyClient {
 
         PaymentToken paymentToken = new PaymentToken(androidPayToken, PAYMENT_TOKEN_TYPE_ANDROID_PAY, androidPayPublicKeyHash);
 
-        retrofitService.completeCheckout(new PaymentTokenWrapper(paymentToken), checkout.getToken(), new Callback<CheckoutWrapper>() {
+        retrofitService.completeCheckout(new PaymentTokenWrapper(paymentToken), checkout.getToken()).observeOn(getCallbackScheduler()).subscribe(new InternalCallback<CheckoutWrapper>() {
             @Override
             public void success(CheckoutWrapper checkoutWrapper, Response response) {
                 callback.success(checkoutWrapper.getCheckout(), response);

@@ -36,8 +36,8 @@ import com.shopify.buy.model.internal.EmailWrapper;
 import com.shopify.buy.model.internal.GiftCardWrapper;
 import com.shopify.buy.model.internal.OrderWrapper;
 import com.shopify.buy.model.internal.OrdersWrapper;
-import com.shopify.buy.model.internal.ProductListings;
 import com.shopify.buy.model.internal.PaymentTokenWrapper;
+import com.shopify.buy.model.internal.ProductListings;
 import com.shopify.buy.model.internal.ShippingRatesWrapper;
 
 import java.util.HashMap;
@@ -101,14 +101,14 @@ interface BuyRetrofitService {
     @POST("anywhere/checkouts/{token}/complete.json")
     Observable<Response<CheckoutWrapper>> completeCheckout(@Body HashMap<String, String> paymentSessionIdMap, @Path("token") String token);
 
+    @POST("/anywhere/checkouts/{token}/complete.json")
+    Observable<Response<CheckoutWrapper>> completeCheckout(@Body PaymentTokenWrapper paymentTokenWrapper, @Path("token") String token);
+
     @GET("anywhere/checkouts/{token}/processing.json")
     Observable<Response<Void>> getCheckoutCompletionStatus(@Path("token") String token);
 
     @GET("anywhere/checkouts/{token}.json")
     Observable<Response<CheckoutWrapper>> getCheckout(@Path("token") String token);
-
-    @POST("/anywhere/checkouts/{token}/complete.json")
-    Observable<Response<CheckoutWrapper>> completeCheckout(@Body PaymentTokenWrapper paymentTokenWrapper, @Path("token") String token, Callback<CheckoutWrapper> callback);
 
     @POST("anywhere/checkouts/{token}/gift_cards.json")
     Observable<Response<GiftCardWrapper>> applyGiftCard(@Body GiftCardWrapper giftCardWrapper, @Path("token") String token);
