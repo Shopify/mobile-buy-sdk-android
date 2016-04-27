@@ -24,6 +24,8 @@
 
 package com.shopify.buy.model;
 
+import android.text.TextUtils;
+
 import com.google.gson.annotations.SerializedName;
 
 /**
@@ -206,6 +208,7 @@ public class Address extends ShopifyObject {
 
         Address address = (Address) o;
 
+        // TODO Kris - we should combine this and the locationsAreEqual, and use TextUtils in this function to simplify
         if (address1 != null ? !address1.equals(address.address1) : address.address1 != null)
             return false;
         if (address2 != null ? !address2.equals(address.address2) : address.address2 != null)
@@ -229,4 +232,42 @@ public class Address extends ShopifyObject {
         return !(zip != null ? !zip.equals(address.zip) : address.zip != null);
     }
 
+    /**
+     * Compares the location portion of the addresses
+     *
+     * @param otherAddress The address to compare to
+     * @return true if the address lines, city, country code, province code, and zip are equivalent
+     */
+    public boolean locationsAreEqual(Address otherAddress) {
+
+        if (this == otherAddress) {
+            return true;
+        }
+
+        if (!TextUtils.equals(address1, otherAddress.address1)) {
+            return false;
+        }
+
+        if (!TextUtils.equals(address2, otherAddress.address2)) {
+            return false;
+        }
+
+        if (!TextUtils.equals(city, otherAddress.city)) {
+            return false;
+        }
+
+        if (!TextUtils.equals(countryCode, otherAddress.countryCode)) {
+            return false;
+        }
+
+        if (!TextUtils.equals(provinceCode, otherAddress.provinceCode)) {
+            return false;
+        }
+
+        if (!TextUtils.equals(zip, otherAddress.zip)) {
+            return false;
+        }
+
+        return true;
+    }
 }

@@ -38,6 +38,10 @@
 
         <activity android:name=".activity.CheckoutActivity"/>
 
+        <activity android:name=".activity.AndroidPayCheckoutActivity"/>
+
+        <activity android:name=".activity.OrderCompleteActivity"/>
+
     </application>
 
 </manifest>

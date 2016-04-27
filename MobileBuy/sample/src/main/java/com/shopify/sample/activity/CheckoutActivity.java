@@ -43,8 +43,8 @@ import retrofit2.Response;
 
 /**
  * The final activity in the app flow. Allows the user to choose between:
- * 1. A native checkout where the payment info is hardcoded and the chekcout is completed within the app; or
- * 2. A web checkout where the user enters their payment info and completes the checkout in a web browser
+ * 1. A native checkout where the payment info is hardcoded and the checkout is completed within the app; or
+ * 2. A web checkout where the user enters their payment info and completes the checkout in a web browser;
  */
 public class CheckoutActivity extends SampleActivity {
 

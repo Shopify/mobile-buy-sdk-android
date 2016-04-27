@@ -37,11 +37,11 @@ import com.shopify.buy.model.internal.GiftCardWrapper;
 import com.shopify.buy.model.internal.OrderWrapper;
 import com.shopify.buy.model.internal.OrdersWrapper;
 import com.shopify.buy.model.internal.ProductListings;
+import com.shopify.buy.model.internal.PaymentTokenWrapper;
 import com.shopify.buy.model.internal.ShippingRatesWrapper;
 
 import java.util.HashMap;
 
-import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.http.Body;
@@ -53,6 +53,7 @@ import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 import rx.Observable;
+
 
 /**
  * Provides the interface for {@link Retrofit} describing the endpoints and responses for the Mobile Buy endpoints
@@ -105,6 +106,9 @@ interface BuyRetrofitService {
 
     @GET("anywhere/checkouts/{token}.json")
     Observable<Response<CheckoutWrapper>> getCheckout(@Path("token") String token);
+
+    @POST("/anywhere/checkouts/{token}/complete.json")
+    Observable<Response<CheckoutWrapper>> completeCheckout(@Body PaymentTokenWrapper paymentTokenWrapper, @Path("token") String token, Callback<CheckoutWrapper> callback);
 
     @POST("anywhere/checkouts/{token}/gift_cards.json")
     Observable<Response<GiftCardWrapper>> applyGiftCard(@Body GiftCardWrapper giftCardWrapper, @Path("token") String token);
