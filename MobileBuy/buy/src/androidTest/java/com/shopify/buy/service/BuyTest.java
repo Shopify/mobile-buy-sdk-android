@@ -610,29 +610,16 @@ public class BuyTest extends ShopifyAndroidTestCase {
         latch.await();
     }
 
-    private void fetchShippingRates(int expectedStatus) throws InterruptedException {
-        final CountDownLatch latch = new CountDownLatch(1);
-        pollShippingRates(expectedStatus, latch);
-        latch.await();
-    }
-
-    private void pollShippingRates(final int expectedStatus, final CountDownLatch latch) {
+    private void fetchShippingRates(final int expectedStatus) throws InterruptedException {
         assertNotNull(checkout);
-        Callback<List<ShippingRate>> callback = new Callback<List<ShippingRate>>() {
+        final CountDownLatch latch = new CountDownLatch(1);
+        buyClient.getShippingRates(checkout.getToken(), new Callback<List<ShippingRate>>() {
             @Override
             public void success(List<ShippingRate> shippingRates, Response response) {
-                if (response.code() != expectedStatus) {
-                    try {
-                        Thread.sleep(500);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    pollShippingRates(expectedStatus, latch);
-                } else {
-                    assertNotNull(shippingRates);
-                    BuyTest.this.shippingRates = shippingRates;
-                    latch.countDown();
-                }
+                assertEquals(response.code(), expectedStatus);
+                assertNotNull(shippingRates);
+                BuyTest.this.shippingRates = shippingRates;
+                latch.countDown();
             }
 
             @Override
@@ -640,8 +627,8 @@ public class BuyTest extends ShopifyAndroidTestCase {
                 assertEquals(error.getResponse().code(), expectedStatus);
                 latch.countDown();
             }
-        };
-        buyClient.getShippingRates(checkout.getToken(), callback);
+        });
+        latch.await();
     }
 
     private void setShippingRate() throws InterruptedException {
@@ -683,6 +670,7 @@ public class BuyTest extends ShopifyAndroidTestCase {
             @Override
             public void success(Checkout checkout, Response response) {
                 assertEquals(HttpStatus.SC_OK, response.code());
+                assertNotNull(checkout.getPaymentSessionId());
                 BuyTest.this.checkout = checkout;
                 latch.countDown();
             }
