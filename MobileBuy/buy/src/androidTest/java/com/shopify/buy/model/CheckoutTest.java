@@ -1,15 +1,25 @@
 package com.shopify.buy.model;
 
+import android.support.test.runner.AndroidJUnit4;
+
 import com.google.gson.Gson;
 import com.shopify.buy.dataprovider.BuyClientFactory;
 import com.shopify.buy.extensions.ProductVariantPrivateAPIs;
 import com.shopify.buy.extensions.ShopifyAndroidTestCase;
 
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import static junit.framework.Assert.assertEquals;
+
 /**
  * Basic unit test for initializing a checkout and adding {@code LineItems}
  */
+
+@RunWith(AndroidJUnit4.class)
 public class CheckoutTest extends ShopifyAndroidTestCase {
 
+    @Test
     public void testInitializeWithCart() {
         Cart cart = new Cart();
 
@@ -46,6 +56,7 @@ public class CheckoutTest extends ShopifyAndroidTestCase {
     }
 
     // Tests both serialization of attributes as a hash map, and deserialization of attributes from a hash map
+    @Test
     public void testAttributesSerialization() {
         Cart cart = new Cart();
         ProductVariantPrivateAPIs variant1 = new ProductVariantPrivateAPIs();
@@ -67,6 +78,7 @@ public class CheckoutTest extends ShopifyAndroidTestCase {
     }
 
     // Tests deserialization of the JSON returned over the wire from the server
+    @Test
     public void testAttributeDeserialization() {
         String jsonString = "{\"channel\":\"mobile_app\",\"line_items\":[{\"variant\":{\"available\":false,\"grams\":0,\"position\":0,\"productId\":0,\"requires_shipping\":false,\"taxable\":false,\"id\":1},\"grams\":0,\"quantity\":1,\"requires_shipping\":false,\"taxable\":false,\"variant_id\":1}],\"attributes\":[{\"name\":\"foo\",\"value\":\"bar\"}]}";
 

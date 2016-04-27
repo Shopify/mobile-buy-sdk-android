@@ -1,5 +1,7 @@
 package com.shopify.buy.model;
 
+import android.support.test.runner.AndroidJUnit4;
+
 import com.google.gson.Gson;
 import com.shopify.buy.dataprovider.BuyClient;
 import com.shopify.buy.dataprovider.BuyClientFactory;
@@ -7,17 +9,25 @@ import com.shopify.buy.dataprovider.Callback;
 import com.shopify.buy.dataprovider.RetrofitError;
 import com.shopify.buy.extensions.ShopifyAndroidTestCase;
 
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.concurrent.CountDownLatch;
 
 import retrofit2.Response;
 
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.fail;
+
 /**
  * Created by davepelletier on 15-08-11.
  */
+@RunWith(AndroidJUnit4.class)
 public class SerializationTest extends ShopifyAndroidTestCase {
 
+    @Test
     public void testSerializeProductAndCart() throws InterruptedException {
         final CountDownLatch latch = new CountDownLatch(1);
         buyClient.getProduct(data.getProductId(), new Callback<Product>() {
@@ -40,6 +50,7 @@ public class SerializationTest extends ShopifyAndroidTestCase {
         latch.await();
     }
 
+    @Test
     public void testSerializeShop() throws InterruptedException {
         final CountDownLatch latch = new CountDownLatch(1);
         buyClient.getShop(new Callback<Shop>() {
