@@ -34,15 +34,6 @@ public class Payment {
     @SerializedName("amount")
     private String amount;
 
-    @SerializedName("amount_in")
-    private String amountIn;
-
-    @SerializedName("amount_out")
-    private String amountOut;
-
-    @SerializedName("amount_rounding")
-    private String amountRounding;
-
     @SerializedName("authorization")
     private String authorization;
 
@@ -81,18 +72,6 @@ public class Payment {
 
     public String getAmount() {
         return amount;
-    }
-
-    public String getAmountIn() {
-        return amountIn;
-    }
-
-    public String getAmountOut() {
-        return amountOut;
-    }
-
-    public String getAmountRounding() {
-        return amountRounding;
     }
 
     public String getAuthorization() {
