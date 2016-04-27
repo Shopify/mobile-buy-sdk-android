@@ -249,7 +249,6 @@ public class BuyTest extends ShopifyAndroidTestCase {
         setShippingRate();
         addCreditCardToCheckout();
         completeCheckout();
-        pollCheckoutCompletionStatus();
         getCheckout();
     }
 
@@ -713,31 +712,6 @@ public class BuyTest extends ShopifyAndroidTestCase {
             }
         });
         latch.await();
-    }
-
-    private void pollCheckoutCompletionStatus() throws InterruptedException {
-        final CountDownLatch latch = new CountDownLatch(1);
-        recurseCheckoutCompletionPoll(latch);
-        latch.await();
-    }
-
-    private void recurseCheckoutCompletionPoll(final CountDownLatch latch) {
-        final Callback<Boolean> callback = new Callback<Boolean>() {
-            @Override
-            public void success(Boolean complete, Response response) {
-                if (complete) {
-                    latch.countDown();
-                } else {
-                    recurseCheckoutCompletionPoll(latch);
-                }
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                fail(BuyClient.getErrorBody(error));
-            }
-        };
-        buyClient.getCheckoutCompletionStatus(checkout, callback);
     }
 
     private void getCheckout() throws InterruptedException {

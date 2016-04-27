@@ -675,38 +675,6 @@ public class BuyClient {
     }
 
     /**
-     * Get the status of the payment session associated with {@code checkout}. {@code callback} will be
-     * called with a boolean value indicating whether the session has completed or not. This method
-     * should be polled until the {@code callback} response is {@code true}
-     *
-     * @param checkout a {@link Checkout} that has been passed as a parameter to {@link #completeCheckout(Checkout, Callback)}
-     * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
-     */
-    public void getCheckoutCompletionStatus(Checkout checkout, final Callback<Boolean> callback) {
-        if (checkout == null) {
-            throw new NullPointerException("checkout cannot be null");
-        }
-
-        retrofitService.getCheckoutCompletionStatus(checkout.getToken()).observeOn(getCallbackScheduler()).subscribe(new InternalCallback<Void>() {
-
-            @Override
-            public void success(Void aVoid, Response response) {
-                if (HttpURLConnection.HTTP_OK == response.code()) {
-                    callback.success(true, response);
-                } else {
-                    callback.success(false, response);
-                }
-
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                callback.failure(error);
-            }
-        });
-    }
-
-    /**
      * Fetch an existing Checkout from Shopify
      *
      * @param checkoutToken the token associated with the existing {@link Checkout}
