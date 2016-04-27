@@ -29,12 +29,12 @@ platform :android do
     })
   end
 
-  desc "Run Tests"
+  desc "Build Release"
   lane :release do
     run_gradle_tests({
       android_project_path: ANDROID_PROJECT_PATH,
       gradle_command: ':buy:archiveReleasePackage',
-      artifact_upload_paths: [ 'MobileBuy/buy/build/outputs/androidTest-results/connected/', 'MobileBuy/buy/build/distributions/' ],
+      artifact_upload_paths: [ 'MobileBuy/buy/build/distributions/' ],
       android_package: PACKAGE
     })
   end
