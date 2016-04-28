@@ -15,8 +15,6 @@ import org.junit.runner.RunWith;
 import java.util.ArrayList;
 import java.util.List;
 
-import retrofit2.Response;
-
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertNotNull;
@@ -33,7 +31,7 @@ public class StorefrontTest extends ShopifyAndroidTestCase {
     public void testGetProductPage() throws InterruptedException {
         buyClient.getProductPage(1, new Callback<List<Product>>() {
             @Override
-            public void success(List<Product> products, Response response) {
+            public void success(List<Product> products) {
                 assertFalse(products.isEmpty());
             }
 
@@ -48,7 +46,7 @@ public class StorefrontTest extends ShopifyAndroidTestCase {
     public void testGetShop() throws InterruptedException {
         buyClient.getShop(new Callback<Shop>() {
             @Override
-            public void success(Shop shop, Response response) {
+            public void success(Shop shop) {
                 assertNotNull(shop);
             }
 
@@ -64,7 +62,7 @@ public class StorefrontTest extends ShopifyAndroidTestCase {
         final String productId = data.getProductId();
         buyClient.getProduct(productId, new Callback<Product>() {
             @Override
-            public void success(Product product, Response response) {
+            public void success(Product product) {
                 assertNotNull(product);
                 assertEquals(product.getProductId(), productId);
             }
@@ -82,7 +80,7 @@ public class StorefrontTest extends ShopifyAndroidTestCase {
 
         buyClient.getProducts(productIds, new Callback<List<Product>>() {
             @Override
-            public void success(List<Product> products, Response response) {
+            public void success(List<Product> products) {
                 assertNotNull(products);
                 assertEquals(products.size(), productIds.size());
             }
@@ -98,7 +96,7 @@ public class StorefrontTest extends ShopifyAndroidTestCase {
     public void testGetNonexistentProduct() throws InterruptedException {
         buyClient.getProduct("1337", new Callback<Product>() {
             @Override
-            public void success(Product product, Response response) {
+            public void success(Product product) {
                 assertNull(product);
             }
 
@@ -113,7 +111,7 @@ public class StorefrontTest extends ShopifyAndroidTestCase {
     public void testGetOutOfIndexProductPage() throws InterruptedException {
         buyClient.getProductPage(999, new Callback<List<Product>>() {
             @Override
-            public void success(List<Product> products, Response response) {
+            public void success(List<Product> products) {
                 assertEquals(products.size(), 0);
             }
 
@@ -133,7 +131,7 @@ public class StorefrontTest extends ShopifyAndroidTestCase {
 
         buyClient.getProducts(productIds, new Callback<List<Product>>() {
             @Override
-            public void success(List<Product> products, Response response) {
+            public void success(List<Product> products) {
                 assertNotNull(products);
                 assertEquals(products.size(), productIds.size() - 1);
             }
@@ -149,7 +147,7 @@ public class StorefrontTest extends ShopifyAndroidTestCase {
     public void testGetCollection() throws InterruptedException {
         buyClient.getCollections(new Callback<List<Collection>>() {
             @Override
-            public void success(List<Collection> collections, Response response) {
+            public void success(List<Collection> collections) {
                 assertNotNull(collections);
                 assertFalse(collections.isEmpty());
             }
@@ -165,7 +163,7 @@ public class StorefrontTest extends ShopifyAndroidTestCase {
     public void testGetProductsInCollection() throws InterruptedException {
         buyClient.getProducts(1, data.getCollectionId(), Collection.SortOrder.COLLECTION_DEFAULT, new Callback<List<Product>>() {
             @Override
-            public void success(List<Product> products, Response response) {
+            public void success(List<Product> products) {
                 assertNotNull(products);
                 assertFalse(products.isEmpty());
             }
@@ -181,7 +179,7 @@ public class StorefrontTest extends ShopifyAndroidTestCase {
     public void testGetCollectionPage() throws InterruptedException {
         buyClient.getCollectionPage(1, new Callback<List<Collection>>() {
             @Override
-            public void success(List<Collection> collections, Response response) {
+            public void success(List<Collection> collections) {
                 assertNotNull(collections);
                 assertFalse(collections.isEmpty());
                 assertEquals(collections.get(0).getHandle(), "frontpage");
@@ -198,7 +196,7 @@ public class StorefrontTest extends ShopifyAndroidTestCase {
     public void testGetOutOfIndexCollectionPage() throws InterruptedException {
         buyClient.getCollectionPage(999, new Callback<List<Collection>>() {
             @Override
-            public void success(List<Collection> collections, Response response) {
+            public void success(List<Collection> collections) {
                 assertNotNull(collections);
                 assertEquals(collections.size(), 0);
             }

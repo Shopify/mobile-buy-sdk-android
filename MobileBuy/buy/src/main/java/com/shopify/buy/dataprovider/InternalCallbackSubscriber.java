@@ -23,13 +23,15 @@
  */
 package com.shopify.buy.dataprovider;
 
-import retrofit2.Response;
 import rx.Subscriber;
 
-/**
- * Created by ykulbashian on 16-04-07.
- */
-abstract class InternalCallback<T> extends Subscriber<Response<T>> {
+final class InternalCallbackSubscriber<T> extends Subscriber<T> {
+
+    final Callback<T> callback;
+
+    InternalCallbackSubscriber(final Callback<T> callback) {
+        this.callback = callback;
+    }
 
     @Override
     public void onCompleted() {
@@ -37,28 +39,16 @@ abstract class InternalCallback<T> extends Subscriber<Response<T>> {
     }
 
     @Override
-    public void onNext(Response<T> response) {
-        if(response.isSuccessful()){
-            if(response.body() != null) {
-                success(response.body(), response);
-            } else {
-                success(null, response);
-            }
-        } else {
-            failure(new RetrofitError(response));
-        }
+    public void onNext(final T response) {
+        callback.success(response);
     }
 
     @Override
-    public void onError(Throwable t) {
-        if(t instanceof RetrofitError) {
-            failure((RetrofitError) t);
+    public void onError(final Throwable t) {
+        if (t instanceof RetrofitError) {
+            callback.failure((RetrofitError) t);
         } else {
-            failure(RetrofitError.exception(new Exception(t)));
+            callback.failure(RetrofitError.exception(new Exception(t)));
         }
     }
-
-    protected abstract void success(T body, Response response);
-
-    protected abstract void failure(RetrofitError error);
 }

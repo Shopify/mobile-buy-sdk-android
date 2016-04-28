@@ -31,7 +31,7 @@ public class ProductTest extends ShopifyAndroidTestCase {
         final CountDownLatch latch = new CountDownLatch(1);
         buyClient.getProduct(data.getProductIdWithVariants(), new Callback<Product>() {
             @Override
-            public void success(Product product, Response response) {
+            public void success(Product product) {
                 List<ProductVariant> variants = product.getVariants();
                 ProductVariant variant = variants.get(variants.size() - 1);
                 assertEquals(variant, product.getVariant(variant.getOptionValues()));
@@ -52,7 +52,7 @@ public class ProductTest extends ShopifyAndroidTestCase {
         final CountDownLatch latch = new CountDownLatch(1);
         buyClient.getProduct(data.getProductIdWithTags(), new Callback<Product>() {
             @Override
-            public void success(Product product, Response response) {
+            public void success(Product product) {
                 Set<String> tags = product.getTags();
                 assertNotNull(tags);
                 assertEquals(true, tags.size() > 0);
@@ -75,7 +75,7 @@ public class ProductTest extends ShopifyAndroidTestCase {
         final CountDownLatch latch = new CountDownLatch(1);
         buyClient.getProduct(data.getProductIdWithoutTags(), new Callback<Product>() {
             @Override
-            public void success(Product product, Response response) {
+            public void success(Product product) {
                 Set<String> tags = product.getTags();
                 assertNotNull(tags);
                 assertEquals(true, tags.size() == 0);

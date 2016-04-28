@@ -28,7 +28,7 @@ import java.io.IOException;
 
 import retrofit2.Response;
 
-public class RetrofitError extends IOException {
+public class RetrofitError extends RuntimeException {
 
     private Response response = null;
     private Exception exception = null;

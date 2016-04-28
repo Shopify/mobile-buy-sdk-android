@@ -52,7 +52,6 @@ import com.shopify.sample.R;
 import java.util.List;
 
 import okhttp3.logging.HttpLoggingInterceptor;
-import retrofit2.Response;
 
 /**
  * Application class that maintains instances of BuyClient and Checkout for the lifetime of the app.
@@ -102,7 +101,7 @@ public class SampleApplication extends Application {
 
         buyClient.getShop(new Callback<Shop>() {
             @Override
-            public void success(Shop shop, Response response) {
+            public void success(Shop shop) {
                 SampleApplication.this.shop = shop;
             }
 
@@ -122,12 +121,12 @@ public class SampleApplication extends Application {
 
         buyClient.getProductPage(page, new Callback<List<Product>>() {
             @Override
-            public void success(List<Product> products, Response response) {
+            public void success(List<Product> products) {
                 if (products.size() > 0) {
                     allProducts.addAll(products);
                     getAllProducts(page + 1, allProducts, callback );
                 } else {
-                    callback.success(allProducts, response);
+                    callback.success(allProducts);
                 }
             }
 
@@ -261,9 +260,9 @@ public class SampleApplication extends Application {
     private Callback<Checkout> wrapCheckoutCallback(final Callback<Checkout> callback) {
         return new Callback<Checkout>() {
             @Override
-            public void success(Checkout checkout, Response response) {
+            public void success(Checkout checkout) {
                 SampleApplication.this.checkout = checkout;
-                callback.success(checkout, response);
+                callback.success(checkout);
             }
 
             @Override

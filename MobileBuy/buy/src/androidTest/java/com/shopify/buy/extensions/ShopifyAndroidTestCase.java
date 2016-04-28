@@ -15,6 +15,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.TestName;
 
+import okhttp3.logging.HttpLoggingInterceptor;
 import rx.Scheduler;
 import rx.plugins.RxJavaPlugins;
 import rx.plugins.RxJavaSchedulersHook;
@@ -93,11 +94,11 @@ public class ShopifyAndroidTestCase {
     protected BuyClient getBuyClient(String shopDomain, String apiKey, String appId, String applicationName) {
         BuyClient buyClient;
         if (USE_MOCK_RESPONSES) {
-            buyClient = BuyClientFactory.getBuyClient(shopDomain, apiKey, appId, applicationName, new MockResponder(context));
+            buyClient = BuyClientFactory.getBuyClient(shopDomain, apiKey, appId, applicationName, new MockResponder(context), new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY));
         } else if (GENERATE_MOCK_RESPONSES) {
-            buyClient = BuyClientFactory.getBuyClient(shopDomain, apiKey, appId, applicationName, new MockResponseGenerator(context));
+            buyClient = BuyClientFactory.getBuyClient(shopDomain, apiKey, appId, applicationName, new MockResponseGenerator(context), new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY));
         } else {
-            buyClient = BuyClientFactory.getBuyClient(shopDomain, apiKey, appId, applicationName);
+            buyClient = BuyClientFactory.getBuyClient(shopDomain, apiKey, appId, applicationName, new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY));
         }
 
         buyClient.setCallbackScheduler(Schedulers.immediate());

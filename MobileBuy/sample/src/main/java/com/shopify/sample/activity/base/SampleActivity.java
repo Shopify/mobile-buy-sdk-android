@@ -47,8 +47,6 @@ import com.shopify.sample.application.SampleApplication;
 
 import java.util.List;
 
-import retrofit2.Response;
-
 /**
  * Base class for all activities in the app. Manages the ProgressDialog that is displayed while network activity is occurring.
  */
@@ -221,7 +219,7 @@ public class SampleActivity extends Activity {
         getSampleApplication().getCheckoutCompletionStatus(new Callback<Boolean>() {
             @Override
 
-            public void success(Boolean complete, Response response) {
+            public void success(Boolean complete) {
                 if (complete) {
                     dismissLoadingDialog();
                     onCheckoutComplete();

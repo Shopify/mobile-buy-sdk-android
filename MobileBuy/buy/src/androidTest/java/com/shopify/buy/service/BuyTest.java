@@ -59,7 +59,7 @@ public class BuyTest extends ShopifyAndroidTestCase {
         createValidCheckout();
         buyClient.applyGiftCard(data.getGiftCardCode(TestData.GiftCardType.INVALID), checkout, new Callback<Checkout>() {
             @Override
-            public void success(Checkout checkout, Response response) {
+            public void success(Checkout checkout) {
                 fail("Retrofit succeeded. Expected: 422 error");
             }
 
@@ -75,7 +75,7 @@ public class BuyTest extends ShopifyAndroidTestCase {
         createValidCheckout();
         buyClient.applyGiftCard(data.getGiftCardCode(TestData.GiftCardType.EXPIRED), checkout, new Callback<Checkout>() {
             @Override
-            public void success(Checkout checkout, Response response) {
+            public void success(Checkout checkout) {
                 fail("Retrofit succeeded. Expected: 422 error");
             }
 
@@ -100,7 +100,7 @@ public class BuyTest extends ShopifyAndroidTestCase {
         invalidGiftCard.setId(data.getGiftCardId(TestData.GiftCardType.INVALID));
         buyClient.removeGiftCard(invalidGiftCard, checkout, new Callback<Checkout>() {
             @Override
-            public void success(Checkout checkout, Response response) {
+            public void success(Checkout checkout) {
                 fail("Retrofit succeeded. Expected: 422 error");
             }
 
@@ -118,7 +118,7 @@ public class BuyTest extends ShopifyAndroidTestCase {
         expiredGiftCard.setId(data.getGiftCardId(TestData.GiftCardType.EXPIRED));
         buyClient.removeGiftCard(expiredGiftCard, checkout, new Callback<Checkout>() {
             @Override
-            public void success(Checkout checkout, Response response) {
+            public void success(Checkout checkout) {
                 fail("Retrofit succeeded. Expected: 422 error");
             }
 
@@ -173,7 +173,7 @@ public class BuyTest extends ShopifyAndroidTestCase {
 	public void testGetCheckoutWithInvalidToken() throws InterruptedException {
         buyClient.getCheckout("ZZZZZZZZZZZZZZZ", new Callback<Checkout>() {
             @Override
-            public void success(Checkout checkout, Response response) {
+            public void success(Checkout checkout) {
                 fail("Retrofit succeeded. Expected: 404");
             }
 
@@ -237,8 +237,8 @@ public class BuyTest extends ShopifyAndroidTestCase {
 
         buyClient.createCheckout(checkout, new Callback<Checkout>() {
             @Override
-            public void success(Checkout checkout, Response response) {
-                validateCheckoutCreatedWithVariantID(checkout, response);
+            public void success(Checkout checkout) {
+                validateCheckoutCreatedWithVariantID(checkout);
                 BuyTest.this.checkout = checkout;
             }
 
@@ -289,7 +289,7 @@ public class BuyTest extends ShopifyAndroidTestCase {
 
         buyClient.createCheckout(checkout, new Callback<Checkout>() {
             @Override
-            public void success(Checkout checkout, Response response) {
+            public void success(Checkout checkout) {
                 assertNotNull(checkout.getDiscount());
 
                 Discount discount = checkout.getDiscount();
@@ -312,7 +312,7 @@ public class BuyTest extends ShopifyAndroidTestCase {
         checkout.setDiscountCode(data.getDiscountCode(TestData.DiscountType.EXPIRED));
         buyClient.createCheckout(checkout, new Callback<Checkout>() {
             @Override
-            public void success(Checkout checkout, Response response) {
+            public void success(Checkout checkout) {
                 fail("Retrofit succeeded. Expected: 422 error");
             }
 
@@ -331,7 +331,7 @@ public class BuyTest extends ShopifyAndroidTestCase {
         checkout.setDiscountCode("notarealdiscountasdasfsafasda");
         buyClient.createCheckout(checkout, new Callback<Checkout>() {
             @Override
-            public void success(Checkout checkout, Response response) {
+            public void success(Checkout checkout) {
                 fail("Retrofit succeeded. Expected: 422 error");
             }
 
@@ -352,7 +352,7 @@ public class BuyTest extends ShopifyAndroidTestCase {
 
         buyClient.updateCheckout(checkout, new Callback<Checkout>() {
             @Override
-            public void success(Checkout checkout, Response response) {
+            public void success(Checkout checkout) {
                 assertNotNull(checkout.getDiscount());
 
                 Discount discount = checkout.getDiscount();
@@ -383,7 +383,7 @@ public class BuyTest extends ShopifyAndroidTestCase {
 
         buyClient.removeProductReservationsFromCheckout(checkout, new Callback<Checkout>() {
             @Override
-            public void success(Checkout checkout, Response response) {
+            public void success(Checkout checkout) {
                 assertEquals(checkout.getReservationTime().longValue(), 0);
 
                 // make sure that only the reservation time changed.
@@ -407,7 +407,7 @@ public class BuyTest extends ShopifyAndroidTestCase {
         final AtomicReference<Product> productRef = new AtomicReference<>();
         buyClient.getProduct(data.getProductId(), new Callback<Product>() {
             @Override
-            public void success(Product product, Response response) {
+            public void success(Product product) {
                 productRef.set(product);
             }
 
@@ -433,7 +433,7 @@ public class BuyTest extends ShopifyAndroidTestCase {
         final AtomicReference<Product> productRef = new AtomicReference<>();
         buyClient.getProduct(data.getProductId(), new Callback<Product>() {
             @Override
-            public void success(Product product, Response response) {
+            public void success(Product product) {
                 productRef.set(product);
             }
 
@@ -454,8 +454,8 @@ public class BuyTest extends ShopifyAndroidTestCase {
 
         buyClient.createCheckout(checkout, new Callback<Checkout>() {
             @Override
-            public void success(Checkout checkout, Response response) {
-                validateCreatedCheckout(checkout, response);
+            public void success(Checkout checkout) {
+                validateCreatedCheckout(checkout);
                 BuyTest.this.checkout = checkout;
             }
 
@@ -471,8 +471,8 @@ public class BuyTest extends ShopifyAndroidTestCase {
         checkout.setBillingAddress(checkout.getShippingAddress());
         buyClient.createCheckout(checkout, new Callback<Checkout>() {
             @Override
-            public void success(Checkout checkout, Response response) {
-                validateCreatedCheckout(checkout, response);
+            public void success(Checkout checkout) {
+                validateCreatedCheckout(checkout);
                 BuyTest.this.checkout = checkout;
             }
 
@@ -483,8 +483,7 @@ public class BuyTest extends ShopifyAndroidTestCase {
         });
     }
 
-    private void validateCreatedCheckout(Checkout checkout, Response response) {
-        assertEquals(HttpStatus.SC_CREATED, response.code());
+    private void validateCreatedCheckout(Checkout checkout) {
         assertNotNull(checkout.getLineItems());
         assertEquals(1, checkout.getLineItems().size());
         assertNotNull(checkout.getLineItems().get(0).getProperties());
@@ -492,8 +491,7 @@ public class BuyTest extends ShopifyAndroidTestCase {
         assertEquals(checkout.getSourceName(), "mobile_app");
     }
 
-    private void validateCheckoutCreatedWithVariantID(Checkout checkout, Response response) {
-        assertEquals(HttpStatus.SC_CREATED, response.code());
+    private void validateCheckoutCreatedWithVariantID(Checkout checkout) {
         assertNotNull(checkout.getLineItems());
         assertEquals(1, checkout.getLineItems().size());
         assertEquals(checkout.getSourceName(), "mobile_app");
@@ -526,7 +524,7 @@ public class BuyTest extends ShopifyAndroidTestCase {
 
         buyClient.applyGiftCard(code, checkout, new Callback<Checkout>() {
             @Override
-            public void success(Checkout checkout, Response response) {
+            public void success(Checkout checkout) {
 
                 BuyTest.this.checkout = checkout;
 
@@ -535,8 +533,6 @@ public class BuyTest extends ShopifyAndroidTestCase {
                 GiftCard giftCard = checkout.getGiftCards().get(size - 1);
                 float paymentDue = Float.valueOf(checkout.getPaymentDue());
                 float giftCardValue = Float.valueOf(giftCard.getBalance());
-
-                assertEquals(HttpStatus.SC_CREATED, response.code());
 
                 // make sure the code is the same
                 int startIndex = code.length() - giftCard.getLastCharacters().length();
@@ -565,8 +561,7 @@ public class BuyTest extends ShopifyAndroidTestCase {
 
         buyClient.removeGiftCard(giftCard, checkout, new Callback<Checkout>() {
             @Override
-            public void success(Checkout checkout, Response response) {
-                assertEquals(HttpStatus.SC_OK, response.code());
+            public void success(Checkout checkout) {
                 assertEquals(initialGiftCardCount - 1, checkout.getGiftCards().size());
 
                 float paymentDue = Float.valueOf(checkout.getPaymentDue());
@@ -590,18 +585,9 @@ public class BuyTest extends ShopifyAndroidTestCase {
         assertNotNull(checkout);
         Callback<List<ShippingRate>> callback = new Callback<List<ShippingRate>>() {
             @Override
-            public void success(List<ShippingRate> shippingRates, Response response) {
-                if (response.code() != expectedStatus) {
-                    try {
-                        Thread.sleep(500);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    pollShippingRates(expectedStatus);
-                } else {
-                    assertNotNull(shippingRates);
-                    BuyTest.this.shippingRates = shippingRates;
-                }
+            public void success(List<ShippingRate> shippingRates) {
+                assertNotNull(shippingRates);
+                BuyTest.this.shippingRates = shippingRates;
             }
 
             @Override
@@ -620,8 +606,7 @@ public class BuyTest extends ShopifyAndroidTestCase {
     private void updateCheckout() throws InterruptedException {
         buyClient.updateCheckout(checkout, new Callback<Checkout>() {
             @Override
-            public void success(Checkout checkout, Response response) {
-                assertEquals(HttpStatus.SC_OK, response.code());
+            public void success(Checkout checkout) {
                 assertNotNull(checkout);
                 assertEquals("test@test.com", checkout.getEmail());
                 BuyTest.this.checkout = checkout;
@@ -645,8 +630,7 @@ public class BuyTest extends ShopifyAndroidTestCase {
 
         buyClient.storeCreditCard(card, checkout, new Callback<Checkout>() {
             @Override
-            public void success(Checkout checkout, Response response) {
-                assertEquals(HttpStatus.SC_OK, response.code());
+            public void success(Checkout checkout) {
                 BuyTest.this.checkout = checkout;
             }
 
@@ -660,8 +644,7 @@ public class BuyTest extends ShopifyAndroidTestCase {
     private void completeCheckout() throws InterruptedException {
         buyClient.completeCheckout(checkout, new Callback<Checkout>() {
             @Override
-            public void success(Checkout checkout, Response response) {
-                assertEquals(HttpStatus.SC_OK, response.code());
+            public void success(Checkout checkout) {
             }
 
             @Override
@@ -678,7 +661,7 @@ public class BuyTest extends ShopifyAndroidTestCase {
     private void recurseCheckoutCompletionPoll() {
         final Callback<Boolean> callback = new Callback<Boolean>() {
             @Override
-            public void success(Boolean complete, Response response) {
+            public void success(Boolean complete) {
                 if (complete) {
                 } else {
                     recurseCheckoutCompletionPoll();
@@ -696,7 +679,7 @@ public class BuyTest extends ShopifyAndroidTestCase {
     private void getCheckout() throws InterruptedException {
         buyClient.getCheckout(checkout.getToken(), new Callback<Checkout>() {
             @Override
-            public void success(Checkout checkout, Response response) {
+            public void success(Checkout checkout) {
                 assertNotNull(checkout);
                 assertNotNull(checkout.getOrder().getId());
                 assertNotNull(checkout.getOrder().getStatusUrl());

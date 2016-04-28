@@ -43,8 +43,6 @@ import com.shopify.buy.model.ShippingRate;
 import java.net.HttpURLConnection;
 import java.util.List;
 
-import retrofit2.Response;
-
 /**
  * If the selected product requires shipping, this activity allows the user to select a list of shipping rates.
  * For the sample app, the shipping address has been hardcoded and we will only see the shipping rates applicable to that address.
@@ -76,7 +74,7 @@ public class ShippingRateListActivity extends SampleListActivity {
     private void fetchShippingRates() {
         getSampleApplication().getShippingRates(new Callback<List<ShippingRate>>() {
             @Override
-            public void success(List<ShippingRate> shippingRates, Response response) {
+            public void success(List<ShippingRate> shippingRates) {
                 if (response.code() == HttpURLConnection.HTTP_ACCEPTED) {
 
                     // Poll until the server either fails or returns HttpStatus.SC_ACCEPTED
@@ -160,7 +158,7 @@ public class ShippingRateListActivity extends SampleListActivity {
 
         getSampleApplication().setShippingRate(shippingRate, new Callback<Checkout>() {
             @Override
-            public void success(Checkout checkout, Response response) {
+            public void success(Checkout checkout) {
                 dismissLoadingDialog();
                 startActivity(new Intent(ShippingRateListActivity.this, DiscountActivity.class));
             }

@@ -38,20 +38,12 @@ import com.shopify.buy.model.Customer;
 import com.shopify.buy.model.CustomerToken;
 import com.shopify.buy.model.Order;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
-
-import retrofit2.Response;
-import rx.Scheduler;
-import rx.plugins.RxJavaPlugins;
-import rx.plugins.RxJavaSchedulersHook;
-import rx.plugins.RxJavaTestPlugins;
-import rx.schedulers.Schedulers;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
@@ -80,7 +72,7 @@ public class CustomerTest extends ShopifyAndroidTestCase {
 
         buyClient.createCustomer(accountCredentials, new Callback<Customer>() {
             @Override
-            public void success(Customer customer, Response response) {
+            public void success(Customer customer) {
                 assertNotNull(customer);
                 assertEquals(randomCustomer.getEmail(), customer.getEmail());
                 assertEquals(randomCustomer.getFirstName(), customer.getFirstName());
@@ -105,7 +97,7 @@ public class CustomerTest extends ShopifyAndroidTestCase {
         // TODO update this test when we start to get real tokens
         buyClient.activateCustomer(customer.getId(), "need activation token not access token", accountCredentials, new Callback<Customer>() {
             @Override
-            public void success(Customer customer, Response response) {
+            public void success(Customer customer) {
                 assertNotNull(customer);
             }
 
@@ -126,7 +118,7 @@ public class CustomerTest extends ShopifyAndroidTestCase {
 
         buyClient.loginCustomer(accountCredentials, new Callback<CustomerToken>() {
             @Override
-            public void success(CustomerToken customerToken, Response response) {
+            public void success(CustomerToken customerToken) {
                 assertNotNull(buyClient.getCustomerToken());
                 assertEquals(false, buyClient.getCustomerToken().getAccessToken().isEmpty());
                 CustomerTest.this.customerToken = buyClient.getCustomerToken();
@@ -148,7 +140,7 @@ public class CustomerTest extends ShopifyAndroidTestCase {
 
         buyClient.logoutCustomer(new Callback<Void>() {
             @Override
-            public void success(Void aVoid, Response response) {
+            public void success(Void aVoid) {
             }
 
             @Override
@@ -166,7 +158,7 @@ public class CustomerTest extends ShopifyAndroidTestCase {
 
         buyClient.renewCustomer(new Callback<CustomerToken>() {
             @Override
-            public void success(CustomerToken customerToken, Response response) {
+            public void success(CustomerToken customerToken) {
             }
 
             @Override
@@ -183,7 +175,7 @@ public class CustomerTest extends ShopifyAndroidTestCase {
 
         buyClient.recoverPassword(EMAIL, new Callback<Void>() {
             @Override
-            public void success(Void aVoid, Response response) {
+            public void success(Void aVoid) {
             }
 
             @Override
@@ -204,7 +196,7 @@ public class CustomerTest extends ShopifyAndroidTestCase {
 
         buyClient.updateCustomer(customer, new Callback<Customer>() {
             @Override
-            public void success(Customer customer, Response response) {
+            public void success(Customer customer) {
                 assertNotNull(customer);
                 assertEquals("Foo", customer.getLastName());
             }
@@ -224,7 +216,7 @@ public class CustomerTest extends ShopifyAndroidTestCase {
 
         buyClient.getOrders(customer, new Callback<List<Order>>() {
             @Override
-            public void success(List<Order> orders, Response response) {
+            public void success(List<Order> orders) {
                 assertNotNull(orders);
                 assertEquals(true, orders.size() > 0);
                 CustomerTest.this.orders = orders;
@@ -249,7 +241,7 @@ public class CustomerTest extends ShopifyAndroidTestCase {
 
         buyClient.getOrder(customer, orderId, new Callback<Order>() {
             @Override
-            public void success(Order order, Response response) {
+            public void success(Order order) {
                 assertNotNull(order);
             }
 
@@ -268,7 +260,7 @@ public class CustomerTest extends ShopifyAndroidTestCase {
 
         buyClient.getCustomer(customerToken.getCustomerId(), new Callback<Customer>() {
             @Override
-            public void success(Customer customer, Response response) {
+            public void success(Customer customer) {
                 assertNotNull(customer);
             }
 
@@ -289,7 +281,7 @@ public class CustomerTest extends ShopifyAndroidTestCase {
 
         buyClient.createAddress(customer, inputAddress, new Callback<Address>() {
             @Override
-            public void success(Address address, Response response) {
+            public void success(Address address) {
                 assertEquals(inputAddress.getAddress1(), address.getAddress1());
                 assertEquals(inputAddress.getAddress2(), address.getAddress2());
                 assertEquals(inputAddress.getCity(), address.getCity());
@@ -310,7 +302,7 @@ public class CustomerTest extends ShopifyAndroidTestCase {
 
         buyClient.getAddresses(customer, new Callback<List<Address>>() {
             @Override
-            public void success(List<Address> addresses, Response response) {
+            public void success(List<Address> addresses) {
                 assertNotNull(addresses);
                 assertEquals(true, addresses.size() > 0);
                 CustomerTest.this.addresses = addresses;
@@ -333,7 +325,7 @@ public class CustomerTest extends ShopifyAndroidTestCase {
 
         buyClient.getAddress(customer, addressId, new Callback<Address>() {
             @Override
-            public void success(Address address, Response response) {
+            public void success(Address address) {
                 assertNotNull(address);
                 CustomerTest.this.address = address;
             }
@@ -355,7 +347,7 @@ public class CustomerTest extends ShopifyAndroidTestCase {
 
         buyClient.updateAddress(customer, address, new Callback<Address>() {
             @Override
-            public void success(Address address, Response response) {
+            public void success(Address address) {
                 assertNotNull(address);
             }
 
@@ -428,7 +420,7 @@ public class CustomerTest extends ShopifyAndroidTestCase {
         buyClient.getCustomer(customerToken.getCustomerId(), new Callback<Customer>() {
 
             @Override
-            public void success(Customer customer, Response response) {
+            public void success(Customer customer) {
                 assertNotNull(customer);
                 CustomerTest.this.customer = customer;
                 CustomerTest.this.customerToken = buyClient.getCustomerToken();
@@ -451,7 +443,7 @@ public class CustomerTest extends ShopifyAndroidTestCase {
 
         buyClient.createCustomer(accountCredentials, new Callback<Customer>() {
             @Override
-            public void success(Customer customer, Response response) {
+            public void success(Customer customer) {
                 fail("Should not be able to create multiple accounts with same email");
             }
 
@@ -473,7 +465,7 @@ public class CustomerTest extends ShopifyAndroidTestCase {
         buyClient.loginCustomer(accountCredentials, new Callback<CustomerToken>() {
 
             @Override
-            public void success(CustomerToken customerToken, Response response) {
+            public void success(CustomerToken customerToken) {
                 fail("Invalid credentials should not be able to login");
             }
 
