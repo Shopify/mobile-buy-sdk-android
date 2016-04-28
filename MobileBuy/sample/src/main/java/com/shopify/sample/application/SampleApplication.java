@@ -272,9 +272,9 @@ public class SampleApplication extends Application {
     private Callback<Payment> wrapCheckoutCallbackForPayment(final Callback<Checkout> callback) {
         return new Callback<Payment>() {
             @Override
-            public void success(Payment payment, Response response) {
+            public void success(Payment payment) {
                 SampleApplication.this.checkout = payment.getCheckout();
-                callback.success(checkout, response);
+                callback.success(checkout);
             }
 
             @Override
