@@ -49,9 +49,9 @@ public class MockResponseGenerator implements Interceptor {
         To generate the file, do the following:
             1. Set ShopifyAndroidTestCase.GENERATE_MOCK_RESPONSES = true
             2. Make sure shop.properties has mobilebuysdktestshop credentials
-            3. Command line: adb shell rm /mnt/shell/emulated/0/Android/data/com.shopify.buy.test/files/MobileBuy.json
+            3. Command line: adb shell rm /storage/emulated/0/Android/data/com.shopify.buy.test/files/MobileBuy.json
             4. Run the tests
-            5. Command line: adb pull /mnt/shell/emulated/0/Android/data/com.shopify.buy.test/files/MobileBuy.json
+            5. Command line: adb pull /storage/emulated/0/Android/data/com.shopify.buy.test/files/MobileBuy.json
             6. Now you have the mock responses in a new file called MobileBuy.json
             7. Open up MobileBuy.json, remove the last comma, and surround the entire file with '{' and '}' to create one giant valid json object.
      */

@@ -22,40 +22,21 @@
  * THE SOFTWARE.
  */
 
-package com.shopify.buy.model;
+package com.shopify.buy.model.internal;
 
-import com.shopify.buy.dataprovider.BuyClientFactory;
+import com.google.gson.annotations.SerializedName;
+import com.shopify.buy.model.CustomerToken;
 
 /**
- * Base class for Shopify Objects
+ * Wrapper class used by Gson Serialization
  */
-public abstract class ShopifyObject {
+public class CustomerTokenWrapper {
 
-    protected Long id;
+    @SerializedName("customer_access_token")
+    private CustomerToken customerToken;
 
-    /**
-     * @return The unique identifier of this object within the Shopify platform.
-     */
-    public Long getId() {
-        return id;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof ShopifyObject)) return false;
-
-        ShopifyObject object = (ShopifyObject) o;
-
-        return id.equals(object.id);
-
-    }
-
-    /**
-     * @return A JSON representation of this object.
-     */
-    public String toJsonString() {
-        return BuyClientFactory.createDefaultGson().toJson(this);
+    public CustomerToken getCustomerToken() {
+        return customerToken;
     }
 
 }

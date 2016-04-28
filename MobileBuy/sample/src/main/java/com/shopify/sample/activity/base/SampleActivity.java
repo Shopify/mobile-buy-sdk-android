@@ -36,12 +36,12 @@ import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.shopify.sample.R;
-import com.shopify.sample.application.SampleApplication;
 import com.shopify.buy.dataprovider.BuyClient;
 import com.shopify.buy.model.Checkout;
 import com.shopify.buy.model.Discount;
 import com.shopify.buy.model.GiftCard;
+import com.shopify.sample.R;
+import com.shopify.sample.application.SampleApplication;
 
 import java.util.List;
 

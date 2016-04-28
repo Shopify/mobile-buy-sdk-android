@@ -17,7 +17,7 @@ public class ProductDetailsBuilderTest extends ShopifyAndroidTestCase {
         Intent intent = new ProductDetailsBuilder(this.getContext())
                 .setShopDomain(getShopDomain())
                 .setApiKey(getApiKey())
-                .setChannelid(getChannelId())
+                .setChannelId(getChannelId())
                 .setApplicationName(data.getApplicationName())
                 .setProductId(data.getProductId())
                 .setWebReturnToLabel(WEB_RETURN_TO_LABEL)
@@ -42,7 +42,7 @@ public class ProductDetailsBuilderTest extends ShopifyAndroidTestCase {
             Intent intent = new ProductDetailsBuilder(getContext())
                     .setApiKey(getApiKey())
                     .setApplicationName(data.getApplicationName())
-                    .setChannelid(getChannelId())
+                    .setChannelId(getChannelId())
                     .setProductId(data.getProductId())
                     .build();
 
@@ -56,7 +56,7 @@ public class ProductDetailsBuilderTest extends ShopifyAndroidTestCase {
         try {
             Intent intent = new ProductDetailsBuilder(getContext())
                     .setShopDomain(getShopDomain())
-                    .setChannelid(getChannelId())
+                    .setChannelId(getChannelId())
                     .setApplicationName(data.getApplicationName())
                     .setProductId(data.getProductId())
                     .build();
@@ -85,7 +85,7 @@ public class ProductDetailsBuilderTest extends ShopifyAndroidTestCase {
             Intent intent = new ProductDetailsBuilder(getContext())
                     .setShopDomain(getShopDomain())
                     .setApiKey(getApiKey())
-                    .setChannelid(getChannelId())
+                    .setChannelId(getChannelId())
                     .setProductId(data.getProductId())
                     .build();
 

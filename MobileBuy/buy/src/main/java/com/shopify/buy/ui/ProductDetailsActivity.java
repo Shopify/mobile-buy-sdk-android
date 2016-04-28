@@ -28,12 +28,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.view.Display;
-import android.view.Window;
 import android.view.WindowManager;
 
 import com.shopify.buy.R;
@@ -54,7 +52,7 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
             makeActivityDialog();
 
         }
-        
+
         super.onCreate(savedInstanceState);
 
         if (savedInstanceState == null) {

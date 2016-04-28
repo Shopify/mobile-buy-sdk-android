@@ -27,12 +27,13 @@ package com.shopify.sample.activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 
-import com.shopify.sample.R;
 import com.shopify.buy.model.Checkout;
 import com.shopify.buy.model.CreditCard;
+import com.shopify.sample.R;
 import com.shopify.sample.activity.base.SampleActivity;
 
 import retrofit.Callback;
@@ -53,25 +54,45 @@ public class CheckoutActivity extends SampleActivity {
         setTitle(R.string.checkout);
         setContentView(R.layout.checkout_activity);
 
+        final boolean didCreateCheckout = !TextUtils.isEmpty(getSampleApplication().getCheckout().getToken());
+
         Button nativeCheckoutButton = (Button) findViewById(R.id.native_checkout_button);
-        nativeCheckoutButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onNativeCheckoutButtonClicked();
-            }
-        });
+        if (didCreateCheckout) {
+            nativeCheckoutButton.setVisibility(View.VISIBLE);
+            nativeCheckoutButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onNativeCheckoutButtonClicked();
+                }
+            });
+        } else {
+            nativeCheckoutButton.setVisibility(View.GONE);
+        }
 
         Button webCheckoutButton = (Button) findViewById(R.id.web_checkout_button);
-        webCheckoutButton.setOnClickListener(new View.OnClickListener() {
+        if (didCreateCheckout) {
+            webCheckoutButton.setVisibility(View.VISIBLE);
+            webCheckoutButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onWebCheckoutButtonClicked();
+                }
+            });
+        } else {
+            webCheckoutButton.setVisibility(View.GONE);
+        }
+
+        Button cartPermalinkButton = (Button) findViewById(R.id.cart_permalink_button);
+        cartPermalinkButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onWebCheckoutButtonClicked();
+                onCartPermalinkClicked();
             }
         });
 
         updateOrderSummary();
     }
-
+    
     /**
      * For our sample native checkout, we use a hardcoded credit card.
      */
@@ -121,9 +142,20 @@ public class CheckoutActivity extends SampleActivity {
      * Launch the device browser so the user can complete the checkout.
      */
     private void onWebCheckoutButtonClicked() {
+        launchBrowser(getSampleApplication().getCheckout().getWebUrl());
+    }
+
+    /**
+     * Launch the device browser using the cart permalink method
+     */
+    private void onCartPermalinkClicked() {
+        launchBrowser(getSampleApplication().getCartPermalink());
+    }
+
+    private void launchBrowser(String url) {
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        intent.setData(Uri.parse(getSampleApplication().getCheckout().getWebUrl()));
+        intent.setData(Uri.parse(url));
 
         try {
             intent.setPackage("com.android.chrome");

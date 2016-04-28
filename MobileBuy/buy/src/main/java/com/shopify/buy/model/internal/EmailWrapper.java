@@ -22,40 +22,19 @@
  * THE SOFTWARE.
  */
 
-package com.shopify.buy.model;
+package com.shopify.buy.model.internal;
 
-import com.shopify.buy.dataprovider.BuyClientFactory;
+public class EmailWrapper {
 
-/**
- * Base class for Shopify Objects
- */
-public abstract class ShopifyObject {
-
-    protected Long id;
+    private String email;
 
     /**
-     * @return The unique identifier of this object within the Shopify platform.
+     * No args constructor for use in serialization.
      */
-    public Long getId() {
-        return id;
+    public EmailWrapper() {
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof ShopifyObject)) return false;
-
-        ShopifyObject object = (ShopifyObject) o;
-
-        return id.equals(object.id);
-
+    public EmailWrapper(final String email) {
+     this.email = email;
     }
-
-    /**
-     * @return A JSON representation of this object.
-     */
-    public String toJsonString() {
-        return BuyClientFactory.createDefaultGson().toJson(this);
-    }
-
 }

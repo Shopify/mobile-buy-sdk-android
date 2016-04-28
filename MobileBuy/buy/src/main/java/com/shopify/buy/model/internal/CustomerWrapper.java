@@ -22,40 +22,35 @@
  * THE SOFTWARE.
  */
 
-package com.shopify.buy.model;
+package com.shopify.buy.model.internal;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
+import com.google.gson.annotations.SerializedName;
 import com.shopify.buy.dataprovider.BuyClientFactory;
+import com.shopify.buy.model.Customer;
 
-/**
- * Base class for Shopify Objects
- */
-public abstract class ShopifyObject {
+import java.lang.reflect.Type;
 
-    protected Long id;
+public class CustomerWrapper {
 
-    /**
-     * @return The unique identifier of this object within the Shopify platform.
-     */
-    public Long getId() {
-        return id;
+    private Customer customer;
+
+    CustomerWrapper() {
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof ShopifyObject)) return false;
-
-        ShopifyObject object = (ShopifyObject) o;
-
-        return id.equals(object.id);
-
+    public CustomerWrapper(Customer customer) {
+        this.customer = customer;
     }
 
     /**
-     * @return A JSON representation of this object.
+     * @return The up to date customer.
      */
-    public String toJsonString() {
-        return BuyClientFactory.createDefaultGson().toJson(this);
+    public Customer getCustomer() {
+        return customer;
     }
 
 }
