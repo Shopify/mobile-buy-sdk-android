@@ -85,7 +85,7 @@ public class Order extends ShopifyObject {
     }
 
     /**
-     * @return URL for the website showing the order status. This is only available for Orders returned using {@link BuyClient#getCheckoutCompletionStatus(Checkout, Callback)}
+     * @return URL for the website showing the order status. This is only available for Orders returned using {@link BuyClient#completeCheckout(Checkout, Callback)}
      */
     public String getStatusUrl() {
         return statusUrl;

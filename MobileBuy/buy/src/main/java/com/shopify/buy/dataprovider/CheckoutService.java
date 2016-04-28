@@ -26,6 +26,7 @@ package com.shopify.buy.dataprovider;
 import com.shopify.buy.model.Checkout;
 import com.shopify.buy.model.CreditCard;
 import com.shopify.buy.model.GiftCard;
+import com.shopify.buy.model.Payment;
 import com.shopify.buy.model.ShippingRate;
 
 import java.util.List;
@@ -75,7 +76,7 @@ public interface CheckoutService {
      * @param checkout a {@link Checkout} that has had a {@link CreditCard} associated with it using {@link #storeCreditCard(CreditCard, Checkout)}
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      */
-    void completeCheckout(Checkout checkout, Callback<Checkout> callback);
+    void completeCheckout(Checkout checkout, Callback<Payment> callback);
 
     /**
      * Complete the checkout and process the payment session
@@ -83,27 +84,7 @@ public interface CheckoutService {
      * @param checkout a {@link Checkout} that has had a {@link CreditCard} associated with it using {@link #storeCreditCard(CreditCard, Checkout)}
      * @return cold observable that emits completed checkout
      */
-    Observable<Checkout> completeCheckout(Checkout checkout);
-
-    /**
-     * Get the status of the payment session associated with {@code checkout}. {@code callback} will be
-     * called with a boolean value indicating whether the session has completed or not. This method
-     * should be polled until the {@code callback} response is {@code true}
-     *
-     * @param checkout a {@link Checkout} that has been passed as a parameter to {@link #completeCheckout(Checkout, Callback)}
-     * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
-     */
-    void getCheckoutCompletionStatus(Checkout checkout, Callback<Boolean> callback);
-
-    /**
-     * Get the status of the payment session associated with {@code checkout}. {@code callback} will be
-     * called with a boolean value indicating whether the session has completed or not. This method
-     * should be polled until the {@code callback} response is {@code true}
-     *
-     * @param checkout a {@link Checkout} that has been passed as a parameter to {@link #completeCheckout(Checkout, Callback)}
-     * @return cold observable that emits the requested status for specified checkout
-     */
-    Observable<Boolean> getCheckoutCompletionStatus(Checkout checkout);
+    Observable<Payment> completeCheckout(Checkout checkout);
 
     /**
      * Fetch an existing Checkout from Shopify

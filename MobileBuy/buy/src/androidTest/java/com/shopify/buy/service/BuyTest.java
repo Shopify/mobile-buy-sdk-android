@@ -17,6 +17,7 @@ import com.shopify.buy.model.CreditCard;
 import com.shopify.buy.model.Discount;
 import com.shopify.buy.model.GiftCard;
 import com.shopify.buy.model.LineItem;
+import com.shopify.buy.model.Payment;
 import com.shopify.buy.model.Product;
 import com.shopify.buy.model.ShippingRate;
 
@@ -256,7 +257,6 @@ public class BuyTest extends ShopifyAndroidTestCase {
         setShippingRate();
         addCreditCardToCheckout();
         completeCheckout();
-        pollCheckoutCompletionStatus();
         getCheckout();
     }
 
@@ -577,13 +577,9 @@ public class BuyTest extends ShopifyAndroidTestCase {
         });
     }
 
-    private void fetchShippingRates(int expectedStatus) throws InterruptedException {
-        pollShippingRates(expectedStatus);
-    }
-
-    private void pollShippingRates(final int expectedStatus) {
+    private void fetchShippingRates(final int expectedStatus) throws InterruptedException {
         assertNotNull(checkout);
-        Callback<List<ShippingRate>> callback = new Callback<List<ShippingRate>>() {
+        buyClient.getShippingRates(checkout.getToken(), new Callback<List<ShippingRate>>() {
             @Override
             public void success(List<ShippingRate> shippingRates) {
                 assertNotNull(shippingRates);
@@ -594,8 +590,7 @@ public class BuyTest extends ShopifyAndroidTestCase {
             public void failure(RetrofitError error) {
                 assertEquals(error.getResponse().code(), expectedStatus);
             }
-        };
-        buyClient.getShippingRates(checkout.getToken(), callback);
+        });
     }
 
     private void setShippingRate() throws InterruptedException {
@@ -629,8 +624,8 @@ public class BuyTest extends ShopifyAndroidTestCase {
         card.setNumber("4242424242424242");
 
         buyClient.storeCreditCard(card, checkout, new Callback<Checkout>() {
-            @Override
             public void success(Checkout checkout) {
+                assertNotNull(checkout.getPaymentSessionId());
                 BuyTest.this.checkout = checkout;
             }
 
@@ -642,9 +637,11 @@ public class BuyTest extends ShopifyAndroidTestCase {
     }
 
     private void completeCheckout() throws InterruptedException {
-        buyClient.completeCheckout(checkout, new Callback<Checkout>() {
+        buyClient.completeCheckout(checkout, new Callback<Payment>() {
             @Override
-            public void success(Checkout checkout) {
+            public void success(Payment payment) {
+                assertNotNull(payment);
+                assertNotNull(payment.getCheckout());
             }
 
             @Override
@@ -652,28 +649,6 @@ public class BuyTest extends ShopifyAndroidTestCase {
                 fail(BuyClient.getErrorBody(error));
             }
         });
-    }
-
-    private void pollCheckoutCompletionStatus() throws InterruptedException {
-        recurseCheckoutCompletionPoll();
-    }
-
-    private void recurseCheckoutCompletionPoll() {
-        final Callback<Boolean> callback = new Callback<Boolean>() {
-            @Override
-            public void success(Boolean complete) {
-                if (complete) {
-                } else {
-                    recurseCheckoutCompletionPoll();
-                }
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                fail(BuyClient.getErrorBody(error));
-            }
-        };
-        buyClient.getCheckoutCompletionStatus(checkout, callback);
     }
 
     private void getCheckout() throws InterruptedException {

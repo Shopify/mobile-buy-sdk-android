@@ -25,33 +25,21 @@
 package com.shopify.buy.model.internal;
 
 import com.google.gson.annotations.SerializedName;
-import com.shopify.buy.model.Address;
-import com.shopify.buy.model.CreditCard;
 
 /**
- * Created by agodding on 14-10-23.
- *
- * Internal structure used to serialize data for creating a payment session
+ * Wrapper class used by Gson Serialization
  */
-public class PaymentSessionCheckout {
+public class PaymentRequestWrapper {
 
-    private String token;
+    @SerializedName("payment")
+    private PaymentRequest paymentRequest;
 
-    @SerializedName("credit_card")
-    private CreditCard creditCard;
-
-    @SerializedName("billing_address")
-    private Address billingAddress;
-
-    public void setToken(String token) {
-        this.token = token;
+    public PaymentRequestWrapper(PaymentRequest paymentRequest) {
+        this.paymentRequest = paymentRequest;
     }
 
-    public void setCreditCard(CreditCard creditCard) {
-        this.creditCard = creditCard;
+    public PaymentRequest getPayment() {
+        return paymentRequest;
     }
 
-    public void setBillingAddress(Address billingAddress) {
-        this.billingAddress = billingAddress;
-    }
 }

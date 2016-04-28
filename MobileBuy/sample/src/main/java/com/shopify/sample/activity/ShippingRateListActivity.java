@@ -40,7 +40,6 @@ import com.shopify.sample.activity.base.SampleListActivity;
 import com.shopify.buy.model.Checkout;
 import com.shopify.buy.model.ShippingRate;
 
-import java.net.HttpURLConnection;
 import java.util.List;
 
 /**
@@ -75,34 +74,15 @@ public class ShippingRateListActivity extends SampleListActivity {
         getSampleApplication().getShippingRates(new Callback<List<ShippingRate>>() {
             @Override
             public void success(List<ShippingRate> shippingRates) {
-                if (response.code() == HttpURLConnection.HTTP_ACCEPTED) {
-
-                    // Poll until the server either fails or returns HttpStatus.SC_ACCEPTED
-                    pollingHandler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            fetchShippingRates();
-                        }
-                    }, POLL_DELAY);
-
-                } else if (response.code() == HttpURLConnection.HTTP_OK) {
-                    isFetching = false;
-
-                    // The application should surface to the user that their items cannot be shipped to that location
-                    if (shippingRates.size() == 0) {
-                        Toast.makeText(ShippingRateListActivity.this, R.string.no_shipping_rates, Toast.LENGTH_LONG).show();
-                        finish();
-                        return;
-                    }
-
-                    onFetchedShippingRates(shippingRates);
-
-                } else {
-                    isFetching = false;
-
-                    // Handle error
-                    onError(response.message());
+                isFetching = false;
+                // The application should surface to the user that their items cannot be shipped to that location
+                if (shippingRates.size() == 0) {
+                    Toast.makeText(ShippingRateListActivity.this, R.string.no_shipping_rates, Toast.LENGTH_LONG).show();
+                    finish();
+                    return;
                 }
+
+                onFetchedShippingRates(shippingRates);
             }
 
             @Override

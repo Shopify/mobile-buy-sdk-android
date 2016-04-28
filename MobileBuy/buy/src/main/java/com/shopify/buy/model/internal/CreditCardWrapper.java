@@ -24,18 +24,23 @@
 
 package com.shopify.buy.model.internal;
 
+import com.google.gson.annotations.SerializedName;
+import com.shopify.buy.model.CreditCard;
+
 /**
- * Represents a payment session for use with Shopify Payments
+ * Wrapper class used by Gson Serialization
  */
-public class PaymentSession {
+public class CreditCardWrapper {
 
-    private String id;
+    @SerializedName("credit_card")
+    private CreditCard creditCard;
 
-    public String getId() {
-        return id;
+    public CreditCardWrapper(CreditCard creditCard) {
+        this.creditCard = creditCard;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public CreditCard getCreditCard() {
+        return creditCard;
     }
+
 }

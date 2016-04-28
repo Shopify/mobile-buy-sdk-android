@@ -37,6 +37,9 @@ import com.shopify.buy.model.Customer;
 import com.shopify.buy.model.CustomerToken;
 import com.shopify.buy.model.GiftCard;
 import com.shopify.buy.model.Order;
+import com.shopify.buy.model.Payment;
+import com.shopify.buy.model.PaymentSession;
+import com.shopify.buy.model.internal.PaymentRequest;
 import com.shopify.buy.model.Product;
 import com.shopify.buy.model.ShippingRate;
 import com.shopify.buy.model.Shop;
@@ -45,6 +48,7 @@ import com.shopify.buy.model.internal.AddressWrapper;
 import com.shopify.buy.model.internal.AddressesWrapper;
 import com.shopify.buy.model.internal.CheckoutWrapper;
 import com.shopify.buy.model.internal.CollectionListings;
+import com.shopify.buy.model.internal.CreditCardWrapper;
 import com.shopify.buy.model.internal.CustomerTokenWrapper;
 import com.shopify.buy.model.internal.CustomerWrapper;
 import com.shopify.buy.model.internal.EmailWrapper;
@@ -52,16 +56,14 @@ import com.shopify.buy.model.internal.GiftCardWrapper;
 import com.shopify.buy.model.internal.MarketingAttribution;
 import com.shopify.buy.model.internal.OrderWrapper;
 import com.shopify.buy.model.internal.OrdersWrapper;
-import com.shopify.buy.model.internal.PaymentSession;
-import com.shopify.buy.model.internal.PaymentSessionCheckout;
-import com.shopify.buy.model.internal.PaymentSessionCheckoutWrapper;
+import com.shopify.buy.model.internal.PaymentRequestWrapper;
+import com.shopify.buy.model.internal.PaymentWrapper;
 import com.shopify.buy.model.internal.ProductListings;
 import com.shopify.buy.model.internal.ShippingRatesWrapper;
 import com.shopify.buy.utils.CollectionUtils;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -522,16 +524,9 @@ public class BuyClient implements IBuyClient {
             throw new NullPointerException("checkout cannot be null");
         }
 
-        final PaymentSessionCheckoutWrapper dataWrapper = new PaymentSessionCheckoutWrapper();
-
-        final PaymentSessionCheckout data = new PaymentSessionCheckout();
-        data.setToken(checkout.getToken());
-        data.setCreditCard(card);
-        data.setBillingAddress(checkout.getBillingAddress());
-        dataWrapper.setCheckout(data);
-
+        final CreditCardWrapper creditCardWrapper = new CreditCardWrapper(card);
         return retrofitService
-                .storeCreditCard(checkout.getPaymentUrl(), dataWrapper, "Basic " + Base64.encodeToString(apiKey.getBytes(), Base64.NO_WRAP))
+                .storeCreditCard(checkout.getPaymentUrl(), creditCardWrapper, "Basic " + Base64.encodeToString(apiKey.getBytes(), Base64.NO_WRAP))
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
                 .map(new Func1<Response<PaymentSession>, String>() {
                     @Override
@@ -555,51 +550,25 @@ public class BuyClient implements IBuyClient {
     }
 
     @Override
-    public void completeCheckout(final Checkout checkout, final Callback<Checkout> callback) {
+    public void completeCheckout(final Checkout checkout, final Callback<Payment> callback) {
         completeCheckout(checkout).subscribe(new InternalCallbackSubscriber<>(callback));
     }
 
     @Override
-    public Observable<Checkout> completeCheckout(final Checkout checkout) {
+    public Observable<Payment> completeCheckout(final Checkout checkout) {
         if (checkout == null) {
             throw new NullPointerException("checkout cannot be null");
         }
 
-        final HashMap<String, String> requestBodyMap = new HashMap<>();
-        final String paymentSessionId = checkout.getPaymentSessionId();
-        if (!TextUtils.isEmpty(paymentSessionId)) {
-            requestBodyMap.put("payment_session_id", checkout.getPaymentSessionId());
-        }
-
+        final PaymentRequest paymentRequest = new PaymentRequest(checkout.getPaymentSessionId());
+        final PaymentRequestWrapper paymentRequestWrapper = new PaymentRequestWrapper(paymentRequest);
         return retrofitService
-                .completeCheckout(requestBodyMap, checkout.getToken())
+                .completeCheckout(paymentRequestWrapper, checkout.getToken())
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .map(new Func1<Response<CheckoutWrapper>, Checkout>() {
+                .map(new Func1<Response<PaymentWrapper>, Payment>() {
                     @Override
-                    public Checkout call(Response<CheckoutWrapper> response) {
-                        return response.body() != null ? response.body().getCheckout() : null;
-                    }
-                })
-                .observeOn(getCallbackScheduler());
-    }
-
-    @Override
-    public void getCheckoutCompletionStatus(final Checkout checkout, final Callback<Boolean> callback) {
-        getCheckoutCompletionStatus(checkout).subscribe(new InternalCallbackSubscriber<>(callback));
-    }
-
-    @Override
-    public Observable<Boolean> getCheckoutCompletionStatus(final Checkout checkout) {
-        if (checkout == null) {
-            throw new NullPointerException("checkout cannot be null");
-        }
-
-        return retrofitService
-                .getCheckoutCompletionStatus(checkout.getToken())
-                .map(new Func1<Response<Void>, Boolean>() {
-                    @Override
-                    public Boolean call(Response<Void> response) {
-                        return HttpURLConnection.HTTP_OK == response.code();
+                    public Payment call(Response<PaymentWrapper> response) {
+                        return response.body() != null ? response.body().getPayment() : null;
                     }
                 })
                 .observeOn(getCallbackScheduler());

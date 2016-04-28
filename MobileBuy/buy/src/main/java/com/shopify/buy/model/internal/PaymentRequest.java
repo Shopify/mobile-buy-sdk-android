@@ -24,14 +24,21 @@
 
 package com.shopify.buy.model.internal;
 
+import com.google.gson.annotations.SerializedName;
+
+import java.util.HashMap;
+
 /**
- * Wrapper used by Gson for serialization of {@link PaymentSessionCheckout}
+ * Represents the token object associated with a payment request
  */
-public class PaymentSessionCheckoutWrapper {
+public class PaymentRequest {
 
-    private PaymentSessionCheckout checkout;
+    @SerializedName("source")
+    private HashMap<String, String> paymentSessionIdMap;
 
-    public void setCheckout(PaymentSessionCheckout checkout) {
-        this.checkout = checkout;
+    public PaymentRequest(String paymentSessionId) {
+        paymentSessionIdMap = new HashMap<>();
+        paymentSessionIdMap.put("session_id", paymentSessionId);
     }
+
 }

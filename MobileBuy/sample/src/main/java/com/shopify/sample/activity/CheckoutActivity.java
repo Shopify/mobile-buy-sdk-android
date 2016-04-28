@@ -126,8 +126,7 @@ public class CheckoutActivity extends SampleActivity {
         getSampleApplication().completeCheckout(new Callback<Checkout>() {
             @Override
             public void success(Checkout checkout) {
-                dismissLoadingDialog();
-                pollCheckoutCompletionStatus(checkout);
+                onCheckoutComplete();
             }
 
             @Override
