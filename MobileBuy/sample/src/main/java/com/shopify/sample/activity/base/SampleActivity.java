@@ -191,6 +191,7 @@ public class SampleActivity extends Activity {
     }
 
     /**
+     * When our polling determines that the checkout is completely processed, show a toast.
      * When checkout is completely processed, show a toast.
      */
     protected void onCheckoutComplete() {

@@ -52,7 +52,7 @@ import com.shopify.sample.R;
 
 import java.util.List;
 
-import retrofit2.Response;
+import okhttp3.logging.HttpLoggingInterceptor;
 
 /**
  * Application class that maintains instances of BuyClient and Checkout for the lifetime of the app.
@@ -93,14 +93,16 @@ public class SampleApplication extends Application {
 
         String applicationName = getPackageName();
 
+        final HttpLoggingInterceptor logging = new HttpLoggingInterceptor().setLevel(BuildConfig.OKHTTP_LOG_LEVEL);
+
         /**
          * Create the BuyClient
          */
-        buyClient = BuyClientFactory.getBuyClient(shopUrl, shopifyApiKey, shopifyAppId, applicationName);
+        buyClient = BuyClientFactory.getBuyClient(shopUrl, shopifyApiKey, shopifyAppId, applicationName, logging);
 
         buyClient.getShop(new Callback<Shop>() {
             @Override
-            public void success(Shop shop, Response response) {
+            public void success(Shop shop) {
                 SampleApplication.this.shop = shop;
             }
 
@@ -120,12 +122,12 @@ public class SampleApplication extends Application {
 
         buyClient.getProductPage(page, new Callback<List<Product>>() {
             @Override
-            public void success(List<Product> products, Response response) {
+            public void success(List<Product> products) {
                 if (products.size() > 0) {
                     allProducts.addAll(products);
                     getAllProducts(page + 1, allProducts, callback);
                 } else {
-                    callback.success(allProducts, response);
+                    callback.success(allProducts);
                 }
             }
 
@@ -255,9 +257,9 @@ public class SampleApplication extends Application {
     private Callback<Checkout> wrapCheckoutCallback(final Callback<Checkout> callback) {
         return new Callback<Checkout>() {
             @Override
-            public void success(Checkout checkout, Response response) {
+            public void success(Checkout checkout) {
                 SampleApplication.this.checkout = checkout;
-                callback.success(checkout, response);
+                callback.success(checkout);
             }
 
             @Override
@@ -270,9 +272,9 @@ public class SampleApplication extends Application {
     private Callback<Payment> wrapCheckoutCallbackForPayment(final Callback<Checkout> callback) {
         return new Callback<Payment>() {
             @Override
-            public void success(Payment payment, Response response) {
+            public void success(Payment payment) {
                 SampleApplication.this.checkout = payment.getCheckout();
-                callback.success(checkout, response);
+                callback.success(checkout);
             }
 
             @Override

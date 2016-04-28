@@ -55,13 +55,14 @@ import com.shopify.buy.model.Product;
 import com.shopify.buy.model.ProductVariant;
 import com.shopify.buy.model.Shop;
 import com.shopify.buy.utils.CurrencyFormatter;
+import com.shopify.sample.BuildConfig;
 
 import java.net.HttpURLConnection;
 import java.text.NumberFormat;
 import java.util.Locale;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import retrofit2.Response;
+import okhttp3.logging.HttpLoggingInterceptor;
 
 /**
  * The fragment that controls the presentation of the {@link Product} details.
@@ -174,7 +175,7 @@ public class ProductDetailsFragment extends Fragment {
     }
 
     private void configureCheckoutButton() {
-        checkoutButton = (Button)view.findViewById(R.id.checkout_button);
+        checkoutButton = (Button) view.findViewById(R.id.checkout_button);
 
         checkoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -223,8 +224,10 @@ public class ProductDetailsFragment extends Fragment {
         String webReturnToUrl = bundle.getString(ProductDetailsConfig.EXTRA_WEB_RETURN_TO_URL);
         String webReturnToLabel = bundle.getString(ProductDetailsConfig.EXTRA_WEB_RETURN_TO_LABEL);
 
+        final HttpLoggingInterceptor logging = new HttpLoggingInterceptor().setLevel(BuildConfig.OKHTTP_LOG_LEVEL);
+
         // Create the BuyClient
-        buyClient = BuyClientFactory.getBuyClient(shopDomain, apiKey, appId, applicationName);
+        buyClient = BuyClientFactory.getBuyClient(shopDomain, apiKey, appId, applicationName, logging);
 
         // Set the optional web return to values
         if (!TextUtils.isEmpty(webReturnToUrl)) {
@@ -271,7 +274,7 @@ public class ProductDetailsFragment extends Fragment {
     private void fetchShop() {
         buyClient.getShop(new Callback<Shop>() {
             @Override
-            public void success(Shop shop, Response response) {
+            public void success(Shop shop) {
                 ProductDetailsFragment.this.shop = shop;
                 showProductIfReady();
             }
@@ -286,7 +289,7 @@ public class ProductDetailsFragment extends Fragment {
     private void fetchProduct(final String productId) {
         buyClient.getProduct(productId, new Callback<Product>() {
             @Override
-            public void success(Product product, Response response) {
+            public void success(Product product) {
                 if (product != null) {
                     // Default to having the first variant selected in the UI
                     ProductVariant variant = product.getVariants().get(0);
@@ -363,13 +366,8 @@ public class ProductDetailsFragment extends Fragment {
         // Create the checkout using our Cart
         buyClient.createCheckout(new Checkout(cart), new Callback<Checkout>() {
             @Override
-            public void success(Checkout checkout, Response response) {
-                if (response.code() == HttpURLConnection.HTTP_CREATED) {
-                    // Start the web checkout
-                    launchWebCheckout(checkout);
-                } else {
-                    onCheckoutFailure();
-                }
+            public void success(Checkout checkout) {
+                launchWebCheckout(checkout);
             }
 
             @Override
@@ -468,7 +466,6 @@ public class ProductDetailsFragment extends Fragment {
 
         }
     }
-
 
 
 }

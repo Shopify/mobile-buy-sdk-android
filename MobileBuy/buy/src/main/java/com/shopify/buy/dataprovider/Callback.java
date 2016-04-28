@@ -23,12 +23,12 @@
  */
 package com.shopify.buy.dataprovider;
 
-import retrofit2.Response;
-
 /**
  * Created by ykulbashian on 16-04-07.
  */
 public interface Callback<T> {
-    void success(T body, Response response);
+
+    void success(T body);
+
     void failure(RetrofitError error);
 }

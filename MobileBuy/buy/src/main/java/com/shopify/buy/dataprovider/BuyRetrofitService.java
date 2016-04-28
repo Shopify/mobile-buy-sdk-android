@@ -24,12 +24,14 @@
 
 package com.shopify.buy.dataprovider;
 
+import com.shopify.buy.model.PaymentSession;
 import com.shopify.buy.model.Shop;
 import com.shopify.buy.model.internal.AccountCredentialsWrapper;
 import com.shopify.buy.model.internal.AddressWrapper;
 import com.shopify.buy.model.internal.AddressesWrapper;
 import com.shopify.buy.model.internal.CheckoutWrapper;
 import com.shopify.buy.model.internal.CollectionListings;
+import com.shopify.buy.model.internal.CreditCardWrapper;
 import com.shopify.buy.model.internal.CustomerTokenWrapper;
 import com.shopify.buy.model.internal.CustomerWrapper;
 import com.shopify.buy.model.internal.EmailWrapper;
@@ -41,17 +43,19 @@ import com.shopify.buy.model.internal.PaymentWrapper;
 import com.shopify.buy.model.internal.ProductListings;
 import com.shopify.buy.model.internal.ShippingRatesWrapper;
 
-import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
+import retrofit2.http.Headers;
 import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
+import retrofit2.http.Url;
 import rx.Observable;
 
 /**
@@ -108,6 +112,10 @@ interface BuyRetrofitService {
 
     @DELETE("api/checkouts/{token}/gift_cards/{identifier}.json")
     Observable<Response<GiftCardWrapper>> removeGiftCard(@Path("identifier") String giftCardIdentifier, @Path("token") String token);
+
+    @POST
+    @Headers("Accept: application/json")
+    Observable<Response<PaymentSession>> storeCreditCard(@Url String url, @Body CreditCardWrapper body, @Header("Authorization") String authorizationHeader);
 
     /*
      * Customer API

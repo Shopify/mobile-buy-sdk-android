@@ -38,8 +38,6 @@ import com.shopify.buy.model.CreditCard;
 import com.shopify.sample.R;
 import com.shopify.sample.activity.base.SampleActivity;
 
-import retrofit2.Response;
-
 
 /**
  * The final activity in the app flow. Allows the user to choose between:
@@ -110,7 +108,7 @@ public class CheckoutActivity extends SampleActivity {
         showLoadingDialog(R.string.completing_checkout);
         getSampleApplication().storeCreditCard(creditCard, new Callback<Checkout>() {
             @Override
-            public void success(Checkout checkout, Response response) {
+            public void success(Checkout checkout) {
                 onCreditCardStored();
             }
 
@@ -127,7 +125,7 @@ public class CheckoutActivity extends SampleActivity {
     private void onCreditCardStored() {
         getSampleApplication().completeCheckout(new Callback<Checkout>() {
             @Override
-            public void success(Checkout checkout, Response response) {
+            public void success(Checkout checkout) {
                 onCheckoutComplete();
             }
 

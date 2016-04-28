@@ -16,8 +16,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.concurrent.CountDownLatch;
 
-import retrofit2.Response;
-
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.fail;
 
@@ -32,7 +30,7 @@ public class SerializationTest extends ShopifyAndroidTestCase {
         final CountDownLatch latch = new CountDownLatch(1);
         buyClient.getProduct(data.getProductId(), new Callback<Product>() {
             @Override
-            public void success(Product product, Response response) {
+            public void success(Product product) {
                 assertSerializable(product);
 
                 Cart cart = new Cart();
@@ -55,7 +53,7 @@ public class SerializationTest extends ShopifyAndroidTestCase {
         final CountDownLatch latch = new CountDownLatch(1);
         buyClient.getShop(new Callback<Shop>() {
             @Override
-            public void success(Shop shop, Response response) {
+            public void success(Shop shop) {
                 assertSerializable(shop);
                 latch.countDown();
             }

@@ -42,8 +42,6 @@ import com.shopify.buy.model.ShippingRate;
 
 import java.util.List;
 
-import retrofit2.Response;
-
 /**
  * If the selected product requires shipping, this activity allows the user to select a list of shipping rates.
  * For the sample app, the shipping address has been hardcoded and we will only see the shipping rates applicable to that address.
@@ -75,9 +73,8 @@ public class ShippingRateListActivity extends SampleListActivity {
     private void fetchShippingRates() {
         getSampleApplication().getShippingRates(new Callback<List<ShippingRate>>() {
             @Override
-            public void success(List<ShippingRate> shippingRates, Response response) {
+            public void success(List<ShippingRate> shippingRates) {
                 isFetching = false;
-
                 // The application should surface to the user that their items cannot be shipped to that location
                 if (shippingRates.size() == 0) {
                     Toast.makeText(ShippingRateListActivity.this, R.string.no_shipping_rates, Toast.LENGTH_LONG).show();
@@ -141,7 +138,7 @@ public class ShippingRateListActivity extends SampleListActivity {
 
         getSampleApplication().setShippingRate(shippingRate, new Callback<Checkout>() {
             @Override
-            public void success(Checkout checkout, Response response) {
+            public void success(Checkout checkout) {
                 dismissLoadingDialog();
                 startActivity(new Intent(ShippingRateListActivity.this, DiscountActivity.class));
             }

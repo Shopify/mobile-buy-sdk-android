@@ -24,11 +24,10 @@
 
 package com.shopify.buy.dataprovider;
 
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Base64;
 
-import com.google.gson.Gson;
-import com.shopify.buy.BuildConfig;
 import com.shopify.buy.model.AccountCredentials;
 import com.shopify.buy.model.Address;
 import com.shopify.buy.model.Checkout;
@@ -40,6 +39,7 @@ import com.shopify.buy.model.CustomerToken;
 import com.shopify.buy.model.GiftCard;
 import com.shopify.buy.model.Order;
 import com.shopify.buy.model.Payment;
+import com.shopify.buy.model.PaymentSession;
 import com.shopify.buy.model.internal.PaymentRequest;
 import com.shopify.buy.model.Product;
 import com.shopify.buy.model.ShippingRate;
@@ -63,33 +63,30 @@ import com.shopify.buy.model.internal.ProductListings;
 import com.shopify.buy.model.internal.ShippingRatesWrapper;
 import com.shopify.buy.utils.CollectionUtils;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.IOException;
-import java.net.HttpURLConnection;
+import java.nio.charset.Charset;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Interceptor;
-import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
+import rx.Observable;
 import rx.Scheduler;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
  * The {@code BuyClient} provides all requests needed to perform request on the Shopify Checkout API. Use this class to perform tasks such as getting a shop, getting collections and products for a shop, creating a {@link Checkout} on Shopify and completing Checkouts.
  * All API methods presented here run asynchronously and return results via callback on the Main thread.
  */
-public class BuyClient {
+public class BuyClient implements IBuyClient {
 
     public static final int MAX_PAGE_SIZE = 250;
     public static final int MIN_PAGE_SIZE = 1;
@@ -98,10 +95,8 @@ public class BuyClient {
     public static final String EMPTY_BODY = "";
 
     private static final String CUSTOMER_TOKEN_HEADER = "X-Shopify-Customer-Access-Token";
-    private static final MediaType jsonMediateType = MediaType.parse("application/json; charset=utf-8");
 
     private final BuyRetrofitService retrofitService;
-    private final OkHttpClient httpClient;
     private int pageSize = DEFAULT_PAGE_SIZE;
 
     private final String shopDomain;
@@ -112,30 +107,39 @@ public class BuyClient {
     private String webReturnToLabel;
     private CustomerToken customerToken;
 
+    private Scheduler callbackScheduler = AndroidSchedulers.mainThread();
+
+    @Override
     public String getApiKey() {
         return apiKey;
     }
 
+    @Override
     public String getAppId() {
         return appId;
     }
 
+    @Override
     public String getApplicationName() {
         return applicationName;
     }
 
+    @Override
     public String getWebReturnToUrl() {
         return webReturnToUrl;
     }
 
+    @Override
     public String getWebReturnToLabel() {
         return webReturnToLabel;
     }
 
+    @Override
     public String getShopDomain() {
         return shopDomain;
     }
 
+    @Override
     public int getPageSize() {
         return pageSize;
     }
@@ -155,7 +159,7 @@ public class BuyClient {
                 Request.Builder builder = original.newBuilder()
                         .method(original.method(), original.body());
 
-                builder.header("Authorization", "Basic " + Base64.encodeToString(apiKey.getBytes(), Base64.NO_WRAP));
+                builder.header("Authorization", formatBasicAuthorization(apiKey));
 
                 if (BuyClient.this.customerToken != null && !TextUtils.isEmpty(BuyClient.this.customerToken.getAccessToken())) {
                     builder.header(CUSTOMER_TOKEN_HEADER, BuyClient.this.customerToken.getAccessToken());
@@ -168,20 +172,17 @@ public class BuyClient {
             }
         };
 
-        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-        logging.setLevel(BuildConfig.OKHTTP_LOG_LEVEL);
-
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
                 .connectTimeout(30, TimeUnit.SECONDS)
                 .readTimeout(60, TimeUnit.SECONDS)
                 .writeTimeout(60, TimeUnit.SECONDS)
                 .addInterceptor(requestInterceptor);
 
-        for(Interceptor interceptor : interceptors){
+        for (Interceptor interceptor : interceptors) {
             builder.addInterceptor(interceptor);
         }
 
-        httpClient = builder.build();
+        final OkHttpClient httpClient = builder.build();
 
         Retrofit adapter = new Retrofit.Builder()
                 .baseUrl("https://" + shopDomain + "/")
@@ -193,53 +194,37 @@ public class BuyClient {
         retrofitService = adapter.create(BuyRetrofitService.class);
     }
 
-    public Scheduler getCallbackScheduler(){
-        return AndroidSchedulers.mainThread();
+    @Override
+    public Scheduler getCallbackScheduler() {
+        return callbackScheduler;
     }
 
-    /**
-     * Sets the {@link Customer} specific token
-     *
-     * @param customerToken
-     */
+    @Override
+    public void setCallbackScheduler(Scheduler callbackScheduler) {
+        this.callbackScheduler = callbackScheduler;
+    }
+
+    @Override
     public void setCustomerToken(CustomerToken customerToken) {
         this.customerToken = customerToken;
     }
 
-    /**
-     * Returns the {@link Customer} specific token
-     *
-     * @return customer token
-     */
+    @Override
     public CustomerToken getCustomerToken() {
         return customerToken;
     }
 
-    /**
-     * Sets the web url to be invoked by the button on the completion page of the web checkout.
-     *
-     * @param webReturnToUrl a url defined as a custom scheme in the Android Manifest file.
-     */
+    @Override
     public void setWebReturnToUrl(String webReturnToUrl) {
         this.webReturnToUrl = webReturnToUrl;
     }
 
-    /**
-     * Sets the text to be displayed on the button on the completion page of the web checkout
-     *
-     * @param webReturnToLabel the text to display on the button.
-     */
+    @Override
     public void setWebReturnToLabel(String webReturnToLabel) {
         this.webReturnToLabel = webReturnToLabel;
     }
 
-    /**
-     * Sets the page size used for paged API queries
-     *
-     * @param pageSize the number of {@link Product} to include in a page.  The maximum page size is {@link #MAX_PAGE_SIZE} and the minimum page size is {@link #MIN_PAGE_SIZE}.
-     *                 If the page size is less than {@code MIN_PAGE_SIZE}, it will be set to {@code MIN_PAGE_SIZE}.  If the page size is greater than MAX_PAGE_SIZE it will be set to {@code MAX_PAGE_SIZE}.
-     *                 The default value is {@link #DEFAULT_PAGE_SIZE}
-     */
+    @Override
     public void setPageSize(int pageSize) {
         this.pageSize = Math.max(Math.min(pageSize, MAX_PAGE_SIZE), MIN_PAGE_SIZE);
     }
@@ -248,187 +233,145 @@ public class BuyClient {
      * Storefront API
      */
 
-    /**
-     * Fetch metadata about your shop
-     *
-     * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
-     */
+    @Override
     public void getShop(final Callback<Shop> callback) {
-        retrofitService.getShop().observeOn(getCallbackScheduler()).subscribe(new InternalCallback<Shop>() {
-            @Override
-            public void success(Shop body, Response response) {
-                callback.success(body, response);
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                callback.failure(error);
-            }
-        });
+        getShop().subscribe(new InternalCallbackSubscriber<>(callback));
     }
 
-    /**
-     * Fetch a page of products
-     *
-     * @param page     the 1-based page index. The page size can be set with
-     *                 {@link #setPageSize(int)}
-     * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
-     */
-    public void getProductPage(int page, final Callback<List<Product>> callback) {
+    @Override
+    public Observable<Shop> getShop() {
+        return retrofitService
+                .getShop()
+                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
+                .map(new Func1<Response<Shop>, Shop>() {
+                    @Override
+                    public Shop call(Response<Shop> response) {
+                        return response.body();
+                    }
+                })
+                .observeOn(getCallbackScheduler());
+    }
+
+    @Override
+    public void getProductPage(final int page, final Callback<List<Product>> callback) {
+        getProductPage(page).subscribe(new InternalCallbackSubscriber<>(callback));
+    }
+
+    @Override
+    public Observable<List<Product>> getProductPage(final int page) {
         if (page < 1) {
             throw new IllegalArgumentException("page is a 1-based index, value cannot be less than 1");
         }
 
-        // All product responses from the server are wrapped in a ProductListings object which contains and array of products
-        // For this call, we will clamp the size of the product array returned to the page size
-        retrofitService.getProductPage(appId, page, pageSize).observeOn(getCallbackScheduler()).subscribe(new InternalCallback<ProductListings>() {
-
-            @Override
-            public void success(ProductListings productPage, Response response) {
-                List<Product> products = null;
-                if (productPage != null) {
-                    products = productPage.getProducts();
-                }
-                callback.success(products, response);
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                callback.failure(error);
-            }
-        });
+        return retrofitService
+                .getProductPage(appId, page, pageSize)
+                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
+                .map(new UnwrapRetrofitBodyTransformation<ProductListings, List<Product>>() {
+                    @Override
+                    List<Product> unwrap(@NonNull ProductListings body) {
+                        return body.getProducts();
+                    }
+                })
+                .observeOn(getCallbackScheduler());
     }
 
-    /**
-     * Fetch the product with the specified handle
-     *
-     * @param handle   the handle for the product to fetch
-     * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
-     */
-    public void getProductWithHandle(String handle, final Callback<Product> callback) {
+    @Override
+    public void getProductWithHandle(final String handle, final Callback<Product> callback) {
+        getProductWithHandle(handle).subscribe(new InternalCallbackSubscriber<>(callback));
+    }
+
+    @Override
+    public Observable<Product> getProductWithHandle(final String handle) {
         if (handle == null) {
             throw new NullPointerException("handle cannot be null");
         }
 
-        retrofitService.getProductWithHandle(appId, handle).observeOn(getCallbackScheduler()).subscribe(new InternalCallback<ProductListings>() {
-            @Override
-            public void success(ProductListings productPublications, Response response) {
-                List<Product> products = null;
-                if (productPublications != null) {
-                    products = productPublications.getProducts();
-                }
-                if (!CollectionUtils.isEmpty(products)) {
-                    callback.success(products.get(0), response);
-                } else {
-                    callback.success(null, response);
-                }
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                callback.failure(error);
-            }
-        });
+        return retrofitService
+                .getProductWithHandle(appId, handle)
+                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
+                .map(new UnwrapRetrofitBodyTransformation<ProductListings, Product>() {
+                    @Override
+                    Product unwrap(@NonNull ProductListings body) {
+                        final List<Product> products = body.getProducts();
+                        return !CollectionUtils.isEmpty(products) ? products.get(0) : null;
+                    }
+                })
+                .observeOn(getCallbackScheduler());
     }
 
-    /**
-     * Fetch a single Product
-     *
-     * @param productId the productId for the product to fetch
-     * @param callback  the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
-     */
-    public void getProduct(String productId, final Callback<Product> callback) {
+    @Override
+    public void getProduct(final String productId, final Callback<Product> callback) {
+        getProduct(productId).subscribe(new InternalCallbackSubscriber<>(callback));
+    }
+
+    @Override
+    public Observable<Product> getProduct(final String productId) {
         if (productId == null) {
             throw new NullPointerException("productId cannot be null");
         }
 
-        // All product responses from the server are wrapped in a ProductListings object
-        // The same endpoint is used for single and multiple product queries.
-        // For this call we will query with a single id, and the returned product array
-        // If the id was found the array will contain a single object, otherwise it will be empty
-        retrofitService.getProducts(appId, productId).observeOn(getCallbackScheduler()).subscribe(new InternalCallback<ProductListings>() {
-
-            @Override
-            public void success(ProductListings productPublications, Response response) {
-                Product product = null;
-
-                if (productPublications != null) {
-                    List<Product> products = productPublications.getProducts();
-
-                    if (products != null && products.size() > 0) {
-                        product = products.get(0);
+        return retrofitService
+                .getProducts(appId, productId)
+                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
+                .map(new UnwrapRetrofitBodyTransformation<ProductListings, Product>() {
+                    @Override
+                    Product unwrap(@NonNull ProductListings body) {
+                        final List<Product> products = body.getProducts();
+                        return !CollectionUtils.isEmpty(products) ? products.get(0) : null;
                     }
-                }
-                callback.success(product, response);
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                callback.failure(error);
-            }
-        });
+                })
+                .observeOn(getCallbackScheduler());
     }
 
-    /**
-     * Fetch a list of Products
-     *
-     * @param productIds a List of the productIds to fetch
-     * @param callback   the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
-     */
-    public void getProducts(List<String> productIds, final Callback<List<Product>> callback) {
+    @Override
+    public void getProducts(final List<String> productIds, final Callback<List<Product>> callback) {
+        getProducts(productIds).subscribe(new InternalCallbackSubscriber<>(callback));
+    }
+
+    @Override
+    public Observable<List<Product>> getProducts(final List<String> productIds) {
         if (productIds == null) {
             throw new NullPointerException("productIds List cannot be null");
         }
         if (productIds.size() < 1) {
             throw new IllegalArgumentException("productIds List cannot be empty");
         }
-        String queryString = TextUtils.join(",", productIds.toArray());
 
         // All product responses from the server are wrapped in a ProductListings object
         // The same endpoint is used for single and multiple product queries.
         // For this call we will query with multiple ids.
         // The returned product array will contain products for each id found.
         // If no ids were found, the array will be empty
-        retrofitService.getProducts(appId, queryString).observeOn(getCallbackScheduler()).subscribe(new InternalCallback<ProductListings>() {
-
-            @Override
-            public void success(ProductListings productPublications, Response response) {
-                List<Product> products = null;
-
-                if (productPublications != null) {
-                    products = productPublications.getProducts();
-                }
-
-                callback.success(products, response);
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                callback.failure(error);
-            }
-        });
+        final String queryString = TextUtils.join(",", productIds.toArray());
+        return retrofitService
+                .getProducts(appId, queryString)
+                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
+                .map(new UnwrapRetrofitBodyTransformation<ProductListings, List<Product>>() {
+                    @Override
+                    List<Product> unwrap(@NonNull ProductListings body) {
+                        return body.getProducts();
+                    }
+                })
+                .observeOn(getCallbackScheduler());
     }
 
-    /**
-     * Fetch the list of Products in a Collection using the sort order defined in the shop admin
-     *
-     * @param page         the 1-based page index. The page size can be set with {@link #setPageSize(int)}
-     * @param collectionId the collectionId that we want to fetch products for
-     * @param callback     the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
-     */
+    @Override
     public void getProducts(int page, String collectionId, final Callback<List<Product>> callback) {
         getProducts(page, collectionId, SortOrder.COLLECTION_DEFAULT, callback);
     }
 
-    /**
-     * Fetch the list of Products in a Collection
-     *
-     * @param page         the 1-based page index. The page size can be set with {@link #setPageSize(int)}
-     * @param collectionId the collectionId that we want to fetch products for
-     * @param sortOrder    the sort order for the collection.
-     * @param callback     the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
-     */
-    public void getProducts(int page, String collectionId, SortOrder sortOrder, final Callback<List<Product>> callback) {
+    @Override
+    public Observable<List<Product>> getProducts(final int page, final String collectionId) {
+        return getProducts(page, collectionId, SortOrder.COLLECTION_DEFAULT);
+    }
+
+    @Override
+    public void getProducts(final int page, final String collectionId, final SortOrder sortOrder, final Callback<List<Product>> callback) {
+        getProducts(page, collectionId, sortOrder).subscribe(new InternalCallbackSubscriber<>(callback));
+    }
+
+    @Override
+    public Observable<List<Product>> getProducts(final int page, final String collectionId, final SortOrder sortOrder) {
         if (page < 1) {
             throw new IllegalArgumentException("page is a 1-based index, value cannot be less than 1");
         }
@@ -436,174 +379,143 @@ public class BuyClient {
             throw new IllegalArgumentException("collectionId cannot be null");
         }
 
-        retrofitService.getProducts(appId, collectionId, pageSize, page, sortOrder.toString()).observeOn(getCallbackScheduler()).subscribe(new InternalCallback<ProductListings>() {
-
-            @Override
-            public void success(ProductListings productPublications, Response response) {
-                List<Product> products = null;
-
-                if (productPublications != null) {
-                    products = productPublications.getProducts();
-                }
-
-                callback.success(products, response);
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                callback.failure(error);
-            }
-        });
+        return retrofitService
+                .getProducts(appId, collectionId, pageSize, page, sortOrder.toString())
+                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
+                .map(new UnwrapRetrofitBodyTransformation<ProductListings, List<Product>>() {
+                    @Override
+                    List<Product> unwrap(@NonNull ProductListings body) {
+                        return body.getProducts();
+                    }
+                })
+                .observeOn(getCallbackScheduler());
     }
 
-    /**
-     * Fetch a list of Collections
-     *
-     * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
-     */
+    @Override
     public void getCollections(final Callback<List<Collection>> callback) {
         getCollectionPage(1, callback);
     }
 
-    /**
-     * Fetch a page of collections
-     *
-     * @param page     the 1-based page index. The page size can be set with
-     *                 {@link #setPageSize(int)}
-     * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
-     */
-    public void getCollectionPage(int page, final Callback<List<Collection>> callback) {
+    @Override
+    public Observable<List<Collection>> getCollections() {
+        return getCollections(1);
+    }
+
+    @Override
+    public void getCollectionPage(final int page, final Callback<List<Collection>> callback) {
+        getCollections(page).subscribe(new InternalCallbackSubscriber<>(callback));
+    }
+
+    @Override
+    public Observable<List<Collection>> getCollections(final int page) {
         if (page < 1) {
             throw new IllegalArgumentException("page is a 1-based index, value cannot be less than 1");
         }
 
         // All collection responses from the server are wrapped in a CollectionListings object which contains and array of collections
         // For this call, we will clamp the size of the collection array returned to the page size
-        retrofitService.getCollectionPage(appId, page, pageSize).observeOn(getCallbackScheduler()).subscribe(new InternalCallback<CollectionListings>() {
-
-            @Override
-            public void success(CollectionListings collectionPage, Response response) {
-                List<Collection> collections = null;
-                if (collectionPage != null) {
-                    collections = collectionPage.getCollections();
-                }
-                callback.success(collections, response);
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                callback.failure(error);
-            }
-        });
+        return retrofitService
+                .getCollectionPage(appId, page, pageSize)
+                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
+                .map(new UnwrapRetrofitBodyTransformation<CollectionListings, List<Collection>>() {
+                    @Override
+                    List<Collection> unwrap(@NonNull CollectionListings body) {
+                        return body.getCollections();
+                    }
+                })
+                .observeOn(getCallbackScheduler());
     }
 
     /*
      * Buy API
      */
 
-    /**
-     * Initiate the Shopify checkout process with a new Checkout object.
-     *
-     * @param checkout the {@link Checkout} object to use for initiating the checkout process
-     * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
-     */
-    public void createCheckout(Checkout checkout, final Callback<Checkout> callback) {
+    @Override
+    public void createCheckout(final Checkout checkout, final Callback<Checkout> callback) {
+        createCheckout(checkout).subscribe(new InternalCallbackSubscriber<>(callback));
+    }
+
+    @Override
+    public Observable<Checkout> createCheckout(final Checkout checkout) {
         if (checkout == null) {
             throw new NullPointerException("checkout cannot be null");
         }
 
         checkout.setMarketingAttribution(new MarketingAttribution(applicationName));
         checkout.setSourceName("mobile_app");
-
         if (webReturnToUrl != null) {
             checkout.setWebReturnToUrl(webReturnToUrl);
         }
-
         if (webReturnToLabel != null) {
             checkout.setWebReturnToLabel(webReturnToLabel);
         }
 
-        retrofitService.createCheckout(new CheckoutWrapper(checkout)).observeOn(getCallbackScheduler()).subscribe(new InternalCallback<CheckoutWrapper>() {
-
-            @Override
-            public void success(CheckoutWrapper checkoutWrapper, Response response) {
-                Checkout checkout = null;
-                if (checkoutWrapper != null) {
-                    checkout = checkoutWrapper.getCheckout();
-                }
-
-                callback.success(checkout, response);
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                callback.failure(error);
-            }
-        });
+        return retrofitService
+                .createCheckout(new CheckoutWrapper(checkout))
+                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
+                .map(new UnwrapRetrofitBodyTransformation<CheckoutWrapper, Checkout>() {
+                    @Override
+                    Checkout unwrap(@NonNull CheckoutWrapper body) {
+                        return body.getCheckout();
+                    }
+                })
+                .observeOn(getCallbackScheduler());
     }
 
-    /**
-     * Update an existing Checkout's attributes
-     *
-     * @param checkout the {@link Checkout} to update
-     * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
-     */
+    @Override
     public void updateCheckout(final Checkout checkout, final Callback<Checkout> callback) {
+        updateCheckout(checkout).subscribe(new InternalCallbackSubscriber<>(callback));
+    }
+
+    @Override
+    public Observable<Checkout> updateCheckout(final Checkout checkout) {
         if (checkout == null) {
             throw new NullPointerException("checkout cannot be null");
         }
 
-        Checkout cleanCheckout = checkout.copyForUpdate();
-
-        retrofitService.updateCheckout(new CheckoutWrapper(cleanCheckout), cleanCheckout.getToken()).observeOn(getCallbackScheduler()).subscribe(new InternalCallback<CheckoutWrapper>() {
-            @Override
-            public void success(CheckoutWrapper checkoutWrapper, Response response) {
-                callback.success(checkoutWrapper.getCheckout(), response);
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                callback.failure(error);
-            }
-        });
+        final Checkout cleanCheckout = checkout.copyForUpdate();
+        return retrofitService
+                .updateCheckout(new CheckoutWrapper(cleanCheckout), cleanCheckout.getToken())
+                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
+                .map(new UnwrapRetrofitBodyTransformation<CheckoutWrapper, Checkout>() {
+                    @Override
+                    Checkout unwrap(@NonNull CheckoutWrapper body) {
+                        return body.getCheckout();
+                    }
+                })
+                .observeOn(getCallbackScheduler());
     }
 
-    /**
-     * Fetch shipping rates for a given Checkout
-     *
-     * @param checkoutToken the {@link Checkout#token} from an existing Checkout
-     * @param callback      the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
-     */
-    public void getShippingRates(String checkoutToken, final Callback<List<ShippingRate>> callback) {
+    @Override
+    public void getShippingRates(final String checkoutToken, final Callback<List<ShippingRate>> callback) {
+        getShippingRates(checkoutToken).subscribe(new InternalCallbackSubscriber<>(callback));
+    }
+
+    @Override
+    public Observable<List<ShippingRate>> getShippingRates(final String checkoutToken) {
         if (checkoutToken == null) {
             throw new NullPointerException("checkoutToken cannot be null");
         }
 
-        retrofitService.getShippingRates(checkoutToken).observeOn(getCallbackScheduler()).subscribe(new InternalCallback<ShippingRatesWrapper>() {
-            @Override
-            public void success(ShippingRatesWrapper shippingRatesWrapper, Response response) {
-                if (HttpURLConnection.HTTP_OK == response.code() && shippingRatesWrapper != null) {
-                    callback.success(shippingRatesWrapper.getShippingRates(), response);
-                } else {
-                    callback.success(null, response);
-                }
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                callback.failure(error);
-            }
-        });
+        return retrofitService
+                .getShippingRates(checkoutToken)
+                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
+                .map(new UnwrapRetrofitBodyTransformation<ShippingRatesWrapper, List<ShippingRate>>() {
+                    @Override
+                    List<ShippingRate> unwrap(@NonNull ShippingRatesWrapper body) {
+                        return body.getShippingRates();
+                    }
+                })
+                .observeOn(getCallbackScheduler());
     }
 
-    /**
-     * Post a credit card to Shopify's card server and associate it with a Checkout
-     *
-     * @param card     the {@link CreditCard} to associate
-     * @param checkout the {@link Checkout} to associate the card with
-     * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
-     */
+    @Override
     public void storeCreditCard(final CreditCard card, final Checkout checkout, final Callback<Checkout> callback) {
+        storeCreditCard(card, checkout).subscribe(new InternalCallbackSubscriber<>(callback));
+    }
+
+    @Override
+    public Observable<Checkout> storeCreditCard(final CreditCard card, final Checkout checkout) {
         if (card == null) {
             throw new NullPointerException("card cannot be null");
         }
@@ -612,128 +524,121 @@ public class BuyClient {
             throw new NullPointerException("checkout cannot be null");
         }
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                CreditCardWrapper creditCardWrapper = new CreditCardWrapper(card);
-                RequestBody body = RequestBody.create(jsonMediateType, new Gson().toJson(creditCardWrapper));
-
-                Request request = new Request.Builder()
-                        .url(checkout.getPaymentUrl())
-                        .post(body)
-                        .addHeader("Authorization", "Basic " + Base64.encodeToString(apiKey.getBytes(), Base64.NO_WRAP))
-                        .addHeader("Content-Type", "application/json")
-                        .addHeader("Accept", "application/json")
-                        .build();
-                try {
-                    okhttp3.Response httpResponse = httpClient.newCall(request).execute();
-                    String paymentSessionId = parsePaymentSessionResponse(httpResponse);
-                    checkout.setPaymentSessionId(paymentSessionId);
-
-                    Response retrofitResponse = Response.success(checkout, httpResponse);
-                    callback.success(checkout, retrofitResponse);
-                } catch (IOException e) {
-                    e.printStackTrace();
-
-                    callback.failure(RetrofitError.exception(e));
-                }
-            }
-        }).start();
+        final CreditCardWrapper creditCardWrapper = new CreditCardWrapper(card);
+        return retrofitService
+                .storeCreditCard(checkout.getPaymentUrl(), creditCardWrapper, formatBasicAuthorization(apiKey))
+                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
+                .map(new UnwrapRetrofitBodyTransformation<PaymentSession, String>() {
+                    @Override
+                    String unwrap(@NonNull PaymentSession body) {
+                        return body.getId();
+                    }
+                })
+                .doOnNext(new Action1<String>() {
+                    @Override
+                    public void call(String paymentSessionId) {
+                        checkout.setPaymentSessionId(paymentSessionId);
+                    }
+                })
+                .map(new Func1<String, Checkout>() {
+                    @Override
+                    public Checkout call(String s) {
+                        return checkout;
+                    }
+                })
+                .observeOn(getCallbackScheduler());
     }
 
-    /**
-     * Complete the checkout and process the payment session
-     *
-     * @param checkout a {@link Checkout} that has had a {@link CreditCard} associated with it using {@link #storeCreditCard(CreditCard, Checkout, Callback)}
-     * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
-     */
-    public void completeCheckout(Checkout checkout, final Callback<Payment> callback) {
+    @Override
+    public void completeCheckout(final Checkout checkout, final Callback<Payment> callback) {
+        completeCheckout(checkout).subscribe(new InternalCallbackSubscriber<>(callback));
+    }
+
+    @Override
+    public Observable<Payment> completeCheckout(final Checkout checkout) {
         if (checkout == null) {
             throw new NullPointerException("checkout cannot be null");
         }
 
-        PaymentRequest paymentRequest = new PaymentRequest(checkout.getPaymentSessionId());
-
-        PaymentRequestWrapper paymentRequestWrapper = new PaymentRequestWrapper(paymentRequest);
-
-        retrofitService.completeCheckout(paymentRequestWrapper, checkout.getToken()).observeOn(getCallbackScheduler()).subscribe(new InternalCallback<PaymentWrapper>() {
-            @Override
-            public void success(PaymentWrapper paymentWrapper, Response response) {
-                callback.success(paymentWrapper.getPayment(), response);
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                callback.failure(error);
-            }
-        });
+        final PaymentRequest paymentRequest = new PaymentRequest(checkout.getPaymentSessionId());
+        final PaymentRequestWrapper paymentRequestWrapper = new PaymentRequestWrapper(paymentRequest);
+        return retrofitService
+                .completeCheckout(paymentRequestWrapper, checkout.getToken())
+                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
+                .map(new UnwrapRetrofitBodyTransformation<PaymentWrapper, Payment>() {
+                    @Override
+                    Payment unwrap(@NonNull PaymentWrapper body) {
+                        return body.getPayment();
+                    }
+                })
+                .observeOn(getCallbackScheduler());
     }
 
-    /**
-     * Fetch an existing Checkout from Shopify
-     *
-     * @param checkoutToken the token associated with the existing {@link Checkout}
-     * @param callback      the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
-     */
-    public void getCheckout(String checkoutToken, final Callback<Checkout> callback) {
+    @Override
+    public void getCheckout(final String checkoutToken, final Callback<Checkout> callback) {
+        getCheckout(checkoutToken).subscribe(new InternalCallbackSubscriber<>(callback));
+    }
+
+    @Override
+    public Observable<Checkout> getCheckout(final String checkoutToken) {
         if (checkoutToken == null) {
             throw new NullPointerException("checkoutToken cannot be null");
         }
 
-        retrofitService.getCheckout(checkoutToken).observeOn(getCallbackScheduler()).subscribe(new InternalCallback<CheckoutWrapper>() {
-            @Override
-            public void success(CheckoutWrapper checkoutWrapper, Response response) {
-                callback.success(checkoutWrapper.getCheckout(), response);
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                callback.failure(error);
-            }
-        });
+        return retrofitService
+                .getCheckout(checkoutToken)
+                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
+                .map(new UnwrapRetrofitBodyTransformation<CheckoutWrapper, Checkout>() {
+                    @Override
+                    Checkout unwrap(@NonNull CheckoutWrapper body) {
+                        return body.getCheckout();
+                    }
+                })
+                .observeOn(getCallbackScheduler());
     }
 
+    @Override
+    public void applyGiftCard(final String giftCardCode, final Checkout checkout, final Callback<Checkout> callback) {
+        applyGiftCard(giftCardCode, checkout).subscribe(new InternalCallbackSubscriber<>(callback));
+    }
 
-    /**
-     * Apply a gift card to a Checkout
-     *
-     * @param giftCardCode the gift card code for a gift card associated with the current Shop
-     * @param checkout     the {@link Checkout} object to apply the gift card to
-     * @param callback     the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
-     */
-    public void applyGiftCard(String giftCardCode, final Checkout checkout, final Callback<Checkout> callback) {
+    @Override
+    public Observable<Checkout> applyGiftCard(final String giftCardCode, final Checkout checkout) {
         if (checkout == null) {
             throw new NullPointerException("checkout cannot be null");
         }
 
         final Checkout cleanCheckout = checkout.copy();
-
         final GiftCard giftCard = new GiftCard(giftCardCode);
-
-        retrofitService.applyGiftCard(new GiftCardWrapper(giftCard), checkout.getToken()).observeOn(getCallbackScheduler()).subscribe(new InternalCallback<GiftCardWrapper>() {
-            @Override
-            public void success(GiftCardWrapper giftCardWrapper, Response response) {
-                GiftCard updatedGiftCard = giftCardWrapper.getGiftCard();
-                cleanCheckout.addGiftCard(updatedGiftCard);
-                cleanCheckout.setPaymentDue(updatedGiftCard.getCheckout().getPaymentDue());
-                callback.success(cleanCheckout, response);
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                callback.failure(error);
-            }
-        });
+        return retrofitService
+                .applyGiftCard(new GiftCardWrapper(giftCard), checkout.getToken())
+                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
+                .map(new UnwrapRetrofitBodyTransformation<GiftCardWrapper, GiftCard>() {
+                    @Override
+                    GiftCard unwrap(@NonNull GiftCardWrapper body) {
+                        return body.getGiftCard();
+                    }
+                })
+                .map(new Func1<GiftCard, Checkout>() {
+                    @Override
+                    public Checkout call(GiftCard giftCard) {
+                        if (giftCard != null) {
+                            cleanCheckout.addGiftCard(giftCard);
+                            cleanCheckout.setPaymentDue(giftCard.getCheckout().getPaymentDue());
+                        }
+                        return cleanCheckout;
+                    }
+                })
+                .observeOn(getCallbackScheduler());
     }
 
-    /**
-     * Remove a gift card that was previously applied to a Checkout
-     *
-     * @param giftCard the {@link GiftCard} to remove from the {@link Checkout}
-     * @param checkout the {@code Checkout} to remove the {@code GiftCard} from
-     * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
-     */
+    @Override
     public void removeGiftCard(final GiftCard giftCard, final Checkout checkout, final Callback<Checkout> callback) {
+        removeGiftCard(giftCard, checkout).subscribe(new InternalCallbackSubscriber<>(callback));
+    }
+
+    @Override
+    public Observable<Checkout> removeGiftCard(final GiftCard giftCard, final Checkout checkout) {
         if (checkout == null) {
             throw new NullPointerException("checkout cannot be null");
         }
@@ -742,56 +647,60 @@ public class BuyClient {
             throw new NullPointerException("giftCard cannot be null");
         }
 
-        retrofitService.removeGiftCard(giftCard.getId(), checkout.getToken()).observeOn(getCallbackScheduler()).subscribe(new InternalCallback<GiftCardWrapper>() {
-            @Override
-            public void success(GiftCardWrapper giftCardWrapper, Response response) {
-                GiftCard updatedGiftCard = giftCardWrapper.getGiftCard();
-                checkout.removeGiftCard(updatedGiftCard);
-                checkout.setPaymentDue(updatedGiftCard.getCheckout().getPaymentDue());
-                callback.success(checkout, response);
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                callback.failure(error);
-            }
-        });
+        return retrofitService
+                .removeGiftCard(giftCard.getId(), checkout.getToken())
+                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
+                .map(new UnwrapRetrofitBodyTransformation<GiftCardWrapper, GiftCard>() {
+                    @Override
+                    GiftCard unwrap(@NonNull GiftCardWrapper body) {
+                        return body.getGiftCard();
+                    }
+                })
+                .map(new Func1<GiftCard, Checkout>() {
+                    @Override
+                    public Checkout call(GiftCard giftCard) {
+                        if (giftCard != null) {
+                            checkout.removeGiftCard(giftCard);
+                            checkout.setPaymentDue(giftCard.getCheckout().getPaymentDue());
+                        }
+                        return checkout;
+                    }
+                })
+                .observeOn(getCallbackScheduler());
     }
 
-    /**
-     * Create a new Customer on Shopify
-     * @param accountCredentials the account credentials with an email, password, first name, and last name of the {@link Customer} to be created, not null
-     * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
-     */
+    @Override
     public void createCustomer(final AccountCredentials accountCredentials, final Callback<Customer> callback) {
+        createCustomer(accountCredentials).subscribe(new InternalCallbackSubscriber<>(callback));
+    }
+
+    @Override
+    public Observable<Customer> createCustomer(final AccountCredentials accountCredentials) {
         if (accountCredentials == null) {
             throw new NullPointerException("accountCredentials cannot be null");
         }
 
         final AccountCredentialsWrapper accountCredentialsWrapper = new AccountCredentialsWrapper(accountCredentials);
-
-        retrofitService.createCustomer(accountCredentialsWrapper).observeOn(getCallbackScheduler()).subscribe(new InternalCallback<CustomerWrapper>() {
-            @Override
-            public void success(CustomerWrapper customerWrapper, Response response) {
-                callback.success(customerWrapper.getCustomer(), response);
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                callback.failure(error);
-            }
-        });
+        return retrofitService
+                .createCustomer(accountCredentialsWrapper)
+                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
+                .map(new UnwrapRetrofitBodyTransformation<CustomerWrapper, Customer>() {
+                    @Override
+                    Customer unwrap(@NonNull CustomerWrapper body) {
+                        return body.getCustomer();
+                    }
+                })
+                .observeOn(getCallbackScheduler());
     }
 
-    /**
-     * Activate the customer account.
-     * @param customerId         the id of the {@link Customer} to activate
-     * @param activationToken    the activation token for the Customer, not null or empty
-     * @param accountCredentials the account credentials with a password of the {@link Customer} to be activated, not null
-     * @param callback           the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
-     */
     @Deprecated
+    @Override
     public void activateCustomer(final Long customerId, final String activationToken, final AccountCredentials accountCredentials, final Callback<Customer> callback) {
+        activateCustomer(customerId, activationToken, accountCredentials).subscribe(new InternalCallbackSubscriber<>(callback));
+    }
+
+    @Override
+    public Observable<Customer> activateCustomer(final Long customerId, final String activationToken, final AccountCredentials accountCredentials) {
         if (TextUtils.isEmpty(activationToken)) {
             throw new IllegalArgumentException("activation token cannot be empty");
         }
@@ -800,30 +709,26 @@ public class BuyClient {
             throw new NullPointerException("accountCredentials cannot be null");
         }
 
-        AccountCredentialsWrapper accountCredentialsWrapper = new AccountCredentialsWrapper(accountCredentials);
-
-        retrofitService.activateCustomer(customerId, activationToken, accountCredentialsWrapper).observeOn(getCallbackScheduler()).subscribe(new InternalCallback<CustomerWrapper>() {
-            @Override
-            public void success(CustomerWrapper customerWrapper, Response response) {
-                callback.success(customerWrapper.getCustomer(), response);
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                callback.failure(error);
-            }
-        });
-
+        final AccountCredentialsWrapper accountCredentialsWrapper = new AccountCredentialsWrapper(accountCredentials);
+        return retrofitService
+                .activateCustomer(customerId, activationToken, accountCredentialsWrapper)
+                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
+                .map(new UnwrapRetrofitBodyTransformation<CustomerWrapper, Customer>() {
+                    @Override
+                    Customer unwrap(@NonNull CustomerWrapper body) {
+                        return body.getCustomer();
+                    }
+                })
+                .observeOn(getCallbackScheduler());
     }
 
-    /**
-     * Reset the password for the customer account.
-     * @param customerId         the id of the {@link Customer} to activate
-     * @param resetToken         the reset token for the Customer, not null or empty
-     * @param accountCredentials the account credentials with the new password of the {@link Customer}. not null
-     * @param callback           the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
-     */
+    @Override
     public void resetPassword(final Long customerId, final String resetToken, final AccountCredentials accountCredentials, final Callback<Customer> callback) {
+        resetPassword(customerId, resetToken, accountCredentials).subscribe(new InternalCallbackSubscriber<>(callback));
+    }
+
+    @Override
+    public Observable<Customer> resetPassword(final Long customerId, final String resetToken, final AccountCredentials accountCredentials) {
         if (TextUtils.isEmpty(resetToken)) {
             throw new IllegalArgumentException("reset token cannot be empty");
         }
@@ -832,200 +737,206 @@ public class BuyClient {
             throw new NullPointerException("accountCredentials cannot be null");
         }
 
-        AccountCredentialsWrapper accountCredentialsWrapper = new AccountCredentialsWrapper(accountCredentials);
-
-        retrofitService.resetPassword(customerId, resetToken, accountCredentialsWrapper).observeOn(getCallbackScheduler()).subscribe(new InternalCallback<CustomerWrapper>() {
-            @Override
-            public void success(CustomerWrapper customerWrapper, Response response) {
-                callback.success(customerWrapper.getCustomer(), response);
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                callback.failure(error);
-            }
-        });
-
+        final AccountCredentialsWrapper accountCredentialsWrapper = new AccountCredentialsWrapper(accountCredentials);
+        return retrofitService
+                .resetPassword(customerId, resetToken, accountCredentialsWrapper)
+                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
+                .map(new UnwrapRetrofitBodyTransformation<CustomerWrapper, Customer>() {
+                    @Override
+                    Customer unwrap(@NonNull CustomerWrapper body) {
+                        return body.getCustomer();
+                    }
+                })
+                .observeOn(getCallbackScheduler());
     }
 
-    /**
-     * Log an existing Customer into Shopify
-     * @param accountCredentials the account credentials with an email and password of the {@link Customer}, not null
-     * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
-     */
+    @Override
     public void loginCustomer(final AccountCredentials accountCredentials, final Callback<CustomerToken> callback) {
+        loginCustomer(accountCredentials).subscribe(new InternalCallbackSubscriber<>(callback));
+    }
+
+    @Override
+    public Observable<CustomerToken> loginCustomer(final AccountCredentials accountCredentials) {
         if (accountCredentials == null) {
             throw new NullPointerException("accountCredentials cannot be null");
         }
 
         final AccountCredentialsWrapper accountCredentialsWrapper = new AccountCredentialsWrapper(accountCredentials);
-
-        retrofitService.getCustomerToken(accountCredentialsWrapper).observeOn(getCallbackScheduler()).subscribe(new InternalCallback<CustomerTokenWrapper>() {
-            @Override
-            public void success(CustomerTokenWrapper customerTokenWrapper, Response response) {
-                customerToken = customerTokenWrapper.getCustomerToken();
-                callback.success(customerTokenWrapper.getCustomerToken(), response);
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                callback.failure(error);
-            }
-        });
+        return retrofitService
+                .getCustomerToken(accountCredentialsWrapper)
+                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
+                .map(new UnwrapRetrofitBodyTransformation<CustomerTokenWrapper, CustomerToken>() {
+                    @Override
+                    CustomerToken unwrap(@NonNull CustomerTokenWrapper body) {
+                        return body.getCustomerToken();
+                    }
+                })
+                .doOnNext(new Action1<CustomerToken>() {
+                    @Override
+                    public void call(CustomerToken token) {
+                        customerToken = token;
+                    }
+                })
+                .observeOn(getCallbackScheduler());
     }
 
-    /**
-     * Log a Customer out from Shopify
-     *
-     * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
-     */
+    @Override
     public void logoutCustomer(final Callback<Void> callback) {
+        logoutCustomer().subscribe(new InternalCallbackSubscriber<>(callback));
+    }
+
+    @Override
+    public Observable<Void> logoutCustomer() {
         if (customerToken == null) {
-            return;
+            return Observable.just(null);
         }
 
-        retrofitService.removeCustomerToken(customerToken.getCustomerId()).observeOn(getCallbackScheduler()).subscribe(new InternalCallback<Void>() {
-            @Override
-            public void success(Void aVoid, Response response) {
-                customerToken = null;
-                callback.success(aVoid, response);
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                callback.failure(error);
-            }
-        });
+        return retrofitService
+                .removeCustomerToken(customerToken.getCustomerId())
+                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
+                .map(new Func1<Response<Void>, Void>() {
+                    @Override
+                    public Void call(Response<Void> response) {
+                        return response.body();
+                    }
+                })
+                .observeOn(getCallbackScheduler())
+                .doOnNext(new Action1<Void>() {
+                    @Override
+                    public void call(Void aVoid) {
+                        customerToken = null;
+                    }
+                });
     }
 
-    /**
-     * Update an existing Customer's attributes.
-     *
-     * @param customer the {@link Customer} to update
-     * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
-     */
+    @Override
     public void updateCustomer(final Customer customer, final Callback<Customer> callback) {
+        updateCustomer(customer).subscribe(new InternalCallbackSubscriber<>(callback));
+    }
+
+    @Override
+    public Observable<Customer> updateCustomer(final Customer customer) {
         if (customer == null) {
             throw new NullPointerException("customer cannot be null");
         }
 
-        retrofitService.updateCustomer(customer.getId(), new CustomerWrapper(customer)).observeOn(getCallbackScheduler()).subscribe(new InternalCallback<CustomerWrapper>() {
-            @Override
-            public void success(CustomerWrapper customerWrapper, Response response) {
-                callback.success(customerWrapper.getCustomer(), response);
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                callback.failure(error);
-            }
-        });
+        return retrofitService
+                .updateCustomer(customer.getId(), new CustomerWrapper(customer))
+                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
+                .map(new UnwrapRetrofitBodyTransformation<CustomerWrapper, Customer>() {
+                    @Override
+                    Customer unwrap(@NonNull CustomerWrapper body) {
+                        return body.getCustomer();
+                    }
+                })
+                .observeOn(getCallbackScheduler());
     }
 
-    /**
-     * Retrieve a Customer's details from Shopify.
-     *
-     * @param customerId the identifier of a {@link CustomerToken} or {@link Customer}
-     * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
-     */
+    @Override
     public void getCustomer(final Long customerId, final Callback<Customer> callback) {
+        getCustomer(customerId).subscribe(new InternalCallbackSubscriber<>(callback));
+    }
+
+    @Override
+    public Observable<Customer> getCustomer(final Long customerId) {
         if (customerId == null) {
             throw new NullPointerException("customer Id cannot be null");
         }
 
-        retrofitService.getCustomer(customerId).observeOn(getCallbackScheduler()).subscribe(new InternalCallback<CustomerWrapper>() {
-            @Override
-            public void success(CustomerWrapper customerWrapper, Response response) {
-                callback.success(customerWrapper.getCustomer(), response);
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                callback.failure(error);
-            }
-        });
+        return retrofitService
+                .getCustomer(customerId)
+                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
+                .map(new UnwrapRetrofitBodyTransformation<CustomerWrapper, Customer>() {
+                    @Override
+                    Customer unwrap(@NonNull CustomerWrapper body) {
+                        return body.getCustomer();
+                    }
+                })
+                .observeOn(getCallbackScheduler());
     }
 
-    /**
-     * Renew a Customer login.  This should be called periodically to keep the token up to date.
-     *
-     * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
-     */
+    @Override
     public void renewCustomer(final Callback<CustomerToken> callback) {
+        renewCustomer().subscribe(new InternalCallbackSubscriber<>(callback));
+    }
+
+    @Override
+    public Observable<CustomerToken> renewCustomer() {
         if (customerToken == null) {
-            return;
+            return Observable.just(null);
         }
 
-        retrofitService.renewCustomerToken(EMPTY_BODY, customerToken.getCustomerId()).observeOn(getCallbackScheduler()).subscribe(new InternalCallback<CustomerTokenWrapper>() {
-            @Override
-            public void success(CustomerTokenWrapper customerTokenWrapper, Response response) {
-                customerToken = customerTokenWrapper.getCustomerToken();
-                callback.success(customerTokenWrapper.getCustomerToken(), response);
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                callback.failure(error);
-            }
-        });
+        return retrofitService
+                .renewCustomerToken(EMPTY_BODY, customerToken.getCustomerId())
+                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
+                .map(new UnwrapRetrofitBodyTransformation<CustomerTokenWrapper, CustomerToken>() {
+                    @Override
+                    CustomerToken unwrap(@NonNull CustomerTokenWrapper body) {
+                        return body.getCustomerToken();
+                    }
+                })
+                .observeOn(getCallbackScheduler())
+                .doOnNext(new Action1<CustomerToken>() {
+                    @Override
+                    public void call(CustomerToken token) {
+                        customerToken = token;
+                    }
+                });
     }
 
-    /**
-     * Send a password recovery email. An email will be sent to the email address specified if a customer with that email address exists on Shopify.
-     *
-     * @param email    the email address to send the password recovery email to
-     * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
-     */
+    @Override
     public void recoverPassword(final String email, final Callback<Void> callback) {
+        recoverPassword(email).subscribe(new InternalCallbackSubscriber<>(callback));
+    }
+
+    @Override
+    public Observable<Void> recoverPassword(final String email) {
         if (TextUtils.isEmpty(email)) {
             throw new IllegalArgumentException("email cannot be empty");
         }
 
-        retrofitService.recoverCustomer(new EmailWrapper(email)).observeOn(getCallbackScheduler()).subscribe(new InternalCallback<Void>() {
-            @Override
-            public void success(Void aVoid, Response response) {
-                callback.success(aVoid, response);
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                callback.failure(error);
-            }
-        });
+        return retrofitService
+                .recoverCustomer(new EmailWrapper(email))
+                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
+                .map(new Func1<Response<Void>, Void>() {
+                    @Override
+                    public Void call(Response<Void> response) {
+                        return response.body();
+                    }
+                })
+                .observeOn(getCallbackScheduler());
     }
 
-    /**
-     * Fetch the Orders associated with a Customer.
-     *
-     * @param customer the {@link Customer} to fetch the orders for, not null
-     * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
-     */
+    @Override
     public void getOrders(final Customer customer, final Callback<List<Order>> callback) {
+        getOrders(customer).subscribe(new InternalCallbackSubscriber<>(callback));
+    }
+
+    @Override
+    public Observable<List<Order>> getOrders(final Customer customer) {
         if (customer == null) {
             throw new NullPointerException("customer cannot be null");
         }
 
-        retrofitService.getOrders(customer.getId()).observeOn(getCallbackScheduler()).subscribe(new InternalCallback<OrdersWrapper>() {
-            @Override
-            public void success(OrdersWrapper ordersWrapper, Response response) {
-                callback.success(ordersWrapper.getOrders(), response);
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                callback.failure(error);
-            }
-        });
+        return retrofitService
+                .getOrders(customer.getId())
+                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
+                .map(new UnwrapRetrofitBodyTransformation<OrdersWrapper, List<Order>>() {
+                    @Override
+                    List<Order> unwrap(@NonNull OrdersWrapper body) {
+                        return body.getOrders();
+                    }
+                })
+                .observeOn(getCallbackScheduler());
     }
 
-    /**
-     * Fetch an existing Order from Shopify
-     *
-     * @param customer the {@link Customer} to fetch the order for
-     * @param orderId  the identifier of the {@link Order} to retrieve
-     * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
-     */
+    @Override
     public void getOrder(final Customer customer, final String orderId, final Callback<Order> callback) {
+        getOrder(customer, orderId).subscribe(new InternalCallbackSubscriber<>(callback));
+    }
+
+    @Override
+    public Observable<Order> getOrder(final Customer customer, final String orderId) {
         if (TextUtils.isEmpty(orderId)) {
             throw new IllegalArgumentException("orderId cannot be empty");
         }
@@ -1034,27 +945,25 @@ public class BuyClient {
             throw new NullPointerException("customer cannot be null");
         }
 
-        retrofitService.getOrder(customer.getId(), orderId).observeOn(getCallbackScheduler()).subscribe(new InternalCallback<OrderWrapper>() {
-            @Override
-            public void success(OrderWrapper orderWrapper, Response response) {
-                callback.success(orderWrapper.getOrder(), response);
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                callback.failure(error);
-            }
-        });
+        return retrofitService
+                .getOrder(customer.getId(), orderId)
+                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
+                .map(new UnwrapRetrofitBodyTransformation<OrderWrapper, Order>() {
+                    @Override
+                    Order unwrap(@NonNull OrderWrapper body) {
+                        return body.getOrder();
+                    }
+                })
+                .observeOn(getCallbackScheduler());
     }
 
-    /**
-     * Create an Address and associate it with a Customer
-     *
-     * @param customer the {@link Customer} to create and address for, not null
-     * @param address  the {@link Address} to create, not null
-     * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
-     */
+    @Override
     public void createAddress(final Customer customer, final Address address, final Callback<Address> callback) {
+        createAddress(customer, address).subscribe(new InternalCallbackSubscriber<>(callback));
+    }
+
+    @Override
+    public Observable<Address> createAddress(final Customer customer, final Address address) {
         if (address == null) {
             throw new NullPointerException("address cannot be null");
         }
@@ -1063,51 +972,48 @@ public class BuyClient {
             throw new NullPointerException("customer cannot be null");
         }
 
-        retrofitService.createAddress(customer.getId(), new AddressWrapper(address)).observeOn(getCallbackScheduler()).subscribe(new InternalCallback<AddressWrapper>() {
-            @Override
-            public void success(AddressWrapper addressWrapper, Response response) {
-                callback.success(addressWrapper.getAddress(), response);
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                callback.failure(error);
-            }
-        });
+        return retrofitService
+                .createAddress(customer.getId(), new AddressWrapper(address))
+                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
+                .map(new UnwrapRetrofitBodyTransformation<AddressWrapper, Address>() {
+                    @Override
+                    Address unwrap(@NonNull AddressWrapper body) {
+                        return body.getAddress();
+                    }
+                })
+                .observeOn(getCallbackScheduler());
     }
 
-    /**
-     * Fetch all of the Addresses associated with a Customer.
-     *
-     * @param customer the {@link Customer} to fetch addresses for, not null
-     * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
-     */
+    @Override
     public void getAddresses(final Customer customer, final Callback<List<Address>> callback) {
+        getAddresses(customer).subscribe(new InternalCallbackSubscriber<>(callback));
+    }
+
+    @Override
+    public Observable<List<Address>> getAddresses(final Customer customer) {
         if (customer == null) {
             throw new NullPointerException("customer cannot be null");
         }
 
-        retrofitService.getAddresses(customer.getId()).observeOn(getCallbackScheduler()).subscribe(new InternalCallback<AddressesWrapper>() {
-            @Override
-            public void success(AddressesWrapper addressesWrapper, Response response) {
-                callback.success(addressesWrapper.getAddresses(), response);
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                callback.failure(error);
-            }
-        });
+        return retrofitService
+                .getAddresses(customer.getId())
+                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
+                .map(new UnwrapRetrofitBodyTransformation<AddressesWrapper, List<Address>>() {
+                    @Override
+                    List<Address> unwrap(@NonNull AddressesWrapper body) {
+                        return body.getAddresses();
+                    }
+                })
+                .observeOn(getCallbackScheduler());
     }
 
-    /**
-     * Fetch an existing Address from Shopify
-     *
-     * @param customer the {@link Customer} to fetch an address for, not null
-     * @param addressId the identifier of the {@link Address}
-     * @param callback  the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
-     */
+    @Override
     public void getAddress(final Customer customer, final String addressId, final Callback<Address> callback) {
+        getAddress(customer, addressId).subscribe(new InternalCallbackSubscriber<>(callback));
+    }
+
+    @Override
+    public Observable<Address> getAddress(final Customer customer, final String addressId) {
         if (TextUtils.isEmpty(addressId)) {
             throw new IllegalArgumentException("addressId cannot be empty");
         }
@@ -1116,27 +1022,25 @@ public class BuyClient {
             throw new NullPointerException("customer cannot be null");
         }
 
-        retrofitService.getAddress(customer.getId(), addressId).observeOn(getCallbackScheduler()).subscribe(new InternalCallback<AddressWrapper>() {
-            @Override
-            public void success(AddressWrapper addressWrapper, Response response) {
-                callback.success(addressWrapper.getAddress(), response);
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                callback.failure(error);
-            }
-        });
+        return retrofitService
+                .getAddress(customer.getId(), addressId)
+                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
+                .map(new UnwrapRetrofitBodyTransformation<AddressWrapper, Address>() {
+                    @Override
+                    Address unwrap(@NonNull AddressWrapper body) {
+                        return body.getAddress();
+                    }
+                })
+                .observeOn(getCallbackScheduler());
     }
 
-    /**
-     * Update the attributes of an existing Address
-     *
-     * @param customer the {@link Customer} to updatne an address for, not null
-     * @param address  the {@link Address} to update
-     * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
-     */
+    @Override
     public void updateAddress(final Customer customer, final Address address, final Callback<Address> callback) {
+        updateAddress(customer, address).subscribe(new InternalCallbackSubscriber<>(callback));
+    }
+
+    @Override
+    public Observable<Address> updateAddress(final Customer customer, final Address address) {
         if (address == null) {
             throw new NullPointerException("address cannot be null");
         }
@@ -1145,26 +1049,19 @@ public class BuyClient {
             throw new NullPointerException("customer cannot be null");
         }
 
-        retrofitService.updateAddress(customer.getId(), new AddressWrapper(address), address.getAddressId()).observeOn(getCallbackScheduler()).subscribe(new InternalCallback<AddressWrapper>() {
-            @Override
-            public void success(AddressWrapper addressWrapper, Response response) {
-                callback.success(addressWrapper.getAddress(), response);
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                callback.failure(error);
-            }
-        });
+        return retrofitService
+                .updateAddress(customer.getId(), new AddressWrapper(address), address.getAddressId())
+                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
+                .map(new UnwrapRetrofitBodyTransformation<AddressWrapper, Address>() {
+                    @Override
+                    Address unwrap(@NonNull AddressWrapper body) {
+                        return body.getAddress();
+                    }
+                })
+                .observeOn(getCallbackScheduler());
     }
 
-    /**
-     * Convenience method to release all product inventory reservations by setting the `reservationTime` of the checkout `0` and calling {@link #updateCheckout(Checkout, Callback) updateCheckout(Checkout, Callback)}.
-     * We recommend creating a new `Checkout` object from a `Cart` for further API calls.
-     *
-     * @param checkout the {@link Checkout} to expire
-     * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
-     */
+    @Override
     public void removeProductReservationsFromCheckout(final Checkout checkout, final Callback<Checkout> callback) {
         if (checkout == null || TextUtils.isEmpty(checkout.getToken())) {
             callback.failure(null);
@@ -1178,6 +1075,20 @@ public class BuyClient {
         }
     }
 
+    @Override
+    public Observable<Checkout> removeProductReservationsFromCheckout(final Checkout checkout) {
+        if (checkout == null || TextUtils.isEmpty(checkout.getToken())) {
+            return Observable.error(new RuntimeException("Missing checkout token"));
+        } else {
+            checkout.setReservationTime(0);
+
+            final Checkout expiredCheckout = new Checkout();
+            expiredCheckout.setToken(checkout.getToken());
+            expiredCheckout.setReservationTime(0);
+
+            return updateCheckout(expiredCheckout);
+        }
+    }
 
     /**
      * Helper methods
@@ -1193,11 +1104,11 @@ public class BuyClient {
         if (errorResponse == null) {
             return "Error was null";
         }
-        if(errorResponse.getResponse() != null && errorResponse.getResponse().isSuccessful()){
+        if (errorResponse.getResponse() != null && errorResponse.getResponse().isSuccessful()) {
             return String.format("Tried to parse error on successful response! Code: %d", errorResponse.getResponse().code());
         }
 
-        if(errorResponse.getResponse() == null){
+        if (errorResponse.getResponse() == null) {
             return String.format("\n\tMessage: %s\n\tCode: %d\n\tResponse error body: %s", errorResponse.getMessage(), errorResponse.getCode(), "null");
         }
 
@@ -1209,19 +1120,7 @@ public class BuyClient {
         return errorResponse.getMessage();
     }
 
-
-    private String parsePaymentSessionResponse(okhttp3.Response response) throws IOException {
-        String paymentSessionId = null;
-        if (response.isSuccessful()) {
-            String jsonString = response.body().string();
-            try {
-                JSONObject json = new JSONObject(jsonString);
-                paymentSessionId = (String) json.get("id");
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-        return paymentSessionId;
+    private static String formatBasicAuthorization(final String token) {
+        return String.format("Basic %s", Base64.encodeToString(token.getBytes(Charset.forName("UTF-8")), Base64.NO_WRAP));
     }
-
 }
