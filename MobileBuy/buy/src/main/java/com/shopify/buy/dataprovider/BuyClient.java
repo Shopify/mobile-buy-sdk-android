@@ -24,6 +24,7 @@
 
 package com.shopify.buy.dataprovider;
 
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Base64;
 
@@ -63,7 +64,7 @@ import com.shopify.buy.model.internal.ShippingRatesWrapper;
 import com.shopify.buy.utils.CollectionUtils;
 
 import java.io.IOException;
-import java.net.HttpURLConnection;
+import java.nio.charset.Charset;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -158,7 +159,7 @@ public class BuyClient implements IBuyClient {
                 Request.Builder builder = original.newBuilder()
                         .method(original.method(), original.body());
 
-                builder.header("Authorization", "Basic " + Base64.encodeToString(apiKey.getBytes(), Base64.NO_WRAP));
+                builder.header("Authorization", formatBasicAuthorization(apiKey));
 
                 if (BuyClient.this.customerToken != null && !TextUtils.isEmpty(BuyClient.this.customerToken.getAccessToken())) {
                     builder.header(CUSTOMER_TOKEN_HEADER, BuyClient.this.customerToken.getAccessToken());
@@ -265,10 +266,10 @@ public class BuyClient implements IBuyClient {
         return retrofitService
                 .getProductPage(appId, page, pageSize)
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .map(new Func1<Response<ProductListings>, List<Product>>() {
+                .map(new UnwrapRetrofitBodyTransformation<ProductListings, List<Product>>() {
                     @Override
-                    public List<Product> call(Response<ProductListings> response) {
-                        return response.body() != null ? response.body().getProducts() : null;
+                    List<Product> unwrap(@NonNull ProductListings body) {
+                        return body.getProducts();
                     }
                 })
                 .observeOn(getCallbackScheduler());
@@ -288,10 +289,10 @@ public class BuyClient implements IBuyClient {
         return retrofitService
                 .getProductWithHandle(appId, handle)
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .map(new Func1<Response<ProductListings>, Product>() {
+                .map(new UnwrapRetrofitBodyTransformation<ProductListings, Product>() {
                     @Override
-                    public Product call(Response<ProductListings> response) {
-                        final List<Product> products = response.body() != null ? response.body().getProducts() : null;
+                    Product unwrap(@NonNull ProductListings body) {
+                        final List<Product> products = body.getProducts();
                         return !CollectionUtils.isEmpty(products) ? products.get(0) : null;
                     }
                 })
@@ -312,11 +313,10 @@ public class BuyClient implements IBuyClient {
         return retrofitService
                 .getProducts(appId, productId)
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .map(new Func1<Response<ProductListings>, Product>() {
+                .map(new UnwrapRetrofitBodyTransformation<ProductListings, Product>() {
                     @Override
-                    public Product call(Response<ProductListings> response) {
-                        final List<Product> products = response.body() != null ? response.body().getProducts() : null;
+                    Product unwrap(@NonNull ProductListings body) {
+                        final List<Product> products = body.getProducts();
                         return !CollectionUtils.isEmpty(products) ? products.get(0) : null;
                     }
                 })
@@ -346,10 +346,10 @@ public class BuyClient implements IBuyClient {
         return retrofitService
                 .getProducts(appId, queryString)
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .map(new Func1<Response<ProductListings>, List<Product>>() {
+                .map(new UnwrapRetrofitBodyTransformation<ProductListings, List<Product>>() {
                     @Override
-                    public List<Product> call(Response<ProductListings> response) {
-                        return response.body() != null ? response.body().getProducts() : null;
+                    List<Product> unwrap(@NonNull ProductListings body) {
+                        return body.getProducts();
                     }
                 })
                 .observeOn(getCallbackScheduler());
@@ -382,10 +382,10 @@ public class BuyClient implements IBuyClient {
         return retrofitService
                 .getProducts(appId, collectionId, pageSize, page, sortOrder.toString())
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .map(new Func1<Response<ProductListings>, List<Product>>() {
+                .map(new UnwrapRetrofitBodyTransformation<ProductListings, List<Product>>() {
                     @Override
-                    public List<Product> call(Response<ProductListings> response) {
-                        return response.body() != null ? response.body().getProducts() : null;
+                    List<Product> unwrap(@NonNull ProductListings body) {
+                        return body.getProducts();
                     }
                 })
                 .observeOn(getCallbackScheduler());
@@ -417,10 +417,10 @@ public class BuyClient implements IBuyClient {
         return retrofitService
                 .getCollectionPage(appId, page, pageSize)
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .map(new Func1<Response<CollectionListings>, List<Collection>>() {
+                .map(new UnwrapRetrofitBodyTransformation<CollectionListings, List<Collection>>() {
                     @Override
-                    public List<Collection> call(Response<CollectionListings> response) {
-                        return response.body() != null ? response.body().getCollections() : null;
+                    List<Collection> unwrap(@NonNull CollectionListings body) {
+                        return body.getCollections();
                     }
                 })
                 .observeOn(getCallbackScheduler());
@@ -453,10 +453,10 @@ public class BuyClient implements IBuyClient {
         return retrofitService
                 .createCheckout(new CheckoutWrapper(checkout))
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .map(new Func1<Response<CheckoutWrapper>, Checkout>() {
+                .map(new UnwrapRetrofitBodyTransformation<CheckoutWrapper, Checkout>() {
                     @Override
-                    public Checkout call(Response<CheckoutWrapper> response) {
-                        return response.body() != null ? response.body().getCheckout() : null;
+                    Checkout unwrap(@NonNull CheckoutWrapper body) {
+                        return body.getCheckout();
                     }
                 })
                 .observeOn(getCallbackScheduler());
@@ -477,10 +477,10 @@ public class BuyClient implements IBuyClient {
         return retrofitService
                 .updateCheckout(new CheckoutWrapper(cleanCheckout), cleanCheckout.getToken())
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .map(new Func1<Response<CheckoutWrapper>, Checkout>() {
+                .map(new UnwrapRetrofitBodyTransformation<CheckoutWrapper, Checkout>() {
                     @Override
-                    public Checkout call(Response<CheckoutWrapper> response) {
-                        return response.body() != null ? response.body().getCheckout() : null;
+                    Checkout unwrap(@NonNull CheckoutWrapper body) {
+                        return body.getCheckout();
                     }
                 })
                 .observeOn(getCallbackScheduler());
@@ -500,10 +500,10 @@ public class BuyClient implements IBuyClient {
         return retrofitService
                 .getShippingRates(checkoutToken)
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .map(new Func1<Response<ShippingRatesWrapper>, List<ShippingRate>>() {
+                .map(new UnwrapRetrofitBodyTransformation<ShippingRatesWrapper, List<ShippingRate>>() {
                     @Override
-                    public List<ShippingRate> call(Response<ShippingRatesWrapper> response) {
-                        return response.body() != null ? response.body().getShippingRates() : null;
+                    List<ShippingRate> unwrap(@NonNull ShippingRatesWrapper body) {
+                        return body.getShippingRates();
                     }
                 })
                 .observeOn(getCallbackScheduler());
@@ -526,12 +526,12 @@ public class BuyClient implements IBuyClient {
 
         final CreditCardWrapper creditCardWrapper = new CreditCardWrapper(card);
         return retrofitService
-                .storeCreditCard(checkout.getPaymentUrl(), creditCardWrapper, "Basic " + Base64.encodeToString(apiKey.getBytes(), Base64.NO_WRAP))
+                .storeCreditCard(checkout.getPaymentUrl(), creditCardWrapper, formatBasicAuthorization(apiKey))
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .map(new Func1<Response<PaymentSession>, String>() {
+                .map(new UnwrapRetrofitBodyTransformation<PaymentSession, String>() {
                     @Override
-                    public String call(Response<PaymentSession> response) {
-                        return response.body() != null ? response.body().getId() : null;
+                    String unwrap(@NonNull PaymentSession body) {
+                        return body.getId();
                     }
                 })
                 .doOnNext(new Action1<String>() {
@@ -565,10 +565,10 @@ public class BuyClient implements IBuyClient {
         return retrofitService
                 .completeCheckout(paymentRequestWrapper, checkout.getToken())
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .map(new Func1<Response<PaymentWrapper>, Payment>() {
+                .map(new UnwrapRetrofitBodyTransformation<PaymentWrapper, Payment>() {
                     @Override
-                    public Payment call(Response<PaymentWrapper> response) {
-                        return response.body() != null ? response.body().getPayment() : null;
+                    Payment unwrap(@NonNull PaymentWrapper body) {
+                        return body.getPayment();
                     }
                 })
                 .observeOn(getCallbackScheduler());
@@ -588,10 +588,10 @@ public class BuyClient implements IBuyClient {
         return retrofitService
                 .getCheckout(checkoutToken)
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .map(new Func1<Response<CheckoutWrapper>, Checkout>() {
+                .map(new UnwrapRetrofitBodyTransformation<CheckoutWrapper, Checkout>() {
                     @Override
-                    public Checkout call(Response<CheckoutWrapper> response) {
-                        return response.body() != null ? response.body().getCheckout() : null;
+                    Checkout unwrap(@NonNull CheckoutWrapper body) {
+                        return body.getCheckout();
                     }
                 })
                 .observeOn(getCallbackScheduler());
@@ -613,13 +613,18 @@ public class BuyClient implements IBuyClient {
         return retrofitService
                 .applyGiftCard(new GiftCardWrapper(giftCard), checkout.getToken())
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .map(new Func1<Response<GiftCardWrapper>, Checkout>() {
+                .map(new UnwrapRetrofitBodyTransformation<GiftCardWrapper, GiftCard>() {
                     @Override
-                    public Checkout call(Response<GiftCardWrapper> response) {
-                        if (response.body() != null) {
-                            final GiftCard updatedGiftCard = response.body().getGiftCard();
-                            cleanCheckout.addGiftCard(updatedGiftCard);
-                            cleanCheckout.setPaymentDue(updatedGiftCard.getCheckout().getPaymentDue());
+                    GiftCard unwrap(@NonNull GiftCardWrapper body) {
+                        return body.getGiftCard();
+                    }
+                })
+                .map(new Func1<GiftCard, Checkout>() {
+                    @Override
+                    public Checkout call(GiftCard giftCard) {
+                        if (giftCard != null) {
+                            cleanCheckout.addGiftCard(giftCard);
+                            cleanCheckout.setPaymentDue(giftCard.getCheckout().getPaymentDue());
                         }
                         return cleanCheckout;
                     }
@@ -645,13 +650,18 @@ public class BuyClient implements IBuyClient {
         return retrofitService
                 .removeGiftCard(giftCard.getId(), checkout.getToken())
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .map(new Func1<Response<GiftCardWrapper>, Checkout>() {
+                .map(new UnwrapRetrofitBodyTransformation<GiftCardWrapper, GiftCard>() {
                     @Override
-                    public Checkout call(Response<GiftCardWrapper> response) {
-                        if (response.body() != null) {
-                            GiftCard updatedGiftCard = response.body().getGiftCard();
-                            checkout.removeGiftCard(updatedGiftCard);
-                            checkout.setPaymentDue(updatedGiftCard.getCheckout().getPaymentDue());
+                    GiftCard unwrap(@NonNull GiftCardWrapper body) {
+                        return body.getGiftCard();
+                    }
+                })
+                .map(new Func1<GiftCard, Checkout>() {
+                    @Override
+                    public Checkout call(GiftCard giftCard) {
+                        if (giftCard != null) {
+                            checkout.removeGiftCard(giftCard);
+                            checkout.setPaymentDue(giftCard.getCheckout().getPaymentDue());
                         }
                         return checkout;
                     }
@@ -674,10 +684,10 @@ public class BuyClient implements IBuyClient {
         return retrofitService
                 .createCustomer(accountCredentialsWrapper)
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .map(new Func1<Response<CustomerWrapper>, Customer>() {
+                .map(new UnwrapRetrofitBodyTransformation<CustomerWrapper, Customer>() {
                     @Override
-                    public Customer call(Response<CustomerWrapper> response) {
-                        return response.body() != null ? response.body().getCustomer() : null;
+                    Customer unwrap(@NonNull CustomerWrapper body) {
+                        return body.getCustomer();
                     }
                 })
                 .observeOn(getCallbackScheduler());
@@ -703,10 +713,10 @@ public class BuyClient implements IBuyClient {
         return retrofitService
                 .activateCustomer(customerId, activationToken, accountCredentialsWrapper)
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .map(new Func1<Response<CustomerWrapper>, Customer>() {
+                .map(new UnwrapRetrofitBodyTransformation<CustomerWrapper, Customer>() {
                     @Override
-                    public Customer call(Response<CustomerWrapper> response) {
-                        return response.body() != null ? response.body().getCustomer() : null;
+                    Customer unwrap(@NonNull CustomerWrapper body) {
+                        return body.getCustomer();
                     }
                 })
                 .observeOn(getCallbackScheduler());
@@ -731,10 +741,10 @@ public class BuyClient implements IBuyClient {
         return retrofitService
                 .resetPassword(customerId, resetToken, accountCredentialsWrapper)
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .map(new Func1<Response<CustomerWrapper>, Customer>() {
+                .map(new UnwrapRetrofitBodyTransformation<CustomerWrapper, Customer>() {
                     @Override
-                    public Customer call(Response<CustomerWrapper> response) {
-                        return response.body() != null ? response.body().getCustomer() : null;
+                    Customer unwrap(@NonNull CustomerWrapper body) {
+                        return body.getCustomer();
                     }
                 })
                 .observeOn(getCallbackScheduler());
@@ -755,10 +765,10 @@ public class BuyClient implements IBuyClient {
         return retrofitService
                 .getCustomerToken(accountCredentialsWrapper)
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .map(new Func1<Response<CustomerTokenWrapper>, CustomerToken>() {
+                .map(new UnwrapRetrofitBodyTransformation<CustomerTokenWrapper, CustomerToken>() {
                     @Override
-                    public CustomerToken call(Response<CustomerTokenWrapper> response) {
-                        return response.body() != null ? response.body().getCustomerToken() : null;
+                    CustomerToken unwrap(@NonNull CustomerTokenWrapper body) {
+                        return body.getCustomerToken();
                     }
                 })
                 .doOnNext(new Action1<CustomerToken>() {
@@ -813,10 +823,10 @@ public class BuyClient implements IBuyClient {
         return retrofitService
                 .updateCustomer(customer.getId(), new CustomerWrapper(customer))
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .map(new Func1<Response<CustomerWrapper>, Customer>() {
+                .map(new UnwrapRetrofitBodyTransformation<CustomerWrapper, Customer>() {
                     @Override
-                    public Customer call(Response<CustomerWrapper> response) {
-                        return response.body() != null ? response.body().getCustomer() : null;
+                    Customer unwrap(@NonNull CustomerWrapper body) {
+                        return body.getCustomer();
                     }
                 })
                 .observeOn(getCallbackScheduler());
@@ -836,10 +846,10 @@ public class BuyClient implements IBuyClient {
         return retrofitService
                 .getCustomer(customerId)
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .map(new Func1<Response<CustomerWrapper>, Customer>() {
+                .map(new UnwrapRetrofitBodyTransformation<CustomerWrapper, Customer>() {
                     @Override
-                    public Customer call(Response<CustomerWrapper> response) {
-                        return response.body() != null ? response.body().getCustomer() : null;
+                    Customer unwrap(@NonNull CustomerWrapper body) {
+                        return body.getCustomer();
                     }
                 })
                 .observeOn(getCallbackScheduler());
@@ -859,10 +869,10 @@ public class BuyClient implements IBuyClient {
         return retrofitService
                 .renewCustomerToken(EMPTY_BODY, customerToken.getCustomerId())
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .map(new Func1<Response<CustomerTokenWrapper>, CustomerToken>() {
+                .map(new UnwrapRetrofitBodyTransformation<CustomerTokenWrapper, CustomerToken>() {
                     @Override
-                    public CustomerToken call(Response<CustomerTokenWrapper> response) {
-                        return response.body() != null ? response.body().getCustomerToken() : null;
+                    CustomerToken unwrap(@NonNull CustomerTokenWrapper body) {
+                        return body.getCustomerToken();
                     }
                 })
                 .observeOn(getCallbackScheduler())
@@ -911,10 +921,10 @@ public class BuyClient implements IBuyClient {
         return retrofitService
                 .getOrders(customer.getId())
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .map(new Func1<Response<OrdersWrapper>, List<Order>>() {
+                .map(new UnwrapRetrofitBodyTransformation<OrdersWrapper, List<Order>>() {
                     @Override
-                    public List<Order> call(Response<OrdersWrapper> response) {
-                        return response.body() != null ? response.body().getOrders() : null;
+                    List<Order> unwrap(@NonNull OrdersWrapper body) {
+                        return body.getOrders();
                     }
                 })
                 .observeOn(getCallbackScheduler());
@@ -938,10 +948,10 @@ public class BuyClient implements IBuyClient {
         return retrofitService
                 .getOrder(customer.getId(), orderId)
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .map(new Func1<Response<OrderWrapper>, Order>() {
+                .map(new UnwrapRetrofitBodyTransformation<OrderWrapper, Order>() {
                     @Override
-                    public Order call(Response<OrderWrapper> response) {
-                        return response.body() != null ? response.body().getOrder() : null;
+                    Order unwrap(@NonNull OrderWrapper body) {
+                        return body.getOrder();
                     }
                 })
                 .observeOn(getCallbackScheduler());
@@ -965,10 +975,10 @@ public class BuyClient implements IBuyClient {
         return retrofitService
                 .createAddress(customer.getId(), new AddressWrapper(address))
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .map(new Func1<Response<AddressWrapper>, Address>() {
+                .map(new UnwrapRetrofitBodyTransformation<AddressWrapper, Address>() {
                     @Override
-                    public Address call(Response<AddressWrapper> response) {
-                        return response.body() != null ? response.body().getAddress() : null;
+                    Address unwrap(@NonNull AddressWrapper body) {
+                        return body.getAddress();
                     }
                 })
                 .observeOn(getCallbackScheduler());
@@ -988,10 +998,10 @@ public class BuyClient implements IBuyClient {
         return retrofitService
                 .getAddresses(customer.getId())
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .map(new Func1<Response<AddressesWrapper>, List<Address>>() {
+                .map(new UnwrapRetrofitBodyTransformation<AddressesWrapper, List<Address>>() {
                     @Override
-                    public List<Address> call(Response<AddressesWrapper> response) {
-                        return response.body() != null ? response.body().getAddresses() : null;
+                    List<Address> unwrap(@NonNull AddressesWrapper body) {
+                        return body.getAddresses();
                     }
                 })
                 .observeOn(getCallbackScheduler());
@@ -1015,10 +1025,10 @@ public class BuyClient implements IBuyClient {
         return retrofitService
                 .getAddress(customer.getId(), addressId)
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .map(new Func1<Response<AddressWrapper>, Address>() {
+                .map(new UnwrapRetrofitBodyTransformation<AddressWrapper, Address>() {
                     @Override
-                    public Address call(Response<AddressWrapper> response) {
-                        return response.body() != null ? response.body().getAddress() : null;
+                    Address unwrap(@NonNull AddressWrapper body) {
+                        return body.getAddress();
                     }
                 })
                 .observeOn(getCallbackScheduler());
@@ -1042,10 +1052,10 @@ public class BuyClient implements IBuyClient {
         return retrofitService
                 .updateAddress(customer.getId(), new AddressWrapper(address), address.getAddressId())
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .map(new Func1<Response<AddressWrapper>, Address>() {
+                .map(new UnwrapRetrofitBodyTransformation<AddressWrapper, Address>() {
                     @Override
-                    public Address call(Response<AddressWrapper> response) {
-                        return response.body() != null ? response.body().getAddress() : null;
+                    Address unwrap(@NonNull AddressWrapper body) {
+                        return body.getAddress();
                     }
                 })
                 .observeOn(getCallbackScheduler());
@@ -1108,5 +1118,9 @@ public class BuyClient implements IBuyClient {
             // ignore
         }
         return errorResponse.getMessage();
+    }
+
+    private static String formatBasicAuthorization(final String token) {
+        return String.format("Basic %s", Base64.encodeToString(token.getBytes(Charset.forName("UTF-8")), Base64.NO_WRAP));
     }
 }
