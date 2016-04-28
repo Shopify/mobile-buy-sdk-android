@@ -28,7 +28,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
 
-import com.shopify.buy.dataprovider.IBuyClient;
+import com.shopify.buy.dataprovider.BuyClient;
 import com.shopify.buy.model.Product;
 import com.shopify.buy.model.Shop;
 
@@ -58,7 +58,7 @@ public class ProductDetailsBuilder {
      * @param context context to use for launching the {@code Activity}
      * @param client  the {@link BuyClientImpl} to use to configure the ProductDetailsActivity
      */
-    public ProductDetailsBuilder(Context context, IBuyClient client) {
+    public ProductDetailsBuilder(Context context, BuyClient client) {
         this.context = context;
 
         productDetailsConfig.setShopDomain(client.getShopDomain());

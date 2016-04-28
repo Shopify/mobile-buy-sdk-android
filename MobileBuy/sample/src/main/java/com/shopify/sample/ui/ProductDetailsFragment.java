@@ -48,7 +48,7 @@ import com.shopify.buy.customTabs.CustomTabActivityHelper;
 import com.shopify.buy.dataprovider.BuyClientBuilder;
 import com.shopify.buy.dataprovider.BuyClientUtils;
 import com.shopify.buy.dataprovider.Callback;
-import com.shopify.buy.dataprovider.IBuyClient;
+import com.shopify.buy.dataprovider.BuyClient;
 import com.shopify.buy.dataprovider.RetrofitError;
 import com.shopify.buy.model.Cart;
 import com.shopify.buy.model.Checkout;
@@ -77,7 +77,7 @@ public class ProductDetailsFragment extends Fragment {
     private Product product;
     private ProductVariant variant;
     private String productId;
-    private IBuyClient buyClient;
+    private BuyClient buyClient;
     private Shop shop;
 
     private ProductDetailsTheme theme;

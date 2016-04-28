@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.test.AndroidTestCase;
 
 import com.shopify.buy.dataprovider.BuyClientFactory;
-import com.shopify.buy.dataprovider.IBuyClient;
+import com.shopify.buy.dataprovider.BuyClient;
 
 /**
  * Created by krisorr on 2015-07-14.
@@ -15,7 +15,7 @@ public class ProductDetailsBuilderTest extends AndroidTestCase {
     private static final String WEB_RETURN_TO_LABEL = "Go Back";
     private static final String WEB_RETURN_TO_URL = "myapp://";
 
-    protected IBuyClient buyClient;
+    protected BuyClient buyClient;
 
     @Override
     protected void setUp() throws Exception {

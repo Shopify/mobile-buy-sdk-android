@@ -122,7 +122,7 @@ public final class BuyClientBuilder {
         return this;
     }
 
-    public IBuyClient build() {
+    public BuyClient build() {
         if (BuildConfig.DEBUG) {
             if (TextUtils.isEmpty(shopDomain) || shopDomain.contains(":") || shopDomain.contains("/")) {
                 throw new IllegalArgumentException("shopDomain is not set or invalid. shopDomain must be a valid URL and cannot start with 'http://'");

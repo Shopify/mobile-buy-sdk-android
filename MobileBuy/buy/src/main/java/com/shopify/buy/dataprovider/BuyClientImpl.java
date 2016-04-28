@@ -86,7 +86,7 @@ import rx.schedulers.Schedulers;
  * The {@code BuyClient} provides all requests needed to perform request on the Shopify Checkout API. Use this class to perform tasks such as getting a shop, getting collections and products for a shop, creating a {@link Checkout} on Shopify and completing Checkouts.
  * All API methods presented here run asynchronously and return results via callback on the Main thread.
  */
-final class BuyClientImpl implements IBuyClient {
+final class BuyClientImpl implements BuyClient {
 
     public static final int MAX_PAGE_SIZE = 250;
     public static final int MIN_PAGE_SIZE = 1;

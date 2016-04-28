@@ -39,7 +39,7 @@ import rx.Scheduler;
  * creating a {@link Checkout} on Shopify and completing Checkouts.
  * All API methods presented here run asynchronously and return results via callback or Rx observables on the callback scheduler thread.
  */
-public interface IBuyClient extends ProductService, CheckoutService, CustomerService, OrderService, AddressService {
+public interface BuyClient extends ProductService, CheckoutService, CustomerService, OrderService, AddressService {
 
     String getApiKey();
 

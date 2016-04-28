@@ -9,7 +9,7 @@ import com.shopify.buy.data.MockResponder;
 import com.shopify.buy.data.MockResponseGenerator;
 import com.shopify.buy.data.TestData;
 import com.shopify.buy.dataprovider.BuyClientBuilder;
-import com.shopify.buy.dataprovider.IBuyClient;
+import com.shopify.buy.dataprovider.BuyClient;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -44,7 +44,7 @@ public class ShopifyAndroidTestCase {
 
     protected static TestData data;
 
-    protected IBuyClient buyClient;
+    protected BuyClient buyClient;
 
     @Before
     public void setUp() throws Exception {
@@ -91,7 +91,7 @@ public class ShopifyAndroidTestCase {
         return name.getMethodName();
     }
 
-    protected IBuyClient getBuyClient(String shopDomain, String apiKey, String appId, String applicationName) {
+    protected BuyClient getBuyClient(String shopDomain, String apiKey, String appId, String applicationName) {
         final BuyClientBuilder buyClientBuilder = new BuyClientBuilder()
                 .shopDomain(shopDomain)
                 .apiKey(apiKey)

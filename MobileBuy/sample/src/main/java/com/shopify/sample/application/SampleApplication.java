@@ -33,7 +33,7 @@ import android.widget.Toast;
 
 import com.shopify.buy.dataprovider.BuyClientBuilder;
 import com.shopify.buy.dataprovider.Callback;
-import com.shopify.buy.dataprovider.IBuyClient;
+import com.shopify.buy.dataprovider.BuyClient;
 import com.shopify.buy.dataprovider.RetrofitError;
 import com.shopify.buy.model.Address;
 import com.shopify.buy.model.Cart;
@@ -64,7 +64,7 @@ public class SampleApplication extends Application {
                     "\t\tSHOP_DOMAIN=<myshop>.myshopify.com\n" +
                     "\t\tAPI_KEY=0123456789abcdefghijklmnopqrstuvw\n";
 
-    private IBuyClient buyClient;
+    private BuyClient buyClient;
     private Checkout checkout;
     private Shop shop;
 
