@@ -652,12 +652,7 @@ public class BuyClient {
             throw new NullPointerException("checkout cannot be null");
         }
 
-        PaymentRequest paymentRequest = new PaymentRequest();
-
-        String paymentSessionId = checkout.getPaymentSessionId();
-        if (!TextUtils.isEmpty(paymentSessionId)) {
-            paymentRequest.setPaymentSessionId(paymentSessionId);
-        }
+        PaymentRequest paymentRequest = new PaymentRequest(checkout.getPaymentSessionId());
 
         PaymentRequestWrapper paymentRequestWrapper = new PaymentRequestWrapper(paymentRequest);
 

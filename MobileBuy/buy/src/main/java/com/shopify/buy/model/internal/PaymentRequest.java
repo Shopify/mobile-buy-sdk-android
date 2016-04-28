@@ -36,7 +36,7 @@ public class PaymentRequest {
     @SerializedName("source")
     private HashMap<String, String> paymentSessionIdMap;
 
-    public void setPaymentSessionId(String paymentSessionId) {
+    public PaymentRequest(String paymentSessionId) {
         paymentSessionIdMap = new HashMap<>();
         paymentSessionIdMap.put("session_id", paymentSessionId);
     }
