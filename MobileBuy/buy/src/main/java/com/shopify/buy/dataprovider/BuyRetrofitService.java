@@ -36,10 +36,10 @@ import com.shopify.buy.model.internal.EmailWrapper;
 import com.shopify.buy.model.internal.GiftCardWrapper;
 import com.shopify.buy.model.internal.OrderWrapper;
 import com.shopify.buy.model.internal.OrdersWrapper;
+import com.shopify.buy.model.internal.PaymentRequestWrapper;
+import com.shopify.buy.model.internal.PaymentWrapper;
 import com.shopify.buy.model.internal.ProductListings;
 import com.shopify.buy.model.internal.ShippingRatesWrapper;
-
-import java.util.HashMap;
 
 import retrofit2.Call;
 import retrofit2.Response;
@@ -88,28 +88,25 @@ interface BuyRetrofitService {
      * Checkout API
      */
 
-    @POST("anywhere/checkouts.json")
+    @POST("api/checkouts.json")
     Observable<Response<CheckoutWrapper>> createCheckout(@Body CheckoutWrapper checkoutWrapper);
 
-    @PATCH("anywhere/checkouts/{token}.json")
+    @PATCH("api/checkouts/{token}.json")
     Observable<Response<CheckoutWrapper>> updateCheckout(@Body CheckoutWrapper checkoutWrapper, @Path("token") String token);
 
-    @GET("anywhere/checkouts/{token}/shipping_rates.json")
+    @GET("api/checkouts/{token}/shipping_rates.json")
     Observable<Response<ShippingRatesWrapper>> getShippingRates(@Path("token") String token);
 
-    @POST("anywhere/checkouts/{token}/complete.json")
-    Observable<Response<CheckoutWrapper>> completeCheckout(@Body HashMap<String, String> paymentSessionIdMap, @Path("token") String token);
+    @POST("api/checkouts/{token}/payments.json")
+    Observable<Response<PaymentWrapper>> completeCheckout(@Body PaymentRequestWrapper paymentRequestWrapper, @Path("token") String token);
 
-    @GET("anywhere/checkouts/{token}/processing.json")
-    Observable<Response<Void>> getCheckoutCompletionStatus(@Path("token") String token);
-
-    @GET("anywhere/checkouts/{token}.json")
+    @GET("api/checkouts/{token}.json")
     Observable<Response<CheckoutWrapper>> getCheckout(@Path("token") String token);
 
-    @POST("anywhere/checkouts/{token}/gift_cards.json")
+    @POST("api/checkouts/{token}/gift_cards.json")
     Observable<Response<GiftCardWrapper>> applyGiftCard(@Body GiftCardWrapper giftCardWrapper, @Path("token") String token);
 
-    @DELETE("anywhere/checkouts/{token}/gift_cards/{identifier}.json")
+    @DELETE("api/checkouts/{token}/gift_cards/{identifier}.json")
     Observable<Response<GiftCardWrapper>> removeGiftCard(@Path("identifier") String giftCardIdentifier, @Path("token") String token);
 
     /*

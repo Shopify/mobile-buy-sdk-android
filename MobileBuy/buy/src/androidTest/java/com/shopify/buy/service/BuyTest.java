@@ -17,6 +17,7 @@ import com.shopify.buy.model.CreditCard;
 import com.shopify.buy.model.Discount;
 import com.shopify.buy.model.GiftCard;
 import com.shopify.buy.model.LineItem;
+import com.shopify.buy.model.Payment;
 import com.shopify.buy.model.Product;
 import com.shopify.buy.model.ShippingRate;
 
@@ -277,7 +278,6 @@ public class BuyTest extends ShopifyAndroidTestCase {
         setShippingRate();
         addCreditCardToCheckout();
         completeCheckout();
-        pollCheckoutCompletionStatus();
         getCheckout();
     }
 
@@ -645,29 +645,16 @@ public class BuyTest extends ShopifyAndroidTestCase {
         latch.await();
     }
 
-    private void fetchShippingRates(int expectedStatus) throws InterruptedException {
-        final CountDownLatch latch = new CountDownLatch(1);
-        pollShippingRates(expectedStatus, latch);
-        latch.await();
-    }
-
-    private void pollShippingRates(final int expectedStatus, final CountDownLatch latch) {
+    private void fetchShippingRates(final int expectedStatus) throws InterruptedException {
         assertNotNull(checkout);
-        Callback<List<ShippingRate>> callback = new Callback<List<ShippingRate>>() {
+        final CountDownLatch latch = new CountDownLatch(1);
+        buyClient.getShippingRates(checkout.getToken(), new Callback<List<ShippingRate>>() {
             @Override
             public void success(List<ShippingRate> shippingRates, Response response) {
-                if (response.code() != expectedStatus) {
-                    try {
-                        Thread.sleep(500);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    pollShippingRates(expectedStatus, latch);
-                } else {
-                    assertNotNull(shippingRates);
-                    BuyTest.this.shippingRates = shippingRates;
-                    latch.countDown();
-                }
+                assertEquals(response.code(), expectedStatus);
+                assertNotNull(shippingRates);
+                BuyTest.this.shippingRates = shippingRates;
+                latch.countDown();
             }
 
             @Override
@@ -675,8 +662,8 @@ public class BuyTest extends ShopifyAndroidTestCase {
                 assertEquals(error.getResponse().code(), expectedStatus);
                 latch.countDown();
             }
-        };
-        buyClient.getShippingRates(checkout.getToken(), callback);
+        });
+        latch.await();
     }
 
     private void setShippingRate() throws InterruptedException {
@@ -718,6 +705,7 @@ public class BuyTest extends ShopifyAndroidTestCase {
             @Override
             public void success(Checkout checkout, Response response) {
                 assertEquals(HttpStatus.SC_OK, response.code());
+                assertNotNull(checkout.getPaymentSessionId());
                 BuyTest.this.checkout = checkout;
                 latch.countDown();
             }
@@ -732,10 +720,12 @@ public class BuyTest extends ShopifyAndroidTestCase {
 
     private void completeCheckout() throws InterruptedException {
         final CountDownLatch latch = new CountDownLatch(1);
-        buyClient.completeCheckout(checkout, new Callback<Checkout>() {
+        buyClient.completeCheckout(checkout, new Callback<Payment>() {
             @Override
-            public void success(Checkout checkout, Response response) {
+            public void success(Payment payment, Response response) {
                 assertEquals(HttpStatus.SC_OK, response.code());
+                assertNotNull(payment);
+                assertNotNull(payment.getCheckout());
                 latch.countDown();
             }
 
@@ -745,31 +735,6 @@ public class BuyTest extends ShopifyAndroidTestCase {
             }
         });
         latch.await();
-    }
-
-    private void pollCheckoutCompletionStatus() throws InterruptedException {
-        final CountDownLatch latch = new CountDownLatch(1);
-        recurseCheckoutCompletionPoll(latch);
-        latch.await();
-    }
-
-    private void recurseCheckoutCompletionPoll(final CountDownLatch latch) {
-        final Callback<Boolean> callback = new Callback<Boolean>() {
-            @Override
-            public void success(Boolean complete, Response response) {
-                if (complete) {
-                    latch.countDown();
-                } else {
-                    recurseCheckoutCompletionPoll(latch);
-                }
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                fail(BuyClient.getErrorBody(error));
-            }
-        };
-        buyClient.getCheckoutCompletionStatus(checkout, callback);
     }
 
     private void getCheckout() throws InterruptedException {

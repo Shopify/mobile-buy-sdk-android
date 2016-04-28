@@ -41,6 +41,7 @@ import com.shopify.buy.model.Checkout;
 import com.shopify.buy.model.Collection;
 import com.shopify.buy.model.CreditCard;
 import com.shopify.buy.model.LineItem;
+import com.shopify.buy.model.Payment;
 import com.shopify.buy.model.Product;
 import com.shopify.buy.model.ShippingRate;
 import com.shopify.buy.model.Shop;
@@ -122,7 +123,7 @@ public class SampleApplication extends Application {
             public void success(List<Product> products, Response response) {
                 if (products.size() > 0) {
                     allProducts.addAll(products);
-                    getAllProducts(page + 1, allProducts, callback );
+                    getAllProducts(page + 1, allProducts, callback);
                 } else {
                     callback.success(allProducts, response);
                 }
@@ -162,6 +163,7 @@ public class SampleApplication extends Application {
         address.setZip("10001");
         address.setCountryCode("US");
         checkout.setShippingAddress(address);
+        checkout.setBillingAddress(address);
 
         checkout.setEmail("something@somehost.com");
 
@@ -225,16 +227,11 @@ public class SampleApplication extends Application {
     }
 
     public void storeCreditCard(final CreditCard card, final Callback<Checkout> callback) {
-        checkout.setBillingAddress(checkout.getShippingAddress());
         buyClient.storeCreditCard(card, checkout, wrapCheckoutCallback(callback));
     }
 
     public void completeCheckout(final Callback<Checkout> callback) {
-        buyClient.completeCheckout(checkout, wrapCheckoutCallback(callback));
-    }
-
-    public void getCheckoutCompletionStatus(final Callback<Boolean> callback) {
-        buyClient.getCheckoutCompletionStatus(checkout, callback);
+        buyClient.completeCheckout(checkout, wrapCheckoutCallbackForPayment(callback));
     }
 
     public void launchProductDetailsActivity(Activity activity, Product product, ProductDetailsTheme theme) {
@@ -260,6 +257,21 @@ public class SampleApplication extends Application {
             @Override
             public void success(Checkout checkout, Response response) {
                 SampleApplication.this.checkout = checkout;
+                callback.success(checkout, response);
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                callback.failure(error);
+            }
+        };
+    }
+
+    private Callback<Payment> wrapCheckoutCallbackForPayment(final Callback<Checkout> callback) {
+        return new Callback<Payment>() {
+            @Override
+            public void success(Payment payment, Response response) {
+                SampleApplication.this.checkout = payment.getCheckout();
                 callback.success(checkout, response);
             }
 
