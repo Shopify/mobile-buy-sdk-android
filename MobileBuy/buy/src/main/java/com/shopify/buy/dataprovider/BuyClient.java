@@ -201,53 +201,26 @@ public class BuyClient implements IBuyClient {
         this.callbackScheduler = callbackScheduler;
     }
 
-    /**
-     * Sets the {@link Customer} specific token
-     *
-     * @param customerToken
-     */
     @Override
     public void setCustomerToken(CustomerToken customerToken) {
         this.customerToken = customerToken;
     }
 
-    /**
-     * Returns the {@link Customer} specific token
-     *
-     * @return customer token
-     */
     @Override
     public CustomerToken getCustomerToken() {
         return customerToken;
     }
 
-    /**
-     * Sets the web url to be invoked by the button on the completion page of the web checkout.
-     *
-     * @param webReturnToUrl a url defined as a custom scheme in the Android Manifest file.
-     */
     @Override
     public void setWebReturnToUrl(String webReturnToUrl) {
         this.webReturnToUrl = webReturnToUrl;
     }
 
-    /**
-     * Sets the text to be displayed on the button on the completion page of the web checkout
-     *
-     * @param webReturnToLabel the text to display on the button.
-     */
     @Override
     public void setWebReturnToLabel(String webReturnToLabel) {
         this.webReturnToLabel = webReturnToLabel;
     }
 
-    /**
-     * Sets the page size used for paged API queries
-     *
-     * @param pageSize the number of {@link Product} to include in a page.  The maximum page size is {@link #MAX_PAGE_SIZE} and the minimum page size is {@link #MIN_PAGE_SIZE}.
-     *                 If the page size is less than {@code MIN_PAGE_SIZE}, it will be set to {@code MIN_PAGE_SIZE}.  If the page size is greater than MAX_PAGE_SIZE it will be set to {@code MAX_PAGE_SIZE}.
-     *                 The default value is {@link #DEFAULT_PAGE_SIZE}
-     */
     @Override
     public void setPageSize(int pageSize) {
         this.pageSize = Math.max(Math.min(pageSize, MAX_PAGE_SIZE), MIN_PAGE_SIZE);
@@ -257,21 +230,11 @@ public class BuyClient implements IBuyClient {
      * Storefront API
      */
 
-    /**
-     * Fetch metadata about your shop
-     *
-     * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
-     */
     @Override
     public void getShop(final Callback<Shop> callback) {
         getShop().subscribe(new InternalCallbackSubscriber<>(callback));
     }
 
-    /**
-     * Fetch metadata about your shop
-     *
-     * @return cold observable that emits requested shop metadata
-     */
     @Override
     public Observable<Shop> getShop() {
         return retrofitService
@@ -286,25 +249,11 @@ public class BuyClient implements IBuyClient {
                 .observeOn(getCallbackScheduler());
     }
 
-    /**
-     * Fetch a page of products
-     *
-     * @param page     the 1-based page index. The page size can be set with
-     *                 {@link #setPageSize(int)}
-     * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
-     */
     @Override
     public void getProductPage(final int page, final Callback<List<Product>> callback) {
         getProductPage(page).subscribe(new InternalCallbackSubscriber<>(callback));
     }
 
-    /**
-     * Fetch a page of products
-     *
-     * @param page the 1-based page index. The page size can be set with
-     *             {@link #setPageSize(int)}
-     * @return cold observable that emits the requested list of products
-     */
     @Override
     public Observable<List<Product>> getProductPage(final int page) {
         if (page < 1) {
@@ -323,23 +272,11 @@ public class BuyClient implements IBuyClient {
                 .observeOn(getCallbackScheduler());
     }
 
-    /**
-     * Fetch the product with the specified handle
-     *
-     * @param handle   the handle for the product to fetch
-     * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
-     */
     @Override
     public void getProductWithHandle(final String handle, final Callback<Product> callback) {
         getProductWithHandle(handle).subscribe(new InternalCallbackSubscriber<>(callback));
     }
 
-    /**
-     * Fetch the product with the specified handle
-     *
-     * @param handle the handle for the product to fetch
-     * @return cold observable that emits requested product with the specified handle
-     */
     @Override
     public Observable<Product> getProductWithHandle(final String handle) {
         if (handle == null) {
@@ -359,23 +296,11 @@ public class BuyClient implements IBuyClient {
                 .observeOn(getCallbackScheduler());
     }
 
-    /**
-     * Fetch a single Product
-     *
-     * @param productId the productId for the product to fetch
-     * @param callback  the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
-     */
     @Override
     public void getProduct(final String productId, final Callback<Product> callback) {
         getProduct(productId).subscribe(new InternalCallbackSubscriber<>(callback));
     }
 
-    /**
-     * Fetch a single Product
-     *
-     * @param productId the productId for the product to fetch
-     * @return cold observable that emits requested single product
-     */
     @Override
     public Observable<Product> getProduct(final String productId) {
         if (productId == null) {
@@ -396,23 +321,11 @@ public class BuyClient implements IBuyClient {
                 .observeOn(getCallbackScheduler());
     }
 
-    /**
-     * Fetch a list of Products
-     *
-     * @param productIds a List of the productIds to fetch
-     * @param callback   the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
-     */
     @Override
     public void getProducts(final List<String> productIds, final Callback<List<Product>> callback) {
         getProducts(productIds).subscribe(new InternalCallbackSubscriber<>(callback));
     }
 
-    /**
-     * Fetch a list of Products
-     *
-     * @param productIds a List of the productIds to fetch
-     * @return cold observable that emits requested list of products
-     */
     @Override
     public Observable<List<Product>> getProducts(final List<String> productIds) {
         if (productIds == null) {
@@ -440,51 +353,21 @@ public class BuyClient implements IBuyClient {
                 .observeOn(getCallbackScheduler());
     }
 
-    /**
-     * Fetch the list of Products in a Collection using the sort order defined in the shop admin
-     *
-     * @param page         the 1-based page index. The page size can be set with {@link #setPageSize(int)}
-     * @param collectionId the collectionId that we want to fetch products for
-     * @param callback     the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
-     */
     @Override
     public void getProducts(int page, String collectionId, final Callback<List<Product>> callback) {
         getProducts(page, collectionId, SortOrder.COLLECTION_DEFAULT, callback);
     }
 
-    /**
-     * Fetch the list of Products in a Collection using the sort order defined in the shop admin
-     *
-     * @param page         the 1-based page index. The page size can be set with {@link #setPageSize(int)}
-     * @param collectionId the collectionId that we want to fetch products for
-     * @return cold observable that emits requested list of products
-     */
     @Override
     public Observable<List<Product>> getProducts(final int page, final String collectionId) {
         return getProducts(page, collectionId, SortOrder.COLLECTION_DEFAULT);
     }
 
-    /**
-     * Fetch the list of Products in a Collection
-     *
-     * @param page         the 1-based page index. The page size can be set with {@link #setPageSize(int)}
-     * @param collectionId the collectionId that we want to fetch products for
-     * @param sortOrder    the sort order for the collection.
-     * @param callback     the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
-     */
     @Override
     public void getProducts(final int page, final String collectionId, final SortOrder sortOrder, final Callback<List<Product>> callback) {
         getProducts(page, collectionId, sortOrder).subscribe(new InternalCallbackSubscriber<>(callback));
     }
 
-    /**
-     * Fetch the list of Products in a Collection
-     *
-     * @param page         the 1-based page index. The page size can be set with {@link #setPageSize(int)}
-     * @param collectionId the collectionId that we want to fetch products for
-     * @param sortOrder    the sort order for the collection.
-     * @return cold observable that emits requested list of products
-     */
     @Override
     public Observable<List<Product>> getProducts(final int page, final String collectionId, final SortOrder sortOrder) {
         if (page < 1) {
@@ -506,45 +389,21 @@ public class BuyClient implements IBuyClient {
                 .observeOn(getCallbackScheduler());
     }
 
-    /**
-     * Fetch a list of Collections
-     *
-     * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
-     */
     @Override
     public void getCollections(final Callback<List<Collection>> callback) {
         getCollectionPage(1, callback);
     }
 
-    /**
-     * Fetch a list of Collections
-     *
-     * @return cold observable that emits requested list of collections
-     */
     @Override
     public Observable<List<Collection>> getCollections() {
         return getCollections(1);
     }
 
-    /**
-     * Fetch a page of collections
-     *
-     * @param page     the 1-based page index. The page size can be set with
-     *                 {@link #setPageSize(int)}
-     * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
-     */
     @Override
     public void getCollectionPage(final int page, final Callback<List<Collection>> callback) {
         getCollections(page).subscribe(new InternalCallbackSubscriber<>(callback));
     }
 
-    /**
-     * Fetch a page of collections
-     *
-     * @param page the 1-based page index. The page size can be set with
-     *             {@link #setPageSize(int)}
-     * @return cold observable that emits requested list of collections
-     */
     @Override
     public Observable<List<Collection>> getCollections(final int page) {
         if (page < 1) {
@@ -569,23 +428,11 @@ public class BuyClient implements IBuyClient {
      * Buy API
      */
 
-    /**
-     * Initiate the Shopify checkout process with a new Checkout object.
-     *
-     * @param checkout the {@link Checkout} object to use for initiating the checkout process
-     * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
-     */
     @Override
     public void createCheckout(final Checkout checkout, final Callback<Checkout> callback) {
         createCheckout(checkout).subscribe(new InternalCallbackSubscriber<>(callback));
     }
 
-    /**
-     * Initiate the Shopify checkout process with a new Checkout object.
-     *
-     * @param checkout the {@link Checkout} object to use for initiating the checkout process
-     * @return cold observable that emits created checkout object
-     */
     @Override
     public Observable<Checkout> createCheckout(final Checkout checkout) {
         if (checkout == null) {
@@ -613,23 +460,11 @@ public class BuyClient implements IBuyClient {
                 .observeOn(getCallbackScheduler());
     }
 
-    /**
-     * Update an existing Checkout's attributes
-     *
-     * @param checkout the {@link Checkout} to update
-     * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
-     */
     @Override
     public void updateCheckout(final Checkout checkout, final Callback<Checkout> callback) {
         updateCheckout(checkout).subscribe(new InternalCallbackSubscriber<>(callback));
     }
 
-    /**
-     * Update an existing Checkout's attributes
-     *
-     * @param checkout the {@link Checkout} to update
-     * @return cold observable that emits updated checkout object
-     */
     @Override
     public Observable<Checkout> updateCheckout(final Checkout checkout) {
         if (checkout == null) {
@@ -649,23 +484,11 @@ public class BuyClient implements IBuyClient {
                 .observeOn(getCallbackScheduler());
     }
 
-    /**
-     * Fetch shipping rates for a given Checkout
-     *
-     * @param checkoutToken the {@link Checkout#token} from an existing Checkout
-     * @param callback      the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
-     */
     @Override
     public void getShippingRates(final String checkoutToken, final Callback<List<ShippingRate>> callback) {
         getShippingRates(checkoutToken).subscribe(new InternalCallbackSubscriber<>(callback));
     }
 
-    /**
-     * Fetch shipping rates for a given Checkout
-     *
-     * @param checkoutToken the {@link Checkout#token} from an existing Checkout
-     * @return cold observable that emits requested list of shipping rates for a given checkout
-     */
     @Override
     public Observable<List<ShippingRate>> getShippingRates(final String checkoutToken) {
         if (checkoutToken == null) {
@@ -684,25 +507,11 @@ public class BuyClient implements IBuyClient {
                 .observeOn(getCallbackScheduler());
     }
 
-    /**
-     * Post a credit card to Shopify's card server and associate it with a Checkout
-     *
-     * @param card     the {@link CreditCard} to associate
-     * @param checkout the {@link Checkout} to associate the card with
-     * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
-     */
     @Override
     public void storeCreditCard(final CreditCard card, final Checkout checkout, final Callback<Checkout> callback) {
         storeCreditCard(card, checkout).subscribe(new InternalCallbackSubscriber<>(callback));
     }
 
-    /**
-     * Post a credit card to Shopify's card server and associate it with a Checkout
-     *
-     * @param card     the {@link CreditCard} to associate
-     * @param checkout the {@link Checkout} to associate the card with
-     * @return cold observable that emits updated checkout with posted credit card
-     */
     @Override
     public Observable<Checkout> storeCreditCard(final CreditCard card, final Checkout checkout) {
         if (card == null) {
@@ -745,24 +554,11 @@ public class BuyClient implements IBuyClient {
                 .observeOn(getCallbackScheduler());
     }
 
-    /**
-     * Complete the checkout and process the payment session
-     *
-     * @param checkout a {@link Checkout} that has had a {@link CreditCard} associated with it using {@link #storeCreditCard(CreditCard, Checkout)}
-     * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
-     */
     @Override
     public void completeCheckout(final Checkout checkout, final Callback<Checkout> callback) {
         completeCheckout(checkout).subscribe(new InternalCallbackSubscriber<>(callback));
     }
 
-
-    /**
-     * Complete the checkout and process the payment session
-     *
-     * @param checkout a {@link Checkout} that has had a {@link CreditCard} associated with it using {@link #storeCreditCard(CreditCard, Checkout)}
-     * @return cold observable that emits completed checkout
-     */
     @Override
     public Observable<Checkout> completeCheckout(final Checkout checkout) {
         if (checkout == null) {
@@ -787,27 +583,11 @@ public class BuyClient implements IBuyClient {
                 .observeOn(getCallbackScheduler());
     }
 
-    /**
-     * Get the status of the payment session associated with {@code checkout}. {@code callback} will be
-     * called with a boolean value indicating whether the session has completed or not. This method
-     * should be polled until the {@code callback} response is {@code true}
-     *
-     * @param checkout a {@link Checkout} that has been passed as a parameter to {@link #completeCheckout(Checkout, Callback)}
-     * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
-     */
     @Override
     public void getCheckoutCompletionStatus(final Checkout checkout, final Callback<Boolean> callback) {
         getCheckoutCompletionStatus(checkout).subscribe(new InternalCallbackSubscriber<>(callback));
     }
 
-    /**
-     * Get the status of the payment session associated with {@code checkout}. {@code callback} will be
-     * called with a boolean value indicating whether the session has completed or not. This method
-     * should be polled until the {@code callback} response is {@code true}
-     *
-     * @param checkout a {@link Checkout} that has been passed as a parameter to {@link #completeCheckout(Checkout, Callback)}
-     * @return cold observable that emits the requested status for specified checkout
-     */
     @Override
     public Observable<Boolean> getCheckoutCompletionStatus(final Checkout checkout) {
         if (checkout == null) {
@@ -825,23 +605,11 @@ public class BuyClient implements IBuyClient {
                 .observeOn(getCallbackScheduler());
     }
 
-    /**
-     * Fetch an existing Checkout from Shopify
-     *
-     * @param checkoutToken the token associated with the existing {@link Checkout}
-     * @param callback      the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
-     */
     @Override
     public void getCheckout(final String checkoutToken, final Callback<Checkout> callback) {
         getCheckout(checkoutToken).subscribe(new InternalCallbackSubscriber<>(callback));
     }
 
-    /**
-     * Fetch an existing Checkout from Shopify
-     *
-     * @param checkoutToken the token associated with the existing {@link Checkout}
-     * @return cold observable that emits requested existing checkout
-     */
     @Override
     public Observable<Checkout> getCheckout(final String checkoutToken) {
         if (checkoutToken == null) {
@@ -860,25 +628,11 @@ public class BuyClient implements IBuyClient {
                 .observeOn(getCallbackScheduler());
     }
 
-    /**
-     * Apply a gift card to a Checkout
-     *
-     * @param giftCardCode the gift card code for a gift card associated with the current Shop
-     * @param checkout     the {@link Checkout} object to apply the gift card to
-     * @param callback     the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
-     */
     @Override
     public void applyGiftCard(final String giftCardCode, final Checkout checkout, final Callback<Checkout> callback) {
         applyGiftCard(giftCardCode, checkout).subscribe(new InternalCallbackSubscriber<>(callback));
     }
 
-    /**
-     * Apply a gift card to a Checkout
-     *
-     * @param giftCardCode the gift card code for a gift card associated with the current Shop
-     * @param checkout     the {@link Checkout} object to apply the gift card to
-     * @return cold observable that emits updated checkout
-     */
     @Override
     public Observable<Checkout> applyGiftCard(final String giftCardCode, final Checkout checkout) {
         if (checkout == null) {
@@ -904,25 +658,11 @@ public class BuyClient implements IBuyClient {
                 .observeOn(getCallbackScheduler());
     }
 
-    /**
-     * Remove a gift card that was previously applied to a Checkout
-     *
-     * @param giftCard the {@link GiftCard} to remove from the {@link Checkout}
-     * @param checkout the {@code Checkout} to remove the {@code GiftCard} from
-     * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
-     */
     @Override
     public void removeGiftCard(final GiftCard giftCard, final Checkout checkout, final Callback<Checkout> callback) {
         removeGiftCard(giftCard, checkout).subscribe(new InternalCallbackSubscriber<>(callback));
     }
 
-    /**
-     * Remove a gift card that was previously applied to a Checkout
-     *
-     * @param giftCard the {@link GiftCard} to remove from the {@link Checkout}
-     * @param checkout the {@code Checkout} to remove the {@code GiftCard} from
-     * @return cold observable that emits updated checkout
-     */
     @Override
     public Observable<Checkout> removeGiftCard(final GiftCard giftCard, final Checkout checkout) {
         if (checkout == null) {
@@ -950,23 +690,11 @@ public class BuyClient implements IBuyClient {
                 .observeOn(getCallbackScheduler());
     }
 
-    /**
-     * Create a new Customer on Shopify
-     *
-     * @param accountCredentials the account credentials with an email, password, first name, and last name of the {@link Customer} to be created, not null
-     * @param callback           the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
-     */
     @Override
     public void createCustomer(final AccountCredentials accountCredentials, final Callback<Customer> callback) {
         createCustomer(accountCredentials).subscribe(new InternalCallbackSubscriber<>(callback));
     }
 
-    /**
-     * Create a new Customer on Shopify
-     *
-     * @param accountCredentials the account credentials with an email, password, first name, and last name of the {@link Customer} to be created, not null
-     * @return cold observable that emits created new customer
-     */
     @Override
     public Observable<Customer> createCustomer(final AccountCredentials accountCredentials) {
         if (accountCredentials == null) {
@@ -986,28 +714,12 @@ public class BuyClient implements IBuyClient {
                 .observeOn(getCallbackScheduler());
     }
 
-    /**
-     * Activate the customer account.
-     *
-     * @param customerId         the id of the {@link Customer} to activate
-     * @param activationToken    the activation token for the Customer, not null or empty
-     * @param accountCredentials the account credentials with a password of the {@link Customer} to be activated, not null
-     * @param callback           the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
-     */
     @Deprecated
     @Override
     public void activateCustomer(final Long customerId, final String activationToken, final AccountCredentials accountCredentials, final Callback<Customer> callback) {
         activateCustomer(customerId, activationToken, accountCredentials).subscribe(new InternalCallbackSubscriber<>(callback));
     }
 
-    /**
-     * Activate the customer account.
-     *
-     * @param customerId         the id of the {@link Customer} to activate
-     * @param activationToken    the activation token for the Customer, not null or empty
-     * @param accountCredentials the account credentials with a password of the {@link Customer} to be activated, not null
-     * @return cold observable that emits activated customer account
-     */
     @Override
     public Observable<Customer> activateCustomer(final Long customerId, final String activationToken, final AccountCredentials accountCredentials) {
         if (TextUtils.isEmpty(activationToken)) {
@@ -1031,27 +743,11 @@ public class BuyClient implements IBuyClient {
                 .observeOn(getCallbackScheduler());
     }
 
-    /**
-     * Reset the password for the customer account.
-     *
-     * @param customerId         the id of the {@link Customer} to activate
-     * @param resetToken         the reset token for the Customer, not null or empty
-     * @param accountCredentials the account credentials with the new password of the {@link Customer}. not null
-     * @param callback           the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
-     */
     @Override
     public void resetPassword(final Long customerId, final String resetToken, final AccountCredentials accountCredentials, final Callback<Customer> callback) {
         resetPassword(customerId, resetToken, accountCredentials).subscribe(new InternalCallbackSubscriber<>(callback));
     }
 
-    /**
-     * Reset the password for the customer account.
-     *
-     * @param customerId         the id of the {@link Customer} to activate
-     * @param resetToken         the reset token for the Customer, not null or empty
-     * @param accountCredentials the account credentials with the new password of the {@link Customer}. not null
-     * @return cold observable that emits customer account with reset password
-     */
     @Override
     public Observable<Customer> resetPassword(final Long customerId, final String resetToken, final AccountCredentials accountCredentials) {
         if (TextUtils.isEmpty(resetToken)) {
@@ -1075,23 +771,11 @@ public class BuyClient implements IBuyClient {
                 .observeOn(getCallbackScheduler());
     }
 
-    /**
-     * Log an existing Customer into Shopify
-     *
-     * @param accountCredentials the account credentials with an email and password of the {@link Customer}, not null
-     * @param callback           the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
-     */
     @Override
     public void loginCustomer(final AccountCredentials accountCredentials, final Callback<CustomerToken> callback) {
         loginCustomer(accountCredentials).subscribe(new InternalCallbackSubscriber<>(callback));
     }
 
-    /**
-     * Log an existing Customer into Shopify
-     *
-     * @param accountCredentials the account credentials with an email and password of the {@link Customer}, not null
-     * @return cold observable that emits logged in customer token
-     */
     @Override
     public Observable<CustomerToken> loginCustomer(final AccountCredentials accountCredentials) {
         if (accountCredentials == null) {
@@ -1117,21 +801,11 @@ public class BuyClient implements IBuyClient {
                 .observeOn(getCallbackScheduler());
     }
 
-    /**
-     * Log a Customer out from Shopify
-     *
-     * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
-     */
     @Override
     public void logoutCustomer(final Callback<Void> callback) {
         logoutCustomer().subscribe(new InternalCallbackSubscriber<>(callback));
     }
 
-    /**
-     * Log a Customer out from Shopify
-     *
-     * @return cold observable that log customer out and emits nothing
-     */
     @Override
     public Observable<Void> logoutCustomer() {
         if (customerToken == null) {
@@ -1156,23 +830,11 @@ public class BuyClient implements IBuyClient {
                 });
     }
 
-    /**
-     * Update an existing Customer's attributes.
-     *
-     * @param customer the {@link Customer} to update
-     * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
-     */
     @Override
     public void updateCustomer(final Customer customer, final Callback<Customer> callback) {
         updateCustomer(customer).subscribe(new InternalCallbackSubscriber<>(callback));
     }
 
-    /**
-     * Update an existing Customer's attributes.
-     *
-     * @param customer the {@link Customer} to update
-     * @return cold observable that emits updated existent customer attributes
-     */
     @Override
     public Observable<Customer> updateCustomer(final Customer customer) {
         if (customer == null) {
@@ -1191,23 +853,11 @@ public class BuyClient implements IBuyClient {
                 .observeOn(getCallbackScheduler());
     }
 
-    /**
-     * Retrieve a Customer's details from Shopify.
-     *
-     * @param customerId the identifier of a {@link CustomerToken} or {@link Customer}
-     * @param callback   the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
-     */
     @Override
     public void getCustomer(final Long customerId, final Callback<Customer> callback) {
         getCustomer(customerId).subscribe(new InternalCallbackSubscriber<>(callback));
     }
 
-    /**
-     * Retrieve a Customer's details from Shopify.
-     *
-     * @param customerId the identifier of a {@link CustomerToken} or {@link Customer}
-     * @return cold observable tha emits requested customer details
-     */
     @Override
     public Observable<Customer> getCustomer(final Long customerId) {
         if (customerId == null) {
@@ -1226,21 +876,11 @@ public class BuyClient implements IBuyClient {
                 .observeOn(getCallbackScheduler());
     }
 
-    /**
-     * Renew a Customer login.  This should be called periodically to keep the token up to date.
-     *
-     * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
-     */
     @Override
     public void renewCustomer(final Callback<CustomerToken> callback) {
         renewCustomer().subscribe(new InternalCallbackSubscriber<>(callback));
     }
 
-    /**
-     * Renew a Customer login.  This should be called periodically to keep the token up to date.
-     *
-     * @return cold observable that emits renewed customer token
-     */
     @Override
     public Observable<CustomerToken> renewCustomer() {
         if (customerToken == null) {
@@ -1265,23 +905,11 @@ public class BuyClient implements IBuyClient {
                 });
     }
 
-    /**
-     * Send a password recovery email. An email will be sent to the email address specified if a customer with that email address exists on Shopify.
-     *
-     * @param email    the email address to send the password recovery email to
-     * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
-     */
     @Override
     public void recoverPassword(final String email, final Callback<Void> callback) {
         recoverPassword(email).subscribe(new InternalCallbackSubscriber<>(callback));
     }
 
-    /**
-     * Send a password recovery email. An email will be sent to the email address specified if a customer with that email address exists on Shopify.
-     *
-     * @param email the email address to send the password recovery email to
-     * @return cold observable that sends a password recovery email and emits nothing
-     */
     @Override
     public Observable<Void> recoverPassword(final String email) {
         if (TextUtils.isEmpty(email)) {
@@ -1300,23 +928,11 @@ public class BuyClient implements IBuyClient {
                 .observeOn(getCallbackScheduler());
     }
 
-    /**
-     * Fetch the Orders associated with a Customer.
-     *
-     * @param customer the {@link Customer} to fetch the orders for, not null
-     * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
-     */
     @Override
     public void getOrders(final Customer customer, final Callback<List<Order>> callback) {
         getOrders(customer).subscribe(new InternalCallbackSubscriber<>(callback));
     }
 
-    /**
-     * Fetch the Orders associated with a Customer.
-     *
-     * @param customer the {@link Customer} to fetch the orders for, not null
-     * @return cold observable that emits requested list of orders associated with a customer
-     */
     @Override
     public Observable<List<Order>> getOrders(final Customer customer) {
         if (customer == null) {
@@ -1335,25 +951,11 @@ public class BuyClient implements IBuyClient {
                 .observeOn(getCallbackScheduler());
     }
 
-    /**
-     * Fetch an existing Order from Shopify
-     *
-     * @param customer the {@link Customer} to fetch the order for
-     * @param orderId  the identifier of the {@link Order} to retrieve
-     * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
-     */
     @Override
     public void getOrder(final Customer customer, final String orderId, final Callback<Order> callback) {
         getOrder(customer, orderId).subscribe(new InternalCallbackSubscriber<>(callback));
     }
 
-    /**
-     * Fetch an existing Order from Shopify
-     *
-     * @param customer the {@link Customer} to fetch the order for
-     * @param orderId  the identifier of the {@link Order} to retrieve
-     * @return cold observable that emits requested existing order
-     */
     @Override
     public Observable<Order> getOrder(final Customer customer, final String orderId) {
         if (TextUtils.isEmpty(orderId)) {
@@ -1376,25 +978,11 @@ public class BuyClient implements IBuyClient {
                 .observeOn(getCallbackScheduler());
     }
 
-    /**
-     * Create an Address and associate it with a Customer
-     *
-     * @param customer the {@link Customer} to create and address for, not null
-     * @param address  the {@link Address} to create, not null
-     * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
-     */
     @Override
     public void createAddress(final Customer customer, final Address address, final Callback<Address> callback) {
         createAddress(customer, address).subscribe(new InternalCallbackSubscriber<>(callback));
     }
 
-    /**
-     * Create an Address and associate it with a Customer
-     *
-     * @param customer the {@link Customer} to create and address for, not null
-     * @param address  the {@link Address} to create, not null
-     * @return cold observable that emits created address associated with a customer
-     */
     @Override
     public Observable<Address> createAddress(final Customer customer, final Address address) {
         if (address == null) {
@@ -1417,23 +1005,11 @@ public class BuyClient implements IBuyClient {
                 .observeOn(getCallbackScheduler());
     }
 
-    /**
-     * Fetch all of the Addresses associated with a Customer.
-     *
-     * @param customer the {@link Customer} to fetch addresses for, not null
-     * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
-     */
     @Override
     public void getAddresses(final Customer customer, final Callback<List<Address>> callback) {
         getAddresses(customer).subscribe(new InternalCallbackSubscriber<>(callback));
     }
 
-    /**
-     * Fetch all of the Addresses associated with a Customer.
-     *
-     * @param customer the {@link Customer} to fetch addresses for, not null
-     * @return cold observable that emits the requested list of addresses associated with a customer
-     */
     @Override
     public Observable<List<Address>> getAddresses(final Customer customer) {
         if (customer == null) {
@@ -1452,25 +1028,11 @@ public class BuyClient implements IBuyClient {
                 .observeOn(getCallbackScheduler());
     }
 
-    /**
-     * Fetch an existing Address from Shopify
-     *
-     * @param customer  the {@link Customer} to fetch an address for, not null
-     * @param addressId the identifier of the {@link Address}
-     * @param callback  the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
-     */
     @Override
     public void getAddress(final Customer customer, final String addressId, final Callback<Address> callback) {
         getAddress(customer, addressId).subscribe(new InternalCallbackSubscriber<>(callback));
     }
 
-    /**
-     * Fetch an existing Address from Shopify
-     *
-     * @param customer  the {@link Customer} to fetch an address for, not null
-     * @param addressId the identifier of the {@link Address}
-     * @return cold observable that emits requested existing address
-     */
     @Override
     public Observable<Address> getAddress(final Customer customer, final String addressId) {
         if (TextUtils.isEmpty(addressId)) {
@@ -1493,25 +1055,11 @@ public class BuyClient implements IBuyClient {
                 .observeOn(getCallbackScheduler());
     }
 
-    /**
-     * Update the attributes of an existing Address
-     *
-     * @param customer the {@link Customer} to updatne an address for, not null
-     * @param address  the {@link Address} to update
-     * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
-     */
     @Override
     public void updateAddress(final Customer customer, final Address address, final Callback<Address> callback) {
         updateAddress(customer, address).subscribe(new InternalCallbackSubscriber<>(callback));
     }
 
-    /**
-     * Update the attributes of an existing Address
-     *
-     * @param customer the {@link Customer} to updatne an address for, not null
-     * @param address  the {@link Address} to update
-     * @return returns cold observable that emits updated existing address
-     */
     @Override
     public Observable<Address> updateAddress(final Customer customer, final Address address) {
         if (address == null) {
@@ -1534,13 +1082,6 @@ public class BuyClient implements IBuyClient {
                 .observeOn(getCallbackScheduler());
     }
 
-    /**
-     * Convenience method to release all product inventory reservations by setting the `reservationTime` of the checkout `0` and calling {@link #updateCheckout(Checkout, Callback) updateCheckout(Checkout, Callback)}.
-     * We recommend creating a new `Checkout` object from a `Cart` for further API calls.
-     *
-     * @param checkout the {@link Checkout} to expire
-     * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
-     */
     @Override
     public void removeProductReservationsFromCheckout(final Checkout checkout, final Callback<Checkout> callback) {
         if (checkout == null || TextUtils.isEmpty(checkout.getToken())) {
@@ -1555,13 +1096,6 @@ public class BuyClient implements IBuyClient {
         }
     }
 
-    /**
-     * Convenience method to release all product inventory reservations by setting the `reservationTime` of the checkout `0` and calling {@link #updateCheckout(Checkout, Callback) updateCheckout(Checkout, Callback)}.
-     * We recommend creating a new `Checkout` object from a `Cart` for further API calls.
-     *
-     * @param checkout the {@link Checkout} to expire
-     * @return cold observable that emits updated checkout
-     */
     @Override
     public Observable<Checkout> removeProductReservationsFromCheckout(final Checkout checkout) {
         if (checkout == null || TextUtils.isEmpty(checkout.getToken())) {
@@ -1606,6 +1140,4 @@ public class BuyClient implements IBuyClient {
         }
         return errorResponse.getMessage();
     }
-
-
 }

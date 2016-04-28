@@ -30,21 +30,78 @@ import java.util.List;
 
 import rx.Observable;
 
+/**
+ * Service that provides Address API endpoints.
+ */
 public interface AddressService {
 
+    /**
+     * Create an Address and associate it with a Customer
+     *
+     * @param customer the {@link Customer} to create and address for, not null
+     * @param address  the {@link Address} to create, not null
+     * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
+     */
     void createAddress(Customer customer, Address address, Callback<Address> callback);
 
+    /**
+     * Create an Address and associate it with a Customer
+     *
+     * @param customer the {@link Customer} to create and address for, not null
+     * @param address  the {@link Address} to create, not null
+     * @return cold observable that emits created address associated with a customer
+     */
     Observable<Address> createAddress(Customer customer, Address address);
 
+    /**
+     * Fetch all of the Addresses associated with a Customer.
+     *
+     * @param customer the {@link Customer} to fetch addresses for, not null
+     * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
+     */
     void getAddresses(Customer customer, Callback<List<Address>> callback);
 
+    /**
+     * Fetch all of the Addresses associated with a Customer.
+     *
+     * @param customer the {@link Customer} to fetch addresses for, not null
+     * @return cold observable that emits the requested list of addresses associated with a customer
+     */
     Observable<List<Address>> getAddresses(Customer customer);
 
+    /**
+     * Fetch an existing Address from Shopify
+     *
+     * @param customer  the {@link Customer} to fetch an address for, not null
+     * @param addressId the identifier of the {@link Address}
+     * @param callback  the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
+     */
     void getAddress(Customer customer, String addressId, Callback<Address> callback);
 
+    /**
+     * Fetch an existing Address from Shopify
+     *
+     * @param customer  the {@link Customer} to fetch an address for, not null
+     * @param addressId the identifier of the {@link Address}
+     * @return cold observable that emits requested existing address
+     */
     Observable<Address> getAddress(Customer customer, String addressId);
 
+    /**
+     * Update the attributes of an existing Address
+     *
+     * @param customer the {@link Customer} to updatne an address for, not null
+     * @param address  the {@link Address} to update
+     * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
+     */
     void updateAddress(Customer customer, Address address, Callback<Address> callback);
 
+    /**
+     * Update the attributes of an existing Address
+     *
+     * @param customer the {@link Customer} to updatne an address for, not null
+     * @param address  the {@link Address} to update
+     * @return returns cold observable that emits updated existing address
+     */
     Observable<Address> updateAddress(Customer customer, Address address);
 }
