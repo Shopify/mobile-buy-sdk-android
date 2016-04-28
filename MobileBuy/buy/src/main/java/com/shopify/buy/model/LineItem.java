@@ -25,7 +25,6 @@
 package com.shopify.buy.model;
 
 import com.google.gson.annotations.SerializedName;
-import com.shopify.buy.dataprovider.BuyClient;
 import com.shopify.buy.dataprovider.Callback;
 
 import java.util.HashMap;
@@ -103,14 +102,14 @@ public class LineItem {
 
 
     /**
-     * @return The line price of the item (price * quantity). This is only available for line items returned using {@link BuyClient#getCheckout(String, Callback)}
+     * @return The line price of the item (price * quantity). This is only available for line items returned using {@link BuyClientImpl#getCheckout(String, Callback)}
      */
     public String getLinePrice() {
         return linePrice;
     }
 
     /**
-     * @return The competitor's price for the same item. You need to set this value on the {@link Product} in your shop admin portal. This is only available for line items returned using {@link BuyClient#getCheckout(String, Callback)}
+     * @return The competitor's price for the same item. You need to set this value on the {@link Product} in your shop admin portal. This is only available for line items returned using {@link BuyClientImpl#getCheckout(String, Callback)}
      */
     public String getCompareAtPrice() {
         return compareAtPrice;
@@ -197,7 +196,7 @@ public class LineItem {
     }
 
     /**
-     * @return The total discount applied to this line item. This is only available for line items returned using {@link BuyClient#getCustomer(Long, Callback)}.
+     * @return The total discount applied to this line item. This is only available for line items returned using {@link BuyClientImpl#getCustomer(Long, Callback)}.
      */
     public String getTotalDiscount() {
         return totalDiscount;

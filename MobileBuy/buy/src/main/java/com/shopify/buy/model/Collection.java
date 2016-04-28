@@ -25,7 +25,7 @@
 package com.shopify.buy.model;
 
 import com.google.gson.annotations.SerializedName;
-import com.shopify.buy.dataprovider.BuyClientFactory;
+import com.shopify.buy.dataprovider.BuyClientUtils;
 import com.shopify.buy.model.internal.CollectionImage;
 import com.shopify.buy.dataprovider.Callback;
 
@@ -33,7 +33,7 @@ import java.util.Date;
 
 /**
  * Represents a collection of {@link Product}.
- * In order to get the list of products in a collection, use {@link com.shopify.buy.dataprovider.BuyClient#getProducts(int, String, SortOrder, Callback) getProducts(page, collectionId, sortOrder, callback}.
+ * In order to get the list of products in a collection, use {@link BuyClientImpl#getProducts(int, String, SortOrder, Callback) getProducts(page, collectionId, sortOrder, callback}.
  */
 public class Collection extends ShopifyObject {
 
@@ -163,7 +163,7 @@ public class Collection extends ShopifyObject {
      * @return A collection object created using the values in the JSON string.
      */
     public static Collection fromJson(String json) {
-        return BuyClientFactory.createDefaultGson().fromJson(json, Collection.class);
+        return BuyClientUtils.createDefaultGson().fromJson(json, Collection.class);
     }
 
 }

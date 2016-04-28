@@ -36,7 +36,7 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
-import com.shopify.buy.dataprovider.BuyClientFactory;
+import com.shopify.buy.dataprovider.BuyClientUtils;
 import com.shopify.buy.dataprovider.Callback;
 import com.shopify.buy.model.internal.MarketingAttribution;
 import com.shopify.buy.utils.CollectionUtils;
@@ -51,7 +51,7 @@ import java.util.Map;
 /**
  * The checkout object. This is the main object that you will interact with when creating orders on Shopify.
  * After making changes to your checkout object by calling any of the setter functions, make sure you call
- * {@link com.shopify.buy.dataprovider.BuyClient#updateCheckout(Checkout, Callback) updateCheckout}.
+ * {@link BuyClientImpl#updateCheckout(Checkout, Callback) updateCheckout}.
  */
 public class Checkout extends ShopifyObject {
 
@@ -474,8 +474,8 @@ public class Checkout extends ShopifyObject {
 
     /**
      * The default reservation time on a checkout is 300 seconds (5 minutes).
-     * Setting the reservation time to 0 and updating the checkout (via {@link com.shopify.buy.dataprovider.BuyClient#updateCheckout(Checkout, Callback) updateCheckout(checkout, callback)})
-     * will release the inventory reserved by this checkout. This can also be done by calling {@link com.shopify.buy.dataprovider.BuyClient#removeProductReservationsFromCheckout(Checkout, Callback) removeProductReservationsFromCheckout(checkout, callback)}.
+     * Setting the reservation time to 0 and updating the checkout (via {@link BuyClientImpl#updateCheckout(Checkout, Callback) updateCheckout(checkout, callback)})
+     * will release the inventory reserved by this checkout. This can also be done by calling {@link BuyClientImpl#removeProductReservationsFromCheckout(Checkout, Callback) removeProductReservationsFromCheckout(checkout, callback)}.
      *
      * @param reservationTime The reservation time on this checkout (in seconds).
      */
@@ -557,7 +557,7 @@ public class Checkout extends ShopifyObject {
     }
 
     /**
-     * For internal use only. To apply a gift card to your checkout, use {@link com.shopify.buy.dataprovider.BuyClient#applyGiftCard(String, Checkout, Callback) applyGiftCard(giftCardCode, checkout, callback)}.
+     * For internal use only. To apply a gift card to your checkout, use {@link BuyClientImpl#applyGiftCard(String, Checkout, Callback) applyGiftCard(giftCardCode, checkout, callback)}.
      */
     public void addGiftCard(GiftCard giftCard) {
         if (giftCards == null) {
@@ -627,7 +627,7 @@ public class Checkout extends ShopifyObject {
             return null;
         }
 
-        Gson gson = BuyClientFactory.createDefaultGson(Checkout.class);
+        Gson gson = BuyClientUtils.createDefaultGson(Checkout.class);
 
         JsonObject checkoutElement = gson.fromJson(json, JsonElement.class).getAsJsonObject();
 
@@ -663,7 +663,7 @@ public class Checkout extends ShopifyObject {
 
         @Override
         public JsonElement serialize(final Checkout checkout, final Type typeOfSrc, final JsonSerializationContext context) {
-            Gson gson = BuyClientFactory.createDefaultGson(Checkout.class);
+            Gson gson = BuyClientUtils.createDefaultGson(Checkout.class);
 
             JsonObject checkoutObject = gson.toJsonTree(checkout).getAsJsonObject();
 

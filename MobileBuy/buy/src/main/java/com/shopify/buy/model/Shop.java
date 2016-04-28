@@ -25,7 +25,7 @@
 package com.shopify.buy.model;
 
 import com.google.gson.annotations.SerializedName;
-import com.shopify.buy.dataprovider.BuyClientFactory;
+import com.shopify.buy.dataprovider.BuyClientUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -164,7 +164,7 @@ public class Shop extends ShopifyObject {
      * @return A shop object created using the values in the JSON string.
      */
     public static Shop fromJson(String json) {
-        return BuyClientFactory.createDefaultGson().fromJson(json, Shop.class);
+        return BuyClientUtils.createDefaultGson().fromJson(json, Shop.class);
     }
 
 }

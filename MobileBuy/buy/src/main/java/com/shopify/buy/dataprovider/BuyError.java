@@ -157,7 +157,7 @@ public class BuyError {
      * @param email
      */
     public static boolean isEmailAlreadyTakenError(RetrofitError retrofitError, String email) {
-        return isEmailAlreadyTakenError(BuyClient.getErrorBody(retrofitError), email);
+        return isEmailAlreadyTakenError(BuyClientUtils.getErrorBody(retrofitError), email);
     }
 
     /**
@@ -205,7 +205,7 @@ public class BuyError {
      * @return list of BuyError objects for customer errors
      */
     public static List<BuyError> errorsForCustomer(RetrofitError retrofitError) {
-        return errorsForCustomer(BuyClient.getErrorBody(retrofitError));
+        return errorsForCustomer(BuyClientUtils.getErrorBody(retrofitError));
     }
 
     /**
@@ -239,7 +239,7 @@ public class BuyError {
      * @return list of BuyError objects for checkout errors
      */
     public static List<BuyError> errorsForCheckout(RetrofitError retrofitError) {
-        return errorsForCheckout(BuyClient.getErrorBody(retrofitError));
+        return errorsForCheckout(BuyClientUtils.getErrorBody(retrofitError));
     }
 
     /**
@@ -276,7 +276,7 @@ public class BuyError {
      * @return list of BuyError objects corresponding to the checkout inline items
      */
     public static List<BuyError> errorsForLineItems(RetrofitError retrofitError) {
-        return errorsForLineItems(BuyClient.getErrorBody(retrofitError));
+        return errorsForLineItems(BuyClientUtils.getErrorBody(retrofitError));
     }
 
     /**

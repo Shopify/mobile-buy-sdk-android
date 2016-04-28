@@ -24,7 +24,7 @@
 
 package com.shopify.buy.model;
 
-import com.shopify.buy.dataprovider.BuyClientFactory;
+import com.shopify.buy.dataprovider.BuyClientUtils;
 import com.shopify.buy.utils.CollectionUtils;
 
 import java.util.ArrayList;
@@ -33,7 +33,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * The Cart is the starting point for the Checkout API. You are responsible for building a cart, then transforming it into a {@link Checkout} using the {@link com.shopify.buy.dataprovider.BuyClient}.
+ * The Cart is the starting point for the Checkout API. You are responsible for building a cart, then transforming it into a {@link Checkout} using the {@link BuyClientImpl}.
  */
 public class Cart {
 
@@ -157,11 +157,11 @@ public class Cart {
     }
 
     public String toJsonString() {
-        return BuyClientFactory.createDefaultGson().toJson(this);
+        return BuyClientUtils.createDefaultGson().toJson(this);
     }
 
     public static Cart fromJson(String json) {
-        return BuyClientFactory.createDefaultGson().fromJson(json, Cart.class);
+        return BuyClientUtils.createDefaultGson().fromJson(json, Cart.class);
     }
 
     /**

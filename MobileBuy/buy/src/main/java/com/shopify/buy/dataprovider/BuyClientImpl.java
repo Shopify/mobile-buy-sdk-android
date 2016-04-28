@@ -86,7 +86,7 @@ import rx.schedulers.Schedulers;
  * The {@code BuyClient} provides all requests needed to perform request on the Shopify Checkout API. Use this class to perform tasks such as getting a shop, getting collections and products for a shop, creating a {@link Checkout} on Shopify and completing Checkouts.
  * All API methods presented here run asynchronously and return results via callback on the Main thread.
  */
-public class BuyClient implements IBuyClient {
+final class BuyClientImpl implements IBuyClient {
 
     public static final int MAX_PAGE_SIZE = 250;
     public static final int MIN_PAGE_SIZE = 1;
@@ -144,7 +144,7 @@ public class BuyClient implements IBuyClient {
         return pageSize;
     }
 
-    BuyClient(final String apiKey, final String appId, final String applicationName, final String shopDomain, final CustomerToken customerToken, Interceptor... interceptors) {
+    BuyClientImpl(final String apiKey, final String appId, final String applicationName, final String shopDomain, final CustomerToken customerToken, Interceptor... interceptors) {
         this.apiKey = apiKey;
         this.appId = appId;
         this.applicationName = applicationName;
@@ -161,8 +161,8 @@ public class BuyClient implements IBuyClient {
 
                 builder.header("Authorization", formatBasicAuthorization(apiKey));
 
-                if (BuyClient.this.customerToken != null && !TextUtils.isEmpty(BuyClient.this.customerToken.getAccessToken())) {
-                    builder.header(CUSTOMER_TOKEN_HEADER, BuyClient.this.customerToken.getAccessToken());
+                if (BuyClientImpl.this.customerToken != null && !TextUtils.isEmpty(BuyClientImpl.this.customerToken.getAccessToken())) {
+                    builder.header(CUSTOMER_TOKEN_HEADER, BuyClientImpl.this.customerToken.getAccessToken());
                 }
 
                 // Using the full package name for BuildConfig here as a work around for Javadoc.  The source paths need to be adjusted
@@ -186,7 +186,7 @@ public class BuyClient implements IBuyClient {
 
         Retrofit adapter = new Retrofit.Builder()
                 .baseUrl("https://" + shopDomain + "/")
-                .addConverterFactory(GsonConverterFactory.create(BuyClientFactory.createDefaultGson()))
+                .addConverterFactory(GsonConverterFactory.create(BuyClientUtils.createDefaultGson()))
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.createWithScheduler(Schedulers.io()))
                 .client(httpClient)
                 .build();
@@ -200,33 +200,13 @@ public class BuyClient implements IBuyClient {
     }
 
     @Override
-    public void setCallbackScheduler(Scheduler callbackScheduler) {
-        this.callbackScheduler = callbackScheduler;
-    }
-
-    @Override
-    public void setCustomerToken(CustomerToken customerToken) {
-        this.customerToken = customerToken;
-    }
-
-    @Override
     public CustomerToken getCustomerToken() {
         return customerToken;
     }
 
     @Override
-    public void setWebReturnToUrl(String webReturnToUrl) {
-        this.webReturnToUrl = webReturnToUrl;
-    }
-
-    @Override
-    public void setWebReturnToLabel(String webReturnToLabel) {
-        this.webReturnToLabel = webReturnToLabel;
-    }
-
-    @Override
-    public void setPageSize(int pageSize) {
-        this.pageSize = Math.max(Math.min(pageSize, MAX_PAGE_SIZE), MIN_PAGE_SIZE);
+    public void setCustomerToken(CustomerToken customerToken) {
+        this.customerToken = customerToken;
     }
 
     /*
@@ -1090,34 +1070,20 @@ public class BuyClient implements IBuyClient {
         }
     }
 
-    /**
-     * Helper methods
-     */
+    void setCallbackScheduler(Scheduler callbackScheduler) {
+        this.callbackScheduler = callbackScheduler;
+    }
 
-    /**
-     * Extracts the body of the {@code RetrofitError} associated with this error
-     *
-     * @param errorResponse the {@link RetrofitError}
-     * @return the body of the response, or the error message if the body is null
-     */
-    public static String getErrorBody(RetrofitError errorResponse) {
-        if (errorResponse == null) {
-            return "Error was null";
-        }
-        if (errorResponse.getResponse() != null && errorResponse.getResponse().isSuccessful()) {
-            return String.format("Tried to parse error on successful response! Code: %d", errorResponse.getResponse().code());
-        }
+    void setWebReturnToUrl(String webReturnToUrl) {
+        this.webReturnToUrl = webReturnToUrl;
+    }
 
-        if (errorResponse.getResponse() == null) {
-            return String.format("\n\tMessage: %s\n\tCode: %d\n\tResponse error body: %s", errorResponse.getMessage(), errorResponse.getCode(), "null");
-        }
+    void setWebReturnToLabel(String webReturnToLabel) {
+        this.webReturnToLabel = webReturnToLabel;
+    }
 
-        try {
-            return errorResponse.getResponse().errorBody().string();
-        } catch (Throwable e) {
-            // ignore
-        }
-        return errorResponse.getMessage();
+    void setPageSize(int pageSize) {
+        this.pageSize = Math.max(Math.min(pageSize, MAX_PAGE_SIZE), MIN_PAGE_SIZE);
     }
 
     private static String formatBasicAuthorization(final String token) {

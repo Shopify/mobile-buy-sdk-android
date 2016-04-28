@@ -55,16 +55,7 @@ public interface IBuyClient extends ProductService, CheckoutService, CustomerSer
 
     int getPageSize();
 
-    /**
-     * Sets the {@link Customer} specific token
-     *
-     * @param customerToken
-     */
-    void setCustomerToken(CustomerToken customerToken);
-
     Scheduler getCallbackScheduler();
-
-    void setCallbackScheduler(Scheduler callbackScheduler);
 
     /**
      * Returns the {@link Customer} specific token
@@ -73,28 +64,7 @@ public interface IBuyClient extends ProductService, CheckoutService, CustomerSer
      */
     CustomerToken getCustomerToken();
 
-    /**
-     * Sets the web url to be invoked by the button on the completion page of the web checkout.
-     *
-     * @param webReturnToUrl a url defined as a custom scheme in the Android Manifest file.
-     */
-    void setWebReturnToUrl(String webReturnToUrl);
-
-    /**
-     * Sets the text to be displayed on the button on the completion page of the web checkout
-     *
-     * @param webReturnToLabel the text to display on the button.
-     */
-    void setWebReturnToLabel(String webReturnToLabel);
-
-    /**
-     * Sets the page size used for paged API queries
-     *
-     * @param pageSize the number of {@link Product} to include in a page.  The maximum page size is {@link #MAX_PAGE_SIZE} and the minimum page size is {@link #MIN_PAGE_SIZE}.
-     *                 If the page size is less than {@code MIN_PAGE_SIZE}, it will be set to {@code MIN_PAGE_SIZE}.  If the page size is greater than MAX_PAGE_SIZE it will be set to {@code MAX_PAGE_SIZE}.
-     *                 The default value is {@link #DEFAULT_PAGE_SIZE}
-     */
-    void setPageSize(int pageSize);
+    void setCustomerToken(CustomerToken customerToken);
 
     /**
      * Fetch metadata about your shop
@@ -109,5 +79,4 @@ public interface IBuyClient extends ProductService, CheckoutService, CustomerSer
      * @return cold observable that emits requested shop metadata
      */
     Observable<Shop> getShop();
-
 }

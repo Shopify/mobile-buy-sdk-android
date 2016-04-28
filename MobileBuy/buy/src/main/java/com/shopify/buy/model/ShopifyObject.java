@@ -24,7 +24,7 @@
 
 package com.shopify.buy.model;
 
-import com.shopify.buy.dataprovider.BuyClientFactory;
+import com.shopify.buy.dataprovider.BuyClientUtils;
 
 /**
  * Base class for Shopify Objects
@@ -55,7 +55,7 @@ public abstract class ShopifyObject {
      * @return A JSON representation of this object.
      */
     public String toJsonString() {
-        return BuyClientFactory.createDefaultGson().toJson(this);
+        return BuyClientUtils.createDefaultGson().toJson(this);
     }
 
 }
