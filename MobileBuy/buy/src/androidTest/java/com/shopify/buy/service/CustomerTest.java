@@ -57,7 +57,9 @@ public class CustomerTest extends ShopifyAndroidTestCase {
     private static final String EMAIL = "asd@asda.com";
     private static final String FIRSTNAME = "Testy";
     private static final String LASTNAME = "McTesterson2";
-    private static final String WRONG_PASSWORD = "iiiiii";
+    private static final String WRONG_PASSWORD = "iii";
+    private static final String MALFORMED_EMAIL = "aaaj*&^";
+    private static final String OTHER_WRONG_PASSWORD = "7g63";
 
     private Customer customer;
     private List<Order> orders;
@@ -434,7 +436,6 @@ public class CustomerTest extends ShopifyAndroidTestCase {
 
     }
 
-    @Suppress
     @Test
     public void testCustomerCreationDuplicateEmail() throws InterruptedException {
 
@@ -471,6 +472,45 @@ public class CustomerTest extends ShopifyAndroidTestCase {
 
             @Override
             public void failure(RetrofitError error) {
+                assertEquals(401, error.getCode());
+                assertEquals("Unauthorized", error.getMessage());
+            }
+        });
+    }
+
+    @Test
+    public void testCreateCustomerInvalidEmailPassword() throws InterruptedException {
+        final AccountCredentials accountCredentials = new AccountCredentials(MALFORMED_EMAIL, WRONG_PASSWORD, OTHER_WRONG_PASSWORD, FIRSTNAME, LASTNAME);
+
+        buyClient.createCustomer(accountCredentials, new Callback<Customer>() {
+
+            @Override
+            public void success(Customer customerToken) {
+                fail("Invalid email, password, confirmation password. Should not be able to create a customer.");
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                List<BuyError> buyErrors = BuyError.errorsForCustomer(error);
+                assertEquals(3, buyErrors.size());
+
+                BuyError passwordTooShort = buyErrors.get(0);
+                assertEquals(passwordTooShort.getCode(), "too_short");
+                assertEquals(passwordTooShort.getMessage(), "is too short (minimum is 5 characters)");
+                assertEquals(1, passwordTooShort.getOptions().size());
+
+                BuyError confirmationMatch = buyErrors.get(1);
+                assertEquals(confirmationMatch.getCode(), "confirmation");
+                assertEquals(confirmationMatch.getMessage(), "doesn't match Password");
+                assertEquals(1, confirmationMatch.getOptions().size());
+
+                BuyError invalidEmail = buyErrors.get(2);
+                assertEquals(invalidEmail.getCode(), "invalid");
+                assertEquals(invalidEmail.getMessage(), "is invalid");
+                assertEquals(0, invalidEmail.getOptions().size());
+
+                assertEquals(422, error.getCode());
+                assertEquals("Unprocessable Entity", error.getMessage());
             }
         });
     }
