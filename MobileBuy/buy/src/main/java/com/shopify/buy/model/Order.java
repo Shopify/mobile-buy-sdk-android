@@ -77,14 +77,14 @@ public class Order extends ShopifyObject {
     }
 
     /**
-     * @return URL for the website showing the order status.  This url will pass an authentication token for the currently logged in user. This is only available for Orders returned using {@link BuyClientImpl#getOrder(Customer, String, Callback)} or {@link BuyClientImpl#getOrders(Customer, Callback)}
+     * @return URL for the website showing the order status.  This url will pass an authentication token for the currently logged in user. This is only available for Orders returned using {@link com.shopify.buy.dataprovider.BuyClient#getOrder(Customer, String, Callback)} or {@link com.shopify.buy.dataprovider.BuyClient#getOrders(Customer, Callback)}
      */
     public String getOrderStatusUrl() {
         return orderStatusUrl;
     }
 
     /**
-     * @return URL for the website showing the order status. This is only available for Orders returned using {@link BuyClientImpl#completeCheckout(Checkout, Callback)}
+     * @return URL for the website showing the order status. This is only available for Orders returned using {@link com.shopify.buy.dataprovider.BuyClient#completeCheckout(Checkout, Callback)}
      */
     public String getStatusUrl() {
         return statusUrl;

@@ -33,7 +33,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * The Cart is the starting point for the Checkout API. You are responsible for building a cart, then transforming it into a {@link Checkout} using the {@link BuyClientImpl}.
+ * The Cart is the starting point for the Checkout API. You are responsible for building a cart, then transforming it into a {@link Checkout} using the {@link com.shopify.buy.dataprovider.BuyClient}.
  */
 public class Cart {
 

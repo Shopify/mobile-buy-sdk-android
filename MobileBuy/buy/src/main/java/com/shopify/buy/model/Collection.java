@@ -33,7 +33,7 @@ import java.util.Date;
 
 /**
  * Represents a collection of {@link Product}.
- * In order to get the list of products in a collection, use {@link BuyClientImpl#getProducts(int, String, SortOrder, Callback) getProducts(page, collectionId, sortOrder, callback}.
+ * In order to get the list of products in a collection, use {@link com.shopify.buy.dataprovider.BuyClient#getProducts(int, String, SortOrder, Callback) getProducts(page, collectionId, sortOrder, callback}.
  */
 public class Collection extends ShopifyObject {
 
