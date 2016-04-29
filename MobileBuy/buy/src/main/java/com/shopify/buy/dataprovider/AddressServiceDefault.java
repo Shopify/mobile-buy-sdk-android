@@ -40,13 +40,13 @@ import rx.Scheduler;
 /**
  * Default implementation of {@link AddressService}
  */
-final class AddressServiceImpl implements AddressService {
+final class AddressServiceDefault implements AddressService {
 
     final AddressRetrofitService retrofitService;
 
     final Scheduler callbackScheduler;
 
-    AddressServiceImpl(final Retrofit retrofit, final Scheduler callbackScheduler) {
+    AddressServiceDefault(final Retrofit retrofit, final Scheduler callbackScheduler) {
         this.retrofitService = retrofit.create(AddressRetrofitService.class);
         this.callbackScheduler = callbackScheduler;
     }

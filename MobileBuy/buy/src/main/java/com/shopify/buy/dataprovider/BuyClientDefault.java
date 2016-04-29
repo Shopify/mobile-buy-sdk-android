@@ -58,7 +58,7 @@ import rx.schedulers.Schedulers;
 /**
  * Default implementation of {@link BuyClient} represents a facade for all Shopify Checkout API calls.
  */
-final class BuyClientImpl implements BuyClient {
+final class BuyClientDefault implements BuyClient {
 
     private static final String CUSTOMER_TOKEN_HEADER = "X-Shopify-Customer-Access-Token";
 
@@ -74,7 +74,7 @@ final class BuyClientImpl implements BuyClient {
     private final OrderService orderService;
     private final ProductService productService;
 
-    BuyClientImpl(
+    BuyClientDefault(
             final String apiKey,
             final String appId,
             final String applicationName,
@@ -129,12 +129,12 @@ final class BuyClientImpl implements BuyClient {
                 .client(httpClient)
                 .build();
 
-        storeService = new StoreServiceImpl(retrofit, callbackScheduler);
-        addressService = new AddressServiceImpl(retrofit, callbackScheduler);
-        checkoutService = new CheckoutServiceImpl(retrofit, apiKey, applicationName, completeCheckoutWebReturnUrl, completeCheckoutWebReturnLabel, callbackScheduler);
-        customerService = new CustomerServiceImpl(retrofit, customerToken, callbackScheduler);
-        orderService = new OrderServiceImpl(retrofit, callbackScheduler);
-        productService = new ProductServiceImpl(retrofit, appId, productPageSize, callbackScheduler);
+        storeService = new StoreServiceDefault(retrofit, callbackScheduler);
+        addressService = new AddressServiceDefault(retrofit, callbackScheduler);
+        checkoutService = new CheckoutServiceDefault(retrofit, apiKey, applicationName, completeCheckoutWebReturnUrl, completeCheckoutWebReturnLabel, callbackScheduler);
+        customerService = new CustomerServiceDefault(retrofit, customerToken, callbackScheduler);
+        orderService = new OrderServiceDefault(retrofit, callbackScheduler);
+        productService = new ProductServiceDefault(retrofit, appId, productPageSize, callbackScheduler);
     }
 
     @Override

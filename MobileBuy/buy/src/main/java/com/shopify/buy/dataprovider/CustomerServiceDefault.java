@@ -44,7 +44,7 @@ import rx.functions.Func1;
 /**
  * Default implementation of {@link CustomerService}
  */
-final class CustomerServiceImpl implements CustomerService {
+final class CustomerServiceDefault implements CustomerService {
 
     private static final String EMPTY_BODY = "";
 
@@ -54,7 +54,7 @@ final class CustomerServiceImpl implements CustomerService {
 
     CustomerToken customerToken;
 
-    CustomerServiceImpl(
+    CustomerServiceDefault(
             final Retrofit retrofit,
             final CustomerToken customerToken,
             final Scheduler callbackScheduler

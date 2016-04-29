@@ -52,7 +52,7 @@ import rx.functions.Func1;
 /**
  * Default implementation of {@link CheckoutService}
  */
-final class CheckoutServiceImpl implements CheckoutService {
+final class CheckoutServiceDefault implements CheckoutService {
 
     final CheckoutRetrofitService retrofitService;
 
@@ -66,7 +66,7 @@ final class CheckoutServiceImpl implements CheckoutService {
 
     final Scheduler callbackScheduler;
 
-    CheckoutServiceImpl(
+    CheckoutServiceDefault(
             final Retrofit retrofit,
             final String apiKey,
             final String applicationName,

@@ -41,7 +41,7 @@ import rx.Scheduler;
 /**
  * Default implementation of {@link ProductService}
  */
-final class ProductServiceImpl implements ProductService {
+final class ProductServiceDefault implements ProductService {
 
     final ProductRetrofitService retrofitService;
 
@@ -51,7 +51,7 @@ final class ProductServiceImpl implements ProductService {
 
     final Scheduler callbackScheduler;
 
-    ProductServiceImpl(
+    ProductServiceDefault(
             final Retrofit retrofit,
             final String appId,
             final int pageSize,

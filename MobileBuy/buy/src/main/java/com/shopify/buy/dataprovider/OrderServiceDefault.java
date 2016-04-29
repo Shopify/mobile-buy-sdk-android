@@ -40,13 +40,13 @@ import rx.Scheduler;
 /**
  * Default implementation of {@link OrderService}
  */
-final class OrderServiceImpl implements OrderService {
+final class OrderServiceDefault implements OrderService {
 
     final OrderRetrofitService retrofitService;
 
     final Scheduler callbackScheduler;
 
-    OrderServiceImpl(final Retrofit retrofit, final Scheduler callbackScheduler) {
+    OrderServiceDefault(final Retrofit retrofit, final Scheduler callbackScheduler) {
         this.retrofitService = retrofit.create(OrderRetrofitService.class);
         this.callbackScheduler = callbackScheduler;
     }

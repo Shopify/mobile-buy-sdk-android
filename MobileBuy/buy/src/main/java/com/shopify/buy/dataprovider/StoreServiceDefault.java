@@ -31,13 +31,13 @@ import rx.Observable;
 import rx.Scheduler;
 import rx.functions.Func1;
 
-final class StoreServiceImpl implements StoreService {
+final class StoreServiceDefault implements StoreService {
 
     final StoreRetrofitService retrofitService;
 
     final Scheduler callbackScheduler;
 
-    public StoreServiceImpl(final Retrofit retrofit, final Scheduler callbackScheduler) {
+    public StoreServiceDefault(final Retrofit retrofit, final Scheduler callbackScheduler) {
         this.retrofitService = retrofit.create(StoreRetrofitService.class);
         this.callbackScheduler = callbackScheduler;
     }

@@ -186,7 +186,12 @@ public class BuyTest extends ShopifyAndroidTestCase {
     @Test
     public void testWithoutShop() {
         try {
-            new BuyClientBuilder().shopDomain("").build();
+            new BuyClientBuilder()
+                    .apiKey("apiKey")
+                    .appId("appId")
+                    .applicationName("applicationName")
+                    .shopDomain("")
+                    .build();
         } catch (IllegalArgumentException e) {
             return;
         }
@@ -196,7 +201,12 @@ public class BuyTest extends ShopifyAndroidTestCase {
     @Test
     public void testWithoutAuthToken() {
         try {
-            new BuyClientBuilder().apiKey("").build();
+            new BuyClientBuilder()
+                    .apiKey("")
+                    .appId("appId")
+                    .applicationName("applicationName")
+                    .shopDomain("shopDomain")
+                    .build();
         } catch (IllegalArgumentException e) {
             return;
         }
@@ -206,7 +216,27 @@ public class BuyTest extends ShopifyAndroidTestCase {
     @Test
     public void testWithoutApplicationName() {
         try {
-            new BuyClientBuilder().applicationName("").build();
+            new BuyClientBuilder()
+                    .apiKey("apiKey")
+                    .appId("appId")
+                    .applicationName("")
+                    .shopDomain("shopDomain")
+                    .build();
+        } catch (IllegalArgumentException e) {
+            return;
+        }
+        fail("Expected IllegalArgumentException");
+    }
+
+    @Test
+    public void testWithoutAppId() {
+        try {
+            new BuyClientBuilder()
+                    .apiKey("apiKey")
+                    .appId("")
+                    .applicationName("applicationName")
+                    .shopDomain("shopDomain")
+                    .build();
         } catch (IllegalArgumentException e) {
             return;
         }

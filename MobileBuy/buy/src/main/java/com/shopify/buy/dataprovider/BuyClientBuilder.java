@@ -164,7 +164,7 @@ public final class BuyClientBuilder {
             }
         }
 
-        if (TextUtils.isEmpty(this.apiKey)) {
+        if (TextUtils.isEmpty(apiKey)) {
             throw new IllegalArgumentException("apiKey is not set or invalid. apiKey must be provided, and cannot be empty");
         }
 
@@ -176,17 +176,17 @@ public final class BuyClientBuilder {
             throw new IllegalArgumentException("applicationName is not set or invalid. applicationName must be provided, and cannot be empty");
         }
 
-        return new BuyClientImpl(
-                this.apiKey,
-                this.appId,
-                this.applicationName,
-                this.shopDomain,
-                this.completeCheckoutWebReturnUrl,
-                this.completeCheckoutWebReturnLabel,
-                this.customerToken,
-                this.callbackScheduler,
-                this.productPageSize,
-                this.interceptors
+        return new BuyClientDefault(
+                apiKey,
+                appId,
+                applicationName,
+                shopDomain,
+                completeCheckoutWebReturnUrl,
+                completeCheckoutWebReturnLabel,
+                customerToken,
+                callbackScheduler,
+                productPageSize,
+                interceptors
         );
     }
 }
