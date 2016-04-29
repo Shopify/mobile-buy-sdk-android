@@ -25,21 +25,14 @@
 package com.shopify.buy.dataprovider;
 
 import com.shopify.buy.model.Checkout;
-import com.shopify.buy.model.Customer;
-import com.shopify.buy.model.CustomerToken;
-import com.shopify.buy.model.Product;
-import com.shopify.buy.model.Shop;
-
-import rx.Observable;
-import rx.Scheduler;
 
 /**
- * Buy Client Facade provides all requests needed to perform request on the Shopify Checkout API.
+ * Client responsible for all requests needed to perform request on the Shopify Checkout API.
  * Use this class to perform tasks such as getting a shop, getting collections and products for a shop,
  * creating a {@link Checkout} on Shopify and completing Checkouts.
  * All API methods presented here run asynchronously and return results via callback or Rx observables on the callback scheduler thread.
  */
-public interface BuyClient extends ProductService, CheckoutService, CustomerService, OrderService, AddressService {
+public interface BuyClient extends StoreService, ProductService, CheckoutService, CustomerService, OrderService, AddressService {
 
     String getApiKey();
 
@@ -47,36 +40,5 @@ public interface BuyClient extends ProductService, CheckoutService, CustomerServ
 
     String getApplicationName();
 
-    String getWebReturnToUrl();
-
-    String getWebReturnToLabel();
-
     String getShopDomain();
-
-    int getPageSize();
-
-    Scheduler getCallbackScheduler();
-
-    /**
-     * Returns the {@link Customer} specific token
-     *
-     * @return customer token
-     */
-    CustomerToken getCustomerToken();
-
-    void setCustomerToken(CustomerToken customerToken);
-
-    /**
-     * Fetch metadata about your shop
-     *
-     * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
-     */
-    void getShop(Callback<Shop> callback);
-
-    /**
-     * Fetch metadata about your shop
-     *
-     * @return cold observable that emits requested shop metadata
-     */
-    Observable<Shop> getShop();
 }

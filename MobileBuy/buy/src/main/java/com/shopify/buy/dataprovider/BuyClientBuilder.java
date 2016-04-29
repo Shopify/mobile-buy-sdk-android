@@ -33,7 +33,16 @@ import okhttp3.Interceptor;
 import rx.Scheduler;
 import rx.android.schedulers.AndroidSchedulers;
 
+/**
+ * Builds default implementation of {@link BuyClient}
+ */
 public final class BuyClientBuilder {
+
+    public static final int MAX_PAGE_SIZE = 250;
+
+    public static final int MIN_PAGE_SIZE = 1;
+
+    public static final int DEFAULT_PAGE_SIZE = 25;
 
     private String shopDomain;
 
@@ -53,32 +62,43 @@ public final class BuyClientBuilder {
 
     private Interceptor[] interceptors;
 
-    private int productPageSize;
+    private int productPageSize = DEFAULT_PAGE_SIZE;
 
+    /**
+     * Sets store domain url (usually {store name}.myshopify.com
+     */
     public BuyClientBuilder shopDomain(final String shopDomain) {
         this.shopDomain = shopDomain;
         return this;
     }
 
+    /**
+     * Sets Shopify store api key
+     */
     public BuyClientBuilder apiKey(final String apiKey) {
         this.apiKey = apiKey;
         return this;
     }
 
+    /**
+     * Sets Shopify store application id
+     */
     public BuyClientBuilder appId(final String appId) {
         this.appId = appId;
         return this;
     }
 
+    /**
+     * Sets Shopify store application name
+     */
     public BuyClientBuilder applicationName(final String applicationName) {
         this.applicationName = applicationName;
         return this;
     }
 
     /**
-     * Sets the web url to be invoked by the button on the completion page of the web checkout.
-     *
-     * @param webReturnToUrl a url defined as a custom scheme in the Android Manifest file.
+     * Sets the web url to be invoked by the button on the completion page of the web checkout,
+     * defined as a custom scheme in the Android Manifest file
      */
     public BuyClientBuilder completeCheckoutWebReturnUrl(final String completeCheckoutWebReturnUrl) {
         this.completeCheckoutWebReturnUrl = completeCheckoutWebReturnUrl;
@@ -87,41 +107,52 @@ public final class BuyClientBuilder {
 
     /**
      * Sets the text to be displayed on the button on the completion page of the web checkout
-     *
-     * @param webReturnToLabel the text to display on the button.
      */
     public BuyClientBuilder completeCheckoutWebReturnLabel(final String completeCheckoutWebReturnLabel) {
         this.completeCheckoutWebReturnLabel = completeCheckoutWebReturnLabel;
         return this;
     }
 
+    /**
+     * Sets the customer token
+     */
     public BuyClientBuilder customerToken(final CustomerToken customerToken) {
         this.customerToken = customerToken;
         return this;
     }
 
+    /**
+     * Sets the Rx scheduler that will be used for all API callbacks, by default callback will be notified
+     * in main thread.
+     */
     public BuyClientBuilder callbackScheduler(final Scheduler callbackScheduler) {
         this.callbackScheduler = callbackScheduler;
         return this;
     }
 
+    /**
+     * Sets custom OkHttp interceptors
+     */
     public BuyClientBuilder interceptors(final Interceptor... interceptors) {
         this.interceptors = interceptors;
         return this;
     }
 
     /**
-     * Sets the page size used for paged API queries
-     *
-     * @param pageSize the number of {@link Product} to include in a page.  The maximum page size is {@link #MAX_PAGE_SIZE} and the minimum page size is {@link #MIN_PAGE_SIZE}.
-     *                 If the page size is less than {@code MIN_PAGE_SIZE}, it will be set to {@code MIN_PAGE_SIZE}.  If the page size is greater than MAX_PAGE_SIZE it will be set to {@code MAX_PAGE_SIZE}.
-     *                 The default value is {@link #DEFAULT_PAGE_SIZE}
+     * Sets the page size used for paged product API queries. The number of {@link Product} to include in a page.
+     * The maximum page size is {@link #MAX_PAGE_SIZE} and the minimum page size is {@link #MIN_PAGE_SIZE}.
+     * If the page size is less than {@code MIN_PAGE_SIZE}, it will be set to {@code MIN_PAGE_SIZE}.
+     * If the page size is greater than MAX_PAGE_SIZE it will be set to {@code MAX_PAGE_SIZE}.
+     * The default value is {@link #DEFAULT_PAGE_SIZE}
      */
     public BuyClientBuilder productPageSize(final int productPageSize) {
-        this.productPageSize = productPageSize;
+        this.productPageSize = Math.max(Math.min(productPageSize, MAX_PAGE_SIZE), MIN_PAGE_SIZE);
         return this;
     }
 
+    /**
+     * Builds default implementation of {@link BuyClient}
+     */
     public BuyClient build() {
         if (BuildConfig.DEBUG) {
             if (TextUtils.isEmpty(shopDomain) || shopDomain.contains(":") || shopDomain.contains("/")) {
@@ -145,18 +176,17 @@ public final class BuyClientBuilder {
             throw new IllegalArgumentException("applicationName is not set or invalid. applicationName must be provided, and cannot be empty");
         }
 
-        final BuyClientImpl buyClient = new BuyClientImpl(
+        return new BuyClientImpl(
                 this.apiKey,
                 this.appId,
                 this.applicationName,
                 this.shopDomain,
+                this.completeCheckoutWebReturnUrl,
+                this.completeCheckoutWebReturnLabel,
                 this.customerToken,
+                this.callbackScheduler,
+                this.productPageSize,
                 this.interceptors
         );
-        buyClient.setCallbackScheduler(this.callbackScheduler);
-        buyClient.setWebReturnToUrl(this.completeCheckoutWebReturnUrl);
-        buyClient.setWebReturnToLabel(this.completeCheckoutWebReturnLabel);
-        buyClient.setPageSize(productPageSize);
-        return buyClient;
     }
 }

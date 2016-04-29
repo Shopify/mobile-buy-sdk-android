@@ -35,6 +35,20 @@ import rx.Observable;
 public interface CustomerService {
 
     /**
+     * Sets customer token
+     *
+     * @param customerToken token
+     */
+    void setCustomerToken(CustomerToken customerToken);
+
+    /**
+     * Returns customer token
+     *
+     * @return token
+     */
+    CustomerToken getCustomerToken();
+
+    /**
      * Create a new Customer on Shopify
      *
      * @param accountCredentials the account credentials with an email, password, first name, and last name of the {@link Customer} to be created, not null

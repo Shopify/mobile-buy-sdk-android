@@ -23,6 +23,8 @@
  */
 package com.shopify.buy.dataprovider;
 
+import android.util.Base64;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.shopify.buy.model.Checkout;
@@ -30,6 +32,7 @@ import com.shopify.buy.model.Customer;
 import com.shopify.buy.model.Product;
 import com.shopify.buy.utils.DateUtility;
 
+import java.nio.charset.Charset;
 import java.util.Date;
 
 public final class BuyClientUtils {
@@ -84,6 +87,10 @@ public final class BuyClientUtils {
             // ignore
         }
         return errorResponse.getMessage();
+    }
+
+    public static String formatBasicAuthorization(final String token) {
+        return String.format("Basic %s", Base64.encodeToString(token.getBytes(Charset.forName("UTF-8")), Base64.NO_WRAP));
     }
 
     private BuyClientUtils() {
