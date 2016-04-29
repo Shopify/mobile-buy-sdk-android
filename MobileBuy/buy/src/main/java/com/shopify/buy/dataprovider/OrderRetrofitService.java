@@ -21,26 +21,22 @@
  *   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  *   THE SOFTWARE.
  */
-package com.shopify.buy.model;
+package com.shopify.buy.dataprovider;
 
-import com.google.gson.annotations.SerializedName;
-import com.shopify.buy.model.internal.ResponseWrapper;
+import com.shopify.buy.model.internal.OrderWrapper;
+import com.shopify.buy.model.internal.OrdersWrapper;
 
-public class PaymentSession implements ResponseWrapper<String> {
+import retrofit2.Response;
+import retrofit2.http.GET;
+import retrofit2.http.Path;
+import rx.Observable;
 
-    @SerializedName("id")
-    private String id;
+interface OrderRetrofitService {
 
-    public String getId() {
-        return id;
-    }
+    @GET("api/customers/{customerId}/orders.json")
+    Observable<Response<OrdersWrapper>> getOrders(@Path("customerId") Long customerId);
 
-    public void setId(String id) {
-        this.id = id;
-    }
+    @GET("api/customers/{customerId}/orders/{orderId}")
+    Observable<Response<OrderWrapper>> getOrder(@Path("customerId") Long customerId, @Path("orderId") String orderId);
 
-    @Override
-    public String getContent() {
-        return id;
-    }
 }

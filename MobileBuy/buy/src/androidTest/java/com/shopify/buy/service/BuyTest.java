@@ -3,8 +3,8 @@ package com.shopify.buy.service;
 import android.support.test.runner.AndroidJUnit4;
 
 import com.shopify.buy.data.TestData;
-import com.shopify.buy.dataprovider.BuyClient;
-import com.shopify.buy.dataprovider.BuyClientFactory;
+import com.shopify.buy.dataprovider.BuyClientBuilder;
+import com.shopify.buy.dataprovider.BuyClientUtils;
 import com.shopify.buy.dataprovider.Callback;
 import com.shopify.buy.dataprovider.RetrofitError;
 import com.shopify.buy.extensions.CheckoutPrivateAPIs;
@@ -28,8 +28,6 @@ import org.junit.runner.RunWith;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
-
-import retrofit2.Response;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
@@ -188,7 +186,12 @@ public class BuyTest extends ShopifyAndroidTestCase {
     @Test
     public void testWithoutShop() {
         try {
-            BuyClientFactory.getBuyClient("", getApiKey(), getAppId(), data.getApplicationName());
+            new BuyClientBuilder()
+                    .apiKey("apiKey")
+                    .appId("appId")
+                    .applicationName("applicationName")
+                    .shopDomain("")
+                    .build();
         } catch (IllegalArgumentException e) {
             return;
         }
@@ -198,7 +201,12 @@ public class BuyTest extends ShopifyAndroidTestCase {
     @Test
     public void testWithoutAuthToken() {
         try {
-            BuyClientFactory.getBuyClient(getShopDomain(), "", getAppId(), data.getApplicationName());
+            new BuyClientBuilder()
+                    .apiKey("")
+                    .appId("appId")
+                    .applicationName("applicationName")
+                    .shopDomain("shopDomain")
+                    .build();
         } catch (IllegalArgumentException e) {
             return;
         }
@@ -208,7 +216,27 @@ public class BuyTest extends ShopifyAndroidTestCase {
     @Test
     public void testWithoutApplicationName() {
         try {
-            BuyClientFactory.getBuyClient(getShopDomain(), getApiKey(), getAppId(), "");
+            new BuyClientBuilder()
+                    .apiKey("apiKey")
+                    .appId("appId")
+                    .applicationName("")
+                    .shopDomain("shopDomain")
+                    .build();
+        } catch (IllegalArgumentException e) {
+            return;
+        }
+        fail("Expected IllegalArgumentException");
+    }
+
+    @Test
+    public void testWithoutAppId() {
+        try {
+            new BuyClientBuilder()
+                    .apiKey("apiKey")
+                    .appId("")
+                    .applicationName("applicationName")
+                    .shopDomain("shopDomain")
+                    .build();
         } catch (IllegalArgumentException e) {
             return;
         }
@@ -245,7 +273,7 @@ public class BuyTest extends ShopifyAndroidTestCase {
 
             @Override
             public void failure(RetrofitError error) {
-                fail(BuyClient.getErrorBody(error));
+                fail(BuyClientUtils.getErrorBody(error));
             }
         });
     }
@@ -299,7 +327,7 @@ public class BuyTest extends ShopifyAndroidTestCase {
 
             @Override
             public void failure(RetrofitError error) {
-                fail(BuyClient.getErrorBody(error));
+                fail(BuyClientUtils.getErrorBody(error));
             }
         });
     }
@@ -365,7 +393,7 @@ public class BuyTest extends ShopifyAndroidTestCase {
 
             @Override
             public void failure(RetrofitError error) {
-                fail(BuyClient.getErrorBody(error));
+                fail(BuyClientUtils.getErrorBody(error));
             }
         });
     }
@@ -392,7 +420,7 @@ public class BuyTest extends ShopifyAndroidTestCase {
 
             @Override
             public void failure(RetrofitError error) {
-                fail(BuyClient.getErrorBody(error));
+                fail(BuyClientUtils.getErrorBody(error));
             }
         });
     }
@@ -413,7 +441,7 @@ public class BuyTest extends ShopifyAndroidTestCase {
 
             @Override
             public void failure(RetrofitError error) {
-                fail(BuyClient.getErrorBody(error));
+                fail(BuyClientUtils.getErrorBody(error));
             }
         });
 
@@ -439,7 +467,7 @@ public class BuyTest extends ShopifyAndroidTestCase {
 
             @Override
             public void failure(RetrofitError error) {
-                fail(BuyClient.getErrorBody(error));
+                fail(BuyClientUtils.getErrorBody(error));
             }
         });
 
@@ -461,7 +489,7 @@ public class BuyTest extends ShopifyAndroidTestCase {
 
             @Override
             public void failure(RetrofitError error) {
-                fail(BuyClient.getErrorBody(error));
+                fail(BuyClientUtils.getErrorBody(error));
             }
         });
     }
@@ -478,7 +506,7 @@ public class BuyTest extends ShopifyAndroidTestCase {
 
             @Override
             public void failure(RetrofitError error) {
-                fail(BuyClient.getErrorBody(error));
+                fail(BuyClientUtils.getErrorBody(error));
             }
         });
     }
@@ -550,7 +578,7 @@ public class BuyTest extends ShopifyAndroidTestCase {
 
             @Override
             public void failure(RetrofitError error) {
-                fail(BuyClient.getErrorBody(error));
+                fail(BuyClientUtils.getErrorBody(error));
             }
         });
     }
@@ -609,7 +637,7 @@ public class BuyTest extends ShopifyAndroidTestCase {
 
             @Override
             public void failure(RetrofitError error) {
-                fail(BuyClient.getErrorBody(error));
+                fail(BuyClientUtils.getErrorBody(error));
             }
         });
     }
@@ -631,7 +659,7 @@ public class BuyTest extends ShopifyAndroidTestCase {
 
             @Override
             public void failure(RetrofitError error) {
-                fail(BuyClient.getErrorBody(error));
+                fail(BuyClientUtils.getErrorBody(error));
             }
         });
     }
@@ -646,7 +674,7 @@ public class BuyTest extends ShopifyAndroidTestCase {
 
             @Override
             public void failure(RetrofitError error) {
-                fail(BuyClient.getErrorBody(error));
+                fail(BuyClientUtils.getErrorBody(error));
             }
         });
     }
@@ -663,7 +691,7 @@ public class BuyTest extends ShopifyAndroidTestCase {
 
             @Override
             public void failure(RetrofitError error) {
-                fail(BuyClient.getErrorBody(error));
+                fail(BuyClientUtils.getErrorBody(error));
             }
         });
     }

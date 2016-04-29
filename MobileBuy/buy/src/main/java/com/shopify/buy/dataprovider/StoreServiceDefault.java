@@ -23,32 +23,41 @@
  */
 package com.shopify.buy.dataprovider;
 
-import android.support.annotation.NonNull;
+import com.shopify.buy.model.Shop;
 
 import retrofit2.Response;
+import retrofit2.Retrofit;
+import rx.Observable;
+import rx.Scheduler;
 import rx.functions.Func1;
 
-/**
- * Transformation that unwraps retrofit response body
- *
- * @param <B> class of retrofit body wrapper
- * @param <R> class of unwrapped response from body
- */
-abstract class UnwrapRetrofitBodyTransformation<B, R> implements Func1<Response<B>, R> {
+final class StoreServiceDefault implements StoreService {
 
-    @Override
-    public R call(final Response<B> response) {
-        if (response.body() != null) {
-            return unwrap(response.body());
-        }
-        return null;
+    final StoreRetrofitService retrofitService;
+
+    final Scheduler callbackScheduler;
+
+    public StoreServiceDefault(final Retrofit retrofit, final Scheduler callbackScheduler) {
+        this.retrofitService = retrofit.create(StoreRetrofitService.class);
+        this.callbackScheduler = callbackScheduler;
     }
 
-    /**
-     * Unwraps body from retrofit response
-     *
-     * @param body retrofit body wrapper
-     * @return unwrapped response
-     */
-    abstract R unwrap(@NonNull B body);
+    @Override
+    public void getShop(final Callback<Shop> callback) {
+        getShop().subscribe(new InternalCallbackSubscriber<>(callback));
+    }
+
+    @Override
+    public Observable<Shop> getShop() {
+        return retrofitService
+                .getShop()
+                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
+                .map(new Func1<Response<Shop>, Shop>() {
+                    @Override
+                    public Shop call(Response<Shop> response) {
+                        return response.body();
+                    }
+                })
+                .observeOn(callbackScheduler);
+    }
 }

@@ -25,7 +25,7 @@
 package com.shopify.buy.model;
 
 import com.google.gson.annotations.SerializedName;
-import com.shopify.buy.dataprovider.BuyClientFactory;
+import com.shopify.buy.dataprovider.BuyClientUtils;
 import com.shopify.buy.model.internal.CollectionImage;
 import com.shopify.buy.dataprovider.Callback;
 
@@ -163,7 +163,7 @@ public class Collection extends ShopifyObject {
      * @return A collection object created using the values in the JSON string.
      */
     public static Collection fromJson(String json) {
-        return BuyClientFactory.createDefaultGson().fromJson(json, Collection.class);
+        return BuyClientUtils.createDefaultGson().fromJson(json, Collection.class);
     }
 
 }

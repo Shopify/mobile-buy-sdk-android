@@ -35,7 +35,7 @@ import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.shopify.buy.dataprovider.BuyClient;
+import com.shopify.buy.dataprovider.BuyClientUtils;
 import com.shopify.buy.dataprovider.RetrofitError;
 import com.shopify.buy.model.Checkout;
 import com.shopify.buy.model.Discount;
@@ -135,7 +135,7 @@ public class SampleActivity extends Activity {
     }
 
     protected void onError(RetrofitError error) {
-        onError(BuyClient.getErrorBody(error));
+        onError(BuyClientUtils.getErrorBody(error));
     }
 
     /**
