@@ -501,8 +501,8 @@ public class CustomerTest extends ShopifyAndroidTestCase {
 
                 BuyError confirmationMatch = buyErrors.get(1);
                 assertEquals(confirmationMatch.getCode(), "confirmation");
-                assertEquals(confirmationMatch.getMessage(), "doesn't match Password");
-                assertEquals(1, confirmationMatch.getOptions().size());
+                assertEquals(confirmationMatch.getMessage(), "must match the provided password.");
+                assertEquals(2, confirmationMatch.getOptions().size());
 
                 BuyError invalidEmail = buyErrors.get(2);
                 assertEquals(invalidEmail.getCode(), "invalid");
