@@ -43,7 +43,7 @@ public class ProductDetailsBuilder {
 
     /**
      * Create a default ProductDetailsBuilder.
-     * If this constructor is used, {@link #setShopDomain(String)}, {@link #setApplicationName(String)}, {@link #setApiKey(String)}, {@link #setChannelid(String)}, and {@link #setProductId(String)} must be called.
+     * If this constructor is used, {@link #setShopDomain(String)}, {@link #setApplicationName(String)}, {@link #setApiKey(String)}, {@link #setChannelId(String)}, and {@link #setProductId(String)} must be called.
      *
      * @param context context to use for starting the {@code Activity}
      */
@@ -79,7 +79,13 @@ public class ProductDetailsBuilder {
         return this;
     }
 
+    @Deprecated
     public ProductDetailsBuilder setChannelid(String channelId) {
+        productDetailsConfig.setChannelId(channelId);
+        return this;
+    }
+
+    public ProductDetailsBuilder setChannelId(String channelId) {
         productDetailsConfig.setChannelId(channelId);
         return this;
     }

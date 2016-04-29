@@ -25,6 +25,7 @@
 package com.shopify.buy.model;
 
 import com.google.gson.annotations.SerializedName;
+import com.shopify.buy.dataprovider.BuyClientFactory;
 import com.shopify.buy.model.internal.CollectionImage;
 
 import java.util.Date;
@@ -58,48 +59,52 @@ public class Collection extends ShopifyObject {
         }
     }
 
-    private String title;
+    protected String title;
 
     @SerializedName("body_html")
-    private String htmlDescription;
+    protected String htmlDescription;
 
-    private String handle;
+    protected String handle;
 
-    private boolean published;
+    protected boolean published;
 
     @SerializedName("collection_id")
-    private String collectionId;
+    protected String collectionId;
 
     @SerializedName("created_at")
-    private Date createdAtDate;
+    protected Date createdAtDate;
 
     @SerializedName("updated_at")
-    private Date updatedAtDate;
+    protected Date updatedAtDate;
 
     @SerializedName("published_at")
-    private Date publishedAtDate;
+    protected Date publishedAtDate;
 
-    private CollectionImage image;
+    protected CollectionImage image;
 
     /**
      * @return The creation date for this collection.
      */
-    private Date getCreatedAtDate() {
+    public Date getCreatedAtDate() {
         return createdAtDate;
     }
 
     /**
      * @return The updated date for this collection.
      */
-    private Date getUpdatedAtDate() {
+    public Date getUpdatedAtDate() {
         return updatedAtDate;
     }
 
     /**
      * @return The publish date for this collection.
      */
-    private Date getPublishedAtDate() {
+    public Date getPublishedAtDate() {
         return publishedAtDate;
+    }
+
+    public CollectionImage getImage() {
+        return image;
     }
 
     /**
@@ -153,6 +158,13 @@ public class Collection extends ShopifyObject {
      */
     public String getCollectionId() {
         return collectionId;
+    }
+
+    /**
+     * @return A collection object created using the values in the JSON string.
+     */
+    public static Collection fromJson(String json) {
+        return BuyClientFactory.createDefaultGson().fromJson(json, Collection.class);
     }
 
 }

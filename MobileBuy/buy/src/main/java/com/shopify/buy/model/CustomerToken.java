@@ -24,38 +24,33 @@
 
 package com.shopify.buy.model;
 
-import com.shopify.buy.dataprovider.BuyClientFactory;
+import com.google.gson.annotations.SerializedName;
+
+import java.util.Date;
 
 /**
- * Base class for Shopify Objects
+ * Represents the token object associated with a logged in Customer
  */
-public abstract class ShopifyObject {
+public class CustomerToken {
 
-    protected Long id;
+    @SerializedName("access_token")
+    private String accessToken;
 
-    /**
-     * @return The unique identifier of this object within the Shopify platform.
-     */
-    public Long getId() {
-        return id;
+    @SerializedName("customer_id")
+    private Long customerId;
+
+    @SerializedName("expires_at")
+    private Date expiresAt;
+
+    public String getAccessToken() {
+        return accessToken;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof ShopifyObject)) return false;
-
-        ShopifyObject object = (ShopifyObject) o;
-
-        return id.equals(object.id);
-
+    public Long getCustomerId() {
+        return customerId;
     }
 
-    /**
-     * @return A JSON representation of this object.
-     */
-    public String toJsonString() {
-        return BuyClientFactory.createDefaultGson().toJson(this);
+    public Date getExpiresAt() {
+        return expiresAt;
     }
-
 }

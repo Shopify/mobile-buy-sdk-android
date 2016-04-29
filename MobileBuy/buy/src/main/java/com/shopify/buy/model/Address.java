@@ -32,18 +32,18 @@ import com.google.gson.annotations.SerializedName;
  * Represents a shipping or billing address on an order. This will be associated with the customer upon completion.
  */
 
-public class Address {
+public class Address extends ShopifyObject {
 
-	private String address1;
+    private String address1;
 
-	private String address2;
+    private String address2;
 
-	private String city;
+    private String city;
 
-	private String company;
+    private String company;
 
     @SerializedName("first_name")
-	private String firstName;
+    private String firstName;
 
     @SerializedName("last_name")
     private String lastName;
@@ -61,6 +61,13 @@ public class Address {
     private String provinceCode;
 
     private String zip;
+
+    /**
+     * @return The unique identifier of this object within the Shopify platform.
+     */
+    public String getAddressId() {
+        return String.valueOf(id);
+    }
 
     /**
      * @return The street of the address.
@@ -194,9 +201,8 @@ public class Address {
         this.zip = zip;
     }
 
-
     /**
-     * Compares the location portion of the addresses
+     * Compares the location portion the address for equality
      *
      * @param otherAddress The address to compare to
      * @return true if the address lines, city, country code, province code, and zip are equivalent
@@ -233,4 +239,37 @@ public class Address {
 
         return true;
     }
+
+    @Override
+    public boolean equals(Object o) {
+
+        if (this == o) return true;
+
+        if (!(o instanceof Address)) return false;
+
+        Address address = (Address) o;
+
+        if (!locationsAreEqual(address)) {
+            return false;
+        }
+
+        if (!TextUtils.equals(company, address.company)) {
+            return false;
+        }
+
+        if (!TextUtils.equals(firstName, address.firstName)) {
+            return false;
+        }
+
+        if (!TextUtils.equals(lastName, address.lastName)) {
+            return false;
+        }
+
+        if (!TextUtils.equals(phone, address.phone)) {
+            return false;
+        }
+
+        return true;
+    }
+
 }

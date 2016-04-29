@@ -24,38 +24,40 @@
 
 package com.shopify.buy.model;
 
-import com.shopify.buy.dataprovider.BuyClientFactory;
+import com.google.gson.annotations.SerializedName;
 
 /**
- * Base class for Shopify Objects
+ * Represents the account credentials of a customer
  */
-public abstract class ShopifyObject {
+public class AccountCredentials {
 
-    protected Long id;
+    private String email;
 
-    /**
-     * @return The unique identifier of this object within the Shopify platform.
-     */
-    public Long getId() {
-        return id;
+    private String password;
+
+    @SerializedName("password_confirmation")
+    private String passwordConfirmation;
+
+    @SerializedName("first_name")
+    private String firstName;
+
+    @SerializedName("last_name")
+    private String lastName;
+
+    public AccountCredentials(String password) {
+        this(null, password);
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof ShopifyObject)) return false;
-
-        ShopifyObject object = (ShopifyObject) o;
-
-        return id.equals(object.id);
-
+    public AccountCredentials(String email, String password) {
+        this(email, password, null, null);
     }
 
-    /**
-     * @return A JSON representation of this object.
-     */
-    public String toJsonString() {
-        return BuyClientFactory.createDefaultGson().toJson(this);
+    public AccountCredentials(String email, String password, String firstName, String lastName) {
+        this.email = email;
+        this.password = password;
+        this.passwordConfirmation = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
     }
 
 }

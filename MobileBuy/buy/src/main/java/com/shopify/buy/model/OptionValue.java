@@ -32,11 +32,11 @@ import com.google.gson.annotations.SerializedName;
 public class OptionValue {
 
     @SerializedName("option_id")
-    private String optionId;
+    protected String optionId;
 
-    private String name;
+    protected String name;
 
-    private String value;
+    protected String value;
 
     /**
      * @return The unique identifier of the {@link Option} to which this value belongs.

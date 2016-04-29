@@ -22,40 +22,23 @@
  * THE SOFTWARE.
  */
 
-package com.shopify.buy.model;
+package com.shopify.buy.model.internal;
 
-import com.shopify.buy.dataprovider.BuyClientFactory;
+import com.google.gson.annotations.SerializedName;
+import com.shopify.buy.model.AccountCredentials;
 
 /**
- * Base class for Shopify Objects
+ * Wrapper class used by Gson Serialization
  */
-public abstract class ShopifyObject {
+public class AccountCredentialsWrapper {
 
-    protected Long id;
+    @SerializedName("customer")
+    private AccountCredentials accountCredentials;
 
-    /**
-     * @return The unique identifier of this object within the Shopify platform.
-     */
-    public Long getId() {
-        return id;
+    public AccountCredentialsWrapper(AccountCredentials accountCredentials) {
+        this.accountCredentials = accountCredentials;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof ShopifyObject)) return false;
-
-        ShopifyObject object = (ShopifyObject) o;
-
-        return id.equals(object.id);
-
-    }
-
-    /**
-     * @return A JSON representation of this object.
-     */
-    public String toJsonString() {
-        return BuyClientFactory.createDefaultGson().toJson(this);
-    }
-
+    // Empty constructor required by Gson
+    public AccountCredentialsWrapper(){};
 }

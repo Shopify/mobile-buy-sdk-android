@@ -27,6 +27,7 @@ package com.shopify.sample.application;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Intent;
+import android.net.Uri;
 import android.text.TextUtils;
 import android.widget.Toast;
 
@@ -40,12 +41,14 @@ import com.shopify.buy.model.Cart;
 import com.shopify.buy.model.Checkout;
 import com.shopify.buy.model.Collection;
 import com.shopify.buy.model.CreditCard;
+import com.shopify.buy.model.LineItem;
 import com.shopify.buy.model.Product;
 import com.shopify.buy.model.ShippingRate;
 import com.shopify.buy.model.Shop;
 import com.shopify.buy.ui.ProductDetailsBuilder;
 import com.shopify.buy.ui.ProductDetailsTheme;
 import com.shopify.buy.utils.AndroidPayHelper;
+import com.shopify.sample.BuildConfig;
 import com.shopify.sample.R;
 
 import java.util.List;
@@ -78,17 +81,17 @@ public class SampleApplication extends Application {
     }
 
     private void initializeBuyClient() {
-        String shopUrl = getString(R.string.shop_url);
+        String shopUrl = BuildConfig.SHOP_DOMAIN;
         if (TextUtils.isEmpty(shopUrl)) {
             throw new IllegalArgumentException("You must populate the 'shop_url' entry in strings.xml, in the form '<myshop>.myshopify.com'");
         }
 
-        String shopifyApiKey = getString(R.string.shopify_api_key);
+        String shopifyApiKey = BuildConfig.API_KEY;
         if (TextUtils.isEmpty(shopifyApiKey)) {
             throw new IllegalArgumentException("You must populate the 'shopify_api_key' entry in strings.xml");
         }
 
-        String channelId = getString(R.string.channel_id);
+        String channelId = BuildConfig.CHANNEL_ID;
         if (TextUtils.isEmpty(channelId)) {
             throw new IllegalArgumentException("You must populate the 'channel_id' entry in the strings.xml");
         }
@@ -112,8 +115,11 @@ public class SampleApplication extends Application {
             }
         });
 
-        String publicKey = getString(R.string.android_pay_public_key);
-        buyClient.enableAndroidPay(publicKey);
+        // Enable Android Pay if we have a public key
+        String androidPayPublicKey = BuildConfig.ANDROID_PAY_PUBLIC_KEY;
+        if (!TextUtils.isEmpty(androidPayPublicKey)) {
+            buyClient.enableAndroidPay(androidPayPublicKey);
+        }
     }
 
     public void getCollections(final Callback<List<Collection>> callback) {
@@ -128,7 +134,7 @@ public class SampleApplication extends Application {
             public void success(List<Product> products, Response response) {
                 if (products.size() > 0) {
                     allProducts.addAll(products);
-                    getAllProducts(page + 1, allProducts, callback );
+                    getAllProducts(page + 1, allProducts, callback);
                 } else {
                     callback.success(allProducts, response);
                 }
@@ -149,7 +155,7 @@ public class SampleApplication extends Application {
     /**
      * Create a new checkout with the selected product. For convenience in the sample app we will hardcode the user's shipping address.
      * The shipping rates fetched in ShippingRateListActivity will be for this address.
-     *
+     * <p/>
      * For the Android Pay Checkout, we will replace this with the address and email returned in the {@link MaskedWallet}
      *
      * @param product
@@ -190,6 +196,38 @@ public class SampleApplication extends Application {
         // Update the checkout with the Address information in the Masked Wallet
         AndroidPayHelper.updateCheckoutAddressAndEmail(checkout, maskedWallet);
         updateCheckout(checkout, callback);
+    }
+
+    public String getCartPermalink() {
+        Uri.Builder uri = new Uri.Builder();
+        uri.scheme("http").path(buyClient.getShopDomain()).appendPath("cart");
+
+        StringBuilder lineItemsStr = new StringBuilder();
+        String prefix = "";
+        for (LineItem lineItem : checkout.getLineItems()) {
+            lineItemsStr.append(prefix);
+            lineItemsStr.append(Long.toString(lineItem.getVariantId()));
+            lineItemsStr.append(":");
+            lineItemsStr.append(Long.toString(lineItem.getQuantity()));
+            prefix = ",";
+        }
+        uri.appendPath(lineItemsStr.toString());
+
+        uri.appendQueryParameter("channel_id", buyClient.getChannelId());
+        uri.appendQueryParameter("channel", "mobile_app");
+        uri.appendQueryParameter("checkout[email]", "email@domain.com");
+
+        uri.appendQueryParameter("checkout[shipping_address][address1]", "Cart Permalink");
+        uri.appendQueryParameter("checkout[shipping_address][city]", "Toronto");
+        uri.appendQueryParameter("checkout[shipping_address][company]", "Shopify");
+        uri.appendQueryParameter("checkout[shipping_address][first_name]", "Dinosaur");
+        uri.appendQueryParameter("checkout[shipping_address][last_name]", "Banana");
+        uri.appendQueryParameter("checkout[shipping_address][phone]", "416-555-1234");
+        uri.appendQueryParameter("checkout[shipping_address][country]", "Canada");
+        uri.appendQueryParameter("checkout[shipping_address][province]", "Ontario");
+        uri.appendQueryParameter("checkout[shipping_address][zip]", "M5V2J4");
+
+        return uri.build().toString();
     }
 
     public Checkout getCheckout() {

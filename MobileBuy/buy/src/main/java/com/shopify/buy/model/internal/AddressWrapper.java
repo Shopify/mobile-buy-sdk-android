@@ -22,40 +22,28 @@
  * THE SOFTWARE.
  */
 
-package com.shopify.buy.model;
+package com.shopify.buy.model.internal;
 
-import com.shopify.buy.dataprovider.BuyClientFactory;
 
-/**
- * Base class for Shopify Objects
- */
-public abstract class ShopifyObject {
+import com.google.gson.annotations.SerializedName;
+import com.shopify.buy.model.Address;
 
-    protected Long id;
+public class AddressWrapper {
 
-    /**
-     * @return The unique identifier of this object within the Shopify platform.
-     */
-    public Long getId() {
-        return id;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof ShopifyObject)) return false;
-
-        ShopifyObject object = (ShopifyObject) o;
-
-        return id.equals(object.id);
-
-    }
+    @SerializedName("address")
+    private Address address;
 
     /**
-     * @return A JSON representation of this object.
+     * No args constructor for use in serialization.
      */
-    public String toJsonString() {
-        return BuyClientFactory.createDefaultGson().toJson(this);
+    public AddressWrapper() {
     }
 
+    public AddressWrapper(Address address) {
+        this.address = address;
+    }
+
+    public Address getAddress() {
+        return address;
+    }
 }

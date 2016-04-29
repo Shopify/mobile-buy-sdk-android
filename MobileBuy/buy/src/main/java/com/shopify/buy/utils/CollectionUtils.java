@@ -22,40 +22,14 @@
  * THE SOFTWARE.
  */
 
-package com.shopify.buy.model;
+package com.shopify.buy.utils;
 
-import com.shopify.buy.dataprovider.BuyClientFactory;
+import java.util.Collection;
 
-/**
- * Base class for Shopify Objects
- */
-public abstract class ShopifyObject {
+public class CollectionUtils {
 
-    protected Long id;
-
-    /**
-     * @return The unique identifier of this object within the Shopify platform.
-     */
-    public Long getId() {
-        return id;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof ShopifyObject)) return false;
-
-        ShopifyObject object = (ShopifyObject) o;
-
-        return id.equals(object.id);
-
-    }
-
-    /**
-     * @return A JSON representation of this object.
-     */
-    public String toJsonString() {
-        return BuyClientFactory.createDefaultGson().toJson(this);
+    public static boolean isEmpty(Collection collection) {
+        return collection == null || collection.isEmpty();
     }
 
 }

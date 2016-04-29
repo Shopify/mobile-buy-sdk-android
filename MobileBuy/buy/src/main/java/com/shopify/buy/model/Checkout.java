@@ -24,6 +24,8 @@
 
 package com.shopify.buy.model;
 
+import android.text.TextUtils;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
@@ -36,6 +38,7 @@ import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
 import com.shopify.buy.dataprovider.BuyClientFactory;
 import com.shopify.buy.model.internal.MarketingAttribution;
+import com.shopify.buy.utils.CollectionUtils;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -178,6 +181,11 @@ public class Checkout extends ShopifyObject {
         lineItems.add(lineItem);
     }
 
+    public void setLineItems(Cart cart) {
+        this.lineItems.clear();
+        this.lineItems.addAll(cart.getLineItems());
+    }
+
     /**
      * @return The identifier of the source of this checkout (used  for tracking purposes). For the Mobile Buy SDK, this is set to the Mobile App Channel ID of the shop, which you can find in your shop's admin portal by navigating to Integration under Mobile App.
      */
@@ -262,8 +270,18 @@ public class Checkout extends ShopifyObject {
         return orderId;
     }
 
+    /**
+     * @return This value is null until the checkout is complete. Once it is completed, it will containin the {@link Order#name}, {@link Order#id}, and {@link Order#statusUrl}
+     */
     public Order getOrder() {
         return order;
+    }
+
+    /**
+     * @return {@code true} if checkout has been completed and there's an order with an id, {@code false} otherwise.
+     */
+    public boolean hasOrderId() {
+        return order != null && order.getId() != null && order.getId() > 0;
     }
 
     /**
@@ -445,6 +463,13 @@ public class Checkout extends ShopifyObject {
     }
 
     /**
+     * @param customerId The customer's id.
+     */
+    public void setCustomerId(String customerId) {
+        this.customerId = customerId;
+    }
+
+    /**
      * @param email The customer's email address.
      */
     public void setEmail(String email) {
@@ -579,13 +604,37 @@ public class Checkout extends ShopifyObject {
     public Checkout copyForUpdate() {
         Checkout copy = Checkout.fromJson(this.toJsonString());
         copy.giftCards = null;
+
+        if (TextUtils.isEmpty(copy.email)) {
+            copy.email = null;
+        }
+
         return copy;
+    }
+
+    /**
+     * @return The total number of product variants in the cart (the sum of quantities across all line items).
+     */
+    public Integer getTotalQuantity() {
+        if (CollectionUtils.isEmpty(lineItems)) {
+            return 0;
+        }
+
+        int quantity = 0;
+        for (LineItem lineItem : lineItems) {
+            quantity += lineItem.getQuantity();
+        }
+        return quantity;
     }
 
     /**
      * @return A checkout object created using the values in the JSON string.
      */
     public static Checkout fromJson(String json) {
+        if (TextUtils.isEmpty(json)) {
+            return null;
+        }
+
         Gson gson = BuyClientFactory.createDefaultGson(Checkout.class);
 
         JsonObject checkoutElement = gson.fromJson(json, JsonElement.class).getAsJsonObject();
@@ -600,7 +649,8 @@ public class Checkout extends ShopifyObject {
             // The attributes are an array of CheckoutAttributes when received from the server, and are flattened and serialized as a hash map
             // when serializing for the server, or internally.  We have to check to see which case it is and deserialize appropriately.
             if (attributeElement.isJsonArray()) {
-                attributes = gson.fromJson(attributeElement, new TypeToken<List<CheckoutAttribute>>() {}.getType());
+                attributes = gson.fromJson(attributeElement, new TypeToken<List<CheckoutAttribute>>() {
+                }.getType());
             } else {
                 // We serialize the CheckoutAttributes to a hash map internally, and for sending to the server
                 HashMap<String, String> attributesHashMap = gson.fromJson(attributeElement, HashMap.class);
@@ -647,7 +697,6 @@ public class Checkout extends ShopifyObject {
         public Checkout deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
             return fromJson(json.toString());
         }
-
     }
 
 }

@@ -27,6 +27,7 @@ package com.shopify.buy.model;
 import com.google.gson.annotations.SerializedName;
 import com.shopify.buy.dataprovider.BuyClientFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -34,36 +35,36 @@ import java.util.List;
  */
 public class Shop extends ShopifyObject {
 
-    private String name;
+    protected String name;
 
-    private String city;
+    protected String city;
 
-    private String province;
+    protected String province;
 
-    private String country;
+    protected String country;
 
     @SerializedName("contact_email")
-    private String contactEmail;
+    protected String contactEmail;
 
-    private String currency;
+    protected String currency;
 
-    private String domain;
+    protected String domain;
 
-    private String url;
+    protected String url;
 
     @SerializedName("myshopify_domain")
-    private String myshopifyDomain;
+    protected String myshopifyDomain;
 
-    private String description;
+    protected String description;
 
     @SerializedName("ships_to_countries")
-    private List<String> shipsToCountries;
+    protected List<String> shipsToCountries;
 
     @SerializedName("money_format")
-    private String moneyFormat;
+    protected String moneyFormat;
 
     @SerializedName("published_products_count")
-    private long publishedProductsCount;
+    protected long publishedProductsCount;
 
     /**
      * @return The name of this shop.
@@ -139,6 +140,9 @@ public class Shop extends ShopifyObject {
      * @return A list of two-letter country codes identifying the countries that the shop ships to.
      */
     public List<String> getShipsToCountries() {
+        if (shipsToCountries == null) {
+            shipsToCountries = new ArrayList<>();
+        }
         return shipsToCountries;
     }
 
