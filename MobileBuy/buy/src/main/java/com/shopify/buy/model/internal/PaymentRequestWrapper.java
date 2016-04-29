@@ -29,7 +29,7 @@ import com.google.gson.annotations.SerializedName;
 /**
  * Wrapper class used by Gson Serialization
  */
-public class PaymentRequestWrapper {
+public class PaymentRequestWrapper implements ResponseWrapper<PaymentRequest> {
 
     @SerializedName("payment")
     private PaymentRequest paymentRequest;
@@ -42,4 +42,8 @@ public class PaymentRequestWrapper {
         return paymentRequest;
     }
 
+    @Override
+    public PaymentRequest getContent() {
+        return paymentRequest;
+    }
 }

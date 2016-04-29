@@ -21,26 +21,39 @@
  *   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  *   THE SOFTWARE.
  */
-package com.shopify.buy.model;
+package com.shopify.buy.dataprovider;
 
-import com.google.gson.annotations.SerializedName;
-import com.shopify.buy.model.internal.ResponseWrapper;
+import com.shopify.buy.utils.CollectionUtils;
 
-public class PaymentSession implements ResponseWrapper<String> {
+import java.util.List;
 
-    @SerializedName("id")
-    private String id;
+import rx.Observable;
+import rx.functions.Func1;
 
-    public String getId() {
-        return id;
+/**
+ * Transformer that returns first item in the list or default value if it's empty
+ *
+ * @param <T> type of items in the list
+ */
+final class FirstListItemOrDefaultTransformer<T> implements Observable.Transformer<List<T>, T> {
+
+    final T defaultValue;
+
+    FirstListItemOrDefaultTransformer() {
+        defaultValue = null;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    FirstListItemOrDefaultTransformer(T defaultValue) {
+        this.defaultValue = defaultValue;
     }
 
     @Override
-    public String getContent() {
-        return id;
+    public Observable<T> call(Observable<List<T>> collectionObservable) {
+        return collectionObservable.map(new Func1<List<T>, T>() {
+            @Override
+            public T call(List<T> collection) {
+                return !CollectionUtils.isEmpty(collection) ? collection.get(0) : defaultValue;
+            }
+        });
     }
 }

@@ -23,7 +23,6 @@
  */
 package com.shopify.buy.dataprovider;
 
-import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.shopify.buy.model.Checkout;
@@ -115,12 +114,7 @@ final class CheckoutServiceDefault implements CheckoutService {
         return retrofitService
                 .createCheckout(new CheckoutWrapper(checkout))
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .map(new UnwrapRetrofitBodyTransformation<CheckoutWrapper, Checkout>() {
-                    @Override
-                    Checkout unwrap(@NonNull CheckoutWrapper body) {
-                        return body.getCheckout();
-                    }
-                })
+                .compose(new UnwrapRetrofitBodyTransformer<CheckoutWrapper, Checkout>())
                 .observeOn(callbackScheduler);
     }
 
@@ -139,12 +133,7 @@ final class CheckoutServiceDefault implements CheckoutService {
         return retrofitService
                 .updateCheckout(new CheckoutWrapper(cleanCheckout), cleanCheckout.getToken())
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .map(new UnwrapRetrofitBodyTransformation<CheckoutWrapper, Checkout>() {
-                    @Override
-                    Checkout unwrap(@NonNull CheckoutWrapper body) {
-                        return body.getCheckout();
-                    }
-                })
+                .compose(new UnwrapRetrofitBodyTransformer<CheckoutWrapper, Checkout>())
                 .observeOn(callbackScheduler);
     }
 
@@ -162,12 +151,7 @@ final class CheckoutServiceDefault implements CheckoutService {
         return retrofitService
                 .getShippingRates(checkoutToken)
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .map(new UnwrapRetrofitBodyTransformation<ShippingRatesWrapper, List<ShippingRate>>() {
-                    @Override
-                    List<ShippingRate> unwrap(@NonNull ShippingRatesWrapper body) {
-                        return body.getShippingRates();
-                    }
-                })
+                .compose(new UnwrapRetrofitBodyTransformer<ShippingRatesWrapper, List<ShippingRate>>())
                 .observeOn(callbackScheduler);
     }
 
@@ -190,12 +174,7 @@ final class CheckoutServiceDefault implements CheckoutService {
         return retrofitService
                 .storeCreditCard(checkout.getPaymentUrl(), creditCardWrapper, BuyClientUtils.formatBasicAuthorization(apiKey))
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .map(new UnwrapRetrofitBodyTransformation<PaymentSession, String>() {
-                    @Override
-                    String unwrap(@NonNull PaymentSession body) {
-                        return body.getId();
-                    }
-                })
+                .compose(new UnwrapRetrofitBodyTransformer<PaymentSession, String>())
                 .doOnNext(new Action1<String>() {
                     @Override
                     public void call(String paymentSessionId) {
@@ -227,12 +206,7 @@ final class CheckoutServiceDefault implements CheckoutService {
         return retrofitService
                 .completeCheckout(paymentRequestWrapper, checkout.getToken())
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .map(new UnwrapRetrofitBodyTransformation<PaymentWrapper, Payment>() {
-                    @Override
-                    Payment unwrap(@NonNull PaymentWrapper body) {
-                        return body.getPayment();
-                    }
-                })
+                .compose(new UnwrapRetrofitBodyTransformer<PaymentWrapper, Payment>())
                 .observeOn(callbackScheduler);
     }
 
@@ -250,12 +224,7 @@ final class CheckoutServiceDefault implements CheckoutService {
         return retrofitService
                 .getCheckout(checkoutToken)
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .map(new UnwrapRetrofitBodyTransformation<CheckoutWrapper, Checkout>() {
-                    @Override
-                    Checkout unwrap(@NonNull CheckoutWrapper body) {
-                        return body.getCheckout();
-                    }
-                })
+                .compose(new UnwrapRetrofitBodyTransformer<CheckoutWrapper, Checkout>())
                 .observeOn(callbackScheduler);
     }
 
@@ -275,12 +244,7 @@ final class CheckoutServiceDefault implements CheckoutService {
         return retrofitService
                 .applyGiftCard(new GiftCardWrapper(giftCard), checkout.getToken())
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .map(new UnwrapRetrofitBodyTransformation<GiftCardWrapper, GiftCard>() {
-                    @Override
-                    GiftCard unwrap(@NonNull GiftCardWrapper body) {
-                        return body.getGiftCard();
-                    }
-                })
+                .compose(new UnwrapRetrofitBodyTransformer<GiftCardWrapper, GiftCard>())
                 .map(new Func1<GiftCard, Checkout>() {
                     @Override
                     public Checkout call(GiftCard giftCard) {
@@ -312,12 +276,7 @@ final class CheckoutServiceDefault implements CheckoutService {
         return retrofitService
                 .removeGiftCard(giftCard.getId(), checkout.getToken())
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .map(new UnwrapRetrofitBodyTransformation<GiftCardWrapper, GiftCard>() {
-                    @Override
-                    GiftCard unwrap(@NonNull GiftCardWrapper body) {
-                        return body.getGiftCard();
-                    }
-                })
+                .compose(new UnwrapRetrofitBodyTransformer<GiftCardWrapper, GiftCard>())
                 .map(new Func1<GiftCard, Checkout>() {
                     @Override
                     public Checkout call(GiftCard giftCard) {

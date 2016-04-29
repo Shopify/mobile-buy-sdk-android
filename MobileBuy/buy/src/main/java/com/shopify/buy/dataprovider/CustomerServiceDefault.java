@@ -23,7 +23,6 @@
  */
 package com.shopify.buy.dataprovider;
 
-import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.shopify.buy.model.AccountCredentials;
@@ -89,12 +88,7 @@ final class CustomerServiceDefault implements CustomerService {
         return retrofitService
                 .createCustomer(accountCredentialsWrapper)
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .map(new UnwrapRetrofitBodyTransformation<CustomerWrapper, Customer>() {
-                    @Override
-                    Customer unwrap(@NonNull CustomerWrapper body) {
-                        return body.getCustomer();
-                    }
-                })
+                .compose(new UnwrapRetrofitBodyTransformer<CustomerWrapper, Customer>())
                 .observeOn(callbackScheduler);
     }
 
@@ -118,12 +112,7 @@ final class CustomerServiceDefault implements CustomerService {
         return retrofitService
                 .activateCustomer(customerId, activationToken, accountCredentialsWrapper)
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .map(new UnwrapRetrofitBodyTransformation<CustomerWrapper, Customer>() {
-                    @Override
-                    Customer unwrap(@NonNull CustomerWrapper body) {
-                        return body.getCustomer();
-                    }
-                })
+                .compose(new UnwrapRetrofitBodyTransformer<CustomerWrapper, Customer>())
                 .observeOn(callbackScheduler);
     }
 
@@ -146,12 +135,7 @@ final class CustomerServiceDefault implements CustomerService {
         return retrofitService
                 .resetPassword(customerId, resetToken, accountCredentialsWrapper)
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .map(new UnwrapRetrofitBodyTransformation<CustomerWrapper, Customer>() {
-                    @Override
-                    Customer unwrap(@NonNull CustomerWrapper body) {
-                        return body.getCustomer();
-                    }
-                })
+                .compose(new UnwrapRetrofitBodyTransformer<CustomerWrapper, Customer>())
                 .observeOn(callbackScheduler);
     }
 
@@ -170,12 +154,7 @@ final class CustomerServiceDefault implements CustomerService {
         return retrofitService
                 .getCustomerToken(accountCredentialsWrapper)
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .map(new UnwrapRetrofitBodyTransformation<CustomerTokenWrapper, CustomerToken>() {
-                    @Override
-                    CustomerToken unwrap(@NonNull CustomerTokenWrapper body) {
-                        return body.getCustomerToken();
-                    }
-                })
+                .compose(new UnwrapRetrofitBodyTransformer<CustomerTokenWrapper, CustomerToken>())
                 .doOnNext(new Action1<CustomerToken>() {
                     @Override
                     public void call(CustomerToken token) {
@@ -228,12 +207,7 @@ final class CustomerServiceDefault implements CustomerService {
         return retrofitService
                 .updateCustomer(customer.getId(), new CustomerWrapper(customer))
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .map(new UnwrapRetrofitBodyTransformation<CustomerWrapper, Customer>() {
-                    @Override
-                    Customer unwrap(@NonNull CustomerWrapper body) {
-                        return body.getCustomer();
-                    }
-                })
+                .compose(new UnwrapRetrofitBodyTransformer<CustomerWrapper, Customer>())
                 .observeOn(callbackScheduler);
     }
 
@@ -251,12 +225,7 @@ final class CustomerServiceDefault implements CustomerService {
         return retrofitService
                 .getCustomer(customerId)
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .map(new UnwrapRetrofitBodyTransformation<CustomerWrapper, Customer>() {
-                    @Override
-                    Customer unwrap(@NonNull CustomerWrapper body) {
-                        return body.getCustomer();
-                    }
-                })
+                .compose(new UnwrapRetrofitBodyTransformer<CustomerWrapper, Customer>())
                 .observeOn(callbackScheduler);
     }
 
@@ -274,12 +243,7 @@ final class CustomerServiceDefault implements CustomerService {
         return retrofitService
                 .renewCustomerToken(EMPTY_BODY, customerToken.getCustomerId())
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .map(new UnwrapRetrofitBodyTransformation<CustomerTokenWrapper, CustomerToken>() {
-                    @Override
-                    CustomerToken unwrap(@NonNull CustomerTokenWrapper body) {
-                        return body.getCustomerToken();
-                    }
-                })
+                .compose(new UnwrapRetrofitBodyTransformer<CustomerTokenWrapper, CustomerToken>())
                 .observeOn(callbackScheduler)
                 .doOnNext(new Action1<CustomerToken>() {
                     @Override

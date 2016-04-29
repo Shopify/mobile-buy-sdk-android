@@ -21,34 +21,9 @@
  *   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  *   THE SOFTWARE.
  */
-package com.shopify.buy.dataprovider;
+package com.shopify.buy.model.internal;
 
-import android.support.annotation.NonNull;
+public interface ResponseWrapper<T> {
 
-import retrofit2.Response;
-import rx.functions.Func1;
-
-/**
- * Transformation that unwraps retrofit response body
- *
- * @param <B> class of retrofit body wrapper
- * @param <R> class of unwrapped response from body
- */
-abstract class UnwrapRetrofitBodyTransformation<B, R> implements Func1<Response<B>, R> {
-
-    @Override
-    public R call(final Response<B> response) {
-        if (response.body() != null) {
-            return unwrap(response.body());
-        }
-        return null;
-    }
-
-    /**
-     * Unwraps body from retrofit response
-     *
-     * @param body retrofit body wrapper
-     * @return unwrapped response
-     */
-    abstract R unwrap(@NonNull B body);
+     T getContent();
 }

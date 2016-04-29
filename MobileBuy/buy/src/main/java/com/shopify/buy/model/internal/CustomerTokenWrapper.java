@@ -30,7 +30,7 @@ import com.shopify.buy.model.CustomerToken;
 /**
  * Wrapper class used by Gson Serialization
  */
-public class CustomerTokenWrapper {
+public class CustomerTokenWrapper implements ResponseWrapper<CustomerToken> {
 
     @SerializedName("customer_access_token")
     private CustomerToken customerToken;
@@ -39,4 +39,8 @@ public class CustomerTokenWrapper {
         return customerToken;
     }
 
+    @Override
+    public CustomerToken getContent() {
+        return customerToken;
+    }
 }

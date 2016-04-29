@@ -30,7 +30,6 @@ import com.shopify.buy.model.Collection;
 import com.shopify.buy.model.Product;
 import com.shopify.buy.model.internal.CollectionListings;
 import com.shopify.buy.model.internal.ProductListings;
-import com.shopify.buy.utils.CollectionUtils;
 
 import java.util.List;
 
@@ -77,12 +76,7 @@ final class ProductServiceDefault implements ProductService {
         return retrofitService
                 .getProductPage(appId, page, pageSize)
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .map(new UnwrapRetrofitBodyTransformation<ProductListings, List<Product>>() {
-                    @Override
-                    List<Product> unwrap(@NonNull ProductListings body) {
-                        return body.getProducts();
-                    }
-                })
+                .compose(new UnwrapRetrofitBodyTransformer<ProductListings, List<Product>>())
                 .observeOn(callbackScheduler);
     }
 
@@ -100,13 +94,8 @@ final class ProductServiceDefault implements ProductService {
         return retrofitService
                 .getProductWithHandle(appId, handle)
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .map(new UnwrapRetrofitBodyTransformation<ProductListings, Product>() {
-                    @Override
-                    Product unwrap(@NonNull ProductListings body) {
-                        final List<Product> products = body.getProducts();
-                        return !CollectionUtils.isEmpty(products) ? products.get(0) : null;
-                    }
-                })
+                .compose(new UnwrapRetrofitBodyTransformer<ProductListings, List<Product>>())
+                .compose(new FirstListItemOrDefaultTransformer<Product>())
                 .observeOn(callbackScheduler);
     }
 
@@ -124,13 +113,8 @@ final class ProductServiceDefault implements ProductService {
         return retrofitService
                 .getProducts(appId, productId)
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .map(new UnwrapRetrofitBodyTransformation<ProductListings, Product>() {
-                    @Override
-                    Product unwrap(@NonNull ProductListings body) {
-                        final List<Product> products = body.getProducts();
-                        return !CollectionUtils.isEmpty(products) ? products.get(0) : null;
-                    }
-                })
+                .compose(new UnwrapRetrofitBodyTransformer<ProductListings, List<Product>>())
+                .compose(new FirstListItemOrDefaultTransformer<Product>())
                 .observeOn(callbackScheduler);
     }
 
@@ -157,12 +141,7 @@ final class ProductServiceDefault implements ProductService {
         return retrofitService
                 .getProducts(appId, queryString)
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .map(new UnwrapRetrofitBodyTransformation<ProductListings, List<Product>>() {
-                    @Override
-                    List<Product> unwrap(@NonNull ProductListings body) {
-                        return body.getProducts();
-                    }
-                })
+                .compose(new UnwrapRetrofitBodyTransformer<ProductListings, List<Product>>())
                 .observeOn(callbackScheduler);
     }
 
@@ -193,12 +172,7 @@ final class ProductServiceDefault implements ProductService {
         return retrofitService
                 .getProducts(appId, collectionId, pageSize, page, sortOrder.toString())
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .map(new UnwrapRetrofitBodyTransformation<ProductListings, List<Product>>() {
-                    @Override
-                    List<Product> unwrap(@NonNull ProductListings body) {
-                        return body.getProducts();
-                    }
-                })
+                .compose(new UnwrapRetrofitBodyTransformer<ProductListings, List<Product>>())
                 .observeOn(callbackScheduler);
     }
 
@@ -228,12 +202,7 @@ final class ProductServiceDefault implements ProductService {
         return retrofitService
                 .getCollectionPage(appId, page, pageSize)
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .map(new UnwrapRetrofitBodyTransformation<CollectionListings, List<Collection>>() {
-                    @Override
-                    List<Collection> unwrap(@NonNull CollectionListings body) {
-                        return body.getCollections();
-                    }
-                })
+                .compose(new UnwrapRetrofitBodyTransformer<CollectionListings, List<Collection>>())
                 .observeOn(callbackScheduler);
     }
 }

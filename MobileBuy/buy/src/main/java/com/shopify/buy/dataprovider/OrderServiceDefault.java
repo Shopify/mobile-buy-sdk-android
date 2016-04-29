@@ -65,12 +65,7 @@ final class OrderServiceDefault implements OrderService {
         return retrofitService
                 .getOrders(customer.getId())
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .map(new UnwrapRetrofitBodyTransformation<OrdersWrapper, List<Order>>() {
-                    @Override
-                    List<Order> unwrap(@NonNull OrdersWrapper body) {
-                        return body.getOrders();
-                    }
-                })
+                .compose(new UnwrapRetrofitBodyTransformer<OrdersWrapper, List<Order>>())
                 .observeOn(callbackScheduler);
     }
 
@@ -92,12 +87,7 @@ final class OrderServiceDefault implements OrderService {
         return retrofitService
                 .getOrder(customer.getId(), orderId)
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .map(new UnwrapRetrofitBodyTransformation<OrderWrapper, Order>() {
-                    @Override
-                    Order unwrap(@NonNull OrderWrapper body) {
-                        return body.getOrder();
-                    }
-                })
+                .compose(new UnwrapRetrofitBodyTransformer<OrderWrapper, Order>())
                 .observeOn(callbackScheduler);
     }
 }
