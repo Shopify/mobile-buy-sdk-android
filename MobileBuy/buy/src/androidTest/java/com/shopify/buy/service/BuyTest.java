@@ -186,7 +186,7 @@ public class BuyTest extends ShopifyAndroidTestCase {
     @Test
     public void testWithoutShop() {
         try {
-            new BuyClientBuilder().shopDomain("");
+            new BuyClientBuilder().shopDomain("").build();
         } catch (IllegalArgumentException e) {
             return;
         }
@@ -196,7 +196,7 @@ public class BuyTest extends ShopifyAndroidTestCase {
     @Test
     public void testWithoutAuthToken() {
         try {
-            new BuyClientBuilder().apiKey("");
+            new BuyClientBuilder().apiKey("").build();
         } catch (IllegalArgumentException e) {
             return;
         }
@@ -206,7 +206,7 @@ public class BuyTest extends ShopifyAndroidTestCase {
     @Test
     public void testWithoutApplicationName() {
         try {
-            new BuyClientBuilder().applicationName("");
+            new BuyClientBuilder().applicationName("").build();
         } catch (IllegalArgumentException e) {
             return;
         }
