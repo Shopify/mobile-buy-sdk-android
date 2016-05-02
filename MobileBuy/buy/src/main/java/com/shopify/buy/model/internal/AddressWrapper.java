@@ -28,7 +28,7 @@ package com.shopify.buy.model.internal;
 import com.google.gson.annotations.SerializedName;
 import com.shopify.buy.model.Address;
 
-public class AddressWrapper {
+public class AddressWrapper implements ResponseWrapper<Address> {
 
     @SerializedName("address")
     private Address address;
@@ -44,6 +44,11 @@ public class AddressWrapper {
     }
 
     public Address getAddress() {
+        return address;
+    }
+
+    @Override
+    public Address getContent() {
         return address;
     }
 }

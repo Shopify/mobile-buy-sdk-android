@@ -23,7 +23,6 @@
  */
 package com.shopify.buy.dataprovider;
 
-import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.shopify.buy.model.Address;
@@ -69,12 +68,7 @@ final class AddressServiceDefault implements AddressService {
         return retrofitService
                 .createAddress(customer.getId(), new AddressWrapper(address))
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .map(new UnwrapRetrofitBodyTransformation<AddressWrapper, Address>() {
-                    @Override
-                    Address unwrap(@NonNull AddressWrapper body) {
-                        return body.getAddress();
-                    }
-                })
+                .compose(new UnwrapRetrofitBodyTransformer<AddressWrapper, Address>())
                 .observeOn(callbackScheduler);
     }
 
@@ -92,12 +86,7 @@ final class AddressServiceDefault implements AddressService {
         return retrofitService
                 .getAddresses(customer.getId())
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .map(new UnwrapRetrofitBodyTransformation<AddressesWrapper, List<Address>>() {
-                    @Override
-                    List<Address> unwrap(@NonNull AddressesWrapper body) {
-                        return body.getAddresses();
-                    }
-                })
+                .compose(new UnwrapRetrofitBodyTransformer<AddressesWrapper, List<Address>>())
                 .observeOn(callbackScheduler);
     }
 
@@ -119,12 +108,7 @@ final class AddressServiceDefault implements AddressService {
         return retrofitService
                 .getAddress(customer.getId(), addressId)
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .map(new UnwrapRetrofitBodyTransformation<AddressWrapper, Address>() {
-                    @Override
-                    Address unwrap(@NonNull AddressWrapper body) {
-                        return body.getAddress();
-                    }
-                })
+                .compose(new UnwrapRetrofitBodyTransformer<AddressWrapper, Address>())
                 .observeOn(callbackScheduler);
     }
 
@@ -146,12 +130,7 @@ final class AddressServiceDefault implements AddressService {
         return retrofitService
                 .updateAddress(customer.getId(), new AddressWrapper(address), address.getAddressId())
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .map(new UnwrapRetrofitBodyTransformation<AddressWrapper, Address>() {
-                    @Override
-                    Address unwrap(@NonNull AddressWrapper body) {
-                        return body.getAddress();
-                    }
-                })
+                .compose(new UnwrapRetrofitBodyTransformer<AddressWrapper, Address>())
                 .observeOn(callbackScheduler);
     }
 }

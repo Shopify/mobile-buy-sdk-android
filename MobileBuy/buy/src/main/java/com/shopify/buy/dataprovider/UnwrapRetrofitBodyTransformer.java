@@ -21,26 +21,33 @@
  *   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  *   THE SOFTWARE.
  */
-package com.shopify.buy.model;
+package com.shopify.buy.dataprovider;
 
-import com.google.gson.annotations.SerializedName;
 import com.shopify.buy.model.internal.ResponseWrapper;
 
-public class PaymentSession implements ResponseWrapper<String> {
+import retrofit2.Response;
+import rx.Observable;
+import rx.functions.Func1;
 
-    @SerializedName("id")
-    private String id;
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
+/**
+ * Transformer that returns unwrapped retrofit response body
+ *
+ * @param <B> type of retrofit body wrapper that is extended from {@link ResponseWrapper}
+ * @param <R> class of unwrapped response from body
+ */
+final class UnwrapRetrofitBodyTransformer<B extends ResponseWrapper<R>, R> implements Observable.Transformer<Response<B>, R> {
 
     @Override
-    public String getContent() {
-        return id;
+    public Observable<R> call(Observable<Response<B>> responseObservable) {
+        return responseObservable.map(new Func1<Response<B>, R>() {
+            @Override
+            public R call(Response<B> response) {
+                if (response.body() != null) {
+                    return response.body().getContent();
+                }
+                return null;
+            }
+        });
     }
+
 }

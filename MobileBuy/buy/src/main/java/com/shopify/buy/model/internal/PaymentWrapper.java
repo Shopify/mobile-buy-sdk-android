@@ -30,7 +30,7 @@ import com.shopify.buy.model.Payment;
 /**
  * Wrapper class used by Gson Serialization
  */
-public class PaymentWrapper {
+public class PaymentWrapper implements ResponseWrapper<Payment> {
 
     @SerializedName("payment")
     private Payment payment;
@@ -43,4 +43,8 @@ public class PaymentWrapper {
         return payment;
     }
 
+    @Override
+    public Payment getContent() {
+        return payment;
+    }
 }

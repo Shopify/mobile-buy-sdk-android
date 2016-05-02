@@ -28,7 +28,7 @@ package com.shopify.buy.model.internal;
 import com.google.gson.annotations.SerializedName;
 import com.shopify.buy.model.Order;
 
-public class OrderWrapper {
+public class OrderWrapper implements ResponseWrapper<Order> {
 
     @SerializedName("order")
     private Order order;
@@ -40,6 +40,11 @@ public class OrderWrapper {
     }
 
     public Order getOrder() {
+        return order;
+    }
+
+    @Override
+    public Order getContent() {
         return order;
     }
 }

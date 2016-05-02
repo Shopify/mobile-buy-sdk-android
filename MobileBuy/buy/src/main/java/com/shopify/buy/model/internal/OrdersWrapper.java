@@ -30,7 +30,7 @@ import com.shopify.buy.model.Order;
 
 import java.util.List;
 
-public class OrdersWrapper {
+public class OrdersWrapper implements ResponseWrapper<List<Order>> {
 
     @SerializedName("orders")
     private List<Order> orders;
@@ -42,6 +42,11 @@ public class OrdersWrapper {
     }
 
     public List<Order> getOrders() {
+        return orders;
+    }
+
+    @Override
+    public List<Order> getContent() {
         return orders;
     }
 }

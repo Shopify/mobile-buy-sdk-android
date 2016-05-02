@@ -26,7 +26,7 @@ package com.shopify.buy.model.internal;
 
 import com.shopify.buy.model.Customer;
 
-public class CustomerWrapper {
+public class CustomerWrapper implements ResponseWrapper<Customer> {
 
     private Customer customer;
 
@@ -44,4 +44,8 @@ public class CustomerWrapper {
         return customer;
     }
 
+    @Override
+    public Customer getContent() {
+        return customer;
+    }
 }

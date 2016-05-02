@@ -30,7 +30,7 @@ import com.shopify.buy.model.Address;
 
 import java.util.List;
 
-public class AddressesWrapper {
+public class AddressesWrapper implements ResponseWrapper<List<Address>> {
 
     @SerializedName("addresses")
     private List<Address> addresses;
@@ -42,6 +42,11 @@ public class AddressesWrapper {
     }
 
     public List<Address> getAddresses() {
+        return addresses;
+    }
+
+    @Override
+    public List<Address> getContent() {
         return addresses;
     }
 }
