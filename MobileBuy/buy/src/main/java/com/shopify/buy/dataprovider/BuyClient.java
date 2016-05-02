@@ -273,6 +273,10 @@ public class BuyClient {
         return androidPayPublicKey;
     }
 
+    public String getAndroidPayPublicKeyHash() {
+        return androidPayPublicKeyHash;
+    }
+
     /**
      * Sets the page size used for paged API queries
      *

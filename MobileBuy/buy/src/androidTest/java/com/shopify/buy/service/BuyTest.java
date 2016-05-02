@@ -7,7 +7,6 @@ import com.shopify.buy.extensions.CheckoutPrivateAPIs;
 import com.shopify.buy.extensions.GiftCardPrivateAPIs;
 import com.shopify.buy.extensions.ShopifyAndroidTestCase;
 import com.shopify.buy.model.Address;
-import com.shopify.buy.model.Cart;
 import com.shopify.buy.model.Checkout;
 import com.shopify.buy.model.CreditCard;
 import com.shopify.buy.model.Discount;
@@ -19,7 +18,6 @@ import com.shopify.buy.model.ShippingRate;
 import org.apache.http.HttpStatus;
 
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -486,37 +484,6 @@ public class BuyTest extends ShopifyAndroidTestCase {
      * ***** Helper functions *******
      * *****************************
      */
-
-    private Cart createCart() throws InterruptedException {
-        final CountDownLatch latch = new CountDownLatch(1);
-
-        final AtomicReference<Product> productRef = new AtomicReference<>();
-        buyClient.getProduct(data.getProductId(), new Callback<Product>() {
-            @Override
-            public void success(Product product, Response response) {
-                productRef.set(product);
-                latch.countDown();
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                fail(BuyClient.getErrorBody(error));
-            }
-        });
-
-        latch.await();
-
-        Cart cart = new Cart();
-        cart.addVariant(productRef.get().getVariants().get(0));
-
-        // add some custom properties
-        LineItem lineItem = cart.getLineItems().get(0);
-        Map<String, String> properties = lineItem.getProperties();
-        properties.put("color", "red");
-        properties.put("size", "large");
-
-        return cart;
-    }
 
     private Long getVariantID() throws InterruptedException {
         final CountDownLatch latch = new CountDownLatch(1);

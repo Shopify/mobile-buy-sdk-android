@@ -74,7 +74,7 @@ public class Checkout extends ShopifyObject {
     @SerializedName("taxes_included")
     private Boolean taxesIncluded;
 
-    private String currency;
+    protected String currency;
 
     @SerializedName("subtotal_price")
     private String subtotalPrice;
@@ -83,7 +83,7 @@ public class Checkout extends ShopifyObject {
     private String totalTax;
 
     @SerializedName("total_price")
-    private String totalPrice;
+    protected String totalPrice;
 
     @SerializedName("payment_session_id")
     private String paymentSessionId;

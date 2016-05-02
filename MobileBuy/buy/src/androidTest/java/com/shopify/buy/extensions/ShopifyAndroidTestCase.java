@@ -9,6 +9,18 @@ import com.shopify.buy.data.MockResponseGenerator;
 import com.shopify.buy.data.TestData;
 import com.shopify.buy.dataprovider.BuyClient;
 import com.shopify.buy.dataprovider.BuyClientFactory;
+import com.shopify.buy.model.Cart;
+import com.shopify.buy.model.LineItem;
+import com.shopify.buy.model.Product;
+import com.shopify.buy.model.Shop;
+
+import java.util.Map;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicReference;
+
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 /**
  * Base class for Mobile Buy SDK Tests
@@ -25,6 +37,8 @@ public class ShopifyAndroidTestCase extends AndroidTestCase {
     protected static TestData data;
 
     protected BuyClient buyClient;
+
+    protected Shop shop;
 
     @Override
     protected void setUp() throws Exception {
@@ -75,4 +89,36 @@ public class ShopifyAndroidTestCase extends AndroidTestCase {
     protected String getAndroidPayPublicKey() {
         return USE_MOCK_RESPONSES ? "placeholderAndroidPayPublicKey" : BuildConfig.ANDROID_PAY_PUBLIC_KEY;
     }
+
+    public Cart createCart() throws InterruptedException {
+        final CountDownLatch latch = new CountDownLatch(1);
+
+        final AtomicReference<Product> productRef = new AtomicReference<>();
+        buyClient.getProduct(data.getProductId(), new Callback<Product>() {
+            @Override
+            public void success(Product product, Response response) {
+                productRef.set(product);
+                latch.countDown();
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                fail(BuyClient.getErrorBody(error));
+            }
+        });
+
+        latch.await();
+
+        Cart cart = new Cart();
+        cart.addVariant(productRef.get().getVariants().get(0));
+
+        // add some custom properties
+        LineItem lineItem = cart.getLineItems().get(0);
+        Map<String, String> properties = lineItem.getProperties();
+        properties.put("color", "red");
+        properties.put("size", "large");
+
+        return cart;
+    }
+
 }

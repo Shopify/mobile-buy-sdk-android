@@ -27,4 +27,12 @@ public class CheckoutPrivateAPIs extends Checkout {
     public void setReservationTimeLeft(Long reservationTimeLeft) {
         this.reservationTimeLeft = reservationTimeLeft;
     }
+
+    public void setTotalPrice(String totalPrice) {
+        this.totalPrice = totalPrice;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
 }

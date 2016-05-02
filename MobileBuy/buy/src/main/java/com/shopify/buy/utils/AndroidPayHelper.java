@@ -1,4 +1,3 @@
-package com.shopify.buy.utils;
 
 /*
  * The MIT License (MIT)
@@ -24,6 +23,8 @@ package com.shopify.buy.utils;
  * THE SOFTWARE.
  *
  */
+
+package com.shopify.buy.utils;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
