@@ -42,6 +42,17 @@ public class CustomerToken {
     @SerializedName("expires_at")
     private Date expiresAt;
 
+    public CustomerToken() {
+    }
+
+    public CustomerToken(final CustomerToken other) {
+        if (other != null) {
+            accessToken = other.accessToken;
+            customerId = other.customerId;
+            expiresAt = other.expiresAt;
+        }
+    }
+
     public String getAccessToken() {
         return accessToken;
     }

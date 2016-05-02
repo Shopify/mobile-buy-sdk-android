@@ -284,11 +284,6 @@ final class BuyClientDefault implements BuyClient {
     }
 
     @Override
-    public void setCustomerToken(CustomerToken customerToken) {
-        customerService.setCustomerToken(customerToken);
-    }
-
-    @Override
     public void createCustomer(AccountCredentials accountCredentials, Callback<Customer> callback) {
         customerService.createCustomer(accountCredentials, callback);
     }

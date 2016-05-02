@@ -33,6 +33,8 @@ import com.shopify.buy.model.internal.CustomerTokenWrapper;
 import com.shopify.buy.model.internal.CustomerWrapper;
 import com.shopify.buy.model.internal.EmailWrapper;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import rx.Observable;
@@ -53,7 +55,7 @@ final class CustomerServiceDefault implements CustomerService {
 
     final Scheduler callbackScheduler;
 
-    CustomerToken customerToken;
+    final AtomicReference<CustomerToken> customerTokenRef = new AtomicReference<>();
 
     CustomerServiceDefault(
             final Retrofit retrofit,
@@ -62,19 +64,19 @@ final class CustomerServiceDefault implements CustomerService {
             final Scheduler callbackScheduler
     ) {
         this.retrofitService = retrofit.create(CustomerRetrofitService.class);
-        this.customerToken = customerToken;
+        this.customerTokenRef.set(customerToken);
         this.networkRetryPolicyProvider = networkRetryPolicyProvider;
         this.callbackScheduler = callbackScheduler;
     }
 
     @Override
-    public void setCustomerToken(CustomerToken customerToken) {
-        this.customerToken = customerToken;
-    }
-
-    @Override
     public CustomerToken getCustomerToken() {
-        return customerToken;
+        final CustomerToken customerToken = customerTokenRef.get();
+        if (customerToken != null) {
+            return new CustomerToken(customerToken);
+        } else {
+            return null;
+        }
     }
 
     @Override
@@ -163,7 +165,7 @@ final class CustomerServiceDefault implements CustomerService {
                 .doOnNext(new Action1<CustomerToken>() {
                     @Override
                     public void call(CustomerToken token) {
-                        customerToken = token;
+                        customerTokenRef.set(token);
                     }
                 })
                 .observeOn(callbackScheduler);
@@ -176,6 +178,7 @@ final class CustomerServiceDefault implements CustomerService {
 
     @Override
     public Observable<Void> logoutCustomer() {
+        final CustomerToken customerToken = customerTokenRef.get();
         if (customerToken == null) {
             return Observable.just(null);
         }
@@ -194,7 +197,7 @@ final class CustomerServiceDefault implements CustomerService {
                 .doOnNext(new Action1<Void>() {
                     @Override
                     public void call(Void aVoid) {
-                        customerToken = null;
+                        customerTokenRef.set(null);
                     }
                 });
     }
@@ -243,6 +246,7 @@ final class CustomerServiceDefault implements CustomerService {
 
     @Override
     public Observable<CustomerToken> renewCustomer() {
+        final CustomerToken customerToken = customerTokenRef.get();
         if (customerToken == null) {
             return Observable.just(null);
         }
@@ -255,7 +259,7 @@ final class CustomerServiceDefault implements CustomerService {
                 .doOnNext(new Action1<CustomerToken>() {
                     @Override
                     public void call(CustomerToken token) {
-                        customerToken = token;
+                        customerTokenRef.set(token);
                     }
                 });
     }

@@ -91,7 +91,6 @@ public class CustomerTest extends ShopifyAndroidTestCase {
     @Suppress
     @Test
 	public void testCustomerActivation() throws InterruptedException {
-        
         testCustomerLogin();
 
         final AccountCredentials accountCredentials = new AccountCredentials(customer.getEmail(), PASSWORD, customer.getFirstName(), customer.getLastName());
@@ -113,7 +112,6 @@ public class CustomerTest extends ShopifyAndroidTestCase {
 
     @Test
 	public void testCustomerLogin() throws InterruptedException {
-        
         customer = getExistingCustomer();
 
         final AccountCredentials accountCredentials = new AccountCredentials(customer.getEmail(), PASSWORD, customer.getFirstName(), customer.getLastName());
@@ -136,10 +134,7 @@ public class CustomerTest extends ShopifyAndroidTestCase {
 
     @Test
 	public void testCustomerLogout() throws InterruptedException {
-        
         testCustomerLogin();
-        buyClient.setCustomerToken(customerToken);
-
         buyClient.logoutCustomer(new Callback<Void>() {
             @Override
             public void success(Void aVoid) {
@@ -154,10 +149,7 @@ public class CustomerTest extends ShopifyAndroidTestCase {
 
     @Test
 	public void testCustomerRenew() throws InterruptedException {
-        
         testCustomerLogin();
-        buyClient.setCustomerToken(customerToken);
-
         buyClient.renewCustomer(new Callback<CustomerToken>() {
             @Override
             public void success(CustomerToken customerToken) {
@@ -172,7 +164,6 @@ public class CustomerTest extends ShopifyAndroidTestCase {
 
     @Test
 	public void testCustomerRecover() throws InterruptedException {
-        
         customer = getExistingCustomer();
 
         buyClient.recoverPassword(EMAIL, new Callback<Void>() {
@@ -189,10 +180,7 @@ public class CustomerTest extends ShopifyAndroidTestCase {
 
     @Test
 	public void testCustomerUpdate() throws InterruptedException {
-        
         testCustomerLogin();
-        buyClient.setCustomerToken(customerToken);
-
 
         customer.setLastName("Foo");
 
@@ -212,9 +200,7 @@ public class CustomerTest extends ShopifyAndroidTestCase {
 
     @Test
 	public void testGetCustomerOrders() throws InterruptedException {
-        
         testCustomerLogin();
-        buyClient.setCustomerToken(customerToken);
 
         buyClient.getOrders(customer, new Callback<List<Order>>() {
             @Override
@@ -234,10 +220,7 @@ public class CustomerTest extends ShopifyAndroidTestCase {
 
     @Test
 	public void testGetOrder() throws InterruptedException {
-        
         testGetCustomerOrders();
-        buyClient.setCustomerToken(customerToken);
-
 
         String orderId = orders.get(0).getOrderId();
 
@@ -256,9 +239,7 @@ public class CustomerTest extends ShopifyAndroidTestCase {
 
     @Test
 	public void testGetCustomer() throws InterruptedException {
-        
         testCustomerLogin();
-        buyClient.setCustomerToken(customerToken);
 
         buyClient.getCustomer(customerToken.getCustomerId(), new Callback<Customer>() {
             @Override
@@ -275,9 +256,7 @@ public class CustomerTest extends ShopifyAndroidTestCase {
 
     @Test
 	public void testCreateAddress() throws InterruptedException {
-        
         testCustomerLogin();
-        buyClient.setCustomerToken(customerToken);
 
         final Address inputAddress = USE_MOCK_RESPONSES ? getExistingAddress() : generateAddress();
 
@@ -298,9 +277,7 @@ public class CustomerTest extends ShopifyAndroidTestCase {
 
     @Test
 	public void testGetAddresses() throws InterruptedException {
-        
         testCustomerLogin();
-        buyClient.setCustomerToken(customerToken);
 
         buyClient.getAddresses(customer, new Callback<List<Address>>() {
             @Override
@@ -319,9 +296,7 @@ public class CustomerTest extends ShopifyAndroidTestCase {
 
     @Test
 	public void testGetAddress() throws InterruptedException {
-        
         testGetAddresses();
-        buyClient.setCustomerToken(customerToken);
 
         String addressId = addresses.get(0).getAddressId();
 
@@ -341,9 +316,7 @@ public class CustomerTest extends ShopifyAndroidTestCase {
 
     @Test
 	public void testUpdateAddress() throws InterruptedException {
-        
         testGetAddress();
-        buyClient.setCustomerToken(customerToken);
 
         address.setCity("Toledo");
 
