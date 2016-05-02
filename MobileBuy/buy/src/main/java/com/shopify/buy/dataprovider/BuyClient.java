@@ -851,10 +851,6 @@ public class BuyClient {
     }
 
     /**
-<<<<<<< HEAD
-     *  Convenience method to release all product inventory reservations by setting the `reservationTime` of the checkout `0` and calling {@link #updateCheckout(Checkout, Callback) updateCheckoutAddressAndEmail(Checkout, Callback)}.
-     *  We recommend creating a new `Checkout` object from a `Cart` for further API calls.
-=======
      * Create a new Customer on Shopify
      * @param accountCredentials the account credentials with an email, password, first name, and last name of the {@link Customer} to be created, not null
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
@@ -996,7 +992,6 @@ public class BuyClient {
 
     /**
      * Update an existing Customer's attributes.
->>>>>>> release/1.3.1
      *
      * @param customer the {@link Customer} to update
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
