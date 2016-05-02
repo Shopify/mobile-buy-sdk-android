@@ -51,6 +51,7 @@ import com.shopify.sample.BuildConfig;
 import com.shopify.sample.R;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.logging.HttpLoggingInterceptor;
 
@@ -105,6 +106,7 @@ public class SampleApplication extends Application {
                 .appId(shopifyAppId)
                 .applicationName(applicationName)
                 .interceptors(logging)
+                .networkRequestRetryPolicy(3, TimeUnit.MILLISECONDS.toMillis(200), 1.5f)
                 .build();
 
         buyClient.getShop(new Callback<Shop>() {

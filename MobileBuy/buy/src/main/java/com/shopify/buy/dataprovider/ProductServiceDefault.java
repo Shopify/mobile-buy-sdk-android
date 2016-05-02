@@ -23,7 +23,6 @@
  */
 package com.shopify.buy.dataprovider;
 
-import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.shopify.buy.model.Collection;
@@ -48,17 +47,21 @@ final class ProductServiceDefault implements ProductService {
 
     final int pageSize;
 
+    final NetworkRetryPolicyProvider networkRetryPolicyProvider;
+
     final Scheduler callbackScheduler;
 
     ProductServiceDefault(
             final Retrofit retrofit,
             final String appId,
             final int pageSize,
+            final NetworkRetryPolicyProvider networkRetryPolicyProvider,
             final Scheduler callbackScheduler
     ) {
         this.retrofitService = retrofit.create(ProductRetrofitService.class);
         this.appId = appId;
         this.pageSize = pageSize;
+        this.networkRetryPolicyProvider = networkRetryPolicyProvider;
         this.callbackScheduler = callbackScheduler;
     }
 
@@ -75,6 +78,7 @@ final class ProductServiceDefault implements ProductService {
 
         return retrofitService
                 .getProductPage(appId, page, pageSize)
+                .retryWhen(networkRetryPolicyProvider.provide())
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
                 .compose(new UnwrapRetrofitBodyTransformer<ProductListings, List<Product>>())
                 .observeOn(callbackScheduler);
@@ -93,6 +97,7 @@ final class ProductServiceDefault implements ProductService {
 
         return retrofitService
                 .getProductWithHandle(appId, handle)
+                .retryWhen(networkRetryPolicyProvider.provide())
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
                 .compose(new UnwrapRetrofitBodyTransformer<ProductListings, List<Product>>())
                 .compose(new FirstListItemOrDefaultTransformer<Product>())
@@ -112,6 +117,7 @@ final class ProductServiceDefault implements ProductService {
 
         return retrofitService
                 .getProducts(appId, productId)
+                .retryWhen(networkRetryPolicyProvider.provide())
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
                 .compose(new UnwrapRetrofitBodyTransformer<ProductListings, List<Product>>())
                 .compose(new FirstListItemOrDefaultTransformer<Product>())
@@ -140,6 +146,7 @@ final class ProductServiceDefault implements ProductService {
         final String queryString = TextUtils.join(",", productIds.toArray());
         return retrofitService
                 .getProducts(appId, queryString)
+                .retryWhen(networkRetryPolicyProvider.provide())
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
                 .compose(new UnwrapRetrofitBodyTransformer<ProductListings, List<Product>>())
                 .observeOn(callbackScheduler);
@@ -171,6 +178,7 @@ final class ProductServiceDefault implements ProductService {
 
         return retrofitService
                 .getProducts(appId, collectionId, pageSize, page, sortOrder.toString())
+                .retryWhen(networkRetryPolicyProvider.provide())
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
                 .compose(new UnwrapRetrofitBodyTransformer<ProductListings, List<Product>>())
                 .observeOn(callbackScheduler);
@@ -201,6 +209,7 @@ final class ProductServiceDefault implements ProductService {
         // For this call, we will clamp the size of the collection array returned to the page size
         return retrofitService
                 .getCollectionPage(appId, page, pageSize)
+                .retryWhen(networkRetryPolicyProvider.provide())
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
                 .compose(new UnwrapRetrofitBodyTransformer<CollectionListings, List<Collection>>())
                 .observeOn(callbackScheduler);

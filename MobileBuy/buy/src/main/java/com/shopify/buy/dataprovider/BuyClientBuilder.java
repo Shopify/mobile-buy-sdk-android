@@ -64,6 +64,12 @@ public final class BuyClientBuilder {
 
     private int productPageSize = DEFAULT_PAGE_SIZE;
 
+    private int networkRequestRetryMaxCount;
+
+    private long networkRequestRetryDelayMs;
+
+    private float networkRequestRetryBackoffMultiplier;
+
     /**
      * Sets store domain url (usually {store name}.myshopify.com
      */
@@ -151,6 +157,20 @@ public final class BuyClientBuilder {
     }
 
     /**
+     * Sets the configuration for retry logic in case network request failed (socket timeout, unknown host, etc.)
+     *
+     * @param networkRequestRetryMaxCount          max count of retry attempts
+     * @param networkRequestRetryDelayMs           delay between retry attempts
+     * @param networkRequestRetryBackoffMultiplier backoff multiplier for next request attempts, can be used for “exponential backoff”
+     */
+    public BuyClientBuilder networkRequestRetryPolicy(final int networkRequestRetryMaxCount, final long networkRequestRetryDelayMs, final float networkRequestRetryBackoffMultiplier) {
+        this.networkRequestRetryMaxCount = networkRequestRetryMaxCount;
+        this.networkRequestRetryDelayMs = networkRequestRetryDelayMs;
+        this.networkRequestRetryBackoffMultiplier = networkRequestRetryBackoffMultiplier;
+        return this;
+    }
+
+    /**
      * Builds default implementation of {@link BuyClient}
      */
     public BuyClient build() {
@@ -186,6 +206,9 @@ public final class BuyClientBuilder {
                 customerToken,
                 callbackScheduler,
                 productPageSize,
+                networkRequestRetryMaxCount,
+                networkRequestRetryDelayMs,
+                networkRequestRetryBackoffMultiplier,
                 interceptors
         );
     }

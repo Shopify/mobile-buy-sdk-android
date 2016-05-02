@@ -43,10 +43,17 @@ final class AddressServiceDefault implements AddressService {
 
     final AddressRetrofitService retrofitService;
 
+    final NetworkRetryPolicyProvider networkRetryPolicyProvider;
+
     final Scheduler callbackScheduler;
 
-    AddressServiceDefault(final Retrofit retrofit, final Scheduler callbackScheduler) {
+    AddressServiceDefault(
+            final Retrofit retrofit,
+            final NetworkRetryPolicyProvider networkRetryPolicyProvider,
+            final Scheduler callbackScheduler
+    ) {
         this.retrofitService = retrofit.create(AddressRetrofitService.class);
+        this.networkRetryPolicyProvider = networkRetryPolicyProvider;
         this.callbackScheduler = callbackScheduler;
     }
 
@@ -85,6 +92,7 @@ final class AddressServiceDefault implements AddressService {
 
         return retrofitService
                 .getAddresses(customer.getId())
+                .retryWhen(networkRetryPolicyProvider.provide())
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
                 .compose(new UnwrapRetrofitBodyTransformer<AddressesWrapper, List<Address>>())
                 .observeOn(callbackScheduler);
@@ -107,6 +115,7 @@ final class AddressServiceDefault implements AddressService {
 
         return retrofitService
                 .getAddress(customer.getId(), addressId)
+                .retryWhen(networkRetryPolicyProvider.provide())
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
                 .compose(new UnwrapRetrofitBodyTransformer<AddressWrapper, Address>())
                 .observeOn(callbackScheduler);

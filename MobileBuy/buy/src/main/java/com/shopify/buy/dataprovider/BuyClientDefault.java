@@ -84,6 +84,9 @@ final class BuyClientDefault implements BuyClient {
             final CustomerToken customerToken,
             final Scheduler callbackScheduler,
             final int productPageSize,
+            final int networkRequestRetryMaxCount,
+            final long networkRequestRetryDelayMs,
+            final float networkRequestRetryBackoffMultiplier,
             final Interceptor... interceptors
     ) {
         this.apiKey = apiKey;
@@ -129,12 +132,14 @@ final class BuyClientDefault implements BuyClient {
                 .client(httpClient)
                 .build();
 
-        storeService = new StoreServiceDefault(retrofit, callbackScheduler);
-        addressService = new AddressServiceDefault(retrofit, callbackScheduler);
-        checkoutService = new CheckoutServiceDefault(retrofit, apiKey, applicationName, completeCheckoutWebReturnUrl, completeCheckoutWebReturnLabel, callbackScheduler);
-        customerService = new CustomerServiceDefault(retrofit, customerToken, callbackScheduler);
-        orderService = new OrderServiceDefault(retrofit, callbackScheduler);
-        productService = new ProductServiceDefault(retrofit, appId, productPageSize, callbackScheduler);
+        final NetworkRetryPolicyProvider networkRetryPolicyProvider = new NetworkRetryPolicyProvider(networkRequestRetryMaxCount, networkRequestRetryDelayMs, networkRequestRetryBackoffMultiplier);
+
+        storeService = new StoreServiceDefault(retrofit, networkRetryPolicyProvider, callbackScheduler);
+        addressService = new AddressServiceDefault(retrofit, networkRetryPolicyProvider, callbackScheduler);
+        checkoutService = new CheckoutServiceDefault(retrofit, apiKey, applicationName, completeCheckoutWebReturnUrl, completeCheckoutWebReturnLabel, networkRetryPolicyProvider, callbackScheduler);
+        customerService = new CustomerServiceDefault(retrofit, customerToken, networkRetryPolicyProvider, callbackScheduler);
+        orderService = new OrderServiceDefault(retrofit, networkRetryPolicyProvider, callbackScheduler);
+        productService = new ProductServiceDefault(retrofit, appId, productPageSize, networkRetryPolicyProvider, callbackScheduler);
     }
 
     @Override
