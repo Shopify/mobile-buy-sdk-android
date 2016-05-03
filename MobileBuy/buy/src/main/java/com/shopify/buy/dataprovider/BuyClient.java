@@ -26,6 +26,7 @@ package com.shopify.buy.dataprovider;
 
 import android.text.TextUtils;
 import android.util.Base64;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.shopify.buy.BuildConfig;
@@ -93,6 +94,7 @@ import rx.schedulers.Schedulers;
  * All API methods presented here run asynchronously and return results via callback on the Main thread.
  */
 public class BuyClient {
+    private static final String LOG_TAG = BuyClient.class.getSimpleName();
 
     public static final int MAX_PAGE_SIZE = 250;
     public static final int MIN_PAGE_SIZE = 1;
@@ -256,6 +258,7 @@ public class BuyClient {
             digest = messageDigest.digest(androidPayPublicKey.getBytes("UTF-8"));
         } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
             // Do not enable Android Pay if the hash could not be computed
+            Log.e(LOG_TAG, "Could not enable Android Pay: " + e.getMessage());
             return;
         }
 

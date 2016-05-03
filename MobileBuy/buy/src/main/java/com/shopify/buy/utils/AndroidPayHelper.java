@@ -190,10 +190,10 @@ public class AndroidPayHelper {
     /**
      * Creates a Masked Wallet Request from a Shopify Checkout
      *
-     * @param merchantName The merchant name to show on the Android Pay dialogs, not null or empty
-     * @param checkout     The {@link Checkout} to use, not null.
-     * @param buyClient    The {@link BuyClient} to use, not null.  Must have previously had Android Pay enabled via {@link BuyClient#enableAndroidPay(String)}
-     * @param phoneNumberRequired If true, the phone number will be required
+     * @param merchantName        The merchant name to show on the Android Pay dialogs, not null or empty
+     * @param checkout            The {@link Checkout} to use, not null.
+     * @param buyClient           The {@link BuyClient} to use, not null.  Must have previously had Android Pay enabled via {@link BuyClient#enableAndroidPay(String)}
+     * @param phoneNumberRequired If true, the phone number will be required as part of the Shipping Address in Android Pay
      * @return A {@link MaskedWalletRequest}
      */
     public static MaskedWalletRequest createMaskedWalletRequest(String merchantName, Checkout checkout, BuyClient buyClient, boolean phoneNumberRequired) {
@@ -217,13 +217,13 @@ public class AndroidPayHelper {
                         .build();
 
         // Create a Wallet cart from our Checkout.
-        Cart walletCart = AndroidPayHelper.createWalletCart(checkout);
+        Cart walletCart = createWalletCart(checkout);
 
         // These settings should be updated to reflect the requirements of the app.
         // The merchant name will be shown on the top of the Android Pay dialogs
         return MaskedWalletRequest.newBuilder()
                 .setMerchantName(merchantName)
-                .setPhoneNumberRequired(true)
+                .setPhoneNumberRequired(phoneNumberRequired)
                 .setShippingAddressRequired(checkout.isRequiresShipping())
                 .setCurrencyCode(checkout.getCurrency())
                 .setEstimatedTotalPrice(checkout.getTotalPrice())
@@ -273,8 +273,8 @@ public class AndroidPayHelper {
             throw new NullPointerException("maskedWallet cannot be null");
         }
 
-        Address shippingAddress = AndroidPayHelper.createShopifyAddress(maskedWallet.getBuyerShippingAddress());
-        Address billingAddress = AndroidPayHelper.createShopifyAddress(maskedWallet.getBuyerBillingAddress());
+        Address shippingAddress = createShopifyAddress(maskedWallet.getBuyerShippingAddress());
+        Address billingAddress = createShopifyAddress(maskedWallet.getBuyerBillingAddress());
 
         // If the location has changed, we need to invalidate the shipping address
         if (!shippingAddress.locationsAreEqual(checkout.getShippingAddress())) {

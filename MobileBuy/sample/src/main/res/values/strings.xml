@@ -2,9 +2,6 @@
     <!-- Application and Activity Names -->
     <string name="app_name">Mobile Buy Sample</string>
 
-    <!-- Android Pay Public Key -->
-    <string name="android_pay_public_key"></string>
-
     <!-- UI -->
     <string name="please_wait">Please wait</string>
     <string name="loading_data">Loading data from store...</string>

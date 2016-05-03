@@ -102,9 +102,9 @@ public class AndroidPayCheckoutActivity extends SampleActivity implements Google
     private void createAndAddWalletFragment() {
 
         WalletFragmentStyle walletFragmentStyle = new WalletFragmentStyle()
-               .setMaskedWalletDetailsHeaderTextAppearance(R.style.SampleWalletFragmentDetailsHeaderTextAppearance)
-               .setMaskedWalletDetailsTextAppearance(R.style.SampleWalletFragmentDetailsTextAppearance)
-               .setMaskedWalletDetailsBackgroundColor(android.R.color.white);
+                .setMaskedWalletDetailsHeaderTextAppearance(R.style.SampleWalletFragmentDetailsHeaderTextAppearance)
+                .setMaskedWalletDetailsTextAppearance(R.style.SampleWalletFragmentDetailsTextAppearance)
+                .setMaskedWalletDetailsBackgroundColor(android.R.color.white);
 
         WalletFragmentOptions walletFragmentOptions = WalletFragmentOptions.newBuilder()
                 .setEnvironment(SampleApplication.WALLET_ENVIRONMENT)
@@ -139,8 +139,6 @@ public class AndroidPayCheckoutActivity extends SampleActivity implements Google
                 if (resultCode == Activity.RESULT_OK &&
                         data.hasExtra(WalletConstants.EXTRA_MASKED_WALLET)) {
                     MaskedWallet maskedWallet = data.getParcelableExtra(WalletConstants.EXTRA_MASKED_WALLET);
-                    getSampleApplication().setMaskedWallet(maskedWallet);
-
                     updateCheckoutWithMaskedWallet(maskedWallet);
                 }
                 break;
