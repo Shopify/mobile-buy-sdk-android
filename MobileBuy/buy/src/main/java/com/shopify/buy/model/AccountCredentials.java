@@ -53,11 +53,14 @@ public class AccountCredentials {
     }
 
     public AccountCredentials(String email, String password, String firstName, String lastName) {
+        this(email, password, password, firstName, lastName);
+    }
+
+    public AccountCredentials(String email, String password, String passwordConfirmation, String firstName, String lastName) {
         this.email = email;
         this.password = password;
-        this.passwordConfirmation = password;
+        this.passwordConfirmation = passwordConfirmation;
         this.firstName = firstName;
         this.lastName = lastName;
     }
-
 }
