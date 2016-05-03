@@ -212,6 +212,10 @@ public class AndroidPayHelper {
             throw new IllegalArgumentException("merchantName cannot be empty");
         }
 
+        if (!buyClient.androidPayIsEnabled()) {
+            throw new IllegalArgumentException("buyClient must have Android Pay enabled");
+        }
+
         // Create the parameters that will be used for encrypting Network Tokens.
         PaymentMethodTokenizationParameters parameters =
                 PaymentMethodTokenizationParameters.newBuilder()
@@ -220,7 +224,7 @@ public class AndroidPayHelper {
                         .build();
 
         // Create a Wallet cart from our Checkout.
-        Cart walletCart = AndroidPayHelper.createWalletCart(checkout);
+        Cart walletCart = createWalletCart(checkout);
 
         // These settings should be updated to reflect the requirements of the app.
         // The merchant name will be shown on the top of the Android Pay dialogs
@@ -276,8 +280,8 @@ public class AndroidPayHelper {
             throw new NullPointerException("maskedWallet cannot be null");
         }
 
-        Address shippingAddress = AndroidPayHelper.createShopifyAddress(maskedWallet.getBuyerShippingAddress());
-        Address billingAddress = AndroidPayHelper.createShopifyAddress(maskedWallet.getBuyerBillingAddress());
+        Address shippingAddress = createShopifyAddress(maskedWallet.getBuyerShippingAddress());
+        Address billingAddress = createShopifyAddress(maskedWallet.getBuyerBillingAddress());
 
         // If the location has changed, we need to invalidate the shipping address
         if (!shippingAddress.locationsAreEqual(checkout.getShippingAddress())) {
