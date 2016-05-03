@@ -1,8 +1,7 @@
-
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2015 Shopify
+ * Copyright (c) 2015 Shopify Inc.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,23 +20,29 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
- *
  */
 
-package com.shopify.buy.extensions;
+package com.shopify.buy.model.internal;
 
-import com.shopify.buy.model.GiftCard;
 
-/**
- * Wrapper to expose private members for testing
- */
-public class GiftCardPrivateAPIs extends GiftCard {
+import com.google.gson.annotations.SerializedName;
 
-    public void setId(String id) {
-        this.id = id;
-    }
+public class PaymentToken {
 
-    public GiftCardPrivateAPIs(String code) {
-        super(code);
+    @SerializedName("payment_data")
+    private String paymentData;
+
+    private String type;
+
+    // Empty constructor required by GSON
+    protected PaymentToken() {}
+
+    @SerializedName("identifier")
+    private String identifier;
+
+    public PaymentToken(String paymentData, String type, String publicKeyHash) {
+        this.paymentData = paymentData;
+        this.type = type;
+        this.identifier = publicKeyHash;
     }
 }

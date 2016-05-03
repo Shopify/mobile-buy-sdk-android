@@ -36,7 +36,6 @@ import com.shopify.buy.model.Checkout.CheckoutSerializer;
 import com.shopify.buy.model.Customer;
 import com.shopify.buy.model.Customer.CustomerDeserializer;
 import com.shopify.buy.model.CustomerToken;
-import com.shopify.buy.model.internal.CustomerWrapper;
 import com.shopify.buy.model.Product;
 import com.shopify.buy.model.Product.ProductDeserializer;
 import com.shopify.buy.utils.DateUtility;

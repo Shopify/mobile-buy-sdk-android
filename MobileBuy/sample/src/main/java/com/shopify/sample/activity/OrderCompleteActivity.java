@@ -1,8 +1,7 @@
-
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2015 Shopify
+ * Copyright (c) 2016 Shopify
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,20 +23,25 @@
  *
  */
 
-package com.shopify.buy.extensions;
+package com.shopify.sample.activity;
 
-import com.shopify.buy.model.GiftCard;
+import android.app.Activity;
+import android.os.Bundle;
+
+import com.shopify.sample.R;
 
 /**
- * Wrapper to expose private members for testing
+ *  This Activity shows the details for the completed order.
+ *  Any information relevant to the order, such as shipping date or order number
+ *  should be displayed here.
+ *
  */
-public class GiftCardPrivateAPIs extends GiftCard {
+public class OrderCompleteActivity extends Activity {
 
-    public void setId(String id) {
-        this.id = id;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.order_complete_activity);
     }
 
-    public GiftCardPrivateAPIs(String code) {
-        super(code);
-    }
 }

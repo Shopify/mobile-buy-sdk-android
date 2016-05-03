@@ -31,6 +31,9 @@ import android.net.Uri;
 import android.text.TextUtils;
 import android.widget.Toast;
 
+import com.google.android.gms.wallet.FullWallet;
+import com.google.android.gms.wallet.MaskedWallet;
+import com.google.android.gms.wallet.WalletConstants;
 import com.shopify.buy.dataprovider.BuyClient;
 import com.shopify.buy.dataprovider.BuyClientFactory;
 import com.shopify.buy.model.Address;
@@ -44,6 +47,7 @@ import com.shopify.buy.model.ShippingRate;
 import com.shopify.buy.model.Shop;
 import com.shopify.buy.ui.ProductDetailsBuilder;
 import com.shopify.buy.ui.ProductDetailsTheme;
+import com.shopify.buy.utils.AndroidPayHelper;
 import com.shopify.sample.BuildConfig;
 import com.shopify.sample.R;
 
@@ -61,6 +65,13 @@ public class SampleApplication extends Application {
     private BuyClient buyClient;
     private Checkout checkout;
     private Shop shop;
+
+    private MaskedWallet maskedWallet;
+
+    public static final String ANDROID_PAY_FLOW = "com.shopify.sample.androidpayflow";
+
+    // Use ENVIRONMENT_TEST for testing
+    public static final int WALLET_ENVIRONMENT = WalletConstants.ENVIRONMENT_TEST;
 
     @Override
     public void onCreate() {
@@ -103,6 +114,12 @@ public class SampleApplication extends Application {
                 Toast.makeText(SampleApplication.this, R.string.shop_error, Toast.LENGTH_LONG).show();
             }
         });
+
+        // Enable Android Pay if we have a public key
+        String androidPayPublicKey = BuildConfig.ANDROID_PAY_PUBLIC_KEY;
+        if (!TextUtils.isEmpty(androidPayPublicKey)) {
+            buyClient.enableAndroidPay(androidPayPublicKey);
+        }
     }
 
     public void getCollections(final Callback<List<Collection>> callback) {
@@ -117,7 +134,7 @@ public class SampleApplication extends Application {
             public void success(List<Product> products, Response response) {
                 if (products.size() > 0) {
                     allProducts.addAll(products);
-                    getAllProducts(page + 1, allProducts, callback );
+                    getAllProducts(page + 1, allProducts, callback);
                 } else {
                     callback.success(allProducts, response);
                 }
@@ -138,6 +155,8 @@ public class SampleApplication extends Application {
     /**
      * Create a new checkout with the selected product. For convenience in the sample app we will hardcode the user's shipping address.
      * The shipping rates fetched in ShippingRateListActivity will be for this address.
+     * <p/>
+     * For the Android Pay Checkout, we will replace this with the address and email returned in the {@link MaskedWallet}
      *
      * @param product
      * @param callback
@@ -164,6 +183,19 @@ public class SampleApplication extends Application {
         checkout.setWebReturnToLabel(getString(R.string.web_return_to_label));
 
         buyClient.createCheckout(checkout, wrapCheckoutCallback(callback));
+    }
+
+    /**
+     * Update a checkout.
+     */
+    public void updateCheckout(final Checkout checkout, final Callback<Checkout> callback) {
+        buyClient.updateCheckout(checkout, wrapCheckoutCallback(callback));
+    }
+
+    public void updateCheckout(final Checkout checkout, MaskedWallet maskedWallet, final Callback<Checkout> callback) {
+        // Update the checkout with the Address information in the Masked Wallet
+        AndroidPayHelper.updateCheckoutAddressAndEmail(checkout, maskedWallet);
+        updateCheckout(checkout, callback);
     }
 
     public String getCartPermalink() {
@@ -202,6 +234,22 @@ public class SampleApplication extends Application {
         return checkout;
     }
 
+    public BuyClient getBuyClient() {
+        return buyClient;
+    }
+
+    public Shop getShop() {
+        return shop;
+    }
+
+    public MaskedWallet getMaskedWallet() {
+        return maskedWallet;
+    }
+
+    public void setMaskedWallet(MaskedWallet maskedWallet) {
+        this.maskedWallet = maskedWallet;
+    }
+
     public void getShippingRates(final Callback<List<ShippingRate>> callback) {
         buyClient.getShippingRates(checkout.getToken(), callback);
     }
@@ -227,6 +275,10 @@ public class SampleApplication extends Application {
 
     public void completeCheckout(final Callback<Checkout> callback) {
         buyClient.completeCheckout(checkout, wrapCheckoutCallback(callback));
+    }
+
+    public void completeCheckout(FullWallet fullWallet, final Callback<Checkout> callback) {
+        buyClient.completeCheckout(fullWallet.getPaymentMethodToken().getToken(), checkout, wrapCheckoutCallback(callback));
     }
 
     public void getCheckoutCompletionStatus(final Callback<Boolean> callback) {

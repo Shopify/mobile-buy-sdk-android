@@ -24,6 +24,8 @@
 
 package com.shopify.buy.model;
 
+import android.text.TextUtils;
+
 import com.google.gson.annotations.SerializedName;
 
 /**
@@ -199,34 +201,75 @@ public class Address extends ShopifyObject {
         this.zip = zip;
     }
 
+    /**
+     * Compares the location portion the address for equality
+     *
+     * @param otherAddress The address to compare to
+     * @return true if the address lines, city, country code, province code, and zip are equivalent
+     */
+    public boolean locationsAreEqual(Address otherAddress) {
+
+        if (this == otherAddress) {
+            return true;
+        }
+
+        if (!TextUtils.equals(address1, otherAddress.address1)) {
+            return false;
+        }
+
+        if (!TextUtils.equals(address2, otherAddress.address2)) {
+            return false;
+        }
+
+        if (!TextUtils.equals(city, otherAddress.city)) {
+            return false;
+        }
+
+        if (!TextUtils.equals(countryCode, otherAddress.countryCode)) {
+            return false;
+        }
+
+        if (!TextUtils.equals(provinceCode, otherAddress.provinceCode)) {
+            return false;
+        }
+
+        if (!TextUtils.equals(zip, otherAddress.zip)) {
+            return false;
+        }
+
+        return true;
+    }
+
     @Override
     public boolean equals(Object o) {
+
         if (this == o) return true;
+
         if (!(o instanceof Address)) return false;
 
         Address address = (Address) o;
 
-        if (address1 != null ? !address1.equals(address.address1) : address.address1 != null)
+        if (!locationsAreEqual(address)) {
             return false;
-        if (address2 != null ? !address2.equals(address.address2) : address.address2 != null)
+        }
+
+        if (!TextUtils.equals(company, address.company)) {
             return false;
-        if (city != null ? !city.equals(address.city) : address.city != null) return false;
-        if (company != null ? !company.equals(address.company) : address.company != null)
+        }
+
+        if (!TextUtils.equals(firstName, address.firstName)) {
             return false;
-        if (firstName != null ? !firstName.equals(address.firstName) : address.firstName != null)
+        }
+
+        if (!TextUtils.equals(lastName, address.lastName)) {
             return false;
-        if (lastName != null ? !lastName.equals(address.lastName) : address.lastName != null)
+        }
+
+        if (!TextUtils.equals(phone, address.phone)) {
             return false;
-        if (phone != null ? !phone.equals(address.phone) : address.phone != null) return false;
-        if (country != null ? !country.equals(address.country) : address.country != null)
-            return false;
-        if (countryCode != null ? !countryCode.equals(address.countryCode) : address.countryCode != null)
-            return false;
-        if (province != null ? !province.equals(address.province) : address.province != null)
-            return false;
-        if (provinceCode != null ? !provinceCode.equals(address.provinceCode) : address.provinceCode != null)
-            return false;
-        return !(zip != null ? !zip.equals(address.zip) : address.zip != null);
+        }
+
+        return true;
     }
 
 }

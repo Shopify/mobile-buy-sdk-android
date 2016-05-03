@@ -34,6 +34,7 @@ import com.shopify.buy.model.internal.CustomerTokenWrapper;
 import com.shopify.buy.model.internal.CustomerWrapper;
 import com.shopify.buy.model.internal.EmailWrapper;
 import com.shopify.buy.model.internal.GiftCardWrapper;
+import com.shopify.buy.model.internal.PaymentTokenWrapper;
 import com.shopify.buy.model.internal.OrderWrapper;
 import com.shopify.buy.model.internal.OrdersWrapper;
 import com.shopify.buy.model.internal.ProductPublication;
@@ -98,6 +99,9 @@ interface BuyRetrofitService {
 
     @POST("/api/checkouts/{token}/complete.json")
     void completeCheckout(@Body HashMap<String, String> paymentSessionIdMap, @Path("token") String token, Callback<CheckoutWrapper> callback);
+
+    @POST("/anywhere/checkouts/{token}/complete.json")
+    void  completeCheckout(@Body PaymentTokenWrapper paymentTokenWrapper, @Path("token") String token, Callback<CheckoutWrapper> callback);
 
     @GET("/api/checkouts/{token}/processing.json")
     void getCheckoutCompletionStatus(@Path("token") String token, ResponseCallback callback);
