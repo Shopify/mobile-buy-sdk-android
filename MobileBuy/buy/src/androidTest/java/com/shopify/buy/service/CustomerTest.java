@@ -504,7 +504,6 @@ public class CustomerTest extends ShopifyAndroidTestCase {
             @Override
             public void success(Customer customer, Response response) {
                 fail("Should not be able to create multiple accounts with same email");
-                countDownLatch.countDown();
             }
 
             @Override
@@ -513,6 +512,7 @@ public class CustomerTest extends ShopifyAndroidTestCase {
                 } else {
                     fail(String.format("Should be getting email already taken error. \nGot \"%s\"", error.getMessage()));
                 }
+                countDownLatch.countDown();
             }
         });
 
@@ -535,7 +535,6 @@ public class CustomerTest extends ShopifyAndroidTestCase {
             @Override
             public void failure(RetrofitError error) {
                 assertEquals(401, error.getResponse().getStatus());
-                assertEquals("Unauthorized", error.getMessage());
                 countDownLatch.countDown();
             }
         });
@@ -544,7 +543,7 @@ public class CustomerTest extends ShopifyAndroidTestCase {
     }
 
     public void testCreateCustomerInvalidEmailPassword() throws InterruptedException {
-        final AccountCredentials accountCredentials = new AccountCredentials(MALFORMED_EMAIL, WRONG_PASSWORD, OTHER_WRONG_PASSWORD, FIRSTNAME, LASTNAME);
+        final AccountCredentials accountCredentials = new AccountCredentials(generateRandomString(), WRONG_PASSWORD, OTHER_WRONG_PASSWORD, FIRSTNAME, LASTNAME);
 
         final CountDownLatch countDownLatch = new CountDownLatch(1);
 
@@ -560,23 +559,20 @@ public class CustomerTest extends ShopifyAndroidTestCase {
                 List<BuyError> buyErrors = BuyError.errorsForCustomer(error);
                 assertEquals(3, buyErrors.size());
 
+
                 BuyError passwordTooShort = buyErrors.get(0);
                 assertEquals(passwordTooShort.getCode(), "too_short");
                 assertEquals(passwordTooShort.getMessage(), "is too short (minimum is 5 characters)");
-                assertEquals(1, passwordTooShort.getOptions().size());
 
                 BuyError confirmationMatch = buyErrors.get(1);
                 assertEquals(confirmationMatch.getCode(), "confirmation");
-                assertEquals(confirmationMatch.getMessage(), "doesn't match Password");
-                assertEquals(1, confirmationMatch.getOptions().size());
+                assertEquals(confirmationMatch.getMessage(), "must match the provided password.");
 
                 BuyError invalidEmail = buyErrors.get(2);
                 assertEquals(invalidEmail.getCode(), "invalid");
                 assertEquals(invalidEmail.getMessage(), "is invalid");
-                assertEquals(0, invalidEmail.getOptions().size());
 
                 assertEquals(422, error.getResponse().getStatus());
-                assertEquals("Unprocessable Entity", error.getMessage());
 
                 countDownLatch.countDown();
             }
