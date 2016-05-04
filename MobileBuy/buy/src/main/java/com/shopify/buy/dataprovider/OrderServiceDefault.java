@@ -44,10 +44,17 @@ final class OrderServiceDefault implements OrderService {
 
     final OrderRetrofitService retrofitService;
 
+    final NetworkRetryPolicyProvider networkRetryPolicyProvider;
+
     final Scheduler callbackScheduler;
 
-    OrderServiceDefault(final Retrofit retrofit, final Scheduler callbackScheduler) {
+    OrderServiceDefault(
+            final Retrofit retrofit,
+            final NetworkRetryPolicyProvider networkRetryPolicyProvider,
+            final Scheduler callbackScheduler
+    ) {
         this.retrofitService = retrofit.create(OrderRetrofitService.class);
+        this.networkRetryPolicyProvider = networkRetryPolicyProvider;
         this.callbackScheduler = callbackScheduler;
     }
 
@@ -64,6 +71,7 @@ final class OrderServiceDefault implements OrderService {
 
         return retrofitService
                 .getOrders(customer.getId())
+                .retryWhen(networkRetryPolicyProvider.provide())
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
                 .compose(new UnwrapRetrofitBodyTransformer<OrdersWrapper, List<Order>>())
                 .observeOn(callbackScheduler);
@@ -86,6 +94,7 @@ final class OrderServiceDefault implements OrderService {
 
         return retrofitService
                 .getOrder(customer.getId(), orderId)
+                .retryWhen(networkRetryPolicyProvider.provide())
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
                 .compose(new UnwrapRetrofitBodyTransformer<OrderWrapper, Order>())
                 .observeOn(callbackScheduler);

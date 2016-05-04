@@ -35,10 +35,17 @@ final class StoreServiceDefault implements StoreService {
 
     final StoreRetrofitService retrofitService;
 
+    final NetworkRetryPolicyProvider networkRetryPolicyProvider;
+
     final Scheduler callbackScheduler;
 
-    public StoreServiceDefault(final Retrofit retrofit, final Scheduler callbackScheduler) {
+    StoreServiceDefault(
+            final Retrofit retrofit,
+            final NetworkRetryPolicyProvider networkRetryPolicyProvider,
+            final Scheduler callbackScheduler
+    ) {
         this.retrofitService = retrofit.create(StoreRetrofitService.class);
+        this.networkRetryPolicyProvider = networkRetryPolicyProvider;
         this.callbackScheduler = callbackScheduler;
     }
 
@@ -51,6 +58,7 @@ final class StoreServiceDefault implements StoreService {
     public Observable<Shop> getShop() {
         return retrofitService
                 .getShop()
+                .retryWhen(networkRetryPolicyProvider.provide())
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
                 .map(new Func1<Response<Shop>, Shop>() {
                     @Override
@@ -60,4 +68,6 @@ final class StoreServiceDefault implements StoreService {
                 })
                 .observeOn(callbackScheduler);
     }
+
+
 }

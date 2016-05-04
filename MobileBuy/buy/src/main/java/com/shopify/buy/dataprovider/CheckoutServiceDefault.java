@@ -63,6 +63,8 @@ final class CheckoutServiceDefault implements CheckoutService {
 
     final String webReturnToLabel;
 
+    final NetworkRetryPolicyProvider networkRetryPolicyProvider;
+
     final Scheduler callbackScheduler;
 
     CheckoutServiceDefault(
@@ -71,6 +73,7 @@ final class CheckoutServiceDefault implements CheckoutService {
             final String applicationName,
             final String webReturnToUrl,
             final String webReturnToLabel,
+            final NetworkRetryPolicyProvider networkRetryPolicyProvider,
             final Scheduler callbackScheduler
     ) {
         this.retrofitService = retrofit.create(CheckoutRetrofitService.class);
@@ -78,6 +81,7 @@ final class CheckoutServiceDefault implements CheckoutService {
         this.applicationName = applicationName;
         this.webReturnToUrl = webReturnToUrl;
         this.webReturnToLabel = webReturnToLabel;
+        this.networkRetryPolicyProvider = networkRetryPolicyProvider;
         this.callbackScheduler = callbackScheduler;
     }
 
@@ -150,6 +154,7 @@ final class CheckoutServiceDefault implements CheckoutService {
 
         return retrofitService
                 .getShippingRates(checkoutToken)
+                .retryWhen(networkRetryPolicyProvider.provide())
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
                 .compose(new UnwrapRetrofitBodyTransformer<ShippingRatesWrapper, List<ShippingRate>>())
                 .observeOn(callbackScheduler);
@@ -223,6 +228,7 @@ final class CheckoutServiceDefault implements CheckoutService {
 
         return retrofitService
                 .getCheckout(checkoutToken)
+                .retryWhen(networkRetryPolicyProvider.provide())
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
                 .compose(new UnwrapRetrofitBodyTransformer<CheckoutWrapper, Checkout>())
                 .observeOn(callbackScheduler);

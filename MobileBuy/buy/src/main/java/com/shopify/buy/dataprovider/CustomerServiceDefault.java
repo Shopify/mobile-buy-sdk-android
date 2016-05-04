@@ -49,6 +49,8 @@ final class CustomerServiceDefault implements CustomerService {
 
     final CustomerRetrofitService retrofitService;
 
+    final NetworkRetryPolicyProvider networkRetryPolicyProvider;
+
     final Scheduler callbackScheduler;
 
     CustomerToken customerToken;
@@ -56,10 +58,12 @@ final class CustomerServiceDefault implements CustomerService {
     CustomerServiceDefault(
             final Retrofit retrofit,
             final CustomerToken customerToken,
+            final NetworkRetryPolicyProvider networkRetryPolicyProvider,
             final Scheduler callbackScheduler
     ) {
         this.retrofitService = retrofit.create(CustomerRetrofitService.class);
         this.customerToken = customerToken;
+        this.networkRetryPolicyProvider = networkRetryPolicyProvider;
         this.callbackScheduler = callbackScheduler;
     }
 
@@ -153,6 +157,7 @@ final class CustomerServiceDefault implements CustomerService {
         final AccountCredentialsWrapper accountCredentialsWrapper = new AccountCredentialsWrapper(accountCredentials);
         return retrofitService
                 .getCustomerToken(accountCredentialsWrapper)
+                .retryWhen(networkRetryPolicyProvider.provide())
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
                 .compose(new UnwrapRetrofitBodyTransformer<CustomerTokenWrapper, CustomerToken>())
                 .doOnNext(new Action1<CustomerToken>() {
@@ -177,6 +182,7 @@ final class CustomerServiceDefault implements CustomerService {
 
         return retrofitService
                 .removeCustomerToken(customerToken.getCustomerId())
+                .retryWhen(networkRetryPolicyProvider.provide())
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
                 .map(new Func1<Response<Void>, Void>() {
                     @Override
@@ -224,6 +230,7 @@ final class CustomerServiceDefault implements CustomerService {
 
         return retrofitService
                 .getCustomer(customerId)
+                .retryWhen(networkRetryPolicyProvider.provide())
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
                 .compose(new UnwrapRetrofitBodyTransformer<CustomerWrapper, Customer>())
                 .observeOn(callbackScheduler);
