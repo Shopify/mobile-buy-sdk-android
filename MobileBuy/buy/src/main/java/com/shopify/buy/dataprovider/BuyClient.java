@@ -172,7 +172,7 @@ public class BuyClient {
                 .setEndpoint("https://" + shopDomain)
                 .setConverter(new GsonConverter(BuyClientFactory.createDefaultGson()))
                 .setClient(new OkClient(httpClient))
-                .setLogLevel(BuildConfig.RETROFIT_LOG_LEVEL)
+                .setLogLevel(RestAdapter.LogLevel.FULL)
                 .setRequestInterceptor(requestInterceptor)
                 .build();
 
@@ -1228,7 +1228,7 @@ public class BuyClient {
             return "null";
         }
         try {
-            return new String(((TypedByteArray) error.getResponse().getBody()).getBytes());
+            return "HTTP code: " + error.getResponse().getStatus() + " HTTP body: " + new String(((TypedByteArray) error.getResponse().getBody()).getBytes());
         } catch (Throwable e) {
             // ignore
         }
