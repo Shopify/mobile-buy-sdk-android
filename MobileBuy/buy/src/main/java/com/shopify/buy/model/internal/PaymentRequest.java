@@ -25,33 +25,20 @@
 package com.shopify.buy.model.internal;
 
 import com.google.gson.annotations.SerializedName;
-import com.shopify.buy.model.Address;
-import com.shopify.buy.model.CreditCard;
+
+import java.util.HashMap;
 
 /**
- * Created by agodding on 14-10-23.
- *
- * Internal structure used to serialize data for creating a payment session
+ * Represents the token object associated with a payment request
  */
-public class PaymentSessionCheckout {
+public class PaymentRequest {
 
-    private String token;
+    @SerializedName("source")
+    private HashMap<String, String> paymentSessionIdMap;
 
-    @SerializedName("credit_card")
-    private CreditCard creditCard;
-
-    @SerializedName("billing_address")
-    private Address billingAddress;
-
-    public void setToken(String token) {
-        this.token = token;
+    public PaymentRequest(String paymentSessionId) {
+        paymentSessionIdMap = new HashMap<>();
+        paymentSessionIdMap.put("session_id", paymentSessionId);
     }
 
-    public void setCreditCard(CreditCard creditCard) {
-        this.creditCard = creditCard;
-    }
-
-    public void setBillingAddress(Address billingAddress) {
-        this.billingAddress = billingAddress;
-    }
 }

@@ -41,10 +41,7 @@ import com.shopify.buy.model.Checkout;
 import com.shopify.buy.model.ShippingRate;
 import com.shopify.sample.application.SampleApplication;
 
-import java.net.HttpURLConnection;
 import java.util.List;
-
-import retrofit2.Response;
 
 /**
  * If the selected product requires shipping, this activity allows the user to select a list of shipping rates.
@@ -86,35 +83,16 @@ public class ShippingRateListActivity extends SampleListActivity {
     private void fetchShippingRates() {
         getSampleApplication().getShippingRates(new Callback<List<ShippingRate>>() {
             @Override
-            public void success(List<ShippingRate> shippingRates, Response response) {
-                if (response.code() == HttpURLConnection.HTTP_ACCEPTED) {
-
-                    // Poll until the server either fails or returns HttpStatus.SC_ACCEPTED
-                    pollingHandler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            fetchShippingRates();
-                        }
-                    }, POLL_DELAY);
-
-                } else if (response.code() == HttpURLConnection.HTTP_OK) {
-                    isFetching = false;
-
-                    // The application should surface to the user that their items cannot be shipped to that location
-                    if (shippingRates.size() == 0) {
-                        Toast.makeText(ShippingRateListActivity.this, R.string.no_shipping_rates, Toast.LENGTH_LONG).show();
-                        finish();
-                        return;
-                    }
-
-                    onFetchedShippingRates(shippingRates);
-
-                } else {
-                    isFetching = false;
-
-                    // Handle error
-                    onError(response.message());
+            public void success(List<ShippingRate> shippingRates) {
+                isFetching = false;
+                // The application should surface to the user that their items cannot be shipped to that location
+                if (shippingRates.size() == 0) {
+                    Toast.makeText(ShippingRateListActivity.this, R.string.no_shipping_rates, Toast.LENGTH_LONG).show();
+                    finish();
+                    return;
                 }
+
+                onFetchedShippingRates(shippingRates);
             }
 
             @Override
@@ -170,7 +148,7 @@ public class ShippingRateListActivity extends SampleListActivity {
 
         getSampleApplication().setShippingRate(shippingRate, new Callback<Checkout>() {
             @Override
-            public void success(Checkout checkout, Response response) {
+            public void success(Checkout checkout) {
                 dismissLoadingDialog();
 
                 if (isAndroidPayFlow) {

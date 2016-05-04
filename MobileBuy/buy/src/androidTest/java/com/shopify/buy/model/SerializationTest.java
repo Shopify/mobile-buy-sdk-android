@@ -3,8 +3,7 @@ package com.shopify.buy.model;
 import android.support.test.runner.AndroidJUnit4;
 
 import com.google.gson.Gson;
-import com.shopify.buy.dataprovider.BuyClient;
-import com.shopify.buy.dataprovider.BuyClientFactory;
+import com.shopify.buy.dataprovider.BuyClientUtils;
 import com.shopify.buy.dataprovider.Callback;
 import com.shopify.buy.dataprovider.RetrofitError;
 import com.shopify.buy.extensions.ShopifyAndroidTestCase;
@@ -15,8 +14,6 @@ import org.junit.runner.RunWith;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.concurrent.CountDownLatch;
-
-import retrofit2.Response;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.fail;
@@ -32,7 +29,7 @@ public class SerializationTest extends ShopifyAndroidTestCase {
         final CountDownLatch latch = new CountDownLatch(1);
         buyClient.getProduct(data.getProductId(), new Callback<Product>() {
             @Override
-            public void success(Product product, Response response) {
+            public void success(Product product) {
                 assertSerializable(product);
 
                 Cart cart = new Cart();
@@ -44,7 +41,7 @@ public class SerializationTest extends ShopifyAndroidTestCase {
 
             @Override
             public void failure(RetrofitError error) {
-                fail(BuyClient.getErrorBody(error));
+                fail(BuyClientUtils.getErrorBody(error));
             }
         });
         latch.await();
@@ -55,7 +52,7 @@ public class SerializationTest extends ShopifyAndroidTestCase {
         final CountDownLatch latch = new CountDownLatch(1);
         buyClient.getShop(new Callback<Shop>() {
             @Override
-            public void success(Shop shop, Response response) {
+            public void success(Shop shop) {
                 assertSerializable(shop);
                 latch.countDown();
             }
@@ -96,7 +93,7 @@ public class SerializationTest extends ShopifyAndroidTestCase {
     }
 
     private Object serializeAndDeserialize(Object obj) {
-        Gson gson = BuyClientFactory.createDefaultGson();
+        Gson gson = BuyClientUtils.createDefaultGson();
         String json = gson.toJson(obj);
         return gson.fromJson(json, obj.getClass());
     }

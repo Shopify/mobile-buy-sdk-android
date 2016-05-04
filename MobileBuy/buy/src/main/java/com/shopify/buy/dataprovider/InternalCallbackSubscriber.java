@@ -21,21 +21,34 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+package com.shopify.buy.dataprovider;
 
-package com.shopify.buy.model.internal;
+import rx.Subscriber;
 
-/**
- * Represents a payment session for use with Shopify Payments
- */
-public class PaymentSession {
+final class InternalCallbackSubscriber<T> extends Subscriber<T> {
 
-    private String id;
+    final Callback<T> callback;
 
-    public String getId() {
-        return id;
+    InternalCallbackSubscriber(final Callback<T> callback) {
+        this.callback = callback;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    @Override
+    public void onCompleted() {
+        // Do nothing
+    }
+
+    @Override
+    public void onNext(final T response) {
+        callback.success(response);
+    }
+
+    @Override
+    public void onError(final Throwable t) {
+        if (t instanceof RetrofitError) {
+            callback.failure((RetrofitError) t);
+        } else {
+            callback.failure(RetrofitError.exception(new Exception(t)));
+        }
     }
 }

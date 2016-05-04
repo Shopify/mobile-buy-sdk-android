@@ -24,14 +24,27 @@
 
 package com.shopify.buy.model.internal;
 
+import com.google.gson.annotations.SerializedName;
+import com.shopify.buy.model.Payment;
+
 /**
- * Wrapper used by Gson for serialization of {@link PaymentSessionCheckout}
+ * Wrapper class used by Gson Serialization
  */
-public class PaymentSessionCheckoutWrapper {
+public class PaymentWrapper implements ResponseWrapper<Payment> {
 
-    private PaymentSessionCheckout checkout;
+    @SerializedName("payment")
+    private Payment payment;
 
-    public void setCheckout(PaymentSessionCheckout checkout) {
-        this.checkout = checkout;
+    public PaymentWrapper(Payment payment) {
+        this.payment = payment;
+    }
+
+    public Payment getPayment() {
+        return payment;
+    }
+
+    @Override
+    public Payment getContent() {
+        return payment;
     }
 }

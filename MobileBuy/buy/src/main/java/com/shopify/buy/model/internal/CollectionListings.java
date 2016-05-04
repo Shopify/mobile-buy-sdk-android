@@ -32,7 +32,7 @@ import java.util.List;
 /**
  * Wrapper class used by Gson Serialization
  */
-public class CollectionListings {
+public class CollectionListings implements ResponseWrapper<List<Collection>> {
 
     @SerializedName("collection_listings")
     private List<Collection> collections;
@@ -41,4 +41,8 @@ public class CollectionListings {
         return collections;
     }
 
+    @Override
+    public List<Collection> getContent() {
+        return collections;
+    }
 }

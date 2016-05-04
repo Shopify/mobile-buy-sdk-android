@@ -13,6 +13,8 @@ android {
     }
     buildTypes {
         all {
+            buildConfigField 'okhttp3.logging.HttpLoggingInterceptor.Level', 'OKHTTP_LOG_LEVEL', 'okhttp3.logging.HttpLoggingInterceptor.Level.BODY'
+
             // We pull the shop settings either from the Environment or a file called shop.properties at the root of the project.
             // Environment variables will take precedence, we will attempt to read those first.
             def shopDomain

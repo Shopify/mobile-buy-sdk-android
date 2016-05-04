@@ -52,11 +52,11 @@ public class ProductDetailsBuilder {
     }
 
     /**
-     * Constructor that will use an existing {@link BuyClient} to configure the {@link ProductDetailsActivity}.
+     * Constructor that will use an existing {@link BuyClientImpl} to configure the {@link ProductDetailsActivity}.
      * If this constructor is user, {@link #setProductId(String)} must be called.
      *
      * @param context context to use for launching the {@code Activity}
-     * @param client  the {@link BuyClient} to use to configure the ProductDetailsActivity
+     * @param client  the {@link BuyClientImpl} to use to configure the ProductDetailsActivity
      */
     public ProductDetailsBuilder(Context context, BuyClient client) {
         this.context = context;

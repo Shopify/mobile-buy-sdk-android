@@ -3,8 +3,8 @@ package com.shopify.buy.service;
 import android.support.test.runner.AndroidJUnit4;
 
 import com.shopify.buy.data.TestData;
-import com.shopify.buy.dataprovider.BuyClient;
-import com.shopify.buy.dataprovider.BuyClientFactory;
+import com.shopify.buy.dataprovider.BuyClientBuilder;
+import com.shopify.buy.dataprovider.BuyClientUtils;
 import com.shopify.buy.dataprovider.Callback;
 import com.shopify.buy.dataprovider.RetrofitError;
 import com.shopify.buy.extensions.CheckoutPrivateAPIs;
@@ -17,6 +17,7 @@ import com.shopify.buy.model.CreditCard;
 import com.shopify.buy.model.Discount;
 import com.shopify.buy.model.GiftCard;
 import com.shopify.buy.model.LineItem;
+import com.shopify.buy.model.Payment;
 import com.shopify.buy.model.Product;
 import com.shopify.buy.model.ShippingRate;
 
@@ -26,10 +27,7 @@ import org.junit.runner.RunWith;
 
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
-
-import retrofit2.Response;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
@@ -58,40 +56,33 @@ public class BuyTest extends ShopifyAndroidTestCase {
     @Test
     public void testApplyingInvalidGiftCardToCheckout() throws InterruptedException {
         createValidCheckout();
-        final CountDownLatch latch = new CountDownLatch(1);
-
         buyClient.applyGiftCard(data.getGiftCardCode(TestData.GiftCardType.INVALID), checkout, new Callback<Checkout>() {
             @Override
-            public void success(Checkout checkout, Response response) {
+            public void success(Checkout checkout) {
                 fail("Retrofit succeeded. Expected: 422 error");
             }
 
             @Override
             public void failure(RetrofitError error) {
                 assertEquals(HttpStatus.SC_UNPROCESSABLE_ENTITY, error.getResponse().code());
-                latch.countDown();
             }
         });
-        latch.await();
     }
 
     @Test
     public void testApplyingExpiredGiftCardToCheckout() throws InterruptedException {
         createValidCheckout();
-        final CountDownLatch latch = new CountDownLatch(1);
         buyClient.applyGiftCard(data.getGiftCardCode(TestData.GiftCardType.EXPIRED), checkout, new Callback<Checkout>() {
             @Override
-            public void success(Checkout checkout, Response response) {
+            public void success(Checkout checkout) {
                 fail("Retrofit succeeded. Expected: 422 error");
             }
 
             @Override
             public void failure(RetrofitError error) {
                 assertEquals(HttpStatus.SC_UNPROCESSABLE_ENTITY, error.getResponse().code());
-                latch.countDown();
             }
         });
-        latch.await();
     }
 
     @Test
@@ -104,43 +95,37 @@ public class BuyTest extends ShopifyAndroidTestCase {
     @Test
     public void testRemovingInvalidGiftCardFromCheckout() throws InterruptedException {
         createValidCheckout();
-        final CountDownLatch latch = new CountDownLatch(1);
         GiftCardPrivateAPIs invalidGiftCard = new GiftCardPrivateAPIs(data.getGiftCardCode(TestData.GiftCardType.INVALID));
         invalidGiftCard.setId(data.getGiftCardId(TestData.GiftCardType.INVALID));
         buyClient.removeGiftCard(invalidGiftCard, checkout, new Callback<Checkout>() {
             @Override
-            public void success(Checkout checkout, Response response) {
+            public void success(Checkout checkout) {
                 fail("Retrofit succeeded. Expected: 422 error");
             }
 
             @Override
             public void failure(RetrofitError error) {
                 assertEquals(HttpStatus.SC_UNPROCESSABLE_ENTITY, error.getResponse().code());
-                latch.countDown();
             }
         });
-        latch.await();
     }
 
     @Test
     public void testRemovingExpiredGiftCardFromCheckout() throws InterruptedException {
         createValidCheckout();
-        final CountDownLatch latch = new CountDownLatch(1);
         GiftCardPrivateAPIs expiredGiftCard = new GiftCardPrivateAPIs(data.getGiftCardCode(TestData.GiftCardType.EXPIRED));
         expiredGiftCard.setId(data.getGiftCardId(TestData.GiftCardType.EXPIRED));
         buyClient.removeGiftCard(expiredGiftCard, checkout, new Callback<Checkout>() {
             @Override
-            public void success(Checkout checkout, Response response) {
+            public void success(Checkout checkout) {
                 fail("Retrofit succeeded. Expected: 422 error");
             }
 
             @Override
             public void failure(RetrofitError error) {
                 assertEquals(HttpStatus.SC_UNPROCESSABLE_ENTITY, error.getResponse().code());
-                latch.countDown();
             }
         });
-        latch.await();
     }
 
     @Test
@@ -164,47 +149,49 @@ public class BuyTest extends ShopifyAndroidTestCase {
     public void testRemovingSecondGiftCard() throws InterruptedException {
         testApplyingThreeGiftCardsToCheckout();
         removeGiftCardFromCheckout(checkout.getGiftCards().get(1));
-        assertEquals(checkout.getGiftCards().size(), 2);
+        assertEquals(2, checkout.getGiftCards().size());
     }
 
     @Test
     public void testRemovingFirstGiftCard() throws InterruptedException {
         testRemovingSecondGiftCard();
         removeGiftCardFromCheckout(checkout.getGiftCards().get(0));
-        assertEquals(checkout.getGiftCards().size(), 1);
+        assertEquals(1, checkout.getGiftCards().size());
     }
 
     @Test
     public void testRemovingAllGiftCards() throws InterruptedException {
         testRemovingFirstGiftCard();
         removeGiftCardFromCheckout(checkout.getGiftCards().get(0));
-        assertEquals(checkout.getGiftCards().size(), 0);
+        assertEquals(0, checkout.getGiftCards().size());
 
         assertEquals(checkout.getTotalPrice(), checkout.getPaymentDue());
     }
 
     @Test
-    public void testGetCheckoutWithInvalidToken() throws InterruptedException {
-        final CountDownLatch latch = new CountDownLatch(1);
+	public void testGetCheckoutWithInvalidToken() throws InterruptedException {
         buyClient.getCheckout("ZZZZZZZZZZZZZZZ", new Callback<Checkout>() {
             @Override
-            public void success(Checkout checkout, Response response) {
+            public void success(Checkout checkout) {
                 fail("Retrofit succeeded. Expected: 404");
             }
 
             @Override
             public void failure(RetrofitError error) {
                 assertEquals(HttpStatus.SC_NOT_FOUND, error.getResponse().code());
-                latch.countDown();
             }
         });
-        latch.await();
     }
 
     @Test
     public void testWithoutShop() {
         try {
-            BuyClientFactory.getBuyClient("", getApiKey(), getAppId(), data.getApplicationName());
+            new BuyClientBuilder()
+                    .apiKey("apiKey")
+                    .appId("appId")
+                    .applicationName("applicationName")
+                    .shopDomain("")
+                    .build();
         } catch (IllegalArgumentException e) {
             return;
         }
@@ -214,7 +201,12 @@ public class BuyTest extends ShopifyAndroidTestCase {
     @Test
     public void testWithoutAuthToken() {
         try {
-            BuyClientFactory.getBuyClient(getShopDomain(), "", getAppId(), data.getApplicationName());
+            new BuyClientBuilder()
+                    .apiKey("")
+                    .appId("appId")
+                    .applicationName("applicationName")
+                    .shopDomain("shopDomain")
+                    .build();
         } catch (IllegalArgumentException e) {
             return;
         }
@@ -224,7 +216,27 @@ public class BuyTest extends ShopifyAndroidTestCase {
     @Test
     public void testWithoutApplicationName() {
         try {
-            BuyClientFactory.getBuyClient(getShopDomain(), getApiKey(), getAppId(), "");
+            new BuyClientBuilder()
+                    .apiKey("apiKey")
+                    .appId("appId")
+                    .applicationName("")
+                    .shopDomain("shopDomain")
+                    .build();
+        } catch (IllegalArgumentException e) {
+            return;
+        }
+        fail("Expected IllegalArgumentException");
+    }
+
+    @Test
+    public void testWithoutAppId() {
+        try {
+            new BuyClientBuilder()
+                    .apiKey("apiKey")
+                    .appId("")
+                    .applicationName("applicationName")
+                    .shopDomain("shopDomain")
+                    .build();
         } catch (IllegalArgumentException e) {
             return;
         }
@@ -246,8 +258,7 @@ public class BuyTest extends ShopifyAndroidTestCase {
     }
 
     @Test
-    public void testCreateCheckoutWithVariantID() throws InterruptedException {
-        final CountDownLatch latch = new CountDownLatch(1);
+	public void testCreateCheckoutWithVariantID() throws InterruptedException {
         Checkout checkout = new Checkout(new LineItem(getVariantID(), true, 1));
         checkout.setShippingAddress(getShippingAddress());
         checkout.setBillingAddress(checkout.getShippingAddress());
@@ -255,19 +266,16 @@ public class BuyTest extends ShopifyAndroidTestCase {
 
         buyClient.createCheckout(checkout, new Callback<Checkout>() {
             @Override
-            public void success(Checkout checkout, Response response) {
-                validateCheckoutCreatedWithVariantID(checkout, response);
+            public void success(Checkout checkout) {
+                validateCheckoutCreatedWithVariantID(checkout);
                 BuyTest.this.checkout = checkout;
-                latch.countDown();
             }
 
             @Override
             public void failure(RetrofitError error) {
-                fail(BuyClient.getErrorBody(error));
+                fail(BuyClientUtils.getErrorBody(error));
             }
         });
-
-        latch.await();
     }
 
     @Test
@@ -277,7 +285,6 @@ public class BuyTest extends ShopifyAndroidTestCase {
         setShippingRate();
         addCreditCardToCheckout();
         completeCheckout();
-        pollCheckoutCompletionStatus();
         getCheckout();
     }
 
@@ -303,7 +310,6 @@ public class BuyTest extends ShopifyAndroidTestCase {
     public void testCreateCheckoutWithValidDiscount() throws InterruptedException {
         final String discountCode = data.getDiscountCode(TestData.DiscountType.VALID);
 
-        final CountDownLatch latch = new CountDownLatch(1);
         Checkout checkout = new Checkout(createCart());
         checkout.setShippingAddress(getShippingAddress());
         checkout.setBillingAddress(checkout.getShippingAddress());
@@ -311,66 +317,57 @@ public class BuyTest extends ShopifyAndroidTestCase {
 
         buyClient.createCheckout(checkout, new Callback<Checkout>() {
             @Override
-            public void success(Checkout checkout, Response response) {
+            public void success(Checkout checkout) {
                 assertNotNull(checkout.getDiscount());
 
                 Discount discount = checkout.getDiscount();
                 assertEquals(discountCode, discount.getCode());
                 assertTrue(discount.isApplicable());
-
-                latch.countDown();
             }
 
             @Override
             public void failure(RetrofitError error) {
-                fail(BuyClient.getErrorBody(error));
+                fail(BuyClientUtils.getErrorBody(error));
             }
         });
-        latch.await();
     }
 
     @Test
-    public void testCreateCheckoutWithExpiredDiscount() throws InterruptedException {
-        final CountDownLatch latch = new CountDownLatch(1);
+	public void testCreateCheckoutWithExpiredDiscount() throws InterruptedException {
         Checkout checkout = new Checkout(createCart());
         checkout.setShippingAddress(getShippingAddress());
         checkout.setBillingAddress(checkout.getShippingAddress());
         checkout.setDiscountCode(data.getDiscountCode(TestData.DiscountType.EXPIRED));
         buyClient.createCheckout(checkout, new Callback<Checkout>() {
             @Override
-            public void success(Checkout checkout, Response response) {
+            public void success(Checkout checkout) {
                 fail("Retrofit succeeded. Expected: 422 error");
             }
 
             @Override
             public void failure(RetrofitError error) {
                 assertEquals(HttpStatus.SC_UNPROCESSABLE_ENTITY, error.getResponse().code());
-                latch.countDown();
             }
         });
-        latch.await();
     }
 
     @Test
     public void testCreateCheckoutWithNonExistentDiscount() throws InterruptedException {
-        final CountDownLatch latch = new CountDownLatch(1);
         Checkout checkout = new Checkout(createCart());
         checkout.setShippingAddress(getShippingAddress());
         checkout.setBillingAddress(checkout.getShippingAddress());
         checkout.setDiscountCode("notarealdiscountasdasfsafasda");
         buyClient.createCheckout(checkout, new Callback<Checkout>() {
             @Override
-            public void success(Checkout checkout, Response response) {
+            public void success(Checkout checkout) {
                 fail("Retrofit succeeded. Expected: 422 error");
             }
 
             @Override
             public void failure(RetrofitError error) {
                 assertEquals(HttpStatus.SC_UNPROCESSABLE_ENTITY, error.getResponse().code());
-                latch.countDown();
             }
         });
-        latch.await();
     }
 
     @Test
@@ -381,10 +378,9 @@ public class BuyTest extends ShopifyAndroidTestCase {
         final float initialPaymentDue = Float.valueOf(checkout.getPaymentDue());
         checkout.setDiscountCode(discountCode);
 
-        final CountDownLatch latch = new CountDownLatch(1);
         buyClient.updateCheckout(checkout, new Callback<Checkout>() {
             @Override
-            public void success(Checkout checkout, Response response) {
+            public void success(Checkout checkout) {
                 assertNotNull(checkout.getDiscount());
 
                 Discount discount = checkout.getDiscount();
@@ -393,16 +389,13 @@ public class BuyTest extends ShopifyAndroidTestCase {
 
                 // make sure the payment due amount was adjusted properly and the gift card value is correct
                 assertEquals(initialPaymentDue - data.getDiscountValue(TestData.DiscountType.VALID), Float.valueOf(checkout.getPaymentDue()));
-
-                latch.countDown();
             }
 
             @Override
             public void failure(RetrofitError error) {
-                fail(BuyClient.getErrorBody(error));
+                fail(BuyClientUtils.getErrorBody(error));
             }
         });
-        latch.await();
     }
 
     @Test
@@ -416,25 +409,20 @@ public class BuyTest extends ShopifyAndroidTestCase {
         before.setReservationTime(0);
         before.setReservationTimeLeft(0l);
 
-        final CountDownLatch latch = new CountDownLatch(1);
         buyClient.removeProductReservationsFromCheckout(checkout, new Callback<Checkout>() {
             @Override
-            public void success(Checkout checkout, Response response) {
+            public void success(Checkout checkout) {
                 assertEquals(checkout.getReservationTime().longValue(), 0);
 
                 // make sure that only the reservation time changed.
                 assertEquals(before.toJsonString(), checkout.toJsonString());
-
-                latch.countDown();
             }
 
             @Override
             public void failure(RetrofitError error) {
-                fail(BuyClient.getErrorBody(error));
+                fail(BuyClientUtils.getErrorBody(error));
             }
         });
-
-        latch.await();
     }
 
     /**
@@ -444,23 +432,18 @@ public class BuyTest extends ShopifyAndroidTestCase {
      */
 
     private Cart createCart() throws InterruptedException {
-        final CountDownLatch latch = new CountDownLatch(1);
-
         final AtomicReference<Product> productRef = new AtomicReference<>();
         buyClient.getProduct(data.getProductId(), new Callback<Product>() {
             @Override
-            public void success(Product product, Response response) {
+            public void success(Product product) {
                 productRef.set(product);
-                latch.countDown();
             }
 
             @Override
             public void failure(RetrofitError error) {
-                fail(BuyClient.getErrorBody(error));
+                fail(BuyClientUtils.getErrorBody(error));
             }
         });
-
-        latch.await();
 
         Cart cart = new Cart();
         cart.addVariant(productRef.get().getVariants().get(0));
@@ -475,29 +458,23 @@ public class BuyTest extends ShopifyAndroidTestCase {
     }
 
     private Long getVariantID() throws InterruptedException {
-        final CountDownLatch latch = new CountDownLatch(1);
-
         final AtomicReference<Product> productRef = new AtomicReference<>();
         buyClient.getProduct(data.getProductId(), new Callback<Product>() {
             @Override
-            public void success(Product product, Response response) {
+            public void success(Product product) {
                 productRef.set(product);
-                latch.countDown();
             }
 
             @Override
             public void failure(RetrofitError error) {
-                fail(BuyClient.getErrorBody(error));
+                fail(BuyClientUtils.getErrorBody(error));
             }
         });
-
-        latch.await();
 
         return productRef.get().getVariants().get(0).getId();
     }
 
     private void createValidCheckout() throws InterruptedException {
-        final CountDownLatch latch = new CountDownLatch(1);
         Checkout checkout = new Checkout(createCart());
         checkout.setShippingAddress(getShippingAddress());
         checkout.setBillingAddress(checkout.getShippingAddress());
@@ -505,42 +482,36 @@ public class BuyTest extends ShopifyAndroidTestCase {
 
         buyClient.createCheckout(checkout, new Callback<Checkout>() {
             @Override
-            public void success(Checkout checkout, Response response) {
-                validateCreatedCheckout(checkout, response);
+            public void success(Checkout checkout) {
+                validateCreatedCheckout(checkout);
                 BuyTest.this.checkout = checkout;
-                latch.countDown();
             }
 
             @Override
             public void failure(RetrofitError error) {
-                fail(BuyClient.getErrorBody(error));
+                fail(BuyClientUtils.getErrorBody(error));
             }
         });
-        latch.await();
     }
 
     private void createCheckoutWithNoShippingAddress() throws InterruptedException {
-        final CountDownLatch latch = new CountDownLatch(1);
         Checkout checkout = new Checkout(createCart());
         checkout.setBillingAddress(checkout.getShippingAddress());
         buyClient.createCheckout(checkout, new Callback<Checkout>() {
             @Override
-            public void success(Checkout checkout, Response response) {
-                validateCreatedCheckout(checkout, response);
+            public void success(Checkout checkout) {
+                validateCreatedCheckout(checkout);
                 BuyTest.this.checkout = checkout;
-                latch.countDown();
             }
 
             @Override
             public void failure(RetrofitError error) {
-                fail(BuyClient.getErrorBody(error));
+                fail(BuyClientUtils.getErrorBody(error));
             }
         });
-        latch.await();
     }
 
-    private void validateCreatedCheckout(Checkout checkout, Response response) {
-        assertEquals(HttpStatus.SC_CREATED, response.code());
+    private void validateCreatedCheckout(Checkout checkout) {
         assertNotNull(checkout.getLineItems());
         assertEquals(1, checkout.getLineItems().size());
         assertNotNull(checkout.getLineItems().get(0).getProperties());
@@ -548,8 +519,7 @@ public class BuyTest extends ShopifyAndroidTestCase {
         assertEquals(checkout.getSourceName(), "mobile_app");
     }
 
-    private void validateCheckoutCreatedWithVariantID(Checkout checkout, Response response) {
-        assertEquals(HttpStatus.SC_CREATED, response.code());
+    private void validateCheckoutCreatedWithVariantID(Checkout checkout) {
         assertNotNull(checkout.getLineItems());
         assertEquals(1, checkout.getLineItems().size());
         assertEquals(checkout.getSourceName(), "mobile_app");
@@ -571,8 +541,6 @@ public class BuyTest extends ShopifyAndroidTestCase {
     }
 
     private void applyGiftCardToCheckout(final String code, final float value) throws InterruptedException {
-        final CountDownLatch latch = new CountDownLatch(1);
-
         final int initialGiftCardCount;
         if (checkout.getGiftCards() != null) {
             initialGiftCardCount = checkout.getGiftCards().size();
@@ -584,7 +552,7 @@ public class BuyTest extends ShopifyAndroidTestCase {
 
         buyClient.applyGiftCard(code, checkout, new Callback<Checkout>() {
             @Override
-            public void success(Checkout checkout, Response response) {
+            public void success(Checkout checkout) {
 
                 BuyTest.this.checkout = checkout;
 
@@ -593,8 +561,6 @@ public class BuyTest extends ShopifyAndroidTestCase {
                 GiftCard giftCard = checkout.getGiftCards().get(size - 1);
                 float paymentDue = Float.valueOf(checkout.getPaymentDue());
                 float giftCardValue = Float.valueOf(giftCard.getBalance());
-
-                assertEquals(HttpStatus.SC_CREATED, response.code());
 
                 // make sure the code is the same
                 int startIndex = code.length() - giftCard.getLastCharacters().length();
@@ -608,33 +574,30 @@ public class BuyTest extends ShopifyAndroidTestCase {
                 // make sure the payment due amount was adjusted properly and the gift card value is correct
                 assertEquals(initialPaymentDue - giftCardValue, paymentDue);
                 assertEquals(value, giftCardValue);
-                latch.countDown();
             }
 
             @Override
             public void failure(RetrofitError error) {
-                fail(BuyClient.getErrorBody(error));
+                fail(BuyClientUtils.getErrorBody(error));
             }
         });
-        latch.await();
     }
 
     private void removeGiftCardFromCheckout(final GiftCard giftCard) throws InterruptedException {
-        final CountDownLatch latch = new CountDownLatch(1);
         final int initialGiftCardCount = checkout.getGiftCards().size();
         final float initialPaymentDue = Float.valueOf(checkout.getPaymentDue());
 
         buyClient.removeGiftCard(giftCard, checkout, new Callback<Checkout>() {
             @Override
-            public void success(Checkout checkout, Response response) {
-                assertEquals(HttpStatus.SC_OK, response.code());
+            public void success(Checkout checkout) {
+                BuyTest.this.checkout = checkout;
+
                 assertEquals(initialGiftCardCount - 1, checkout.getGiftCards().size());
 
                 float paymentDue = Float.valueOf(checkout.getPaymentDue());
                 float giftCardValue = Float.valueOf(giftCard.getBalance());
 
                 assertEquals(initialPaymentDue + giftCardValue, paymentDue);
-                latch.countDown();
             }
 
             @Override
@@ -642,41 +605,22 @@ public class BuyTest extends ShopifyAndroidTestCase {
                 fail("Retrofit failed. Expected success.");
             }
         });
-        latch.await();
     }
 
-    private void fetchShippingRates(int expectedStatus) throws InterruptedException {
-        final CountDownLatch latch = new CountDownLatch(1);
-        pollShippingRates(expectedStatus, latch);
-        latch.await();
-    }
-
-    private void pollShippingRates(final int expectedStatus, final CountDownLatch latch) {
+    private void fetchShippingRates(final int expectedStatus) throws InterruptedException {
         assertNotNull(checkout);
-        Callback<List<ShippingRate>> callback = new Callback<List<ShippingRate>>() {
+        buyClient.getShippingRates(checkout.getToken(), new Callback<List<ShippingRate>>() {
             @Override
-            public void success(List<ShippingRate> shippingRates, Response response) {
-                if (response.code() != expectedStatus) {
-                    try {
-                        Thread.sleep(500);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    pollShippingRates(expectedStatus, latch);
-                } else {
-                    assertNotNull(shippingRates);
-                    BuyTest.this.shippingRates = shippingRates;
-                    latch.countDown();
-                }
+            public void success(List<ShippingRate> shippingRates) {
+                assertNotNull(shippingRates);
+                BuyTest.this.shippingRates = shippingRates;
             }
 
             @Override
             public void failure(RetrofitError error) {
                 assertEquals(error.getResponse().code(), expectedStatus);
-                latch.countDown();
             }
-        };
-        buyClient.getShippingRates(checkout.getToken(), callback);
+        });
     }
 
     private void setShippingRate() throws InterruptedException {
@@ -685,23 +629,19 @@ public class BuyTest extends ShopifyAndroidTestCase {
     }
 
     private void updateCheckout() throws InterruptedException {
-        final CountDownLatch latch = new CountDownLatch(1);
         buyClient.updateCheckout(checkout, new Callback<Checkout>() {
             @Override
-            public void success(Checkout checkout, Response response) {
-                assertEquals(HttpStatus.SC_OK, response.code());
+            public void success(Checkout checkout) {
                 assertNotNull(checkout);
                 assertEquals("test@test.com", checkout.getEmail());
                 BuyTest.this.checkout = checkout;
-                latch.countDown();
             }
 
             @Override
             public void failure(RetrofitError error) {
-                fail(BuyClient.getErrorBody(error));
+                fail(BuyClientUtils.getErrorBody(error));
             }
         });
-        latch.await();
     }
 
     private void addCreditCardToCheckout() throws InterruptedException {
@@ -713,84 +653,49 @@ public class BuyTest extends ShopifyAndroidTestCase {
         card.setVerificationValue("123");
         card.setNumber("4242424242424242");
 
-        final CountDownLatch latch = new CountDownLatch(1);
         buyClient.storeCreditCard(card, checkout, new Callback<Checkout>() {
-            @Override
-            public void success(Checkout checkout, Response response) {
-                assertEquals(HttpStatus.SC_OK, response.code());
+            public void success(Checkout checkout) {
+                assertNotNull(checkout.getPaymentSessionId());
                 BuyTest.this.checkout = checkout;
-                latch.countDown();
             }
 
             @Override
             public void failure(RetrofitError error) {
-                fail(BuyClient.getErrorBody(error));
+                fail(BuyClientUtils.getErrorBody(error));
             }
         });
-        latch.await();
     }
 
     private void completeCheckout() throws InterruptedException {
-        final CountDownLatch latch = new CountDownLatch(1);
-        buyClient.completeCheckout(checkout, new Callback<Checkout>() {
+        buyClient.completeCheckout(checkout, new Callback<Payment>() {
             @Override
-            public void success(Checkout checkout, Response response) {
-                assertEquals(HttpStatus.SC_OK, response.code());
-                latch.countDown();
+            public void success(Payment payment) {
+                assertNotNull(payment);
+                assertNotNull(payment.getCheckout());
             }
 
             @Override
             public void failure(RetrofitError error) {
-                fail(BuyClient.getErrorBody(error));
+                fail(BuyClientUtils.getErrorBody(error));
             }
         });
-        latch.await();
-    }
-
-
-    private void pollCheckoutCompletionStatus() throws InterruptedException {
-        final CountDownLatch latch = new CountDownLatch(1);
-        recurseCheckoutCompletionPoll(latch);
-        latch.await();
-    }
-
-    private void recurseCheckoutCompletionPoll(final CountDownLatch latch) {
-        final Callback<Boolean> callback = new Callback<Boolean>() {
-            @Override
-            public void success(Boolean complete, Response response) {
-                if (complete) {
-                    latch.countDown();
-                } else {
-                    recurseCheckoutCompletionPoll(latch);
-                }
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                fail(BuyClient.getErrorBody(error));
-            }
-        };
-        buyClient.getCheckoutCompletionStatus(checkout, callback);
     }
 
     private void getCheckout() throws InterruptedException {
-        final CountDownLatch latch = new CountDownLatch(1);
         buyClient.getCheckout(checkout.getToken(), new Callback<Checkout>() {
             @Override
-            public void success(Checkout checkout, Response response) {
+            public void success(Checkout checkout) {
                 assertNotNull(checkout);
                 assertNotNull(checkout.getOrder().getId());
                 assertNotNull(checkout.getOrder().getStatusUrl());
                 assertNotNull(checkout.getOrder().getName());
-                latch.countDown();
             }
 
             @Override
             public void failure(RetrofitError error) {
-                fail(BuyClient.getErrorBody(error));
+                fail(BuyClientUtils.getErrorBody(error));
             }
         });
-        latch.await();
     }
 
 }

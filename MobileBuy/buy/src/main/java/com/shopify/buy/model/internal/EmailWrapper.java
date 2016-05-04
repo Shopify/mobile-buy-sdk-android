@@ -24,7 +24,7 @@
 
 package com.shopify.buy.model.internal;
 
-public class EmailWrapper {
+public class EmailWrapper implements ResponseWrapper<String> {
 
     private String email;
 
@@ -36,5 +36,10 @@ public class EmailWrapper {
 
     public EmailWrapper(final String email) {
      this.email = email;
+    }
+
+    @Override
+    public String getContent() {
+        return email;
     }
 }

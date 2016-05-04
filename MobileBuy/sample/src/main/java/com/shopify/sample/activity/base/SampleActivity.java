@@ -29,7 +29,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
 import android.util.Log;
@@ -37,8 +36,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.shopify.buy.dataprovider.Callback;
-import com.shopify.buy.dataprovider.BuyClient;
+import com.shopify.buy.dataprovider.BuyClientUtils;
 import com.shopify.buy.dataprovider.RetrofitError;
 import com.shopify.buy.model.Checkout;
 import com.shopify.buy.model.Discount;
@@ -48,8 +46,6 @@ import com.shopify.sample.application.SampleApplication;
 
 import java.util.List;
 
-import retrofit2.Response;
-
 /**
  * Base class for all activities in the app. Manages the ProgressDialog that is displayed while network activity is occurring.
  */
@@ -57,19 +53,11 @@ public class SampleActivity extends FragmentActivity {
 
     private static final String LOG_TAG = SampleActivity.class.getSimpleName();
 
-    // The amount of time in milliseconds to delay between network calls when you are polling for Shipping Rates and Checkout Completion
-    protected static final long POLL_DELAY = 500;
-
-    protected Handler pollingHandler;
-
     private ProgressDialog progressDialog;
-    private boolean webCheckoutInProgress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        pollingHandler = new Handler();
 
         initializeProgressDialog();
     }
@@ -85,16 +73,8 @@ public class SampleActivity extends FragmentActivity {
         String scheme = getString(R.string.web_return_to_scheme);
 
         if (uri != null && TextUtils.equals(uri.getScheme(), scheme)) {
-            webCheckoutInProgress = false;
-
             // If the app was launched using the scheme, we know we just successfully completed an order
             onCheckoutComplete();
-
-        } else {
-            // If a Web checkout was previously launched, we should check its status
-            if (webCheckoutInProgress && getSampleApplication().getCheckout() != null) {
-                pollCheckoutCompletionStatus(getSampleApplication().getCheckout());
-            }
         }
     }
 
@@ -156,7 +136,7 @@ public class SampleActivity extends FragmentActivity {
     }
 
     protected void onError(RetrofitError error) {
-        onError(BuyClient.getErrorBody(error));
+        onError(BuyClientUtils.getErrorBody(error));
     }
 
     /**
@@ -222,43 +202,11 @@ public class SampleActivity extends FragmentActivity {
     }
 
     /**
-     * Polls until the web checkout has completed.
-     *
-     * @param checkout the checkout to check the status on
-     */
-    protected void pollCheckoutCompletionStatus(final Checkout checkout) {
-        showLoadingDialog(R.string.getting_checkout_status);
-
-        getSampleApplication().getCheckoutCompletionStatus(new Callback<Boolean>() {
-            @Override
-
-            public void success(Boolean complete, Response response) {
-                if (complete) {
-                    dismissLoadingDialog();
-                    onCheckoutComplete();
-                } else {
-                    pollingHandler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            pollCheckoutCompletionStatus(checkout);
-                        }
-                    }, POLL_DELAY);
-                }
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                onError(error);
-            }
-        });
-    }
-
-    /**
      * When our polling determines that the checkout is completely processed, show a toast.
+     * When checkout is completely processed, show a toast.
      */
     protected void onCheckoutComplete() {
         dismissLoadingDialog();
-        webCheckoutInProgress = false;
 
         runOnUiThread(new Runnable() {
             @Override

@@ -39,8 +39,6 @@ import com.shopify.buy.model.Collection;
 import java.util.ArrayList;
 import java.util.List;
 
-import retrofit2.Response;
-
 
 /**
  * The first activity in the app flow. Allows the user to browse the list of collections and drill down into a list of products.
@@ -66,7 +64,7 @@ public class CollectionListActivity extends SampleListActivity {
             // Fetch the collections
             getSampleApplication().getCollections(new Callback<List<Collection>>() {
                 @Override
-                public void success(List<Collection> collections, Response response) {
+                public void success(List<Collection> collections) {
                     isFetching = false;
                     dismissLoadingDialog();
                     onFetchedCollections(collections);

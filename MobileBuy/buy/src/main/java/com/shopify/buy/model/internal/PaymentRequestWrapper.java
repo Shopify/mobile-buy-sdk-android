@@ -21,44 +21,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.shopify.buy.dataprovider;
 
-import retrofit2.Response;
-import rx.Subscriber;
+package com.shopify.buy.model.internal;
+
+import com.google.gson.annotations.SerializedName;
 
 /**
- * Created by ykulbashian on 16-04-07.
+ * Wrapper class used by Gson Serialization
  */
-abstract class InternalCallback<T> extends Subscriber<Response<T>> {
+public class PaymentRequestWrapper implements ResponseWrapper<PaymentRequest> {
 
-    @Override
-    public void onCompleted() {
-        // Do nothing
+    @SerializedName("payment")
+    private PaymentRequest paymentRequest;
+
+    public PaymentRequestWrapper(PaymentRequest paymentRequest) {
+        this.paymentRequest = paymentRequest;
+    }
+
+    public PaymentRequest getPayment() {
+        return paymentRequest;
     }
 
     @Override
-    public void onNext(Response<T> response) {
-        if(response.isSuccessful()){
-            if(response.body() != null) {
-                success(response.body(), response);
-            } else {
-                success(null, response);
-            }
-        } else {
-            failure(new RetrofitError(response));
-        }
+    public PaymentRequest getContent() {
+        return paymentRequest;
     }
-
-    @Override
-    public void onError(Throwable t) {
-        if(t instanceof RetrofitError) {
-            failure((RetrofitError) t);
-        } else {
-            failure(RetrofitError.exception(new Exception(t)));
-        }
-    }
-
-    protected abstract void success(T body, Response response);
-
-    protected abstract void failure(RetrofitError error);
 }

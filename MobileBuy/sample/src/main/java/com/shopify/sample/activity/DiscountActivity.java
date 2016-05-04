@@ -57,8 +57,6 @@ import com.shopify.sample.R;
 import com.shopify.sample.activity.base.SampleActivity;
 import com.shopify.sample.application.SampleApplication;
 
-import retrofit2.Response;
-
 /**
  * After a shipping rate is selected, this activity allows the user to add discount codes or gift card codes to the order.
  * It also shows a summary of the order, including the line item price, any discounts or gift cards used, the shipping charge, the taxes, and the total price.
@@ -282,7 +280,7 @@ public class DiscountActivity extends SampleActivity implements GoogleApiClient.
         showLoadingDialog(R.string.syncing_data);
         getSampleApplication().setDiscountCode(discountCode, new Callback<Checkout>() {
             @Override
-            public void success(Checkout checkout, Response response) {
+            public void success(Checkout checkout) {
                 dismissLoadingDialog();
                 updateOrderSummary();
             }
@@ -305,7 +303,7 @@ public class DiscountActivity extends SampleActivity implements GoogleApiClient.
         showLoadingDialog(R.string.syncing_data);
         getSampleApplication().addGiftCard(giftCardCode, new Callback<Checkout>() {
             @Override
-            public void success(Checkout checkout, Response response) {
+            public void success(Checkout checkout) {
                 dismissLoadingDialog();
                 updateOrderSummary();
             }

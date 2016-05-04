@@ -29,7 +29,7 @@ import com.shopify.buy.model.Checkout;
 /**
  * Wrapper class used by Gson Serialization
  */
-public class CheckoutWrapper {
+public class CheckoutWrapper implements ResponseWrapper<Checkout> {
 
     private Checkout checkout;
 
@@ -49,4 +49,8 @@ public class CheckoutWrapper {
         this.checkout = checkout;
     }
 
+    @Override
+    public Checkout getContent() {
+        return checkout;
+    }
 }

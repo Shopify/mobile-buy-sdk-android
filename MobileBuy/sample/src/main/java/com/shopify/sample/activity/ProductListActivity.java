@@ -45,8 +45,6 @@ import com.shopify.sample.dialog.HSVColorPickerDialog;
 import java.util.ArrayList;
 import java.util.List;
 
-import retrofit2.Response;
-
 
 /**
  * This activity allows the user to select a product to purchase from a list of all products in a collection.
@@ -121,7 +119,7 @@ public class ProductListActivity extends SampleListActivity {
 
             Callback<List<Product>> callback = new Callback<List<Product>>() {
                 @Override
-                public void success(List<Product> products, Response response) {
+                public void success(List<Product> products) {
                     isFetching = false;
                     dismissLoadingDialog();
                     onFetchedProducts(products);
@@ -198,7 +196,7 @@ public class ProductListActivity extends SampleListActivity {
 
         getSampleApplication().createCheckout(product, new Callback<Checkout>() {
             @Override
-            public void success(Checkout checkout, Response response) {
+            public void success(Checkout checkout) {
                 dismissLoadingDialog();
                 onCheckoutCreated(checkout);
             }
