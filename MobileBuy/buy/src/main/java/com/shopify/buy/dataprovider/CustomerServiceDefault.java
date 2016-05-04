@@ -71,12 +71,7 @@ final class CustomerServiceDefault implements CustomerService {
 
     @Override
     public CustomerToken getCustomerToken() {
-        final CustomerToken customerToken = customerTokenRef.get();
-        if (customerToken != null) {
-            return new CustomerToken(customerToken);
-        } else {
-            return null;
-        }
+        return customerTokenRef.get();
     }
 
     @Override
