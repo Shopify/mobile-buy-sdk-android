@@ -149,21 +149,21 @@ public class BuyTest extends ShopifyAndroidTestCase {
     public void testRemovingSecondGiftCard() throws InterruptedException {
         testApplyingThreeGiftCardsToCheckout();
         removeGiftCardFromCheckout(checkout.getGiftCards().get(1));
-        assertEquals(checkout.getGiftCards().size(), 2);
+        assertEquals(2, checkout.getGiftCards().size());
     }
 
     @Test
     public void testRemovingFirstGiftCard() throws InterruptedException {
         testRemovingSecondGiftCard();
         removeGiftCardFromCheckout(checkout.getGiftCards().get(0));
-        assertEquals(checkout.getGiftCards().size(), 1);
+        assertEquals(1, checkout.getGiftCards().size());
     }
 
     @Test
     public void testRemovingAllGiftCards() throws InterruptedException {
         testRemovingFirstGiftCard();
         removeGiftCardFromCheckout(checkout.getGiftCards().get(0));
-        assertEquals(checkout.getGiftCards().size(), 0);
+        assertEquals(0, checkout.getGiftCards().size());
 
         assertEquals(checkout.getTotalPrice(), checkout.getPaymentDue());
     }
@@ -590,6 +590,8 @@ public class BuyTest extends ShopifyAndroidTestCase {
         buyClient.removeGiftCard(giftCard, checkout, new Callback<Checkout>() {
             @Override
             public void success(Checkout checkout) {
+                BuyTest.this.checkout = checkout;
+
                 assertEquals(initialGiftCardCount - 1, checkout.getGiftCards().size());
 
                 float paymentDue = Float.valueOf(checkout.getPaymentDue());

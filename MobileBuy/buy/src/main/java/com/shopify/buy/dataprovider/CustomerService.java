@@ -35,13 +35,6 @@ import rx.Observable;
 public interface CustomerService {
 
     /**
-     * Sets customer token
-     *
-     * @param customerToken token
-     */
-    void setCustomerToken(CustomerToken customerToken);
-
-    /**
      * Returns customer token
      *
      * @return token

@@ -106,17 +106,18 @@ final class CheckoutServiceDefault implements CheckoutService {
             throw new NullPointerException("checkout cannot be null");
         }
 
-        checkout.setMarketingAttribution(new MarketingAttribution(applicationName));
-        checkout.setSourceName("mobile_app");
+        final Checkout safeCheckout = checkout.copy();
+        safeCheckout.setMarketingAttribution(new MarketingAttribution(applicationName));
+        safeCheckout.setSourceName("mobile_app");
         if (webReturnToUrl != null) {
-            checkout.setWebReturnToUrl(webReturnToUrl);
+            safeCheckout.setWebReturnToUrl(webReturnToUrl);
         }
         if (webReturnToLabel != null) {
-            checkout.setWebReturnToLabel(webReturnToLabel);
+            safeCheckout.setWebReturnToLabel(webReturnToLabel);
         }
 
         return retrofitService
-                .createCheckout(new CheckoutWrapper(checkout))
+                .createCheckout(new CheckoutWrapper(safeCheckout))
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
                 .compose(new UnwrapRetrofitBodyTransformer<CheckoutWrapper, Checkout>())
                 .observeOn(callbackScheduler);
@@ -133,9 +134,9 @@ final class CheckoutServiceDefault implements CheckoutService {
             throw new NullPointerException("checkout cannot be null");
         }
 
-        final Checkout cleanCheckout = checkout.copyForUpdate();
+        final Checkout safeCheckout = checkout.copyForUpdate();
         return retrofitService
-                .updateCheckout(new CheckoutWrapper(cleanCheckout), cleanCheckout.getToken())
+                .updateCheckout(new CheckoutWrapper(safeCheckout), safeCheckout.getToken())
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
                 .compose(new UnwrapRetrofitBodyTransformer<CheckoutWrapper, Checkout>())
                 .observeOn(callbackScheduler);
@@ -175,21 +176,22 @@ final class CheckoutServiceDefault implements CheckoutService {
             throw new NullPointerException("checkout cannot be null");
         }
 
+        final Checkout safeCheckout = checkout.copy();
         final CreditCardWrapper creditCardWrapper = new CreditCardWrapper(card);
         return retrofitService
-                .storeCreditCard(checkout.getPaymentUrl(), creditCardWrapper, BuyClientUtils.formatBasicAuthorization(apiKey))
+                .storeCreditCard(safeCheckout.getPaymentUrl(), creditCardWrapper, BuyClientUtils.formatBasicAuthorization(apiKey))
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
                 .compose(new UnwrapRetrofitBodyTransformer<PaymentSession, String>())
                 .doOnNext(new Action1<String>() {
                     @Override
                     public void call(String paymentSessionId) {
-                        checkout.setPaymentSessionId(paymentSessionId);
+                        safeCheckout.setPaymentSessionId(paymentSessionId);
                     }
                 })
                 .map(new Func1<String, Checkout>() {
                     @Override
                     public Checkout call(String s) {
-                        return checkout;
+                        return safeCheckout;
                     }
                 })
                 .observeOn(callbackScheduler);
@@ -279,18 +281,19 @@ final class CheckoutServiceDefault implements CheckoutService {
             throw new NullPointerException("giftCard cannot be null");
         }
 
+        final Checkout safeCheckout = checkout.copy();
         return retrofitService
-                .removeGiftCard(giftCard.getId(), checkout.getToken())
+                .removeGiftCard(giftCard.getId(), safeCheckout.getToken())
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
                 .compose(new UnwrapRetrofitBodyTransformer<GiftCardWrapper, GiftCard>())
                 .map(new Func1<GiftCard, Checkout>() {
                     @Override
                     public Checkout call(GiftCard giftCard) {
                         if (giftCard != null) {
-                            checkout.removeGiftCard(giftCard);
-                            checkout.setPaymentDue(giftCard.getCheckout().getPaymentDue());
+                            safeCheckout.removeGiftCard(giftCard);
+                            safeCheckout.setPaymentDue(giftCard.getCheckout().getPaymentDue());
                         }
-                        return checkout;
+                        return safeCheckout;
                     }
                 })
                 .observeOn(callbackScheduler);
