@@ -23,12 +23,15 @@
  */
 package com.shopify.sample.customer;
 
+import com.shopify.buy.dataprovider.Callback;
+import com.shopify.buy.dataprovider.RetrofitError;
 import com.shopify.buy.model.Customer;
 import com.shopify.buy.model.Order;
 import com.shopify.sample.WeakObserver;
 import com.shopify.sample.BaseViewPresenter;
 import com.shopify.sample.application.SampleApplication;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
 
 import rx.Subscription;
@@ -48,11 +51,12 @@ public final class CustomerOrderListViewPresenter extends BaseViewPresenter<Cust
 
         final Customer customer = SampleApplication.getCustomer();
         if (customer != null) {
-            fetchCustomerOrders(customer);
+            // fetchCustomerOrdersWithRx(customer);
+            fetchCustomerOrdersWithCallback(customer);
         }
     }
 
-    private void fetchCustomerOrders(final Customer customer) {
+    private void fetchCustomerOrdersWithRx(final Customer customer) {
         if (!attached) {
             return;
         }
@@ -76,6 +80,32 @@ public final class CustomerOrderListViewPresenter extends BaseViewPresenter<Cust
                         }
                 ));
         addSubscription(subscription);
+    }
+
+    private void fetchCustomerOrdersWithCallback(final Customer customer) {
+        if (!attached) {
+            return;
+        }
+
+        showProgress();
+        final WeakReference<CustomerOrderListViewPresenter> presenterRef = new WeakReference<>(this);
+        SampleApplication.getBuyClient().getOrders(customer, new Callback<List<Order>>() {
+            @Override
+            public void success(final List<Order> orders) {
+                final CustomerOrderListViewPresenter presenter = presenterRef.get();
+                if (presenter != null) {
+                    presenter.onFetchCustomerOrders(orders);
+                }
+            }
+
+            @Override
+            public void failure(final RetrofitError error) {
+                final CustomerOrderListViewPresenter presenter = presenterRef.get();
+                if (presenter != null) {
+                    presenter.onRequestError(error);
+                }
+            }
+        });
     }
 
     private void onFetchCustomerOrders(final List<Order> orders) {

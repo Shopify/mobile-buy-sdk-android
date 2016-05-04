@@ -23,12 +23,16 @@
  */
 package com.shopify.sample.customer;
 
+import com.shopify.buy.dataprovider.Callback;
+import com.shopify.buy.dataprovider.RetrofitError;
 import com.shopify.buy.model.AccountCredentials;
 import com.shopify.buy.model.Customer;
 import com.shopify.buy.model.CustomerToken;
 import com.shopify.sample.WeakObserver;
 import com.shopify.sample.BaseViewPresenter;
 import com.shopify.sample.application.SampleApplication;
+
+import java.lang.ref.WeakReference;
 
 import rx.Observable;
 import rx.Subscription;
@@ -43,6 +47,11 @@ public final class CustomerLoginViewPresenter extends BaseViewPresenter<Customer
     }
 
     public void loginCustomer(final String email, final String password) {
+        // loginCustomerWithRx(email, password);
+        loginCustomerWithCallback(email, password);
+    }
+
+    public void loginCustomerWithRx(final String email, final String password) {
         if (!attached) {
             return;
         }
@@ -75,6 +84,34 @@ public final class CustomerLoginViewPresenter extends BaseViewPresenter<Customer
         addSubscription(subscription);
     }
 
+    public void loginCustomerWithCallback(final String email, final String password) {
+        if (!attached) {
+            return;
+        }
+
+        showProgress();
+
+        final WeakReference<CustomerLoginViewPresenter> presenterRef = new WeakReference<>(this);
+        final AccountCredentials credentials = new AccountCredentials(email, password);
+        SampleApplication.getBuyClient().loginCustomer(credentials, new Callback<CustomerToken>() {
+            @Override
+            public void success(final CustomerToken token) {
+                final CustomerLoginViewPresenter presenter = presenterRef.get();
+                if (presenter != null) {
+                    presenter.onFetchCustomerToken(token);
+                }
+            }
+
+            @Override
+            public void failure(final RetrofitError error) {
+                final CustomerLoginViewPresenter presenter = presenterRef.get();
+                if (presenter != null) {
+                    presenter.onRequestError(error);
+                }
+            }
+        });
+    }
+
     public void createCustomer(final String email, final String password, final String firstName, final String lastName) {
         if (!attached) {
             return;
@@ -100,6 +137,31 @@ public final class CustomerLoginViewPresenter extends BaseViewPresenter<Customer
                         }
                 ));
         addSubscription(subscription);
+    }
+
+    private void onFetchCustomerToken(final CustomerToken customerToken) {
+        if (!attached) {
+            return;
+        }
+
+        final WeakReference<CustomerLoginViewPresenter> presenterRef = new WeakReference<>(this);
+        SampleApplication.getBuyClient().getCustomer(customerToken.getCustomerId(), new Callback<Customer>() {
+            @Override
+            public void success(final Customer customer) {
+                final CustomerLoginViewPresenter presenter = presenterRef.get();
+                if (presenter != null) {
+                    presenter.onFetchCustomerSuccess(customer);
+                }
+            }
+
+            @Override
+            public void failure(final RetrofitError error) {
+                final CustomerLoginViewPresenter presenter = presenterRef.get();
+                if (presenter != null) {
+                    presenter.onRequestError(error);
+                }
+            }
+        });
     }
 
     private void onFetchCustomerSuccess(final Customer customer) {

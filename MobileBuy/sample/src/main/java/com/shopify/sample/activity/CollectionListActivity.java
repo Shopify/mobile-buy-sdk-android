@@ -122,20 +122,15 @@ public class CollectionListActivity extends SampleListActivity {
 
             case R.id.action_logout: {
                 SampleApplication.setCustomer(null);
-                SampleApplication.getBuyClient()
-                        .logoutCustomer()
-                        .subscribe(
-                                new Action1<Void>() {
-                                    @Override
-                                    public void call(Void aVoid) {
-                                    }
-                                },
-                                new Action1<Throwable>() {
-                                    @Override
-                                    public void call(Throwable throwable) {
-                                    }
-                                }
-                        );
+                SampleApplication.getBuyClient().logoutCustomer(new Callback<Void>() {
+                    @Override
+                    public void success(Void body) {
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                    }
+                });
                 invalidateOptionsMenu();
                 return true;
             }
