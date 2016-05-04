@@ -3,7 +3,7 @@ package com.shopify.buy.model;
 import android.support.test.runner.AndroidJUnit4;
 
 import com.google.gson.Gson;
-import com.shopify.buy.dataprovider.BuyClientFactory;
+import com.shopify.buy.dataprovider.BuyClientUtils;
 import com.shopify.buy.extensions.ShopifyAndroidTestCase;
 import com.shopify.buy.model.internal.MarketingAttribution;
 
@@ -23,7 +23,7 @@ public class MarketingAttributionTest extends ShopifyAndroidTestCase {
 
     @Test
     public void testSerialization() throws JSONException {
-        Gson gson = BuyClientFactory.createDefaultGson();
+        Gson gson = BuyClientUtils.createDefaultGson();
 
         final String appName = "myApp";
         MarketingAttribution marketingAttribution = new MarketingAttribution(appName);

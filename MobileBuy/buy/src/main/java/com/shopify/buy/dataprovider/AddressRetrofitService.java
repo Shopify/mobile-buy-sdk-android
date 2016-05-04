@@ -21,26 +21,31 @@
  *   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  *   THE SOFTWARE.
  */
-package com.shopify.buy.model;
+package com.shopify.buy.dataprovider;
 
-import com.google.gson.annotations.SerializedName;
-import com.shopify.buy.model.internal.ResponseWrapper;
+import com.shopify.buy.model.internal.AddressWrapper;
+import com.shopify.buy.model.internal.AddressesWrapper;
 
-public class PaymentSession implements ResponseWrapper<String> {
+import retrofit2.Response;
+import retrofit2.http.Body;
+import retrofit2.http.GET;
+import retrofit2.http.PATCH;
+import retrofit2.http.POST;
+import retrofit2.http.Path;
+import rx.Observable;
 
-    @SerializedName("id")
-    private String id;
+interface AddressRetrofitService {
 
-    public String getId() {
-        return id;
-    }
+    @GET("api/customers/{customerId}/addresses")
+    Observable<Response<AddressesWrapper>> getAddresses(@Path("customerId") Long customerId);
 
-    public void setId(String id) {
-        this.id = id;
-    }
+    @POST("api/customers/{customerId}/addresses")
+    Observable<Response<AddressWrapper>> createAddress(@Path("customerId") Long customerId, @Body AddressWrapper address);
 
-    @Override
-    public String getContent() {
-        return id;
-    }
+    @GET("api/customers/{customerId}/addresses/{addressId}")
+    Observable<Response<AddressWrapper>> getAddress(@Path("customerId") Long customerId, @Path("addressId") String addressId);
+
+    @PATCH("api/customers/{customerId}/addresses/{addressId}")
+    Observable<Response<AddressWrapper>> updateAddress(@Path("customerId") Long customerId, @Body AddressWrapper address, @Path("addressId") String addressId);
+
 }

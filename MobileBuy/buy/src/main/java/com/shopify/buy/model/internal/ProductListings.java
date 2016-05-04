@@ -32,12 +32,17 @@ import java.util.List;
 /**
  * Wrapper used by Gson for serialization.  It contains a list of {@link Product} objects
  */
-public class ProductListings {
+public class ProductListings implements ResponseWrapper<List<Product>> {
 
     @SerializedName("product_listings")
     private List<Product> products;
 
     public List<Product> getProducts() {
+        return products;
+    }
+
+    @Override
+    public List<Product> getContent() {
         return products;
     }
 }

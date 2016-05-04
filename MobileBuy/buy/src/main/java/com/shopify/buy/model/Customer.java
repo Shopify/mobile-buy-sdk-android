@@ -32,7 +32,7 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.google.gson.annotations.SerializedName;
-import com.shopify.buy.dataprovider.BuyClientFactory;
+import com.shopify.buy.dataprovider.BuyClientUtils;
 
 import java.lang.reflect.Type;
 import java.util.Date;
@@ -270,7 +270,7 @@ public class Customer extends ShopifyObject {
      * A Customer object created using the values in the JSON string.
      */
     public static Customer fromJson(String json) {
-        Gson gson = BuyClientFactory.createDefaultGson(Customer.class);
+        Gson gson = BuyClientUtils.createDefaultGson(Customer.class);
         Customer customer = gson.fromJson(json, Customer.class);
 
         // Create the tagSet.

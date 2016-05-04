@@ -36,7 +36,7 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
-import com.shopify.buy.dataprovider.BuyClientFactory;
+import com.shopify.buy.dataprovider.BuyClientUtils;
 import com.shopify.buy.dataprovider.Callback;
 import com.shopify.buy.model.internal.MarketingAttribution;
 import com.shopify.buy.utils.CollectionUtils;
@@ -627,7 +627,7 @@ public class Checkout extends ShopifyObject {
             return null;
         }
 
-        Gson gson = BuyClientFactory.createDefaultGson(Checkout.class);
+        Gson gson = BuyClientUtils.createDefaultGson(Checkout.class);
 
         JsonObject checkoutElement = gson.fromJson(json, JsonElement.class).getAsJsonObject();
 
@@ -663,7 +663,7 @@ public class Checkout extends ShopifyObject {
 
         @Override
         public JsonElement serialize(final Checkout checkout, final Type typeOfSrc, final JsonSerializationContext context) {
-            Gson gson = BuyClientFactory.createDefaultGson(Checkout.class);
+            Gson gson = BuyClientUtils.createDefaultGson(Checkout.class);
 
             JsonObject checkoutObject = gson.toJsonTree(checkout).getAsJsonObject();
 

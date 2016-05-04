@@ -23,32 +23,15 @@
  */
 package com.shopify.buy.dataprovider;
 
-import android.support.annotation.NonNull;
+import com.shopify.buy.model.Shop;
 
 import retrofit2.Response;
-import rx.functions.Func1;
+import retrofit2.http.GET;
+import rx.Observable;
 
-/**
- * Transformation that unwraps retrofit response body
- *
- * @param <B> class of retrofit body wrapper
- * @param <R> class of unwrapped response from body
- */
-abstract class UnwrapRetrofitBodyTransformation<B, R> implements Func1<Response<B>, R> {
+interface StoreRetrofitService {
 
-    @Override
-    public R call(final Response<B> response) {
-        if (response.body() != null) {
-            return unwrap(response.body());
-        }
-        return null;
-    }
+    @GET("meta.json")
+    Observable<Response<Shop>> getShop();
 
-    /**
-     * Unwraps body from retrofit response
-     *
-     * @param body retrofit body wrapper
-     * @return unwrapped response
-     */
-    abstract R unwrap(@NonNull B body);
 }

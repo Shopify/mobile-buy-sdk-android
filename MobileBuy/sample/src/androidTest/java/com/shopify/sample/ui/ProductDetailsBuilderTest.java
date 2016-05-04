@@ -4,8 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.test.AndroidTestCase;
 
-import com.shopify.buy.dataprovider.BuyClient;
 import com.shopify.buy.dataprovider.BuyClientFactory;
+import com.shopify.buy.dataprovider.BuyClient;
 
 /**
  * Created by krisorr on 2015-07-14.

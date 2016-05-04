@@ -45,9 +45,10 @@ import android.widget.Button;
 
 import com.shopify.buy.R;
 import com.shopify.buy.customTabs.CustomTabActivityHelper;
+import com.shopify.buy.dataprovider.BuyClientBuilder;
+import com.shopify.buy.dataprovider.BuyClientUtils;
 import com.shopify.buy.dataprovider.Callback;
 import com.shopify.buy.dataprovider.BuyClient;
-import com.shopify.buy.dataprovider.BuyClientFactory;
 import com.shopify.buy.dataprovider.RetrofitError;
 import com.shopify.buy.model.Cart;
 import com.shopify.buy.model.Checkout;
@@ -57,7 +58,6 @@ import com.shopify.buy.model.Shop;
 import com.shopify.buy.utils.CurrencyFormatter;
 import com.shopify.sample.BuildConfig;
 
-import java.net.HttpURLConnection;
 import java.text.NumberFormat;
 import java.util.Locale;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -226,17 +226,15 @@ public class ProductDetailsFragment extends Fragment {
 
         final HttpLoggingInterceptor logging = new HttpLoggingInterceptor().setLevel(BuildConfig.OKHTTP_LOG_LEVEL);
 
-        // Create the BuyClient
-        buyClient = BuyClientFactory.getBuyClient(shopDomain, apiKey, appId, applicationName, logging);
-
-        // Set the optional web return to values
-        if (!TextUtils.isEmpty(webReturnToUrl)) {
-            buyClient.setWebReturnToUrl(webReturnToUrl);
-        }
-
-        if (!TextUtils.isEmpty(webReturnToLabel)) {
-            buyClient.setWebReturnToLabel(webReturnToLabel);
-        }
+        buyClient = new BuyClientBuilder()
+                .shopDomain(shopDomain)
+                .apiKey(apiKey)
+                .appId(appId)
+                .applicationName(applicationName)
+                .interceptors(logging)
+                .completeCheckoutWebReturnUrl(webReturnToUrl)
+                .completeCheckoutWebReturnLabel(webReturnToLabel)
+                .build();
     }
 
     private void initializeProgressDialog() {
@@ -281,7 +279,7 @@ public class ProductDetailsFragment extends Fragment {
 
             @Override
             public void failure(RetrofitError error) {
-                productDetailsListener.onFailure(createErrorBundle(ProductDetailsConstants.ERROR_GET_SHOP_FAILED, BuyClient.getErrorBody(error)));
+                productDetailsListener.onFailure(createErrorBundle(ProductDetailsConstants.ERROR_GET_SHOP_FAILED, BuyClientUtils.getErrorBody(error)));
             }
         });
     }
@@ -303,7 +301,7 @@ public class ProductDetailsFragment extends Fragment {
 
             @Override
             public void failure(RetrofitError error) {
-                productDetailsListener.onFailure(createErrorBundle(ProductDetailsConstants.ERROR_GET_PRODUCT_FAILED, BuyClient.getErrorBody(error)));
+                productDetailsListener.onFailure(createErrorBundle(ProductDetailsConstants.ERROR_GET_PRODUCT_FAILED, BuyClientUtils.getErrorBody(error)));
             }
         });
     }

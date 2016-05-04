@@ -39,8 +39,7 @@ public interface ProductService {
     /**
      * Fetch a page of products
      *
-     * @param page     the 1-based page index. The page size can be set with
-     *                 {@link #setPageSize(int)}
+     * @param page     the 1-based page index. The page size is set by {@link BuyClientBuilder#productPageSize} configuration.
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      */
     void getProductPage(int page, Callback<List<Product>> callback);
@@ -48,8 +47,7 @@ public interface ProductService {
     /**
      * Fetch a page of products
      *
-     * @param page the 1-based page index. The page size can be set with
-     *             {@link #setPageSize(int)}
+     * @param page the 1-based page index. The page size is set by {@link BuyClientBuilder#productPageSize} configuration.
      * @return cold observable that emits the requested list of products
      */
     Observable<List<Product>> getProductPage(int page);
@@ -105,7 +103,7 @@ public interface ProductService {
     /**
      * Fetch the list of Products in a Collection using the sort order defined in the shop admin
      *
-     * @param page         the 1-based page index. The page size can be set with {@link #setPageSize(int)}
+     * @param page         the 1-based page index. The page size is set by {@link BuyClientBuilder#productPageSize} configuration.
      * @param collectionId the collectionId that we want to fetch products for
      * @param callback     the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      */
@@ -114,7 +112,7 @@ public interface ProductService {
     /**
      * Fetch the list of Products in a Collection using the sort order defined in the shop admin
      *
-     * @param page         the 1-based page index. The page size can be set with {@link #setPageSize(int)}
+     * @param page         the 1-based page index. The page size is set by {@link BuyClientBuilder#productPageSize} configuration.
      * @param collectionId the collectionId that we want to fetch products for
      * @return cold observable that emits requested list of products
      */
@@ -123,7 +121,7 @@ public interface ProductService {
     /**
      * Fetch the list of Products in a Collection
      *
-     * @param page         the 1-based page index. The page size can be set with {@link #setPageSize(int)}
+     * @param page         the 1-based page index. The page size is set by {@link BuyClientBuilder#productPageSize} configuration.
      * @param collectionId the collectionId that we want to fetch products for
      * @param sortOrder    the sort order for the collection.
      * @param callback     the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
@@ -133,7 +131,7 @@ public interface ProductService {
     /**
      * Fetch the list of Products in a Collection
      *
-     * @param page         the 1-based page index. The page size can be set with {@link #setPageSize(int)}
+     * @param page         the 1-based page index. The page size is set by {@link BuyClientBuilder#productPageSize} configuration.
      * @param collectionId the collectionId that we want to fetch products for
      * @param sortOrder    the sort order for the collection.
      * @return cold observable that emits requested list of products
@@ -157,8 +155,7 @@ public interface ProductService {
     /**
      * Fetch a page of collections
      *
-     * @param page     the 1-based page index. The page size can be set with
-     *                 {@link #setPageSize(int)}
+     * @param page     the 1-based page index. The page size is set by {@link BuyClientBuilder#productPageSize} configuration.
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      */
     void getCollectionPage(int page, Callback<List<Collection>> callback);
@@ -166,8 +163,7 @@ public interface ProductService {
     /**
      * Fetch a page of collections
      *
-     * @param page the 1-based page index. The page size can be set with
-     *             {@link #setPageSize(int)}
+     * @param page the 1-based page index. The page size is set by {@link BuyClientBuilder#productPageSize} configuration.
      * @return cold observable that emits requested list of collections
      */
     Observable<List<Collection>> getCollections(int page);

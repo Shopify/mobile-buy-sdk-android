@@ -31,9 +31,9 @@ import android.net.Uri;
 import android.text.TextUtils;
 import android.widget.Toast;
 
+import com.shopify.buy.dataprovider.BuyClientBuilder;
 import com.shopify.buy.dataprovider.Callback;
 import com.shopify.buy.dataprovider.BuyClient;
-import com.shopify.buy.dataprovider.BuyClientFactory;
 import com.shopify.buy.dataprovider.RetrofitError;
 import com.shopify.buy.model.Address;
 import com.shopify.buy.model.Cart;
@@ -51,6 +51,7 @@ import com.shopify.sample.BuildConfig;
 import com.shopify.sample.R;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.logging.HttpLoggingInterceptor;
 
@@ -98,7 +99,15 @@ public class SampleApplication extends Application {
         /**
          * Create the BuyClient
          */
-        buyClient = BuyClientFactory.getBuyClient(shopUrl, shopifyApiKey, shopifyAppId, applicationName, logging);
+
+        buyClient = new BuyClientBuilder()
+                .shopDomain(shopUrl)
+                .apiKey(shopifyApiKey)
+                .appId(shopifyAppId)
+                .applicationName(applicationName)
+                .interceptors(logging)
+                .networkRequestRetryPolicy(3, TimeUnit.MILLISECONDS.toMillis(200), 1.5f)
+                .build();
 
         buyClient.getShop(new Callback<Shop>() {
             @Override

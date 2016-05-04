@@ -3,8 +3,7 @@ package com.shopify.buy.model;
 import android.support.test.runner.AndroidJUnit4;
 
 import com.google.gson.Gson;
-import com.shopify.buy.dataprovider.BuyClient;
-import com.shopify.buy.dataprovider.BuyClientFactory;
+import com.shopify.buy.dataprovider.BuyClientUtils;
 import com.shopify.buy.dataprovider.Callback;
 import com.shopify.buy.dataprovider.RetrofitError;
 import com.shopify.buy.extensions.ShopifyAndroidTestCase;
@@ -42,7 +41,7 @@ public class SerializationTest extends ShopifyAndroidTestCase {
 
             @Override
             public void failure(RetrofitError error) {
-                fail(BuyClient.getErrorBody(error));
+                fail(BuyClientUtils.getErrorBody(error));
             }
         });
         latch.await();
@@ -94,7 +93,7 @@ public class SerializationTest extends ShopifyAndroidTestCase {
     }
 
     private Object serializeAndDeserialize(Object obj) {
-        Gson gson = BuyClientFactory.createDefaultGson();
+        Gson gson = BuyClientUtils.createDefaultGson();
         String json = gson.toJson(obj);
         return gson.fromJson(json, obj.getClass());
     }

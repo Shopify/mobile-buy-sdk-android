@@ -24,7 +24,7 @@
 
 package com.shopify.buy.model;
 
-import com.shopify.buy.dataprovider.BuyClientFactory;
+import com.shopify.buy.dataprovider.BuyClientUtils;
 import com.shopify.buy.utils.CollectionUtils;
 
 import java.util.ArrayList;
@@ -157,11 +157,11 @@ public class Cart {
     }
 
     public String toJsonString() {
-        return BuyClientFactory.createDefaultGson().toJson(this);
+        return BuyClientUtils.createDefaultGson().toJson(this);
     }
 
     public static Cart fromJson(String json) {
-        return BuyClientFactory.createDefaultGson().fromJson(json, Cart.class);
+        return BuyClientUtils.createDefaultGson().fromJson(json, Cart.class);
     }
 
     /**

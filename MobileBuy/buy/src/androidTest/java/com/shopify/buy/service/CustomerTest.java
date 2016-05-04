@@ -27,7 +27,7 @@ package com.shopify.buy.service;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.suitebuilder.annotation.Suppress;
 
-import com.shopify.buy.dataprovider.BuyClient;
+import com.shopify.buy.dataprovider.BuyClientUtils;
 import com.shopify.buy.dataprovider.BuyError;
 import com.shopify.buy.dataprovider.Callback;
 import com.shopify.buy.dataprovider.RetrofitError;
@@ -83,7 +83,7 @@ public class CustomerTest extends ShopifyAndroidTestCase {
 
             @Override
             public void failure(RetrofitError error) {
-                fail(BuyClient.getErrorBody(error));
+                fail(BuyClientUtils.getErrorBody(error));
             }
         });
     }
@@ -91,7 +91,6 @@ public class CustomerTest extends ShopifyAndroidTestCase {
     @Suppress
     @Test
 	public void testCustomerActivation() throws InterruptedException {
-        
         testCustomerLogin();
 
         final AccountCredentials accountCredentials = new AccountCredentials(customer.getEmail(), PASSWORD, customer.getFirstName(), customer.getLastName());
@@ -105,7 +104,7 @@ public class CustomerTest extends ShopifyAndroidTestCase {
 
             @Override
             public void failure(RetrofitError error) {
-                fail(BuyClient.getErrorBody(error));
+                fail(BuyClientUtils.getErrorBody(error));
             }
         });
     }
@@ -113,7 +112,6 @@ public class CustomerTest extends ShopifyAndroidTestCase {
 
     @Test
 	public void testCustomerLogin() throws InterruptedException {
-        
         customer = getExistingCustomer();
 
         final AccountCredentials accountCredentials = new AccountCredentials(customer.getEmail(), PASSWORD, customer.getFirstName(), customer.getLastName());
@@ -129,17 +127,14 @@ public class CustomerTest extends ShopifyAndroidTestCase {
 
             @Override
             public void failure(RetrofitError error) {
-                fail(BuyClient.getErrorBody(error));
+                fail(BuyClientUtils.getErrorBody(error));
             }
         });
     }
 
     @Test
 	public void testCustomerLogout() throws InterruptedException {
-        
         testCustomerLogin();
-        buyClient.setCustomerToken(customerToken);
-
         buyClient.logoutCustomer(new Callback<Void>() {
             @Override
             public void success(Void aVoid) {
@@ -147,17 +142,14 @@ public class CustomerTest extends ShopifyAndroidTestCase {
 
             @Override
             public void failure(RetrofitError error) {
-                fail(BuyClient.getErrorBody(error));
+                fail(BuyClientUtils.getErrorBody(error));
             }
         });
     }
 
     @Test
 	public void testCustomerRenew() throws InterruptedException {
-        
         testCustomerLogin();
-        buyClient.setCustomerToken(customerToken);
-
         buyClient.renewCustomer(new Callback<CustomerToken>() {
             @Override
             public void success(CustomerToken customerToken) {
@@ -165,14 +157,13 @@ public class CustomerTest extends ShopifyAndroidTestCase {
 
             @Override
             public void failure(RetrofitError error) {
-                fail(BuyClient.getErrorBody(error));
+                fail(BuyClientUtils.getErrorBody(error));
             }
         });
     }
 
     @Test
 	public void testCustomerRecover() throws InterruptedException {
-        
         customer = getExistingCustomer();
 
         buyClient.recoverPassword(EMAIL, new Callback<Void>() {
@@ -182,17 +173,14 @@ public class CustomerTest extends ShopifyAndroidTestCase {
 
             @Override
             public void failure(RetrofitError error) {
-                fail(BuyClient.getErrorBody(error));
+                fail(BuyClientUtils.getErrorBody(error));
             }
         });
     }
 
     @Test
 	public void testCustomerUpdate() throws InterruptedException {
-        
         testCustomerLogin();
-        buyClient.setCustomerToken(customerToken);
-
 
         customer.setLastName("Foo");
 
@@ -205,16 +193,14 @@ public class CustomerTest extends ShopifyAndroidTestCase {
 
             @Override
             public void failure(RetrofitError error) {
-                fail(BuyClient.getErrorBody(error));
+                fail(BuyClientUtils.getErrorBody(error));
             }
         });
     }
 
     @Test
 	public void testGetCustomerOrders() throws InterruptedException {
-        
         testCustomerLogin();
-        buyClient.setCustomerToken(customerToken);
 
         buyClient.getOrders(customer, new Callback<List<Order>>() {
             @Override
@@ -226,7 +212,7 @@ public class CustomerTest extends ShopifyAndroidTestCase {
 
             @Override
             public void failure(RetrofitError error) {
-                fail(BuyClient.getErrorBody(error));
+                fail(BuyClientUtils.getErrorBody(error));
             }
 
         });
@@ -234,10 +220,7 @@ public class CustomerTest extends ShopifyAndroidTestCase {
 
     @Test
 	public void testGetOrder() throws InterruptedException {
-        
         testGetCustomerOrders();
-        buyClient.setCustomerToken(customerToken);
-
 
         String orderId = orders.get(0).getOrderId();
 
@@ -249,16 +232,14 @@ public class CustomerTest extends ShopifyAndroidTestCase {
 
             @Override
             public void failure(RetrofitError error) {
-                fail(BuyClient.getErrorBody(error));
+                fail(BuyClientUtils.getErrorBody(error));
             }
         });
     }
 
     @Test
 	public void testGetCustomer() throws InterruptedException {
-        
         testCustomerLogin();
-        buyClient.setCustomerToken(customerToken);
 
         buyClient.getCustomer(customerToken.getCustomerId(), new Callback<Customer>() {
             @Override
@@ -268,16 +249,14 @@ public class CustomerTest extends ShopifyAndroidTestCase {
 
             @Override
             public void failure(RetrofitError error) {
-                fail(BuyClient.getErrorBody(error));
+                fail(BuyClientUtils.getErrorBody(error));
             }
         });
     }
 
     @Test
 	public void testCreateAddress() throws InterruptedException {
-        
         testCustomerLogin();
-        buyClient.setCustomerToken(customerToken);
 
         final Address inputAddress = USE_MOCK_RESPONSES ? getExistingAddress() : generateAddress();
 
@@ -291,16 +270,14 @@ public class CustomerTest extends ShopifyAndroidTestCase {
 
             @Override
             public void failure(RetrofitError error) {
-                fail(BuyClient.getErrorBody(error));
+                fail(BuyClientUtils.getErrorBody(error));
             }
         });
     }
 
     @Test
 	public void testGetAddresses() throws InterruptedException {
-        
         testCustomerLogin();
-        buyClient.setCustomerToken(customerToken);
 
         buyClient.getAddresses(customer, new Callback<List<Address>>() {
             @Override
@@ -312,16 +289,14 @@ public class CustomerTest extends ShopifyAndroidTestCase {
 
             @Override
             public void failure(RetrofitError error) {
-                fail(BuyClient.getErrorBody(error));
+                fail(BuyClientUtils.getErrorBody(error));
             }
         });
     }
 
     @Test
 	public void testGetAddress() throws InterruptedException {
-        
         testGetAddresses();
-        buyClient.setCustomerToken(customerToken);
 
         String addressId = addresses.get(0).getAddressId();
 
@@ -334,16 +309,14 @@ public class CustomerTest extends ShopifyAndroidTestCase {
 
             @Override
             public void failure(RetrofitError error) {
-                fail(BuyClient.getErrorBody(error));
+                fail(BuyClientUtils.getErrorBody(error));
             }
         });
     }
 
     @Test
 	public void testUpdateAddress() throws InterruptedException {
-        
         testGetAddress();
-        buyClient.setCustomerToken(customerToken);
 
         address.setCity("Toledo");
 
@@ -355,7 +328,7 @@ public class CustomerTest extends ShopifyAndroidTestCase {
 
             @Override
             public void failure(RetrofitError error) {
-                fail(BuyClient.getErrorBody(error));
+                fail(BuyClientUtils.getErrorBody(error));
             }
         });
     }
@@ -430,7 +403,7 @@ public class CustomerTest extends ShopifyAndroidTestCase {
 
             @Override
             public void failure(RetrofitError error) {
-                fail(BuyClient.getErrorBody(error));
+                fail(BuyClientUtils.getErrorBody(error));
             }
         });
 
@@ -501,8 +474,8 @@ public class CustomerTest extends ShopifyAndroidTestCase {
 
                 BuyError confirmationMatch = buyErrors.get(1);
                 assertEquals(confirmationMatch.getCode(), "confirmation");
-                assertEquals(confirmationMatch.getMessage(), "doesn't match Password");
-                assertEquals(1, confirmationMatch.getOptions().size());
+                assertEquals(confirmationMatch.getMessage(), "must match the provided password.");
+                assertEquals(2, confirmationMatch.getOptions().size());
 
                 BuyError invalidEmail = buyErrors.get(2);
                 assertEquals(invalidEmail.getCode(), "invalid");
