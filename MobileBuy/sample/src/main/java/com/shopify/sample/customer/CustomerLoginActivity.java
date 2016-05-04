@@ -34,13 +34,13 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-import com.shopify.buy.dataprovider.BuyClient;
+import com.shopify.buy.dataprovider.BuyClientUtils;
+import com.shopify.buy.dataprovider.RetrofitError;
 import com.shopify.sample.R;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import retrofit.RetrofitError;
 
 public final class CustomerLoginActivity extends AppCompatActivity implements CustomerLoginViewPresenter.View {
 
@@ -93,8 +93,12 @@ public final class CustomerLoginActivity extends AppCompatActivity implements Cu
     private final CustomerLoginViewPresenter presenter = new CustomerLoginViewPresenter();
 
     @Override
-    public void showError(final RetrofitError error) {
-        Log.e(LOG_TAG, "Error: " + BuyClient.getErrorBody(error));
+    public void showError(final Throwable t) {
+        if (t instanceof RetrofitError) {
+            Log.e(LOG_TAG, "Error: " + BuyClientUtils.getErrorBody((RetrofitError) t), t);
+        } else {
+            Log.e(LOG_TAG, t.getMessage(), t);
+        }
         Toast.makeText(this, R.string.error, Toast.LENGTH_LONG).show();
     }
 

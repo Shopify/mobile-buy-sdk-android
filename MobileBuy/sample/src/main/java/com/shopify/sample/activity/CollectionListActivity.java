@@ -45,6 +45,8 @@ import com.shopify.sample.customer.CustomerOrderListActivity;
 import java.util.ArrayList;
 import java.util.List;
 
+import rx.functions.Action1;
+
 
 /**
  * The first activity in the app flow. Allows the user to browse the list of collections and drill down into a list of products.
@@ -120,15 +122,20 @@ public class CollectionListActivity extends SampleListActivity {
 
             case R.id.action_logout: {
                 SampleApplication.setCustomer(null);
-                SampleApplication.getBuyClient().logoutCustomer(new Callback<Void>() {
-                    @Override
-                    public void success(Void aVoid, Response response) {
-                    }
-
-                    @Override
-                    public void failure(RetrofitError error) {
-                    }
-                });
+                SampleApplication.getBuyClient()
+                        .logoutCustomer()
+                        .subscribe(
+                                new Action1<Void>() {
+                                    @Override
+                                    public void call(Void aVoid) {
+                                    }
+                                },
+                                new Action1<Throwable>() {
+                                    @Override
+                                    public void call(Throwable throwable) {
+                                    }
+                                }
+                        );
                 invalidateOptionsMenu();
                 return true;
             }

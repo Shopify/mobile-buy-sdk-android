@@ -25,33 +25,26 @@ package com.shopify.sample.customer;
 
 import com.shopify.buy.model.Customer;
 import com.shopify.buy.model.Order;
+import com.shopify.sample.WeakObserver;
+import com.shopify.sample.BaseViewPresenter;
 import com.shopify.sample.application.SampleApplication;
 
-import java.lang.ref.WeakReference;
 import java.util.List;
 
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
+import rx.Subscription;
+import rx.functions.Action2;
 
-public final class CustomerViewPresenter {
+public final class CustomerOrderListViewPresenter extends BaseViewPresenter<CustomerOrderListViewPresenter.View> {
 
-    public static interface View {
+    public static interface View extends BaseViewPresenter.View {
 
         void showOrderList(List<Order> orders);
 
-        void showError(RetrofitError error);
-
-        void showProgress();
-
-        void hideProgress();
-
     }
 
-    private View view;
-
+    @Override
     public void attach(final View view) {
-        this.view = view;
+        super.attach(view);
 
         final Customer customer = SampleApplication.getCustomer();
         if (customer != null) {
@@ -59,51 +52,41 @@ public final class CustomerViewPresenter {
         }
     }
 
-    public void detach() {
-        view = null;
-    }
-
     private void fetchCustomerOrders(final Customer customer) {
-        view.showProgress();
-        SampleApplication.getBuyClient().getOrders(customer, new BaseBuyCallback<List<Order>>(this) {
-            @Override
-            public void success(final List<Order> orders, final Response response) {
-                final CustomerViewPresenter presenter = presenterRef.get();
-                if (presenter != null) {
-                    presenter.onFetchCustomerOrders(orders);
-                }
-            }
-        });
+        if (!attached) {
+            return;
+        }
+
+        showProgress();
+        final Subscription subscription = SampleApplication.getBuyClient()
+                .getOrders(customer)
+                .subscribe(new WeakObserver<>(
+                        this,
+                        new Action2<CustomerOrderListViewPresenter, List<Order>>() {
+                            @Override
+                            public void call(final CustomerOrderListViewPresenter target, final List<Order> orders) {
+                                target.onFetchCustomerOrders(orders);
+                            }
+                        },
+                        new Action2<CustomerOrderListViewPresenter, Throwable>() {
+                            @Override
+                            public void call(final CustomerOrderListViewPresenter target, final Throwable t) {
+                                target.onRequestError(t);
+                            }
+                        }
+                ));
+        addSubscription(subscription);
     }
 
     private void onFetchCustomerOrders(final List<Order> orders) {
-        if (view != null) {
-            view.hideProgress();
+        hideProgress();
+        if (attached) {
             view.showOrderList(orders);
         }
     }
 
-    private void onRequestError(final RetrofitError error) {
-        if (view != null) {
-            view.hideProgress();
-            view.showError(error);
-        }
-    }
-
-    private static abstract class BaseBuyCallback<T> implements Callback<T> {
-
-        final WeakReference<CustomerViewPresenter> presenterRef;
-
-        BaseBuyCallback(final CustomerViewPresenter presenter) {
-            presenterRef = new WeakReference<>(presenter);
-        }
-
-        @Override
-        public void failure(RetrofitError error) {
-            final CustomerViewPresenter presenter = presenterRef.get();
-            if (presenter != null) {
-                presenter.onRequestError(error);
-            }
-        }
+    private void onRequestError(final Throwable t) {
+        hideProgress();
+        showError(t);
     }
 }

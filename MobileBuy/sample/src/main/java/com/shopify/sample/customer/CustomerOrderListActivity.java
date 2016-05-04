@@ -36,7 +36,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.shopify.buy.dataprovider.BuyClient;
+import com.shopify.buy.dataprovider.BuyClientUtils;
+import com.shopify.buy.dataprovider.RetrofitError;
 import com.shopify.buy.model.Order;
 import com.shopify.sample.R;
 
@@ -44,9 +45,8 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import retrofit.RetrofitError;
 
-public final class CustomerOrderListActivity extends AppCompatActivity implements CustomerViewPresenter.View {
+public final class CustomerOrderListActivity extends AppCompatActivity implements CustomerOrderListViewPresenter.View {
 
     private static final String LOG_TAG = CustomerOrderListActivity.class.getSimpleName();
 
@@ -55,7 +55,7 @@ public final class CustomerOrderListActivity extends AppCompatActivity implement
 
     private ProgressDialog progressDialog;
 
-    private final CustomerViewPresenter presenter = new CustomerViewPresenter();
+    private final CustomerOrderListViewPresenter presenter = new CustomerOrderListViewPresenter();
 
     @Override
     public void showOrderList(final List<Order> orders) {
@@ -63,8 +63,12 @@ public final class CustomerOrderListActivity extends AppCompatActivity implement
     }
 
     @Override
-    public void showError(final RetrofitError error) {
-        Log.e(LOG_TAG, "Error: " + BuyClient.getErrorBody(error));
+    public void showError(final Throwable t) {
+        if (t instanceof RetrofitError) {
+            Log.e(LOG_TAG, "Error: " + BuyClientUtils.getErrorBody((RetrofitError) t), t);
+        } else {
+            Log.e(LOG_TAG, t.getMessage(), t);
+        }
         Toast.makeText(this, R.string.error, Toast.LENGTH_LONG).show();
     }
 

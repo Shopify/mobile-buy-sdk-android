@@ -26,111 +26,92 @@ package com.shopify.sample.customer;
 import com.shopify.buy.model.AccountCredentials;
 import com.shopify.buy.model.Customer;
 import com.shopify.buy.model.CustomerToken;
+import com.shopify.sample.WeakObserver;
+import com.shopify.sample.BaseViewPresenter;
 import com.shopify.sample.application.SampleApplication;
 
-import java.lang.ref.WeakReference;
+import rx.Observable;
+import rx.Subscription;
+import rx.functions.Action2;
+import rx.functions.Func1;
 
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
+public final class CustomerLoginViewPresenter extends BaseViewPresenter<CustomerLoginViewPresenter.View> {
 
-public final class CustomerLoginViewPresenter {
-
-    public static interface View {
-
-        void showError(RetrofitError error);
-
-        void showProgress();
-
-        void hideProgress();
+    public static interface View extends BaseViewPresenter.View {
 
         void onLoginCustomerSuccess();
-
-    }
-
-    private View view;
-
-    public void attach(final View view) {
-        this.view = view;
-    }
-
-    public void detach() {
-        view = null;
     }
 
     public void loginCustomer(final String email, final String password) {
-        view.showProgress();
+        if (!attached) {
+            return;
+        }
 
+        showProgress();
         final AccountCredentials credentials = new AccountCredentials(email, password);
-        SampleApplication.getBuyClient().loginCustomer(credentials, new BaseBuyCallback<CustomerToken>(this) {
-            @Override
-            public void success(final CustomerToken customerToken, final Response response) {
-                final CustomerLoginViewPresenter presenter = presenterRef.get();
-                if (presenter != null) {
-                    presenter.onLoginCustomerSuccess(customerToken);
-                }
-            }
-        });
+        final Subscription subscription = SampleApplication.getBuyClient()
+                .loginCustomer(credentials)
+                .flatMap(new Func1<CustomerToken, Observable<Customer>>() {
+                    @Override
+                    public Observable<Customer> call(CustomerToken customerToken) {
+                        return SampleApplication.getBuyClient().getCustomer(customerToken.getCustomerId());
+                    }
+                })
+                .subscribe(new WeakObserver<>(
+                        this,
+                        new Action2<CustomerLoginViewPresenter, Customer>() {
+                            @Override
+                            public void call(final CustomerLoginViewPresenter target, final Customer customer) {
+                                target.onFetchCustomerSuccess(customer);
+                            }
+                        },
+                        new Action2<CustomerLoginViewPresenter, Throwable>() {
+                            @Override
+                            public void call(final CustomerLoginViewPresenter target, final Throwable t) {
+                                target.onRequestError(t);
+                            }
+                        }
+                ));
+        addSubscription(subscription);
     }
 
     public void createCustomer(final String email, final String password, final String firstName, final String lastName) {
-        view.showProgress();
-
-        final AccountCredentials credentials = new AccountCredentials(email, password, firstName, lastName);
-        SampleApplication.getBuyClient().createCustomer(credentials, new BaseBuyCallback<Customer>(this) {
-            @Override
-            public void success(final Customer customer, final Response response) {
-                final CustomerLoginViewPresenter presenter = presenterRef.get();
-                if (presenter != null) {
-                    presenter.onFetchCustomerSuccess(customer);
-                }
-            }
-        });
-    }
-
-    private void onLoginCustomerSuccess(final CustomerToken customerToken) {
-        if (view != null) {
-            SampleApplication.getBuyClient().getCustomer(customerToken.getCustomerId(), new BaseBuyCallback<Customer>(this) {
-                @Override
-                public void success(final Customer customer, final Response response) {
-                    final CustomerLoginViewPresenter presenter = presenterRef.get();
-                    if (presenter != null) {
-                        presenter.onFetchCustomerSuccess(customer);
-                    }
-                }
-            });
+        if (!attached) {
+            return;
         }
+
+        showProgress();
+        final AccountCredentials credentials = new AccountCredentials(email, password, firstName, lastName);
+        final Subscription subscription = SampleApplication.getBuyClient()
+                .createCustomer(credentials)
+                .subscribe(new WeakObserver<>(
+                        this,
+                        new Action2<CustomerLoginViewPresenter, Customer>() {
+                            @Override
+                            public void call(final CustomerLoginViewPresenter target, final Customer customer) {
+                                target.onFetchCustomerSuccess(customer);
+                            }
+                        },
+                        new Action2<CustomerLoginViewPresenter, Throwable>() {
+                            @Override
+                            public void call(final CustomerLoginViewPresenter target, final Throwable t) {
+                                target.onRequestError(t);
+                            }
+                        }
+                ));
+        addSubscription(subscription);
     }
 
     private void onFetchCustomerSuccess(final Customer customer) {
         SampleApplication.setCustomer(customer);
-        if (view != null) {
-            view.hideProgress();
+        hideProgress();
+        if (attached) {
             view.onLoginCustomerSuccess();
         }
     }
 
-    private void onRequestError(final RetrofitError error) {
-        if (view != null) {
-            view.hideProgress();
-            view.showError(error);
-        }
-    }
-
-    private static abstract class BaseBuyCallback<T> implements Callback<T> {
-
-        final WeakReference<CustomerLoginViewPresenter> presenterRef;
-
-        BaseBuyCallback(final CustomerLoginViewPresenter presenter) {
-            presenterRef = new WeakReference<>(presenter);
-        }
-
-        @Override
-        public void failure(RetrofitError error) {
-            final CustomerLoginViewPresenter presenter = presenterRef.get();
-            if (presenter != null) {
-                presenter.onRequestError(error);
-            }
-        }
+    private void onRequestError(final Throwable t) {
+        hideProgress();
+        showError(t);
     }
 }
