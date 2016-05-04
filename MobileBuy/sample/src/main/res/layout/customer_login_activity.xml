@@ -175,7 +175,7 @@
             android:orientation="horizontal">
 
             <Button
-                android:id="@+id/registeration_cancel_button"
+                android:id="@+id/registration_cancel_button"
                 android:layout_width="0dp"
                 android:layout_height="60dp"
                 android:layout_weight="1"
