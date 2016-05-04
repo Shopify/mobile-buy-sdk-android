@@ -42,6 +42,4 @@
             android:text="@string/cart_permalink"/>
     </FrameLayout>
 
-    <include layout="@layout/order_summary"/>
-
 </LinearLayout>
