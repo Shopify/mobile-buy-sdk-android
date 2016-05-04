@@ -61,12 +61,11 @@ import okhttp3.logging.HttpLoggingInterceptor;
  */
 public class SampleApplication extends Application {
 
-<<<<<<< HEAD
     private static final String SHOP_PROPERTIES_INSTRUCTION =
             "\n\tAdd your shop credentials to a shop.properties file in the main app folder (e.g. 'app/shop.properties'). Include these keys:\n" +
                     "\t\tSHOP_DOMAIN=<myshop>.myshopify.com\n" +
                     "\t\tAPI_KEY=0123456789abcdefghijklmnopqrstuvw\n";
-=======
+
     private static SampleApplication instance;
 
     private static Customer customer;
@@ -82,7 +81,6 @@ public class SampleApplication extends Application {
     public static void setCustomer(Customer customer) {
         SampleApplication.customer = customer;
     }
->>>>>>> 0030cb9... Usage of customer API example
 
     private BuyClient buyClient;
     private Checkout checkout;
@@ -186,21 +184,28 @@ public class SampleApplication extends Application {
 
         checkout = new Checkout(cart);
 
-        Address address = new Address();
-        address.setFirstName("Dinosaur");
-        address.setLastName("Banana");
-        address.setAddress1("421 8th Ave");
-        address.setCity("New York");
-        address.setProvince("NY");
-        address.setZip("10001");
-        address.setCountryCode("US");
-        checkout.setShippingAddress(address);
-        checkout.setBillingAddress(address);
-
+        // if we have logged in customer use customer email instead of hardcoded one
         if (customer != null) {
             checkout.setEmail(customer.getEmail());
         } else {
             checkout.setEmail("something@somehost.com");
+        }
+
+        // the same for shipping address if we have logged in customer use customer default shipping address instead of hardcoded one
+        if (customer != null && customer.getDefaultAddress() != null) {
+            checkout.setShippingAddress(customer.getDefaultAddress());
+            checkout.setBillingAddress(customer.getDefaultAddress());
+        } else {
+            final Address address = new Address();
+            address.setFirstName("Dinosaur");
+            address.setLastName("Banana");
+            address.setAddress1("421 8th Ave");
+            address.setCity("New York");
+            address.setProvince("NY");
+            address.setZip("10001");
+            address.setCountryCode("US");
+            checkout.setShippingAddress(address);
+            checkout.setBillingAddress(address);
         }
 
         checkout.setWebReturnToUrl(getString(R.string.web_return_to_url));

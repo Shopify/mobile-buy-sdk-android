@@ -37,7 +37,7 @@
         android:fontFamily="sans-serif-medium"
         android:text="@string/customer_order_list_title"
         android:textColor="@android:color/black"
-        android:textSize="18sp"/>
+        android:textSize="@dimen/text_medium"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/order_list"

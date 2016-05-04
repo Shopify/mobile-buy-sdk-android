@@ -41,7 +41,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-medium"
             android:textColor="@android:color/black"
-            android:textSize="14sp"/>
+            android:textSize="@dimen/text_small"/>
 
         <TextView
             android:id="@+id/date"
@@ -51,7 +51,7 @@
             android:gravity="right"
             android:fontFamily="sans-serif-medium"
             android:textColor="@android:color/black"
-            android:textSize="14sp"/>
+            android:textSize="@dimen/text_small"/>
     </LinearLayout>
 
     <TextView
@@ -61,7 +61,7 @@
         android:layout_margin="@dimen/spacing_4dp"
         android:fontFamily="sans-serif-medium"
         android:textColor="@android:color/black"
-        android:textSize="14sp"/>
+        android:textSize="@dimen/text_small"/>
 
     <TextView
         android:id="@+id/price"
@@ -70,7 +70,7 @@
         android:layout_margin="@dimen/spacing_4dp"
         android:fontFamily="sans-serif-medium"
         android:textColor="@android:color/black"
-        android:textSize="14sp"/>
+        android:textSize="@dimen/text_small"/>
 
     <View
         android:layout_width="match_parent"

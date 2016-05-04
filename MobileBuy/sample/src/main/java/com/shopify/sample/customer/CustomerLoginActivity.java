@@ -135,7 +135,6 @@ public final class CustomerLoginActivity extends AppCompatActivity implements Cu
         presenter.attach(this);
     }
 
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -194,7 +193,7 @@ public final class CustomerLoginActivity extends AppCompatActivity implements Cu
         presenter.createCustomer(email, password, firstName, lastName);
     }
 
-    @OnClick(R.id.registeration_cancel_button)
+    @OnClick(R.id.registration_cancel_button)
     protected void onCancelRegistrationClick() {
         registerLayoutView.setVisibility(View.GONE);
         loginLayoutView.setVisibility(View.VISIBLE);
