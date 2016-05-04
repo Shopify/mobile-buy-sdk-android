@@ -78,7 +78,7 @@ public class SampleApplication extends Application {
     public static final String ANDROID_PAY_FLOW = "com.shopify.sample.androidpayflow";
 
     // Use ENVIRONMENT_TEST for testing
-    public static final int WALLET_ENVIRONMENT = WalletConstants.ENVIRONMENT_TEST;
+    public static final int WALLET_ENVIRONMENT = WalletConstants.ENVIRONMENT_SANDBOX;
 
     @Override
     public void onCreate() {

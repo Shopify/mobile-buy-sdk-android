@@ -37,6 +37,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.shopify.buy.dataprovider.BuyClientUtils;
 import com.shopify.buy.dataprovider.Callback;
 import com.shopify.buy.dataprovider.RetrofitError;
 import com.google.android.gms.common.ConnectionResult;
@@ -324,7 +325,7 @@ public class DiscountActivity extends SampleActivity implements GoogleApiClient.
 
         getSampleApplication().updateCheckout(getSampleApplication().getCheckout(), maskedWallet, new Callback<Checkout>() {
             @Override
-            public void success(Checkout checkout, Response response) {
+            public void success(Checkout checkout) {
                 dismissLoadingDialog();
 
                 if (checkout.isRequiresShipping()) {
@@ -338,7 +339,7 @@ public class DiscountActivity extends SampleActivity implements GoogleApiClient.
 
             @Override
             public void failure(RetrofitError error) {
-                Log.e(LOG_TAG, "Error updating checkout: " + BuyClient.getErrorBody(error));
+                Log.e(LOG_TAG, "Error updating checkout: " + BuyClientUtils.getErrorBody(error));
                 Toast.makeText(DiscountActivity.this, "Could not start the checkout, please try again later", Toast.LENGTH_SHORT).show();
                 dismissLoadingDialog();
             }
