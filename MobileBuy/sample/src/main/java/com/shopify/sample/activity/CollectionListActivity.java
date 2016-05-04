@@ -26,6 +26,9 @@ package com.shopify.sample.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -35,6 +38,9 @@ import com.shopify.buy.dataprovider.RetrofitError;
 import com.shopify.sample.R;
 import com.shopify.sample.activity.base.SampleListActivity;
 import com.shopify.buy.model.Collection;
+import com.shopify.sample.application.SampleApplication;
+import com.shopify.sample.customer.CustomerLoginActivity;
+import com.shopify.sample.customer.CustomerOrderListActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -76,6 +82,59 @@ public class CollectionListActivity extends SampleListActivity {
                     onError(error);
                 }
             });
+        }
+
+        invalidateOptionsMenu();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(final Menu menu) {
+        final MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.collection_list_activity, menu);
+
+        if (SampleApplication.getCustomer() == null) {
+            menu.removeItem(R.id.action_logout);
+            menu.removeItem(R.id.action_orders);
+        } else {
+            menu.removeItem(R.id.action_login);
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean onMenuItemSelected(final int featureId, final MenuItem item) {
+        switch (item.getItemId()) {
+
+            case R.id.action_login: {
+                final Intent intent = new Intent(this, CustomerLoginActivity.class);
+                startActivity(intent);
+                return true;
+            }
+
+            case R.id.action_orders: {
+                final Intent intent = new Intent(this, CustomerOrderListActivity.class);
+                startActivity(intent);
+                return true;
+            }
+
+            case R.id.action_logout: {
+                SampleApplication.setCustomer(null);
+                SampleApplication.getBuyClient().logoutCustomer(new Callback<Void>() {
+                    @Override
+                    public void success(Void aVoid, Response response) {
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                    }
+                });
+                invalidateOptionsMenu();
+                return true;
+            }
+
+            default:
+                return super.onMenuItemSelected(featureId, item);
         }
     }
 

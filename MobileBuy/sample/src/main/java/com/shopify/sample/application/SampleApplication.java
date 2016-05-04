@@ -40,6 +40,7 @@ import com.shopify.buy.model.Cart;
 import com.shopify.buy.model.Checkout;
 import com.shopify.buy.model.Collection;
 import com.shopify.buy.model.CreditCard;
+import com.shopify.buy.model.Customer;
 import com.shopify.buy.model.LineItem;
 import com.shopify.buy.model.Payment;
 import com.shopify.buy.model.Product;
@@ -60,10 +61,28 @@ import okhttp3.logging.HttpLoggingInterceptor;
  */
 public class SampleApplication extends Application {
 
+<<<<<<< HEAD
     private static final String SHOP_PROPERTIES_INSTRUCTION =
             "\n\tAdd your shop credentials to a shop.properties file in the main app folder (e.g. 'app/shop.properties'). Include these keys:\n" +
                     "\t\tSHOP_DOMAIN=<myshop>.myshopify.com\n" +
                     "\t\tAPI_KEY=0123456789abcdefghijklmnopqrstuvw\n";
+=======
+    private static SampleApplication instance;
+
+    private static Customer customer;
+
+    public static BuyClient getBuyClient() {
+        return instance.buyClient;
+    }
+
+    public static Customer getCustomer() {
+        return customer;
+    }
+
+    public static void setCustomer(Customer customer) {
+        SampleApplication.customer = customer;
+    }
+>>>>>>> 0030cb9... Usage of customer API example
 
     private BuyClient buyClient;
     private Checkout checkout;
@@ -72,6 +91,8 @@ public class SampleApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        instance = this;
 
         initializeBuyClient();
     }
@@ -176,7 +197,11 @@ public class SampleApplication extends Application {
         checkout.setShippingAddress(address);
         checkout.setBillingAddress(address);
 
-        checkout.setEmail("something@somehost.com");
+        if (customer != null) {
+            checkout.setEmail(customer.getEmail());
+        } else {
+            checkout.setEmail("something@somehost.com");
+        }
 
         checkout.setWebReturnToUrl(getString(R.string.web_return_to_url));
         checkout.setWebReturnToLabel(getString(R.string.web_return_to_label));
