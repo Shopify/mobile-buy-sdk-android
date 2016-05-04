@@ -56,4 +56,23 @@
     <string name="web_return_to_scheme">mobilebuysample</string>
     <string name="web_return_to_url">"mobilebuysample://"</string>
     <string name="web_return_to_label">"Return to Mobile Buy Sample</string>
+
+    <string name="collection_list_menu_action_login">Log In</string>
+    <string name="collection_list_menu_action_logout">Log Out</string>
+    <string name="collection_list_menu_action_orders">Orders</string>
+
+    <string name="customer_login_title">Customer Login</string>
+    <string name="customer_login_email_hint">Email</string>
+    <string name="customer_login_email_error_hint">Email can\'t be empty</string>
+    <string name="customer_login_password_hint">Password</string>
+    <string name="customer_login_password_error_hint">Password can\'t be empty</string>
+    <string name="customer_login_first_name_hint">First Name</string>
+    <string name="customer_login_first_name_error_hint">First Name can\'t be empty</string>
+    <string name="customer_login_last_name_hint">Last Name</string>
+    <string name="customer_login_last_name_error_hint">Last Name can\'t be empty</string>
+    <string name="customer_login_register_button">Sign Up</string>
+    <string name="customer_login_login_button">Log in</string>
+    <string name="customer_login_cancel_button">Cancel</string>
+
+    <string name="customer_order_list_title">Orders</string>
 </resources>

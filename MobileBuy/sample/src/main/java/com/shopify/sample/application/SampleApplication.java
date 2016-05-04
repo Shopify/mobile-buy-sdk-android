@@ -38,6 +38,7 @@ import com.shopify.buy.model.Cart;
 import com.shopify.buy.model.Checkout;
 import com.shopify.buy.model.Collection;
 import com.shopify.buy.model.CreditCard;
+import com.shopify.buy.model.Customer;
 import com.shopify.buy.model.LineItem;
 import com.shopify.buy.model.Product;
 import com.shopify.buy.model.ShippingRate;
@@ -58,6 +59,22 @@ import retrofit.client.Response;
  */
 public class SampleApplication extends Application {
 
+    private static SampleApplication instance;
+
+    private static Customer customer;
+
+    public static BuyClient getBuyClient() {
+        return instance.buyClient;
+    }
+
+    public static Customer getCustomer() {
+        return customer;
+    }
+
+    public static void setCustomer(Customer customer) {
+        SampleApplication.customer = customer;
+    }
+
     private BuyClient buyClient;
     private Checkout checkout;
     private Shop shop;
@@ -65,6 +82,8 @@ public class SampleApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        instance = this;
 
         initializeBuyClient();
     }
@@ -158,7 +177,11 @@ public class SampleApplication extends Application {
         address.setCountryCode("US");
         checkout.setShippingAddress(address);
 
-        checkout.setEmail("something@somehost.com");
+        if (customer != null) {
+            checkout.setEmail(customer.getEmail());
+        } else {
+            checkout.setEmail("something@somehost.com");
+        }
 
         checkout.setWebReturnToUrl(getString(R.string.web_return_to_url));
         checkout.setWebReturnToLabel(getString(R.string.web_return_to_label));
