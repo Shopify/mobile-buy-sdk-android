@@ -29,6 +29,8 @@ import com.shopify.buy.BuildConfig;
 import com.shopify.buy.model.CustomerToken;
 import com.shopify.buy.model.Product;
 
+import java.util.concurrent.TimeUnit;
+
 import okhttp3.Interceptor;
 import rx.Scheduler;
 import rx.android.schedulers.AndroidSchedulers;
@@ -43,6 +45,8 @@ public final class BuyClientBuilder {
     public static final int MIN_PAGE_SIZE = 1;
 
     public static final int DEFAULT_PAGE_SIZE = 25;
+
+    public static final long MIN_NETWORK_RETRY_DELAY = TimeUnit.MILLISECONDS.toMillis(500);
 
     private String shopDomain;
 
@@ -157,15 +161,16 @@ public final class BuyClientBuilder {
     }
 
     /**
-     * Sets the configuration for retry logic in case network request failed (socket timeout, unknown host, etc.)
+     * Sets the configuration for retry logic in case network request failed (socket timeout, unknown host, etc.).
+     * The minimum of the delay between retries should be greater than {@link MIN_NETWORK_RETRY_DELAY}, otherwise it will be set to {@link MIN_NETWORK_RETRY_DELAY}
      *
      * @param networkRequestRetryMaxCount          max count of retry attempts
-     * @param networkRequestRetryDelayMs           delay between retry attempts
+     * @param networkRequestRetryDelayMs           delay between retry attempts in milliseconds
      * @param networkRequestRetryBackoffMultiplier backoff multiplier for next request attempts, can be used for “exponential backoff”
      */
     public BuyClientBuilder networkRequestRetryPolicy(final int networkRequestRetryMaxCount, final long networkRequestRetryDelayMs, final float networkRequestRetryBackoffMultiplier) {
         this.networkRequestRetryMaxCount = networkRequestRetryMaxCount;
-        this.networkRequestRetryDelayMs = networkRequestRetryDelayMs;
+        this.networkRequestRetryDelayMs = Math.max(networkRequestRetryDelayMs, MIN_NETWORK_RETRY_DELAY);
         this.networkRequestRetryBackoffMultiplier = networkRequestRetryBackoffMultiplier;
         return this;
     }
