@@ -103,7 +103,7 @@ public interface CustomerService {
      * @param accountCredentials the account credentials with an email and password of the {@link Customer}, not null
      * @param callback           the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      */
-    void loginCustomer(AccountCredentials accountCredentials, Callback<CustomerToken> callback);
+    Cancellable loginCustomer(AccountCredentials accountCredentials, Callback<CustomerToken> callback);
 
     /**
      * Log an existing Customer into Shopify

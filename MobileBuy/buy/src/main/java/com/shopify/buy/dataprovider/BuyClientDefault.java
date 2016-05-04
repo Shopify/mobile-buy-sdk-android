@@ -318,8 +318,8 @@ final class BuyClientDefault implements BuyClient {
     }
 
     @Override
-    public void loginCustomer(AccountCredentials accountCredentials, Callback<CustomerToken> callback) {
-        customerService.loginCustomer(accountCredentials, callback);
+    public Cancellable loginCustomer(AccountCredentials accountCredentials, Callback<CustomerToken> callback) {
+        return customerService.loginCustomer(accountCredentials, callback);
     }
 
     @Override

@@ -24,6 +24,7 @@
 package com.shopify.sample.customer;
 
 import com.shopify.buy.dataprovider.Callback;
+import com.shopify.buy.dataprovider.Cancellable;
 import com.shopify.buy.dataprovider.RetrofitError;
 import com.shopify.buy.model.AccountCredentials;
 import com.shopify.buy.model.Customer;
@@ -44,6 +45,18 @@ public final class CustomerLoginViewPresenter extends BaseViewPresenter<Customer
     public static interface View extends BaseViewPresenter.View {
 
         void onLoginCustomerSuccess();
+    }
+
+    private Cancellable loginCustomerRequest;
+
+    @Override
+    public void detach() {
+        super.detach();
+
+        if (loginCustomerRequest != null) {
+            loginCustomerRequest.cancel();
+            loginCustomerRequest = null;
+        }
     }
 
     public void loginCustomer(final String email, final String password) {
@@ -93,7 +106,7 @@ public final class CustomerLoginViewPresenter extends BaseViewPresenter<Customer
 
         final WeakReference<CustomerLoginViewPresenter> presenterRef = new WeakReference<>(this);
         final AccountCredentials credentials = new AccountCredentials(email, password);
-        SampleApplication.getBuyClient().loginCustomer(credentials, new Callback<CustomerToken>() {
+        loginCustomerRequest = SampleApplication.getBuyClient().loginCustomer(credentials, new Callback<CustomerToken>() {
             @Override
             public void success(final CustomerToken token) {
                 final CustomerLoginViewPresenter presenter = presenterRef.get();

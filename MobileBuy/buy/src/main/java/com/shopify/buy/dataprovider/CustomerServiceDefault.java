@@ -141,8 +141,8 @@ final class CustomerServiceDefault implements CustomerService {
     }
 
     @Override
-    public void loginCustomer(final AccountCredentials accountCredentials, final Callback<CustomerToken> callback) {
-        loginCustomer(accountCredentials).subscribe(new InternalCallbackSubscriber<>(callback));
+    public Cancellable loginCustomer(final AccountCredentials accountCredentials, final Callback<CustomerToken> callback) {
+        return new CancellableSubscriptionWrapper(loginCustomer(accountCredentials).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
