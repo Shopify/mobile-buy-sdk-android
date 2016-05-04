@@ -30,7 +30,7 @@ import com.shopify.buy.model.CreditCard;
 /**
  * Wrapper class used by Gson Serialization
  */
-public class CreditCardWrapper {
+public class CreditCardWrapper implements ResponseWrapper<CreditCard> {
 
     @SerializedName("credit_card")
     private CreditCard creditCard;
@@ -43,4 +43,8 @@ public class CreditCardWrapper {
         return creditCard;
     }
 
+    @Override
+    public CreditCard getContent() {
+        return creditCard;
+    }
 }

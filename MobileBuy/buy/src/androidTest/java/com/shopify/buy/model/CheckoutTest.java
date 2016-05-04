@@ -3,7 +3,7 @@ package com.shopify.buy.model;
 import android.support.test.runner.AndroidJUnit4;
 
 import com.google.gson.Gson;
-import com.shopify.buy.dataprovider.BuyClientFactory;
+import com.shopify.buy.dataprovider.BuyClientUtils;
 import com.shopify.buy.extensions.ProductVariantPrivateAPIs;
 import com.shopify.buy.extensions.ShopifyAndroidTestCase;
 
@@ -67,7 +67,7 @@ public class CheckoutTest extends ShopifyAndroidTestCase {
         CheckoutAttribute attribute = new CheckoutAttribute("foo", "bar");
         checkout.getAttributes().add(attribute);
 
-        Gson gson = BuyClientFactory.createDefaultGson();
+        Gson gson = BuyClientUtils.createDefaultGson();
         String json = gson.toJson(checkout);
 
         Checkout checkoutFromJson = gson.fromJson(json, Checkout.class);
@@ -82,7 +82,7 @@ public class CheckoutTest extends ShopifyAndroidTestCase {
     public void testAttributeDeserialization() {
         String jsonString = "{\"channel\":\"mobile_app\",\"line_items\":[{\"variant\":{\"available\":false,\"grams\":0,\"position\":0,\"productId\":0,\"requires_shipping\":false,\"taxable\":false,\"id\":1},\"grams\":0,\"quantity\":1,\"requires_shipping\":false,\"taxable\":false,\"variant_id\":1}],\"attributes\":[{\"name\":\"foo\",\"value\":\"bar\"}]}";
 
-        Gson gson = BuyClientFactory.createDefaultGson();
+        Gson gson = BuyClientUtils.createDefaultGson();
         Checkout checkout = gson.fromJson(jsonString, Checkout.class);
 
         CheckoutAttribute returnedAttribute = checkout.getAttributes().get(0);

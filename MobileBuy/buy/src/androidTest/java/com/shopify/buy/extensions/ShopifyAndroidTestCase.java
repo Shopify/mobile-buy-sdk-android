@@ -8,8 +8,8 @@ import com.shopify.buy.BuildConfig;
 import com.shopify.buy.data.MockResponder;
 import com.shopify.buy.data.MockResponseGenerator;
 import com.shopify.buy.data.TestData;
+import com.shopify.buy.dataprovider.BuyClientBuilder;
 import com.shopify.buy.dataprovider.BuyClient;
-import com.shopify.buy.dataprovider.BuyClientFactory;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -26,6 +26,7 @@ import rx.schedulers.Schedulers;
  * Base class for Mobile Buy SDK Tests
  */
 public class ShopifyAndroidTestCase {
+
     @Rule
     public TestName name = new TestName();
 
@@ -35,9 +36,8 @@ public class ShopifyAndroidTestCase {
     private static final boolean GENERATE_MOCK_RESPONSES = false;
 
     protected static final boolean USE_MOCK_RESPONSES = TextUtils.isEmpty(BuildConfig.SHOP_DOMAIN)
-                                                        || TextUtils.isEmpty(BuildConfig.API_KEY)
-                                                        || TextUtils.isEmpty(BuildConfig.APP_ID);
-
+            || TextUtils.isEmpty(BuildConfig.API_KEY)
+            || TextUtils.isEmpty(BuildConfig.APP_ID);
 
 
     private Context context;
@@ -92,16 +92,22 @@ public class ShopifyAndroidTestCase {
     }
 
     protected BuyClient getBuyClient(String shopDomain, String apiKey, String appId, String applicationName) {
-        BuyClient buyClient;
+        final BuyClientBuilder buyClientBuilder = new BuyClientBuilder()
+                .shopDomain(shopDomain)
+                .apiKey(apiKey)
+                .appId(appId)
+                .applicationName(applicationName)
+                .callbackScheduler(Schedulers.immediate());
+
         if (USE_MOCK_RESPONSES) {
-            buyClient = BuyClientFactory.getBuyClient(shopDomain, apiKey, appId, applicationName, new MockResponder(context), new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY));
+            buyClientBuilder.interceptors(new MockResponder(context), new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY));
         } else if (GENERATE_MOCK_RESPONSES) {
-            buyClient = BuyClientFactory.getBuyClient(shopDomain, apiKey, appId, applicationName, new MockResponseGenerator(context), new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY));
+            buyClientBuilder.interceptors(new MockResponseGenerator(context), new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY));
         } else {
-            buyClient = BuyClientFactory.getBuyClient(shopDomain, apiKey, appId, applicationName, new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY));
+            buyClientBuilder.interceptors(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY));
         }
 
-        buyClient.setCallbackScheduler(Schedulers.immediate());
+        buyClient = buyClientBuilder.build();
 
         return buyClient;
     }

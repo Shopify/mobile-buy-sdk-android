@@ -21,26 +21,25 @@
  *   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  *   THE SOFTWARE.
  */
-package com.shopify.buy.model;
+package com.shopify.buy.dataprovider;
 
-import com.google.gson.annotations.SerializedName;
-import com.shopify.buy.model.internal.ResponseWrapper;
+import com.shopify.buy.model.Shop;
 
-public class PaymentSession implements ResponseWrapper<String> {
+import rx.Observable;
 
-    @SerializedName("id")
-    private String id;
+public interface StoreService {
 
-    public String getId() {
-        return id;
-    }
+    /**
+     * Fetch metadata about your shop
+     *
+     * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
+     */
+    void getShop(Callback<Shop> callback);
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    @Override
-    public String getContent() {
-        return id;
-    }
+    /**
+     * Fetch metadata about your shop
+     *
+     * @return cold observable that emits requested shop metadata
+     */
+    Observable<Shop> getShop();
 }

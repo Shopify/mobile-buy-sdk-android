@@ -21,26 +21,9 @@
  *   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  *   THE SOFTWARE.
  */
-package com.shopify.buy.model;
+package com.shopify.buy.model.internal;
 
-import com.google.gson.annotations.SerializedName;
-import com.shopify.buy.model.internal.ResponseWrapper;
+public interface ResponseWrapper<T> {
 
-public class PaymentSession implements ResponseWrapper<String> {
-
-    @SerializedName("id")
-    private String id;
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    @Override
-    public String getContent() {
-        return id;
-    }
+     T getContent();
 }

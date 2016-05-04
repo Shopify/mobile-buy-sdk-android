@@ -30,7 +30,7 @@ import com.shopify.buy.model.GiftCard;
 /**
  * Wrapper used by Gson for serialization
  */
-public class GiftCardWrapper {
+public class GiftCardWrapper implements ResponseWrapper<GiftCard> {
 
     @SerializedName("gift_card")
     private GiftCard giftCard;
@@ -47,4 +47,8 @@ public class GiftCardWrapper {
         return giftCard;
     }
 
+    @Override
+    public GiftCard getContent() {
+        return giftCard;
+    }
 }
