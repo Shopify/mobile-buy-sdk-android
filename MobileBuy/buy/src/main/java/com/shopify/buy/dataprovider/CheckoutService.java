@@ -47,8 +47,9 @@ public interface CheckoutService {
      *
      * @param checkout the {@link Checkout} object to use for initiating the checkout process
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
+     * @return cancelable task
      */
-    void createCheckout(Checkout checkout, Callback<Checkout> callback);
+    CancellableTask createCheckout(Checkout checkout, Callback<Checkout> callback);
 
     /**
      * Initiate the Shopify checkout process with a new Checkout object.
@@ -63,8 +64,9 @@ public interface CheckoutService {
      *
      * @param checkout the {@link Checkout} to update
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
+     * @return cancelable task
      */
-    void updateCheckout(Checkout checkout, Callback<Checkout> callback);
+    CancellableTask updateCheckout(Checkout checkout, Callback<Checkout> callback);
 
     /**
      * Update an existing Checkout's attributes
@@ -79,8 +81,9 @@ public interface CheckoutService {
      *
      * @param checkout a {@link Checkout} that has had a {@link CreditCard} associated with it using {@link #storeCreditCard(CreditCard, Checkout)}
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
+     * @return cancelable task
      */
-    void completeCheckout(Checkout checkout, Callback<Payment> callback);
+    CancellableTask completeCheckout(Checkout checkout, Callback<Payment> callback);
 
     /**
      * Complete the checkout and process the payment session
@@ -95,8 +98,9 @@ public interface CheckoutService {
      *
      * @param checkoutToken the token associated with the existing {@link Checkout}
      * @param callback      the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
+     * @return cancelable task
      */
-    void getCheckout(String checkoutToken, Callback<Checkout> callback);
+    CancellableTask getCheckout(String checkoutToken, Callback<Checkout> callback);
 
     /**
      * Fetch an existing Checkout from Shopify
@@ -111,8 +115,9 @@ public interface CheckoutService {
      *
      * @param checkoutToken the {@link Checkout#token} from an existing Checkout
      * @param callback      the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
+     * @return cancelable task
      */
-    void getShippingRates(String checkoutToken, Callback<List<ShippingRate>> callback);
+    CancellableTask getShippingRates(String checkoutToken, Callback<List<ShippingRate>> callback);
 
     /**
      * Fetch shipping rates for a given Checkout
@@ -128,8 +133,9 @@ public interface CheckoutService {
      * @param card     the {@link CreditCard} to associate
      * @param checkout the {@link Checkout} to associate the card with
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
+     * @return cancelable task
      */
-    void storeCreditCard(CreditCard card, Checkout checkout, Callback<Checkout> callback);
+    CancellableTask storeCreditCard(CreditCard card, Checkout checkout, Callback<Checkout> callback);
 
     /**
      * Post a credit card to Shopify's card server and associate it with a Checkout
@@ -146,8 +152,9 @@ public interface CheckoutService {
      * @param giftCardCode the gift card code for a gift card associated with the current Shop
      * @param checkout     the {@link Checkout} object to apply the gift card to
      * @param callback     the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
+     * @return cancelable task
      */
-    void applyGiftCard(String giftCardCode, Checkout checkout, Callback<Checkout> callback);
+    CancellableTask applyGiftCard(String giftCardCode, Checkout checkout, Callback<Checkout> callback);
 
     /**
      * Apply a gift card to a Checkout
@@ -164,8 +171,9 @@ public interface CheckoutService {
      * @param giftCard the {@link GiftCard} to remove from the {@link Checkout}
      * @param checkout the {@code Checkout} to remove the {@code GiftCard} from
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
+     * @return cancelable task
      */
-    void removeGiftCard(GiftCard giftCard, Checkout checkout, Callback<Checkout> callback);
+    CancellableTask removeGiftCard(GiftCard giftCard, Checkout checkout, Callback<Checkout> callback);
 
     /**
      * Remove a gift card that was previously applied to a Checkout
@@ -182,8 +190,9 @@ public interface CheckoutService {
      *
      * @param checkout the {@link Checkout} to expire
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
+     * @return cancelable task
      */
-    void removeProductReservationsFromCheckout(Checkout checkout, Callback<Checkout> callback);
+    CancellableTask removeProductReservationsFromCheckout(Checkout checkout, Callback<Checkout> callback);
 
     /**
      * Convenience method to release all product inventory reservations by setting the `reservationTime` of the checkout `0` and calling {@link #updateCheckout(Checkout, Callback) updateCheckout(Checkout, Callback)}.

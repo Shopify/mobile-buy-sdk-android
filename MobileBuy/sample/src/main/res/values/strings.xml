@@ -57,9 +57,10 @@
     <string name="web_return_to_url">"mobilebuysample://"</string>
     <string name="web_return_to_label">"Return to Mobile Buy Sample</string>
 
+    <string name="collection_list_orders">Orders</string>
+
     <string name="collection_list_menu_action_login">Log In</string>
     <string name="collection_list_menu_action_logout">Log Out</string>
-    <string name="collection_list_menu_action_orders">Orders</string>
 
     <string name="customer_login_title">Customer Login</string>
     <string name="customer_login_email_hint">Email</string>

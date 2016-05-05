@@ -24,6 +24,7 @@
 package com.shopify.sample.customer;
 
 import com.shopify.buy.dataprovider.Callback;
+import com.shopify.buy.dataprovider.CancellableTask;
 import com.shopify.buy.dataprovider.RetrofitError;
 import com.shopify.buy.model.Customer;
 import com.shopify.buy.model.Order;
@@ -45,6 +46,8 @@ public final class CustomerOrderListViewPresenter extends BaseViewPresenter<Cust
 
     }
 
+    private CancellableTask fetchOrderListTask;
+
     @Override
     public void attach(final View view) {
         super.attach(view);
@@ -53,6 +56,16 @@ public final class CustomerOrderListViewPresenter extends BaseViewPresenter<Cust
         if (customer != null) {
             // fetchCustomerOrdersWithRx(customer);
             fetchCustomerOrdersWithCallback(customer);
+        }
+    }
+
+    @Override
+    public void detach() {
+        super.detach();
+
+        if (fetchOrderListTask != null) {
+            fetchOrderListTask.cancel();
+            fetchOrderListTask = null;
         }
     }
 
@@ -89,7 +102,7 @@ public final class CustomerOrderListViewPresenter extends BaseViewPresenter<Cust
 
         showProgress();
         final WeakReference<CustomerOrderListViewPresenter> presenterRef = new WeakReference<>(this);
-        SampleApplication.getBuyClient().getOrders(customer, new Callback<List<Order>>() {
+        fetchOrderListTask = SampleApplication.getBuyClient().getOrders(customer, new Callback<List<Order>>() {
             @Override
             public void success(final List<Order> orders) {
                 final CustomerOrderListViewPresenter presenter = presenterRef.get();

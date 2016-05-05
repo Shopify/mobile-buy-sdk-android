@@ -59,8 +59,8 @@ final class OrderServiceDefault implements OrderService {
     }
 
     @Override
-    public void getOrders(final Customer customer, final Callback<List<Order>> callback) {
-        getOrders(customer).subscribe(new InternalCallbackSubscriber<>(callback));
+    public CancellableTask getOrders(final Customer customer, final Callback<List<Order>> callback) {
+        return new CancellableTaskSubscriptionWrapper(getOrders(customer).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
@@ -78,8 +78,8 @@ final class OrderServiceDefault implements OrderService {
     }
 
     @Override
-    public void getOrder(final Customer customer, final String orderId, final Callback<Order> callback) {
-        getOrder(customer, orderId).subscribe(new InternalCallbackSubscriber<>(callback));
+    public CancellableTask getOrder(final Customer customer, final String orderId, final Callback<Order> callback) {
+        return new CancellableTaskSubscriptionWrapper(getOrder(customer, orderId).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override

@@ -23,8 +23,14 @@
  */
 package com.shopify.buy.dataprovider;
 
-public interface Cancellable {
+/**
+ * A task that can be cancelled
+ */
+public interface CancellableTask {
 
+    /**
+     * Attempt to cancel current task
+     */
     void cancel();
 
 }

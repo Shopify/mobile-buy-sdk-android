@@ -23,6 +23,7 @@
  */
 package com.shopify.sample.customer;
 
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -43,6 +44,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public final class CustomerLoginActivity extends AppCompatActivity implements CustomerLoginViewPresenter.View {
+
+    public static final String EXTRAS_PENDING_ACTIVITY_INTENT = "pending_activity_intent";
 
     private static final String LOG_TAG = CustomerLoginActivity.class.getSimpleName();
 
@@ -114,6 +117,14 @@ public final class CustomerLoginActivity extends AppCompatActivity implements Cu
 
     @Override
     public void onLoginCustomerSuccess() {
+        final PendingIntent pendingIntent = getIntent().getParcelableExtra(EXTRAS_PENDING_ACTIVITY_INTENT);
+        if (pendingIntent != null) {
+            try {
+                pendingIntent.send();
+            } catch (Exception e) {
+                Log.e(LOG_TAG, "Failed to send pending intent", e);
+            }
+        }
         finish();
     }
 

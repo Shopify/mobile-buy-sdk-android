@@ -25,11 +25,11 @@ package com.shopify.buy.dataprovider;
 
 import rx.Subscription;
 
-final class CancellableSubscriptionWrapper implements Cancellable {
+final class CancellableTaskSubscriptionWrapper implements CancellableTask {
 
     private Subscription subscription;
 
-    public CancellableSubscriptionWrapper(final Subscription subscription) {
+    public CancellableTaskSubscriptionWrapper(final Subscription subscription) {
         this.subscription = subscription;
     }
 

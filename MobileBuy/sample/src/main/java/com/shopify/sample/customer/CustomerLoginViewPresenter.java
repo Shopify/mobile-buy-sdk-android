@@ -24,7 +24,7 @@
 package com.shopify.sample.customer;
 
 import com.shopify.buy.dataprovider.Callback;
-import com.shopify.buy.dataprovider.Cancellable;
+import com.shopify.buy.dataprovider.CancellableTask;
 import com.shopify.buy.dataprovider.RetrofitError;
 import com.shopify.buy.model.AccountCredentials;
 import com.shopify.buy.model.Customer;
@@ -47,15 +47,22 @@ public final class CustomerLoginViewPresenter extends BaseViewPresenter<Customer
         void onLoginCustomerSuccess();
     }
 
-    private Cancellable loginCustomerRequest;
+    private CancellableTask loginCustomerTask;
+
+    private CancellableTask fetchCustomerTask;
 
     @Override
     public void detach() {
         super.detach();
 
-        if (loginCustomerRequest != null) {
-            loginCustomerRequest.cancel();
-            loginCustomerRequest = null;
+        if (loginCustomerTask != null) {
+            loginCustomerTask.cancel();
+            loginCustomerTask = null;
+        }
+
+        if (fetchCustomerTask != null) {
+            fetchCustomerTask.cancel();
+            fetchCustomerTask = null;
         }
     }
 
@@ -106,7 +113,7 @@ public final class CustomerLoginViewPresenter extends BaseViewPresenter<Customer
 
         final WeakReference<CustomerLoginViewPresenter> presenterRef = new WeakReference<>(this);
         final AccountCredentials credentials = new AccountCredentials(email, password);
-        loginCustomerRequest = SampleApplication.getBuyClient().loginCustomer(credentials, new Callback<CustomerToken>() {
+        loginCustomerTask = SampleApplication.getBuyClient().loginCustomer(credentials, new Callback<CustomerToken>() {
             @Override
             public void success(final CustomerToken token) {
                 final CustomerLoginViewPresenter presenter = presenterRef.get();
@@ -158,7 +165,7 @@ public final class CustomerLoginViewPresenter extends BaseViewPresenter<Customer
         }
 
         final WeakReference<CustomerLoginViewPresenter> presenterRef = new WeakReference<>(this);
-        SampleApplication.getBuyClient().getCustomer(customerToken.getCustomerId(), new Callback<Customer>() {
+        fetchCustomerTask = SampleApplication.getBuyClient().getCustomer(customerToken.getCustomerId(), new Callback<Customer>() {
             @Override
             public void success(final Customer customer) {
                 final CustomerLoginViewPresenter presenter = presenterRef.get();

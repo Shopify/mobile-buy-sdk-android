@@ -50,8 +50,8 @@ final class StoreServiceDefault implements StoreService {
     }
 
     @Override
-    public void getShop(final Callback<Shop> callback) {
-        getShop().subscribe(new InternalCallbackSubscriber<>(callback));
+    public CancellableTask getShop(final Callback<Shop> callback) {
+        return new CancellableTaskSubscriptionWrapper(getShop().subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override

@@ -169,8 +169,8 @@ final class BuyClientDefault implements BuyClient {
     // ----------- StoreService API ---------------
 
     @Override
-    public void getShop(Callback<Shop> callback) {
-        storeService.getShop(callback);
+    public CancellableTask getShop(Callback<Shop> callback) {
+        return storeService.getShop(callback);
     }
 
     @Override
@@ -191,8 +191,8 @@ final class BuyClientDefault implements BuyClient {
     }
 
     @Override
-    public void createCheckout(final Checkout checkout, final Callback<Checkout> callback) {
-        checkoutService.createCheckout(checkout, callback);
+    public CancellableTask createCheckout(final Checkout checkout, final Callback<Checkout> callback) {
+        return checkoutService.createCheckout(checkout, callback);
     }
 
     @Override
@@ -201,8 +201,8 @@ final class BuyClientDefault implements BuyClient {
     }
 
     @Override
-    public void updateCheckout(final Checkout checkout, final Callback<Checkout> callback) {
-        checkoutService.updateCheckout(checkout, callback);
+    public CancellableTask updateCheckout(final Checkout checkout, final Callback<Checkout> callback) {
+        return checkoutService.updateCheckout(checkout, callback);
     }
 
     @Override
@@ -211,8 +211,8 @@ final class BuyClientDefault implements BuyClient {
     }
 
     @Override
-    public void getShippingRates(final String checkoutToken, final Callback<List<ShippingRate>> callback) {
-        checkoutService.getShippingRates(checkoutToken, callback);
+    public CancellableTask getShippingRates(final String checkoutToken, final Callback<List<ShippingRate>> callback) {
+        return checkoutService.getShippingRates(checkoutToken, callback);
     }
 
     @Override
@@ -221,8 +221,8 @@ final class BuyClientDefault implements BuyClient {
     }
 
     @Override
-    public void storeCreditCard(final CreditCard card, final Checkout checkout, final Callback<Checkout> callback) {
-        checkoutService.storeCreditCard(card, checkout, callback);
+    public CancellableTask storeCreditCard(final CreditCard card, final Checkout checkout, final Callback<Checkout> callback) {
+        return checkoutService.storeCreditCard(card, checkout, callback);
     }
 
     @Override
@@ -231,8 +231,8 @@ final class BuyClientDefault implements BuyClient {
     }
 
     @Override
-    public void completeCheckout(final Checkout checkout, final Callback<Payment> callback) {
-        checkoutService.completeCheckout(checkout, callback);
+    public CancellableTask completeCheckout(final Checkout checkout, final Callback<Payment> callback) {
+        return checkoutService.completeCheckout(checkout, callback);
     }
 
     @Override
@@ -241,8 +241,8 @@ final class BuyClientDefault implements BuyClient {
     }
 
     @Override
-    public void getCheckout(final String checkoutToken, final Callback<Checkout> callback) {
-        checkoutService.getCheckout(checkoutToken, callback);
+    public CancellableTask getCheckout(final String checkoutToken, final Callback<Checkout> callback) {
+        return checkoutService.getCheckout(checkoutToken, callback);
     }
 
     @Override
@@ -251,8 +251,8 @@ final class BuyClientDefault implements BuyClient {
     }
 
     @Override
-    public void applyGiftCard(final String giftCardCode, final Checkout checkout, final Callback<Checkout> callback) {
-        checkoutService.applyGiftCard(giftCardCode, checkout, callback);
+    public CancellableTask applyGiftCard(final String giftCardCode, final Checkout checkout, final Callback<Checkout> callback) {
+        return checkoutService.applyGiftCard(giftCardCode, checkout, callback);
     }
 
     @Override
@@ -261,8 +261,8 @@ final class BuyClientDefault implements BuyClient {
     }
 
     @Override
-    public void removeGiftCard(final GiftCard giftCard, final Checkout checkout, final Callback<Checkout> callback) {
-        checkoutService.removeGiftCard(giftCard, checkout, callback);
+    public CancellableTask removeGiftCard(final GiftCard giftCard, final Checkout checkout, final Callback<Checkout> callback) {
+        return checkoutService.removeGiftCard(giftCard, checkout, callback);
     }
 
     @Override
@@ -271,8 +271,8 @@ final class BuyClientDefault implements BuyClient {
     }
 
     @Override
-    public void removeProductReservationsFromCheckout(final Checkout checkout, final Callback<Checkout> callback) {
-        checkoutService.removeProductReservationsFromCheckout(checkout, callback);
+    public CancellableTask removeProductReservationsFromCheckout(final Checkout checkout, final Callback<Checkout> callback) {
+        return checkoutService.removeProductReservationsFromCheckout(checkout, callback);
     }
 
     @Override
@@ -288,8 +288,8 @@ final class BuyClientDefault implements BuyClient {
     }
 
     @Override
-    public void createCustomer(AccountCredentials accountCredentials, Callback<Customer> callback) {
-        customerService.createCustomer(accountCredentials, callback);
+    public CancellableTask createCustomer(AccountCredentials accountCredentials, Callback<Customer> callback) {
+        return customerService.createCustomer(accountCredentials, callback);
     }
 
     @Override
@@ -298,8 +298,8 @@ final class BuyClientDefault implements BuyClient {
     }
 
     @Override
-    public void activateCustomer(Long customerId, String activationToken, AccountCredentials accountCredentials, Callback<Customer> callback) {
-        customerService.activateCustomer(customerId, activationToken, accountCredentials, callback);
+    public CancellableTask activateCustomer(Long customerId, String activationToken, AccountCredentials accountCredentials, Callback<Customer> callback) {
+        return customerService.activateCustomer(customerId, activationToken, accountCredentials, callback);
     }
 
     @Override
@@ -308,8 +308,8 @@ final class BuyClientDefault implements BuyClient {
     }
 
     @Override
-    public void resetPassword(Long customerId, String resetToken, AccountCredentials accountCredentials, Callback<Customer> callback) {
-        customerService.resetPassword(customerId, resetToken, accountCredentials, callback);
+    public CancellableTask resetPassword(Long customerId, String resetToken, AccountCredentials accountCredentials, Callback<Customer> callback) {
+        return customerService.resetPassword(customerId, resetToken, accountCredentials, callback);
     }
 
     @Override
@@ -318,7 +318,7 @@ final class BuyClientDefault implements BuyClient {
     }
 
     @Override
-    public Cancellable loginCustomer(AccountCredentials accountCredentials, Callback<CustomerToken> callback) {
+    public CancellableTask loginCustomer(AccountCredentials accountCredentials, Callback<CustomerToken> callback) {
         return customerService.loginCustomer(accountCredentials, callback);
     }
 
@@ -328,8 +328,8 @@ final class BuyClientDefault implements BuyClient {
     }
 
     @Override
-    public void logoutCustomer(Callback<Void> callback) {
-        customerService.logoutCustomer(callback);
+    public CancellableTask logoutCustomer(Callback<Void> callback) {
+        return customerService.logoutCustomer(callback);
     }
 
     @Override
@@ -338,8 +338,8 @@ final class BuyClientDefault implements BuyClient {
     }
 
     @Override
-    public void updateCustomer(Customer customer, Callback<Customer> callback) {
-        customerService.updateCustomer(customer, callback);
+    public CancellableTask updateCustomer(Customer customer, Callback<Customer> callback) {
+        return customerService.updateCustomer(customer, callback);
     }
 
     @Override
@@ -348,8 +348,8 @@ final class BuyClientDefault implements BuyClient {
     }
 
     @Override
-    public void getCustomer(Long customerId, Callback<Customer> callback) {
-        customerService.getCustomer(customerId, callback);
+    public CancellableTask getCustomer(Long customerId, Callback<Customer> callback) {
+        return customerService.getCustomer(customerId, callback);
     }
 
     @Override
@@ -358,8 +358,8 @@ final class BuyClientDefault implements BuyClient {
     }
 
     @Override
-    public void renewCustomer(Callback<CustomerToken> callback) {
-        customerService.renewCustomer(callback);
+    public CancellableTask renewCustomer(Callback<CustomerToken> callback) {
+        return customerService.renewCustomer(callback);
     }
 
     @Override
@@ -368,8 +368,8 @@ final class BuyClientDefault implements BuyClient {
     }
 
     @Override
-    public void recoverPassword(String email, Callback<Void> callback) {
-        customerService.recoverPassword(email, callback);
+    public CancellableTask recoverPassword(String email, Callback<Void> callback) {
+        return customerService.recoverPassword(email, callback);
     }
 
     @Override
@@ -380,8 +380,8 @@ final class BuyClientDefault implements BuyClient {
     // ----------- OrderService API ---------------
 
     @Override
-    public void getOrders(Customer customer, Callback<List<Order>> callback) {
-        orderService.getOrders(customer, callback);
+    public CancellableTask getOrders(Customer customer, Callback<List<Order>> callback) {
+        return orderService.getOrders(customer, callback);
     }
 
     @Override
@@ -390,8 +390,8 @@ final class BuyClientDefault implements BuyClient {
     }
 
     @Override
-    public void getOrder(Customer customer, String orderId, Callback<Order> callback) {
-        orderService.getOrder(customer, orderId, callback);
+    public CancellableTask getOrder(Customer customer, String orderId, Callback<Order> callback) {
+        return orderService.getOrder(customer, orderId, callback);
     }
 
     @Override
@@ -402,8 +402,8 @@ final class BuyClientDefault implements BuyClient {
     // ----------- AddressService API ---------------
 
     @Override
-    public void createAddress(final Customer customer, final Address address, final Callback<Address> callback) {
-        addressService.createAddress(customer, address, callback);
+    public CancellableTask createAddress(final Customer customer, final Address address, final Callback<Address> callback) {
+        return addressService.createAddress(customer, address, callback);
     }
 
     @Override
@@ -412,8 +412,8 @@ final class BuyClientDefault implements BuyClient {
     }
 
     @Override
-    public void getAddresses(final Customer customer, final Callback<List<Address>> callback) {
-        addressService.getAddresses(customer, callback);
+    public CancellableTask getAddresses(final Customer customer, final Callback<List<Address>> callback) {
+        return addressService.getAddresses(customer, callback);
     }
 
     @Override
@@ -422,8 +422,8 @@ final class BuyClientDefault implements BuyClient {
     }
 
     @Override
-    public void getAddress(final Customer customer, final String addressId, final Callback<Address> callback) {
-        addressService.getAddress(customer, addressId, callback);
+    public CancellableTask getAddress(final Customer customer, final String addressId, final Callback<Address> callback) {
+        return addressService.getAddress(customer, addressId, callback);
     }
 
     @Override
@@ -432,8 +432,8 @@ final class BuyClientDefault implements BuyClient {
     }
 
     @Override
-    public void updateAddress(final Customer customer, final Address address, final Callback<Address> callback) {
-        addressService.updateAddress(customer, address, callback);
+    public CancellableTask updateAddress(final Customer customer, final Address address, final Callback<Address> callback) {
+        return addressService.updateAddress(customer, address, callback);
     }
 
     @Override
@@ -450,8 +450,8 @@ final class BuyClientDefault implements BuyClient {
     }
 
     @Override
-    public void getProductPage(int page, Callback<List<Product>> callback) {
-        productService.getProductPage(page, callback);
+    public CancellableTask getProductPage(int page, Callback<List<Product>> callback) {
+        return productService.getProductPage(page, callback);
     }
 
     @Override
@@ -460,8 +460,8 @@ final class BuyClientDefault implements BuyClient {
     }
 
     @Override
-    public void getProductWithHandle(String handle, Callback<Product> callback) {
-        productService.getProductWithHandle(handle, callback);
+    public CancellableTask getProductWithHandle(String handle, Callback<Product> callback) {
+        return productService.getProductWithHandle(handle, callback);
     }
 
     @Override
@@ -470,8 +470,8 @@ final class BuyClientDefault implements BuyClient {
     }
 
     @Override
-    public void getProduct(String productId, Callback<Product> callback) {
-        productService.getProduct(productId, callback);
+    public CancellableTask getProduct(String productId, Callback<Product> callback) {
+        return productService.getProduct(productId, callback);
     }
 
     @Override
@@ -480,8 +480,8 @@ final class BuyClientDefault implements BuyClient {
     }
 
     @Override
-    public void getProducts(List<String> productIds, Callback<List<Product>> callback) {
-        productService.getProducts(productIds, callback);
+    public CancellableTask getProducts(List<String> productIds, Callback<List<Product>> callback) {
+        return productService.getProducts(productIds, callback);
     }
 
     @Override
@@ -490,8 +490,8 @@ final class BuyClientDefault implements BuyClient {
     }
 
     @Override
-    public void getProducts(int page, String collectionId, Callback<List<Product>> callback) {
-        productService.getProducts(page, collectionId, callback);
+    public CancellableTask getProducts(int page, String collectionId, Callback<List<Product>> callback) {
+        return productService.getProducts(page, collectionId, callback);
     }
 
     @Override
@@ -500,8 +500,8 @@ final class BuyClientDefault implements BuyClient {
     }
 
     @Override
-    public void getProducts(int page, String collectionId, SortOrder sortOrder, Callback<List<Product>> callback) {
-        productService.getProducts(page, collectionId, sortOrder, callback);
+    public CancellableTask getProducts(int page, String collectionId, SortOrder sortOrder, Callback<List<Product>> callback) {
+        return productService.getProducts(page, collectionId, sortOrder, callback);
     }
 
     @Override
@@ -510,8 +510,8 @@ final class BuyClientDefault implements BuyClient {
     }
 
     @Override
-    public void getCollections(Callback<List<Collection>> callback) {
-        productService.getCollections(callback);
+    public CancellableTask getCollections(Callback<List<Collection>> callback) {
+        return productService.getCollections(callback);
     }
 
     @Override
@@ -520,8 +520,8 @@ final class BuyClientDefault implements BuyClient {
     }
 
     @Override
-    public void getCollectionPage(int page, Callback<List<Collection>> callback) {
-        productService.getCollectionPage(page, callback);
+    public CancellableTask getCollectionPage(int page, Callback<List<Collection>> callback) {
+        return productService.getCollectionPage(page, callback);
     }
 
     @Override

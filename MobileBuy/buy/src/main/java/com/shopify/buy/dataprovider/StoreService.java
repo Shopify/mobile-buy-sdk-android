@@ -33,8 +33,9 @@ public interface StoreService {
      * Fetch metadata about your shop
      *
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
+     * @return cancelable task
      */
-    void getShop(Callback<Shop> callback);
+    CancellableTask getShop(Callback<Shop> callback);
 
     /**
      * Fetch metadata about your shop

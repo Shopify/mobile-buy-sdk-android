@@ -33,11 +33,6 @@
         app:showAsAction="ifRoom"/>
 
     <item
-        android:id="@+id/action_orders"
-        android:title="@string/collection_list_menu_action_orders"
-        app:showAsAction="ifRoom"/>
-
-    <item
         android:id="@+id/action_logout"
         android:title="@string/collection_list_menu_action_logout"
         app:showAsAction="ifRoom"/>
