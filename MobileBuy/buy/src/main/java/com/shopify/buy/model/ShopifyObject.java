@@ -36,7 +36,7 @@ public abstract class ShopifyObject {
     /**
      * @return The unique identifier of this object within the Shopify platform.
      */
-    public Long getId() {
+    protected Long getId() {
         return id;
     }
 

@@ -18,6 +18,11 @@ public class CheckoutPrivateAPIs extends Checkout {
         super(cart);
     }
 
+    @Override
+    public Long getId() {
+        return super.getId();
+    }
+
     public static CheckoutPrivateAPIs fromCheckout(Checkout checkout) {
         Gson gson = BuyClientUtils.createDefaultGson();
         String checkoutJson = gson.toJson(checkout);
