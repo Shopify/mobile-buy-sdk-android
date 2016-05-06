@@ -26,6 +26,12 @@ package com.shopify.buy.dataprovider;
 import android.text.TextUtils;
 
 import com.shopify.buy.BuildConfig;
+import com.shopify.buy.dataprovider.cache.AddressCacheHook;
+import com.shopify.buy.dataprovider.cache.CheckoutCacheHook;
+import com.shopify.buy.dataprovider.cache.CustomerCacheHook;
+import com.shopify.buy.dataprovider.cache.OrderCacheHook;
+import com.shopify.buy.dataprovider.cache.ProductCacheHook;
+import com.shopify.buy.dataprovider.cache.StoreCacheHook;
 import com.shopify.buy.model.CustomerToken;
 import com.shopify.buy.model.Product;
 
@@ -73,6 +79,18 @@ public final class BuyClientBuilder {
     private long networkRequestRetryDelayMs;
 
     private float networkRequestRetryBackoffMultiplier;
+
+    private AddressCacheHook addressCacheHook;
+
+    private CheckoutCacheHook checkoutCacheHook;
+
+    private CustomerCacheHook customerCacheHook;
+
+    private OrderCacheHook orderCacheHook;
+
+    private ProductCacheHook productCacheHook;
+
+    private StoreCacheHook storeCacheHook;
 
     /**
      * Sets store domain url (usually {store name}.myshopify.com
@@ -175,6 +193,36 @@ public final class BuyClientBuilder {
         return this;
     }
 
+    public BuyClientBuilder addressCacheHook(AddressCacheHook addressCacheHook) {
+        this.addressCacheHook = addressCacheHook;
+        return this;
+    }
+
+    public BuyClientBuilder checkoutCacheHook(CheckoutCacheHook checkoutCacheHook) {
+        this.checkoutCacheHook = checkoutCacheHook;
+        return this;
+    }
+
+    public BuyClientBuilder customerCacheHook(CustomerCacheHook customerCacheHook) {
+        this.customerCacheHook = customerCacheHook;
+        return this;
+    }
+
+    public BuyClientBuilder orderCacheHook(OrderCacheHook orderCacheHook) {
+        this.orderCacheHook = orderCacheHook;
+        return this;
+    }
+
+    public BuyClientBuilder productCacheHook(ProductCacheHook productCacheHook) {
+        this.productCacheHook = productCacheHook;
+        return this;
+    }
+
+    public BuyClientBuilder storeCacheHook(StoreCacheHook storeCacheHook) {
+        this.storeCacheHook = storeCacheHook;
+        return this;
+    }
+
     /**
      * Builds default implementation of {@link BuyClient}
      */
@@ -214,6 +262,12 @@ public final class BuyClientBuilder {
                 networkRequestRetryMaxCount,
                 networkRequestRetryDelayMs,
                 networkRequestRetryBackoffMultiplier,
+                addressCacheHook,
+                checkoutCacheHook,
+                customerCacheHook,
+                orderCacheHook,
+                productCacheHook,
+                storeCacheHook,
                 interceptors
         );
     }

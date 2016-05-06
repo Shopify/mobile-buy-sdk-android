@@ -25,6 +25,7 @@ package com.shopify.buy.dataprovider;
 
 import android.text.TextUtils;
 
+import com.shopify.buy.dataprovider.cache.AddressCacheHook;
 import com.shopify.buy.model.Address;
 import com.shopify.buy.model.Customer;
 import com.shopify.buy.model.internal.AddressWrapper;
@@ -35,6 +36,8 @@ import java.util.List;
 import retrofit2.Retrofit;
 import rx.Observable;
 import rx.Scheduler;
+import rx.functions.Action1;
+import rx.functions.Func1;
 
 /**
  * Default implementation of {@link AddressService}
@@ -47,14 +50,59 @@ final class AddressServiceDefault implements AddressService {
 
     final Scheduler callbackScheduler;
 
+    private Func1<Customer, Action1<Address>> cacheAddressHookProvider;
+
+    private Func1<Customer, Action1<List<Address>>> cacheAddressesHookProvider;
+
     AddressServiceDefault(
             final Retrofit retrofit,
             final NetworkRetryPolicyProvider networkRetryPolicyProvider,
+            final AddressCacheHook cacheHook,
             final Scheduler callbackScheduler
     ) {
         this.retrofitService = retrofit.create(AddressRetrofitService.class);
         this.networkRetryPolicyProvider = networkRetryPolicyProvider;
         this.callbackScheduler = callbackScheduler;
+
+        initCacheHookProviders(cacheHook);
+    }
+
+    private void initCacheHookProviders(final AddressCacheHook cacheHook) {
+        cacheAddressHookProvider = new Func1<Customer, Action1<Address>>() {
+            @Override
+            public Action1<Address> call(final Customer customer) {
+                return new Action1<Address>() {
+                    @Override
+                    public void call(final Address address) {
+                        if (cacheHook != null) {
+                            try {
+                                cacheHook.cacheAddress(customer, address);
+                            } catch (Exception e) {
+
+                            }
+                        }
+                    }
+                };
+            }
+        };
+
+        cacheAddressesHookProvider = new Func1<Customer, Action1<List<Address>>>() {
+            @Override
+            public Action1<List<Address>> call(final Customer customer) {
+                return new Action1<List<Address>>() {
+                    @Override
+                    public void call(final List<Address> addresses) {
+                        if (cacheHook != null) {
+                            try {
+                                cacheHook.cacheAddresses(customer, addresses);
+                            } catch (Exception e) {
+
+                            }
+                        }
+                    }
+                };
+            }
+        };
     }
 
     @Override
@@ -76,6 +124,7 @@ final class AddressServiceDefault implements AddressService {
                 .createAddress(customer.getId(), new AddressWrapper(address))
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
                 .compose(new UnwrapRetrofitBodyTransformer<AddressWrapper, Address>())
+                .doOnNext(cacheAddressHookProvider.call(customer))
                 .observeOn(callbackScheduler);
     }
 
@@ -95,6 +144,7 @@ final class AddressServiceDefault implements AddressService {
                 .retryWhen(networkRetryPolicyProvider.provide())
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
                 .compose(new UnwrapRetrofitBodyTransformer<AddressesWrapper, List<Address>>())
+                .doOnNext(cacheAddressesHookProvider.call(customer))
                 .observeOn(callbackScheduler);
     }
 
@@ -118,6 +168,7 @@ final class AddressServiceDefault implements AddressService {
                 .retryWhen(networkRetryPolicyProvider.provide())
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
                 .compose(new UnwrapRetrofitBodyTransformer<AddressWrapper, Address>())
+                .doOnNext(cacheAddressHookProvider.call(customer))
                 .observeOn(callbackScheduler);
     }
 
@@ -140,6 +191,7 @@ final class AddressServiceDefault implements AddressService {
                 .updateAddress(customer.getId(), new AddressWrapper(address), address.getAddressId())
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
                 .compose(new UnwrapRetrofitBodyTransformer<AddressWrapper, Address>())
+                .doOnNext(cacheAddressHookProvider.call(customer))
                 .observeOn(callbackScheduler);
     }
 }
