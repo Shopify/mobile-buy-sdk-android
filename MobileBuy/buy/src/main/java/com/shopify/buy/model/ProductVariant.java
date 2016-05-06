@@ -74,6 +74,11 @@ public class ProductVariant extends ShopifyObject {
     @SerializedName("image_url")
     protected String imageUrl;
 
+    @Override
+    public Long getId() {
+        return super.getId();
+    }
+
     /**
      * @return The title of this variant.
      */
