@@ -443,6 +443,12 @@ final class BuyClientDefault implements BuyClient {
 
     // ----------- ProductService API ---------------
 
+
+    @Override
+    public int getProductPageSize() {
+        return productService.getProductPageSize();
+    }
+
     @Override
     public void getProductPage(int page, Callback<List<Product>> callback) {
         productService.getProductPage(page, callback);
