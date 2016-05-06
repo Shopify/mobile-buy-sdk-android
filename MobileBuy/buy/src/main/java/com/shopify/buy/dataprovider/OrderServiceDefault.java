@@ -23,8 +23,7 @@
  */
 package com.shopify.buy.dataprovider;
 
-import android.text.TextUtils;
-
+import com.shopify.buy.dataprovider.cache.OrderCacheHook;
 import com.shopify.buy.model.Order;
 import com.shopify.buy.model.internal.OrderWrapper;
 import com.shopify.buy.model.internal.OrdersWrapper;
@@ -34,6 +33,8 @@ import java.util.List;
 import retrofit2.Retrofit;
 import rx.Observable;
 import rx.Scheduler;
+import rx.functions.Action1;
+import rx.functions.Func1;
 
 /**
  * Default implementation of {@link OrderService}
@@ -46,14 +47,57 @@ final class OrderServiceDefault implements OrderService {
 
     final Scheduler callbackScheduler;
 
+    private Func1<Long, Action1<Order>> cacheOrderHookProvider;
+
+    private Func1<Long, Action1<List<Order>>> cacheOrdersHookProvider;
+
     OrderServiceDefault(
         final Retrofit retrofit,
         final NetworkRetryPolicyProvider networkRetryPolicyProvider,
+        final OrderCacheHook cacheHook,
         final Scheduler callbackScheduler
     ) {
         this.retrofitService = retrofit.create(OrderRetrofitService.class);
         this.networkRetryPolicyProvider = networkRetryPolicyProvider;
         this.callbackScheduler = callbackScheduler;
+
+        initCacheHookProviders(cacheHook);
+    }
+
+    private void initCacheHookProviders(final OrderCacheHook cacheHook) {
+        cacheOrderHookProvider = new Func1<Long, Action1<Order>>() {
+            @Override
+            public Action1<Order> call(final Long customerId) {
+                return new Action1<Order>() {
+                    @Override
+                    public void call(final Order order) {
+                        if (cacheHook != null) {
+                            try {
+                                cacheHook.cacheOrder(customerId, order);
+                            } catch (Exception e) {
+                            }
+                        }
+                    }
+                };
+            }
+        };
+
+        cacheOrdersHookProvider = new Func1<Long, Action1<List<Order>>>() {
+            @Override
+            public Action1<List<Order>> call(final Long customerId) {
+                return new Action1<List<Order>>() {
+                    @Override
+                    public void call(final List<Order> orders) {
+                        if (cacheHook != null) {
+                            try {
+                                cacheHook.cacheOrders(customerId, orders);
+                            } catch (Exception e) {
+                            }
+                        }
+                    }
+                };
+            }
+        };
     }
 
     @Override
@@ -72,6 +116,7 @@ final class OrderServiceDefault implements OrderService {
             .retryWhen(networkRetryPolicyProvider.provide())
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<OrdersWrapper, List<Order>>())
+            .doOnNext(cacheOrdersHookProvider.call(customerId))
             .onErrorResumeNext(new BuyClientExceptionHandler<List<Order>>())
             .observeOn(callbackScheduler);
     }
@@ -96,6 +141,7 @@ final class OrderServiceDefault implements OrderService {
             .retryWhen(networkRetryPolicyProvider.provide())
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<OrderWrapper, Order>())
+            .doOnNext(cacheOrderHookProvider.call(customerId))
             .onErrorResumeNext(new BuyClientExceptionHandler<Order>())
             .observeOn(callbackScheduler);
     }
