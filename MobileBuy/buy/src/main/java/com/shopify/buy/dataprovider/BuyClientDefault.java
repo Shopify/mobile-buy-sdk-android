@@ -118,7 +118,7 @@ final class BuyClientDefault implements BuyClient {
         final OkHttpClient.Builder builder = new OkHttpClient.Builder()
                 .connectTimeout(30, TimeUnit.SECONDS)
                 .readTimeout(60, TimeUnit.SECONDS)
-                .writeTimeout(60, TimeUnit.SECONDS).connectionPool(new ConnectionPool())
+                .writeTimeout(60, TimeUnit.SECONDS)
                 .addInterceptor(requestInterceptor);
 
         if (interceptors != null) {
@@ -126,8 +126,6 @@ final class BuyClientDefault implements BuyClient {
                 builder.addInterceptor(interceptor);
             }
         }
-
-        builder.addInterceptor(new HttpLoggingInterceptor(HttpLoggingInterceptor.Logger.DEFAULT).setLevel(HttpLoggingInterceptor.Level.BODY));
 
         final OkHttpClient httpClient = builder.build();
 
