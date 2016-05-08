@@ -25,7 +25,6 @@ package com.shopify.buy.dataprovider;
 
 import android.text.TextUtils;
 
-import com.shopify.buy.dataprovider.cache.ProductCacheHook;
 import com.shopify.buy.model.Collection;
 import com.shopify.buy.model.Product;
 import com.shopify.buy.model.internal.CollectionListings;
@@ -36,10 +35,6 @@ import java.util.List;
 import retrofit2.Retrofit;
 import rx.Observable;
 import rx.Scheduler;
-import rx.functions.Action1;
-import rx.functions.Func0;
-import rx.functions.Func1;
-import rx.functions.Func2;
 
 /**
  * Default implementation of {@link ProductService}
@@ -56,143 +51,22 @@ final class ProductServiceDefault implements ProductService {
 
     final Scheduler callbackScheduler;
 
-    private Func1<Integer, Action1<List<Product>>> cacheProductPageHookProvider;
-
-    private Func1<String, Action1<Product>> cacheProductWithHandleHookProvider;
-
-    private Func0<Action1<Product>> cacheProductHookProvider;
-
-    private Func0<Action1<List<Product>>> cacheProductsHookProvider;
-
-    private Func2<String, Integer, Action1<List<Product>>> cacheCollectionProductPageHookProvider;
-
-    private Func1<Integer, Action1<List<Collection>>> cacheCollectionPageHookProvider;
+    final ProductCacheRxHookProvider cacheRxHookProvider;
 
     ProductServiceDefault(
             final Retrofit retrofit,
             final String appId,
             final int pageSize,
             final NetworkRetryPolicyProvider networkRetryPolicyProvider,
-            final ProductCacheHook cacheHook,
+            final ProductCacheRxHookProvider cacheRxHookProvider,
             final Scheduler callbackScheduler
     ) {
         this.retrofitService = retrofit.create(ProductRetrofitService.class);
         this.appId = appId;
         this.pageSize = pageSize;
         this.networkRetryPolicyProvider = networkRetryPolicyProvider;
+        this.cacheRxHookProvider = cacheRxHookProvider;
         this.callbackScheduler = callbackScheduler;
-
-        initCacheHookProviders(cacheHook);
-    }
-
-    private void initCacheHookProviders(final ProductCacheHook cacheHook) {
-        cacheProductPageHookProvider = new Func1<Integer, Action1<List<Product>>>() {
-            @Override
-            public Action1<List<Product>> call(final Integer page) {
-                return new Action1<List<Product>>() {
-                    @Override
-                    public void call(final List<Product> products) {
-                        if (cacheHook != null) {
-                            try {
-                                cacheHook.cacheProducts(page, pageSize, products);
-                            } catch (Exception e) {
-
-                            }
-                        }
-                    }
-                };
-            }
-        };
-
-        cacheProductWithHandleHookProvider = new Func1<String, Action1<Product>>() {
-            @Override
-            public Action1<Product> call(final String handle) {
-                return new Action1<Product>() {
-                    @Override
-                    public void call(final Product product) {
-                        if (cacheHook != null) {
-                            try {
-                                cacheHook.cacheProductWithHandle(handle, product);
-                            } catch (Exception e) {
-
-                            }
-                        }
-                    }
-                };
-            }
-        };
-
-        cacheProductHookProvider = new Func0<Action1<Product>>() {
-            @Override
-            public Action1<Product> call() {
-                return new Action1<Product>() {
-                    @Override
-                    public void call(final Product product) {
-                        if (cacheHook != null) {
-                            try {
-                                cacheHook.cacheProduct(product);
-                            } catch (Exception e) {
-
-                            }
-                        }
-                    }
-                };
-            }
-        };
-
-        cacheProductsHookProvider = new Func0<Action1<List<Product>>>() {
-            @Override
-            public Action1<List<Product>> call() {
-                return new Action1<List<Product>>() {
-                    @Override
-                    public void call(final List<Product> products) {
-                        if (cacheHook != null) {
-                            try {
-                                cacheHook.cacheProducts(products);
-                            } catch (Exception e) {
-
-                            }
-                        }
-                    }
-                };
-            }
-        };
-
-        cacheCollectionProductPageHookProvider = new Func2<String, Integer, Action1<List<Product>>>() {
-            @Override
-            public Action1<List<Product>> call(final String collectionId, final Integer page) {
-                return new Action1<List<Product>>() {
-                    @Override
-                    public void call(final List<Product> products) {
-                        if (cacheHook != null) {
-                            try {
-                                cacheHook.cacheProducts(collectionId, page, pageSize, products);
-                            } catch (Exception e) {
-
-                            }
-                        }
-                    }
-                };
-            }
-        };
-
-        cacheCollectionPageHookProvider = new Func1<Integer, Action1<List<Collection>>>() {
-            @Override
-            public Action1<List<Collection>> call(final Integer page) {
-                return new Action1<List<Collection>>() {
-                    @Override
-                    public void call(final List<Collection> collections) {
-                        if (cacheHook != null) {
-                            try {
-                                cacheHook.cacheCollections(page, pageSize, collections);
-                            } catch (Exception e) {
-
-                            }
-                        }
-                    }
-                };
-            }
-        };
     }
 
     @Override
@@ -211,7 +85,7 @@ final class ProductServiceDefault implements ProductService {
                 .retryWhen(networkRetryPolicyProvider.provide())
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
                 .compose(new UnwrapRetrofitBodyTransformer<ProductListings, List<Product>>())
-                .doOnNext(cacheProductPageHookProvider.call(page))
+                .doOnNext(cacheRxHookProvider.getProductPageHook(page, pageSize))
                 .observeOn(callbackScheduler);
     }
 
@@ -232,7 +106,7 @@ final class ProductServiceDefault implements ProductService {
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
                 .compose(new UnwrapRetrofitBodyTransformer<ProductListings, List<Product>>())
                 .compose(new FirstListItemOrDefaultTransformer<Product>())
-                .doOnNext(cacheProductWithHandleHookProvider.call(handle))
+                .doOnNext(cacheRxHookProvider.getProductWithHandleHook(handle))
                 .observeOn(callbackScheduler);
     }
 
@@ -253,7 +127,7 @@ final class ProductServiceDefault implements ProductService {
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
                 .compose(new UnwrapRetrofitBodyTransformer<ProductListings, List<Product>>())
                 .compose(new FirstListItemOrDefaultTransformer<Product>())
-                .doOnNext(cacheProductHookProvider.call())
+                .doOnNext(cacheRxHookProvider.getProductHook())
                 .observeOn(callbackScheduler);
     }
 
@@ -282,7 +156,7 @@ final class ProductServiceDefault implements ProductService {
                 .retryWhen(networkRetryPolicyProvider.provide())
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
                 .compose(new UnwrapRetrofitBodyTransformer<ProductListings, List<Product>>())
-                .doOnNext(cacheProductsHookProvider.call())
+                .doOnNext(cacheRxHookProvider.getProductsHook())
                 .observeOn(callbackScheduler);
     }
 
@@ -315,7 +189,7 @@ final class ProductServiceDefault implements ProductService {
                 .retryWhen(networkRetryPolicyProvider.provide())
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
                 .compose(new UnwrapRetrofitBodyTransformer<ProductListings, List<Product>>())
-                .doOnNext(cacheCollectionProductPageHookProvider.call(collectionId, page))
+                .doOnNext(cacheRxHookProvider.getCollectionProductPageHook(collectionId, page, pageSize))
                 .observeOn(callbackScheduler);
     }
 
@@ -347,7 +221,7 @@ final class ProductServiceDefault implements ProductService {
                 .retryWhen(networkRetryPolicyProvider.provide())
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
                 .compose(new UnwrapRetrofitBodyTransformer<CollectionListings, List<Collection>>())
-                .doOnNext(cacheCollectionPageHookProvider.call(page))
+                .doOnNext(cacheRxHookProvider.getCollectionPageHook(page, pageSize))
                 .observeOn(callbackScheduler);
     }
 }

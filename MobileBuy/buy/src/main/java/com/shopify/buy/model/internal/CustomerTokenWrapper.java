@@ -35,6 +35,13 @@ public class CustomerTokenWrapper implements ResponseWrapper<CustomerToken> {
     @SerializedName("customer_access_token")
     private CustomerToken customerToken;
 
+    public CustomerTokenWrapper() {
+    }
+
+    public CustomerTokenWrapper(CustomerToken customerToken) {
+        this.customerToken = customerToken;
+    }
+
     public CustomerToken getCustomerToken() {
         return customerToken;
     }

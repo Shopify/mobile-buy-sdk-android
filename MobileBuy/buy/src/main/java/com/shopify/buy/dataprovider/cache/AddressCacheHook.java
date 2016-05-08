@@ -28,9 +28,19 @@ import com.shopify.buy.model.Customer;
 
 import java.util.List;
 
+/**
+ * Cache hook that will be triggered by {@link com.shopify.buy.dataprovider.AddressService}. By default all caching operates
+ * on background thread.
+ */
 public interface AddressCacheHook {
 
+    /**
+     * Caches customer address
+     */
     void cacheAddress(Customer customer, Address address);
 
+    /**
+     * Caches customer list of addresses
+     */
     void cacheAddresses(Customer customer, List<Address> addresses);
 }

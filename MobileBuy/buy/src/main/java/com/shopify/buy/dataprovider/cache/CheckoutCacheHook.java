@@ -29,12 +29,25 @@ import com.shopify.buy.model.ShippingRate;
 
 import java.util.List;
 
+/**
+ * Cache hook that will be triggered by {@link com.shopify.buy.dataprovider.CheckoutService}. By default all caching operates
+ * on background thread.
+ */
 public interface CheckoutCacheHook {
 
+    /**
+     * Caches checkout
+     */
     void cacheCheckout(Checkout checkout);
 
+    /**
+     * Caches list of shipping rates for specified checkout token
+     */
     void cacheShippingRates(String checkoutToken, List<ShippingRate> shippingRates);
 
+    /**
+     * Caches payment for specified checkout token
+     */
     void cachePayment(String checkoutToken, Payment payment);
 
 }

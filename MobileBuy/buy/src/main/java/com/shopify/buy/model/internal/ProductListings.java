@@ -37,6 +37,13 @@ public class ProductListings implements ResponseWrapper<List<Product>> {
     @SerializedName("product_listings")
     private List<Product> products;
 
+    public ProductListings() {
+    }
+
+    public ProductListings(List<Product> products) {
+        this.products = products;
+    }
+
     public List<Product> getProducts() {
         return products;
     }

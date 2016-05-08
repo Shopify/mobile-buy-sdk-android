@@ -37,6 +37,13 @@ public class CollectionListings implements ResponseWrapper<List<Collection>> {
     @SerializedName("collection_listings")
     private List<Collection> collections;
 
+    public CollectionListings() {
+    }
+
+    public CollectionListings(List<Collection> collections) {
+        this.collections = collections;
+    }
+
     public List<Collection> getCollections() {
         return collections;
     }

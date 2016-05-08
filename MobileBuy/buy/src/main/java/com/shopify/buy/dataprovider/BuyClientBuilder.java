@@ -193,31 +193,61 @@ public final class BuyClientBuilder {
         return this;
     }
 
+    /**
+     * Sets cache hook for {@link AddressService} API requests
+     *
+     * @param addressCacheHook cache hook
+     */
     public BuyClientBuilder addressCacheHook(AddressCacheHook addressCacheHook) {
         this.addressCacheHook = addressCacheHook;
         return this;
     }
 
+    /**
+     * Sets cache hook for {@link CheckoutService} API requests
+     *
+     * @param addressCacheHook cache hook
+     */
     public BuyClientBuilder checkoutCacheHook(CheckoutCacheHook checkoutCacheHook) {
         this.checkoutCacheHook = checkoutCacheHook;
         return this;
     }
 
+    /**
+     * Sets cache hook for {@link CustomerService} API requests
+     *
+     * @param addressCacheHook cache hook
+     */
     public BuyClientBuilder customerCacheHook(CustomerCacheHook customerCacheHook) {
         this.customerCacheHook = customerCacheHook;
         return this;
     }
 
+    /**
+     * Sets cache hook for {@link OrderService} API requests
+     *
+     * @param addressCacheHook cache hook
+     */
     public BuyClientBuilder orderCacheHook(OrderCacheHook orderCacheHook) {
         this.orderCacheHook = orderCacheHook;
         return this;
     }
 
+    /**
+     * Sets cache hook for {@link ProductService} API requests
+     *
+     * @param addressCacheHook cache hook
+     */
     public BuyClientBuilder productCacheHook(ProductCacheHook productCacheHook) {
         this.productCacheHook = productCacheHook;
         return this;
     }
 
+    /**
+     * Sets cache hook for {@link StoreService} API requests
+     *
+     * @param addressCacheHook cache hook
+     */
     public BuyClientBuilder storeCacheHook(StoreCacheHook storeCacheHook) {
         this.storeCacheHook = storeCacheHook;
         return this;

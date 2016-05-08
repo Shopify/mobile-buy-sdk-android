@@ -37,6 +37,13 @@ public class ShippingRatesWrapper implements ResponseWrapper<List<ShippingRate>>
     @SerializedName("shipping_rates")
     private List<ShippingRate> shippingRates;
 
+    public ShippingRatesWrapper() {
+    }
+
+    public ShippingRatesWrapper(List<ShippingRate> shippingRates) {
+        this.shippingRates = shippingRates;
+    }
+
     public List<ShippingRate> getShippingRates() {
         return shippingRates;
     }

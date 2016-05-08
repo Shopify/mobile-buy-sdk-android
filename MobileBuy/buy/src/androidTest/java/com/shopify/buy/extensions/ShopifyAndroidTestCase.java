@@ -8,8 +8,8 @@ import com.shopify.buy.BuildConfig;
 import com.shopify.buy.data.MockResponder;
 import com.shopify.buy.data.MockResponseGenerator;
 import com.shopify.buy.data.TestData;
-import com.shopify.buy.dataprovider.BuyClientBuilder;
 import com.shopify.buy.dataprovider.BuyClient;
+import com.shopify.buy.dataprovider.BuyClientBuilder;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -27,6 +27,8 @@ import rx.schedulers.Schedulers;
  */
 public class ShopifyAndroidTestCase {
 
+    protected final int productPageSize = 50;
+
     @Rule
     public TestName name = new TestName();
 
@@ -36,8 +38,8 @@ public class ShopifyAndroidTestCase {
     private static final boolean GENERATE_MOCK_RESPONSES = false;
 
     protected static final boolean USE_MOCK_RESPONSES = TextUtils.isEmpty(BuildConfig.SHOP_DOMAIN)
-            || TextUtils.isEmpty(BuildConfig.API_KEY)
-            || TextUtils.isEmpty(BuildConfig.APP_ID);
+        || TextUtils.isEmpty(BuildConfig.API_KEY)
+        || TextUtils.isEmpty(BuildConfig.APP_ID);
 
 
     private Context context;
@@ -53,11 +55,6 @@ public class ShopifyAndroidTestCase {
 
             @Override
             public Scheduler getIOScheduler() {
-                return Schedulers.immediate();
-            }
-
-            @Override
-            public Scheduler getComputationScheduler() {
                 return Schedulers.immediate();
             }
 
@@ -93,11 +90,12 @@ public class ShopifyAndroidTestCase {
 
     protected BuyClient getBuyClient(String shopDomain, String apiKey, String appId, String applicationName) {
         final BuyClientBuilder buyClientBuilder = new BuyClientBuilder()
-                .shopDomain(shopDomain)
-                .apiKey(apiKey)
-                .appId(appId)
-                .applicationName(applicationName)
-                .callbackScheduler(Schedulers.immediate());
+            .shopDomain(shopDomain)
+            .apiKey(apiKey)
+            .appId(appId)
+            .applicationName(applicationName)
+            .productPageSize(productPageSize)
+            .callbackScheduler(Schedulers.immediate());
 
         if (USE_MOCK_RESPONSES) {
             buyClientBuilder.interceptors(new MockResponder(context), new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY));

@@ -41,6 +41,10 @@ public class OrdersWrapper implements ResponseWrapper<List<Order>> {
     public OrdersWrapper() {
     }
 
+    public OrdersWrapper(List<Order> orders) {
+        this.orders = orders;
+    }
+
     public List<Order> getOrders() {
         return orders;
     }

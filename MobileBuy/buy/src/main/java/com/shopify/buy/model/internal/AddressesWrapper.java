@@ -41,6 +41,10 @@ public class AddressesWrapper implements ResponseWrapper<List<Address>> {
     public AddressesWrapper() {
     }
 
+    public AddressesWrapper(List<Address> addresses) {
+        this.addresses = addresses;
+    }
+
     public List<Address> getAddresses() {
         return addresses;
     }

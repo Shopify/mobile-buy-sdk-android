@@ -51,11 +51,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import okhttp3.ConnectionPool;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -75,12 +73,12 @@ final class BuyClientDefault implements BuyClient {
     private final String appId;
     private final String applicationName;
 
-    private final StoreService storeService;
-    private final AddressService addressService;
-    private final CheckoutService checkoutService;
-    private final CustomerService customerService;
-    private final OrderService orderService;
-    private final ProductService productService;
+    final StoreService storeService;
+    final AddressService addressService;
+    final CheckoutService checkoutService;
+    final CustomerService customerService;
+    final OrderService orderService;
+    final ProductService productService;
 
     BuyClientDefault(
             final String apiKey,
@@ -150,12 +148,12 @@ final class BuyClientDefault implements BuyClient {
 
         final NetworkRetryPolicyProvider networkRetryPolicyProvider = new NetworkRetryPolicyProvider(networkRequestRetryMaxCount, networkRequestRetryDelayMs, networkRequestRetryBackoffMultiplier);
 
-        storeService = new StoreServiceDefault(retrofit, networkRetryPolicyProvider, storeCacheHook, callbackScheduler);
-        addressService = new AddressServiceDefault(retrofit, networkRetryPolicyProvider, addressCacheHook, callbackScheduler);
-        checkoutService = new CheckoutServiceDefault(retrofit, apiKey, applicationName, completeCheckoutWebReturnUrl, completeCheckoutWebReturnLabel, networkRetryPolicyProvider, checkoutCacheHook, callbackScheduler);
-        customerService = new CustomerServiceDefault(retrofit, customerToken, networkRetryPolicyProvider, customerCacheHook, callbackScheduler);
-        orderService = new OrderServiceDefault(retrofit, networkRetryPolicyProvider, orderCacheHook, callbackScheduler);
-        productService = new ProductServiceDefault(retrofit, appId, productPageSize, networkRetryPolicyProvider, productCacheHook, callbackScheduler);
+        storeService = new StoreServiceDefault(retrofit, networkRetryPolicyProvider, new StoreCacheRxHookProvider(storeCacheHook), callbackScheduler);
+        addressService = new AddressServiceDefault(retrofit, networkRetryPolicyProvider, new AddressCacheRxHookProvider(addressCacheHook), callbackScheduler);
+        checkoutService = new CheckoutServiceDefault(retrofit, apiKey, applicationName, completeCheckoutWebReturnUrl, completeCheckoutWebReturnLabel, networkRetryPolicyProvider, new CheckoutCacheRxHookProvider(checkoutCacheHook), callbackScheduler);
+        customerService = new CustomerServiceDefault(retrofit, customerToken, networkRetryPolicyProvider, new CustomerCacheRxHookProvider(customerCacheHook), callbackScheduler);
+        orderService = new OrderServiceDefault(retrofit, networkRetryPolicyProvider, new OrderCacheRxHookProvider(orderCacheHook), callbackScheduler);
+        productService = new ProductServiceDefault(retrofit, appId, productPageSize, networkRetryPolicyProvider, new ProductCacheRxHookProvider(productCacheHook), callbackScheduler);
     }
 
     @Override

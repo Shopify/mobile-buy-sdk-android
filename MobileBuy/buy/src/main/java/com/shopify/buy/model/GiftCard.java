@@ -39,7 +39,7 @@ public class GiftCard {
 
     protected String id;
 
-    private Checkout checkout;
+    protected Checkout checkout;
 
     @SerializedName("last_characters")
     private String lastCharacters;
