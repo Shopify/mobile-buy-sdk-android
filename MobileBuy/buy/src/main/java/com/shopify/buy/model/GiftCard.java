@@ -37,7 +37,9 @@ public class GiftCard extends ShopifyObject {
 
     private String code;
 
-    private Checkout checkout;
+    protected String id;
+
+    protected Checkout checkout;
 
     @SerializedName("last_characters")
     private String lastCharacters;

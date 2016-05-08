@@ -23,15 +23,12 @@
  */
 package com.shopify.buy.dataprovider;
 
-import com.shopify.buy.dataprovider.cache.StoreCacheHook;
 import com.shopify.buy.model.Shop;
 
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import rx.Observable;
 import rx.Scheduler;
-import rx.functions.Action1;
-import rx.functions.Func0;
 import rx.functions.Func1;
 
 final class StoreServiceDefault implements StoreService {
@@ -42,38 +39,18 @@ final class StoreServiceDefault implements StoreService {
 
     final Scheduler callbackScheduler;
 
-    private Func0<Action1<Shop>> cacheStoreHookProvider;
+    final StoreCacheRxHookProvider cacheRxHookProvider;
 
     StoreServiceDefault(
         final Retrofit retrofit,
         final NetworkRetryPolicyProvider networkRetryPolicyProvider,
-        final StoreCacheHook cacheHook,
+        final StoreCacheRxHookProvider cacheRxHookProvider,
         final Scheduler callbackScheduler
     ) {
         this.retrofitService = retrofit.create(StoreRetrofitService.class);
         this.networkRetryPolicyProvider = networkRetryPolicyProvider;
+        this.cacheRxHookProvider = cacheRxHookProvider;
         this.callbackScheduler = callbackScheduler;
-
-        initCacheHookProviders(cacheHook);
-    }
-
-    private void initCacheHookProviders(final StoreCacheHook cacheHook) {
-        cacheStoreHookProvider = new Func0<Action1<Shop>>() {
-            @Override
-            public Action1<Shop> call() {
-                return new Action1<Shop>() {
-                    @Override
-                    public void call(final Shop shop) {
-                        if (cacheHook != null) {
-                            try {
-                                cacheHook.cacheStore(shop);
-                            } catch (Exception e) {
-                            }
-                        }
-                    }
-                };
-            }
-        };
     }
 
     @Override
@@ -93,7 +70,7 @@ final class StoreServiceDefault implements StoreService {
                     return response.body();
                 }
             })
-            .doOnNext(cacheStoreHookProvider.call())
+            .doOnNext(cacheRxHookProvider.getStoreHook())
             .onErrorResumeNext(new BuyClientExceptionHandler<Shop>())
             .observeOn(callbackScheduler);
     }

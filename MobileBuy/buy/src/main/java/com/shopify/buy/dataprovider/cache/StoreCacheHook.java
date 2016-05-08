@@ -25,7 +25,14 @@ package com.shopify.buy.dataprovider.cache;
 
 import com.shopify.buy.model.Shop;
 
+/**
+ * Cache hook that will be triggered by {@link com.shopify.buy.dataprovider.StoreService}. By default all caching operates
+ * on background thread.
+ */
 public interface StoreCacheHook {
 
+    /**
+     * Caches shop
+     */
     void cacheStore(Shop shop);
 }

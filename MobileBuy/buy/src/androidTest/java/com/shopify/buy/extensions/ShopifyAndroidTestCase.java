@@ -25,6 +25,8 @@ import rx.schedulers.Schedulers;
  */
 public class ShopifyAndroidTestCase {
 
+    protected final int productPageSize = 50;
+
     @Rule
     public TestName name = new TestName();
 
@@ -34,8 +36,8 @@ public class ShopifyAndroidTestCase {
     private static final boolean GENERATE_MOCK_RESPONSES = false;
 
     protected static final boolean USE_MOCK_RESPONSES = TextUtils.isEmpty(BuildConfig.SHOP_DOMAIN)
-            || TextUtils.isEmpty(BuildConfig.API_KEY)
-            || TextUtils.isEmpty(BuildConfig.APP_ID);
+        || TextUtils.isEmpty(BuildConfig.API_KEY)
+        || TextUtils.isEmpty(BuildConfig.APP_ID);
 
 
     private Context context;

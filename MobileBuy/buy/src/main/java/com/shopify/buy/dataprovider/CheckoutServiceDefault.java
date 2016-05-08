@@ -25,7 +25,6 @@ package com.shopify.buy.dataprovider;
 
 import android.text.TextUtils;
 
-import com.shopify.buy.dataprovider.cache.CheckoutCacheHook;
 import com.shopify.buy.model.Checkout;
 import com.shopify.buy.model.CreditCard;
 import com.shopify.buy.model.GiftCard;
@@ -46,8 +45,6 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import rx.Observable;
 import rx.Scheduler;
-import rx.functions.Action1;
-import rx.functions.Func0;
 import rx.functions.Func1;
 
 import static java.net.HttpURLConnection.HTTP_OK;
@@ -71,67 +68,26 @@ final class CheckoutServiceDefault implements CheckoutService {
 
     final PollingPolicyProvider pollingRetryPolicyProvider;
 
+    final CheckoutCacheRxHookProvider cacheRxHookProvider;
+
     final Scheduler callbackScheduler;
-
-    private Func0<Action1<Checkout>> cacheCheckoutHookProvider;
-
-    private Func1<String, Action1<List<ShippingRate>>> cacheShippingRatesHookProvider;
 
     CheckoutServiceDefault(
         final Retrofit retrofit,
         final String apiKey,
         final String applicationName,
         final NetworkRetryPolicyProvider networkRetryPolicyProvider,
-        final CheckoutCacheHook cacheHook,
+        final CheckoutCacheRxHookProvider cacheRxHookProvider,
         final Scheduler callbackScheduler
     ) {
         this.retrofitService = retrofit.create(CheckoutRetrofitService.class);
         this.apiKey = apiKey;
         this.applicationName = applicationName;
         this.networkRetryPolicyProvider = networkRetryPolicyProvider;
+        this.cacheRxHookProvider = cacheRxHookProvider;
         this.callbackScheduler = callbackScheduler;
 
-        initCacheHookProviders(cacheHook);
-
         pollingRetryPolicyProvider = new PollingPolicyProvider(POLLING_INTERVAL, POLLING_TIMEOUT);
-    }
-
-    private void initCacheHookProviders(final CheckoutCacheHook cacheHook) {
-        cacheCheckoutHookProvider = new Func0<Action1<Checkout>>() {
-            @Override
-            public Action1<Checkout> call() {
-                return new Action1<Checkout>() {
-                    @Override
-                    public void call(final Checkout checkout) {
-                        if (cacheHook != null) {
-                            try {
-                                cacheHook.cacheCheckout(checkout);
-                            } catch (Exception e) {
-
-                            }
-                        }
-                    }
-                };
-            }
-        };
-
-        cacheShippingRatesHookProvider = new Func1<String, Action1<List<ShippingRate>>>() {
-            @Override
-            public Action1<List<ShippingRate>> call(final String checkoutToken) {
-                return new Action1<List<ShippingRate>>() {
-                    @Override
-                    public void call(final List<ShippingRate> shippingRates) {
-                        if (cacheHook != null) {
-                            try {
-                                cacheHook.cacheShippingRates(checkoutToken, shippingRates);
-                            } catch (Exception e) {
-
-                            }
-                        }
-                    }
-                };
-            }
-        };
     }
 
     @Override
@@ -152,7 +108,7 @@ final class CheckoutServiceDefault implements CheckoutService {
             .createCheckout(new CheckoutWrapper(safeCheckout))
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<CheckoutWrapper, Checkout>())
-            .doOnNext(cacheCheckoutHookProvider.call())
+            .doOnNext(cacheRxHookProvider.getCheckoutCacheHook())
             .onErrorResumeNext(new BuyClientExceptionHandler<Checkout>())
             .observeOn(callbackScheduler);
     }
@@ -189,7 +145,7 @@ final class CheckoutServiceDefault implements CheckoutService {
             .updateCheckout(new CheckoutWrapper(safeCheckout), checkout.getToken())
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<CheckoutWrapper, Checkout>())
-            .doOnNext(cacheCheckoutHookProvider.call())
+            .doOnNext(cacheRxHookProvider.getCheckoutCacheHook())
             .onErrorResumeNext(new BuyClientExceptionHandler<Checkout>())
             .observeOn(callbackScheduler);
     }
@@ -213,7 +169,7 @@ final class CheckoutServiceDefault implements CheckoutService {
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>(successCodes))
             .retryWhen(pollingRetryPolicyProvider.provide())
             .compose(new UnwrapRetrofitBodyTransformer<ShippingRatesWrapper, List<ShippingRate>>())
-            .doOnNext(cacheShippingRatesHookProvider.call(checkoutToken))
+            .doOnNext(cacheRxHookProvider.getShippingRatesCacheHook(checkoutToken))
             .onErrorResumeNext(new BuyClientExceptionHandler<List<ShippingRate>>())
             .observeOn(callbackScheduler);
     }
@@ -279,7 +235,7 @@ final class CheckoutServiceDefault implements CheckoutService {
                     return getCompletedCheckout(checkoutToken);
                 }
             })
-            .doOnNext(cacheCheckoutHookProvider.call())
+            .doOnNext(cacheRxHookProvider.getCheckoutCacheHook())
             .onErrorResumeNext(new BuyClientExceptionHandler<Checkout>())
             .observeOn(callbackScheduler);
     }
@@ -341,7 +297,7 @@ final class CheckoutServiceDefault implements CheckoutService {
             .retryWhen(networkRetryPolicyProvider.provide())
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<CheckoutWrapper, Checkout>())
-            .doOnNext(cacheCheckoutHookProvider.call())
+            .doOnNext(cacheRxHookProvider.getCheckoutCacheHook())
             .onErrorResumeNext(new BuyClientExceptionHandler<Checkout>())
             .observeOn(callbackScheduler);
     }
@@ -377,7 +333,7 @@ final class CheckoutServiceDefault implements CheckoutService {
                     return safeCheckout;
                 }
             })
-            .doOnNext(cacheCheckoutHookProvider.call())
+            .doOnNext(cacheRxHookProvider.getCheckoutCacheHook())
             .onErrorResumeNext(new BuyClientExceptionHandler<Checkout>())
             .observeOn(callbackScheduler);
     }
@@ -417,7 +373,7 @@ final class CheckoutServiceDefault implements CheckoutService {
                     return safeCheckout;
                 }
             })
-            .doOnNext(cacheCheckoutHookProvider.call())
+            .doOnNext(cacheRxHookProvider.getCheckoutCacheHook())
             .onErrorResumeNext(new BuyClientExceptionHandler<Checkout>())
             .observeOn(callbackScheduler);
     }

@@ -147,12 +147,12 @@ final class BuyClientDefault implements BuyClient {
 
         final NetworkRetryPolicyProvider networkRetryPolicyProvider = new NetworkRetryPolicyProvider(networkRequestRetryMaxCount, networkRequestRetryDelayMs, networkRequestRetryBackoffMultiplier);
 
-        storeService = new StoreServiceDefault(retrofit, networkRetryPolicyProvider, storeCacheHook, callbackScheduler);
-        addressService = new AddressServiceDefault(retrofit, networkRetryPolicyProvider, addressCacheHook, callbackScheduler);
-        checkoutService = new CheckoutServiceDefault(retrofit, apiKey, applicationName, networkRetryPolicyProvider, checkoutCacheHook, callbackScheduler);
-        customerService = new CustomerServiceDefault(retrofit, customerToken, networkRetryPolicyProvider, customerCacheHook, callbackScheduler);
-        orderService = new OrderServiceDefault(retrofit, networkRetryPolicyProvider, orderCacheHook, callbackScheduler);
-        productService = new ProductServiceDefault(retrofit, appId, productPageSize, networkRetryPolicyProvider, productCacheHook, callbackScheduler);
+        storeService = new StoreServiceDefault(retrofit, networkRetryPolicyProvider, new StoreCacheRxHookProvider(storeCacheHook), callbackScheduler);
+        addressService = new AddressServiceDefault(retrofit, networkRetryPolicyProvider, new AddressCacheRxHookProvider(addressCacheHook), callbackScheduler);
+        checkoutService = new CheckoutServiceDefault(retrofit, apiKey, applicationName, networkRetryPolicyProvider, new CheckoutCacheRxHookProvider(checkoutCacheHook), callbackScheduler);
+        customerService = new CustomerServiceDefault(retrofit, customerToken, networkRetryPolicyProvider, new CustomerCacheRxHookProvider(customerCacheHook), callbackScheduler);
+        orderService = new OrderServiceDefault(retrofit, networkRetryPolicyProvider, new OrderCacheRxHookProvider(orderCacheHook), callbackScheduler);
+        productService = new ProductServiceDefault(retrofit, appId, productPageSize, networkRetryPolicyProvider, new ProductCacheRxHookProvider(productCacheHook), callbackScheduler);
     }
 
     @Override
