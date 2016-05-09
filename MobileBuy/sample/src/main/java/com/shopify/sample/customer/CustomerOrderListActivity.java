@@ -140,10 +140,12 @@ public final class CustomerOrderListActivity extends AppCompatActivity implement
                 lineItemLayoutView.removeAllViews();
                 if (order.getLineItems() != null) {
                     for (LineItem lineItem : order.getLineItems()) {
-                        final View lineItemView = layoutInflater.inflate(R.layout.list_view_item_order_line_item, lineItemLayoutView, true);
+                        final View lineItemView = layoutInflater.inflate(R.layout.list_view_item_order_line_item, lineItemLayoutView, false);
                         ((TextView) lineItemView.findViewById(R.id.title)).setText(lineItem.getTitle());
                         ((TextView) lineItemView.findViewById(R.id.variant_title)).setText(lineItem.getVariantTitle());
                         ((TextView) lineItemView.findViewById(R.id.price)).setText("$" + lineItem.getPrice());
+
+                        lineItemLayoutView.addView(lineItemView, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
                     }
                 }
             }

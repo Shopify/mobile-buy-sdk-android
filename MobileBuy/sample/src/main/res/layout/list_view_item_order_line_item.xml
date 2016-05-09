@@ -26,11 +26,11 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_marginBottom="@dimen/spacing_4dp"
-    android:layout_marginLeft="@dimen/spacing_12dp"
-    android:layout_marginRight="@dimen/spacing_12dp"
-    android:layout_marginTop="@dimen/spacing_12dp">
+    android:layout_height="wrap_content"
+    android:paddingBottom="@dimen/spacing_4dp"
+    android:paddingLeft="@dimen/spacing_12dp"
+    android:paddingRight="@dimen/spacing_12dp"
+    android:paddingTop="@dimen/spacing_12dp">
 
     <TextView
         android:id="@+id/price"
