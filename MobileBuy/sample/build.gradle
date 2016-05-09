@@ -60,6 +60,7 @@ android {
             buildConfigField "String", "SHOP_DOMAIN", "\"" + shopDomain.toString() + "\""
             buildConfigField "String", "API_KEY", "\"" + apiKey.toString() + "\""
             buildConfigField "String", "APP_ID", "\"" + appId.toString() + "\""
+            buildConfigField "boolean", "USE_RX_API", "false"
         }
     }
 

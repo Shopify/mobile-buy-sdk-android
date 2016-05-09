@@ -28,6 +28,7 @@ import com.shopify.buy.dataprovider.CancellableTask;
 import com.shopify.buy.dataprovider.RetrofitError;
 import com.shopify.buy.model.Customer;
 import com.shopify.buy.model.Order;
+import com.shopify.sample.BuildConfig;
 import com.shopify.sample.WeakObserver;
 import com.shopify.sample.BaseViewPresenter;
 import com.shopify.sample.application.SampleApplication;
@@ -54,8 +55,11 @@ public final class CustomerOrderListViewPresenter extends BaseViewPresenter<Cust
 
         final Customer customer = SampleApplication.getCustomer();
         if (customer != null) {
-            // fetchCustomerOrdersWithRx(customer);
-            fetchCustomerOrdersWithCallback(customer);
+            if (BuildConfig.USE_RX_API) {
+                fetchCustomerOrdersWithRx(customer);
+            } else {
+                fetchCustomerOrdersWithCallback(customer);
+            }
         }
     }
 

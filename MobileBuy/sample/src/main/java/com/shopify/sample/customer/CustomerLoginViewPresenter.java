@@ -29,6 +29,7 @@ import com.shopify.buy.dataprovider.RetrofitError;
 import com.shopify.buy.model.AccountCredentials;
 import com.shopify.buy.model.Customer;
 import com.shopify.buy.model.CustomerToken;
+import com.shopify.sample.BuildConfig;
 import com.shopify.sample.WeakObserver;
 import com.shopify.sample.BaseViewPresenter;
 import com.shopify.sample.application.SampleApplication;
@@ -67,8 +68,11 @@ public final class CustomerLoginViewPresenter extends BaseViewPresenter<Customer
     }
 
     public void loginCustomer(final String email, final String password) {
-        // loginCustomerWithRx(email, password);
-        loginCustomerWithCallback(email, password);
+        if (BuildConfig.USE_RX_API) {
+            loginCustomerWithRx(email, password);
+        } else {
+            loginCustomerWithCallback(email, password);
+        }
     }
 
     public void loginCustomerWithRx(final String email, final String password) {
@@ -79,28 +83,28 @@ public final class CustomerLoginViewPresenter extends BaseViewPresenter<Customer
         showProgress();
         final AccountCredentials credentials = new AccountCredentials(email, password);
         final Subscription subscription = SampleApplication.getBuyClient()
-                .loginCustomer(credentials)
-                .flatMap(new Func1<CustomerToken, Observable<Customer>>() {
+            .loginCustomer(credentials)
+            .flatMap(new Func1<CustomerToken, Observable<Customer>>() {
+                @Override
+                public Observable<Customer> call(CustomerToken customerToken) {
+                    return SampleApplication.getBuyClient().getCustomer(customerToken.getCustomerId());
+                }
+            })
+            .subscribe(new WeakObserver<>(
+                this,
+                new Action2<CustomerLoginViewPresenter, Customer>() {
                     @Override
-                    public Observable<Customer> call(CustomerToken customerToken) {
-                        return SampleApplication.getBuyClient().getCustomer(customerToken.getCustomerId());
+                    public void call(final CustomerLoginViewPresenter target, final Customer customer) {
+                        target.onFetchCustomerSuccess(customer);
                     }
-                })
-                .subscribe(new WeakObserver<>(
-                        this,
-                        new Action2<CustomerLoginViewPresenter, Customer>() {
-                            @Override
-                            public void call(final CustomerLoginViewPresenter target, final Customer customer) {
-                                target.onFetchCustomerSuccess(customer);
-                            }
-                        },
-                        new Action2<CustomerLoginViewPresenter, Throwable>() {
-                            @Override
-                            public void call(final CustomerLoginViewPresenter target, final Throwable t) {
-                                target.onRequestError(t);
-                            }
-                        }
-                ));
+                },
+                new Action2<CustomerLoginViewPresenter, Throwable>() {
+                    @Override
+                    public void call(final CustomerLoginViewPresenter target, final Throwable t) {
+                        target.onRequestError(t);
+                    }
+                }
+            ));
         addSubscription(subscription);
     }
 
@@ -140,22 +144,22 @@ public final class CustomerLoginViewPresenter extends BaseViewPresenter<Customer
         showProgress();
         final AccountCredentials credentials = new AccountCredentials(email, password, firstName, lastName);
         final Subscription subscription = SampleApplication.getBuyClient()
-                .createCustomer(credentials)
-                .subscribe(new WeakObserver<>(
-                        this,
-                        new Action2<CustomerLoginViewPresenter, Customer>() {
-                            @Override
-                            public void call(final CustomerLoginViewPresenter target, final Customer customer) {
-                                target.onFetchCustomerSuccess(customer);
-                            }
-                        },
-                        new Action2<CustomerLoginViewPresenter, Throwable>() {
-                            @Override
-                            public void call(final CustomerLoginViewPresenter target, final Throwable t) {
-                                target.onRequestError(t);
-                            }
-                        }
-                ));
+            .createCustomer(credentials)
+            .subscribe(new WeakObserver<>(
+                this,
+                new Action2<CustomerLoginViewPresenter, Customer>() {
+                    @Override
+                    public void call(final CustomerLoginViewPresenter target, final Customer customer) {
+                        target.onFetchCustomerSuccess(customer);
+                    }
+                },
+                new Action2<CustomerLoginViewPresenter, Throwable>() {
+                    @Override
+                    public void call(final CustomerLoginViewPresenter target, final Throwable t) {
+                        target.onRequestError(t);
+                    }
+                }
+            ));
         addSubscription(subscription);
     }
 
