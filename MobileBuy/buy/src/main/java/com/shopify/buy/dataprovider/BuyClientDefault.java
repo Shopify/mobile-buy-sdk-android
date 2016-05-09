@@ -227,12 +227,22 @@ final class BuyClientDefault implements BuyClient {
     }
 
     @Override
-    public void completeCheckout(final Checkout checkout, final Callback<Payment> callback) {
+    public void completeCheckout(final Checkout checkout, final Callback<Checkout> callback) {
         checkoutService.completeCheckout(checkout, callback);
     }
 
     @Override
-    public Observable<Payment> completeCheckout(final Checkout checkout) {
+    public void getCheckoutCompletionStatus(Checkout checkout, final Callback<Boolean> callback) {
+        checkoutService.getCheckoutCompletionStatus(checkout);
+    }
+
+    @Override
+    public Observable<Boolean> getCheckoutCompletionStatus(final Checkout checkout) {
+        return checkoutService.getCheckoutCompletionStatus(checkout);
+    }
+
+    @Override
+    public Observable<Checkout> completeCheckout(final Checkout checkout) {
         return checkoutService.completeCheckout(checkout);
     }
 
