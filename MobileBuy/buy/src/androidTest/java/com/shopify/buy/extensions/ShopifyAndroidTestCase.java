@@ -15,12 +15,19 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.TestName;
 
+import java.util.concurrent.TimeUnit;
+
 import okhttp3.logging.HttpLoggingInterceptor;
 import rx.Scheduler;
+import rx.Subscription;
+import rx.functions.Action0;
+import rx.internal.schedulers.EventLoopsScheduler;
 import rx.plugins.RxJavaPlugins;
 import rx.plugins.RxJavaSchedulersHook;
 import rx.plugins.RxJavaTestPlugins;
 import rx.schedulers.Schedulers;
+import rx.subscriptions.BooleanSubscription;
+import rx.subscriptions.Subscriptions;
 
 /**
  * Base class for Mobile Buy SDK Tests
@@ -56,6 +63,54 @@ public class ShopifyAndroidTestCase {
             @Override
             public Scheduler getIOScheduler() {
                 return Schedulers.immediate();
+            }
+
+            @Override
+            public Scheduler getComputationScheduler() {
+                return new EventLoopsScheduler() {
+                    @Override
+                    public void start() {
+                    }
+
+                    @Override
+                    public void shutdown() {
+                    }
+
+                    @Override
+                    public Subscription scheduleDirect(Action0 action) {
+                        action.call();
+                        return Subscriptions.unsubscribed();
+                    }
+
+                    @Override
+                    public Worker createWorker() {
+                        return new Worker() {
+                            final BooleanSubscription innerSubscription = new BooleanSubscription();
+
+                            @Override
+                            public Subscription schedule(Action0 action) {
+                                action.call();
+                                return Subscriptions.unsubscribed();
+                            }
+
+                            @Override
+                            public Subscription schedule(Action0 action, long delayTime, TimeUnit unit) {
+                                action.call();
+                                return Subscriptions.unsubscribed();
+                            }
+
+                            @Override
+                            public void unsubscribe() {
+                                innerSubscription.unsubscribe();
+                            }
+
+                            @Override
+                            public boolean isUnsubscribed() {
+                                return innerSubscription.isUnsubscribed();
+                            }
+                        };
+                    }
+                };
             }
 
             @Override
