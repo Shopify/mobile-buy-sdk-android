@@ -1,10 +1,8 @@
 GIT
-  remote: git@github.com:Shopify/mobiletest.git
-  revision: 53dde930b25a1daa0ccc7dfb89e7d5ac626d2639
+  remote: git@github.com:Shopify/android_emulator.git
+  revision: 39e5e213bd9ab693c53af245195c213d95fdfe72
   specs:
-    mobiletest (0.1.2)
-      aws-sdk
-      fastlane
+    android_emulator (0.1.0)
 
 GIT
   remote: git@github.com:jules2689/fastlane.git
@@ -120,12 +118,6 @@ GEM
       thread_safe (~> 0.3, >= 0.3.4)
       tzinfo (~> 1.1)
     addressable (2.4.0)
-    aws-sdk (2.3.2)
-      aws-sdk-resources (= 2.3.2)
-    aws-sdk-core (2.3.2)
-      jmespath (~> 1.0)
-    aws-sdk-resources (2.3.2)
-      aws-sdk-core (= 2.3.2)
     babosa (1.0.2)
     claide (0.9.1)
     colored (1.2)
@@ -181,10 +173,7 @@ GEM
     httpclient (2.8.0)
     hurley (0.2)
     i18n (0.7.0)
-    jmespath (1.2.4)
-      json_pure (>= 1.8.1)
     json (1.8.3)
-    json_pure (1.8.3)
     jwt (1.5.4)
     krausefx-shenzhen (0.14.7)
       commander (~> 4.3)
@@ -253,9 +242,9 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  android_emulator!
   fastlane!
   json (~> 1.8.1)
-  mobiletest!
 
 BUNDLED WITH
    1.12.2
