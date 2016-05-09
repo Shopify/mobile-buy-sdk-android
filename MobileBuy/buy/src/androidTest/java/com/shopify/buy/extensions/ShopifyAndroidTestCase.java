@@ -8,19 +8,26 @@ import com.shopify.buy.BuildConfig;
 import com.shopify.buy.data.MockResponder;
 import com.shopify.buy.data.MockResponseGenerator;
 import com.shopify.buy.data.TestData;
-import com.shopify.buy.dataprovider.BuyClientBuilder;
 import com.shopify.buy.dataprovider.BuyClient;
+import com.shopify.buy.dataprovider.BuyClientBuilder;
 
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.TestName;
 
+import java.util.concurrent.TimeUnit;
+
 import okhttp3.logging.HttpLoggingInterceptor;
 import rx.Scheduler;
+import rx.Subscription;
+import rx.functions.Action0;
+import rx.internal.schedulers.EventLoopsScheduler;
 import rx.plugins.RxJavaPlugins;
 import rx.plugins.RxJavaSchedulersHook;
 import rx.plugins.RxJavaTestPlugins;
 import rx.schedulers.Schedulers;
+import rx.subscriptions.BooleanSubscription;
+import rx.subscriptions.Subscriptions;
 
 /**
  * Base class for Mobile Buy SDK Tests

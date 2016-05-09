@@ -246,7 +246,6 @@ final class CheckoutServiceDefault implements CheckoutService {
                                 .flatMap(new Func1<Boolean, Observable<Checkout>>() {
                                     @Override
                                     public Observable<Checkout> call(Boolean aBoolean) {
-                                        Log.e("FOO", "checking for completion status");
                                         if (aBoolean) {
                                             return getCheckout(checkout.getToken());
                                         }
