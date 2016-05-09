@@ -24,7 +24,6 @@
 package com.shopify.buy.dataprovider;
 
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.shopify.buy.model.Checkout;
 import com.shopify.buy.model.CreditCard;

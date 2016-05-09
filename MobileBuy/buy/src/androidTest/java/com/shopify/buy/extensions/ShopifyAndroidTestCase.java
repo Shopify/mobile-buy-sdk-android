@@ -58,13 +58,57 @@ public class ShopifyAndroidTestCase {
 
             @Override
             public Scheduler getComputationScheduler() {
-                return Schedulers.immediate();
+                return new EventLoopsScheduler() {
+                    @Override
+                    public void start() {
+                    }
+
+                    @Override
+                    public void shutdown() {
+                    }
+
+                    @Override
+                    public Subscription scheduleDirect(Action0 action) {
+                        action.call();
+                        return Subscriptions.unsubscribed();
+                    }
+
+                    @Override
+                    public Worker createWorker() {
+                        return new Worker() {
+                            final BooleanSubscription innerSubscription = new BooleanSubscription();
+
+                            @Override
+                            public Subscription schedule(Action0 action) {
+                                action.call();
+                                return Subscriptions.unsubscribed();
+                            }
+
+                            @Override
+                            public Subscription schedule(Action0 action, long delayTime, TimeUnit unit) {
+                                action.call();
+                                return Subscriptions.unsubscribed();
+                            }
+
+                            @Override
+                            public void unsubscribe() {
+                                innerSubscription.unsubscribe();
+                            }
+
+                            @Override
+                            public boolean isUnsubscribed() {
+                                return innerSubscription.isUnsubscribed();
+                            }
+                        };
+                    }
+                };
             }
 
             @Override
             public Scheduler getNewThreadScheduler() {
                 return Schedulers.immediate();
             }
+
         });
 
         context = InstrumentationRegistry.getContext();
