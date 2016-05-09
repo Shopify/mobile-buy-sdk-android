@@ -37,6 +37,13 @@ import rx.Observable;
 public interface ProductService {
 
     /**
+     * Returns the page size used for paged product API queries.
+     *
+     * @return page size
+     */
+    int getProductPageSize();
+
+    /**
      * Fetch a page of products
      *
      * @param page     the 1-based page index. The page size is set by {@link BuyClientBuilder#productPageSize} configuration.

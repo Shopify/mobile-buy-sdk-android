@@ -38,6 +38,11 @@ public class Option extends ShopifyObject {
     @SerializedName("product_id")
     protected String productId;
 
+    @Override
+    public Long getId() {
+        return super.getId();
+    }
+
     /**
      * @return The unique identifier for the {@link Product} associated with this option.
      */

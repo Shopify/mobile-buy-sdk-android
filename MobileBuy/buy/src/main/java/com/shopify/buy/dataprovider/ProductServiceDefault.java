@@ -66,6 +66,11 @@ final class ProductServiceDefault implements ProductService {
     }
 
     @Override
+    public int getProductPageSize() {
+        return pageSize;
+    }
+
+    @Override
     public void getProductPage(final int page, final Callback<List<Product>> callback) {
         getProductPage(page).subscribe(new InternalCallbackSubscriber<>(callback));
     }

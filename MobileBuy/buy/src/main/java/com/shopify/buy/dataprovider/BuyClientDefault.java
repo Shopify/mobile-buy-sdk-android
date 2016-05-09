@@ -44,9 +44,11 @@ import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import okhttp3.ConnectionPool;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -118,8 +120,10 @@ final class BuyClientDefault implements BuyClient {
                 .writeTimeout(60, TimeUnit.SECONDS)
                 .addInterceptor(requestInterceptor);
 
-        for (Interceptor interceptor : interceptors) {
-            builder.addInterceptor(interceptor);
+        if (interceptors != null) {
+            for (Interceptor interceptor : interceptors) {
+                builder.addInterceptor(interceptor);
+            }
         }
 
         final OkHttpClient httpClient = builder.build();
@@ -447,6 +451,12 @@ final class BuyClientDefault implements BuyClient {
     }
 
     // ----------- ProductService API ---------------
+
+
+    @Override
+    public int getProductPageSize() {
+        return productService.getProductPageSize();
+    }
 
     @Override
     public void getProductPage(int page, Callback<List<Product>> callback) {

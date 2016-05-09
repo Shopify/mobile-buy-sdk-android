@@ -76,6 +76,11 @@ public class Order extends ShopifyObject {
     public Order() {
     }
 
+    @Override
+    public Long getId() {
+        return super.getId();
+    }
+
     /**
      * @return URL for the website showing the order status.  This url will pass an authentication token for the currently logged in user. This is only available for Orders returned using {@link com.shopify.buy.dataprovider.BuyClient#getOrder(Customer, String, Callback)} or {@link com.shopify.buy.dataprovider.BuyClient#getOrders(Customer, Callback)}
      */

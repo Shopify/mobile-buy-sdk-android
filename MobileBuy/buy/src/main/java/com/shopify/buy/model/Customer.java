@@ -92,6 +92,11 @@ public class Customer extends ShopifyObject {
     @SerializedName("default_address")
     private Address defaultAddress;
 
+    @Override
+    public Long getId() {
+        return super.getId();
+    }
+
     /**
      * @return The email for this customer.
      */
