@@ -26,51 +26,47 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/spacing_6dp"
-    android:layout_marginTop="@dimen/spacing_6dp"
-    android:orientation="vertical">
+    android:layout_height="match_parent"
+    android:layout_marginBottom="@dimen/spacing_4dp"
+    android:layout_marginLeft="@dimen/spacing_12dp"
+    android:layout_marginRight="@dimen/spacing_12dp"
+    android:layout_marginTop="@dimen/spacing_12dp">
 
     <TextView
-        android:id="@+id/date"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/spacing_12dp"
-        android:textColor="@android:color/black"
-        android:textSize="@dimen/text_extra_small"/>
-
-    <LinearLayout
-        android:id="@+id/line_item_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_12dp"
-        android:orientation="vertical"/>
-
-    <TextView
-        android:id="@+id/total_price"
+        android:id="@+id/price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_below="@id/line_item_layout"
-        android:layout_marginBottom="@dimen/spacing_16dp"
-        android:layout_marginLeft="@dimen/spacing_12dp"
-        android:layout_marginRight="@dimen/spacing_12dp"
-        android:layout_marginTop="@dimen/spacing_16dp"
+        android:layout_centerVertical="true"
         android:textColor="@android:color/black"
-        android:textSize="@dimen/text_small"/>
+        android:textSize="@dimen/text_medium"/>
 
-    <View
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="1px"
-        android:layout_above="@id/total_price"
-        android:layout_alignLeft="@id/total_price"
-        android:layout_alignRight="@id/total_price"
-        android:background="@android:color/darker_gray"/>
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@id/price"
+        android:orientation="vertical">
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1px"
-        android:layout_alignParentBottom="true"
-        android:background="@android:color/darker_gray"/>
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/text_medium"/>
+
+        <TextView
+            android:id="@+id/variant_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing_4dp"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="@dimen/text_small"/>
+
+    </LinearLayout>
 
 </RelativeLayout>

@@ -33,11 +33,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.shopify.buy.dataprovider.BuyClientUtils;
 import com.shopify.buy.dataprovider.RetrofitError;
+import com.shopify.buy.model.LineItem;
 import com.shopify.buy.model.Order;
 import com.shopify.sample.R;
 
@@ -117,28 +119,33 @@ public final class CustomerOrderListActivity extends AppCompatActivity implement
 
         static class OrderViewHolder extends RecyclerView.ViewHolder {
 
-            @BindView(R.id.number)
-            TextView numberView;
-
-            @BindView(R.id.name)
-            TextView nameView;
-
             @BindView(R.id.date)
             TextView dateView;
 
-            @BindView(R.id.price)
-            TextView priceView;
+            @BindView(R.id.total_price)
+            TextView totalPriceView;
+
+            @BindView(R.id.line_item_layout)
+            LinearLayout lineItemLayoutView;
 
             OrderViewHolder(final View itemView) {
                 super(itemView);
                 ButterKnife.bind(this, itemView);
             }
 
-            void bind(final Order order) {
-                numberView.setText(order.getOrderNumber());
-                nameView.setText(order.getName());
+            void bind(final Order order, final LayoutInflater layoutInflater) {
                 dateView.setText(order.getProcessedAt().toString());
-                priceView.setText(order.getTotalPrice() + order.getCurrency());
+                totalPriceView.setText(itemView.getResources().getString(R.string.customer_order_list_total_price, order.getTotalPrice(), order.getCurrency()));
+
+                lineItemLayoutView.removeAllViews();
+                if (order.getLineItems() != null) {
+                    for (LineItem lineItem : order.getLineItems()) {
+                        final View lineItemView = layoutInflater.inflate(R.layout.list_view_item_order_line_item, lineItemLayoutView, true);
+                        ((TextView) lineItemView.findViewById(R.id.title)).setText(lineItem.getTitle());
+                        ((TextView) lineItemView.findViewById(R.id.variant_title)).setText(lineItem.getVariantTitle());
+                        ((TextView) lineItemView.findViewById(R.id.price)).setText("$" + lineItem.getPrice());
+                    }
+                }
             }
         }
 
@@ -158,7 +165,7 @@ public final class CustomerOrderListActivity extends AppCompatActivity implement
 
         @Override
         public void onBindViewHolder(final OrderViewHolder viewHolder, final int position) {
-            viewHolder.bind(orders.get(position));
+            viewHolder.bind(orders.get(position), layoutInflater);
         }
 
         @Override

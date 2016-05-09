@@ -76,4 +76,5 @@
     <string name="customer_login_cancel_button">Cancel</string>
 
     <string name="customer_order_list_title">Orders</string>
+    <string name="customer_order_list_total_price" formatted="false">Total: %s %s</string>
 </resources>
