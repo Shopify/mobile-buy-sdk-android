@@ -1,10 +1,8 @@
-require 'mobiletest'
-
-spec = Gem::Specification.find_by_name("mobiletest")
-import "#{spec.gem_dir}/lib/mobiletest/android/Fastfile"
+import_from_git(url: 'git@github.com:Shopify/buildkite_fastlane.git', path: 'fastlane/AndroidFastfile')
 
 PACKAGE = "com.shopify.buy"
-ANDROID_PROJECT_PATH='MobileBuy'
+ANDROID_PROJECT_PATH = File.expand_path('../../MobileBuy', __FILE__)
+
 BASE_EMULATOR = {
   name: 'shift-21',
   port: '5560'
@@ -13,20 +11,7 @@ BASE_EMULATOR = {
 platform :android do
   desc "Run CI"
   lane :ci do
-    setup_emulator
-    tests
     release
-    clean_emulator
-  end
-
-  desc "Run Tests"
-  lane :tests do
-    run_gradle_tests({
-      android_project_path: ANDROID_PROJECT_PATH,
-      gradle_command: 'clean :buy:connectedAndroidTest -PdisablePreDex',
-      artifact_upload_paths: [ 'MobileBuy/buy/build/outputs/androidTest-results/connected/' ],
-      android_package: PACKAGE
-    })
   end
 
   desc "Build Release"
