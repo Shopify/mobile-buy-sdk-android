@@ -1,0 +1,38 @@
+import_from_git(url: 'git@github.com:Shopify/buildkite_fastlane.git', path: 'fastlane/AndroidFastfile')
+
+PACKAGE = "com.shopify.buy"
+ANDROID_PROJECT_PATH = File.expand_path('../../MobileBuy', __FILE__)
+
+BASE_EMULATOR = {
+  name: 'shift-21',
+  port: '5560'
+}
+
+platform :android do
+  desc "Run CI"
+  lane :ci do
+    release
+  end
+
+  desc "Build Release"
+  lane :release do
+    run_gradle_tests({
+      android_project_path: ANDROID_PROJECT_PATH,
+      gradle_command: ':buy:archiveReleasePackage',
+      artifact_upload_paths: [ 'MobileBuy/buy/build/distributions/' ],
+      android_package: PACKAGE
+    })
+  end
+
+  # By defining start/cleanup down here as lanes,
+  # we get free logging and formatting
+  desc "Start Emulator with params"
+  lane :setup_emulator do
+    start_emulator(BASE_EMULATOR)
+  end
+
+  desc "Cleanup Emulator"
+  lane :clean_emulator do
+    cleanup_emulator(emulator: BASE_EMULATOR, android_package: PACKAGE)
+  end
+end
