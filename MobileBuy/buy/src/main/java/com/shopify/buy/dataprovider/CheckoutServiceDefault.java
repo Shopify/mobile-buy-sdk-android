@@ -96,8 +96,8 @@ final class CheckoutServiceDefault implements CheckoutService {
     }
 
     @Override
-    public void createCheckout(final Checkout checkout, final Callback<Checkout> callback) {
-        createCheckout(checkout).subscribe(new InternalCallbackSubscriber<>(callback));
+    public CancellableTask createCheckout(final Checkout checkout, final Callback<Checkout> callback) {
+        return new CancellableTaskSubscriptionWrapper(createCheckout(checkout).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
@@ -124,8 +124,8 @@ final class CheckoutServiceDefault implements CheckoutService {
     }
 
     @Override
-    public void updateCheckout(final Checkout checkout, final Callback<Checkout> callback) {
-        updateCheckout(checkout).subscribe(new InternalCallbackSubscriber<>(callback));
+    public CancellableTask updateCheckout(final Checkout checkout, final Callback<Checkout> callback) {
+        return new CancellableTaskSubscriptionWrapper(updateCheckout(checkout).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
@@ -143,8 +143,8 @@ final class CheckoutServiceDefault implements CheckoutService {
     }
 
     @Override
-    public void getShippingRates(final String checkoutToken, final Callback<List<ShippingRate>> callback) {
-        getShippingRates(checkoutToken).subscribe(new InternalCallbackSubscriber<>(callback));
+    public CancellableTask getShippingRates(final String checkoutToken, final Callback<List<ShippingRate>> callback) {
+        return new CancellableTaskSubscriptionWrapper(getShippingRates(checkoutToken).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
@@ -162,8 +162,8 @@ final class CheckoutServiceDefault implements CheckoutService {
     }
 
     @Override
-    public void storeCreditCard(final CreditCard card, final Checkout checkout, final Callback<Checkout> callback) {
-        storeCreditCard(card, checkout).subscribe(new InternalCallbackSubscriber<>(callback));
+    public CancellableTask storeCreditCard(final CreditCard card, final Checkout checkout, final Callback<Checkout> callback) {
+        return new CancellableTaskSubscriptionWrapper(storeCreditCard(card, checkout).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
@@ -198,8 +198,8 @@ final class CheckoutServiceDefault implements CheckoutService {
     }
 
     @Override
-    public void completeCheckout(final Checkout checkout, final Callback<Payment> callback) {
-        completeCheckout(checkout).subscribe(new InternalCallbackSubscriber<>(callback));
+    public CancellableTask completeCheckout(final Checkout checkout, final Callback<Payment> callback) {
+        return new CancellableTaskSubscriptionWrapper(completeCheckout(checkout).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
@@ -218,8 +218,8 @@ final class CheckoutServiceDefault implements CheckoutService {
     }
 
     @Override
-    public void getCheckout(final String checkoutToken, final Callback<Checkout> callback) {
-        getCheckout(checkoutToken).subscribe(new InternalCallbackSubscriber<>(callback));
+    public CancellableTask getCheckout(final String checkoutToken, final Callback<Checkout> callback) {
+        return new CancellableTaskSubscriptionWrapper(getCheckout(checkoutToken).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
@@ -237,8 +237,8 @@ final class CheckoutServiceDefault implements CheckoutService {
     }
 
     @Override
-    public void applyGiftCard(final String giftCardCode, final Checkout checkout, final Callback<Checkout> callback) {
-        applyGiftCard(giftCardCode, checkout).subscribe(new InternalCallbackSubscriber<>(callback));
+    public CancellableTask applyGiftCard(final String giftCardCode, final Checkout checkout, final Callback<Checkout> callback) {
+        return new CancellableTaskSubscriptionWrapper(applyGiftCard(giftCardCode, checkout).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
@@ -267,8 +267,8 @@ final class CheckoutServiceDefault implements CheckoutService {
     }
 
     @Override
-    public void removeGiftCard(final GiftCard giftCard, final Checkout checkout, final Callback<Checkout> callback) {
-        removeGiftCard(giftCard, checkout).subscribe(new InternalCallbackSubscriber<>(callback));
+    public CancellableTask removeGiftCard(final GiftCard giftCard, final Checkout checkout, final Callback<Checkout> callback) {
+        return new CancellableTaskSubscriptionWrapper(removeGiftCard(giftCard, checkout).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
@@ -300,16 +300,21 @@ final class CheckoutServiceDefault implements CheckoutService {
     }
 
     @Override
-    public void removeProductReservationsFromCheckout(final Checkout checkout, final Callback<Checkout> callback) {
+    public CancellableTask removeProductReservationsFromCheckout(final Checkout checkout, final Callback<Checkout> callback) {
         if (checkout == null || TextUtils.isEmpty(checkout.getToken())) {
             callback.failure(null);
+            return new CancellableTask() {
+                @Override
+                public void cancel() {
+                }
+            };
         } else {
             checkout.setReservationTime(0);
 
-            Checkout expiredCheckout = new Checkout();
+            final Checkout expiredCheckout = new Checkout();
             expiredCheckout.setToken(checkout.getToken());
             expiredCheckout.setReservationTime(0);
-            updateCheckout(expiredCheckout, callback);
+            return updateCheckout(expiredCheckout, callback);
         }
     }
 

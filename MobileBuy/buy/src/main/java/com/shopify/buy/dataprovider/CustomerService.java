@@ -46,8 +46,9 @@ public interface CustomerService {
      *
      * @param accountCredentials the account credentials with an email, password, first name, and last name of the {@link Customer} to be created, not null
      * @param callback           the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
+     * @return cancelable task
      */
-    void createCustomer(AccountCredentials accountCredentials, Callback<Customer> callback);
+    CancellableTask createCustomer(AccountCredentials accountCredentials, Callback<Customer> callback);
 
     /**
      * Create a new Customer on Shopify
@@ -64,8 +65,9 @@ public interface CustomerService {
      * @param activationToken    the activation token for the Customer, not null or empty
      * @param accountCredentials the account credentials with a password of the {@link Customer} to be activated, not null
      * @param callback           the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
+     * @return cancelable task
      */
-    void activateCustomer(Long customerId, String activationToken, AccountCredentials accountCredentials, Callback<Customer> callback);
+    CancellableTask activateCustomer(Long customerId, String activationToken, AccountCredentials accountCredentials, Callback<Customer> callback);
 
     /**
      * Activate the customer account.
@@ -84,8 +86,9 @@ public interface CustomerService {
      * @param resetToken         the reset token for the Customer, not null or empty
      * @param accountCredentials the account credentials with the new password of the {@link Customer}. not null
      * @param callback           the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
+     * @return cancelable task
      */
-    void resetPassword(Long customerId, String resetToken, AccountCredentials accountCredentials, Callback<Customer> callback);
+    CancellableTask resetPassword(Long customerId, String resetToken, AccountCredentials accountCredentials, Callback<Customer> callback);
 
     /**
      * Reset the password for the customer account.
@@ -102,8 +105,9 @@ public interface CustomerService {
      *
      * @param accountCredentials the account credentials with an email and password of the {@link Customer}, not null
      * @param callback           the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
+     * @return cancelable task
      */
-    void loginCustomer(AccountCredentials accountCredentials, Callback<CustomerToken> callback);
+    CancellableTask loginCustomer(AccountCredentials accountCredentials, Callback<CustomerToken> callback);
 
     /**
      * Log an existing Customer into Shopify
@@ -117,8 +121,9 @@ public interface CustomerService {
      * Log a Customer out from Shopify
      *
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
+     * @return cancelable task
      */
-    void logoutCustomer(Callback<Void> callback);
+    CancellableTask logoutCustomer(Callback<Void> callback);
 
     /**
      * Log a Customer out from Shopify
@@ -132,8 +137,9 @@ public interface CustomerService {
      *
      * @param customer the {@link Customer} to update
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
+     * @return cancelable task
      */
-    void updateCustomer(Customer customer, Callback<Customer> callback);
+    CancellableTask updateCustomer(Customer customer, Callback<Customer> callback);
 
     /**
      * Update an existing Customer's attributes.
@@ -148,8 +154,9 @@ public interface CustomerService {
      *
      * @param customerId the identifier of a {@link CustomerToken} or {@link Customer}
      * @param callback   the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
+     * @return cancelable task
      */
-    void getCustomer(Long customerId, Callback<Customer> callback);
+    CancellableTask getCustomer(Long customerId, Callback<Customer> callback);
 
     /**
      * Retrieve a Customer's details from Shopify.
@@ -163,8 +170,9 @@ public interface CustomerService {
      * Renew a Customer login.  This should be called periodically to keep the token up to date.
      *
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
+     * @return cancelable task
      */
-    void renewCustomer(Callback<CustomerToken> callback);
+    CancellableTask renewCustomer(Callback<CustomerToken> callback);
 
     /**
      * Renew a Customer login.  This should be called periodically to keep the token up to date.
@@ -178,8 +186,9 @@ public interface CustomerService {
      *
      * @param email    the email address to send the password recovery email to
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
+     * @return cancelable task
      */
-    void recoverPassword(String email, Callback<Void> callback);
+    CancellableTask recoverPassword(String email, Callback<Void> callback);
 
     /**
      * Send a password recovery email. An email will be sent to the email address specified if a customer with that email address exists on Shopify.

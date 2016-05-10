@@ -40,8 +40,9 @@ public interface OrderService {
      *
      * @param customer the {@link Customer} to fetch the orders for, not null
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
+     * @return cancelable task
      */
-    void getOrders(Customer customer, Callback<List<Order>> callback);
+    CancellableTask getOrders(Customer customer, Callback<List<Order>> callback);
 
     /**
      * Fetch the Orders associated with a Customer.
@@ -57,8 +58,9 @@ public interface OrderService {
      * @param customer the {@link Customer} to fetch the order for
      * @param orderId  the identifier of the {@link Order} to retrieve
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
+     * @return cancelable task
      */
-    void getOrder(Customer customer, String orderId, Callback<Order> callback);
+    CancellableTask getOrder(Customer customer, String orderId, Callback<Order> callback);
 
     /**
      * Fetch an existing Order from Shopify
