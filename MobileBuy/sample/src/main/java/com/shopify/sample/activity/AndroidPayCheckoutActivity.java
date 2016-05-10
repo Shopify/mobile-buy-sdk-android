@@ -179,6 +179,7 @@ public class AndroidPayCheckoutActivity extends SampleActivity implements Google
                 // The checkout failed.
                 Log.e(LOG_TAG, "Could not complete the checkout:" +  BuyClientUtils.getErrorBody(error));
                 Toast.makeText(AndroidPayCheckoutActivity.this, "Could not complete the checkout, please try again later", Toast.LENGTH_SHORT).show();
+                dismissLoadingDialog();
             }
         });
     }

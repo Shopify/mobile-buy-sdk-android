@@ -35,15 +35,15 @@ import com.shopify.buy.model.ShippingRate;
 import com.shopify.buy.model.internal.CheckoutWrapper;
 import com.shopify.buy.model.internal.GiftCardWrapper;
 import com.shopify.buy.model.internal.MarketingAttribution;
+import com.shopify.buy.model.internal.PaymentSessionCheckout;
+import com.shopify.buy.model.internal.PaymentSessionCheckoutWrapper;
 import com.shopify.buy.model.internal.PaymentToken;
+import com.shopify.buy.model.internal.PaymentTokenWrapper;
 import com.shopify.buy.model.internal.ShippingRatesWrapper;
 
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import com.shopify.buy.model.internal.PaymentSessionCheckout;
-import com.shopify.buy.model.internal.PaymentSessionCheckoutWrapper;
-
 import java.util.HashMap;
 import java.util.List;
 
@@ -292,9 +292,10 @@ final class CheckoutServiceDefault implements CheckoutService {
         }
 
         PaymentToken paymentToken = new PaymentToken(androidPayToken, PAYMENT_TOKEN_TYPE_ANDROID_PAY, androidPayPublicKeyHash);
+        PaymentTokenWrapper paymentTokenWrapper= new PaymentTokenWrapper(paymentToken);
 
         return retrofitService
-                .completeCheckout(paymentToken, checkout.getToken())
+                .completeCheckout(paymentTokenWrapper, checkout.getToken())
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<Response<CheckoutWrapper>>())
                 .compose(new UnwrapRetrofitBodyTransformer<CheckoutWrapper, Checkout>())
                 .flatMap(new Func1<Checkout, Observable<Checkout>>() {
