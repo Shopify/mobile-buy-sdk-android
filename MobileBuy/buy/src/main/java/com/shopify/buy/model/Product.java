@@ -345,6 +345,22 @@ public class Product extends ShopifyObject {
         return minimumPrice;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Product)) return false;
+
+        Product product = (Product) o;
+
+        return productId.equals(product.productId);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return productId.hashCode();
+    }
+
     public static class ProductDeserializer implements JsonDeserializer<Product> {
 
         @Override

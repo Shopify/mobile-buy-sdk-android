@@ -75,8 +75,8 @@ final class CustomerServiceDefault implements CustomerService {
     }
 
     @Override
-    public void createCustomer(final AccountCredentials accountCredentials, final Callback<Customer> callback) {
-        createCustomer(accountCredentials).subscribe(new InternalCallbackSubscriber<>(callback));
+    public CancellableTask createCustomer(final AccountCredentials accountCredentials, final Callback<Customer> callback) {
+        return new CancellableTaskSubscriptionWrapper(createCustomer(accountCredentials).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
@@ -95,8 +95,8 @@ final class CustomerServiceDefault implements CustomerService {
 
     @Deprecated
     @Override
-    public void activateCustomer(final Long customerId, final String activationToken, final AccountCredentials accountCredentials, final Callback<Customer> callback) {
-        activateCustomer(customerId, activationToken, accountCredentials).subscribe(new InternalCallbackSubscriber<>(callback));
+    public CancellableTask activateCustomer(final Long customerId, final String activationToken, final AccountCredentials accountCredentials, final Callback<Customer> callback) {
+        return new CancellableTaskSubscriptionWrapper(activateCustomer(customerId, activationToken, accountCredentials).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
@@ -118,8 +118,8 @@ final class CustomerServiceDefault implements CustomerService {
     }
 
     @Override
-    public void resetPassword(final Long customerId, final String resetToken, final AccountCredentials accountCredentials, final Callback<Customer> callback) {
-        resetPassword(customerId, resetToken, accountCredentials).subscribe(new InternalCallbackSubscriber<>(callback));
+    public CancellableTask resetPassword(final Long customerId, final String resetToken, final AccountCredentials accountCredentials, final Callback<Customer> callback) {
+        return new CancellableTaskSubscriptionWrapper(resetPassword(customerId, resetToken, accountCredentials).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
@@ -141,8 +141,8 @@ final class CustomerServiceDefault implements CustomerService {
     }
 
     @Override
-    public void loginCustomer(final AccountCredentials accountCredentials, final Callback<CustomerToken> callback) {
-        loginCustomer(accountCredentials).subscribe(new InternalCallbackSubscriber<>(callback));
+    public CancellableTask loginCustomer(final AccountCredentials accountCredentials, final Callback<CustomerToken> callback) {
+        return new CancellableTaskSubscriptionWrapper(loginCustomer(accountCredentials).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
@@ -167,8 +167,8 @@ final class CustomerServiceDefault implements CustomerService {
     }
 
     @Override
-    public void logoutCustomer(final Callback<Void> callback) {
-        logoutCustomer().subscribe(new InternalCallbackSubscriber<>(callback));
+    public CancellableTask logoutCustomer(final Callback<Void> callback) {
+        return new CancellableTaskSubscriptionWrapper(logoutCustomer().subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
@@ -198,8 +198,8 @@ final class CustomerServiceDefault implements CustomerService {
     }
 
     @Override
-    public void updateCustomer(final Customer customer, final Callback<Customer> callback) {
-        updateCustomer(customer).subscribe(new InternalCallbackSubscriber<>(callback));
+    public CancellableTask updateCustomer(final Customer customer, final Callback<Customer> callback) {
+        return new CancellableTaskSubscriptionWrapper(updateCustomer(customer).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
@@ -216,8 +216,8 @@ final class CustomerServiceDefault implements CustomerService {
     }
 
     @Override
-    public void getCustomer(final Long customerId, final Callback<Customer> callback) {
-        getCustomer(customerId).subscribe(new InternalCallbackSubscriber<>(callback));
+    public CancellableTask getCustomer(final Long customerId, final Callback<Customer> callback) {
+        return new CancellableTaskSubscriptionWrapper(getCustomer(customerId).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
@@ -235,8 +235,8 @@ final class CustomerServiceDefault implements CustomerService {
     }
 
     @Override
-    public void renewCustomer(final Callback<CustomerToken> callback) {
-        renewCustomer().subscribe(new InternalCallbackSubscriber<>(callback));
+    public CancellableTask renewCustomer(final Callback<CustomerToken> callback) {
+        return new CancellableTaskSubscriptionWrapper(renewCustomer().subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
@@ -260,8 +260,8 @@ final class CustomerServiceDefault implements CustomerService {
     }
 
     @Override
-    public void recoverPassword(final String email, final Callback<Void> callback) {
-        recoverPassword(email).subscribe(new InternalCallbackSubscriber<>(callback));
+    public CancellableTask recoverPassword(final String email, final Callback<Void> callback) {
+        return new CancellableTaskSubscriptionWrapper(recoverPassword(email).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override

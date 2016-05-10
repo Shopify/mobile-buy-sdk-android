@@ -30,29 +30,31 @@ import android.util.Log;
 import com.shopify.buy.model.Checkout;
 import com.shopify.buy.model.CreditCard;
 import com.shopify.buy.model.GiftCard;
-import com.shopify.buy.model.Payment;
 import com.shopify.buy.model.PaymentSession;
 import com.shopify.buy.model.ShippingRate;
 import com.shopify.buy.model.internal.CheckoutWrapper;
-import com.shopify.buy.model.internal.CreditCardWrapper;
 import com.shopify.buy.model.internal.GiftCardWrapper;
 import com.shopify.buy.model.internal.MarketingAttribution;
-import com.shopify.buy.model.internal.PaymentRequest;
-import com.shopify.buy.model.internal.PaymentRequestWrapper;
 import com.shopify.buy.model.internal.PaymentToken;
-import com.shopify.buy.model.internal.PaymentWrapper;
 import com.shopify.buy.model.internal.ShippingRatesWrapper;
 
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import com.shopify.buy.model.internal.PaymentSessionCheckout;
+import com.shopify.buy.model.internal.PaymentSessionCheckoutWrapper;
+
+import java.util.HashMap;
 import java.util.List;
 
+import retrofit2.Response;
 import retrofit2.Retrofit;
 import rx.Observable;
 import rx.Scheduler;
 import rx.functions.Action1;
 import rx.functions.Func1;
+
+import static java.net.HttpURLConnection.HTTP_OK;
 
 /**
  * Default implementation of {@link CheckoutService}
@@ -62,6 +64,8 @@ final class CheckoutServiceDefault implements CheckoutService {
     private static String LOG_TAG = CheckoutServiceDefault.class.getSimpleName();
 
     private static final String PAYMENT_TOKEN_TYPE_ANDROID_PAY = "android_pay";
+
+    public static final long POLLING_INTERVAL = 500;
 
     final CheckoutRetrofitService retrofitService;
 
@@ -74,6 +78,8 @@ final class CheckoutServiceDefault implements CheckoutService {
     final String webReturnToLabel;
 
     final NetworkRetryPolicyProvider networkRetryPolicyProvider;
+
+    final PollingPolicyProvider pollingRetryPolicyProvider;
 
     final Scheduler callbackScheduler;
 
@@ -96,6 +102,8 @@ final class CheckoutServiceDefault implements CheckoutService {
         this.webReturnToLabel = webReturnToLabel;
         this.networkRetryPolicyProvider = networkRetryPolicyProvider;
         this.callbackScheduler = callbackScheduler;
+
+        pollingRetryPolicyProvider = new PollingPolicyProvider(POLLING_INTERVAL);
     }
 
     @Override
@@ -109,8 +117,8 @@ final class CheckoutServiceDefault implements CheckoutService {
     }
 
     @Override
-    public void createCheckout(final Checkout checkout, final Callback<Checkout> callback) {
-        createCheckout(checkout).subscribe(new InternalCallbackSubscriber<>(callback));
+    public CancellableTask createCheckout(final Checkout checkout, final Callback<Checkout> callback) {
+        return new CancellableTaskSubscriptionWrapper(createCheckout(checkout).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
@@ -137,8 +145,8 @@ final class CheckoutServiceDefault implements CheckoutService {
     }
 
     @Override
-    public void updateCheckout(final Checkout checkout, final Callback<Checkout> callback) {
-        updateCheckout(checkout).subscribe(new InternalCallbackSubscriber<>(callback));
+    public CancellableTask updateCheckout(final Checkout checkout, final Callback<Checkout> callback) {
+        return new CancellableTaskSubscriptionWrapper(updateCheckout(checkout).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
@@ -156,8 +164,8 @@ final class CheckoutServiceDefault implements CheckoutService {
     }
 
     @Override
-    public void getShippingRates(final String checkoutToken, final Callback<List<ShippingRate>> callback) {
-        getShippingRates(checkoutToken).subscribe(new InternalCallbackSubscriber<>(callback));
+    public CancellableTask getShippingRates(final String checkoutToken, final Callback<List<ShippingRate>> callback) {
+        return new CancellableTaskSubscriptionWrapper(getShippingRates(checkoutToken).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
@@ -166,17 +174,26 @@ final class CheckoutServiceDefault implements CheckoutService {
             throw new NullPointerException("checkoutToken cannot be null");
         }
 
+        int[] successCodes = {HTTP_OK};
+
         return retrofitService
                 .getShippingRates(checkoutToken)
                 .retryWhen(networkRetryPolicyProvider.provide())
-                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
+                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>(successCodes))
+                .retryWhen(pollingRetryPolicyProvider.provide())
                 .compose(new UnwrapRetrofitBodyTransformer<ShippingRatesWrapper, List<ShippingRate>>())
-                .observeOn(callbackScheduler);
+                .observeOn(callbackScheduler)
+                .doOnError(new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        System.out.println(throwable);
+                    }
+                });
     }
 
     @Override
-    public void storeCreditCard(final CreditCard card, final Checkout checkout, final Callback<Checkout> callback) {
-        storeCreditCard(card, checkout).subscribe(new InternalCallbackSubscriber<>(callback));
+    public CancellableTask storeCreditCard(final CreditCard card, final Checkout checkout, final Callback<Checkout> callback) {
+        return new CancellableTaskSubscriptionWrapper(storeCreditCard(card, checkout).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
@@ -189,10 +206,13 @@ final class CheckoutServiceDefault implements CheckoutService {
             throw new NullPointerException("checkout cannot be null");
         }
 
+
         final Checkout safeCheckout = checkout.copy();
-        final CreditCardWrapper creditCardWrapper = new CreditCardWrapper(card);
+
+        PaymentSessionCheckout paymentSessionCheckout = new PaymentSessionCheckout(checkout.getToken(), card, checkout.getBillingAddress());
+
         return retrofitService
-                .storeCreditCard(safeCheckout.getPaymentUrl(), creditCardWrapper, BuyClientUtils.formatBasicAuthorization(apiKey))
+                .storeCreditCard(safeCheckout.getPaymentUrl(), new PaymentSessionCheckoutWrapper(paymentSessionCheckout), BuyClientUtils.formatBasicAuthorization(apiKey))
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
                 .compose(new UnwrapRetrofitBodyTransformer<PaymentSession, String>())
                 .doOnNext(new Action1<String>() {
@@ -211,32 +231,56 @@ final class CheckoutServiceDefault implements CheckoutService {
     }
 
     @Override
-    public void completeCheckout(final Checkout checkout, final Callback<Payment> callback) {
-        completeCheckout(checkout).subscribe(new InternalCallbackSubscriber<>(callback));
+    public CancellableTask completeCheckout(final Checkout checkout, final Callback<Checkout> callback) {
+        return new CancellableTaskSubscriptionWrapper(completeCheckout(checkout).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
-    public Observable<Payment> completeCheckout(final Checkout checkout) {
+    public Observable<Checkout> completeCheckout(final Checkout checkout) {
         if (checkout == null) {
             throw new NullPointerException("checkout cannot be null");
         }
 
-        final PaymentRequest paymentRequest = new PaymentRequest(checkout.getPaymentSessionId());
-        final PaymentRequestWrapper paymentRequestWrapper = new PaymentRequestWrapper(paymentRequest);
+        HashMap<String, String> requestBodyMap = new HashMap<>();
+
+        String paymentSessionId = checkout.getPaymentSessionId();
+        if (!TextUtils.isEmpty(paymentSessionId)) {
+            requestBodyMap.put("payment_session_id", checkout.getPaymentSessionId());
+        }
+
         return retrofitService
-                .completeCheckout(paymentRequestWrapper, checkout.getToken())
-                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .compose(new UnwrapRetrofitBodyTransformer<PaymentWrapper, Payment>())
+                .completeCheckout(requestBodyMap, checkout.getToken())
+                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<Response<CheckoutWrapper>>())
+                .compose(new UnwrapRetrofitBodyTransformer<CheckoutWrapper, Checkout>())
+                .flatMap(new Func1<Checkout, Observable<Checkout>>() {
+                    @Override
+                    public Observable<Checkout> call(final Checkout checkout) {
+
+                        return getCheckoutCompletionStatus(checkout)
+                                .flatMap(new Func1<Boolean, Observable<Checkout>>() {
+                                    @Override
+                                    public Observable<Checkout> call(Boolean aBoolean) {
+                                        if (aBoolean) {
+                                            return getCheckout(checkout.getToken());
+                                        }
+
+                                        // Poll while aBoolean == false
+                                        return Observable.error(new PollingRequiredException());
+                                    }
+                                })
+                                .retryWhen(pollingRetryPolicyProvider.provide());
+                    }
+                })
                 .observeOn(callbackScheduler);
     }
 
     @Override
-    public void completeCheckout(final String androidPayToken, final Checkout checkout, final Callback<Payment> callback) {
-        completeCheckout(androidPayToken, checkout).subscribe(new InternalCallbackSubscriber<>(callback));
+    public CancellableTask completeCheckout(final String androidPayToken, final Checkout checkout, final Callback<Checkout> callback) {
+        return new CancellableTaskSubscriptionWrapper(completeCheckout(androidPayToken, checkout).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
-    public Observable<Payment> completeCheckout(final String androidPayToken, final Checkout checkout) {
+    public Observable<Checkout> completeCheckout(final String androidPayToken, final Checkout checkout) {
         if (!androidPayIsEnabled()) {
             throw new UnsupportedOperationException("Android Pay is not enabled");
         }
@@ -248,16 +292,61 @@ final class CheckoutServiceDefault implements CheckoutService {
         }
 
         PaymentToken paymentToken = new PaymentToken(androidPayToken, PAYMENT_TOKEN_TYPE_ANDROID_PAY, androidPayPublicKeyHash);
+
         return retrofitService
                 .completeCheckout(paymentToken, checkout.getToken())
-                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .compose(new UnwrapRetrofitBodyTransformer<PaymentWrapper, Payment>())
+                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<Response<CheckoutWrapper>>())
+                .compose(new UnwrapRetrofitBodyTransformer<CheckoutWrapper, Checkout>())
+                .flatMap(new Func1<Checkout, Observable<Checkout>>() {
+                    @Override
+                    public Observable<Checkout> call(final Checkout checkout) {
+
+                        return getCheckoutCompletionStatus(checkout)
+                                .flatMap(new Func1<Boolean, Observable<Checkout>>() {
+                                    @Override
+                                    public Observable<Checkout> call(Boolean aBoolean) {
+                                        if (aBoolean) {
+                                            return getCheckout(checkout.getToken());
+                                        }
+
+                                        // Poll while aBoolean == false
+                                        return Observable.error(new PollingRequiredException());
+                                    }
+                                })
+                                .retryWhen(pollingRetryPolicyProvider.provide());
+                    }
+                })
                 .observeOn(callbackScheduler);
     }
 
+
     @Override
-    public void getCheckout(final String checkoutToken, final Callback<Checkout> callback) {
-        getCheckout(checkoutToken).subscribe(new InternalCallbackSubscriber<>(callback));
+    public void getCheckoutCompletionStatus(Checkout checkout, final Callback<Boolean> callback) {
+        getCheckoutCompletionStatus(checkout).subscribe(new InternalCallbackSubscriber<>(callback));
+    }
+
+    @Override
+    public Observable<Boolean> getCheckoutCompletionStatus(final Checkout checkout) {
+        if (checkout == null) {
+            throw new NullPointerException("checkout cannot be null");
+        }
+
+        return retrofitService
+                .getCheckoutCompletionStatus(checkout.getToken())
+                .retryWhen(networkRetryPolicyProvider.provide())
+                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
+                .map(new Func1<Response<Void>, Boolean>() {
+                         @Override
+                         public Boolean call(Response<Void> voidResponse) {
+                             return HTTP_OK == voidResponse.code();
+                         }
+                     }
+                )
+                .observeOn(callbackScheduler);
+    }
+
+    public CancellableTask getCheckout(final String checkoutToken, final Callback<Checkout> callback) {
+        return new CancellableTaskSubscriptionWrapper(getCheckout(checkoutToken).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
@@ -275,8 +364,8 @@ final class CheckoutServiceDefault implements CheckoutService {
     }
 
     @Override
-    public void applyGiftCard(final String giftCardCode, final Checkout checkout, final Callback<Checkout> callback) {
-        applyGiftCard(giftCardCode, checkout).subscribe(new InternalCallbackSubscriber<>(callback));
+    public CancellableTask applyGiftCard(final String giftCardCode, final Checkout checkout, final Callback<Checkout> callback) {
+        return new CancellableTaskSubscriptionWrapper(applyGiftCard(giftCardCode, checkout).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
@@ -305,8 +394,8 @@ final class CheckoutServiceDefault implements CheckoutService {
     }
 
     @Override
-    public void removeGiftCard(final GiftCard giftCard, final Checkout checkout, final Callback<Checkout> callback) {
-        removeGiftCard(giftCard, checkout).subscribe(new InternalCallbackSubscriber<>(callback));
+    public CancellableTask removeGiftCard(final GiftCard giftCard, final Checkout checkout, final Callback<Checkout> callback) {
+        return new CancellableTaskSubscriptionWrapper(removeGiftCard(giftCard, checkout).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
@@ -338,16 +427,21 @@ final class CheckoutServiceDefault implements CheckoutService {
     }
 
     @Override
-    public void removeProductReservationsFromCheckout(final Checkout checkout, final Callback<Checkout> callback) {
+    public CancellableTask removeProductReservationsFromCheckout(final Checkout checkout, final Callback<Checkout> callback) {
         if (checkout == null || TextUtils.isEmpty(checkout.getToken())) {
             callback.failure(null);
+            return new CancellableTask() {
+                @Override
+                public void cancel() {
+                }
+            };
         } else {
             checkout.setReservationTime(0);
 
-            Checkout expiredCheckout = new Checkout();
+            final Checkout expiredCheckout = new Checkout();
             expiredCheckout.setToken(checkout.getToken());
             expiredCheckout.setReservationTime(0);
-            updateCheckout(expiredCheckout, callback);
+            return updateCheckout(expiredCheckout, callback);
         }
     }
 

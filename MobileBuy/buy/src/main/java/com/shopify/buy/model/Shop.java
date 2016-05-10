@@ -66,6 +66,11 @@ public class Shop extends ShopifyObject {
     @SerializedName("published_products_count")
     protected long publishedProductsCount;
 
+    @Override
+    public Long getId() {
+        return super.getId();
+    }
+
     /**
      * @return The name of this shop.
      */

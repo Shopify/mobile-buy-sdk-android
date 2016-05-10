@@ -166,4 +166,19 @@ public class Collection extends ShopifyObject {
         return BuyClientUtils.createDefaultGson().fromJson(json, Collection.class);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Collection)) return false;
+
+        Collection that = (Collection) o;
+
+        return collectionId.equals(that.collectionId);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return collectionId.hashCode();
+    }
 }

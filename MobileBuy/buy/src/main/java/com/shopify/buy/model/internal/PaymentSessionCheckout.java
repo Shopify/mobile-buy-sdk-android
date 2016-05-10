@@ -22,44 +22,30 @@
  * THE SOFTWARE.
  */
 
-package com.shopify.buy.model;
+package com.shopify.buy.model.internal;
 
 import com.google.gson.annotations.SerializedName;
+import com.shopify.buy.model.Address;
+import com.shopify.buy.model.CreditCard;
 
 /**
- * Represents an option on a {@link Product} (e.g. color, size, etc)
+ * Created by agodding on 14-10-23.
+ *
+ * Internal structure used to serialize data for creating a payment session
  */
-public class Option extends ShopifyObject {
+public class PaymentSessionCheckout {
 
-    protected String name;
+    private String checkoutToken;
 
-    protected int position;
+    @SerializedName("credit_card")
+    private CreditCard creditCard;
 
-    @SerializedName("product_id")
-    protected String productId;
+    @SerializedName("billing_address")
+    private Address billingAddress;
 
-    @Override
-    public Long getId() {
-        return super.getId();
+    public PaymentSessionCheckout(String checkoutToken, CreditCard creditCard, Address billingAddress) {
+        this.checkoutToken = checkoutToken;
+        this.creditCard = creditCard;
+        this.billingAddress = billingAddress;
     }
-
-    /**
-     * @return The unique identifier for the {@link Product} associated with this option.
-     */
-    public String getProductId() { return productId; }
-
-    /**
-     * @return The name of this option (e.g. "Size", "Color", etc)
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * @return The index of this option relative to the the options on the product.
-     */
-    public int getPosition() {
-        return position;
-    }
-
 }

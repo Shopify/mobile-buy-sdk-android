@@ -66,8 +66,13 @@ final class ProductServiceDefault implements ProductService {
     }
 
     @Override
-    public void getProductPage(final int page, final Callback<List<Product>> callback) {
-        getProductPage(page).subscribe(new InternalCallbackSubscriber<>(callback));
+    public int getProductPageSize() {
+        return pageSize;
+    }
+
+    @Override
+    public CancellableTask getProductPage(final int page, final Callback<List<Product>> callback) {
+        return new CancellableTaskSubscriptionWrapper(getProductPage(page).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
@@ -85,8 +90,8 @@ final class ProductServiceDefault implements ProductService {
     }
 
     @Override
-    public void getProductWithHandle(final String handle, final Callback<Product> callback) {
-        getProductWithHandle(handle).subscribe(new InternalCallbackSubscriber<>(callback));
+    public CancellableTask getProductWithHandle(final String handle, final Callback<Product> callback) {
+        return new CancellableTaskSubscriptionWrapper(getProductWithHandle(handle).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
@@ -105,8 +110,8 @@ final class ProductServiceDefault implements ProductService {
     }
 
     @Override
-    public void getProduct(final String productId, final Callback<Product> callback) {
-        getProduct(productId).subscribe(new InternalCallbackSubscriber<>(callback));
+    public CancellableTask getProduct(final String productId, final Callback<Product> callback) {
+        return new CancellableTaskSubscriptionWrapper(getProduct(productId).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
@@ -125,8 +130,8 @@ final class ProductServiceDefault implements ProductService {
     }
 
     @Override
-    public void getProducts(final List<String> productIds, final Callback<List<Product>> callback) {
-        getProducts(productIds).subscribe(new InternalCallbackSubscriber<>(callback));
+    public CancellableTask getProducts(final List<String> productIds, final Callback<List<Product>> callback) {
+        return new CancellableTaskSubscriptionWrapper(getProducts(productIds).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
@@ -153,8 +158,8 @@ final class ProductServiceDefault implements ProductService {
     }
 
     @Override
-    public void getProducts(int page, String collectionId, final Callback<List<Product>> callback) {
-        getProducts(page, collectionId, Collection.SortOrder.COLLECTION_DEFAULT, callback);
+    public CancellableTask getProducts(int page, String collectionId, final Callback<List<Product>> callback) {
+        return getProducts(page, collectionId, Collection.SortOrder.COLLECTION_DEFAULT, callback);
     }
 
     @Override
@@ -163,8 +168,8 @@ final class ProductServiceDefault implements ProductService {
     }
 
     @Override
-    public void getProducts(final int page, final String collectionId, final Collection.SortOrder sortOrder, final Callback<List<Product>> callback) {
-        getProducts(page, collectionId, sortOrder).subscribe(new InternalCallbackSubscriber<>(callback));
+    public CancellableTask getProducts(final int page, final String collectionId, final Collection.SortOrder sortOrder, final Callback<List<Product>> callback) {
+        return new CancellableTaskSubscriptionWrapper(getProducts(page, collectionId, sortOrder).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
@@ -185,8 +190,8 @@ final class ProductServiceDefault implements ProductService {
     }
 
     @Override
-    public void getCollections(final Callback<List<Collection>> callback) {
-        getCollectionPage(1, callback);
+    public CancellableTask getCollections(final Callback<List<Collection>> callback) {
+        return getCollectionPage(1, callback);
     }
 
     @Override
@@ -195,8 +200,8 @@ final class ProductServiceDefault implements ProductService {
     }
 
     @Override
-    public void getCollectionPage(final int page, final Callback<List<Collection>> callback) {
-        getCollections(page).subscribe(new InternalCallbackSubscriber<>(callback));
+    public CancellableTask getCollectionPage(final int page, final Callback<List<Collection>> callback) {
+        return new CancellableTaskSubscriptionWrapper(getCollections(page).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override

@@ -25,12 +25,12 @@ package com.shopify.buy.dataprovider;
 
 import com.shopify.buy.model.PaymentSession;
 import com.shopify.buy.model.internal.CheckoutWrapper;
-import com.shopify.buy.model.internal.CreditCardWrapper;
 import com.shopify.buy.model.internal.GiftCardWrapper;
-import com.shopify.buy.model.internal.PaymentRequestWrapper;
 import com.shopify.buy.model.internal.PaymentToken;
-import com.shopify.buy.model.internal.PaymentWrapper;
+import com.shopify.buy.model.internal.PaymentSessionCheckoutWrapper;
 import com.shopify.buy.model.internal.ShippingRatesWrapper;
+
+import java.util.HashMap;
 
 import retrofit2.Response;
 import retrofit2.http.Body;
@@ -55,11 +55,14 @@ interface CheckoutRetrofitService {
     @GET("api/checkouts/{token}/shipping_rates.json")
     Observable<Response<ShippingRatesWrapper>> getShippingRates(@Path("token") String token);
 
-    @POST("api/checkouts/{token}/payments.json")
-    Observable<Response<PaymentWrapper>> completeCheckout(@Body PaymentRequestWrapper paymentRequestWrapper, @Path("token") String token);
+    @POST("api/checkouts/{token}/complete.json")
+    Observable<Response<CheckoutWrapper>> completeCheckout(@Body HashMap<String, String> paymentSessionIdMap, @Path("token") String token);
 
     @POST("api/checkouts/{token}/payments.json")
-    Observable<Response<PaymentWrapper>> completeCheckout(@Body PaymentToken paymentRequestWrapper, @Path("token") String token);
+    Observable<Response<CheckoutWrapper>> completeCheckout(@Body PaymentToken paymentRequestWrapper, @Path("token") String token);
+
+    @GET("anywhere/checkouts/{token}/processing.json")
+    Observable<Response<Void>> getCheckoutCompletionStatus(@Path("token") String token);
 
     @GET("api/checkouts/{token}.json")
     Observable<Response<CheckoutWrapper>> getCheckout(@Path("token") String token);
@@ -72,6 +75,6 @@ interface CheckoutRetrofitService {
 
     @POST
     @Headers("Accept: application/json")
-    Observable<Response<PaymentSession>> storeCreditCard(@Url String url, @Body CreditCardWrapper body, @Header("Authorization") String authorizationHeader);
+    Observable<Response<PaymentSession>> storeCreditCard(@Url String url, @Body PaymentSessionCheckoutWrapper body, @Header("Authorization") String authorizationHeader);
 
 }

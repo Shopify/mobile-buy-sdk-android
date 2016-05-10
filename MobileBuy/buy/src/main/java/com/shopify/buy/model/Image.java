@@ -51,6 +51,11 @@ public class Image extends ShopifyObject {
 
     protected String src;
 
+    @Override
+    public Long getId() {
+        return super.getId();
+    }
+
     /**
      * @return Creation date of the image.
      */

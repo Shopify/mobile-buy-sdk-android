@@ -1,4 +1,14 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
+    }
+}
+
 apply plugin: 'com.android.application'
+apply plugin: 'com.neenbedankt.android-apt'
 
 android {
     compileSdkVersion 23
@@ -57,6 +67,7 @@ android {
             buildConfigField "String", "API_KEY", "\"" + apiKey.toString() + "\""
             buildConfigField "String", "APP_ID", "\"" + appId.toString() + "\""
             buildConfigField "String", "ANDROID_PAY_PUBLIC_KEY",  "\"" + androidPayPublicKey.toString() + "\""
+            buildConfigField "boolean", "USE_RX_API", "false"
         }
     }
 
@@ -68,5 +79,10 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.squareup.picasso:picasso:2.5.2'
+    compile 'com.squareup.okhttp:okhttp-urlconnection:2.5.0'
+    compile 'com.squareup.okhttp:okhttp:2.5.0'
+    compile 'com.squareup.retrofit:retrofit:1.9.0'
+    compile 'com.jakewharton:butterknife:8.0.1'
+    apt 'com.jakewharton:butterknife-compiler:8.0.1'
     compile project(':buy')
 }

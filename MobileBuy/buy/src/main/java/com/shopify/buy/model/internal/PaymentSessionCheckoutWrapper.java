@@ -22,44 +22,16 @@
  * THE SOFTWARE.
  */
 
-package com.shopify.buy.model;
-
-import com.google.gson.annotations.SerializedName;
+package com.shopify.buy.model.internal;
 
 /**
- * Represents an option on a {@link Product} (e.g. color, size, etc)
+ * Wrapper used by Gson for serialization of {@link PaymentSessionCheckout}
  */
-public class Option extends ShopifyObject {
+public class PaymentSessionCheckoutWrapper {
 
-    protected String name;
+    private PaymentSessionCheckout checkout;
 
-    protected int position;
-
-    @SerializedName("product_id")
-    protected String productId;
-
-    @Override
-    public Long getId() {
-        return super.getId();
+    public PaymentSessionCheckoutWrapper(PaymentSessionCheckout checkout) {
+        this.checkout = checkout;
     }
-
-    /**
-     * @return The unique identifier for the {@link Product} associated with this option.
-     */
-    public String getProductId() { return productId; }
-
-    /**
-     * @return The name of this option (e.g. "Size", "Color", etc)
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * @return The index of this option relative to the the options on the product.
-     */
-    public int getPosition() {
-        return position;
-    }
-
 }

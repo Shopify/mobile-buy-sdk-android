@@ -177,6 +177,11 @@ public class Checkout extends ShopifyObject {
         lineItems.add(lineItem);
     }
 
+    @Override
+    public Long getId() {
+        return super.getId();
+    }
+
     public void setLineItems(Cart cart) {
         this.lineItems.clear();
         this.lineItems.addAll(cart.getLineItems());

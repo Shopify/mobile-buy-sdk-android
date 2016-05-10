@@ -23,24 +23,14 @@
  */
 package com.shopify.buy.dataprovider;
 
-import com.shopify.buy.model.Shop;
-
-import rx.Observable;
-
-public interface StoreService {
-
-    /**
-     * Fetch metadata about your shop
-     *
-     * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
-     * @return cancelable task
-     */
-    CancellableTask getShop(Callback<Shop> callback);
+/**
+ * A task that can be cancelled
+ */
+public interface CancellableTask {
 
     /**
-     * Fetch metadata about your shop
-     *
-     * @return cold observable that emits requested shop metadata
+     * Attempt to cancel current task
      */
-    Observable<Shop> getShop();
+    void cancel();
+
 }

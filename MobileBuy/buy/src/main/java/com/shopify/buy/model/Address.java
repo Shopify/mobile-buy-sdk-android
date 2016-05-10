@@ -62,6 +62,11 @@ public class Address extends ShopifyObject {
 
     private String zip;
 
+    @Override
+    public Long getId() {
+        return super.getId();
+    }
+
     /**
      * @return The unique identifier of this object within the Shopify platform.
      */
