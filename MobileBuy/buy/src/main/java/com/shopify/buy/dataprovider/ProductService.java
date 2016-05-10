@@ -25,7 +25,6 @@ package com.shopify.buy.dataprovider;
 
 import com.shopify.buy.model.Collection;
 import com.shopify.buy.model.Product;
-import com.shopify.buy.model.Shop;
 
 import java.util.List;
 
@@ -48,8 +47,9 @@ public interface ProductService {
      *
      * @param page     the 1-based page index. The page size is set by {@link BuyClientBuilder#productPageSize} configuration.
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
+     * @return cancelable task
      */
-    void getProductPage(int page, Callback<List<Product>> callback);
+    CancellableTask getProductPage(int page, Callback<List<Product>> callback);
 
     /**
      * Fetch a page of products
@@ -64,8 +64,9 @@ public interface ProductService {
      *
      * @param handle   the handle for the product to fetch
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
+     * @return cancelable task
      */
-    void getProductWithHandle(String handle, Callback<Product> callback);
+    CancellableTask getProductWithHandle(String handle, Callback<Product> callback);
 
     /**
      * Fetch the product with the specified handle
@@ -80,8 +81,9 @@ public interface ProductService {
      *
      * @param productId the productId for the product to fetch
      * @param callback  the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
+     * @return cancelable task
      */
-    void getProduct(String productId, Callback<Product> callback);
+    CancellableTask getProduct(String productId, Callback<Product> callback);
 
     /**
      * Fetch a single Product
@@ -96,8 +98,9 @@ public interface ProductService {
      *
      * @param productIds a List of the productIds to fetch
      * @param callback   the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
+     * @return cancelable task
      */
-    void getProducts(List<String> productIds, Callback<List<Product>> callback);
+    CancellableTask getProducts(List<String> productIds, Callback<List<Product>> callback);
 
     /**
      * Fetch a list of Products
@@ -113,8 +116,9 @@ public interface ProductService {
      * @param page         the 1-based page index. The page size is set by {@link BuyClientBuilder#productPageSize} configuration.
      * @param collectionId the collectionId that we want to fetch products for
      * @param callback     the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
+     * @return cancelable task
      */
-    void getProducts(int page, String collectionId, Callback<List<Product>> callback);
+    CancellableTask getProducts(int page, String collectionId, Callback<List<Product>> callback);
 
     /**
      * Fetch the list of Products in a Collection using the sort order defined in the shop admin
@@ -132,8 +136,9 @@ public interface ProductService {
      * @param collectionId the collectionId that we want to fetch products for
      * @param sortOrder    the sort order for the collection.
      * @param callback     the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
+     * @return cancelable task
      */
-    void getProducts(int page, String collectionId, Collection.SortOrder sortOrder, Callback<List<Product>> callback);
+    CancellableTask getProducts(int page, String collectionId, Collection.SortOrder sortOrder, Callback<List<Product>> callback);
 
     /**
      * Fetch the list of Products in a Collection
@@ -149,8 +154,9 @@ public interface ProductService {
      * Fetch a list of Collections
      *
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
+     * @return cancelable task
      */
-    void getCollections(Callback<List<Collection>> callback);
+    CancellableTask getCollections(Callback<List<Collection>> callback);
 
     /**
      * Fetch a list of Collections
@@ -164,8 +170,9 @@ public interface ProductService {
      *
      * @param page     the 1-based page index. The page size is set by {@link BuyClientBuilder#productPageSize} configuration.
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
+     * @return cancelable task
      */
-    void getCollectionPage(int page, Callback<List<Collection>> callback);
+    CancellableTask getCollectionPage(int page, Callback<List<Collection>> callback);
 
     /**
      * Fetch a page of collections

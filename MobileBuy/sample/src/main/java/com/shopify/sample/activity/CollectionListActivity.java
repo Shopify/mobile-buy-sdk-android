@@ -24,8 +24,12 @@
 
 package com.shopify.sample.activity;
 
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -35,9 +39,14 @@ import com.shopify.buy.dataprovider.RetrofitError;
 import com.shopify.sample.R;
 import com.shopify.sample.activity.base.SampleListActivity;
 import com.shopify.buy.model.Collection;
+import com.shopify.sample.application.SampleApplication;
+import com.shopify.sample.customer.CustomerLoginActivity;
+import com.shopify.sample.customer.CustomerOrderListActivity;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import rx.functions.Action1;
 
 
 /**
@@ -77,6 +86,52 @@ public class CollectionListActivity extends SampleListActivity {
                 }
             });
         }
+
+        invalidateOptionsMenu();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(final Menu menu) {
+        final MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.collection_list_activity, menu);
+
+        if (SampleApplication.getCustomer() == null) {
+            menu.removeItem(R.id.action_logout);
+        } else {
+            menu.removeItem(R.id.action_login);
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean onMenuItemSelected(final int featureId, final MenuItem item) {
+        switch (item.getItemId()) {
+
+            case R.id.action_login: {
+                final Intent intent = new Intent(this, CustomerLoginActivity.class);
+                startActivity(intent);
+                return true;
+            }
+
+            case R.id.action_logout: {
+                SampleApplication.setCustomer(null);
+                SampleApplication.getBuyClient().logoutCustomer(new Callback<Void>() {
+                    @Override
+                    public void success(Void body) {
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                    }
+                });
+                invalidateOptionsMenu();
+                return true;
+            }
+
+            default:
+                return super.onMenuItemSelected(featureId, item);
+        }
     }
 
     /**
@@ -88,19 +143,26 @@ public class CollectionListActivity extends SampleListActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                List<String> collectionTitles = new ArrayList<String>();
+                final List<String> collectionTitles = new ArrayList<String>();
 
                 // Add an 'All Products' collection just in case there are products that do not belong to a collection
                 collectionTitles.add(getString(R.string.all_products));
                 for (Collection collection : collections) {
                     collectionTitles.add(collection.getTitle());
                 }
+                collectionTitles.add(getString(R.string.collection_list_orders));
 
                 listView.setAdapter(new ArrayAdapter<>(CollectionListActivity.this, R.layout.simple_list_item, collectionTitles));
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        onCollectionClicked(position == 0 ? null : collections.get(position - 1).getCollectionId());
+                        if (position == 0) {
+                            onCollectionClicked(null);
+                        } else if (position == collectionTitles.size() - 1) {
+                            onOrdersClick();
+                        } else {
+                            onCollectionClicked(collections.get(position - 1).getCollectionId());
+                        }
                     }
                 });
             }
@@ -120,4 +182,15 @@ public class CollectionListActivity extends SampleListActivity {
         startActivity(intent);
     }
 
+    private void onOrdersClick() {
+        final Intent customerOrderListActivityIntent = new Intent(this, CustomerOrderListActivity.class);
+        if (SampleApplication.getCustomer() == null) {
+            final PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, customerOrderListActivityIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+            final Intent intent = new Intent(this, CustomerLoginActivity.class);
+            intent.putExtra(CustomerLoginActivity.EXTRAS_PENDING_ACTIVITY_INTENT, pendingIntent);
+            startActivity(intent);
+        } else {
+            startActivity(customerOrderListActivityIntent);
+        }
+    }
 }

@@ -41,8 +41,9 @@ public interface AddressService {
      * @param customer the {@link Customer} to create and address for, not null
      * @param address  the {@link Address} to create, not null
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
+     * @return cancelable task
      */
-    void createAddress(Customer customer, Address address, Callback<Address> callback);
+    CancellableTask createAddress(Customer customer, Address address, Callback<Address> callback);
 
     /**
      * Create an Address and associate it with a Customer
@@ -58,8 +59,9 @@ public interface AddressService {
      *
      * @param customer the {@link Customer} to fetch addresses for, not null
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
+     * @return cancelable task
      */
-    void getAddresses(Customer customer, Callback<List<Address>> callback);
+    CancellableTask getAddresses(Customer customer, Callback<List<Address>> callback);
 
     /**
      * Fetch all of the Addresses associated with a Customer.
@@ -75,8 +77,9 @@ public interface AddressService {
      * @param customer  the {@link Customer} to fetch an address for, not null
      * @param addressId the identifier of the {@link Address}
      * @param callback  the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
+     * @return cancelable task
      */
-    void getAddress(Customer customer, String addressId, Callback<Address> callback);
+    CancellableTask getAddress(Customer customer, String addressId, Callback<Address> callback);
 
     /**
      * Fetch an existing Address from Shopify
@@ -93,8 +96,9 @@ public interface AddressService {
      * @param customer the {@link Customer} to updatne an address for, not null
      * @param address  the {@link Address} to update
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
+     * @return cancelable task
      */
-    void updateAddress(Customer customer, Address address, Callback<Address> callback);
+    CancellableTask updateAddress(Customer customer, Address address, Callback<Address> callback);
 
     /**
      * Update the attributes of an existing Address

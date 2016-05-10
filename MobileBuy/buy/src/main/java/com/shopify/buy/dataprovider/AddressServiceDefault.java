@@ -58,8 +58,8 @@ final class AddressServiceDefault implements AddressService {
     }
 
     @Override
-    public void createAddress(final Customer customer, final Address address, final Callback<Address> callback) {
-        createAddress(customer, address).subscribe(new InternalCallbackSubscriber<>(callback));
+    public CancellableTask createAddress(final Customer customer, final Address address, final Callback<Address> callback) {
+        return new CancellableTaskSubscriptionWrapper(createAddress(customer, address).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
@@ -80,8 +80,8 @@ final class AddressServiceDefault implements AddressService {
     }
 
     @Override
-    public void getAddresses(final Customer customer, final Callback<List<Address>> callback) {
-        getAddresses(customer).subscribe(new InternalCallbackSubscriber<>(callback));
+    public CancellableTask getAddresses(final Customer customer, final Callback<List<Address>> callback) {
+        return new CancellableTaskSubscriptionWrapper(getAddresses(customer).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
@@ -99,8 +99,8 @@ final class AddressServiceDefault implements AddressService {
     }
 
     @Override
-    public void getAddress(final Customer customer, final String addressId, final Callback<Address> callback) {
-        getAddress(customer, addressId).subscribe(new InternalCallbackSubscriber<>(callback));
+    public CancellableTask getAddress(final Customer customer, final String addressId, final Callback<Address> callback) {
+        return new CancellableTaskSubscriptionWrapper(getAddress(customer, addressId).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
@@ -122,8 +122,8 @@ final class AddressServiceDefault implements AddressService {
     }
 
     @Override
-    public void updateAddress(final Customer customer, final Address address, final Callback<Address> callback) {
-        updateAddress(customer, address).subscribe(new InternalCallbackSubscriber<>(callback));
+    public CancellableTask updateAddress(final Customer customer, final Address address, final Callback<Address> callback) {
+        return new CancellableTaskSubscriptionWrapper(updateAddress(customer, address).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override

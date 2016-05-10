@@ -40,6 +40,7 @@ import com.shopify.buy.model.Cart;
 import com.shopify.buy.model.Checkout;
 import com.shopify.buy.model.Collection;
 import com.shopify.buy.model.CreditCard;
+import com.shopify.buy.model.Customer;
 import com.shopify.buy.model.LineItem;
 import com.shopify.buy.model.Product;
 import com.shopify.buy.model.ShippingRate;
@@ -64,6 +65,22 @@ public class SampleApplication extends Application {
                     "\t\tSHOP_DOMAIN=<myshop>.myshopify.com\n" +
                     "\t\tAPI_KEY=0123456789abcdefghijklmnopqrstuvw\n";
 
+    private static SampleApplication instance;
+
+    private static Customer customer;
+
+    public static BuyClient getBuyClient() {
+        return instance.buyClient;
+    }
+
+    public static Customer getCustomer() {
+        return customer;
+    }
+
+    public static void setCustomer(Customer customer) {
+        SampleApplication.customer = customer;
+    }
+
     private BuyClient buyClient;
     private Checkout checkout;
     private Shop shop;
@@ -71,6 +88,8 @@ public class SampleApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        instance = this;
 
         initializeBuyClient();
     }
@@ -164,18 +183,29 @@ public class SampleApplication extends Application {
 
         checkout = new Checkout(cart);
 
-        Address address = new Address();
-        address.setFirstName("Dinosaur");
-        address.setLastName("Banana");
-        address.setAddress1("421 8th Ave");
-        address.setCity("New York");
-        address.setProvince("NY");
-        address.setZip("10001");
-        address.setCountryCode("US");
-        checkout.setShippingAddress(address);
-        checkout.setBillingAddress(address);
+        // if we have logged in customer use customer email instead of hardcoded one
+        if (customer != null) {
+            checkout.setEmail(customer.getEmail());
+        } else {
+            checkout.setEmail("something@somehost.com");
+        }
 
-        checkout.setEmail("something@somehost.com");
+        // the same for shipping address if we have logged in customer use customer default shipping address instead of hardcoded one
+        if (customer != null && customer.getDefaultAddress() != null) {
+            checkout.setShippingAddress(customer.getDefaultAddress());
+            checkout.setBillingAddress(customer.getDefaultAddress());
+        } else {
+            final Address address = new Address();
+            address.setFirstName("Dinosaur");
+            address.setLastName("Banana");
+            address.setAddress1("421 8th Ave");
+            address.setCity("New York");
+            address.setProvince("NY");
+            address.setZip("10001");
+            address.setCountryCode("US");
+            checkout.setShippingAddress(address);
+            checkout.setBillingAddress(address);
+        }
 
         checkout.setWebReturnToUrl(getString(R.string.web_return_to_url));
         checkout.setWebReturnToLabel(getString(R.string.web_return_to_label));

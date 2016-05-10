@@ -23,24 +23,22 @@
  */
 package com.shopify.buy.dataprovider;
 
-import com.shopify.buy.model.Shop;
+import rx.Subscription;
 
-import rx.Observable;
+final class CancellableTaskSubscriptionWrapper implements CancellableTask {
 
-public interface StoreService {
+    private Subscription subscription;
 
-    /**
-     * Fetch metadata about your shop
-     *
-     * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
-     * @return cancelable task
-     */
-    CancellableTask getShop(Callback<Shop> callback);
+    public CancellableTaskSubscriptionWrapper(final Subscription subscription) {
+        this.subscription = subscription;
+    }
 
-    /**
-     * Fetch metadata about your shop
-     *
-     * @return cold observable that emits requested shop metadata
-     */
-    Observable<Shop> getShop();
+    @Override
+    public void cancel() {
+        final Subscription subscription = this.subscription;
+        if (subscription != null) {
+            subscription.unsubscribe();
+        }
+        this.subscription = null;
+    }
 }
