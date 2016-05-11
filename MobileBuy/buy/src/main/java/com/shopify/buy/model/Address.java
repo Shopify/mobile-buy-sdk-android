@@ -213,28 +213,35 @@ public class Address extends ShopifyObject {
 
         Address address = (Address) o;
 
-        // TODO Kris - we should combine this and the locationsAreEqual, and use TextUtils in this function to simplify
-        if (address1 != null ? !address1.equals(address.address1) : address.address1 != null)
+        if (!locationsAreEqual(address)) {
             return false;
-        if (address2 != null ? !address2.equals(address.address2) : address.address2 != null)
+        }
+
+        if (!TextUtils.equals(this.company, address.getCompany())) {
             return false;
-        if (city != null ? !city.equals(address.city) : address.city != null) return false;
-        if (company != null ? !company.equals(address.company) : address.company != null)
+        }
+
+        if (!TextUtils.equals(this.firstName, address.firstName)) {
             return false;
-        if (firstName != null ? !firstName.equals(address.firstName) : address.firstName != null)
+        }
+
+        if (!TextUtils.equals(this.lastName, address.lastName)) {
             return false;
-        if (lastName != null ? !lastName.equals(address.lastName) : address.lastName != null)
+        }
+
+        if (!TextUtils.equals(this.phone, address.phone)) {
             return false;
-        if (phone != null ? !phone.equals(address.phone) : address.phone != null) return false;
-        if (country != null ? !country.equals(address.country) : address.country != null)
+        }
+
+        if (!TextUtils.equals(this.country, address.country)) {
             return false;
-        if (countryCode != null ? !countryCode.equals(address.countryCode) : address.countryCode != null)
+        }
+
+        if (!TextUtils.equals(this.province, address.province)) {
             return false;
-        if (province != null ? !province.equals(address.province) : address.province != null)
-            return false;
-        if (provinceCode != null ? !provinceCode.equals(address.provinceCode) : address.provinceCode != null)
-            return false;
-        return !(zip != null ? !zip.equals(address.zip) : address.zip != null);
+        }
+
+        return true;
     }
 
     /**
