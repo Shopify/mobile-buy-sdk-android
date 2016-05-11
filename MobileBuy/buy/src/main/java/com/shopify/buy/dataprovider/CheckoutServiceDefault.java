@@ -44,6 +44,7 @@ import com.shopify.buy.model.internal.ShippingRatesWrapper;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+
 import java.util.HashMap;
 import java.util.List;
 

@@ -61,7 +61,7 @@ interface CheckoutRetrofitService {
     @POST("api/checkouts/{token}/complete.json")
     Observable<Response<CheckoutWrapper>> completeCheckout(@Body PaymentTokenWrapper paymentTokenWrapper, @Path("token") String token);
 
-    @GET("anywhere/checkouts/{token}/processing.json")
+    @GET("api/checkouts/{token}/processing.json")
     Observable<Response<Void>> getCheckoutCompletionStatus(@Path("token") String token);
 
     @GET("api/checkouts/{token}.json")
