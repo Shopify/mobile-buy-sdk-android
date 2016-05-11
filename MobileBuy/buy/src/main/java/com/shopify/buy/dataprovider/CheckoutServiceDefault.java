@@ -182,13 +182,7 @@ final class CheckoutServiceDefault implements CheckoutService {
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>(successCodes))
                 .retryWhen(pollingRetryPolicyProvider.provide())
                 .compose(new UnwrapRetrofitBodyTransformer<ShippingRatesWrapper, List<ShippingRate>>())
-                .observeOn(callbackScheduler)
-                .doOnError(new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        System.out.println(throwable);
-                    }
-                });
+                .observeOn(callbackScheduler);
     }
 
     @Override
