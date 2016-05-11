@@ -250,20 +250,7 @@ final class CheckoutServiceDefault implements CheckoutService {
                 .flatMap(new Func1<Checkout, Observable<Checkout>>() {
                     @Override
                     public Observable<Checkout> call(final Checkout checkout) {
-
-                        return getCheckoutCompletionStatus(checkout)
-                                .flatMap(new Func1<Boolean, Observable<Checkout>>() {
-                                    @Override
-                                    public Observable<Checkout> call(Boolean aBoolean) {
-                                        if (aBoolean) {
-                                            return getCheckout(checkout.getToken());
-                                        }
-
-                                        // Poll while aBoolean == false
-                                        return Observable.error(new PollingRequiredException());
-                                    }
-                                })
-                                .retryWhen(pollingRetryPolicyProvider.provide());
+                        return getCompletedCheckout(checkout);
                     }
                 })
                 .observeOn(callbackScheduler);
@@ -296,25 +283,27 @@ final class CheckoutServiceDefault implements CheckoutService {
                 .flatMap(new Func1<Checkout, Observable<Checkout>>() {
                     @Override
                     public Observable<Checkout> call(final Checkout checkout) {
-
-                        return getCheckoutCompletionStatus(checkout)
-                                .flatMap(new Func1<Boolean, Observable<Checkout>>() {
-                                    @Override
-                                    public Observable<Checkout> call(Boolean aBoolean) {
-                                        if (aBoolean) {
-                                            return getCheckout(checkout.getToken());
-                                        }
-
-                                        // Poll while aBoolean == false
-                                        return Observable.error(new PollingRequiredException());
-                                    }
-                                })
-                                .retryWhen(pollingRetryPolicyProvider.provide());
+                        return getCompletedCheckout(checkout);
                     }
                 })
                 .observeOn(callbackScheduler);
     }
 
+    private Observable<Checkout> getCompletedCheckout(final Checkout checkout) {
+        return getCheckoutCompletionStatus(checkout)
+                .flatMap(new Func1<Boolean, Observable<Checkout>>() {
+                    @Override
+                    public Observable<Checkout> call(Boolean aBoolean) {
+                        if (aBoolean) {
+                            return getCheckout(checkout.getToken());
+                        }
+
+                        // Poll while aBoolean == false
+                        return Observable.error(new PollingRequiredException());
+                    }
+                })
+                .retryWhen(pollingRetryPolicyProvider.provide());
+    }
 
     @Override
     public void getCheckoutCompletionStatus(Checkout checkout, final Callback<Boolean> callback) {

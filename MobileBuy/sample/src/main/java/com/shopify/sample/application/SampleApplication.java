@@ -220,7 +220,7 @@ public class SampleApplication extends Application {
             address.setLastName("Banana");
             address.setAddress1("421 8th Ave");
             address.setCity("New York");
-            address.setProvince("NY");
+            address.setProvinceCode("NY");
             address.setZip("10001");
             address.setCountryCode("US");
             checkout.setShippingAddress(address);
