@@ -36,7 +36,6 @@ import com.shopify.buy.model.Customer;
 import com.shopify.buy.model.CustomerToken;
 import com.shopify.buy.model.GiftCard;
 import com.shopify.buy.model.Order;
-import com.shopify.buy.model.Payment;
 import com.shopify.buy.model.Product;
 import com.shopify.buy.model.ShippingRate;
 import com.shopify.buy.model.Shop;
@@ -231,12 +230,22 @@ final class BuyClientDefault implements BuyClient {
     }
 
     @Override
-    public CancellableTask completeCheckout(final Checkout checkout, final Callback<Payment> callback) {
+    public CancellableTask completeCheckout(final Checkout checkout, final Callback<Checkout> callback) {
         return checkoutService.completeCheckout(checkout, callback);
     }
 
     @Override
-    public Observable<Payment> completeCheckout(final Checkout checkout) {
+    public void getCheckoutCompletionStatus(Checkout checkout, final Callback<Boolean> callback) {
+        checkoutService.getCheckoutCompletionStatus(checkout);
+    }
+
+    @Override
+    public Observable<Boolean> getCheckoutCompletionStatus(final Checkout checkout) {
+        return checkoutService.getCheckoutCompletionStatus(checkout);
+    }
+
+    @Override
+    public Observable<Checkout> completeCheckout(final Checkout checkout) {
         return checkoutService.completeCheckout(checkout);
     }
 

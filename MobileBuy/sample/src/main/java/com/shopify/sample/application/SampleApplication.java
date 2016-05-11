@@ -31,9 +31,9 @@ import android.net.Uri;
 import android.text.TextUtils;
 import android.widget.Toast;
 
+import com.shopify.buy.dataprovider.BuyClient;
 import com.shopify.buy.dataprovider.BuyClientBuilder;
 import com.shopify.buy.dataprovider.Callback;
-import com.shopify.buy.dataprovider.BuyClient;
 import com.shopify.buy.dataprovider.RetrofitError;
 import com.shopify.buy.model.Address;
 import com.shopify.buy.model.Cart;
@@ -42,14 +42,13 @@ import com.shopify.buy.model.Collection;
 import com.shopify.buy.model.CreditCard;
 import com.shopify.buy.model.Customer;
 import com.shopify.buy.model.LineItem;
-import com.shopify.buy.model.Payment;
 import com.shopify.buy.model.Product;
 import com.shopify.buy.model.ShippingRate;
 import com.shopify.buy.model.Shop;
-import com.shopify.sample.ui.ProductDetailsBuilder;
-import com.shopify.sample.ui.ProductDetailsTheme;
 import com.shopify.sample.BuildConfig;
 import com.shopify.sample.R;
+import com.shopify.sample.ui.ProductDetailsBuilder;
+import com.shopify.sample.ui.ProductDetailsTheme;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -272,7 +271,7 @@ public class SampleApplication extends Application {
     }
 
     public void completeCheckout(final Callback<Checkout> callback) {
-        buyClient.completeCheckout(checkout, wrapCheckoutCallbackForPayment(callback));
+        buyClient.completeCheckout(checkout, wrapCheckoutCallback(callback));
     }
 
     public void launchProductDetailsActivity(Activity activity, Product product, ProductDetailsTheme theme) {
@@ -298,21 +297,6 @@ public class SampleApplication extends Application {
             @Override
             public void success(Checkout checkout) {
                 SampleApplication.this.checkout = checkout;
-                callback.success(checkout);
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                callback.failure(error);
-            }
-        };
-    }
-
-    private Callback<Payment> wrapCheckoutCallbackForPayment(final Callback<Checkout> callback) {
-        return new Callback<Payment>() {
-            @Override
-            public void success(Payment payment) {
-                SampleApplication.this.checkout = payment.getCheckout();
                 callback.success(checkout);
             }
 

@@ -26,7 +26,6 @@ package com.shopify.buy.dataprovider;
 import com.shopify.buy.model.Checkout;
 import com.shopify.buy.model.CreditCard;
 import com.shopify.buy.model.GiftCard;
-import com.shopify.buy.model.Payment;
 import com.shopify.buy.model.ShippingRate;
 
 import java.util.List;
@@ -83,7 +82,7 @@ public interface CheckoutService {
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      * @return cancelable task
      */
-    CancellableTask completeCheckout(Checkout checkout, Callback<Payment> callback);
+    CancellableTask completeCheckout(Checkout checkout, Callback<Checkout> callback);
 
     /**
      * Complete the checkout and process the payment session
@@ -91,7 +90,27 @@ public interface CheckoutService {
      * @param checkout a {@link Checkout} that has had a {@link CreditCard} associated with it using {@link #storeCreditCard(CreditCard, Checkout)}
      * @return cold observable that emits completed checkout
      */
-    Observable<Payment> completeCheckout(Checkout checkout);
+    Observable<Checkout> completeCheckout(Checkout checkout);
+
+    /**
+     * Get the status of the payment session associated with {@code checkout}. {@code callback} will be
+     * called with a boolean value indicating whether the session has completed or not.
+     *
+     * @param checkout a {@link Checkout} that has been passed as a parameter to {@link #completeCheckout(Checkout, Callback)} or {@link #completeCheckout(Checkout)}
+     * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
+     *
+     */
+    void getCheckoutCompletionStatus(Checkout checkout, final Callback<Boolean> callback);
+
+    /**
+     * Get the status of the payment session associated with {@code checkout}. {@code callback} will be
+     * called with a boolean value indicating whether the session has completed or not.
+     *
+     * @param checkout a {@link Checkout} that has been passed as a parameter to {@link #completeCheckout(Checkout, Callback)} or {@link #completeCheckout(Checkout)}
+     * @return cold observable that emits a Boolean that indicates whether the checkout has been completed
+     *
+     */
+    Observable<Boolean> getCheckoutCompletionStatus(Checkout checkout);
 
     /**
      * Fetch an existing Checkout from Shopify
