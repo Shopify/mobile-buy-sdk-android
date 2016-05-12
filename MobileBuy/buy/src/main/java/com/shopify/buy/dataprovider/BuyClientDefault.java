@@ -44,11 +44,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import okhttp3.ConnectionPool;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -235,8 +233,8 @@ final class BuyClientDefault implements BuyClient {
     }
 
     @Override
-    public void getCheckoutCompletionStatus(Checkout checkout, final Callback<Boolean> callback) {
-        checkoutService.getCheckoutCompletionStatus(checkout);
+    public CancellableTask getCheckoutCompletionStatus(Checkout checkout, final Callback<Boolean> callback) {
+        return checkoutService.getCheckoutCompletionStatus(checkout, callback);
     }
 
     @Override
