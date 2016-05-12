@@ -7,4 +7,5 @@
     <string name="loading_checkout_page">Loading checkout</string>
     <string name="sold_out">Sold Out</string>
     <string name="selected">Selected</string>
+    <string name="confirm_order">Confirm Order</string>
 </resources>

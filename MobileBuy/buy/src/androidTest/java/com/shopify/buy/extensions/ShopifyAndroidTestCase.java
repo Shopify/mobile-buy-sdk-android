@@ -175,4 +175,7 @@ public class ShopifyAndroidTestCase {
         return USE_MOCK_RESPONSES ? "placeholderAppId" : BuildConfig.APP_ID;
     }
 
+    protected String getAndroidPayPublicKey() {
+        return USE_MOCK_RESPONSES ? "placeholderAndroidPayPublicKey" : BuildConfig.ANDROID_PAY_PUBLIC_KEY;
+    }
 }

@@ -24,14 +24,15 @@
 
 package com.shopify.sample.activity.base;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -48,7 +49,7 @@ import java.util.List;
 /**
  * Base class for all activities in the app. Manages the ProgressDialog that is displayed while network activity is occurring.
  */
-public class SampleActivity extends Activity {
+public class SampleActivity extends FragmentActivity {
 
     private static final String LOG_TAG = SampleActivity.class.getSimpleName();
 
@@ -152,7 +153,7 @@ public class SampleActivity extends Activity {
     }
 
     /**
-     * Use the latest Checkout objects details to populate the text views in the order summary section.
+     * Use the latest Checkout object details to populate the text views in the order summary section.
      */
     protected void updateOrderSummary() {
         final Checkout checkout = getSampleApplication().getCheckout();
@@ -167,7 +168,11 @@ public class SampleActivity extends Activity {
         Discount discount = checkout.getDiscount();
         if (discount != null && !TextUtils.isEmpty(discount.getAmount())) {
             totalDiscount += Double.parseDouble(discount.getAmount());
+            findViewById(R.id.discount_row).setVisibility(View.VISIBLE);
+        } else {
+            findViewById(R.id.discount_row).setVisibility(View.GONE);
         }
+
         ((TextView) findViewById(R.id.discount_value)).setText("-$" + Double.toString(totalDiscount));
 
         double totalGiftCards = 0;
@@ -179,7 +184,13 @@ public class SampleActivity extends Activity {
                 }
             }
         }
-        ((TextView) findViewById(R.id.gift_card_value)).setText("-$" + Double.toString(totalGiftCards));
+        if (totalGiftCards > 0) {
+            ((TextView) findViewById(R.id.gift_card_value)).setText("-$" + Double.toString(totalGiftCards));
+            findViewById(R.id.gift_card_row).setVisibility(View.VISIBLE);
+        } else {
+            findViewById(R.id.gift_card_row).setVisibility(View.GONE);
+        }
+
         ((TextView) findViewById(R.id.taxes_value)).setText('$' + checkout.getTotalTax());
         ((TextView) findViewById(R.id.total_value)).setText('$' + checkout.getPaymentDue());
 

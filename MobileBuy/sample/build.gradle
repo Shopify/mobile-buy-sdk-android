@@ -30,11 +30,13 @@ android {
             def shopDomain
             def apiKey
             def appId
+            def androidPayPublicKey
 
             // get the shop setting from the environment if there any
             shopDomain = System.getenv("SHOP_DOMAIN")
             apiKey = System.getenv("API_KEY")
             appId = System.getenv("APP_ID")
+            androidPayPublicKey = System.getenv("ANDROID_PAY_PUBLIC_KEY")
 
             // pull the store properties from the local file if it exists.  Environment variables take precedence
             def shopProperties = new Properties();
@@ -45,6 +47,7 @@ android {
                 shopDomain = shopDomain ?: shopProperties["SHOP_DOMAIN"]
                 apiKey = apiKey ?: shopProperties["API_KEY"]
                 appId = appId ?: shopProperties["APP_ID"]
+                androidPayPublicKey = androidPayPublicKey ?: shopProperties["ANDROID_PAY_PUBLIC_KEY"]
             }
 
             if (!shopDomain) {
@@ -56,10 +59,14 @@ android {
             if (!appId) {
                 appId = ""
             }
+            if (!androidPayPublicKey) {
+                androidPayPublicKey = ""
+            }
 
             buildConfigField "String", "SHOP_DOMAIN", "\"" + shopDomain.toString() + "\""
             buildConfigField "String", "API_KEY", "\"" + apiKey.toString() + "\""
             buildConfigField "String", "APP_ID", "\"" + appId.toString() + "\""
+            buildConfigField "String", "ANDROID_PAY_PUBLIC_KEY",  "\"" + androidPayPublicKey.toString() + "\""
             buildConfigField "boolean", "USE_RX_API", "false"
         }
     }

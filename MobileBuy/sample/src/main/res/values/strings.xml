@@ -45,7 +45,7 @@
     <string name="checkout_error">Could not complete checkout</string>
     <string name="unsupported_gateway">Could not create a checkout. Is your payment gateway supported?</string>
 
-    <string name="line_item_price">Line Item Price</string>
+    <string name="subtotal">Subtotal</string>
     <string name="discount">Discount</string>
     <string name="gift_card">Gift Card</string>
     <string name="shipping">Shipping</string>
@@ -57,6 +57,13 @@
     <string name="web_return_to_url">"mobilebuysample://"</string>
     <string name="web_return_to_label">"Return to Mobile Buy Sample</string>
 
+    <!-- Android Pay -->
+    <string name="thanks">Thanks for your order</string>
+    <string name="confirmation_details">Confirmation details</string>
+    <string name="secured_by">Secured By</string>
+    <string name="merchant_name">A Sample Merchant</string>
+
+    <!-- Customers and Orders -->
     <string name="collection_list_orders">Orders</string>
 
     <string name="collection_list_menu_action_login">Log In</string>

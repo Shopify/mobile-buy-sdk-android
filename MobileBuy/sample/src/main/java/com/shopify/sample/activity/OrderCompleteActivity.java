@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2015 Shopify Inc.
+ * Copyright (c) 2016 Shopify
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -20,32 +20,28 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
+ *
  */
 
-package com.shopify.buy.model.internal;
+package com.shopify.sample.activity;
 
-import com.google.gson.annotations.SerializedName;
-import com.shopify.buy.model.Address;
-import com.shopify.buy.model.CreditCard;
+import android.app.Activity;
+import android.os.Bundle;
+
+import com.shopify.sample.R;
 
 /**
- * Created by agodding on 14-10-23.
+ *  This Activity shows the details for the completed order.
+ *  Any information relevant to the order, such as shipping date or order number
+ *  should be displayed here.
  *
- * Internal structure used to serialize data for creating a payment session
  */
-public class PaymentSessionCheckout {
+public class OrderCompleteActivity extends Activity {
 
-    private String checkoutToken;
-
-    @SerializedName("credit_card")
-    private CreditCard creditCard;
-
-    @SerializedName("billing_address")
-    private Address billingAddress;
-
-    public PaymentSessionCheckout(String checkoutToken, CreditCard creditCard, Address billingAddress) {
-        this.checkoutToken = checkoutToken;
-        this.creditCard = creditCard;
-        this.billingAddress = billingAddress;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.order_complete_activity);
     }
+
 }

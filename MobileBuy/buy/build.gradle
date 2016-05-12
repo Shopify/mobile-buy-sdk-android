@@ -55,11 +55,13 @@ android {
             def apiKey
             def appId
             def useMockResponses
+            def androidPayPublicKey
 
             // get the shop setting from the environment if there any
             shopDomain = System.getenv("SHOP_DOMAIN")
             apiKey = System.getenv("API_KEY")
             appId = System.getenv("APP_ID")
+            androidPayPublicKey = System.getenv("ANDROID_PAY_PUBLIC_KEY")
 
             // pull the store properties from the local file if it exists.  Environment variables take precedence
             def shopProperties = new Properties();
@@ -70,6 +72,7 @@ android {
                 shopDomain = shopDomain ?: shopProperties["SHOP_DOMAIN"]
                 apiKey = apiKey ?: shopProperties["API_KEY"]
                 appId = appId ?: shopProperties["APP_ID"]
+                androidPayPublicKey = androidPayPublicKey ?: shopProperties["ANDROID_PAY_PUBLIC_KEY"]
             }
 
             if (!shopDomain) {
@@ -81,11 +84,14 @@ android {
             if (!appId) {
                 appId = ""
             }
+            if (!androidPayPublicKey) {
+                androidPayPublicKey = ""
+            }
 
             buildConfigField "String", "SHOP_DOMAIN", "\"" + shopDomain.toString() + "\""
             buildConfigField "String", "API_KEY", "\"" + apiKey.toString() + "\""
             buildConfigField "String", "APP_ID", "\"" + appId.toString() + "\""
-
+            buildConfigField "String", "ANDROID_PAY_PUBLIC_KEY",  "\"" + androidPayPublicKey.toString() + "\""
         }
 
         release {
@@ -126,6 +132,8 @@ dependencies {
     compile 'com.android.support:palette-v7:23.3.0'
     compile 'com.android.support:customtabs:23.3.0'
 
+    compile 'com.google.android.gms:play-services-wallet:8.4.0'
+
     androidTestCompile 'org.mockito:mockito-core:1.9.5'
     androidTestCompile 'com.google.dexmaker:dexmaker:1.1'
     androidTestCompile 'com.google.dexmaker:dexmaker-mockito:1.1'
@@ -163,6 +171,12 @@ task javadoc(type: Javadoc) {
 
     def designLib = "${android.sdkDirectory}/extras/android/support/design/libs/android-support-design.jar"
     classpath += project.files(designLib)
+
+    def supportLib = "${android.sdkDirectory}/extras/android/support/v4/android-support-v4.jar"
+    classpath += project.files(supportLib)
+
+    def playLib = "${android.sdkDirectory}/extras/google/google_play_services/libproject/google-play-services_lib/libs/google-play-services.jar"
+    classpath += project.files(playLib)
 
     options {
         linksOffline("http://d.android.com/reference", "${android.sdkDirectory}/docs/reference")

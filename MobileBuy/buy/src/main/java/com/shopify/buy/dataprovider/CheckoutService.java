@@ -100,7 +100,7 @@ public interface CheckoutService {
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      *
      */
-    void getCheckoutCompletionStatus(Checkout checkout, final Callback<Boolean> callback);
+    CancellableTask getCheckoutCompletionStatus(Checkout checkout, final Callback<Boolean> callback);
 
     /**
      * Get the status of the payment session associated with {@code checkout}. {@code callback} will be
@@ -111,6 +111,24 @@ public interface CheckoutService {
      *
      */
     Observable<Boolean> getCheckoutCompletionStatus(Checkout checkout);
+
+    /**
+     * Complete the checkout and process the payment session
+     *
+     * @param checkout        a {@link Checkout} to complete using Android Pay
+     * @param androidPayToken the token returned in the {@link com.google.android.gms.wallet.FullWallet}
+     * @param callback        the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
+     */
+    CancellableTask completeCheckout(String androidPayToken, Checkout checkout, Callback<Checkout> callback);
+
+    /**
+     * Complete the checkout and process the payment session
+     *
+     * @param checkout        a {@link Checkout} that has had a {@link CreditCard} associated with it using {@link #storeCreditCard(CreditCard, Checkout)}
+     * @param androidPayToken the token returned in the {@link com.google.android.gms.wallet.FullWallet}
+     * @return cold observable that emits completed checkout
+     */
+    Observable<Checkout> completeCheckout(String androidPayToken, Checkout checkout);
 
     /**
      * Fetch an existing Checkout from Shopify
@@ -221,4 +239,13 @@ public interface CheckoutService {
      * @return cold observable that emits updated checkout
      */
     Observable<Checkout> removeProductReservationsFromCheckout(Checkout checkout);
+
+    // TODO KRIS add javadoc
+    void enableAndroidPay(String androidPayPublicKey);
+
+    void disableAndroidPay();
+
+    boolean androidPayIsEnabled();
+
+    String getAndroidPayPublicKey();
 }
