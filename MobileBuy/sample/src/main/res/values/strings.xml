@@ -58,7 +58,6 @@
     <string name="web_return_to_label">"Return to Mobile Buy Sample</string>
 
     <!-- Android Pay -->
-    <string name="checking_android_pay">Checking Android Pay</string>
     <string name="thanks">Thanks for your order</string>
     <string name="confirmation_details">Confirmation details</string>
     <string name="secured_by">Secured By</string>

@@ -44,6 +44,7 @@ import com.google.android.gms.wallet.PaymentMethodTokenizationParameters;
 import com.google.android.gms.wallet.PaymentMethodTokenizationType;
 import com.google.android.gms.wallet.Wallet;
 import com.shopify.buy.dataprovider.BuyClient;
+import com.shopify.buy.dataprovider.Callback;
 import com.shopify.buy.model.Address;
 import com.shopify.buy.model.Checkout;
 import com.shopify.buy.model.Shop;
@@ -192,17 +193,17 @@ public class AndroidPayHelper {
      *
      * @param merchantName        The merchant name to show on the Android Pay dialogs, not null or empty
      * @param checkout            The {@link Checkout} to use, not null.
-     * @param buyClient           The {@link BuyClient} to use, not null.  Must have previously had Android Pay enabled via {@link BuyClient#enableAndroidPay(String)}
+     * @param publicKey           The Public Key to use, not empty.
      * @param phoneNumberRequired If true, the phone number will be required as part of the Shipping Address in Android Pay
      * @return A {@link MaskedWalletRequest}
      */
-    public static MaskedWalletRequest createMaskedWalletRequest(String merchantName, Checkout checkout, BuyClient buyClient, boolean phoneNumberRequired) {
+    public static MaskedWalletRequest createMaskedWalletRequest(String merchantName, Checkout checkout, String publicKey, boolean phoneNumberRequired) {
         if (checkout == null) {
             throw new NullPointerException("checkout cannot be null");
         }
 
-        if (buyClient == null) {
-            throw new NullPointerException("buyClient cannot be null");
+        if (publicKey == null) {
+            throw new IllegalArgumentException("publicKey cannot be empty");
         }
 
         if (TextUtils.isEmpty(merchantName)) {
@@ -213,7 +214,7 @@ public class AndroidPayHelper {
         PaymentMethodTokenizationParameters parameters =
                 PaymentMethodTokenizationParameters.newBuilder()
                         .setPaymentMethodTokenizationType(PaymentMethodTokenizationType.NETWORK_TOKEN)
-                        .addParameter("publicKey", buyClient.getAndroidPayPublicKey())
+                        .addParameter("publicKey", publicKey)
                         .build();
 
         // Create a Wallet cart from our Checkout.
@@ -291,21 +292,15 @@ public class AndroidPayHelper {
      *
      * It will check that:
      * 1) Play Services are available using {@link AndroidPayHelper#hasGooglePlayServices(Context)}
-     * 2) The BuyClient has Android Pay enabled using {@link BuyClient#androidPayIsEnabled()}
-     * 3) The Android Pay application is installed on device, and user has setup a valid card for In App Purchase using {@link AndroidPayHelper#isReadyToPay(GoogleApiClient, AndroidPayAvailableResponse)}
+     * 2) The Android Pay application is installed on device, and user has setup a valid card for In App Purchase using {@link AndroidPayHelper#isReadyToPay(GoogleApiClient, AndroidPayReadyCallback)}
      *
      * @param context
-     * @param buyClient The {@link BuyClient} to use, not null
      * @param apiClient The {@link GoogleApiClient}, not null
-     * @param delegate  The {@link AndroidPayAvailableResponse} delegate for receiving the result
+     * @param delegate  The {@link AndroidPayReadyCallback} delegate for receiving the result
      */
-    public static void androidPayIsAvailable(final Context context, final BuyClient buyClient, final GoogleApiClient apiClient, final AndroidPayAvailableResponse delegate) {
+    public static void androidPayIsAvailable(final Context context, final GoogleApiClient apiClient, final AndroidPayReadyCallback delegate) {
         if (context == null) {
             throw new NullPointerException("context cannot be null");
-        }
-
-        if (buyClient == null) {
-            throw new NullPointerException("buyClient cannot be null");
         }
 
         if (apiClient == null) {
@@ -316,8 +311,8 @@ public class AndroidPayHelper {
             throw new NullPointerException("delegate cannot be null");
         }
 
-        // Check to see if Google play is up to date and the buyclient has android pay enabled
-        if (!hasGooglePlayServices(context) || !buyClient.androidPayIsEnabled()) {
+        // Check to see if Google play is up to date
+        if (!hasGooglePlayServices(context)) {
             delegate.onResult(false);
             return;
         }
@@ -351,9 +346,9 @@ public class AndroidPayHelper {
      * Checks to see if the Android Pay App is installed on device and has a valid card for In App Purchase using {@link com.google.android.gms.wallet.Payments#isReadyToPay(GoogleApiClient)}
      *
      * @param apiClient The {@link GoogleApiClient}, not null
-     * @param delegate  The {@link AndroidPayAvailableResponse} delegate for receiving the result
+     * @param delegate  The {@link AndroidPayReadyCallback} delegate for receiving the result
      */
-    public static void isReadyToPay(final GoogleApiClient apiClient, final AndroidPayAvailableResponse delegate) {
+    public static void isReadyToPay(final GoogleApiClient apiClient, final AndroidPayReadyCallback delegate) {
         if (apiClient == null) {
             throw new NullPointerException("apiClient cannot be null");
         }
@@ -380,9 +375,9 @@ public class AndroidPayHelper {
 
 
     /**
-     * Interface for receiving results from {@link AndroidPayHelper#androidPayIsAvailable(Context, BuyClient, GoogleApiClient, AndroidPayAvailableResponse)}
+     * Interface for receiving results from {@link AndroidPayHelper#androidPayIsAvailable(Context, GoogleApiClient, AndroidPayReadyCallback)}
      */
-    public interface AndroidPayAvailableResponse {
+    public interface AndroidPayReadyCallback {
 
         void onResult(boolean result);
     }

@@ -208,7 +208,9 @@ public class Address extends ShopifyObject {
 
     @Override
     public boolean equals(Object o) {
+
         if (this == o) return true;
+
         if (!(o instanceof Address)) return false;
 
         Address address = (Address) o;
@@ -251,6 +253,10 @@ public class Address extends ShopifyObject {
      * @return true if the address lines, city, country code, province code, and zip are equivalent
      */
     public boolean locationsAreEqual(Address otherAddress) {
+
+        if (otherAddress == null) {
+            return false;
+        }
 
         if (this == otherAddress) {
             return true;

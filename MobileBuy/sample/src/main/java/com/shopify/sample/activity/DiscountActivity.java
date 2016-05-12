@@ -120,17 +120,20 @@ public class DiscountActivity extends SampleActivity implements GoogleApiClient.
      *
      * To show Android Pay, the following conditions must be met:
      * 1) Google Play Services are available
-     * 2) Android Pay is enable in the BuyClient using {@link BuyClient#enableAndroidPay(String)}
-     * 3) Android Pay App is installed, and has valid credit cards for in app purchase
+     * 2) Android Pay App is installed, and has valid credit cards for in app purchase
+     * 3) Android Pay is enable on the BuyClient
      */
     private void createAndAddAndroidPayButton() {
-        // Check if device is configured to support Android Pay
-        showLoadingDialog(R.string.checking_android_pay);
 
-        AndroidPayHelper.androidPayIsAvailable(this, buyClient, googleApiClient, new AndroidPayHelper.AndroidPayAvailableResponse() {
+        // Check if device is configured to support Android Pay
+
+        if (!buyClient.androidPayIsEnabled()) {
+            return;
+        }
+
+        AndroidPayHelper.androidPayIsAvailable(this, googleApiClient, new AndroidPayHelper.AndroidPayReadyCallback() {
             @Override
             public void onResult(boolean androidPayAvailable) {
-                dismissLoadingDialog();
 
                 if (androidPayAvailable) {
                     createAndAddWalletFragment();
@@ -166,7 +169,7 @@ public class DiscountActivity extends SampleActivity implements GoogleApiClient.
         String merchantName = getString(R.string.merchant_name);
 
         // Create the Masked Wallet request
-        MaskedWalletRequest maskedWalletRequest = AndroidPayHelper.createMaskedWalletRequest(merchantName, checkout, buyClient, true);
+        MaskedWalletRequest maskedWalletRequest = AndroidPayHelper.createMaskedWalletRequest(merchantName, checkout, buyClient.getAndroidPayPublicKey(), true);
 
         WalletFragmentInitParams.Builder startParamsBuilder = WalletFragmentInitParams.newBuilder()
                 .setMaskedWalletRequest(maskedWalletRequest)
