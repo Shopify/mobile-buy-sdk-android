@@ -248,15 +248,16 @@ final class BuyClientDefault implements BuyClient {
     }
 
     @Override
-    public CancellableTask completeCheckout(final String token, final Checkout checkout, final Callback<Checkout> callback) {
-        return checkoutService.completeCheckout(token, checkout, callback);
+    public CancellableTask completeCheckout(final String androidPayToken, final Checkout checkout, final Callback<Checkout> callback) {
+        return checkoutService.completeCheckout(androidPayToken, checkout, callback);
     }
 
     @Override
-    public Observable<Checkout> completeCheckout(final String token, final Checkout checkout) {
-        return checkoutService.completeCheckout(checkout);
+    public Observable<Checkout> completeCheckout(final String androidPayToken, final Checkout checkout) {
+        return checkoutService.completeCheckout(androidPayToken, checkout);
     }
 
+    @Override
     public CancellableTask getCheckout(final String checkoutToken, final Callback<Checkout> callback) {
         return checkoutService.getCheckout(checkoutToken, callback);
     }
