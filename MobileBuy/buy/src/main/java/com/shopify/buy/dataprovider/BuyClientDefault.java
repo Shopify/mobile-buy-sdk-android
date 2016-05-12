@@ -248,6 +248,15 @@ final class BuyClientDefault implements BuyClient {
     }
 
     @Override
+    public CancellableTask completeCheckout(final String token, final Checkout checkout, final Callback<Checkout> callback) {
+        return checkoutService.completeCheckout(token, checkout, callback);
+    }
+
+    @Override
+    public Observable<Checkout> completeCheckout(final String token, final Checkout checkout) {
+        return checkoutService.completeCheckout(checkout);
+    }
+
     public CancellableTask getCheckout(final String checkoutToken, final Callback<Checkout> callback) {
         return checkoutService.getCheckout(checkoutToken, callback);
     }
@@ -285,6 +294,23 @@ final class BuyClientDefault implements BuyClient {
     @Override
     public Observable<Checkout> removeProductReservationsFromCheckout(final Checkout checkout) {
         return checkoutService.removeProductReservationsFromCheckout(checkout);
+    }
+
+    @Override
+    public void enableAndroidPay(String androidPayPublicKey) {
+        checkoutService.enableAndroidPay(androidPayPublicKey);
+    }
+
+    public void disableAndroidPay() {
+        checkoutService.disableAndroidPay();
+    }
+
+    public boolean androidPayIsEnabled() {
+        return checkoutService.androidPayIsEnabled();
+    }
+
+    public String getAndroidPayPublicKey() {
+        return checkoutService.getAndroidPayPublicKey();
     }
 
     // ----------- CustomerService API ---------------

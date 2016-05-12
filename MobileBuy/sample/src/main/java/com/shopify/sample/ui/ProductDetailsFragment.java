@@ -458,7 +458,6 @@ public class ProductDetailsFragment extends Fragment {
 
                 } catch (Exception launchOtherException) {
                     onCheckoutFailure();
-                    return;
                 }
             }
 

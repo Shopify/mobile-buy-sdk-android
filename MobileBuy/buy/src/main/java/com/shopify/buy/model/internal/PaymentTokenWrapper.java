@@ -25,26 +25,16 @@
 package com.shopify.buy.model.internal;
 
 import com.google.gson.annotations.SerializedName;
-import com.shopify.buy.model.Payment;
 
-/**
- * Wrapper class used by Gson Serialization
- */
-public class PaymentWrapper implements ResponseWrapper<Payment> {
+public class PaymentTokenWrapper {
 
-    @SerializedName("payment")
-    private Payment payment;
+    @SerializedName("payment_token")
+    private PaymentToken paymentToken;
 
-    public PaymentWrapper(Payment payment) {
-        this.payment = payment;
-    }
+    // empty constructor required by GSON
+    protected PaymentTokenWrapper() {}
 
-    public Payment getPayment() {
-        return payment;
-    }
-
-    @Override
-    public Payment getContent() {
-        return payment;
+    public PaymentTokenWrapper(PaymentToken paymentToken) {
+        this.paymentToken = paymentToken;
     }
 }

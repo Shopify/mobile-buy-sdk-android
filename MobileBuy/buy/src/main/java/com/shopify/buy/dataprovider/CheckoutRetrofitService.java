@@ -27,6 +27,7 @@ import com.shopify.buy.model.PaymentSession;
 import com.shopify.buy.model.internal.CheckoutWrapper;
 import com.shopify.buy.model.internal.GiftCardWrapper;
 import com.shopify.buy.model.internal.PaymentSessionCheckoutWrapper;
+import com.shopify.buy.model.internal.PaymentTokenWrapper;
 import com.shopify.buy.model.internal.ShippingRatesWrapper;
 
 import java.util.HashMap;
@@ -56,6 +57,9 @@ interface CheckoutRetrofitService {
 
     @POST("api/checkouts/{token}/complete.json")
     Observable<Response<CheckoutWrapper>> completeCheckout(@Body HashMap<String, String> paymentSessionIdMap, @Path("token") String token);
+
+    @POST("api/checkouts/{token}/complete.json")
+    Observable<Response<CheckoutWrapper>> completeCheckout(@Body PaymentTokenWrapper paymentTokenWrapper, @Path("token") String token);
 
     @GET("api/checkouts/{token}/processing.json")
     Observable<Response<Void>> getCheckoutCompletionStatus(@Path("token") String token);

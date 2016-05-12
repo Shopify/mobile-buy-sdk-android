@@ -218,13 +218,7 @@ public class ProductListActivity extends SampleListActivity {
      * @param checkout
      */
     private void onCheckoutCreated(Checkout checkout) {
-        if (checkout.isRequiresShipping()) {
-            startActivity(new Intent(ProductListActivity.this, ShippingRateListActivity.class));
-        } else {
-            startActivity(new Intent(ProductListActivity.this, DiscountActivity.class));
-        }
-
+        startActivity(new Intent(ProductListActivity.this, DiscountActivity.class));
     }
-
 }
 

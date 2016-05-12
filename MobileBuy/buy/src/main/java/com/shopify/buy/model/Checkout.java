@@ -51,7 +51,7 @@ import java.util.Map;
 /**
  * The checkout object. This is the main object that you will interact with when creating orders on Shopify.
  * After making changes to your checkout object by calling any of the setter functions, make sure you call
- * {@link com.shopify.buy.dataprovider.BuyClient#updateCheckout(Checkout, Callback) updateCheckout}.
+ * {@link com.shopify.buy.dataprovider.BuyClient#updateCheckout(Checkout, Callback) updateCheckoutAddressAndEmail}.
  */
 public class Checkout extends ShopifyObject {
 
@@ -479,7 +479,7 @@ public class Checkout extends ShopifyObject {
 
     /**
      * The default reservation time on a checkout is 300 seconds (5 minutes).
-     * Setting the reservation time to 0 and updating the checkout (via {@link com.shopify.buy.dataprovider.BuyClient#updateCheckout(Checkout, Callback) updateCheckout(checkout, callback)})
+     * Setting the reservation time to 0 and updating the checkout (via {@link com.shopify.buy.dataprovider.BuyClient#updateCheckout(Checkout, Callback) updateCheckoutAddressAndEmail(checkout, callback)})
      * will release the inventory reserved by this checkout. This can also be done by calling {@link com.shopify.buy.dataprovider.BuyClient#removeProductReservationsFromCheckout(Checkout, Callback) removeProductReservationsFromCheckout(checkout, callback)}.
      *
      * @param reservationTime The reservation time on this checkout (in seconds).
