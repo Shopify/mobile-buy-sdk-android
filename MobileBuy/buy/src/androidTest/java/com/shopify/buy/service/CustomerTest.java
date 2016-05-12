@@ -263,9 +263,7 @@ public class CustomerTest extends ShopifyAndroidTestCase {
         buyClient.createAddress(customer, inputAddress, new Callback<Address>() {
             @Override
             public void success(Address address) {
-                assertEquals(inputAddress.getAddress1(), address.getAddress1());
-                assertEquals(inputAddress.getAddress2(), address.getAddress2());
-                assertEquals(inputAddress.getCity(), address.getCity());
+                assertEquals(true, inputAddress.equals(address));
             }
 
             @Override
@@ -372,6 +370,8 @@ public class CustomerTest extends ShopifyAndroidTestCase {
         shippingAddress.setPhone("1-555-555-5555");
         shippingAddress.setCountryCode("CA");
         shippingAddress.setZip("K1N5T5");
+        shippingAddress.setCountry("Canada");
+        shippingAddress.setProvince("Ontario");
         return shippingAddress;
     }
 
@@ -387,6 +387,8 @@ public class CustomerTest extends ShopifyAndroidTestCase {
         shippingAddress.setPhone("1-555-555-5555");
         shippingAddress.setCountryCode("CA");
         shippingAddress.setZip("K1N5T5");
+        shippingAddress.setCountry("Canada");
+        shippingAddress.setProvince("Ontario");
         return shippingAddress;
     }
 
