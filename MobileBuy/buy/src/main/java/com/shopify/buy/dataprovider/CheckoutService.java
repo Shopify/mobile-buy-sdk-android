@@ -100,7 +100,7 @@ public interface CheckoutService {
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      *
      */
-    void getCheckoutCompletionStatus(Checkout checkout, final Callback<Boolean> callback);
+    CancellableTask getCheckoutCompletionStatus(Checkout checkout, final Callback<Boolean> callback);
 
     /**
      * Get the status of the payment session associated with {@code checkout}. {@code callback} will be

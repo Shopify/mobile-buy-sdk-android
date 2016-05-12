@@ -306,8 +306,8 @@ final class CheckoutServiceDefault implements CheckoutService {
     }
 
     @Override
-    public void getCheckoutCompletionStatus(Checkout checkout, final Callback<Boolean> callback) {
-        getCheckoutCompletionStatus(checkout).subscribe(new InternalCallbackSubscriber<>(callback));
+    public CancellableTask getCheckoutCompletionStatus(Checkout checkout, final Callback<Boolean> callback) {
+        return new CancellableTaskSubscriptionWrapper(getCheckoutCompletionStatus(checkout).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override

@@ -233,8 +233,8 @@ final class BuyClientDefault implements BuyClient {
     }
 
     @Override
-    public void getCheckoutCompletionStatus(Checkout checkout, final Callback<Boolean> callback) {
-        checkoutService.getCheckoutCompletionStatus(checkout);
+    public CancellableTask getCheckoutCompletionStatus(Checkout checkout, final Callback<Boolean> callback) {
+        return checkoutService.getCheckoutCompletionStatus(checkout, callback);
     }
 
     @Override
