@@ -162,11 +162,11 @@ public final class BuyClientBuilder {
 
     /**
      * Sets the configuration for retry logic in case network request failed (socket timeout, unknown host, etc.).
-     * The minimum of the delay between retries should be greater than {@link MIN_NETWORK_RETRY_DELAY}, otherwise it will be set to {@link MIN_NETWORK_RETRY_DELAY}
+     * The minimum of the delay between retries should be greater than {@link BuyClientBuilder#MIN_NETWORK_RETRY_DELAY}, otherwise it will be set to {@link BuyClientBuilder#MIN_NETWORK_RETRY_DELAY}
      *
      * @param networkRequestRetryMaxCount          max count of retry attempts
      * @param networkRequestRetryDelayMs           delay between retry attempts in milliseconds
-     * @param networkRequestRetryBackoffMultiplier backoff multiplier for next request attempts, can be used for “exponential backoff”
+     * @param networkRequestRetryBackoffMultiplier backoff multiplier for next request attempts, can be used for "exponential backoff"
      */
     public BuyClientBuilder networkRequestRetryPolicy(final int networkRequestRetryMaxCount, final long networkRequestRetryDelayMs, final float networkRequestRetryBackoffMultiplier) {
         this.networkRequestRetryMaxCount = networkRequestRetryMaxCount;
