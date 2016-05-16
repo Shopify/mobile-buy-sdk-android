@@ -54,6 +54,7 @@ import com.google.android.gms.wallet.fragment.WalletFragmentStyle;
 import com.shopify.buy.dataprovider.BuyClient;
 import com.shopify.buy.model.Checkout;
 import com.shopify.buy.utils.AndroidPayHelper;
+import com.shopify.sample.BuildConfig;
 import com.shopify.sample.R;
 import com.shopify.sample.activity.base.SampleActivity;
 import com.shopify.sample.application.SampleApplication;
@@ -126,11 +127,6 @@ public class DiscountActivity extends SampleActivity implements GoogleApiClient.
     private void createAndAddAndroidPayButton() {
 
         // Check if device is configured to support Android Pay
-
-        if (!buyClient.androidPayIsEnabled()) {
-            return;
-        }
-
         AndroidPayHelper.androidPayIsAvailable(this, googleApiClient, new AndroidPayHelper.AndroidPayReadyCallback() {
             @Override
             public void onResult(boolean androidPayAvailable) {
@@ -169,7 +165,7 @@ public class DiscountActivity extends SampleActivity implements GoogleApiClient.
         String merchantName = getString(R.string.merchant_name);
 
         // Create the Masked Wallet request
-        MaskedWalletRequest maskedWalletRequest = AndroidPayHelper.createMaskedWalletRequest(merchantName, checkout, buyClient.getAndroidPayPublicKey(), true);
+        MaskedWalletRequest maskedWalletRequest = AndroidPayHelper.createMaskedWalletRequest(merchantName, checkout, BuildConfig.ANDROID_PAY_PUBLIC_KEY, true);
 
         WalletFragmentInitParams.Builder startParamsBuilder = WalletFragmentInitParams.newBuilder()
                 .setMaskedWalletRequest(maskedWalletRequest)
