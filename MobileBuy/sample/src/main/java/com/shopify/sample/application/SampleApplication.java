@@ -45,6 +45,7 @@ import com.shopify.buy.model.Collection;
 import com.shopify.buy.model.CreditCard;
 import com.shopify.buy.model.Customer;
 import com.shopify.buy.model.LineItem;
+import com.shopify.buy.model.PaymentToken;
 import com.shopify.buy.model.Product;
 import com.shopify.buy.model.ShippingRate;
 import com.shopify.buy.model.Shop;
@@ -65,9 +66,9 @@ import okhttp3.logging.HttpLoggingInterceptor;
 public class SampleApplication extends Application {
 
     private static final String SHOP_PROPERTIES_INSTRUCTION =
-            "\n\tAdd your shop credentials to a shop.properties file in the main app folder (e.g. 'app/shop.properties'). Include these keys:\n" +
-                    "\t\tSHOP_DOMAIN=<myshop>.myshopify.com\n" +
-                    "\t\tAPI_KEY=0123456789abcdefghijklmnopqrstuvw\n";
+        "\n\tAdd your shop credentials to a shop.properties file in the main app folder (e.g. 'app/shop.properties'). Include these keys:\n" +
+            "\t\tSHOP_DOMAIN=<myshop>.myshopify.com\n" +
+            "\t\tAPI_KEY=0123456789abcdefghijklmnopqrstuvw\n";
 
     private static SampleApplication instance;
 
@@ -87,6 +88,7 @@ public class SampleApplication extends Application {
 
     private BuyClient buyClient;
     private Checkout checkout;
+    private PaymentToken paymentToken;
     private Shop shop;
 
     private MaskedWallet maskedWallet;
@@ -94,7 +96,7 @@ public class SampleApplication extends Application {
     public static final String ANDROID_PAY_FLOW = "com.shopify.sample.androidpayflow";
 
     // Use ENVIRONMENT_TEST for testing
-    public static final int WALLET_ENVIRONMENT = WalletConstants.ENVIRONMENT_TEST;
+    public static final int WALLET_ENVIRONMENT = WalletConstants.ENVIRONMENT_SANDBOX;
 
     @Override
     public void onCreate() {
@@ -130,13 +132,13 @@ public class SampleApplication extends Application {
          */
 
         buyClient = new BuyClientBuilder()
-                .shopDomain(shopUrl)
-                .apiKey(shopifyApiKey)
-                .appId(shopifyAppId)
-                .applicationName(applicationName)
-                .interceptors(logging)
-                .networkRequestRetryPolicy(3, TimeUnit.MILLISECONDS.toMillis(200), 1.5f)
-                .build();
+            .shopDomain(shopUrl)
+            .apiKey(shopifyApiKey)
+            .appId(shopifyAppId)
+            .applicationName(applicationName)
+            .interceptors(logging)
+            .networkRequestRetryPolicy(3, TimeUnit.MILLISECONDS.toMillis(200), 1.5f)
+            .build();
 
         buyClient.getShop(new Callback<Shop>() {
             @Override
@@ -149,13 +151,6 @@ public class SampleApplication extends Application {
                 Toast.makeText(SampleApplication.this, R.string.shop_error, Toast.LENGTH_LONG).show();
             }
         });
-
-        // Enable Android Pay. This is an optional call
-        String androidPayPublicKey = BuildConfig.ANDROID_PAY_PUBLIC_KEY;
-
-        if (!TextUtils.isEmpty(androidPayPublicKey)) {
-            buyClient.enableAndroidPay(androidPayPublicKey);
-        }
     }
 
     public void getCollections(final Callback<List<Collection>> callback) {
@@ -191,7 +186,7 @@ public class SampleApplication extends Application {
     /**
      * Create a new checkout with the selected product. For convenience in the sample app we will hardcode the user's shipping address.
      * The shipping rates fetched in ShippingRateListActivity will be for this address.
-     *
+     * <p/>
      * For the Android Pay Checkout, we will replace this with the address and email returned in the {@link MaskedWallet}
      *
      * @param product
@@ -311,27 +306,39 @@ public class SampleApplication extends Application {
         buyClient.applyGiftCard(code, checkout, wrapCheckoutCallback(callback));
     }
 
-    public void storeCreditCard(final CreditCard card, final Callback<Checkout> callback) {
-        buyClient.storeCreditCard(card, checkout, wrapCheckoutCallback(callback));
+    public void storeCreditCard(final CreditCard card, final Callback<PaymentToken> callback) {
+        buyClient.storeCreditCard(card, checkout, new Callback<PaymentToken>() {
+            @Override
+            public void success(PaymentToken body) {
+                SampleApplication.this.paymentToken = body;
+                callback.success(body);
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                callback.failure(error);
+            }
+        });
     }
 
     public void completeCheckout(final Callback<Checkout> callback) {
-        buyClient.completeCheckout(checkout, wrapCheckoutCallback(callback));
+        buyClient.completeCheckout(paymentToken, checkout.getToken(), wrapCheckoutCallback(callback));
     }
 
     public void completeCheckout(FullWallet fullWallet, final Callback<Checkout> callback) {
-        buyClient.completeCheckout(fullWallet.getPaymentMethodToken().getToken(), checkout, wrapCheckoutCallback(callback));
+        paymentToken = AndroidPayHelper.getAndroidPaymentToken(fullWallet, BuildConfig.ANDROID_PAY_PUBLIC_KEY);
+        buyClient.completeCheckout(paymentToken, checkout.getToken(), wrapCheckoutCallback(callback));
     }
 
     public void launchProductDetailsActivity(Activity activity, Product product, ProductDetailsTheme theme) {
         ProductDetailsBuilder builder = new ProductDetailsBuilder(this, buyClient);
         Intent intent = builder.setShopDomain(buyClient.getShopDomain())
-                .setProduct(product)
-                .setTheme(theme)
-                .setShop(shop)
-                .setWebReturnToUrl(getString(R.string.web_return_to_url))
-                .setWebReturnToLabel(getString(R.string.web_return_to_label))
-                .build();
+            .setProduct(product)
+            .setTheme(theme)
+            .setShop(shop)
+            .setWebReturnToUrl(getString(R.string.web_return_to_url))
+            .setWebReturnToLabel(getString(R.string.web_return_to_label))
+            .build();
         activity.startActivityForResult(intent, 1);
     }
 

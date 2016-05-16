@@ -28,6 +28,7 @@ package com.shopify.buy.utils;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
+import android.util.Base64;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -36,6 +37,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.identity.intents.model.UserAddress;
 import com.google.android.gms.wallet.Cart;
+import com.google.android.gms.wallet.FullWallet;
 import com.google.android.gms.wallet.FullWalletRequest;
 import com.google.android.gms.wallet.LineItem;
 import com.google.android.gms.wallet.MaskedWallet;
@@ -47,16 +49,20 @@ import com.shopify.buy.dataprovider.BuyClient;
 import com.shopify.buy.dataprovider.Callback;
 import com.shopify.buy.model.Address;
 import com.shopify.buy.model.Checkout;
+import com.shopify.buy.model.PaymentToken;
 import com.shopify.buy.model.Shop;
 
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 
 /**
  * Contains utility functions to help with Android Pay
  */
 
-public class AndroidPayHelper {
+public final class AndroidPayHelper {
 
     private static final int FIRST_NAME_PART = 0;
     private static final int LAST_NAME_PART = 1;
@@ -311,6 +317,14 @@ public class AndroidPayHelper {
             throw new NullPointerException("delegate cannot be null");
         }
 
+        try {
+            MessageDigest.getInstance("SHA-256");
+            "foo".getBytes("UTF-8");
+        } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
+            delegate.onResult(false);
+            return;
+        }
+
         // Check to see if Google play is up to date
         if (!hasGooglePlayServices(context)) {
             delegate.onResult(false);
@@ -373,6 +387,24 @@ public class AndroidPayHelper {
                 });
     }
 
+    public static PaymentToken getAndroidPaymentToken(final FullWallet fullWallet, final String androidPayPublicKey) {
+        if (fullWallet == null) {
+            throw new IllegalArgumentException("fullWallet cannot be empty");
+        }
+
+        if (TextUtils.isEmpty(androidPayPublicKey)) {
+            throw new IllegalArgumentException("androidPayPublicKey cannot be empty");
+        }
+
+        try {
+            final MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
+            final byte[] digest = messageDigest.digest(androidPayPublicKey.getBytes("UTF-8"));
+            return PaymentToken.createAndroidPayPaymentToken(fullWallet.getPaymentMethodToken().getToken(), Base64.encodeToString(digest, Base64.DEFAULT));
+        } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
+            return null;
+        }
+    }
+
 
     /**
      * Interface for receiving results from {@link AndroidPayHelper#androidPayIsAvailable(Context, GoogleApiClient, AndroidPayReadyCallback)}
@@ -383,4 +415,6 @@ public class AndroidPayHelper {
     }
 
 
+    private AndroidPayHelper(){
+    }
 }

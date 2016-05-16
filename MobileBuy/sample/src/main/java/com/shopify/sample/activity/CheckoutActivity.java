@@ -35,6 +35,7 @@ import com.shopify.buy.dataprovider.Callback;
 import com.shopify.buy.dataprovider.RetrofitError;
 import com.shopify.buy.model.Checkout;
 import com.shopify.buy.model.CreditCard;
+import com.shopify.buy.model.PaymentToken;
 import com.shopify.sample.R;
 import com.shopify.sample.activity.base.SampleActivity;
 
@@ -106,9 +107,9 @@ public class CheckoutActivity extends SampleActivity {
         creditCard.setNumber("4242424242424242");
 
         showLoadingDialog(R.string.completing_checkout);
-        getSampleApplication().storeCreditCard(creditCard, new Callback<Checkout>() {
+        getSampleApplication().storeCreditCard(creditCard, new Callback<PaymentToken>() {
             @Override
-            public void success(Checkout checkout) {
+            public void success(PaymentToken paymentToken) {
                 onCreditCardStored();
             }
 

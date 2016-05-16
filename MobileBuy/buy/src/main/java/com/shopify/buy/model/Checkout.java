@@ -84,9 +84,6 @@ public class Checkout extends ShopifyObject {
     @SerializedName("total_price")
     private String totalPrice;
 
-    @SerializedName("payment_session_id")
-    private String paymentSessionId;
-
     @SerializedName("payment_url")
     private String paymentUrl;
 
@@ -335,13 +332,6 @@ public class Checkout extends ShopifyObject {
     }
 
     /**
-     * @return The Payment Session ID associated with a credit card transaction.
-     */
-    public String getPaymentSessionId() {
-        return paymentSessionId;
-    }
-
-    /**
      * @return URL to the payment gateway.
      */
     public String getPaymentUrl() {
@@ -500,13 +490,6 @@ public class Checkout extends ShopifyObject {
      */
     public void setShippingRate(ShippingRate shippingRate) {
         this.shippingRate = shippingRate;
-    }
-
-    /**
-     * @param paymentSessionId The Payment Session ID associated with a credit card transaction.
-     */
-    public void setPaymentSessionId(String paymentSessionId) {
-        this.paymentSessionId = paymentSessionId;
     }
 
     /**
