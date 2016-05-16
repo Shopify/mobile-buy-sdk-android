@@ -47,6 +47,7 @@ import java.security.NoSuchAlgorithmException;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import retrofit2.Response;
 import retrofit2.Retrofit;
@@ -66,7 +67,9 @@ final class CheckoutServiceDefault implements CheckoutService {
 
     private static final String PAYMENT_TOKEN_TYPE_ANDROID_PAY = "android_pay";
 
-    public static final long POLLING_INTERVAL = 500;
+    public static final long POLLING_INTERVAL = TimeUnit.MILLISECONDS.toMillis(500);
+
+    public static final long POLLING_TIMEOUT = TimeUnit.SECONDS.toMillis(90);
 
     final CheckoutRetrofitService retrofitService;
 
@@ -104,7 +107,7 @@ final class CheckoutServiceDefault implements CheckoutService {
         this.networkRetryPolicyProvider = networkRetryPolicyProvider;
         this.callbackScheduler = callbackScheduler;
 
-        pollingRetryPolicyProvider = new PollingPolicyProvider(POLLING_INTERVAL);
+        pollingRetryPolicyProvider = new PollingPolicyProvider(POLLING_INTERVAL, POLLING_TIMEOUT);
     }
 
     @Override
