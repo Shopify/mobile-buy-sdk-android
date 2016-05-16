@@ -26,6 +26,7 @@ package com.shopify.buy.dataprovider;
 import com.shopify.buy.model.Checkout;
 import com.shopify.buy.model.CreditCard;
 import com.shopify.buy.model.GiftCard;
+import com.shopify.buy.model.PaymentToken;
 import com.shopify.buy.model.ShippingRate;
 
 import java.util.List;
@@ -78,19 +79,21 @@ public interface CheckoutService {
     /**
      * Complete the checkout and process the payment session
      *
-     * @param checkout a {@link Checkout} that has had a {@link CreditCard} associated with it using {@link #storeCreditCard(CreditCard, Checkout)}
+     * @param paymentToken  a {@link PaymentToken} associated with the checkout to be completed
+     * @param checkoutToken checkout token associated with the specified payment token
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      * @return cancelable task
      */
-    CancellableTask completeCheckout(Checkout checkout, Callback<Checkout> callback);
+    CancellableTask completeCheckout(PaymentToken paymentToken, String checkoutToken, Callback<Checkout> callback);
 
     /**
      * Complete the checkout and process the payment session
      *
-     * @param checkout a {@link Checkout} that has had a {@link CreditCard} associated with it using {@link #storeCreditCard(CreditCard, Checkout)}
+     * @param paymentToken a {@link PaymentToken} associated with the checkout to be completed
+     * @param checkoutToken checkout token associated with the specified payment token
      * @return cold observable that emits completed checkout
      */
-    Observable<Checkout> completeCheckout(Checkout checkout);
+    Observable<Checkout> completeCheckout(PaymentToken paymentToken, String checkoutToken);
 
     /**
      * Get the status of the payment session associated with {@code checkout}. {@code callback} will be
@@ -111,24 +114,6 @@ public interface CheckoutService {
      *
      */
     Observable<Boolean> getCheckoutCompletionStatus(Checkout checkout);
-
-    /**
-     * Complete the checkout and process the payment session
-     *
-     * @param checkout        a {@link Checkout} to complete using Android Pay
-     * @param androidPayToken the token returned in the {@link com.google.android.gms.wallet.FullWallet}
-     * @param callback        the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
-     */
-    CancellableTask completeCheckout(String androidPayToken, Checkout checkout, Callback<Checkout> callback);
-
-    /**
-     * Complete the checkout and process the payment session
-     *
-     * @param checkout        a {@link Checkout} that has had a {@link CreditCard} associated with it using {@link #storeCreditCard(CreditCard, Checkout)}
-     * @param androidPayToken the token returned in the {@link com.google.android.gms.wallet.FullWallet}
-     * @return cold observable that emits completed checkout
-     */
-    Observable<Checkout> completeCheckout(String androidPayToken, Checkout checkout);
 
     /**
      * Fetch an existing Checkout from Shopify
@@ -172,16 +157,16 @@ public interface CheckoutService {
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      * @return cancelable task
      */
-    CancellableTask storeCreditCard(CreditCard card, Checkout checkout, Callback<Checkout> callback);
+    CancellableTask storeCreditCard(CreditCard card, Checkout checkout, Callback<PaymentToken> callback);
 
     /**
      * Post a credit card to Shopify's card server and associate it with a Checkout
      *
      * @param card     the {@link CreditCard} to associate
      * @param checkout the {@link Checkout} to associate the card with
-     * @return cold observable that emits updated checkout with posted credit card
+     * @return cold observable that emits payment token associated with specified checkout and credit card
      */
-    Observable<Checkout> storeCreditCard(CreditCard card, Checkout checkout);
+    Observable<PaymentToken> storeCreditCard(CreditCard card, Checkout checkout);
 
     /**
      * Apply a gift card to a Checkout
@@ -239,13 +224,4 @@ public interface CheckoutService {
      * @return cold observable that emits updated checkout
      */
     Observable<Checkout> removeProductReservationsFromCheckout(Checkout checkout);
-
-    // TODO KRIS add javadoc
-    void enableAndroidPay(String androidPayPublicKey);
-
-    void disableAndroidPay();
-
-    boolean androidPayIsEnabled();
-
-    String getAndroidPayPublicKey();
 }

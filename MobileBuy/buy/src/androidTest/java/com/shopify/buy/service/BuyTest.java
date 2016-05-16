@@ -18,6 +18,7 @@ import com.shopify.buy.model.CreditCard;
 import com.shopify.buy.model.Discount;
 import com.shopify.buy.model.GiftCard;
 import com.shopify.buy.model.LineItem;
+import com.shopify.buy.model.PaymentToken;
 import com.shopify.buy.model.Product;
 import com.shopify.buy.model.ShippingRate;
 
@@ -41,6 +42,7 @@ import static junit.framework.Assert.fail;
 @RunWith(AndroidJUnit4.class)
 public class BuyTest extends ShopifyAndroidTestCase {
 
+    private PaymentToken paymentToken;
     private Checkout checkout;
     private List<ShippingRate> shippingRates;
 
@@ -675,10 +677,10 @@ public class BuyTest extends ShopifyAndroidTestCase {
         card.setVerificationValue("123");
         card.setNumber("4242424242424242");
 
-        buyClient.storeCreditCard(card, checkout, new Callback<Checkout>() {
-            public void success(Checkout checkout) {
-                assertNotNull(checkout.getPaymentSessionId());
-                BuyTest.this.checkout = checkout;
+        buyClient.storeCreditCard(card, checkout, new Callback<PaymentToken>() {
+            public void success(PaymentToken paymentToken) {
+                assertNotNull(paymentToken);
+                BuyTest.this.paymentToken = paymentToken;
             }
 
             @Override
@@ -689,8 +691,7 @@ public class BuyTest extends ShopifyAndroidTestCase {
     }
 
     private void completeCheckout() throws InterruptedException {
-
-        buyClient.completeCheckout(checkout, new Callback<Checkout>() {
+        buyClient.completeCheckout(paymentToken, checkout.getToken(), new Callback<Checkout>() {
             @Override
             public void success(Checkout checkout) {
                 assertNotNull(checkout);
