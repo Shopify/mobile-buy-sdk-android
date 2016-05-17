@@ -27,6 +27,7 @@ import rx.Subscriber;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertTrue;
 import static junit.framework.Assert.fail;
 
 /**
@@ -128,7 +129,7 @@ public class ShippingRatesTest extends ShopifyAndroidTestCase {
 
             @Override
             public void failure(RetrofitError error) {
-                assert(error.getException() instanceof IOException );
+                assertTrue(error.getException() instanceof IOException );
                 latch.countDown();
             }
         });
