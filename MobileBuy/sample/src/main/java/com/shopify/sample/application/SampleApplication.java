@@ -186,7 +186,7 @@ public class SampleApplication extends Application {
     /**
      * Create a new checkout with the selected product. For convenience in the sample app we will hardcode the user's shipping address.
      * The shipping rates fetched in ShippingRateListActivity will be for this address.
-     * <p/>
+     *
      * For the Android Pay Checkout, we will replace this with the address and email returned in the {@link MaskedWallet}
      *
      * @param product

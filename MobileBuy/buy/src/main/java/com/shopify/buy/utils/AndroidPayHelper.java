@@ -317,10 +317,12 @@ public final class AndroidPayHelper {
             throw new NullPointerException("delegate cannot be null");
         }
 
+        // make sure that device supports SHA-256 and UTF-8 required by hashing android pay public key for payment token creation
         try {
             MessageDigest.getInstance("SHA-256");
-            "foo".getBytes("UTF-8");
+            final byte[] bytes = "foo".getBytes("UTF-8");
         } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
+            // if not then android pay feature should be disabled
             delegate.onResult(false);
             return;
         }
