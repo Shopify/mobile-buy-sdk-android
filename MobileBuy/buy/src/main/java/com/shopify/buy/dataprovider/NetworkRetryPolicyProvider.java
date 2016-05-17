@@ -74,7 +74,7 @@ final class NetworkRetryPolicyProvider {
                         public Observable<?> call(Throwable t) {
                             Observable<?> resultObservable = Observable.error(t);
                             if (t instanceof IOException) {
-                                if (--retryAttempt > 0) {
+                                if (--retryAttempt >= 0) {
                                     nextAttemptDelay = Math.max((long) (backoffMultiplier * nextAttemptDelay), delayBeforeRetryMs);
                                     resultObservable = Observable.timer(nextAttemptDelay, TimeUnit.MILLISECONDS);
                                 }

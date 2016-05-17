@@ -69,12 +69,14 @@ public class ShopifyAndroidTestCase {
     }
 
     protected BuyClient getBuyClient(String shopDomain, String apiKey, String appId, String applicationName) {
+
         final BuyClientBuilder buyClientBuilder = new BuyClientBuilder()
                 .shopDomain(shopDomain)
                 .apiKey(apiKey)
                 .appId(appId)
                 .applicationName(applicationName)
-                .callbackScheduler(Schedulers.immediate());
+                .callbackScheduler(Schedulers.immediate())
+                .networkRequestRetryPolicy(1, 100, 1);
 
         if (USE_MOCK_RESPONSES) {
             buyClientBuilder.interceptors(new MockResponder(context), new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY));
