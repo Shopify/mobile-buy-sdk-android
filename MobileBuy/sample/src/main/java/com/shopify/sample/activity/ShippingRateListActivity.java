@@ -33,8 +33,8 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.shopify.buy.dataprovider.BuyClientError;
 import com.shopify.buy.dataprovider.Callback;
-import com.shopify.buy.dataprovider.RetrofitError;
 import com.shopify.sample.R;
 import com.shopify.sample.activity.base.SampleListActivity;
 import com.shopify.buy.model.Checkout;
@@ -96,7 +96,7 @@ public class ShippingRateListActivity extends SampleListActivity {
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void failure(BuyClientError error) {
                 isFetching = false;
 
                 // Handle error
@@ -159,7 +159,7 @@ public class ShippingRateListActivity extends SampleListActivity {
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void failure(BuyClientError error) {
                 onError(error);
             }
         });

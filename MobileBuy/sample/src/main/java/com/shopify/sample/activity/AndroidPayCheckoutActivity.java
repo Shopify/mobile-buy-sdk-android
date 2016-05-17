@@ -45,9 +45,8 @@ import com.google.android.gms.wallet.fragment.WalletFragmentInitParams;
 import com.google.android.gms.wallet.fragment.WalletFragmentMode;
 import com.google.android.gms.wallet.fragment.WalletFragmentOptions;
 import com.google.android.gms.wallet.fragment.WalletFragmentStyle;
-import com.shopify.buy.dataprovider.BuyClientUtils;
+import com.shopify.buy.dataprovider.BuyClientError;
 import com.shopify.buy.dataprovider.Callback;
-import com.shopify.buy.dataprovider.RetrofitError;
 import com.shopify.buy.model.Checkout;
 import com.shopify.buy.utils.AndroidPayHelper;
 import com.shopify.sample.R;
@@ -174,9 +173,9 @@ public class AndroidPayCheckoutActivity extends SampleActivity implements Google
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void failure(BuyClientError error) {
                 // The checkout failed.
-                Log.e(LOG_TAG, "Could not complete the checkout:" +  BuyClientUtils.getErrorBody(error));
+                Log.e(LOG_TAG, "Could not complete the checkout:" +  error.getRetrofitErrorBody());
                 Toast.makeText(AndroidPayCheckoutActivity.this, "Could not complete the checkout, please try again later", Toast.LENGTH_SHORT).show();
                 dismissLoadingDialog();
             }
@@ -254,8 +253,8 @@ public class AndroidPayCheckoutActivity extends SampleActivity implements Google
             }
 
             @Override
-            public void failure(RetrofitError error) {
-                Log.e(LOG_TAG, "Error updating checkout: " + BuyClientUtils.getErrorBody(error));
+            public void failure(BuyClientError error) {
+                Log.e(LOG_TAG, "Error updating checkout: " + error.getRetrofitErrorBody());
                 Toast.makeText(AndroidPayCheckoutActivity.this, "Could not Sync data with Checkout API", Toast.LENGTH_SHORT).show();
                 dismissLoadingDialog();
             }

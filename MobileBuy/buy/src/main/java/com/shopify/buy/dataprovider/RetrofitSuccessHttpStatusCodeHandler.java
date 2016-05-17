@@ -54,9 +54,9 @@ final class RetrofitSuccessHttpStatusCodeHandler<T extends Response<?>> implemen
                     return;
                 }
             }
-            throw new RetrofitError(response);
+            throw new BuyClientError(response, null);
         } else if (!response.isSuccessful()) {
-            throw new RetrofitError(response);
+            throw new BuyClientError(response, null);
         }
     }
 }

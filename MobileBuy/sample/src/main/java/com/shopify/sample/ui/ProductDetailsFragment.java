@@ -46,10 +46,9 @@ import android.widget.Button;
 import com.shopify.buy.R;
 import com.shopify.buy.customTabs.CustomTabActivityHelper;
 import com.shopify.buy.dataprovider.BuyClientBuilder;
-import com.shopify.buy.dataprovider.BuyClientUtils;
+import com.shopify.buy.dataprovider.BuyClientError;
 import com.shopify.buy.dataprovider.Callback;
 import com.shopify.buy.dataprovider.BuyClient;
-import com.shopify.buy.dataprovider.RetrofitError;
 import com.shopify.buy.model.Cart;
 import com.shopify.buy.model.Checkout;
 import com.shopify.buy.model.Product;
@@ -278,8 +277,8 @@ public class ProductDetailsFragment extends Fragment {
             }
 
             @Override
-            public void failure(RetrofitError error) {
-                productDetailsListener.onFailure(createErrorBundle(ProductDetailsConstants.ERROR_GET_SHOP_FAILED, BuyClientUtils.getErrorBody(error)));
+            public void failure(BuyClientError error) {
+                productDetailsListener.onFailure(createErrorBundle(ProductDetailsConstants.ERROR_GET_SHOP_FAILED, error.getRetrofitErrorBody()));
             }
         });
     }
@@ -300,8 +299,8 @@ public class ProductDetailsFragment extends Fragment {
             }
 
             @Override
-            public void failure(RetrofitError error) {
-                productDetailsListener.onFailure(createErrorBundle(ProductDetailsConstants.ERROR_GET_PRODUCT_FAILED, BuyClientUtils.getErrorBody(error)));
+            public void failure(BuyClientError error) {
+                productDetailsListener.onFailure(createErrorBundle(ProductDetailsConstants.ERROR_GET_PRODUCT_FAILED, error.getRetrofitErrorBody()));
             }
         });
     }
@@ -369,7 +368,7 @@ public class ProductDetailsFragment extends Fragment {
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void failure(BuyClientError error) {
                 onCheckoutFailure();
             }
         });

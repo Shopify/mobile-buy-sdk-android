@@ -35,9 +35,9 @@ import com.google.android.gms.wallet.FullWallet;
 import com.google.android.gms.wallet.MaskedWallet;
 import com.google.android.gms.wallet.WalletConstants;
 import com.shopify.buy.dataprovider.BuyClient;
-import com.shopify.buy.dataprovider.Callback;
 import com.shopify.buy.dataprovider.BuyClientBuilder;
-import com.shopify.buy.dataprovider.RetrofitError;
+import com.shopify.buy.dataprovider.BuyClientError;
+import com.shopify.buy.dataprovider.Callback;
 import com.shopify.buy.model.Address;
 import com.shopify.buy.model.Cart;
 import com.shopify.buy.model.Checkout;
@@ -147,7 +147,7 @@ public class SampleApplication extends Application {
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void failure(BuyClientError error) {
                 Toast.makeText(SampleApplication.this, R.string.shop_error, Toast.LENGTH_LONG).show();
             }
         });
@@ -172,7 +172,7 @@ public class SampleApplication extends Application {
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void failure(BuyClientError error) {
                 callback.failure(error);
             }
         });
@@ -357,7 +357,7 @@ public class SampleApplication extends Application {
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void failure(BuyClientError error) {
                 callback.failure(error);
             }
         };

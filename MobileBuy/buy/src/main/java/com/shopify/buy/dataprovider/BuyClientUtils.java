@@ -63,32 +63,6 @@ public final class BuyClientUtils {
         return builder.create();
     }
 
-    /**
-     * Extracts the body of the {@code RetrofitError} associated with this error
-     *
-     * @param errorResponse the {@link RetrofitError}
-     * @return the body of the response, or the error message if the body is null
-     */
-    public static String getErrorBody(RetrofitError errorResponse) {
-        if (errorResponse == null) {
-            return "Error was null";
-        }
-        if (errorResponse.getResponse() != null && errorResponse.getResponse().isSuccessful()) {
-            return String.format("Tried to parse error on successful response! Code: %d", errorResponse.getResponse().code());
-        }
-
-        if (errorResponse.getResponse() == null) {
-            return String.format("\n\tMessage: %s\n\tCode: %d\n\tResponse error body: %s", errorResponse.getMessage(), errorResponse.getCode(), "null");
-        }
-
-        try {
-            return errorResponse.getResponse().errorBody().string();
-        } catch (Throwable e) {
-            // ignore
-        }
-        return errorResponse.getMessage();
-    }
-
     public static String formatBasicAuthorization(final String token) {
         return String.format("Basic %s", Base64.encodeToString(token.getBytes(Charset.forName("UTF-8")), Base64.NO_WRAP));
     }
