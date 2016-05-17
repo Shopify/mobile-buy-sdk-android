@@ -77,15 +77,14 @@ public class ShippingRatesTest extends ShopifyAndroidTestCase {
         fail("Expected a NullPointerException");
     }
 
-    // Network retry testing
 
     @Test
     public void testFetchingShippingRatesWithIOError() throws InterruptedException, IOException {
 
-        final int exceptionCount = 1;
+        final int retryCount = 1;
 
         // Create an observable that will return one IOException, then a valid response
-        final Observable<Response<ShippingRatesWrapper>> response = Observable.create(new ExceptionOnSubscribe(exceptionCount, new IOException()));
+        final Observable<Response<ShippingRatesWrapper>> response = Observable.create(new ExceptionOnSubscribe(retryCount, new IOException()));
 
         Mockito.when(checkoutRetrofitService.getShippingRates(Mockito.anyString())).thenReturn(response);
 
@@ -95,7 +94,7 @@ public class ShippingRatesTest extends ShopifyAndroidTestCase {
             @Override
             public void success(List<ShippingRate> body) {
                 assertNotNull(body);
-                assertEquals(exceptionCount, callCount);
+                assertEquals(retryCount, callCount);
                 latch.countDown();
             }
 
@@ -109,14 +108,13 @@ public class ShippingRatesTest extends ShopifyAndroidTestCase {
     }
 
 
-
     @Test
     public void testFetchingShippingRatesWithMultipleIOError() throws InterruptedException {
 
-        final int exceptionCount = 2;
+        final int retryCount = 2;
 
         // Create an observable that will return one IOException, then a valid response
-        final Observable<Response<ShippingRatesWrapper>> response = Observable.create(new ExceptionOnSubscribe(exceptionCount, new IOException()));
+        final Observable<Response<ShippingRatesWrapper>> response = Observable.create(new ExceptionOnSubscribe(retryCount, new IOException()));
 
         Mockito.when(checkoutRetrofitService.getShippingRates(Mockito.anyString())).thenReturn(response);
 
@@ -139,9 +137,8 @@ public class ShippingRatesTest extends ShopifyAndroidTestCase {
     }
 
 
-    // Error propogation expected
     @Test
-    public void testFetchingShippingRatesWithPreConditionFailedError() throws InterruptedException{
+    public void testFetchingShippingRatesWithNonIOError() throws InterruptedException{
         final Observable<Response<ShippingRatesWrapper>> response = Observable.error(new RetrofitError(HttpStatus.SC_PRECONDITION_FAILED, "precondition failed"));
         Mockito.when(checkoutRetrofitService.getShippingRates(Mockito.anyString())).thenReturn(response);
 
@@ -164,13 +161,11 @@ public class ShippingRatesTest extends ShopifyAndroidTestCase {
     }
 
 
-    // Polling
     @Test
     public void testFetchingShippingRatesWithPolling() throws InterruptedException {
-        // lets try polling 3 times
-        final int targetCount = 3;
+        final int retryCount = 3;
 
-        final Observable<Response<ShippingRatesWrapper>> response = Observable.create(new ResponseOnSubscribe(targetCount, HttpStatus.SC_ACCEPTED));
+        final Observable<Response<ShippingRatesWrapper>> response = Observable.create(new ResponseOnSubscribe(retryCount, HttpStatus.SC_ACCEPTED));
         Mockito.when(checkoutRetrofitService.getShippingRates(Mockito.anyString())).thenReturn(response);
 
         final CountDownLatch latch = new CountDownLatch(1);
@@ -179,7 +174,7 @@ public class ShippingRatesTest extends ShopifyAndroidTestCase {
             @Override
             public void success(List<ShippingRate> body) {
                 assertNotNull(body);
-                assertEquals(targetCount, callCount);
+                assertEquals(retryCount, callCount);
                 latch.countDown();
             }
 
