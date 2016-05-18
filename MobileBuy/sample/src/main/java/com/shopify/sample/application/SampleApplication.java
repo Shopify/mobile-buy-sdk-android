@@ -315,7 +315,7 @@ public class SampleApplication extends Application {
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void failure(BuyClientError error) {
                 callback.failure(error);
             }
         });
