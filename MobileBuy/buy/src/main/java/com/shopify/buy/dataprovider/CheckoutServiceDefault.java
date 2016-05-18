@@ -24,28 +24,20 @@
 package com.shopify.buy.dataprovider;
 
 import android.text.TextUtils;
-import android.util.Base64;
-import android.util.Log;
 
 import com.shopify.buy.model.Checkout;
 import com.shopify.buy.model.CreditCard;
 import com.shopify.buy.model.GiftCard;
 import com.shopify.buy.model.PaymentSession;
+import com.shopify.buy.model.PaymentToken;
 import com.shopify.buy.model.ShippingRate;
 import com.shopify.buy.model.internal.CheckoutWrapper;
 import com.shopify.buy.model.internal.GiftCardWrapper;
 import com.shopify.buy.model.internal.MarketingAttribution;
 import com.shopify.buy.model.internal.PaymentSessionCheckout;
 import com.shopify.buy.model.internal.PaymentSessionCheckoutWrapper;
-import com.shopify.buy.model.internal.PaymentToken;
-import com.shopify.buy.model.internal.PaymentTokenWrapper;
 import com.shopify.buy.model.internal.ShippingRatesWrapper;
 
-import java.io.UnsupportedEncodingException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-
-import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -53,7 +45,6 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import rx.Observable;
 import rx.Scheduler;
-import rx.functions.Action1;
 import rx.functions.Func1;
 
 import static java.net.HttpURLConnection.HTTP_OK;
@@ -62,10 +53,6 @@ import static java.net.HttpURLConnection.HTTP_OK;
  * Default implementation of {@link CheckoutService}
  */
 final class CheckoutServiceDefault implements CheckoutService {
-
-    private static String LOG_TAG = CheckoutServiceDefault.class.getSimpleName();
-
-    private static final String PAYMENT_TOKEN_TYPE_ANDROID_PAY = "android_pay";
 
     public static final long POLLING_INTERVAL = TimeUnit.MILLISECONDS.toMillis(500);
 
@@ -86,9 +73,6 @@ final class CheckoutServiceDefault implements CheckoutService {
     final PollingPolicyProvider pollingRetryPolicyProvider;
 
     final Scheduler callbackScheduler;
-
-    private String androidPayPublicKey;
-    private String androidPayPublicKeyHash;
 
     CheckoutServiceDefault(
             final Retrofit retrofit,
@@ -190,12 +174,12 @@ final class CheckoutServiceDefault implements CheckoutService {
     }
 
     @Override
-    public CancellableTask storeCreditCard(final CreditCard card, final Checkout checkout, final Callback<Checkout> callback) {
+    public CancellableTask storeCreditCard(final CreditCard card, final Checkout checkout, final Callback<PaymentToken> callback) {
         return new CancellableTaskSubscriptionWrapper(storeCreditCard(card, checkout).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
-    public Observable<Checkout> storeCreditCard(final CreditCard card, final Checkout checkout) {
+    public Observable<PaymentToken> storeCreditCard(final CreditCard card, final Checkout checkout) {
         if (card == null) {
             throw new NullPointerException("card cannot be null");
         }
@@ -213,74 +197,28 @@ final class CheckoutServiceDefault implements CheckoutService {
                 .storeCreditCard(safeCheckout.getPaymentUrl(), new PaymentSessionCheckoutWrapper(paymentSessionCheckout), BuyClientUtils.formatBasicAuthorization(apiKey))
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
                 .compose(new UnwrapRetrofitBodyTransformer<PaymentSession, String>())
-                .doOnNext(new Action1<String>() {
+                .map(new Func1<String, PaymentToken>() {
                     @Override
-                    public void call(String paymentSessionId) {
-                        safeCheckout.setPaymentSessionId(paymentSessionId);
-                    }
-                })
-                .map(new Func1<String, Checkout>() {
-                    @Override
-                    public Checkout call(String s) {
-                        return safeCheckout;
+                    public PaymentToken call(String sessionId) {
+                        return PaymentToken.createCreditCardPaymentToken(sessionId);
                     }
                 })
                 .observeOn(callbackScheduler);
     }
 
     @Override
-    public CancellableTask completeCheckout(final Checkout checkout, final Callback<Checkout> callback) {
-        return new CancellableTaskSubscriptionWrapper(completeCheckout(checkout).subscribe(new InternalCallbackSubscriber<>(callback)));
+    public CancellableTask completeCheckout(final PaymentToken paymentToken, final String checkoutToken, final Callback<Checkout> callback) {
+        return new CancellableTaskSubscriptionWrapper(completeCheckout(paymentToken, checkoutToken).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
-    public Observable<Checkout> completeCheckout(final Checkout checkout) {
-        if (checkout == null) {
-            throw new NullPointerException("checkout cannot be null");
-        }
-
-        HashMap<String, String> requestBodyMap = new HashMap<>();
-
-        String paymentSessionId = checkout.getPaymentSessionId();
-        if (!TextUtils.isEmpty(paymentSessionId)) {
-            requestBodyMap.put("payment_session_id", checkout.getPaymentSessionId());
+    public Observable<Checkout> completeCheckout(final PaymentToken paymentToken, final String checkoutToken) {
+        if (paymentToken == null) {
+            throw new NullPointerException("paymentToken cannot be null");
         }
 
         return retrofitService
-                .completeCheckout(requestBodyMap, checkout.getToken())
-                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<Response<CheckoutWrapper>>())
-                .compose(new UnwrapRetrofitBodyTransformer<CheckoutWrapper, Checkout>())
-                .flatMap(new Func1<Checkout, Observable<Checkout>>() {
-                    @Override
-                    public Observable<Checkout> call(final Checkout checkout) {
-                        return getCompletedCheckout(checkout);
-                    }
-                })
-                .observeOn(callbackScheduler);
-    }
-
-    @Override
-    public CancellableTask completeCheckout(final String androidPayToken, final Checkout checkout, final Callback<Checkout> callback) {
-        return new CancellableTaskSubscriptionWrapper(completeCheckout(androidPayToken, checkout).subscribe(new InternalCallbackSubscriber<>(callback)));
-    }
-
-    @Override
-    public Observable<Checkout> completeCheckout(final String androidPayToken, final Checkout checkout) {
-        if (!androidPayIsEnabled()) {
-            throw new UnsupportedOperationException("Android Pay is not enabled");
-        }
-        if (checkout == null) {
-            throw new NullPointerException("checkout cannot be null");
-        }
-        if (TextUtils.isEmpty(androidPayToken)) {
-            throw new IllegalArgumentException("androidPayToken cannot be null");
-        }
-
-        PaymentToken paymentToken = new PaymentToken(androidPayToken, PAYMENT_TOKEN_TYPE_ANDROID_PAY, androidPayPublicKeyHash);
-        PaymentTokenWrapper paymentTokenWrapper= new PaymentTokenWrapper(paymentToken);
-
-        return retrofitService
-                .completeCheckout(paymentTokenWrapper, checkout.getToken())
+                .completeCheckout(paymentToken, checkoutToken)
                 .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<Response<CheckoutWrapper>>())
                 .compose(new UnwrapRetrofitBodyTransformer<CheckoutWrapper, Checkout>())
                 .flatMap(new Func1<Checkout, Observable<Checkout>>() {
@@ -446,43 +384,5 @@ final class CheckoutServiceDefault implements CheckoutService {
 
             return updateCheckout(expiredCheckout);
         }
-    }
-
-    /**
-     * Enables Android Pay support in the {@link BuyClient}
-     *
-     * @param androidPayPublicKey The base64 encoded public key associated with Android Pay.
-     */
-    public void enableAndroidPay(String androidPayPublicKey) {
-        if (TextUtils.isEmpty(androidPayPublicKey)) {
-            throw new IllegalArgumentException("androidPayPublicKey cannot be empty");
-        }
-
-        byte[] digest;
-        try {
-            MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
-            digest = messageDigest.digest(androidPayPublicKey.getBytes("UTF-8"));
-        } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
-            // Do not enable Android Pay if the hash could not be computed
-            Log.e(LOG_TAG, "Could not enable Android Pay: " + e.getMessage());
-            return;
-        }
-
-        // Enable Android Pay by setting the hash and key
-        this.androidPayPublicKeyHash = Base64.encodeToString(digest, Base64.DEFAULT);
-        this.androidPayPublicKey = androidPayPublicKey;
-    }
-
-    public boolean androidPayIsEnabled() {
-        return !TextUtils.isEmpty(androidPayPublicKey);
-    }
-
-    public void disableAndroidPay() {
-        androidPayPublicKeyHash = null;
-        androidPayPublicKey = null;
-    }
-
-    public String getAndroidPayPublicKey() {
-        return androidPayPublicKey;
     }
 }

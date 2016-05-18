@@ -36,6 +36,7 @@ import com.shopify.buy.model.Customer;
 import com.shopify.buy.model.CustomerToken;
 import com.shopify.buy.model.GiftCard;
 import com.shopify.buy.model.Order;
+import com.shopify.buy.model.PaymentToken;
 import com.shopify.buy.model.Product;
 import com.shopify.buy.model.ShippingRate;
 import com.shopify.buy.model.Shop;
@@ -218,18 +219,13 @@ final class BuyClientDefault implements BuyClient {
     }
 
     @Override
-    public CancellableTask storeCreditCard(final CreditCard card, final Checkout checkout, final Callback<Checkout> callback) {
+    public CancellableTask storeCreditCard(final CreditCard card, final Checkout checkout, final Callback<PaymentToken> callback) {
         return checkoutService.storeCreditCard(card, checkout, callback);
     }
 
     @Override
-    public Observable<Checkout> storeCreditCard(final CreditCard card, final Checkout checkout) {
+    public Observable<PaymentToken> storeCreditCard(final CreditCard card, final Checkout checkout) {
         return checkoutService.storeCreditCard(card, checkout);
-    }
-
-    @Override
-    public CancellableTask completeCheckout(final Checkout checkout, final Callback<Checkout> callback) {
-        return checkoutService.completeCheckout(checkout, callback);
     }
 
     @Override
@@ -243,18 +239,13 @@ final class BuyClientDefault implements BuyClient {
     }
 
     @Override
-    public Observable<Checkout> completeCheckout(final Checkout checkout) {
-        return checkoutService.completeCheckout(checkout);
+    public Observable<Checkout> completeCheckout(final PaymentToken paymentToken, final String checkoutToken) {
+        return checkoutService.completeCheckout(paymentToken, checkoutToken);
     }
 
     @Override
-    public CancellableTask completeCheckout(final String androidPayToken, final Checkout checkout, final Callback<Checkout> callback) {
-        return checkoutService.completeCheckout(androidPayToken, checkout, callback);
-    }
-
-    @Override
-    public Observable<Checkout> completeCheckout(final String androidPayToken, final Checkout checkout) {
-        return checkoutService.completeCheckout(androidPayToken, checkout);
+    public CancellableTask completeCheckout(final PaymentToken paymentToken, final String checkoutToken, final Callback<Checkout> callback) {
+        return checkoutService.completeCheckout(paymentToken, checkoutToken, callback);
     }
 
     @Override
@@ -295,23 +286,6 @@ final class BuyClientDefault implements BuyClient {
     @Override
     public Observable<Checkout> removeProductReservationsFromCheckout(final Checkout checkout) {
         return checkoutService.removeProductReservationsFromCheckout(checkout);
-    }
-
-    @Override
-    public void enableAndroidPay(String androidPayPublicKey) {
-        checkoutService.enableAndroidPay(androidPayPublicKey);
-    }
-
-    public void disableAndroidPay() {
-        checkoutService.disableAndroidPay();
-    }
-
-    public boolean androidPayIsEnabled() {
-        return checkoutService.androidPayIsEnabled();
-    }
-
-    public String getAndroidPayPublicKey() {
-        return checkoutService.getAndroidPayPublicKey();
     }
 
     // ----------- CustomerService API ---------------
