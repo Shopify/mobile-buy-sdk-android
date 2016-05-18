@@ -27,7 +27,6 @@ import rx.Subscriber;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertTrue;
 import static junit.framework.Assert.fail;
 
 /**
@@ -129,7 +128,8 @@ public class ShippingRatesTest extends ShopifyAndroidTestCase {
 
             @Override
             public void failure(RetrofitError error) {
-                assertTrue(error.getException() instanceof IOException );
+                Throwable throwable = error.getException().getCause();
+                assertEquals(true, throwable instanceof IOException);
                 latch.countDown();
             }
         });
@@ -203,7 +203,8 @@ public class ShippingRatesTest extends ShopifyAndroidTestCase {
 
         @Override
         public void call(Subscriber<? super Response<ShippingRatesWrapper>> subscriber) {
-            if (++callCount < count) {
+            if (callCount < count) {
+                callCount++;
                 subscriber.onError(throwable);
             } else {
                 subscriber.onNext(Response.success(shippingRatesWrapper));
@@ -238,7 +239,9 @@ public class ShippingRatesTest extends ShopifyAndroidTestCase {
 
         @Override
         public void call(Subscriber<? super Response<ShippingRatesWrapper>> subscriber) {
-            if ( ++callCount < count) {
+            if ( callCount < count) {
+                callCount++;
+
                 Response<ShippingRatesWrapper> response = Response.success(null, this.response);
                 subscriber.onNext(response);
             } else {
