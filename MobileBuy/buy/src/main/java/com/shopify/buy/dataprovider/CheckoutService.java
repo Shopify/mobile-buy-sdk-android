@@ -99,9 +99,9 @@ public interface CheckoutService {
      * Get the status of the payment session associated with {@code checkout}. {@code callback} will be
      * called with a boolean value indicating whether the session has completed or not.
      *
-     * @param checkout a {@link Checkout} that has been passed as a parameter to {@link #completeCheckout(Checkout, Callback)} or {@link #completeCheckout(Checkout)}
+     * @param checkout a {@link Checkout} that has been passed as a parameter to {@link #completeCheckout(PaymentToken, String, Callback)}
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
-     *
+     * @return cancellable task
      */
     CancellableTask getCheckoutCompletionStatus(Checkout checkout, final Callback<Boolean> callback);
 
@@ -109,7 +109,7 @@ public interface CheckoutService {
      * Get the status of the payment session associated with {@code checkout}. {@code callback} will be
      * called with a boolean value indicating whether the session has completed or not.
      *
-     * @param checkout a {@link Checkout} that has been passed as a parameter to {@link #completeCheckout(Checkout, Callback)} or {@link #completeCheckout(Checkout)}
+     * @param checkout a {@link Checkout} that has been passed as a parameter to {@link #completeCheckout(PaymentToken, String, Callback)}
      * @return cold observable that emits a Boolean that indicates whether the checkout has been completed
      *
      */

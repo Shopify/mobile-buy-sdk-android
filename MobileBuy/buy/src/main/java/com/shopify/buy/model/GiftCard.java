@@ -86,6 +86,8 @@ public class GiftCard {
 
     /**
      * For internal use only.
+     *
+     * @return The {@link Checkout} associated with this gift card.
      */
     public Checkout getCheckout() {
         return checkout;
