@@ -48,7 +48,7 @@ public final class BuyClientError extends RuntimeException {
     public static final int ERROR_TYPE_API = -2;
 
     /**
-     * Represents any network raletd errors
+     * Represents any network related errors
      */
     public static final int ERROR_TYPE_NETWORK = -1;
 
@@ -63,24 +63,34 @@ public final class BuyClientError extends RuntimeException {
 
     private final JSONObject errorsRootJsonObject;
 
-    public BuyClientError(final Response retrofitResponse, final Throwable throwable) {
+    public BuyClientError(final Throwable throwable) {
         super(throwable);
-        this.retrofitResponse = retrofitResponse;
 
-        if (retrofitResponse == null && throwable instanceof IOException) {
-            this.type = ERROR_TYPE_NETWORK;
-            this.errorsRootJsonObject = null;
-        } else if (retrofitResponse != null) {
-            this.type = ERROR_TYPE_API;
-            this.errorsRootJsonObject = parseRetrofitErrorResponse(retrofitResponse);
+        retrofitResponse = null;
+        if (throwable instanceof IOException) {
+            type = ERROR_TYPE_NETWORK;
+            errorsRootJsonObject = null;
         } else {
-            this.type = ERROR_TYPE_UNKNOWN;
-            this.errorsRootJsonObject = null;
+            type = ERROR_TYPE_UNKNOWN;
+            errorsRootJsonObject = null;
+        }
+    }
+
+    public BuyClientError(final Response retrofitResponse) {
+        this.retrofitResponse = retrofitResponse;
+        if (retrofitResponse != null) {
+            type = ERROR_TYPE_API;
+            errorsRootJsonObject = parseRetrofitErrorResponse(retrofitResponse);
+        } else {
+            type = ERROR_TYPE_UNKNOWN;
+            errorsRootJsonObject = null;
         }
     }
 
     /**
-     * Returns the type of error on of: {@link BuyClientError#ERROR_TYPE_API}, {@link BuyClientError#ERROR_TYPE_NETWORK}, {@link BuyClientError#ERROR_TYPE_UNKNOWN}
+     * Returns the type of error, on of: {@link BuyClientError#ERROR_TYPE_API}, {@link BuyClientError#ERROR_TYPE_NETWORK}, {@link BuyClientError#ERROR_TYPE_UNKNOWN}
+     *
+     * @return error type
      */
     public int getType() {
         return type;
@@ -88,13 +98,17 @@ public final class BuyClientError extends RuntimeException {
 
     /**
      * Returns raw retrofit response
+     *
+     * @return retrofit response
      */
     public Response getRetrofitResponse() {
         return retrofitResponse;
     }
 
     /**
-     * Returns raw retrofit error body response
+     * Returns raw retrofit response error body
+     *
+     * @return retrofit response error body
      */
     public String getRetrofitErrorBody() {
         if (retrofitResponse != null) {

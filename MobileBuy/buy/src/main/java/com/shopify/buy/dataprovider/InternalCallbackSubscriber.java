@@ -48,7 +48,7 @@ final class InternalCallbackSubscriber<T> extends Subscriber<T> {
         if (t instanceof BuyClientError) {
             callback.failure((BuyClientError) t);
         } else {
-            callback.failure(new BuyClientError(null, t));
+            callback.failure(new BuyClientError(t));
         }
     }
 }

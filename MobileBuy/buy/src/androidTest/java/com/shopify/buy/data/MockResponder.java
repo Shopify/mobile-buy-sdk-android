@@ -92,7 +92,7 @@ public class MockResponder implements Interceptor {
                     .build();
             ResponseBody responseBody = ResponseBody.create(MediaType.parse("application/json"), body);
             retrofit2.Response retrofitResponse = retrofit2.Response.error(responseBody, httpResponse);
-            throw new BuyClientError(retrofitResponse, null);
+            throw new BuyClientError(retrofitResponse);
         }
 
         MediaType contentType = MediaType.parse("application/json; charset=utf-8");

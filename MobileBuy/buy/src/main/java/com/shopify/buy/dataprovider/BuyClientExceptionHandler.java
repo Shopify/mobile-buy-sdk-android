@@ -36,7 +36,7 @@ final class BuyClientExceptionHandler<R> implements Func1<Throwable, Observable<
         if (t instanceof BuyClientError) {
             return Observable.error(t);
         } else {
-            return Observable.error(new BuyClientError(null, t));
+            return Observable.error(new BuyClientError(t));
         }
     }
 }
