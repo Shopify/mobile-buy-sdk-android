@@ -43,15 +43,25 @@ public class CurrencyFormatter {
 
     private static final Map<FormatterAttributes, NumberFormat> cache = new HashMap<>();
 
+
     /**
      * The returned formatter instance is a shared object. Callers should ensure they do not use the formatter simultaneously from multiple threads.
+     *
+     * @param displayLocale    The locale to use for display
+     * @param currencyToFormat The currency code
+     * @return A {@link NumberFormat}
      */
     public static NumberFormat getFormatter(Locale displayLocale, String currencyToFormat) {
         return CurrencyFormatter.getFormatter(displayLocale, currencyToFormat, true, true, true);
     }
 
     /**
-     * The returned formatter instance is a shared object. Callers should ensure they do not use the formatter simultaneously from multiple threads.
+     * @param displayLocale            The locale to use for display.
+     * @param currencyToFormat         The currency code
+     * @param withSymbol               Include the currency symbol
+     * @param includeGroupingSeparator Include the grouping seperator
+     * @param includeFractionDigits    Include fraction digits
+     * @return A {@link NumberFormat}
      */
     public static NumberFormat getFormatter(Locale displayLocale, String currencyToFormat, boolean withSymbol, boolean includeGroupingSeparator, boolean includeFractionDigits) {
         FormatterAttributes cacheKey = new FormatterAttributes(displayLocale.toString(), currencyToFormat, withSymbol, includeGroupingSeparator, includeFractionDigits);

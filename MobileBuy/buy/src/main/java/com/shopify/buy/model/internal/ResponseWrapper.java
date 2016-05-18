@@ -23,6 +23,9 @@
  */
 package com.shopify.buy.model.internal;
 
+/**
+ * Wrapper class used by Gson Serialization
+ */
 public interface ResponseWrapper<T> {
 
      T getContent();

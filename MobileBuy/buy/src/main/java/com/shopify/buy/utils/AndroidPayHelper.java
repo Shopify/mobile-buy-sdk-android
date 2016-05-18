@@ -300,7 +300,7 @@ public final class AndroidPayHelper {
      * 1) Play Services are available using {@link AndroidPayHelper#hasGooglePlayServices(Context)}
      * 2) The Android Pay application is installed on device, and user has setup a valid card for In App Purchase using {@link AndroidPayHelper#isReadyToPay(GoogleApiClient, AndroidPayReadyCallback)}
      *
-     * @param context
+     * @param context The context to use.
      * @param apiClient The {@link GoogleApiClient}, not null
      * @param delegate  The {@link AndroidPayReadyCallback} delegate for receiving the result
      */
@@ -339,7 +339,7 @@ public final class AndroidPayHelper {
     /**
      * Checks to see if Play Services are available on device
      *
-     * @param context
+     * @param context The context to use.
      * @return true if Play Services are available
      */
     public static boolean hasGooglePlayServices(final Context context) {

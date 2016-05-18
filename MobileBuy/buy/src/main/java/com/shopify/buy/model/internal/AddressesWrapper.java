@@ -30,6 +30,9 @@ import com.shopify.buy.model.Address;
 
 import java.util.List;
 
+/**
+ * Wrapper class used by Gson Serialization
+ */
 public class AddressesWrapper implements ResponseWrapper<List<Address>> {
 
     @SerializedName("addresses")

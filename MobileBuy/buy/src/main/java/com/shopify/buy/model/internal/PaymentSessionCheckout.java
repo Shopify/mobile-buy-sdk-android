@@ -29,8 +29,6 @@ import com.shopify.buy.model.Address;
 import com.shopify.buy.model.CreditCard;
 
 /**
- * Created by agodding on 14-10-23.
- *
  * Internal structure used to serialize data for creating a payment session
  */
 public class PaymentSessionCheckout {

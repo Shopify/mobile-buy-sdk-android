@@ -55,6 +55,9 @@ public class ImageUtility {
      * @param objects          A list of Collection and/or Product objects.
      * @param lastVisibleIndex The index of the last visible item on the screen (we need to start pre-loading from the next index).
      * @param numberToLoad     The number of images to pre-load.
+     * @param parentHeight     The height of the parent view in px.
+     * @param parentWidth      The width of the parent view in px.
+     * @param crop             Crop image if true.
      */
     public static void preLoadImages(final Picasso imageLoader, final List<? extends ShopifyObject> objects, final int lastVisibleIndex, final int numberToLoad, int parentWidth, int parentHeight, final boolean crop) {
         if (CollectionUtils.isEmpty(objects)) {
@@ -95,6 +98,9 @@ public class ImageUtility {
      *
      * @param imageLoader The image loader to use.
      * @param objects     A list of Collection and/or Product objects.
+     * @param parentHeight     The height of the parent view in px.
+     * @param parentWidth      The width of the parent view in px.
+     * @param crop             Crop image if true.
      */
     public static void preLoadImages(final Picasso imageLoader, final List<? extends ShopifyObject> objects, int parentWidth, int parentHeight, final boolean crop) {
         preLoadImages(imageLoader, objects, -1, objects.size(), parentWidth, parentHeight, crop);
@@ -144,6 +150,16 @@ public class ImageUtility {
     /**
      * Fetches and loads an image into an ImageView that has layout params with MATCH_PARENT as width and/or height. You must pass in non-zero values for
      * {@code parentWidth} and {@code parentHeight} so that an appropriately sized image can be fetched from the server.
+     *
+     * @param parentHeight        The height of the parent view in px.
+     * @param parentWidth         The width of the parent view in px.
+     * @param crop                Crop image if true.
+     * @param imageLoader         ImageLoader to use.
+     * @param imageSrc            The Url for the image.
+     * @param imageView           The view to load the image into.
+     * @param placeholderDrawable Image drawable to use as a placeholder.
+     * @param errorDrawable       Image drawable to use on error.
+     * @param callback            callback to call when image load completes.
      */
     public static void loadRemoteImageIntoViewWithoutSize(final Picasso imageLoader, String imageSrc, final ImageView imageView, int parentWidth, int parentHeight, boolean crop, Drawable placeholderDrawable, Drawable errorDrawable, Callback callback) {
         String imageUrl = getSizedImageUrl(imageSrc, parentWidth, parentHeight);
@@ -168,6 +184,14 @@ public class ImageUtility {
     /**
      * Fetches and loads an image into an ImageView that has layout params with MATCH_PARENT as width and/or height. You must pass in non-zero values for
      * {@code parentWidth} and {@code parentHeight} so that an appropriately sized image can be fetched from the server.
+     *
+     * @param parentHeight The height of the parent view in px.
+     * @param parentWidth  The width of the parent view in px.
+     * @param crop         Crop image if true.
+     * @param imageLoader  ImageLoader to use.
+     * @param imageSrc     The Url for the image.
+     * @param imageView    The view to load the image into.
+     * @param callback     callback to call when image load completes.
      */
     public static void loadRemoteImageIntoViewWithoutSize(final Picasso imageLoader, String imageSrc, final ImageView imageView, int parentWidth, int parentHeight, boolean crop, Callback callback) {
         loadRemoteImageIntoViewWithoutSize(imageLoader, imageSrc, imageView, parentWidth, parentHeight, crop, null, null, callback);
@@ -175,6 +199,12 @@ public class ImageUtility {
 
     /**
      * Load image into an ImageView where the layout has a fixed size
+     *
+     * @param crop        Crop image if true.
+     * @param imageLoader ImageLoader to use.
+     * @param imageSrc    The Url for the image.
+     * @param imageView   The view to load the image into.
+     * @param callback    callback to call when image load completes.
      */
     public static void loadImageResourceIntoSizedView(final Picasso imageLoader, String imageSrc, final ImageView imageView, boolean crop, Callback callback) {
         final int imageWidthPx = imageView.getLayoutParams().width;

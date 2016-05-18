@@ -273,6 +273,9 @@ public class Customer extends ShopifyObject {
 
     /**
      * A Customer object created using the values in the JSON string.
+     *
+     * @param json The input json.
+     * @return A {@link Customer}
      */
     public static Customer fromJson(String json) {
         Gson gson = BuyClientUtils.createDefaultGson(Customer.class);

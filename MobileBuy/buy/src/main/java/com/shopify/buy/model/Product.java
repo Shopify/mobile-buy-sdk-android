@@ -126,6 +126,8 @@ public class Product extends ShopifyObject {
 
     /**
      * Use {@link #getPublishedAtDate() getPublishedAtDate()}.
+     *
+     * @return The date this product was published.
      */
     @Deprecated
     public String getPublishedAt() {
@@ -134,6 +136,8 @@ public class Product extends ShopifyObject {
 
     /**
      * Use {@link #getCreatedAtDate() getCreatedAtDate()}.
+     *
+     * @return The date this product was created.
      */
     @Deprecated
     public String getCreatedAt() {
@@ -142,6 +146,8 @@ public class Product extends ShopifyObject {
 
     /**
      * Use {@link #getUpdatedAtDate() getUpdatedAtDate()}.
+     *
+     * @return The date this product was updated.
      */
     @Deprecated
     public String getUpdatedAt() {
@@ -240,6 +246,8 @@ public class Product extends ShopifyObject {
 
     /**
      * For internal use only.
+     *
+     * @return true if this product has a default variant.
      */
     public boolean hasDefaultVariant() {
         if (CollectionUtils.isEmpty(variants) || variants.size() != 1) {
@@ -372,6 +380,9 @@ public class Product extends ShopifyObject {
 
     /**
      * A product object created using the values in the JSON string.
+     *
+     * @param json The json representation of this product.
+     * @return A {@link Product}
      */
     public static Product fromJson(String json) {
         Gson gson = BuyClientUtils.createDefaultGson(Product.class);
