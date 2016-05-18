@@ -79,7 +79,7 @@ public final class BuyClientBuilder {
      * Sets store domain url (usually {store name}.myshopify.com
      *
      * @param shopDomain The domain for the shop.
-     * @return A {@link BuyClientBuilder}
+     * @return a {@link BuyClientBuilder}
      */
     public BuyClientBuilder shopDomain(final String shopDomain) {
         this.shopDomain = shopDomain;
@@ -90,7 +90,7 @@ public final class BuyClientBuilder {
      * Sets Shopify store api key
      *
      * @param apiKey The Api Key.
-     * @return A {@link BuyClientBuilder}
+     * @return a {@link BuyClientBuilder}
      */
     public BuyClientBuilder apiKey(final String apiKey) {
         this.apiKey = apiKey;
@@ -101,7 +101,7 @@ public final class BuyClientBuilder {
      * Sets Shopify store application id
      *
      * @param appId The App Id.
-     * @return A {@link BuyClientBuilder}
+     * @return a {@link BuyClientBuilder}
      */
     public BuyClientBuilder appId(final String appId) {
         this.appId = appId;
@@ -112,7 +112,7 @@ public final class BuyClientBuilder {
      * Sets Shopify store application name
      *
      * @param applicationName The application name.
-     * @return A {@link BuyClientBuilder}
+     * @return a {@link BuyClientBuilder}
      */
     public BuyClientBuilder applicationName(final String applicationName) {
         this.applicationName = applicationName;
@@ -125,7 +125,7 @@ public final class BuyClientBuilder {
      *
      * @param completeCheckoutWebReturnUrl The url to use when returning to the app from web checkout.
      *
-     * @return A {@link BuyClientBuilder}
+     * @return a {@link BuyClientBuilder}
      */
     public BuyClientBuilder completeCheckoutWebReturnUrl(final String completeCheckoutWebReturnUrl) {
         this.completeCheckoutWebReturnUrl = completeCheckoutWebReturnUrl;
@@ -137,7 +137,7 @@ public final class BuyClientBuilder {
      *
      * @param completeCheckoutWebReturnLabel The label to use on the return to app button in web checkout.
      *
-     * @return A {@link BuyClientBuilder}
+     * @return a {@link BuyClientBuilder}
      */
     public BuyClientBuilder completeCheckoutWebReturnLabel(final String completeCheckoutWebReturnLabel) {
         this.completeCheckoutWebReturnLabel = completeCheckoutWebReturnLabel;
@@ -149,7 +149,7 @@ public final class BuyClientBuilder {
      *
      * @param customerToken The token associated with a {@link Customer}
      *
-     * @return A {@link BuyClientBuilder}
+     * @return a {@link BuyClientBuilder}
      */
     public BuyClientBuilder customerToken(final CustomerToken customerToken) {
         this.customerToken = customerToken;
@@ -162,7 +162,7 @@ public final class BuyClientBuilder {
      *
      * @param callbackScheduler The {@link Scheduler} to use for API callbacks.
      *
-     * @return A {@link BuyClientBuilder}
+     * @return a {@link BuyClientBuilder}
      */
     public BuyClientBuilder callbackScheduler(final Scheduler callbackScheduler) {
         this.callbackScheduler = callbackScheduler;
@@ -173,7 +173,7 @@ public final class BuyClientBuilder {
      * Sets custom OkHttp interceptors
      *
      * @param interceptors Interceptors to add to the OkHttp client.
-     * @return A {@link BuyClientBuilder}
+     * @return a {@link BuyClientBuilder}
      */
     public BuyClientBuilder interceptors(final Interceptor... interceptors) {
         this.interceptors = interceptors;
@@ -188,7 +188,7 @@ public final class BuyClientBuilder {
      * The default value is {@link #DEFAULT_PAGE_SIZE}
      *
      * @param productPageSize The number of products to return in a page.
-     * @return A {@link BuyClientBuilder}
+     * @return a {@link BuyClientBuilder}
      */
     public BuyClientBuilder productPageSize(final int productPageSize) {
         this.productPageSize = Math.max(Math.min(productPageSize, MAX_PAGE_SIZE), MIN_PAGE_SIZE);
@@ -203,7 +203,7 @@ public final class BuyClientBuilder {
      * @param networkRequestRetryDelayMs           delay between retry attempts in milliseconds
      * @param networkRequestRetryBackoffMultiplier backoff multiplier for next request attempts, can be used for "exponential backoff"
      *
-     * @return A {@link BuyClientBuilder}
+     * @return a {@link BuyClientBuilder}
      */
     public BuyClientBuilder networkRequestRetryPolicy(final int networkRequestRetryMaxCount, final long networkRequestRetryDelayMs, final float networkRequestRetryBackoffMultiplier) {
         this.networkRequestRetryMaxCount = networkRequestRetryMaxCount;
