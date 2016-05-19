@@ -45,10 +45,10 @@ final class InternalCallbackSubscriber<T> extends Subscriber<T> {
 
     @Override
     public void onError(final Throwable t) {
-        if (t instanceof RetrofitError) {
-            callback.failure((RetrofitError) t);
+        if (t instanceof BuyClientError) {
+            callback.failure((BuyClientError) t);
         } else {
-            callback.failure(RetrofitError.exception(new Exception(t)));
+            callback.failure(new BuyClientError(t));
         }
     }
 }

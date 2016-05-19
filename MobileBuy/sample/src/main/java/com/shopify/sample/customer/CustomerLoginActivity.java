@@ -35,8 +35,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-import com.shopify.buy.dataprovider.BuyClientUtils;
-import com.shopify.buy.dataprovider.RetrofitError;
+import com.shopify.buy.dataprovider.BuyClientError;
 import com.shopify.sample.R;
 
 import butterknife.BindView;
@@ -97,8 +96,8 @@ public final class CustomerLoginActivity extends AppCompatActivity implements Cu
 
     @Override
     public void showError(final Throwable t) {
-        if (t instanceof RetrofitError) {
-            Log.e(LOG_TAG, "Error: " + BuyClientUtils.getErrorBody((RetrofitError) t), t);
+        if (t instanceof BuyClientError) {
+            Log.e(LOG_TAG, "Error: " + ((BuyClientError) t).getRetrofitErrorBody(), t);
         } else {
             Log.e(LOG_TAG, t.getMessage(), t);
         }

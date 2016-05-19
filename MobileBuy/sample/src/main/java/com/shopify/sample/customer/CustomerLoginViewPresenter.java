@@ -23,15 +23,15 @@
  */
 package com.shopify.sample.customer;
 
+import com.shopify.buy.dataprovider.BuyClientError;
 import com.shopify.buy.dataprovider.Callback;
 import com.shopify.buy.dataprovider.CancellableTask;
-import com.shopify.buy.dataprovider.RetrofitError;
 import com.shopify.buy.model.AccountCredentials;
 import com.shopify.buy.model.Customer;
 import com.shopify.buy.model.CustomerToken;
+import com.shopify.sample.BaseViewPresenter;
 import com.shopify.sample.BuildConfig;
 import com.shopify.sample.WeakObserver;
-import com.shopify.sample.BaseViewPresenter;
 import com.shopify.sample.application.SampleApplication;
 
 import java.lang.ref.WeakReference;
@@ -127,7 +127,7 @@ public final class CustomerLoginViewPresenter extends BaseViewPresenter<Customer
             }
 
             @Override
-            public void failure(final RetrofitError error) {
+            public void failure(final BuyClientError error) {
                 final CustomerLoginViewPresenter presenter = presenterRef.get();
                 if (presenter != null) {
                     presenter.onRequestError(error);
@@ -179,7 +179,7 @@ public final class CustomerLoginViewPresenter extends BaseViewPresenter<Customer
             }
 
             @Override
-            public void failure(final RetrofitError error) {
+            public void failure(final BuyClientError error) {
                 final CustomerLoginViewPresenter presenter = presenterRef.get();
                 if (presenter != null) {
                     presenter.onRequestError(error);

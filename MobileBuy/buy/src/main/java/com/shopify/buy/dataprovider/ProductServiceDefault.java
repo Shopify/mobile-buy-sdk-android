@@ -52,11 +52,11 @@ final class ProductServiceDefault implements ProductService {
     final Scheduler callbackScheduler;
 
     ProductServiceDefault(
-            final Retrofit retrofit,
-            final String appId,
-            final int pageSize,
-            final NetworkRetryPolicyProvider networkRetryPolicyProvider,
-            final Scheduler callbackScheduler
+        final Retrofit retrofit,
+        final String appId,
+        final int pageSize,
+        final NetworkRetryPolicyProvider networkRetryPolicyProvider,
+        final Scheduler callbackScheduler
     ) {
         this.retrofitService = retrofit.create(ProductRetrofitService.class);
         this.appId = appId;
@@ -82,11 +82,12 @@ final class ProductServiceDefault implements ProductService {
         }
 
         return retrofitService
-                .getProductPage(appId, page, pageSize)
-                .retryWhen(networkRetryPolicyProvider.provide())
-                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .compose(new UnwrapRetrofitBodyTransformer<ProductListings, List<Product>>())
-                .observeOn(callbackScheduler);
+            .getProductPage(appId, page, pageSize)
+            .retryWhen(networkRetryPolicyProvider.provide())
+            .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
+            .compose(new UnwrapRetrofitBodyTransformer<ProductListings, List<Product>>())
+            .onErrorResumeNext(new BuyClientExceptionHandler<List<Product>>())
+            .observeOn(callbackScheduler);
     }
 
     @Override
@@ -101,12 +102,13 @@ final class ProductServiceDefault implements ProductService {
         }
 
         return retrofitService
-                .getProductWithHandle(appId, handle)
-                .retryWhen(networkRetryPolicyProvider.provide())
-                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .compose(new UnwrapRetrofitBodyTransformer<ProductListings, List<Product>>())
-                .compose(new FirstListItemOrDefaultTransformer<Product>())
-                .observeOn(callbackScheduler);
+            .getProductWithHandle(appId, handle)
+            .retryWhen(networkRetryPolicyProvider.provide())
+            .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
+            .compose(new UnwrapRetrofitBodyTransformer<ProductListings, List<Product>>())
+            .compose(new FirstListItemOrDefaultTransformer<Product>())
+            .onErrorResumeNext(new BuyClientExceptionHandler<Product>())
+            .observeOn(callbackScheduler);
     }
 
     @Override
@@ -121,12 +123,13 @@ final class ProductServiceDefault implements ProductService {
         }
 
         return retrofitService
-                .getProducts(appId, productId)
-                .retryWhen(networkRetryPolicyProvider.provide())
-                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .compose(new UnwrapRetrofitBodyTransformer<ProductListings, List<Product>>())
-                .compose(new FirstListItemOrDefaultTransformer<Product>())
-                .observeOn(callbackScheduler);
+            .getProducts(appId, productId)
+            .retryWhen(networkRetryPolicyProvider.provide())
+            .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
+            .compose(new UnwrapRetrofitBodyTransformer<ProductListings, List<Product>>())
+            .compose(new FirstListItemOrDefaultTransformer<Product>())
+            .onErrorResumeNext(new BuyClientExceptionHandler<Product>())
+            .observeOn(callbackScheduler);
     }
 
     @Override
@@ -150,11 +153,12 @@ final class ProductServiceDefault implements ProductService {
         // If no ids were found, the array will be empty
         final String queryString = TextUtils.join(",", productIds.toArray());
         return retrofitService
-                .getProducts(appId, queryString)
-                .retryWhen(networkRetryPolicyProvider.provide())
-                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .compose(new UnwrapRetrofitBodyTransformer<ProductListings, List<Product>>())
-                .observeOn(callbackScheduler);
+            .getProducts(appId, queryString)
+            .retryWhen(networkRetryPolicyProvider.provide())
+            .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
+            .compose(new UnwrapRetrofitBodyTransformer<ProductListings, List<Product>>())
+            .onErrorResumeNext(new BuyClientExceptionHandler<List<Product>>())
+            .observeOn(callbackScheduler);
     }
 
     @Override
@@ -182,11 +186,12 @@ final class ProductServiceDefault implements ProductService {
         }
 
         return retrofitService
-                .getProducts(appId, collectionId, pageSize, page, sortOrder.toString())
-                .retryWhen(networkRetryPolicyProvider.provide())
-                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .compose(new UnwrapRetrofitBodyTransformer<ProductListings, List<Product>>())
-                .observeOn(callbackScheduler);
+            .getProducts(appId, collectionId, pageSize, page, sortOrder.toString())
+            .retryWhen(networkRetryPolicyProvider.provide())
+            .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
+            .compose(new UnwrapRetrofitBodyTransformer<ProductListings, List<Product>>())
+            .onErrorResumeNext(new BuyClientExceptionHandler<List<Product>>())
+            .observeOn(callbackScheduler);
     }
 
     @Override
@@ -213,10 +218,11 @@ final class ProductServiceDefault implements ProductService {
         // All collection responses from the server are wrapped in a CollectionListings object which contains and array of collections
         // For this call, we will clamp the size of the collection array returned to the page size
         return retrofitService
-                .getCollectionPage(appId, page, pageSize)
-                .retryWhen(networkRetryPolicyProvider.provide())
-                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .compose(new UnwrapRetrofitBodyTransformer<CollectionListings, List<Collection>>())
-                .observeOn(callbackScheduler);
+            .getCollectionPage(appId, page, pageSize)
+            .retryWhen(networkRetryPolicyProvider.provide())
+            .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
+            .compose(new UnwrapRetrofitBodyTransformer<CollectionListings, List<Collection>>())
+            .onErrorResumeNext(new BuyClientExceptionHandler<List<Collection>>())
+            .observeOn(callbackScheduler);
     }
 }

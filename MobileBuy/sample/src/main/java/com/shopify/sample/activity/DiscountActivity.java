@@ -37,9 +37,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.shopify.buy.dataprovider.BuyClientUtils;
-import com.shopify.buy.dataprovider.Callback;
-import com.shopify.buy.dataprovider.RetrofitError;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.wallet.MaskedWallet;
@@ -52,6 +49,8 @@ import com.google.android.gms.wallet.fragment.WalletFragmentMode;
 import com.google.android.gms.wallet.fragment.WalletFragmentOptions;
 import com.google.android.gms.wallet.fragment.WalletFragmentStyle;
 import com.shopify.buy.dataprovider.BuyClient;
+import com.shopify.buy.dataprovider.BuyClientError;
+import com.shopify.buy.dataprovider.Callback;
 import com.shopify.buy.model.Checkout;
 import com.shopify.buy.utils.AndroidPayHelper;
 import com.shopify.sample.BuildConfig;
@@ -286,7 +285,7 @@ public class DiscountActivity extends SampleActivity implements GoogleApiClient.
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void failure(BuyClientError error) {
                 dismissLoadingDialog();
                 Toast.makeText(DiscountActivity.this, getString(R.string.discount_error, discountCode), Toast.LENGTH_LONG).show();
             }
@@ -309,7 +308,7 @@ public class DiscountActivity extends SampleActivity implements GoogleApiClient.
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void failure(BuyClientError error) {
                 dismissLoadingDialog();
                 Toast.makeText(DiscountActivity.this, getString(R.string.gift_card_error, giftCardCode), Toast.LENGTH_LONG).show();
             }
@@ -337,8 +336,8 @@ public class DiscountActivity extends SampleActivity implements GoogleApiClient.
             }
 
             @Override
-            public void failure(RetrofitError error) {
-                Log.e(LOG_TAG, "Error updating checkout: " + BuyClientUtils.getErrorBody(error));
+            public void failure(BuyClientError error) {
+                Log.e(LOG_TAG, "Error updating checkout: " + error.getRetrofitErrorBody());
                 Toast.makeText(DiscountActivity.this, "Could not start the checkout, please try again later", Toast.LENGTH_SHORT).show();
                 dismissLoadingDialog();
             }

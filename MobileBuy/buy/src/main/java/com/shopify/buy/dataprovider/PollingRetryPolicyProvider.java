@@ -70,11 +70,10 @@ final class PollingPolicyProvider {
                     public Observable<?> call(final Throwable t) {
                         boolean pollingRequired = false;
 
-                        if (t instanceof RetrofitError) {
-                            RetrofitError error = (RetrofitError) t;
-
-                            if (HttpURLConnection.HTTP_ACCEPTED == error.getCode()) {
-                                pollingRequired = true;
+                        if (t instanceof BuyClientError) {
+                            final BuyClientError buyClientError = (BuyClientError) t;
+                            if (buyClientError.getRetrofitResponse() != null) {
+                                pollingRequired = (HttpURLConnection.HTTP_ACCEPTED == buyClientError.getRetrofitResponse().code());
                             }
                         } else if (t instanceof PollingRequiredException) {
                             pollingRequired = true;
@@ -88,7 +87,7 @@ final class PollingPolicyProvider {
                             }
                         }
 
-                        if(pollingRequired) {
+                        if (pollingRequired) {
                             return Observable.timer(retryDelayMs, TimeUnit.MILLISECONDS);
                         } else {
                             return Observable.error(t);

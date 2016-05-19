@@ -34,8 +34,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 
+import com.shopify.buy.dataprovider.BuyClientError;
 import com.shopify.buy.dataprovider.Callback;
-import com.shopify.buy.dataprovider.RetrofitError;
 import com.shopify.sample.R;
 import com.shopify.sample.activity.base.SampleListActivity;
 import com.shopify.buy.model.Collection;
@@ -45,8 +45,6 @@ import com.shopify.sample.customer.CustomerOrderListActivity;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import rx.functions.Action1;
 
 
 /**
@@ -80,7 +78,7 @@ public class CollectionListActivity extends SampleListActivity {
                 }
 
                 @Override
-                public void failure(RetrofitError error) {
+                public void failure(BuyClientError error) {
                     isFetching = false;
                     onError(error);
                 }
@@ -122,7 +120,7 @@ public class CollectionListActivity extends SampleListActivity {
                     }
 
                     @Override
-                    public void failure(RetrofitError error) {
+                    public void failure(BuyClientError error) {
                     }
                 });
                 invalidateOptionsMenu();

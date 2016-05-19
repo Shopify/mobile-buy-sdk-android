@@ -58,10 +58,10 @@ final class CustomerServiceDefault implements CustomerService {
     final AtomicReference<CustomerToken> customerTokenRef = new AtomicReference<>();
 
     CustomerServiceDefault(
-            final Retrofit retrofit,
-            final CustomerToken customerToken,
-            final NetworkRetryPolicyProvider networkRetryPolicyProvider,
-            final Scheduler callbackScheduler
+        final Retrofit retrofit,
+        final CustomerToken customerToken,
+        final NetworkRetryPolicyProvider networkRetryPolicyProvider,
+        final Scheduler callbackScheduler
     ) {
         this.retrofitService = retrofit.create(CustomerRetrofitService.class);
         this.customerTokenRef.set(customerToken);
@@ -87,10 +87,11 @@ final class CustomerServiceDefault implements CustomerService {
 
         final AccountCredentialsWrapper accountCredentialsWrapper = new AccountCredentialsWrapper(accountCredentials);
         return retrofitService
-                .createCustomer(accountCredentialsWrapper)
-                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .compose(new UnwrapRetrofitBodyTransformer<CustomerWrapper, Customer>())
-                .observeOn(callbackScheduler);
+            .createCustomer(accountCredentialsWrapper)
+            .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
+            .compose(new UnwrapRetrofitBodyTransformer<CustomerWrapper, Customer>())
+            .onErrorResumeNext(new BuyClientExceptionHandler<Customer>())
+            .observeOn(callbackScheduler);
     }
 
     @Deprecated
@@ -111,10 +112,11 @@ final class CustomerServiceDefault implements CustomerService {
 
         final AccountCredentialsWrapper accountCredentialsWrapper = new AccountCredentialsWrapper(accountCredentials);
         return retrofitService
-                .activateCustomer(customerId, activationToken, accountCredentialsWrapper)
-                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .compose(new UnwrapRetrofitBodyTransformer<CustomerWrapper, Customer>())
-                .observeOn(callbackScheduler);
+            .activateCustomer(customerId, activationToken, accountCredentialsWrapper)
+            .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
+            .compose(new UnwrapRetrofitBodyTransformer<CustomerWrapper, Customer>())
+            .onErrorResumeNext(new BuyClientExceptionHandler<Customer>())
+            .observeOn(callbackScheduler);
     }
 
     @Override
@@ -134,10 +136,11 @@ final class CustomerServiceDefault implements CustomerService {
 
         final AccountCredentialsWrapper accountCredentialsWrapper = new AccountCredentialsWrapper(accountCredentials);
         return retrofitService
-                .resetPassword(customerId, resetToken, accountCredentialsWrapper)
-                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .compose(new UnwrapRetrofitBodyTransformer<CustomerWrapper, Customer>())
-                .observeOn(callbackScheduler);
+            .resetPassword(customerId, resetToken, accountCredentialsWrapper)
+            .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
+            .compose(new UnwrapRetrofitBodyTransformer<CustomerWrapper, Customer>())
+            .onErrorResumeNext(new BuyClientExceptionHandler<Customer>())
+            .observeOn(callbackScheduler);
     }
 
     @Override
@@ -153,17 +156,18 @@ final class CustomerServiceDefault implements CustomerService {
 
         final AccountCredentialsWrapper accountCredentialsWrapper = new AccountCredentialsWrapper(accountCredentials);
         return retrofitService
-                .getCustomerToken(accountCredentialsWrapper)
-                .retryWhen(networkRetryPolicyProvider.provide())
-                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .compose(new UnwrapRetrofitBodyTransformer<CustomerTokenWrapper, CustomerToken>())
-                .doOnNext(new Action1<CustomerToken>() {
-                    @Override
-                    public void call(CustomerToken token) {
-                        customerTokenRef.set(token);
-                    }
-                })
-                .observeOn(callbackScheduler);
+            .getCustomerToken(accountCredentialsWrapper)
+            .retryWhen(networkRetryPolicyProvider.provide())
+            .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
+            .compose(new UnwrapRetrofitBodyTransformer<CustomerTokenWrapper, CustomerToken>())
+            .doOnNext(new Action1<CustomerToken>() {
+                @Override
+                public void call(CustomerToken token) {
+                    customerTokenRef.set(token);
+                }
+            })
+            .onErrorResumeNext(new BuyClientExceptionHandler<CustomerToken>())
+            .observeOn(callbackScheduler);
     }
 
     @Override
@@ -179,22 +183,23 @@ final class CustomerServiceDefault implements CustomerService {
         }
 
         return retrofitService
-                .removeCustomerToken(customerToken.getCustomerId())
-                .retryWhen(networkRetryPolicyProvider.provide())
-                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .map(new Func1<Response<Void>, Void>() {
-                    @Override
-                    public Void call(Response<Void> response) {
-                        return response.body();
-                    }
-                })
-                .observeOn(callbackScheduler)
-                .doOnNext(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        customerTokenRef.set(null);
-                    }
-                });
+            .removeCustomerToken(customerToken.getCustomerId())
+            .retryWhen(networkRetryPolicyProvider.provide())
+            .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
+            .map(new Func1<Response<Void>, Void>() {
+                @Override
+                public Void call(Response<Void> response) {
+                    return response.body();
+                }
+            })
+            .onErrorResumeNext(new BuyClientExceptionHandler<Void>())
+            .observeOn(callbackScheduler)
+            .doOnNext(new Action1<Void>() {
+                @Override
+                public void call(Void aVoid) {
+                    customerTokenRef.set(null);
+                }
+            });
     }
 
     @Override
@@ -209,10 +214,11 @@ final class CustomerServiceDefault implements CustomerService {
         }
 
         return retrofitService
-                .updateCustomer(customer.getId(), new CustomerWrapper(customer))
-                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .compose(new UnwrapRetrofitBodyTransformer<CustomerWrapper, Customer>())
-                .observeOn(callbackScheduler);
+            .updateCustomer(customer.getId(), new CustomerWrapper(customer))
+            .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
+            .compose(new UnwrapRetrofitBodyTransformer<CustomerWrapper, Customer>())
+            .onErrorResumeNext(new BuyClientExceptionHandler<Customer>())
+            .observeOn(callbackScheduler);
     }
 
     @Override
@@ -227,11 +233,12 @@ final class CustomerServiceDefault implements CustomerService {
         }
 
         return retrofitService
-                .getCustomer(customerId)
-                .retryWhen(networkRetryPolicyProvider.provide())
-                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .compose(new UnwrapRetrofitBodyTransformer<CustomerWrapper, Customer>())
-                .observeOn(callbackScheduler);
+            .getCustomer(customerId)
+            .retryWhen(networkRetryPolicyProvider.provide())
+            .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
+            .compose(new UnwrapRetrofitBodyTransformer<CustomerWrapper, Customer>())
+            .onErrorResumeNext(new BuyClientExceptionHandler<Customer>())
+            .observeOn(callbackScheduler);
     }
 
     @Override
@@ -247,16 +254,17 @@ final class CustomerServiceDefault implements CustomerService {
         }
 
         return retrofitService
-                .renewCustomerToken(EMPTY_BODY, customerToken.getCustomerId())
-                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .compose(new UnwrapRetrofitBodyTransformer<CustomerTokenWrapper, CustomerToken>())
-                .observeOn(callbackScheduler)
-                .doOnNext(new Action1<CustomerToken>() {
-                    @Override
-                    public void call(CustomerToken token) {
-                        customerTokenRef.set(token);
-                    }
-                });
+            .renewCustomerToken(EMPTY_BODY, customerToken.getCustomerId())
+            .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
+            .compose(new UnwrapRetrofitBodyTransformer<CustomerTokenWrapper, CustomerToken>())
+            .onErrorResumeNext(new BuyClientExceptionHandler<CustomerToken>())
+            .observeOn(callbackScheduler)
+            .doOnNext(new Action1<CustomerToken>() {
+                @Override
+                public void call(CustomerToken token) {
+                    customerTokenRef.set(token);
+                }
+            });
     }
 
     @Override
@@ -271,14 +279,15 @@ final class CustomerServiceDefault implements CustomerService {
         }
 
         return retrofitService
-                .recoverCustomer(new EmailWrapper(email))
-                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .map(new Func1<Response<Void>, Void>() {
-                    @Override
-                    public Void call(Response<Void> response) {
-                        return response.body();
-                    }
-                })
-                .observeOn(callbackScheduler);
+            .recoverCustomer(new EmailWrapper(email))
+            .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
+            .map(new Func1<Response<Void>, Void>() {
+                @Override
+                public Void call(Response<Void> response) {
+                    return response.body();
+                }
+            })
+            .onErrorResumeNext(new BuyClientExceptionHandler<Void>())
+            .observeOn(callbackScheduler);
     }
 }

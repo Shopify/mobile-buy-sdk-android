@@ -3,7 +3,7 @@ package com.shopify.buy.service;
 import android.support.test.runner.AndroidJUnit4;
 
 import com.shopify.buy.dataprovider.Callback;
-import com.shopify.buy.dataprovider.RetrofitError;
+import com.shopify.buy.dataprovider.BuyClientError;
 import com.shopify.buy.extensions.ShopifyAndroidTestCase;
 import com.shopify.buy.model.Collection;
 import com.shopify.buy.model.Product;
@@ -40,7 +40,7 @@ public class StorefrontTest extends ShopifyAndroidTestCase {
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void failure(BuyClientError error) {
                 fail();
             }
         });
@@ -60,7 +60,7 @@ public class StorefrontTest extends ShopifyAndroidTestCase {
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void failure(BuyClientError error) {
                 fail();
             }
         });
@@ -82,7 +82,7 @@ public class StorefrontTest extends ShopifyAndroidTestCase {
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void failure(BuyClientError error) {
                 fail();
             }
         });
@@ -105,7 +105,7 @@ public class StorefrontTest extends ShopifyAndroidTestCase {
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void failure(BuyClientError error) {
                 fail();
             }
         });
@@ -125,7 +125,7 @@ public class StorefrontTest extends ShopifyAndroidTestCase {
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void failure(BuyClientError error) {
                 fail();
             }
         });
@@ -145,7 +145,7 @@ public class StorefrontTest extends ShopifyAndroidTestCase {
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void failure(BuyClientError error) {
                 fail();
             }
         });
@@ -171,7 +171,7 @@ public class StorefrontTest extends ShopifyAndroidTestCase {
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void failure(BuyClientError error) {
                 fail();
             }
         });
@@ -192,7 +192,7 @@ public class StorefrontTest extends ShopifyAndroidTestCase {
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void failure(BuyClientError error) {
                 fail();
             }
         });
@@ -213,7 +213,7 @@ public class StorefrontTest extends ShopifyAndroidTestCase {
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void failure(BuyClientError error) {
                 fail();
             }
         });
@@ -235,7 +235,7 @@ public class StorefrontTest extends ShopifyAndroidTestCase {
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void failure(BuyClientError error) {
                 fail();
             }
         });
@@ -256,7 +256,7 @@ public class StorefrontTest extends ShopifyAndroidTestCase {
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void failure(BuyClientError error) {
                 fail();
             }
         });

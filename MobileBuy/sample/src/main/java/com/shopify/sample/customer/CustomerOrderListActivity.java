@@ -37,8 +37,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.shopify.buy.dataprovider.BuyClientUtils;
-import com.shopify.buy.dataprovider.RetrofitError;
+import com.shopify.buy.dataprovider.BuyClientError;
 import com.shopify.buy.model.LineItem;
 import com.shopify.buy.model.Order;
 import com.shopify.sample.R;
@@ -66,8 +65,8 @@ public final class CustomerOrderListActivity extends AppCompatActivity implement
 
     @Override
     public void showError(final Throwable t) {
-        if (t instanceof RetrofitError) {
-            Log.e(LOG_TAG, "Error: " + BuyClientUtils.getErrorBody((RetrofitError) t), t);
+        if (t instanceof BuyClientError) {
+            Log.e(LOG_TAG, "Error: " + ((BuyClientError) t).getRetrofitErrorBody(), t);
         } else {
             Log.e(LOG_TAG, t.getMessage(), t);
         }
