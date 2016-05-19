@@ -100,7 +100,7 @@ public class ShippingRatesTest extends ShopifyAndroidTestCase {
 
             @Override
             public void failure(RetrofitError error) {
-                fail("Expected an IOException");
+                fail("Expected success but received" + error.toString());
             }
         });
 
@@ -164,7 +164,7 @@ public class ShippingRatesTest extends ShopifyAndroidTestCase {
 
     @Test
     public void testFetchingShippingRatesWithPolling() throws InterruptedException {
-        final int retryCount = 3;
+        final int retryCount = 5;
 
         final Observable<Response<ShippingRatesWrapper>> response = Observable.create(new ResponseOnSubscribe(retryCount, HttpStatus.SC_ACCEPTED));
         Mockito.when(checkoutRetrofitService.getShippingRates(Mockito.anyString())).thenReturn(response);
