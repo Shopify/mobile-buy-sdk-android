@@ -44,6 +44,10 @@ public class ShippingRatesTest extends ShopifyAndroidTestCase {
 
     ShippingRatesWrapper shippingRatesWrapper;
 
+    // keep track of any tasks that we want to force a cancel on for testing
+    CancellableTask taskToCancel;
+    CountDownLatch taskCancelLatch;
+
     @Override
     public void setUp() throws Exception {
         super.setUp();
@@ -186,8 +190,35 @@ public class ShippingRatesTest extends ShopifyAndroidTestCase {
         });
 
         latch.await();
+    }
 
+    @Test
+    public void testFetchingShippingRatesWithPollingButCancelBeforeCompletion() throws InterruptedException {
+        final int retryCount = 5;
 
+        final Observable<Response<ShippingRatesWrapper>> response = Observable.create(new ResponseOnSubscribe(retryCount, HttpStatus.SC_ACCEPTED));
+        Mockito.when(checkoutRetrofitService.getShippingRates(Mockito.anyString())).thenReturn(response);
+
+        taskCancelLatch = new CountDownLatch(1);
+
+        taskToCancel = buyClient.getShippingRates(checkout.getToken(), new Callback<List<ShippingRate>>() {
+            @Override
+            public void success(List<ShippingRate> body) {
+                fail("Should not have hit success callback");
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                fail("Should not have hit failure callback");
+            }
+        });
+
+        taskCancelLatch.await();
+
+        assertEquals(false, retryCount == callCount);
+
+        // We cancelled the task after one iteration
+        assertEquals(1, callCount);
     }
 
     private class ExceptionOnSubscribe implements Observable.OnSubscribe<Response<ShippingRatesWrapper>> {
@@ -240,6 +271,13 @@ public class ShippingRatesTest extends ShopifyAndroidTestCase {
         @Override
         public void call(Subscriber<? super Response<ShippingRatesWrapper>> subscriber) {
             if ( callCount < count) {
+
+                if (taskToCancel != null) {
+                    taskToCancel.cancel();
+                    taskCancelLatch.countDown();
+                    return;
+                }
+
                 callCount++;
 
                 Response<ShippingRatesWrapper> response = Response.success(null, this.response);
