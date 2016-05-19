@@ -67,16 +67,11 @@ public class ShippingRatesTest extends ShopifyAndroidTestCase {
 
     @Test
     public void testFetchingShippingRatesWithNullCheckoutToken() throws InterruptedException {
-        final CountDownLatch latch = new CountDownLatch(1);
-
         try {
             buyClient.getShippingRates(null, null);
         } catch (NullPointerException e) {
-            latch.countDown();
             return;
         }
-
-        latch.await();
 
         fail("Expected a NullPointerException");
     }

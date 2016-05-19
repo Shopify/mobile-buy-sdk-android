@@ -58,48 +58,33 @@ public class CompleteCheckoutTest extends ShopifyAndroidTestCase {
 
     @Test
     public void testCompletingCheckoutWithNullCheckoutToken() throws InterruptedException {
-        final CountDownLatch latch = new CountDownLatch(1);
-
         try {
             buyClient.completeCheckout(paymentToken, null);
         } catch (IllegalArgumentException e) {
-            latch.countDown();
             return;
         }
-
-        latch.await();
 
         fail("Expected an IllegalArgumentException");
     }
 
     @Test
     public void testCompletingCheckoutWithEmptyCheckoutToken() throws InterruptedException {
-        final CountDownLatch latch = new CountDownLatch(1);
-
         try {
             buyClient.completeCheckout(paymentToken, "");
         } catch (IllegalArgumentException e) {
-            latch.countDown();
             return;
         }
-
-        latch.await();
 
         fail("Expected an IllegalArgumentException");
     }
 
     @Test
     public void testCompletingCheckoutWithNullPaymentToken() throws InterruptedException {
-        final CountDownLatch latch = new CountDownLatch(1);
-
         try {
             buyClient.completeCheckout(null, checkout.getToken());
         } catch (NullPointerException e) {
-            latch.countDown();
             return;
         }
-
-        latch.await();
 
         fail("Expected an NullPointerException");
     }
