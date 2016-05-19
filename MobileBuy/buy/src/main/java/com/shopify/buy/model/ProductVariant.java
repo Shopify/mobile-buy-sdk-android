@@ -165,6 +165,8 @@ public class ProductVariant extends ShopifyObject {
 
     /**
      * Use {@link #getCreatedAtDate() getCreatedAtDate()}.
+     *
+     * @return The date this variant was created.
      */
     @Deprecated
     public String getCreatedAt() {
@@ -173,6 +175,8 @@ public class ProductVariant extends ShopifyObject {
 
     /**
      * Use {@link #getUpdatedAtDate() getUpdatedAtDate()}.
+     *
+     * @return The date this variant was updated.
      */
     @Deprecated
     public String getUpdatedAt() {

@@ -160,14 +160,6 @@ task javadoc(type: Javadoc) {
     source = sourceSets.javadoc.allSource
     title = "Mobile Buy SDK"
 
-    exclude('**/internal/**')
-    exclude('**/ui/ProductDetailsImageAreaTouchHandler.java')
-    exclude('**/ui/ProductDetailsListener.java')
-    exclude('**/ui/ProductVariantOptionView.java')
-    exclude('**/ui/ProductImagePagerAdapter.java')
-    exclude('**/ui/ScrollFlingGestureListener.java')
-    exclude('**/ui/VariantSelectionController.java')
-    exclude('**/ui/ViewPagerAdapter.java')
     exclude('**/customTabs/**')
 
     classpath = configurations.compile

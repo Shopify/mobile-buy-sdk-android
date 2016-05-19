@@ -26,6 +26,9 @@ package com.shopify.buy.model.internal;
 
 import com.shopify.buy.model.Customer;
 
+/**
+ * Wrapper class used by Gson Serialization
+ */
 public class CustomerWrapper implements ResponseWrapper<Customer> {
 
     private Customer customer;

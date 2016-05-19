@@ -84,9 +84,6 @@ public class Checkout extends ShopifyObject {
     @SerializedName("total_price")
     private String totalPrice;
 
-    @SerializedName("payment_session_id")
-    private String paymentSessionId;
-
     @SerializedName("payment_url")
     private String paymentUrl;
 
@@ -245,6 +242,8 @@ public class Checkout extends ShopifyObject {
 
     /**
      * @deprecated Use {@link #getOrder()}.
+     *
+     * @return The order status.
      */
     public String getOrderStatusUrl() {
         return orderStatusUrl;
@@ -266,6 +265,8 @@ public class Checkout extends ShopifyObject {
 
     /**
      * @deprecated Use {@link #getOrder()}.
+     *
+     * @return The order id.
      */
     public Long getOrderId() {
         return orderId;
@@ -332,13 +333,6 @@ public class Checkout extends ShopifyObject {
      */
     public String getTotalPrice() {
         return totalPrice;
-    }
-
-    /**
-     * @return The Payment Session ID associated with a credit card transaction.
-     */
-    public String getPaymentSessionId() {
-        return paymentSessionId;
     }
 
     /**
@@ -426,7 +420,7 @@ public class Checkout extends ShopifyObject {
     }
 
     /**
-     * @return An optional list of {@link CheckoutAttribute} attached to the checkout
+     * @return An optional list of {@link CheckoutAttribute} attached to the checkout.
      */
     public List<CheckoutAttribute> getAttributes() {
         if (attributes == null) {
@@ -437,6 +431,8 @@ public class Checkout extends ShopifyObject {
 
     /**
      * For internal use only.
+     *
+     * @return The {@link MarketingAttribution} associated with the checkout.
      */
     public MarketingAttribution getMarketingAttribution() {
         return marketingAttribution;
@@ -444,6 +440,8 @@ public class Checkout extends ShopifyObject {
 
     /**
      * For internal use only.
+     *
+     * @param sourceIdentifier The source identifier.
      */
     public void setSourceIdentifier(String sourceIdentifier) {
         this.sourceIdentifier = sourceIdentifier;
@@ -451,6 +449,8 @@ public class Checkout extends ShopifyObject {
 
     /**
      * For internal use only.
+     *
+     * @param sourceName The source name.
      */
     public void setSourceName(String sourceName) {
         this.sourceName = sourceName;
@@ -503,13 +503,6 @@ public class Checkout extends ShopifyObject {
     }
 
     /**
-     * @param paymentSessionId The Payment Session ID associated with a credit card transaction.
-     */
-    public void setPaymentSessionId(String paymentSessionId) {
-        this.paymentSessionId = paymentSessionId;
-    }
-
-    /**
      * @param paymentDue Amount of payment due on the checkout.
      */
     public void setPaymentDue(String paymentDue) {
@@ -525,6 +518,8 @@ public class Checkout extends ShopifyObject {
 
     /**
      * For internal use only.
+     *
+     * @param marketingAttribution A {@link MarketingAttribution}.
      */
     public void setMarketingAttribution(MarketingAttribution marketingAttribution) {
         this.marketingAttribution = marketingAttribution;
@@ -555,7 +550,7 @@ public class Checkout extends ShopifyObject {
     /**
      * Set the token for the Checkout.
      *
-     * @param token
+     * @param token The token to set.
      */
     public void setToken(String token) {
         this.token = token;
@@ -563,6 +558,7 @@ public class Checkout extends ShopifyObject {
 
     /**
      * For internal use only. To apply a gift card to your checkout, use {@link com.shopify.buy.dataprovider.BuyClient#applyGiftCard(String, Checkout, Callback) applyGiftCard(giftCardCode, checkout, callback)}.
+     * @param giftCard The gift card to add.
      */
     public void addGiftCard(GiftCard giftCard) {
         if (giftCards == null) {
@@ -625,7 +621,9 @@ public class Checkout extends ShopifyObject {
     }
 
     /**
+     * @param json The json input.
      * @return A checkout object created using the values in the JSON string.
+     *
      */
     public static Checkout fromJson(String json) {
         if (TextUtils.isEmpty(json)) {

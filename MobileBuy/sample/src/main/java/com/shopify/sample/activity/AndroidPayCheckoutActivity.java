@@ -167,7 +167,6 @@ public class AndroidPayCheckoutActivity extends SampleActivity implements Google
 
     private void completeCheckout(FullWallet fullWallet) {
         // We have a Full Wallet containing a token, so we can now complete the checkout
-
         getSampleApplication().completeCheckout(fullWallet, new Callback<Checkout>() {
             @Override
             public void success(Checkout checkout) {
@@ -194,7 +193,7 @@ public class AndroidPayCheckoutActivity extends SampleActivity implements Google
      */
     private void createGoogleAPIClient() {
         googleApiClient = new GoogleApiClient.Builder(this)
-                .addApi(Wallet.API, new Wallet.WalletOptions.Builder().build())
+                .addApi(Wallet.API, new Wallet.WalletOptions.Builder().setEnvironment(SampleApplication.WALLET_ENVIRONMENT).build())
                 .enableAutoManage(this, this)
                 .build();
     }

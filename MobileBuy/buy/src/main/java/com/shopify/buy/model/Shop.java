@@ -166,6 +166,9 @@ public class Shop extends ShopifyObject {
     }
 
     /**
+     * Creates a {@link Shop} from json.
+     *
+     * @param json The json input.
      * @return A shop object created using the values in the JSON string.
      */
     public static Shop fromJson(String json) {

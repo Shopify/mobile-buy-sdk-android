@@ -36,20 +36,28 @@ final class PollingPolicyProvider {
 
     final long retryDelayMs;
 
-    PollingPolicyProvider(final long retryDelayMs) {
+    final long timeoutMs;
+
+    PollingPolicyProvider(final long retryDelayMs, final long timeoutMs) {
         this.retryDelayMs = retryDelayMs;
+        this.timeoutMs = timeoutMs;
     }
 
     Func1<Observable<? extends Throwable>, Observable<?>> provide() {
-        return new PollingPolicy(retryDelayMs);
+        return new PollingPolicy(retryDelayMs, timeoutMs);
     }
 
-    private static class PollingPolicy implements Func1<Observable<? extends Throwable>, Observable<?>> {
+    private static final class PollingPolicy implements Func1<Observable<? extends Throwable>, Observable<?>> {
 
         private final long retryDelayMs;
 
-        PollingPolicy(final long retryDelayMs) {
+        private final long timeoutMs;
+
+        private volatile long pollingStartTime = -1;
+
+        PollingPolicy(final long retryDelayMs, final long timeoutMs) {
             this.retryDelayMs = retryDelayMs;
+            this.timeoutMs = timeoutMs;
         }
 
         @Override
@@ -57,30 +65,36 @@ final class PollingPolicyProvider {
 
             return failedAttempt.flatMap(
 
-                    new Func1<Throwable, Observable<?>>() {
-                        @Override
-                        public Observable<?> call(Throwable t) {
+                new Func1<Throwable, Observable<?>>() {
+                    @Override
+                    public Observable<?> call(final Throwable t) {
+                        boolean pollingRequired = false;
 
-                            Observable<?> resultObservable = Observable.error(t);
-                            boolean pollingRequired = false;
+                        if (t instanceof RetrofitError) {
+                            RetrofitError error = (RetrofitError) t;
 
-                            if (t instanceof RetrofitError) {
-                                RetrofitError error = (RetrofitError) t;
-
-                                if (HttpURLConnection.HTTP_ACCEPTED == error.getCode()) {
-                                    pollingRequired = true;
-                                }
-                            } else if (t instanceof PollingRequiredException) {
+                            if (HttpURLConnection.HTTP_ACCEPTED == error.getCode()) {
                                 pollingRequired = true;
                             }
-
-                            if (pollingRequired) {
-                                resultObservable = Observable.timer(retryDelayMs, TimeUnit.MILLISECONDS);
-                            }
-
-                            return resultObservable;
+                        } else if (t instanceof PollingRequiredException) {
+                            pollingRequired = true;
                         }
-                    });
+
+                        if (pollingRequired) {
+                            if (pollingStartTime == -1) {
+                                pollingStartTime = System.currentTimeMillis();
+                            } else if (System.currentTimeMillis() - pollingStartTime > timeoutMs) {
+                                pollingRequired = false;
+                            }
+                        }
+
+                        if(pollingRequired) {
+                            return Observable.timer(retryDelayMs, TimeUnit.MILLISECONDS);
+                        } else {
+                            return Observable.error(t);
+                        }
+                    }
+                });
         }
     }
 }
