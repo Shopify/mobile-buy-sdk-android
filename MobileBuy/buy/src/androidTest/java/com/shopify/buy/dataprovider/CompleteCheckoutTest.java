@@ -136,8 +136,8 @@ public class CompleteCheckoutTest extends ShopifyAndroidTestCase {
         final Observable<Response<CheckoutWrapper>> completeCheckoutResponse = Observable.just(Response.success(checkoutWrapper));
         Mockito.when(checkoutRetrofitService.completeCheckout(Mockito.any(PaymentToken.class), Mockito.anyString())).thenReturn(completeCheckoutResponse);
 
-        final Observable<Response<Void>> getChekcoutCompletionStatusResponse = Observable.create(new ResponseOnSubscribe(retryCount, HttpStatus.SC_ACCEPTED));
-        Mockito.when(checkoutRetrofitService.getCheckoutCompletionStatus(Mockito.anyString())).thenReturn(getChekcoutCompletionStatusResponse);
+        final Observable<Response<Void>> getCheckoutCompletionStatusResponse = Observable.create(new ResponseOnSubscribe(retryCount, HttpStatus.SC_ACCEPTED));
+        Mockito.when(checkoutRetrofitService.getCheckoutCompletionStatus(Mockito.anyString())).thenReturn(getCheckoutCompletionStatusResponse);
 
         final Observable<Response<CheckoutWrapper>> getCheckoutResponse = Observable.just(Response.success(checkoutWrapper));
         Mockito.when(checkoutRetrofitService.getCheckout(Mockito.anyString())).thenReturn(getCheckoutResponse);
