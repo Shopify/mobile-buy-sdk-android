@@ -30,9 +30,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import retrofit2.Response;
@@ -138,26 +140,83 @@ public final class BuyClientError extends RuntimeException {
             return null;
         }
 
-        JSONObject rootJsonObject = errorsRootJsonObject;
         final Iterator<String> pathIterator = Arrays.asList(path).iterator();
-        while (pathIterator.hasNext()) {
-            final String pathElement = pathIterator.next();
-            try {
+        JSONObject rootJsonObject = errorsRootJsonObject;
+        try {
+            while (pathIterator.hasNext()) {
+                final String pathElement = pathIterator.next();
                 if (rootJsonObject.has(pathElement)) {
-                    if (!pathIterator.hasNext()) {
-                        return parseErrorMessages(rootJsonObject.getJSONArray(pathElement));
-                    } else {
+                    if (pathIterator.hasNext()) {
                         rootJsonObject = rootJsonObject.getJSONObject(pathElement);
+                    } else {
+                        return parseErrorMessages(rootJsonObject.getJSONArray(pathElement));
+                    }
+                } else {
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            //ignore
+        }
+
+        return null;
+    }
+
+    /**
+     * Returns the ordered list of line items errors for specific property. Index of errors corresponds to the index
+     * of line item in the checkout. Could contain null items that represents no errors for the particular line item.
+     *
+     * @param property filter for line item errors (e.g. "quantity")
+     * @return ordered list of line items errors
+     */
+    public List<Map<String, String>> getLineItemErrors(final String property) {
+        if (errorsRootJsonObject == null) {
+            return null;
+        }
+
+        if (TextUtils.isEmpty(property)) {
+            return null;
+        }
+
+        final Iterator<String> pathIterator = Arrays.asList("checkout", "line_items").iterator();
+        JSONObject rootJsonObject = errorsRootJsonObject;
+        try {
+            JSONArray lineItemJsonErrors = null;
+            while (pathIterator.hasNext()) {
+                final String pathElement = pathIterator.next();
+                if (rootJsonObject.has(pathElement)) {
+                    if (pathIterator.hasNext()) {
+                        rootJsonObject = rootJsonObject.getJSONObject(pathElement);
+                    } else {
+                        lineItemJsonErrors = rootJsonObject.getJSONArray(pathElement);
                     }
                 } else {
                     return null;
                 }
-            } catch (Exception e) {
+            }
+
+            if (lineItemJsonErrors == null) {
                 return null;
             }
-        }
 
-        return null;
+            final List<Map<String, String>> lineItemErrors = new ArrayList<>();
+            for (int i = 0; i < lineItemJsonErrors.length(); i++) {
+                lineItemErrors.add(null);
+                if (!lineItemJsonErrors.isNull(i)) {
+                    final JSONObject lineItemError = lineItemJsonErrors.getJSONObject(i);
+                    if (lineItemError.has(property)) {
+                        try {
+                            lineItemErrors.set(i, parseErrorMessages(lineItemError.getJSONArray(property)));
+                        } catch (Exception e) {
+                            // ignore
+                        }
+                    }
+                }
+            }
+            return lineItemErrors;
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     private JSONObject parseRetrofitErrorResponse(final Response retrofitResponse) {
