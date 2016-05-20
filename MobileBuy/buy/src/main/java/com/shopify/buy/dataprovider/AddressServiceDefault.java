@@ -48,9 +48,9 @@ final class AddressServiceDefault implements AddressService {
     final Scheduler callbackScheduler;
 
     AddressServiceDefault(
-            final Retrofit retrofit,
-            final NetworkRetryPolicyProvider networkRetryPolicyProvider,
-            final Scheduler callbackScheduler
+        final Retrofit retrofit,
+        final NetworkRetryPolicyProvider networkRetryPolicyProvider,
+        final Scheduler callbackScheduler
     ) {
         this.retrofitService = retrofit.create(AddressRetrofitService.class);
         this.networkRetryPolicyProvider = networkRetryPolicyProvider;
@@ -73,10 +73,11 @@ final class AddressServiceDefault implements AddressService {
         }
 
         return retrofitService
-                .createAddress(customer.getId(), new AddressWrapper(address))
-                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .compose(new UnwrapRetrofitBodyTransformer<AddressWrapper, Address>())
-                .observeOn(callbackScheduler);
+            .createAddress(customer.getId(), new AddressWrapper(address))
+            .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
+            .compose(new UnwrapRetrofitBodyTransformer<AddressWrapper, Address>())
+            .onErrorResumeNext(new BuyClientExceptionHandler<Address>())
+            .observeOn(callbackScheduler);
     }
 
     @Override
@@ -91,11 +92,12 @@ final class AddressServiceDefault implements AddressService {
         }
 
         return retrofitService
-                .getAddresses(customer.getId())
-                .retryWhen(networkRetryPolicyProvider.provide())
-                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .compose(new UnwrapRetrofitBodyTransformer<AddressesWrapper, List<Address>>())
-                .observeOn(callbackScheduler);
+            .getAddresses(customer.getId())
+            .retryWhen(networkRetryPolicyProvider.provide())
+            .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
+            .compose(new UnwrapRetrofitBodyTransformer<AddressesWrapper, List<Address>>())
+            .onErrorResumeNext(new BuyClientExceptionHandler<List<Address>>())
+            .observeOn(callbackScheduler);
     }
 
     @Override
@@ -114,11 +116,12 @@ final class AddressServiceDefault implements AddressService {
         }
 
         return retrofitService
-                .getAddress(customer.getId(), addressId)
-                .retryWhen(networkRetryPolicyProvider.provide())
-                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .compose(new UnwrapRetrofitBodyTransformer<AddressWrapper, Address>())
-                .observeOn(callbackScheduler);
+            .getAddress(customer.getId(), addressId)
+            .retryWhen(networkRetryPolicyProvider.provide())
+            .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
+            .compose(new UnwrapRetrofitBodyTransformer<AddressWrapper, Address>())
+            .onErrorResumeNext(new BuyClientExceptionHandler<Address>())
+            .observeOn(callbackScheduler);
     }
 
     @Override
@@ -137,9 +140,10 @@ final class AddressServiceDefault implements AddressService {
         }
 
         return retrofitService
-                .updateAddress(customer.getId(), new AddressWrapper(address), address.getAddressId())
-                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .compose(new UnwrapRetrofitBodyTransformer<AddressWrapper, Address>())
-                .observeOn(callbackScheduler);
+            .updateAddress(customer.getId(), new AddressWrapper(address), address.getAddressId())
+            .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
+            .compose(new UnwrapRetrofitBodyTransformer<AddressWrapper, Address>())
+            .onErrorResumeNext(new BuyClientExceptionHandler<Address>())
+            .observeOn(callbackScheduler);
     }
 }

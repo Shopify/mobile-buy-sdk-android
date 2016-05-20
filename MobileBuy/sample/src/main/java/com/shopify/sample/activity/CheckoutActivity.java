@@ -31,8 +31,8 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 
+import com.shopify.buy.dataprovider.BuyClientError;
 import com.shopify.buy.dataprovider.Callback;
-import com.shopify.buy.dataprovider.RetrofitError;
 import com.shopify.buy.model.Checkout;
 import com.shopify.buy.model.CreditCard;
 import com.shopify.buy.model.PaymentToken;
@@ -114,7 +114,7 @@ public class CheckoutActivity extends SampleActivity {
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void failure(BuyClientError error) {
                 onError(error);
             }
         });
@@ -131,7 +131,7 @@ public class CheckoutActivity extends SampleActivity {
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void failure(BuyClientError error) {
                 onError(error);
             }
         });

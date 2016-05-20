@@ -2,9 +2,8 @@ package com.shopify.buy.model;
 
 import android.support.test.runner.AndroidJUnit4;
 
-import com.shopify.buy.dataprovider.BuyClientUtils;
+import com.shopify.buy.dataprovider.BuyClientError;
 import com.shopify.buy.dataprovider.Callback;
-import com.shopify.buy.dataprovider.RetrofitError;
 import com.shopify.buy.extensions.ShopifyAndroidTestCase;
 
 import org.junit.Test;
@@ -38,8 +37,8 @@ public class ProductTest extends ShopifyAndroidTestCase {
             }
 
             @Override
-            public void failure(RetrofitError error) {
-                fail(BuyClientUtils.getErrorBody(error));
+            public void failure(BuyClientError error) {
+                fail(error.getRetrofitErrorBody());
             }
         });
         latch.await();
@@ -61,8 +60,8 @@ public class ProductTest extends ShopifyAndroidTestCase {
             }
 
             @Override
-            public void failure(RetrofitError error) {
-                fail(BuyClientUtils.getErrorBody(error));
+            public void failure(BuyClientError error) {
+                fail(error.getRetrofitErrorBody());
             }
         });
         latch.await();
@@ -83,8 +82,8 @@ public class ProductTest extends ShopifyAndroidTestCase {
             }
 
             @Override
-            public void failure(RetrofitError error) {
-                fail(BuyClientUtils.getErrorBody(error));
+            public void failure(BuyClientError error) {
+                fail(error.getRetrofitErrorBody());
             }
         });
         latch.await();

@@ -36,8 +36,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.shopify.buy.dataprovider.BuyClientUtils;
-import com.shopify.buy.dataprovider.RetrofitError;
+import com.shopify.buy.dataprovider.BuyClientError;
 import com.shopify.buy.model.Checkout;
 import com.shopify.buy.model.Discount;
 import com.shopify.buy.model.GiftCard;
@@ -135,8 +134,8 @@ public class SampleActivity extends FragmentActivity {
         });
     }
 
-    protected void onError(RetrofitError error) {
-        onError(BuyClientUtils.getErrorBody(error));
+    protected void onError(BuyClientError error) {
+        onError(error.getRetrofitErrorBody());
     }
 
     /**

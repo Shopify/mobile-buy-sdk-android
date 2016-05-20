@@ -4,9 +4,8 @@ import android.support.test.runner.AndroidJUnit4;
 
 import com.shopify.buy.data.TestData;
 import com.shopify.buy.dataprovider.BuyClientBuilder;
-import com.shopify.buy.dataprovider.BuyClientUtils;
+import com.shopify.buy.dataprovider.BuyClientError;
 import com.shopify.buy.dataprovider.Callback;
-import com.shopify.buy.dataprovider.RetrofitError;
 import com.shopify.buy.extensions.CheckoutPrivateAPIs;
 import com.shopify.buy.extensions.GiftCardPrivateAPIs;
 import com.shopify.buy.extensions.ShopifyAndroidTestCase;
@@ -65,8 +64,8 @@ public class BuyTest extends ShopifyAndroidTestCase {
             }
 
             @Override
-            public void failure(RetrofitError error) {
-                assertEquals(HttpStatus.SC_UNPROCESSABLE_ENTITY, error.getResponse().code());
+            public void failure(BuyClientError error) {
+                assertEquals(HttpStatus.SC_UNPROCESSABLE_ENTITY, error.getRetrofitResponse().code());
             }
         });
     }
@@ -81,8 +80,8 @@ public class BuyTest extends ShopifyAndroidTestCase {
             }
 
             @Override
-            public void failure(RetrofitError error) {
-                assertEquals(HttpStatus.SC_UNPROCESSABLE_ENTITY, error.getResponse().code());
+            public void failure(BuyClientError error) {
+                assertEquals(HttpStatus.SC_UNPROCESSABLE_ENTITY, error.getRetrofitResponse().code());
             }
         });
     }
@@ -106,8 +105,8 @@ public class BuyTest extends ShopifyAndroidTestCase {
             }
 
             @Override
-            public void failure(RetrofitError error) {
-                assertEquals(HttpStatus.SC_UNPROCESSABLE_ENTITY, error.getResponse().code());
+            public void failure(BuyClientError error) {
+                assertEquals(HttpStatus.SC_UNPROCESSABLE_ENTITY, error.getRetrofitResponse().code());
             }
         });
     }
@@ -124,8 +123,8 @@ public class BuyTest extends ShopifyAndroidTestCase {
             }
 
             @Override
-            public void failure(RetrofitError error) {
-                assertEquals(HttpStatus.SC_UNPROCESSABLE_ENTITY, error.getResponse().code());
+            public void failure(BuyClientError error) {
+                assertEquals(HttpStatus.SC_UNPROCESSABLE_ENTITY, error.getRetrofitResponse().code());
             }
         });
     }
@@ -179,8 +178,8 @@ public class BuyTest extends ShopifyAndroidTestCase {
             }
 
             @Override
-            public void failure(RetrofitError error) {
-                assertEquals(HttpStatus.SC_NOT_FOUND, error.getResponse().code());
+            public void failure(BuyClientError error) {
+                assertEquals(HttpStatus.SC_NOT_FOUND, error.getRetrofitResponse().code());
             }
         });
     }
@@ -274,8 +273,8 @@ public class BuyTest extends ShopifyAndroidTestCase {
             }
 
             @Override
-            public void failure(RetrofitError error) {
-                fail(BuyClientUtils.getErrorBody(error));
+            public void failure(BuyClientError error) {
+                fail(error.getRetrofitErrorBody());
             }
         });
     }
@@ -334,8 +333,8 @@ public class BuyTest extends ShopifyAndroidTestCase {
             }
 
             @Override
-            public void failure(RetrofitError error) {
-                fail(BuyClientUtils.getErrorBody(error));
+            public void failure(BuyClientError error) {
+                fail(error.getRetrofitErrorBody());
             }
         });
 
@@ -358,8 +357,8 @@ public class BuyTest extends ShopifyAndroidTestCase {
             }
 
             @Override
-            public void failure(RetrofitError error) {
-                assertEquals(HttpStatus.SC_UNPROCESSABLE_ENTITY, error.getResponse().code());
+            public void failure(BuyClientError error) {
+                assertEquals(HttpStatus.SC_UNPROCESSABLE_ENTITY, error.getRetrofitResponse().code());
                 latch.countDown();
             }
         });
@@ -383,8 +382,8 @@ public class BuyTest extends ShopifyAndroidTestCase {
             }
 
             @Override
-            public void failure(RetrofitError error) {
-                assertEquals(HttpStatus.SC_UNPROCESSABLE_ENTITY, error.getResponse().code());
+            public void failure(BuyClientError error) {
+                assertEquals(HttpStatus.SC_UNPROCESSABLE_ENTITY, error.getRetrofitResponse().code());
                 latch.countDown();
             }
         });
@@ -418,8 +417,8 @@ public class BuyTest extends ShopifyAndroidTestCase {
             }
 
             @Override
-            public void failure(RetrofitError error) {
-                fail(BuyClientUtils.getErrorBody(error));
+            public void failure(BuyClientError error) {
+                fail(error.getRetrofitErrorBody());
             }
         });
 
@@ -451,8 +450,8 @@ public class BuyTest extends ShopifyAndroidTestCase {
             }
 
             @Override
-            public void failure(RetrofitError error) {
-                fail(BuyClientUtils.getErrorBody(error));
+            public void failure(BuyClientError error) {
+                fail(error.getRetrofitErrorBody());
             }
         });
 
@@ -478,8 +477,8 @@ public class BuyTest extends ShopifyAndroidTestCase {
             }
 
             @Override
-            public void failure(RetrofitError error) {
-                fail(BuyClientUtils.getErrorBody(error));
+            public void failure(BuyClientError error) {
+                fail(error.getRetrofitErrorBody());
             }
         });
 
@@ -510,8 +509,8 @@ public class BuyTest extends ShopifyAndroidTestCase {
             }
 
             @Override
-            public void failure(RetrofitError error) {
-                fail(BuyClientUtils.getErrorBody(error));
+            public void failure(BuyClientError error) {
+                fail(error.getRetrofitErrorBody());
             }
         });
 
@@ -537,8 +536,8 @@ public class BuyTest extends ShopifyAndroidTestCase {
             }
 
             @Override
-            public void failure(RetrofitError error) {
-                fail(BuyClientUtils.getErrorBody(error));
+            public void failure(BuyClientError error) {
+                fail(error.getRetrofitErrorBody());
             }
         });
 
@@ -560,8 +559,8 @@ public class BuyTest extends ShopifyAndroidTestCase {
             }
 
             @Override
-            public void failure(RetrofitError error) {
-                fail(BuyClientUtils.getErrorBody(error));
+            public void failure(BuyClientError error) {
+                fail(error.getRetrofitErrorBody());
             }
         });
 
@@ -638,8 +637,8 @@ public class BuyTest extends ShopifyAndroidTestCase {
             }
 
             @Override
-            public void failure(RetrofitError error) {
-                fail(BuyClientUtils.getErrorBody(error));
+            public void failure(BuyClientError error) {
+                fail(error.getRetrofitErrorBody());
             }
         });
 
@@ -668,7 +667,7 @@ public class BuyTest extends ShopifyAndroidTestCase {
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void failure(BuyClientError error) {
                 fail("Retrofit failed. Expected success.");
             }
         });
@@ -690,8 +689,8 @@ public class BuyTest extends ShopifyAndroidTestCase {
             }
 
             @Override
-            public void failure(RetrofitError error) {
-                assertEquals(error.getResponse().code(), expectedStatus);
+            public void failure(BuyClientError error) {
+                assertEquals(error.getRetrofitResponse().code(), expectedStatus);
                 latch.countDown();
             }
         });
@@ -717,8 +716,8 @@ public class BuyTest extends ShopifyAndroidTestCase {
             }
 
             @Override
-            public void failure(RetrofitError error) {
-                fail(BuyClientUtils.getErrorBody(error));
+            public void failure(BuyClientError error) {
+                fail(error.getRetrofitErrorBody());
             }
         });
 
@@ -735,7 +734,7 @@ public class BuyTest extends ShopifyAndroidTestCase {
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void failure(BuyClientError error) {
                 fail("Failed to get checkout completion status");
             }
         });
@@ -761,8 +760,8 @@ public class BuyTest extends ShopifyAndroidTestCase {
             }
 
             @Override
-            public void failure(RetrofitError error) {
-                fail(BuyClientUtils.getErrorBody(error));
+            public void failure(BuyClientError error) {
+                fail(error.getRetrofitErrorBody());
             }
         });
 
@@ -783,8 +782,8 @@ public class BuyTest extends ShopifyAndroidTestCase {
             }
 
             @Override
-            public void failure(RetrofitError error) {
-                fail(BuyClientUtils.getErrorBody(error));
+            public void failure(BuyClientError error) {
+                fail(error.getRetrofitErrorBody());
             }
         });
 
@@ -805,8 +804,8 @@ public class BuyTest extends ShopifyAndroidTestCase {
             }
 
             @Override
-            public void failure(RetrofitError error) {
-                fail(BuyClientUtils.getErrorBody(error));
+            public void failure(BuyClientError error) {
+                fail(error.getRetrofitErrorBody());
             }
         });
 
