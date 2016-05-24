@@ -76,13 +76,13 @@ final class CheckoutServiceDefault implements CheckoutService {
     final Scheduler callbackScheduler;
 
     CheckoutServiceDefault(
-            final Retrofit retrofit,
-            final String apiKey,
-            final String applicationName,
-            final String webReturnToUrl,
-            final String webReturnToLabel,
-            final NetworkRetryPolicyProvider networkRetryPolicyProvider,
-            final Scheduler callbackScheduler
+        final Retrofit retrofit,
+        final String apiKey,
+        final String applicationName,
+        final String webReturnToUrl,
+        final String webReturnToLabel,
+        final NetworkRetryPolicyProvider networkRetryPolicyProvider,
+        final Scheduler callbackScheduler
     ) {
         this.retrofitService = retrofit.create(CheckoutRetrofitService.class);
         this.apiKey = apiKey;
@@ -127,11 +127,11 @@ final class CheckoutServiceDefault implements CheckoutService {
         }
 
         return retrofitService
-                .createCheckout(new CheckoutWrapper(safeCheckout))
-                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .compose(new UnwrapRetrofitBodyTransformer<CheckoutWrapper, Checkout>())
-                .onErrorResumeNext(new BuyClientExceptionHandler<Checkout>())
-                .observeOn(callbackScheduler);
+            .createCheckout(new CheckoutWrapper(safeCheckout))
+            .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
+            .compose(new UnwrapRetrofitBodyTransformer<CheckoutWrapper, Checkout>())
+            .onErrorResumeNext(new BuyClientExceptionHandler<Checkout>())
+            .observeOn(callbackScheduler);
     }
 
     @Override
@@ -182,11 +182,11 @@ final class CheckoutServiceDefault implements CheckoutService {
 
         final Checkout safeCheckout = checkout.copyForUpdate();
         return retrofitService
-                .updateCheckout(new CheckoutWrapper(safeCheckout), safeCheckout.getToken())
-                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .compose(new UnwrapRetrofitBodyTransformer<CheckoutWrapper, Checkout>())
-                .onErrorResumeNext(new BuyClientExceptionHandler<Checkout>())
-                .observeOn(callbackScheduler);
+            .updateCheckout(new CheckoutWrapper(safeCheckout), safeCheckout.getToken())
+            .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
+            .compose(new UnwrapRetrofitBodyTransformer<CheckoutWrapper, Checkout>())
+            .onErrorResumeNext(new BuyClientExceptionHandler<Checkout>())
+            .observeOn(callbackScheduler);
     }
 
     @Override
@@ -203,13 +203,13 @@ final class CheckoutServiceDefault implements CheckoutService {
         int[] successCodes = {HTTP_OK};
 
         return retrofitService
-                .getShippingRates(checkoutToken)
-                .retryWhen(networkRetryPolicyProvider.provide())
-                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>(successCodes))
-                .retryWhen(pollingRetryPolicyProvider.provide())
-                .compose(new UnwrapRetrofitBodyTransformer<ShippingRatesWrapper, List<ShippingRate>>())
-                .onErrorResumeNext(new BuyClientExceptionHandler<List<ShippingRate>>())
-                .observeOn(callbackScheduler);
+            .getShippingRates(checkoutToken)
+            .retryWhen(networkRetryPolicyProvider.provide())
+            .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>(successCodes))
+            .retryWhen(pollingRetryPolicyProvider.provide())
+            .compose(new UnwrapRetrofitBodyTransformer<ShippingRatesWrapper, List<ShippingRate>>())
+            .onErrorResumeNext(new BuyClientExceptionHandler<List<ShippingRate>>())
+            .observeOn(callbackScheduler);
     }
 
     @Override
@@ -233,17 +233,17 @@ final class CheckoutServiceDefault implements CheckoutService {
         PaymentSessionCheckout paymentSessionCheckout = new PaymentSessionCheckout(checkout.getToken(), card, checkout.getBillingAddress());
 
         return retrofitService
-                .storeCreditCard(safeCheckout.getPaymentUrl(), new PaymentSessionCheckoutWrapper(paymentSessionCheckout), BuyClientUtils.formatBasicAuthorization(apiKey))
-                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .compose(new UnwrapRetrofitBodyTransformer<PaymentSession, String>())
-                .map(new Func1<String, PaymentToken>() {
-                    @Override
-                    public PaymentToken call(String sessionId) {
-                        return PaymentToken.createCreditCardPaymentToken(sessionId);
-                    }
-                })
-                .onErrorResumeNext(new BuyClientExceptionHandler<PaymentToken>())
-                .observeOn(callbackScheduler);
+            .storeCreditCard(safeCheckout.getPaymentUrl(), new PaymentSessionCheckoutWrapper(paymentSessionCheckout), BuyClientUtils.formatBasicAuthorization(apiKey))
+            .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
+            .compose(new UnwrapRetrofitBodyTransformer<PaymentSession, String>())
+            .map(new Func1<String, PaymentToken>() {
+                @Override
+                public PaymentToken call(String sessionId) {
+                    return PaymentToken.createCreditCardPaymentToken(sessionId);
+                }
+            })
+            .onErrorResumeNext(new BuyClientExceptionHandler<PaymentToken>())
+            .observeOn(callbackScheduler);
     }
 
     @Override
@@ -262,33 +262,33 @@ final class CheckoutServiceDefault implements CheckoutService {
         }
 
         return retrofitService
-                .completeCheckout(paymentToken, checkoutToken)
-                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<Response<CheckoutWrapper>>())
-                .compose(new UnwrapRetrofitBodyTransformer<CheckoutWrapper, Checkout>())
-                .flatMap(new Func1<Checkout, Observable<Checkout>>() {
-                    @Override
-                    public Observable<Checkout> call(final Checkout checkout) {
-                        return getCompletedCheckout(checkout);
-                    }
-                })
-                .onErrorResumeNext(new BuyClientExceptionHandler<Checkout>())
-                .observeOn(callbackScheduler);
+            .completeCheckout(paymentToken, checkoutToken)
+            .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<Response<CheckoutWrapper>>())
+            .compose(new UnwrapRetrofitBodyTransformer<CheckoutWrapper, Checkout>())
+            .flatMap(new Func1<Checkout, Observable<Checkout>>() {
+                @Override
+                public Observable<Checkout> call(final Checkout checkout) {
+                    return getCompletedCheckout(checkout);
+                }
+            })
+            .onErrorResumeNext(new BuyClientExceptionHandler<Checkout>())
+            .observeOn(callbackScheduler);
     }
 
     private Observable<Checkout> getCompletedCheckout(final Checkout checkout) {
         return getCheckoutCompletionStatus(checkout)
-                .flatMap(new Func1<Boolean, Observable<Checkout>>() {
-                    @Override
-                    public Observable<Checkout> call(Boolean aBoolean) {
-                        if (aBoolean) {
-                            return getCheckout(checkout.getToken());
-                        }
-
-                        // Poll while aBoolean == false
-                        return Observable.error(new PollingRequiredException());
+            .flatMap(new Func1<Boolean, Observable<Checkout>>() {
+                @Override
+                public Observable<Checkout> call(Boolean aBoolean) {
+                    if (aBoolean) {
+                        return getCheckout(checkout.getToken());
                     }
-                })
-                .retryWhen(pollingRetryPolicyProvider.provide());
+
+                    // Poll while aBoolean == false
+                    return Observable.error(new PollingRequiredException());
+                }
+            })
+            .retryWhen(pollingRetryPolicyProvider.provide());
     }
 
     @Override
@@ -303,18 +303,18 @@ final class CheckoutServiceDefault implements CheckoutService {
         }
 
         return retrofitService
-                .getCheckoutCompletionStatus(checkout.getToken())
-                .retryWhen(networkRetryPolicyProvider.provide())
-                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .map(new Func1<Response<Void>, Boolean>() {
-                         @Override
-                         public Boolean call(Response<Void> voidResponse) {
-                             return HTTP_OK == voidResponse.code();
-                         }
+            .getCheckoutCompletionStatus(checkout.getToken())
+            .retryWhen(networkRetryPolicyProvider.provide())
+            .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
+            .map(new Func1<Response<Void>, Boolean>() {
+                     @Override
+                     public Boolean call(Response<Void> voidResponse) {
+                         return HTTP_OK == voidResponse.code();
                      }
-                )
-                .onErrorResumeNext(new BuyClientExceptionHandler<Boolean>())
-                .observeOn(callbackScheduler);
+                 }
+            )
+            .onErrorResumeNext(new BuyClientExceptionHandler<Boolean>())
+            .observeOn(callbackScheduler);
     }
 
     public CancellableTask getCheckout(final String checkoutToken, final Callback<Checkout> callback) {
@@ -328,12 +328,12 @@ final class CheckoutServiceDefault implements CheckoutService {
         }
 
         return retrofitService
-                .getCheckout(checkoutToken)
-                .retryWhen(networkRetryPolicyProvider.provide())
-                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .compose(new UnwrapRetrofitBodyTransformer<CheckoutWrapper, Checkout>())
-                .onErrorResumeNext(new BuyClientExceptionHandler<Checkout>())
-                .observeOn(callbackScheduler);
+            .getCheckout(checkoutToken)
+            .retryWhen(networkRetryPolicyProvider.provide())
+            .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
+            .compose(new UnwrapRetrofitBodyTransformer<CheckoutWrapper, Checkout>())
+            .onErrorResumeNext(new BuyClientExceptionHandler<Checkout>())
+            .observeOn(callbackScheduler);
     }
 
     @Override
@@ -350,21 +350,21 @@ final class CheckoutServiceDefault implements CheckoutService {
         final Checkout cleanCheckout = checkout.copy();
         final GiftCard giftCard = new GiftCard(giftCardCode);
         return retrofitService
-                .applyGiftCard(new GiftCardWrapper(giftCard), checkout.getToken())
-                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .compose(new UnwrapRetrofitBodyTransformer<GiftCardWrapper, GiftCard>())
-                .map(new Func1<GiftCard, Checkout>() {
-                    @Override
-                    public Checkout call(GiftCard giftCard) {
-                        if (giftCard != null) {
-                            cleanCheckout.addGiftCard(giftCard);
-                            cleanCheckout.setPaymentDue(giftCard.getCheckout().getPaymentDue());
-                        }
-                        return cleanCheckout;
+            .applyGiftCard(new GiftCardWrapper(giftCard), checkout.getToken())
+            .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
+            .compose(new UnwrapRetrofitBodyTransformer<GiftCardWrapper, GiftCard>())
+            .map(new Func1<GiftCard, Checkout>() {
+                @Override
+                public Checkout call(GiftCard giftCard) {
+                    if (giftCard != null) {
+                        cleanCheckout.addGiftCard(giftCard);
+                        cleanCheckout.setPaymentDue(giftCard.getCheckout().getPaymentDue());
                     }
-                })
-                .onErrorResumeNext(new BuyClientExceptionHandler<Checkout>())
-                .observeOn(callbackScheduler);
+                    return cleanCheckout;
+                }
+            })
+            .onErrorResumeNext(new BuyClientExceptionHandler<Checkout>())
+            .observeOn(callbackScheduler);
     }
 
     @Override
@@ -384,21 +384,21 @@ final class CheckoutServiceDefault implements CheckoutService {
 
         final Checkout safeCheckout = checkout.copy();
         return retrofitService
-                .removeGiftCard(giftCard.getId(), safeCheckout.getToken())
-                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .compose(new UnwrapRetrofitBodyTransformer<GiftCardWrapper, GiftCard>())
-                .map(new Func1<GiftCard, Checkout>() {
-                    @Override
-                    public Checkout call(GiftCard giftCard) {
-                        if (giftCard != null) {
-                            safeCheckout.removeGiftCard(giftCard);
-                            safeCheckout.setPaymentDue(giftCard.getCheckout().getPaymentDue());
-                        }
-                        return safeCheckout;
+            .removeGiftCard(giftCard.getId(), safeCheckout.getToken())
+            .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
+            .compose(new UnwrapRetrofitBodyTransformer<GiftCardWrapper, GiftCard>())
+            .map(new Func1<GiftCard, Checkout>() {
+                @Override
+                public Checkout call(GiftCard giftCard) {
+                    if (giftCard != null) {
+                        safeCheckout.removeGiftCard(giftCard);
+                        safeCheckout.setPaymentDue(giftCard.getCheckout().getPaymentDue());
                     }
-                })
-                .onErrorResumeNext(new BuyClientExceptionHandler<Checkout>())
-                .observeOn(callbackScheduler);
+                    return safeCheckout;
+                }
+            })
+            .onErrorResumeNext(new BuyClientExceptionHandler<Checkout>())
+            .observeOn(callbackScheduler);
     }
 
     @Override
