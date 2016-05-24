@@ -105,7 +105,6 @@ public interface CheckoutService {
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      * @return cancelable task
      */
-    @Deprecated
     CancellableTask updateCheckout(Checkout checkout, Callback<Checkout> callback);
 
     /**
@@ -114,7 +113,6 @@ public interface CheckoutService {
      * @param checkout the {@link Checkout} to update
      * @return cold observable that emits updated checkout object
      */
-    @Deprecated
     Observable<Checkout> updateCheckout(Checkout checkout);
 
     /**
