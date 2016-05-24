@@ -221,6 +221,10 @@ final class CheckoutServiceDefault implements CheckoutService {
             throw new NullPointerException("paymentToken cannot be null");
         }
 
+        if (TextUtils.isEmpty(checkoutToken)) {
+            throw new IllegalArgumentException("checkout token cannot be empty");
+        }
+
         return retrofitService
             .completeCheckout(paymentToken, checkoutToken)
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<Response<CheckoutWrapper>>())

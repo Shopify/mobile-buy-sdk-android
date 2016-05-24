@@ -67,12 +67,12 @@ final class BuyClientDefault implements BuyClient {
     private final String appId;
     private final String applicationName;
 
-    private final StoreService storeService;
-    private final AddressService addressService;
-    private final CheckoutService checkoutService;
-    private final CustomerService customerService;
-    private final OrderService orderService;
-    private final ProductService productService;
+    final StoreService storeService;
+    final AddressService addressService;
+    final CheckoutService checkoutService;
+    final CustomerService customerService;
+    final OrderService orderService;
+    final ProductService productService;
 
     BuyClientDefault(
             final String apiKey,
