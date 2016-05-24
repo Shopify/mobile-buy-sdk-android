@@ -23,6 +23,7 @@
  */
 package com.shopify.buy.dataprovider;
 
+import com.shopify.buy.model.Address;
 import com.shopify.buy.model.Checkout;
 import com.shopify.buy.model.CreditCard;
 import com.shopify.buy.model.GiftCard;
@@ -58,6 +59,44 @@ public interface CheckoutService {
      * @return cold observable that emits created checkout object
      */
     Observable<Checkout> createCheckout(Checkout checkout);
+
+    /**
+     * Update an existing Checkout's addresses
+     *
+     * @param checkoutToken the token associated with the existing {@link Checkout}
+     * @param shippingAddress the new shipping address
+     * @param billingAddress the new billing address
+     * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
+     * @return cancelable task
+     */
+    CancellableTask updateCheckoutAddresses(String checkoutToken, Address shippingAddress, Address billingAddress, Callback<Checkout> callback);
+
+    /**
+     * Update an existing Checkout's addresses
+     *
+     * @param checkoutToken the token associated with the existing {@link Checkout}
+     * @param shippingAddress the new shipping address
+     * @param billingAddress the new billing address
+     */
+    Observable<Checkout> updateCheckoutAddresses(String checkoutToken, Address shippingAddress, Address billingAddress);
+
+    /**
+     * Update an existing Checkout's shipping rate
+     *
+     * @param checkoutToken the token associated with the existing {@link Checkout}
+     * @param shippingRate the {@link ShippingRate} to associate with the checkout
+     * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
+     * @return cancelable task
+     */
+    CancellableTask updateCheckoutShippingRate(String checkoutToken, ShippingRate shippingRate, Callback<Checkout> callback);
+
+    /**
+     * Update an existing Checkout's shipping rate
+     *
+     * @param checkoutToken the token associated with the existing {@link Checkout}
+     * @param shippingRate the {@link ShippingRate} to associate with the checkout
+     */
+    Observable<Checkout> updateCheckoutShippingRate(String checkoutToken, ShippingRate shippingRate);
 
     /**
      * Update an existing Checkout's attributes

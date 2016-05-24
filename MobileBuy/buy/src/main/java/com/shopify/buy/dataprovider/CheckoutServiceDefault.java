@@ -25,6 +25,7 @@ package com.shopify.buy.dataprovider;
 
 import android.text.TextUtils;
 
+import com.shopify.buy.model.Address;
 import com.shopify.buy.model.Checkout;
 import com.shopify.buy.model.CreditCard;
 import com.shopify.buy.model.GiftCard;
@@ -134,12 +135,47 @@ final class CheckoutServiceDefault implements CheckoutService {
     }
 
     @Override
+    public CancellableTask updateCheckoutAddresses(final String checkoutToken, final Address shippingAddress, final Address billingAddress, final Callback<Checkout> callback) {
+        return new CancellableTaskSubscriptionWrapper(updateCheckoutAddresses(checkoutToken, shippingAddress, billingAddress).subscribe(new InternalCallbackSubscriber<>(callback)));
+    }
+
+    @Override
+    public Observable<Checkout> updateCheckoutAddresses(final String checkoutToken, final Address shippingAddress, final Address billingAddress) {
+        if (TextUtils.isEmpty(checkoutToken)) {
+            throw new NullPointerException("checkout token cannot be empty");
+        }
+
+        Checkout checkout = new Checkout(checkoutToken);
+        checkout.setShippingAddress(shippingAddress);
+        checkout.setBillingAddress(billingAddress);
+
+        return updateCheckout(checkout);
+    }
+
+    @Override
+    public CancellableTask updateCheckoutShippingRate(final String checkoutToken, final ShippingRate shippingRate, final Callback<Checkout> callback) {
+        return new CancellableTaskSubscriptionWrapper(updateCheckoutShippingRate(checkoutToken, shippingRate).subscribe(new InternalCallbackSubscriber<>(callback)));
+    }
+
+    @Override
+    public Observable<Checkout> updateCheckoutShippingRate(final String checkoutToken, final ShippingRate shippingRate) {
+        if (TextUtils.isEmpty(checkoutToken)) {
+            throw new NullPointerException("checkout token cannot be empty");
+        }
+
+        Checkout checkout = new Checkout(checkoutToken);
+        checkout.setShippingRate(shippingRate);
+
+        return updateCheckout(checkout);
+    }
+
+    @Override
     public CancellableTask updateCheckout(final Checkout checkout, final Callback<Checkout> callback) {
         return new CancellableTaskSubscriptionWrapper(updateCheckout(checkout).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
-    public Observable<Checkout> updateCheckout(final Checkout checkout) {
+    public Observable<Checkout> updateCheckout(Checkout checkout) {
         if (checkout == null) {
             throw new NullPointerException("checkout cannot be null");
         }

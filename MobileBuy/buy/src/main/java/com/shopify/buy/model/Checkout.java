@@ -174,6 +174,10 @@ public class Checkout extends ShopifyObject {
         lineItems.add(lineItem);
     }
 
+    public Checkout(String token) {
+        this.token = token;
+    }
+
     @Override
     public Long getId() {
         return super.getId();
