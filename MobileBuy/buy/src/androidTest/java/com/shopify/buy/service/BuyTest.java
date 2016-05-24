@@ -435,8 +435,11 @@ public class BuyTest extends ShopifyAndroidTestCase {
 
         shippingAddress.setLastName(LAST_NAME_FOR_UPDATE);
 
+        final Checkout updateCheckout = new Checkout(checkout.getToken());
+        updateCheckout.setShippingAddress(shippingAddress);
+
         final CountDownLatch countDownLatch = new CountDownLatch(1);
-        buyClient.updateCheckoutAddresses(checkout.getToken(), shippingAddress, null, new Callback<Checkout>() {
+        buyClient.updateCheckout(checkout, new Callback<Checkout>() {
             @Override
             public void success(Checkout response) {
 
@@ -470,8 +473,11 @@ public class BuyTest extends ShopifyAndroidTestCase {
 
         billingAddress.setLastName(LAST_NAME_FOR_UPDATE);
 
+        final Checkout updateCheckout = new Checkout(checkout.getToken());
+        updateCheckout.setBillingAddress(billingAddress);
+
         final CountDownLatch countDownLatch = new CountDownLatch(1);
-        buyClient.updateCheckoutAddresses(checkout.getToken(), null, billingAddress, new Callback<Checkout>() {
+        buyClient.updateCheckout(updateCheckout, new Callback<Checkout>() {
             @Override
             public void success(Checkout response) {
 
@@ -501,8 +507,11 @@ public class BuyTest extends ShopifyAndroidTestCase {
 
         assertEquals(null, checkout.getShippingRate());
 
+        final Checkout updateCheckout = new Checkout(checkout.getToken());
+        updateCheckout.setShippingRate(shippingRates.get(0));
+
         final CountDownLatch countDownLatch = new CountDownLatch(1);
-        buyClient.updateCheckoutShippingRate(checkout.getToken(), shippingRates.get(0), new Callback<Checkout>() {
+        buyClient.updateCheckout(updateCheckout, new Callback<Checkout>() {
             @Override
             public void success(Checkout response) {
 
