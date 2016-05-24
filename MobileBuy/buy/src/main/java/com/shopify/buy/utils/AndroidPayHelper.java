@@ -263,10 +263,11 @@ public final class AndroidPayHelper {
     }
 
     /**
-     * Checks if any of the address attributes (City, Country Code, Province Code, ZIP code) or email have changed for specified checkout
-     * from new {@link MaskedWallet} response and in this case checkout should be updated.
+     * Checks if new {@link MaskedWallet} response requires specified checkout to be updated or not.
+     * If any of the address attributes (City, Country Code, Province Code, ZIP code) or email have changed for specified checkout
+     * it requires to be updated.
      *
-     * @param checkout the {@link Checkout} object to be verified
+     * @param checkout the {@link Checkout} to be verified
      * @param maskedWallet the {@link MaskedWallet} to check with
      * @return {@code true} if checkout should be updated, {@code false} otherwise
      */
