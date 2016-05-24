@@ -157,6 +157,7 @@ final class CheckoutServiceDefault implements CheckoutService {
             safeCheckout.setDiscountCode(checkout.getDiscount().getCode());
         }
         safeCheckout.setShippingRate(checkout.getShippingRate());
+        safeCheckout.setReservationTime(checkout.getReservationTime());
 
         return retrofitService
             .updateCheckout(new CheckoutWrapper(safeCheckout), checkout.getToken())

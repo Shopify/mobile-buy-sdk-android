@@ -71,6 +71,7 @@ public interface CheckoutService {
      * <li>{@link Checkout#lineItems}</li>
      * <li>{@link Checkout#discount}</li>
      * <li>{@link Checkout#shippingRate}</li>
+     * <li>{@link Checkout#reservationTime}</li>
      * </ul>
      *
      * @param checkout the {@link Checkout} attributes to be updated
@@ -81,6 +82,17 @@ public interface CheckoutService {
 
     /**
      * Update an existing Checkout's attributes
+     *
+     * Only the following attributes will be updated, any others will be ignored:
+     * <ul>
+     * <li>{@link Checkout#email}</li>
+     * <li>{@link Checkout#shippingAddress}</li>
+     * <li>{@link Checkout#billingAddress}</li>
+     * <li>{@link Checkout#lineItems}</li>
+     * <li>{@link Checkout#discount}</li>
+     * <li>{@link Checkout#shippingRate}</li>
+     * <li>{@link Checkout#reservationTime}</li>
+     * </ul>
      *
      * @param checkout the {@link Checkout} to update
      * @return cold observable that emits updated checkout object
