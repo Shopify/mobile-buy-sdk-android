@@ -61,47 +61,20 @@ public interface CheckoutService {
     Observable<Checkout> createCheckout(Checkout checkout);
 
     /**
-     * Update an existing Checkout's addresses
+     * Update an existing Checkout's attributes.
      *
-     * @param checkoutToken the token associated with the existing {@link Checkout}
-     * @param shippingAddress the new shipping address
-     * @param billingAddress the new billing address
-     * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
-     * @return cancelable task
-     */
-    CancellableTask updateCheckoutAddresses(String checkoutToken, Address shippingAddress, Address billingAddress, Callback<Checkout> callback);
-
-    /**
-     * Update an existing Checkout's addresses
+     * Only the following attributes will be updated, any others will be ignored:
+     * <ul>
+     * <li>{@link Checkout#email}</li>
+     * <li>{@link Checkout#shippingAddress}</li>
+     * <li>{@link Checkout#billingAddress}</li>
+     * <li>{@link Checkout#lineItems}</li>
+     * <li>{@link Checkout#discount}</li>
+     * <li>{@link Checkout#shippingRate}</li>
+     * <li>{@link Checkout#reservationTime}</li>
+     * </ul>
      *
-     * @param checkoutToken the token associated with the existing {@link Checkout}
-     * @param shippingAddress the new shipping address
-     * @param billingAddress the new billing address
-     */
-    Observable<Checkout> updateCheckoutAddresses(String checkoutToken, Address shippingAddress, Address billingAddress);
-
-    /**
-     * Update an existing Checkout's shipping rate
-     *
-     * @param checkoutToken the token associated with the existing {@link Checkout}
-     * @param shippingRate the {@link ShippingRate} to associate with the checkout
-     * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
-     * @return cancelable task
-     */
-    CancellableTask updateCheckoutShippingRate(String checkoutToken, ShippingRate shippingRate, Callback<Checkout> callback);
-
-    /**
-     * Update an existing Checkout's shipping rate
-     *
-     * @param checkoutToken the token associated with the existing {@link Checkout}
-     * @param shippingRate the {@link ShippingRate} to associate with the checkout
-     */
-    Observable<Checkout> updateCheckoutShippingRate(String checkoutToken, ShippingRate shippingRate);
-
-    /**
-     * Update an existing Checkout's attributes
-     *
-     * @param checkout the {@link Checkout} to update
+     * @param checkout the {@link Checkout} attributes to be updated
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      * @return cancelable task
      */
@@ -109,6 +82,17 @@ public interface CheckoutService {
 
     /**
      * Update an existing Checkout's attributes
+     *
+     * Only the following attributes will be updated, any others will be ignored:
+     * <ul>
+     * <li>{@link Checkout#email}</li>
+     * <li>{@link Checkout#shippingAddress}</li>
+     * <li>{@link Checkout#billingAddress}</li>
+     * <li>{@link Checkout#lineItems}</li>
+     * <li>{@link Checkout#discount}</li>
+     * <li>{@link Checkout#shippingRate}</li>
+     * <li>{@link Checkout#reservationTime}</li>
+     * </ul>
      *
      * @param checkout the {@link Checkout} to update
      * @return cold observable that emits updated checkout object

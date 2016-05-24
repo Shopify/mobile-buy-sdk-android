@@ -26,6 +26,7 @@ package com.shopify.buy.dataprovider;
 import android.text.TextUtils;
 
 import com.shopify.buy.model.Address;
+import com.shopify.buy.model.Cart;
 import com.shopify.buy.model.Checkout;
 import com.shopify.buy.model.CreditCard;
 import com.shopify.buy.model.GiftCard;
@@ -135,41 +136,6 @@ final class CheckoutServiceDefault implements CheckoutService {
     }
 
     @Override
-    public CancellableTask updateCheckoutAddresses(final String checkoutToken, final Address shippingAddress, final Address billingAddress, final Callback<Checkout> callback) {
-        return new CancellableTaskSubscriptionWrapper(updateCheckoutAddresses(checkoutToken, shippingAddress, billingAddress).subscribe(new InternalCallbackSubscriber<>(callback)));
-    }
-
-    @Override
-    public Observable<Checkout> updateCheckoutAddresses(final String checkoutToken, final Address shippingAddress, final Address billingAddress) {
-        if (TextUtils.isEmpty(checkoutToken)) {
-            throw new NullPointerException("checkout token cannot be empty");
-        }
-
-        Checkout checkout = new Checkout(checkoutToken);
-        checkout.setShippingAddress(shippingAddress);
-        checkout.setBillingAddress(billingAddress);
-
-        return updateCheckout(checkout);
-    }
-
-    @Override
-    public CancellableTask updateCheckoutShippingRate(final String checkoutToken, final ShippingRate shippingRate, final Callback<Checkout> callback) {
-        return new CancellableTaskSubscriptionWrapper(updateCheckoutShippingRate(checkoutToken, shippingRate).subscribe(new InternalCallbackSubscriber<>(callback)));
-    }
-
-    @Override
-    public Observable<Checkout> updateCheckoutShippingRate(final String checkoutToken, final ShippingRate shippingRate) {
-        if (TextUtils.isEmpty(checkoutToken)) {
-            throw new NullPointerException("checkout token cannot be empty");
-        }
-
-        Checkout checkout = new Checkout(checkoutToken);
-        checkout.setShippingRate(shippingRate);
-
-        return updateCheckout(checkout);
-    }
-
-    @Override
     public CancellableTask updateCheckout(final Checkout checkout, final Callback<Checkout> callback) {
         return new CancellableTaskSubscriptionWrapper(updateCheckout(checkout).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
@@ -180,9 +146,23 @@ final class CheckoutServiceDefault implements CheckoutService {
             throw new NullPointerException("checkout cannot be null");
         }
 
-        final Checkout safeCheckout = checkout.copyForUpdate();
+        final Checkout safeCheckout = new Checkout(checkout.getToken());
+        safeCheckout.setEmail(checkout.getEmail());
+        safeCheckout.setShippingAddress(checkout.getShippingAddress());
+        safeCheckout.setBillingAddress(checkout.getBillingAddress());
+        if (checkout.getLineItems() != null) {
+            safeCheckout.setLineItems(checkout.getLineItems());
+        }
+        if (checkout.getDiscount() != null) {
+            safeCheckout.setDiscountCode(checkout.getDiscount().getCode());
+        }
+        safeCheckout.setShippingRate(checkout.getShippingRate());
+        if (checkout.getReservationTime() != null) {
+            safeCheckout.setReservationTime(checkout.getReservationTime());
+        }
+
         return retrofitService
-            .updateCheckout(new CheckoutWrapper(safeCheckout), safeCheckout.getToken())
+            .updateCheckout(new CheckoutWrapper(safeCheckout), checkout.getToken())
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<CheckoutWrapper, Checkout>())
             .onErrorResumeNext(new BuyClientExceptionHandler<Checkout>())

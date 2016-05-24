@@ -199,26 +199,6 @@ final class BuyClientDefault implements BuyClient {
     }
 
     @Override
-    public CancellableTask updateCheckoutShippingRate(final String checkoutToken, ShippingRate shippingRate, final Callback<Checkout> callback) {
-        return checkoutService.updateCheckoutShippingRate(checkoutToken, shippingRate, callback);
-    }
-
-    @Override
-    public Observable<Checkout> updateCheckoutShippingRate(final String checkoutToken, ShippingRate shippingRate) {
-        return checkoutService.updateCheckoutShippingRate(checkoutToken, shippingRate);
-    }
-
-    @Override
-    public CancellableTask updateCheckoutAddresses(final String checkoutToken, Address shippingAddress, Address billingAddress, final Callback<Checkout> callback) {
-        return checkoutService.updateCheckoutAddresses(checkoutToken, shippingAddress, billingAddress, callback);
-    }
-
-    @Override
-    public Observable<Checkout> updateCheckoutAddresses(final String checkoutToken, Address shippingAddress, Address billingAddress) {
-        return checkoutService.updateCheckoutAddresses(checkoutToken, shippingAddress, billingAddress);
-    }
-
-    @Override
     public CancellableTask updateCheckout(final Checkout checkout, final Callback<Checkout> callback) {
         return checkoutService.updateCheckout(checkout, callback);
     }
