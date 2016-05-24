@@ -26,7 +26,6 @@ package com.shopify.buy.dataprovider;
 import android.text.TextUtils;
 
 import com.shopify.buy.model.Address;
-import com.shopify.buy.model.Cart;
 import com.shopify.buy.model.Checkout;
 import com.shopify.buy.model.CreditCard;
 import com.shopify.buy.model.GiftCard;
@@ -142,6 +141,10 @@ final class CheckoutServiceDefault implements CheckoutService {
 
     @Override
     public Observable<Checkout> updateCheckoutAddresses(final String checkoutToken, final Address shippingAddress, final Address billingAddress) {
+        if (TextUtils.isEmpty(checkoutToken)) {
+            throw new NullPointerException("checkout token cannot be empty");
+        }
+
         Checkout checkout = new Checkout(checkoutToken);
         checkout.setShippingAddress(shippingAddress);
         checkout.setBillingAddress(billingAddress);
@@ -156,21 +159,12 @@ final class CheckoutServiceDefault implements CheckoutService {
 
     @Override
     public Observable<Checkout> updateCheckoutShippingRate(final String checkoutToken, final ShippingRate shippingRate) {
+        if (TextUtils.isEmpty(checkoutToken)) {
+            throw new NullPointerException("checkout token cannot be empty");
+        }
+
         Checkout checkout = new Checkout(checkoutToken);
         checkout.setShippingRate(shippingRate);
-
-        return updateCheckout(checkout);
-    }
-
-    @Override
-    public CancellableTask updateCheckoutLineItems(final String checkoutToken, final Cart cart, final Callback<Checkout> callback) {
-        return new CancellableTaskSubscriptionWrapper(updateCheckoutLineItems(checkoutToken, cart).subscribe(new InternalCallbackSubscriber<>(callback)));
-    }
-
-    @Override
-    public Observable<Checkout> updateCheckoutLineItems(final String checkoutToken, final Cart cart) {
-        Checkout checkout = new Checkout(checkoutToken);
-        checkout.setLineItems(cart);
 
         return updateCheckout(checkout);
     }
@@ -182,6 +176,9 @@ final class CheckoutServiceDefault implements CheckoutService {
 
     @Override
     public Observable<Checkout> updateCheckout(Checkout checkout) {
+        if (checkout == null) {
+            throw new NullPointerException("checkout cannot be null");
+        }
 
         final Checkout safeCheckout = checkout.copyForUpdate();
         return retrofitService

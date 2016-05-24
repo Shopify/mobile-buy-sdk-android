@@ -426,6 +426,104 @@ public class BuyTest extends ShopifyAndroidTestCase {
     }
 
     @Test
+    public void testUpdatingCheckoutShippingAddress() throws InterruptedException {
+        createValidCheckout();
+
+        final Address shippingAddress = getShippingAddress();
+
+        final String LAST_NAME_FOR_UPDATE = "Bar";
+
+        shippingAddress.setLastName(LAST_NAME_FOR_UPDATE);
+
+        final CountDownLatch countDownLatch = new CountDownLatch(1);
+        buyClient.updateCheckoutAddresses(checkout.getToken(), shippingAddress, null, new Callback<Checkout>() {
+            @Override
+            public void success(Checkout response) {
+
+                // make sure the checkout updated with the last name
+                assertEquals(LAST_NAME_FOR_UPDATE, response.getShippingAddress().getLastName());
+
+                // make sure the billing address is unchanged
+                assertEquals(checkout.getBillingAddress(), response.getBillingAddress());
+
+                countDownLatch.countDown();
+            }
+
+            @Override
+            public void failure(BuyClientError error) {
+                fail("Should have succeeded");
+            }
+        });
+
+        countDownLatch.await();
+    }
+
+    @Test
+    public void testUpdatingCheckoutBillingAddress() throws InterruptedException
+
+    {
+        createValidCheckout();
+
+        final Address billingAddress = getShippingAddress();
+
+        final String LAST_NAME_FOR_UPDATE = "BarBar";
+
+        billingAddress.setLastName(LAST_NAME_FOR_UPDATE);
+
+        final CountDownLatch countDownLatch = new CountDownLatch(1);
+        buyClient.updateCheckoutAddresses(checkout.getToken(), null, billingAddress, new Callback<Checkout>() {
+            @Override
+            public void success(Checkout response) {
+
+                // make sure the checkout updated with the last name
+                assertEquals(LAST_NAME_FOR_UPDATE, response.getBillingAddress().getLastName());
+
+                // make sure the shipping address is unchanged
+                assertEquals(checkout.getShippingAddress(), response.getShippingAddress());
+
+                countDownLatch.countDown();
+            }
+
+            @Override
+            public void failure(BuyClientError error) {
+                fail("Should have succeeded");
+            }
+        });
+
+        countDownLatch.await();
+    }
+
+
+    @Test
+    public void testUpdatingShippingRate() throws InterruptedException {
+        createValidCheckout();
+        fetchShippingRates(HttpStatus.SC_OK);
+
+        assertEquals(null, checkout.getShippingRate());
+
+        final CountDownLatch countDownLatch = new CountDownLatch(1);
+        buyClient.updateCheckoutShippingRate(checkout.getToken(), shippingRates.get(0), new Callback<Checkout>() {
+            @Override
+            public void success(Checkout response) {
+
+                // make sure the checkout updated with the last name
+                assertEquals(shippingRates.get(0).getId(), response.getShippingRate().getId());
+
+                countDownLatch.countDown();
+            }
+
+            @Override
+            public void failure(BuyClientError error) {
+                fail("Should have succeeded");
+            }
+        });
+
+        countDownLatch.await();
+    }
+
+
+
+    @Test
     public void testExpiringCheckout() throws InterruptedException {
         createValidCheckout();
 
