@@ -63,14 +63,14 @@ public interface CheckoutService {
     /**
      * Update an existing Checkout's attributes.
      *
-     * Only attributes from the list below are going to be updated, any other will be ignored:
+     * Only the following attributes will be updated, any others will be ignored:
      * <ul>
-     * <li>email</li>
-     * <li>shipping address</li>
-     * <li>billing address</li>
-     * <li>line items</li>
-     * <li>discount</li>
-     * <li>shipping rate</li>
+     * <li>{@link Checkout#email}</li>
+     * <li>{@link Checkout#shippingAddress}</li>
+     * <li>{@link Checkout#billingAddress}</li>
+     * <li>{@link Checkout#lineItems}</li>
+     * <li>{@link Checkout#discount}</li>
+     * <li>{@link Checkout#shippingRate}</li>
      * </ul>
      *
      * @param checkout the {@link Checkout} attributes to be updated
