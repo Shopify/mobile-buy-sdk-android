@@ -439,7 +439,7 @@ public class BuyTest extends ShopifyAndroidTestCase {
         updateCheckout.setShippingAddress(shippingAddress);
 
         final CountDownLatch countDownLatch = new CountDownLatch(1);
-        buyClient.updateCheckout(checkout, new Callback<Checkout>() {
+        buyClient.updateCheckout(updateCheckout, new Callback<Checkout>() {
             @Override
             public void success(Checkout response) {
 
@@ -462,9 +462,7 @@ public class BuyTest extends ShopifyAndroidTestCase {
     }
 
     @Test
-    public void testUpdatingCheckoutBillingAddress() throws InterruptedException
-
-    {
+    public void testUpdatingCheckoutBillingAddress() throws InterruptedException {
         createValidCheckout();
 
         final Address billingAddress = getShippingAddress();
