@@ -263,15 +263,14 @@ public final class AndroidPayHelper {
     }
 
     /**
-     * Will update the local checkout with the Addresses and email from a Masked Wallet.
-     * If any of the City, Country Code, Province Code, or ZIP code have changed any shipping rate previously set
-     * on the Checkout will be invalid and set to null. The checkout should be updated on Shopify using {@link BuyClient#updateCheckout(Checkout, Callback)},
-     * and the shipping rate will need to be fetched again using {@link BuyClient#getShippingRates(String, Callback)}
+     * Checks if any of the address attributes (City, Country Code, Province Code, ZIP code) or email have changed for specified checkout
+     * from new {@link MaskedWallet} response and in this case checkout should be updated.
      *
-     * @param checkout     The {@link Checkout} to update
-     * @param maskedWallet The {@link MaskedWallet} to use the address from
+     * @param checkout the {@link Checkout} object to be verified
+     * @param maskedWallet the {@link MaskedWallet} to check with
+     * @return {@code true} if checkout should be updated, {@code false} otherwise
      */
-    public static void updateCheckoutAddressAndEmail(Checkout checkout, MaskedWallet maskedWallet) {
+    public static boolean isCheckoutUpdateRequired(final Checkout checkout, final MaskedWallet maskedWallet) {
         if (checkout == null) {
             throw new NullPointerException("checkout cannot be null");
         }
@@ -280,17 +279,12 @@ public final class AndroidPayHelper {
             throw new NullPointerException("maskedWallet cannot be null");
         }
 
-        Address shippingAddress = createShopifyAddress(maskedWallet.getBuyerShippingAddress());
-        Address billingAddress = createShopifyAddress(maskedWallet.getBuyerBillingAddress());
+        final Address shippingAddress = createShopifyAddress(maskedWallet.getBuyerShippingAddress());
+        final Address billingAddress = createShopifyAddress(maskedWallet.getBuyerBillingAddress());
 
-        // If the location has changed, we need to invalidate the shipping address
-        if (!shippingAddress.locationsAreEqual(checkout.getShippingAddress())) {
-            checkout.setShippingRate(null);
-        }
-
-        checkout.setShippingAddress(shippingAddress);
-        checkout.setBillingAddress(billingAddress);
-        checkout.setEmail(maskedWallet.getEmail());
+        return !shippingAddress.locationsAreEqual(checkout.getShippingAddress())
+            || !billingAddress.locationsAreEqual(checkout.getBillingAddress())
+            || !TextUtils.equals(maskedWallet.getEmail(), checkout.getEmail());
     }
 
     /**
