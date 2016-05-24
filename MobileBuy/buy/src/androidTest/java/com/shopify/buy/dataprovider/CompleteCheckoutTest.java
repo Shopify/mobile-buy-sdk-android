@@ -39,8 +39,6 @@ public class CompleteCheckoutTest extends ShopifyAndroidTestCase {
 
     PaymentToken paymentToken;
 
-    int callCount;
-
     @Override
     public void setUp() throws Exception {
         super.setUp();
@@ -122,7 +120,7 @@ public class CompleteCheckoutTest extends ShopifyAndroidTestCase {
 
             @Override
             public void failure(BuyClientError error) {
-                assertEquals(error.getRetrofitResponse().code(), HttpStatus.SC_PRECONDITION_FAILED);
+                assertEquals(HttpStatus.SC_PRECONDITION_FAILED, error.getRetrofitResponse().code());
                 latch.countDown();
             }
         });
@@ -138,7 +136,8 @@ public class CompleteCheckoutTest extends ShopifyAndroidTestCase {
         final Observable<Response<CheckoutWrapper>> completeCheckoutResponse = Observable.just(Response.success(checkoutWrapper));
         Mockito.when(checkoutRetrofitService.completeCheckout(Mockito.any(PaymentToken.class), Mockito.anyString())).thenReturn(completeCheckoutResponse);
 
-        final Observable<Response<Void>> getCheckoutCompletionStatusResponse = Observable.create(new ResponseOnSubscribe(retryCount, HttpStatus.SC_ACCEPTED));
+        final ResponseOnSubscribe pollingResponseOnSubscribe = new ResponseOnSubscribe(retryCount, HttpStatus.SC_ACCEPTED);
+        final Observable<Response<Void>> getCheckoutCompletionStatusResponse = Observable.create(pollingResponseOnSubscribe);
         Mockito.when(checkoutRetrofitService.getCheckoutCompletionStatus(Mockito.anyString())).thenReturn(getCheckoutCompletionStatusResponse);
 
         final Observable<Response<CheckoutWrapper>> getCheckoutResponse = Observable.just(Response.success(checkoutWrapper));
@@ -150,7 +149,7 @@ public class CompleteCheckoutTest extends ShopifyAndroidTestCase {
             @Override
             public void success(Checkout checkout) {
                 assertNotNull(checkout);
-                assertEquals(retryCount, callCount);
+                assertEquals(retryCount, pollingResponseOnSubscribe.getCallCount());
                 latch.countDown();
             }
 
@@ -166,18 +165,19 @@ public class CompleteCheckoutTest extends ShopifyAndroidTestCase {
 
     private class ResponseOnSubscribe implements Observable.OnSubscribe<Response<Void>> {
 
-        private int count;
+        final private int retryCount;
+        private int callCount;
 
         private okhttp3.Response response;
 
-        public ResponseOnSubscribe(int count, int code) {
-            this.count = count;
+        public ResponseOnSubscribe(int retryCount, int code) {
+            this.retryCount = retryCount;
             response = createResponse(code);
         }
 
         @Override
         public void call(Subscriber<? super Response<Void>> subscriber) {
-            if ( callCount < count) {
+            if (callCount < retryCount) {
                 callCount++;
 
                 Response<Void> response = Response.success(null, this.response);
@@ -185,6 +185,10 @@ public class CompleteCheckoutTest extends ShopifyAndroidTestCase {
             } else {
                 subscriber.onNext(Response.success((Void)null));
             }
+        }
+
+        public int getCallCount() {
+            return callCount;
         }
     }
 

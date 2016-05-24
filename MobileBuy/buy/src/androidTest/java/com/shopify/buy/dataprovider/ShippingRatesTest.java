@@ -43,8 +43,6 @@ public class ShippingRatesTest extends ShopifyAndroidTestCase {
 
     CheckoutRetrofitService checkoutRetrofitService;
 
-    int callCount;
-
     ShippingRatesWrapper shippingRatesWrapper;
 
     // keep track of any tasks that we want to force a cancel on for testing
@@ -86,7 +84,8 @@ public class ShippingRatesTest extends ShopifyAndroidTestCase {
         final int retryCount = 1;
 
         // Create an observable that will return one IOException, then a valid response
-        final Observable<Response<ShippingRatesWrapper>> response = Observable.create(new ExceptionOnSubscribe(retryCount, new IOException()));
+        final ExceptionOnSubscribe exceptionOnSubscribe = new ExceptionOnSubscribe(retryCount, new IOException());
+        final Observable<Response<ShippingRatesWrapper>> response = Observable.create(exceptionOnSubscribe);
 
         Mockito.when(checkoutRetrofitService.getShippingRates(Mockito.anyString())).thenReturn(response);
 
@@ -95,8 +94,8 @@ public class ShippingRatesTest extends ShopifyAndroidTestCase {
         buyClient.getShippingRates(checkout.getToken(), new Callback<List<ShippingRate>>() {
             @Override
             public void success(List<ShippingRate> body) {
-                assertNotNull(body);
-                assertEquals(retryCount, callCount);
+                assertEquals(true, body != null);
+                assertEquals(retryCount, exceptionOnSubscribe.getCallCount());
                 latch.countDown();
             }
 
@@ -171,7 +170,7 @@ public class ShippingRatesTest extends ShopifyAndroidTestCase {
 
             @Override
             public void failure(BuyClientError error) {
-                assertEquals(error.getRetrofitResponse().code(), HttpStatus.SC_PRECONDITION_FAILED);
+                assertEquals(HttpStatus.SC_PRECONDITION_FAILED, error.getRetrofitResponse().code());
                 latch.countDown();
             }
         });
@@ -184,7 +183,8 @@ public class ShippingRatesTest extends ShopifyAndroidTestCase {
     public void testFetchingShippingRatesWithPolling() throws InterruptedException {
         final int retryCount = 5;
 
-        final Observable<Response<ShippingRatesWrapper>> response = Observable.create(new ResponseOnSubscribe(retryCount, HttpStatus.SC_ACCEPTED));
+        final ResponseOnSubscribe responseOnSubscribe = new ResponseOnSubscribe(retryCount, HttpStatus.SC_ACCEPTED);
+        final Observable<Response<ShippingRatesWrapper>> response = Observable.create(responseOnSubscribe);
         Mockito.when(checkoutRetrofitService.getShippingRates(Mockito.anyString())).thenReturn(response);
 
         final CountDownLatch latch = new CountDownLatch(1);
@@ -193,7 +193,7 @@ public class ShippingRatesTest extends ShopifyAndroidTestCase {
             @Override
             public void success(List<ShippingRate> body) {
                 assertNotNull(body);
-                assertEquals(retryCount, callCount);
+                assertEquals(retryCount, responseOnSubscribe.getCallCount());
                 latch.countDown();
             }
 
@@ -210,7 +210,8 @@ public class ShippingRatesTest extends ShopifyAndroidTestCase {
     public void testFetchingShippingRatesWithPollingButCancelBeforeCompletion() throws InterruptedException {
         final int retryCount = 5;
 
-        final Observable<Response<ShippingRatesWrapper>> response = Observable.create(new ResponseOnSubscribe(retryCount, HttpStatus.SC_ACCEPTED));
+        ResponseOnSubscribe responseOnSubscribe  = new ResponseOnSubscribe(retryCount, HttpStatus.SC_ACCEPTED);
+        final Observable<Response<ShippingRatesWrapper>> response = Observable.create(responseOnSubscribe);
         Mockito.when(checkoutRetrofitService.getShippingRates(Mockito.anyString())).thenReturn(response);
 
         taskCancelLatch = new CountDownLatch(1);
@@ -229,42 +230,48 @@ public class ShippingRatesTest extends ShopifyAndroidTestCase {
 
         taskCancelLatch.await();
 
-        assertEquals(false, retryCount == callCount);
+        assertEquals(false, retryCount == responseOnSubscribe.getCallCount());
 
         // We cancelled the task after one iteration
-        assertEquals(1, callCount);
+        assertEquals(1, responseOnSubscribe.getCallCount());
     }
 
     private class ExceptionOnSubscribe implements Observable.OnSubscribe<Response<ShippingRatesWrapper>> {
 
-        private int count;
+        final private int retryCount;
+        private int callCount;
 
         private Throwable throwable;
 
-        public ExceptionOnSubscribe(int count, Throwable throwable) {
-            this.count = count;
+        public ExceptionOnSubscribe(int retryCount, Throwable throwable) {
+            this.retryCount = retryCount;
             this.throwable = throwable;
         }
 
         @Override
         public void call(Subscriber<? super Response<ShippingRatesWrapper>> subscriber) {
-            if (callCount < count) {
+            if (callCount < retryCount) {
                 callCount++;
                 subscriber.onError(throwable);
             } else {
                 subscriber.onNext(Response.success(shippingRatesWrapper));
             }
         }
+
+        public int getCallCount() {
+            return callCount;
+        }
     }
 
     private class ResponseOnSubscribe implements Observable.OnSubscribe<Response<ShippingRatesWrapper>> {
 
-        private int count;
+        final private int retryCount;
+        private int callCount;
 
         private okhttp3.Response response;
 
-        public ResponseOnSubscribe(int count, int code) {
-            this.count = count;
+        public ResponseOnSubscribe(int retryCount, int code) {
+            this.retryCount = retryCount;
 
             HttpUrl httpUrl = new HttpUrl.Builder()
                     .scheme("https")
@@ -284,7 +291,7 @@ public class ShippingRatesTest extends ShopifyAndroidTestCase {
 
         @Override
         public void call(Subscriber<? super Response<ShippingRatesWrapper>> subscriber) {
-            if ( callCount < count) {
+            if ( callCount < retryCount) {
 
                 if (taskToCancel != null) {
                     taskToCancel.cancel();
@@ -299,6 +306,10 @@ public class ShippingRatesTest extends ShopifyAndroidTestCase {
             } else {
                 subscriber.onNext(Response.success(shippingRatesWrapper));
             }
+        }
+
+        public int getCallCount() {
+            return callCount;
         }
     }
 
