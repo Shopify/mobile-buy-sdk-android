@@ -15,8 +15,9 @@ import org.mockito.Mockito;
 import java.lang.reflect.Field;
 import java.util.concurrent.CountDownLatch;
 
-import okhttp3.HttpUrl;
-import okhttp3.Protocol;
+import okhttp3.MediaType;
+import okhttp3.ResponseBody;
+import okio.BufferedSource;
 import retrofit2.Response;
 import rx.Observable;
 import rx.Subscriber;
@@ -92,7 +93,23 @@ public class CompleteCheckoutTest extends ShopifyAndroidTestCase {
 
     @Test
     public void testCompleteCheckoutWithNonIOError() throws InterruptedException{
-        final Observable<Response<CheckoutWrapper>> response = Observable.error(new RetrofitError(HttpStatus.SC_PRECONDITION_FAILED, "precondition failed"));
+        final Observable<Response<CheckoutWrapper>> response = Observable.error(new BuyClientError(Response.error(new ResponseBody() {
+            @Override
+            public MediaType contentType() {
+                return null;
+            }
+
+            @Override
+            public long contentLength() {
+                return 0;
+            }
+
+            @Override
+            public BufferedSource source() {
+                return null;
+            }
+        }, createResponse(HttpStatus.SC_PRECONDITION_FAILED))));
+
         Mockito.when(checkoutRetrofitService.completeCheckout(Mockito.any(PaymentToken.class), Mockito.anyString())).thenReturn(response);
 
         final CountDownLatch latch = new CountDownLatch(1);
@@ -104,8 +121,8 @@ public class CompleteCheckoutTest extends ShopifyAndroidTestCase {
             }
 
             @Override
-            public void failure(RetrofitError error) {
-                assertEquals(error.getCode(), HttpStatus.SC_PRECONDITION_FAILED);
+            public void failure(BuyClientError error) {
+                assertEquals(error.getRetrofitResponse().code(), HttpStatus.SC_PRECONDITION_FAILED);
                 latch.countDown();
             }
         });
@@ -138,7 +155,7 @@ public class CompleteCheckoutTest extends ShopifyAndroidTestCase {
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void failure(BuyClientError error) {
                 fail("Expected success");
             }
         });
@@ -155,21 +172,7 @@ public class CompleteCheckoutTest extends ShopifyAndroidTestCase {
 
         public ResponseOnSubscribe(int count, int code) {
             this.count = count;
-
-            HttpUrl httpUrl = new HttpUrl.Builder()
-                    .scheme("https")
-                    .host("example.com")
-                    .build();
-
-            okhttp3.Request request = new okhttp3.Request.Builder()
-                    .url(httpUrl)
-                    .build();
-
-            response = new okhttp3.Response.Builder()
-                    .code(code)
-                    .request(request)
-                    .protocol(Protocol.HTTP_1_0)
-                    .build();
+            response = createResponse(code);
         }
 
         @Override

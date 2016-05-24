@@ -15,6 +15,8 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.TestName;
 
+import okhttp3.HttpUrl;
+import okhttp3.Protocol;
 import okhttp3.logging.HttpLoggingInterceptor;
 import rx.schedulers.Schedulers;
 
@@ -105,5 +107,23 @@ public class ShopifyAndroidTestCase {
 
     protected String getAndroidPayPublicKey() {
         return USE_MOCK_RESPONSES ? "placeholderAndroidPayPublicKey" : BuildConfig.ANDROID_PAY_PUBLIC_KEY;
+    }
+
+    public okhttp3.Response createResponse(int code) {
+
+        HttpUrl httpUrl = new HttpUrl.Builder()
+                .scheme("https")
+                .host("example.com")
+                .build();
+
+        okhttp3.Request request = new okhttp3.Request.Builder()
+                .url(httpUrl)
+                .build();
+
+        return new okhttp3.Response.Builder()
+                .code(code)
+                .request(request)
+                .protocol(Protocol.HTTP_1_0)
+                .build();
     }
 }

@@ -20,7 +20,10 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 import okhttp3.HttpUrl;
+import okhttp3.MediaType;
 import okhttp3.Protocol;
+import okhttp3.ResponseBody;
+import okio.BufferedSource;
 import retrofit2.Response;
 import rx.Observable;
 import rx.Subscriber;
@@ -98,7 +101,7 @@ public class ShippingRatesTest extends ShopifyAndroidTestCase {
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void failure(BuyClientError error) {
                 fail("Expected success but received" + error.toString());
             }
         });
@@ -126,8 +129,8 @@ public class ShippingRatesTest extends ShopifyAndroidTestCase {
             }
 
             @Override
-            public void failure(RetrofitError error) {
-                Throwable throwable = error.getException().getCause();
+            public void failure(BuyClientError error) {
+                Throwable throwable = error.getCause();
                 assertEquals(true, throwable instanceof IOException);
                 latch.countDown();
             }
@@ -139,7 +142,23 @@ public class ShippingRatesTest extends ShopifyAndroidTestCase {
 
     @Test
     public void testFetchingShippingRatesWithNonIOError() throws InterruptedException{
-        final Observable<Response<ShippingRatesWrapper>> response = Observable.error(new RetrofitError(HttpStatus.SC_PRECONDITION_FAILED, "precondition failed"));
+        final Observable<Response<ShippingRatesWrapper>> response = Observable.error(new BuyClientError(Response.error(HttpStatus.SC_PRECONDITION_FAILED, new ResponseBody() {
+            @Override
+            public MediaType contentType() {
+                return null;
+            }
+
+            @Override
+            public long contentLength() {
+                return 0;
+            }
+
+            @Override
+            public BufferedSource source() {
+                return null;
+            }
+        })));
+
         Mockito.when(checkoutRetrofitService.getShippingRates(Mockito.anyString())).thenReturn(response);
 
         final CountDownLatch latch = new CountDownLatch(1);
@@ -151,8 +170,8 @@ public class ShippingRatesTest extends ShopifyAndroidTestCase {
             }
 
             @Override
-            public void failure(RetrofitError error) {
-                assertEquals(error.getCode(), HttpStatus.SC_PRECONDITION_FAILED);
+            public void failure(BuyClientError error) {
+                assertEquals(error.getRetrofitResponse().code(), HttpStatus.SC_PRECONDITION_FAILED);
                 latch.countDown();
             }
         });
@@ -179,7 +198,7 @@ public class ShippingRatesTest extends ShopifyAndroidTestCase {
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void failure(BuyClientError error) {
                 fail("Expected success");
             }
         });
@@ -203,7 +222,7 @@ public class ShippingRatesTest extends ShopifyAndroidTestCase {
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void failure(BuyClientError error) {
                 fail("Should not have hit failure callback");
             }
         });
