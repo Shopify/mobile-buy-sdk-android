@@ -23,6 +23,8 @@
  */
 package com.shopify.buy.dataprovider;
 
+import com.shopify.buy.model.Address;
+import com.shopify.buy.model.Cart;
 import com.shopify.buy.model.Checkout;
 import com.shopify.buy.model.CreditCard;
 import com.shopify.buy.model.GiftCard;
@@ -60,12 +62,69 @@ public interface CheckoutService {
     Observable<Checkout> createCheckout(Checkout checkout);
 
     /**
+     * Update an existing Checkout's addresses
+     *
+     * @param checkoutToken the token associated with the existing {@link Checkout}
+     * @param shippingAddress the new shipping address
+     * @param billingAddress the new billing address
+     * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
+     * @return cancelable task
+     */
+    CancellableTask updateCheckoutAddresses(String checkoutToken, Address shippingAddress, Address billingAddress, Callback<Checkout> callback);
+
+    /**
+     * Update an existing Checkout's addresses
+     *
+     * @param checkoutToken the token associated with the existing {@link Checkout}
+     * @param shippingAddress the new shipping address
+     * @param billingAddress the new billing address
+     */
+    Observable<Checkout> updateCheckoutAddresses(String checkoutToken, Address shippingAddress, Address billingAddress);
+
+    /**
+     * Update an existing Checkout's shipping rate
+     *
+     * @param checkoutToken the token associated with the existing {@link Checkout}
+     * @param shippingRate the {@link ShippingRate} to associate with the checkout
+     * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
+     * @return cancelable task
+     */
+    CancellableTask updateCheckoutShippingRate(String checkoutToken, ShippingRate shippingRate, Callback<Checkout> callback);
+
+    /**
+     * Update an existing Checkout's shipping rate
+     *
+     * @param checkoutToken the token associated with the existing {@link Checkout}
+     * @param shippingRate the {@link ShippingRate} to associate with the checkout
+     */
+    Observable<Checkout> updateCheckoutShippingRate(String checkoutToken, ShippingRate shippingRate);
+
+    /**
+     * Update an existing Checkout's line items
+     *
+     * @param checkoutToken the token associated with the existing {@link Checkout}
+     * @param cart the cart containing the updated line items
+     * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
+     * @return cancelable task
+     */
+    CancellableTask updateCheckoutLineItems(String checkoutToken, Cart cart, Callback<Checkout> callback);
+
+    /**
+     * Update an existing Checkout's line items
+     *
+     * @param checkoutToken the token associated with the existing {@link Checkout}
+     * @param cart the cart containing the updated line items
+     */
+    Observable<Checkout> updateCheckoutLineItems(String checkoutToken, Cart cart);
+
+    /**
      * Update an existing Checkout's attributes
      *
      * @param checkout the {@link Checkout} to update
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      * @return cancelable task
      */
+    @Deprecated
     CancellableTask updateCheckout(Checkout checkout, Callback<Checkout> callback);
 
     /**
@@ -74,6 +133,7 @@ public interface CheckoutService {
      * @param checkout the {@link Checkout} to update
      * @return cold observable that emits updated checkout object
      */
+    @Deprecated
     Observable<Checkout> updateCheckout(Checkout checkout);
 
     /**

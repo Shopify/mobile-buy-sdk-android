@@ -25,6 +25,8 @@ package com.shopify.buy.dataprovider;
 
 import android.text.TextUtils;
 
+import com.shopify.buy.model.Address;
+import com.shopify.buy.model.Cart;
 import com.shopify.buy.model.Checkout;
 import com.shopify.buy.model.CreditCard;
 import com.shopify.buy.model.GiftCard;
@@ -134,23 +136,60 @@ final class CheckoutServiceDefault implements CheckoutService {
     }
 
     @Override
+    public CancellableTask updateCheckoutAddresses(final String checkoutToken, final Address shippingAddress, final Address billingAddress, final Callback<Checkout> callback) {
+        return new CancellableTaskSubscriptionWrapper(updateCheckoutAddresses(checkoutToken, shippingAddress, billingAddress).subscribe(new InternalCallbackSubscriber<>(callback)));
+    }
+
+    @Override
+    public Observable<Checkout> updateCheckoutAddresses(final String checkoutToken, final Address shippingAddress, final Address billingAddress) {
+        Checkout checkout = new Checkout(checkoutToken);
+        checkout.setShippingAddress(shippingAddress);
+        checkout.setBillingAddress(billingAddress);
+
+        return updateCheckout(checkout);
+    }
+
+    @Override
+    public CancellableTask updateCheckoutShippingRate(final String checkoutToken, final ShippingRate shippingRate, final Callback<Checkout> callback) {
+        return new CancellableTaskSubscriptionWrapper(updateCheckoutShippingRate(checkoutToken, shippingRate).subscribe(new InternalCallbackSubscriber<>(callback)));
+    }
+
+    @Override
+    public Observable<Checkout> updateCheckoutShippingRate(final String checkoutToken, final ShippingRate shippingRate) {
+        Checkout checkout = new Checkout(checkoutToken);
+        checkout.setShippingRate(shippingRate);
+
+        return updateCheckout(checkout);
+    }
+
+    @Override
+    public CancellableTask updateCheckoutLineItems(final String checkoutToken, final Cart cart, final Callback<Checkout> callback) {
+        return new CancellableTaskSubscriptionWrapper(updateCheckoutLineItems(checkoutToken, cart).subscribe(new InternalCallbackSubscriber<>(callback)));
+    }
+
+    @Override
+    public Observable<Checkout> updateCheckoutLineItems(final String checkoutToken, final Cart cart) {
+        Checkout checkout = new Checkout(checkoutToken);
+        checkout.setLineItems(cart);
+
+        return updateCheckout(checkout);
+    }
+
+    @Override
     public CancellableTask updateCheckout(final Checkout checkout, final Callback<Checkout> callback) {
         return new CancellableTaskSubscriptionWrapper(updateCheckout(checkout).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
-    public Observable<Checkout> updateCheckout(final Checkout checkout) {
-        if (checkout == null) {
-            throw new NullPointerException("checkout cannot be null");
-        }
+    public Observable<Checkout> updateCheckout(Checkout checkout) {
 
         final Checkout safeCheckout = checkout.copyForUpdate();
         return retrofitService
-            .updateCheckout(new CheckoutWrapper(safeCheckout), safeCheckout.getToken())
-            .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-            .compose(new UnwrapRetrofitBodyTransformer<CheckoutWrapper, Checkout>())
-            .onErrorResumeNext(new BuyClientExceptionHandler<Checkout>())
-            .observeOn(callbackScheduler);
+                .updateCheckout(new CheckoutWrapper(safeCheckout), safeCheckout.getToken())
+                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
+                .compose(new UnwrapRetrofitBodyTransformer<CheckoutWrapper, Checkout>())
+                .onErrorResumeNext(new BuyClientExceptionHandler<Checkout>())
+                .observeOn(callbackScheduler);
     }
 
     @Override
