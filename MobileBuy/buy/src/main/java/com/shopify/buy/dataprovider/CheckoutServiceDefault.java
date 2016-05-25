@@ -147,7 +147,9 @@ final class CheckoutServiceDefault implements CheckoutService {
         }
 
         final Checkout safeCheckout = new Checkout(checkout.getToken());
-        safeCheckout.setEmail(checkout.getEmail());
+        if (checkout.getEmail() != null && !TextUtils.isEmpty(checkout.getEmail().trim())) {
+            safeCheckout.setEmail(checkout.getEmail());
+        }
         safeCheckout.setShippingAddress(checkout.getShippingAddress());
         safeCheckout.setBillingAddress(checkout.getBillingAddress());
         if (checkout.getLineItems() != null) {
