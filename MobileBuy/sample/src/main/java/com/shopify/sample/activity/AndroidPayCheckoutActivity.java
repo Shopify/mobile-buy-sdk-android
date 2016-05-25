@@ -62,6 +62,8 @@ public class AndroidPayCheckoutActivity extends SampleActivity implements Google
 
     private GoogleApiClient googleApiClient;
 
+    private Button confirmationButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,13 +72,8 @@ public class AndroidPayCheckoutActivity extends SampleActivity implements Google
 
         setTitle(R.string.checkout);
         setContentView(R.layout.android_pay_checkout_activity);
-    }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        Button confirmationButton = (Button) findViewById(R.id.confirm_button);
+        confirmationButton = (Button) findViewById(R.id.confirm_button);
         confirmationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -88,6 +85,11 @@ public class AndroidPayCheckoutActivity extends SampleActivity implements Google
                 Wallet.Payments.loadFullWallet(googleApiClient, fullWalletRequest, AndroidPayHelper.REQUEST_CODE_FULL_WALLET);
             }
         });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
 
         updateOrderSummary();
 
@@ -99,28 +101,28 @@ public class AndroidPayCheckoutActivity extends SampleActivity implements Google
     private void createAndAddWalletFragment() {
 
         WalletFragmentStyle walletFragmentStyle = new WalletFragmentStyle()
-                .setMaskedWalletDetailsHeaderTextAppearance(R.style.SampleWalletFragmentDetailsHeaderTextAppearance)
-                .setMaskedWalletDetailsTextAppearance(R.style.SampleWalletFragmentDetailsTextAppearance)
-                .setMaskedWalletDetailsBackgroundColor(android.R.color.white);
+            .setMaskedWalletDetailsHeaderTextAppearance(R.style.SampleWalletFragmentDetailsHeaderTextAppearance)
+            .setMaskedWalletDetailsTextAppearance(R.style.SampleWalletFragmentDetailsTextAppearance)
+            .setMaskedWalletDetailsBackgroundColor(android.R.color.white);
 
         WalletFragmentOptions walletFragmentOptions = WalletFragmentOptions.newBuilder()
-                .setEnvironment(SampleApplication.WALLET_ENVIRONMENT)
-                .setFragmentStyle(walletFragmentStyle)
-                .setTheme(WalletConstants.THEME_LIGHT)
-                .setMode(WalletFragmentMode.SELECTION_DETAILS)
-                .build();
+            .setEnvironment(SampleApplication.WALLET_ENVIRONMENT)
+            .setFragmentStyle(walletFragmentStyle)
+            .setTheme(WalletConstants.THEME_LIGHT)
+            .setMode(WalletFragmentMode.SELECTION_DETAILS)
+            .build();
 
         SupportWalletFragment walletFragment = SupportWalletFragment.newInstance(walletFragmentOptions);
 
         WalletFragmentInitParams.Builder startParamsBuilder = WalletFragmentInitParams.newBuilder()
-                .setMaskedWallet(maskedWallet)
-                .setMaskedWalletRequestCode(AndroidPayHelper.REQUEST_CODE_CHANGE_MASKED_WALLET);
+            .setMaskedWallet(maskedWallet)
+            .setMaskedWalletRequestCode(AndroidPayHelper.REQUEST_CODE_CHANGE_MASKED_WALLET);
         walletFragment.initialize(startParamsBuilder.build());
 
         // add Wallet fragment to the UI
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.google_wallet_fragment_container, walletFragment)
-                .commit();
+            .replace(R.id.google_wallet_fragment_container, walletFragment)
+            .commit();
     }
 
     @Override
@@ -133,8 +135,7 @@ public class AndroidPayCheckoutActivity extends SampleActivity implements Google
                 // This is the result of a change made on the shipping or billing address.
                 // If the shipping address has changed, we should recalculate the shipping rates
                 // For simplicity in this sample, we will always direct the user back to the Shipping Rate Activity
-                if (resultCode == Activity.RESULT_OK &&
-                        data.hasExtra(WalletConstants.EXTRA_MASKED_WALLET)) {
+                if (resultCode == Activity.RESULT_OK && data.hasExtra(WalletConstants.EXTRA_MASKED_WALLET)) {
                     MaskedWallet maskedWallet = data.getParcelableExtra(WalletConstants.EXTRA_MASKED_WALLET);
                     updateCheckoutWithMaskedWallet(maskedWallet);
                 }
@@ -142,9 +143,14 @@ public class AndroidPayCheckoutActivity extends SampleActivity implements Google
             case AndroidPayHelper.REQUEST_CODE_FULL_WALLET:
                 switch (resultCode) {
                     case Activity.RESULT_OK:
-                        if (data != null && data.hasExtra(WalletConstants.EXTRA_FULL_WALLET)) {
+                        if (data.hasExtra(WalletConstants.EXTRA_FULL_WALLET)) {
                             FullWallet fullWallet = data.getParcelableExtra(WalletConstants.EXTRA_FULL_WALLET);
                             completeCheckout(fullWallet);
+                        } else if (data.hasExtra(WalletConstants.EXTRA_MASKED_WALLET)) {
+                            MaskedWallet maskedWallet = data.getParcelableExtra(WalletConstants.EXTRA_MASKED_WALLET);
+                            if (!updateCheckoutWithMaskedWallet(maskedWallet)) {
+                                confirmationButton.performClick();
+                            }
                         }
                         break;
                     case Activity.RESULT_CANCELED:
@@ -175,7 +181,7 @@ public class AndroidPayCheckoutActivity extends SampleActivity implements Google
             @Override
             public void failure(BuyClientError error) {
                 // The checkout failed.
-                Log.e(LOG_TAG, "Could not complete the checkout:" +  error.getRetrofitErrorBody());
+                Log.e(LOG_TAG, "Could not complete the checkout:" + error.getRetrofitErrorBody());
                 Toast.makeText(AndroidPayCheckoutActivity.this, "Could not complete the checkout, please try again later", Toast.LENGTH_SHORT).show();
                 dismissLoadingDialog();
             }
@@ -192,9 +198,9 @@ public class AndroidPayCheckoutActivity extends SampleActivity implements Google
      */
     private void createGoogleAPIClient() {
         googleApiClient = new GoogleApiClient.Builder(this)
-                .addApi(Wallet.API, new Wallet.WalletOptions.Builder().setEnvironment(SampleApplication.WALLET_ENVIRONMENT).build())
-                .enableAutoManage(this, this)
-                .build();
+            .addApi(Wallet.API, new Wallet.WalletOptions.Builder().setEnvironment(SampleApplication.WALLET_ENVIRONMENT).build())
+            .enableAutoManage(this, this)
+            .build();
     }
 
     @Override
@@ -237,29 +243,32 @@ public class AndroidPayCheckoutActivity extends SampleActivity implements Google
         }
     }
 
-    private void updateCheckoutWithMaskedWallet(MaskedWallet maskedWallet) {
+    private boolean updateCheckoutWithMaskedWallet(MaskedWallet maskedWallet) {
+        if (AndroidPayHelper.isCheckoutUpdateRequired(getSampleApplication().getCheckout(), maskedWallet)) {
+            showLoadingDialog(R.string.syncing_data);
+            getSampleApplication().updateCheckout(getSampleApplication().getCheckout(), maskedWallet, new Callback<Checkout>() {
+                @Override
+                public void success(Checkout checkout) {
+                    dismissLoadingDialog();
 
-        showLoadingDialog(R.string.syncing_data);
-        getSampleApplication().updateCheckout(getSampleApplication().getCheckout(), maskedWallet, new Callback<Checkout>() {
-            @Override
-            public void success(Checkout checkout) {
-                dismissLoadingDialog();
-
-                // The shipping address has changed, we need to recalculate shipping rates
-                // For this sample we will send them back to our ShippingRateListActivity()
-                if (checkout.getShippingRate() == null) {
-                    launchShippingRateActivity();
+                    // The shipping address has changed, we need to recalculate shipping rates
+                    // For this sample we will send them back to our ShippingRateListActivity()
+                    if (checkout.getShippingRate() == null) {
+                        launchShippingRateActivity();
+                    }
                 }
-            }
 
-            @Override
-            public void failure(BuyClientError error) {
-                Log.e(LOG_TAG, "Error updating checkout: " + error.getRetrofitErrorBody());
-                Toast.makeText(AndroidPayCheckoutActivity.this, "Could not Sync data with Checkout API", Toast.LENGTH_SHORT).show();
-                dismissLoadingDialog();
-            }
-        });
-
+                @Override
+                public void failure(BuyClientError error) {
+                    Log.e(LOG_TAG, "Error updating checkout: " + error.getRetrofitErrorBody());
+                    Toast.makeText(AndroidPayCheckoutActivity.this, "Could not Sync data with Checkout API", Toast.LENGTH_SHORT).show();
+                    dismissLoadingDialog();
+                }
+            });
+            return true;
+        } else {
+            return false;
+        }
     }
 }
 
