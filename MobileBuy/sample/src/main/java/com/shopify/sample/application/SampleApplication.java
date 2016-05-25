@@ -268,8 +268,11 @@ public class SampleApplication extends Application {
 
     public void updateCheckout(final Checkout checkout, MaskedWallet maskedWallet, final Callback<Checkout> callback) {
         // Update the checkout with the Address information in the Masked Wallet
-        AndroidPayHelper.updateCheckoutAddressAndEmail(checkout, maskedWallet);
-        updateCheckout(checkout, callback);
+        final Checkout updateCheckout = new Checkout(checkout.getToken());
+        updateCheckout.setShippingAddress(AndroidPayHelper.createShopifyAddress(maskedWallet.getBuyerShippingAddress()));
+        updateCheckout.setBillingAddress(AndroidPayHelper.createShopifyAddress(maskedWallet.getBuyerBillingAddress()));
+        updateCheckout.setEmail(maskedWallet.getEmail());
+        updateCheckout(updateCheckout, callback);
     }
 
     public Checkout getCheckout() {
