@@ -151,14 +151,12 @@ public final class AndroidPayHelper {
         // Google Wallet address has 5 address lines.
         // Convert to 2 address lines
         StringBuilder address2 = new StringBuilder();
-        address2.append(walletUserAddress.getAddress2());
-
-        if (!TextUtils.isEmpty(walletUserAddress.getAddress3())) {
-            address2.append(walletUserAddress.getAddress3());
+        if (!TextUtils.isEmpty(walletUserAddress.getAddress2())) {
+            address2.append(walletUserAddress.getAddress2());
             address2.append(", ");
         }
-        if (!TextUtils.isEmpty(walletUserAddress.getAddress4())) {
-            address2.append(walletUserAddress.getAddress4());
+        if (!TextUtils.isEmpty(walletUserAddress.getAddress3())) {
+            address2.append(walletUserAddress.getAddress3());
             address2.append(", ");
         }
         if (!TextUtils.isEmpty(walletUserAddress.getAddress4())) {
