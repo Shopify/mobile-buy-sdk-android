@@ -1,4 +1,5 @@
 apply plugin: 'com.android.library'
+apply plugin: 'jacoco-android'
 apply plugin: 'maven'
 apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
@@ -8,6 +9,18 @@ def VERSION_NAME = '1.3.0'
 
 buildscript {
     System.properties['com.android.build.gradle.overrideVersionCheck'] = 'true'
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.dicedmelon.gradle:jacoco-android:0.1.1'
+    }
+}
+
+jacocoAndroidUnitTestReport {
+    csv.enabled false
+    html.enabled true
+    xml.enabled true
 }
 
 // Params for bintrayUpload
@@ -96,12 +109,16 @@ android {
             buildConfigField "String", "API_KEY", "\"" + apiKey.toString() + "\""
             buildConfigField "String", "APP_ID", "\"" + appId.toString() + "\""
             buildConfigField "String", "ANDROID_PAY_PUBLIC_KEY",  "\"" + androidPayPublicKey.toString() + "\""
+
+            testCoverageEnabled true
         }
 
         release {
             minifyEnabled = false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField 'okhttp3.logging.HttpLoggingInterceptor.Level', 'OKHTTP_LOG_LEVEL', 'okhttp3.logging.HttpLoggingInterceptor.Level.NONE'
+
+            testCoverageEnabled true
         }
     }
 
