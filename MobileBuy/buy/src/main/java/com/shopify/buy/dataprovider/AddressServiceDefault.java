@@ -101,7 +101,7 @@ final class AddressServiceDefault implements AddressService {
             .map(new Func1<Response<Void>, Void>() {
                 @Override
                 public Void call(Response<Void> voidResponse) {
-                    return null;
+                    return voidResponse.body();
                 }
             })
             .onErrorResumeNext(new BuyClientExceptionHandler<Void>())
