@@ -53,7 +53,7 @@ public class ProductListActivity extends SampleListActivity {
 
     static final String EXTRA_COLLECTION_ID = "ProductListActivity.EXTRA_COLLECTION_ID";
 
-    private String collectionId;
+    private Long collectionId;
     private ProductDetailsTheme theme;
     private boolean useProductDetailsActivity;
     private View accentColorView;
@@ -70,7 +70,7 @@ public class ProductListActivity extends SampleListActivity {
 
         Intent intent = getIntent();
         if (intent.hasExtra(EXTRA_COLLECTION_ID)) {
-            collectionId = intent.getStringExtra(EXTRA_COLLECTION_ID);
+            collectionId = intent.getLongExtra(EXTRA_COLLECTION_ID, -1);
         }
 
         productViewOptionsContainer = findViewById(R.id.product_view_options_container);

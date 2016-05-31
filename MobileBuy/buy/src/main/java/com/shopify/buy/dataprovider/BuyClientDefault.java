@@ -477,42 +477,42 @@ final class BuyClientDefault implements BuyClient {
     }
 
     @Override
-    public CancellableTask getProduct(String productId, Callback<Product> callback) {
+    public CancellableTask getProduct(Long productId, Callback<Product> callback) {
         return productService.getProduct(productId, callback);
     }
 
     @Override
-    public Observable<Product> getProduct(String productId) {
+    public Observable<Product> getProduct(Long productId) {
         return productService.getProduct(productId);
     }
 
     @Override
-    public CancellableTask getProducts(List<String> productIds, Callback<List<Product>> callback) {
+    public CancellableTask getProducts(List<Long> productIds, Callback<List<Product>> callback) {
         return productService.getProducts(productIds, callback);
     }
 
     @Override
-    public Observable<List<Product>> getProducts(List<String> productIds) {
+    public Observable<List<Product>> getProducts(List<Long> productIds) {
         return productService.getProducts(productIds);
     }
 
     @Override
-    public CancellableTask getProducts(int page, String collectionId, Callback<List<Product>> callback) {
+    public CancellableTask getProducts(int page, Long collectionId, Callback<List<Product>> callback) {
         return productService.getProducts(page, collectionId, callback);
     }
 
     @Override
-    public Observable<List<Product>> getProducts(int page, String collectionId) {
+    public Observable<List<Product>> getProducts(int page, Long collectionId) {
         return productService.getProducts(page, collectionId);
     }
 
     @Override
-    public CancellableTask getProducts(int page, String collectionId, SortOrder sortOrder, Callback<List<Product>> callback) {
+    public CancellableTask getProducts(int page, Long collectionId, SortOrder sortOrder, Callback<List<Product>> callback) {
         return productService.getProducts(page, collectionId, sortOrder, callback);
     }
 
     @Override
-    public Observable<List<Product>> getProducts(int page, String collectionId, SortOrder sortOrder) {
+    public Observable<List<Product>> getProducts(int page, Long collectionId, SortOrder sortOrder) {
         return productService.getProducts(page, collectionId, sortOrder);
     }
 

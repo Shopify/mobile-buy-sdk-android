@@ -72,7 +72,7 @@ public class StorefrontTest extends ShopifyAndroidTestCase {
     public void testGetProduct() throws InterruptedException {
         final CountDownLatch latch = new CountDownLatch(1);
 
-        final String productId = data.getProductId();
+        final Long productId = data.getProductId();
         buyClient.getProduct(productId, new Callback<Product>() {
             @Override
             public void success(Product product) {
@@ -92,7 +92,7 @@ public class StorefrontTest extends ShopifyAndroidTestCase {
 
     @Test
     public void testGetProducts() throws InterruptedException {
-        final List<String> productIds = data.getProductIds();
+        final List<Long> productIds = data.getProductIds();
 
         final CountDownLatch latch = new CountDownLatch(1);
 
@@ -117,7 +117,7 @@ public class StorefrontTest extends ShopifyAndroidTestCase {
     public void testGetNonexistentProduct() throws InterruptedException {
         final CountDownLatch latch = new CountDownLatch(1);
 
-        buyClient.getProduct("1337", new Callback<Product>() {
+        buyClient.getProduct(1337l, new Callback<Product>() {
             @Override
             public void success(Product product) {
                 assertNull(product);
@@ -157,9 +157,9 @@ public class StorefrontTest extends ShopifyAndroidTestCase {
     public void testGetProductsWithOneInvalidId() throws InterruptedException {
         final CountDownLatch latch = new CountDownLatch(1);
 
-        final List<String> productIds = new ArrayList<>();
+        final List<Long> productIds = new ArrayList<>();
 
-        productIds.add("1337");
+        productIds.add(1337l);
         productIds.add(data.getProductId());
 
         buyClient.getProducts(productIds, new Callback<List<Product>>() {

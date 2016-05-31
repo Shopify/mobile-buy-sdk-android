@@ -112,18 +112,18 @@ final class ProductServiceDefault implements ProductService {
     }
 
     @Override
-    public CancellableTask getProduct(final String productId, final Callback<Product> callback) {
+    public CancellableTask getProduct(final Long productId, final Callback<Product> callback) {
         return new CancellableTaskSubscriptionWrapper(getProduct(productId).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
-    public Observable<Product> getProduct(final String productId) {
+    public Observable<Product> getProduct(final Long productId) {
         if (productId == null) {
             throw new NullPointerException("productId cannot be null");
         }
 
         return retrofitService
-            .getProducts(appId, productId)
+            .getProducts(appId, String.valueOf(productId))
             .retryWhen(networkRetryPolicyProvider.provide())
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<ProductListings, List<Product>>())
@@ -133,12 +133,12 @@ final class ProductServiceDefault implements ProductService {
     }
 
     @Override
-    public CancellableTask getProducts(final List<String> productIds, final Callback<List<Product>> callback) {
+    public CancellableTask getProducts(final List<Long> productIds, final Callback<List<Product>> callback) {
         return new CancellableTaskSubscriptionWrapper(getProducts(productIds).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
-    public Observable<List<Product>> getProducts(final List<String> productIds) {
+    public Observable<List<Product>> getProducts(final List<Long> productIds) {
         if (productIds == null) {
             throw new NullPointerException("productIds List cannot be null");
         }
@@ -162,22 +162,22 @@ final class ProductServiceDefault implements ProductService {
     }
 
     @Override
-    public CancellableTask getProducts(int page, String collectionId, final Callback<List<Product>> callback) {
+    public CancellableTask getProducts(int page, Long collectionId, final Callback<List<Product>> callback) {
         return getProducts(page, collectionId, Collection.SortOrder.COLLECTION_DEFAULT, callback);
     }
 
     @Override
-    public Observable<List<Product>> getProducts(final int page, final String collectionId) {
+    public Observable<List<Product>> getProducts(final int page, final Long collectionId) {
         return getProducts(page, collectionId, Collection.SortOrder.COLLECTION_DEFAULT);
     }
 
     @Override
-    public CancellableTask getProducts(final int page, final String collectionId, final Collection.SortOrder sortOrder, final Callback<List<Product>> callback) {
+    public CancellableTask getProducts(final int page, final Long collectionId, final Collection.SortOrder sortOrder, final Callback<List<Product>> callback) {
         return new CancellableTaskSubscriptionWrapper(getProducts(page, collectionId, sortOrder).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
-    public Observable<List<Product>> getProducts(final int page, final String collectionId, final Collection.SortOrder sortOrder) {
+    public Observable<List<Product>> getProducts(final int page, final Long collectionId, final Collection.SortOrder sortOrder) {
         if (page < 1) {
             throw new IllegalArgumentException("page is a 1-based index, value cannot be less than 1");
         }

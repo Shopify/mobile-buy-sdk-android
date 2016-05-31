@@ -68,7 +68,7 @@ public class Collection extends ShopifyObject {
     protected boolean published;
 
     @SerializedName("collection_id")
-    protected String collectionId;
+    protected Long collectionId;
 
     @SerializedName("created_at")
     protected Date createdAtDate;
@@ -157,7 +157,7 @@ public class Collection extends ShopifyObject {
     /**
      * @return The unique identifier for this collection.
      */
-    public String getCollectionId() {
+    public Long getCollectionId() {
         return collectionId;
     }
 
