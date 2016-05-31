@@ -118,7 +118,7 @@ public class AndroidPayTest extends ShopifyAndroidTestCase {
         final Checkout checkout = Mockito.mock(Checkout.class);
         Mockito.doReturn(Arrays.asList(lineItem1, lineItem2)).when(checkout).getLineItems();
         Mockito.doReturn(CURRENCY).when(checkout).getCurrency();
-        Mockito.doReturn(currencyFormatter.format(LINE_ITEM_TOTAL_PRICE_1 + LINE_ITEM_TOTAL_PRICE_2)).when(checkout).getTotalPrice();
+        Mockito.doReturn(currencyFormatter.format(LINE_ITEM_TOTAL_PRICE_1 + LINE_ITEM_TOTAL_PRICE_2)).when(checkout).getPaymentDue();
 
         final Cart cart = AndroidPayHelper.createWalletCart(checkout);
         assertWalletCart(cart);
@@ -145,14 +145,14 @@ public class AndroidPayTest extends ShopifyAndroidTestCase {
         final Checkout checkout = Mockito.mock(Checkout.class);
         Mockito.doReturn(Arrays.asList(lineItem1, lineItem2)).when(checkout).getLineItems();
         Mockito.doReturn(CURRENCY).when(checkout).getCurrency();
-        Mockito.doReturn(currencyFormatter.format(LINE_ITEM_TOTAL_PRICE_1 + LINE_ITEM_TOTAL_PRICE_2)).when(checkout).getTotalPrice();
+        Mockito.doReturn(currencyFormatter.format(LINE_ITEM_TOTAL_PRICE_1 + LINE_ITEM_TOTAL_PRICE_2)).when(checkout).getPaymentDue();
         Mockito.doReturn(true).when(checkout).isRequiresShipping();
 
         final MaskedWalletRequest request = AndroidPayHelper.createMaskedWalletRequest("merchantName", checkout, "ANDROID_PAY_PUBLIC_KEY", true);
         assertWalletCart(request.getCart());
         Assert.assertEquals("merchantName", request.getMerchantName());
         Assert.assertEquals(CURRENCY, request.getCurrencyCode());
-        Assert.assertEquals(checkout.getTotalPrice(), request.getEstimatedTotalPrice());
+        Assert.assertEquals(checkout.getPaymentDue(), request.getEstimatedTotalPrice());
     }
 
     @Test
@@ -160,7 +160,7 @@ public class AndroidPayTest extends ShopifyAndroidTestCase {
         final Checkout checkout = Mockito.mock(Checkout.class);
         Mockito.doReturn(Arrays.asList(lineItem1, lineItem2)).when(checkout).getLineItems();
         Mockito.doReturn(CURRENCY).when(checkout).getCurrency();
-        Mockito.doReturn(currencyFormatter.format(LINE_ITEM_TOTAL_PRICE_1 + LINE_ITEM_TOTAL_PRICE_2)).when(checkout).getTotalPrice();
+        Mockito.doReturn(currencyFormatter.format(LINE_ITEM_TOTAL_PRICE_1 + LINE_ITEM_TOTAL_PRICE_2)).when(checkout).getPaymentDue();
         Mockito.doReturn(true).when(checkout).isRequiresShipping();
 
         final MaskedWallet maskedWallet = createMaskedWallet(null, null, null, "GoogleTransactionId");
