@@ -38,7 +38,6 @@ import rx.Observable;
  */
 public interface CheckoutService {
 
-    // TODO - remove these
     String getWebReturnToUrl();
     String getWebReturnToLabel();
 

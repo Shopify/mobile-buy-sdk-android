@@ -91,7 +91,7 @@ public class CompleteCheckoutTest extends ShopifyAndroidTestCase {
 
     @Test
     public void testCompleteCheckoutWithNonIOError() throws InterruptedException{
-        final Observable<Response<CheckoutWrapper>> response = Observable.error(new BuyClientError(Response.error(new ResponseBody() {
+        final Observable<Response<Void>> response = Observable.error(new BuyClientError(Response.error(new ResponseBody() {
             @Override
             public MediaType contentType() {
                 return null;
@@ -133,7 +133,7 @@ public class CompleteCheckoutTest extends ShopifyAndroidTestCase {
     public void testCompleteCheckoutWithPolling() throws InterruptedException {
         final int retryCount = 5;
 
-        final Observable<Response<CheckoutWrapper>> completeCheckoutResponse = Observable.just(Response.success(checkoutWrapper));
+        final Observable<Response<Void>> completeCheckoutResponse = Observable.just(Response.success((Void)null));
         Mockito.when(checkoutRetrofitService.completeCheckout(Mockito.any(PaymentToken.class), Mockito.anyString())).thenReturn(completeCheckoutResponse);
 
         final ResponseOnSubscribe pollingResponseOnSubscribe = new ResponseOnSubscribe(retryCount, HttpStatus.SC_ACCEPTED);
