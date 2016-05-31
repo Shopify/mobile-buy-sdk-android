@@ -29,9 +29,13 @@ import com.shopify.buy.model.internal.AddressesWrapper;
 
 import java.util.List;
 
+import retrofit2.Response;
 import retrofit2.Retrofit;
 import rx.Observable;
 import rx.Scheduler;
+import rx.functions.Func1;
+
+import static java.net.HttpURLConnection.HTTP_NO_CONTENT;
 
 /**
  * Default implementation of {@link AddressService}
@@ -74,6 +78,33 @@ final class AddressServiceDefault implements AddressService {
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<AddressWrapper, Address>())
             .onErrorResumeNext(new BuyClientExceptionHandler<Address>())
+            .observeOn(callbackScheduler);
+    }
+
+    public CancellableTask deleteAddress(Long customerId, Long addressId, Callback<Void> callback) {
+        return new CancellableTaskSubscriptionWrapper(deleteAddress(customerId, addressId).subscribe(new InternalCallbackSubscriber<>(callback)));
+    }
+
+    public Observable<Void> deleteAddress(Long customerId, Long addressId) {
+        if (customerId == null) {
+            throw new NullPointerException("customerId cannot be null");
+        }
+
+        if (addressId == null) {
+            throw new NullPointerException("addressId cannot be null");
+        }
+
+        int[] successCodes = {HTTP_NO_CONTENT};
+
+        return retrofitService.deleteAddress(customerId, addressId)
+            .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>(successCodes))
+            .map(new Func1<Response<Void>, Void>() {
+                @Override
+                public Void call(Response<Void> voidResponse) {
+                    return null;
+                }
+            })
+            .onErrorResumeNext(new BuyClientExceptionHandler<Void>())
             .observeOn(callbackScheduler);
     }
 

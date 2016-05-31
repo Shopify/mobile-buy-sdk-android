@@ -419,6 +419,16 @@ final class BuyClientDefault implements BuyClient {
     }
 
     @Override
+    public CancellableTask deleteAddress(final Long customerId, final Long addressId, final Callback<Void> callback) {
+        return addressService.deleteAddress(customerId, addressId, callback);
+    }
+
+    @Override
+    public Observable<Void> deleteAddress(final Long customerId, final Long addressId) {
+        return addressService.deleteAddress(customerId, addressId);
+    }
+
+    @Override
     public CancellableTask getAddresses(final Long customerId, final Callback<List<Address>> callback) {
         return addressService.getAddresses(customerId, callback);
     }
