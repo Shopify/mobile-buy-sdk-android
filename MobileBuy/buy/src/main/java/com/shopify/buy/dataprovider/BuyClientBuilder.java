@@ -47,6 +47,10 @@ public final class BuyClientBuilder {
 
     public static final int DEFAULT_PAGE_SIZE = 25;
 
+    public static final long DEFAULT_HTTP_CONNECTION_TIME_OUT_MS =  TimeUnit.SECONDS.toMillis(30);
+
+    public static final long DEFAULT_HTTP_READ_WRITE_TIME_OUT_MS =  TimeUnit.SECONDS.toMillis(60);
+
     public static final long MIN_NETWORK_RETRY_DELAY = TimeUnit.MILLISECONDS.toMillis(500);
 
     private String shopDomain;
@@ -74,6 +78,10 @@ public final class BuyClientBuilder {
     private long networkRequestRetryDelayMs;
 
     private float networkRequestRetryBackoffMultiplier;
+
+    private long httpConnectionTimeoutMs = DEFAULT_HTTP_CONNECTION_TIME_OUT_MS;
+
+    private long httpReadWriteTimeoutMs = DEFAULT_HTTP_READ_WRITE_TIME_OUT_MS;
 
     /**
      * Sets store domain url (usually {store name}.myshopify.com
@@ -213,6 +221,20 @@ public final class BuyClientBuilder {
     }
 
     /**
+     * Sets the default http timeouts for new connections.
+     * A value of 0 means no timeout, otherwise values must be between 1 and Long.MAX_VALUE.
+     *
+     * @param httpConnectionTimeoutMs default connect timeout for new connections in milliseconds
+     * @param httpReadWriteTimeoutMs  default read/write timeout for new connections in milliseconds
+     * @return {@link BuyClientBuilder}
+     */
+    public BuyClientBuilder httpTimeout(final long httpConnectionTimeoutMs, final long httpReadWriteTimeoutMs) {
+        this.httpConnectionTimeoutMs = httpConnectionTimeoutMs;
+        this.httpReadWriteTimeoutMs = httpReadWriteTimeoutMs;
+        return this;
+    }
+
+    /**
      * Builds default implementation of {@link BuyClient}
      *
      * @return A {@link BuyClient}.
@@ -241,19 +263,21 @@ public final class BuyClientBuilder {
         }
 
         return new BuyClientDefault(
-                apiKey,
-                appId,
-                applicationName,
-                shopDomain,
-                completeCheckoutWebReturnUrl,
-                completeCheckoutWebReturnLabel,
-                customerToken,
-                callbackScheduler,
-                productPageSize,
-                networkRequestRetryMaxCount,
-                networkRequestRetryDelayMs,
-                networkRequestRetryBackoffMultiplier,
-                interceptors
+            apiKey,
+            appId,
+            applicationName,
+            shopDomain,
+            completeCheckoutWebReturnUrl,
+            completeCheckoutWebReturnLabel,
+            customerToken,
+            callbackScheduler,
+            productPageSize,
+            networkRequestRetryMaxCount,
+            networkRequestRetryDelayMs,
+            networkRequestRetryBackoffMultiplier,
+            httpConnectionTimeoutMs,
+            httpReadWriteTimeoutMs,
+            interceptors
         );
     }
 }

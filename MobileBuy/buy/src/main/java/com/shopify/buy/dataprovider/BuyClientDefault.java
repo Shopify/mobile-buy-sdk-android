@@ -87,6 +87,8 @@ final class BuyClientDefault implements BuyClient {
             final int networkRequestRetryMaxCount,
             final long networkRequestRetryDelayMs,
             final float networkRequestRetryBackoffMultiplier,
+            final long httpConnectionTimeoutMs,
+            final long httpReadWriteTimeoutMs,
             final Interceptor... interceptors
     ) {
         this.apiKey = apiKey;
@@ -114,9 +116,9 @@ final class BuyClientDefault implements BuyClient {
         };
 
         final OkHttpClient.Builder builder = new OkHttpClient.Builder()
-                .connectTimeout(30, TimeUnit.SECONDS)
-                .readTimeout(60, TimeUnit.SECONDS)
-                .writeTimeout(60, TimeUnit.SECONDS)
+                .connectTimeout(httpConnectionTimeoutMs, TimeUnit.MILLISECONDS)
+                .readTimeout(httpReadWriteTimeoutMs, TimeUnit.MILLISECONDS)
+                .writeTimeout(httpReadWriteTimeoutMs, TimeUnit.MILLISECONDS)
                 .addInterceptor(requestInterceptor);
 
         if (interceptors != null) {
