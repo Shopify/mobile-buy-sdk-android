@@ -69,7 +69,7 @@ public class CustomerTest extends ShopifyAndroidTestCase {
     private CustomerToken customerToken;
 
     @Test
-	public void testCustomerCreation() throws InterruptedException {
+    public void testCustomerCreation() throws InterruptedException {
         final Customer randomCustomer = USE_MOCK_RESPONSES ? getExistingCustomer() : generateRandomCustomer();
         final AccountCredentials accountCredentials = new AccountCredentials(randomCustomer.getEmail(), PASSWORD, randomCustomer.getFirstName(), randomCustomer.getLastName());
 
@@ -96,7 +96,7 @@ public class CustomerTest extends ShopifyAndroidTestCase {
 
     @Suppress
     @Test
-	public void testCustomerActivation() throws InterruptedException {
+    public void testCustomerActivation() throws InterruptedException {
         testCustomerLogin();
 
         final AccountCredentials accountCredentials = new AccountCredentials(customer.getEmail(), PASSWORD, customer.getFirstName(), customer.getLastName());
@@ -122,7 +122,7 @@ public class CustomerTest extends ShopifyAndroidTestCase {
 
 
     @Test
-	public void testCustomerLogin() throws InterruptedException {
+    public void testCustomerLogin() throws InterruptedException {
         customer = getExistingCustomer();
 
         final AccountCredentials accountCredentials = new AccountCredentials(customer.getEmail(), PASSWORD, customer.getFirstName(), customer.getLastName());
@@ -150,7 +150,7 @@ public class CustomerTest extends ShopifyAndroidTestCase {
     }
 
     @Test
-	public void testCustomerLogout() throws InterruptedException {
+    public void testCustomerLogout() throws InterruptedException {
         testCustomerLogin();
 
         final CountDownLatch latch = new CountDownLatch(1);
@@ -171,7 +171,7 @@ public class CustomerTest extends ShopifyAndroidTestCase {
     }
 
     @Test
-	public void testCustomerRenew() throws InterruptedException {
+    public void testCustomerRenew() throws InterruptedException {
         testCustomerLogin();
 
         final CountDownLatch latch = new CountDownLatch(1);
@@ -192,7 +192,7 @@ public class CustomerTest extends ShopifyAndroidTestCase {
     }
 
     @Test
-	public void testCustomerRecover() throws InterruptedException {
+    public void testCustomerRecover() throws InterruptedException {
         customer = getExistingCustomer();
 
         final CountDownLatch latch = new CountDownLatch(1);
@@ -213,7 +213,7 @@ public class CustomerTest extends ShopifyAndroidTestCase {
     }
 
     @Test
-	public void testCustomerUpdate() throws InterruptedException {
+    public void testCustomerUpdate() throws InterruptedException {
         testCustomerLogin();
 
         customer.setLastName("Foo");
@@ -238,7 +238,7 @@ public class CustomerTest extends ShopifyAndroidTestCase {
     }
 
     @Test
-	public void testGetCustomerOrders() throws InterruptedException {
+    public void testGetCustomerOrders() throws InterruptedException {
         testCustomerLogin();
 
         final CountDownLatch latch = new CountDownLatch(1);
@@ -263,7 +263,7 @@ public class CustomerTest extends ShopifyAndroidTestCase {
     }
 
     @Test
-	public void testGetOrder() throws InterruptedException {
+    public void testGetOrder() throws InterruptedException {
         testGetCustomerOrders();
 
         String orderId = orders.get(0).getOrderId();
@@ -287,7 +287,7 @@ public class CustomerTest extends ShopifyAndroidTestCase {
     }
 
     @Test
-	public void testGetCustomer() throws InterruptedException {
+    public void testGetCustomer() throws InterruptedException {
         testCustomerLogin();
 
         final CountDownLatch latch = new CountDownLatch(1);
@@ -309,9 +309,12 @@ public class CustomerTest extends ShopifyAndroidTestCase {
     }
 
     @Test
-	public void testCreateAddress() throws InterruptedException {
+    public void testCreateAddress() throws InterruptedException {
         testCustomerLogin();
+        createAddress();
+    }
 
+    private void createAddress() throws InterruptedException {
         final Address inputAddress = USE_MOCK_RESPONSES ? getExistingAddress() : generateAddress();
 
         final CountDownLatch latch = new CountDownLatch(1);
@@ -320,6 +323,7 @@ public class CustomerTest extends ShopifyAndroidTestCase {
             @Override
             public void success(Address address) {
                 assertEquals(true, inputAddress.equals(address));
+                CustomerTest.this.address = address;
                 latch.countDown();
             }
 
@@ -333,9 +337,50 @@ public class CustomerTest extends ShopifyAndroidTestCase {
     }
 
     @Test
-	public void testGetAddresses() throws InterruptedException {
+    public void testDeleteAddress() throws InterruptedException {
         testCustomerLogin();
+        createAddress();
+        getAddresses();
 
+        final int addressCount = addresses.size();
+
+        // assert that addresses has the created address
+        assertEquals(true, addresses.contains(address));
+
+        final CountDownLatch countDownLatch = new CountDownLatch(1);
+
+        buyClient.deleteAddress(customer.getId(), address.getId(), new Callback<Void>() {
+            @Override
+            public void success(Void response) {
+                countDownLatch.countDown();
+            }
+
+            @Override
+            public void failure(BuyClientError error) {
+                fail("Expected success");
+            }
+        });
+
+        // Wait for the delete to finish
+        countDownLatch.await();
+
+        // Make sure the addresses list looks correct now
+        getAddresses();
+
+        // address is no longer in the list
+        assertEquals(false, addresses.contains(address));
+
+        // address count is one less
+        assertEquals(addressCount - 1, addresses.size());
+    }
+
+    @Test
+    public void testGetAddresses() throws InterruptedException {
+        testCustomerLogin();
+        getAddresses();
+    }
+
+    private void getAddresses() throws InterruptedException {
         final CountDownLatch latch = new CountDownLatch(1);
 
         buyClient.getAddresses(customer.getId(), new Callback<List<Address>>() {
@@ -357,7 +402,7 @@ public class CustomerTest extends ShopifyAndroidTestCase {
     }
 
     @Test
-	public void testGetAddress() throws InterruptedException {
+    public void testGetAddress() throws InterruptedException {
         testGetAddresses();
 
         Long addressId = addresses.get(0).getId();
@@ -382,7 +427,7 @@ public class CustomerTest extends ShopifyAndroidTestCase {
     }
 
     @Test
-	public void testUpdateAddress() throws InterruptedException {
+    public void testUpdateAddress() throws InterruptedException {
         testGetAddress();
 
         address.setCity("Toledo");

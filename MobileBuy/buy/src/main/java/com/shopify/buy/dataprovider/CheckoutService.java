@@ -211,7 +211,7 @@ public interface CheckoutService {
     /**
      * Remove a gift card that was previously applied to a Checkout
      *
-     * @param giftCardId the id of the {@link GiftCard} to remove from the {@link Checkout}
+     * @param giftCardId the id of the {@link GiftCard} to remove from the {@link Checkout}, not null
      * @param checkout the {@code Checkout} to remove the {@code GiftCard} from
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      * @return cancelable task

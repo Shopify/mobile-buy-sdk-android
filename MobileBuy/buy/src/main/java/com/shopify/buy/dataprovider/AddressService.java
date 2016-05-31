@@ -110,4 +110,23 @@ public interface AddressService {
      * @return returns cold observable that emits updated existing address
      */
     Observable<Address> updateAddress(Long customerId, Address address);
+
+    /**
+     * Delete an Address
+     *
+     * @param customerId the {@link Customer} to update an address for, not null
+     * @param addressId the identifier of the {@link Address} to fetch, not null
+     * @param callback  the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
+     * @return cancelable task
+     */
+    CancellableTask deleteAddress(Long customerId, Long addressId, Callback<Void> callback);
+
+    /**
+     * Delete an Address
+     *
+     * @param customerId the {@link Customer} to update an address for, not null
+     * @param addressId the identifier of the {@link Address} to fetch, not null
+     * @return cancelable task
+     */
+    Observable<Void> deleteAddress(Long customerId, Long addressId);
 }
