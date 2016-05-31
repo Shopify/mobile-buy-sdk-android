@@ -246,11 +246,10 @@ final class CheckoutServiceDefault implements CheckoutService {
 
         return retrofitService
             .completeCheckout(paymentToken, checkoutToken)
-            .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<Response<CheckoutWrapper>>())
-            .compose(new UnwrapRetrofitBodyTransformer<CheckoutWrapper, Checkout>())
-            .flatMap(new Func1<Checkout, Observable<Checkout>>() {
+            .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<Response<Void>>())
+            .flatMap(new Func1<Response<Void>, Observable<Checkout>>() {
                 @Override
-                public Observable<Checkout> call(final Checkout checkout) {
+                public Observable<Checkout> call(Response<Void> voidResponse) {
                     return getCompletedCheckout(checkoutToken);
                 }
             })
