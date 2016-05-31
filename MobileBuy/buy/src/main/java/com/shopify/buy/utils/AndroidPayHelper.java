@@ -115,7 +115,7 @@ public final class AndroidPayHelper {
             LineItem lineItem = createWalletLineItem(shopifyLineItem, checkout.getCurrency());
             builder.addLineItem(lineItem);
         }
-        builder.setTotalPrice(checkout.getTotalPrice());
+        builder.setTotalPrice(checkout.getPaymentDue());
         return builder.build();
     }
 
@@ -231,7 +231,7 @@ public final class AndroidPayHelper {
                 .setPhoneNumberRequired(phoneNumberRequired)
                 .setShippingAddressRequired(checkout.isRequiresShipping())
                 .setCurrencyCode(checkout.getCurrency())
-                .setEstimatedTotalPrice(checkout.getTotalPrice())
+                .setEstimatedTotalPrice(checkout.getPaymentDue())
                 .setPaymentMethodTokenizationParameters(parameters)
                 .setCart(walletCart)
                 .setPhoneNumberRequired(phoneNumberRequired)

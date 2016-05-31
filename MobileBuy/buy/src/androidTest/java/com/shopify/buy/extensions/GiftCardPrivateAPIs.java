@@ -7,7 +7,7 @@ import com.shopify.buy.model.GiftCard;
  */
 public class GiftCardPrivateAPIs extends GiftCard {
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

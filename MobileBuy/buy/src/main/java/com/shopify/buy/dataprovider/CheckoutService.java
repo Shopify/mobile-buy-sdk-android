@@ -211,21 +211,21 @@ public interface CheckoutService {
     /**
      * Remove a gift card that was previously applied to a Checkout
      *
-     * @param giftCardId the id of the {@link GiftCard} to remove from the {@link Checkout}
+     * @param giftCardId the id of the {@link GiftCard} to remove from the {@link Checkout}, not null
      * @param checkout the {@code Checkout} to remove the {@code GiftCard} from
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      * @return cancelable task
      */
-    CancellableTask removeGiftCard(String giftCardId, Checkout checkout, Callback<Checkout> callback);
+    CancellableTask removeGiftCard(Long giftCardId, Checkout checkout, Callback<Checkout> callback);
 
     /**
      * Remove a gift card that was previously applied to a Checkout
      *
-     * @param giftCardId the id of the {@link GiftCard} to remove from the {@link Checkout}
-     * @param checkout the {@code Checkout} to remove the {@code GiftCard} from
+     * @param giftCardId the id of the {@link GiftCard} to remove from the {@link Checkout}, not null
+     * @param checkout the {@code Checkout} to remove the {@code GiftCard} from, not null
      * @return cold observable that emits updated checkout
      */
-    Observable<Checkout> removeGiftCard(String giftCardId, Checkout checkout);
+    Observable<Checkout> removeGiftCard(Long giftCardId, Checkout checkout);
 
     /**
      * Release all product inventory reservations associated with the checkout by setting the `reservationTime` of the checkout to `0` and calling {@link #updateCheckout(Checkout, Callback) updateCheckout(Checkout, Callback)}.

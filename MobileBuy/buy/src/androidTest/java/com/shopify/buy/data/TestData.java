@@ -75,8 +75,8 @@ public class TestData {
         return productIds;
     }
 
-    public String getGiftCardId(GiftCardType type) {
-        return data.get("gift_cards").getAsJsonObject().get(type.name().toLowerCase()).getAsJsonObject().get("id").getAsString();
+    public Long getGiftCardId(GiftCardType type) {
+        return data.get("gift_cards").getAsJsonObject().get(type.name().toLowerCase()).getAsJsonObject().get("id").getAsLong();
     }
 
     public String getGiftCardCode(GiftCardType type) {

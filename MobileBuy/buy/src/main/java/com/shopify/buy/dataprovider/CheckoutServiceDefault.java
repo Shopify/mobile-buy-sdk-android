@@ -354,12 +354,12 @@ final class CheckoutServiceDefault implements CheckoutService {
     }
 
     @Override
-    public CancellableTask removeGiftCard(final String giftCardId, final Checkout checkout, final Callback<Checkout> callback) {
+    public CancellableTask removeGiftCard(final Long giftCardId, final Checkout checkout, final Callback<Checkout> callback) {
         return new CancellableTaskSubscriptionWrapper(removeGiftCard(giftCardId, checkout).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
-    public Observable<Checkout> removeGiftCard(final String giftCardId, final Checkout checkout) {
+    public Observable<Checkout> removeGiftCard(final Long giftCardId, final Checkout checkout) {
         if (checkout == null) {
             throw new NullPointerException("checkout cannot be null");
         }
@@ -368,8 +368,8 @@ final class CheckoutServiceDefault implements CheckoutService {
             throw new IllegalArgumentException("checkout token cannot be empty");
         }
 
-        if (TextUtils.isEmpty(giftCardId)) {
-            throw new IllegalArgumentException("giftCard cannot be empty");
+        if (giftCardId == null) {
+            throw new NullPointerException("giftCard cannot be null");
         }
 
         final Checkout safeCheckout = checkout.copy();

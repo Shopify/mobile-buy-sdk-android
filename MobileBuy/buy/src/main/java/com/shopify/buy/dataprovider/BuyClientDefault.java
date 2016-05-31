@@ -268,12 +268,12 @@ final class BuyClientDefault implements BuyClient {
     }
 
     @Override
-    public CancellableTask removeGiftCard(final String giftCardId, final Checkout checkout, final Callback<Checkout> callback) {
+    public CancellableTask removeGiftCard(final Long giftCardId, final Checkout checkout, final Callback<Checkout> callback) {
         return checkoutService.removeGiftCard(giftCardId, checkout, callback);
     }
 
     @Override
-    public Observable<Checkout> removeGiftCard(final String giftCardId, final Checkout checkout) {
+    public Observable<Checkout> removeGiftCard(final Long giftCardId, final Checkout checkout) {
         return checkoutService.removeGiftCard(giftCardId, checkout);
     }
 
@@ -453,7 +453,6 @@ final class BuyClientDefault implements BuyClient {
         return addressService.updateAddress(customerId, address, callback);
     }
 
-    @Override
     public Observable<Address> updateAddress(final Long customerId, final Address address) {
         return addressService.updateAddress(customerId, address);
     }
