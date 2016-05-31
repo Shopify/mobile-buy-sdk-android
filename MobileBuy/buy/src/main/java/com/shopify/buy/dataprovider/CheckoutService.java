@@ -174,6 +174,7 @@ public interface CheckoutService {
      * Post a credit card to Shopify's card server and associate it with a Checkout
      *
      * @param card     the {@link CreditCard} to associate
+     * @param checkout  the {@link Checkout} to associate the card with
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      * @return cancelable task
      */
@@ -183,7 +184,7 @@ public interface CheckoutService {
      * Post a credit card to Shopify's card server and associate it with a Checkout
      *
      * @param card     the {@link CreditCard} to associate
-     * @param checkout  the token for the {@link Checkout} to associate the card with
+     * @param checkout  the {@link Checkout} to associate the card with
      * @return cold observable that emits payment token associated with specified checkout and credit card
      */
     Observable<PaymentToken> storeCreditCard(CreditCard card, Checkout checkout);
