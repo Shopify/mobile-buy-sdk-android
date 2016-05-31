@@ -66,7 +66,7 @@ interface CheckoutRetrofitService {
     Observable<Response<GiftCardWrapper>> applyGiftCard(@Body GiftCardWrapper giftCardWrapper, @Path("token") String token);
 
     @DELETE("api/checkouts/{token}/gift_cards/{identifier}.json")
-    Observable<Response<GiftCardWrapper>> removeGiftCard(@Path("identifier") String giftCardIdentifier, @Path("token") String token);
+    Observable<Response<GiftCardWrapper>> removeGiftCard(@Path("identifier") Long giftCardIdentifier, @Path("token") String token);
 
     @POST
     @Headers("Accept: application/json")
