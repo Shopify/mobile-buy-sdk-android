@@ -243,7 +243,7 @@ public class CustomerTest extends ShopifyAndroidTestCase {
 
         final CountDownLatch latch = new CountDownLatch(1);
 
-        buyClient.getOrders(customer, new Callback<List<Order>>() {
+        buyClient.getOrders(customer.getId(), new Callback<List<Order>>() {
             @Override
             public void success(List<Order> orders) {
                 assertNotNull(orders);
@@ -270,7 +270,7 @@ public class CustomerTest extends ShopifyAndroidTestCase {
 
         final CountDownLatch latch = new CountDownLatch(1);
 
-        buyClient.getOrder(customer, orderId, new Callback<Order>() {
+        buyClient.getOrder(customer.getId(), orderId, new Callback<Order>() {
             @Override
             public void success(Order order) {
                 assertNotNull(order);
@@ -316,7 +316,7 @@ public class CustomerTest extends ShopifyAndroidTestCase {
 
         final CountDownLatch latch = new CountDownLatch(1);
 
-        buyClient.createAddress(customer, inputAddress, new Callback<Address>() {
+        buyClient.createAddress(customer.getId(), inputAddress, new Callback<Address>() {
             @Override
             public void success(Address address) {
                 assertEquals(true, inputAddress.equals(address));
@@ -338,7 +338,7 @@ public class CustomerTest extends ShopifyAndroidTestCase {
 
         final CountDownLatch latch = new CountDownLatch(1);
 
-        buyClient.getAddresses(customer, new Callback<List<Address>>() {
+        buyClient.getAddresses(customer.getId(), new Callback<List<Address>>() {
             @Override
             public void success(List<Address> addresses) {
                 assertNotNull(addresses);
@@ -360,11 +360,11 @@ public class CustomerTest extends ShopifyAndroidTestCase {
 	public void testGetAddress() throws InterruptedException {
         testGetAddresses();
 
-        String addressId = addresses.get(0).getAddressId();
+        Long addressId = addresses.get(0).getId();
 
         final CountDownLatch latch = new CountDownLatch(1);
 
-        buyClient.getAddress(customer, addressId, new Callback<Address>() {
+        buyClient.getAddress(customer.getId(), addressId, new Callback<Address>() {
             @Override
             public void success(Address address) {
                 assertNotNull(address);
@@ -389,7 +389,7 @@ public class CustomerTest extends ShopifyAndroidTestCase {
 
         final CountDownLatch latch = new CountDownLatch(1);
 
-        buyClient.updateAddress(customer, address, new Callback<Address>() {
+        buyClient.updateAddress(customer.getId(), address, new Callback<Address>() {
             @Override
             public void success(Address address) {
                 assertNotNull(address);

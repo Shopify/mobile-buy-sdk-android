@@ -43,9 +43,9 @@ interface AddressRetrofitService {
     Observable<Response<AddressWrapper>> createAddress(@Path("customerId") Long customerId, @Body AddressWrapper address);
 
     @GET("api/customers/{customerId}/addresses/{addressId}")
-    Observable<Response<AddressWrapper>> getAddress(@Path("customerId") Long customerId, @Path("addressId") String addressId);
+    Observable<Response<AddressWrapper>> getAddress(@Path("customerId") Long customerId, @Path("addressId") Long addressId);
 
     @PATCH("api/customers/{customerId}/addresses/{addressId}")
-    Observable<Response<AddressWrapper>> updateAddress(@Path("customerId") Long customerId, @Body AddressWrapper address, @Path("addressId") String addressId);
+    Observable<Response<AddressWrapper>> updateAddress(@Path("customerId") Long customerId, @Body AddressWrapper address, @Path("addressId") Long addressId);
 
 }
