@@ -180,27 +180,6 @@ public class StorefrontTest extends ShopifyAndroidTestCase {
     }
 
     @Test
-    public void testGetCollection() throws InterruptedException {
-        final CountDownLatch latch = new CountDownLatch(1);
-
-        buyClient.getCollections(new Callback<List<Collection>>() {
-            @Override
-            public void success(List<Collection> collections) {
-                assertNotNull(collections);
-                assertFalse(collections.isEmpty());
-                latch.countDown();
-            }
-
-            @Override
-            public void failure(BuyClientError error) {
-                fail();
-            }
-        });
-
-        latch.await();
-    }
-
-    @Test
     public void testGetProductsInCollection() throws InterruptedException {
         final CountDownLatch latch = new CountDownLatch(1);
 

@@ -154,7 +154,7 @@ public class SampleApplication extends Application {
     }
 
     public void getCollections(final Callback<List<Collection>> callback) {
-        buyClient.getCollections(callback);
+        buyClient.getCollectionPage(1, callback);
     }
 
 

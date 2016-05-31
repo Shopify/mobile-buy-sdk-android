@@ -68,13 +68,6 @@ public class Address extends ShopifyObject {
     }
 
     /**
-     * @return The unique identifier of this object within the Shopify platform.
-     */
-    public String getAddressId() {
-        return String.valueOf(id);
-    }
-
-    /**
      * @return The street of the address.
      */
     public String getAddress1() {

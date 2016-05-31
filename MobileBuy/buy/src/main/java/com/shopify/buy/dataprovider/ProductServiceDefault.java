@@ -193,24 +193,14 @@ final class ProductServiceDefault implements ProductService {
             .onErrorResumeNext(new BuyClientExceptionHandler<List<Product>>())
             .observeOn(callbackScheduler);
     }
-
-    @Override
-    public CancellableTask getCollections(final Callback<List<Collection>> callback) {
-        return getCollectionPage(1, callback);
-    }
-
-    @Override
-    public Observable<List<Collection>> getCollections() {
-        return getCollections(1);
-    }
-
+    
     @Override
     public CancellableTask getCollectionPage(final int page, final Callback<List<Collection>> callback) {
-        return new CancellableTaskSubscriptionWrapper(getCollections(page).subscribe(new InternalCallbackSubscriber<>(callback)));
+        return new CancellableTaskSubscriptionWrapper(getCollectionPage(page).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
-    public Observable<List<Collection>> getCollections(final int page) {
+    public Observable<List<Collection>> getCollectionPage(final int page) {
         if (page < 1) {
             throw new IllegalArgumentException("page is a 1-based index, value cannot be less than 1");
         }

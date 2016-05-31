@@ -33,14 +33,14 @@ public interface Callback<T> {
     /**
      * Called in case async API call succeed
      *
-     * @param response
+     * @param response the response
      */
     void success(T response);
 
     /**
      * Called in case async API call failed
      *
-     * @param error
+     * @param error the error
      */
     void failure(BuyClientError error);
 }

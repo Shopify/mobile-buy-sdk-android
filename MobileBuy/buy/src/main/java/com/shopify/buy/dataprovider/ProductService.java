@@ -151,21 +151,6 @@ public interface ProductService {
     Observable<List<Product>> getProducts(int page, String collectionId, Collection.SortOrder sortOrder);
 
     /**
-     * Fetch a list of Collections
-     *
-     * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
-     * @return cancelable task
-     */
-    CancellableTask getCollections(Callback<List<Collection>> callback);
-
-    /**
-     * Fetch a list of Collections
-     *
-     * @return cold observable that emits requested list of collections
-     */
-    Observable<List<Collection>> getCollections();
-
-    /**
      * Fetch a page of collections
      *
      * @param page     the 1-based page index. The page size is set by {@link BuyClientBuilder#productPageSize} configuration.
@@ -180,5 +165,5 @@ public interface ProductService {
      * @param page the 1-based page index. The page size is set by {@link BuyClientBuilder#productPageSize} configuration.
      * @return cold observable that emits requested list of collections
      */
-    Observable<List<Collection>> getCollections(int page);
+    Observable<List<Collection>> getCollectionPage(int page);
 }

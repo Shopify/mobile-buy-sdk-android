@@ -110,6 +110,10 @@ final class CustomerServiceDefault implements CustomerService {
             throw new NullPointerException("accountCredentials cannot be null");
         }
 
+        if (customerId == null) {
+            throw new NullPointerException("customerId cannot be null");
+        }
+
         final AccountCredentialsWrapper accountCredentialsWrapper = new AccountCredentialsWrapper(accountCredentials);
         return retrofitService
             .activateCustomer(customerId, activationToken, accountCredentialsWrapper)
@@ -132,6 +136,10 @@ final class CustomerServiceDefault implements CustomerService {
 
         if (accountCredentials == null) {
             throw new NullPointerException("accountCredentials cannot be null");
+        }
+
+        if (customerId == null) {
+            throw new NullPointerException("customerId cannot be null");
         }
 
         final AccountCredentialsWrapper accountCredentialsWrapper = new AccountCredentialsWrapper(accountCredentials);
@@ -211,6 +219,10 @@ final class CustomerServiceDefault implements CustomerService {
     public Observable<Customer> updateCustomer(final Customer customer) {
         if (customer == null) {
             throw new NullPointerException("customer cannot be null");
+        }
+
+        if (customer.getId() == null) {
+            throw new NullPointerException("customerId cannot be null");
         }
 
         return retrofitService

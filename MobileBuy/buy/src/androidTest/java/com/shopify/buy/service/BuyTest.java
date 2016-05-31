@@ -98,7 +98,7 @@ public class BuyTest extends ShopifyAndroidTestCase {
         createValidCheckout();
         GiftCardPrivateAPIs invalidGiftCard = new GiftCardPrivateAPIs(data.getGiftCardCode(TestData.GiftCardType.INVALID));
         invalidGiftCard.setId(data.getGiftCardId(TestData.GiftCardType.INVALID));
-        buyClient.removeGiftCard(invalidGiftCard, checkout, new Callback<Checkout>() {
+        buyClient.removeGiftCard(invalidGiftCard.getId(), checkout, new Callback<Checkout>() {
             @Override
             public void success(Checkout checkout) {
                 fail("Retrofit succeeded. Expected: 422 error");
@@ -116,7 +116,7 @@ public class BuyTest extends ShopifyAndroidTestCase {
         createValidCheckout();
         GiftCardPrivateAPIs expiredGiftCard = new GiftCardPrivateAPIs(data.getGiftCardCode(TestData.GiftCardType.EXPIRED));
         expiredGiftCard.setId(data.getGiftCardId(TestData.GiftCardType.EXPIRED));
-        buyClient.removeGiftCard(expiredGiftCard, checkout, new Callback<Checkout>() {
+        buyClient.removeGiftCard(expiredGiftCard.getId(), checkout, new Callback<Checkout>() {
             @Override
             public void success(Checkout checkout) {
                 fail("Retrofit succeeded. Expected: 422 error");
@@ -543,7 +543,7 @@ public class BuyTest extends ShopifyAndroidTestCase {
 
         final CountDownLatch latch = new CountDownLatch(1);
 
-        buyClient.removeProductReservationsFromCheckout(checkout, new Callback<Checkout>() {
+        buyClient.removeProductReservationsFromCheckout(checkout.getToken(), new Callback<Checkout>() {
             @Override
             public void success(Checkout checkout) {
                 assertEquals(checkout.getReservationTime().longValue(), 0);
@@ -756,7 +756,7 @@ public class BuyTest extends ShopifyAndroidTestCase {
 
         final CountDownLatch latch = new CountDownLatch(1);
 
-        buyClient.removeGiftCard(giftCard, checkout, new Callback<Checkout>() {
+        buyClient.removeGiftCard(giftCard.getId(), checkout, new Callback<Checkout>() {
             @Override
             public void success(Checkout checkout) {
                 BuyTest.this.checkout = checkout;
@@ -832,7 +832,7 @@ public class BuyTest extends ShopifyAndroidTestCase {
     private void getCheckoutCompletionStatus() throws InterruptedException {
         final CountDownLatch latch = new CountDownLatch(1);
 
-        buyClient.getCheckoutCompletionStatus(checkout, new Callback<Boolean>() {
+        buyClient.getCheckoutCompletionStatus(checkout.getToken(), new Callback<Boolean>() {
             @Override
             public void success(Boolean completed) {
                 latch.countDown();

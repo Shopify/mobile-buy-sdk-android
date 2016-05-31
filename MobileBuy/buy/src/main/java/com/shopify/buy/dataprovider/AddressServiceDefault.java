@@ -23,10 +23,7 @@
  */
 package com.shopify.buy.dataprovider;
 
-import android.text.TextUtils;
-
 import com.shopify.buy.model.Address;
-import com.shopify.buy.model.Customer;
 import com.shopify.buy.model.internal.AddressWrapper;
 import com.shopify.buy.model.internal.AddressesWrapper;
 
@@ -58,22 +55,22 @@ final class AddressServiceDefault implements AddressService {
     }
 
     @Override
-    public CancellableTask createAddress(final Customer customer, final Address address, final Callback<Address> callback) {
-        return new CancellableTaskSubscriptionWrapper(createAddress(customer, address).subscribe(new InternalCallbackSubscriber<>(callback)));
+    public CancellableTask createAddress(final Long customerId, final Address address, final Callback<Address> callback) {
+        return new CancellableTaskSubscriptionWrapper(createAddress(customerId, address).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
-    public Observable<Address> createAddress(final Customer customer, final Address address) {
+    public Observable<Address> createAddress(final Long customerId, final Address address) {
+        if (customerId == null) {
+            throw new NullPointerException("customerId cannot be null");
+        }
+
         if (address == null) {
             throw new NullPointerException("address cannot be null");
         }
 
-        if (customer == null) {
-            throw new NullPointerException("customer cannot be null");
-        }
-
         return retrofitService
-            .createAddress(customer.getId(), new AddressWrapper(address))
+            .createAddress(customerId, new AddressWrapper(address))
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<AddressWrapper, Address>())
             .onErrorResumeNext(new BuyClientExceptionHandler<Address>())
@@ -81,18 +78,18 @@ final class AddressServiceDefault implements AddressService {
     }
 
     @Override
-    public CancellableTask getAddresses(final Customer customer, final Callback<List<Address>> callback) {
-        return new CancellableTaskSubscriptionWrapper(getAddresses(customer).subscribe(new InternalCallbackSubscriber<>(callback)));
+    public CancellableTask getAddresses(final Long customerId, final Callback<List<Address>> callback) {
+        return new CancellableTaskSubscriptionWrapper(getAddresses(customerId).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
-    public Observable<List<Address>> getAddresses(final Customer customer) {
-        if (customer == null) {
-            throw new NullPointerException("customer cannot be null");
+    public Observable<List<Address>> getAddresses(final Long customerId) {
+        if (customerId == null) {
+            throw new NullPointerException("customerId cannot be null");
         }
 
         return retrofitService
-            .getAddresses(customer.getId())
+            .getAddresses(customerId)
             .retryWhen(networkRetryPolicyProvider.provide())
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<AddressesWrapper, List<Address>>())
@@ -101,22 +98,22 @@ final class AddressServiceDefault implements AddressService {
     }
 
     @Override
-    public CancellableTask getAddress(final Customer customer, final String addressId, final Callback<Address> callback) {
-        return new CancellableTaskSubscriptionWrapper(getAddress(customer, addressId).subscribe(new InternalCallbackSubscriber<>(callback)));
+    public CancellableTask getAddress(final Long customerId, final Long addressId, final Callback<Address> callback) {
+        return new CancellableTaskSubscriptionWrapper(getAddress(customerId, addressId).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
-    public Observable<Address> getAddress(final Customer customer, final String addressId) {
-        if (TextUtils.isEmpty(addressId)) {
-            throw new IllegalArgumentException("addressId cannot be empty");
+    public Observable<Address> getAddress(final Long customerId, final Long addressId) {
+        if (customerId == null) {
+            throw new NullPointerException("customerId cannot be null");
         }
 
-        if (customer == null) {
-            throw new NullPointerException("customer cannot be null");
+        if (addressId == null) {
+            throw new NullPointerException("addressId cannot be null");
         }
 
         return retrofitService
-            .getAddress(customer.getId(), addressId)
+            .getAddress(customerId, addressId)
             .retryWhen(networkRetryPolicyProvider.provide())
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<AddressWrapper, Address>())
@@ -125,22 +122,22 @@ final class AddressServiceDefault implements AddressService {
     }
 
     @Override
-    public CancellableTask updateAddress(final Customer customer, final Address address, final Callback<Address> callback) {
-        return new CancellableTaskSubscriptionWrapper(updateAddress(customer, address).subscribe(new InternalCallbackSubscriber<>(callback)));
+    public CancellableTask updateAddress(final Long customerId, final Address address, final Callback<Address> callback) {
+        return new CancellableTaskSubscriptionWrapper(updateAddress(customerId, address).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
-    public Observable<Address> updateAddress(final Customer customer, final Address address) {
+    public Observable<Address> updateAddress(final Long customerId, final Address address) {
+        if (customerId == null) {
+            throw new NullPointerException("customerId cannot be null");
+        }
+
         if (address == null) {
             throw new NullPointerException("address cannot be null");
         }
 
-        if (customer == null) {
-            throw new NullPointerException("customer cannot be null");
-        }
-
         return retrofitService
-            .updateAddress(customer.getId(), new AddressWrapper(address), address.getAddressId())
+            .updateAddress(customerId, new AddressWrapper(address), address.getId())
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<AddressWrapper, Address>())
             .onErrorResumeNext(new BuyClientExceptionHandler<Address>())

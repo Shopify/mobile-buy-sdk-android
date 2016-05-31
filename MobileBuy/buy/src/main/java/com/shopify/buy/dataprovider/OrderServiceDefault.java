@@ -23,10 +23,8 @@
  */
 package com.shopify.buy.dataprovider;
 
-import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
-import com.shopify.buy.model.Customer;
 import com.shopify.buy.model.Order;
 import com.shopify.buy.model.internal.OrderWrapper;
 import com.shopify.buy.model.internal.OrdersWrapper;
@@ -59,18 +57,18 @@ final class OrderServiceDefault implements OrderService {
     }
 
     @Override
-    public CancellableTask getOrders(final Customer customer, final Callback<List<Order>> callback) {
-        return new CancellableTaskSubscriptionWrapper(getOrders(customer).subscribe(new InternalCallbackSubscriber<>(callback)));
+    public CancellableTask getOrders(final Long customerId, final Callback<List<Order>> callback) {
+        return new CancellableTaskSubscriptionWrapper(getOrders(customerId).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
-    public Observable<List<Order>> getOrders(final Customer customer) {
-        if (customer == null) {
-            throw new NullPointerException("customer cannot be null");
+    public Observable<List<Order>> getOrders(final Long customerId) {
+        if (customerId == null) {
+            throw new NullPointerException("customerId cannot be null");
         }
 
         return retrofitService
-            .getOrders(customer.getId())
+            .getOrders(customerId)
             .retryWhen(networkRetryPolicyProvider.provide())
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<OrdersWrapper, List<Order>>())
@@ -79,22 +77,22 @@ final class OrderServiceDefault implements OrderService {
     }
 
     @Override
-    public CancellableTask getOrder(final Customer customer, final String orderId, final Callback<Order> callback) {
-        return new CancellableTaskSubscriptionWrapper(getOrder(customer, orderId).subscribe(new InternalCallbackSubscriber<>(callback)));
+    public CancellableTask getOrder(final Long customerId, final String orderId, final Callback<Order> callback) {
+        return new CancellableTaskSubscriptionWrapper(getOrder(customerId, orderId).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
-    public Observable<Order> getOrder(final Customer customer, final String orderId) {
+    public Observable<Order> getOrder(final Long customerId, final String orderId) {
         if (TextUtils.isEmpty(orderId)) {
             throw new IllegalArgumentException("orderId cannot be empty");
         }
 
-        if (customer == null) {
-            throw new NullPointerException("customer cannot be null");
+        if (customerId == null) {
+            throw new NullPointerException("customerId cannot be null");
         }
 
         return retrofitService
-            .getOrder(customer.getId(), orderId)
+            .getOrder(customerId, orderId)
             .retryWhen(networkRetryPolicyProvider.provide())
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<OrderWrapper, Order>())

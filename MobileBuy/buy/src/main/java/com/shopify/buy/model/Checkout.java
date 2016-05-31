@@ -488,7 +488,7 @@ public class Checkout extends ShopifyObject {
     /**
      * The default reservation time on a checkout is 300 seconds (5 minutes).
      * Setting the reservation time to 0 and updating the checkout (via {@link com.shopify.buy.dataprovider.BuyClient#updateCheckout(Checkout, Callback) updateCheckoutAddressAndEmail(checkout, callback)})
-     * will release the inventory reserved by this checkout. This can also be done by calling {@link com.shopify.buy.dataprovider.BuyClient#removeProductReservationsFromCheckout(Checkout, Callback) removeProductReservationsFromCheckout(checkout, callback)}.
+     * will release the inventory reserved by this checkout. This can also be done by calling {@link com.shopify.buy.dataprovider.BuyClient#removeProductReservationsFromCheckout(String)}.
      *
      * @param reservationTime The reservation time on this checkout (in seconds).
      */

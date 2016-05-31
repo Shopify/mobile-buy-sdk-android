@@ -23,7 +23,6 @@
  */
 package com.shopify.buy.dataprovider;
 
-import com.shopify.buy.model.Address;
 import com.shopify.buy.model.Checkout;
 import com.shopify.buy.model.CreditCard;
 import com.shopify.buy.model.GiftCard;
@@ -40,7 +39,6 @@ import rx.Observable;
 public interface CheckoutService {
 
     String getWebReturnToUrl();
-
     String getWebReturnToLabel();
 
     /**
@@ -122,21 +120,21 @@ public interface CheckoutService {
      * Get the status of the payment session associated with {@code checkout}. {@code callback} will be
      * called with a boolean value indicating whether the session has completed or not.
      *
-     * @param checkout a {@link Checkout} that has been passed as a parameter to {@link #completeCheckout(PaymentToken, String, Callback)}
+     * @param checkoutToken checkout token for the {@link Checkout} to get the completion status for
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      * @return cancellable task
      */
-    CancellableTask getCheckoutCompletionStatus(Checkout checkout, final Callback<Boolean> callback);
+    CancellableTask getCheckoutCompletionStatus(String checkoutToken, final Callback<Boolean> callback);
 
     /**
      * Get the status of the payment session associated with {@code checkout}. {@code callback} will be
      * called with a boolean value indicating whether the session has completed or not.
      *
-     * @param checkout a {@link Checkout} that has been passed as a parameter to {@link #completeCheckout(PaymentToken, String, Callback)}
+     * @param checkoutToken checkout token for the {@link Checkout} to get the completion status for
      * @return cold observable that emits a Boolean that indicates whether the checkout has been completed
      *
      */
-    Observable<Boolean> getCheckoutCompletionStatus(Checkout checkout);
+    Observable<Boolean> getCheckoutCompletionStatus(String checkoutToken);
 
     /**
      * Fetch an existing Checkout from Shopify
@@ -176,7 +174,7 @@ public interface CheckoutService {
      * Post a credit card to Shopify's card server and associate it with a Checkout
      *
      * @param card     the {@link CreditCard} to associate
-     * @param checkout the {@link Checkout} to associate the card with
+     * @param checkout  the {@link Checkout} to associate the card with
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      * @return cancelable task
      */
@@ -186,7 +184,7 @@ public interface CheckoutService {
      * Post a credit card to Shopify's card server and associate it with a Checkout
      *
      * @param card     the {@link CreditCard} to associate
-     * @param checkout the {@link Checkout} to associate the card with
+     * @param checkout  the {@link Checkout} to associate the card with
      * @return cold observable that emits payment token associated with specified checkout and credit card
      */
     Observable<PaymentToken> storeCreditCard(CreditCard card, Checkout checkout);
@@ -213,38 +211,38 @@ public interface CheckoutService {
     /**
      * Remove a gift card that was previously applied to a Checkout
      *
-     * @param giftCard the {@link GiftCard} to remove from the {@link Checkout}
+     * @param giftCardId the id of the {@link GiftCard} to remove from the {@link Checkout}
      * @param checkout the {@code Checkout} to remove the {@code GiftCard} from
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      * @return cancelable task
      */
-    CancellableTask removeGiftCard(GiftCard giftCard, Checkout checkout, Callback<Checkout> callback);
+    CancellableTask removeGiftCard(Long giftCardId, Checkout checkout, Callback<Checkout> callback);
 
     /**
      * Remove a gift card that was previously applied to a Checkout
      *
-     * @param giftCard the {@link GiftCard} to remove from the {@link Checkout}
-     * @param checkout the {@code Checkout} to remove the {@code GiftCard} from
+     * @param giftCardId the id of the {@link GiftCard} to remove from the {@link Checkout}, not null
+     * @param checkout the {@code Checkout} to remove the {@code GiftCard} from, not null
      * @return cold observable that emits updated checkout
      */
-    Observable<Checkout> removeGiftCard(GiftCard giftCard, Checkout checkout);
+    Observable<Checkout> removeGiftCard(Long giftCardId, Checkout checkout);
 
     /**
-     * Convenience method to release all product inventory reservations by setting the `reservationTime` of the checkout `0` and calling {@link #updateCheckout(Checkout, Callback) updateCheckout(Checkout, Callback)}.
+     * Release all product inventory reservations associated with the checkout by setting the `reservationTime` of the checkout to `0` and calling {@link #updateCheckout(Checkout, Callback) updateCheckout(Checkout, Callback)}.
      * We recommend creating a new `Checkout` object from a `Cart` for further API calls.
      *
-     * @param checkout the {@link Checkout} to expire
+     * @param checkoutToken the token for the {@link Checkout} to expire
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      * @return cancelable task
      */
-    CancellableTask removeProductReservationsFromCheckout(Checkout checkout, Callback<Checkout> callback);
+    CancellableTask removeProductReservationsFromCheckout(String checkoutToken, Callback<Checkout> callback);
 
     /**
-     * Convenience method to release all product inventory reservations by setting the `reservationTime` of the checkout `0` and calling {@link #updateCheckout(Checkout, Callback) updateCheckout(Checkout, Callback)}.
+     * Release all product inventory reservations associated with the checkout by setting the `reservationTime` of the checkout to `0` and calling {@link #updateCheckout(Checkout, Callback) updateCheckout(Checkout, Callback)}.
      * We recommend creating a new `Checkout` object from a `Cart` for further API calls.
      *
-     * @param checkout the {@link Checkout} to expire
+     * @param checkoutToken the {@link Checkout} to expire
      * @return cold observable that emits updated checkout
      */
-    Observable<Checkout> removeProductReservationsFromCheckout(Checkout checkout);
+    Observable<Checkout> removeProductReservationsFromCheckout(String checkoutToken);
 }

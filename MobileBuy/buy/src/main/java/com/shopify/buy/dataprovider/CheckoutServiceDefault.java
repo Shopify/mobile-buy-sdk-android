@@ -25,8 +25,6 @@ package com.shopify.buy.dataprovider;
 
 import android.text.TextUtils;
 
-import com.shopify.buy.model.Address;
-import com.shopify.buy.model.Cart;
 import com.shopify.buy.model.Checkout;
 import com.shopify.buy.model.CreditCard;
 import com.shopify.buy.model.GiftCard;
@@ -209,6 +207,9 @@ final class CheckoutServiceDefault implements CheckoutService {
             throw new NullPointerException("checkout cannot be null");
         }
 
+        if (TextUtils.isEmpty(checkout.getToken())) {
+            throw new IllegalArgumentException("checkout token cannot be empty");
+        }
 
         final Checkout safeCheckout = checkout.copy();
 
@@ -245,25 +246,24 @@ final class CheckoutServiceDefault implements CheckoutService {
 
         return retrofitService
             .completeCheckout(paymentToken, checkoutToken)
-            .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<Response<CheckoutWrapper>>())
-            .compose(new UnwrapRetrofitBodyTransformer<CheckoutWrapper, Checkout>())
-            .flatMap(new Func1<Checkout, Observable<Checkout>>() {
+            .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<Response<Void>>())
+            .flatMap(new Func1<Response<Void>, Observable<Checkout>>() {
                 @Override
-                public Observable<Checkout> call(final Checkout checkout) {
-                    return getCompletedCheckout(checkout);
+                public Observable<Checkout> call(Response<Void> voidResponse) {
+                    return getCompletedCheckout(checkoutToken);
                 }
             })
             .onErrorResumeNext(new BuyClientExceptionHandler<Checkout>())
             .observeOn(callbackScheduler);
     }
 
-    private Observable<Checkout> getCompletedCheckout(final Checkout checkout) {
-        return getCheckoutCompletionStatus(checkout)
+    private Observable<Checkout> getCompletedCheckout(final String checkoutToken) {
+        return getCheckoutCompletionStatus(checkoutToken)
             .flatMap(new Func1<Boolean, Observable<Checkout>>() {
                 @Override
                 public Observable<Checkout> call(Boolean aBoolean) {
                     if (aBoolean) {
-                        return getCheckout(checkout.getToken());
+                        return getCheckout(checkoutToken);
                     }
 
                     // Poll while aBoolean == false
@@ -274,18 +274,18 @@ final class CheckoutServiceDefault implements CheckoutService {
     }
 
     @Override
-    public CancellableTask getCheckoutCompletionStatus(Checkout checkout, final Callback<Boolean> callback) {
-        return new CancellableTaskSubscriptionWrapper(getCheckoutCompletionStatus(checkout).subscribe(new InternalCallbackSubscriber<>(callback)));
+    public CancellableTask getCheckoutCompletionStatus(String checkoutToken, final Callback<Boolean> callback) {
+        return new CancellableTaskSubscriptionWrapper(getCheckoutCompletionStatus(checkoutToken).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
-    public Observable<Boolean> getCheckoutCompletionStatus(final Checkout checkout) {
-        if (checkout == null) {
-            throw new NullPointerException("checkout cannot be null");
+    public Observable<Boolean> getCheckoutCompletionStatus(final String checkoutToken) {
+        if (TextUtils.isEmpty(checkoutToken)) {
+            throw new IllegalArgumentException("checkoutToken cannot be empty");
         }
 
         return retrofitService
-            .getCheckoutCompletionStatus(checkout.getToken())
+            .getCheckoutCompletionStatus(checkoutToken)
             .retryWhen(networkRetryPolicyProvider.provide())
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .map(new Func1<Response<Void>, Boolean>() {
@@ -329,7 +329,11 @@ final class CheckoutServiceDefault implements CheckoutService {
             throw new NullPointerException("checkout cannot be null");
         }
 
-        final Checkout cleanCheckout = checkout.copy();
+        if (TextUtils.isEmpty(checkout.getToken())) {
+            throw new IllegalArgumentException("checkout token cannot be empty");
+        }
+
+        final Checkout safeCheckout = checkout.copy();
         final GiftCard giftCard = new GiftCard(giftCardCode);
         return retrofitService
             .applyGiftCard(new GiftCardWrapper(giftCard), checkout.getToken())
@@ -339,10 +343,10 @@ final class CheckoutServiceDefault implements CheckoutService {
                 @Override
                 public Checkout call(GiftCard giftCard) {
                     if (giftCard != null) {
-                        cleanCheckout.addGiftCard(giftCard);
-                        cleanCheckout.setPaymentDue(giftCard.getCheckout().getPaymentDue());
+                        safeCheckout.addGiftCard(giftCard);
+                        safeCheckout.setPaymentDue(giftCard.getCheckout().getPaymentDue());
                     }
-                    return cleanCheckout;
+                    return safeCheckout;
                 }
             })
             .onErrorResumeNext(new BuyClientExceptionHandler<Checkout>())
@@ -350,23 +354,28 @@ final class CheckoutServiceDefault implements CheckoutService {
     }
 
     @Override
-    public CancellableTask removeGiftCard(final GiftCard giftCard, final Checkout checkout, final Callback<Checkout> callback) {
-        return new CancellableTaskSubscriptionWrapper(removeGiftCard(giftCard, checkout).subscribe(new InternalCallbackSubscriber<>(callback)));
+    public CancellableTask removeGiftCard(final Long giftCardId, final Checkout checkout, final Callback<Checkout> callback) {
+        return new CancellableTaskSubscriptionWrapper(removeGiftCard(giftCardId, checkout).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
-    public Observable<Checkout> removeGiftCard(final GiftCard giftCard, final Checkout checkout) {
+    public Observable<Checkout> removeGiftCard(final Long giftCardId, final Checkout checkout) {
         if (checkout == null) {
             throw new NullPointerException("checkout cannot be null");
         }
 
-        if (giftCard == null) {
+        if (TextUtils.isEmpty(checkout.getToken())) {
+            throw new IllegalArgumentException("checkout token cannot be empty");
+        }
+
+        if (giftCardId == null) {
             throw new NullPointerException("giftCard cannot be null");
         }
 
         final Checkout safeCheckout = checkout.copy();
+
         return retrofitService
-            .removeGiftCard(giftCard.getId(), safeCheckout.getToken())
+            .removeGiftCard(giftCardId, safeCheckout.getToken())
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<GiftCardWrapper, GiftCard>())
             .map(new Func1<GiftCard, Checkout>() {
@@ -384,36 +393,19 @@ final class CheckoutServiceDefault implements CheckoutService {
     }
 
     @Override
-    public CancellableTask removeProductReservationsFromCheckout(final Checkout checkout, final Callback<Checkout> callback) {
-        if (checkout == null || TextUtils.isEmpty(checkout.getToken())) {
-            callback.failure(null);
-            return new CancellableTask() {
-                @Override
-                public void cancel() {
-                }
-            };
-        } else {
-            checkout.setReservationTime(0);
-
-            final Checkout expiredCheckout = new Checkout();
-            expiredCheckout.setToken(checkout.getToken());
-            expiredCheckout.setReservationTime(0);
-            return updateCheckout(expiredCheckout, callback);
-        }
+    public CancellableTask removeProductReservationsFromCheckout(final String checkoutToken, final Callback<Checkout> callback) {
+        return new CancellableTaskSubscriptionWrapper(removeProductReservationsFromCheckout(checkoutToken).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
-    public Observable<Checkout> removeProductReservationsFromCheckout(final Checkout checkout) {
-        if (checkout == null || TextUtils.isEmpty(checkout.getToken())) {
-            return Observable.error(new RuntimeException("Missing checkout token"));
-        } else {
-            checkout.setReservationTime(0);
-
-            final Checkout expiredCheckout = new Checkout();
-            expiredCheckout.setToken(checkout.getToken());
-            expiredCheckout.setReservationTime(0);
-
-            return updateCheckout(expiredCheckout);
+    public Observable<Checkout> removeProductReservationsFromCheckout(final String checkoutToken) {
+        if (TextUtils.isEmpty(checkoutToken)) {
+            throw new IllegalArgumentException("checkoutToken cannot be empty");
         }
+
+        final Checkout expiredCheckout = new Checkout(checkoutToken);
+        expiredCheckout.setReservationTime(0);
+
+        return updateCheckout(expiredCheckout);
     }
 }
