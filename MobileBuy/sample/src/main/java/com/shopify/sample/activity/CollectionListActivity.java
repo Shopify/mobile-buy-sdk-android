@@ -172,7 +172,7 @@ public class CollectionListActivity extends SampleListActivity {
      *
      * @param collectionId
      */
-    private void onCollectionClicked(String collectionId) {
+    private void onCollectionClicked(Long collectionId) {
         Intent intent = new Intent(this, ProductListActivity.class);
         if (collectionId != null) {
             intent.putExtra(ProductListActivity.EXTRA_COLLECTION_ID, collectionId);
