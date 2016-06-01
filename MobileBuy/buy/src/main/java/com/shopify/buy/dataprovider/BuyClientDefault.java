@@ -399,12 +399,12 @@ final class BuyClientDefault implements BuyClient {
     }
 
     @Override
-    public CancellableTask getOrder(Long customerId, String orderId, Callback<Order> callback) {
+    public CancellableTask getOrder(Long customerId, Long orderId, Callback<Order> callback) {
         return orderService.getOrder(customerId, orderId, callback);
     }
 
     @Override
-    public Observable<Order> getOrder(Long customerId, String orderId) {
+    public Observable<Order> getOrder(Long customerId, Long orderId) {
         return orderService.getOrder(customerId, orderId);
     }
 
@@ -418,16 +418,6 @@ final class BuyClientDefault implements BuyClient {
     @Override
     public Observable<Address> createAddress(final Long customerId, final Address address) {
         return addressService.createAddress(customerId, address);
-    }
-
-    @Override
-    public CancellableTask deleteAddress(final Long customerId, final Long addressId, final Callback<Void> callback) {
-        return addressService.deleteAddress(customerId, addressId, callback);
-    }
-
-    @Override
-    public Observable<Void> deleteAddress(final Long customerId, final Long addressId) {
-        return addressService.deleteAddress(customerId, addressId);
     }
 
     @Override
@@ -453,6 +443,16 @@ final class BuyClientDefault implements BuyClient {
     @Override
     public CancellableTask updateAddress(final Long customerId, final Address address, final Callback<Address> callback) {
         return addressService.updateAddress(customerId, address, callback);
+    }
+
+    @Override
+    public CancellableTask deleteAddress(final Long customerId, final Long addressId, final Callback<Void> callback) {
+        return addressService.deleteAddress(customerId, addressId, callback);
+    }
+
+    @Override
+    public Observable<Void> deleteAddress(final Long customerId, final Long addressId) {
+        return addressService.deleteAddress(customerId, addressId);
     }
 
     public Observable<Address> updateAddress(final Long customerId, final Address address) {
@@ -488,42 +488,42 @@ final class BuyClientDefault implements BuyClient {
     }
 
     @Override
-    public CancellableTask getProduct(String productId, Callback<Product> callback) {
+    public CancellableTask getProduct(Long productId, Callback<Product> callback) {
         return productService.getProduct(productId, callback);
     }
 
     @Override
-    public Observable<Product> getProduct(String productId) {
+    public Observable<Product> getProduct(Long productId) {
         return productService.getProduct(productId);
     }
 
     @Override
-    public CancellableTask getProducts(List<String> productIds, Callback<List<Product>> callback) {
+    public CancellableTask getProducts(List<Long> productIds, Callback<List<Product>> callback) {
         return productService.getProducts(productIds, callback);
     }
 
     @Override
-    public Observable<List<Product>> getProducts(List<String> productIds) {
+    public Observable<List<Product>> getProducts(List<Long> productIds) {
         return productService.getProducts(productIds);
     }
 
     @Override
-    public CancellableTask getProducts(int page, String collectionId, Callback<List<Product>> callback) {
+    public CancellableTask getProducts(int page, Long collectionId, Callback<List<Product>> callback) {
         return productService.getProducts(page, collectionId, callback);
     }
 
     @Override
-    public Observable<List<Product>> getProducts(int page, String collectionId) {
+    public Observable<List<Product>> getProducts(int page, Long collectionId) {
         return productService.getProducts(page, collectionId);
     }
 
     @Override
-    public CancellableTask getProducts(int page, String collectionId, SortOrder sortOrder, Callback<List<Product>> callback) {
+    public CancellableTask getProducts(int page, Long collectionId, SortOrder sortOrder, Callback<List<Product>> callback) {
         return productService.getProducts(page, collectionId, sortOrder, callback);
     }
 
     @Override
-    public Observable<List<Product>> getProducts(int page, String collectionId, SortOrder sortOrder) {
+    public Observable<List<Product>> getProducts(int page, Long collectionId, SortOrder sortOrder) {
         return productService.getProducts(page, collectionId, sortOrder);
     }
 

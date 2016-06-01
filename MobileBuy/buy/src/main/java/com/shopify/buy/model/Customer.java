@@ -82,7 +82,7 @@ public class Customer extends ShopifyObject {
     private Set<String> tagSet;
 
     @SerializedName("last_order_id")
-    private String lastOrderId;
+    private Long lastOrderId;
 
     @SerializedName("last_order_name")
     private String lastOrderName;
@@ -198,7 +198,7 @@ public class Customer extends ShopifyObject {
     /**
      * @return The id of the customer's last order.
      */
-    public String getLastOrderId() {
+    public Long getLastOrderId() {
         return lastOrderId;
     }
 

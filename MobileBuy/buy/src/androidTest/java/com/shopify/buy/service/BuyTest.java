@@ -881,7 +881,7 @@ public class BuyTest extends ShopifyAndroidTestCase {
             public void success(Checkout checkout) {
                 assertNotNull(checkout);
                 assertNotNull(checkout.getOrder());
-                assertNotNull(checkout.getOrder().getOrderId());
+                assertNotNull(checkout.getOrder().getId());
                 BuyTest.this.checkout = checkout;
                 latch.countDown();
             }

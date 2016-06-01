@@ -36,7 +36,6 @@ import android.support.annotation.Nullable;
 import android.support.customtabs.CustomTabsIntent;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -45,10 +44,10 @@ import android.widget.Button;
 
 import com.shopify.buy.R;
 import com.shopify.buy.customTabs.CustomTabActivityHelper;
+import com.shopify.buy.dataprovider.BuyClient;
 import com.shopify.buy.dataprovider.BuyClientBuilder;
 import com.shopify.buy.dataprovider.BuyClientError;
 import com.shopify.buy.dataprovider.Callback;
-import com.shopify.buy.dataprovider.BuyClient;
 import com.shopify.buy.model.Cart;
 import com.shopify.buy.model.Checkout;
 import com.shopify.buy.model.Product;
@@ -75,7 +74,7 @@ public class ProductDetailsFragment extends Fragment {
 
     private Product product;
     private ProductVariant variant;
-    private String productId;
+    private Long productId;
     private BuyClient buyClient;
     private Shop shop;
 
@@ -128,7 +127,7 @@ public class ProductDetailsFragment extends Fragment {
         super.onStart();
 
         // fetch the Shop and Product data if we don't have them already
-        if (product == null && !TextUtils.isEmpty(productId)) {
+        if (product == null && productId != null) {
             fetchProduct(productId);
         }
         if (shop == null) {
@@ -206,7 +205,7 @@ public class ProductDetailsFragment extends Fragment {
         String applicationName = bundle.getString(ProductDetailsConfig.EXTRA_SHOP_APPLICATION_NAME);
 
         // Retrieve the id of the Product we are going to display
-        productId = bundle.getString(ProductDetailsConfig.EXTRA_SHOP_PRODUCT_ID);
+        productId = bundle.getLong(ProductDetailsConfig.EXTRA_SHOP_PRODUCT_ID, -1);
 
         // If we have a full product object in the bundle, we don't need to fetch it
         if (bundle.containsKey(ProductDetailsConfig.EXTRA_SHOP_PRODUCT)) {
@@ -283,7 +282,7 @@ public class ProductDetailsFragment extends Fragment {
         });
     }
 
-    private void fetchProduct(final String productId) {
+    private void fetchProduct(final Long productId) {
         buyClient.getProduct(productId, new Callback<Product>() {
             @Override
             public void success(Product product) {
