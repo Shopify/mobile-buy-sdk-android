@@ -37,6 +37,6 @@ interface OrderRetrofitService {
     Observable<Response<OrdersWrapper>> getOrders(@Path("customerId") Long customerId);
 
     @GET("api/customers/{customerId}/orders/{orderId}")
-    Observable<Response<OrderWrapper>> getOrder(@Path("customerId") Long customerId, @Path("orderId") String orderId);
+    Observable<Response<OrderWrapper>> getOrder(@Path("customerId") Long customerId, @Path("orderId") Long orderId);
 
 }

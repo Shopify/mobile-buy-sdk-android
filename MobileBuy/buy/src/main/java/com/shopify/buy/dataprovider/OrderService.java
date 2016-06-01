@@ -60,7 +60,7 @@ public interface OrderService {
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      * @return cancelable task
      */
-    CancellableTask getOrder(Long customerId, String orderId, Callback<Order> callback);
+    CancellableTask getOrder(Long customerId, Long orderId, Callback<Order> callback);
 
     /**
      * Fetch an existing Order from Shopify
@@ -69,6 +69,6 @@ public interface OrderService {
      * @param orderId  the identifier of the {@link Order} to retrieve
      * @return cold observable that emits requested existing order
      */
-    Observable<Order> getOrder(Long customerId, String orderId);
+    Observable<Order> getOrder(Long customerId, Long orderId);
 
 }

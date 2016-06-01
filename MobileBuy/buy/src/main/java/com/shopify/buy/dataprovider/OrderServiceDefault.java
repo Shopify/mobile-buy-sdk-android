@@ -77,14 +77,14 @@ final class OrderServiceDefault implements OrderService {
     }
 
     @Override
-    public CancellableTask getOrder(final Long customerId, final String orderId, final Callback<Order> callback) {
+    public CancellableTask getOrder(final Long customerId, final Long orderId, final Callback<Order> callback) {
         return new CancellableTaskSubscriptionWrapper(getOrder(customerId, orderId).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
-    public Observable<Order> getOrder(final Long customerId, final String orderId) {
-        if (TextUtils.isEmpty(orderId)) {
-            throw new IllegalArgumentException("orderId cannot be empty");
+    public Observable<Order> getOrder(final Long customerId, final Long orderId) {
+        if (orderId == null) {
+            throw new NullPointerException("orderId cannot be null");
         }
 
         if (customerId == null) {

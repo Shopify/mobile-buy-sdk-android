@@ -399,12 +399,12 @@ final class BuyClientDefault implements BuyClient {
     }
 
     @Override
-    public CancellableTask getOrder(Long customerId, String orderId, Callback<Order> callback) {
+    public CancellableTask getOrder(Long customerId, Long orderId, Callback<Order> callback) {
         return orderService.getOrder(customerId, orderId, callback);
     }
 
     @Override
-    public Observable<Order> getOrder(Long customerId, String orderId) {
+    public Observable<Order> getOrder(Long customerId, Long orderId) {
         return orderService.getOrder(customerId, orderId);
     }
 
