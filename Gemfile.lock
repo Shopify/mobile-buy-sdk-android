@@ -6,7 +6,7 @@ GIT
 
 GIT
   remote: git@github.com:jules2689/fastlane.git
-  revision: 9a001e8db9f4dd7222ce4eeb7cad8bc2d36737fd
+  revision: 5a12ade5ccb2fd3b3a63c2c374dfae29030ed0be
   specs:
     cert (1.4.1)
       fastlane_core (>= 0.29.1, < 1.0.0)
@@ -22,7 +22,7 @@ GIT
       fastlane_core (>= 0.43.1, < 1.0.0)
       plist (~> 3.1.0)
       spaceship (>= 0.26.2, < 1.0.0)
-    fastlane (1.87.1)
+    fastlane (1.89.0)
       addressable (~> 2.3)
       cert (>= 1.4.1, < 2.0.0)
       credentials_manager (>= 0.16.0, < 1.0.0)
@@ -48,7 +48,7 @@ GIT
       terminal-table (~> 1.4.5)
       xcodeproj (>= 0.20, < 2.0.0)
       xcpretty (>= 0.2.1)
-    fastlane_core (0.43.3)
+    fastlane_core (0.43.5)
       babosa
       colored
       commander (= 4.3.5)
@@ -61,7 +61,7 @@ GIT
       rubyzip (~> 1.1.6)
       sentry-raven (~> 0.15)
       terminal-table (~> 1.4.5)
-    frameit (2.6.2)
+    frameit (2.6.3)
       deliver (> 0.3)
       fastimage (~> 1.6.3)
       fastlane_core (>= 0.36.1, < 1.0.0)
@@ -107,7 +107,7 @@ GIT
       fastlane_core (>= 0.36.1, < 1.0.0)
       plist (~> 3.1.0)
       xcpretty (>= 0.2.1)
-    spaceship (0.26.2)
+    spaceship (0.26.3)
       colored
       credentials_manager (>= 0.9.0)
       faraday (~> 0.9)
@@ -116,9 +116,9 @@ GIT
       fastimage (~> 1.6)
       multi_xml (~> 0.5)
       plist (~> 3.1)
-    supply (0.6.2)
+    supply (0.7.0)
       credentials_manager (>= 0.15.0)
-      fastlane_core (>= 0.40.0)
+      fastlane_core (>= 0.43.4)
       google-api-client (~> 0.9.1)
 
 GEM
@@ -149,7 +149,7 @@ GEM
       faraday (>= 0.7.4, < 0.10)
     fastimage (1.6.8)
       addressable (~> 2.3, >= 2.3.5)
-    google-api-client (0.9.6)
+    google-api-client (0.9.8)
       addressable (~> 2.3)
       googleauth (~> 0.5)
       httpclient (~> 2.7)
@@ -192,12 +192,12 @@ GEM
       little-plugger (~> 1.1)
       multi_json (~> 1.10)
     memoist (0.14.0)
-    mime-types (3.0)
+    mime-types (3.1)
       mime-types-data (~> 3.2015)
-    mime-types-data (3.2016.0221)
+    mime-types-data (3.2016.0521)
     mini_magick (4.5.1)
-    minitest (5.8.4)
-    multi_json (1.12.0)
+    minitest (5.9.0)
+    multi_json (1.12.1)
     multi_xml (0.5.5)
     multipart-post (2.0.0)
     net-sftp (2.1.2)

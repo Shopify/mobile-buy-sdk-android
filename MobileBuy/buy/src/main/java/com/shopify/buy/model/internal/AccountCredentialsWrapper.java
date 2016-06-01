@@ -40,5 +40,5 @@ public class AccountCredentialsWrapper {
     }
 
     // Empty constructor required by Gson
-    public AccountCredentialsWrapper(){};
+    public AccountCredentialsWrapper(){}
 }

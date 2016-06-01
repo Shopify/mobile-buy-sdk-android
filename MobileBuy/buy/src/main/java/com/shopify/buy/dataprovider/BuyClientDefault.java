@@ -86,6 +86,8 @@ final class BuyClientDefault implements BuyClient {
             final int networkRequestRetryMaxCount,
             final long networkRequestRetryDelayMs,
             final float networkRequestRetryBackoffMultiplier,
+            final long httpConnectionTimeoutMs,
+            final long httpReadWriteTimeoutMs,
             final Interceptor... interceptors
     ) {
         this.apiKey = apiKey;
@@ -113,9 +115,9 @@ final class BuyClientDefault implements BuyClient {
         };
 
         final OkHttpClient.Builder builder = new OkHttpClient.Builder()
-                .connectTimeout(30, TimeUnit.SECONDS)
-                .readTimeout(60, TimeUnit.SECONDS)
-                .writeTimeout(60, TimeUnit.SECONDS)
+                .connectTimeout(httpConnectionTimeoutMs, TimeUnit.MILLISECONDS)
+                .readTimeout(httpReadWriteTimeoutMs, TimeUnit.MILLISECONDS)
+                .writeTimeout(httpReadWriteTimeoutMs, TimeUnit.MILLISECONDS)
                 .addInterceptor(requestInterceptor);
 
         if (interceptors != null) {
@@ -268,12 +270,12 @@ final class BuyClientDefault implements BuyClient {
     }
 
     @Override
-    public CancellableTask removeGiftCard(final String giftCardId, final Checkout checkout, final Callback<Checkout> callback) {
+    public CancellableTask removeGiftCard(final Long giftCardId, final Checkout checkout, final Callback<Checkout> callback) {
         return checkoutService.removeGiftCard(giftCardId, checkout, callback);
     }
 
     @Override
-    public Observable<Checkout> removeGiftCard(final String giftCardId, final Checkout checkout) {
+    public Observable<Checkout> removeGiftCard(final Long giftCardId, final Checkout checkout) {
         return checkoutService.removeGiftCard(giftCardId, checkout);
     }
 
@@ -444,6 +446,15 @@ final class BuyClientDefault implements BuyClient {
     }
 
     @Override
+    public CancellableTask deleteAddress(final Long customerId, final Long addressId, final Callback<Void> callback) {
+        return addressService.deleteAddress(customerId, addressId, callback);
+    }
+
+    @Override
+    public Observable<Void> deleteAddress(final Long customerId, final Long addressId) {
+        return addressService.deleteAddress(customerId, addressId);
+    }
+
     public Observable<Address> updateAddress(final Long customerId, final Address address) {
         return addressService.updateAddress(customerId, address);
     }
