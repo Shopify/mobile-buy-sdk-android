@@ -103,6 +103,13 @@ public class Order extends ShopifyObject {
     }
 
     /**
+     * @return Numerical identifier unique to the shop.
+     */
+    public String getOrderNumber() {
+        return orderNumber;
+    }
+
+    /**
      * @return The date and time when the order was processed.
      */
     public Date getProcessedAt() {
