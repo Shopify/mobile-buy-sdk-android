@@ -33,7 +33,7 @@ import java.util.Date;
 
 /**
  * Represents a collection of {@link Product}.
- * In order to get the list of products in a collection, use {@link com.shopify.buy.dataprovider.BuyClient#getProducts(int, String, Callback)} .
+ * In order to get the list of products in a collection, use {@link com.shopify.buy.dataprovider.BuyClient#getProducts(int, Long, Callback)} .
  */
 public class Collection extends ShopifyObject {
 
@@ -68,7 +68,7 @@ public class Collection extends ShopifyObject {
     protected boolean published;
 
     @SerializedName("collection_id")
-    protected String collectionId;
+    protected Long collectionId;
 
     @SerializedName("created_at")
     protected Date createdAtDate;
@@ -157,7 +157,7 @@ public class Collection extends ShopifyObject {
     /**
      * @return The unique identifier for this collection.
      */
-    public String getCollectionId() {
+    public Long getCollectionId() {
         return collectionId;
     }
 

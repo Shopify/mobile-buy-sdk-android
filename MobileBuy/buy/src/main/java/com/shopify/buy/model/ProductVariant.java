@@ -56,7 +56,7 @@ public class ProductVariant extends ShopifyObject {
 
     protected int position;
 
-    protected long productId;
+    protected Long productId;
 
     @SerializedName("created_at")
     protected Date createdAtDate;

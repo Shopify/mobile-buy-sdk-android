@@ -141,7 +141,7 @@ public class Checkout extends ShopifyObject {
     private CreditCard creditCard;
 
     @SerializedName("customer_id")
-    private String customerId;
+    private Long customerId;
 
     @SerializedName("privacy_policy_url")
     private String privacyPolicyUrl;
@@ -230,7 +230,7 @@ public class Checkout extends ShopifyObject {
     /**
      * @return Customer ID associated with the checkout.
      */
-    public String getCustomerId() {
+    public Long getCustomerId() {
         return customerId;
     }
 
@@ -467,7 +467,7 @@ public class Checkout extends ShopifyObject {
     /**
      * @param customerId The customer's id.
      */
-    public void setCustomerId(String customerId) {
+    public void setCustomerId(Long customerId) {
         this.customerId = customerId;
     }
 

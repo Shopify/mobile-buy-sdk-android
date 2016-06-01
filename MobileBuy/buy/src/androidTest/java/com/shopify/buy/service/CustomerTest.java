@@ -266,7 +266,7 @@ public class CustomerTest extends ShopifyAndroidTestCase {
     public void testGetOrder() throws InterruptedException {
         testGetCustomerOrders();
 
-        String orderId = orders.get(0).getOrderId();
+        Long orderId = orders.get(0).getId();
 
         final CountDownLatch latch = new CountDownLatch(1);
 

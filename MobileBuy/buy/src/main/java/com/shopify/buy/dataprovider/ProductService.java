@@ -83,7 +83,7 @@ public interface ProductService {
      * @param callback  the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      * @return cancelable task
      */
-    CancellableTask getProduct(String productId, Callback<Product> callback);
+    CancellableTask getProduct(Long productId, Callback<Product> callback);
 
     /**
      * Fetch a single Product
@@ -91,7 +91,7 @@ public interface ProductService {
      * @param productId the productId for the product to fetch
      * @return cold observable that emits requested single product
      */
-    Observable<Product> getProduct(String productId);
+    Observable<Product> getProduct(Long productId);
 
     /**
      * Fetch a list of Products
@@ -100,7 +100,7 @@ public interface ProductService {
      * @param callback   the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      * @return cancelable task
      */
-    CancellableTask getProducts(List<String> productIds, Callback<List<Product>> callback);
+    CancellableTask getProducts(List<Long> productIds, Callback<List<Product>> callback);
 
     /**
      * Fetch a list of Products
@@ -108,7 +108,7 @@ public interface ProductService {
      * @param productIds a List of the productIds to fetch
      * @return cold observable that emits requested list of products
      */
-    Observable<List<Product>> getProducts(List<String> productIds);
+    Observable<List<Product>> getProducts(List<Long> productIds);
 
     /**
      * Fetch the list of Products in a Collection using the sort order defined in the shop admin
@@ -118,7 +118,7 @@ public interface ProductService {
      * @param callback     the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      * @return cancelable task
      */
-    CancellableTask getProducts(int page, String collectionId, Callback<List<Product>> callback);
+    CancellableTask getProducts(int page, Long collectionId, Callback<List<Product>> callback);
 
     /**
      * Fetch the list of Products in a Collection using the sort order defined in the shop admin
@@ -127,7 +127,7 @@ public interface ProductService {
      * @param collectionId the collectionId that we want to fetch products for
      * @return cold observable that emits requested list of products
      */
-    Observable<List<Product>> getProducts(int page, String collectionId);
+    Observable<List<Product>> getProducts(int page, Long collectionId);
 
     /**
      * Fetch the list of Products in a Collection
@@ -138,7 +138,7 @@ public interface ProductService {
      * @param callback     the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      * @return cancelable task
      */
-    CancellableTask getProducts(int page, String collectionId, Collection.SortOrder sortOrder, Callback<List<Product>> callback);
+    CancellableTask getProducts(int page, Long collectionId, Collection.SortOrder sortOrder, Callback<List<Product>> callback);
 
     /**
      * Fetch the list of Products in a Collection
@@ -148,7 +148,7 @@ public interface ProductService {
      * @param sortOrder    the sort order for the collection.
      * @return cold observable that emits requested list of products
      */
-    Observable<List<Product>> getProducts(int page, String collectionId, Collection.SortOrder sortOrder);
+    Observable<List<Product>> getProducts(int page, Long collectionId, Collection.SortOrder sortOrder);
 
     /**
      * Fetch a page of collections

@@ -48,7 +48,7 @@ import java.util.Set;
 public class Product extends ShopifyObject {
 
     @SerializedName("product_id")
-    protected String productId;
+    protected Long productId;
 
     protected String title;
 
@@ -99,7 +99,7 @@ public class Product extends ShopifyObject {
     /**
      * @return The unique identifier for this product.
      */
-    public String getProductId() {
+    public Long getProductId() {
         return productId;
     }
 
@@ -393,7 +393,7 @@ public class Product extends ShopifyObject {
 
         if (variants != null) {
             for (ProductVariant variant : variants) {
-                variant.productId = Long.parseLong(product.productId);
+                variant.productId = product.productId;
                 variant.productTitle = product.getTitle();
 
                 Image image = product.getImage(variant);
