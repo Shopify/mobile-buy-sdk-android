@@ -82,6 +82,11 @@ public class CustomerTest extends ShopifyAndroidTestCase {
                 assertEquals(randomCustomer.getEmail(), customer.getEmail());
                 assertEquals(randomCustomer.getFirstName(), customer.getFirstName());
                 assertEquals(randomCustomer.getLastName(), customer.getLastName());
+
+                assertNotNull(buyClient.getCustomerToken());
+                assertEquals(false, buyClient.getCustomerToken().getAccessToken().isEmpty());
+                assertEquals(customer.getId(), buyClient.getCustomerToken().getCustomerId());
+
                 latch.countDown();
             }
 

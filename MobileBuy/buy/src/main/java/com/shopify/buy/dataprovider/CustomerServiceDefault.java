@@ -91,6 +91,18 @@ final class CustomerServiceDefault implements CustomerService {
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<CustomerWrapper, Customer>())
             .onErrorResumeNext(new BuyClientExceptionHandler<Customer>())
+            .flatMap(new Func1<Customer, Observable<Customer>>() {
+                @Override
+                public Observable<Customer> call(final Customer customer) {
+                    return loginCustomer(accountCredentials)
+                        .map(new Func1<CustomerToken, Customer>() {
+                            @Override
+                            public Customer call(CustomerToken customerToken) {
+                                return customer;
+                            }
+                        });
+                }
+            })
             .observeOn(callbackScheduler);
     }
 
@@ -168,14 +180,14 @@ final class CustomerServiceDefault implements CustomerService {
             .retryWhen(networkRetryPolicyProvider.provide())
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<CustomerTokenWrapper, CustomerToken>())
+            .onErrorResumeNext(new BuyClientExceptionHandler<CustomerToken>())
+            .observeOn(callbackScheduler)
             .doOnNext(new Action1<CustomerToken>() {
                 @Override
                 public void call(CustomerToken token) {
                     customerTokenRef.set(token);
                 }
-            })
-            .onErrorResumeNext(new BuyClientExceptionHandler<CustomerToken>())
-            .observeOn(callbackScheduler);
+            });
     }
 
     @Override
