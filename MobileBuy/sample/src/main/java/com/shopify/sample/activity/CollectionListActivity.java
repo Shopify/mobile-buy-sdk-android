@@ -127,6 +127,10 @@ public class CollectionListActivity extends SampleListActivity {
                 return true;
             }
 
+            case R.id.action_orders:
+                onOrdersClick();
+                return true;
+
             default:
                 return super.onMenuItemSelected(featureId, item);
         }
@@ -148,7 +152,6 @@ public class CollectionListActivity extends SampleListActivity {
                 for (Collection collection : collections) {
                     collectionTitles.add(collection.getTitle());
                 }
-                collectionTitles.add(getString(R.string.collection_list_orders));
 
                 listView.setAdapter(new ArrayAdapter<>(CollectionListActivity.this, R.layout.simple_list_item, collectionTitles));
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -156,8 +159,6 @@ public class CollectionListActivity extends SampleListActivity {
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                         if (position == 0) {
                             onCollectionClicked(null);
-                        } else if (position == collectionTitles.size() - 1) {
-                            onOrdersClick();
                         } else {
                             onCollectionClicked(collections.get(position - 1).getCollectionId());
                         }
