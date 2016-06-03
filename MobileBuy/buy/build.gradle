@@ -132,7 +132,7 @@ android {
 
         if (variant.name.equals('release')) {
 
-            task("javadoc", type: Javadoc) {
+            task("javadoc", type: Javadoc, dependsOn: assembleRelease) {
                 description "Generate Javadoc"
                 title = "Mobile Buy SDK"
                 source = android.sourceSets.main.java.srcDirs
@@ -140,10 +140,16 @@ android {
                 def androidJar = "${android.sdkDirectory}/platforms/${android.compileSdkVersion}/android.jar"
                 classpath = files(variant.javaCompile.classpath.files) + files(androidJar)
 
+                options {
+                    linksOffline("http://d.android.com/reference", "${android.sdkDirectory}/docs/reference")
+                    links("http://square.github.io/retrofit/2.x/retrofit/")
+                }
+
                 exclude('**/customTabs/**')
+                exclude('**/BuildConfig.java')
             }
 
-            task("javadocJar", type: Jar) {
+            task("javadocJar", type: Jar, dependsOn: javadoc) {
                 description "Bundles Javadoc into zip"
                 classifier = "javadoc"
                 baseName = 'buy'
@@ -154,7 +160,7 @@ android {
                 archives project.javadocJar
             }
 
-            task("archiveReleasePackage", type: Zip, dependsOn: [assembleRelease, javadocJar]) {
+            task("archiveReleasePackage", type: Zip, dependsOn: [javadocJar]) {
                 baseName = "mobile-buy-sdk-android"
 
                 from("./build/libs") {
@@ -192,7 +198,6 @@ android {
                 ignoreFailures = false
             }
         }
-
     }
 
     sourceSets { main { assets.srcDirs = ['src/main/assets', 'src/androidTest/assets/'] } }
