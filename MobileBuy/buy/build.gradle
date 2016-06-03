@@ -108,7 +108,7 @@ android {
             buildConfigField "String", "SHOP_DOMAIN", "\"" + shopDomain.toString() + "\""
             buildConfigField "String", "API_KEY", "\"" + apiKey.toString() + "\""
             buildConfigField "String", "APP_ID", "\"" + appId.toString() + "\""
-            buildConfigField "String", "ANDROID_PAY_PUBLIC_KEY",  "\"" + androidPayPublicKey.toString() + "\""
+            buildConfigField "String", "ANDROID_PAY_PUBLIC_KEY", "\"" + androidPayPublicKey.toString() + "\""
 
             // do not enable test coverage for production builds as it modifies the classes to add agents and it crashes
             testCoverageEnabled true
@@ -129,6 +129,75 @@ android {
                 output.outputFile = new File(outputFile.parent, fileName)
             }
         }
+
+        if (variant.name.equals('release')) {
+
+            task("javadoc", type: Javadoc, dependsOn: assembleRelease) {
+                description "Generate Javadoc"
+                title = "Mobile Buy SDK"
+                source = android.sourceSets.main.java.srcDirs
+
+                def androidJar = "${android.sdkDirectory}/platforms/${android.compileSdkVersion}/android.jar"
+                classpath = files(variant.javaCompile.classpath.files) + files(androidJar)
+
+                options {
+                    linksOffline("http://d.android.com/reference", "${android.sdkDirectory}/docs/reference")
+                    links("http://square.github.io/retrofit/2.x/retrofit/")
+                }
+
+                exclude('**/customTabs/**')
+                exclude('**/BuildConfig.java')
+            }
+
+            task("javadocJar", type: Jar, dependsOn: javadoc) {
+                description "Bundles Javadoc into zip"
+                classifier = "javadoc"
+                baseName = 'buy'
+                from tasks["javadoc"]
+            }
+
+            artifacts {
+                archives project.javadocJar
+            }
+
+            task("archiveReleasePackage", type: Zip, dependsOn: [javadocJar]) {
+                baseName = "mobile-buy-sdk-android"
+
+                from("./build/libs") {
+                    include javadocJar.getArchiveName()
+                }
+
+                from("./build/docs") {
+                    include 'javadoc/**'
+                }
+
+                from("./build/outputs/aar") {
+                    include "buy-" + version + ".aar"
+                }
+
+                from("..") {
+                    include "sample/src/main/**"
+                    include "sample/.gitignore"
+                    include "sample/build.gradle.packaging"
+                    include "sample/proguard-rules.pro"
+
+                    rename "build.gradle.packaging", "build.gradle"
+                }
+
+                from("../..") {
+                    include "LICENSE"
+                    include "NOTICE"
+                }
+
+                into(baseName + "-" + version)
+            }
+        }
+
+        project.gradle.taskGraph.whenReady {
+            connectedDebugAndroidTest {
+                ignoreFailures = false
+            }
+        }
     }
 
     sourceSets { main { assets.srcDirs = ['src/main/assets', 'src/androidTest/assets/'] } }
@@ -146,99 +215,24 @@ dependencies {
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.squareup.retrofit2:converter-gson:2.0.0'
 
-    compile 'com.android.support:design:23.3.0'
-    compile 'com.android.support:support-v4:23.3.0'
-    compile 'com.android.support:appcompat-v7:23.3.0'
-    compile 'com.android.support:palette-v7:23.3.0'
-    compile 'com.android.support:customtabs:23.3.0'
+    compile 'com.android.support:design:23.4.0'
+    compile 'com.android.support:support-v4:23.4.0'
+    compile 'com.android.support:appcompat-v7:23.4.0'
+    compile 'com.android.support:palette-v7:23.4.0'
+    compile 'com.android.support:customtabs:23.4.0'
 
-    compile 'com.google.android.gms:play-services-wallet:8.4.0'
+    compile 'com.google.android.gms:play-services-wallet:9.0.1'
 
     androidTestCompile 'org.mockito:mockito-core:1.9.5'
     androidTestCompile 'com.google.dexmaker:dexmaker:1.1'
     androidTestCompile 'com.google.dexmaker:dexmaker-mockito:1.1'
-    androidTestCompile 'com.android.support:support-annotations:23.3.0'
+    androidTestCompile 'com.android.support:support-annotations:23.4.0'
     androidTestCompile 'com.android.support.test:runner:0.4.1'
     androidTestCompile 'com.android.support.test:rules:0.4.1'
 
     compile 'com.squareup.retrofit2:adapter-rxjava:2.0.0'
     compile 'io.reactivex:rxandroid:1.0.1'
 
-}
-
-sourceSets {
-    javadoc {
-        java.srcDirs = ['src/main/java']
-    }
-}
-
-task javadoc(type: Javadoc) {
-    source = sourceSets.javadoc.allSource
-    title = "Mobile Buy SDK"
-
-    exclude('**/customTabs/**')
-
-    classpath = configurations.compile
-    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
-
-    def designLib = "${android.sdkDirectory}/extras/android/support/design/libs/android-support-design.jar"
-    classpath += project.files(designLib)
-
-    def supportLib = "${android.sdkDirectory}/extras/android/support/v4/android-support-v4.jar"
-    classpath += project.files(supportLib)
-
-    def playLib = "${android.sdkDirectory}/extras/google/google_play_services/libproject/google-play-services_lib/libs/google-play-services.jar"
-    classpath += project.files(playLib)
-
-    options {
-        linksOffline("http://d.android.com/reference", "${android.sdkDirectory}/docs/reference")
-        links("http://square.github.io/retrofit/javadoc")
-    }
-}
-
-
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
-    baseName = 'buy'
-    from javadoc.destinationDir
-}
-
-task archiveReleasePackage(type: Zip, dependsOn: [assembleRelease, javadocJar]) {
-    baseName = "mobile-buy-sdk-android"
-
-    from("./build/libs") {
-        include javadocJar.getArchiveName()
-    }
-
-    from("./build/docs") {
-        include 'javadoc/**'
-    }
-
-    from("./build/outputs/aar") {
-        include "buy-" + version + ".aar"
-    }
-
-    from("..") {
-        include "sample/src/main/**"
-        include "sample/.gitignore"
-        include "sample/build.gradle.packaging"
-        include "sample/proguard-rules.pro"
-
-        rename "build.gradle.packaging", "build.gradle"
-    }
-
-    from("../..") {
-        include "LICENSE"
-        include "NOTICE"
-    }
-
-    into(baseName + "-" + version)
-}
-
-project.gradle.taskGraph.whenReady {
-    connectedDebugAndroidTest {
-        ignoreFailures = false
-    }
 }
 
 /*
@@ -296,7 +290,6 @@ task sourcesJar(type: Jar) {
 }
 
 artifacts {
-    archives javadocJar
     archives sourcesJar
 }
 
@@ -325,4 +318,5 @@ bintray {
             desc = libraryDescription
         }
     }
+
 }
