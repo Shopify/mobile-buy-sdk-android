@@ -129,17 +129,17 @@ android {
                 output.outputFile = new File(outputFile.parent, fileName)
             }
         }
-    }
 
-    libraryVariants.all { variant ->
         if (variant.name.equals('release')) {
 
             task("javadoc", type: Javadoc) {
                 description "Generate Javadoc"
                 title = "Mobile Buy SDK"
                 source = android.sourceSets.main.java.srcDirs
-                ext.androidJar = "${android.sdkDirectory}/platforms/${android.compileSdkVersion}/android.jar"
-                classpath = files(variant.javaCompile.classpath.files) + files(ext.androidJar)
+
+                def androidJar = "${android.sdkDirectory}/platforms/${android.compileSdkVersion}/android.jar"
+                classpath = files(variant.javaCompile.classpath.files) + files(androidJar)
+
                 exclude('**/customTabs/**')
             }
 
@@ -148,6 +148,10 @@ android {
                 classifier = "javadoc"
                 baseName = 'buy'
                 from tasks["javadoc"]
+            }
+
+            artifacts {
+                archives project.javadocJar
             }
 
             task("archiveReleasePackage", type: Zip, dependsOn: [assembleRelease, javadocJar]) {
@@ -189,11 +193,6 @@ android {
             }
         }
 
-        artifacts {
-
-            archives sourcesJar
-        }
-
     }
 
     sourceSets { main { assets.srcDirs = ['src/main/assets', 'src/androidTest/assets/'] } }
@@ -211,18 +210,18 @@ dependencies {
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.squareup.retrofit2:converter-gson:2.0.0'
 
-    compile 'com.android.support:design:23.3.0'
-    compile 'com.android.support:support-v4:23.3.0'
-    compile 'com.android.support:appcompat-v7:23.3.0'
-    compile 'com.android.support:palette-v7:23.3.0'
-    compile 'com.android.support:customtabs:23.3.0'
+    compile 'com.android.support:design:23.4.0'
+    compile 'com.android.support:support-v4:23.4.0'
+    compile 'com.android.support:appcompat-v7:23.4.0'
+    compile 'com.android.support:palette-v7:23.4.0'
+    compile 'com.android.support:customtabs:23.4.0'
 
-    compile 'com.google.android.gms:play-services-wallet:8.4.0'
+    compile 'com.google.android.gms:play-services-wallet:9.0.1'
 
     androidTestCompile 'org.mockito:mockito-core:1.9.5'
     androidTestCompile 'com.google.dexmaker:dexmaker:1.1'
     androidTestCompile 'com.google.dexmaker:dexmaker-mockito:1.1'
-    androidTestCompile 'com.android.support:support-annotations:23.3.0'
+    androidTestCompile 'com.android.support:support-annotations:23.4.0'
     androidTestCompile 'com.android.support.test:runner:0.4.1'
     androidTestCompile 'com.android.support.test:rules:0.4.1'
 
@@ -283,6 +282,10 @@ version = VERSION_NAME
 task sourcesJar(type: Jar) {
     from android.sourceSets.main.java.srcDirs
     classifier = 'sources'
+}
+
+artifacts {
+    archives sourcesJar
 }
 
 File localProperties = project.rootProject.file('local.properties')
