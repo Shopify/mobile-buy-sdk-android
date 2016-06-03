@@ -1,4 +1,4 @@
-import_from_git(url: 'git@github.com:Shopify/buildkite_fastlane.git', path: 'fastlane/AndroidFastfile')
+import_from_git(url: 'git@github.com:Shopify/buildkite_fastlane.git')
 
 PACKAGE = "com.shopify.buy"
 ANDROID_PROJECT_PATH = File.expand_path('../../MobileBuy', __FILE__)
