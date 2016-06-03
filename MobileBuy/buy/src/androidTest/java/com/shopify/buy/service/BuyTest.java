@@ -433,18 +433,14 @@ public class BuyTest extends ShopifyAndroidTestCase {
 
         Discount discount = checkout.getDiscount();
 
-        checkout.setDiscountCode("");
+        checkout.setDiscountCode(null);
 
         final CountDownLatch latch = new CountDownLatch(1);
 
         buyClient.updateCheckout(checkout, new Callback<Checkout>() {
             @Override
             public void success(Checkout checkout) {
-                assertNotNull(checkout.getDiscount());
-
-                Discount discount = checkout.getDiscount();
-                assertEquals(true, discount == null);
-
+                assertEquals(true, checkout.getDiscount() == null);
                 latch.countDown();
             }
 
