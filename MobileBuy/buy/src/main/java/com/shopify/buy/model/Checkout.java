@@ -57,7 +57,7 @@ public class Checkout extends ShopifyObject {
 
     private static final String ATTRIBUTES_JSON_KEY = "attributes";
 
-    private String email;
+    protected String email;
 
     protected String token;
 
@@ -65,100 +65,103 @@ public class Checkout extends ShopifyObject {
     @SerializedName("order_id")
     private Long orderId;
 
-    private Order order;
+    protected Order order;
 
     @SerializedName("requires_shipping")
-    private Boolean requiresShipping;
+    protected Boolean requiresShipping;
 
     @SerializedName("taxes_included")
-    private Boolean taxesIncluded;
+    protected Boolean taxesIncluded;
 
-    private String currency;
+    protected String currency;
 
     @SerializedName("subtotal_price")
-    private String subtotalPrice;
+    protected String subtotalPrice;
 
     @SerializedName("total_tax")
-    private String totalTax;
+    protected String totalTax;
 
     @SerializedName("total_price")
-    private String totalPrice;
+    protected String totalPrice;
+
+    @SerializedName("payment_session_id")
+    protected String paymentSessionId;
 
     @SerializedName("payment_url")
-    private String paymentUrl;
+    protected String paymentUrl;
 
     @SerializedName("payment_due")
-    private String paymentDue;
+    protected String paymentDue;
 
     @SerializedName("reservation_time")
-    private Long reservationTime;
+    protected Long reservationTime;
 
     @SerializedName("reservation_time_left")
     protected Long reservationTimeLeft;
 
     @SerializedName("line_items")
-    private List<LineItem> lineItems;
+    protected List<LineItem> lineItems;
 
     @SerializedName("tax_lines")
-    private List<TaxLine> taxLines;
+    protected List<TaxLine> taxLines;
 
-    private Discount discount;
+    protected Discount discount;
 
     @SerializedName("billing_address")
-    private Address billingAddress;
+    protected Address billingAddress;
 
     @SerializedName("shipping_address")
-    private Address shippingAddress;
+    protected Address shippingAddress;
 
     @SerializedName("shipping_rate")
-    private ShippingRate shippingRate;
+    protected ShippingRate shippingRate;
 
     @SerializedName("marketing_attribution")
-    private MarketingAttribution marketingAttribution;
+    protected MarketingAttribution marketingAttribution;
 
     @SerializedName("web_url")
-    private String webUrl;
+    protected String webUrl;
 
     @SerializedName("web_return_to_url")
-    private String webReturnToUrl;
+    protected String webReturnToUrl;
 
     @SerializedName("web_return_to_label")
-    private String webReturnToLabel;
+    protected String webReturnToLabel;
 
     final private String channel = "mobile_app";
 
     @SerializedName("gift_cards")
-    private List<GiftCard> giftCards;
+    protected List<GiftCard> giftCards;
 
     @Deprecated
     @SerializedName("order_status_url")
-    private String orderStatusUrl;
+    protected String orderStatusUrl;
 
     @SerializedName("created_at")
-    private Date createdAtDate;
+    protected Date createdAtDate;
 
     @SerializedName("credit_card")
-    private CreditCard creditCard;
+    protected CreditCard creditCard;
 
     @SerializedName("customer_id")
-    private Long customerId;
+    protected Long customerId;
 
     @SerializedName("privacy_policy_url")
-    private String privacyPolicyUrl;
+    protected String privacyPolicyUrl;
 
     @SerializedName("refund_policy_url")
-    private String refundPolicyUrl;
+    protected String refundPolicyUrl;
 
     @SerializedName("terms_of_service_url")
-    private String termsOfServiceUrl;
+    protected String termsOfServiceUrl;
 
     @SerializedName("source_name")
-    private String sourceName;
+    protected String sourceName;
 
     @SerializedName("source_identifier")
-    private String sourceIdentifier;
+    protected String sourceIdentifier;
 
-    private String note;
+    protected String note;
 
     private transient List<CheckoutAttribute> attributes;
 
@@ -540,11 +543,19 @@ public class Checkout extends ShopifyObject {
         this.webReturnToUrl = webReturnToUrl;
     }
 
+    public String getWebReturnToUrl() {
+        return webReturnToUrl;
+    }
+
     /**
      * @param webReturnToLabel The button title that will appear after checkout to return to the host app. Defaults to "Return to 'application'", where 'application' is the `applicationName` set on the BuyClient.
      */
     public void setWebReturnToLabel(String webReturnToLabel) {
         this.webReturnToLabel = webReturnToLabel;
+    }
+
+    public String getWebReturnToLabel() {
+        return webReturnToLabel;
     }
 
     /**

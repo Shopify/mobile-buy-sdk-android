@@ -85,9 +85,9 @@ public class Product extends ShopifyObject {
 
     protected boolean published;
 
-    private Set<String> prices;
+    protected Set<String> prices;
 
-    private String minimumPrice;
+    protected String minimumPrice;
 
     /**
      * @return {@code true} if this product has been published on the store, {@code false} otherwise.
