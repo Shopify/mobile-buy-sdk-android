@@ -47,6 +47,10 @@
         <activity android:name=".activity.OrderCompleteActivity"/>
 
         <activity
+            android:name=".ui.ProductDetailsActivity"
+            android:theme="@style/Theme.AppCompat.Light.DarkActionBar"/>
+
+        <activity
             android:name=".customer.CustomerLoginActivity"
             android:label="@string/customer_login_title"
             android:parentActivityName=".activity.CollectionListActivity"
@@ -61,7 +65,7 @@
             android:name=".customer.CustomerOrderListActivity"
             android:label="@string/customer_order_list_title"
             android:parentActivityName=".activity.CollectionListActivity"
-            android:theme="@style/Theme.AppCompat.Light.DarkActionBar"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:windowSoftInputMode="adjustResize">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

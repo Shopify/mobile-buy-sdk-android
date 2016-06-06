@@ -78,8 +78,6 @@ final class BuyClientDefault implements BuyClient {
             final String appId,
             final String applicationName,
             final String shopDomain,
-            final String completeCheckoutWebReturnUrl,
-            final String completeCheckoutWebReturnLabel,
             final CustomerToken customerToken,
             final Scheduler callbackScheduler,
             final int productPageSize,
@@ -139,7 +137,7 @@ final class BuyClientDefault implements BuyClient {
 
         storeService = new StoreServiceDefault(retrofit, networkRetryPolicyProvider, callbackScheduler);
         addressService = new AddressServiceDefault(retrofit, networkRetryPolicyProvider, callbackScheduler);
-        checkoutService = new CheckoutServiceDefault(retrofit, apiKey, applicationName, completeCheckoutWebReturnUrl, completeCheckoutWebReturnLabel, networkRetryPolicyProvider, callbackScheduler);
+        checkoutService = new CheckoutServiceDefault(retrofit, apiKey, applicationName, networkRetryPolicyProvider, callbackScheduler);
         customerService = new CustomerServiceDefault(retrofit, customerToken, networkRetryPolicyProvider, callbackScheduler);
         orderService = new OrderServiceDefault(retrofit, networkRetryPolicyProvider, callbackScheduler);
         productService = new ProductServiceDefault(retrofit, appId, productPageSize, networkRetryPolicyProvider, callbackScheduler);
@@ -178,16 +176,6 @@ final class BuyClientDefault implements BuyClient {
     }
 
     // ----------- CheckoutService API ---------------
-
-    @Override
-    public String getWebReturnToUrl() {
-        return checkoutService.getWebReturnToUrl();
-    }
-
-    @Override
-    public String getWebReturnToLabel() {
-        return checkoutService.getWebReturnToLabel();
-    }
 
     @Override
     public CancellableTask createCheckout(final Checkout checkout, final Callback<Checkout> callback) {

@@ -125,8 +125,6 @@ public class ProductDetailsBuilderTest extends AndroidTestCase {
         assertEquals(bundle.getString(ProductDetailsConfig.EXTRA_SHOP_DOMAIN), getShopDomain());
         assertEquals(bundle.getString(ProductDetailsConfig.EXTRA_SHOP_API_KEY), getApiKey());
         assertEquals(bundle.getString(ProductDetailsConfig.EXTRA_SHOP_PRODUCT_ID), getProductId());
-        assertEquals(bundle.getString(ProductDetailsConfig.EXTRA_WEB_RETURN_TO_LABEL), WEB_RETURN_TO_LABEL);
-        assertEquals(bundle.getString(ProductDetailsConfig.EXTRA_WEB_RETURN_TO_URL), WEB_RETURN_TO_URL);
         assertEquals(bundle.getString(ProductDetailsConfig.EXTRA_SHOP_APPLICATION_NAME), getApplicationName());
     }
 

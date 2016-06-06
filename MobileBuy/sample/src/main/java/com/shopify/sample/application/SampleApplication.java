@@ -197,6 +197,8 @@ public class SampleApplication extends Application {
         cart.addVariant(product.getVariants().get(0));
 
         checkout = new Checkout(cart);
+        checkout.setWebReturnToLabel(getString(R.string.web_return_to_label));
+        checkout.setWebReturnToUrl(getString(R.string.web_return_to_url));
 
         // if we have logged in customer use customer email instead of hardcoded one
         if (customer != null) {
@@ -339,8 +341,6 @@ public class SampleApplication extends Application {
             .setProduct(product)
             .setTheme(theme)
             .setShop(shop)
-            .setWebReturnToUrl(getString(R.string.web_return_to_url))
-            .setWebReturnToLabel(getString(R.string.web_return_to_label))
             .build();
         activity.startActivityForResult(intent, 1);
     }

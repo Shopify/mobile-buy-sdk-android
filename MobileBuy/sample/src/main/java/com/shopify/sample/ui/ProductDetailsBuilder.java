@@ -65,8 +65,6 @@ public class ProductDetailsBuilder {
         productDetailsConfig.setApiKey(client.getApiKey());
         productDetailsConfig.setAppId(client.getAppId());
         productDetailsConfig.setApplicationName(client.getApplicationName());
-        productDetailsConfig.setWebReturnToUrl(client.getWebReturnToUrl());
-        productDetailsConfig.setWebReturnToLabel(client.getWebReturnToLabel());
     }
 
     public ProductDetailsBuilder setShopDomain(String shopDomain) {
@@ -96,16 +94,6 @@ public class ProductDetailsBuilder {
 
     public ProductDetailsBuilder setProduct(Product product) {
         productDetailsConfig.setProduct(product);
-        return this;
-    }
-
-    public ProductDetailsBuilder setWebReturnToUrl(String webReturnToUrl) {
-        productDetailsConfig.setWebReturnToUrl(webReturnToUrl);
-        return this;
-    }
-
-    public ProductDetailsBuilder setWebReturnToLabel(String webReturnToLabel) {
-        productDetailsConfig.setWebReturnToLabel(webReturnToLabel);
         return this;
     }
 
