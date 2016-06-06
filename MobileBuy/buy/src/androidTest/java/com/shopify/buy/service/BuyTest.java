@@ -404,6 +404,8 @@ public class BuyTest extends ShopifyAndroidTestCase {
         buyClient.updateCheckout(checkout, new Callback<Checkout>() {
             @Override
             public void success(Checkout checkout) {
+                BuyTest.this.checkout = checkout;
+
                 assertNotNull(checkout.getDiscount());
 
                 Discount discount = checkout.getDiscount();
@@ -423,6 +425,34 @@ public class BuyTest extends ShopifyAndroidTestCase {
         });
 
         latch.await();
+    }
+
+    @Test
+    public void testRemoveDiscountCode() throws InterruptedException {
+        testUpdateCheckoutWithValidDiscount();
+
+        Discount discount = checkout.getDiscount();
+
+        checkout.setDiscountCode(null);
+
+        final CountDownLatch latch = new CountDownLatch(1);
+
+        buyClient.updateCheckout(checkout, new Callback<Checkout>() {
+            @Override
+            public void success(Checkout checkout) {
+                assertEquals(true, checkout.getDiscount() == null);
+                latch.countDown();
+            }
+
+            @Override
+            public void failure(BuyClientError error) {
+                fail(error.getRetrofitErrorBody());
+            }
+        });
+
+        latch.await();
+
+
     }
 
     @Test
