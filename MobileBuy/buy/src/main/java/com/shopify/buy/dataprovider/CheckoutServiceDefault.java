@@ -64,10 +64,6 @@ final class CheckoutServiceDefault implements CheckoutService {
 
     final String applicationName;
 
-    final String webReturnToUrl;
-
-    final String webReturnToLabel;
-
     final NetworkRetryPolicyProvider networkRetryPolicyProvider;
 
     final PollingPolicyProvider pollingRetryPolicyProvider;
@@ -78,30 +74,16 @@ final class CheckoutServiceDefault implements CheckoutService {
         final Retrofit retrofit,
         final String apiKey,
         final String applicationName,
-        final String webReturnToUrl,
-        final String webReturnToLabel,
         final NetworkRetryPolicyProvider networkRetryPolicyProvider,
         final Scheduler callbackScheduler
     ) {
         this.retrofitService = retrofit.create(CheckoutRetrofitService.class);
         this.apiKey = apiKey;
         this.applicationName = applicationName;
-        this.webReturnToUrl = webReturnToUrl;
-        this.webReturnToLabel = webReturnToLabel;
         this.networkRetryPolicyProvider = networkRetryPolicyProvider;
         this.callbackScheduler = callbackScheduler;
 
         pollingRetryPolicyProvider = new PollingPolicyProvider(POLLING_INTERVAL, POLLING_TIMEOUT);
-    }
-
-    @Override
-    public String getWebReturnToUrl() {
-        return webReturnToUrl;
-    }
-
-    @Override
-    public String getWebReturnToLabel() {
-        return webReturnToLabel;
     }
 
     @Override
@@ -118,13 +100,6 @@ final class CheckoutServiceDefault implements CheckoutService {
         final Checkout safeCheckout = checkout.copy();
         safeCheckout.setMarketingAttribution(new MarketingAttribution(applicationName));
         safeCheckout.setSourceName("mobile_app");
-        if (webReturnToUrl != null) {
-            safeCheckout.setWebReturnToUrl(webReturnToUrl);
-        }
-        if (webReturnToLabel != null) {
-            safeCheckout.setWebReturnToLabel(webReturnToLabel);
-        }
-
         return retrofitService
             .createCheckout(new CheckoutWrapper(safeCheckout))
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
@@ -211,13 +186,13 @@ final class CheckoutServiceDefault implements CheckoutService {
             throw new IllegalArgumentException("checkout token cannot be empty");
         }
 
-        final Checkout safeCheckout = checkout.copy();
-
         PaymentSessionCheckout paymentSessionCheckout = new PaymentSessionCheckout(checkout.getToken(), card, checkout.getBillingAddress());
 
+        final int[] successCodes = {HTTP_OK};
+
         return retrofitService
-            .storeCreditCard(safeCheckout.getPaymentUrl(), new PaymentSessionCheckoutWrapper(paymentSessionCheckout), BuyClientUtils.formatBasicAuthorization(apiKey))
-            .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
+            .storeCreditCard(checkout.getPaymentUrl(), new PaymentSessionCheckoutWrapper(paymentSessionCheckout), BuyClientUtils.formatBasicAuthorization(apiKey))
+            .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>(successCodes))
             .compose(new UnwrapRetrofitBodyTransformer<PaymentSession, String>())
             .map(new Func1<String, PaymentToken>() {
                 @Override

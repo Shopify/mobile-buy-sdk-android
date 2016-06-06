@@ -61,10 +61,6 @@ public final class BuyClientBuilder {
 
     private String applicationName;
 
-    private String completeCheckoutWebReturnUrl;
-
-    private String completeCheckoutWebReturnLabel;
-
     private CustomerToken customerToken;
 
     private Scheduler callbackScheduler = AndroidSchedulers.mainThread();
@@ -124,31 +120,6 @@ public final class BuyClientBuilder {
      */
     public BuyClientBuilder applicationName(final String applicationName) {
         this.applicationName = applicationName;
-        return this;
-    }
-
-    /**
-     * Sets the web url to be invoked by the button on the completion page of the web checkout,
-     * defined as a custom scheme in the Android Manifest file
-     *
-     * @param completeCheckoutWebReturnUrl The url to use when returning to the app from web checkout.
-     *
-     * @return a {@link BuyClientBuilder}
-     */
-    public BuyClientBuilder completeCheckoutWebReturnUrl(final String completeCheckoutWebReturnUrl) {
-        this.completeCheckoutWebReturnUrl = completeCheckoutWebReturnUrl;
-        return this;
-    }
-
-    /**
-     * Sets the text to be displayed on the button on the completion page of the web checkout
-     *
-     * @param completeCheckoutWebReturnLabel The label to use on the return to app button in web checkout.
-     *
-     * @return a {@link BuyClientBuilder}
-     */
-    public BuyClientBuilder completeCheckoutWebReturnLabel(final String completeCheckoutWebReturnLabel) {
-        this.completeCheckoutWebReturnLabel = completeCheckoutWebReturnLabel;
         return this;
     }
 
@@ -267,8 +238,6 @@ public final class BuyClientBuilder {
             appId,
             applicationName,
             shopDomain,
-            completeCheckoutWebReturnUrl,
-            completeCheckoutWebReturnLabel,
             customerToken,
             callbackScheduler,
             productPageSize,

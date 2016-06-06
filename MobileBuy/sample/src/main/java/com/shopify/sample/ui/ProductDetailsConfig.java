@@ -41,8 +41,6 @@ class ProductDetailsConfig {
     public static final String EXTRA_SHOP_PRODUCT_ID = "com.shopify.buy.ui.PRODUCT_ID";
     public static final String EXTRA_SHOP_PRODUCT = "com.shopify.buy.ui.PRODUCT";
     public static final String EXTRA_SHOP_SHOP = "com.shopify.buy.ui.SHOP";
-    public static final String EXTRA_WEB_RETURN_TO_URL = "com.shopify.buy.ui.WEB_RETURN_TO_URL";
-    public static final String EXTRA_WEB_RETURN_TO_LABEL = "com.shopify.buy.ui.WEB_RETURN_TO_LABEL";
     public static final String EXTRA_THEME = "com.shopify.buy.ui.THEME";
 
     private String shopDomain;
@@ -51,8 +49,6 @@ class ProductDetailsConfig {
     private String applicationName;
     private String productId;
     private Product product;
-    private String webReturnToUrl;
-    private String webReturnToLabel;
     private ProductDetailsTheme theme;
     private Shop shop;
 
@@ -78,14 +74,6 @@ class ProductDetailsConfig {
 
     public Product getProduct() {
         return product;
-    }
-
-    public String getWebReturnToUrl() {
-        return webReturnToUrl;
-    }
-
-    public String getWebReturnToLabel() {
-        return webReturnToLabel;
     }
 
     public ProductDetailsTheme getTheme() {
@@ -114,14 +102,6 @@ class ProductDetailsConfig {
 
     public void setProduct(Product product) {
         this.product = product;
-    }
-
-    public void setWebReturnToUrl(String webReturnToUrl) {
-        this.webReturnToUrl = webReturnToUrl;
-    }
-
-    public void setWebReturnToLabel(String webReturnToLabel) {
-        this.webReturnToLabel = webReturnToLabel;
     }
 
     public void setShop(Shop shop) {
@@ -162,14 +142,6 @@ class ProductDetailsConfig {
 
         if (shop != null) {
             bundle.putString(EXTRA_SHOP_SHOP, shop.toJsonString());
-        }
-
-        if (webReturnToUrl != null) {
-            bundle.putString(EXTRA_WEB_RETURN_TO_URL, webReturnToUrl);
-        }
-
-        if (webReturnToLabel != null) {
-            bundle.putString(EXTRA_WEB_RETURN_TO_LABEL, webReturnToLabel);
         }
 
         if (theme != null) {

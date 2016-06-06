@@ -38,9 +38,6 @@ import rx.Observable;
  */
 public interface CheckoutService {
 
-    String getWebReturnToUrl();
-    String getWebReturnToLabel();
-
     /**
      * Initiate the Shopify checkout process with a new Checkout object.
      *

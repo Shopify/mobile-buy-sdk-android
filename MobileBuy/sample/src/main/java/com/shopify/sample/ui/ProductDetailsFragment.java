@@ -218,10 +218,6 @@ public class ProductDetailsFragment extends Fragment {
             shop = Shop.fromJson(bundle.getString(ProductDetailsConfig.EXTRA_SHOP_SHOP));
         }
 
-        // Retrieve the optional settings
-        String webReturnToUrl = bundle.getString(ProductDetailsConfig.EXTRA_WEB_RETURN_TO_URL);
-        String webReturnToLabel = bundle.getString(ProductDetailsConfig.EXTRA_WEB_RETURN_TO_LABEL);
-
         final HttpLoggingInterceptor logging = new HttpLoggingInterceptor().setLevel(BuildConfig.OKHTTP_LOG_LEVEL);
 
         buyClient = new BuyClientBuilder()
@@ -230,8 +226,6 @@ public class ProductDetailsFragment extends Fragment {
                 .appId(appId)
                 .applicationName(applicationName)
                 .interceptors(logging)
-                .completeCheckoutWebReturnUrl(webReturnToUrl)
-                .completeCheckoutWebReturnLabel(webReturnToLabel)
                 .build();
     }
 
