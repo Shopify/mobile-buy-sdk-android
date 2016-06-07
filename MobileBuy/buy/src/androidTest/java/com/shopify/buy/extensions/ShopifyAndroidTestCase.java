@@ -80,6 +80,7 @@ public class ShopifyAndroidTestCase {
                 .appId(appId)
                 .applicationName(applicationName)
                 .callbackScheduler(Schedulers.immediate())
+                .productPageSize(productPageSize)
                 .networkRequestRetryPolicy(1, 100, 1);
 
         if (USE_MOCK_RESPONSES) {
@@ -105,10 +106,6 @@ public class ShopifyAndroidTestCase {
 
     public String getAppId() {
         return USE_MOCK_RESPONSES ? "placeholderAppId" : BuildConfig.APP_ID;
-    }
-
-    protected String getAndroidPayPublicKey() {
-        return USE_MOCK_RESPONSES ? "placeholderAndroidPayPublicKey" : BuildConfig.ANDROID_PAY_PUBLIC_KEY;
     }
 
     public okhttp3.Response createResponse(int code) {

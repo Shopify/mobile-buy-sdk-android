@@ -114,7 +114,7 @@ public class OrderServiceCacheHookTest extends ShopifyAndroidTestCase {
     public void cacheWithoutHook() {
         Observable
             .just(order1)
-            .doOnNext(new OrderCacheRxHookProvider(null).getOrderCacheHook(customer))
+            .doOnNext(new OrderCacheRxHookProvider(null).getOrderCacheHook(customer.getId()))
             .subscribe(new Action1<Order>() {
                 @Override
                 public void call(Order response) {
@@ -129,7 +129,7 @@ public class OrderServiceCacheHookTest extends ShopifyAndroidTestCase {
 
         Observable
             .just(orderList)
-            .doOnNext(new OrderCacheRxHookProvider(null).getOrdersCacheHook(customer))
+            .doOnNext(new OrderCacheRxHookProvider(null).getOrdersCacheHook(customer.getId()))
             .subscribe(new Action1<List<Order>>() {
                 @Override
                 public void call(List<Order> response) {
@@ -147,12 +147,12 @@ public class OrderServiceCacheHookTest extends ShopifyAndroidTestCase {
     @Test
     public void cacheWithHookException() {
         final OrderCacheHook cacheHook = Mockito.mock(OrderCacheHook.class);
-        Mockito.doThrow(new RuntimeException()).when(cacheHook).cacheOrder(customer, order1);
-        Mockito.doThrow(new RuntimeException()).when(cacheHook).cacheOrders(customer, orderList);
+        Mockito.doThrow(new RuntimeException()).when(cacheHook).cacheOrder(customer.getId(), order1);
+        Mockito.doThrow(new RuntimeException()).when(cacheHook).cacheOrders(customer.getId(), orderList);
 
         Observable
             .just(order1)
-            .doOnNext(new OrderCacheRxHookProvider(cacheHook).getOrderCacheHook(customer))
+            .doOnNext(new OrderCacheRxHookProvider(cacheHook).getOrderCacheHook(customer.getId()))
             .subscribe(new Action1<Order>() {
                 @Override
                 public void call(Order response) {
@@ -167,7 +167,7 @@ public class OrderServiceCacheHookTest extends ShopifyAndroidTestCase {
 
         Observable
             .just(orderList)
-            .doOnNext(new OrderCacheRxHookProvider(cacheHook).getOrdersCacheHook(customer))
+            .doOnNext(new OrderCacheRxHookProvider(cacheHook).getOrdersCacheHook(customer.getId()))
             .subscribe(new Action1<List<Order>>() {
                 @Override
                 public void call(List<Order> response) {
@@ -186,19 +186,19 @@ public class OrderServiceCacheHookTest extends ShopifyAndroidTestCase {
     public void cacheGetOrder() {
         final Response<OrderWrapper> response = Response.success(orderWrapper1);
         final Observable<Response<OrderWrapper>> responseObservable = Observable.just(response);
-        Mockito.when(orderRetrofitService.getOrder(Mockito.anyLong(), Mockito.anyString())).thenReturn(responseObservable);
-        buyClient.getOrder(customer, "test", new Callback<Order>() {
+        Mockito.when(orderRetrofitService.getOrder(Mockito.anyLong(), Mockito.anyLong())).thenReturn(responseObservable);
+        buyClient.getOrder(customer.getId(), order1.getId(), new Callback<Order>() {
             @Override
             public void success(Order response) {
                 Assert.assertEquals(order1, response);
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void failure(BuyClientError error) {
                 Assert.fail();
             }
         });
-        Mockito.verify(orderCacheHook, Mockito.times(1)).cacheOrder(customer, order1);
+        Mockito.verify(orderCacheHook, Mockito.times(1)).cacheOrder(customer.getId(), order1);
     }
 
     @Test
@@ -206,7 +206,7 @@ public class OrderServiceCacheHookTest extends ShopifyAndroidTestCase {
         final Response<OrdersWrapper> response = Response.success(ordersWrapper);
         final Observable<Response<OrdersWrapper>> responseObservable = Observable.just(response);
         Mockito.when(orderRetrofitService.getOrders(Mockito.anyLong())).thenReturn(responseObservable);
-        buyClient.getOrders(customer, new Callback<List<Order>>() {
+        buyClient.getOrders(customer.getId(), new Callback<List<Order>>() {
             @Override
             public void success(List<Order> response) {
                 Assert.assertEquals(orderList.get(0), response.get(0));
@@ -214,10 +214,10 @@ public class OrderServiceCacheHookTest extends ShopifyAndroidTestCase {
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void failure(BuyClientError error) {
                 Assert.fail();
             }
         });
-        Mockito.verify(orderCacheHook, Mockito.times(1)).cacheOrders(customer, orderList);
+        Mockito.verify(orderCacheHook, Mockito.times(1)).cacheOrders(customer.getId(), orderList);
     }
 }

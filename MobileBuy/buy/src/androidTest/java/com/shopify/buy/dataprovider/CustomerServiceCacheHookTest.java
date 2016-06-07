@@ -166,7 +166,9 @@ public class CustomerServiceCacheHookTest extends ShopifyAndroidTestCase {
     public void cacheCreateCustomer() {
         final Response<CustomerWrapper> response = Response.success(customerWrapper);
         final Observable<Response<CustomerWrapper>> responseObservable = Observable.just(response);
+        final Observable<Response<CustomerTokenWrapper>> responseCustomerTokenObservable = Observable.just(Response.success(customerTokenWrapper));
         Mockito.when(customerRetrofitService.createCustomer(Mockito.any(AccountCredentialsWrapper.class))).thenReturn(responseObservable);
+        Mockito.when(customerRetrofitService.getCustomerToken(Mockito.any(AccountCredentialsWrapper.class))).thenReturn(responseCustomerTokenObservable);
         buyClient.createCustomer(new AccountCredentials("test@test.com", "123"), new Callback<Customer>() {
             @Override
             public void success(Customer response) {
@@ -174,7 +176,7 @@ public class CustomerServiceCacheHookTest extends ShopifyAndroidTestCase {
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void failure(BuyClientError error) {
                 Assert.fail();
             }
         });
@@ -193,7 +195,7 @@ public class CustomerServiceCacheHookTest extends ShopifyAndroidTestCase {
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void failure(BuyClientError error) {
                 Assert.fail();
             }
         });
@@ -212,7 +214,7 @@ public class CustomerServiceCacheHookTest extends ShopifyAndroidTestCase {
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void failure(BuyClientError error) {
                 Assert.fail();
             }
         });
@@ -231,7 +233,7 @@ public class CustomerServiceCacheHookTest extends ShopifyAndroidTestCase {
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void failure(BuyClientError error) {
                 Assert.fail();
             }
         });
@@ -250,7 +252,7 @@ public class CustomerServiceCacheHookTest extends ShopifyAndroidTestCase {
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void failure(BuyClientError error) {
                 Assert.fail();
             }
         });
@@ -269,7 +271,7 @@ public class CustomerServiceCacheHookTest extends ShopifyAndroidTestCase {
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void failure(BuyClientError error) {
                 Assert.fail();
             }
         });
@@ -292,7 +294,7 @@ public class CustomerServiceCacheHookTest extends ShopifyAndroidTestCase {
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void failure(BuyClientError error) {
                 Assert.fail();
             }
         });

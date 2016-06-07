@@ -86,20 +86,15 @@ final class AddressCacheRxHookProvider {
         if (cacheHook == null) {
             return EMPTY_CACHE_HOOK;
         } else {
-            new Func2<Long, Long, Action1<Void>>() {
+            return new Action1<Void>() {
                 @Override
-                public Action1<Void> call(final Long customerId, final Long addressId) {
-                    return new Action1<Void>() {
-                        @Override
-                        public void call(Void aVoid) {
-                            if (cacheHook != null) {
-                                try {
-                                    cacheHook.deleteAddress(customerId, addressId);
-                                } catch (Exception e) {
-                                }
-                            }
+                public void call(Void aVoid) {
+                    if (cacheHook != null) {
+                        try {
+                            cacheHook.deleteAddress(customerId, addressId);
+                        } catch (Exception e) {
                         }
-                    };
+                    }
                 }
             };
         }
