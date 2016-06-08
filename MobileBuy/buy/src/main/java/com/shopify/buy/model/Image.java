@@ -24,8 +24,6 @@
 
 package com.shopify.buy.model;
 
-import android.text.TextUtils;
-
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
@@ -44,7 +42,7 @@ public class Image extends ShopifyObject {
     protected String updatedAt;
 
     @SerializedName("product_id")
-    protected long productId;
+    protected Long productId;
 
     @SerializedName("variant_ids")
     protected List<Long> variantIds;
@@ -80,7 +78,7 @@ public class Image extends ShopifyObject {
     /**
      * @return The associated product ID for the image.
      */
-    public long getProductId() {
+    public Long getProductId() {
         return productId;
     }
 
@@ -96,10 +94,5 @@ public class Image extends ShopifyObject {
      */
     public String getSrc() {
         return src;
-    }
-
-    @Override
-    public boolean equals(Object other) {
-        return super.equals(other) && TextUtils.equals(((Image) other).getSrc(), src);
     }
 }

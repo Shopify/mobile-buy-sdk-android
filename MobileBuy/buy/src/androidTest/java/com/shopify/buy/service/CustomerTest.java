@@ -327,7 +327,12 @@ public class CustomerTest extends ShopifyAndroidTestCase {
         buyClient.createAddress(customer.getId(), inputAddress, new Callback<Address>() {
             @Override
             public void success(Address address) {
-                assertEquals(true, inputAddress.equals(address));
+                assertEquals(true, inputAddress.locationsAreEqual(address));
+                assertEquals(inputAddress.getCompany(), address.getCompany());
+                assertEquals(inputAddress.getFirstName(), address.getFirstName());
+                assertEquals(inputAddress.getLastName(), address.getLastName());
+                assertEquals(inputAddress.getPhone(), address.getPhone());
+
                 CustomerTest.this.address = address;
                 latch.countDown();
             }
