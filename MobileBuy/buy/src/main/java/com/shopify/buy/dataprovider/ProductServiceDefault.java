@@ -71,12 +71,12 @@ final class ProductServiceDefault implements ProductService {
     }
 
     @Override
-    public CancellableTask getProductPage(final int page, final Callback<List<Product>> callback) {
-        return new CancellableTaskSubscriptionWrapper(getProductPage(page).subscribe(new InternalCallbackSubscriber<>(callback)));
+    public CancellableTask getProducts(final int page, final Callback<List<Product>> callback) {
+        return new CancellableTaskSubscriptionWrapper(getProducts(page).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
-    public Observable<List<Product>> getProductPage(final int page) {
+    public Observable<List<Product>> getProducts(final int page) {
         if (page < 1) {
             throw new IllegalArgumentException("page is a 1-based index, value cannot be less than 1");
         }
@@ -91,12 +91,12 @@ final class ProductServiceDefault implements ProductService {
     }
 
     @Override
-    public CancellableTask getProductWithHandle(final String handle, final Callback<Product> callback) {
-        return new CancellableTaskSubscriptionWrapper(getProductWithHandle(handle).subscribe(new InternalCallbackSubscriber<>(callback)));
+    public CancellableTask getProductByHandle(final String handle, final Callback<Product> callback) {
+        return new CancellableTaskSubscriptionWrapper(getProductByHandle(handle).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
-    public Observable<Product> getProductWithHandle(final String handle) {
+    public Observable<Product> getProductByHandle(final String handle) {
         if (handle == null) {
             throw new NullPointerException("handle cannot be null");
         }
@@ -195,12 +195,12 @@ final class ProductServiceDefault implements ProductService {
     }
     
     @Override
-    public CancellableTask getCollectionPage(final int page, final Callback<List<Collection>> callback) {
-        return new CancellableTaskSubscriptionWrapper(getCollectionPage(page).subscribe(new InternalCallbackSubscriber<>(callback)));
+    public CancellableTask getCollections(final int page, final Callback<List<Collection>> callback) {
+        return new CancellableTaskSubscriptionWrapper(getCollections(page).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
-    public Observable<List<Collection>> getCollectionPage(final int page) {
+    public Observable<List<Collection>> getCollections(final int page) {
         if (page < 1) {
             throw new IllegalArgumentException("page is a 1-based index, value cannot be less than 1");
         }
