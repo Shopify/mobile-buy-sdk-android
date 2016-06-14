@@ -32,7 +32,7 @@ public class StorefrontTest extends ShopifyAndroidTestCase {
     public void testGetProductPage() throws InterruptedException {
         final CountDownLatch latch = new CountDownLatch(1);
 
-        buyClient.getProductPage(1, new Callback<List<Product>>() {
+        buyClient.getProducts(1, new Callback<List<Product>>() {
             @Override
             public void success(List<Product> products) {
                 assertFalse(products.isEmpty());
@@ -137,7 +137,7 @@ public class StorefrontTest extends ShopifyAndroidTestCase {
     public void testGetOutOfIndexProductPage() throws InterruptedException {
         final CountDownLatch latch = new CountDownLatch(1);
 
-        buyClient.getProductPage(999, new Callback<List<Product>>() {
+        buyClient.getProducts(999, new Callback<List<Product>>() {
             @Override
             public void success(List<Product> products) {
                 assertEquals(products.size(), 0);
@@ -204,7 +204,7 @@ public class StorefrontTest extends ShopifyAndroidTestCase {
     public void testGetCollectionPage() throws InterruptedException {
         final CountDownLatch latch = new CountDownLatch(1);
 
-        buyClient.getCollectionPage(1, new Callback<List<Collection>>() {
+        buyClient.getCollections(1, new Callback<List<Collection>>() {
             @Override
             public void success(List<Collection> collections) {
                 assertNotNull(collections);
@@ -226,7 +226,7 @@ public class StorefrontTest extends ShopifyAndroidTestCase {
     public void testGetOutOfIndexCollectionPage() throws InterruptedException {
         final CountDownLatch latch = new CountDownLatch(1);
 
-        buyClient.getCollectionPage(999, new Callback<List<Collection>>() {
+        buyClient.getCollections(999, new Callback<List<Collection>>() {
             @Override
             public void success(List<Collection> collections) {
                 assertNotNull(collections);

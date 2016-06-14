@@ -49,7 +49,7 @@ public interface ProductService {
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      * @return cancelable task
      */
-    CancellableTask getProductPage(int page, Callback<List<Product>> callback);
+    CancellableTask getProducts(int page, Callback<List<Product>> callback);
 
     /**
      * Fetch a page of products
@@ -57,7 +57,7 @@ public interface ProductService {
      * @param page the 1-based page index. The page size is set by {@link BuyClientBuilder#productPageSize} configuration.
      * @return cold observable that emits the requested list of products
      */
-    Observable<List<Product>> getProductPage(int page);
+    Observable<List<Product>> getProducts(int page);
 
     /**
      * Fetch the product with the specified handle
@@ -66,7 +66,7 @@ public interface ProductService {
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      * @return cancelable task
      */
-    CancellableTask getProductWithHandle(String handle, Callback<Product> callback);
+    CancellableTask getProductByHandle(String handle, Callback<Product> callback);
 
     /**
      * Fetch the product with the specified handle
@@ -74,7 +74,7 @@ public interface ProductService {
      * @param handle the handle for the product to fetch
      * @return cold observable that emits requested product with the specified handle
      */
-    Observable<Product> getProductWithHandle(String handle);
+    Observable<Product> getProductByHandle(String handle);
 
     /**
      * Fetch a single Product
@@ -157,7 +157,7 @@ public interface ProductService {
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      * @return cancelable task
      */
-    CancellableTask getCollectionPage(int page, Callback<List<Collection>> callback);
+    CancellableTask getCollections(int page, Callback<List<Collection>> callback);
 
     /**
      * Fetch a page of collections
@@ -165,5 +165,5 @@ public interface ProductService {
      * @param page the 1-based page index. The page size is set by {@link BuyClientBuilder#productPageSize} configuration.
      * @return cold observable that emits requested list of collections
      */
-    Observable<List<Collection>> getCollectionPage(int page);
+    Observable<List<Collection>> getCollections(int page);
 }
