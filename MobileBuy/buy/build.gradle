@@ -111,7 +111,7 @@ android {
             buildConfigField "String", "ANDROID_PAY_PUBLIC_KEY", "\"" + androidPayPublicKey.toString() + "\""
 
             // do not enable test coverage for production builds as it modifies the classes to add agents and it crashes
-            testCoverageEnabled true
+//            testCoverageEnabled true
         }
 
         release {
