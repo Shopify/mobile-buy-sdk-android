@@ -101,6 +101,10 @@ final class ProductServiceDefault implements ProductService {
             throw new NullPointerException("handle cannot be null");
         }
 
+        if (TextUtils.isEmpty(handle)) {
+            throw new IllegalArgumentException("handle cannot be empty");
+        }
+
         return retrofitService
             .getProductWithHandle(appId, handle)
             .retryWhen(networkRetryPolicyProvider.provide())
@@ -182,7 +186,10 @@ final class ProductServiceDefault implements ProductService {
             throw new IllegalArgumentException("page is a 1-based index, value cannot be less than 1");
         }
         if (collectionId == null) {
-            throw new IllegalArgumentException("collectionId cannot be null");
+            throw new NullPointerException("collectionId cannot be null");
+        }
+        if (sortOrder == null) {
+            throw new NullPointerException("sortOrder cannot be null");
         }
 
         return retrofitService
@@ -193,7 +200,7 @@ final class ProductServiceDefault implements ProductService {
             .onErrorResumeNext(new BuyClientExceptionHandler<List<Product>>())
             .observeOn(callbackScheduler);
     }
-    
+
     @Override
     public CancellableTask getCollections(final int page, final Callback<List<Collection>> callback) {
         return new CancellableTaskSubscriptionWrapper(getCollections(page).subscribe(new InternalCallbackSubscriber<>(callback)));

@@ -30,8 +30,6 @@ import java.util.List;
 
 import rx.Observable;
 
-// TODO add delete address
-
 /**
  * Service that provides Address API endpoints.
  */

@@ -114,16 +114,17 @@ final class CustomerServiceDefault implements CustomerService {
 
     @Override
     public Observable<Customer> activateCustomer(final Long customerId, final String activationToken, final AccountCredentials accountCredentials) {
+        if (customerId == null) {
+            throw new NullPointerException("customerId cannot be null");
+        }
+        if (activationToken == null) {
+            throw new NullPointerException("activationToken cannot be null");
+        }
         if (TextUtils.isEmpty(activationToken)) {
             throw new IllegalArgumentException("activation token cannot be empty");
         }
-
         if (accountCredentials == null) {
             throw new NullPointerException("accountCredentials cannot be null");
-        }
-
-        if (customerId == null) {
-            throw new NullPointerException("customerId cannot be null");
         }
 
         final AccountCredentialsWrapper accountCredentialsWrapper = new AccountCredentialsWrapper(accountCredentials);
@@ -142,16 +143,17 @@ final class CustomerServiceDefault implements CustomerService {
 
     @Override
     public Observable<Customer> resetPassword(final Long customerId, final String resetToken, final AccountCredentials accountCredentials) {
+        if (customerId == null) {
+            throw new NullPointerException("customerId cannot be null");
+        }
+        if (resetToken == null) {
+            throw new NullPointerException("resetToken cannot be null");
+        }
         if (TextUtils.isEmpty(resetToken)) {
             throw new IllegalArgumentException("reset token cannot be empty");
         }
-
         if (accountCredentials == null) {
             throw new NullPointerException("accountCredentials cannot be null");
-        }
-
-        if (customerId == null) {
-            throw new NullPointerException("customerId cannot be null");
         }
 
         final AccountCredentialsWrapper accountCredentialsWrapper = new AccountCredentialsWrapper(accountCredentials);
@@ -232,9 +234,8 @@ final class CustomerServiceDefault implements CustomerService {
         if (customer == null) {
             throw new NullPointerException("customer cannot be null");
         }
-
         if (customer.getId() == null) {
-            throw new NullPointerException("customerId cannot be null");
+            throw new IllegalArgumentException("customerId cannot be null");
         }
 
         return retrofitService
@@ -298,6 +299,9 @@ final class CustomerServiceDefault implements CustomerService {
 
     @Override
     public Observable<Void> recoverPassword(final String email) {
+        if (email == null) {
+            throw new NullPointerException("email cannot be null");
+        }
         if (TextUtils.isEmpty(email)) {
             throw new IllegalArgumentException("email cannot be empty");
         }

@@ -56,40 +56,6 @@ public class CompleteCheckoutTest extends ShopifyAndroidTestCase {
     }
 
     @Test
-    public void testCompletingCheckoutWithNullCheckoutToken() throws InterruptedException {
-        try {
-            buyClient.completeCheckout(paymentToken, null);
-        } catch (IllegalArgumentException e) {
-            return;
-        }
-
-        fail("Expected an IllegalArgumentException");
-    }
-
-    @Test
-    public void testCompletingCheckoutWithEmptyCheckoutToken() throws InterruptedException {
-        try {
-            buyClient.completeCheckout(paymentToken, "");
-        } catch (IllegalArgumentException e) {
-            return;
-        }
-
-        fail("Expected an IllegalArgumentException");
-    }
-
-    @Test
-    public void testCompletingCheckoutWithNullPaymentToken() throws InterruptedException {
-        try {
-            buyClient.completeCheckout(null, checkout.getToken());
-        } catch (NullPointerException e) {
-            return;
-        }
-
-        fail("Expected an NullPointerException");
-    }
-
-
-    @Test
     public void testCompleteCheckoutWithNonIOError() throws InterruptedException{
         final Observable<Response<Void>> response = Observable.error(new BuyClientError(Response.error(new ResponseBody() {
             @Override
