@@ -26,6 +26,12 @@ package com.shopify.buy.dataprovider;
 
 import android.text.TextUtils;
 
+import com.shopify.buy.dataprovider.cache.AddressCacheHook;
+import com.shopify.buy.dataprovider.cache.CheckoutCacheHook;
+import com.shopify.buy.dataprovider.cache.CustomerCacheHook;
+import com.shopify.buy.dataprovider.cache.OrderCacheHook;
+import com.shopify.buy.dataprovider.cache.ProductCacheHook;
+import com.shopify.buy.dataprovider.cache.StoreCacheHook;
 import com.shopify.buy.model.AccountCredentials;
 import com.shopify.buy.model.Address;
 import com.shopify.buy.model.Checkout;
@@ -86,6 +92,12 @@ final class BuyClientDefault implements BuyClient {
             final float networkRequestRetryBackoffMultiplier,
             final long httpConnectionTimeoutMs,
             final long httpReadWriteTimeoutMs,
+            final AddressCacheHook addressCacheHook,
+            final CheckoutCacheHook checkoutCacheHook,
+            final CustomerCacheHook customerCacheHook,
+            final OrderCacheHook orderCacheHook,
+            final ProductCacheHook productCacheHook,
+            final StoreCacheHook storeCacheHook,
             final Interceptor... interceptors
     ) {
         this.apiKey = apiKey;
@@ -135,12 +147,12 @@ final class BuyClientDefault implements BuyClient {
 
         final NetworkRetryPolicyProvider networkRetryPolicyProvider = new NetworkRetryPolicyProvider(networkRequestRetryMaxCount, networkRequestRetryDelayMs, networkRequestRetryBackoffMultiplier);
 
-        storeService = new StoreServiceDefault(retrofit, networkRetryPolicyProvider, callbackScheduler);
-        addressService = new AddressServiceDefault(retrofit, networkRetryPolicyProvider, callbackScheduler);
-        checkoutService = new CheckoutServiceDefault(retrofit, apiKey, applicationName, networkRetryPolicyProvider, callbackScheduler);
-        customerService = new CustomerServiceDefault(retrofit, customerToken, networkRetryPolicyProvider, callbackScheduler);
-        orderService = new OrderServiceDefault(retrofit, networkRetryPolicyProvider, callbackScheduler);
-        productService = new ProductServiceDefault(retrofit, appId, productPageSize, networkRetryPolicyProvider, callbackScheduler);
+        storeService = new StoreServiceDefault(retrofit, networkRetryPolicyProvider, new StoreCacheRxHookProvider(storeCacheHook), callbackScheduler);
+        addressService = new AddressServiceDefault(retrofit, networkRetryPolicyProvider, new AddressCacheRxHookProvider(addressCacheHook), callbackScheduler);
+        checkoutService = new CheckoutServiceDefault(retrofit, apiKey, applicationName, networkRetryPolicyProvider, new CheckoutCacheRxHookProvider(checkoutCacheHook), callbackScheduler);
+        customerService = new CustomerServiceDefault(retrofit, customerToken, networkRetryPolicyProvider, new CustomerCacheRxHookProvider(customerCacheHook), callbackScheduler);
+        orderService = new OrderServiceDefault(retrofit, networkRetryPolicyProvider, new OrderCacheRxHookProvider(orderCacheHook), callbackScheduler);
+        productService = new ProductServiceDefault(retrofit, appId, productPageSize, networkRetryPolicyProvider, new ProductCacheRxHookProvider(productCacheHook), callbackScheduler);
     }
 
     @Override

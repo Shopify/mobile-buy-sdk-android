@@ -34,13 +34,13 @@ import java.util.Date;
 public class CustomerToken {
 
     @SerializedName("access_token")
-    private String accessToken;
+    protected String accessToken;
 
     @SerializedName("customer_id")
-    private Long customerId;
+    protected Long customerId;
 
     @SerializedName("expires_at")
-    private Date expiresAt;
+    protected Date expiresAt;
 
     public CustomerToken() {
     }

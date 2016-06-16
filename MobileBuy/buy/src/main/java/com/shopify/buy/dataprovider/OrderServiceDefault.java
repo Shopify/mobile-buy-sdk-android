@@ -23,8 +23,6 @@
  */
 package com.shopify.buy.dataprovider;
 
-import android.text.TextUtils;
-
 import com.shopify.buy.model.Order;
 import com.shopify.buy.model.internal.OrderWrapper;
 import com.shopify.buy.model.internal.OrdersWrapper;
@@ -44,15 +42,19 @@ final class OrderServiceDefault implements OrderService {
 
     final NetworkRetryPolicyProvider networkRetryPolicyProvider;
 
+    final OrderCacheRxHookProvider cacheRxHookProvider;
+
     final Scheduler callbackScheduler;
 
     OrderServiceDefault(
         final Retrofit retrofit,
         final NetworkRetryPolicyProvider networkRetryPolicyProvider,
+        final OrderCacheRxHookProvider cacheRxHookProvider,
         final Scheduler callbackScheduler
     ) {
         this.retrofitService = retrofit.create(OrderRetrofitService.class);
         this.networkRetryPolicyProvider = networkRetryPolicyProvider;
+        this.cacheRxHookProvider = cacheRxHookProvider;
         this.callbackScheduler = callbackScheduler;
     }
 
@@ -72,6 +74,7 @@ final class OrderServiceDefault implements OrderService {
             .retryWhen(networkRetryPolicyProvider.provide())
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<OrdersWrapper, List<Order>>())
+            .doOnNext(cacheRxHookProvider.getOrdersCacheHook(customerId))
             .onErrorResumeNext(new BuyClientExceptionHandler<List<Order>>())
             .observeOn(callbackScheduler);
     }
@@ -96,6 +99,7 @@ final class OrderServiceDefault implements OrderService {
             .retryWhen(networkRetryPolicyProvider.provide())
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<OrderWrapper, Order>())
+            .doOnNext(cacheRxHookProvider.getOrderCacheHook(customerId))
             .onErrorResumeNext(new BuyClientExceptionHandler<Order>())
             .observeOn(callbackScheduler);
     }

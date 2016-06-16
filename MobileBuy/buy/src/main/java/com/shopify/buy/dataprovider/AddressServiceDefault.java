@@ -46,15 +46,19 @@ final class AddressServiceDefault implements AddressService {
 
     final NetworkRetryPolicyProvider networkRetryPolicyProvider;
 
+    final AddressCacheRxHookProvider cacheRxHookProvider;
+
     final Scheduler callbackScheduler;
 
     AddressServiceDefault(
         final Retrofit retrofit,
         final NetworkRetryPolicyProvider networkRetryPolicyProvider,
+        final AddressCacheRxHookProvider cacheRxHookProvider,
         final Scheduler callbackScheduler
     ) {
         this.retrofitService = retrofit.create(AddressRetrofitService.class);
         this.networkRetryPolicyProvider = networkRetryPolicyProvider;
+        this.cacheRxHookProvider = cacheRxHookProvider;
         this.callbackScheduler = callbackScheduler;
     }
 
@@ -77,6 +81,7 @@ final class AddressServiceDefault implements AddressService {
             .createAddress(customerId, new AddressWrapper(address))
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<AddressWrapper, Address>())
+            .doOnNext(cacheRxHookProvider.getAddressCacheHook(customerId))
             .onErrorResumeNext(new BuyClientExceptionHandler<Address>())
             .observeOn(callbackScheduler);
     }
@@ -104,6 +109,7 @@ final class AddressServiceDefault implements AddressService {
                     return voidResponse.body();
                 }
             })
+            .doOnNext(cacheRxHookProvider.getDeleteAddressCacheHook(customerId, addressId))
             .onErrorResumeNext(new BuyClientExceptionHandler<Void>())
             .observeOn(callbackScheduler);
     }
@@ -124,6 +130,7 @@ final class AddressServiceDefault implements AddressService {
             .retryWhen(networkRetryPolicyProvider.provide())
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<AddressesWrapper, List<Address>>())
+            .doOnNext(cacheRxHookProvider.getAddressesCacheHook(customerId))
             .onErrorResumeNext(new BuyClientExceptionHandler<List<Address>>())
             .observeOn(callbackScheduler);
     }
@@ -148,6 +155,7 @@ final class AddressServiceDefault implements AddressService {
             .retryWhen(networkRetryPolicyProvider.provide())
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<AddressWrapper, Address>())
+            .doOnNext(cacheRxHookProvider.getAddressCacheHook(customerId))
             .onErrorResumeNext(new BuyClientExceptionHandler<Address>())
             .observeOn(callbackScheduler);
     }
@@ -171,6 +179,7 @@ final class AddressServiceDefault implements AddressService {
             .updateAddress(customerId, new AddressWrapper(address), address.getId())
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<AddressWrapper, Address>())
+            .doOnNext(cacheRxHookProvider.getAddressCacheHook(customerId))
             .onErrorResumeNext(new BuyClientExceptionHandler<Address>())
             .observeOn(callbackScheduler);
     }

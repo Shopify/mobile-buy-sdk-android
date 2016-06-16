@@ -29,11 +29,11 @@ package com.shopify.buy.model;
  */
 public class TaxLine {
 
-    private String price;
+    protected String price;
 
-    private String rate;
+    protected String rate;
 
-    private String title;
+    protected String title;
 
     /**
      * @return The amount of tax to be charged.
