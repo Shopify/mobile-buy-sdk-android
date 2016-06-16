@@ -205,9 +205,8 @@ public class ProductDetailsFragment extends Fragment {
         String applicationName = bundle.getString(ProductDetailsConfig.EXTRA_SHOP_APPLICATION_NAME);
 
         // Retrieve the id of the Product we are going to display
-        productId = bundle.getLong(ProductDetailsConfig.EXTRA_SHOP_PRODUCT_ID, -1);
-        if (productId == -1) {
-            productId = null;
+        if (bundle.containsKey(ProductDetailsConfig.EXTRA_SHOP_PRODUCT_ID)) {
+            productId = bundle.getLong(ProductDetailsConfig.EXTRA_SHOP_PRODUCT_ID, -1);
         }
 
         // If we have a full product object in the bundle, we don't need to fetch it
