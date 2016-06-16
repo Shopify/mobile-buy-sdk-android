@@ -41,7 +41,7 @@ public interface CheckoutService {
     /**
      * Initiate the Shopify checkout process with a new Checkout object.
      *
-     * @param checkout the {@link Checkout} object to use for initiating the checkout process
+     * @param checkout the {@link Checkout} object to use for initiating the checkout process, not null
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      * @return cancelable task
      */
@@ -50,7 +50,7 @@ public interface CheckoutService {
     /**
      * Initiate the Shopify checkout process with a new Checkout object.
      *
-     * @param checkout the {@link Checkout} object to use for initiating the checkout process
+     * @param checkout the {@link Checkout} object to use for initiating the checkout process, not null
      * @return cold observable that emits created checkout object
      */
     Observable<Checkout> createCheckout(Checkout checkout);
@@ -69,7 +69,7 @@ public interface CheckoutService {
      * <li>{@link Checkout#reservationTime}</li>
      * </ul>
      *
-     * @param checkout the {@link Checkout} attributes to be updated
+     * @param checkout the {@link Checkout} attributes to be updated, not null
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      * @return cancelable task
      */
@@ -89,7 +89,7 @@ public interface CheckoutService {
      * <li>{@link Checkout#reservationTime}</li>
      * </ul>
      *
-     * @param checkout the {@link Checkout} to update
+     * @param checkout the {@link Checkout} to update, not null
      * @return cold observable that emits updated checkout object
      */
     Observable<Checkout> updateCheckout(Checkout checkout);
@@ -97,8 +97,8 @@ public interface CheckoutService {
     /**
      * Complete the checkout and process the payment session
      *
-     * @param paymentToken  a {@link PaymentToken} associated with the checkout to be completed
-     * @param checkoutToken checkout token associated with the specified payment token
+     * @param paymentToken  a {@link PaymentToken} associated with the checkout to be completed, not null
+     * @param checkoutToken checkout token associated with the specified payment token, not null or empty
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      * @return cancelable task
      */
@@ -107,8 +107,8 @@ public interface CheckoutService {
     /**
      * Complete the checkout and process the payment session
      *
-     * @param paymentToken a {@link PaymentToken} associated with the checkout to be completed
-     * @param checkoutToken checkout token associated with the specified payment token
+     * @param paymentToken a {@link PaymentToken} associated with the checkout to be completed, not null
+     * @param checkoutToken checkout token associated with the specified payment token, not null or empty
      * @return cold observable that emits completed checkout
      */
     Observable<Checkout> completeCheckout(PaymentToken paymentToken, String checkoutToken);
@@ -117,7 +117,7 @@ public interface CheckoutService {
      * Get the status of the payment session associated with {@code checkout}. {@code callback} will be
      * called with a boolean value indicating whether the session has completed or not.
      *
-     * @param checkoutToken checkout token for the {@link Checkout} to get the completion status for
+     * @param checkoutToken checkout token for the {@link Checkout} to get the completion status for, not null or empty
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      * @return cancellable task
      */
@@ -127,7 +127,7 @@ public interface CheckoutService {
      * Get the status of the payment session associated with {@code checkout}. {@code callback} will be
      * called with a boolean value indicating whether the session has completed or not.
      *
-     * @param checkoutToken checkout token for the {@link Checkout} to get the completion status for
+     * @param checkoutToken checkout token for the {@link Checkout} to get the completion status for, not null or empty
      * @return cold observable that emits a Boolean that indicates whether the checkout has been completed
      *
      */
@@ -136,7 +136,7 @@ public interface CheckoutService {
     /**
      * Fetch an existing Checkout from Shopify
      *
-     * @param checkoutToken the token associated with the existing {@link Checkout}
+     * @param checkoutToken the token associated with the existing {@link Checkout}, not null or empty
      * @param callback      the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      * @return cancelable task
      */
@@ -145,7 +145,7 @@ public interface CheckoutService {
     /**
      * Fetch an existing Checkout from Shopify
      *
-     * @param checkoutToken the token associated with the existing {@link Checkout}
+     * @param checkoutToken the token associated with the existing {@link Checkout}, not null or empty
      * @return cold observable that emits requested existing checkout
      */
     Observable<Checkout> getCheckout(String checkoutToken);
@@ -153,7 +153,7 @@ public interface CheckoutService {
     /**
      * Fetch shipping rates for a given Checkout
      *
-     * @param checkoutToken the {@link Checkout#token} from an existing Checkout
+     * @param checkoutToken the {@link Checkout#token} from an existing Checkout, not null or empty
      * @param callback      the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      * @return cancelable task
      */
@@ -162,7 +162,7 @@ public interface CheckoutService {
     /**
      * Fetch shipping rates for a given Checkout
      *
-     * @param checkoutToken the {@link Checkout#token} from an existing Checkout
+     * @param checkoutToken the {@link Checkout#token} from an existing Checkout, not null or empty
      * @return cold observable that emits requested list of shipping rates for a given checkout
      */
     Observable<List<ShippingRate>> getShippingRates(String checkoutToken);
@@ -170,8 +170,8 @@ public interface CheckoutService {
     /**
      * Post a credit card to Shopify's card server and associate it with a Checkout
      *
-     * @param card     the {@link CreditCard} to associate
-     * @param checkout  the {@link Checkout} to associate the card with
+     * @param card     the {@link CreditCard} to associate, not null
+     * @param checkout  the {@link Checkout} to associate the card with, not null
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      * @return cancelable task
      */
@@ -180,8 +180,8 @@ public interface CheckoutService {
     /**
      * Post a credit card to Shopify's card server and associate it with a Checkout
      *
-     * @param card     the {@link CreditCard} to associate
-     * @param checkout  the {@link Checkout} to associate the card with
+     * @param card     the {@link CreditCard} to associate, not null
+     * @param checkout  the {@link Checkout} to associate the card with, not null
      * @return cold observable that emits payment token associated with specified checkout and credit card
      */
     Observable<PaymentToken> storeCreditCard(CreditCard card, Checkout checkout);
@@ -189,8 +189,8 @@ public interface CheckoutService {
     /**
      * Apply a gift card to a Checkout
      *
-     * @param giftCardCode the gift card code for a gift card associated with the current Shop
-     * @param checkout     the {@link Checkout} object to apply the gift card to
+     * @param giftCardCode the gift card code for a gift card associated with the current Shop, not null
+     * @param checkout     the {@link Checkout} object to apply the gift card to, not null
      * @param callback     the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      * @return cancelable task
      */
@@ -199,8 +199,8 @@ public interface CheckoutService {
     /**
      * Apply a gift card to a Checkout
      *
-     * @param giftCardCode the gift card code for a gift card associated with the current Shop
-     * @param checkout     the {@link Checkout} object to apply the gift card to
+     * @param giftCardCode the gift card code for a gift card associated with the current Shop, not null or empty
+     * @param checkout     the {@link Checkout} object to apply the gift card to, not null
      * @return cold observable that emits updated checkout
      */
     Observable<Checkout> applyGiftCard(String giftCardCode, Checkout checkout);
@@ -209,7 +209,7 @@ public interface CheckoutService {
      * Remove a gift card that was previously applied to a Checkout
      *
      * @param giftCardId the id of the {@link GiftCard} to remove from the {@link Checkout}, not null
-     * @param checkout the {@code Checkout} to remove the {@code GiftCard} from
+     * @param checkout the {@code Checkout} to remove the {@code GiftCard} from, not null
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      * @return cancelable task
      */
@@ -228,7 +228,7 @@ public interface CheckoutService {
      * Release all product inventory reservations associated with the checkout by setting the `reservationTime` of the checkout to `0` and calling {@link #updateCheckout(Checkout, Callback) updateCheckout(Checkout, Callback)}.
      * We recommend creating a new `Checkout` object from a `Cart` for further API calls.
      *
-     * @param checkoutToken the token for the {@link Checkout} to expire
+     * @param checkoutToken the token for the {@link Checkout} to expire, not null or empty
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      * @return cancelable task
      */
@@ -238,7 +238,7 @@ public interface CheckoutService {
      * Release all product inventory reservations associated with the checkout by setting the `reservationTime` of the checkout to `0` and calling {@link #updateCheckout(Checkout, Callback) updateCheckout(Checkout, Callback)}.
      * We recommend creating a new `Checkout` object from a `Cart` for further API calls.
      *
-     * @param checkoutToken the {@link Checkout} to expire
+     * @param checkoutToken the {@link Checkout} to expire, not null or empty
      * @return cold observable that emits updated checkout
      */
     Observable<Checkout> removeProductReservationsFromCheckout(String checkoutToken);
