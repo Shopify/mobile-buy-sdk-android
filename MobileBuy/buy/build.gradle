@@ -23,6 +23,10 @@ jacocoAndroidUnitTestReport {
     xml.enabled true
 }
 
+buildscript {
+    System.properties['com.android.build.gradle.overrideVersionCheck'] = 'true'
+}
+
 // Params for bintrayUpload
 ext {
     bintrayOrg = 'shopify'
