@@ -87,7 +87,7 @@ public class ProductDetailsBuilder {
         return this;
     }
 
-    public ProductDetailsBuilder setProductId(String productId) {
+    public ProductDetailsBuilder setProductId(Long productId) {
         productDetailsConfig.setProductId(productId);
         return this;
     }
@@ -121,7 +121,7 @@ public class ProductDetailsBuilder {
             throw new IllegalArgumentException("applicationName must be provided, and cannot be empty");
         }
 
-        if (TextUtils.isEmpty(productDetailsConfig.getProductId()) && productDetailsConfig.getProduct() == null) {
+        if (productDetailsConfig.getProductId() == null && productDetailsConfig.getProduct() == null) {
             throw new IllegalArgumentException("One of productId or product must be provided, and cannot be empty");
         }
 

@@ -71,6 +71,9 @@ public class ProductListActivity extends SampleListActivity {
         Intent intent = getIntent();
         if (intent.hasExtra(EXTRA_COLLECTION_ID)) {
             collectionId = intent.getLongExtra(EXTRA_COLLECTION_ID, -1);
+            if (collectionId == -1) {
+                collectionId = null;
+            }
         }
 
         productViewOptionsContainer = findViewById(R.id.product_view_options_container);
