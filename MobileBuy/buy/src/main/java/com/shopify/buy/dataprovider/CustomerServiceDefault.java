@@ -175,7 +175,6 @@ final class CustomerServiceDefault implements CustomerService {
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<CustomerTokenWrapper, CustomerToken>())
             .onErrorResumeNext(new BuyClientExceptionHandler<CustomerToken>())
-            .observeOn(callbackScheduler)
             .doOnNext(new Action1<CustomerToken>() {
                 @Override
                 public void call(CustomerToken token) {
@@ -187,7 +186,8 @@ final class CustomerServiceDefault implements CustomerService {
                 public Observable<Customer> call(CustomerToken customerToken) {
                     return getCustomer(customerToken.getCustomerId());
                 }
-            });
+            })
+            .observeOn(callbackScheduler);
     }
 
     @Override
