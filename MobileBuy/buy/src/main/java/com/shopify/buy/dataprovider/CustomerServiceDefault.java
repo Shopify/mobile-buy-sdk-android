@@ -94,13 +94,7 @@ final class CustomerServiceDefault implements CustomerService {
             .flatMap(new Func1<Customer, Observable<Customer>>() {
                 @Override
                 public Observable<Customer> call(final Customer customer) {
-                    return loginCustomer(accountCredentials)
-                        .map(new Func1<CustomerToken, Customer>() {
-                            @Override
-                            public Customer call(CustomerToken customerToken) {
-                                return customer;
-                            }
-                        });
+                    return loginCustomer(accountCredentials);
                 }
             })
             .observeOn(callbackScheduler);
@@ -164,12 +158,12 @@ final class CustomerServiceDefault implements CustomerService {
     }
 
     @Override
-    public CancellableTask loginCustomer(final AccountCredentials accountCredentials, final Callback<CustomerToken> callback) {
+    public CancellableTask loginCustomer(final AccountCredentials accountCredentials, final Callback<Customer> callback) {
         return new CancellableTaskSubscriptionWrapper(loginCustomer(accountCredentials).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
-    public Observable<CustomerToken> loginCustomer(final AccountCredentials accountCredentials) {
+    public Observable<Customer> loginCustomer(final AccountCredentials accountCredentials) {
         if (accountCredentials == null) {
             throw new NullPointerException("accountCredentials cannot be null");
         }
@@ -186,6 +180,12 @@ final class CustomerServiceDefault implements CustomerService {
                 @Override
                 public void call(CustomerToken token) {
                     customerTokenRef.set(token);
+                }
+            })
+            .flatMap(new Func1<CustomerToken, Observable<Customer>>() {
+                @Override
+                public Observable<Customer> call(CustomerToken customerToken) {
+                    return getCustomer(customerToken.getCustomerId());
                 }
             });
     }
