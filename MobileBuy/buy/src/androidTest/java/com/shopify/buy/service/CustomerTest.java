@@ -130,16 +130,20 @@ public class CustomerTest extends ShopifyAndroidTestCase {
     public void testCustomerLogin() throws InterruptedException {
         customer = getExistingCustomer();
 
-        final AccountCredentials accountCredentials = new AccountCredentials(customer.getEmail(), PASSWORD, customer.getFirstName(), customer.getLastName());
+        final AccountCredentials accountCredentials = new AccountCredentials(customer.getEmail(), PASSWORD);
 
         final CountDownLatch latch = new CountDownLatch(1);
 
-        buyClient.loginCustomer(accountCredentials, new Callback<CustomerToken>() {
+        buyClient.loginCustomer(accountCredentials, new Callback<Customer>() {
             @Override
-            public void success(CustomerToken customerToken) {
+            public void success(Customer customer) {
                 assertNotNull(buyClient.getCustomerToken());
                 assertEquals(false, buyClient.getCustomerToken().getAccessToken().isEmpty());
+                assertNotNull(customer);
+
                 CustomerTest.this.customerToken = buyClient.getCustomerToken();
+                CustomerTest.this.customer = customer;
+
                 latch.countDown();
             }
 
@@ -150,8 +154,6 @@ public class CustomerTest extends ShopifyAndroidTestCase {
         });
 
         latch.await();
-
-        getCustomerAfterLogin();
     }
 
     @Test
@@ -521,30 +523,6 @@ public class CustomerTest extends ShopifyAndroidTestCase {
         return shippingAddress;
     }
 
-    private void getCustomerAfterLogin() throws InterruptedException {
-
-        final CountDownLatch latch = new CountDownLatch(1);
-
-        buyClient.getCustomer(customerToken.getCustomerId(), new Callback<Customer>() {
-
-            @Override
-            public void success(Customer customer) {
-                assertNotNull(customer);
-                CustomerTest.this.customer = customer;
-                CustomerTest.this.customerToken = buyClient.getCustomerToken();
-                latch.countDown();
-            }
-
-            @Override
-            public void failure(BuyClientError error) {
-                fail(error.getRetrofitErrorBody());
-            }
-        });
-
-        latch.await();
-
-    }
-
     @Test
     public void testCustomerCreationDuplicateEmail() throws InterruptedException {
 
@@ -579,10 +557,10 @@ public class CustomerTest extends ShopifyAndroidTestCase {
 
         final CountDownLatch latch = new CountDownLatch(1);
 
-        buyClient.loginCustomer(accountCredentials, new Callback<CustomerToken>() {
+        buyClient.loginCustomer(accountCredentials, new Callback<Customer>() {
 
             @Override
-            public void success(CustomerToken customerToken) {
+            public void success(Customer customer) {
                 fail("Invalid credentials should not be able to login");
             }
 

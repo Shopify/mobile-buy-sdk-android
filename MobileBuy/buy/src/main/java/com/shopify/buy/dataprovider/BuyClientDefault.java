@@ -315,12 +315,12 @@ final class BuyClientDefault implements BuyClient {
     }
 
     @Override
-    public CancellableTask loginCustomer(AccountCredentials accountCredentials, Callback<CustomerToken> callback) {
+    public CancellableTask loginCustomer(AccountCredentials accountCredentials, Callback<Customer> callback) {
         return customerService.loginCustomer(accountCredentials, callback);
     }
 
     @Override
-    public Observable<CustomerToken> loginCustomer(AccountCredentials accountCredentials) {
+    public Observable<Customer> loginCustomer(AccountCredentials accountCredentials) {
         return customerService.loginCustomer(accountCredentials);
     }
 

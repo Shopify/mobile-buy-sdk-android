@@ -107,7 +107,7 @@ public interface CustomerService {
      * @param callback           the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      * @return cancelable task
      */
-    CancellableTask loginCustomer(AccountCredentials accountCredentials, Callback<CustomerToken> callback);
+    CancellableTask loginCustomer(AccountCredentials accountCredentials, Callback<Customer> callback);
 
     /**
      * Log an existing Customer into Shopify
@@ -115,7 +115,7 @@ public interface CustomerService {
      * @param accountCredentials the account credentials with an email and password of the {@link Customer}, not null
      * @return cold observable that emits logged in customer token
      */
-    Observable<CustomerToken> loginCustomer(AccountCredentials accountCredentials);
+    Observable<Customer> loginCustomer(AccountCredentials accountCredentials);
 
     /**
      * Log a Customer out from Shopify
