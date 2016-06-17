@@ -15,6 +15,7 @@ import org.junit.runner.RunWith;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
@@ -241,5 +242,56 @@ public class StorefrontTest extends ShopifyAndroidTestCase {
         });
 
         latch.await();
+    }
+
+    @Test
+    public void testGetProductByHandle() throws InterruptedException {
+        final AtomicReference<Product> productRef = new AtomicReference<>();
+
+        final CountDownLatch getProductLatch = new CountDownLatch(1);
+        buyClient.getProducts(1, new Callback<List<Product>>() {
+            @Override
+            public void success(List<Product> response) {
+                if (response != null && response.size() > 0) {
+                    productRef.set(response.get(0));
+                }
+                getProductLatch.countDown();
+            }
+
+            @Override
+            public void failure(BuyClientError error) {
+                getProductLatch.countDown();
+            }
+        });
+        getProductLatch.await();
+
+        final Product expectedProduct = productRef.get();
+        if (expectedProduct == null) {
+            fail("Expected some product");
+        }
+
+        productRef.set(null);
+
+        final CountDownLatch getProductByHandleLatch = new CountDownLatch(1);
+        buyClient.getProductByHandle(expectedProduct.getHandle(), new Callback<Product>() {
+            @Override
+            public void success(Product response) {
+                productRef.set(response);
+                getProductByHandleLatch.countDown();
+            }
+
+            @Override
+            public void failure(BuyClientError error) {
+                getProductByHandleLatch.countDown();
+            }
+        });
+        getProductByHandleLatch.await();
+
+        final Product actualProduct = productRef.get();
+        if (actualProduct == null) {
+            fail("Product by handle not found");
+        }
+
+        assertEquals(expectedProduct, actualProduct);
     }
 }

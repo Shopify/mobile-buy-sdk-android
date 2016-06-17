@@ -610,4 +610,42 @@ public class CustomerTest extends ShopifyAndroidTestCase {
         latch.await();
 
     }
+
+    @Test
+    public void testActivateCustomer() throws InterruptedException {
+        final CountDownLatch latch = new CountDownLatch(1);
+
+        buyClient.activateCustomer(-1L, "test_activate_customer", new AccountCredentials("test_activate_customer"), new Callback<Customer>() {
+            @Override
+            public void success(Customer response) {
+                fail("Well it's unexpected as probably this customer shouldn't exist");
+                latch.countDown();
+            }
+
+            @Override
+            public void failure(BuyClientError error) {
+                latch.countDown();
+            }
+        });
+        latch.await();
+    }
+
+    @Test
+    public void testResetPassword() throws InterruptedException {
+        final CountDownLatch latch = new CountDownLatch(1);
+
+        buyClient.resetPassword(-1L, "test_reset_password", new AccountCredentials("test_reset_password"), new Callback<Customer>() {
+            @Override
+            public void success(Customer response) {
+                fail("Well it's unexpected as probably this customer shouldn't exist");
+                latch.countDown();
+            }
+
+            @Override
+            public void failure(BuyClientError error) {
+                latch.countDown();
+            }
+        });
+        latch.await();
+    }
 }

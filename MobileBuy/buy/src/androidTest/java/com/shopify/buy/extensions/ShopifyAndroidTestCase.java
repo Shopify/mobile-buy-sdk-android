@@ -15,6 +15,8 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.TestName;
 
+import java.util.concurrent.TimeUnit;
+
 import okhttp3.HttpUrl;
 import okhttp3.Protocol;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -34,8 +36,8 @@ public class ShopifyAndroidTestCase {
     private static final boolean GENERATE_MOCK_RESPONSES = false;
 
     protected static final boolean USE_MOCK_RESPONSES = TextUtils.isEmpty(BuildConfig.SHOP_DOMAIN)
-            || TextUtils.isEmpty(BuildConfig.API_KEY)
-            || TextUtils.isEmpty(BuildConfig.APP_ID);
+        || TextUtils.isEmpty(BuildConfig.API_KEY)
+        || TextUtils.isEmpty(BuildConfig.APP_ID);
 
 
     private Context context;
@@ -73,12 +75,14 @@ public class ShopifyAndroidTestCase {
     protected BuyClient getBuyClient(String shopDomain, String apiKey, String appId, String applicationName) {
 
         final BuyClientBuilder buyClientBuilder = new BuyClientBuilder()
-                .shopDomain(shopDomain)
-                .apiKey(apiKey)
-                .appId(appId)
-                .applicationName(applicationName)
-                .callbackScheduler(Schedulers.immediate())
-                .networkRequestRetryPolicy(1, 100, 1);
+            .shopDomain(shopDomain)
+            .apiKey(apiKey)
+            .appId(appId)
+            .applicationName(applicationName)
+            .callbackScheduler(Schedulers.immediate())
+            .productPageSize(50)
+            .httpTimeout(TimeUnit.SECONDS.toMillis(60), TimeUnit.SECONDS.toMillis(60))
+            .networkRequestRetryPolicy(1, 100, 1);
 
         if (USE_MOCK_RESPONSES) {
             buyClientBuilder.interceptors(new MockResponder(context), new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY));
@@ -112,18 +116,18 @@ public class ShopifyAndroidTestCase {
     public okhttp3.Response createResponse(int code) {
 
         HttpUrl httpUrl = new HttpUrl.Builder()
-                .scheme("https")
-                .host("example.com")
-                .build();
+            .scheme("https")
+            .host("example.com")
+            .build();
 
         okhttp3.Request request = new okhttp3.Request.Builder()
-                .url(httpUrl)
-                .build();
+            .url(httpUrl)
+            .build();
 
         return new okhttp3.Response.Builder()
-                .code(code)
-                .request(request)
-                .protocol(Protocol.HTTP_1_0)
-                .build();
+            .code(code)
+            .request(request)
+            .protocol(Protocol.HTTP_1_0)
+            .build();
     }
 }
