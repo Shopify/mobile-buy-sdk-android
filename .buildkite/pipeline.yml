@@ -14,4 +14,6 @@ steps:
     command: "bundle install && bundle exec fastlane android release"
     artifact_paths: "/tmp/artifacts/**/*"
     timeout_in_minutes: 15
+    agents: 
+      android: true
 
