@@ -36,10 +36,8 @@ import com.shopify.sample.application.SampleApplication;
 
 import java.lang.ref.WeakReference;
 
-import rx.Observable;
 import rx.Subscription;
 import rx.functions.Action2;
-import rx.functions.Func1;
 
 public final class CustomerLoginViewPresenter extends BaseViewPresenter<CustomerLoginViewPresenter.View> {
 
@@ -84,12 +82,6 @@ public final class CustomerLoginViewPresenter extends BaseViewPresenter<Customer
         final AccountCredentials credentials = new AccountCredentials(email, password);
         final Subscription subscription = SampleApplication.getBuyClient()
             .loginCustomer(credentials)
-            .flatMap(new Func1<CustomerToken, Observable<Customer>>() {
-                @Override
-                public Observable<Customer> call(CustomerToken customerToken) {
-                    return SampleApplication.getBuyClient().getCustomer(customerToken.getCustomerId());
-                }
-            })
             .subscribe(new WeakObserver<>(
                 this,
                 new Action2<CustomerLoginViewPresenter, Customer>() {
@@ -117,12 +109,12 @@ public final class CustomerLoginViewPresenter extends BaseViewPresenter<Customer
 
         final WeakReference<CustomerLoginViewPresenter> presenterRef = new WeakReference<>(this);
         final AccountCredentials credentials = new AccountCredentials(email, password);
-        loginCustomerTask = SampleApplication.getBuyClient().loginCustomer(credentials, new Callback<CustomerToken>() {
+        loginCustomerTask = SampleApplication.getBuyClient().loginCustomer(credentials, new Callback<Customer>() {
             @Override
-            public void success(final CustomerToken token) {
+            public void success(final Customer token) {
                 final CustomerLoginViewPresenter presenter = presenterRef.get();
                 if (presenter != null) {
-                    presenter.onFetchCustomerToken(token);
+                    presenter.onFetchCustomerToken(SampleApplication.getBuyClient().getCustomerToken());
                 }
             }
 
