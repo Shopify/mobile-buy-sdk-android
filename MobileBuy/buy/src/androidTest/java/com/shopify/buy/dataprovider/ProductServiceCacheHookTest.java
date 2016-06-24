@@ -360,6 +360,5 @@ public class ProductServiceCacheHookTest extends ShopifyAndroidTestCase {
             }
         });
         Mockito.verify(productCacheHook, Mockito.times(1)).cacheCollections(1, productPageSize, collectionList);
-        Mockito.verify(productCacheHook, Mockito.times(1)).cacheProducts(1L, 1, productPageSize, productList);
     }
 }
