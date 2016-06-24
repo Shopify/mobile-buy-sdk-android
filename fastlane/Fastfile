@@ -1,4 +1,4 @@
-import_from_git(url: 'git@github.com:Shopify/buildkite_fastlane.git', path: 'fastlane/AndroidFastfile')
+import_from_git(url: 'git@github.com:Shopify/buildkite_fastlane.git')
 
 PACKAGE = "com.shopify.buy"
 ANDROID_PROJECT_PATH = File.expand_path('../../MobileBuy', __FILE__)
@@ -9,16 +9,29 @@ BASE_EMULATOR = {
 }
 
 platform :android do
-  desc "Run CI"
-  lane :ci do
-    release
+  desc "Run Tests"
+  lane :tests do
+    setup_emulator
+    instrumentedTests
+    clean_emulator
+  end
+
+  desc "Run Instrumented Tests"
+  lane :instrumentedTests do
+    run_gradle_tests({
+      android_project_path: ANDROID_PROJECT_PATH,
+      gradle_command: 'clean :buy:connectedAndroidTest -PdisablePreDex',
+      artifact_upload_paths: [ 'MobileBuy/buy/build/outputs/androidTest-results/connected/' ],
+      android_package: PACKAGE
+    })
   end
 
   desc "Build Release"
   lane :release do
+    lane_context['SKIP_LOGCAT'] = true
     run_gradle_tests({
       android_project_path: ANDROID_PROJECT_PATH,
-      gradle_command: ':buy:archiveReleasePackage',
+      gradle_command: 'archiveReleasePackage',
       artifact_upload_paths: [ 'MobileBuy/buy/build/distributions/' ],
       android_package: PACKAGE
     })

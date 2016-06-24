@@ -25,15 +25,15 @@
 package com.shopify.buy.model;
 
 import com.google.gson.annotations.SerializedName;
+import com.shopify.buy.dataprovider.BuyClientUtils;
+import com.shopify.buy.dataprovider.Callback;
 import com.shopify.buy.model.internal.CollectionImage;
 
 import java.util.Date;
 
-import retrofit.Callback;
-
 /**
  * Represents a collection of {@link Product}.
- * In order to get the list of products in a collection, use {@link com.shopify.buy.dataprovider.BuyClient#getProducts(int, String, SortOrder, Callback) getProducts(page, collectionId, sortOrder, callback}.
+ * In order to get the list of products in a collection, use {@link com.shopify.buy.dataprovider.BuyClient#getProducts(int, Long, Callback)} .
  */
 public class Collection extends ShopifyObject {
 
@@ -58,48 +58,52 @@ public class Collection extends ShopifyObject {
         }
     }
 
-    private String title;
+    protected String title;
 
     @SerializedName("body_html")
-    private String htmlDescription;
+    protected String htmlDescription;
 
-    private String handle;
+    protected String handle;
 
-    private boolean published;
+    protected boolean published;
 
     @SerializedName("collection_id")
-    private String collectionId;
+    protected Long collectionId;
 
     @SerializedName("created_at")
-    private Date createdAtDate;
+    protected Date createdAtDate;
 
     @SerializedName("updated_at")
-    private Date updatedAtDate;
+    protected Date updatedAtDate;
 
     @SerializedName("published_at")
-    private Date publishedAtDate;
+    protected Date publishedAtDate;
 
-    private CollectionImage image;
+    protected CollectionImage image;
 
     /**
      * @return The creation date for this collection.
      */
-    private Date getCreatedAtDate() {
+    public Date getCreatedAtDate() {
         return createdAtDate;
     }
 
     /**
      * @return The updated date for this collection.
      */
-    private Date getUpdatedAtDate() {
+    public Date getUpdatedAtDate() {
         return updatedAtDate;
     }
 
     /**
      * @return The publish date for this collection.
      */
-    private Date getPublishedAtDate() {
+    public Date getPublishedAtDate() {
         return publishedAtDate;
+    }
+
+    public CollectionImage getImage() {
+        return image;
     }
 
     /**
@@ -135,6 +139,8 @@ public class Collection extends ShopifyObject {
 
     /**
      * Use {@link Collection#isPublished() isPublished()}.
+     *
+     * @return true if the collection is published.
      */
     @Deprecated
     public String getPublished() {
@@ -151,8 +157,33 @@ public class Collection extends ShopifyObject {
     /**
      * @return The unique identifier for this collection.
      */
-    public String getCollectionId() {
+    public Long getCollectionId() {
         return collectionId;
     }
 
+    /**
+     * @return A collection object created using the values in the JSON string.
+     *
+     * @param json The input json.
+     * @return A {@link Collection}
+     */
+    public static Collection fromJson(String json) {
+        return BuyClientUtils.createDefaultGson().fromJson(json, Collection.class);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Collection)) return false;
+
+        Collection that = (Collection) o;
+
+        return collectionId.equals(that.collectionId);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return collectionId.hashCode();
+    }
 }

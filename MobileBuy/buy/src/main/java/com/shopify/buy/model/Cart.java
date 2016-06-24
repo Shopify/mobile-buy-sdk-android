@@ -24,6 +24,9 @@
 
 package com.shopify.buy.model;
 
+import com.shopify.buy.dataprovider.BuyClientUtils;
+import com.shopify.buy.utils.CollectionUtils;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -32,11 +35,10 @@ import java.util.Set;
 /**
  * The Cart is the starting point for the Checkout API. You are responsible for building a cart, then transforming it into a {@link Checkout} using the {@link com.shopify.buy.dataprovider.BuyClient}.
  */
-
 public class Cart {
 
-    private final List<CartLineItem> lineItems;
-    private final Set<ProductVariant> productVariants;
+    protected final List<CartLineItem> lineItems;
+    protected final Set<ProductVariant> productVariants;
 
     public Cart() {
         lineItems = new ArrayList<>();
@@ -85,8 +87,8 @@ public class Cart {
      * If a LineItem with this ProductVariant already exists in the Cart, that LineItems's quantity will be set to the new value.
      * If no LineItem with this ProductVariant exists in the Cart, a new LineItem will be created with the specified ProductVariant and quantity.
      *
-     * @param variant   the {@link ProductVariant} to update
-     * @param quantity  the new quantity
+     * @param variant  the {@link ProductVariant} to update
+     * @param quantity the new quantity
      */
     public void setVariantQuantity(ProductVariant variant, int quantity) {
         if (quantity <= 0) {
@@ -152,6 +154,42 @@ public class Cart {
      */
     public void clear() {
         lineItems.clear();
+    }
+
+    public String toJsonString() {
+        return BuyClientUtils.createDefaultGson().toJson(this);
+    }
+
+    public static Cart fromJson(String json) {
+        return BuyClientUtils.createDefaultGson().fromJson(json, Cart.class);
+    }
+
+    /**
+     * Convenience function to return the subtotal price for this cart, before taxes and shipping.
+     *
+     * @return The subtotal price for this cart.
+     */
+    public double getSubtotal() {
+        double subtotal = 0;
+        for (CartLineItem lineItem : lineItems) {
+            subtotal += (Double.parseDouble(lineItem.getPrice()) * lineItem.getQuantity());
+        }
+        return subtotal;
+    }
+
+    /**
+     * @return The total number of product variants in the cart (the sum of quantities across all line items).
+     */
+    public Integer getTotalQuantity() {
+        if (CollectionUtils.isEmpty(lineItems)) {
+            return 0;
+        }
+
+        int quantity = 0;
+        for (LineItem lineItem : lineItems) {
+            quantity += lineItem.getQuantity();
+        }
+        return quantity;
     }
 
 }

@@ -29,13 +29,11 @@ import com.shopify.buy.model.Address;
 import com.shopify.buy.model.CreditCard;
 
 /**
- * Created by agodding on 14-10-23.
- *
  * Internal structure used to serialize data for creating a payment session
  */
 public class PaymentSessionCheckout {
 
-    private String token;
+    private String checkoutToken;
 
     @SerializedName("credit_card")
     private CreditCard creditCard;
@@ -43,15 +41,9 @@ public class PaymentSessionCheckout {
     @SerializedName("billing_address")
     private Address billingAddress;
 
-    public void setToken(String token) {
-        this.token = token;
-    }
-
-    public void setCreditCard(CreditCard creditCard) {
+    public PaymentSessionCheckout(String checkoutToken, CreditCard creditCard, Address billingAddress) {
+        this.checkoutToken = checkoutToken;
         this.creditCard = creditCard;
-    }
-
-    public void setBillingAddress(Address billingAddress) {
         this.billingAddress = billingAddress;
     }
 }

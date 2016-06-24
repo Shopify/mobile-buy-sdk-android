@@ -24,7 +24,7 @@
 
 package com.shopify.buy.model;
 
-import com.shopify.buy.dataprovider.BuyClientFactory;
+import com.shopify.buy.dataprovider.BuyClientUtils;
 
 /**
  * Base class for Shopify Objects
@@ -36,27 +36,30 @@ public abstract class ShopifyObject {
     /**
      * @return The unique identifier of this object within the Shopify platform.
      */
-    public Long getId() {
+    protected Long getId() {
         return id;
     }
 
     @Override
-    public boolean equals(Object other) {
-        if (this == other) return true;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
-        if (other == null) return false;
-        if (other.getClass() != this.getClass()) return false;
+        ShopifyObject that = (ShopifyObject) o;
 
-        ShopifyObject that = (ShopifyObject) other;
+        return id != null ? id.equals(that.id) : that.id == null;
+    }
 
-        return !(id != null ? !id.equals(that.id) : that.id != null);
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
     }
 
     /**
      * @return A JSON representation of this object.
      */
     public String toJsonString() {
-        return BuyClientFactory.createDefaultGson().toJson(this);
+        return BuyClientUtils.createDefaultGson().toJson(this);
     }
 
 }

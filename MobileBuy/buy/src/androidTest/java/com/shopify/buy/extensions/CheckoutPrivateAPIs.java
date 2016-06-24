@@ -1,7 +1,7 @@
 package com.shopify.buy.extensions;
 
 import com.google.gson.Gson;
-import com.shopify.buy.dataprovider.BuyClientFactory;
+import com.shopify.buy.dataprovider.BuyClientUtils;
 import com.shopify.buy.model.Cart;
 import com.shopify.buy.model.Checkout;
 
@@ -18,8 +18,13 @@ public class CheckoutPrivateAPIs extends Checkout {
         super(cart);
     }
 
+    @Override
+    public Long getId() {
+        return super.getId();
+    }
+
     public static CheckoutPrivateAPIs fromCheckout(Checkout checkout) {
-        Gson gson = BuyClientFactory.createDefaultGson();
+        Gson gson = BuyClientUtils.createDefaultGson();
         String checkoutJson = gson.toJson(checkout);
         return gson.fromJson(checkoutJson, CheckoutPrivateAPIs.class);
     }

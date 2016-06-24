@@ -40,33 +40,44 @@ public class ProductVariant extends ShopifyObject {
     protected String price;
 
     @SerializedName("option_values")
-    private List<OptionValue> optionValues;
+    protected List<OptionValue> optionValues;
 
-    private long grams;
+    protected long grams;
 
     @SerializedName("compare_at_price")
-    private String compareAtPrice;
+    protected String compareAtPrice;
 
-    private String sku;
+    protected String sku;
 
     @SerializedName("requires_shipping")
-    private boolean requiresShipping;
+    protected boolean requiresShipping;
 
-    private boolean taxable;
+    protected boolean taxable;
 
-    private int position;
+    protected int position;
 
-    long productId;
-
-    String productTitle;
+    protected Long productId;
 
     @SerializedName("created_at")
-    private Date createdAtDate;
+    protected Date createdAtDate;
 
     @SerializedName("updated_at")
-    private Date updatedAtDate;
+    protected Date updatedAtDate;
 
-    private boolean available;
+    protected boolean available;
+
+    // NOTE: productTitle and imageUrl are not in the JSON from the server, they are set manually during the Product parsing
+
+    @SerializedName("product_title")
+    protected String productTitle;
+
+    @SerializedName("image_url")
+    protected String imageUrl;
+
+    @Override
+    public Long getId() {
+        return super.getId();
+    }
 
     /**
      * @return The title of this variant.
@@ -139,6 +150,13 @@ public class ProductVariant extends ShopifyObject {
     }
 
     /**
+     * @return The URL of the image for this variant.
+     */
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    /**
      * @return The title of the {@link Product} to which this variant belongs.
      */
     public String getProductTitle() {
@@ -147,6 +165,8 @@ public class ProductVariant extends ShopifyObject {
 
     /**
      * Use {@link #getCreatedAtDate() getCreatedAtDate()}.
+     *
+     * @return The date this variant was created.
      */
     @Deprecated
     public String getCreatedAt() {
@@ -155,11 +175,12 @@ public class ProductVariant extends ShopifyObject {
 
     /**
      * Use {@link #getUpdatedAtDate() getUpdatedAtDate()}.
+     *
+     * @return The date this variant was updated.
      */
     @Deprecated
     public String getUpdatedAt() {
         return updatedAtDate == null ? null : DateUtility.createDefaultDateFormat().format(updatedAtDate);
-
     }
 
     /**

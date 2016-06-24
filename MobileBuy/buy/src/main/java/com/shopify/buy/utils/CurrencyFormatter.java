@@ -43,18 +43,28 @@ public class CurrencyFormatter {
 
     private static final Map<FormatterAttributes, NumberFormat> cache = new HashMap<>();
 
-    /**
-     * The returned formatter instance is a shared object. Callers should ensure they do not use the formatter simultaneously from multiple threads.
-     */
-    public static NumberFormat getFormatter(Locale displayLocale, String currencyToFormat) {
-        return CurrencyFormatter.getFormatter(displayLocale, currencyToFormat, true, true);
-    }
 
     /**
      * The returned formatter instance is a shared object. Callers should ensure they do not use the formatter simultaneously from multiple threads.
+     *
+     * @param displayLocale    The locale to use for display
+     * @param currencyToFormat The currency code
+     * @return A {@link NumberFormat}
      */
-    public static NumberFormat getFormatter(Locale displayLocale, String currencyToFormat, boolean withSymbol, boolean includeGroupingSeparator) {
-        FormatterAttributes cacheKey = new FormatterAttributes(displayLocale.toString(), currencyToFormat, withSymbol, includeGroupingSeparator);
+    public static NumberFormat getFormatter(Locale displayLocale, String currencyToFormat) {
+        return CurrencyFormatter.getFormatter(displayLocale, currencyToFormat, true, true, true);
+    }
+
+    /**
+     * @param displayLocale            The locale to use for display.
+     * @param currencyToFormat         The currency code
+     * @param withSymbol               Include the currency symbol
+     * @param includeGroupingSeparator Include the grouping seperator
+     * @param includeFractionDigits    Include fraction digits
+     * @return A {@link NumberFormat}
+     */
+    public static NumberFormat getFormatter(Locale displayLocale, String currencyToFormat, boolean withSymbol, boolean includeGroupingSeparator, boolean includeFractionDigits) {
+        FormatterAttributes cacheKey = new FormatterAttributes(displayLocale.toString(), currencyToFormat, withSymbol, includeGroupingSeparator, includeFractionDigits);
         if (cache.containsKey(cacheKey)) {
             return cache.get(cacheKey);
         }
@@ -85,7 +95,7 @@ public class CurrencyFormatter {
         // It seems to be using the locale's rounding behaviour (search Google
         // for "Swedish rounding").
         formatter.setMinimumFractionDigits(currency.getDefaultFractionDigits());
-        formatter.setMaximumFractionDigits(currency.getDefaultFractionDigits());
+        formatter.setMaximumFractionDigits(includeFractionDigits ? currency.getDefaultFractionDigits() : 0);
 
         formatter.setMinimumIntegerDigits(1);
         formatter.setGroupingUsed(includeGroupingSeparator);
@@ -150,12 +160,14 @@ public class CurrencyFormatter {
         private final String currency;
         private final boolean withSymbol;
         private final boolean includeGroupingSeparator;
+        private final boolean includeFractionDigits;
 
-        public FormatterAttributes(String locale, String currency, boolean withSymbol, boolean includeGroupingSeparator) {
+        public FormatterAttributes(String locale, String currency, boolean withSymbol, boolean includeGroupingSeparator, boolean includeFractionDigits) {
             this.locale = locale;
             this.currency = currency;
             this.withSymbol = withSymbol;
             this.includeGroupingSeparator = includeGroupingSeparator;
+            this.includeFractionDigits = includeFractionDigits;
         }
 
         @Override
@@ -165,6 +177,7 @@ public class CurrencyFormatter {
 
             FormatterAttributes that = (FormatterAttributes) o;
 
+            if (includeFractionDigits != that.includeFractionDigits) return false;
             if (includeGroupingSeparator != that.includeGroupingSeparator) return false;
             if (withSymbol != that.withSymbol) return false;
             if (!currency.equals(that.currency)) return false;
@@ -179,6 +192,7 @@ public class CurrencyFormatter {
             result = 31 * result + currency.hashCode();
             result = 31 * result + (withSymbol ? 1 : 0);
             result = 31 * result + (includeGroupingSeparator ? 1 : 0);
+            result = 31 * result + (includeFractionDigits ? 1 : 0);
             return result;
         }
     }

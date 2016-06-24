@@ -25,51 +25,59 @@
 package com.shopify.buy.model;
 
 import com.google.gson.annotations.SerializedName;
+import com.shopify.buy.dataprovider.Callback;
 
 import java.util.HashMap;
 import java.util.Map;
+
 
 /**
  * Represents a Line Item, containing a {@link ProductVariant} and an associated quantity
  */
 public class LineItem {
 
-    private long quantity;
+    protected long quantity;
 
-    private String id;
+    protected String id;
 
-    private String price;
+    protected String price;
 
     @SerializedName("requires_shipping")
-    private boolean requiresShipping;
+    protected boolean requiresShipping;
 
     @SerializedName("variant_id")
-    private Long variantId;
+    protected Long variantId;
 
-    private String title;
+    protected String title;
 
     @SerializedName("product_id")
-    private String productId;
+    protected String productId;
 
     @SerializedName("variant_title")
-    private String variantTitle;
+    protected String variantTitle;
 
     @SerializedName("line_price")
-    private String linePrice;
+    protected String linePrice;
 
     @SerializedName("compare_at_price")
-    private String compareAtPrice;
+    protected String compareAtPrice;
 
-    private String sku;
+    protected String sku;
 
-    private boolean taxable;
+    protected boolean taxable;
 
-    private long grams;
+    protected long grams;
 
     @SerializedName("fulfillment_service")
-    private String fulfillmentService;
+    protected String fulfillmentService;
 
-    private Map<String, String> properties;
+    protected Map<String, String> properties;
+
+    @SerializedName("total_discount")
+    protected String totalDiscount;
+
+    protected LineItem() {
+    }
 
     public LineItem(ProductVariant variant) {
         variantId = variant.getId();
@@ -92,15 +100,16 @@ public class LineItem {
         return variantTitle;
     }
 
+
     /**
-     * @return The line price of the item (price * quantity).
+     * @return The line price of the item (price * quantity). This is only available for line items returned using {@link com.shopify.buy.dataprovider.BuyClient#getCheckout(String, Callback)}
      */
     public String getLinePrice() {
         return linePrice;
     }
 
     /**
-     * @return The competitor's price for the same item. You need to set this value on the {@link Product} in your shop admin portal.
+     * @return The competitor's price for the same item. You need to set this value on the {@link Product} in your shop admin portal. This is only available for line items returned using {@link com.shopify.buy.dataprovider.BuyClient#getCheckout(String, Callback)}
      */
     public String getCompareAtPrice() {
         return compareAtPrice;
@@ -187,10 +196,10 @@ public class LineItem {
     }
 
     /**
-     * @param quantity The quantity of the {@link ProductVariant} being purchased in this line item.
+     * @return The total discount applied to this line item. This is only available for line items returned using {@link com.shopify.buy.dataprovider.BuyClient#getCustomer(Long, Callback)}.
      */
-    public void setQuantity(long quantity) {
-        this.quantity = quantity;
+    public String getTotalDiscount() {
+        return totalDiscount;
     }
 
     /**

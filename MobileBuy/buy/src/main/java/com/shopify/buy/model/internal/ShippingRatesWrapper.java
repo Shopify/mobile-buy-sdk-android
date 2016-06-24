@@ -32,7 +32,7 @@ import java.util.List;
 /**
  * Wrapper used by Gson to do serialization.  Contains a list of {@link ShippingRate} objects
  */
-public class ShippingRatesWrapper {
+public class ShippingRatesWrapper implements ResponseWrapper<List<ShippingRate>> {
 
     @SerializedName("shipping_rates")
     private List<ShippingRate> shippingRates;
@@ -41,4 +41,8 @@ public class ShippingRatesWrapper {
         return shippingRates;
     }
 
+    @Override
+    public List<ShippingRate> getContent() {
+        return shippingRates;
+    }
 }

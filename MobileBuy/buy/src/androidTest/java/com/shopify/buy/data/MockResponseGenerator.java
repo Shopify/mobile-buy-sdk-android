@@ -27,11 +27,6 @@ package com.shopify.buy.data;
 import android.content.Context;
 
 import com.google.gson.JsonObject;
-import com.squareup.okhttp.Interceptor;
-import com.squareup.okhttp.MediaType;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
-import com.squareup.okhttp.ResponseBody;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -42,6 +37,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
+import okhttp3.Interceptor;
+import okhttp3.MediaType;
+import okhttp3.Request;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
+
 public class MockResponseGenerator implements Interceptor {
 
     /*
@@ -49,9 +50,9 @@ public class MockResponseGenerator implements Interceptor {
         To generate the file, do the following:
             1. Set ShopifyAndroidTestCase.GENERATE_MOCK_RESPONSES = true
             2. Make sure shop.properties has mobilebuysdktestshop credentials
-            3. Command line: adb shell rm /mnt/shell/emulated/0/Android/data/com.shopify.buy.test/files/MobileBuy.json
+            3. Command line: adb shell rm /storage/emulated/0/Android/data/com.shopify.buy.test/files/MobileBuy.json
             4. Run the tests
-            5. Command line: adb pull /mnt/shell/emulated/0/Android/data/com.shopify.buy.test/files/MobileBuy.json
+            5. Command line: adb pull /storage/emulated/0/Android/data/com.shopify.buy.test/files/MobileBuy.json
             6. Now you have the mock responses in a new file called MobileBuy.json
             7. Open up MobileBuy.json, remove the last comma, and surround the entire file with '{' and '}' to create one giant valid json object.
      */
@@ -64,15 +65,15 @@ public class MockResponseGenerator implements Interceptor {
         currentTestRequestIndex.set(0);
     }
 
-    private final Context context;
+    final File file;
 
-    public MockResponseGenerator(Context context) {
-        this.context = context;
+    public MockResponseGenerator(Context context){
+        file = new File(context.getExternalFilesDir(null), "MobileBuy.json");
     }
+
 
     @Override
     public Response intercept(Chain chain) throws IOException {
-        File file = new File(context.getExternalFilesDir(null), "MobileBuy.json");
 
         if (file == null) {
             return chain.proceed(chain.request());

@@ -24,24 +24,26 @@
 
 package com.shopify.buy.model;
 
+import android.text.TextUtils;
+
 import com.google.gson.annotations.SerializedName;
 
 /**
  * Represents a shipping or billing address on an order. This will be associated with the customer upon completion.
  */
 
-public class Address {
+public class Address extends ShopifyObject {
 
-	private String address1;
+    private String address1;
 
-	private String address2;
+    private String address2;
 
-	private String city;
+    private String city;
 
-	private String company;
+    private String company;
 
     @SerializedName("first_name")
-	private String firstName;
+    private String firstName;
 
     @SerializedName("last_name")
     private String lastName;
@@ -59,6 +61,11 @@ public class Address {
     private String provinceCode;
 
     private String zip;
+
+    @Override
+    public Long getId() {
+        return super.getId();
+    }
 
     /**
      * @return The street of the address.
@@ -190,5 +197,48 @@ public class Address {
 
     public void setZip(String zip) {
         this.zip = zip;
+    }
+
+    /**
+     * Compares the location portion of the addresses
+     *
+     * @param otherAddress The address to compare to
+     * @return true if the address lines, city, country code, province code, and zip are equivalent
+     */
+    public boolean locationsAreEqual(Address otherAddress) {
+
+        if (otherAddress == null) {
+            return false;
+        }
+
+        if (this == otherAddress) {
+            return true;
+        }
+
+        if (!TextUtils.equals(address1, otherAddress.address1)) {
+            return false;
+        }
+
+        if (!TextUtils.equals(address2, otherAddress.address2)) {
+            return false;
+        }
+
+        if (!TextUtils.equals(city, otherAddress.city)) {
+            return false;
+        }
+
+        if (!TextUtils.equals(countryCode, otherAddress.countryCode)) {
+            return false;
+        }
+
+        if (!TextUtils.equals(provinceCode, otherAddress.provinceCode)) {
+            return false;
+        }
+
+        if (!TextUtils.equals(zip, otherAddress.zip)) {
+            return false;
+        }
+
+        return true;
     }
 }
