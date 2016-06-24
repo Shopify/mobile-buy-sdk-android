@@ -184,15 +184,6 @@ android {
                     include "buy-" + version + ".aar"
                 }
 
-                from("..") {
-                    include "sample/src/main/**"
-                    include "sample/.gitignore"
-                    include "sample/build.gradle.packaging"
-                    include "sample/proguard-rules.pro"
-
-                    rename "build.gradle.packaging", "build.gradle"
-                }
-
                 from("../..") {
                     include "LICENSE"
                     include "NOTICE"
