@@ -31,24 +31,29 @@ import android.net.Uri;
 import android.text.TextUtils;
 import android.widget.Toast;
 
-import com.shopify.buy.dataprovider.BuyClientBuilder;
-import com.shopify.buy.dataprovider.Callback;
+import com.google.android.gms.wallet.FullWallet;
+import com.google.android.gms.wallet.MaskedWallet;
+import com.google.android.gms.wallet.WalletConstants;
 import com.shopify.buy.dataprovider.BuyClient;
-import com.shopify.buy.dataprovider.RetrofitError;
+import com.shopify.buy.dataprovider.BuyClientBuilder;
+import com.shopify.buy.dataprovider.BuyClientError;
+import com.shopify.buy.dataprovider.Callback;
 import com.shopify.buy.model.Address;
 import com.shopify.buy.model.Cart;
 import com.shopify.buy.model.Checkout;
 import com.shopify.buy.model.Collection;
 import com.shopify.buy.model.CreditCard;
+import com.shopify.buy.model.Customer;
 import com.shopify.buy.model.LineItem;
-import com.shopify.buy.model.Payment;
+import com.shopify.buy.model.PaymentToken;
 import com.shopify.buy.model.Product;
 import com.shopify.buy.model.ShippingRate;
 import com.shopify.buy.model.Shop;
-import com.shopify.sample.ui.ProductDetailsBuilder;
-import com.shopify.sample.ui.ProductDetailsTheme;
+import com.shopify.buy.utils.AndroidPayHelper;
 import com.shopify.sample.BuildConfig;
 import com.shopify.sample.R;
+import com.shopify.sample.ui.ProductDetailsBuilder;
+import com.shopify.sample.ui.ProductDetailsTheme;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -61,17 +66,43 @@ import okhttp3.logging.HttpLoggingInterceptor;
 public class SampleApplication extends Application {
 
     private static final String SHOP_PROPERTIES_INSTRUCTION =
-            "\n\tAdd your shop credentials to a shop.properties file in the main app folder (e.g. 'app/shop.properties'). Include these keys:\n" +
-                    "\t\tSHOP_DOMAIN=<myshop>.myshopify.com\n" +
-                    "\t\tAPI_KEY=0123456789abcdefghijklmnopqrstuvw\n";
+        "\n\tAdd your shop credentials to a shop.properties file in the main app folder (e.g. 'app/shop.properties'). Include these keys:\n" +
+            "\t\tSHOP_DOMAIN=<myshop>.myshopify.com\n" +
+            "\t\tAPI_KEY=0123456789abcdefghijklmnopqrstuvw\n";
+
+    private static SampleApplication instance;
+
+    private static Customer customer;
+
+    public static BuyClient getBuyClient() {
+        return instance.buyClient;
+    }
+
+    public static Customer getCustomer() {
+        return customer;
+    }
+
+    public static void setCustomer(Customer customer) {
+        SampleApplication.customer = customer;
+    }
 
     private BuyClient buyClient;
     private Checkout checkout;
+    private PaymentToken paymentToken;
     private Shop shop;
+
+    private MaskedWallet maskedWallet;
+
+    public static final String ANDROID_PAY_FLOW = "com.shopify.sample.androidpayflow";
+
+    // Use ENVIRONMENT_TEST for testing
+    public static final int WALLET_ENVIRONMENT = WalletConstants.ENVIRONMENT_TEST;
 
     @Override
     public void onCreate() {
         super.onCreate();
+
+        instance = this;
 
         initializeBuyClient();
     }
@@ -101,13 +132,13 @@ public class SampleApplication extends Application {
          */
 
         buyClient = new BuyClientBuilder()
-                .shopDomain(shopUrl)
-                .apiKey(shopifyApiKey)
-                .appId(shopifyAppId)
-                .applicationName(applicationName)
-                .interceptors(logging)
-                .networkRequestRetryPolicy(3, TimeUnit.MILLISECONDS.toMillis(200), 1.5f)
-                .build();
+            .shopDomain(shopUrl)
+            .apiKey(shopifyApiKey)
+            .appId(shopifyAppId)
+            .applicationName(applicationName)
+            .interceptors(logging)
+            .networkRequestRetryPolicy(3, TimeUnit.MILLISECONDS.toMillis(200), 1.5f)
+            .build();
 
         buyClient.getShop(new Callback<Shop>() {
             @Override
@@ -116,14 +147,14 @@ public class SampleApplication extends Application {
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void failure(BuyClientError error) {
                 Toast.makeText(SampleApplication.this, R.string.shop_error, Toast.LENGTH_LONG).show();
             }
         });
     }
 
     public void getCollections(final Callback<List<Collection>> callback) {
-        buyClient.getCollections(callback);
+        buyClient.getCollectionPage(1, callback);
     }
 
 
@@ -141,13 +172,13 @@ public class SampleApplication extends Application {
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void failure(BuyClientError error) {
                 callback.failure(error);
             }
         });
     }
 
-    public void getProducts(String collectionId, Callback<List<Product>> callback) {
+    public void getProducts(Long collectionId, Callback<List<Product>> callback) {
         // For this sample app, we'll just fetch the first page of products in the collection
         buyClient.getProducts(1, collectionId, callback);
     }
@@ -155,6 +186,8 @@ public class SampleApplication extends Application {
     /**
      * Create a new checkout with the selected product. For convenience in the sample app we will hardcode the user's shipping address.
      * The shipping rates fetched in ShippingRateListActivity will be for this address.
+     *
+     * For the Android Pay Checkout, we will replace this with the address and email returned in the {@link MaskedWallet}
      *
      * @param product
      * @param callback
@@ -164,19 +197,32 @@ public class SampleApplication extends Application {
         cart.addVariant(product.getVariants().get(0));
 
         checkout = new Checkout(cart);
+        checkout.setWebReturnToLabel(getString(R.string.web_return_to_label));
+        checkout.setWebReturnToUrl(getString(R.string.web_return_to_url));
 
-        Address address = new Address();
-        address.setFirstName("Dinosaur");
-        address.setLastName("Banana");
-        address.setAddress1("421 8th Ave");
-        address.setCity("New York");
-        address.setProvince("NY");
-        address.setZip("10001");
-        address.setCountryCode("US");
-        checkout.setShippingAddress(address);
-        checkout.setBillingAddress(address);
+        // if we have logged in customer use customer email instead of hardcoded one
+        if (customer != null) {
+            checkout.setEmail(customer.getEmail());
+        } else {
+            checkout.setEmail("something@somehost.com");
+        }
 
-        checkout.setEmail("something@somehost.com");
+        // the same for shipping address if we have logged in customer use customer default shipping address instead of hardcoded one
+        if (customer != null && customer.getDefaultAddress() != null) {
+            checkout.setShippingAddress(customer.getDefaultAddress());
+            checkout.setBillingAddress(customer.getDefaultAddress());
+        } else {
+            final Address address = new Address();
+            address.setFirstName("Dinosaur");
+            address.setLastName("Banana");
+            address.setAddress1("421 8th Ave");
+            address.setCity("New York");
+            address.setProvinceCode("NY");
+            address.setZip("10001");
+            address.setCountryCode("US");
+            checkout.setShippingAddress(address);
+            checkout.setBillingAddress(address);
+        }
 
         checkout.setWebReturnToUrl(getString(R.string.web_return_to_url));
         checkout.setWebReturnToLabel(getString(R.string.web_return_to_label));
@@ -215,8 +261,36 @@ public class SampleApplication extends Application {
         return uri.build().toString();
     }
 
+    /**
+     * Update a checkout.
+     */
+    public void updateCheckout(final Checkout checkout, final Callback<Checkout> callback) {
+        buyClient.updateCheckout(checkout, wrapCheckoutCallback(callback));
+    }
+
+    public void updateCheckout(final Checkout checkout, MaskedWallet maskedWallet, final Callback<Checkout> callback) {
+        // Update the checkout with the Address information in the Masked Wallet
+        final Checkout updateCheckout = new Checkout(checkout.getToken());
+        updateCheckout.setShippingAddress(AndroidPayHelper.createShopifyAddress(maskedWallet.getBuyerShippingAddress()));
+        updateCheckout.setBillingAddress(AndroidPayHelper.createShopifyAddress(maskedWallet.getBuyerBillingAddress()));
+        updateCheckout.setEmail(maskedWallet.getEmail());
+        updateCheckout(updateCheckout, callback);
+    }
+
     public Checkout getCheckout() {
         return checkout;
+    }
+
+    public Shop getShop() {
+        return shop;
+    }
+
+    public MaskedWallet getMaskedWallet() {
+        return maskedWallet;
+    }
+
+    public void setMaskedWallet(MaskedWallet maskedWallet) {
+        this.maskedWallet = maskedWallet;
     }
 
     public void getShippingRates(final Callback<List<ShippingRate>> callback) {
@@ -237,23 +311,37 @@ public class SampleApplication extends Application {
         buyClient.applyGiftCard(code, checkout, wrapCheckoutCallback(callback));
     }
 
-    public void storeCreditCard(final CreditCard card, final Callback<Checkout> callback) {
-        buyClient.storeCreditCard(card, checkout, wrapCheckoutCallback(callback));
+    public void storeCreditCard(final CreditCard card, final Callback<PaymentToken> callback) {
+        buyClient.storeCreditCard(card, checkout, new Callback<PaymentToken>() {
+            @Override
+            public void success(PaymentToken body) {
+                SampleApplication.this.paymentToken = body;
+                callback.success(body);
+            }
+
+            @Override
+            public void failure(BuyClientError error) {
+                callback.failure(error);
+            }
+        });
     }
 
     public void completeCheckout(final Callback<Checkout> callback) {
-        buyClient.completeCheckout(checkout, wrapCheckoutCallbackForPayment(callback));
+        buyClient.completeCheckout(paymentToken, checkout.getToken(), wrapCheckoutCallback(callback));
+    }
+
+    public void completeCheckout(FullWallet fullWallet, final Callback<Checkout> callback) {
+        paymentToken = AndroidPayHelper.getAndroidPaymentToken(fullWallet, BuildConfig.ANDROID_PAY_PUBLIC_KEY);
+        buyClient.completeCheckout(paymentToken, checkout.getToken(), wrapCheckoutCallback(callback));
     }
 
     public void launchProductDetailsActivity(Activity activity, Product product, ProductDetailsTheme theme) {
         ProductDetailsBuilder builder = new ProductDetailsBuilder(this, buyClient);
         Intent intent = builder.setShopDomain(buyClient.getShopDomain())
-                .setProduct(product)
-                .setTheme(theme)
-                .setShop(shop)
-                .setWebReturnToUrl(getString(R.string.web_return_to_url))
-                .setWebReturnToLabel(getString(R.string.web_return_to_label))
-                .build();
+            .setProduct(product)
+            .setTheme(theme)
+            .setShop(shop)
+            .build();
         activity.startActivityForResult(intent, 1);
     }
 
@@ -272,22 +360,7 @@ public class SampleApplication extends Application {
             }
 
             @Override
-            public void failure(RetrofitError error) {
-                callback.failure(error);
-            }
-        };
-    }
-
-    private Callback<Payment> wrapCheckoutCallbackForPayment(final Callback<Checkout> callback) {
-        return new Callback<Payment>() {
-            @Override
-            public void success(Payment payment) {
-                SampleApplication.this.checkout = payment.getCheckout();
-                callback.success(checkout);
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
+            public void failure(BuyClientError error) {
                 callback.failure(error);
             }
         };

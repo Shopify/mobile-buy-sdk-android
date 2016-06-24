@@ -24,11 +24,23 @@
 package com.shopify.buy.dataprovider;
 
 /**
- * Created by ykulbashian on 16-04-07.
+ * Callback for asynchronous API operations
+ *
+ * @param <T> type of response
  */
 public interface Callback<T> {
 
-    void success(T body);
+    /**
+     * Called in case async API call succeed
+     *
+     * @param response the response
+     */
+    void success(T response);
 
-    void failure(RetrofitError error);
+    /**
+     * Called in case async API call failed
+     *
+     * @param error the error
+     */
+    void failure(BuyClientError error);
 }

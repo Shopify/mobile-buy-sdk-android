@@ -23,7 +23,6 @@
  */
 package com.shopify.buy.dataprovider.cache;
 
-import com.shopify.buy.model.Customer;
 import com.shopify.buy.model.Order;
 
 import java.util.List;
@@ -37,10 +36,10 @@ public interface OrderCacheHook {
     /**
      * Caches customer order
      */
-    void cacheOrder(Customer customer, Order order);
+    void cacheOrder(Long customerId, Order order);
 
     /**
      * Caches customer list of orders
      */
-    void cacheOrders(Customer customer, List<Order> orders);
+    void cacheOrders(Long customerId, List<Order> orders);
 }

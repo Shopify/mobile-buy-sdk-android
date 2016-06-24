@@ -28,6 +28,9 @@ package com.shopify.buy.model.internal;
 import com.google.gson.annotations.SerializedName;
 import com.shopify.buy.model.Order;
 
+/**
+ * Wrapper class used by Gson Serialization
+ */
 public class OrderWrapper implements ResponseWrapper<Order> {
 
     @SerializedName("order")

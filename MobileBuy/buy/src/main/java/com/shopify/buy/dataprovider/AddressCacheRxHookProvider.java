@@ -25,7 +25,6 @@ package com.shopify.buy.dataprovider;
 
 import com.shopify.buy.dataprovider.cache.AddressCacheHook;
 import com.shopify.buy.model.Address;
-import com.shopify.buy.model.Customer;
 
 import java.util.List;
 
@@ -46,7 +45,7 @@ final class AddressCacheRxHookProvider {
     }
 
     @SuppressWarnings("unchecked")
-    Action1<Address> getAddressCacheHook(final Customer customer) {
+    Action1<Address> getAddressCacheHook(final Long customerId) {
         if (cacheHook == null) {
             return EMPTY_CACHE_HOOK;
         } else {
@@ -54,7 +53,7 @@ final class AddressCacheRxHookProvider {
                 @Override
                 public void call(final Address address) {
                     try {
-                        cacheHook.cacheAddress(customer, address);
+                        cacheHook.cacheAddress(customerId, address);
                     } catch (Exception e) {
 
                     }
@@ -64,7 +63,7 @@ final class AddressCacheRxHookProvider {
     }
 
     @SuppressWarnings("unchecked")
-    Action1<List<Address>> getAddressesCacheHook(final Customer customer) {
+    Action1<List<Address>> getAddressesCacheHook(final Long customerId) {
         if (cacheHook == null) {
             return EMPTY_CACHE_HOOK;
         } else {
@@ -72,9 +71,26 @@ final class AddressCacheRxHookProvider {
                 @Override
                 public void call(final List<Address> addresses) {
                     try {
-                        cacheHook.cacheAddresses(customer, addresses);
+                        cacheHook.cacheAddresses(customerId, addresses);
                     } catch (Exception e) {
 
+                    }
+                }
+            };
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    Action1<Void> getDeleteAddressCacheHook(final Long customerId, final Long addressId) {
+        if (cacheHook == null) {
+            return EMPTY_CACHE_HOOK;
+        } else {
+            return new Action1<Void>() {
+                @Override
+                public void call(Void aVoid) {
+                    try {
+                        cacheHook.deleteAddress(customerId, addressId);
+                    } catch (Exception e) {
                     }
                 }
             };

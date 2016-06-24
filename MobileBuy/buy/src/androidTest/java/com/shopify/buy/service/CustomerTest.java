@@ -27,10 +27,8 @@ package com.shopify.buy.service;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.suitebuilder.annotation.Suppress;
 
-import com.shopify.buy.dataprovider.BuyClientUtils;
-import com.shopify.buy.dataprovider.BuyError;
+import com.shopify.buy.dataprovider.BuyClientError;
 import com.shopify.buy.dataprovider.Callback;
-import com.shopify.buy.dataprovider.RetrofitError;
 import com.shopify.buy.extensions.ShopifyAndroidTestCase;
 import com.shopify.buy.model.AccountCredentials;
 import com.shopify.buy.model.Address;
@@ -42,11 +40,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
+import java.util.concurrent.CountDownLatch;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertTrue;
 import static junit.framework.Assert.fail;
 
 
@@ -68,9 +69,11 @@ public class CustomerTest extends ShopifyAndroidTestCase {
     private CustomerToken customerToken;
 
     @Test
-	public void testCustomerCreation() throws InterruptedException {
+    public void testCustomerCreation() throws InterruptedException {
         final Customer randomCustomer = USE_MOCK_RESPONSES ? getExistingCustomer() : generateRandomCustomer();
         final AccountCredentials accountCredentials = new AccountCredentials(randomCustomer.getEmail(), PASSWORD, randomCustomer.getFirstName(), randomCustomer.getLastName());
+
+        final CountDownLatch latch = new CountDownLatch(1);
 
         buyClient.createCustomer(accountCredentials, new Callback<Customer>() {
             @Override
@@ -79,42 +82,57 @@ public class CustomerTest extends ShopifyAndroidTestCase {
                 assertEquals(randomCustomer.getEmail(), customer.getEmail());
                 assertEquals(randomCustomer.getFirstName(), customer.getFirstName());
                 assertEquals(randomCustomer.getLastName(), customer.getLastName());
+
+                assertNotNull(buyClient.getCustomerToken());
+                assertEquals(false, buyClient.getCustomerToken().getAccessToken().isEmpty());
+                assertEquals(customer.getId(), buyClient.getCustomerToken().getCustomerId());
+
+                latch.countDown();
             }
 
             @Override
-            public void failure(RetrofitError error) {
-                fail(BuyClientUtils.getErrorBody(error));
+            public void failure(BuyClientError error) {
+                fail(error.getRetrofitErrorBody());
             }
         });
+
+        latch.await();
     }
 
     @Suppress
     @Test
-	public void testCustomerActivation() throws InterruptedException {
+    public void testCustomerActivation() throws InterruptedException {
         testCustomerLogin();
 
         final AccountCredentials accountCredentials = new AccountCredentials(customer.getEmail(), PASSWORD, customer.getFirstName(), customer.getLastName());
+
+        final CountDownLatch latch = new CountDownLatch(1);
 
         // TODO update this test when we start to get real tokens
         buyClient.activateCustomer(customer.getId(), "need activation token not access token", accountCredentials, new Callback<Customer>() {
             @Override
             public void success(Customer customer) {
                 assertNotNull(customer);
+                latch.countDown();
             }
 
             @Override
-            public void failure(RetrofitError error) {
-                fail(BuyClientUtils.getErrorBody(error));
+            public void failure(BuyClientError error) {
+                fail(error.getRetrofitErrorBody());
             }
         });
+
+        latch.await();
     }
 
 
     @Test
-	public void testCustomerLogin() throws InterruptedException {
+    public void testCustomerLogin() throws InterruptedException {
         customer = getExistingCustomer();
 
         final AccountCredentials accountCredentials = new AccountCredentials(customer.getEmail(), PASSWORD, customer.getFirstName(), customer.getLastName());
+
+        final CountDownLatch latch = new CountDownLatch(1);
 
         buyClient.loginCustomer(accountCredentials, new Callback<CustomerToken>() {
             @Override
@@ -122,215 +140,319 @@ public class CustomerTest extends ShopifyAndroidTestCase {
                 assertNotNull(buyClient.getCustomerToken());
                 assertEquals(false, buyClient.getCustomerToken().getAccessToken().isEmpty());
                 CustomerTest.this.customerToken = buyClient.getCustomerToken();
-                getCustomerAfterLogin();
+                latch.countDown();
             }
 
             @Override
-            public void failure(RetrofitError error) {
-                fail(BuyClientUtils.getErrorBody(error));
+            public void failure(BuyClientError error) {
+                fail(error.getRetrofitErrorBody());
             }
         });
+
+        latch.await();
+
+        getCustomerAfterLogin();
     }
 
     @Test
-	public void testCustomerLogout() throws InterruptedException {
+    public void testCustomerLogout() throws InterruptedException {
         testCustomerLogin();
+
+        final CountDownLatch latch = new CountDownLatch(1);
+
         buyClient.logoutCustomer(new Callback<Void>() {
             @Override
             public void success(Void aVoid) {
+                latch.countDown();
             }
 
             @Override
-            public void failure(RetrofitError error) {
-                fail(BuyClientUtils.getErrorBody(error));
+            public void failure(BuyClientError error) {
+                fail(error.getRetrofitErrorBody());
             }
         });
+
+        latch.await();
     }
 
     @Test
-	public void testCustomerRenew() throws InterruptedException {
+    public void testCustomerRenew() throws InterruptedException {
         testCustomerLogin();
+
+        final CountDownLatch latch = new CountDownLatch(1);
+
         buyClient.renewCustomer(new Callback<CustomerToken>() {
             @Override
             public void success(CustomerToken customerToken) {
+                latch.countDown();
             }
 
             @Override
-            public void failure(RetrofitError error) {
-                fail(BuyClientUtils.getErrorBody(error));
+            public void failure(BuyClientError error) {
+                fail(error.getRetrofitErrorBody());
             }
         });
+
+        latch.await();
     }
 
     @Test
-	public void testCustomerRecover() throws InterruptedException {
+    public void testCustomerRecover() throws InterruptedException {
         customer = getExistingCustomer();
+
+        final CountDownLatch latch = new CountDownLatch(1);
 
         buyClient.recoverPassword(EMAIL, new Callback<Void>() {
             @Override
             public void success(Void aVoid) {
+                latch.countDown();
             }
 
             @Override
-            public void failure(RetrofitError error) {
-                fail(BuyClientUtils.getErrorBody(error));
+            public void failure(BuyClientError error) {
+                fail(error.getRetrofitErrorBody());
             }
         });
+
+        latch.await();
     }
 
     @Test
-	public void testCustomerUpdate() throws InterruptedException {
+    public void testCustomerUpdate() throws InterruptedException {
         testCustomerLogin();
 
         customer.setLastName("Foo");
+
+        final CountDownLatch latch = new CountDownLatch(1);
 
         buyClient.updateCustomer(customer, new Callback<Customer>() {
             @Override
             public void success(Customer customer) {
                 assertNotNull(customer);
                 assertEquals("Foo", customer.getLastName());
+                latch.countDown();
             }
 
             @Override
-            public void failure(RetrofitError error) {
-                fail(BuyClientUtils.getErrorBody(error));
+            public void failure(BuyClientError error) {
+                fail(error.getRetrofitErrorBody());
             }
         });
+
+        latch.await();
     }
 
     @Test
-	public void testGetCustomerOrders() throws InterruptedException {
+    public void testGetCustomerOrders() throws InterruptedException {
         testCustomerLogin();
 
-        buyClient.getOrders(customer, new Callback<List<Order>>() {
+        final CountDownLatch latch = new CountDownLatch(1);
+
+        buyClient.getOrders(customer.getId(), new Callback<List<Order>>() {
             @Override
             public void success(List<Order> orders) {
                 assertNotNull(orders);
                 assertEquals(true, orders.size() > 0);
                 CustomerTest.this.orders = orders;
+                latch.countDown();
             }
 
             @Override
-            public void failure(RetrofitError error) {
-                fail(BuyClientUtils.getErrorBody(error));
+            public void failure(BuyClientError error) {
+                fail(error.getRetrofitErrorBody());
             }
 
         });
+
+        latch.await();
     }
 
     @Test
-	public void testGetOrder() throws InterruptedException {
+    public void testGetOrder() throws InterruptedException {
         testGetCustomerOrders();
 
-        String orderId = orders.get(0).getOrderId();
+        Long orderId = orders.get(0).getId();
 
-        buyClient.getOrder(customer, orderId, new Callback<Order>() {
+        final CountDownLatch latch = new CountDownLatch(1);
+
+        buyClient.getOrder(customer.getId(), orderId, new Callback<Order>() {
             @Override
             public void success(Order order) {
                 assertNotNull(order);
+                latch.countDown();
             }
 
             @Override
-            public void failure(RetrofitError error) {
-                fail(BuyClientUtils.getErrorBody(error));
+            public void failure(BuyClientError error) {
+                fail(error.getRetrofitErrorBody());
             }
         });
+
+        latch.await();
     }
 
     @Test
-	public void testGetCustomer() throws InterruptedException {
+    public void testGetCustomer() throws InterruptedException {
         testCustomerLogin();
+
+        final CountDownLatch latch = new CountDownLatch(1);
 
         buyClient.getCustomer(customerToken.getCustomerId(), new Callback<Customer>() {
             @Override
             public void success(Customer customer) {
                 assertNotNull(customer);
+                latch.countDown();
             }
 
             @Override
-            public void failure(RetrofitError error) {
-                fail(BuyClientUtils.getErrorBody(error));
+            public void failure(BuyClientError error) {
+                fail(error.getRetrofitErrorBody());
             }
         });
+
+        latch.await();
     }
 
     @Test
-	public void testCreateAddress() throws InterruptedException {
+    public void testCreateAddress() throws InterruptedException {
         testCustomerLogin();
+        createAddress();
+    }
 
+    private void createAddress() throws InterruptedException {
         final Address inputAddress = USE_MOCK_RESPONSES ? getExistingAddress() : generateAddress();
 
-        buyClient.createAddress(customer, inputAddress, new Callback<Address>() {
+        final CountDownLatch latch = new CountDownLatch(1);
+
+        buyClient.createAddress(customer.getId(), inputAddress, new Callback<Address>() {
             @Override
             public void success(Address address) {
-                assertEquals(inputAddress.getAddress1(), address.getAddress1());
-                assertEquals(inputAddress.getAddress2(), address.getAddress2());
-                assertEquals(inputAddress.getCity(), address.getCity());
+                assertEquals(true, inputAddress.equals(address));
+                CustomerTest.this.address = address;
+                latch.countDown();
             }
 
             @Override
-            public void failure(RetrofitError error) {
-                fail(BuyClientUtils.getErrorBody(error));
+            public void failure(BuyClientError error) {
+                fail(error.getRetrofitErrorBody());
             }
         });
+
+        latch.await();
     }
 
     @Test
-	public void testGetAddresses() throws InterruptedException {
+    public void testDeleteAddress() throws InterruptedException {
         testCustomerLogin();
+        createAddress();
+        getAddresses();
 
-        buyClient.getAddresses(customer, new Callback<List<Address>>() {
+        final int addressCount = addresses.size();
+
+        // assert that addresses has the created address
+        assertEquals(true, addresses.contains(address));
+
+        final CountDownLatch countDownLatch = new CountDownLatch(1);
+
+        buyClient.deleteAddress(customer.getId(), address.getId(), new Callback<Void>() {
+            @Override
+            public void success(Void response) {
+                countDownLatch.countDown();
+            }
+
+            @Override
+            public void failure(BuyClientError error) {
+                fail("Expected success");
+            }
+        });
+
+        // Wait for the delete to finish
+        countDownLatch.await();
+
+        // Make sure the addresses list looks correct now
+        getAddresses();
+
+        // address is no longer in the list
+        assertEquals(false, addresses.contains(address));
+
+        // address count is one less
+        assertEquals(addressCount - 1, addresses.size());
+    }
+
+    @Test
+    public void testGetAddresses() throws InterruptedException {
+        testCustomerLogin();
+        getAddresses();
+    }
+
+    private void getAddresses() throws InterruptedException {
+        final CountDownLatch latch = new CountDownLatch(1);
+
+        buyClient.getAddresses(customer.getId(), new Callback<List<Address>>() {
             @Override
             public void success(List<Address> addresses) {
                 assertNotNull(addresses);
                 assertEquals(true, addresses.size() > 0);
                 CustomerTest.this.addresses = addresses;
+                latch.countDown();
             }
 
             @Override
-            public void failure(RetrofitError error) {
-                fail(BuyClientUtils.getErrorBody(error));
+            public void failure(BuyClientError error) {
+                fail(error.getRetrofitErrorBody());
             }
         });
+
+        latch.await();
     }
 
     @Test
-	public void testGetAddress() throws InterruptedException {
+    public void testGetAddress() throws InterruptedException {
         testGetAddresses();
 
-        String addressId = addresses.get(0).getAddressId();
+        Long addressId = addresses.get(0).getId();
 
-        buyClient.getAddress(customer, addressId, new Callback<Address>() {
+        final CountDownLatch latch = new CountDownLatch(1);
+
+        buyClient.getAddress(customer.getId(), addressId, new Callback<Address>() {
             @Override
             public void success(Address address) {
                 assertNotNull(address);
                 CustomerTest.this.address = address;
+                latch.countDown();
             }
 
             @Override
-            public void failure(RetrofitError error) {
-                fail(BuyClientUtils.getErrorBody(error));
+            public void failure(BuyClientError error) {
+                fail(error.getRetrofitErrorBody());
             }
         });
+
+        latch.await();
     }
 
     @Test
-	public void testUpdateAddress() throws InterruptedException {
+    public void testUpdateAddress() throws InterruptedException {
         testGetAddress();
 
         address.setCity("Toledo");
 
-        buyClient.updateAddress(customer, address, new Callback<Address>() {
+        final CountDownLatch latch = new CountDownLatch(1);
+
+        buyClient.updateAddress(customer.getId(), address, new Callback<Address>() {
             @Override
             public void success(Address address) {
                 assertNotNull(address);
+                latch.countDown();
             }
 
             @Override
-            public void failure(RetrofitError error) {
-                fail(BuyClientUtils.getErrorBody(error));
+            public void failure(BuyClientError error) {
+                fail(error.getRetrofitErrorBody());
             }
         });
+
+        latch.await();
     }
 
     private Customer getExistingCustomer() {
@@ -372,6 +494,8 @@ public class CustomerTest extends ShopifyAndroidTestCase {
         shippingAddress.setPhone("1-555-555-5555");
         shippingAddress.setCountryCode("CA");
         shippingAddress.setZip("K1N5T5");
+        shippingAddress.setCountry("Canada");
+        shippingAddress.setProvince("Ontario");
         return shippingAddress;
     }
 
@@ -387,10 +511,14 @@ public class CustomerTest extends ShopifyAndroidTestCase {
         shippingAddress.setPhone("1-555-555-5555");
         shippingAddress.setCountryCode("CA");
         shippingAddress.setZip("K1N5T5");
+        shippingAddress.setCountry("Canada");
+        shippingAddress.setProvince("Ontario");
         return shippingAddress;
     }
 
-    private void getCustomerAfterLogin(){
+    private void getCustomerAfterLogin() throws InterruptedException {
+
+        final CountDownLatch latch = new CountDownLatch(1);
 
         buyClient.getCustomer(customerToken.getCustomerId(), new Callback<Customer>() {
 
@@ -399,13 +527,16 @@ public class CustomerTest extends ShopifyAndroidTestCase {
                 assertNotNull(customer);
                 CustomerTest.this.customer = customer;
                 CustomerTest.this.customerToken = buyClient.getCustomerToken();
+                latch.countDown();
             }
 
             @Override
-            public void failure(RetrofitError error) {
-                fail(BuyClientUtils.getErrorBody(error));
+            public void failure(BuyClientError error) {
+                fail(error.getRetrofitErrorBody());
             }
         });
+
+        latch.await();
 
     }
 
@@ -415,6 +546,8 @@ public class CustomerTest extends ShopifyAndroidTestCase {
         final Customer input = getExistingCustomer();
         final AccountCredentials accountCredentials = new AccountCredentials(input.getEmail(), PASSWORD, input.getFirstName(), input.getLastName());
 
+        final CountDownLatch latch = new CountDownLatch(1);
+
         buyClient.createCustomer(accountCredentials, new Callback<Customer>() {
             @Override
             public void success(Customer customer) {
@@ -422,19 +555,24 @@ public class CustomerTest extends ShopifyAndroidTestCase {
             }
 
             @Override
-            public void failure(RetrofitError error) {
-                if (BuyError.isEmailAlreadyTakenError(error, input.getEmail())) {
+            public void failure(BuyClientError error) {
+                if (error.getErrors("customer", "email").containsKey("taken")) {
                 } else {
                     fail(String.format("Should be getting email already taken error. \nGot \"%s\"", error.getMessage()));
                 }
+                latch.countDown();
             }
         });
+
+        latch.await();
     }
 
     @Test
     public void testCustomerInvalidLogin() throws InterruptedException {
         final Customer customer = getExistingCustomer();
         final AccountCredentials accountCredentials = new AccountCredentials(customer.getEmail(), WRONG_PASSWORD);
+
+        final CountDownLatch latch = new CountDownLatch(1);
 
         buyClient.loginCustomer(accountCredentials, new Callback<CustomerToken>() {
 
@@ -444,16 +582,20 @@ public class CustomerTest extends ShopifyAndroidTestCase {
             }
 
             @Override
-            public void failure(RetrofitError error) {
-                assertEquals(401, error.getCode());
-                assertEquals("Unauthorized", error.getMessage());
+            public void failure(BuyClientError error) {
+                assertEquals(401, error.getRetrofitResponse().code());
+                latch.countDown();
             }
         });
+
+        latch.await();
     }
 
     @Test
     public void testCreateCustomerInvalidEmailPassword() throws InterruptedException {
         final AccountCredentials accountCredentials = new AccountCredentials(MALFORMED_EMAIL, WRONG_PASSWORD, OTHER_WRONG_PASSWORD, FIRSTNAME, LASTNAME);
+
+        final CountDownLatch latch = new CountDownLatch(1);
 
         buyClient.createCustomer(accountCredentials, new Callback<Customer>() {
 
@@ -463,28 +605,26 @@ public class CustomerTest extends ShopifyAndroidTestCase {
             }
 
             @Override
-            public void failure(RetrofitError error) {
-                List<BuyError> buyErrors = BuyError.errorsForCustomer(error);
-                assertEquals(3, buyErrors.size());
+            public void failure(BuyClientError error) {
+                final Map<String, String> passwordErrors = error.getErrors("customer", "password");
+                assertTrue(passwordErrors.containsKey("too_short"));
+                assertEquals("is too short (minimum is 5 characters)", passwordErrors.get("too_short"));
 
-                BuyError passwordTooShort = buyErrors.get(0);
-                assertEquals(passwordTooShort.getCode(), "too_short");
-                assertEquals(passwordTooShort.getMessage(), "is too short (minimum is 5 characters)");
-                assertEquals(1, passwordTooShort.getOptions().size());
+                final Map<String, String> passwordConfirmationErrors = error.getErrors("customer", "password_confirmation");
+                assertTrue(passwordConfirmationErrors.containsKey("confirmation"));
+                assertEquals("must match the provided password.", passwordConfirmationErrors.get("confirmation"));
 
-                BuyError confirmationMatch = buyErrors.get(1);
-                assertEquals(confirmationMatch.getCode(), "confirmation");
-                assertEquals(confirmationMatch.getMessage(), "must match the provided password.");
-                assertEquals(2, confirmationMatch.getOptions().size());
+                final Map<String, String> emailErrors = error.getErrors("customer", "email");
+                assertTrue(emailErrors.containsKey("invalid"));
+                assertEquals("is invalid", emailErrors.get("invalid"));
 
-                BuyError invalidEmail = buyErrors.get(2);
-                assertEquals(invalidEmail.getCode(), "invalid");
-                assertEquals(invalidEmail.getMessage(), "is invalid");
-                assertEquals(0, invalidEmail.getOptions().size());
+                assertEquals(422, error.getRetrofitResponse().code());
 
-                assertEquals(422, error.getCode());
-                assertEquals("Unprocessable Entity", error.getMessage());
+                latch.countDown();
             }
         });
+
+        latch.await();
+
     }
 }

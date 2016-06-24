@@ -31,18 +31,19 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 
+import com.shopify.buy.dataprovider.BuyClientError;
 import com.shopify.buy.dataprovider.Callback;
-import com.shopify.buy.dataprovider.RetrofitError;
 import com.shopify.buy.model.Checkout;
 import com.shopify.buy.model.CreditCard;
+import com.shopify.buy.model.PaymentToken;
 import com.shopify.sample.R;
 import com.shopify.sample.activity.base.SampleActivity;
 
 
 /**
  * The final activity in the app flow. Allows the user to choose between:
- * 1. A native checkout where the payment info is hardcoded and the chekcout is completed within the app; or
- * 2. A web checkout where the user enters their payment info and completes the checkout in a web browser
+ * 1. A native checkout where the payment info is hardcoded and the checkout is completed within the app; or
+ * 2. A web checkout where the user enters their payment info and completes the checkout in a web browser;
  */
 public class CheckoutActivity extends SampleActivity {
 
@@ -106,14 +107,14 @@ public class CheckoutActivity extends SampleActivity {
         creditCard.setNumber("4242424242424242");
 
         showLoadingDialog(R.string.completing_checkout);
-        getSampleApplication().storeCreditCard(creditCard, new Callback<Checkout>() {
+        getSampleApplication().storeCreditCard(creditCard, new Callback<PaymentToken>() {
             @Override
-            public void success(Checkout checkout) {
+            public void success(PaymentToken paymentToken) {
                 onCreditCardStored();
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void failure(BuyClientError error) {
                 onError(error);
             }
         });
@@ -130,7 +131,7 @@ public class CheckoutActivity extends SampleActivity {
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void failure(BuyClientError error) {
                 onError(error);
             }
         });

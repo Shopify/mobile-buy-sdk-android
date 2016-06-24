@@ -42,10 +42,10 @@ final class StoreServiceDefault implements StoreService {
     final StoreCacheRxHookProvider cacheRxHookProvider;
 
     StoreServiceDefault(
-            final Retrofit retrofit,
-            final NetworkRetryPolicyProvider networkRetryPolicyProvider,
-            final StoreCacheRxHookProvider cacheRxHookProvider,
-            final Scheduler callbackScheduler
+        final Retrofit retrofit,
+        final NetworkRetryPolicyProvider networkRetryPolicyProvider,
+        final StoreCacheRxHookProvider cacheRxHookProvider,
+        final Scheduler callbackScheduler
     ) {
         this.retrofitService = retrofit.create(StoreRetrofitService.class);
         this.networkRetryPolicyProvider = networkRetryPolicyProvider;
@@ -54,23 +54,24 @@ final class StoreServiceDefault implements StoreService {
     }
 
     @Override
-    public void getShop(final Callback<Shop> callback) {
-        getShop().subscribe(new InternalCallbackSubscriber<>(callback));
+    public CancellableTask getShop(final Callback<Shop> callback) {
+        return new CancellableTaskSubscriptionWrapper(getShop().subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
     public Observable<Shop> getShop() {
         return retrofitService
-                .getShop()
-                .retryWhen(networkRetryPolicyProvider.provide())
-                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .map(new Func1<Response<Shop>, Shop>() {
-                    @Override
-                    public Shop call(Response<Shop> response) {
-                        return response.body();
-                    }
-                })
-                .doOnNext(cacheRxHookProvider.getStoreHook())
-                .observeOn(callbackScheduler);
+            .getShop()
+            .retryWhen(networkRetryPolicyProvider.provide())
+            .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
+            .map(new Func1<Response<Shop>, Shop>() {
+                @Override
+                public Shop call(Response<Shop> response) {
+                    return response.body();
+                }
+            })
+            .doOnNext(cacheRxHookProvider.getStoreHook())
+            .onErrorResumeNext(new BuyClientExceptionHandler<Shop>())
+            .observeOn(callbackScheduler);
     }
 }

@@ -76,15 +76,20 @@ public class Order extends ShopifyObject {
     public Order() {
     }
 
+    @Override
+    public Long getId() {
+        return super.getId();
+    }
+
     /**
-     * @return URL for the website showing the order status.  This url will pass an authentication token for the currently logged in user. This is only available for Orders returned using {@link com.shopify.buy.dataprovider.BuyClient#getOrder(Customer, String, Callback)} or {@link com.shopify.buy.dataprovider.BuyClient#getOrders(Customer, Callback)}
+     * @return URL for the website showing the order status.  This url will pass an authentication token for the currently logged in user. This is only available for Orders returned using {@link com.shopify.buy.dataprovider.BuyClient#getOrder(Long, Long, Callback)} or {@link com.shopify.buy.dataprovider.BuyClient#getOrders(Long, Callback)}
      */
     public String getOrderStatusUrl() {
         return orderStatusUrl;
     }
 
     /**
-     * @return URL for the website showing the order status. This is only available for Orders returned using {@link com.shopify.buy.dataprovider.BuyClient#completeCheckout(Checkout, Callback)}
+     * @return URL for the website showing the order status. This is only available for Orders returned using {@link com.shopify.buy.dataprovider.BuyClient#completeCheckout(PaymentToken, String, Callback)}
      */
     public String getStatusUrl() {
         return statusUrl;
@@ -102,13 +107,6 @@ public class Order extends ShopifyObject {
      */
     public String getOrderNumber() {
         return orderNumber;
-    }
-
-    /**
-     * @return The unique identifier of the Order within Shopify.
-     */
-    public String getOrderId() {
-        return String.valueOf(id);
     }
 
     /**

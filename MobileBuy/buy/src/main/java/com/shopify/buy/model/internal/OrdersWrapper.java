@@ -30,6 +30,9 @@ import com.shopify.buy.model.Order;
 
 import java.util.List;
 
+/**
+ * Wrapper class used by Gson Serialization
+ */
 public class OrdersWrapper implements ResponseWrapper<List<Order>> {
 
     @SerializedName("orders")

@@ -22,29 +22,6 @@
  * THE SOFTWARE.
  */
 
-package com.shopify.buy.model.internal;
+package com.shopify.buy.dataprovider;
 
-import com.google.gson.annotations.SerializedName;
-import com.shopify.buy.model.Payment;
-
-/**
- * Wrapper class used by Gson Serialization
- */
-public class PaymentWrapper implements ResponseWrapper<Payment> {
-
-    @SerializedName("payment")
-    private Payment payment;
-
-    public PaymentWrapper(Payment payment) {
-        this.payment = payment;
-    }
-
-    public Payment getPayment() {
-        return payment;
-    }
-
-    @Override
-    public Payment getContent() {
-        return payment;
-    }
-}
+public class PollingRequiredException extends RuntimeException {}

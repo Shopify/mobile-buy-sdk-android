@@ -127,7 +127,7 @@ public class StoreServiceCacheHookTest extends ShopifyAndroidTestCase {
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void failure(BuyClientError error) {
                 Assert.fail();
             }
         });

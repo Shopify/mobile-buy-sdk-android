@@ -24,14 +24,6 @@
 
 package com.shopify.buy.dataprovider;
 
-import com.shopify.buy.model.Checkout;
-
-/**
- * Client responsible for all requests needed to perform request on the Shopify Checkout API.
- * Use this class to perform tasks such as getting a shop, getting collections and products for a shop,
- * creating a {@link Checkout} on Shopify and completing Checkouts.
- * All API methods presented here run asynchronously and return results via callback or Rx observables on the callback scheduler thread.
- */
 public interface BuyClient extends StoreService, ProductService, CheckoutService, CustomerService, OrderService, AddressService {
 
     String getApiKey();
@@ -41,4 +33,5 @@ public interface BuyClient extends StoreService, ProductService, CheckoutService
     String getApplicationName();
 
     String getShopDomain();
+
 }

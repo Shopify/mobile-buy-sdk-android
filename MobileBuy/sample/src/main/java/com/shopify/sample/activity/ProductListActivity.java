@@ -33,14 +33,14 @@ import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.Toast;
 
+import com.shopify.buy.dataprovider.BuyClientError;
 import com.shopify.buy.dataprovider.Callback;
-import com.shopify.buy.dataprovider.RetrofitError;
 import com.shopify.buy.model.Checkout;
 import com.shopify.buy.model.Product;
-import com.shopify.sample.ui.ProductDetailsTheme;
 import com.shopify.sample.R;
 import com.shopify.sample.activity.base.SampleListActivity;
 import com.shopify.sample.dialog.HSVColorPickerDialog;
+import com.shopify.sample.ui.ProductDetailsTheme;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +53,7 @@ public class ProductListActivity extends SampleListActivity {
 
     static final String EXTRA_COLLECTION_ID = "ProductListActivity.EXTRA_COLLECTION_ID";
 
-    private String collectionId;
+    private Long collectionId;
     private ProductDetailsTheme theme;
     private boolean useProductDetailsActivity;
     private View accentColorView;
@@ -70,7 +70,7 @@ public class ProductListActivity extends SampleListActivity {
 
         Intent intent = getIntent();
         if (intent.hasExtra(EXTRA_COLLECTION_ID)) {
-            collectionId = intent.getStringExtra(EXTRA_COLLECTION_ID);
+            collectionId = intent.getLongExtra(EXTRA_COLLECTION_ID, -1);
         }
 
         productViewOptionsContainer = findViewById(R.id.product_view_options_container);
@@ -126,7 +126,7 @@ public class ProductListActivity extends SampleListActivity {
                 }
 
                 @Override
-                public void failure(RetrofitError error) {
+                public void failure(BuyClientError error) {
                     isFetching = false;
                     onError(error);
                 }
@@ -202,7 +202,7 @@ public class ProductListActivity extends SampleListActivity {
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void failure(BuyClientError error) {
                 // If we can't create a checkout, we still want to give the user the cart permalink option in the CheckoutActivity
                 dismissLoadingDialog();
                 Toast.makeText(ProductListActivity.this, getString(R.string.unsupported_gateway), Toast.LENGTH_LONG).show();
@@ -218,13 +218,7 @@ public class ProductListActivity extends SampleListActivity {
      * @param checkout
      */
     private void onCheckoutCreated(Checkout checkout) {
-        if (checkout.isRequiresShipping()) {
-            startActivity(new Intent(ProductListActivity.this, ShippingRateListActivity.class));
-        } else {
-            startActivity(new Intent(ProductListActivity.this, DiscountActivity.class));
-        }
-
+        startActivity(new Intent(ProductListActivity.this, DiscountActivity.class));
     }
-
 }
 

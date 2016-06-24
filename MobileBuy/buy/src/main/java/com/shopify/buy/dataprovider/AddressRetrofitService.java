@@ -28,6 +28,7 @@ import com.shopify.buy.model.internal.AddressesWrapper;
 
 import retrofit2.Response;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.PATCH;
 import retrofit2.http.POST;
@@ -42,10 +43,13 @@ interface AddressRetrofitService {
     @POST("api/customers/{customerId}/addresses")
     Observable<Response<AddressWrapper>> createAddress(@Path("customerId") Long customerId, @Body AddressWrapper address);
 
+    @DELETE("api/customers/{customerId}/addresses/{addressId}")
+    Observable<Response<Void>> deleteAddress(@Path("customerId") Long customerId, @Path("addressId") Long addressId);
+
     @GET("api/customers/{customerId}/addresses/{addressId}")
-    Observable<Response<AddressWrapper>> getAddress(@Path("customerId") Long customerId, @Path("addressId") String addressId);
+    Observable<Response<AddressWrapper>> getAddress(@Path("customerId") Long customerId, @Path("addressId") Long addressId);
 
     @PATCH("api/customers/{customerId}/addresses/{addressId}")
-    Observable<Response<AddressWrapper>> updateAddress(@Path("customerId") Long customerId, @Body AddressWrapper address, @Path("addressId") String addressId);
+    Observable<Response<AddressWrapper>> updateAddress(@Path("customerId") Long customerId, @Body AddressWrapper address, @Path("addressId") Long addressId);
 
 }

@@ -25,7 +25,6 @@ package com.shopify.buy.dataprovider;
 
 import com.shopify.buy.dataprovider.cache.CheckoutCacheHook;
 import com.shopify.buy.model.Checkout;
-import com.shopify.buy.model.Payment;
 import com.shopify.buy.model.ShippingRate;
 
 import java.util.List;
@@ -76,23 +75,6 @@ final class CheckoutCacheRxHookProvider {
                         cacheHook.cacheShippingRates(checkoutToken, shippingRates);
                     } catch (Exception e) {
 
-                    }
-                }
-            };
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    Action1<Payment> getPaymentCacheHook(final String checkoutToken) {
-        if (cacheHook == null) {
-            return EMPTY_CACHE_HOOK;
-        } else {
-            return new Action1<Payment>() {
-                @Override
-                public void call(final Payment payment) {
-                    try {
-                        cacheHook.cachePayment(checkoutToken, payment);
-                    } catch (Exception e) {
                     }
                 }
             };

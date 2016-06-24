@@ -66,6 +66,11 @@ public class Shop extends ShopifyObject {
     @SerializedName("published_products_count")
     protected long publishedProductsCount;
 
+    @Override
+    public Long getId() {
+        return super.getId();
+    }
+
     /**
      * @return The name of this shop.
      */
@@ -161,6 +166,9 @@ public class Shop extends ShopifyObject {
     }
 
     /**
+     * Creates a {@link Shop} from json.
+     *
+     * @param json The json input.
      * @return A shop object created using the values in the JSON string.
      */
     public static Shop fromJson(String json) {

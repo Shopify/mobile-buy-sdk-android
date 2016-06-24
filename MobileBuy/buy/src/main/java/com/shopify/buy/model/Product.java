@@ -48,7 +48,7 @@ import java.util.Set;
 public class Product extends ShopifyObject {
 
     @SerializedName("product_id")
-    protected String productId;
+    protected Long productId;
 
     protected String title;
 
@@ -85,9 +85,9 @@ public class Product extends ShopifyObject {
 
     protected boolean published;
 
-    private Set<String> prices;
+    protected Set<String> prices;
 
-    private String minimumPrice;
+    protected String minimumPrice;
 
     /**
      * @return {@code true} if this product has been published on the store, {@code false} otherwise.
@@ -99,7 +99,7 @@ public class Product extends ShopifyObject {
     /**
      * @return The unique identifier for this product.
      */
-    public String getProductId() {
+    public Long getProductId() {
         return productId;
     }
 
@@ -126,6 +126,8 @@ public class Product extends ShopifyObject {
 
     /**
      * Use {@link #getPublishedAtDate() getPublishedAtDate()}.
+     *
+     * @return The date this product was published.
      */
     @Deprecated
     public String getPublishedAt() {
@@ -134,6 +136,8 @@ public class Product extends ShopifyObject {
 
     /**
      * Use {@link #getCreatedAtDate() getCreatedAtDate()}.
+     *
+     * @return The date this product was created.
      */
     @Deprecated
     public String getCreatedAt() {
@@ -142,6 +146,8 @@ public class Product extends ShopifyObject {
 
     /**
      * Use {@link #getUpdatedAtDate() getUpdatedAtDate()}.
+     *
+     * @return The date this product was updated.
      */
     @Deprecated
     public String getUpdatedAt() {
@@ -240,6 +246,8 @@ public class Product extends ShopifyObject {
 
     /**
      * For internal use only.
+     *
+     * @return true if this product has a default variant.
      */
     public boolean hasDefaultVariant() {
         if (CollectionUtils.isEmpty(variants) || variants.size() != 1) {
@@ -345,6 +353,22 @@ public class Product extends ShopifyObject {
         return minimumPrice;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Product)) return false;
+
+        Product product = (Product) o;
+
+        return productId.equals(product.productId);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return productId.hashCode();
+    }
+
     public static class ProductDeserializer implements JsonDeserializer<Product> {
 
         @Override
@@ -356,6 +380,9 @@ public class Product extends ShopifyObject {
 
     /**
      * A product object created using the values in the JSON string.
+     *
+     * @param json The json representation of this product.
+     * @return A {@link Product}
      */
     public static Product fromJson(String json) {
         Gson gson = BuyClientUtils.createDefaultGson(Product.class);
@@ -366,7 +393,7 @@ public class Product extends ShopifyObject {
 
         if (variants != null) {
             for (ProductVariant variant : variants) {
-                variant.productId = Long.parseLong(product.productId);
+                variant.productId = product.productId;
                 variant.productTitle = product.getTitle();
 
                 Image image = product.getImage(variant);

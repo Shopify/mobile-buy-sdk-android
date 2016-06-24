@@ -15,19 +15,10 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.TestName;
 
-import java.util.concurrent.TimeUnit;
-
+import okhttp3.HttpUrl;
+import okhttp3.Protocol;
 import okhttp3.logging.HttpLoggingInterceptor;
-import rx.Scheduler;
-import rx.Subscription;
-import rx.functions.Action0;
-import rx.internal.schedulers.EventLoopsScheduler;
-import rx.plugins.RxJavaPlugins;
-import rx.plugins.RxJavaSchedulersHook;
-import rx.plugins.RxJavaTestPlugins;
 import rx.schedulers.Schedulers;
-import rx.subscriptions.BooleanSubscription;
-import rx.subscriptions.Subscriptions;
 
 /**
  * Base class for Mobile Buy SDK Tests
@@ -57,68 +48,6 @@ public class ShopifyAndroidTestCase {
 
     @Before
     public void setUp() throws Exception {
-        RxJavaTestPlugins.resetPlugins();
-        RxJavaPlugins.getInstance().registerSchedulersHook(new RxJavaSchedulersHook() {
-
-            @Override
-            public Scheduler getIOScheduler() {
-                return Schedulers.immediate();
-            }
-
-            @Override
-            public Scheduler getComputationScheduler() {
-                return new EventLoopsScheduler() {
-                    @Override
-                    public void start() {
-                    }
-
-                    @Override
-                    public void shutdown() {
-                    }
-
-                    @Override
-                    public Subscription scheduleDirect(Action0 action) {
-                        action.call();
-                        return Subscriptions.unsubscribed();
-                    }
-
-                    @Override
-                    public Worker createWorker() {
-                        return new Worker() {
-                            final BooleanSubscription innerSubscription = new BooleanSubscription();
-
-                            @Override
-                            public Subscription schedule(Action0 action) {
-                                action.call();
-                                return Subscriptions.unsubscribed();
-                            }
-
-                            @Override
-                            public Subscription schedule(Action0 action, long delayTime, TimeUnit unit) {
-                                action.call();
-                                return Subscriptions.unsubscribed();
-                            }
-
-                            @Override
-                            public void unsubscribe() {
-                                innerSubscription.unsubscribe();
-                            }
-
-                            @Override
-                            public boolean isUnsubscribed() {
-                                return innerSubscription.isUnsubscribed();
-                            }
-                        };
-                    }
-                };
-            }
-
-            @Override
-            public Scheduler getNewThreadScheduler() {
-                return Schedulers.immediate();
-            }
-        });
-
         context = InstrumentationRegistry.getContext();
 
         if (data == null) {
@@ -144,13 +73,15 @@ public class ShopifyAndroidTestCase {
     }
 
     protected BuyClient getBuyClient(String shopDomain, String apiKey, String appId, String applicationName) {
+
         final BuyClientBuilder buyClientBuilder = new BuyClientBuilder()
             .shopDomain(shopDomain)
             .apiKey(apiKey)
             .appId(appId)
             .applicationName(applicationName)
+            .callbackScheduler(Schedulers.immediate())
             .productPageSize(productPageSize)
-            .callbackScheduler(Schedulers.immediate());
+            .networkRequestRetryPolicy(1, 100, 1);
 
         if (USE_MOCK_RESPONSES) {
             buyClientBuilder.interceptors(new MockResponder(context), new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY));
@@ -177,4 +108,21 @@ public class ShopifyAndroidTestCase {
         return USE_MOCK_RESPONSES ? "placeholderAppId" : BuildConfig.APP_ID;
     }
 
+    public okhttp3.Response createResponse(int code) {
+
+        HttpUrl httpUrl = new HttpUrl.Builder()
+            .scheme("https")
+            .host("example.com")
+            .build();
+
+        okhttp3.Request request = new okhttp3.Request.Builder()
+            .url(httpUrl)
+            .build();
+
+        return new okhttp3.Response.Builder()
+            .code(code)
+            .request(request)
+            .protocol(Protocol.HTTP_1_0)
+            .build();
+    }
 }

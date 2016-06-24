@@ -53,18 +53,18 @@ final class CustomerServiceDefault implements CustomerService {
 
     final NetworkRetryPolicyProvider networkRetryPolicyProvider;
 
+    final CustomerCacheRxHookProvider cacheRxHookProvider;
+
     final Scheduler callbackScheduler;
 
     final AtomicReference<CustomerToken> customerTokenRef = new AtomicReference<>();
 
-    final CustomerCacheRxHookProvider cacheRxHookProvider;
-
     CustomerServiceDefault(
-            final Retrofit retrofit,
-            final CustomerToken customerToken,
-            final NetworkRetryPolicyProvider networkRetryPolicyProvider,
-            final CustomerCacheRxHookProvider cacheRxHookProvider,
-            final Scheduler callbackScheduler
+        final Retrofit retrofit,
+        final CustomerToken customerToken,
+        final NetworkRetryPolicyProvider networkRetryPolicyProvider,
+        final CustomerCacheRxHookProvider cacheRxHookProvider,
+        final Scheduler callbackScheduler
     ) {
         this.retrofitService = retrofit.create(CustomerRetrofitService.class);
         this.customerTokenRef.set(customerToken);
@@ -79,8 +79,8 @@ final class CustomerServiceDefault implements CustomerService {
     }
 
     @Override
-    public void createCustomer(final AccountCredentials accountCredentials, final Callback<Customer> callback) {
-        createCustomer(accountCredentials).subscribe(new InternalCallbackSubscriber<>(callback));
+    public CancellableTask createCustomer(final AccountCredentials accountCredentials, final Callback<Customer> callback) {
+        return new CancellableTaskSubscriptionWrapper(createCustomer(accountCredentials).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
@@ -91,17 +91,30 @@ final class CustomerServiceDefault implements CustomerService {
 
         final AccountCredentialsWrapper accountCredentialsWrapper = new AccountCredentialsWrapper(accountCredentials);
         return retrofitService
-                .createCustomer(accountCredentialsWrapper)
-                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .compose(new UnwrapRetrofitBodyTransformer<CustomerWrapper, Customer>())
-                .doOnNext(cacheRxHookProvider.getCustomerCacheHook())
-                .observeOn(callbackScheduler);
+            .createCustomer(accountCredentialsWrapper)
+            .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
+            .compose(new UnwrapRetrofitBodyTransformer<CustomerWrapper, Customer>())
+            .doOnNext(cacheRxHookProvider.getCustomerCacheHook())
+            .onErrorResumeNext(new BuyClientExceptionHandler<Customer>())
+            .flatMap(new Func1<Customer, Observable<Customer>>() {
+                @Override
+                public Observable<Customer> call(final Customer customer) {
+                    return loginCustomer(accountCredentials)
+                        .map(new Func1<CustomerToken, Customer>() {
+                            @Override
+                            public Customer call(CustomerToken customerToken) {
+                                return customer;
+                            }
+                        });
+                }
+            })
+            .observeOn(callbackScheduler);
     }
 
     @Deprecated
     @Override
-    public void activateCustomer(final Long customerId, final String activationToken, final AccountCredentials accountCredentials, final Callback<Customer> callback) {
-        activateCustomer(customerId, activationToken, accountCredentials).subscribe(new InternalCallbackSubscriber<>(callback));
+    public CancellableTask activateCustomer(final Long customerId, final String activationToken, final AccountCredentials accountCredentials, final Callback<Customer> callback) {
+        return new CancellableTaskSubscriptionWrapper(activateCustomer(customerId, activationToken, accountCredentials).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
@@ -114,18 +127,23 @@ final class CustomerServiceDefault implements CustomerService {
             throw new NullPointerException("accountCredentials cannot be null");
         }
 
+        if (customerId == null) {
+            throw new NullPointerException("customerId cannot be null");
+        }
+
         final AccountCredentialsWrapper accountCredentialsWrapper = new AccountCredentialsWrapper(accountCredentials);
         return retrofitService
-                .activateCustomer(customerId, activationToken, accountCredentialsWrapper)
-                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .compose(new UnwrapRetrofitBodyTransformer<CustomerWrapper, Customer>())
-                .doOnNext(cacheRxHookProvider.getCustomerCacheHook())
-                .observeOn(callbackScheduler);
+            .activateCustomer(customerId, activationToken, accountCredentialsWrapper)
+            .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
+            .compose(new UnwrapRetrofitBodyTransformer<CustomerWrapper, Customer>())
+            .doOnNext(cacheRxHookProvider.getCustomerCacheHook())
+            .onErrorResumeNext(new BuyClientExceptionHandler<Customer>())
+            .observeOn(callbackScheduler);
     }
 
     @Override
-    public void resetPassword(final Long customerId, final String resetToken, final AccountCredentials accountCredentials, final Callback<Customer> callback) {
-        resetPassword(customerId, resetToken, accountCredentials).subscribe(new InternalCallbackSubscriber<>(callback));
+    public CancellableTask resetPassword(final Long customerId, final String resetToken, final AccountCredentials accountCredentials, final Callback<Customer> callback) {
+        return new CancellableTaskSubscriptionWrapper(resetPassword(customerId, resetToken, accountCredentials).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
@@ -138,18 +156,23 @@ final class CustomerServiceDefault implements CustomerService {
             throw new NullPointerException("accountCredentials cannot be null");
         }
 
+        if (customerId == null) {
+            throw new NullPointerException("customerId cannot be null");
+        }
+
         final AccountCredentialsWrapper accountCredentialsWrapper = new AccountCredentialsWrapper(accountCredentials);
         return retrofitService
-                .resetPassword(customerId, resetToken, accountCredentialsWrapper)
-                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .compose(new UnwrapRetrofitBodyTransformer<CustomerWrapper, Customer>())
-                .doOnNext(cacheRxHookProvider.getCustomerCacheHook())
-                .observeOn(callbackScheduler);
+            .resetPassword(customerId, resetToken, accountCredentialsWrapper)
+            .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
+            .compose(new UnwrapRetrofitBodyTransformer<CustomerWrapper, Customer>())
+            .doOnNext(cacheRxHookProvider.getCustomerCacheHook())
+            .onErrorResumeNext(new BuyClientExceptionHandler<Customer>())
+            .observeOn(callbackScheduler);
     }
 
     @Override
-    public void loginCustomer(final AccountCredentials accountCredentials, final Callback<CustomerToken> callback) {
-        loginCustomer(accountCredentials).subscribe(new InternalCallbackSubscriber<>(callback));
+    public CancellableTask loginCustomer(final AccountCredentials accountCredentials, final Callback<CustomerToken> callback) {
+        return new CancellableTaskSubscriptionWrapper(loginCustomer(accountCredentials).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
@@ -160,23 +183,24 @@ final class CustomerServiceDefault implements CustomerService {
 
         final AccountCredentialsWrapper accountCredentialsWrapper = new AccountCredentialsWrapper(accountCredentials);
         return retrofitService
-                .getCustomerToken(accountCredentialsWrapper)
-                .retryWhen(networkRetryPolicyProvider.provide())
-                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .compose(new UnwrapRetrofitBodyTransformer<CustomerTokenWrapper, CustomerToken>())
-                .doOnNext(new Action1<CustomerToken>() {
-                    @Override
-                    public void call(CustomerToken token) {
-                        customerTokenRef.set(token);
-                    }
-                })
-                .doOnNext(cacheRxHookProvider.getCustomerTokenCacheHook())
-                .observeOn(callbackScheduler);
+            .getCustomerToken(accountCredentialsWrapper)
+            .retryWhen(networkRetryPolicyProvider.provide())
+            .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
+            .compose(new UnwrapRetrofitBodyTransformer<CustomerTokenWrapper, CustomerToken>())
+            .doOnNext(cacheRxHookProvider.getCustomerTokenCacheHook())
+            .onErrorResumeNext(new BuyClientExceptionHandler<CustomerToken>())
+            .observeOn(callbackScheduler)
+            .doOnNext(new Action1<CustomerToken>() {
+                @Override
+                public void call(CustomerToken token) {
+                    customerTokenRef.set(token);
+                }
+            });
     }
 
     @Override
-    public void logoutCustomer(final Callback<Void> callback) {
-        logoutCustomer().subscribe(new InternalCallbackSubscriber<>(callback));
+    public CancellableTask logoutCustomer(final Callback<Void> callback) {
+        return new CancellableTaskSubscriptionWrapper(logoutCustomer().subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
@@ -187,27 +211,28 @@ final class CustomerServiceDefault implements CustomerService {
         }
 
         return retrofitService
-                .removeCustomerToken(customerToken.getCustomerId())
-                .retryWhen(networkRetryPolicyProvider.provide())
-                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .map(new Func1<Response<Void>, Void>() {
-                    @Override
-                    public Void call(Response<Void> response) {
-                        return response.body();
-                    }
-                })
-                .observeOn(callbackScheduler)
-                .doOnNext(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        customerTokenRef.set(null);
-                    }
-                });
+            .removeCustomerToken(customerToken.getCustomerId())
+            .retryWhen(networkRetryPolicyProvider.provide())
+            .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
+            .map(new Func1<Response<Void>, Void>() {
+                @Override
+                public Void call(Response<Void> response) {
+                    return response.body();
+                }
+            })
+            .onErrorResumeNext(new BuyClientExceptionHandler<Void>())
+            .observeOn(callbackScheduler)
+            .doOnNext(new Action1<Void>() {
+                @Override
+                public void call(Void aVoid) {
+                    customerTokenRef.set(null);
+                }
+            });
     }
 
     @Override
-    public void updateCustomer(final Customer customer, final Callback<Customer> callback) {
-        updateCustomer(customer).subscribe(new InternalCallbackSubscriber<>(callback));
+    public CancellableTask updateCustomer(final Customer customer, final Callback<Customer> callback) {
+        return new CancellableTaskSubscriptionWrapper(updateCustomer(customer).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
@@ -216,17 +241,22 @@ final class CustomerServiceDefault implements CustomerService {
             throw new NullPointerException("customer cannot be null");
         }
 
+        if (customer.getId() == null) {
+            throw new NullPointerException("customerId cannot be null");
+        }
+
         return retrofitService
-                .updateCustomer(customer.getId(), new CustomerWrapper(customer))
-                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .compose(new UnwrapRetrofitBodyTransformer<CustomerWrapper, Customer>())
-                .doOnNext(cacheRxHookProvider.getCustomerCacheHook())
-                .observeOn(callbackScheduler);
+            .updateCustomer(customer.getId(), new CustomerWrapper(customer))
+            .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
+            .compose(new UnwrapRetrofitBodyTransformer<CustomerWrapper, Customer>())
+            .doOnNext(cacheRxHookProvider.getCustomerCacheHook())
+            .onErrorResumeNext(new BuyClientExceptionHandler<Customer>())
+            .observeOn(callbackScheduler);
     }
 
     @Override
-    public void getCustomer(final Long customerId, final Callback<Customer> callback) {
-        getCustomer(customerId).subscribe(new InternalCallbackSubscriber<>(callback));
+    public CancellableTask getCustomer(final Long customerId, final Callback<Customer> callback) {
+        return new CancellableTaskSubscriptionWrapper(getCustomer(customerId).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
@@ -236,17 +266,18 @@ final class CustomerServiceDefault implements CustomerService {
         }
 
         return retrofitService
-                .getCustomer(customerId)
-                .retryWhen(networkRetryPolicyProvider.provide())
-                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .compose(new UnwrapRetrofitBodyTransformer<CustomerWrapper, Customer>())
-                .doOnNext(cacheRxHookProvider.getCustomerCacheHook())
-                .observeOn(callbackScheduler);
+            .getCustomer(customerId)
+            .retryWhen(networkRetryPolicyProvider.provide())
+            .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
+            .compose(new UnwrapRetrofitBodyTransformer<CustomerWrapper, Customer>())
+            .doOnNext(cacheRxHookProvider.getCustomerCacheHook())
+            .onErrorResumeNext(new BuyClientExceptionHandler<Customer>())
+            .observeOn(callbackScheduler);
     }
 
     @Override
-    public void renewCustomer(final Callback<CustomerToken> callback) {
-        renewCustomer().subscribe(new InternalCallbackSubscriber<>(callback));
+    public CancellableTask renewCustomer(final Callback<CustomerToken> callback) {
+        return new CancellableTaskSubscriptionWrapper(renewCustomer().subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
@@ -257,22 +288,23 @@ final class CustomerServiceDefault implements CustomerService {
         }
 
         return retrofitService
-                .renewCustomerToken(EMPTY_BODY, customerToken.getCustomerId())
-                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .compose(new UnwrapRetrofitBodyTransformer<CustomerTokenWrapper, CustomerToken>())
-                .doOnNext(cacheRxHookProvider.getCustomerTokenCacheHook())
-                .observeOn(callbackScheduler)
-                .doOnNext(new Action1<CustomerToken>() {
-                    @Override
-                    public void call(CustomerToken token) {
-                        customerTokenRef.set(token);
-                    }
-                });
+            .renewCustomerToken(EMPTY_BODY, customerToken.getCustomerId())
+            .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
+            .compose(new UnwrapRetrofitBodyTransformer<CustomerTokenWrapper, CustomerToken>())
+            .doOnNext(cacheRxHookProvider.getCustomerTokenCacheHook())
+            .onErrorResumeNext(new BuyClientExceptionHandler<CustomerToken>())
+            .observeOn(callbackScheduler)
+            .doOnNext(new Action1<CustomerToken>() {
+                @Override
+                public void call(CustomerToken token) {
+                    customerTokenRef.set(token);
+                }
+            });
     }
 
     @Override
-    public void recoverPassword(final String email, final Callback<Void> callback) {
-        recoverPassword(email).subscribe(new InternalCallbackSubscriber<>(callback));
+    public CancellableTask recoverPassword(final String email, final Callback<Void> callback) {
+        return new CancellableTaskSubscriptionWrapper(recoverPassword(email).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
@@ -282,14 +314,15 @@ final class CustomerServiceDefault implements CustomerService {
         }
 
         return retrofitService
-                .recoverCustomer(new EmailWrapper(email))
-                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .map(new Func1<Response<Void>, Void>() {
-                    @Override
-                    public Void call(Response<Void> response) {
-                        return response.body();
-                    }
-                })
-                .observeOn(callbackScheduler);
+            .recoverCustomer(new EmailWrapper(email))
+            .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
+            .map(new Func1<Response<Void>, Void>() {
+                @Override
+                public Void call(Response<Void> response) {
+                    return response.body();
+                }
+            })
+            .onErrorResumeNext(new BuyClientExceptionHandler<Void>())
+            .observeOn(callbackScheduler);
     }
 }

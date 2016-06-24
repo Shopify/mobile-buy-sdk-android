@@ -29,7 +29,7 @@ import android.content.Context;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.shopify.buy.dataprovider.RetrofitError;
+import com.shopify.buy.dataprovider.BuyClientError;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -92,7 +92,7 @@ public class MockResponder implements Interceptor {
                     .build();
             ResponseBody responseBody = ResponseBody.create(MediaType.parse("application/json"), body);
             retrofit2.Response retrofitResponse = retrofit2.Response.error(responseBody, httpResponse);
-            throw new RetrofitError(retrofitResponse);
+            throw new BuyClientError(retrofitResponse);
         }
 
         MediaType contentType = MediaType.parse("application/json; charset=utf-8");

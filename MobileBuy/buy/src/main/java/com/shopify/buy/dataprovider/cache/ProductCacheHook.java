@@ -57,7 +57,7 @@ public interface ProductCacheHook {
     /**
      * Caches product page list for specified collection id
      */
-    void cacheProducts(String collectionId, int page, int pageSize, List<Product> products);
+    void cacheProducts(Long collectionId, int page, int pageSize, List<Product> products);
 
     /**
      * Caches collection page list

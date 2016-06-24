@@ -26,6 +26,7 @@ package com.shopify.buy.dataprovider;
 import android.text.TextUtils;
 
 import com.shopify.buy.BuildConfig;
+import com.shopify.buy.model.Customer;
 import com.shopify.buy.dataprovider.cache.AddressCacheHook;
 import com.shopify.buy.dataprovider.cache.CheckoutCacheHook;
 import com.shopify.buy.dataprovider.cache.CustomerCacheHook;
@@ -52,6 +53,10 @@ public final class BuyClientBuilder {
 
     public static final int DEFAULT_PAGE_SIZE = 25;
 
+    public static final long DEFAULT_HTTP_CONNECTION_TIME_OUT_MS = TimeUnit.SECONDS.toMillis(30);
+
+    public static final long DEFAULT_HTTP_READ_WRITE_TIME_OUT_MS = TimeUnit.SECONDS.toMillis(60);
+
     public static final long MIN_NETWORK_RETRY_DELAY = TimeUnit.MILLISECONDS.toMillis(500);
 
     private String shopDomain;
@@ -61,10 +66,6 @@ public final class BuyClientBuilder {
     private String appId;
 
     private String applicationName;
-
-    private String completeCheckoutWebReturnUrl;
-
-    private String completeCheckoutWebReturnLabel;
 
     private CustomerToken customerToken;
 
@@ -80,6 +81,10 @@ public final class BuyClientBuilder {
 
     private float networkRequestRetryBackoffMultiplier;
 
+    private long httpConnectionTimeoutMs = DEFAULT_HTTP_CONNECTION_TIME_OUT_MS;
+
+    private long httpReadWriteTimeoutMs = DEFAULT_HTTP_READ_WRITE_TIME_OUT_MS;
+
     private AddressCacheHook addressCacheHook;
 
     private CheckoutCacheHook checkoutCacheHook;
@@ -94,6 +99,9 @@ public final class BuyClientBuilder {
 
     /**
      * Sets store domain url (usually {store name}.myshopify.com
+     *
+     * @param shopDomain The domain for the shop.
+     * @return a {@link BuyClientBuilder}
      */
     public BuyClientBuilder shopDomain(final String shopDomain) {
         this.shopDomain = shopDomain;
@@ -102,6 +110,9 @@ public final class BuyClientBuilder {
 
     /**
      * Sets Shopify store api key
+     *
+     * @param apiKey The Api Key.
+     * @return a {@link BuyClientBuilder}
      */
     public BuyClientBuilder apiKey(final String apiKey) {
         this.apiKey = apiKey;
@@ -110,6 +121,9 @@ public final class BuyClientBuilder {
 
     /**
      * Sets Shopify store application id
+     *
+     * @param appId The App Id.
+     * @return a {@link BuyClientBuilder}
      */
     public BuyClientBuilder appId(final String appId) {
         this.appId = appId;
@@ -118,6 +132,9 @@ public final class BuyClientBuilder {
 
     /**
      * Sets Shopify store application name
+     *
+     * @param applicationName The application name.
+     * @return a {@link BuyClientBuilder}
      */
     public BuyClientBuilder applicationName(final String applicationName) {
         this.applicationName = applicationName;
@@ -125,24 +142,10 @@ public final class BuyClientBuilder {
     }
 
     /**
-     * Sets the web url to be invoked by the button on the completion page of the web checkout,
-     * defined as a custom scheme in the Android Manifest file
-     */
-    public BuyClientBuilder completeCheckoutWebReturnUrl(final String completeCheckoutWebReturnUrl) {
-        this.completeCheckoutWebReturnUrl = completeCheckoutWebReturnUrl;
-        return this;
-    }
-
-    /**
-     * Sets the text to be displayed on the button on the completion page of the web checkout
-     */
-    public BuyClientBuilder completeCheckoutWebReturnLabel(final String completeCheckoutWebReturnLabel) {
-        this.completeCheckoutWebReturnLabel = completeCheckoutWebReturnLabel;
-        return this;
-    }
-
-    /**
      * Sets the customer token
+     *
+     * @param customerToken The token associated with a {@link Customer}
+     * @return a {@link BuyClientBuilder}
      */
     public BuyClientBuilder customerToken(final CustomerToken customerToken) {
         this.customerToken = customerToken;
@@ -152,6 +155,9 @@ public final class BuyClientBuilder {
     /**
      * Sets the Rx scheduler that will be used for all API callbacks, by default callback will be notified
      * in main thread.
+     *
+     * @param callbackScheduler The {@link Scheduler} to use for API callbacks.
+     * @return a {@link BuyClientBuilder}
      */
     public BuyClientBuilder callbackScheduler(final Scheduler callbackScheduler) {
         this.callbackScheduler = callbackScheduler;
@@ -160,6 +166,9 @@ public final class BuyClientBuilder {
 
     /**
      * Sets custom OkHttp interceptors
+     *
+     * @param interceptors Interceptors to add to the OkHttp client.
+     * @return a {@link BuyClientBuilder}
      */
     public BuyClientBuilder interceptors(final Interceptor... interceptors) {
         this.interceptors = interceptors;
@@ -172,6 +181,9 @@ public final class BuyClientBuilder {
      * If the page size is less than {@code MIN_PAGE_SIZE}, it will be set to {@code MIN_PAGE_SIZE}.
      * If the page size is greater than MAX_PAGE_SIZE it will be set to {@code MAX_PAGE_SIZE}.
      * The default value is {@link #DEFAULT_PAGE_SIZE}
+     *
+     * @param productPageSize The number of products to return in a page.
+     * @return a {@link BuyClientBuilder}
      */
     public BuyClientBuilder productPageSize(final int productPageSize) {
         this.productPageSize = Math.max(Math.min(productPageSize, MAX_PAGE_SIZE), MIN_PAGE_SIZE);
@@ -180,11 +192,12 @@ public final class BuyClientBuilder {
 
     /**
      * Sets the configuration for retry logic in case network request failed (socket timeout, unknown host, etc.).
-     * The minimum of the delay between retries should be greater than {@link MIN_NETWORK_RETRY_DELAY}, otherwise it will be set to {@link MIN_NETWORK_RETRY_DELAY}
+     * The minimum of the delay between retries should be greater than {@link BuyClientBuilder#MIN_NETWORK_RETRY_DELAY}, otherwise it will be set to {@link BuyClientBuilder#MIN_NETWORK_RETRY_DELAY}
      *
      * @param networkRequestRetryMaxCount          max count of retry attempts
      * @param networkRequestRetryDelayMs           delay between retry attempts in milliseconds
-     * @param networkRequestRetryBackoffMultiplier backoff multiplier for next request attempts, can be used for “exponential backoff”
+     * @param networkRequestRetryBackoffMultiplier backoff multiplier for next request attempts, can be used for "exponential backoff"
+     * @return a {@link BuyClientBuilder}
      */
     public BuyClientBuilder networkRequestRetryPolicy(final int networkRequestRetryMaxCount, final long networkRequestRetryDelayMs, final float networkRequestRetryBackoffMultiplier) {
         this.networkRequestRetryMaxCount = networkRequestRetryMaxCount;
@@ -254,7 +267,26 @@ public final class BuyClientBuilder {
     }
 
     /**
+<<<<<<< HEAD
+=======
+     * Sets the default http timeouts for new connections.
+     * A value of 0 means no timeout, otherwise values must be between 1 and Long.MAX_VALUE.
+     *
+     * @param httpConnectionTimeoutMs default connect timeout for new connections in milliseconds
+     * @param httpReadWriteTimeoutMs  default read/write timeout for new connections in milliseconds
+     * @return {@link BuyClientBuilder}
+     */
+    public BuyClientBuilder httpTimeout(final long httpConnectionTimeoutMs, final long httpReadWriteTimeoutMs) {
+        this.httpConnectionTimeoutMs = httpConnectionTimeoutMs;
+        this.httpReadWriteTimeoutMs = httpReadWriteTimeoutMs;
+        return this;
+    }
+
+    /**
+>>>>>>> badfe80a8c57d2ff613fd612179974209c42d47c
      * Builds default implementation of {@link BuyClient}
+     *
+     * @return A {@link BuyClient}.
      */
     public BuyClient build() {
         if (BuildConfig.DEBUG) {
@@ -280,25 +312,25 @@ public final class BuyClientBuilder {
         }
 
         return new BuyClientDefault(
-                apiKey,
-                appId,
-                applicationName,
-                shopDomain,
-                completeCheckoutWebReturnUrl,
-                completeCheckoutWebReturnLabel,
-                customerToken,
-                callbackScheduler,
-                productPageSize,
-                networkRequestRetryMaxCount,
-                networkRequestRetryDelayMs,
-                networkRequestRetryBackoffMultiplier,
-                addressCacheHook,
-                checkoutCacheHook,
-                customerCacheHook,
-                orderCacheHook,
-                productCacheHook,
-                storeCacheHook,
-                interceptors
+            apiKey,
+            appId,
+            applicationName,
+            shopDomain,
+            customerToken,
+            callbackScheduler,
+            productPageSize,
+            networkRequestRetryMaxCount,
+            networkRequestRetryDelayMs,
+            networkRequestRetryBackoffMultiplier,
+            httpConnectionTimeoutMs,
+            httpReadWriteTimeoutMs,
+            addressCacheHook,
+            checkoutCacheHook,
+            customerCacheHook,
+            orderCacheHook,
+            productCacheHook,
+            storeCacheHook,
+            interceptors
         );
     }
 }

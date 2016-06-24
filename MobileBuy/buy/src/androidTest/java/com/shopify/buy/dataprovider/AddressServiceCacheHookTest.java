@@ -69,12 +69,20 @@ public class AddressServiceCacheHookTest extends ShopifyAndroidTestCase {
     public void setUp() throws Exception {
         super.setUp();
 
-        address1 = new Address();
+        address1 = new Address() {
+            {
+                id = 1L;
+            }
+        };
         address1.setAddress1("address1");
 
         addressWrapper1 = new AddressWrapper(address1);
 
-        address2 = new Address();
+        address2 = new Address(){
+            {
+                id = 1L;
+            }
+        };
         address2.setAddress1("address2");
 
         addressList = Arrays.asList(address1, address2);
@@ -105,7 +113,7 @@ public class AddressServiceCacheHookTest extends ShopifyAndroidTestCase {
     public void cacheWithoutHook() {
         Observable
             .just(address1)
-            .doOnNext(new AddressCacheRxHookProvider(null).getAddressCacheHook(customer))
+            .doOnNext(new AddressCacheRxHookProvider(null).getAddressCacheHook(customer.getId()))
             .subscribe(new Action1<Address>() {
                 @Override
                 public void call(Address response) {
@@ -120,7 +128,7 @@ public class AddressServiceCacheHookTest extends ShopifyAndroidTestCase {
 
         Observable
             .just(addressList)
-            .doOnNext(new AddressCacheRxHookProvider(null).getAddressesCacheHook(customer))
+            .doOnNext(new AddressCacheRxHookProvider(null).getAddressesCacheHook(customer.getId()))
             .subscribe(new Action1<List<Address>>() {
                 @Override
                 public void call(List<Address> response) {
@@ -138,12 +146,13 @@ public class AddressServiceCacheHookTest extends ShopifyAndroidTestCase {
     @Test
     public void cacheWithHookException() {
         final AddressCacheHook addressCacheHook = Mockito.mock(AddressCacheHook.class);
-        Mockito.doThrow(new RuntimeException()).when(addressCacheHook).cacheAddress(customer, address1);
-        Mockito.doThrow(new RuntimeException()).when(addressCacheHook).cacheAddresses(customer, addressList);
+
+        Mockito.doThrow(new RuntimeException()).when(addressCacheHook).cacheAddress(customer.getId(), address1);
+        Mockito.doThrow(new RuntimeException()).when(addressCacheHook).cacheAddresses(customer.getId(), addressList);
 
         Observable
             .just(address1)
-            .doOnNext(new AddressCacheRxHookProvider(addressCacheHook).getAddressCacheHook(customer))
+            .doOnNext(new AddressCacheRxHookProvider(addressCacheHook).getAddressCacheHook(customer.getId()))
             .subscribe(new Action1<Address>() {
                 @Override
                 public void call(Address response) {
@@ -158,7 +167,7 @@ public class AddressServiceCacheHookTest extends ShopifyAndroidTestCase {
 
         Observable
             .just(addressList)
-            .doOnNext(new AddressCacheRxHookProvider(addressCacheHook).getAddressesCacheHook(customer))
+            .doOnNext(new AddressCacheRxHookProvider(addressCacheHook).getAddressesCacheHook(customer.getId()))
             .subscribe(new Action1<List<Address>>() {
                 @Override
                 public void call(List<Address> response) {
@@ -178,18 +187,18 @@ public class AddressServiceCacheHookTest extends ShopifyAndroidTestCase {
         final Response<AddressWrapper> response = Response.success(addressWrapper1);
         final Observable<Response<AddressWrapper>> responseObservable = Observable.just(response);
         Mockito.when(addressRetrofitService.createAddress(Mockito.anyLong(), (AddressWrapper) Mockito.any())).thenReturn(responseObservable);
-        buyClient.createAddress(customer, address1, new Callback<Address>() {
+        buyClient.createAddress(customer.getId(), address1, new Callback<Address>() {
             @Override
             public void success(Address response) {
                 Assert.assertEquals(address1, response);
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void failure(BuyClientError error) {
                 Assert.fail();
             }
         });
-        Mockito.verify(addressCacheHook, Mockito.times(1)).cacheAddress(customer, address1);
+        Mockito.verify(addressCacheHook, Mockito.times(1)).cacheAddress(customer.getId(), address1);
     }
 
     @Test
@@ -197,7 +206,7 @@ public class AddressServiceCacheHookTest extends ShopifyAndroidTestCase {
         final Response<AddressesWrapper> response = Response.success(addressesWrapper);
         final Observable<Response<AddressesWrapper>> responseObservable = Observable.just(response);
         Mockito.when(addressRetrofitService.getAddresses(Mockito.anyLong())).thenReturn(responseObservable);
-        buyClient.getAddresses(customer, new Callback<List<Address>>() {
+        buyClient.getAddresses(customer.getId(), new Callback<List<Address>>() {
             @Override
             public void success(List<Address> response) {
                 Assert.assertEquals(addressList.get(0), response.get(0));
@@ -205,48 +214,48 @@ public class AddressServiceCacheHookTest extends ShopifyAndroidTestCase {
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void failure(BuyClientError error) {
                 Assert.fail();
             }
         });
-        Mockito.verify(addressCacheHook, Mockito.times(1)).cacheAddresses(customer, addressList);
+        Mockito.verify(addressCacheHook, Mockito.times(1)).cacheAddresses(customer.getId(), addressList);
     }
 
     @Test
     public void cacheGetAddress() {
         final Response<AddressWrapper> response = Response.success(addressWrapper1);
         final Observable<Response<AddressWrapper>> responseObservable = Observable.just(response);
-        Mockito.when(addressRetrofitService.getAddress(Mockito.anyLong(), Mockito.anyString())).thenReturn(responseObservable);
-        buyClient.getAddress(customer, "test", new Callback<Address>() {
+        Mockito.when(addressRetrofitService.getAddress(Mockito.anyLong(), Mockito.anyLong())).thenReturn(responseObservable);
+        buyClient.getAddress(customer.getId(), address1.getId(), new Callback<Address>() {
             @Override
             public void success(Address response) {
                 Assert.assertEquals(address1, response);
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void failure(BuyClientError error) {
                 Assert.fail();
             }
         });
-        Mockito.verify(addressCacheHook, Mockito.times(1)).cacheAddress(customer, address1);
+        Mockito.verify(addressCacheHook, Mockito.times(1)).cacheAddress(customer.getId(), address1);
     }
 
     @Test
     public void cacheUpdateAddress() {
         final Response<AddressWrapper> response = Response.success(addressWrapper1);
         final Observable<Response<AddressWrapper>> responseObservable = Observable.just(response);
-        Mockito.when(addressRetrofitService.updateAddress(Mockito.anyLong(), (AddressWrapper) Mockito.any(), Mockito.anyString())).thenReturn(responseObservable);
-        buyClient.updateAddress(customer, address1, new Callback<Address>() {
+        Mockito.when(addressRetrofitService.updateAddress(Mockito.anyLong(), (AddressWrapper) Mockito.any(), Mockito.anyLong())).thenReturn(responseObservable);
+        buyClient.updateAddress(customer.getId(), address1, new Callback<Address>() {
             @Override
             public void success(Address response) {
                 Assert.assertEquals(address1, response);
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void failure(BuyClientError error) {
                 Assert.fail();
             }
         });
-        Mockito.verify(addressCacheHook, Mockito.times(1)).cacheAddress(customer, address1);
+        Mockito.verify(addressCacheHook, Mockito.times(1)).cacheAddress(customer.getId(), address1);
     }
 }

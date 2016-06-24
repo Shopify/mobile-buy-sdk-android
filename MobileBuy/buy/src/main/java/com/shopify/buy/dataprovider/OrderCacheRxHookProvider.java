@@ -46,7 +46,7 @@ final class OrderCacheRxHookProvider {
     }
 
     @SuppressWarnings("unchecked")
-    Action1<Order> getOrderCacheHook(final Customer customer) {
+    Action1<Order> getOrderCacheHook(final Long customerId) {
         if (cacheHook == null) {
             return EMPTY_CACHE_HOOK;
         } else {
@@ -54,7 +54,7 @@ final class OrderCacheRxHookProvider {
                 @Override
                 public void call(final Order order) {
                     try {
-                        cacheHook.cacheOrder(customer, order);
+                        cacheHook.cacheOrder(customerId, order);
                     } catch (Exception e) {
                     }
                 }
@@ -63,7 +63,7 @@ final class OrderCacheRxHookProvider {
     }
 
     @SuppressWarnings("unchecked")
-    Action1<List<Order>> getOrdersCacheHook(final Customer customer) {
+    Action1<List<Order>> getOrdersCacheHook(final Long customerId) {
         if (cacheHook == null) {
             return EMPTY_CACHE_HOOK;
         } else {
@@ -71,7 +71,7 @@ final class OrderCacheRxHookProvider {
                 @Override
                 public void call(final List<Order> orders) {
                     try {
-                        cacheHook.cacheOrders(customer, orders);
+                        cacheHook.cacheOrders(customerId, orders);
                     } catch (Exception e) {
                     }
                 }

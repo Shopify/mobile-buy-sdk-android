@@ -443,7 +443,6 @@ public class ProductDetailsFragmentView extends RelativeLayout implements Produc
         appBarLayout.addOnOffsetChangedListener(this);
 
         // Setup the action bar
-        activity.setSupportActionBar(toolbar);
         actionBar = activity.getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setElevation(8);

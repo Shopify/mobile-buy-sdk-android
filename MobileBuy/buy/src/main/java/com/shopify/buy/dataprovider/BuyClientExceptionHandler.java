@@ -21,14 +21,22 @@
  *   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  *   THE SOFTWARE.
  */
-package rx.plugins;
+package com.shopify.buy.dataprovider;
 
-public class RxJavaTestPlugins extends RxJavaPlugins {
-    RxJavaTestPlugins() {
-        super();
-    }
+import rx.Observable;
+import rx.functions.Func1;
 
-    public static void resetPlugins(){
-        getInstance().reset();
+/**
+ * Handler that wraps all exception into {@link BuyClientError}
+ */
+final class BuyClientExceptionHandler<R> implements Func1<Throwable, Observable<R>> {
+
+    @Override
+    public Observable<R> call(final Throwable t) {
+        if (t instanceof BuyClientError) {
+            return Observable.error(t);
+        } else {
+            return Observable.error(new BuyClientError(t));
+        }
     }
 }

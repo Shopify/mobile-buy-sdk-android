@@ -49,17 +49,17 @@ final class ProductServiceDefault implements ProductService {
 
     final NetworkRetryPolicyProvider networkRetryPolicyProvider;
 
-    final Scheduler callbackScheduler;
-
     final ProductCacheRxHookProvider cacheRxHookProvider;
 
+    final Scheduler callbackScheduler;
+
     ProductServiceDefault(
-            final Retrofit retrofit,
-            final String appId,
-            final int pageSize,
-            final NetworkRetryPolicyProvider networkRetryPolicyProvider,
-            final ProductCacheRxHookProvider cacheRxHookProvider,
-            final Scheduler callbackScheduler
+        final Retrofit retrofit,
+        final String appId,
+        final int pageSize,
+        final NetworkRetryPolicyProvider networkRetryPolicyProvider,
+        final ProductCacheRxHookProvider cacheRxHookProvider,
+        final Scheduler callbackScheduler
     ) {
         this.retrofitService = retrofit.create(ProductRetrofitService.class);
         this.appId = appId;
@@ -70,8 +70,13 @@ final class ProductServiceDefault implements ProductService {
     }
 
     @Override
-    public void getProductPage(final int page, final Callback<List<Product>> callback) {
-        getProductPage(page).subscribe(new InternalCallbackSubscriber<>(callback));
+    public int getProductPageSize() {
+        return pageSize;
+    }
+
+    @Override
+    public CancellableTask getProductPage(final int page, final Callback<List<Product>> callback) {
+        return new CancellableTaskSubscriptionWrapper(getProductPage(page).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
@@ -81,17 +86,18 @@ final class ProductServiceDefault implements ProductService {
         }
 
         return retrofitService
-                .getProductPage(appId, page, pageSize)
-                .retryWhen(networkRetryPolicyProvider.provide())
-                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .compose(new UnwrapRetrofitBodyTransformer<ProductListings, List<Product>>())
-                .doOnNext(cacheRxHookProvider.getProductPageHook(page, pageSize))
-                .observeOn(callbackScheduler);
+            .getProductPage(appId, page, pageSize)
+            .retryWhen(networkRetryPolicyProvider.provide())
+            .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
+            .compose(new UnwrapRetrofitBodyTransformer<ProductListings, List<Product>>())
+            .doOnNext(cacheRxHookProvider.getProductPageHook(page, pageSize))
+            .onErrorResumeNext(new BuyClientExceptionHandler<List<Product>>())
+            .observeOn(callbackScheduler);
     }
 
     @Override
-    public void getProductWithHandle(final String handle, final Callback<Product> callback) {
-        getProductWithHandle(handle).subscribe(new InternalCallbackSubscriber<>(callback));
+    public CancellableTask getProductWithHandle(final String handle, final Callback<Product> callback) {
+        return new CancellableTaskSubscriptionWrapper(getProductWithHandle(handle).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
@@ -101,43 +107,45 @@ final class ProductServiceDefault implements ProductService {
         }
 
         return retrofitService
-                .getProductWithHandle(appId, handle)
-                .retryWhen(networkRetryPolicyProvider.provide())
-                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .compose(new UnwrapRetrofitBodyTransformer<ProductListings, List<Product>>())
-                .compose(new FirstListItemOrDefaultTransformer<Product>())
-                .doOnNext(cacheRxHookProvider.getProductWithHandleHook(handle))
-                .observeOn(callbackScheduler);
+            .getProductWithHandle(appId, handle)
+            .retryWhen(networkRetryPolicyProvider.provide())
+            .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
+            .compose(new UnwrapRetrofitBodyTransformer<ProductListings, List<Product>>())
+            .compose(new FirstListItemOrDefaultTransformer<Product>())
+            .doOnNext(cacheRxHookProvider.getProductHook())
+            .onErrorResumeNext(new BuyClientExceptionHandler<Product>())
+            .observeOn(callbackScheduler);
     }
 
     @Override
-    public void getProduct(final String productId, final Callback<Product> callback) {
-        getProduct(productId).subscribe(new InternalCallbackSubscriber<>(callback));
+    public CancellableTask getProduct(final Long productId, final Callback<Product> callback) {
+        return new CancellableTaskSubscriptionWrapper(getProduct(productId).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
-    public Observable<Product> getProduct(final String productId) {
+    public Observable<Product> getProduct(final Long productId) {
         if (productId == null) {
             throw new NullPointerException("productId cannot be null");
         }
 
         return retrofitService
-                .getProducts(appId, productId)
-                .retryWhen(networkRetryPolicyProvider.provide())
-                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .compose(new UnwrapRetrofitBodyTransformer<ProductListings, List<Product>>())
-                .compose(new FirstListItemOrDefaultTransformer<Product>())
-                .doOnNext(cacheRxHookProvider.getProductHook())
-                .observeOn(callbackScheduler);
+            .getProducts(appId, String.valueOf(productId))
+            .retryWhen(networkRetryPolicyProvider.provide())
+            .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
+            .compose(new UnwrapRetrofitBodyTransformer<ProductListings, List<Product>>())
+            .compose(new FirstListItemOrDefaultTransformer<Product>())
+            .doOnNext(cacheRxHookProvider.getProductHook())
+            .onErrorResumeNext(new BuyClientExceptionHandler<Product>())
+            .observeOn(callbackScheduler);
     }
 
     @Override
-    public void getProducts(final List<String> productIds, final Callback<List<Product>> callback) {
-        getProducts(productIds).subscribe(new InternalCallbackSubscriber<>(callback));
+    public CancellableTask getProducts(final List<Long> productIds, final Callback<List<Product>> callback) {
+        return new CancellableTaskSubscriptionWrapper(getProducts(productIds).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
-    public Observable<List<Product>> getProducts(final List<String> productIds) {
+    public Observable<List<Product>> getProducts(final List<Long> productIds) {
         if (productIds == null) {
             throw new NullPointerException("productIds List cannot be null");
         }
@@ -152,31 +160,32 @@ final class ProductServiceDefault implements ProductService {
         // If no ids were found, the array will be empty
         final String queryString = TextUtils.join(",", productIds.toArray());
         return retrofitService
-                .getProducts(appId, queryString)
-                .retryWhen(networkRetryPolicyProvider.provide())
-                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .compose(new UnwrapRetrofitBodyTransformer<ProductListings, List<Product>>())
-                .doOnNext(cacheRxHookProvider.getProductsHook())
-                .observeOn(callbackScheduler);
+            .getProducts(appId, queryString)
+            .retryWhen(networkRetryPolicyProvider.provide())
+            .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
+            .compose(new UnwrapRetrofitBodyTransformer<ProductListings, List<Product>>())
+            .doOnNext(cacheRxHookProvider.getProductsHook())
+            .onErrorResumeNext(new BuyClientExceptionHandler<List<Product>>())
+            .observeOn(callbackScheduler);
     }
 
     @Override
-    public void getProducts(int page, String collectionId, final Callback<List<Product>> callback) {
-        getProducts(page, collectionId, Collection.SortOrder.COLLECTION_DEFAULT, callback);
+    public CancellableTask getProducts(int page, Long collectionId, final Callback<List<Product>> callback) {
+        return getProducts(page, collectionId, Collection.SortOrder.COLLECTION_DEFAULT, callback);
     }
 
     @Override
-    public Observable<List<Product>> getProducts(final int page, final String collectionId) {
+    public Observable<List<Product>> getProducts(final int page, final Long collectionId) {
         return getProducts(page, collectionId, Collection.SortOrder.COLLECTION_DEFAULT);
     }
 
     @Override
-    public void getProducts(final int page, final String collectionId, final Collection.SortOrder sortOrder, final Callback<List<Product>> callback) {
-        getProducts(page, collectionId, sortOrder).subscribe(new InternalCallbackSubscriber<>(callback));
+    public CancellableTask getProducts(final int page, final Long collectionId, final Collection.SortOrder sortOrder, final Callback<List<Product>> callback) {
+        return new CancellableTaskSubscriptionWrapper(getProducts(page, collectionId, sortOrder).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
-    public Observable<List<Product>> getProducts(final int page, final String collectionId, final Collection.SortOrder sortOrder) {
+    public Observable<List<Product>> getProducts(final int page, final Long collectionId, final Collection.SortOrder sortOrder) {
         if (page < 1) {
             throw new IllegalArgumentException("page is a 1-based index, value cannot be less than 1");
         }
@@ -185,31 +194,21 @@ final class ProductServiceDefault implements ProductService {
         }
 
         return retrofitService
-                .getProducts(appId, collectionId, pageSize, page, sortOrder.toString())
-                .retryWhen(networkRetryPolicyProvider.provide())
-                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .compose(new UnwrapRetrofitBodyTransformer<ProductListings, List<Product>>())
-                .doOnNext(cacheRxHookProvider.getCollectionProductPageHook(collectionId, page, pageSize))
-                .observeOn(callbackScheduler);
+            .getProducts(appId, collectionId, pageSize, page, sortOrder.toString())
+            .retryWhen(networkRetryPolicyProvider.provide())
+            .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
+            .compose(new UnwrapRetrofitBodyTransformer<ProductListings, List<Product>>())
+            .doOnNext(cacheRxHookProvider.getCollectionProductPageHook(collectionId, page, pageSize))
+            .observeOn(callbackScheduler);
     }
 
     @Override
-    public void getCollections(final Callback<List<Collection>> callback) {
-        getCollectionPage(1, callback);
+    public CancellableTask getCollectionPage(final int page, final Callback<List<Collection>> callback) {
+        return new CancellableTaskSubscriptionWrapper(getCollectionPage(page).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
-    public Observable<List<Collection>> getCollections() {
-        return getCollections(1);
-    }
-
-    @Override
-    public void getCollectionPage(final int page, final Callback<List<Collection>> callback) {
-        getCollections(page).subscribe(new InternalCallbackSubscriber<>(callback));
-    }
-
-    @Override
-    public Observable<List<Collection>> getCollections(final int page) {
+    public Observable<List<Collection>> getCollectionPage(final int page) {
         if (page < 1) {
             throw new IllegalArgumentException("page is a 1-based index, value cannot be less than 1");
         }
@@ -217,11 +216,12 @@ final class ProductServiceDefault implements ProductService {
         // All collection responses from the server are wrapped in a CollectionListings object which contains and array of collections
         // For this call, we will clamp the size of the collection array returned to the page size
         return retrofitService
-                .getCollectionPage(appId, page, pageSize)
-                .retryWhen(networkRetryPolicyProvider.provide())
-                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .compose(new UnwrapRetrofitBodyTransformer<CollectionListings, List<Collection>>())
-                .doOnNext(cacheRxHookProvider.getCollectionPageHook(page, pageSize))
-                .observeOn(callbackScheduler);
+            .getCollectionPage(appId, page, pageSize)
+            .retryWhen(networkRetryPolicyProvider.provide())
+            .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
+            .compose(new UnwrapRetrofitBodyTransformer<CollectionListings, List<Collection>>())
+            .doOnNext(cacheRxHookProvider.getCollectionPageHook(page, pageSize))
+            .onErrorResumeNext(new BuyClientExceptionHandler<List<Collection>>())
+            .observeOn(callbackScheduler);
     }
 }

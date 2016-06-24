@@ -38,35 +38,37 @@ public interface OrderService {
     /**
      * Fetch the Orders associated with a Customer.
      *
-     * @param customer the {@link Customer} to fetch the orders for, not null
+     * @param customerId the id of the {@link Customer} to fetch the orders for, not null
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
+     * @return cancelable task
      */
-    void getOrders(Customer customer, Callback<List<Order>> callback);
+    CancellableTask getOrders(Long customerId, Callback<List<Order>> callback);
 
     /**
      * Fetch the Orders associated with a Customer.
      *
-     * @param customer the {@link Customer} to fetch the orders for, not null
+     * @param customerId the id of the {@link Customer} to fetch the orders for, not null
      * @return cold observable that emits requested list of orders associated with a customer
      */
-    Observable<List<Order>> getOrders(Customer customer);
+    Observable<List<Order>> getOrders(Long customerId);
 
     /**
      * Fetch an existing Order from Shopify
      *
-     * @param customer the {@link Customer} to fetch the order for
+     * @param customerId the id of the {@link Customer} to fetch the order for
      * @param orderId  the identifier of the {@link Order} to retrieve
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
+     * @return cancelable task
      */
-    void getOrder(Customer customer, String orderId, Callback<Order> callback);
+    CancellableTask getOrder(Long customerId, Long orderId, Callback<Order> callback);
 
     /**
      * Fetch an existing Order from Shopify
      *
-     * @param customer the {@link Customer} to fetch the order for
+     * @param customerId the id of the {@link Customer} to fetch the order for
      * @param orderId  the identifier of the {@link Order} to retrieve
      * @return cold observable that emits requested existing order
      */
-    Observable<Order> getOrder(Customer customer, String orderId);
+    Observable<Order> getOrder(Long customerId, Long orderId);
 
 }

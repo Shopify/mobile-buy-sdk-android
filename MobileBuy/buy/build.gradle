@@ -1,10 +1,27 @@
 apply plugin: 'com.android.library'
+apply plugin: 'jacoco-android'
 apply plugin: 'maven'
 apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
 apply plugin: 'maven-publish'
 
-def VERSION_NAME = '1.3.0'
+def VERSION_NAME = '2.0.0'
+
+buildscript {
+    System.properties['com.android.build.gradle.overrideVersionCheck'] = 'true'
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.dicedmelon.gradle:jacoco-android:0.1.1'
+    }
+}
+
+jacocoAndroidUnitTestReport {
+    csv.enabled false
+    html.enabled true
+    xml.enabled true
+}
 
 // Params for bintrayUpload
 ext {
@@ -30,7 +47,7 @@ ext {
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "23.0.1"
+    buildToolsVersion "23.0.3"
     com.android.ddmlib.DdmPreferences.setTimeOut(60000) // https://code.google.com/p/android/issues/detail?id=104305
 
     defaultConfig {
@@ -55,11 +72,13 @@ android {
             def apiKey
             def appId
             def useMockResponses
+            def androidPayPublicKey
 
             // get the shop setting from the environment if there any
             shopDomain = System.getenv("SHOP_DOMAIN")
             apiKey = System.getenv("API_KEY")
             appId = System.getenv("APP_ID")
+            androidPayPublicKey = System.getenv("ANDROID_PAY_PUBLIC_KEY")
 
             // pull the store properties from the local file if it exists.  Environment variables take precedence
             def shopProperties = new Properties();
@@ -70,6 +89,7 @@ android {
                 shopDomain = shopDomain ?: shopProperties["SHOP_DOMAIN"]
                 apiKey = apiKey ?: shopProperties["API_KEY"]
                 appId = appId ?: shopProperties["APP_ID"]
+                androidPayPublicKey = androidPayPublicKey ?: shopProperties["ANDROID_PAY_PUBLIC_KEY"]
             }
 
             if (!shopDomain) {
@@ -81,11 +101,17 @@ android {
             if (!appId) {
                 appId = ""
             }
+            if (!androidPayPublicKey) {
+                androidPayPublicKey = ""
+            }
 
             buildConfigField "String", "SHOP_DOMAIN", "\"" + shopDomain.toString() + "\""
             buildConfigField "String", "API_KEY", "\"" + apiKey.toString() + "\""
             buildConfigField "String", "APP_ID", "\"" + appId.toString() + "\""
+            buildConfigField "String", "ANDROID_PAY_PUBLIC_KEY", "\"" + androidPayPublicKey.toString() + "\""
 
+            // do not enable test coverage for production builds as it modifies the classes to add agents and it crashes
+            testCoverageEnabled true
         }
 
         release {
@@ -101,6 +127,75 @@ android {
             if (outputFile != null && outputFile.name.endsWith('.aar')) {
                 def fileName = "${archivesBaseName}-${version}.aar"
                 output.outputFile = new File(outputFile.parent, fileName)
+            }
+        }
+
+        if (variant.name.equals('release')) {
+
+            task("javadoc", type: Javadoc, dependsOn: assembleRelease) {
+                description "Generate Javadoc"
+                title = "Mobile Buy SDK"
+                source = android.sourceSets.main.java.srcDirs
+
+                def androidJar = "${android.sdkDirectory}/platforms/${android.compileSdkVersion}/android.jar"
+                classpath = files(variant.javaCompile.classpath.files) + files(androidJar)
+
+                options {
+                    linksOffline("http://d.android.com/reference", "${android.sdkDirectory}/docs/reference")
+                    links("http://square.github.io/retrofit/2.x/retrofit/")
+                }
+
+                exclude('**/customTabs/**')
+                exclude('**/BuildConfig.java')
+            }
+
+            task("javadocJar", type: Jar, dependsOn: javadoc) {
+                description "Bundles Javadoc into zip"
+                classifier = "javadoc"
+                baseName = 'buy'
+                from tasks["javadoc"]
+            }
+
+            artifacts {
+                archives project.javadocJar
+            }
+
+            task("archiveReleasePackage", type: Zip, dependsOn: [javadocJar]) {
+                baseName = "mobile-buy-sdk-android"
+
+                from("./build/libs") {
+                    include javadocJar.getArchiveName()
+                }
+
+                from("./build/docs") {
+                    include 'javadoc/**'
+                }
+
+                from("./build/outputs/aar") {
+                    include "buy-" + version + ".aar"
+                }
+
+                from("..") {
+                    include "sample/src/main/**"
+                    include "sample/.gitignore"
+                    include "sample/build.gradle.packaging"
+                    include "sample/proguard-rules.pro"
+
+                    rename "build.gradle.packaging", "build.gradle"
+                }
+
+                from("../..") {
+                    include "LICENSE"
+                    include "NOTICE"
+                }
+
+                into(baseName + "-" + version)
+            }
+        }
+
+        project.gradle.taskGraph.whenReady {
+            connectedDebugAndroidTest {
+                ignoreFailures = false
             }
         }
     }
@@ -120,16 +215,18 @@ dependencies {
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.squareup.retrofit2:converter-gson:2.0.0'
 
-    compile 'com.android.support:design:23.3.0'
-    compile 'com.android.support:support-v4:23.3.0'
-    compile 'com.android.support:appcompat-v7:23.3.0'
-    compile 'com.android.support:palette-v7:23.3.0'
-    compile 'com.android.support:customtabs:23.3.0'
+    compile 'com.android.support:design:23.4.0'
+    compile 'com.android.support:support-v4:23.4.0'
+    compile 'com.android.support:appcompat-v7:23.4.0'
+    compile 'com.android.support:palette-v7:23.4.0'
+    compile 'com.android.support:customtabs:23.4.0'
+
+    compile 'com.google.android.gms:play-services-wallet:9.0.1'
 
     androidTestCompile 'org.mockito:mockito-core:1.9.5'
     androidTestCompile 'com.google.dexmaker:dexmaker:1.2'
     androidTestCompile 'com.google.dexmaker:dexmaker-mockito:1.2'
-    androidTestCompile 'com.android.support:support-annotations:23.0.1'
+    androidTestCompile 'com.android.support:support-annotations:23.4.0'
     androidTestCompile 'com.android.support.test:runner:0.4.1'
     androidTestCompile 'com.android.support.test:rules:0.4.1'
 
@@ -269,7 +366,6 @@ task sourcesJar(type: Jar) {
 }
 
 artifacts {
-    archives javadocJar
     archives sourcesJar
 }
 
@@ -298,4 +394,5 @@ bintray {
             desc = libraryDescription
         }
     }
+
 }

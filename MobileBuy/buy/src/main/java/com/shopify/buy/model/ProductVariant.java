@@ -56,7 +56,7 @@ public class ProductVariant extends ShopifyObject {
 
     protected int position;
 
-    protected long productId;
+    protected Long productId;
 
     @SerializedName("created_at")
     protected Date createdAtDate;
@@ -73,6 +73,11 @@ public class ProductVariant extends ShopifyObject {
 
     @SerializedName("image_url")
     protected String imageUrl;
+
+    @Override
+    public Long getId() {
+        return super.getId();
+    }
 
     /**
      * @return The title of this variant.
@@ -160,6 +165,8 @@ public class ProductVariant extends ShopifyObject {
 
     /**
      * Use {@link #getCreatedAtDate() getCreatedAtDate()}.
+     *
+     * @return The date this variant was created.
      */
     @Deprecated
     public String getCreatedAt() {
@@ -168,6 +175,8 @@ public class ProductVariant extends ShopifyObject {
 
     /**
      * Use {@link #getUpdatedAtDate() getUpdatedAtDate()}.
+     *
+     * @return The date this variant was updated.
      */
     @Deprecated
     public String getUpdatedAt() {

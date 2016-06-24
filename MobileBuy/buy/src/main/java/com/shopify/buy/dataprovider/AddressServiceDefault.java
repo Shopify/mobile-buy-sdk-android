@@ -23,18 +23,19 @@
  */
 package com.shopify.buy.dataprovider;
 
-import android.text.TextUtils;
-
 import com.shopify.buy.model.Address;
-import com.shopify.buy.model.Customer;
 import com.shopify.buy.model.internal.AddressWrapper;
 import com.shopify.buy.model.internal.AddressesWrapper;
 
 import java.util.List;
 
+import retrofit2.Response;
 import retrofit2.Retrofit;
 import rx.Observable;
 import rx.Scheduler;
+import rx.functions.Func1;
+
+import static java.net.HttpURLConnection.HTTP_NO_CONTENT;
 
 /**
  * Default implementation of {@link AddressService}
@@ -45,15 +46,15 @@ final class AddressServiceDefault implements AddressService {
 
     final NetworkRetryPolicyProvider networkRetryPolicyProvider;
 
-    final Scheduler callbackScheduler;
-
     final AddressCacheRxHookProvider cacheRxHookProvider;
 
+    final Scheduler callbackScheduler;
+
     AddressServiceDefault(
-            final Retrofit retrofit,
-            final NetworkRetryPolicyProvider networkRetryPolicyProvider,
-            final AddressCacheRxHookProvider cacheRxHookProvider,
-            final Scheduler callbackScheduler
+        final Retrofit retrofit,
+        final NetworkRetryPolicyProvider networkRetryPolicyProvider,
+        final AddressCacheRxHookProvider cacheRxHookProvider,
+        final Scheduler callbackScheduler
     ) {
         this.retrofitService = retrofit.create(AddressRetrofitService.class);
         this.networkRetryPolicyProvider = networkRetryPolicyProvider;
@@ -62,92 +63,124 @@ final class AddressServiceDefault implements AddressService {
     }
 
     @Override
-    public void createAddress(final Customer customer, final Address address, final Callback<Address> callback) {
-        createAddress(customer, address).subscribe(new InternalCallbackSubscriber<>(callback));
+    public CancellableTask createAddress(final Long customerId, final Address address, final Callback<Address> callback) {
+        return new CancellableTaskSubscriptionWrapper(createAddress(customerId, address).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
-    public Observable<Address> createAddress(final Customer customer, final Address address) {
+    public Observable<Address> createAddress(final Long customerId, final Address address) {
+        if (customerId == null) {
+            throw new NullPointerException("customerId cannot be null");
+        }
+
         if (address == null) {
             throw new NullPointerException("address cannot be null");
         }
 
-        if (customer == null) {
-            throw new NullPointerException("customer cannot be null");
+        return retrofitService
+            .createAddress(customerId, new AddressWrapper(address))
+            .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
+            .compose(new UnwrapRetrofitBodyTransformer<AddressWrapper, Address>())
+            .doOnNext(cacheRxHookProvider.getAddressCacheHook(customerId))
+            .onErrorResumeNext(new BuyClientExceptionHandler<Address>())
+            .observeOn(callbackScheduler);
+    }
+
+    public CancellableTask deleteAddress(Long customerId, Long addressId, Callback<Void> callback) {
+        return new CancellableTaskSubscriptionWrapper(deleteAddress(customerId, addressId).subscribe(new InternalCallbackSubscriber<>(callback)));
+    }
+
+    public Observable<Void> deleteAddress(Long customerId, Long addressId) {
+        if (customerId == null) {
+            throw new NullPointerException("customerId cannot be null");
+        }
+
+        if (addressId == null) {
+            throw new NullPointerException("addressId cannot be null");
+        }
+
+        int[] successCodes = {HTTP_NO_CONTENT};
+
+        return retrofitService.deleteAddress(customerId, addressId)
+            .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>(successCodes))
+            .map(new Func1<Response<Void>, Void>() {
+                @Override
+                public Void call(Response<Void> voidResponse) {
+                    return voidResponse.body();
+                }
+            })
+            .doOnNext(cacheRxHookProvider.getDeleteAddressCacheHook(customerId, addressId))
+            .onErrorResumeNext(new BuyClientExceptionHandler<Void>())
+            .observeOn(callbackScheduler);
+    }
+
+    @Override
+    public CancellableTask getAddresses(final Long customerId, final Callback<List<Address>> callback) {
+        return new CancellableTaskSubscriptionWrapper(getAddresses(customerId).subscribe(new InternalCallbackSubscriber<>(callback)));
+    }
+
+    @Override
+    public Observable<List<Address>> getAddresses(final Long customerId) {
+        if (customerId == null) {
+            throw new NullPointerException("customerId cannot be null");
         }
 
         return retrofitService
-                .createAddress(customer.getId(), new AddressWrapper(address))
-                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .compose(new UnwrapRetrofitBodyTransformer<AddressWrapper, Address>())
-                .doOnNext(cacheRxHookProvider.getAddressCacheHook(customer))
-                .observeOn(callbackScheduler);
+            .getAddresses(customerId)
+            .retryWhen(networkRetryPolicyProvider.provide())
+            .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
+            .compose(new UnwrapRetrofitBodyTransformer<AddressesWrapper, List<Address>>())
+            .doOnNext(cacheRxHookProvider.getAddressesCacheHook(customerId))
+            .onErrorResumeNext(new BuyClientExceptionHandler<List<Address>>())
+            .observeOn(callbackScheduler);
     }
 
     @Override
-    public void getAddresses(final Customer customer, final Callback<List<Address>> callback) {
-        getAddresses(customer).subscribe(new InternalCallbackSubscriber<>(callback));
+    public CancellableTask getAddress(final Long customerId, final Long addressId, final Callback<Address> callback) {
+        return new CancellableTaskSubscriptionWrapper(getAddress(customerId, addressId).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
-    public Observable<List<Address>> getAddresses(final Customer customer) {
-        if (customer == null) {
-            throw new NullPointerException("customer cannot be null");
+    public Observable<Address> getAddress(final Long customerId, final Long addressId) {
+        if (customerId == null) {
+            throw new NullPointerException("customerId cannot be null");
+        }
+
+        if (addressId == null) {
+            throw new NullPointerException("addressId cannot be null");
         }
 
         return retrofitService
-                .getAddresses(customer.getId())
-                .retryWhen(networkRetryPolicyProvider.provide())
-                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .compose(new UnwrapRetrofitBodyTransformer<AddressesWrapper, List<Address>>())
-                .doOnNext(cacheRxHookProvider.getAddressesCacheHook(customer))
-                .observeOn(callbackScheduler);
+            .getAddress(customerId, addressId)
+            .retryWhen(networkRetryPolicyProvider.provide())
+            .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
+            .compose(new UnwrapRetrofitBodyTransformer<AddressWrapper, Address>())
+            .doOnNext(cacheRxHookProvider.getAddressCacheHook(customerId))
+            .onErrorResumeNext(new BuyClientExceptionHandler<Address>())
+            .observeOn(callbackScheduler);
     }
 
     @Override
-    public void getAddress(final Customer customer, final String addressId, final Callback<Address> callback) {
-        getAddress(customer, addressId).subscribe(new InternalCallbackSubscriber<>(callback));
+    public CancellableTask updateAddress(final Long customerId, final Address address, final Callback<Address> callback) {
+        return new CancellableTaskSubscriptionWrapper(updateAddress(customerId, address).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
-    public Observable<Address> getAddress(final Customer customer, final String addressId) {
-        if (TextUtils.isEmpty(addressId)) {
-            throw new IllegalArgumentException("addressId cannot be empty");
+    public Observable<Address> updateAddress(final Long customerId, final Address address) {
+        if (customerId == null) {
+            throw new NullPointerException("customerId cannot be null");
         }
 
-        if (customer == null) {
-            throw new NullPointerException("customer cannot be null");
-        }
-
-        return retrofitService
-                .getAddress(customer.getId(), addressId)
-                .retryWhen(networkRetryPolicyProvider.provide())
-                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .compose(new UnwrapRetrofitBodyTransformer<AddressWrapper, Address>())
-                .doOnNext(cacheRxHookProvider.getAddressCacheHook(customer))
-                .observeOn(callbackScheduler);
-    }
-
-    @Override
-    public void updateAddress(final Customer customer, final Address address, final Callback<Address> callback) {
-        updateAddress(customer, address).subscribe(new InternalCallbackSubscriber<>(callback));
-    }
-
-    @Override
-    public Observable<Address> updateAddress(final Customer customer, final Address address) {
         if (address == null) {
             throw new NullPointerException("address cannot be null");
         }
 
-        if (customer == null) {
-            throw new NullPointerException("customer cannot be null");
-        }
-
         return retrofitService
-                .updateAddress(customer.getId(), new AddressWrapper(address), address.getAddressId())
-                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .compose(new UnwrapRetrofitBodyTransformer<AddressWrapper, Address>())
-                .doOnNext(cacheRxHookProvider.getAddressCacheHook(customer))
-                .observeOn(callbackScheduler);
+            .updateAddress(customerId, new AddressWrapper(address), address.getId())
+            .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
+            .compose(new UnwrapRetrofitBodyTransformer<AddressWrapper, Address>())
+            .doOnNext(cacheRxHookProvider.getAddressCacheHook(customerId))
+            .onErrorResumeNext(new BuyClientExceptionHandler<Address>())
+            .observeOn(callbackScheduler);
     }
 }

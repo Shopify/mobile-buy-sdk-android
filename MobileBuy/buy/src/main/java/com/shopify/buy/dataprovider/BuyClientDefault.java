@@ -40,9 +40,8 @@ import com.shopify.buy.model.Collection.SortOrder;
 import com.shopify.buy.model.CreditCard;
 import com.shopify.buy.model.Customer;
 import com.shopify.buy.model.CustomerToken;
-import com.shopify.buy.model.GiftCard;
 import com.shopify.buy.model.Order;
-import com.shopify.buy.model.Payment;
+import com.shopify.buy.model.PaymentToken;
 import com.shopify.buy.model.Product;
 import com.shopify.buy.model.ShippingRate;
 import com.shopify.buy.model.Shop;
@@ -85,14 +84,14 @@ final class BuyClientDefault implements BuyClient {
             final String appId,
             final String applicationName,
             final String shopDomain,
-            final String completeCheckoutWebReturnUrl,
-            final String completeCheckoutWebReturnLabel,
             final CustomerToken customerToken,
             final Scheduler callbackScheduler,
             final int productPageSize,
             final int networkRequestRetryMaxCount,
             final long networkRequestRetryDelayMs,
             final float networkRequestRetryBackoffMultiplier,
+            final long httpConnectionTimeoutMs,
+            final long httpReadWriteTimeoutMs,
             final AddressCacheHook addressCacheHook,
             final CheckoutCacheHook checkoutCacheHook,
             final CustomerCacheHook customerCacheHook,
@@ -126,9 +125,9 @@ final class BuyClientDefault implements BuyClient {
         };
 
         final OkHttpClient.Builder builder = new OkHttpClient.Builder()
-                .connectTimeout(30, TimeUnit.SECONDS)
-                .readTimeout(60, TimeUnit.SECONDS)
-                .writeTimeout(60, TimeUnit.SECONDS)
+                .connectTimeout(httpConnectionTimeoutMs, TimeUnit.MILLISECONDS)
+                .readTimeout(httpReadWriteTimeoutMs, TimeUnit.MILLISECONDS)
+                .writeTimeout(httpReadWriteTimeoutMs, TimeUnit.MILLISECONDS)
                 .addInterceptor(requestInterceptor);
 
         if (interceptors != null) {
@@ -150,7 +149,7 @@ final class BuyClientDefault implements BuyClient {
 
         storeService = new StoreServiceDefault(retrofit, networkRetryPolicyProvider, new StoreCacheRxHookProvider(storeCacheHook), callbackScheduler);
         addressService = new AddressServiceDefault(retrofit, networkRetryPolicyProvider, new AddressCacheRxHookProvider(addressCacheHook), callbackScheduler);
-        checkoutService = new CheckoutServiceDefault(retrofit, apiKey, applicationName, completeCheckoutWebReturnUrl, completeCheckoutWebReturnLabel, networkRetryPolicyProvider, new CheckoutCacheRxHookProvider(checkoutCacheHook), callbackScheduler);
+        checkoutService = new CheckoutServiceDefault(retrofit, apiKey, applicationName, networkRetryPolicyProvider, new CheckoutCacheRxHookProvider(checkoutCacheHook), callbackScheduler);
         customerService = new CustomerServiceDefault(retrofit, customerToken, networkRetryPolicyProvider, new CustomerCacheRxHookProvider(customerCacheHook), callbackScheduler);
         orderService = new OrderServiceDefault(retrofit, networkRetryPolicyProvider, new OrderCacheRxHookProvider(orderCacheHook), callbackScheduler);
         productService = new ProductServiceDefault(retrofit, appId, productPageSize, networkRetryPolicyProvider, new ProductCacheRxHookProvider(productCacheHook), callbackScheduler);
@@ -179,8 +178,8 @@ final class BuyClientDefault implements BuyClient {
     // ----------- StoreService API ---------------
 
     @Override
-    public void getShop(Callback<Shop> callback) {
-        storeService.getShop(callback);
+    public CancellableTask getShop(Callback<Shop> callback) {
+        return storeService.getShop(callback);
     }
 
     @Override
@@ -191,18 +190,8 @@ final class BuyClientDefault implements BuyClient {
     // ----------- CheckoutService API ---------------
 
     @Override
-    public String getWebReturnToUrl() {
-        return checkoutService.getWebReturnToUrl();
-    }
-
-    @Override
-    public String getWebReturnToLabel() {
-        return checkoutService.getWebReturnToLabel();
-    }
-
-    @Override
-    public void createCheckout(final Checkout checkout, final Callback<Checkout> callback) {
-        checkoutService.createCheckout(checkout, callback);
+    public CancellableTask createCheckout(final Checkout checkout, final Callback<Checkout> callback) {
+        return checkoutService.createCheckout(checkout, callback);
     }
 
     @Override
@@ -211,8 +200,8 @@ final class BuyClientDefault implements BuyClient {
     }
 
     @Override
-    public void updateCheckout(final Checkout checkout, final Callback<Checkout> callback) {
-        checkoutService.updateCheckout(checkout, callback);
+    public CancellableTask updateCheckout(final Checkout checkout, final Callback<Checkout> callback) {
+        return checkoutService.updateCheckout(checkout, callback);
     }
 
     @Override
@@ -221,8 +210,8 @@ final class BuyClientDefault implements BuyClient {
     }
 
     @Override
-    public void getShippingRates(final String checkoutToken, final Callback<List<ShippingRate>> callback) {
-        checkoutService.getShippingRates(checkoutToken, callback);
+    public CancellableTask getShippingRates(final String checkoutToken, final Callback<List<ShippingRate>> callback) {
+        return checkoutService.getShippingRates(checkoutToken, callback);
     }
 
     @Override
@@ -231,28 +220,38 @@ final class BuyClientDefault implements BuyClient {
     }
 
     @Override
-    public void storeCreditCard(final CreditCard card, final Checkout checkout, final Callback<Checkout> callback) {
-        checkoutService.storeCreditCard(card, checkout, callback);
+    public CancellableTask storeCreditCard(final CreditCard card, final Checkout checkout, final Callback<PaymentToken> callback) {
+        return checkoutService.storeCreditCard(card, checkout, callback);
     }
 
     @Override
-    public Observable<Checkout> storeCreditCard(final CreditCard card, final Checkout checkout) {
+    public Observable<PaymentToken> storeCreditCard(final CreditCard card, final Checkout checkout) {
         return checkoutService.storeCreditCard(card, checkout);
     }
 
     @Override
-    public void completeCheckout(final Checkout checkout, final Callback<Payment> callback) {
-        checkoutService.completeCheckout(checkout, callback);
+    public CancellableTask getCheckoutCompletionStatus(String checkoutToken, final Callback<Boolean> callback) {
+        return checkoutService.getCheckoutCompletionStatus(checkoutToken, callback);
     }
 
     @Override
-    public Observable<Payment> completeCheckout(final Checkout checkout) {
-        return checkoutService.completeCheckout(checkout);
+    public Observable<Boolean> getCheckoutCompletionStatus(final String checkoutToken) {
+        return checkoutService.getCheckoutCompletionStatus(checkoutToken);
     }
 
     @Override
-    public void getCheckout(final String checkoutToken, final Callback<Checkout> callback) {
-        checkoutService.getCheckout(checkoutToken, callback);
+    public Observable<Checkout> completeCheckout(final PaymentToken paymentToken, final String checkoutToken) {
+        return checkoutService.completeCheckout(paymentToken, checkoutToken);
+    }
+
+    @Override
+    public CancellableTask completeCheckout(final PaymentToken paymentToken, final String checkoutToken, final Callback<Checkout> callback) {
+        return checkoutService.completeCheckout(paymentToken, checkoutToken, callback);
+    }
+
+    @Override
+    public CancellableTask getCheckout(final String checkoutToken, final Callback<Checkout> callback) {
+        return checkoutService.getCheckout(checkoutToken, callback);
     }
 
     @Override
@@ -261,8 +260,8 @@ final class BuyClientDefault implements BuyClient {
     }
 
     @Override
-    public void applyGiftCard(final String giftCardCode, final Checkout checkout, final Callback<Checkout> callback) {
-        checkoutService.applyGiftCard(giftCardCode, checkout, callback);
+    public CancellableTask applyGiftCard(final String giftCardCode, final Checkout checkout, final Callback<Checkout> callback) {
+        return checkoutService.applyGiftCard(giftCardCode, checkout, callback);
     }
 
     @Override
@@ -271,23 +270,23 @@ final class BuyClientDefault implements BuyClient {
     }
 
     @Override
-    public void removeGiftCard(final GiftCard giftCard, final Checkout checkout, final Callback<Checkout> callback) {
-        checkoutService.removeGiftCard(giftCard, checkout, callback);
+    public CancellableTask removeGiftCard(final Long giftCardId, final Checkout checkout, final Callback<Checkout> callback) {
+        return checkoutService.removeGiftCard(giftCardId, checkout, callback);
     }
 
     @Override
-    public Observable<Checkout> removeGiftCard(final GiftCard giftCard, final Checkout checkout) {
-        return checkoutService.removeGiftCard(giftCard, checkout);
+    public Observable<Checkout> removeGiftCard(final Long giftCardId, final Checkout checkout) {
+        return checkoutService.removeGiftCard(giftCardId, checkout);
     }
 
     @Override
-    public void removeProductReservationsFromCheckout(final Checkout checkout, final Callback<Checkout> callback) {
-        checkoutService.removeProductReservationsFromCheckout(checkout, callback);
+    public CancellableTask removeProductReservationsFromCheckout(final String checkoutToken, final Callback<Checkout> callback) {
+        return checkoutService.removeProductReservationsFromCheckout(checkoutToken, callback);
     }
 
     @Override
-    public Observable<Checkout> removeProductReservationsFromCheckout(final Checkout checkout) {
-        return checkoutService.removeProductReservationsFromCheckout(checkout);
+    public Observable<Checkout> removeProductReservationsFromCheckout(final String checkoutToken) {
+        return checkoutService.removeProductReservationsFromCheckout(checkoutToken);
     }
 
     // ----------- CustomerService API ---------------
@@ -298,8 +297,8 @@ final class BuyClientDefault implements BuyClient {
     }
 
     @Override
-    public void createCustomer(AccountCredentials accountCredentials, Callback<Customer> callback) {
-        customerService.createCustomer(accountCredentials, callback);
+    public CancellableTask createCustomer(AccountCredentials accountCredentials, Callback<Customer> callback) {
+        return customerService.createCustomer(accountCredentials, callback);
     }
 
     @Override
@@ -308,8 +307,8 @@ final class BuyClientDefault implements BuyClient {
     }
 
     @Override
-    public void activateCustomer(Long customerId, String activationToken, AccountCredentials accountCredentials, Callback<Customer> callback) {
-        customerService.activateCustomer(customerId, activationToken, accountCredentials, callback);
+    public CancellableTask activateCustomer(Long customerId, String activationToken, AccountCredentials accountCredentials, Callback<Customer> callback) {
+        return customerService.activateCustomer(customerId, activationToken, accountCredentials, callback);
     }
 
     @Override
@@ -318,8 +317,8 @@ final class BuyClientDefault implements BuyClient {
     }
 
     @Override
-    public void resetPassword(Long customerId, String resetToken, AccountCredentials accountCredentials, Callback<Customer> callback) {
-        customerService.resetPassword(customerId, resetToken, accountCredentials, callback);
+    public CancellableTask resetPassword(Long customerId, String resetToken, AccountCredentials accountCredentials, Callback<Customer> callback) {
+        return customerService.resetPassword(customerId, resetToken, accountCredentials, callback);
     }
 
     @Override
@@ -328,8 +327,8 @@ final class BuyClientDefault implements BuyClient {
     }
 
     @Override
-    public void loginCustomer(AccountCredentials accountCredentials, Callback<CustomerToken> callback) {
-        customerService.loginCustomer(accountCredentials, callback);
+    public CancellableTask loginCustomer(AccountCredentials accountCredentials, Callback<CustomerToken> callback) {
+        return customerService.loginCustomer(accountCredentials, callback);
     }
 
     @Override
@@ -338,8 +337,8 @@ final class BuyClientDefault implements BuyClient {
     }
 
     @Override
-    public void logoutCustomer(Callback<Void> callback) {
-        customerService.logoutCustomer(callback);
+    public CancellableTask logoutCustomer(Callback<Void> callback) {
+        return customerService.logoutCustomer(callback);
     }
 
     @Override
@@ -348,8 +347,8 @@ final class BuyClientDefault implements BuyClient {
     }
 
     @Override
-    public void updateCustomer(Customer customer, Callback<Customer> callback) {
-        customerService.updateCustomer(customer, callback);
+    public CancellableTask updateCustomer(Customer customer, Callback<Customer> callback) {
+        return customerService.updateCustomer(customer, callback);
     }
 
     @Override
@@ -358,8 +357,8 @@ final class BuyClientDefault implements BuyClient {
     }
 
     @Override
-    public void getCustomer(Long customerId, Callback<Customer> callback) {
-        customerService.getCustomer(customerId, callback);
+    public CancellableTask getCustomer(Long customerId, Callback<Customer> callback) {
+        return customerService.getCustomer(customerId, callback);
     }
 
     @Override
@@ -368,8 +367,8 @@ final class BuyClientDefault implements BuyClient {
     }
 
     @Override
-    public void renewCustomer(Callback<CustomerToken> callback) {
-        customerService.renewCustomer(callback);
+    public CancellableTask renewCustomer(Callback<CustomerToken> callback) {
+        return customerService.renewCustomer(callback);
     }
 
     @Override
@@ -378,8 +377,8 @@ final class BuyClientDefault implements BuyClient {
     }
 
     @Override
-    public void recoverPassword(String email, Callback<Void> callback) {
-        customerService.recoverPassword(email, callback);
+    public CancellableTask recoverPassword(String email, Callback<Void> callback) {
+        return customerService.recoverPassword(email, callback);
     }
 
     @Override
@@ -390,72 +389,87 @@ final class BuyClientDefault implements BuyClient {
     // ----------- OrderService API ---------------
 
     @Override
-    public void getOrders(Customer customer, Callback<List<Order>> callback) {
-        orderService.getOrders(customer, callback);
+    public CancellableTask getOrders(Long customerId, Callback<List<Order>> callback) {
+        return orderService.getOrders(customerId, callback);
     }
 
     @Override
-    public Observable<List<Order>> getOrders(Customer customer) {
-        return orderService.getOrders(customer);
+    public Observable<List<Order>> getOrders(Long customerId) {
+        return orderService.getOrders(customerId);
     }
 
     @Override
-    public void getOrder(Customer customer, String orderId, Callback<Order> callback) {
-        orderService.getOrder(customer, orderId, callback);
+    public CancellableTask getOrder(Long customerId, Long orderId, Callback<Order> callback) {
+        return orderService.getOrder(customerId, orderId, callback);
     }
 
     @Override
-    public Observable<Order> getOrder(Customer customer, String orderId) {
-        return orderService.getOrder(customer, orderId);
+    public Observable<Order> getOrder(Long customerId, Long orderId) {
+        return orderService.getOrder(customerId, orderId);
     }
 
     // ----------- AddressService API ---------------
 
     @Override
-    public void createAddress(final Customer customer, final Address address, final Callback<Address> callback) {
-        addressService.createAddress(customer, address, callback);
+    public CancellableTask createAddress(final Long customerId, final Address address, final Callback<Address> callback) {
+        return addressService.createAddress(customerId, address, callback);
     }
 
     @Override
-    public Observable<Address> createAddress(final Customer customer, final Address address) {
-        return addressService.createAddress(customer, address);
+    public Observable<Address> createAddress(final Long customerId, final Address address) {
+        return addressService.createAddress(customerId, address);
     }
 
     @Override
-    public void getAddresses(final Customer customer, final Callback<List<Address>> callback) {
-        addressService.getAddresses(customer, callback);
+    public CancellableTask getAddresses(final Long customerId, final Callback<List<Address>> callback) {
+        return addressService.getAddresses(customerId, callback);
     }
 
     @Override
-    public Observable<List<Address>> getAddresses(final Customer customer) {
-        return addressService.getAddresses(customer);
+    public Observable<List<Address>> getAddresses(final Long customerId) {
+        return addressService.getAddresses(customerId);
     }
 
     @Override
-    public void getAddress(final Customer customer, final String addressId, final Callback<Address> callback) {
-        addressService.getAddress(customer, addressId, callback);
+    public CancellableTask getAddress(final Long customerId, final Long addressId, final Callback<Address> callback) {
+        return addressService.getAddress(customerId, addressId, callback);
     }
 
     @Override
-    public Observable<Address> getAddress(final Customer customer, final String addressId) {
-        return addressService.getAddress(customer, addressId);
+    public Observable<Address> getAddress(final Long customerId, final Long addressId) {
+        return addressService.getAddress(customerId, addressId);
     }
 
     @Override
-    public void updateAddress(final Customer customer, final Address address, final Callback<Address> callback) {
-        addressService.updateAddress(customer, address, callback);
+    public CancellableTask updateAddress(final Long customerId, final Address address, final Callback<Address> callback) {
+        return addressService.updateAddress(customerId, address, callback);
     }
 
     @Override
-    public Observable<Address> updateAddress(final Customer customer, final Address address) {
-        return addressService.updateAddress(customer, address);
+    public CancellableTask deleteAddress(final Long customerId, final Long addressId, final Callback<Void> callback) {
+        return addressService.deleteAddress(customerId, addressId, callback);
+    }
+
+    @Override
+    public Observable<Void> deleteAddress(final Long customerId, final Long addressId) {
+        return addressService.deleteAddress(customerId, addressId);
+    }
+
+    public Observable<Address> updateAddress(final Long customerId, final Address address) {
+        return addressService.updateAddress(customerId, address);
     }
 
     // ----------- ProductService API ---------------
 
+
     @Override
-    public void getProductPage(int page, Callback<List<Product>> callback) {
-        productService.getProductPage(page, callback);
+    public int getProductPageSize() {
+        return productService.getProductPageSize();
+    }
+
+    @Override
+    public CancellableTask getProductPage(int page, Callback<List<Product>> callback) {
+        return productService.getProductPage(page, callback);
     }
 
     @Override
@@ -464,8 +478,8 @@ final class BuyClientDefault implements BuyClient {
     }
 
     @Override
-    public void getProductWithHandle(String handle, Callback<Product> callback) {
-        productService.getProductWithHandle(handle, callback);
+    public CancellableTask getProductWithHandle(String handle, Callback<Product> callback) {
+        return productService.getProductWithHandle(handle, callback);
     }
 
     @Override
@@ -474,62 +488,52 @@ final class BuyClientDefault implements BuyClient {
     }
 
     @Override
-    public void getProduct(String productId, Callback<Product> callback) {
-        productService.getProduct(productId, callback);
+    public CancellableTask getProduct(Long productId, Callback<Product> callback) {
+        return productService.getProduct(productId, callback);
     }
 
     @Override
-    public Observable<Product> getProduct(String productId) {
+    public Observable<Product> getProduct(Long productId) {
         return productService.getProduct(productId);
     }
 
     @Override
-    public void getProducts(List<String> productIds, Callback<List<Product>> callback) {
-        productService.getProducts(productIds, callback);
+    public CancellableTask getProducts(List<Long> productIds, Callback<List<Product>> callback) {
+        return productService.getProducts(productIds, callback);
     }
 
     @Override
-    public Observable<List<Product>> getProducts(List<String> productIds) {
+    public Observable<List<Product>> getProducts(List<Long> productIds) {
         return productService.getProducts(productIds);
     }
 
     @Override
-    public void getProducts(int page, String collectionId, Callback<List<Product>> callback) {
-        productService.getProducts(page, collectionId, callback);
+    public CancellableTask getProducts(int page, Long collectionId, Callback<List<Product>> callback) {
+        return productService.getProducts(page, collectionId, callback);
     }
 
     @Override
-    public Observable<List<Product>> getProducts(int page, String collectionId) {
+    public Observable<List<Product>> getProducts(int page, Long collectionId) {
         return productService.getProducts(page, collectionId);
     }
 
     @Override
-    public void getProducts(int page, String collectionId, SortOrder sortOrder, Callback<List<Product>> callback) {
-        productService.getProducts(page, collectionId, sortOrder, callback);
+    public CancellableTask getProducts(int page, Long collectionId, SortOrder sortOrder, Callback<List<Product>> callback) {
+        return productService.getProducts(page, collectionId, sortOrder, callback);
     }
 
     @Override
-    public Observable<List<Product>> getProducts(int page, String collectionId, SortOrder sortOrder) {
+    public Observable<List<Product>> getProducts(int page, Long collectionId, SortOrder sortOrder) {
         return productService.getProducts(page, collectionId, sortOrder);
     }
 
     @Override
-    public void getCollections(Callback<List<Collection>> callback) {
-        productService.getCollections(callback);
+    public CancellableTask getCollectionPage(int page, Callback<List<Collection>> callback) {
+        return productService.getCollectionPage(page, callback);
     }
 
     @Override
-    public Observable<List<Collection>> getCollections() {
-        return productService.getCollections();
-    }
-
-    @Override
-    public void getCollectionPage(int page, Callback<List<Collection>> callback) {
-        productService.getCollectionPage(page, callback);
-    }
-
-    @Override
-    public Observable<List<Collection>> getCollections(int page) {
-        return productService.getCollections(page);
+    public Observable<List<Collection>> getCollectionPage(int page) {
+        return productService.getCollectionPage(page);
     }
 }

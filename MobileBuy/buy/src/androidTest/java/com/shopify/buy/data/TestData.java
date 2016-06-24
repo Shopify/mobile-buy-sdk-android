@@ -40,24 +40,24 @@ public class TestData {
         return data.get("application_name").getAsString();
     }
 
-    public String getCollectionId() {
-        return data.get("collection_id").getAsString();
+    public Long getCollectionId() {
+        return data.get("collection_id").getAsLong();
     }
 
-    public String getProductId() {
-        return data.get("product_ids").getAsJsonArray().get(0).getAsString();
+    public Long getProductId() {
+        return data.get("product_ids").getAsJsonArray().get(0).getAsLong();
     }
 
-    public String getProductIdWithVariants() {
-        return data.get("product_ids").getAsJsonArray().get(1).getAsString();
+    public Long getProductIdWithVariants() {
+        return data.get("product_ids").getAsJsonArray().get(1).getAsLong();
     }
 
-    public String getProductIdWithTags() {
-        return data.get("product_ids").getAsJsonArray().get(1).getAsString();
+    public Long getProductIdWithTags() {
+        return data.get("product_ids").getAsJsonArray().get(1).getAsLong();
     }
 
-    public String getProductIdWithoutTags() {
-        return data.get("product_ids").getAsJsonArray().get(0).getAsString();
+    public Long getProductIdWithoutTags() {
+        return data.get("product_ids").getAsJsonArray().get(0).getAsLong();
     }
 
     public String getValidTag() {
@@ -68,15 +68,15 @@ public class TestData {
         return data.get("tags").getAsJsonArray().get(1).getAsString();
     }
 
-    public List<String> getProductIds() {
-        ArrayList<String> productIds = new ArrayList<>();
-        productIds.add(data.get("product_ids").getAsJsonArray().get(0).getAsString());
-        productIds.add(data.get("product_ids").getAsJsonArray().get(1).getAsString());
+    public List<Long> getProductIds() {
+        ArrayList<Long> productIds = new ArrayList<>();
+        productIds.add(data.get("product_ids").getAsJsonArray().get(0).getAsLong());
+        productIds.add(data.get("product_ids").getAsJsonArray().get(1).getAsLong());
         return productIds;
     }
 
-    public String getGiftCardId(GiftCardType type) {
-        return data.get("gift_cards").getAsJsonObject().get(type.name().toLowerCase()).getAsJsonObject().get("id").getAsString();
+    public Long getGiftCardId(GiftCardType type) {
+        return data.get("gift_cards").getAsJsonObject().get(type.name().toLowerCase()).getAsJsonObject().get("id").getAsLong();
     }
 
     public String getGiftCardCode(GiftCardType type) {

@@ -49,23 +49,11 @@ interface CustomerRetrofitService {
     @PUT("api/customers/{customerId}/reset.json")
     Observable<Response<CustomerWrapper>> resetPassword(@Path("customerId") Long customerId, @Query("token") String resetToken, @Body AccountCredentialsWrapper accountCredentialsWrapper);
 
-    @POST("api/customers/login.json")
-    Observable<Response<CustomerWrapper>> loginCustomer(@Body CustomerWrapper customerWrapper);
-
-    @POST("api/customers/logout.json")
-    Observable<Response<Void>> logoutCustomer(@Body String empty);
-
     @POST("api/customers/recover.json")
     Observable<Response<Void>> recoverCustomer(@Body EmailWrapper emailWrapper);
 
-    @PUT("api/customers/renew.json")
-    Observable<Response<CustomerWrapper>> renewCustomer(@Body String empty);
-
     @GET("api/customers.json")
     Observable<Response<CustomerWrapper>> getCustomer();
-
-    @PUT("api/customers.json")
-    Observable<Response<CustomerWrapper>> updateCustomer(@Body CustomerWrapper customer);
 
     @GET("api/customers/{customerId}.json")
     Observable<Response<CustomerWrapper>> getCustomer(@Path("customerId") Long customerId);

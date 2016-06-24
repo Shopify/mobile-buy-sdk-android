@@ -24,7 +24,6 @@
 package com.shopify.buy.dataprovider.cache;
 
 import com.shopify.buy.model.Checkout;
-import com.shopify.buy.model.Payment;
 import com.shopify.buy.model.ShippingRate;
 
 import java.util.List;
@@ -44,10 +43,5 @@ public interface CheckoutCacheHook {
      * Caches list of shipping rates for specified checkout token
      */
     void cacheShippingRates(String checkoutToken, List<ShippingRate> shippingRates);
-
-    /**
-     * Caches payment for specified checkout token
-     */
-    void cachePayment(String checkoutToken, Payment payment);
 
 }

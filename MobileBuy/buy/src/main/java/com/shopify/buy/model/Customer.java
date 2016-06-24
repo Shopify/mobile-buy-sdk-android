@@ -42,55 +42,60 @@ import java.util.Set;
 
 public class Customer extends ShopifyObject {
 
-    private String email;
+    protected String email;
 
     @SerializedName("accepts_marketing")
-    private Boolean acceptsMarketing;
+    protected Boolean acceptsMarketing;
 
     @SerializedName("created_at")
-    private Date createdAtDate;
+    protected Date createdAtDate;
 
     @SerializedName("updated_at")
-    private Date updatedAtDate;
+    protected Date updatedAtDate;
 
     @SerializedName("first_name")
-    private String firstName;
+    protected String firstName;
 
     @SerializedName("last_name")
-    private String lastName;
+    protected String lastName;
 
     @SerializedName("orders_count")
-    private Long ordersCount;
+    protected Long ordersCount;
 
-    private String state;
+    protected String state;
 
     @SerializedName("total_spent")
-    private String totalSpent;
+    protected String totalSpent;
 
-    private String note;
+    protected String note;
 
     @SerializedName("verified_email")
-    private Boolean verifiedEmail;
+    protected Boolean verifiedEmail;
 
     @SerializedName("multipass_identifier")
-    private String multipassIdentifier;
+    protected String multipassIdentifier;
 
     @SerializedName("tax_exempt")
-    private Boolean taxExempt;
+    protected Boolean taxExempt;
 
-    private String tags;
-    private Set<String> tagSet;
+    protected String tags;
+    protected Set<String> tagSet;
 
     @SerializedName("last_order_id")
-    private String lastOrderId;
+    protected Long lastOrderId;
 
     @SerializedName("last_order_name")
-    private String lastOrderName;
+    protected String lastOrderName;
 
-    private List<Address> addresses;
+    protected List<Address> addresses;
 
     @SerializedName("default_address")
-    private Address defaultAddress;
+    protected Address defaultAddress;
+
+    @Override
+    public Long getId() {
+        return super.getId();
+    }
 
     /**
      * @return The email for this customer.
@@ -193,7 +198,7 @@ public class Customer extends ShopifyObject {
     /**
      * @return The id of the customer's last order.
      */
-    public String getLastOrderId() {
+    public Long getLastOrderId() {
         return lastOrderId;
     }
 
@@ -268,6 +273,9 @@ public class Customer extends ShopifyObject {
 
     /**
      * A Customer object created using the values in the JSON string.
+     *
+     * @param json The input json.
+     * @return A {@link Customer}
      */
     public static Customer fromJson(String json) {
         Gson gson = BuyClientUtils.createDefaultGson(Customer.class);

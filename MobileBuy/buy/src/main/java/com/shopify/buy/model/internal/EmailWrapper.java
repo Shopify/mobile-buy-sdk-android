@@ -24,6 +24,9 @@
 
 package com.shopify.buy.model.internal;
 
+/**
+ * Wrapper class used by Gson Serialization
+ */
 public class EmailWrapper implements ResponseWrapper<String> {
 
     private String email;

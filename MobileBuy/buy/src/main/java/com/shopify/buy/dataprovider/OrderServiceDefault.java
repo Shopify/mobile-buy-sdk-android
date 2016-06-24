@@ -23,9 +23,6 @@
  */
 package com.shopify.buy.dataprovider;
 
-import android.text.TextUtils;
-
-import com.shopify.buy.model.Customer;
 import com.shopify.buy.model.Order;
 import com.shopify.buy.model.internal.OrderWrapper;
 import com.shopify.buy.model.internal.OrdersWrapper;
@@ -45,15 +42,15 @@ final class OrderServiceDefault implements OrderService {
 
     final NetworkRetryPolicyProvider networkRetryPolicyProvider;
 
-    final Scheduler callbackScheduler;
-
     final OrderCacheRxHookProvider cacheRxHookProvider;
 
+    final Scheduler callbackScheduler;
+
     OrderServiceDefault(
-            final Retrofit retrofit,
-            final NetworkRetryPolicyProvider networkRetryPolicyProvider,
-            final OrderCacheRxHookProvider cacheRxHookProvider,
-            final Scheduler callbackScheduler
+        final Retrofit retrofit,
+        final NetworkRetryPolicyProvider networkRetryPolicyProvider,
+        final OrderCacheRxHookProvider cacheRxHookProvider,
+        final Scheduler callbackScheduler
     ) {
         this.retrofitService = retrofit.create(OrderRetrofitService.class);
         this.networkRetryPolicyProvider = networkRetryPolicyProvider;
@@ -62,46 +59,48 @@ final class OrderServiceDefault implements OrderService {
     }
 
     @Override
-    public void getOrders(final Customer customer, final Callback<List<Order>> callback) {
-        getOrders(customer).subscribe(new InternalCallbackSubscriber<>(callback));
+    public CancellableTask getOrders(final Long customerId, final Callback<List<Order>> callback) {
+        return new CancellableTaskSubscriptionWrapper(getOrders(customerId).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
-    public Observable<List<Order>> getOrders(final Customer customer) {
-        if (customer == null) {
-            throw new NullPointerException("customer cannot be null");
+    public Observable<List<Order>> getOrders(final Long customerId) {
+        if (customerId == null) {
+            throw new NullPointerException("customerId cannot be null");
         }
 
         return retrofitService
-                .getOrders(customer.getId())
-                .retryWhen(networkRetryPolicyProvider.provide())
-                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .compose(new UnwrapRetrofitBodyTransformer<OrdersWrapper, List<Order>>())
-                .doOnNext(cacheRxHookProvider.getOrdersCacheHook(customer))
-                .observeOn(callbackScheduler);
+            .getOrders(customerId)
+            .retryWhen(networkRetryPolicyProvider.provide())
+            .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
+            .compose(new UnwrapRetrofitBodyTransformer<OrdersWrapper, List<Order>>())
+            .doOnNext(cacheRxHookProvider.getOrdersCacheHook(customerId))
+            .onErrorResumeNext(new BuyClientExceptionHandler<List<Order>>())
+            .observeOn(callbackScheduler);
     }
 
     @Override
-    public void getOrder(final Customer customer, final String orderId, final Callback<Order> callback) {
-        getOrder(customer, orderId).subscribe(new InternalCallbackSubscriber<>(callback));
+    public CancellableTask getOrder(final Long customerId, final Long orderId, final Callback<Order> callback) {
+        return new CancellableTaskSubscriptionWrapper(getOrder(customerId, orderId).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
-    public Observable<Order> getOrder(final Customer customer, final String orderId) {
-        if (TextUtils.isEmpty(orderId)) {
-            throw new IllegalArgumentException("orderId cannot be empty");
+    public Observable<Order> getOrder(final Long customerId, final Long orderId) {
+        if (orderId == null) {
+            throw new NullPointerException("orderId cannot be null");
         }
 
-        if (customer == null) {
-            throw new NullPointerException("customer cannot be null");
+        if (customerId == null) {
+            throw new NullPointerException("customerId cannot be null");
         }
 
         return retrofitService
-                .getOrder(customer.getId(), orderId)
-                .retryWhen(networkRetryPolicyProvider.provide())
-                .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-                .compose(new UnwrapRetrofitBodyTransformer<OrderWrapper, Order>())
-                .doOnNext(cacheRxHookProvider.getOrderCacheHook(customer))
-                .observeOn(callbackScheduler);
+            .getOrder(customerId, orderId)
+            .retryWhen(networkRetryPolicyProvider.provide())
+            .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
+            .compose(new UnwrapRetrofitBodyTransformer<OrderWrapper, Order>())
+            .doOnNext(cacheRxHookProvider.getOrderCacheHook(customerId))
+            .onErrorResumeNext(new BuyClientExceptionHandler<Order>())
+            .observeOn(callbackScheduler);
     }
 }
