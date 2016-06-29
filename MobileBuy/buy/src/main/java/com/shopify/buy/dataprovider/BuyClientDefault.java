@@ -355,13 +355,13 @@ final class BuyClientDefault implements BuyClient {
     }
 
     @Override
-    public CancellableTask renewCustomer(Callback<CustomerToken> callback) {
-        return customerService.renewCustomer(callback);
+    public CancellableTask renewCustomer(Long customerId, Callback<CustomerToken> callback) {
+        return customerService.renewCustomer(customerId, callback);
     }
 
     @Override
-    public Observable<CustomerToken> renewCustomer() {
-        return customerService.renewCustomer();
+    public Observable<CustomerToken> renewCustomer(Long customerId) {
+        return customerService.renewCustomer(customerId);
     }
 
     @Override

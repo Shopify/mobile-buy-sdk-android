@@ -170,16 +170,18 @@ public interface CustomerService {
      * Renew a Customer login.  This should be called periodically to keep the token up to date.
      *
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
+     * @param customerId the identifier of a {@link CustomerToken} or {@link Customer}, not null
      * @return cancelable task
      */
-    CancellableTask renewCustomer(Callback<CustomerToken> callback);
+    CancellableTask renewCustomer(Long customerId, Callback<CustomerToken> callback);
 
     /**
      * Renew a Customer login.  This should be called periodically to keep the token up to date.
      *
+     * @param customerId the identifier of a {@link CustomerToken} or {@link Customer}, not null
      * @return cold observable that emits renewed customer token
      */
-    Observable<CustomerToken> renewCustomer();
+    Observable<CustomerToken> renewCustomer(Long customerId);
 
     /**
      * Send a password recovery email. An email will be sent to the email address specified if a customer with that email address exists on Shopify.
