@@ -183,7 +183,7 @@ public class CustomerTest extends ShopifyAndroidTestCase {
 
         final CountDownLatch latch = new CountDownLatch(1);
 
-        buyClient.renewCustomer(new Callback<CustomerToken>() {
+        buyClient.renewCustomer(customer.getId(), new Callback<CustomerToken>() {
             @Override
             public void success(CustomerToken customerToken) {
                 latch.countDown();

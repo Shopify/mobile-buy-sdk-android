@@ -73,7 +73,7 @@ public class BuyClientFacadeTest extends ShopifyAndroidTestCase {
             }
         }));
         Assert.assertNotNull(buyClient.getCustomer(1L));
-        Assert.assertNotNull(buyClient.renewCustomer());
+        Assert.assertNotNull(buyClient.renewCustomer(1L));
         Assert.assertNotNull(buyClient.recoverPassword("test"));
         Assert.assertNotNull(buyClient.getOrders(1L));
         Assert.assertNotNull(buyClient.getOrder(1L, 1L));
