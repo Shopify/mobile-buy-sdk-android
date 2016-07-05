@@ -40,6 +40,11 @@ public interface ProductCacheHook {
     void cacheProducts(int page, int pageSize, List<Product> products);
 
     /**
+     * Caches product by handle
+     */
+    void cacheProductWithHandle(String handle, Product product);
+
+    /**
      * Caches product
      */
     void cacheProduct(Product product);

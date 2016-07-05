@@ -199,46 +199,6 @@ public class Address extends ShopifyObject {
         this.zip = zip;
     }
 
-    @Override
-    public boolean equals(Object o) {
-
-        if (this == o) return true;
-
-        if (!(o instanceof Address)) return false;
-
-        Address address = (Address) o;
-
-        if (!locationsAreEqual(address)) {
-            return false;
-        }
-
-        if (!TextUtils.equals(this.company, address.getCompany())) {
-            return false;
-        }
-
-        if (!TextUtils.equals(this.firstName, address.firstName)) {
-            return false;
-        }
-
-        if (!TextUtils.equals(this.lastName, address.lastName)) {
-            return false;
-        }
-
-        if (!TextUtils.equals(this.phone, address.phone)) {
-            return false;
-        }
-
-        if (!TextUtils.equals(this.country, address.country)) {
-            return false;
-        }
-
-        if (!TextUtils.equals(this.province, address.province)) {
-            return false;
-        }
-
-        return true;
-    }
-
     /**
      * Compares the location portion of the addresses
      *

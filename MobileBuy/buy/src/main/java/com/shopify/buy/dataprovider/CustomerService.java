@@ -61,7 +61,7 @@ public interface CustomerService {
     /**
      * Activate the customer account.
      *
-     * @param customerId         the id of the {@link Customer} to activate
+     * @param customerId         the id of the {@link Customer} to activate, not null
      * @param activationToken    the activation token for the Customer, not null or empty
      * @param accountCredentials the account credentials with a password of the {@link Customer} to be activated, not null
      * @param callback           the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
@@ -72,7 +72,7 @@ public interface CustomerService {
     /**
      * Activate the customer account.
      *
-     * @param customerId         the id of the {@link Customer} to activate
+     * @param customerId         the id of the {@link Customer} to activate, not null
      * @param activationToken    the activation token for the Customer, not null or empty
      * @param accountCredentials the account credentials with a password of the {@link Customer} to be activated, not null
      * @return cold observable that emits activated customer account
@@ -82,7 +82,7 @@ public interface CustomerService {
     /**
      * Reset the password for the customer account.
      *
-     * @param customerId         the id of the {@link Customer} to activate
+     * @param customerId         the id of the {@link Customer} to activate, not null
      * @param resetToken         the reset token for the Customer, not null or empty
      * @param accountCredentials the account credentials with the new password of the {@link Customer}. not null
      * @param callback           the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
@@ -93,7 +93,7 @@ public interface CustomerService {
     /**
      * Reset the password for the customer account.
      *
-     * @param customerId         the id of the {@link Customer} to activate
+     * @param customerId         the id of the {@link Customer} to activate, not null
      * @param resetToken         the reset token for the Customer, not null or empty
      * @param accountCredentials the account credentials with the new password of the {@link Customer}. not null
      * @return cold observable that emits customer account with reset password
@@ -107,7 +107,7 @@ public interface CustomerService {
      * @param callback           the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      * @return cancelable task
      */
-    CancellableTask loginCustomer(AccountCredentials accountCredentials, Callback<CustomerToken> callback);
+    CancellableTask loginCustomer(AccountCredentials accountCredentials, Callback<Customer> callback);
 
     /**
      * Log an existing Customer into Shopify
@@ -115,7 +115,7 @@ public interface CustomerService {
      * @param accountCredentials the account credentials with an email and password of the {@link Customer}, not null
      * @return cold observable that emits logged in customer token
      */
-    Observable<CustomerToken> loginCustomer(AccountCredentials accountCredentials);
+    Observable<Customer> loginCustomer(AccountCredentials accountCredentials);
 
     /**
      * Log a Customer out from Shopify
@@ -135,7 +135,7 @@ public interface CustomerService {
     /**
      * Update an existing Customer's attributes.
      *
-     * @param customer the {@link Customer} to update
+     * @param customer the {@link Customer} to update, not null
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      * @return cancelable task
      */
@@ -144,7 +144,7 @@ public interface CustomerService {
     /**
      * Update an existing Customer's attributes.
      *
-     * @param customer the {@link Customer} to update
+     * @param customer the {@link Customer} to update, not null
      * @return cold observable that emits updated existent customer attributes
      */
     Observable<Customer> updateCustomer(Customer customer);
@@ -152,7 +152,7 @@ public interface CustomerService {
     /**
      * Retrieve a Customer's details from Shopify.
      *
-     * @param customerId the identifier of a {@link CustomerToken} or {@link Customer}
+     * @param customerId the identifier of a {@link CustomerToken} or {@link Customer}, not null
      * @param callback   the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      * @return cancelable task
      */
@@ -161,7 +161,7 @@ public interface CustomerService {
     /**
      * Retrieve a Customer's details from Shopify.
      *
-     * @param customerId the identifier of a {@link CustomerToken} or {@link Customer}
+     * @param customerId the identifier of a {@link CustomerToken} or {@link Customer}, not null
      * @return cold observable tha emits requested customer details
      */
     Observable<Customer> getCustomer(Long customerId);
@@ -184,7 +184,7 @@ public interface CustomerService {
     /**
      * Send a password recovery email. An email will be sent to the email address specified if a customer with that email address exists on Shopify.
      *
-     * @param email    the email address to send the password recovery email to
+     * @param email    the email address to send the password recovery email to, not null or empty
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      * @return cancelable task
      */
@@ -193,7 +193,7 @@ public interface CustomerService {
     /**
      * Send a password recovery email. An email will be sent to the email address specified if a customer with that email address exists on Shopify.
      *
-     * @param email the email address to send the password recovery email to
+     * @param email the email address to send the password recovery email to, not null or empty
      * @return cold observable that sends a password recovery email and emits nothing
      */
     Observable<Void> recoverPassword(String email);

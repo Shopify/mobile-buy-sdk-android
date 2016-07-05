@@ -43,5 +43,9 @@ public interface AddressCacheHook {
      */
     void cacheAddresses(Long customerId, List<Address> addresses);
 
+    /**
+     * Deletes address from cache
+     */
     void deleteAddress(Long customerId, Long addressId);
+
 }

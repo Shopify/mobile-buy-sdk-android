@@ -160,6 +160,9 @@ final class CheckoutServiceDefault implements CheckoutService {
         if (checkoutToken == null) {
             throw new NullPointerException("checkoutToken cannot be null");
         }
+        if (TextUtils.isEmpty(checkoutToken)) {
+            throw new IllegalArgumentException("checkoutToken cannot be empty");
+        }
 
         int[] successCodes = {HTTP_OK};
 
@@ -221,7 +224,9 @@ final class CheckoutServiceDefault implements CheckoutService {
         if (paymentToken == null) {
             throw new NullPointerException("paymentToken cannot be null");
         }
-
+        if (checkoutToken == null) {
+            throw new NullPointerException("checkoutToken cannot be null");
+        }
         if (TextUtils.isEmpty(checkoutToken)) {
             throw new IllegalArgumentException("checkout token cannot be empty");
         }
@@ -263,6 +268,9 @@ final class CheckoutServiceDefault implements CheckoutService {
 
     @Override
     public Observable<Boolean> getCheckoutCompletionStatus(final String checkoutToken) {
+        if (checkoutToken == null) {
+            throw new NullPointerException("checkoutToken cannot be null");
+        }
         if (TextUtils.isEmpty(checkoutToken)) {
             throw new IllegalArgumentException("checkoutToken cannot be empty");
         }
@@ -291,6 +299,9 @@ final class CheckoutServiceDefault implements CheckoutService {
         if (checkoutToken == null) {
             throw new NullPointerException("checkoutToken cannot be null");
         }
+        if (TextUtils.isEmpty(checkoutToken)) {
+            throw new IllegalArgumentException("checkoutToken cannot be empty");
+        }
 
         return retrofitService
             .getCheckout(checkoutToken)
@@ -309,10 +320,15 @@ final class CheckoutServiceDefault implements CheckoutService {
 
     @Override
     public Observable<Checkout> applyGiftCard(final String giftCardCode, final Checkout checkout) {
+        if (giftCardCode == null) {
+            throw new NullPointerException("giftCardCode cannot be null");
+        }
+        if (TextUtils.isEmpty(giftCardCode)) {
+            throw new IllegalArgumentException("giftCardCode cannot be empty");
+        }
         if (checkout == null) {
             throw new NullPointerException("checkout cannot be null");
         }
-
         if (TextUtils.isEmpty(checkout.getToken())) {
             throw new IllegalArgumentException("checkout token cannot be empty");
         }
@@ -358,7 +374,6 @@ final class CheckoutServiceDefault implements CheckoutService {
         }
 
         final Checkout safeCheckout = checkout.copy();
-
         return retrofitService
             .removeGiftCard(giftCardId, safeCheckout.getToken())
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
@@ -385,6 +400,9 @@ final class CheckoutServiceDefault implements CheckoutService {
 
     @Override
     public Observable<Checkout> removeProductReservationsFromCheckout(final String checkoutToken) {
+        if (checkoutToken == null) {
+            throw new NullPointerException("checkoutToken cannot be null");
+        }
         if (TextUtils.isEmpty(checkoutToken)) {
             throw new IllegalArgumentException("checkoutToken cannot be empty");
         }

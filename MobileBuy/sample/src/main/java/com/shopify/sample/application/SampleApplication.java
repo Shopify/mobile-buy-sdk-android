@@ -154,13 +154,13 @@ public class SampleApplication extends Application {
     }
 
     public void getCollections(final Callback<List<Collection>> callback) {
-        buyClient.getCollectionPage(1, callback);
+        buyClient.getCollections(1, callback);
     }
 
 
     public void getAllProducts(final int page, final List<Product> allProducts, final Callback<List<Product>> callback) {
 
-        buyClient.getProductPage(page, new Callback<List<Product>>() {
+        buyClient.getProducts(page, new Callback<List<Product>>() {
             @Override
             public void success(List<Product> products) {
                 if (products.size() > 0) {

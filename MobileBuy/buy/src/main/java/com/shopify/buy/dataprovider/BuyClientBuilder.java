@@ -267,6 +267,8 @@ public final class BuyClientBuilder {
     }
 
     /**
+<<<<<<< HEAD
+=======
      * Sets the default http timeouts for new connections.
      * A value of 0 means no timeout, otherwise values must be between 1 and Long.MAX_VALUE.
      *
@@ -281,6 +283,7 @@ public final class BuyClientBuilder {
     }
 
     /**
+>>>>>>> badfe80a8c57d2ff613fd612179974209c42d47c
      * Builds default implementation of {@link BuyClient}
      *
      * @return A {@link BuyClient}.

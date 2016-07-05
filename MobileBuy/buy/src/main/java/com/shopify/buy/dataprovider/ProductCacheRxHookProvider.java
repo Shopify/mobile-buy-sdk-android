@@ -64,6 +64,24 @@ final class ProductCacheRxHookProvider {
     }
 
     @SuppressWarnings("unchecked")
+    Action1<Product> getProductWithHandleHook(final String handle) {
+        if (cacheHook == null) {
+            return EMPTY_CACHE_HOOK;
+        } else {
+            return new Action1<Product>() {
+                @Override
+                public void call(final Product product) {
+                    try {
+                        cacheHook.cacheProductWithHandle(handle, product);
+                    } catch (Exception e) {
+
+                    }
+                }
+            };
+        }
+    }
+
+    @SuppressWarnings("unchecked")
     Action1<Product> getProductHook() {
         if (cacheHook == null) {
             return EMPTY_CACHE_HOOK;

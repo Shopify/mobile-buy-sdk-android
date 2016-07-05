@@ -49,7 +49,7 @@ public interface ProductService {
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      * @return cancelable task
      */
-    CancellableTask getProductPage(int page, Callback<List<Product>> callback);
+    CancellableTask getProducts(int page, Callback<List<Product>> callback);
 
     /**
      * Fetch a page of products
@@ -57,29 +57,29 @@ public interface ProductService {
      * @param page the 1-based page index. The page size is set by {@link BuyClientBuilder#productPageSize} configuration.
      * @return cold observable that emits the requested list of products
      */
-    Observable<List<Product>> getProductPage(int page);
+    Observable<List<Product>> getProducts(int page);
 
     /**
      * Fetch the product with the specified handle
      *
-     * @param handle   the handle for the product to fetch
+     * @param handle   the handle for the product to fetch, not null or empty
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      * @return cancelable task
      */
-    CancellableTask getProductWithHandle(String handle, Callback<Product> callback);
+    CancellableTask getProductByHandle(String handle, Callback<Product> callback);
 
     /**
      * Fetch the product with the specified handle
      *
-     * @param handle the handle for the product to fetch
+     * @param handle the handle for the product to fetch, not null or empty
      * @return cold observable that emits requested product with the specified handle
      */
-    Observable<Product> getProductWithHandle(String handle);
+    Observable<Product> getProductByHandle(String handle);
 
     /**
      * Fetch a single Product
      *
-     * @param productId the productId for the product to fetch
+     * @param productId the productId for the product to fetch, not null
      * @param callback  the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      * @return cancelable task
      */
@@ -88,7 +88,7 @@ public interface ProductService {
     /**
      * Fetch a single Product
      *
-     * @param productId the productId for the product to fetch
+     * @param productId the productId for the product to fetch, not null
      * @return cold observable that emits requested single product
      */
     Observable<Product> getProduct(Long productId);
@@ -96,7 +96,7 @@ public interface ProductService {
     /**
      * Fetch a list of Products
      *
-     * @param productIds a List of the productIds to fetch
+     * @param productIds a List of the productIds to fetch, not null or empty
      * @param callback   the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      * @return cancelable task
      */
@@ -105,7 +105,7 @@ public interface ProductService {
     /**
      * Fetch a list of Products
      *
-     * @param productIds a List of the productIds to fetch
+     * @param productIds a List of the productIds to fetch, not null or empty
      * @return cold observable that emits requested list of products
      */
     Observable<List<Product>> getProducts(List<Long> productIds);
@@ -114,7 +114,7 @@ public interface ProductService {
      * Fetch the list of Products in a Collection using the sort order defined in the shop admin
      *
      * @param page         the 1-based page index. The page size is set by {@link BuyClientBuilder#productPageSize} configuration.
-     * @param collectionId the collectionId that we want to fetch products for
+     * @param collectionId the collectionId that we want to fetch products for, not null
      * @param callback     the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      * @return cancelable task
      */
@@ -124,7 +124,7 @@ public interface ProductService {
      * Fetch the list of Products in a Collection using the sort order defined in the shop admin
      *
      * @param page         the 1-based page index. The page size is set by {@link BuyClientBuilder#productPageSize} configuration.
-     * @param collectionId the collectionId that we want to fetch products for
+     * @param collectionId the collectionId that we want to fetch products for, not null
      * @return cold observable that emits requested list of products
      */
     Observable<List<Product>> getProducts(int page, Long collectionId);
@@ -133,8 +133,8 @@ public interface ProductService {
      * Fetch the list of Products in a Collection
      *
      * @param page         the 1-based page index. The page size is set by {@link BuyClientBuilder#productPageSize} configuration.
-     * @param collectionId the collectionId that we want to fetch products for
-     * @param sortOrder    the sort order for the collection.
+     * @param collectionId the collectionId that we want to fetch products for, not null
+     * @param sortOrder    the sort order for the collection, not null
      * @param callback     the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      * @return cancelable task
      */
@@ -144,8 +144,8 @@ public interface ProductService {
      * Fetch the list of Products in a Collection
      *
      * @param page         the 1-based page index. The page size is set by {@link BuyClientBuilder#productPageSize} configuration.
-     * @param collectionId the collectionId that we want to fetch products for
-     * @param sortOrder    the sort order for the collection.
+     * @param collectionId the collectionId that we want to fetch products for, not null
+     * @param sortOrder    the sort order for the collection, not null
      * @return cold observable that emits requested list of products
      */
     Observable<List<Product>> getProducts(int page, Long collectionId, Collection.SortOrder sortOrder);
@@ -157,7 +157,7 @@ public interface ProductService {
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      * @return cancelable task
      */
-    CancellableTask getCollectionPage(int page, Callback<List<Collection>> callback);
+    CancellableTask getCollections(int page, Callback<List<Collection>> callback);
 
     /**
      * Fetch a page of collections
@@ -165,5 +165,5 @@ public interface ProductService {
      * @param page the 1-based page index. The page size is set by {@link BuyClientBuilder#productPageSize} configuration.
      * @return cold observable that emits requested list of collections
      */
-    Observable<List<Collection>> getCollectionPage(int page);
+    Observable<List<Collection>> getCollections(int page);
 }

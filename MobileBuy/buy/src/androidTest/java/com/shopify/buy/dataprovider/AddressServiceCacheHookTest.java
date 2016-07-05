@@ -146,6 +146,7 @@ public class AddressServiceCacheHookTest extends ShopifyAndroidTestCase {
     @Test
     public void cacheWithHookException() {
         final AddressCacheHook addressCacheHook = Mockito.mock(AddressCacheHook.class);
+
         Mockito.doThrow(new RuntimeException()).when(addressCacheHook).cacheAddress(customer.getId(), address1);
         Mockito.doThrow(new RuntimeException()).when(addressCacheHook).cacheAddresses(customer.getId(), addressList);
 

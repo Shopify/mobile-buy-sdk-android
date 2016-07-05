@@ -29,7 +29,6 @@ import com.shopify.buy.model.Address;
 import java.util.List;
 
 import rx.functions.Action1;
-import rx.functions.Func2;
 
 final class AddressCacheRxHookProvider {
 
@@ -89,11 +88,9 @@ final class AddressCacheRxHookProvider {
             return new Action1<Void>() {
                 @Override
                 public void call(Void aVoid) {
-                    if (cacheHook != null) {
-                        try {
-                            cacheHook.deleteAddress(customerId, addressId);
-                        } catch (Exception e) {
-                        }
+                    try {
+                        cacheHook.deleteAddress(customerId, addressId);
+                    } catch (Exception e) {
                     }
                 }
             };

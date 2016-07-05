@@ -55,8 +55,8 @@ public interface OrderService {
     /**
      * Fetch an existing Order from Shopify
      *
-     * @param customerId the id of the {@link Customer} to fetch the order for
-     * @param orderId  the identifier of the {@link Order} to retrieve
+     * @param customerId the id of the {@link Customer} to fetch the order for, not null
+     * @param orderId  the identifier of the {@link Order} to retrieve, not null
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      * @return cancelable task
      */
@@ -65,8 +65,8 @@ public interface OrderService {
     /**
      * Fetch an existing Order from Shopify
      *
-     * @param customerId the id of the {@link Customer} to fetch the order for
-     * @param orderId  the identifier of the {@link Order} to retrieve
+     * @param customerId the id of the {@link Customer} to fetch the order for, not null
+     * @param orderId  the identifier of the {@link Order} to retrieve, not null
      * @return cold observable that emits requested existing order
      */
     Observable<Order> getOrder(Long customerId, Long orderId);
