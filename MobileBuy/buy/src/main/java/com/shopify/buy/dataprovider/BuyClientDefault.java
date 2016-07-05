@@ -327,12 +327,12 @@ final class BuyClientDefault implements BuyClient {
     }
 
     @Override
-    public CancellableTask loginCustomer(AccountCredentials accountCredentials, Callback<CustomerToken> callback) {
+    public CancellableTask loginCustomer(AccountCredentials accountCredentials, Callback<Customer> callback) {
         return customerService.loginCustomer(accountCredentials, callback);
     }
 
     @Override
-    public Observable<CustomerToken> loginCustomer(AccountCredentials accountCredentials) {
+    public Observable<Customer> loginCustomer(AccountCredentials accountCredentials) {
         return customerService.loginCustomer(accountCredentials);
     }
 
@@ -468,23 +468,23 @@ final class BuyClientDefault implements BuyClient {
     }
 
     @Override
-    public CancellableTask getProductPage(int page, Callback<List<Product>> callback) {
-        return productService.getProductPage(page, callback);
+    public CancellableTask getProducts(int page, Callback<List<Product>> callback) {
+        return productService.getProducts(page, callback);
     }
 
     @Override
-    public Observable<List<Product>> getProductPage(int page) {
-        return productService.getProductPage(page);
+    public Observable<List<Product>> getProducts(int page) {
+        return productService.getProducts(page);
     }
 
     @Override
-    public CancellableTask getProductWithHandle(String handle, Callback<Product> callback) {
-        return productService.getProductWithHandle(handle, callback);
+    public CancellableTask getProductByHandle(String handle, Callback<Product> callback) {
+        return productService.getProductByHandle(handle, callback);
     }
 
     @Override
-    public Observable<Product> getProductWithHandle(String handle) {
-        return productService.getProductWithHandle(handle);
+    public Observable<Product> getProductByHandle(String handle) {
+        return productService.getProductByHandle(handle);
     }
 
     @Override
@@ -528,12 +528,12 @@ final class BuyClientDefault implements BuyClient {
     }
 
     @Override
-    public CancellableTask getCollectionPage(int page, Callback<List<Collection>> callback) {
-        return productService.getCollectionPage(page, callback);
+    public CancellableTask getCollections(int page, Callback<List<Collection>> callback) {
+        return productService.getCollections(page, callback);
     }
 
     @Override
-    public Observable<List<Collection>> getCollectionPage(int page) {
-        return productService.getCollectionPage(page);
+    public Observable<List<Collection>> getCollections(int page) {
+        return productService.getCollections(page);
     }
 }

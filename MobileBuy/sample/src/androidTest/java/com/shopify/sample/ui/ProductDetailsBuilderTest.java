@@ -57,8 +57,6 @@ public class ProductDetailsBuilderTest extends AndroidTestCase {
                 .setAppId(getAppId())
                 .setApplicationName(getApplicationName())
                 .setProductId(getProductId())
-                .setWebReturnToLabel(WEB_RETURN_TO_LABEL)
-                .setWebReturnToUrl(WEB_RETURN_TO_URL)
                 .build();
 
         validateIntent(intent);
@@ -67,8 +65,6 @@ public class ProductDetailsBuilderTest extends AndroidTestCase {
     public void testBuildWithBuyClient() {
         Intent intent = new ProductDetailsBuilder(getContext(), buyClient)
                 .setProductId(getProductId())
-                .setWebReturnToLabel(WEB_RETURN_TO_LABEL)
-                .setWebReturnToUrl(WEB_RETURN_TO_URL)
                 .build();
 
         validateIntent(intent);
@@ -124,7 +120,7 @@ public class ProductDetailsBuilderTest extends AndroidTestCase {
 
         assertEquals(bundle.getString(ProductDetailsConfig.EXTRA_SHOP_DOMAIN), getShopDomain());
         assertEquals(bundle.getString(ProductDetailsConfig.EXTRA_SHOP_API_KEY), getApiKey());
-        assertEquals(bundle.getString(ProductDetailsConfig.EXTRA_SHOP_PRODUCT_ID), getProductId());
+        assertTrue(getProductId() == bundle.getLong(ProductDetailsConfig.EXTRA_SHOP_PRODUCT_ID, -1));
         assertEquals(bundle.getString(ProductDetailsConfig.EXTRA_SHOP_APPLICATION_NAME), getApplicationName());
     }
 
@@ -140,8 +136,8 @@ public class ProductDetailsBuilderTest extends AndroidTestCase {
         return "placeholderAppId";
     }
 
-    public String getProductId() {
-        return "2096063363";
+    public Long getProductId() {
+        return 2096063363L;
     }
 
     public String getApplicationName() {

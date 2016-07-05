@@ -47,7 +47,7 @@ class ProductDetailsConfig {
     private String apiKey;
     private String appId;
     private String applicationName;
-    private String productId;
+    private Long productId;
     private Product product;
     private ProductDetailsTheme theme;
     private Shop shop;
@@ -68,7 +68,7 @@ class ProductDetailsConfig {
         return applicationName;
     }
 
-    public String getProductId() {
+    public Long getProductId() {
         return productId;
     }
 
@@ -96,7 +96,7 @@ class ProductDetailsConfig {
         this.applicationName = applicationName;
     }
 
-    public void setProductId(String productId) {
+    public void setProductId(Long productId) {
         this.productId = productId;
     }
 
@@ -133,7 +133,7 @@ class ProductDetailsConfig {
         }
 
         if (productId != null) {
-            bundle.putString(EXTRA_SHOP_PRODUCT_ID, productId);
+            bundle.putLong(EXTRA_SHOP_PRODUCT_ID, productId);
         }
 
         if (product != null) {

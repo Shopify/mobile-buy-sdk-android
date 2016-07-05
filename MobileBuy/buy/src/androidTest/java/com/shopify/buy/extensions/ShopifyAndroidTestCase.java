@@ -15,6 +15,8 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.TestName;
 
+import java.util.concurrent.TimeUnit;
+
 import okhttp3.HttpUrl;
 import okhttp3.Protocol;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -81,6 +83,7 @@ public class ShopifyAndroidTestCase {
             .applicationName(applicationName)
             .callbackScheduler(Schedulers.immediate())
             .productPageSize(productPageSize)
+            .httpTimeout(TimeUnit.SECONDS.toMillis(60), TimeUnit.SECONDS.toMillis(60))
             .networkRequestRetryPolicy(1, 100, 1);
 
         if (USE_MOCK_RESPONSES) {

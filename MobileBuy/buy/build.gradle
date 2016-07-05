@@ -23,6 +23,10 @@ jacocoAndroidUnitTestReport {
     xml.enabled true
 }
 
+buildscript {
+    System.properties['com.android.build.gradle.overrideVersionCheck'] = 'true'
+}
+
 // Params for bintrayUpload
 ext {
     bintrayOrg = 'shopify'
@@ -73,12 +77,15 @@ android {
             def appId
             def useMockResponses
             def androidPayPublicKey
+            def runTestCoverage
 
             // get the shop setting from the environment if there any
             shopDomain = System.getenv("SHOP_DOMAIN")
             apiKey = System.getenv("API_KEY")
             appId = System.getenv("APP_ID")
             androidPayPublicKey = System.getenv("ANDROID_PAY_PUBLIC_KEY")
+
+            runTestCoverage = System.getProperty("RunTestCoverage")
 
             // pull the store properties from the local file if it exists.  Environment variables take precedence
             def shopProperties = new Properties();
@@ -104,14 +111,16 @@ android {
             if (!androidPayPublicKey) {
                 androidPayPublicKey = ""
             }
+            if (!runTestCoverage) {
+                runTestCoverage = "false"
+            }
 
             buildConfigField "String", "SHOP_DOMAIN", "\"" + shopDomain.toString() + "\""
             buildConfigField "String", "API_KEY", "\"" + apiKey.toString() + "\""
             buildConfigField "String", "APP_ID", "\"" + appId.toString() + "\""
             buildConfigField "String", "ANDROID_PAY_PUBLIC_KEY", "\"" + androidPayPublicKey.toString() + "\""
 
-            // do not enable test coverage for production builds as it modifies the classes to add agents and it crashes
-            testCoverageEnabled true
+            testCoverageEnabled runTestCoverage.toBoolean()
         }
 
         release {
@@ -175,15 +184,6 @@ android {
                     include "buy-" + version + ".aar"
                 }
 
-                from("..") {
-                    include "sample/src/main/**"
-                    include "sample/.gitignore"
-                    include "sample/build.gradle.packaging"
-                    include "sample/proguard-rules.pro"
-
-                    rename "build.gradle.packaging", "build.gradle"
-                }
-
                 from("../..") {
                     include "LICENSE"
                     include "NOTICE"
@@ -212,7 +212,6 @@ dependencies {
     compile 'com.squareup.retrofit2:retrofit:2.0.1'
     compile 'com.squareup.okhttp3:okhttp-urlconnection:3.2.0'
     compile 'com.squareup.okhttp3:logging-interceptor:3.2.0'
-    compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.squareup.retrofit2:converter-gson:2.0.0'
 
     compile 'com.android.support:design:23.4.0'
@@ -221,7 +220,7 @@ dependencies {
     compile 'com.android.support:palette-v7:23.4.0'
     compile 'com.android.support:customtabs:23.4.0'
 
-    compile 'com.google.android.gms:play-services-wallet:9.0.1'
+    compile 'com.google.android.gms:play-services-wallet:8.4.0'
 
     androidTestCompile 'org.mockito:mockito-core:1.9.5'
     androidTestCompile 'com.google.dexmaker:dexmaker:1.2'

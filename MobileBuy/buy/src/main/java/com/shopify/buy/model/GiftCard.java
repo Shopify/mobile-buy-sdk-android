@@ -94,27 +94,4 @@ public class GiftCard extends ShopifyObject {
         return checkout;
     }
 
-    @Override
-    public boolean equals(Object object) {
-        if (super.equals(object)) {
-            return true;
-        }
-
-        if (object == null) {
-            return false;
-        }
-
-        if (getClass() != object.getClass()) {
-            return false;
-        }
-
-        GiftCard giftCard = (GiftCard) object;
-
-        if (id.equals(giftCard.getId())) {
-            return true;
-        }
-
-        return false;
-    }
-
 }
