@@ -90,7 +90,7 @@ final class ProductServiceDefault implements ProductService {
             .retryWhen(networkRetryPolicyProvider.provide())
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<ProductListings, List<Product>>())
-            .doOnNext(cacheRxHookProvider.getProductPageHook(page, pageSize))
+            .doOnNext(cacheRxHookProvider.getProductPageCacheHook(page, pageSize))
             .onErrorResumeNext(new BuyClientExceptionHandler<List<Product>>())
             .observeOn(callbackScheduler);
     }
@@ -116,7 +116,7 @@ final class ProductServiceDefault implements ProductService {
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<ProductListings, List<Product>>())
             .compose(new FirstListItemOrDefaultTransformer<Product>())
-            .doOnNext(cacheRxHookProvider.getProductHook())
+            .doOnNext(cacheRxHookProvider.getProductCacheHook())
             .onErrorResumeNext(new BuyClientExceptionHandler<Product>())
             .observeOn(callbackScheduler);
     }
@@ -138,7 +138,7 @@ final class ProductServiceDefault implements ProductService {
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<ProductListings, List<Product>>())
             .compose(new FirstListItemOrDefaultTransformer<Product>())
-            .doOnNext(cacheRxHookProvider.getProductHook())
+            .doOnNext(cacheRxHookProvider.getProductCacheHook())
             .onErrorResumeNext(new BuyClientExceptionHandler<Product>())
             .observeOn(callbackScheduler);
     }
@@ -168,7 +168,7 @@ final class ProductServiceDefault implements ProductService {
             .retryWhen(networkRetryPolicyProvider.provide())
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<ProductListings, List<Product>>())
-            .doOnNext(cacheRxHookProvider.getProductsHook())
+            .doOnNext(cacheRxHookProvider.getProductsCacheHook())
             .onErrorResumeNext(new BuyClientExceptionHandler<List<Product>>())
             .observeOn(callbackScheduler);
     }
@@ -205,7 +205,7 @@ final class ProductServiceDefault implements ProductService {
             .retryWhen(networkRetryPolicyProvider.provide())
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<ProductListings, List<Product>>())
-            .doOnNext(cacheRxHookProvider.getCollectionProductPageHook(collectionId, page, pageSize))
+            .doOnNext(cacheRxHookProvider.getCollectionProductPageCacheHook(collectionId, page, pageSize))
             .observeOn(callbackScheduler);
     }
 
@@ -227,7 +227,7 @@ final class ProductServiceDefault implements ProductService {
             .retryWhen(networkRetryPolicyProvider.provide())
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<CollectionListings, List<Collection>>())
-            .doOnNext(cacheRxHookProvider.getCollectionPageHook(page, pageSize))
+            .doOnNext(cacheRxHookProvider.getCollectionPageCacheHook(page, pageSize))
             .onErrorResumeNext(new BuyClientExceptionHandler<List<Collection>>())
             .observeOn(callbackScheduler);
     }

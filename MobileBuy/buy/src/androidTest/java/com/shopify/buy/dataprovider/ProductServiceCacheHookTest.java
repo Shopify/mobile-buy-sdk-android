@@ -110,7 +110,7 @@ public class ProductServiceCacheHookTest extends ShopifyAndroidTestCase {
     public void cacheWithoutHook() {
         Observable
             .just(productList)
-            .doOnNext(new ProductCacheRxHookProvider(null).getProductPageHook(1, 1))
+            .doOnNext(new ProductCacheRxHookProvider(null).getProductPageCacheHook(1, 1))
             .subscribe(new Action1<List<Product>>() {
                 @Override
                 public void call(List<Product> response) {
@@ -126,7 +126,7 @@ public class ProductServiceCacheHookTest extends ShopifyAndroidTestCase {
 
         Observable
             .just(product1)
-            .doOnNext(new ProductCacheRxHookProvider(null).getProductHook())
+            .doOnNext(new ProductCacheRxHookProvider(null).getProductCacheHook())
             .subscribe(new Action1<Product>() {
                 @Override
                 public void call(Product response) {
@@ -141,7 +141,7 @@ public class ProductServiceCacheHookTest extends ShopifyAndroidTestCase {
 
         Observable
             .just(productList)
-            .doOnNext(new ProductCacheRxHookProvider(null).getCollectionProductPageHook(1L, 1, 1))
+            .doOnNext(new ProductCacheRxHookProvider(null).getCollectionProductPageCacheHook(1L, 1, 1))
             .subscribe(new Action1<List<Product>>() {
                 @Override
                 public void call(List<Product> response) {
@@ -157,7 +157,7 @@ public class ProductServiceCacheHookTest extends ShopifyAndroidTestCase {
 
         Observable
             .just(collectionList)
-            .doOnNext(new ProductCacheRxHookProvider(null).getCollectionPageHook(1, 1))
+            .doOnNext(new ProductCacheRxHookProvider(null).getCollectionPageCacheHook(1, 1))
             .subscribe(new Action1<List<Collection>>() {
                 @Override
                 public void call(List<Collection> response) {
@@ -185,7 +185,7 @@ public class ProductServiceCacheHookTest extends ShopifyAndroidTestCase {
 
         Observable
             .just(productList)
-            .doOnNext(new ProductCacheRxHookProvider(cacheHook).getProductPageHook(1, 1))
+            .doOnNext(new ProductCacheRxHookProvider(cacheHook).getProductPageCacheHook(1, 1))
             .subscribe(new Action1<List<Product>>() {
                 @Override
                 public void call(List<Product> response) {
@@ -201,7 +201,7 @@ public class ProductServiceCacheHookTest extends ShopifyAndroidTestCase {
 
         Observable
             .just(product1)
-            .doOnNext(new ProductCacheRxHookProvider(cacheHook).getProductHook())
+            .doOnNext(new ProductCacheRxHookProvider(cacheHook).getProductCacheHook())
             .subscribe(new Action1<Product>() {
                 @Override
                 public void call(Product response) {
@@ -216,7 +216,7 @@ public class ProductServiceCacheHookTest extends ShopifyAndroidTestCase {
 
         Observable
             .just(productList)
-            .doOnNext(new ProductCacheRxHookProvider(cacheHook).getCollectionProductPageHook(1L, 1, 1))
+            .doOnNext(new ProductCacheRxHookProvider(cacheHook).getCollectionProductPageCacheHook(1L, 1, 1))
             .subscribe(new Action1<List<Product>>() {
                 @Override
                 public void call(List<Product> response) {
@@ -232,7 +232,7 @@ public class ProductServiceCacheHookTest extends ShopifyAndroidTestCase {
 
         Observable
             .just(collectionList)
-            .doOnNext(new ProductCacheRxHookProvider(cacheHook).getCollectionPageHook(1, 1))
+            .doOnNext(new ProductCacheRxHookProvider(cacheHook).getCollectionPageCacheHook(1, 1))
             .subscribe(new Action1<List<Collection>>() {
                 @Override
                 public void call(List<Collection> response) {

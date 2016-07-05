@@ -70,7 +70,7 @@ final class StoreServiceDefault implements StoreService {
                     return response.body();
                 }
             })
-            .doOnNext(cacheRxHookProvider.getStoreHook())
+            .doOnNext(cacheRxHookProvider.getStoreCacheHook())
             .onErrorResumeNext(new BuyClientExceptionHandler<Shop>())
             .observeOn(callbackScheduler);
     }

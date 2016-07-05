@@ -43,7 +43,7 @@ final class StoreCacheRxHookProvider {
     }
 
     @SuppressWarnings("unchecked")
-    Action1<Shop> getStoreHook() {
+    Action1<Shop> getStoreCacheHook() {
         if (cacheHook == null) {
             return EMPTY_CACHE_HOOK;
         } else {

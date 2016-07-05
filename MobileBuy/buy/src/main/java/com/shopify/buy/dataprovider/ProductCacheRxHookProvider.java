@@ -46,7 +46,7 @@ final class ProductCacheRxHookProvider {
     }
 
     @SuppressWarnings("unchecked")
-    Action1<List<Product>> getProductPageHook(final int page, final int pageSize) {
+    Action1<List<Product>> getProductPageCacheHook(final int page, final int pageSize) {
         if (cacheHook == null) {
             return EMPTY_CACHE_HOOK;
         } else {
@@ -64,7 +64,7 @@ final class ProductCacheRxHookProvider {
     }
 
     @SuppressWarnings("unchecked")
-    Action1<Product> getProductHook() {
+    Action1<Product> getProductCacheHook() {
         if (cacheHook == null) {
             return EMPTY_CACHE_HOOK;
         } else {
@@ -82,7 +82,7 @@ final class ProductCacheRxHookProvider {
     }
 
     @SuppressWarnings("unchecked")
-    Action1<List<Product>> getProductsHook() {
+    Action1<List<Product>> getProductsCacheHook() {
         if (cacheHook == null) {
             return EMPTY_CACHE_HOOK;
         } else {
@@ -100,7 +100,7 @@ final class ProductCacheRxHookProvider {
     }
 
     @SuppressWarnings("unchecked")
-    Action1<List<Product>> getCollectionProductPageHook(final Long collectionId, final int page, final int pageSize) {
+    Action1<List<Product>> getCollectionProductPageCacheHook(final Long collectionId, final int page, final int pageSize) {
         if (cacheHook == null) {
             return EMPTY_CACHE_HOOK;
         } else {
@@ -118,7 +118,7 @@ final class ProductCacheRxHookProvider {
     }
 
     @SuppressWarnings("unchecked")
-    Action1<List<Collection>> getCollectionPageHook(final int page, final int pageSize) {
+    Action1<List<Collection>> getCollectionPageCacheHook(final int page, final int pageSize) {
         if (cacheHook == null) {
             return EMPTY_CACHE_HOOK;
         } else {

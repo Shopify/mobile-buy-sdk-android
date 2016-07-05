@@ -39,7 +39,6 @@ import java.lang.reflect.Field;
 
 import retrofit2.Response;
 import rx.Observable;
-import rx.Subscriber;
 import rx.functions.Action1;
 
 @RunWith(AndroidJUnit4.class)
@@ -79,7 +78,7 @@ public class StoreServiceCacheHookTest extends ShopifyAndroidTestCase {
     public void cacheWithoutHook() {
         Observable
             .just(shop)
-            .doOnNext(new StoreCacheRxHookProvider(null).getStoreHook())
+            .doOnNext(new StoreCacheRxHookProvider(null).getStoreCacheHook())
             .subscribe(new Action1<Shop>() {
                 @Override
                 public void call(Shop shop) {
@@ -100,7 +99,7 @@ public class StoreServiceCacheHookTest extends ShopifyAndroidTestCase {
 
         Observable
             .just(shop)
-            .doOnNext(new StoreCacheRxHookProvider(storeCacheHook).getStoreHook())
+            .doOnNext(new StoreCacheRxHookProvider(storeCacheHook).getStoreCacheHook())
             .subscribe(new Action1<Shop>() {
                 @Override
                 public void call(Shop shop) {
