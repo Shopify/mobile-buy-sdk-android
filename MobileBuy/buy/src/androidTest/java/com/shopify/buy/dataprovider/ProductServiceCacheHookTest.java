@@ -176,7 +176,6 @@ public class ProductServiceCacheHookTest extends ShopifyAndroidTestCase {
     public void cacheWithHookException() {
         final ProductCacheHook cacheHook = Mockito.mock(ProductCacheHook.class);
         Mockito.doThrow(new RuntimeException()).when(cacheHook).cacheProducts(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyList());
-        Mockito.doThrow(new RuntimeException()).when(cacheHook).cacheProductWithHandle(Mockito.anyString(), Mockito.any(Product.class));
         Mockito.doThrow(new RuntimeException()).when(cacheHook).cacheProduct(Mockito.any(Product.class));
         Mockito.doThrow(new RuntimeException()).when(cacheHook).cacheProducts(Mockito.anyList());
         Mockito.doThrow(new RuntimeException()).when(cacheHook).cacheProduct(Mockito.any(Product.class));
@@ -192,21 +191,6 @@ public class ProductServiceCacheHookTest extends ShopifyAndroidTestCase {
                 public void call(List<Product> response) {
                     Assert.assertEquals(productList.get(0), response.get(0));
                     Assert.assertEquals(productList.get(1), response.get(1));
-                }
-            }, new Action1<Throwable>() {
-                @Override
-                public void call(Throwable throwable) {
-                    Assert.fail();
-                }
-            });
-
-        Observable
-            .just(product1)
-            .doOnNext(new ProductCacheRxHookProvider(cacheHook).getProductWithHandleHook(""))
-            .subscribe(new Action1<Product>() {
-                @Override
-                public void call(Product response) {
-                    Assert.assertEquals(product1, response);
                 }
             }, new Action1<Throwable>() {
                 @Override
