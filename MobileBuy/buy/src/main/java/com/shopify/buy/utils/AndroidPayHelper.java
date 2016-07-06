@@ -45,12 +45,11 @@ import com.google.android.gms.wallet.MaskedWalletRequest;
 import com.google.android.gms.wallet.PaymentMethodTokenizationParameters;
 import com.google.android.gms.wallet.PaymentMethodTokenizationType;
 import com.google.android.gms.wallet.Wallet;
-import com.shopify.buy.dataprovider.BuyClient;
-import com.shopify.buy.dataprovider.Callback;
 import com.shopify.buy.model.Address;
 import com.shopify.buy.model.Checkout;
 import com.shopify.buy.model.PaymentToken;
 import com.shopify.buy.model.Shop;
+import com.shopify.buy.model.TaxLine;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
@@ -115,6 +114,25 @@ public final class AndroidPayHelper {
             LineItem lineItem = createWalletLineItem(shopifyLineItem, checkout.getCurrency());
             builder.addLineItem(lineItem);
         }
+
+        if (checkout.getTaxLines().size() != 0) {
+            for (TaxLine taxLine : checkout.getTaxLines()) {
+                LineItem lineItem = LineItem.newBuilder()
+                    .setRole(LineItem.Role.TAX)
+                    .setTotalPrice(taxLine.getPrice())
+                    .build();
+                builder.addLineItem(lineItem);
+            }
+        }
+
+        if (checkout.getShippingRate() != null) {
+            LineItem lineItem = LineItem.newBuilder()
+                .setRole(LineItem.Role.SHIPPING)
+                .setTotalPrice(checkout.getShippingRate().getPrice())
+                .build();
+            builder.addLineItem(lineItem);
+        }
+
         builder.setTotalPrice(checkout.getPaymentDue());
         return builder.build();
     }
@@ -126,6 +144,7 @@ public final class AndroidPayHelper {
                 .setTotalPrice(lineTotal.toString())
                 .setDescription(shopifyLineItem.getTitle())
                 .setCurrencyCode(currencyCode)
+                .setRole(LineItem.Role.REGULAR)
                 .build();
     }
 
