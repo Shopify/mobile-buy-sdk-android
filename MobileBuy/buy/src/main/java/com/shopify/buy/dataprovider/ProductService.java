@@ -27,6 +27,7 @@ import com.shopify.buy.model.Collection;
 import com.shopify.buy.model.Product;
 
 import java.util.List;
+import java.util.Set;
 
 import rx.Observable;
 
@@ -166,4 +167,40 @@ public interface ProductService {
      * @return cold observable that emits requested list of collections
      */
     Observable<List<Collection>> getCollections(int page);
+
+    /**
+     * Fetch a page of product tags
+     *
+     * @param page     the 1-based page index. The page size is set by {@link BuyClientBuilder#productPageSize} configuration.
+     * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
+     * @return cancelable task
+     */
+    CancellableTask getProductTags(int page, Callback<List<String>> callback);
+
+    /**
+     * Fetch a page of product tags
+     *
+     * @param page the 1-based page index. The page size is set by {@link BuyClientBuilder#productPageSize} configuration.
+     * @return cold observable that emits requested set of tags
+     */
+    Observable<List<String>> getProductTags(int page);
+
+    /**
+     * Fetch the products filtered by all specified tags
+     *
+     * @param page the 1-based page index. The page size is set by {@link BuyClientBuilder#productPageSize} configuration.
+     * @param tags set of tags to be used for filtering products
+     * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
+     * @return cancelable task
+     */
+    CancellableTask getProductsByTags(int page, Set<String> tags, Callback<List<Product>> callback);
+
+    /**
+     * Fetch the products that have all specified tags
+     *
+     * @param page the 1-based page index. The page size is set by {@link BuyClientBuilder#productPageSize} configuration.
+     * @param tags tags set of tags to be used for filtering products
+     * @return cold observable that emits requested list of product
+     */
+    Observable<List<Product>> getProductsByTags(int page, Set<String> tags);
 }

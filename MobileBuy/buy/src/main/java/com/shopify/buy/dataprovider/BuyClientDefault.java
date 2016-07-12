@@ -42,6 +42,7 @@ import com.shopify.buy.model.Shop;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Interceptor;
@@ -74,19 +75,19 @@ final class BuyClientDefault implements BuyClient {
     final ProductService productService;
 
     BuyClientDefault(
-            final String apiKey,
-            final String appId,
-            final String applicationName,
-            final String shopDomain,
-            final CustomerToken customerToken,
-            final Scheduler callbackScheduler,
-            final int productPageSize,
-            final int networkRequestRetryMaxCount,
-            final long networkRequestRetryDelayMs,
-            final float networkRequestRetryBackoffMultiplier,
-            final long httpConnectionTimeoutMs,
-            final long httpReadWriteTimeoutMs,
-            final Interceptor... interceptors
+        final String apiKey,
+        final String appId,
+        final String applicationName,
+        final String shopDomain,
+        final CustomerToken customerToken,
+        final Scheduler callbackScheduler,
+        final int productPageSize,
+        final int networkRequestRetryMaxCount,
+        final long networkRequestRetryDelayMs,
+        final float networkRequestRetryBackoffMultiplier,
+        final long httpConnectionTimeoutMs,
+        final long httpReadWriteTimeoutMs,
+        final Interceptor... interceptors
     ) {
         this.apiKey = apiKey;
         this.appId = appId;
@@ -113,10 +114,10 @@ final class BuyClientDefault implements BuyClient {
         };
 
         final OkHttpClient.Builder builder = new OkHttpClient.Builder()
-                .connectTimeout(httpConnectionTimeoutMs, TimeUnit.MILLISECONDS)
-                .readTimeout(httpReadWriteTimeoutMs, TimeUnit.MILLISECONDS)
-                .writeTimeout(httpReadWriteTimeoutMs, TimeUnit.MILLISECONDS)
-                .addInterceptor(requestInterceptor);
+            .connectTimeout(httpConnectionTimeoutMs, TimeUnit.MILLISECONDS)
+            .readTimeout(httpReadWriteTimeoutMs, TimeUnit.MILLISECONDS)
+            .writeTimeout(httpReadWriteTimeoutMs, TimeUnit.MILLISECONDS)
+            .addInterceptor(requestInterceptor);
 
         if (interceptors != null) {
             for (Interceptor interceptor : interceptors) {
@@ -127,11 +128,11 @@ final class BuyClientDefault implements BuyClient {
         final OkHttpClient httpClient = builder.build();
 
         final Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://" + shopDomain + "/")
-                .addConverterFactory(GsonConverterFactory.create(BuyClientUtils.createDefaultGson()))
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.createWithScheduler(Schedulers.io()))
-                .client(httpClient)
-                .build();
+            .baseUrl("https://" + shopDomain + "/")
+            .addConverterFactory(GsonConverterFactory.create(BuyClientUtils.createDefaultGson()))
+            .addCallAdapterFactory(RxJavaCallAdapterFactory.createWithScheduler(Schedulers.io()))
+            .client(httpClient)
+            .build();
 
         final NetworkRetryPolicyProvider networkRetryPolicyProvider = new NetworkRetryPolicyProvider(networkRequestRetryMaxCount, networkRequestRetryDelayMs, networkRequestRetryBackoffMultiplier);
 
@@ -523,5 +524,25 @@ final class BuyClientDefault implements BuyClient {
     @Override
     public Observable<List<Collection>> getCollections(int page) {
         return productService.getCollections(page);
+    }
+
+    @Override
+    public CancellableTask getProductTags(int page, Callback<List<String>> callback) {
+        return productService.getProductTags(page, callback);
+    }
+
+    @Override
+    public Observable<List<String>> getProductTags(int page) {
+        return productService.getProductTags(page);
+    }
+
+    @Override
+    public CancellableTask getProductsByTags(int page, Set<String> tags, Callback<List<Product>> callback) {
+        return productService.getProductsByTags(page, tags, callback);
+    }
+
+    @Override
+    public Observable<List<Product>> getProductsByTags(int page, Set<String> tags) {
+        return productService.getProductsByTags(page, tags);
     }
 }
