@@ -24,8 +24,10 @@ import org.apache.http.HttpStatus;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -558,8 +560,6 @@ public class BuyTest extends ShopifyAndroidTestCase {
         countDownLatch.await();
     }
 
-
-
     @Test
     public void testExpiringCheckout() throws InterruptedException {
         createValidCheckout();
@@ -590,6 +590,46 @@ public class BuyTest extends ShopifyAndroidTestCase {
             }
         });
 
+        latch.await();
+    }
+
+    @Test
+    public void testGetProductTags() throws Exception {
+        final CountDownLatch latch = new CountDownLatch(1);
+        buyClient.getProductTags(1, new Callback<List<String>>() {
+            @Override
+            public void success(List<String> response) {
+                assertNotNull(response);
+                // well we can't really test response for some values, as we can't control from client list of tags
+            }
+
+            @Override
+            public void failure(BuyClientError error) {
+                fail(error.getRetrofitErrorBody());
+            }
+        });
+        latch.await();
+    }
+
+    @Test
+    public void testGetProductByTags() throws Exception {
+        final Set<String> tags = new HashSet<>();
+        tags.add("MISSION");
+        tags.add("IMPOSSIBLE");
+
+        final CountDownLatch latch = new CountDownLatch(1);
+        buyClient.getProductsByTags(1, tags, new Callback<List<Product>>() {
+            @Override
+            public void success(List<Product> response) {
+                assertNotNull(response);
+                assertTrue(response.isEmpty());
+            }
+
+            @Override
+            public void failure(BuyClientError error) {
+                fail(error.getRetrofitErrorBody());
+            }
+        });
         latch.await();
     }
 
