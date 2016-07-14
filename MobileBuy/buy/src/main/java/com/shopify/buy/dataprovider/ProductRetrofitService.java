@@ -38,16 +38,10 @@ import rx.Observable;
 interface ProductRetrofitService {
 
     @GET("api/apps/{appId}/product_listings.json")
-    Observable<Response<ProductListings>> getProductPage(@Path("appId") String appId, @Query("page") int page, @Query("limit") int pageSize);
-
-    @GET("api/apps/{appId}/product_listings.json")
     Observable<Response<ProductListings>> getProducts(@Path("appId") String appId, @Query("product_ids") String productId);
 
     @GET("api/apps/{appId}/product_listings.json")
     Observable<Response<ProductListings>> getProductWithHandle(@Path("appId") String appId, @Query("handle") String handle);
-
-    @GET("api/apps/{appId}/product_listings.json")
-    Observable<Response<ProductListings>> getProducts(@Path("appId") String appId, @Query("collection_id") Long collectionId, @Query("limit") int pageSize, @Query("page") int page, @Query("sort_by") String sortOrder);
 
     @GET("api/apps/{appId}/collection_listings.json")
     Observable<Response<CollectionListings>> getCollectionPage(@Path("appId") String appId, @Query("page") int page, @Query("limit") int pageSize);
