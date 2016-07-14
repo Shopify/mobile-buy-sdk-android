@@ -497,26 +497,6 @@ final class BuyClientDefault implements BuyClient {
     }
 
     @Override
-    public CancellableTask getProducts(int page, Long collectionId, Callback<List<Product>> callback) {
-        return productService.getProducts(page, collectionId, callback);
-    }
-
-    @Override
-    public Observable<List<Product>> getProducts(int page, Long collectionId) {
-        return productService.getProducts(page, collectionId);
-    }
-
-    @Override
-    public CancellableTask getProducts(int page, Long collectionId, SortOrder sortOrder, Callback<List<Product>> callback) {
-        return productService.getProducts(page, collectionId, sortOrder, callback);
-    }
-
-    @Override
-    public Observable<List<Product>> getProducts(int page, Long collectionId, SortOrder sortOrder) {
-        return productService.getProducts(page, collectionId, sortOrder);
-    }
-
-    @Override
     public CancellableTask getCollections(int page, Callback<List<Collection>> callback) {
         return productService.getCollections(page, callback);
     }
@@ -537,12 +517,12 @@ final class BuyClientDefault implements BuyClient {
     }
 
     @Override
-    public CancellableTask getProductsByTags(int page, Set<String> tags, Callback<List<Product>> callback) {
-        return productService.getProductsByTags(page, tags, callback);
+    public CancellableTask getProducts(int page, Long collectionId, Set<String> tags, SortOrder sortOrder, Callback<List<Product>> callback) {
+        return productService.getProducts(page, collectionId, tags, sortOrder, callback);
     }
 
     @Override
-    public Observable<List<Product>> getProductsByTags(int page, Set<String> tags) {
-        return productService.getProductsByTags(page, tags);
+    public Observable<List<Product>> getProducts(int page, Long collectionId, Set<String> tags, SortOrder sortOrder) {
+        return productService.getProducts(page, collectionId, tags, sortOrder);
     }
 }

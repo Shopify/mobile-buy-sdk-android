@@ -600,6 +600,7 @@ public class BuyTest extends ShopifyAndroidTestCase {
             @Override
             public void success(List<String> response) {
                 assertNotNull(response);
+                latch.countDown();
                 // well we can't really test response for some values, as we can't control from client list of tags
             }
 
@@ -618,11 +619,12 @@ public class BuyTest extends ShopifyAndroidTestCase {
         tags.add("IMPOSSIBLE");
 
         final CountDownLatch latch = new CountDownLatch(1);
-        buyClient.getProductsByTags(1, tags, new Callback<List<Product>>() {
+        buyClient.getProducts(1, null, tags, null, new Callback<List<Product>>() {
             @Override
             public void success(List<Product> response) {
                 assertNotNull(response);
                 assertTrue(response.isEmpty());
+                latch.countDown();
             }
 
             @Override

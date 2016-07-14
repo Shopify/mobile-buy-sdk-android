@@ -33,7 +33,6 @@ import com.shopify.buy.model.internal.ProductListings;
 import com.shopify.buy.model.internal.ProductTagsWrapper;
 
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -83,17 +82,7 @@ final class ProductServiceDefault implements ProductService {
 
     @Override
     public Observable<List<Product>> getProducts(final int page) {
-        if (page < 1) {
-            throw new IllegalArgumentException("page is a 1-based index, value cannot be less than 1");
-        }
-
-        return retrofitService
-            .getProductPage(appId, page, pageSize)
-            .retryWhen(networkRetryPolicyProvider.provide())
-            .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-            .compose(new UnwrapRetrofitBodyTransformer<ProductListings, List<Product>>())
-            .onErrorResumeNext(new BuyClientExceptionHandler<List<Product>>())
-            .observeOn(callbackScheduler);
+        return getProducts(page, null, null, null);
     }
 
     @Override
@@ -172,42 +161,6 @@ final class ProductServiceDefault implements ProductService {
     }
 
     @Override
-    public CancellableTask getProducts(int page, Long collectionId, final Callback<List<Product>> callback) {
-        return getProducts(page, collectionId, Collection.SortOrder.COLLECTION_DEFAULT, callback);
-    }
-
-    @Override
-    public Observable<List<Product>> getProducts(final int page, final Long collectionId) {
-        return getProducts(page, collectionId, Collection.SortOrder.COLLECTION_DEFAULT);
-    }
-
-    @Override
-    public CancellableTask getProducts(final int page, final Long collectionId, final Collection.SortOrder sortOrder, final Callback<List<Product>> callback) {
-        return new CancellableTaskSubscriptionWrapper(getProducts(page, collectionId, sortOrder).subscribe(new InternalCallbackSubscriber<>(callback)));
-    }
-
-    @Override
-    public Observable<List<Product>> getProducts(final int page, final Long collectionId, final Collection.SortOrder sortOrder) {
-        if (page < 1) {
-            throw new IllegalArgumentException("page is a 1-based index, value cannot be less than 1");
-        }
-        if (collectionId == null) {
-            throw new NullPointerException("collectionId cannot be null");
-        }
-        if (sortOrder == null) {
-            throw new NullPointerException("sortOrder cannot be null");
-        }
-
-        return retrofitService
-            .getProducts(appId, collectionId, pageSize, page, sortOrder.toString())
-            .retryWhen(networkRetryPolicyProvider.provide())
-            .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-            .compose(new UnwrapRetrofitBodyTransformer<ProductListings, List<Product>>())
-            .onErrorResumeNext(new BuyClientExceptionHandler<List<Product>>())
-            .observeOn(callbackScheduler);
-    }
-
-    @Override
     public CancellableTask getCollections(final int page, final Callback<List<Collection>> callback) {
         return new CancellableTaskSubscriptionWrapper(getCollections(page).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
@@ -266,23 +219,27 @@ final class ProductServiceDefault implements ProductService {
     }
 
     @Override
-    public CancellableTask getProductsByTags(int page, Set<String> tags, Callback<List<Product>> callback) {
-        return new CancellableTaskSubscriptionWrapper(getProductsByTags(page, tags).subscribe(new InternalCallbackSubscriber<>(callback)));
+    public CancellableTask getProducts(final int page, final Long collectionId, Set<String> tags, final Collection.SortOrder sortOrder, final Callback<List<Product>> callback) {
+        return new CancellableTaskSubscriptionWrapper(getProducts(page, collectionId, tags, sortOrder).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
-    public Observable<List<Product>> getProductsByTags(final int page, final Set<String> tags) {
+    public Observable<List<Product>> getProducts(final int page, final Long collectionId, final Set<String> tags, final Collection.SortOrder sortOrder) {
         if (page < 1) {
             throw new IllegalArgumentException("page is a 1-based index, value cannot be less than 1");
         }
 
-        if (tags == null) {
-            throw new IllegalArgumentException("tags cannot be null");
+        final String tagsQueryStr = tags != null && !tags.isEmpty() ? TextUtils.join(",", tags.toArray()) : null;
+
+        final String sortOrderStr;
+        if (collectionId != null) {
+            sortOrderStr = sortOrder != null ? sortOrder.toString() : Collection.SortOrder.COLLECTION_DEFAULT.toString();
+        } else {
+            sortOrderStr = null;
         }
 
-        final String tagsQueryString = TextUtils.join(",", tags.toArray());
         return retrofitService
-            .getProductsByTags(appId, tagsQueryString, page, pageSize)
+            .getProducts(appId, collectionId, tagsQueryStr, sortOrderStr, page, pageSize)
             .retryWhen(networkRetryPolicyProvider.provide())
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<ProductListings, List<Product>>())

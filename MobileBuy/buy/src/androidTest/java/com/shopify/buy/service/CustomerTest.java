@@ -593,10 +593,6 @@ public class CustomerTest extends ShopifyAndroidTestCase {
                 assertTrue(passwordErrors.containsKey("too_short"));
                 assertEquals("is too short (minimum is 5 characters)", passwordErrors.get("too_short"));
 
-                final Map<String, String> passwordConfirmationErrors = error.getErrors("customer", "password_confirmation");
-                assertTrue(passwordConfirmationErrors.containsKey("confirmation"));
-                assertEquals("must match the provided password.", passwordConfirmationErrors.get("confirmation"));
-
                 final Map<String, String> emailErrors = error.getErrors("customer", "email");
                 assertTrue(emailErrors.containsKey("invalid"));
                 assertEquals("is invalid", emailErrors.get("invalid"));

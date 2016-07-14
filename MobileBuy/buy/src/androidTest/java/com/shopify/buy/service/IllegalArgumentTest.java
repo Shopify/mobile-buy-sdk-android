@@ -92,21 +92,7 @@ public class IllegalArgumentTest extends ShopifyAndroidTestCase {
         checkException(IllegalArgumentException.class, new Runnable() {
             @Override
             public void run() {
-                buyClient.getProducts(0, 1L, Collection.SortOrder.BEST_SELLING);
-            }
-        });
-
-        checkException(NullPointerException.class, new Runnable() {
-            @Override
-            public void run() {
-                buyClient.getProducts(1, null, Collection.SortOrder.BEST_SELLING);
-            }
-        });
-
-        checkException(NullPointerException.class, new Runnable() {
-            @Override
-            public void run() {
-                buyClient.getProducts(1, 1L, (Collection.SortOrder) null);
+                buyClient.getProducts(0, null, null, null);
             }
         });
 
@@ -121,20 +107,6 @@ public class IllegalArgumentTest extends ShopifyAndroidTestCase {
             @Override
             public void run() {
                 buyClient.getProductTags(0);
-            }
-        });
-
-        checkException(IllegalArgumentException.class, new Runnable() {
-            @Override
-            public void run() {
-                buyClient.getProductsByTags(0, new LinkedHashSet<String>());
-            }
-        });
-
-        checkException(IllegalArgumentException.class, new Runnable() {
-            @Override
-            public void run() {
-                buyClient.getProductsByTags(1, null);
             }
         });
     }
