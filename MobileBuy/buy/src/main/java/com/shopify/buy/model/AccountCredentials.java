@@ -35,9 +35,6 @@ public class AccountCredentials {
 
     private String password;
 
-    @SerializedName("password_confirmation")
-    private String passwordConfirmation;
-
     @SerializedName("first_name")
     private String firstName;
 
@@ -55,15 +52,6 @@ public class AccountCredentials {
     public AccountCredentials(String email, String password, String firstName, String lastName) {
         this.email = email;
         this.password = password;
-        this.passwordConfirmation = password;
-        this.firstName = firstName;
-        this.lastName = lastName;
-    }
-
-    public AccountCredentials(String email, String password, String passwordConfirmation, String firstName, String lastName) {
-        this.email = email;
-        this.password = password;
-        this.passwordConfirmation = passwordConfirmation;
         this.firstName = firstName;
         this.lastName = lastName;
     }
