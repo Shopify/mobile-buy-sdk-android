@@ -120,17 +120,19 @@ public interface CustomerService {
     /**
      * Log a Customer out from Shopify
      *
+     * @param customerId the identifier of a {@link CustomerToken} or {@link Customer}, not null
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      * @return cancelable task
      */
-    CancellableTask logoutCustomer(Callback<Void> callback);
+    CancellableTask logoutCustomer(Long customerId, Callback<Void> callback);
 
     /**
      * Log a Customer out from Shopify
      *
+     * @param customerId the identifier of a {@link CustomerToken} or {@link Customer}, not null
      * @return cold observable that log customer out and emits nothing
      */
-    Observable<Void> logoutCustomer();
+    Observable<Void> logoutCustomer(Long customerId);
 
     /**
      * Update an existing Customer's attributes.

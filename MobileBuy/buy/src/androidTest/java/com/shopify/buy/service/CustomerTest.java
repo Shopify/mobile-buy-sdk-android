@@ -162,7 +162,28 @@ public class CustomerTest extends ShopifyAndroidTestCase {
 
         final CountDownLatch latch = new CountDownLatch(1);
 
-        buyClient.logoutCustomer(new Callback<Void>() {
+        buyClient.logoutCustomer(customer.getId(), new Callback<Void>() {
+            @Override
+            public void success(Void aVoid) {
+                latch.countDown();
+            }
+
+            @Override
+            public void failure(BuyClientError error) {
+                fail(error.getRetrofitErrorBody());
+            }
+        });
+
+        latch.await();
+    }
+
+    @Test
+    public void testNonExistentCustomerLogout() throws InterruptedException {
+        testCustomerLogin();
+
+        final CountDownLatch latch = new CountDownLatch(1);
+
+        buyClient.logoutCustomer(-1L, new Callback<Void>() {
             @Override
             public void success(Void aVoid) {
                 latch.countDown();

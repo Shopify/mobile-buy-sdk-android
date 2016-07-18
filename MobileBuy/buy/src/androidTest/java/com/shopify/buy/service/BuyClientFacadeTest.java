@@ -29,7 +29,6 @@ import com.shopify.buy.extensions.ShopifyAndroidTestCase;
 import com.shopify.buy.model.AccountCredentials;
 import com.shopify.buy.model.Address;
 import com.shopify.buy.model.Checkout;
-import com.shopify.buy.model.Collection;
 import com.shopify.buy.model.CreditCard;
 import com.shopify.buy.model.Customer;
 import com.shopify.buy.model.PaymentToken;
@@ -66,7 +65,7 @@ public class BuyClientFacadeTest extends ShopifyAndroidTestCase {
         Assert.assertNotNull(buyClient.activateCustomer(1L, "test", new AccountCredentials("test")));
         Assert.assertNotNull(buyClient.resetPassword(1L, "test", new AccountCredentials("test")));
         Assert.assertNotNull(buyClient.loginCustomer(new AccountCredentials("test")));
-        Assert.assertNotNull(buyClient.logoutCustomer());
+        Assert.assertNotNull(buyClient.logoutCustomer(1L));
         Assert.assertNotNull(buyClient.updateCustomer(new Customer() {
             @Override
             public Long getId() {

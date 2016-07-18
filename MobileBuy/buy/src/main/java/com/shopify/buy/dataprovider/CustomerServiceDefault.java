@@ -193,19 +193,18 @@ final class CustomerServiceDefault implements CustomerService {
     }
 
     @Override
-    public CancellableTask logoutCustomer(final Callback<Void> callback) {
-        return new CancellableTaskSubscriptionWrapper(logoutCustomer().subscribe(new InternalCallbackSubscriber<>(callback)));
+    public CancellableTask logoutCustomer(Long customerId, final Callback<Void> callback) {
+        return new CancellableTaskSubscriptionWrapper(logoutCustomer(customerId).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
-    public Observable<Void> logoutCustomer() {
-        final CustomerToken customerToken = customerTokenRef.get();
-        if (customerToken == null) {
-            return Observable.just(null);
+    public Observable<Void> logoutCustomer(Long customerId) {
+        if (customerId == null) {
+            throw new NullPointerException("customer Id cannot be null");
         }
 
         return retrofitService
-            .removeCustomerToken(customerToken.getCustomerId())
+            .removeCustomerToken(customerId)
             .retryWhen(networkRetryPolicyProvider.provide())
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .map(new Func1<Response<Void>, Void>() {

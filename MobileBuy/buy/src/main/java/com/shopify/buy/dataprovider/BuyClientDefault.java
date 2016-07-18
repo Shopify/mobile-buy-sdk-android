@@ -326,13 +326,13 @@ final class BuyClientDefault implements BuyClient {
     }
 
     @Override
-    public CancellableTask logoutCustomer(Callback<Void> callback) {
-        return customerService.logoutCustomer(callback);
+    public CancellableTask logoutCustomer(Long customerId, Callback<Void> callback) {
+        return customerService.logoutCustomer(customerId, callback);
     }
 
     @Override
-    public Observable<Void> logoutCustomer() {
-        return customerService.logoutCustomer();
+    public Observable<Void> logoutCustomer(Long customerId) {
+        return customerService.logoutCustomer(customerId);
     }
 
     @Override
