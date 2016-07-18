@@ -153,7 +153,7 @@ public interface ProductService {
      * @param tags         set of tags which each product must contain, can be null
      * @param sortOrder    the sort order of products for the specified collection,
      *                     in case of {@code null} value {@link Collection.SortOrder#COLLECTION_DEFAULT} will be used as default,
-     *                     will be ignored if collection is not specified
+     *                     will be ignored if specified collection id is {@code null}
      * @param callback     the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      * @return cancelable task
      */
@@ -167,7 +167,7 @@ public interface ProductService {
      * @param tags         set of tags which each product must contain, can be null
      * @param sortOrder    the sort order of products for the specified collection,
      *                     in case of {@code null} value {@link Collection.SortOrder#COLLECTION_DEFAULT} will be used as default,
-     *                     will be ignored if collection is not specified
+     *                     will be ignored if specified collection id is {@code null}
      * @return cold observable that emits requested list of product
      */
     Observable<List<Product>> getProducts(int page, Long collectionId, Set<String> tags, Collection.SortOrder sortOrder);
