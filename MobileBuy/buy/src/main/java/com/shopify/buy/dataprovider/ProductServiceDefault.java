@@ -198,22 +198,7 @@ final class ProductServiceDefault implements ProductService {
             .retryWhen(networkRetryPolicyProvider.provide())
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<ProductTagsWrapper, List<ProductTag>>())
-            .map(new Func1<List<ProductTag>, List<String>>() {
-                @Override
-                public List<String> call(final List<ProductTag> productTags) {
-                    if (productTags == null) {
-                        return null;
-                    } else {
-                        final List<String> tags = new ArrayList<>();
-                        for (ProductTag productTag : productTags) {
-                            if (!TextUtils.isEmpty(productTag.getHandle())) {
-                                tags.add(productTag.getHandle());
-                            }
-                        }
-                        return tags;
-                    }
-                }
-            })
+            .map(unwrapProductTags())
             .onErrorResumeNext(new BuyClientExceptionHandler<List<String>>())
             .observeOn(callbackScheduler);
     }
@@ -229,14 +214,12 @@ final class ProductServiceDefault implements ProductService {
             throw new IllegalArgumentException("page is a 1-based index, value cannot be less than 1");
         }
 
-        final String tagsQueryStr = tags != null && !tags.isEmpty() ? TextUtils.join(",", tags.toArray()) : null;
-
-        final String sortOrderStr;
-        if (collectionId != null) {
-            sortOrderStr = sortOrder != null ? sortOrder.toString() : Collection.SortOrder.COLLECTION_DEFAULT.toString();
-        } else {
+        String sortOrderStr = sortOrder != null ? sortOrder.toString() : Collection.SortOrder.COLLECTION_DEFAULT.toString();
+        if (collectionId == null) {
             sortOrderStr = null;
         }
+
+        final String tagsQueryStr = tags != null && !tags.isEmpty() ? TextUtils.join(",", tags.toArray()) : null;
 
         return retrofitService
             .getProducts(appId, collectionId, tagsQueryStr, sortOrderStr, page, pageSize)
@@ -245,5 +228,22 @@ final class ProductServiceDefault implements ProductService {
             .compose(new UnwrapRetrofitBodyTransformer<ProductListings, List<Product>>())
             .onErrorResumeNext(new BuyClientExceptionHandler<List<Product>>())
             .observeOn(callbackScheduler);
+    }
+
+    private Func1<List<ProductTag>, List<String>> unwrapProductTags() {
+        return new Func1<List<ProductTag>, List<String>>() {
+            @Override
+            public List<String> call(List<ProductTag> productTags) {
+                final List<String> tags = new ArrayList<>();
+                if (productTags != null) {
+                    for (ProductTag productTag : productTags) {
+                        if (!TextUtils.isEmpty(productTag.getHandle())) {
+                            tags.add(productTag.getHandle());
+                        }
+                    }
+                }
+                return tags;
+            }
+        };
     }
 }
