@@ -161,6 +161,31 @@ final class ProductServiceDefault implements ProductService {
     }
 
     @Override
+    public CancellableTask getCollectionByHandle(final String handle, final Callback<Collection> callback) {
+        return new CancellableTaskSubscriptionWrapper(getCollectionByHandle(handle).subscribe(new InternalCallbackSubscriber<>(callback)));
+    }
+
+    @Override
+    public Observable<Collection> getCollectionByHandle(final String handle) {
+        if (handle == null) {
+            throw new NullPointerException("handle cannot be null");
+        }
+
+        if (TextUtils.isEmpty(handle)) {
+            throw new IllegalArgumentException("handle cannot be empty");
+        }
+
+        return retrofitService
+            .getCollectionWithHandle(appId, handle)
+            .retryWhen(networkRetryPolicyProvider.provide())
+            .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
+            .compose(new UnwrapRetrofitBodyTransformer<CollectionListings, List<Collection>>())
+            .compose(new FirstListItemOrDefaultTransformer<Collection>())
+            .onErrorResumeNext(new BuyClientExceptionHandler<Collection>())
+            .observeOn(callbackScheduler);
+    }
+
+    @Override
     public CancellableTask getCollections(final int page, final Callback<List<Collection>> callback) {
         return new CancellableTaskSubscriptionWrapper(getCollections(page).subscribe(new InternalCallbackSubscriber<>(callback)));
     }

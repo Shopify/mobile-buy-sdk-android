@@ -29,7 +29,6 @@ import com.shopify.buy.extensions.ShopifyAndroidTestCase;
 import com.shopify.buy.model.AccountCredentials;
 import com.shopify.buy.model.Address;
 import com.shopify.buy.model.Checkout;
-import com.shopify.buy.model.Collection;
 import com.shopify.buy.model.CreditCard;
 import com.shopify.buy.model.Customer;
 import com.shopify.buy.model.PaymentToken;
@@ -40,7 +39,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 
 @RunWith(AndroidJUnit4.class)
 public class IllegalArgumentTest extends ShopifyAndroidTestCase {
@@ -65,6 +63,13 @@ public class IllegalArgumentTest extends ShopifyAndroidTestCase {
             @Override
             public void run() {
                 buyClient.getProductByHandle("");
+            }
+        });
+
+        checkException(IllegalArgumentException.class, new Runnable() {
+            @Override
+            public void run() {
+                buyClient.getCollectionByHandle("");
             }
         });
 

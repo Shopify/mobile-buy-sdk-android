@@ -27,8 +27,6 @@ import com.shopify.buy.model.internal.CollectionListings;
 import com.shopify.buy.model.internal.ProductListings;
 import com.shopify.buy.model.internal.ProductTagsWrapper;
 
-import java.util.Set;
-
 import retrofit2.Response;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
@@ -45,6 +43,9 @@ interface ProductRetrofitService {
 
     @GET("api/apps/{appId}/collection_listings.json")
     Observable<Response<CollectionListings>> getCollectionPage(@Path("appId") String appId, @Query("page") int page, @Query("limit") int pageSize);
+
+    @GET("api/apps/{appId}/collection_listings.json")
+    Observable<Response<CollectionListings>> getCollectionWithHandle(@Path("appId") String appId, @Query("handle") String handle);
 
     @GET("api/apps/{appId}/product_listings/tags.json")
     Observable<Response<ProductTagsWrapper>> getProductTagPage(@Path("appId") String appId, @Query("page") int page, @Query("limit") int pageSize);

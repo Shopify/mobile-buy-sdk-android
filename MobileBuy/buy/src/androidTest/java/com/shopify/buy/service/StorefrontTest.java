@@ -294,4 +294,55 @@ public class StorefrontTest extends ShopifyAndroidTestCase {
 
         assertEquals(expectedProduct, actualProduct);
     }
+
+    @Test
+    public void testGetCollectionByHandle() throws InterruptedException {
+        final AtomicReference<Collection> collectionRef = new AtomicReference<>();
+
+        final CountDownLatch getCollectionLatch = new CountDownLatch(1);
+        buyClient.getCollections(1, new Callback<List<Collection>>() {
+            @Override
+            public void success(List<Collection> response) {
+                if (response != null && response.size() > 0) {
+                    collectionRef.set(response.get(0));
+                }
+                getCollectionLatch.countDown();
+            }
+
+            @Override
+            public void failure(BuyClientError error) {
+                getCollectionLatch.countDown();
+            }
+        });
+        getCollectionLatch.await();
+
+        final Collection expectedCollection = collectionRef.get();
+        if (expectedCollection == null) {
+            fail("Expected some collection");
+        }
+
+        collectionRef.set(null);
+
+        final CountDownLatch getCollectionByHandleLatch = new CountDownLatch(1);
+        buyClient.getCollectionByHandle(expectedCollection.getHandle(), new Callback<Collection>() {
+            @Override
+            public void success(Collection response) {
+                collectionRef.set(response);
+                getCollectionByHandleLatch.countDown();
+            }
+
+            @Override
+            public void failure(BuyClientError error) {
+                getCollectionByHandleLatch.countDown();
+            }
+        });
+        getCollectionByHandleLatch.await();
+
+        final Collection actualCollection = collectionRef.get();
+        if (actualCollection == null) {
+            fail("Collection by handle not found");
+        }
+
+        assertEquals(expectedCollection, actualCollection);
+    }
 }

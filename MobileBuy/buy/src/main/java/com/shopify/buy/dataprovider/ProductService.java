@@ -112,6 +112,23 @@ public interface ProductService {
     Observable<List<Product>> getProducts(List<Long> productIds);
 
     /**
+     * Fetch the collection with the specified handle
+     *
+     * @param handle   the handle for the collection to fetch, not null or empty
+     * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
+     * @return cancelable task
+     */
+    CancellableTask getCollectionByHandle(String handle, Callback<Collection> callback);
+
+    /**
+     * Fetch the collection with the specified handle
+     *
+     * @param handle the handle for the collection to fetch, not null or empty
+     * @return cold observable that emits requested product with the specified handle
+     */
+    Observable<Collection> getCollectionByHandle(String handle);
+
+    /**
      * Fetch a page of collections
      *
      * @param page     the 1-based page index. The page size is set by {@link BuyClientBuilder#productPageSize} configuration.
