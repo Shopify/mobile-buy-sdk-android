@@ -30,14 +30,14 @@ import com.google.gson.annotations.SerializedName;
  */
 public class ProductTag extends ShopifyObject {
 
-    @SerializedName("handle")
-    private String handle;
+    @SerializedName("title")
+    private String title;
 
-    public String getHandle() {
-        return handle;
+    public String getTitle() {
+        return title;
     }
 
-    public void setHandle(String handle) {
-        this.handle = handle;
+    public void setTitle(String title) {
+        this.title = title;
     }
 }

@@ -237,8 +237,8 @@ final class ProductServiceDefault implements ProductService {
                 final List<String> tags = new ArrayList<>();
                 if (productTags != null) {
                     for (ProductTag productTag : productTags) {
-                        if (!TextUtils.isEmpty(productTag.getHandle())) {
-                            tags.add(productTag.getHandle());
+                        if (!TextUtils.isEmpty(productTag.getTitle())) {
+                            tags.add(productTag.getTitle());
                         }
                     }
                 }

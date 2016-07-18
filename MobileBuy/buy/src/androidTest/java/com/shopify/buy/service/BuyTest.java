@@ -600,6 +600,7 @@ public class BuyTest extends ShopifyAndroidTestCase {
             @Override
             public void success(List<String> response) {
                 assertNotNull(response);
+                assertTrue(response.contains("don't touch me"));
                 latch.countDown();
                 // well we can't really test response for some values, as we can't control from client list of tags
             }
@@ -613,12 +614,13 @@ public class BuyTest extends ShopifyAndroidTestCase {
     }
 
     @Test
-    public void testGetProductByTags() throws Exception {
-        final Set<String> tags = new HashSet<>();
+    public void testGetProductsByTags() throws Exception {
+        final CountDownLatch latch = new CountDownLatch(2);
+
+        Set<String> tags = new HashSet<>();
         tags.add("MISSION");
         tags.add("IMPOSSIBLE");
 
-        final CountDownLatch latch = new CountDownLatch(1);
         buyClient.getProducts(1, null, tags, null, new Callback<List<Product>>() {
             @Override
             public void success(List<Product> response) {
@@ -632,6 +634,24 @@ public class BuyTest extends ShopifyAndroidTestCase {
                 fail(error.getRetrofitErrorBody());
             }
         });
+
+        tags = new HashSet<>();
+        tags.add("don't touch me");
+
+        buyClient.getProducts(1, null, tags, null, new Callback<List<Product>>() {
+            @Override
+            public void success(List<Product> response) {
+                assertNotNull(response);
+                assertTrue(!response.isEmpty());
+                latch.countDown();
+            }
+
+            @Override
+            public void failure(BuyClientError error) {
+                fail(error.getRetrofitErrorBody());
+            }
+        });
+
         latch.await();
     }
 
