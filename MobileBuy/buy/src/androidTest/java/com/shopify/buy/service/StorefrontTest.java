@@ -184,7 +184,7 @@ public class StorefrontTest extends ShopifyAndroidTestCase {
     public void testGetProductsInCollection() throws InterruptedException {
         final CountDownLatch latch = new CountDownLatch(1);
 
-        buyClient.getProducts(1, data.getCollectionId(), Collection.SortOrder.COLLECTION_DEFAULT, new Callback<List<Product>>() {
+        buyClient.getProducts(1, data.getCollectionId(), null, Collection.SortOrder.COLLECTION_DEFAULT, new Callback<List<Product>>() {
             @Override
             public void success(List<Product> products) {
                 assertNotNull(products);

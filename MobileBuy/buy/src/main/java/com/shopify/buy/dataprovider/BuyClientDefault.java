@@ -42,6 +42,7 @@ import com.shopify.buy.model.Shop;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Interceptor;
@@ -74,19 +75,19 @@ final class BuyClientDefault implements BuyClient {
     final ProductService productService;
 
     BuyClientDefault(
-            final String apiKey,
-            final String appId,
-            final String applicationName,
-            final String shopDomain,
-            final CustomerToken customerToken,
-            final Scheduler callbackScheduler,
-            final int productPageSize,
-            final int networkRequestRetryMaxCount,
-            final long networkRequestRetryDelayMs,
-            final float networkRequestRetryBackoffMultiplier,
-            final long httpConnectionTimeoutMs,
-            final long httpReadWriteTimeoutMs,
-            final Interceptor... interceptors
+        final String apiKey,
+        final String appId,
+        final String applicationName,
+        final String shopDomain,
+        final CustomerToken customerToken,
+        final Scheduler callbackScheduler,
+        final int productPageSize,
+        final int networkRequestRetryMaxCount,
+        final long networkRequestRetryDelayMs,
+        final float networkRequestRetryBackoffMultiplier,
+        final long httpConnectionTimeoutMs,
+        final long httpReadWriteTimeoutMs,
+        final Interceptor... interceptors
     ) {
         this.apiKey = apiKey;
         this.appId = appId;
@@ -113,10 +114,10 @@ final class BuyClientDefault implements BuyClient {
         };
 
         final OkHttpClient.Builder builder = new OkHttpClient.Builder()
-                .connectTimeout(httpConnectionTimeoutMs, TimeUnit.MILLISECONDS)
-                .readTimeout(httpReadWriteTimeoutMs, TimeUnit.MILLISECONDS)
-                .writeTimeout(httpReadWriteTimeoutMs, TimeUnit.MILLISECONDS)
-                .addInterceptor(requestInterceptor);
+            .connectTimeout(httpConnectionTimeoutMs, TimeUnit.MILLISECONDS)
+            .readTimeout(httpReadWriteTimeoutMs, TimeUnit.MILLISECONDS)
+            .writeTimeout(httpReadWriteTimeoutMs, TimeUnit.MILLISECONDS)
+            .addInterceptor(requestInterceptor);
 
         if (interceptors != null) {
             for (Interceptor interceptor : interceptors) {
@@ -127,11 +128,11 @@ final class BuyClientDefault implements BuyClient {
         final OkHttpClient httpClient = builder.build();
 
         final Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://" + shopDomain + "/")
-                .addConverterFactory(GsonConverterFactory.create(BuyClientUtils.createDefaultGson()))
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.createWithScheduler(Schedulers.io()))
-                .client(httpClient)
-                .build();
+            .baseUrl("https://" + shopDomain + "/")
+            .addConverterFactory(GsonConverterFactory.create(BuyClientUtils.createDefaultGson()))
+            .addCallAdapterFactory(RxJavaCallAdapterFactory.createWithScheduler(Schedulers.io()))
+            .client(httpClient)
+            .build();
 
         final NetworkRetryPolicyProvider networkRetryPolicyProvider = new NetworkRetryPolicyProvider(networkRequestRetryMaxCount, networkRequestRetryDelayMs, networkRequestRetryBackoffMultiplier);
 
@@ -496,26 +497,6 @@ final class BuyClientDefault implements BuyClient {
     }
 
     @Override
-    public CancellableTask getProducts(int page, Long collectionId, Callback<List<Product>> callback) {
-        return productService.getProducts(page, collectionId, callback);
-    }
-
-    @Override
-    public Observable<List<Product>> getProducts(int page, Long collectionId) {
-        return productService.getProducts(page, collectionId);
-    }
-
-    @Override
-    public CancellableTask getProducts(int page, Long collectionId, SortOrder sortOrder, Callback<List<Product>> callback) {
-        return productService.getProducts(page, collectionId, sortOrder, callback);
-    }
-
-    @Override
-    public Observable<List<Product>> getProducts(int page, Long collectionId, SortOrder sortOrder) {
-        return productService.getProducts(page, collectionId, sortOrder);
-    }
-
-    @Override
     public CancellableTask getCollections(int page, Callback<List<Collection>> callback) {
         return productService.getCollections(page, callback);
     }
@@ -523,5 +504,25 @@ final class BuyClientDefault implements BuyClient {
     @Override
     public Observable<List<Collection>> getCollections(int page) {
         return productService.getCollections(page);
+    }
+
+    @Override
+    public CancellableTask getProductTags(int page, Callback<List<String>> callback) {
+        return productService.getProductTags(page, callback);
+    }
+
+    @Override
+    public Observable<List<String>> getProductTags(int page) {
+        return productService.getProductTags(page);
+    }
+
+    @Override
+    public CancellableTask getProducts(int page, Long collectionId, Set<String> tags, SortOrder sortOrder, Callback<List<Product>> callback) {
+        return productService.getProducts(page, collectionId, tags, sortOrder, callback);
+    }
+
+    @Override
+    public Observable<List<Product>> getProducts(int page, Long collectionId, Set<String> tags, SortOrder sortOrder) {
+        return productService.getProducts(page, collectionId, tags, sortOrder);
     }
 }

@@ -40,6 +40,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 
 @RunWith(AndroidJUnit4.class)
 public class IllegalArgumentTest extends ShopifyAndroidTestCase {
@@ -91,21 +92,7 @@ public class IllegalArgumentTest extends ShopifyAndroidTestCase {
         checkException(IllegalArgumentException.class, new Runnable() {
             @Override
             public void run() {
-                buyClient.getProducts(0, 1L, Collection.SortOrder.BEST_SELLING);
-            }
-        });
-
-        checkException(NullPointerException.class, new Runnable() {
-            @Override
-            public void run() {
-                buyClient.getProducts(1, null, Collection.SortOrder.BEST_SELLING);
-            }
-        });
-
-        checkException(NullPointerException.class, new Runnable() {
-            @Override
-            public void run() {
-                buyClient.getProducts(1, 1L, (Collection.SortOrder) null);
+                buyClient.getProducts(0, null, null, null);
             }
         });
 
@@ -113,6 +100,13 @@ public class IllegalArgumentTest extends ShopifyAndroidTestCase {
             @Override
             public void run() {
                 buyClient.getCollections(0);
+            }
+        });
+
+        checkException(IllegalArgumentException.class, new Runnable() {
+            @Override
+            public void run() {
+                buyClient.getProductTags(0);
             }
         });
     }

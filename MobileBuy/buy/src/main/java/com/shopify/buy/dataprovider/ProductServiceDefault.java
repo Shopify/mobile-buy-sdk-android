@@ -27,14 +27,19 @@ import android.text.TextUtils;
 
 import com.shopify.buy.model.Collection;
 import com.shopify.buy.model.Product;
+import com.shopify.buy.model.ProductTag;
 import com.shopify.buy.model.internal.CollectionListings;
 import com.shopify.buy.model.internal.ProductListings;
+import com.shopify.buy.model.internal.ProductTagsWrapper;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import retrofit2.Retrofit;
 import rx.Observable;
 import rx.Scheduler;
+import rx.functions.Func1;
 
 /**
  * Default implementation of {@link ProductService}
@@ -77,17 +82,7 @@ final class ProductServiceDefault implements ProductService {
 
     @Override
     public Observable<List<Product>> getProducts(final int page) {
-        if (page < 1) {
-            throw new IllegalArgumentException("page is a 1-based index, value cannot be less than 1");
-        }
-
-        return retrofitService
-            .getProductPage(appId, page, pageSize)
-            .retryWhen(networkRetryPolicyProvider.provide())
-            .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-            .compose(new UnwrapRetrofitBodyTransformer<ProductListings, List<Product>>())
-            .onErrorResumeNext(new BuyClientExceptionHandler<List<Product>>())
-            .observeOn(callbackScheduler);
+        return getProducts(page, null, null, null);
     }
 
     @Override
@@ -166,42 +161,6 @@ final class ProductServiceDefault implements ProductService {
     }
 
     @Override
-    public CancellableTask getProducts(int page, Long collectionId, final Callback<List<Product>> callback) {
-        return getProducts(page, collectionId, Collection.SortOrder.COLLECTION_DEFAULT, callback);
-    }
-
-    @Override
-    public Observable<List<Product>> getProducts(final int page, final Long collectionId) {
-        return getProducts(page, collectionId, Collection.SortOrder.COLLECTION_DEFAULT);
-    }
-
-    @Override
-    public CancellableTask getProducts(final int page, final Long collectionId, final Collection.SortOrder sortOrder, final Callback<List<Product>> callback) {
-        return new CancellableTaskSubscriptionWrapper(getProducts(page, collectionId, sortOrder).subscribe(new InternalCallbackSubscriber<>(callback)));
-    }
-
-    @Override
-    public Observable<List<Product>> getProducts(final int page, final Long collectionId, final Collection.SortOrder sortOrder) {
-        if (page < 1) {
-            throw new IllegalArgumentException("page is a 1-based index, value cannot be less than 1");
-        }
-        if (collectionId == null) {
-            throw new NullPointerException("collectionId cannot be null");
-        }
-        if (sortOrder == null) {
-            throw new NullPointerException("sortOrder cannot be null");
-        }
-
-        return retrofitService
-            .getProducts(appId, collectionId, pageSize, page, sortOrder.toString())
-            .retryWhen(networkRetryPolicyProvider.provide())
-            .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-            .compose(new UnwrapRetrofitBodyTransformer<ProductListings, List<Product>>())
-            .onErrorResumeNext(new BuyClientExceptionHandler<List<Product>>())
-            .observeOn(callbackScheduler);
-    }
-
-    @Override
     public CancellableTask getCollections(final int page, final Callback<List<Collection>> callback) {
         return new CancellableTaskSubscriptionWrapper(getCollections(page).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
@@ -221,5 +180,70 @@ final class ProductServiceDefault implements ProductService {
             .compose(new UnwrapRetrofitBodyTransformer<CollectionListings, List<Collection>>())
             .onErrorResumeNext(new BuyClientExceptionHandler<List<Collection>>())
             .observeOn(callbackScheduler);
+    }
+
+    @Override
+    public CancellableTask getProductTags(int page, Callback<List<String>> callback) {
+        return new CancellableTaskSubscriptionWrapper(getProductTags(page).subscribe(new InternalCallbackSubscriber<>(callback)));
+    }
+
+    @Override
+    public Observable<List<String>> getProductTags(final int page) {
+        if (page < 1) {
+            throw new IllegalArgumentException("page is a 1-based index, value cannot be less than 1");
+        }
+
+        return retrofitService
+            .getProductTagPage(appId, page, pageSize)
+            .retryWhen(networkRetryPolicyProvider.provide())
+            .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
+            .compose(new UnwrapRetrofitBodyTransformer<ProductTagsWrapper, List<ProductTag>>())
+            .map(unwrapProductTags())
+            .onErrorResumeNext(new BuyClientExceptionHandler<List<String>>())
+            .observeOn(callbackScheduler);
+    }
+
+    @Override
+    public CancellableTask getProducts(final int page, final Long collectionId, Set<String> tags, final Collection.SortOrder sortOrder, final Callback<List<Product>> callback) {
+        return new CancellableTaskSubscriptionWrapper(getProducts(page, collectionId, tags, sortOrder).subscribe(new InternalCallbackSubscriber<>(callback)));
+    }
+
+    @Override
+    public Observable<List<Product>> getProducts(final int page, final Long collectionId, final Set<String> tags, final Collection.SortOrder sortOrder) {
+        if (page < 1) {
+            throw new IllegalArgumentException("page is a 1-based index, value cannot be less than 1");
+        }
+
+        String sortOrderStr = sortOrder != null ? sortOrder.toString() : Collection.SortOrder.COLLECTION_DEFAULT.toString();
+        if (collectionId == null) {
+            sortOrderStr = null;
+        }
+
+        final String tagsQueryStr = tags != null && !tags.isEmpty() ? TextUtils.join(",", tags.toArray()) : null;
+
+        return retrofitService
+            .getProducts(appId, collectionId, tagsQueryStr, sortOrderStr, page, pageSize)
+            .retryWhen(networkRetryPolicyProvider.provide())
+            .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
+            .compose(new UnwrapRetrofitBodyTransformer<ProductListings, List<Product>>())
+            .onErrorResumeNext(new BuyClientExceptionHandler<List<Product>>())
+            .observeOn(callbackScheduler);
+    }
+
+    private Func1<List<ProductTag>, List<String>> unwrapProductTags() {
+        return new Func1<List<ProductTag>, List<String>>() {
+            @Override
+            public List<String> call(List<ProductTag> productTags) {
+                final List<String> tags = new ArrayList<>();
+                if (productTags != null) {
+                    for (ProductTag productTag : productTags) {
+                        if (!TextUtils.isEmpty(productTag.getTitle())) {
+                            tags.add(productTag.getTitle());
+                        }
+                    }
+                }
+                return tags;
+            }
+        };
     }
 }

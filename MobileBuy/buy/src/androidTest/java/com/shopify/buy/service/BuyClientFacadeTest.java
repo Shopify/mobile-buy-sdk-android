@@ -40,6 +40,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.Arrays;
+import java.util.LinkedHashSet;
 
 @RunWith(AndroidJUnit4.class)
 public class BuyClientFacadeTest extends ShopifyAndroidTestCase {
@@ -87,8 +88,8 @@ public class BuyClientFacadeTest extends ShopifyAndroidTestCase {
         Assert.assertNotNull(buyClient.getProductByHandle("test"));
         Assert.assertNotNull(buyClient.getProduct(1L));
         Assert.assertNotNull(buyClient.getProducts(Arrays.asList(1L)));
-        Assert.assertNotNull(buyClient.getProducts(1, 1L));
-        Assert.assertNotNull(buyClient.getProducts(1, 1L, Collection.SortOrder.PRICE_ASCENDING));
         Assert.assertNotNull(buyClient.getCollections(1));
+        Assert.assertNotNull(buyClient.getProductTags(1));
+        Assert.assertNotNull(buyClient.getProducts(1, 1L, new LinkedHashSet<String>(), null));
     }
 }
