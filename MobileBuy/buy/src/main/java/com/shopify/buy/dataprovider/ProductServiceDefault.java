@@ -101,7 +101,7 @@ final class ProductServiceDefault implements ProductService {
         }
 
         return retrofitService
-            .getProductWithHandle(appId, handle)
+            .getProductByHandle(appId, handle)
             .retryWhen(networkRetryPolicyProvider.provide())
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<ProductListings, List<Product>>())
@@ -176,7 +176,7 @@ final class ProductServiceDefault implements ProductService {
         }
 
         return retrofitService
-            .getCollectionWithHandle(appId, handle)
+            .getCollectionByHandle(appId, handle)
             .retryWhen(networkRetryPolicyProvider.provide())
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<CollectionListings, List<Collection>>())
