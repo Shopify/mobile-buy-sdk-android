@@ -44,29 +44,33 @@ final class OrderServiceDefault implements OrderService {
 
     final Scheduler callbackScheduler;
 
+    final CustomerService customerService;
+
     OrderServiceDefault(
         final Retrofit retrofit,
         final NetworkRetryPolicyProvider networkRetryPolicyProvider,
-        final Scheduler callbackScheduler
+        final Scheduler callbackScheduler,
+        final CustomerService customerService
     ) {
         this.retrofitService = retrofit.create(OrderRetrofitService.class);
         this.networkRetryPolicyProvider = networkRetryPolicyProvider;
         this.callbackScheduler = callbackScheduler;
+        this.customerService = customerService;
     }
 
     @Override
-    public CancellableTask getOrders(final Long customerId, final Callback<List<Order>> callback) {
-        return new CancellableTaskSubscriptionWrapper(getOrders(customerId).subscribe(new InternalCallbackSubscriber<>(callback)));
+    public CancellableTask getOrders(final Callback<List<Order>> callback) {
+        return new CancellableTaskSubscriptionWrapper(getOrders().subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
-    public Observable<List<Order>> getOrders(final Long customerId) {
-        if (customerId == null) {
-            throw new NullPointerException("customerId cannot be null");
+    public Observable<List<Order>> getOrders() {
+        if (customerService.getCustomerToken() == null) {
+            throw new IllegalStateException("customer must be logged in");
         }
 
         return retrofitService
-            .getOrders(customerId)
+            .getOrders(customerService.getCustomerToken().getCustomerId())
             .retryWhen(networkRetryPolicyProvider.provide())
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<OrdersWrapper, List<Order>>())
@@ -75,22 +79,22 @@ final class OrderServiceDefault implements OrderService {
     }
 
     @Override
-    public CancellableTask getOrder(final Long orderId, final Long customerId, final Callback<Order> callback) {
-        return new CancellableTaskSubscriptionWrapper(getOrder(orderId, customerId).subscribe(new InternalCallbackSubscriber<>(callback)));
+    public CancellableTask getOrder(final Long orderId, final Callback<Order> callback) {
+        return new CancellableTaskSubscriptionWrapper(getOrder(orderId).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
-    public Observable<Order> getOrder(final Long orderId, final Long customerId) {
+    public Observable<Order> getOrder(final Long orderId) {
         if (orderId == null) {
             throw new NullPointerException("orderId cannot be null");
         }
 
-        if (customerId == null) {
-            throw new NullPointerException("customerId cannot be null");
+        if (customerService.getCustomerToken() == null) {
+            throw new IllegalStateException("customer must be logged in");
         }
 
         return retrofitService
-            .getOrder(orderId, customerId)
+            .getOrder(orderId, customerService.getCustomerToken().getCustomerId())
             .retryWhen(networkRetryPolicyProvider.provide())
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<OrderWrapper, Order>())

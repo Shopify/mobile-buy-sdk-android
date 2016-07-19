@@ -31,6 +31,7 @@ import com.shopify.buy.model.Address;
 import com.shopify.buy.model.Checkout;
 import com.shopify.buy.model.CreditCard;
 import com.shopify.buy.model.Customer;
+import com.shopify.buy.model.CustomerToken;
 import com.shopify.buy.model.PaymentToken;
 
 import junit.framework.Assert;
@@ -46,6 +47,8 @@ public class BuyClientFacadeTest extends ShopifyAndroidTestCase {
 
     @Test
     public void testFacade() {
+        buyClient.setCustomerToken(new CustomerToken());
+
         Assert.assertNotNull(buyClient.getApiKey());
         Assert.assertNotNull(buyClient.getAppId());
         Assert.assertNotNull(buyClient.getApplicationName());
@@ -65,23 +68,23 @@ public class BuyClientFacadeTest extends ShopifyAndroidTestCase {
         Assert.assertNotNull(buyClient.activateCustomer(1L, "test", new AccountCredentials("test")));
         Assert.assertNotNull(buyClient.resetPassword(1L, "test", new AccountCredentials("test")));
         Assert.assertNotNull(buyClient.loginCustomer(new AccountCredentials("test")));
-        Assert.assertNotNull(buyClient.logoutCustomer(1L));
+        Assert.assertNotNull(buyClient.logoutCustomer());
         Assert.assertNotNull(buyClient.updateCustomer(new Customer() {
             @Override
             public Long getId() {
                 return 1L;
             }
         }));
-        Assert.assertNotNull(buyClient.getCustomer(1L));
-        Assert.assertNotNull(buyClient.renewCustomer(1L));
+        Assert.assertNotNull(buyClient.getCustomer());
+        Assert.assertNotNull(buyClient.renewCustomer());
         Assert.assertNotNull(buyClient.recoverPassword("test"));
-        Assert.assertNotNull(buyClient.getOrders(1L));
-        Assert.assertNotNull(buyClient.getOrder(1L, 1L));
-        Assert.assertNotNull(buyClient.createAddress(1L, new Address()));
-        Assert.assertNotNull(buyClient.getAddresses(1L));
-        Assert.assertNotNull(buyClient.getAddress(1L, 1L));
-        Assert.assertNotNull(buyClient.updateAddress(1L, new Address()));
-        Assert.assertNotNull(buyClient.deleteAddress(1L, 1L));
+        Assert.assertNotNull(buyClient.getOrders());
+        Assert.assertNotNull(buyClient.getOrder(1L));
+        Assert.assertNotNull(buyClient.createAddress(new Address()));
+        Assert.assertNotNull(buyClient.getAddresses());
+        Assert.assertNotNull(buyClient.getAddress(1L));
+        Assert.assertNotNull(buyClient.updateAddress(new Address()));
+        Assert.assertNotNull(buyClient.deleteAddress(1L));
         Assert.assertTrue(buyClient.getProductPageSize() > 0);
         Assert.assertNotNull(buyClient.getProducts(1));
         Assert.assertNotNull(buyClient.getProductByHandle("test"));

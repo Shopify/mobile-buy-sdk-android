@@ -48,25 +48,29 @@ final class AddressServiceDefault implements AddressService {
 
     final Scheduler callbackScheduler;
 
+    final CustomerService customerService;
+
     AddressServiceDefault(
         final Retrofit retrofit,
         final NetworkRetryPolicyProvider networkRetryPolicyProvider,
-        final Scheduler callbackScheduler
+        final Scheduler callbackScheduler,
+        final CustomerService customerService
     ) {
         this.retrofitService = retrofit.create(AddressRetrofitService.class);
         this.networkRetryPolicyProvider = networkRetryPolicyProvider;
         this.callbackScheduler = callbackScheduler;
+        this.customerService = customerService;
     }
 
     @Override
-    public CancellableTask createAddress(final Long customerId, final Address address, final Callback<Address> callback) {
-        return new CancellableTaskSubscriptionWrapper(createAddress(customerId, address).subscribe(new InternalCallbackSubscriber<>(callback)));
+    public CancellableTask createAddress(final Address address, final Callback<Address> callback) {
+        return new CancellableTaskSubscriptionWrapper(createAddress(address).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
-    public Observable<Address> createAddress(final Long customerId, final Address address) {
-        if (customerId == null) {
-            throw new NullPointerException("customerId cannot be null");
+    public Observable<Address> createAddress(final Address address) {
+        if (customerService.getCustomerToken() == null) {
+            throw new IllegalStateException("customer must be logged in");
         }
 
         if (address == null) {
@@ -74,20 +78,20 @@ final class AddressServiceDefault implements AddressService {
         }
 
         return retrofitService
-            .createAddress(customerId, new AddressWrapper(address))
+            .createAddress(customerService.getCustomerToken().getCustomerId(), new AddressWrapper(address))
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<AddressWrapper, Address>())
             .onErrorResumeNext(new BuyClientExceptionHandler<Address>())
             .observeOn(callbackScheduler);
     }
 
-    public CancellableTask deleteAddress(Long customerId, Long addressId, Callback<Void> callback) {
-        return new CancellableTaskSubscriptionWrapper(deleteAddress(customerId, addressId).subscribe(new InternalCallbackSubscriber<>(callback)));
+    public CancellableTask deleteAddress(Long addressId, Callback<Void> callback) {
+        return new CancellableTaskSubscriptionWrapper(deleteAddress(addressId).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
-    public Observable<Void> deleteAddress(Long customerId, Long addressId) {
-        if (customerId == null) {
-            throw new NullPointerException("customerId cannot be null");
+    public Observable<Void> deleteAddress(Long addressId) {
+        if (customerService.getCustomerToken() == null) {
+            throw new IllegalStateException("customer must be logged in");
         }
 
         if (addressId == null) {
@@ -96,7 +100,7 @@ final class AddressServiceDefault implements AddressService {
 
         int[] successCodes = {HTTP_NO_CONTENT};
 
-        return retrofitService.deleteAddress(customerId, addressId)
+        return retrofitService.deleteAddress(customerService.getCustomerToken().getCustomerId(), addressId)
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>(successCodes))
             .map(new Func1<Response<Void>, Void>() {
                 @Override
@@ -109,18 +113,18 @@ final class AddressServiceDefault implements AddressService {
     }
 
     @Override
-    public CancellableTask getAddresses(final Long customerId, final Callback<List<Address>> callback) {
-        return new CancellableTaskSubscriptionWrapper(getAddresses(customerId).subscribe(new InternalCallbackSubscriber<>(callback)));
+    public CancellableTask getAddresses(final Callback<List<Address>> callback) {
+        return new CancellableTaskSubscriptionWrapper(getAddresses().subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
-    public Observable<List<Address>> getAddresses(final Long customerId) {
-        if (customerId == null) {
-            throw new NullPointerException("customerId cannot be null");
+    public Observable<List<Address>> getAddresses() {
+        if (customerService.getCustomerToken() == null) {
+            throw new IllegalStateException("customer must be logged in");
         }
 
         return retrofitService
-            .getAddresses(customerId)
+            .getAddresses(customerService.getCustomerToken().getCustomerId())
             .retryWhen(networkRetryPolicyProvider.provide())
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<AddressesWrapper, List<Address>>())
@@ -129,14 +133,14 @@ final class AddressServiceDefault implements AddressService {
     }
 
     @Override
-    public CancellableTask getAddress(final Long customerId, final Long addressId, final Callback<Address> callback) {
-        return new CancellableTaskSubscriptionWrapper(getAddress(customerId, addressId).subscribe(new InternalCallbackSubscriber<>(callback)));
+    public CancellableTask getAddress(final Long addressId, final Callback<Address> callback) {
+        return new CancellableTaskSubscriptionWrapper(getAddress(addressId).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
-    public Observable<Address> getAddress(final Long customerId, final Long addressId) {
-        if (customerId == null) {
-            throw new NullPointerException("customerId cannot be null");
+    public Observable<Address> getAddress(final Long addressId) {
+        if (customerService.getCustomerToken() == null) {
+            throw new IllegalStateException("customer must be logged in");
         }
 
         if (addressId == null) {
@@ -144,7 +148,7 @@ final class AddressServiceDefault implements AddressService {
         }
 
         return retrofitService
-            .getAddress(customerId, addressId)
+            .getAddress(customerService.getCustomerToken().getCustomerId(), addressId)
             .retryWhen(networkRetryPolicyProvider.provide())
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<AddressWrapper, Address>())
@@ -153,14 +157,14 @@ final class AddressServiceDefault implements AddressService {
     }
 
     @Override
-    public CancellableTask updateAddress(final Long customerId, final Address address, final Callback<Address> callback) {
-        return new CancellableTaskSubscriptionWrapper(updateAddress(customerId, address).subscribe(new InternalCallbackSubscriber<>(callback)));
+    public CancellableTask updateAddress(final Address address, final Callback<Address> callback) {
+        return new CancellableTaskSubscriptionWrapper(updateAddress(address).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
-    public Observable<Address> updateAddress(final Long customerId, final Address address) {
-        if (customerId == null) {
-            throw new NullPointerException("customerId cannot be null");
+    public Observable<Address> updateAddress(final Address address) {
+        if (customerService.getCustomerToken() == null) {
+            throw new IllegalStateException("customer must be logged in");
         }
 
         if (address == null) {
@@ -168,7 +172,7 @@ final class AddressServiceDefault implements AddressService {
         }
 
         return retrofitService
-            .updateAddress(customerId, new AddressWrapper(address), address.getId())
+            .updateAddress(customerService.getCustomerToken().getCustomerId(), new AddressWrapper(address), address.getId())
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<AddressWrapper, Address>())
             .onErrorResumeNext(new BuyClientExceptionHandler<Address>())

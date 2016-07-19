@@ -137,10 +137,10 @@ final class BuyClientDefault implements BuyClient {
         final NetworkRetryPolicyProvider networkRetryPolicyProvider = new NetworkRetryPolicyProvider(networkRequestRetryMaxCount, networkRequestRetryDelayMs, networkRequestRetryBackoffMultiplier);
 
         storeService = new StoreServiceDefault(retrofit, networkRetryPolicyProvider, callbackScheduler);
-        addressService = new AddressServiceDefault(retrofit, networkRetryPolicyProvider, callbackScheduler);
         checkoutService = new CheckoutServiceDefault(retrofit, apiKey, applicationName, networkRetryPolicyProvider, callbackScheduler);
         customerService = new CustomerServiceDefault(retrofit, customerToken, networkRetryPolicyProvider, callbackScheduler);
-        orderService = new OrderServiceDefault(retrofit, networkRetryPolicyProvider, callbackScheduler);
+        addressService = new AddressServiceDefault(retrofit, networkRetryPolicyProvider, callbackScheduler, customerService);
+        orderService = new OrderServiceDefault(retrofit, networkRetryPolicyProvider, callbackScheduler, customerService);
         productService = new ProductServiceDefault(retrofit, appId, productPageSize, networkRetryPolicyProvider, callbackScheduler);
     }
 
@@ -331,13 +331,13 @@ final class BuyClientDefault implements BuyClient {
     }
 
     @Override
-    public CancellableTask logoutCustomer(Long customerId, Callback<Void> callback) {
-        return customerService.logoutCustomer(customerId, callback);
+    public CancellableTask logoutCustomer(Callback<Void> callback) {
+        return customerService.logoutCustomer(callback);
     }
 
     @Override
-    public Observable<Void> logoutCustomer(Long customerId) {
-        return customerService.logoutCustomer(customerId);
+    public Observable<Void> logoutCustomer() {
+        return customerService.logoutCustomer();
     }
 
     @Override
@@ -351,23 +351,23 @@ final class BuyClientDefault implements BuyClient {
     }
 
     @Override
-    public CancellableTask getCustomer(Long customerId, Callback<Customer> callback) {
-        return customerService.getCustomer(customerId, callback);
+    public CancellableTask getCustomer(Callback<Customer> callback) {
+        return customerService.getCustomer(callback);
     }
 
     @Override
-    public Observable<Customer> getCustomer(Long customerId) {
-        return customerService.getCustomer(customerId);
+    public Observable<Customer> getCustomer() {
+        return customerService.getCustomer();
     }
 
     @Override
-    public CancellableTask renewCustomer(Long customerId, Callback<CustomerToken> callback) {
-        return customerService.renewCustomer(customerId, callback);
+    public CancellableTask renewCustomer(Callback<CustomerToken> callback) {
+        return customerService.renewCustomer(callback);
     }
 
     @Override
-    public Observable<CustomerToken> renewCustomer(Long customerId) {
-        return customerService.renewCustomer(customerId);
+    public Observable<CustomerToken> renewCustomer() {
+        return customerService.renewCustomer();
     }
 
     @Override
@@ -383,74 +383,74 @@ final class BuyClientDefault implements BuyClient {
     // ----------- OrderService API ---------------
 
     @Override
-    public CancellableTask getOrders(Long customerId, Callback<List<Order>> callback) {
-        return orderService.getOrders(customerId, callback);
+    public CancellableTask getOrders(Callback<List<Order>> callback) {
+        return orderService.getOrders(callback);
     }
 
     @Override
-    public Observable<List<Order>> getOrders(Long customerId) {
-        return orderService.getOrders(customerId);
+    public Observable<List<Order>> getOrders() {
+        return orderService.getOrders();
     }
 
     @Override
-    public CancellableTask getOrder(Long orderId, Long customerId, Callback<Order> callback) {
-        return orderService.getOrder(orderId, customerId, callback);
+    public CancellableTask getOrder(Long orderId, Callback<Order> callback) {
+        return orderService.getOrder(orderId, callback);
     }
 
     @Override
-    public Observable<Order> getOrder(Long orderId, Long customerId) {
-        return orderService.getOrder(orderId, customerId);
+    public Observable<Order> getOrder(Long orderId) {
+        return orderService.getOrder(orderId);
     }
 
     // ----------- AddressService API ---------------
 
     @Override
-    public CancellableTask createAddress(final Long customerId, final Address address, final Callback<Address> callback) {
-        return addressService.createAddress(customerId, address, callback);
+    public CancellableTask createAddress(final Address address, final Callback<Address> callback) {
+        return addressService.createAddress(address, callback);
     }
 
     @Override
-    public Observable<Address> createAddress(final Long customerId, final Address address) {
-        return addressService.createAddress(customerId, address);
+    public Observable<Address> createAddress(final Address address) {
+        return addressService.createAddress(address);
     }
 
     @Override
-    public CancellableTask getAddresses(final Long customerId, final Callback<List<Address>> callback) {
-        return addressService.getAddresses(customerId, callback);
+    public CancellableTask getAddresses(final Callback<List<Address>> callback) {
+        return addressService.getAddresses(callback);
     }
 
     @Override
-    public Observable<List<Address>> getAddresses(final Long customerId) {
-        return addressService.getAddresses(customerId);
+    public Observable<List<Address>> getAddresses() {
+        return addressService.getAddresses();
     }
 
     @Override
-    public CancellableTask getAddress(final Long customerId, final Long addressId, final Callback<Address> callback) {
-        return addressService.getAddress(customerId, addressId, callback);
+    public CancellableTask getAddress(final Long addressId, final Callback<Address> callback) {
+        return addressService.getAddress(addressId, callback);
     }
 
     @Override
-    public Observable<Address> getAddress(final Long customerId, final Long addressId) {
-        return addressService.getAddress(customerId, addressId);
+    public Observable<Address> getAddress(final Long addressId) {
+        return addressService.getAddress(addressId);
     }
 
     @Override
-    public CancellableTask updateAddress(final Long customerId, final Address address, final Callback<Address> callback) {
-        return addressService.updateAddress(customerId, address, callback);
+    public CancellableTask updateAddress(final Address address, final Callback<Address> callback) {
+        return addressService.updateAddress(address, callback);
     }
 
     @Override
-    public CancellableTask deleteAddress(final Long customerId, final Long addressId, final Callback<Void> callback) {
-        return addressService.deleteAddress(customerId, addressId, callback);
+    public CancellableTask deleteAddress(final Long addressId, final Callback<Void> callback) {
+        return addressService.deleteAddress(addressId, callback);
     }
 
     @Override
-    public Observable<Void> deleteAddress(final Long customerId, final Long addressId) {
-        return addressService.deleteAddress(customerId, addressId);
+    public Observable<Void> deleteAddress(final Long addressId) {
+        return addressService.deleteAddress(addressId);
     }
 
-    public Observable<Address> updateAddress(final Long customerId, final Address address) {
-        return addressService.updateAddress(customerId, address);
+    public Observable<Address> updateAddress(final Address address) {
+        return addressService.updateAddress(address);
     }
 
     // ----------- ProductService API ---------------

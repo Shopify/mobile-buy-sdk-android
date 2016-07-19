@@ -191,25 +191,25 @@ final class CustomerServiceDefault implements CustomerService {
             .flatMap(new Func1<CustomerToken, Observable<Customer>>() {
                 @Override
                 public Observable<Customer> call(CustomerToken customerToken) {
-                    return getCustomer(customerToken.getCustomerId());
+                    return getCustomer();
                 }
             })
             .observeOn(callbackScheduler);
     }
 
     @Override
-    public CancellableTask logoutCustomer(Long customerId, final Callback<Void> callback) {
-        return new CancellableTaskSubscriptionWrapper(logoutCustomer(customerId).subscribe(new InternalCallbackSubscriber<>(callback)));
+    public CancellableTask logoutCustomer(final Callback<Void> callback) {
+        return new CancellableTaskSubscriptionWrapper(logoutCustomer().subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
-    public Observable<Void> logoutCustomer(Long customerId) {
-        if (customerId == null) {
-            throw new NullPointerException("customer Id cannot be null");
+    public Observable<Void> logoutCustomer() {
+        if (getCustomerToken() == null) {
+            throw new IllegalStateException("customer must be logged in");
         }
 
         return retrofitService
-            .removeCustomerToken(customerId)
+            .removeCustomerToken(getCustomerToken().getCustomerId())
             .retryWhen(networkRetryPolicyProvider.provide())
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .map(new Func1<Response<Void>, Void>() {
@@ -251,18 +251,18 @@ final class CustomerServiceDefault implements CustomerService {
     }
 
     @Override
-    public CancellableTask getCustomer(final Long customerId, final Callback<Customer> callback) {
-        return new CancellableTaskSubscriptionWrapper(getCustomer(customerId).subscribe(new InternalCallbackSubscriber<>(callback)));
+    public CancellableTask getCustomer(final Callback<Customer> callback) {
+        return new CancellableTaskSubscriptionWrapper(getCustomer().subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
-    public Observable<Customer> getCustomer(final Long customerId) {
-        if (customerId == null) {
-            throw new NullPointerException("customer Id cannot be null");
+    public Observable<Customer> getCustomer() {
+        if (getCustomerToken() == null) {
+            throw new IllegalStateException("customer must be logged in");
         }
 
         return retrofitService
-            .getCustomer(customerId)
+            .getCustomer(getCustomerToken().getCustomerId())
             .retryWhen(networkRetryPolicyProvider.provide())
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<CustomerWrapper, Customer>())
@@ -271,18 +271,18 @@ final class CustomerServiceDefault implements CustomerService {
     }
 
     @Override
-    public CancellableTask renewCustomer(Long customerId, final Callback<CustomerToken> callback) {
-        return new CancellableTaskSubscriptionWrapper(renewCustomer(customerId).subscribe(new InternalCallbackSubscriber<>(callback)));
+    public CancellableTask renewCustomer(final Callback<CustomerToken> callback) {
+        return new CancellableTaskSubscriptionWrapper(renewCustomer().subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
-    public Observable<CustomerToken> renewCustomer(Long customerId) {
-        if (customerId == null) {
-            throw new NullPointerException("customer Id cannot be null");
+    public Observable<CustomerToken> renewCustomer() {
+        if (getCustomerToken() == null) {
+            throw new IllegalStateException("customer must be logged in");
         }
 
         return retrofitService
-            .renewCustomerToken(EMPTY_BODY, customerId)
+            .renewCustomerToken(EMPTY_BODY, getCustomerToken().getCustomerId())
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<CustomerTokenWrapper, CustomerToken>())
             .onErrorResumeNext(new BuyClientExceptionHandler<CustomerToken>())
