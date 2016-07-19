@@ -238,12 +238,13 @@ final class CustomerServiceDefault implements CustomerService {
         if (customer == null) {
             throw new NullPointerException("customer cannot be null");
         }
-        if (customer.getId() == null) {
-            throw new IllegalArgumentException("customerId cannot be null");
+
+        if (getCustomerToken() == null) {
+            throw new IllegalStateException("customer must be logged in");
         }
 
         return retrofitService
-            .updateCustomer(customer.getId(), new CustomerWrapper(customer))
+            .updateCustomer(getCustomerToken().getCustomerId(), new CustomerWrapper(customer))
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<CustomerWrapper, Customer>())
             .onErrorResumeNext(new BuyClientExceptionHandler<Customer>())

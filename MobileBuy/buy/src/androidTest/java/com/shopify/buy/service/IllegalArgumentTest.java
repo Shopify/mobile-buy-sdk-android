@@ -362,14 +362,6 @@ public class IllegalArgumentTest extends ShopifyAndroidTestCase {
             }
         });
 
-        checkException(IllegalArgumentException.class, new Runnable() {
-            @Override
-            public void run() {
-                buyClient.updateCustomer(new Customer());
-            }
-        });
-
-
         checkException(NullPointerException.class, new Runnable() {
             @Override
             public void run() {
@@ -387,6 +379,13 @@ public class IllegalArgumentTest extends ShopifyAndroidTestCase {
 
         // now clear the token
         buyClient.setCustomerToken(null);
+
+        checkException(IllegalStateException.class, new Runnable() {
+            @Override
+            public void run() {
+                buyClient.updateCustomer(new Customer());
+            }
+        });
 
         checkException(IllegalStateException.class, new Runnable() {
             @Override
