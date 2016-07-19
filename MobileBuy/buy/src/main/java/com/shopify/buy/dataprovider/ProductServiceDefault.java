@@ -101,7 +101,7 @@ final class ProductServiceDefault implements ProductService {
         }
 
         return retrofitService
-            .getProductWithHandle(appId, handle)
+            .getProductByHandle(appId, handle)
             .retryWhen(networkRetryPolicyProvider.provide())
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<ProductListings, List<Product>>())
@@ -157,6 +157,31 @@ final class ProductServiceDefault implements ProductService {
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<ProductListings, List<Product>>())
             .onErrorResumeNext(new BuyClientExceptionHandler<List<Product>>())
+            .observeOn(callbackScheduler);
+    }
+
+    @Override
+    public CancellableTask getCollectionByHandle(final String handle, final Callback<Collection> callback) {
+        return new CancellableTaskSubscriptionWrapper(getCollectionByHandle(handle).subscribe(new InternalCallbackSubscriber<>(callback)));
+    }
+
+    @Override
+    public Observable<Collection> getCollectionByHandle(final String handle) {
+        if (handle == null) {
+            throw new NullPointerException("handle cannot be null");
+        }
+
+        if (TextUtils.isEmpty(handle)) {
+            throw new IllegalArgumentException("handle cannot be empty");
+        }
+
+        return retrofitService
+            .getCollectionByHandle(appId, handle)
+            .retryWhen(networkRetryPolicyProvider.provide())
+            .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
+            .compose(new UnwrapRetrofitBodyTransformer<CollectionListings, List<Collection>>())
+            .compose(new FirstListItemOrDefaultTransformer<Collection>())
+            .onErrorResumeNext(new BuyClientExceptionHandler<Collection>())
             .observeOn(callbackScheduler);
     }
 
