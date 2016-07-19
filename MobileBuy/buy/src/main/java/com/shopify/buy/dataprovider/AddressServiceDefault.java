@@ -24,6 +24,7 @@
 package com.shopify.buy.dataprovider;
 
 import com.shopify.buy.model.Address;
+import com.shopify.buy.model.CustomerToken;
 import com.shopify.buy.model.internal.AddressWrapper;
 import com.shopify.buy.model.internal.AddressesWrapper;
 
@@ -139,7 +140,9 @@ final class AddressServiceDefault implements AddressService {
 
     @Override
     public Observable<Address> getAddress(final Long addressId) {
-        if (customerService.getCustomerToken() == null) {
+        CustomerToken customerToken = customerService.getCustomerToken();
+
+        if (customerToken == null) {
             throw new IllegalStateException("customer must be logged in");
         }
 
@@ -148,7 +151,7 @@ final class AddressServiceDefault implements AddressService {
         }
 
         return retrofitService
-            .getAddress(customerService.getCustomerToken().getCustomerId(), addressId)
+            .getAddress(customerToken.getCustomerId(), addressId)
             .retryWhen(networkRetryPolicyProvider.provide())
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<AddressWrapper, Address>())
@@ -163,7 +166,9 @@ final class AddressServiceDefault implements AddressService {
 
     @Override
     public Observable<Address> updateAddress(final Address address) {
-        if (customerService.getCustomerToken() == null) {
+        CustomerToken customerToken = customerService.getCustomerToken();
+
+        if (customerToken == null) {
             throw new IllegalStateException("customer must be logged in");
         }
 
@@ -172,7 +177,7 @@ final class AddressServiceDefault implements AddressService {
         }
 
         return retrofitService
-            .updateAddress(customerService.getCustomerToken().getCustomerId(), new AddressWrapper(address), address.getId())
+            .updateAddress(customerToken.getCustomerId(), new AddressWrapper(address), address.getId())
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<AddressWrapper, Address>())
             .onErrorResumeNext(new BuyClientExceptionHandler<Address>())

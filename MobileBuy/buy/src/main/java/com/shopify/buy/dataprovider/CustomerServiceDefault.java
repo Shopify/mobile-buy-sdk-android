@@ -204,12 +204,14 @@ final class CustomerServiceDefault implements CustomerService {
 
     @Override
     public Observable<Void> logoutCustomer() {
-        if (getCustomerToken() == null) {
+        CustomerToken customerToken = getCustomerToken();
+
+        if (customerToken == null) {
             throw new IllegalStateException("customer must be logged in");
         }
 
         return retrofitService
-            .removeCustomerToken(getCustomerToken().getCustomerId())
+            .removeCustomerToken(customerToken.getCustomerId())
             .retryWhen(networkRetryPolicyProvider.provide())
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .map(new Func1<Response<Void>, Void>() {
@@ -239,12 +241,14 @@ final class CustomerServiceDefault implements CustomerService {
             throw new NullPointerException("customer cannot be null");
         }
 
-        if (getCustomerToken() == null) {
+        CustomerToken customerToken = getCustomerToken();
+
+        if (customerToken == null) {
             throw new IllegalStateException("customer must be logged in");
         }
 
         return retrofitService
-            .updateCustomer(getCustomerToken().getCustomerId(), new CustomerWrapper(customer))
+            .updateCustomer(customerToken.getCustomerId(), new CustomerWrapper(customer))
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<CustomerWrapper, Customer>())
             .onErrorResumeNext(new BuyClientExceptionHandler<Customer>())
@@ -258,12 +262,14 @@ final class CustomerServiceDefault implements CustomerService {
 
     @Override
     public Observable<Customer> getCustomer() {
-        if (getCustomerToken() == null) {
+        CustomerToken customerToken = getCustomerToken();
+
+        if (customerToken == null) {
             throw new IllegalStateException("customer must be logged in");
         }
 
         return retrofitService
-            .getCustomer(getCustomerToken().getCustomerId())
+            .getCustomer(customerToken.getCustomerId())
             .retryWhen(networkRetryPolicyProvider.provide())
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<CustomerWrapper, Customer>())
@@ -278,12 +284,14 @@ final class CustomerServiceDefault implements CustomerService {
 
     @Override
     public Observable<CustomerToken> renewCustomer() {
-        if (getCustomerToken() == null) {
+        CustomerToken customerToken = getCustomerToken();
+
+        if (customerToken == null) {
             throw new IllegalStateException("customer must be logged in");
         }
 
         return retrofitService
-            .renewCustomerToken(EMPTY_BODY, getCustomerToken().getCustomerId())
+            .renewCustomerToken(EMPTY_BODY, customerToken.getCustomerId())
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<CustomerTokenWrapper, CustomerToken>())
             .onErrorResumeNext(new BuyClientExceptionHandler<CustomerToken>())

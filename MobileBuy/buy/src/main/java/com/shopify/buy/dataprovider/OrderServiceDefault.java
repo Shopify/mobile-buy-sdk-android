@@ -23,6 +23,7 @@
  */
 package com.shopify.buy.dataprovider;
 
+import com.shopify.buy.model.CustomerToken;
 import com.shopify.buy.model.Order;
 import com.shopify.buy.model.internal.OrderWrapper;
 import com.shopify.buy.model.internal.OrdersWrapper;
@@ -65,12 +66,14 @@ final class OrderServiceDefault implements OrderService {
 
     @Override
     public Observable<List<Order>> getOrders() {
-        if (customerService.getCustomerToken() == null) {
+        CustomerToken customerToken = customerService.getCustomerToken();
+
+        if (customerToken == null) {
             throw new IllegalStateException("customer must be logged in");
         }
 
         return retrofitService
-            .getOrders(customerService.getCustomerToken().getCustomerId())
+            .getOrders(customerToken.getCustomerId())
             .retryWhen(networkRetryPolicyProvider.provide())
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<OrdersWrapper, List<Order>>())
@@ -89,12 +92,14 @@ final class OrderServiceDefault implements OrderService {
             throw new NullPointerException("orderId cannot be null");
         }
 
-        if (customerService.getCustomerToken() == null) {
+        CustomerToken customerToken = customerService.getCustomerToken();
+
+        if (customerToken == null) {
             throw new IllegalStateException("customer must be logged in");
         }
 
         return retrofitService
-            .getOrder(orderId, customerService.getCustomerToken().getCustomerId())
+            .getOrder(orderId, customerToken.getCustomerId())
             .retryWhen(networkRetryPolicyProvider.provide())
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<OrderWrapper, Order>())
