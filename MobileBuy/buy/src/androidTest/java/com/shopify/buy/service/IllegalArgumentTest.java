@@ -31,6 +31,7 @@ import com.shopify.buy.model.Address;
 import com.shopify.buy.model.Checkout;
 import com.shopify.buy.model.CreditCard;
 import com.shopify.buy.model.Customer;
+import com.shopify.buy.model.CustomerToken;
 import com.shopify.buy.model.PaymentToken;
 
 import junit.framework.Assert;
@@ -289,6 +290,8 @@ public class IllegalArgumentTest extends ShopifyAndroidTestCase {
 
     @Test
     public void testCustomerServiceArguments() {
+        buyClient.setCustomerToken(new CustomerToken());
+
         checkException(NullPointerException.class, new Runnable() {
             @Override
             public void run() {
@@ -366,20 +369,6 @@ public class IllegalArgumentTest extends ShopifyAndroidTestCase {
             }
         });
 
-        checkException(IllegalArgumentException.class, new Runnable() {
-            @Override
-            public void run() {
-                buyClient.updateCustomer(new Customer());
-            }
-        });
-
-        checkException(NullPointerException.class, new Runnable() {
-            @Override
-            public void run() {
-                buyClient.getCustomer(null);
-            }
-        });
-
         checkException(NullPointerException.class, new Runnable() {
             @Override
             public void run() {
@@ -393,96 +382,146 @@ public class IllegalArgumentTest extends ShopifyAndroidTestCase {
                 buyClient.recoverPassword("");
             }
         });
+
+
+        // now clear the token
+        buyClient.setCustomerToken(null);
+
+        checkException(IllegalStateException.class, new Runnable() {
+            @Override
+            public void run() {
+                buyClient.updateCustomer(new Customer());
+            }
+        });
+
+        checkException(IllegalStateException.class, new Runnable() {
+            @Override
+            public void run() {
+                buyClient.logoutCustomer();
+            }
+        });
+
+        checkException(IllegalStateException.class, new Runnable() {
+            @Override
+            public void run() {
+                buyClient.getCustomer();
+            }
+        });
+
+        checkException(IllegalStateException.class, new Runnable() {
+            @Override
+            public void run() {
+                buyClient.renewCustomer();
+            }
+        });
     }
 
     @Test
     public void testOrderServiceArguments() {
-        checkException(NullPointerException.class, new Runnable() {
-            @Override
-            public void run() {
-                buyClient.getOrders(null);
-            }
-        });
+        buyClient.setCustomerToken(new CustomerToken());
 
         checkException(NullPointerException.class, new Runnable() {
             @Override
             public void run() {
-                buyClient.getOrder(null, 1L);
+                buyClient.getOrder(null);
             }
         });
 
-        checkException(NullPointerException.class, new Runnable() {
+        // now clear the token
+        buyClient.setCustomerToken(null);
+
+        checkException(IllegalStateException.class, new Runnable() {
             @Override
             public void run() {
-                buyClient.getOrder(1L, null);
+                buyClient.getOrders();
+            }
+        });
+
+        checkException(IllegalStateException.class, new Runnable() {
+            @Override
+            public void run() {
+                buyClient.getOrder(1L);
             }
         });
     }
 
     @Test
     public void testAddressServiceArguments() {
+        buyClient.setCustomerToken(new CustomerToken());
+
         checkException(NullPointerException.class, new Runnable() {
             @Override
             public void run() {
-                buyClient.createAddress(null, new Address());
+                buyClient.createAddress(null);
             }
         });
 
         checkException(NullPointerException.class, new Runnable() {
             @Override
             public void run() {
-                buyClient.createAddress(1L, null);
+                buyClient.deleteAddress(null);
             }
         });
 
         checkException(NullPointerException.class, new Runnable() {
             @Override
             public void run() {
-                buyClient.deleteAddress(null, 1L);
+                buyClient.getAddress(null);
             }
         });
 
         checkException(NullPointerException.class, new Runnable() {
             @Override
             public void run() {
-                buyClient.deleteAddress(1L, null);
+                buyClient.updateAddress(null);
             }
         });
 
         checkException(NullPointerException.class, new Runnable() {
             @Override
             public void run() {
-                buyClient.getAddresses(null);
+                buyClient.updateAddress(null);
             }
         });
 
-        checkException(NullPointerException.class, new Runnable() {
+        // now clear the token
+        buyClient.setCustomerToken(null);
+
+        checkException(IllegalStateException.class, new Runnable() {
             @Override
             public void run() {
-                buyClient.getAddress(null, 1L);
+                buyClient.createAddress(new Address());
             }
         });
 
-        checkException(NullPointerException.class, new Runnable() {
+        checkException(IllegalStateException.class, new Runnable() {
             @Override
             public void run() {
-                buyClient.getAddress(1L, null);
+                buyClient.deleteAddress(1L);
             }
         });
 
-        checkException(NullPointerException.class, new Runnable() {
+        checkException(IllegalStateException.class, new Runnable() {
             @Override
             public void run() {
-                buyClient.updateAddress(null, new Address());
+                buyClient.getAddresses();
             }
         });
 
-        checkException(NullPointerException.class, new Runnable() {
+        checkException(IllegalStateException.class, new Runnable() {
             @Override
             public void run() {
-                buyClient.updateAddress(1L, null);
+                buyClient.getAddress(1L);
             }
         });
+
+        checkException(IllegalStateException.class, new Runnable() {
+            @Override
+            public void run() {
+                buyClient.updateAddress(new Address());
+            }
+        });
+
     }
 
     private static void checkException(final Class exceptionClazz, final Runnable call) {
