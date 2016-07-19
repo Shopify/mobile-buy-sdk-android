@@ -446,10 +446,19 @@ public class CustomerTest extends ShopifyAndroidTestCase {
 
         final CountDownLatch latch = new CountDownLatch(1);
 
+        updateAddress(address);
+
+        latch.await();
+    }
+
+    public void updateAddress(Address address) throws InterruptedException {
+        final CountDownLatch latch = new CountDownLatch(1);
+
         buyClient.updateAddress(customer.getId(), address, new Callback<Address>() {
             @Override
             public void success(Address address) {
                 assertNotNull(address);
+                CustomerTest.this.address = address;
                 latch.countDown();
             }
 
@@ -461,6 +470,24 @@ public class CustomerTest extends ShopifyAndroidTestCase {
 
         latch.await();
     }
+
+
+    @Test void testSetDefaultAddress() throws InterruptedException {
+        testGetAddress();
+
+        Address defaultAddress = address;
+
+        defaultAddress.setDefaultAddress(true);
+        updateAddress(defaultAddress);
+        assertEquals(true, address.isDefaultAddress());
+        assertEquals(defaultAddress, address);
+
+        defaultAddress.setDefaultAddress(false);
+        updateAddress(defaultAddress);
+        assertEquals(false, address.isDefaultAddress());
+        assertEquals(defaultAddress, address);
+    }
+
 
     private Customer getExistingCustomer() {
         Customer customer = new Customer();
