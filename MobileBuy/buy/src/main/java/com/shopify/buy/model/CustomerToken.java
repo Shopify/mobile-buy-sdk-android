@@ -85,18 +85,16 @@ public class CustomerToken {
 
         CustomerToken that = (CustomerToken) o;
 
-        if (!accessToken.equals(that.accessToken)) return false;
-        if (!customerId.equals(that.customerId)) return false;
-        return expiresAt.equals(that.expiresAt);
+        if (accessToken != null ? !accessToken.equals(that.accessToken) : that.accessToken != null)
+            return false;
+        return customerId != null ? customerId.equals(that.customerId) : that.customerId == null;
 
     }
 
     @Override
     public int hashCode() {
-        int result = accessToken.hashCode();
-        result = 31 * result + customerId.hashCode();
-        result = 31 * result + expiresAt.hashCode();
+        int result = accessToken != null ? accessToken.hashCode() : 0;
+        result = 31 * result + (customerId != null ? customerId.hashCode() : 0);
         return result;
     }
-
 }
