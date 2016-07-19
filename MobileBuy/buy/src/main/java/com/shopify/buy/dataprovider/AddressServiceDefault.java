@@ -70,7 +70,9 @@ final class AddressServiceDefault implements AddressService {
 
     @Override
     public Observable<Address> createAddress(final Address address) {
-        if (customerService.getCustomerToken() == null) {
+        CustomerToken customerToken = customerService.getCustomerToken();
+
+        if (customerToken == null) {
             throw new IllegalStateException("customer must be logged in");
         }
 
@@ -79,7 +81,7 @@ final class AddressServiceDefault implements AddressService {
         }
 
         return retrofitService
-            .createAddress(customerService.getCustomerToken().getCustomerId(), new AddressWrapper(address))
+            .createAddress(customerToken.getCustomerId(), new AddressWrapper(address))
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<AddressWrapper, Address>())
             .onErrorResumeNext(new BuyClientExceptionHandler<Address>())
@@ -91,7 +93,9 @@ final class AddressServiceDefault implements AddressService {
     }
 
     public Observable<Void> deleteAddress(Long addressId) {
-        if (customerService.getCustomerToken() == null) {
+        CustomerToken customerToken = customerService.getCustomerToken();
+
+        if (customerToken == null) {
             throw new IllegalStateException("customer must be logged in");
         }
 
@@ -101,7 +105,7 @@ final class AddressServiceDefault implements AddressService {
 
         int[] successCodes = {HTTP_NO_CONTENT};
 
-        return retrofitService.deleteAddress(customerService.getCustomerToken().getCustomerId(), addressId)
+        return retrofitService.deleteAddress(customerToken.getCustomerId(), addressId)
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>(successCodes))
             .map(new Func1<Response<Void>, Void>() {
                 @Override
