@@ -42,6 +42,13 @@ public interface CustomerService {
     CustomerToken getCustomerToken();
 
     /**
+     * Set customer token
+     *
+     * @return token
+     */
+    void setCustomerToken(CustomerToken customerToken);
+
+    /**
      * Create a new Customer on Shopify
      *
      * @param accountCredentials the account credentials with an email, password, first name, and last name of the {@link Customer} to be created, not null

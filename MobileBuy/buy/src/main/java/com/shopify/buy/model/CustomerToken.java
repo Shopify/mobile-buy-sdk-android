@@ -53,6 +53,19 @@ public class CustomerToken {
         }
     }
 
+    /**
+     * Create a CustomerToken
+     *
+     * @param accessToken  The access token, not null
+     * @param customerId  The customerId, not null
+     * @param expiresAt The date the token expires, optional.
+     */
+    public CustomerToken(String accessToken, Long customerId, Date expiresAt) {
+        this.accessToken = accessToken;
+        this.customerId = customerId;
+        this.expiresAt = expiresAt;
+    }
+
     public String getAccessToken() {
         return accessToken;
     }
@@ -64,4 +77,26 @@ public class CustomerToken {
     public Date getExpiresAt() {
         return expiresAt;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        CustomerToken that = (CustomerToken) o;
+
+        if (!accessToken.equals(that.accessToken)) return false;
+        if (!customerId.equals(that.customerId)) return false;
+        return expiresAt.equals(that.expiresAt);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = accessToken.hashCode();
+        result = 31 * result + customerId.hashCode();
+        result = 31 * result + expiresAt.hashCode();
+        return result;
+    }
+
 }

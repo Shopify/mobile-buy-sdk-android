@@ -23,8 +23,6 @@
  */
 package com.shopify.buy.dataprovider;
 
-import android.text.TextUtils;
-
 import com.shopify.buy.model.Order;
 import com.shopify.buy.model.internal.OrderWrapper;
 import com.shopify.buy.model.internal.OrdersWrapper;
@@ -77,12 +75,12 @@ final class OrderServiceDefault implements OrderService {
     }
 
     @Override
-    public CancellableTask getOrder(final Long customerId, final Long orderId, final Callback<Order> callback) {
-        return new CancellableTaskSubscriptionWrapper(getOrder(customerId, orderId).subscribe(new InternalCallbackSubscriber<>(callback)));
+    public CancellableTask getOrder(final Long orderId, final Long customerId, final Callback<Order> callback) {
+        return new CancellableTaskSubscriptionWrapper(getOrder(orderId, customerId).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
-    public Observable<Order> getOrder(final Long customerId, final Long orderId) {
+    public Observable<Order> getOrder(final Long orderId, final Long customerId) {
         if (orderId == null) {
             throw new NullPointerException("orderId cannot be null");
         }
@@ -92,7 +90,7 @@ final class OrderServiceDefault implements OrderService {
         }
 
         return retrofitService
-            .getOrder(customerId, orderId)
+            .getOrder(orderId, customerId)
             .retryWhen(networkRetryPolicyProvider.provide())
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<OrderWrapper, Order>())

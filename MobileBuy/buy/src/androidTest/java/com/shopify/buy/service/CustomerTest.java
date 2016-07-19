@@ -298,7 +298,7 @@ public class CustomerTest extends ShopifyAndroidTestCase {
 
         final CountDownLatch latch = new CountDownLatch(1);
 
-        buyClient.getOrder(customer.getId(), orderId, new Callback<Order>() {
+        buyClient.getOrder(orderId, customer.getId(), new Callback<Order>() {
             @Override
             public void success(Order order) {
                 assertNotNull(order);
@@ -335,6 +335,31 @@ public class CustomerTest extends ShopifyAndroidTestCase {
 
         latch.await();
     }
+
+    @Test
+    public void testSetGetToken() throws InterruptedException {
+        testCustomerLogin();
+
+        CustomerToken customerToken = buyClient.getCustomerToken();
+
+        // Test setting from an existing CustomerToken
+        buyClient.setCustomerToken(null);
+        assertEquals(null, buyClient.getCustomerToken());
+        CustomerToken manualCustomerToken = new CustomerToken(customerToken);
+        buyClient.setCustomerToken(customerToken);
+        assertEquals(manualCustomerToken, buyClient.getCustomerToken());
+
+        buyClient.setCustomerToken(null);
+        assertEquals(null, buyClient.getCustomerToken());
+
+        // Test setting from an existing access token string
+        buyClient.setCustomerToken(null);
+        assertEquals(null, buyClient.getCustomerToken());
+        manualCustomerToken = new CustomerToken(customerToken.getAccessToken(), customerToken.getCustomerId(), customerToken.getExpiresAt());
+        buyClient.setCustomerToken(manualCustomerToken);
+        assertEquals(customerToken, buyClient.getCustomerToken());
+    }
+
 
     @Test
     public void testCreateAddress() throws InterruptedException {

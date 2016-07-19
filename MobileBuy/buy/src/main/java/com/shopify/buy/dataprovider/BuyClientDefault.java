@@ -286,6 +286,11 @@ final class BuyClientDefault implements BuyClient {
     }
 
     @Override
+    public void setCustomerToken(CustomerToken customerToken) {
+        customerService.setCustomerToken(customerToken);
+    }
+
+    @Override
     public CancellableTask createCustomer(AccountCredentials accountCredentials, Callback<Customer> callback) {
         return customerService.createCustomer(accountCredentials, callback);
     }
@@ -388,13 +393,13 @@ final class BuyClientDefault implements BuyClient {
     }
 
     @Override
-    public CancellableTask getOrder(Long customerId, Long orderId, Callback<Order> callback) {
-        return orderService.getOrder(customerId, orderId, callback);
+    public CancellableTask getOrder(Long orderId, Long customerId, Callback<Order> callback) {
+        return orderService.getOrder(orderId, customerId, callback);
     }
 
     @Override
-    public Observable<Order> getOrder(Long customerId, Long orderId) {
-        return orderService.getOrder(customerId, orderId);
+    public Observable<Order> getOrder(Long orderId, Long customerId) {
+        return orderService.getOrder(orderId, customerId);
     }
 
     // ----------- AddressService API ---------------

@@ -75,6 +75,11 @@ final class CustomerServiceDefault implements CustomerService {
     }
 
     @Override
+    public void setCustomerToken(CustomerToken customerToken) {
+        customerTokenRef.set(customerToken);
+    }
+
+    @Override
     public CancellableTask createCustomer(final AccountCredentials accountCredentials, final Callback<Customer> callback) {
         return new CancellableTaskSubscriptionWrapper(createCustomer(accountCredentials).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
