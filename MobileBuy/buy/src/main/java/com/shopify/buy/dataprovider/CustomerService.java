@@ -43,8 +43,7 @@ public interface CustomerService {
 
     /**
      * Set customer token
-     *
-     * @return token
+     * @param customerToken the {@link CustomerToken} for a {@link Customer}
      */
     void setCustomerToken(CustomerToken customerToken);
 
