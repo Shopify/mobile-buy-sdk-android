@@ -196,7 +196,7 @@ public class LineItem {
     }
 
     /**
-     * @return The total discount applied to this line item. This is only available for line items returned using {@link com.shopify.buy.dataprovider.BuyClient#getCustomer(Long, Callback)}.
+     * @return The total discount applied to this line item. This is only available for line items returned using {@link com.shopify.buy.dataprovider.BuyClient#getCustomer(Callback)}.
      */
     public String getTotalDiscount() {
         return totalDiscount;
