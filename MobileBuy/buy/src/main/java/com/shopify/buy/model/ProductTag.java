@@ -21,22 +21,23 @@
  *   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  *   THE SOFTWARE.
  */
-package com.shopify.buy.dataprovider;
+package com.shopify.buy.model;
 
-import com.shopify.buy.model.internal.OrderWrapper;
-import com.shopify.buy.model.internal.OrdersWrapper;
+import com.google.gson.annotations.SerializedName;
 
-import retrofit2.Response;
-import retrofit2.http.GET;
-import retrofit2.http.Path;
-import rx.Observable;
+/**
+ * Represents tag information attached to the product
+ */
+public class ProductTag extends ShopifyObject {
 
-interface OrderRetrofitService {
+    @SerializedName("title")
+    private String title;
 
-    @GET("api/customers/{customerId}/orders.json")
-    Observable<Response<OrdersWrapper>> getOrders(@Path("customerId") Long customerId);
+    public String getTitle() {
+        return title;
+    }
 
-    @GET("api/customers/{customerId}/orders/{orderId}")
-    Observable<Response<OrderWrapper>> getOrder(@Path("orderId") Long orderId, @Path("customerId") Long customerId);
-
+    public void setTitle(String title) {
+        this.title = title;
+    }
 }

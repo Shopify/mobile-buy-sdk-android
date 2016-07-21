@@ -24,8 +24,10 @@ import org.apache.http.HttpStatus;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -558,8 +560,6 @@ public class BuyTest extends ShopifyAndroidTestCase {
         countDownLatch.await();
     }
 
-
-
     @Test
     public void testExpiringCheckout() throws InterruptedException {
         createValidCheckout();
@@ -581,6 +581,68 @@ public class BuyTest extends ShopifyAndroidTestCase {
                 // make sure that only the reservation time changed.
                 assertEquals(before.toJsonString(), checkout.toJsonString());
 
+                latch.countDown();
+            }
+
+            @Override
+            public void failure(BuyClientError error) {
+                fail(error.getRetrofitErrorBody());
+            }
+        });
+
+        latch.await();
+    }
+
+    @Test
+    public void testGetProductTags() throws Exception {
+        final CountDownLatch latch = new CountDownLatch(1);
+        buyClient.getProductTags(1, new Callback<List<String>>() {
+            @Override
+            public void success(List<String> response) {
+                assertNotNull(response);
+                assertTrue(response.contains("don't touch me"));
+                latch.countDown();
+                // well we can't really test response for some values, as we can't control from client list of tags
+            }
+
+            @Override
+            public void failure(BuyClientError error) {
+                fail(error.getRetrofitErrorBody());
+            }
+        });
+        latch.await();
+    }
+
+    @Test
+    public void testGetProductsByTags() throws Exception {
+        final CountDownLatch latch = new CountDownLatch(2);
+
+        Set<String> tags = new HashSet<>();
+        tags.add("MISSION");
+        tags.add("IMPOSSIBLE");
+
+        buyClient.getProducts(1, null, tags, null, new Callback<List<Product>>() {
+            @Override
+            public void success(List<Product> response) {
+                assertNotNull(response);
+                assertTrue(response.isEmpty());
+                latch.countDown();
+            }
+
+            @Override
+            public void failure(BuyClientError error) {
+                fail(error.getRetrofitErrorBody());
+            }
+        });
+
+        tags = new HashSet<>();
+        tags.add("don't touch me");
+
+        buyClient.getProducts(1, null, tags, null, new Callback<List<Product>>() {
+            @Override
+            public void success(List<Product> response) {
+                assertNotNull(response);
+                assertTrue(!response.isEmpty());
                 latch.countDown();
             }
 

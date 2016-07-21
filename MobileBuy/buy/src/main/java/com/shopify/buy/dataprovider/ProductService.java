@@ -27,6 +27,7 @@ import com.shopify.buy.model.Collection;
 import com.shopify.buy.model.Product;
 
 import java.util.List;
+import java.util.Set;
 
 import rx.Observable;
 
@@ -111,44 +112,21 @@ public interface ProductService {
     Observable<List<Product>> getProducts(List<Long> productIds);
 
     /**
-     * Fetch the list of Products in a Collection using the sort order defined in the shop admin
+     * Fetch the collection with the specified handle
      *
-     * @param page         the 1-based page index. The page size is set by {@link BuyClientBuilder#productPageSize} configuration.
-     * @param collectionId the collectionId that we want to fetch products for, not null
-     * @param callback     the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
+     * @param handle   the handle for the collection to fetch, not null or empty
+     * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      * @return cancelable task
      */
-    CancellableTask getProducts(int page, Long collectionId, Callback<List<Product>> callback);
+    CancellableTask getCollectionByHandle(String handle, Callback<Collection> callback);
 
     /**
-     * Fetch the list of Products in a Collection using the sort order defined in the shop admin
+     * Fetch the collection with the specified handle
      *
-     * @param page         the 1-based page index. The page size is set by {@link BuyClientBuilder#productPageSize} configuration.
-     * @param collectionId the collectionId that we want to fetch products for, not null
-     * @return cold observable that emits requested list of products
+     * @param handle the handle for the collection to fetch, not null or empty
+     * @return cold observable that emits requested product with the specified handle
      */
-    Observable<List<Product>> getProducts(int page, Long collectionId);
-
-    /**
-     * Fetch the list of Products in a Collection
-     *
-     * @param page         the 1-based page index. The page size is set by {@link BuyClientBuilder#productPageSize} configuration.
-     * @param collectionId the collectionId that we want to fetch products for, not null
-     * @param sortOrder    the sort order for the collection, not null
-     * @param callback     the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
-     * @return cancelable task
-     */
-    CancellableTask getProducts(int page, Long collectionId, Collection.SortOrder sortOrder, Callback<List<Product>> callback);
-
-    /**
-     * Fetch the list of Products in a Collection
-     *
-     * @param page         the 1-based page index. The page size is set by {@link BuyClientBuilder#productPageSize} configuration.
-     * @param collectionId the collectionId that we want to fetch products for, not null
-     * @param sortOrder    the sort order for the collection, not null
-     * @return cold observable that emits requested list of products
-     */
-    Observable<List<Product>> getProducts(int page, Long collectionId, Collection.SortOrder sortOrder);
+    Observable<Collection> getCollectionByHandle(String handle);
 
     /**
      * Fetch a page of collections
@@ -166,4 +144,48 @@ public interface ProductService {
      * @return cold observable that emits requested list of collections
      */
     Observable<List<Collection>> getCollections(int page);
+
+    /**
+     * Fetch a page of product tags
+     *
+     * @param page     the 1-based page index. The page size is set by {@link BuyClientBuilder#productPageSize} configuration.
+     * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
+     * @return cancelable task
+     */
+    CancellableTask getProductTags(int page, Callback<List<String>> callback);
+
+    /**
+     * Fetch a page of product tags
+     *
+     * @param page the 1-based page index. The page size is set by {@link BuyClientBuilder#productPageSize} configuration.
+     * @return cold observable that emits requested set of tags
+     */
+    Observable<List<String>> getProductTags(int page);
+
+    /**
+     * Fetch the products filtered by specified collection and tags
+     *
+     * @param page         the 1-based page index. The page size is set by {@link BuyClientBuilder#productPageSize} configuration.
+     * @param collectionId the collectionId that we want to fetch products for, can be null
+     * @param tags         set of tags which each product must contain, can be null
+     * @param sortOrder    the sort order of products for the specified collection,
+     *                     in case of {@code null} value {@link Collection.SortOrder#COLLECTION_DEFAULT} will be used as default,
+     *                     will be ignored if specified collection id is {@code null}
+     * @param callback     the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
+     * @return cancelable task
+     */
+    CancellableTask getProducts(int page, Long collectionId, Set<String> tags, Collection.SortOrder sortOrder, Callback<List<Product>> callback);
+
+    /**
+     * Fetch the products filtered by specified collection and tags
+     *
+     * @param page         the 1-based page index. The page size is set by {@link BuyClientBuilder#productPageSize} configuration.
+     * @param collectionId the collectionId that we want to fetch products for, can be null
+     * @param tags         set of tags which each product must contain, can be null
+     * @param sortOrder    the sort order of products for the specified collection,
+     *                     in case of {@code null} value {@link Collection.SortOrder#COLLECTION_DEFAULT} will be used as default,
+     *                     will be ignored if specified collection id is {@code null}
+     * @return cold observable that emits requested list of product
+     */
+    Observable<List<Product>> getProducts(int page, Long collectionId, Set<String> tags, Collection.SortOrder sortOrder);
 }

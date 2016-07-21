@@ -75,6 +75,11 @@ final class CustomerServiceDefault implements CustomerService {
     }
 
     @Override
+    public void setCustomerToken(CustomerToken customerToken) {
+        customerTokenRef.set(customerToken);
+    }
+
+    @Override
     public CancellableTask createCustomer(final AccountCredentials accountCredentials, final Callback<Customer> callback) {
         return new CancellableTaskSubscriptionWrapper(createCustomer(accountCredentials).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
@@ -186,7 +191,7 @@ final class CustomerServiceDefault implements CustomerService {
             .flatMap(new Func1<CustomerToken, Observable<Customer>>() {
                 @Override
                 public Observable<Customer> call(CustomerToken customerToken) {
-                    return getCustomer(customerToken.getCustomerId());
+                    return getCustomer();
                 }
             })
             .observeOn(callbackScheduler);
@@ -199,9 +204,10 @@ final class CustomerServiceDefault implements CustomerService {
 
     @Override
     public Observable<Void> logoutCustomer() {
-        final CustomerToken customerToken = customerTokenRef.get();
+        CustomerToken customerToken = getCustomerToken();
+
         if (customerToken == null) {
-            return Observable.just(null);
+            throw new IllegalStateException("customer must be logged in");
         }
 
         return retrofitService
@@ -234,12 +240,15 @@ final class CustomerServiceDefault implements CustomerService {
         if (customer == null) {
             throw new NullPointerException("customer cannot be null");
         }
-        if (customer.getId() == null) {
-            throw new IllegalArgumentException("customerId cannot be null");
+
+        CustomerToken customerToken = getCustomerToken();
+
+        if (customerToken == null) {
+            throw new IllegalStateException("customer must be logged in");
         }
 
         return retrofitService
-            .updateCustomer(customer.getId(), new CustomerWrapper(customer))
+            .updateCustomer(customerToken.getCustomerId(), new CustomerWrapper(customer))
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<CustomerWrapper, Customer>())
             .onErrorResumeNext(new BuyClientExceptionHandler<Customer>())
@@ -247,18 +256,20 @@ final class CustomerServiceDefault implements CustomerService {
     }
 
     @Override
-    public CancellableTask getCustomer(final Long customerId, final Callback<Customer> callback) {
-        return new CancellableTaskSubscriptionWrapper(getCustomer(customerId).subscribe(new InternalCallbackSubscriber<>(callback)));
+    public CancellableTask getCustomer(final Callback<Customer> callback) {
+        return new CancellableTaskSubscriptionWrapper(getCustomer().subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
-    public Observable<Customer> getCustomer(final Long customerId) {
-        if (customerId == null) {
-            throw new NullPointerException("customer Id cannot be null");
+    public Observable<Customer> getCustomer() {
+        CustomerToken customerToken = getCustomerToken();
+
+        if (customerToken == null) {
+            throw new IllegalStateException("customer must be logged in");
         }
 
         return retrofitService
-            .getCustomer(customerId)
+            .getCustomer(customerToken.getCustomerId())
             .retryWhen(networkRetryPolicyProvider.provide())
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<CustomerWrapper, Customer>())
@@ -273,9 +284,10 @@ final class CustomerServiceDefault implements CustomerService {
 
     @Override
     public Observable<CustomerToken> renewCustomer() {
-        final CustomerToken customerToken = customerTokenRef.get();
+        CustomerToken customerToken = getCustomerToken();
+
         if (customerToken == null) {
-            return Observable.just(null);
+            throw new IllegalStateException("customer must be logged in");
         }
 
         return retrofitService

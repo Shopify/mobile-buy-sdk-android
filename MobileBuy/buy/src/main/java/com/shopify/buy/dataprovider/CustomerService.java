@@ -42,6 +42,12 @@ public interface CustomerService {
     CustomerToken getCustomerToken();
 
     /**
+     * Set customer token
+     * @param customerToken the {@link CustomerToken} for a {@link Customer}
+     */
+    void setCustomerToken(CustomerToken customerToken);
+
+    /**
      * Create a new Customer on Shopify
      *
      * @param accountCredentials the account credentials with an email, password, first name, and last name of the {@link Customer} to be created, not null
@@ -118,7 +124,7 @@ public interface CustomerService {
     Observable<Customer> loginCustomer(AccountCredentials accountCredentials);
 
     /**
-     * Log a Customer out from Shopify
+     * Logout the current Customer from Shopify
      *
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      * @return cancelable task
@@ -126,7 +132,7 @@ public interface CustomerService {
     CancellableTask logoutCustomer(Callback<Void> callback);
 
     /**
-     * Log a Customer out from Shopify
+     * Logout the current Customer from Shopify
      *
      * @return cold observable that log customer out and emits nothing
      */
@@ -150,24 +156,22 @@ public interface CustomerService {
     Observable<Customer> updateCustomer(Customer customer);
 
     /**
-     * Retrieve a Customer's details from Shopify.
+     * Retrieve the logged in Customer's details from Shopify.
      *
-     * @param customerId the identifier of a {@link CustomerToken} or {@link Customer}, not null
      * @param callback   the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      * @return cancelable task
      */
-    CancellableTask getCustomer(Long customerId, Callback<Customer> callback);
+    CancellableTask getCustomer(Callback<Customer> callback);
 
     /**
-     * Retrieve a Customer's details from Shopify.
+     * Retrieve the logged in Customer's details from Shopify.
      *
-     * @param customerId the identifier of a {@link CustomerToken} or {@link Customer}, not null
      * @return cold observable tha emits requested customer details
      */
-    Observable<Customer> getCustomer(Long customerId);
+    Observable<Customer> getCustomer();
 
     /**
-     * Renew a Customer login.  This should be called periodically to keep the token up to date.
+     * Renew the Customer login.  This should be called periodically to keep the token up to date.
      *
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      * @return cancelable task
@@ -175,7 +179,7 @@ public interface CustomerService {
     CancellableTask renewCustomer(Callback<CustomerToken> callback);
 
     /**
-     * Renew a Customer login.  This should be called periodically to keep the token up to date.
+     * Renew the Customer login.  This should be called periodically to keep the token up to date.
      *
      * @return cold observable that emits renewed customer token
      */

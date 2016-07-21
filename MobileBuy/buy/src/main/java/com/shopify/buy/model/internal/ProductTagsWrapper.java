@@ -21,22 +21,27 @@
  *   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  *   THE SOFTWARE.
  */
-package com.shopify.buy.dataprovider;
+package com.shopify.buy.model.internal;
 
-import com.shopify.buy.model.internal.OrderWrapper;
-import com.shopify.buy.model.internal.OrdersWrapper;
+import com.google.gson.annotations.SerializedName;
+import com.shopify.buy.model.ProductTag;
 
-import retrofit2.Response;
-import retrofit2.http.GET;
-import retrofit2.http.Path;
-import rx.Observable;
+import java.util.List;
 
-interface OrderRetrofitService {
+/**
+ * Represents a wrapper for list of product tags
+ */
+public class ProductTagsWrapper implements ResponseWrapper<List<ProductTag>> {
 
-    @GET("api/customers/{customerId}/orders.json")
-    Observable<Response<OrdersWrapper>> getOrders(@Path("customerId") Long customerId);
+    @SerializedName("tags")
+    private List<ProductTag> tags;
 
-    @GET("api/customers/{customerId}/orders/{orderId}")
-    Observable<Response<OrderWrapper>> getOrder(@Path("orderId") Long orderId, @Path("customerId") Long customerId);
+    @Override
+    public List<ProductTag> getContent() {
+        return tags;
+    }
 
+    public List<ProductTag> getTags() {
+        return tags;
+    }
 }

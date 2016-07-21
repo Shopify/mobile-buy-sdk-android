@@ -161,7 +161,7 @@ public final class CustomerLoginViewPresenter extends BaseViewPresenter<Customer
         }
 
         final WeakReference<CustomerLoginViewPresenter> presenterRef = new WeakReference<>(this);
-        fetchCustomerTask = SampleApplication.getBuyClient().getCustomer(customerToken.getCustomerId(), new Callback<Customer>() {
+        fetchCustomerTask = SampleApplication.getBuyClient().getCustomer(new Callback<Customer>() {
             @Override
             public void success(final Customer customer) {
                 final CustomerLoginViewPresenter presenter = presenterRef.get();
