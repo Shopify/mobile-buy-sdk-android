@@ -491,11 +491,7 @@ public class CustomerTest extends ShopifyAndroidTestCase {
 
         address.setCity("Toledo");
 
-        final CountDownLatch latch = new CountDownLatch(1);
-
         updateAddress(address);
-
-        latch.await();
     }
 
     public void updateAddress(Address address) throws InterruptedException {
@@ -521,21 +517,27 @@ public class CustomerTest extends ShopifyAndroidTestCase {
 
     @Test
     public void testSetDefaultAddress() throws InterruptedException {
-        testGetAddress();
+        testGetAddresses();
 
-        Address defaultAddress = address;
+        Address firstAddress = addresses.get(0);
+        Address secondAddress;
 
-        defaultAddress.setDefaultAddress(true);
-        updateAddress(defaultAddress);
-        assertEquals(true, address.isDefaultAddress());
-        assertEquals(defaultAddress, address);
+        firstAddress.setDefaultAddress(true);
+        updateAddress(firstAddress);
+        getAddresses();
+        firstAddress = addresses.get(0);
+        secondAddress = addresses.get(1);
+        assertEquals(true, firstAddress.isDefaultAddress());
+        assertEquals(false, secondAddress.isDefaultAddress());
 
-        defaultAddress.setDefaultAddress(false);
-        updateAddress(defaultAddress);
-        assertEquals(false, address.isDefaultAddress());
-        assertEquals(defaultAddress, address);
+        secondAddress.setDefaultAddress(true);
+        updateAddress(secondAddress);
+        getAddresses();
+        firstAddress = addresses.get(0);
+        secondAddress = addresses.get(1);
+        assertEquals(false, firstAddress.isDefaultAddress());
+        assertEquals(true, secondAddress.isDefaultAddress());
     }
-
 
     private Customer getExistingCustomer() {
         Customer customer = new Customer();
