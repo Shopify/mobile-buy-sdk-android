@@ -6,6 +6,7 @@ steps:
     timeout_in_minutes: 15
     agents: 
       android: true
+      env: production
 
    - type: waiter
 
@@ -16,4 +17,5 @@ steps:
     timeout_in_minutes: 15
     agents: 
       android: true
+      env: production
 
