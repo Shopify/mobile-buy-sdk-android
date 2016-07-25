@@ -40,6 +40,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 @RunWith(AndroidJUnit4.class)
 public class IllegalArgumentTest extends ShopifyAndroidTestCase {
@@ -71,6 +72,20 @@ public class IllegalArgumentTest extends ShopifyAndroidTestCase {
             @Override
             public void run() {
                 buyClient.getCollectionByHandle("");
+            }
+        });
+
+        checkException(NullPointerException.class, new Runnable() {
+            @Override
+            public void run() {
+                buyClient.getCollections(null);
+            }
+        });
+
+        checkException(IllegalArgumentException.class, new Runnable() {
+            @Override
+            public void run() {
+                buyClient.getCollections(Collections.<Long>emptyList());
             }
         });
 
