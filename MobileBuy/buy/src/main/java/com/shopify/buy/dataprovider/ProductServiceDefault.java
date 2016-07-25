@@ -82,7 +82,7 @@ final class ProductServiceDefault implements ProductService {
 
     @Override
     public Observable<List<Product>> getProducts(final int page) {
-        return getProducts(page, null, null, null);
+        return getProducts(page, (Set<String>) null);
     }
 
     @Override
@@ -261,7 +261,7 @@ final class ProductServiceDefault implements ProductService {
         }
 
         if (collectionId == null) {
-            throw new NullPointerException("collectionId List cannot be null");
+            throw new NullPointerException("collectionId cannot be null");
         }
 
         final String sortOrderStr = sortOrder != null ? sortOrder.toString() : Collection.SortOrder.COLLECTION_DEFAULT.toString();
