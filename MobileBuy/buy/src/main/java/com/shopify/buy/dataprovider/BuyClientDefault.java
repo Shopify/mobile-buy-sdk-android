@@ -532,6 +532,16 @@ final class BuyClientDefault implements BuyClient {
     }
 
     @Override
+    public CancellableTask getProducts(int page, Set<String> tags, Callback<List<Product>> callback) {
+        return productService.getProducts(page, tags, callback);
+    }
+
+    @Override
+    public Observable<List<Product>> getProducts(int page, Set<String> tags) {
+        return productService.getProducts(page, tags);
+    }
+
+    @Override
     public CancellableTask getProducts(int page, Long collectionId, Set<String> tags, SortOrder sortOrder, Callback<List<Product>> callback) {
         return productService.getProducts(page, collectionId, tags, sortOrder, callback);
     }

@@ -12,6 +12,7 @@ import com.shopify.buy.extensions.ShopifyAndroidTestCase;
 import com.shopify.buy.model.Address;
 import com.shopify.buy.model.Cart;
 import com.shopify.buy.model.Checkout;
+import com.shopify.buy.model.Collection;
 import com.shopify.buy.model.CreditCard;
 import com.shopify.buy.model.Discount;
 import com.shopify.buy.model.GiftCard;
@@ -621,7 +622,7 @@ public class BuyTest extends ShopifyAndroidTestCase {
         tags.add("MISSION");
         tags.add("IMPOSSIBLE");
 
-        buyClient.getProducts(1, null, tags, null, new Callback<List<Product>>() {
+        buyClient.getProducts(1, tags, new Callback<List<Product>>() {
             @Override
             public void success(List<Product> response) {
                 assertNotNull(response);
@@ -638,7 +639,7 @@ public class BuyTest extends ShopifyAndroidTestCase {
         tags = new HashSet<>();
         tags.add("don't touch me");
 
-        buyClient.getProducts(1, null, tags, null, new Callback<List<Product>>() {
+        buyClient.getProducts(1, tags, new Callback<List<Product>>() {
             @Override
             public void success(List<Product> response) {
                 assertNotNull(response);
@@ -653,6 +654,47 @@ public class BuyTest extends ShopifyAndroidTestCase {
         });
 
         latch.await();
+    }
+
+    @Test
+    public void testGetProductByCollectionAndTags() throws Exception {
+        final CountDownLatch getCollectionLatch = new CountDownLatch(1);
+        final AtomicReference<Collection> collectionRef = new AtomicReference<>();
+        buyClient.getCollections(1, new Callback<List<Collection>>() {
+            @Override
+            public void success(List<Collection> response) {
+                assertNotNull(response);
+                assertTrue(!response.isEmpty());
+                collectionRef.set(response.get(0));
+                getCollectionLatch.countDown();
+            }
+
+            @Override
+            public void failure(BuyClientError error) {
+                fail(error.getRetrofitErrorBody());
+            }
+        });
+        getCollectionLatch.await();
+
+        final Set<String> tags = new HashSet<>();
+        tags.add("don't touch me");
+
+        final CountDownLatch getProductsLatch = new CountDownLatch(1);
+        buyClient.getProducts(1, collectionRef.get().getCollectionId(), tags, null, new Callback<List<Product>>() {
+            @Override
+            public void success(List<Product> response) {
+                assertNotNull(response);
+                assertTrue(!response.isEmpty());
+                getProductsLatch.countDown();
+            }
+
+            @Override
+            public void failure(BuyClientError error) {
+                fail(error.getRetrofitErrorBody());
+            }
+        });
+
+        getProductsLatch.await();
     }
 
     /**

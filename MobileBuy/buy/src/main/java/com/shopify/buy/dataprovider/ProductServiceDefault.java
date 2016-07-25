@@ -229,6 +229,27 @@ final class ProductServiceDefault implements ProductService {
     }
 
     @Override
+    public CancellableTask getProducts(final int page, final Set<String> tags, final Callback<List<Product>> callback) {
+        return new CancellableTaskSubscriptionWrapper(getProducts(page, tags).subscribe(new InternalCallbackSubscriber<>(callback)));
+    }
+
+    @Override
+    public Observable<List<Product>> getProducts(final int page, final Set<String> tags) {
+        if (page < 1) {
+            throw new IllegalArgumentException("page is a 1-based index, value cannot be less than 1");
+        }
+
+        final String tagsQueryStr = tags != null && !tags.isEmpty() ? TextUtils.join(",", tags.toArray()) : null;
+        return retrofitService
+            .getProducts(appId, null, tagsQueryStr, null, page, pageSize)
+            .retryWhen(networkRetryPolicyProvider.provide())
+            .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
+            .compose(new UnwrapRetrofitBodyTransformer<ProductListings, List<Product>>())
+            .onErrorResumeNext(new BuyClientExceptionHandler<List<Product>>())
+            .observeOn(callbackScheduler);
+    }
+
+    @Override
     public CancellableTask getProducts(final int page, final Long collectionId, Set<String> tags, final Collection.SortOrder sortOrder, final Callback<List<Product>> callback) {
         return new CancellableTaskSubscriptionWrapper(getProducts(page, collectionId, tags, sortOrder).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
@@ -239,13 +260,12 @@ final class ProductServiceDefault implements ProductService {
             throw new IllegalArgumentException("page is a 1-based index, value cannot be less than 1");
         }
 
-        String sortOrderStr = sortOrder != null ? sortOrder.toString() : Collection.SortOrder.COLLECTION_DEFAULT.toString();
         if (collectionId == null) {
-            sortOrderStr = null;
+            throw new NullPointerException("collectionId List cannot be null");
         }
 
+        final String sortOrderStr = sortOrder != null ? sortOrder.toString() : Collection.SortOrder.COLLECTION_DEFAULT.toString();
         final String tagsQueryStr = tags != null && !tags.isEmpty() ? TextUtils.join(",", tags.toArray()) : null;
-
         return retrofitService
             .getProducts(appId, collectionId, tagsQueryStr, sortOrderStr, page, pageSize)
             .retryWhen(networkRetryPolicyProvider.provide())
