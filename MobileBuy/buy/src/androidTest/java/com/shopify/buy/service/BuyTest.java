@@ -665,7 +665,11 @@ public class BuyTest extends ShopifyAndroidTestCase {
             public void success(List<Collection> response) {
                 assertNotNull(response);
                 assertTrue(!response.isEmpty());
-                collectionRef.set(response.get(0));
+                for (Collection collection : response) {
+                    if ("frontpage".equals(collection.getHandle())) {
+                        collectionRef.set(collection);
+                    }
+                }
                 getCollectionLatch.countDown();
             }
 
