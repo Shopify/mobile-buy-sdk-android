@@ -522,21 +522,21 @@ public class CustomerTest extends ShopifyAndroidTestCase {
         Address firstAddress = addresses.get(0);
         Address secondAddress;
 
-        firstAddress.setDefaultAddress(true);
+        firstAddress.setDefault(true);
         updateAddress(firstAddress);
         getAddresses();
         firstAddress = addresses.get(0);
         secondAddress = addresses.get(1);
-        assertEquals(true, firstAddress.isDefaultAddress());
-        assertEquals(false, secondAddress.isDefaultAddress());
+        assertEquals(true, firstAddress.isDefault());
+        assertEquals(false, secondAddress.isDefault());
 
-        secondAddress.setDefaultAddress(true);
+        secondAddress.setDefault(true);
         updateAddress(secondAddress);
         getAddresses();
         firstAddress = addresses.get(0);
         secondAddress = addresses.get(1);
-        assertEquals(false, firstAddress.isDefaultAddress());
-        assertEquals(true, secondAddress.isDefaultAddress());
+        assertEquals(false, firstAddress.isDefault());
+        assertEquals(true, secondAddress.isDefault());
     }
 
     private Customer getExistingCustomer() {
