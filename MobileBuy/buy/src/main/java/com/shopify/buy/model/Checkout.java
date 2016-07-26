@@ -249,6 +249,15 @@ public class Checkout extends ShopifyObject {
     }
 
     /**
+     * @deprecated Use {@link #getOrder()}.
+     *
+     * @return The order status.
+     */
+    public String getOrderStatusUrl() {
+        return orderStatusUrl;
+    }
+
+    /**
      * @return The customer's email address.
      */
     public String getEmail() {
@@ -260,6 +269,15 @@ public class Checkout extends ShopifyObject {
      */
     public String getToken() {
         return token;
+    }
+
+    /**
+     * @deprecated Use {@link #getOrder()}.
+     *
+     * @return The order id.
+     */
+    public Long getOrderId() {
+        return orderId;
     }
 
     /**
