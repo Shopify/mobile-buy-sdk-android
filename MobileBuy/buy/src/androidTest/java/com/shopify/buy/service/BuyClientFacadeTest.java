@@ -91,6 +91,7 @@ public class BuyClientFacadeTest extends ShopifyAndroidTestCase {
         Assert.assertNotNull(buyClient.getProduct(1L));
         Assert.assertNotNull(buyClient.getProducts(Arrays.asList(1L)));
         Assert.assertNotNull(buyClient.getCollections(1));
+        Assert.assertNotNull(buyClient.getCollections(Arrays.asList(1L)));
         Assert.assertNotNull(buyClient.getProductTags(1));
         Assert.assertNotNull(buyClient.getProducts(1, 1L, new LinkedHashSet<String>(), null));
     }

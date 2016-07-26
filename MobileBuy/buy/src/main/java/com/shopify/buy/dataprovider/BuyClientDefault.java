@@ -507,6 +507,21 @@ final class BuyClientDefault implements BuyClient {
     }
 
     @Override
+    public Observable<List<Collection>> getCollections(int page) {
+        return productService.getCollections(page);
+    }
+
+    @Override
+    public CancellableTask getCollections(List<Long> collectionIds, Callback<List<Collection>> callback) {
+        return productService.getCollections(collectionIds, callback);
+    }
+
+    @Override
+    public Observable<List<Collection>> getCollections(List<Long> collectionIds) {
+        return productService.getCollections(collectionIds);
+    }
+
+    @Override
     public CancellableTask getCollectionByHandle(String handle, Callback<Collection> callback) {
         return productService.getCollectionByHandle(handle, callback);
     }
@@ -514,11 +529,6 @@ final class BuyClientDefault implements BuyClient {
     @Override
     public Observable<Collection> getCollectionByHandle(String handle) {
         return productService.getCollectionByHandle(handle);
-    }
-
-    @Override
-    public Observable<List<Collection>> getCollections(int page) {
-        return productService.getCollections(page);
     }
 
     @Override
