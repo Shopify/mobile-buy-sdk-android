@@ -12,7 +12,6 @@ import com.shopify.buy.extensions.ShopifyAndroidTestCase;
 import com.shopify.buy.model.Address;
 import com.shopify.buy.model.Cart;
 import com.shopify.buy.model.Checkout;
-import com.shopify.buy.model.Collection;
 import com.shopify.buy.model.CreditCard;
 import com.shopify.buy.model.Discount;
 import com.shopify.buy.model.GiftCard;
@@ -25,7 +24,6 @@ import org.apache.http.HttpStatus;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -655,55 +653,6 @@ public class BuyTest extends ShopifyAndroidTestCase {
         });
 
         latch.await();
-    }
-
-    @Test
-    public void testGetCollectionsByIds() throws Exception {
-        final CountDownLatch getCollectionIdsLatch = new CountDownLatch(1);
-        final AtomicReference<List<Long>> collectionIdsRef = new AtomicReference<>();
-        buyClient.getCollections(1, new Callback<List<Collection>>() {
-            @Override
-            public void success(List<Collection> response) {
-                assertNotNull(response);
-                assertTrue(!response.isEmpty());
-
-                final List<Long> collectionIds = new ArrayList<>();
-                for (Collection collection : response) {
-                    collectionIds.add(collection.getCollectionId());
-                }
-                collectionIdsRef.set(collectionIds);
-
-                getCollectionIdsLatch.countDown();
-            }
-
-            @Override
-            public void failure(BuyClientError error) {
-                fail(error.getRetrofitErrorBody());
-            }
-        });
-        getCollectionIdsLatch.await();
-
-        final CountDownLatch getCollectionsLatch = new CountDownLatch(1);
-        final List<Long> expectedCollectionIds = collectionIdsRef.get();
-        buyClient.getCollections(expectedCollectionIds, new Callback<List<Collection>>() {
-            @Override
-            public void success(List<Collection> response) {
-                assertNotNull(response);
-                assertTrue(!response.isEmpty());
-
-                for (Collection collection : response) {
-                    assertTrue(expectedCollectionIds.contains(collection.getCollectionId()));
-                }
-
-                getCollectionsLatch.countDown();
-            }
-
-            @Override
-            public void failure(BuyClientError error) {
-                fail(error.getRetrofitErrorBody());
-            }
-        });
-        getCollectionsLatch.await();
     }
 
     /**

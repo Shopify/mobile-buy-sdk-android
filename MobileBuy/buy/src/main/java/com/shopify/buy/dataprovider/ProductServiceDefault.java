@@ -208,31 +208,6 @@ final class ProductServiceDefault implements ProductService {
     }
 
     @Override
-    public CancellableTask getCollections(final List<Long> collectionIds, final Callback<List<Collection>> callback) {
-        return new CancellableTaskSubscriptionWrapper(getCollections(collectionIds).subscribe(new InternalCallbackSubscriber<>(callback)));
-    }
-
-    @Override
-    public Observable<List<Collection>> getCollections(final List<Long> collectionIds) {
-        if (collectionIds == null) {
-            throw new NullPointerException("collectionIds List cannot be null");
-        }
-
-        if (collectionIds.isEmpty()) {
-            throw new IllegalArgumentException("collectionIds List cannot be empty");
-        }
-
-        final String queryString = TextUtils.join(",", collectionIds.toArray());
-        return retrofitService
-            .getCollections(appId, queryString)
-            .retryWhen(networkRetryPolicyProvider.provide())
-            .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-            .compose(new UnwrapRetrofitBodyTransformer<CollectionListings, List<Collection>>())
-            .onErrorResumeNext(new BuyClientExceptionHandler<List<Collection>>())
-            .observeOn(callbackScheduler);
-    }
-
-    @Override
     public CancellableTask getProductTags(int page, Callback<List<String>> callback) {
         return new CancellableTaskSubscriptionWrapper(getProductTags(page).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
