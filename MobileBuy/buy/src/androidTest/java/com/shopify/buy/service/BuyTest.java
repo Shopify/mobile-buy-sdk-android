@@ -637,7 +637,7 @@ public class BuyTest extends ShopifyAndroidTestCase {
         });
 
         tags = new HashSet<>();
-        tags.add("don't touch me");
+        tags.add(data.getValidTag());
 
         buyClient.getProducts(1, tags, new Callback<List<Product>>() {
             @Override
@@ -666,7 +666,7 @@ public class BuyTest extends ShopifyAndroidTestCase {
                 assertNotNull(response);
                 assertTrue(!response.isEmpty());
                 for (Collection collection : response) {
-                    if ("frontpage".equals(collection.getHandle())) {
+                    if (data.getCollectionHandle().equals(collection.getHandle())) {
                         collectionRef.set(collection);
                     }
                 }
@@ -681,7 +681,7 @@ public class BuyTest extends ShopifyAndroidTestCase {
         getCollectionLatch.await();
 
         final Set<String> tags = new HashSet<>();
-        tags.add("don't touch me");
+        tags.add(data.getValidTag());
 
         final CountDownLatch getProductsLatch = new CountDownLatch(1);
         buyClient.getProducts(1, collectionRef.get().getCollectionId(), tags, null, new Callback<List<Product>>() {
