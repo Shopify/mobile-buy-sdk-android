@@ -212,15 +212,15 @@ public class StorefrontTest extends ShopifyAndroidTestCase {
                 assertNotNull(collections);
                 assertFalse(collections.isEmpty());
 
-
                 boolean found = false;
                 for (Collection collection : collections) {
-                    if ("frontpage".equals(collection.getHandle())) {
+                    if (data.getCollectionHandle().equals(collection.getHandle())) {
                         found = true;
                         break;
                     }
                 }
                 assertTrue(found);
+
                 latch.countDown();
             }
 

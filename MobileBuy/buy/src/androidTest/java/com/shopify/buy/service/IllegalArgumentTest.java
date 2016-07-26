@@ -40,6 +40,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
+import java.util.Set;
 
 @RunWith(AndroidJUnit4.class)
 public class IllegalArgumentTest extends ShopifyAndroidTestCase {
@@ -102,6 +103,13 @@ public class IllegalArgumentTest extends ShopifyAndroidTestCase {
             }
         });
 
+        checkException(NullPointerException.class, new Runnable() {
+            @Override
+            public void run() {
+                buyClient.getProducts(1, null, null, null);
+            }
+        });
+
         checkException(IllegalArgumentException.class, new Runnable() {
             @Override
             public void run() {
@@ -113,6 +121,13 @@ public class IllegalArgumentTest extends ShopifyAndroidTestCase {
             @Override
             public void run() {
                 buyClient.getProductTags(0);
+            }
+        });
+
+        checkException(IllegalArgumentException.class, new Runnable() {
+            @Override
+            public void run() {
+                buyClient.getProducts(0, (Set<String>) null);
             }
         });
     }
