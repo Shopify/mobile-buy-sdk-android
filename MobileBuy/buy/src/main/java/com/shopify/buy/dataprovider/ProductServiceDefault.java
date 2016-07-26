@@ -150,7 +150,7 @@ final class ProductServiceDefault implements ProductService {
         // For this call we will query with multiple ids.
         // The returned product array will contain products for each id found.
         // If no ids were found, the array will be empty
-        final String queryString = TextUtils.join(",", productIds.toArray());
+        final String queryString = formatQueryString(productIds);
         return retrofitService
             .getProducts(appId, queryString)
             .retryWhen(networkRetryPolicyProvider.provide())
@@ -239,7 +239,7 @@ final class ProductServiceDefault implements ProductService {
             throw new IllegalArgumentException("page is a 1-based index, value cannot be less than 1");
         }
 
-        final String tagsQueryStr = tags != null && !tags.isEmpty() ? TextUtils.join(",", tags.toArray()) : null;
+        final String tagsQueryStr = formatQueryString(tags);
         return retrofitService
             .getProducts(appId, null, tagsQueryStr, null, page, pageSize)
             .retryWhen(networkRetryPolicyProvider.provide())
@@ -265,7 +265,7 @@ final class ProductServiceDefault implements ProductService {
         }
 
         final String sortOrderStr = sortOrder != null ? sortOrder.toString() : Collection.SortOrder.COLLECTION_DEFAULT.toString();
-        final String tagsQueryStr = tags != null && !tags.isEmpty() ? TextUtils.join(",", tags.toArray()) : null;
+        final String tagsQueryStr = formatQueryString(tags);
         return retrofitService
             .getProducts(appId, collectionId, tagsQueryStr, sortOrderStr, page, pageSize)
             .retryWhen(networkRetryPolicyProvider.provide())
@@ -290,5 +290,13 @@ final class ProductServiceDefault implements ProductService {
                 return tags;
             }
         };
+    }
+
+    private String formatQueryString(final java.util.Collection items) {
+        if (items != null && !items.isEmpty()) {
+            return TextUtils.join(",", items.toArray());
+        } else {
+            return null;
+        }
     }
 }
