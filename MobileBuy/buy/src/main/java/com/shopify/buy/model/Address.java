@@ -62,9 +62,26 @@ public class Address extends ShopifyObject {
 
     private String zip;
 
+    @SerializedName("default")
+    private Boolean defaultAddress;
+
     @Override
     public Long getId() {
         return super.getId();
+    }
+
+    /**
+     * @param defaultAddress mark this as the default address for the associated {@link Customer}.
+     */
+    public void setDefault(boolean defaultAddress) {
+        this.defaultAddress = defaultAddress;
+    }
+
+    /**
+     * @return true if this is the default address for the associated {@link Customer}
+     */
+    public boolean isDefault() {
+        return defaultAddress != null && defaultAddress;
     }
 
     /**
