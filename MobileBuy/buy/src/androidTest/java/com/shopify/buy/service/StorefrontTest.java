@@ -21,6 +21,7 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertNull;
+import static junit.framework.Assert.assertTrue;
 import static junit.framework.Assert.fail;
 
 /**
@@ -210,7 +211,16 @@ public class StorefrontTest extends ShopifyAndroidTestCase {
             public void success(List<Collection> collections) {
                 assertNotNull(collections);
                 assertFalse(collections.isEmpty());
-                assertEquals(collections.get(0).getHandle(), "frontpage");
+
+
+                boolean found = false;
+                for (Collection collection : collections) {
+                    if ("frontpage".equals(collection.getHandle())) {
+                        found = true;
+                        break;
+                    }
+                }
+                assertTrue(found);
                 latch.countDown();
             }
 
