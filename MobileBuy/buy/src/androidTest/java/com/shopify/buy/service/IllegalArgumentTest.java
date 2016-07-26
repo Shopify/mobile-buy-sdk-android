@@ -42,6 +42,8 @@ import org.junit.runner.RunWith;
 import java.util.ArrayList;
 import java.util.Set;
 
+import rx.Subscriber;
+
 @RunWith(AndroidJUnit4.class)
 public class IllegalArgumentTest extends ShopifyAndroidTestCase {
 
@@ -402,33 +404,13 @@ public class IllegalArgumentTest extends ShopifyAndroidTestCase {
         // now clear the token
         buyClient.setCustomerToken(null);
 
-        checkException(IllegalStateException.class, new Runnable() {
-            @Override
-            public void run() {
-                buyClient.updateCustomer(new Customer());
-            }
-        });
+        buyClient.updateCustomer(new Customer()).subscribe(illegalStateSubscriber);
 
-        checkException(IllegalStateException.class, new Runnable() {
-            @Override
-            public void run() {
-                buyClient.logoutCustomer();
-            }
-        });
+        buyClient.logoutCustomer().subscribe(illegalStateSubscriber);
 
-        checkException(IllegalStateException.class, new Runnable() {
-            @Override
-            public void run() {
-                buyClient.getCustomer();
-            }
-        });
+        buyClient.getCustomer().subscribe(illegalStateSubscriber);
 
-        checkException(IllegalStateException.class, new Runnable() {
-            @Override
-            public void run() {
-                buyClient.renewCustomer();
-            }
-        });
+        buyClient.renewCustomer().subscribe(illegalStateSubscriber);
     }
 
     @Test
@@ -445,19 +427,9 @@ public class IllegalArgumentTest extends ShopifyAndroidTestCase {
         // now clear the token
         buyClient.setCustomerToken(null);
 
-        checkException(IllegalStateException.class, new Runnable() {
-            @Override
-            public void run() {
-                buyClient.getOrders();
-            }
-        });
+        buyClient.getOrders().subscribe(illegalStateSubscriber);
 
-        checkException(IllegalStateException.class, new Runnable() {
-            @Override
-            public void run() {
-                buyClient.getOrder(1L);
-            }
-        });
+        buyClient.getOrder(1L).subscribe(illegalStateSubscriber);
     }
 
     @Test
@@ -502,42 +474,34 @@ public class IllegalArgumentTest extends ShopifyAndroidTestCase {
         // now clear the token
         buyClient.setCustomerToken(null);
 
-        checkException(IllegalStateException.class, new Runnable() {
-            @Override
-            public void run() {
-                buyClient.createAddress(new Address());
-            }
-        });
+        buyClient.createAddress(new Address()).subscribe(illegalStateSubscriber);
 
-        checkException(IllegalStateException.class, new Runnable() {
-            @Override
-            public void run() {
-                buyClient.deleteAddress(1L);
-            }
-        });
+        buyClient.deleteAddress(1L).subscribe(illegalStateSubscriber);
 
-        checkException(IllegalStateException.class, new Runnable() {
-            @Override
-            public void run() {
-                buyClient.getAddresses();
-            }
-        });
+        buyClient.getAddresses().subscribe(illegalStateSubscriber);
 
-        checkException(IllegalStateException.class, new Runnable() {
-            @Override
-            public void run() {
-                buyClient.getAddress(1L);
-            }
-        });
+        buyClient.getAddress(1L).subscribe(illegalStateSubscriber);
 
-        checkException(IllegalStateException.class, new Runnable() {
-            @Override
-            public void run() {
-                buyClient.updateAddress(new Address());
-            }
-        });
+        buyClient.updateAddress(new Address()).subscribe(illegalStateSubscriber);
 
     }
+
+    private Subscriber illegalStateSubscriber = new Subscriber() {
+        @Override
+        public void onCompleted() {
+
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            Assert.assertEquals(IllegalStateException.class, e.getCause().getClass());
+        }
+
+        @Override
+        public void onNext(Object o) {
+            Assert.fail("Expected exception");
+        }
+    };
 
     private static void checkException(final Class exceptionClazz, final Runnable call) {
         try {
