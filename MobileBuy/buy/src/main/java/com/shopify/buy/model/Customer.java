@@ -108,7 +108,7 @@ public class Customer extends ShopifyObject {
      * @return {code true} if this customer accepts marketing.
      */
     public boolean acceptsMarketing() {
-        return acceptsMarketing;
+        return acceptsMarketing != null && acceptsMarketing;
     }
 
     /**
@@ -171,7 +171,7 @@ public class Customer extends ShopifyObject {
      * @return {code true} if the customer email address has been verified.
      */
     public boolean isVerifiedEmail() {
-        return verifiedEmail;
+        return verifiedEmail != null && verifiedEmail;
     }
 
     /**
@@ -185,7 +185,7 @@ public class Customer extends ShopifyObject {
      * @return Indicates whether the customer should be charged taxes when placing orders. Valid values are {@code true} and {@code false}.
      **/
     public boolean isTaxExempt() {
-        return taxExempt;
+        return taxExempt != null && taxExempt;
     }
 
     /**

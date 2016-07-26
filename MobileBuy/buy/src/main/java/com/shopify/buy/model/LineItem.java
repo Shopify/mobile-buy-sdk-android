@@ -43,7 +43,7 @@ public class LineItem {
     protected String price;
 
     @SerializedName("requires_shipping")
-    protected boolean requiresShipping;
+    protected Boolean requiresShipping;
 
     @SerializedName("variant_id")
     protected Long variantId;
@@ -64,7 +64,7 @@ public class LineItem {
 
     protected String sku;
 
-    protected boolean taxable;
+    protected Boolean taxable;
 
     protected long grams;
 
@@ -126,7 +126,7 @@ public class LineItem {
      * @return {@code true} if this line item is taxable, {@code false} otherwise.
      */
     public boolean isTaxable() {
-        return taxable;
+        return taxable != null && taxable;
     }
 
     /**
@@ -206,7 +206,7 @@ public class LineItem {
      * @return {@code true} if the product that is being purchased in this line item requires shipping, {@code false} otherwise.
      */
     public boolean isRequiresShipping() {
-        return requiresShipping;
+        return requiresShipping != null && requiresShipping;
     }
 
     @Override
