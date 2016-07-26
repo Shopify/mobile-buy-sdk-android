@@ -73,7 +73,7 @@ public class Address extends ShopifyObject {
     /**
      * @param defaultAddress mark this as the default address for the associated {@link Customer}.
      */
-    public void setDefault(Boolean defaultAddress) {
+    public void setDefault(boolean defaultAddress) {
         this.defaultAddress = defaultAddress;
     }
 
@@ -81,7 +81,7 @@ public class Address extends ShopifyObject {
      * @return true if this is the default address for the associated {@link Customer}
      */
     public boolean isDefault() {
-        return defaultAddress;
+        return defaultAddress != null && defaultAddress;
     }
 
     /**
