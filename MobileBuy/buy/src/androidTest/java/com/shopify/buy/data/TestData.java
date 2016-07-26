@@ -95,4 +95,7 @@ public class TestData {
         return data.get("discounts").getAsJsonObject().get(type.name().toLowerCase()).getAsJsonObject().get("value").getAsFloat();
     }
 
+    public String getCollectionHandle() {
+        return data.get("collection_handle").getAsString();
+    }
 }

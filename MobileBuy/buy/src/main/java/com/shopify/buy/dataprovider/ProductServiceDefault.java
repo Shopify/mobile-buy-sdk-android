@@ -82,7 +82,7 @@ final class ProductServiceDefault implements ProductService {
 
     @Override
     public Observable<List<Product>> getProducts(final int page) {
-        return getProducts(page, null, null, null);
+        return getProducts(page, (Set<String>) null);
     }
 
     @Override
@@ -150,7 +150,7 @@ final class ProductServiceDefault implements ProductService {
         // For this call we will query with multiple ids.
         // The returned product array will contain products for each id found.
         // If no ids were found, the array will be empty
-        final String queryString = TextUtils.join(",", productIds.toArray());
+        final String queryString = formatQueryString(productIds);
         return retrofitService
             .getProducts(appId, queryString)
             .retryWhen(networkRetryPolicyProvider.provide())
@@ -229,6 +229,27 @@ final class ProductServiceDefault implements ProductService {
     }
 
     @Override
+    public CancellableTask getProducts(final int page, final Set<String> tags, final Callback<List<Product>> callback) {
+        return new CancellableTaskSubscriptionWrapper(getProducts(page, tags).subscribe(new InternalCallbackSubscriber<>(callback)));
+    }
+
+    @Override
+    public Observable<List<Product>> getProducts(final int page, final Set<String> tags) {
+        if (page < 1) {
+            throw new IllegalArgumentException("page is a 1-based index, value cannot be less than 1");
+        }
+
+        final String tagsQueryStr = formatQueryString(tags);
+        return retrofitService
+            .getProducts(appId, null, tagsQueryStr, null, page, pageSize)
+            .retryWhen(networkRetryPolicyProvider.provide())
+            .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
+            .compose(new UnwrapRetrofitBodyTransformer<ProductListings, List<Product>>())
+            .onErrorResumeNext(new BuyClientExceptionHandler<List<Product>>())
+            .observeOn(callbackScheduler);
+    }
+
+    @Override
     public CancellableTask getProducts(final int page, final Long collectionId, Set<String> tags, final Collection.SortOrder sortOrder, final Callback<List<Product>> callback) {
         return new CancellableTaskSubscriptionWrapper(getProducts(page, collectionId, tags, sortOrder).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
@@ -239,13 +260,12 @@ final class ProductServiceDefault implements ProductService {
             throw new IllegalArgumentException("page is a 1-based index, value cannot be less than 1");
         }
 
-        String sortOrderStr = sortOrder != null ? sortOrder.toString() : Collection.SortOrder.COLLECTION_DEFAULT.toString();
         if (collectionId == null) {
-            sortOrderStr = null;
+            throw new NullPointerException("collectionId cannot be null");
         }
 
-        final String tagsQueryStr = tags != null && !tags.isEmpty() ? TextUtils.join(",", tags.toArray()) : null;
-
+        final String sortOrderStr = sortOrder != null ? sortOrder.toString() : Collection.SortOrder.COLLECTION_DEFAULT.toString();
+        final String tagsQueryStr = formatQueryString(tags);
         return retrofitService
             .getProducts(appId, collectionId, tagsQueryStr, sortOrderStr, page, pageSize)
             .retryWhen(networkRetryPolicyProvider.provide())
@@ -270,5 +290,13 @@ final class ProductServiceDefault implements ProductService {
                 return tags;
             }
         };
+    }
+
+    private String formatQueryString(final java.util.Collection items) {
+        if (items != null && !items.isEmpty()) {
+            return TextUtils.join(",", items.toArray());
+        } else {
+            return null;
+        }
     }
 }
