@@ -134,7 +134,7 @@ public class Order extends ShopifyObject {
      * @return true if the Order was cancelled.
      */
     public Boolean isCancelled() {
-        return cancelled;
+        return cancelled != null && cancelled;
     }
 
     /**

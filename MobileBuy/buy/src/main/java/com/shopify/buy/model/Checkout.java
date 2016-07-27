@@ -297,15 +297,15 @@ public class Checkout extends ShopifyObject {
     /**
      * @return {@code true} if the fulfillment of this checkout requires shipping, {@code false} otherwise.
      */
-    public Boolean isRequiresShipping() {
-        return requiresShipping;
+    public boolean isRequiresShipping() {
+        return requiresShipping != null && requiresShipping;
     }
 
     /**
      * @return {@code true} if taxes are included in the price, {@code false} otherwise.
      */
-    public Boolean isTaxesIncluded() {
-        return taxesIncluded;
+    public boolean isTaxesIncluded() {
+        return taxesIncluded != null && taxesIncluded;
     }
 
     /**
@@ -593,8 +593,7 @@ public class Checkout extends ShopifyObject {
      * @return A checkout suitable for sending in an update.
      */
     public Checkout copy() {
-        Checkout copy = Checkout.fromJson(this.toJsonString());
-        return copy;
+        return Checkout.fromJson(this.toJsonString());
     }
 
     /**
