@@ -15,7 +15,7 @@
 
         <meta-data
             android:name="com.google.android.gms.wallet.api.enabled"
-            android:value="true"/>
+            android:value="false"/>
 
         <activity
             android:name=".activity.CollectionListActivity"
