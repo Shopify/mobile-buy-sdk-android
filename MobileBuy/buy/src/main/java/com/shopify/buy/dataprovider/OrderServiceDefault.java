@@ -69,7 +69,7 @@ final class OrderServiceDefault implements OrderService {
         CustomerToken customerToken = customerService.getCustomerToken();
 
         if (customerToken == null) {
-            throw new IllegalStateException("customer must be logged in");
+            return Observable.error(new BuyClientError(new IllegalStateException("customer must be logged in")));
         }
 
         return retrofitService
@@ -95,7 +95,7 @@ final class OrderServiceDefault implements OrderService {
         CustomerToken customerToken = customerService.getCustomerToken();
 
         if (customerToken == null) {
-            throw new IllegalStateException("customer must be logged in");
+            return Observable.error(new BuyClientError(new IllegalStateException("customer must be logged in")));
         }
 
         return retrofitService

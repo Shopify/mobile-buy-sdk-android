@@ -70,14 +70,14 @@ final class AddressServiceDefault implements AddressService {
 
     @Override
     public Observable<Address> createAddress(final Address address) {
+        if (address == null) {
+            throw new NullPointerException("address cannot be null");
+        }
+
         CustomerToken customerToken = customerService.getCustomerToken();
 
         if (customerToken == null) {
-            throw new IllegalStateException("customer must be logged in");
-        }
-
-        if (address == null) {
-            throw new NullPointerException("address cannot be null");
+            return Observable.error(new BuyClientError(new IllegalStateException("customer must be logged in")));
         }
 
         return retrofitService
@@ -93,14 +93,14 @@ final class AddressServiceDefault implements AddressService {
     }
 
     public Observable<Void> deleteAddress(Long addressId) {
+        if (addressId == null) {
+            throw new NullPointerException("addressId cannot be null");
+        }
+
         CustomerToken customerToken = customerService.getCustomerToken();
 
         if (customerToken == null) {
-            throw new IllegalStateException("customer must be logged in");
-        }
-
-        if (addressId == null) {
-            throw new NullPointerException("addressId cannot be null");
+            return Observable.error(new BuyClientError(new IllegalStateException("customer must be logged in")));
         }
 
         int[] successCodes = {HTTP_NO_CONTENT};
@@ -125,7 +125,7 @@ final class AddressServiceDefault implements AddressService {
     @Override
     public Observable<List<Address>> getAddresses() {
         if (customerService.getCustomerToken() == null) {
-            throw new IllegalStateException("customer must be logged in");
+            return Observable.error(new BuyClientError(new IllegalStateException("customer must be logged in")));
         }
 
         return retrofitService
@@ -144,14 +144,14 @@ final class AddressServiceDefault implements AddressService {
 
     @Override
     public Observable<Address> getAddress(final Long addressId) {
+        if (addressId == null) {
+            throw new NullPointerException("addressId cannot be null");
+        }
+
         CustomerToken customerToken = customerService.getCustomerToken();
 
         if (customerToken == null) {
-            throw new IllegalStateException("customer must be logged in");
-        }
-
-        if (addressId == null) {
-            throw new NullPointerException("addressId cannot be null");
+            return Observable.error(new BuyClientError(new IllegalStateException("customer must be logged in")));
         }
 
         return retrofitService
@@ -170,14 +170,14 @@ final class AddressServiceDefault implements AddressService {
 
     @Override
     public Observable<Address> updateAddress(final Address address) {
+        if (address == null) {
+            throw new NullPointerException("address cannot be null");
+        }
+
         CustomerToken customerToken = customerService.getCustomerToken();
 
         if (customerToken == null) {
-            throw new IllegalStateException("customer must be logged in");
-        }
-
-        if (address == null) {
-            throw new NullPointerException("address cannot be null");
+            return Observable.error(new BuyClientError(new IllegalStateException("customer must be logged in")));
         }
 
         return retrofitService
