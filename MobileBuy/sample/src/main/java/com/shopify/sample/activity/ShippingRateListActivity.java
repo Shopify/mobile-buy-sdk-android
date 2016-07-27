@@ -33,29 +33,36 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.shopify.buy.dataprovider.BuyClientError;
+import com.shopify.buy.dataprovider.Callback;
 import com.shopify.sample.R;
 import com.shopify.sample.activity.base.SampleListActivity;
 import com.shopify.buy.model.Checkout;
 import com.shopify.buy.model.ShippingRate;
+import com.shopify.sample.application.SampleApplication;
 
-import java.net.HttpURLConnection;
 import java.util.List;
-
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 
 /**
  * If the selected product requires shipping, this activity allows the user to select a list of shipping rates.
- * For the sample app, the shipping address has been hardcoded and we will only see the shipping rates applicable to that address.
+ * For the sample app native and web checkouts, the shipping address has been hardcoded and we will only see the shipping rates applicable to that address.
+ * For Android Pay the address will be supplied by Android Pay.
  */
 public class ShippingRateListActivity extends SampleListActivity {
+
+    private boolean isAndroidPayFlow;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setTitle(R.string.choose_shipping_rate);
+
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            isAndroidPayFlow = bundle.getBoolean(SampleApplication.ANDROID_PAY_FLOW);
+        }
+
     }
 
     @Override
@@ -76,39 +83,20 @@ public class ShippingRateListActivity extends SampleListActivity {
     private void fetchShippingRates() {
         getSampleApplication().getShippingRates(new Callback<List<ShippingRate>>() {
             @Override
-            public void success(List<ShippingRate> shippingRates, Response response) {
-                if (response.getStatus() == HttpURLConnection.HTTP_ACCEPTED) {
-
-                    // Poll until the server either fails or returns HttpStatus.SC_ACCEPTED
-                    pollingHandler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            fetchShippingRates();
-                        }
-                    }, POLL_DELAY);
-
-                } else if (response.getStatus() == HttpURLConnection.HTTP_OK) {
-                    isFetching = false;
-
-                    // The application should surface to the user that their items cannot be shipped to that location
-                    if (shippingRates.size() == 0) {
-                        Toast.makeText(ShippingRateListActivity.this, R.string.no_shipping_rates, Toast.LENGTH_LONG).show();
-                        finish();
-                        return;
-                    }
-
-                    onFetchedShippingRates(shippingRates);
-
-                } else {
-                    isFetching = false;
-
-                    // Handle error
-                    onError(response.getReason());
+            public void success(List<ShippingRate> shippingRates) {
+                isFetching = false;
+                // The application should surface to the user that their items cannot be shipped to that location
+                if (shippingRates.size() == 0) {
+                    Toast.makeText(ShippingRateListActivity.this, R.string.no_shipping_rates, Toast.LENGTH_LONG).show();
+                    finish();
+                    return;
                 }
+
+                onFetchedShippingRates(shippingRates);
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void failure(BuyClientError error) {
                 isFetching = false;
 
                 // Handle error
@@ -160,13 +148,18 @@ public class ShippingRateListActivity extends SampleListActivity {
 
         getSampleApplication().setShippingRate(shippingRate, new Callback<Checkout>() {
             @Override
-            public void success(Checkout checkout, Response response) {
+            public void success(Checkout checkout) {
                 dismissLoadingDialog();
-                startActivity(new Intent(ShippingRateListActivity.this, DiscountActivity.class));
+
+                if (isAndroidPayFlow) {
+                    startActivity(new Intent(ShippingRateListActivity.this, AndroidPayCheckoutActivity.class));
+                } else {
+                    startActivity(new Intent(ShippingRateListActivity.this, CheckoutActivity.class));
+                }
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void failure(BuyClientError error) {
                 onError(error);
             }
         });

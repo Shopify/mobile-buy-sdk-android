@@ -1,21 +1,9 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          xmlns:tools="http://schemas.android.com/tools"
-          package="com.shopify.buy">
+<manifest package="com.shopify.buy"
+          xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+
     <uses-sdk tools:overrideLibrary="android.support.customtabs"/>
-
-    <application android:allowBackup="true"
-                 android:label="@string/app_name">
-
-        <activity
-            android:name=".ui.ProductDetailsActivity"
-            android:label=""
-            android:launchMode="singleTask"
-            android:screenOrientation="userPortrait"
-            android:theme="@style/CustomActionBarTheme">
-        </activity>
-
-    </application>
-
 </manifest>

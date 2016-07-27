@@ -31,7 +31,7 @@ public class PaymentSessionCheckoutWrapper {
 
     private PaymentSessionCheckout checkout;
 
-    public void setCheckout(PaymentSessionCheckout checkout) {
+    public PaymentSessionCheckoutWrapper(PaymentSessionCheckout checkout) {
         this.checkout = checkout;
     }
 }

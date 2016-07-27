@@ -24,6 +24,8 @@
 
 package com.shopify.buy.model;
 
+import android.text.TextUtils;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
@@ -34,8 +36,10 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
-import com.shopify.buy.dataprovider.BuyClientFactory;
+import com.shopify.buy.dataprovider.BuyClientUtils;
+import com.shopify.buy.dataprovider.Callback;
 import com.shopify.buy.model.internal.MarketingAttribution;
+import com.shopify.buy.utils.CollectionUtils;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -44,12 +48,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import retrofit.Callback;
-
 /**
  * The checkout object. This is the main object that you will interact with when creating orders on Shopify.
  * After making changes to your checkout object by calling any of the setter functions, make sure you call
- * {@link com.shopify.buy.dataprovider.BuyClient#updateCheckout(Checkout, Callback) updateCheckout}.
+ * {@link com.shopify.buy.dataprovider.BuyClient#updateCheckout(Checkout, Callback) updateCheckoutAddressAndEmail}.
  */
 public class Checkout extends ShopifyObject {
 
@@ -81,9 +83,6 @@ public class Checkout extends ShopifyObject {
 
     @SerializedName("total_price")
     private String totalPrice;
-
-    @SerializedName("payment_session_id")
-    private String paymentSessionId;
 
     @SerializedName("payment_url")
     private String paymentUrl;
@@ -117,9 +116,6 @@ public class Checkout extends ShopifyObject {
     @SerializedName("marketing_attribution")
     private MarketingAttribution marketingAttribution;
 
-    @SerializedName("channel_id")
-    private String channelId;
-
     @SerializedName("web_url")
     private String webUrl;
 
@@ -145,7 +141,7 @@ public class Checkout extends ShopifyObject {
     private CreditCard creditCard;
 
     @SerializedName("customer_id")
-    private String customerId;
+    private Long customerId;
 
     @SerializedName("privacy_policy_url")
     private String privacyPolicyUrl;
@@ -176,6 +172,24 @@ public class Checkout extends ShopifyObject {
     public Checkout(LineItem lineItem) {
         lineItems = new ArrayList<>();
         lineItems.add(lineItem);
+    }
+
+    public Checkout(String token) {
+        this.token = token;
+    }
+
+    @Override
+    public Long getId() {
+        return super.getId();
+    }
+
+    public void setLineItems(Cart cart) {
+        this.lineItems.clear();
+        this.lineItems.addAll(cart.getLineItems());
+    }
+
+    public void setLineItems(List<LineItem> lineItems) {
+        this.lineItems = new ArrayList<>(lineItems);
     }
 
     /**
@@ -216,7 +230,7 @@ public class Checkout extends ShopifyObject {
     /**
      * @return Customer ID associated with the checkout.
      */
-    public String getCustomerId() {
+    public Long getCustomerId() {
         return customerId;
     }
 
@@ -236,6 +250,8 @@ public class Checkout extends ShopifyObject {
 
     /**
      * @deprecated Use {@link #getOrder()}.
+     *
+     * @return The order status.
      */
     public String getOrderStatusUrl() {
         return orderStatusUrl;
@@ -257,27 +273,39 @@ public class Checkout extends ShopifyObject {
 
     /**
      * @deprecated Use {@link #getOrder()}.
+     *
+     * @return The order id.
      */
     public Long getOrderId() {
         return orderId;
     }
 
+    /**
+     * @return This value is null until the checkout is complete. Once it is completed, it will containin the {@link Order#name}, {@link Order#id}, and {@link Order#statusUrl}
+     */
     public Order getOrder() {
         return order;
     }
 
     /**
+     * @return {@code true} if checkout has been completed and there's an order with an id, {@code false} otherwise.
+     */
+    public boolean hasOrderId() {
+        return order != null && order.getId() != null && order.getId() > 0;
+    }
+
+    /**
      * @return {@code true} if the fulfillment of this checkout requires shipping, {@code false} otherwise.
      */
-    public Boolean isRequiresShipping() {
-        return requiresShipping;
+    public boolean isRequiresShipping() {
+        return requiresShipping != null && requiresShipping;
     }
 
     /**
      * @return {@code true} if taxes are included in the price, {@code false} otherwise.
      */
-    public Boolean isTaxesIncluded() {
-        return taxesIncluded;
+    public boolean isTaxesIncluded() {
+        return taxesIncluded != null && taxesIncluded;
     }
 
     /**
@@ -313,13 +341,6 @@ public class Checkout extends ShopifyObject {
      */
     public String getTotalPrice() {
         return totalPrice;
-    }
-
-    /**
-     * @return The Payment Session ID associated with a credit card transaction.
-     */
-    public String getPaymentSessionId() {
-        return paymentSessionId;
     }
 
     /**
@@ -393,13 +414,6 @@ public class Checkout extends ShopifyObject {
     }
 
     /**
-     * @return Channel ID where the checkout was created.
-     */
-    public String getChannelId() {
-        return channelId;
-    }
-
-    /**
      * @return URL which is used for completing checkout in browser.
      */
     public String getWebUrl() {
@@ -414,7 +428,7 @@ public class Checkout extends ShopifyObject {
     }
 
     /**
-     * @return An optional list of {@link CheckoutAttribute} attached to the checkout
+     * @return An optional list of {@link CheckoutAttribute} attached to the checkout.
      */
     public List<CheckoutAttribute> getAttributes() {
         if (attributes == null) {
@@ -425,6 +439,8 @@ public class Checkout extends ShopifyObject {
 
     /**
      * For internal use only.
+     *
+     * @return The {@link MarketingAttribution} associated with the checkout.
      */
     public MarketingAttribution getMarketingAttribution() {
         return marketingAttribution;
@@ -432,6 +448,8 @@ public class Checkout extends ShopifyObject {
 
     /**
      * For internal use only.
+     *
+     * @param sourceIdentifier The source identifier.
      */
     public void setSourceIdentifier(String sourceIdentifier) {
         this.sourceIdentifier = sourceIdentifier;
@@ -439,9 +457,18 @@ public class Checkout extends ShopifyObject {
 
     /**
      * For internal use only.
+     *
+     * @param sourceName The source name.
      */
     public void setSourceName(String sourceName) {
         this.sourceName = sourceName;
+    }
+
+    /**
+     * @param customerId The customer's id.
+     */
+    public void setCustomerId(Long customerId) {
+        this.customerId = customerId;
     }
 
     /**
@@ -460,8 +487,8 @@ public class Checkout extends ShopifyObject {
 
     /**
      * The default reservation time on a checkout is 300 seconds (5 minutes).
-     * Setting the reservation time to 0 and updating the checkout (via {@link com.shopify.buy.dataprovider.BuyClient#updateCheckout(Checkout, Callback) updateCheckout(checkout, callback)})
-     * will release the inventory reserved by this checkout. This can also be done by calling {@link com.shopify.buy.dataprovider.BuyClient#removeProductReservationsFromCheckout(Checkout, Callback) removeProductReservationsFromCheckout(checkout, callback)}.
+     * Setting the reservation time to 0 and updating the checkout (via {@link com.shopify.buy.dataprovider.BuyClient#updateCheckout(Checkout, Callback) updateCheckoutAddressAndEmail(checkout, callback)})
+     * will release the inventory reserved by this checkout. This can also be done by calling {@link com.shopify.buy.dataprovider.BuyClient#removeProductReservationsFromCheckout(String)}.
      *
      * @param reservationTime The reservation time on this checkout (in seconds).
      */
@@ -484,13 +511,6 @@ public class Checkout extends ShopifyObject {
     }
 
     /**
-     * @param paymentSessionId The Payment Session ID associated with a credit card transaction.
-     */
-    public void setPaymentSessionId(String paymentSessionId) {
-        this.paymentSessionId = paymentSessionId;
-    }
-
-    /**
      * @param paymentDue Amount of payment due on the checkout.
      */
     public void setPaymentDue(String paymentDue) {
@@ -505,14 +525,9 @@ public class Checkout extends ShopifyObject {
     }
 
     /**
-     * @param channelId Channel ID where the checkout was created
-     */
-    public void setChannelId(String channelId) {
-        this.channelId = channelId;
-    }
-
-    /**
      * For internal use only.
+     *
+     * @param marketingAttribution A {@link MarketingAttribution}.
      */
     public void setMarketingAttribution(MarketingAttribution marketingAttribution) {
         this.marketingAttribution = marketingAttribution;
@@ -543,7 +558,7 @@ public class Checkout extends ShopifyObject {
     /**
      * Set the token for the Checkout.
      *
-     * @param token
+     * @param token The token to set.
      */
     public void setToken(String token) {
         this.token = token;
@@ -551,6 +566,7 @@ public class Checkout extends ShopifyObject {
 
     /**
      * For internal use only. To apply a gift card to your checkout, use {@link com.shopify.buy.dataprovider.BuyClient#applyGiftCard(String, Checkout, Callback) applyGiftCard(giftCardCode, checkout, callback)}.
+     * @param giftCard The gift card to add.
      */
     public void addGiftCard(GiftCard giftCard) {
         if (giftCards == null) {
@@ -572,21 +588,40 @@ public class Checkout extends ShopifyObject {
     }
 
     /**
-     * Creates a copy of the Checkout for use in updates, filtering out properties that should not be sent.
+     * Creates an identical copy of the Checkout for use in updates.
      *
      * @return A checkout suitable for sending in an update.
      */
-    public Checkout copyForUpdate() {
-        Checkout copy = Checkout.fromJson(this.toJsonString());
-        copy.giftCards = null;
-        return copy;
+    public Checkout copy() {
+        return Checkout.fromJson(this.toJsonString());
     }
 
     /**
+     * @return The total number of product variants in the cart (the sum of quantities across all line items).
+     */
+    public Integer getTotalQuantity() {
+        if (CollectionUtils.isEmpty(lineItems)) {
+            return 0;
+        }
+
+        int quantity = 0;
+        for (LineItem lineItem : lineItems) {
+            quantity += lineItem.getQuantity();
+        }
+        return quantity;
+    }
+
+    /**
+     * @param json The json input.
      * @return A checkout object created using the values in the JSON string.
+     *
      */
     public static Checkout fromJson(String json) {
-        Gson gson = BuyClientFactory.createDefaultGson(Checkout.class);
+        if (TextUtils.isEmpty(json)) {
+            return null;
+        }
+
+        Gson gson = BuyClientUtils.createDefaultGson(Checkout.class);
 
         JsonObject checkoutElement = gson.fromJson(json, JsonElement.class).getAsJsonObject();
 
@@ -600,7 +635,8 @@ public class Checkout extends ShopifyObject {
             // The attributes are an array of CheckoutAttributes when received from the server, and are flattened and serialized as a hash map
             // when serializing for the server, or internally.  We have to check to see which case it is and deserialize appropriately.
             if (attributeElement.isJsonArray()) {
-                attributes = gson.fromJson(attributeElement, new TypeToken<List<CheckoutAttribute>>() {}.getType());
+                attributes = gson.fromJson(attributeElement, new TypeToken<List<CheckoutAttribute>>() {
+                }.getType());
             } else {
                 // We serialize the CheckoutAttributes to a hash map internally, and for sending to the server
                 HashMap<String, String> attributesHashMap = gson.fromJson(attributeElement, HashMap.class);
@@ -621,7 +657,7 @@ public class Checkout extends ShopifyObject {
 
         @Override
         public JsonElement serialize(final Checkout checkout, final Type typeOfSrc, final JsonSerializationContext context) {
-            Gson gson = BuyClientFactory.createDefaultGson(Checkout.class);
+            Gson gson = BuyClientUtils.createDefaultGson(Checkout.class);
 
             JsonObject checkoutObject = gson.toJsonTree(checkout).getAsJsonObject();
 
@@ -647,7 +683,6 @@ public class Checkout extends ShopifyObject {
         public Checkout deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
             return fromJson(json.toString());
         }
-
     }
 
 }

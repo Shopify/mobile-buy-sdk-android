@@ -27,19 +27,17 @@ package com.shopify.buy.model;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.google.gson.annotations.SerializedName;
-import com.shopify.buy.dataprovider.BuyClientFactory;
+import com.shopify.buy.dataprovider.BuyClientUtils;
+import com.shopify.buy.utils.CollectionUtils;
 import com.shopify.buy.utils.DateUtility;
-import com.shopify.buy.utils.DateUtility.DateDeserializer;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.lang.reflect.Type;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -50,65 +48,59 @@ import java.util.Set;
 public class Product extends ShopifyObject {
 
     @SerializedName("product_id")
-    private String productId;
+    protected Long productId;
 
-    @SerializedName("channel_id")
-    private String channelId;
+    protected String title;
 
-    private String title;
-
-    private String handle;
+    protected String handle;
 
     @SerializedName("body_html")
-    private String bodyHtml;
+    protected String bodyHtml;
 
     @SerializedName("published_at")
-    private Date publishedAtDate;
+    protected Date publishedAtDate;
 
     @SerializedName("created_at")
-    private Date createdAtDate;
+    protected Date createdAtDate;
 
     @SerializedName("updated_at")
-    private Date updatedAtDate;
+    protected Date updatedAtDate;
 
-    private String vendor;
+    protected String vendor;
 
     @SerializedName("product_type")
-    private String productType;
+    protected String productType;
 
-    private List<ProductVariant> variants;
+    protected List<ProductVariant> variants;
 
-    private List<Image> images;
+    protected List<Image> images;
 
-    private List<Option> options;
+    protected List<Option> options;
 
-    private String tags;
+    protected String tags;
 
-    private Set<String> tagSet;
+    protected Set<String> tagSet;
 
-    private boolean available;
+    protected Boolean available;
 
-    private boolean published;
+    protected Boolean published;
+
+    private Set<String> prices;
+
+    private String minimumPrice;
 
     /**
      * @return {@code true} if this product has been published on the store, {@code false} otherwise.
      */
     public boolean isPublished() {
-        return published;
+        return published != null && published;
     }
 
     /**
      * @return The unique identifier for this product.
      */
-    public String getProductId() {
+    public Long getProductId() {
         return productId;
-    }
-
-    /**
-     * @return The unique identifier of the Mobile App sales channel for this store.
-     */
-    public String getChannelId() {
-        return channelId;
     }
 
     /**
@@ -134,6 +126,8 @@ public class Product extends ShopifyObject {
 
     /**
      * Use {@link #getPublishedAtDate() getPublishedAtDate()}.
+     *
+     * @return The date this product was published.
      */
     @Deprecated
     public String getPublishedAt() {
@@ -142,6 +136,8 @@ public class Product extends ShopifyObject {
 
     /**
      * Use {@link #getCreatedAtDate() getCreatedAtDate()}.
+     *
+     * @return The date this product was created.
      */
     @Deprecated
     public String getCreatedAt() {
@@ -150,6 +146,8 @@ public class Product extends ShopifyObject {
 
     /**
      * Use {@link #getUpdatedAtDate() getUpdatedAtDate()}.
+     *
+     * @return The date this product was updated.
      */
     @Deprecated
     public String getUpdatedAt() {
@@ -194,7 +192,9 @@ public class Product extends ShopifyObject {
     /**
      * @return A list of additional categorizations that a product can be tagged with, commonly used for filtering and searching. Each tag has a character limit of 255.
      */
-    public Set<String> getTags() { return tagSet; }
+    public Set<String> getTags() {
+        return tagSet;
+    }
 
     /**
      * @return A list {@link ProductVariant} objects, each one representing a different version of this product.
@@ -208,6 +208,19 @@ public class Product extends ShopifyObject {
      */
     public List<Image> getImages() {
         return images;
+    }
+
+    /**
+     * @return The first image URL from this Product's list of images.
+     */
+    public String getFirstImageUrl() {
+        if (hasImage()) {
+            Image image = images.get(0);
+            if (image != null) {
+                return image.getSrc();
+            }
+        }
+        return null;
     }
 
     /**
@@ -227,17 +240,31 @@ public class Product extends ShopifyObject {
     /**
      * @return {@code true} if this product is in stock and available for purchase, {@code false} otherwise.
      */
-    public boolean isAvailable() { return available; }
+    public boolean isAvailable() {
+        return available != null && available;
+    }
 
     /**
      * For internal use only.
+     *
+     * @return true if this product has a default variant.
      */
     public boolean hasDefaultVariant() {
-        return variants != null && variants.size() == 1 && variants.get(0).getTitle().equals("Default Title");
+        if (CollectionUtils.isEmpty(variants) || variants.size() != 1) {
+            return false;
+        }
+
+        ProductVariant firstVariant = variants.get(0);
+        List<OptionValue> optionValues = firstVariant.getOptionValues();
+
+        return firstVariant.getTitle().equals("Default Title")
+                && !CollectionUtils.isEmpty(optionValues)
+                && (optionValues.get(0).getValue().equals("Default Title") || optionValues.get(0).getValue().equals("Default"));
     }
 
     /**
      * Returns the {@code Image} for the {@code ProductVariant} with the given id
+     *
      * @param variant the {@link ProductVariant} to find the {@link Image}
      * @return the {@link Image} corresponding to the {@link ProductVariant} if one was found, otherwise the {@code Image} for the {@link Product}.  This may return null if no applicable images were found.
      */
@@ -264,8 +291,8 @@ public class Product extends ShopifyObject {
     }
 
     /**
-     * @param optionValues  A list of {@link OptionValue} objects that represent a specific variant selection.
-     * @return  The {@link ProductVariant} that matches the given list of the OptionValues, or {@code null} if no such variant exists.
+     * @param optionValues A list of {@link OptionValue} objects that represent a specific variant selection.
+     * @return The {@link ProductVariant} that matches the given list of the OptionValues, or {@code null} if no such variant exists.
      */
     public ProductVariant getVariant(List<OptionValue> optionValues) {
         if (optionValues == null) {
@@ -286,6 +313,62 @@ public class Product extends ShopifyObject {
         return null;
     }
 
+    /**
+     * @return A Set containing all the unique prices of the variants.
+     */
+    public Set<String> getPrices() {
+        if (prices != null) {
+            return prices;
+        }
+
+        prices = new HashSet<>();
+        if (!CollectionUtils.isEmpty(variants)) {
+            for (ProductVariant variant : variants) {
+                prices.add(variant.getPrice());
+            }
+        }
+
+        return prices;
+    }
+
+    /**
+     * @return The minimum price from the variants.
+     */
+    public String getMinimumPrice() {
+        if (minimumPrice != null) {
+            return minimumPrice;
+        }
+
+        prices = getPrices();
+
+        for (String price : prices) {
+            if (minimumPrice == null) {
+                minimumPrice = price;
+            }
+            if (Float.valueOf(price) < Float.valueOf(minimumPrice)) {
+                minimumPrice = price;
+            }
+        }
+
+        return minimumPrice;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Product)) return false;
+
+        Product product = (Product) o;
+
+        return productId.equals(product.productId);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return productId.hashCode();
+    }
+
     public static class ProductDeserializer implements JsonDeserializer<Product> {
 
         @Override
@@ -297,9 +380,12 @@ public class Product extends ShopifyObject {
 
     /**
      * A product object created using the values in the JSON string.
+     *
+     * @param json The json representation of this product.
+     * @return A {@link Product}
      */
     public static Product fromJson(String json) {
-        Gson gson = BuyClientFactory.createDefaultGson(Product.class);
+        Gson gson = BuyClientUtils.createDefaultGson(Product.class);
 
         Product product = gson.fromJson(json, Product.class);
 
@@ -307,8 +393,13 @@ public class Product extends ShopifyObject {
 
         if (variants != null) {
             for (ProductVariant variant : variants) {
-                variant.productId = Long.parseLong(product.productId);
+                variant.productId = product.productId;
                 variant.productTitle = product.getTitle();
+
+                Image image = product.getImage(variant);
+                if (image != null) {
+                    variant.imageUrl = image.getSrc();
+                }
             }
         }
 

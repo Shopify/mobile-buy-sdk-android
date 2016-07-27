@@ -29,22 +29,20 @@ import android.content.Context;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.squareup.okhttp.Interceptor;
-import com.squareup.okhttp.MediaType;
-import com.squareup.okhttp.Protocol;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
-import com.squareup.okhttp.ResponseBody;
+import com.shopify.buy.dataprovider.BuyClientError;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.Collections;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
-import retrofit.RetrofitError;
-import retrofit.mime.TypedString;
+import okhttp3.Interceptor;
+import okhttp3.MediaType;
+import okhttp3.Protocol;
+import okhttp3.Request;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
 
 public class MockResponder implements Interceptor {
 
@@ -75,7 +73,7 @@ public class MockResponder implements Interceptor {
     }
 
     @Override
-    public Response intercept(Interceptor.Chain chain) throws IOException {
+    public Response intercept(Chain chain) throws IOException {
         Request request = chain.request();
         String key = currentTestName.get() + '_' + Integer.toString(currentTestRequestIndex.getAndIncrement());
 
@@ -86,8 +84,15 @@ public class MockResponder implements Interceptor {
         String body = responseJson.get(KEY_BODY).getAsString();
 
         if (code >= 400) {
-            retrofit.client.Response retrofitResponse = new retrofit.client.Response(request.urlString(), code, "reason", Collections.EMPTY_LIST, new TypedString(body));
-            throw RetrofitError.httpError(request.urlString(), retrofitResponse, null, null);
+            Response httpResponse = new Response.Builder().
+                    request(request)
+                    .code(code)
+                    .message(message)
+                    .protocol(Protocol.HTTP_2)
+                    .build();
+            ResponseBody responseBody = ResponseBody.create(MediaType.parse("application/json"), body);
+            retrofit2.Response retrofitResponse = retrofit2.Response.error(responseBody, httpResponse);
+            throw new BuyClientError(retrofitResponse);
         }
 
         MediaType contentType = MediaType.parse("application/json; charset=utf-8");

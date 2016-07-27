@@ -1,4 +1,4 @@
-<com.shopify.buy.ui.ProductDetailsFragmentView
+<com.shopify.sample.ui.ProductDetailsFragmentView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -81,23 +81,42 @@
         </android.support.v4.widget.NestedScrollView>
     </android.support.design.widget.CoordinatorLayout>
 
-    <FrameLayout
+    <LinearLayout
         android:id="@+id/checkout_button_container"
         android:layout_width="match_parent"
         android:layout_height="@dimen/checkout_button_height"
-        android:layout_alignParentBottom="true" >
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/checkout_button"
-            android:layout_width="match_parent"
+        <FrameLayout
+            android:id="@+id/inner_checkout_button_container"
             android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:background="?android:attr/selectableItemBackground"
-            android:fontFamily="sans-serif-medium"
-            android:text="@string/checkout"
-            android:textSize="@dimen/text_small" />
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_margin="@dimen/spacing_4dp">
 
-    </FrameLayout>
+            <Button
+                android:id="@+id/checkout_button"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:background="?android:attr/selectableItemBackground"
+                android:fontFamily="sans-serif-medium"
+                android:paddingLeft="@dimen/spacing_12dp"
+                android:paddingRight="@dimen/spacing_12dp"
+                android:text="@string/checkout"
+                android:textSize="@dimen/text_small"/>
+        </FrameLayout>
+
+
+        <FrameLayout
+            android:id="@+id/android_pay_fragment_container"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            android:layout_weight="1"/>
+
+    </LinearLayout>
 
     <android.support.design.widget.CoordinatorLayout
         android:id="@+id/snackbar_location"
@@ -106,4 +125,4 @@
         android:layout_above="@id/checkout_button_container" >
     </android.support.design.widget.CoordinatorLayout>
 
-</com.shopify.buy.ui.ProductDetailsFragmentView>
+</com.shopify.sample.ui.ProductDetailsFragmentView>

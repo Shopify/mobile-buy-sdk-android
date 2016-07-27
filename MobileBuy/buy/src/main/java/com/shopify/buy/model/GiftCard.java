@@ -29,15 +29,13 @@ import com.google.gson.annotations.SerializedName;
 /**
  * Represents a Gift Card
  */
-public class GiftCard {
+public class GiftCard extends ShopifyObject {
 
     public GiftCard(String code) {
         this.code = code;
     }
 
     private String code;
-
-    protected String id;
 
     private Checkout checkout;
 
@@ -52,8 +50,8 @@ public class GiftCard {
     /**
      * @return The unique identifier of this gift card.
      */
-    public String getId() {
-        return id;
+    public Long getId() {
+        return super.getId();
     }
 
     /**
@@ -86,32 +84,11 @@ public class GiftCard {
 
     /**
      * For internal use only.
+     *
+     * @return The {@link Checkout} associated with this gift card.
      */
     public Checkout getCheckout() {
         return checkout;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        if (super.equals(object)) {
-            return true;
-        }
-
-        if (object == null) {
-            return false;
-        }
-
-        if (getClass() != object.getClass()) {
-            return false;
-        }
-
-        GiftCard giftCard = (GiftCard) object;
-
-        if (id.equals(giftCard.getId())) {
-            return true;
-        }
-
-        return false;
     }
 
 }

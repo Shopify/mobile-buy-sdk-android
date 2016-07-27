@@ -27,7 +27,7 @@ package com.shopify.buy.model;
 /**
  * Represents the tax on a {@link Checkout}
  */
-public class TaxLine extends ShopifyObject {
+public class TaxLine {
 
     private String price;
 

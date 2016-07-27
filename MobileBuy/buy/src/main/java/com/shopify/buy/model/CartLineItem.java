@@ -32,9 +32,20 @@ package com.shopify.buy.model;
 public class CartLineItem extends LineItem {
 
     private final ProductVariant variant;
+    private String errorMessage;
 
     public CartLineItem(ProductVariant variant) {
         super(variant);
+        this.variant = variant;
+        this.errorMessage = null;
+    }
+
+    public CartLineItem(LineItem lineItem, ProductVariant variant) {
+        variantId = lineItem.getVariantId();
+        price = lineItem.getPrice();
+        title = lineItem.getTitle();
+        requiresShipping = lineItem.isRequiresShipping();
+        quantity = lineItem.getQuantity();
         this.variant = variant;
     }
 
@@ -43,6 +54,27 @@ public class CartLineItem extends LineItem {
      */
     public ProductVariant getVariant() {
         return variant;
+    }
+
+    /**
+     * @param quantity The quantity of the {@link ProductVariant} being purchased in this line item.
+     */
+    void setQuantity(long quantity) {
+        this.quantity = quantity;
+    }
+
+    /**
+     * @return The {@link #errorMessage} associated with this line item.
+     */
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    /**
+     * @param errorMessage The error message of the {@link ProductVariant} to be displayed in this line item.
+     */
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
     }
 
 }

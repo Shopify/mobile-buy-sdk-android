@@ -1,8 +1,18 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
+    }
+}
+
 apply plugin: 'com.android.application'
+apply plugin: 'com.neenbedankt.android-apt'
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "21.1.2"
+    buildToolsVersion "23.0.3"
 
     defaultConfig {
         applicationId "com.shopify.sample"
@@ -12,20 +22,64 @@ android {
         versionName "1.0"
     }
     buildTypes {
-        release {
-            minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
+        all {
+            buildConfigField 'okhttp3.logging.HttpLoggingInterceptor.Level', 'OKHTTP_LOG_LEVEL', 'okhttp3.logging.HttpLoggingInterceptor.Level.BODY'
 
-        debug { }
+            // We pull the shop settings either from the Environment or a file called shop.properties at the root of the project.
+            // Environment variables will take precedence, we will attempt to read those first.
+            def shopDomain
+            def apiKey
+            def appId
+            def androidPayPublicKey
+
+            // get the shop setting from the environment if there any
+            shopDomain = System.getenv("SHOP_DOMAIN")
+            apiKey = System.getenv("API_KEY")
+            appId = System.getenv("APP_ID")
+            androidPayPublicKey = System.getenv("ANDROID_PAY_PUBLIC_KEY")
+
+            // pull the store properties from the local file if it exists.  Environment variables take precedence
+            def shopProperties = new Properties();
+            File shopPropertiesFile = project.file('shop.properties')
+
+            if (shopPropertiesFile.exists()) {
+                shopProperties.load(new FileInputStream(shopPropertiesFile))
+                shopDomain = shopDomain ?: shopProperties["SHOP_DOMAIN"]
+                apiKey = apiKey ?: shopProperties["API_KEY"]
+                appId = appId ?: shopProperties["APP_ID"]
+                androidPayPublicKey = androidPayPublicKey ?: shopProperties["ANDROID_PAY_PUBLIC_KEY"]
+            }
+
+            if (!shopDomain) {
+                shopDomain = ""
+            }
+            if (!apiKey) {
+                apiKey = ""
+            }
+            if (!appId) {
+                appId = ""
+            }
+            if (!androidPayPublicKey) {
+                androidPayPublicKey = ""
+            }
+
+            buildConfigField "String", "SHOP_DOMAIN", "\"" + shopDomain.toString() + "\""
+            buildConfigField "String", "API_KEY", "\"" + apiKey.toString() + "\""
+            buildConfigField "String", "APP_ID", "\"" + appId.toString() + "\""
+            buildConfigField "String", "ANDROID_PAY_PUBLIC_KEY",  "\"" + androidPayPublicKey.toString() + "\""
+            buildConfigField "boolean", "USE_RX_API", "false"
+        }
+    }
+
+    lintOptions {
+        abortOnError false
     }
 }
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.squareup.picasso:picasso:2.5.2'
-    compile 'com.squareup.okhttp:okhttp-urlconnection:2.5.0'
-    compile 'com.squareup.okhttp:okhttp:2.5.0'
-    compile 'com.squareup.retrofit:retrofit:1.9.0'
+    compile 'com.jakewharton:butterknife:8.0.1'
+    apt 'com.jakewharton:butterknife-compiler:8.0.1'
     compile project(':buy')
 }

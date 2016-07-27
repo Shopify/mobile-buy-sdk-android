@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_margin="@dimen/spacing_6dp" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing_16dp"
+            android:text="@string/thanks"
+            style="@android:style/TextAppearance.Large" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing_16dp"
+            android:text="@string/confirmation_details"
+            style="@android:style/TextAppearance.Medium" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing_16dp"
+            android:text="@string/secured_by"
+            android:drawablePadding="@dimen/spacing_4dp"
+            android:drawableRight="@drawable/android_pay_logo_hrz_fc_white"
+            style="@android:style/TextAppearance.Medium"
+            android:gravity="center_vertical" />
+
+    </LinearLayout>
+
+</ScrollView>

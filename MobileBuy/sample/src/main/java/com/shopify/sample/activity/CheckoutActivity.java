@@ -27,22 +27,23 @@ package com.shopify.sample.activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 
-import com.shopify.sample.R;
+import com.shopify.buy.dataprovider.BuyClientError;
+import com.shopify.buy.dataprovider.Callback;
 import com.shopify.buy.model.Checkout;
 import com.shopify.buy.model.CreditCard;
+import com.shopify.buy.model.PaymentToken;
+import com.shopify.sample.R;
 import com.shopify.sample.activity.base.SampleActivity;
 
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 
 /**
  * The final activity in the app flow. Allows the user to choose between:
- * 1. A native checkout where the payment info is hardcoded and the chekcout is completed within the app; or
- * 2. A web checkout where the user enters their payment info and completes the checkout in a web browser
+ * 1. A native checkout where the payment info is hardcoded and the checkout is completed within the app; or
+ * 2. A web checkout where the user enters their payment info and completes the checkout in a web browser;
  */
 public class CheckoutActivity extends SampleActivity {
 
@@ -53,25 +54,45 @@ public class CheckoutActivity extends SampleActivity {
         setTitle(R.string.checkout);
         setContentView(R.layout.checkout_activity);
 
+        final boolean didCreateCheckout = !TextUtils.isEmpty(getSampleApplication().getCheckout().getToken());
+
         Button nativeCheckoutButton = (Button) findViewById(R.id.native_checkout_button);
-        nativeCheckoutButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onNativeCheckoutButtonClicked();
-            }
-        });
+        if (didCreateCheckout) {
+            nativeCheckoutButton.setVisibility(View.VISIBLE);
+            nativeCheckoutButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onNativeCheckoutButtonClicked();
+                }
+            });
+        } else {
+            nativeCheckoutButton.setVisibility(View.GONE);
+        }
 
         Button webCheckoutButton = (Button) findViewById(R.id.web_checkout_button);
-        webCheckoutButton.setOnClickListener(new View.OnClickListener() {
+        if (didCreateCheckout) {
+            webCheckoutButton.setVisibility(View.VISIBLE);
+            webCheckoutButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onWebCheckoutButtonClicked();
+                }
+            });
+        } else {
+            webCheckoutButton.setVisibility(View.GONE);
+        }
+
+        Button cartPermalinkButton = (Button) findViewById(R.id.cart_permalink_button);
+        cartPermalinkButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onWebCheckoutButtonClicked();
+                onCartPermalinkClicked();
             }
         });
 
         updateOrderSummary();
     }
-
+    
     /**
      * For our sample native checkout, we use a hardcoded credit card.
      */
@@ -86,14 +107,14 @@ public class CheckoutActivity extends SampleActivity {
         creditCard.setNumber("4242424242424242");
 
         showLoadingDialog(R.string.completing_checkout);
-        getSampleApplication().storeCreditCard(creditCard, new Callback<Checkout>() {
+        getSampleApplication().storeCreditCard(creditCard, new Callback<PaymentToken>() {
             @Override
-            public void success(Checkout checkout, Response response) {
+            public void success(PaymentToken paymentToken) {
                 onCreditCardStored();
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void failure(BuyClientError error) {
                 onError(error);
             }
         });
@@ -105,13 +126,12 @@ public class CheckoutActivity extends SampleActivity {
     private void onCreditCardStored() {
         getSampleApplication().completeCheckout(new Callback<Checkout>() {
             @Override
-            public void success(Checkout checkout, Response response) {
-                dismissLoadingDialog();
-                pollCheckoutCompletionStatus(checkout);
+            public void success(Checkout checkout) {
+                onCheckoutComplete();
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void failure(BuyClientError error) {
                 onError(error);
             }
         });
@@ -121,9 +141,20 @@ public class CheckoutActivity extends SampleActivity {
      * Launch the device browser so the user can complete the checkout.
      */
     private void onWebCheckoutButtonClicked() {
+        launchBrowser(getSampleApplication().getCheckout().getWebUrl());
+    }
+
+    /**
+     * Launch the device browser using the cart permalink method
+     */
+    private void onCartPermalinkClicked() {
+        launchBrowser(getSampleApplication().getCartPermalink());
+    }
+
+    private void launchBrowser(String url) {
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        intent.setData(Uri.parse(getSampleApplication().getCheckout().getWebUrl()));
+        intent.setData(Uri.parse(url));
 
         try {
             intent.setPackage("com.android.chrome");
