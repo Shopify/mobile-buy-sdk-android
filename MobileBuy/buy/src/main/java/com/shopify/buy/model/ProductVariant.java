@@ -187,7 +187,7 @@ public class ProductVariant extends ShopifyObject {
      * @return {@code true} if this variant is in stock and available for purchase, {@code false} otherwise.
      */
     public boolean isAvailable() {
-        return available != null && isAvailable();
+        return available != null && available;
     }
 
     /**
