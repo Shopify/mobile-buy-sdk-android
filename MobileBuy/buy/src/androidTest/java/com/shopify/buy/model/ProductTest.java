@@ -9,12 +9,15 @@ import com.shopify.buy.extensions.ShopifyAndroidTestCase;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertTrue;
 import static junit.framework.Assert.fail;
 
 /**
@@ -87,6 +90,113 @@ public class ProductTest extends ShopifyAndroidTestCase {
             }
         });
         latch.await();
+    }
+
+    @Test
+    public void testGetProductTags() throws Exception {
+        final CountDownLatch latch = new CountDownLatch(1);
+        buyClient.getProductTags(1, new Callback<List<String>>() {
+            @Override
+            public void success(List<String> response) {
+                assertNotNull(response);
+                assertTrue(response.contains("don't touch me"));
+                latch.countDown();
+                // well we can't really test response for some values, as we can't control from client list of tags
+            }
+
+            @Override
+            public void failure(BuyClientError error) {
+                fail(error.getRetrofitErrorBody());
+            }
+        });
+        latch.await();
+    }
+
+    @Test
+    public void testGetProductsByTags() throws Exception {
+        final CountDownLatch latch = new CountDownLatch(2);
+
+        Set<String> tags = new HashSet<>();
+        tags.add("MISSION");
+        tags.add("IMPOSSIBLE");
+
+        buyClient.getProducts(1, tags, new Callback<List<Product>>() {
+            @Override
+            public void success(List<Product> response) {
+                assertNotNull(response);
+                assertTrue(response.isEmpty());
+                latch.countDown();
+            }
+
+            @Override
+            public void failure(BuyClientError error) {
+                fail(error.getRetrofitErrorBody());
+            }
+        });
+
+        tags = new HashSet<>();
+        tags.add(data.getValidTag());
+
+        buyClient.getProducts(1, tags, new Callback<List<Product>>() {
+            @Override
+            public void success(List<Product> response) {
+                assertNotNull(response);
+                assertTrue(!response.isEmpty());
+                latch.countDown();
+            }
+
+            @Override
+            public void failure(BuyClientError error) {
+                fail(error.getRetrofitErrorBody());
+            }
+        });
+
+        latch.await();
+    }
+
+    @Test
+    public void testGetProductByCollectionAndTags() throws Exception {
+        final CountDownLatch getCollectionLatch = new CountDownLatch(1);
+        final AtomicReference<Collection> collectionRef = new AtomicReference<>();
+        buyClient.getCollections(1, new Callback<List<Collection>>() {
+            @Override
+            public void success(List<Collection> response) {
+                assertNotNull(response);
+                assertTrue(!response.isEmpty());
+                for (Collection collection : response) {
+                    if (data.getCollectionHandle().equals(collection.getHandle())) {
+                        collectionRef.set(collection);
+                    }
+                }
+                getCollectionLatch.countDown();
+            }
+
+            @Override
+            public void failure(BuyClientError error) {
+                fail(error.getRetrofitErrorBody());
+            }
+        });
+        getCollectionLatch.await();
+
+        final Set<String> tags = new HashSet<>();
+        tags.add(data.getValidTag());
+
+        final CountDownLatch getProductsLatch = new CountDownLatch(1);
+        buyClient.getProducts(1, collectionRef.get().getCollectionId(), tags, null, new Callback<List<Product>>() {
+            @Override
+            public void success(List<Product> response) {
+                assertNotNull(response);
+                assertTrue(!response.isEmpty());
+                getProductsLatch.countDown();
+            }
+
+            @Override
+            public void failure(BuyClientError error) {
+                fail(error.getRetrofitErrorBody());
+            }
+        });
+
+        getProductsLatch.await();
     }
 
 }

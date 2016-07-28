@@ -50,9 +50,9 @@ public class ProductVariant extends ShopifyObject {
     protected String sku;
 
     @SerializedName("requires_shipping")
-    protected boolean requiresShipping;
+    protected Boolean requiresShipping;
 
-    protected boolean taxable;
+    protected Boolean taxable;
 
     protected int position;
 
@@ -64,7 +64,7 @@ public class ProductVariant extends ShopifyObject {
     @SerializedName("updated_at")
     protected Date updatedAtDate;
 
-    protected boolean available;
+    protected Boolean available;
 
     // NOTE: productTitle and imageUrl are not in the JSON from the server, they are set manually during the Product parsing
 
@@ -125,14 +125,14 @@ public class ProductVariant extends ShopifyObject {
      * @return {@code true} if this variant requires shipping, {@code false} otherwise.
      */
     public boolean isRequiresShipping() {
-        return requiresShipping;
+        return requiresShipping != null && requiresShipping;
     }
 
     /**
      * @return {@code true} if this variant is taxable, {@code false} otherwise.
      */
     public boolean isTaxable() {
-        return taxable;
+        return taxable != null && taxable;
     }
 
     /**
@@ -187,7 +187,7 @@ public class ProductVariant extends ShopifyObject {
      * @return {@code true} if this variant is in stock and available for purchase, {@code false} otherwise.
      */
     public boolean isAvailable() {
-        return available;
+        return available != null && available;
     }
 
     /**
