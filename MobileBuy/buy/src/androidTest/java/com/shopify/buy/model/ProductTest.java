@@ -114,11 +114,11 @@ public class ProductTest extends ShopifyAndroidTestCase {
 
     @Test
     public void testGetProductsByTags() throws Exception {
-        final CountDownLatch latch = new CountDownLatch(2);
-
         Set<String> tags = new HashSet<>();
         tags.add("MISSION");
         tags.add("IMPOSSIBLE");
+
+        final CountDownLatch latch = new CountDownLatch(2);
 
         buyClient.getProducts(1, tags, new Callback<List<Product>>() {
             @Override
@@ -156,8 +156,9 @@ public class ProductTest extends ShopifyAndroidTestCase {
 
     @Test
     public void testGetProductByCollectionAndTags() throws Exception {
-        final CountDownLatch getCollectionLatch = new CountDownLatch(1);
         final AtomicReference<Collection> collectionRef = new AtomicReference<>();
+
+        final CountDownLatch getCollectionLatch = new CountDownLatch(1);
         buyClient.getCollections(1, new Callback<List<Collection>>() {
             @Override
             public void success(List<Collection> response) {
