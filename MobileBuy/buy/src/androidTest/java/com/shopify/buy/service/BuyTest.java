@@ -24,10 +24,8 @@ import org.apache.http.HttpStatus;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -75,6 +73,9 @@ public class BuyTest extends ShopifyAndroidTestCase {
     @Test
     public void testApplyingExpiredGiftCardToCheckout() throws InterruptedException {
         createValidCheckout();
+
+        final CountDownLatch countDownLatch = new CountDownLatch(1);
+
         buyClient.applyGiftCard(data.getGiftCardCode(TestData.GiftCardType.EXPIRED), checkout, new Callback<Checkout>() {
             @Override
             public void success(Checkout checkout) {
@@ -84,8 +85,11 @@ public class BuyTest extends ShopifyAndroidTestCase {
             @Override
             public void failure(BuyClientError error) {
                 assertEquals(HttpStatus.SC_UNPROCESSABLE_ENTITY, error.getRetrofitResponse().code());
+                countDownLatch.countDown();
             }
         });
+
+        countDownLatch.await();
     }
 
     @Test
@@ -100,6 +104,8 @@ public class BuyTest extends ShopifyAndroidTestCase {
         createValidCheckout();
         GiftCardPrivateAPIs invalidGiftCard = new GiftCardPrivateAPIs(data.getGiftCardCode(TestData.GiftCardType.INVALID));
         invalidGiftCard.setId(data.getGiftCardId(TestData.GiftCardType.INVALID));
+
+        final CountDownLatch countDownLatch = new CountDownLatch(1);
         buyClient.removeGiftCard(invalidGiftCard.getId(), checkout, new Callback<Checkout>() {
             @Override
             public void success(Checkout checkout) {
@@ -109,8 +115,11 @@ public class BuyTest extends ShopifyAndroidTestCase {
             @Override
             public void failure(BuyClientError error) {
                 assertEquals(HttpStatus.SC_UNPROCESSABLE_ENTITY, error.getRetrofitResponse().code());
+                countDownLatch.countDown();
             }
         });
+
+        countDownLatch.await();
     }
 
     @Test
@@ -118,6 +127,9 @@ public class BuyTest extends ShopifyAndroidTestCase {
         createValidCheckout();
         GiftCardPrivateAPIs expiredGiftCard = new GiftCardPrivateAPIs(data.getGiftCardCode(TestData.GiftCardType.EXPIRED));
         expiredGiftCard.setId(data.getGiftCardId(TestData.GiftCardType.EXPIRED));
+
+        final CountDownLatch countDownLatch = new CountDownLatch(1);
+
         buyClient.removeGiftCard(expiredGiftCard.getId(), checkout, new Callback<Checkout>() {
             @Override
             public void success(Checkout checkout) {
@@ -127,8 +139,11 @@ public class BuyTest extends ShopifyAndroidTestCase {
             @Override
             public void failure(BuyClientError error) {
                 assertEquals(HttpStatus.SC_UNPROCESSABLE_ENTITY, error.getRetrofitResponse().code());
+                countDownLatch.countDown();
             }
         });
+
+        countDownLatch.await();
     }
 
     @Test
@@ -173,6 +188,9 @@ public class BuyTest extends ShopifyAndroidTestCase {
 
     @Test
 	public void testGetCheckoutWithInvalidToken() throws InterruptedException {
+
+        final CountDownLatch countDownLatch = new CountDownLatch(1);
+
         buyClient.getCheckout("ZZZZZZZZZZZZZZZ", new Callback<Checkout>() {
             @Override
             public void success(Checkout checkout) {
@@ -182,8 +200,11 @@ public class BuyTest extends ShopifyAndroidTestCase {
             @Override
             public void failure(BuyClientError error) {
                 assertEquals(HttpStatus.SC_NOT_FOUND, error.getRetrofitResponse().code());
+                countDownLatch.countDown();
             }
         });
+
+        countDownLatch.await();
     }
 
     @Test
@@ -267,11 +288,14 @@ public class BuyTest extends ShopifyAndroidTestCase {
         checkout.setBillingAddress(checkout.getShippingAddress());
         checkout.setEmail("test@test.com");
 
+        final CountDownLatch latch = new CountDownLatch(1);
+
         buyClient.createCheckout(checkout, new Callback<Checkout>() {
             @Override
             public void success(Checkout checkout) {
                 validateCheckoutCreatedWithVariantID(checkout);
                 BuyTest.this.checkout = checkout;
+                latch.countDown();
             }
 
             @Override
@@ -279,6 +303,8 @@ public class BuyTest extends ShopifyAndroidTestCase {
                 fail(error.getRetrofitErrorBody());
             }
         });
+
+        latch.await();
     }
 
     @Test
@@ -453,7 +479,6 @@ public class BuyTest extends ShopifyAndroidTestCase {
         });
 
         latch.await();
-
 
     }
 
