@@ -81,9 +81,9 @@ public class Product extends ShopifyObject {
 
     protected Set<String> tagSet;
 
-    protected boolean available;
+    protected Boolean available;
 
-    protected boolean published;
+    protected Boolean published;
 
     private Set<String> prices;
 
@@ -93,7 +93,7 @@ public class Product extends ShopifyObject {
      * @return {@code true} if this product has been published on the store, {@code false} otherwise.
      */
     public boolean isPublished() {
-        return published;
+        return published != null && published;
     }
 
     /**
@@ -241,7 +241,7 @@ public class Product extends ShopifyObject {
      * @return {@code true} if this product is in stock and available for purchase, {@code false} otherwise.
      */
     public boolean isAvailable() {
-        return available;
+        return available != null && available;
     }
 
     /**

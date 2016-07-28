@@ -179,11 +179,31 @@ public interface ProductService {
      */
     Observable<List<String>> getProductTags(int page);
 
+
     /**
-     * Fetch the products filtered by specified collection and tags
+     * Fetch the products filtered by specified tags
+     *
+     * @param page     the 1-based page index. The page size is set by {@link BuyClientBuilder#productPageSize} configuration.
+     * @param tags     set of tags which each product must contain, can be null
+     * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
+     * @return cancelable task
+     */
+    CancellableTask getProducts(int page, Set<String> tags, Callback<List<Product>> callback);
+
+    /**
+     * Fetch the products filtered by specified tags
+     *
+     * @param page the 1-based page index. The page size is set by {@link BuyClientBuilder#productPageSize} configuration.
+     * @param tags set of tags which each product must contain, can be null
+     * @return cold observable that emits requested list of product
+     */
+    Observable<List<Product>> getProducts(int page, Set<String> tags);
+
+    /**
+     * Fetch the products filtered by specified collection and optional tags
      *
      * @param page         the 1-based page index. The page size is set by {@link BuyClientBuilder#productPageSize} configuration.
-     * @param collectionId the collectionId that we want to fetch products for, can be null
+     * @param collectionId the collectionId that we want to fetch products for, can't be null
      * @param tags         set of tags which each product must contain, can be null
      * @param sortOrder    the sort order of products for the specified collection,
      *                     in case of {@code null} value {@link Collection.SortOrder#COLLECTION_DEFAULT} will be used as default,
@@ -194,10 +214,10 @@ public interface ProductService {
     CancellableTask getProducts(int page, Long collectionId, Set<String> tags, Collection.SortOrder sortOrder, Callback<List<Product>> callback);
 
     /**
-     * Fetch the products filtered by specified collection and tags
+     * Fetch the products filtered by specified collection and optional tags
      *
      * @param page         the 1-based page index. The page size is set by {@link BuyClientBuilder#productPageSize} configuration.
-     * @param collectionId the collectionId that we want to fetch products for, can be null
+     * @param collectionId the collectionId that we want to fetch products for, can't be null
      * @param tags         set of tags which each product must contain, can be null
      * @param sortOrder    the sort order of products for the specified collection,
      *                     in case of {@code null} value {@link Collection.SortOrder#COLLECTION_DEFAULT} will be used as default,

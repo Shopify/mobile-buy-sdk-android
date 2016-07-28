@@ -75,7 +75,7 @@ final class CustomerServiceDefault implements CustomerService {
     }
 
     @Override
-    public void setCustomerToken(CustomerToken customerToken) {
+    public void setCustomerToken(final CustomerToken customerToken) {
         customerTokenRef.set(customerToken);
     }
 
@@ -207,7 +207,7 @@ final class CustomerServiceDefault implements CustomerService {
         CustomerToken customerToken = getCustomerToken();
 
         if (customerToken == null) {
-            throw new IllegalStateException("customer must be logged in");
+            return Observable.error(new BuyClientError(new IllegalStateException("customer must be logged in")));
         }
 
         return retrofitService
@@ -244,7 +244,7 @@ final class CustomerServiceDefault implements CustomerService {
         CustomerToken customerToken = getCustomerToken();
 
         if (customerToken == null) {
-            throw new IllegalStateException("customer must be logged in");
+            return Observable.error(new BuyClientError(new IllegalStateException("customer must be logged in")));
         }
 
         return retrofitService
@@ -265,7 +265,7 @@ final class CustomerServiceDefault implements CustomerService {
         CustomerToken customerToken = getCustomerToken();
 
         if (customerToken == null) {
-            throw new IllegalStateException("customer must be logged in");
+            return Observable.error(new BuyClientError(new IllegalStateException("customer must be logged in")));
         }
 
         return retrofitService
@@ -287,7 +287,7 @@ final class CustomerServiceDefault implements CustomerService {
         CustomerToken customerToken = getCustomerToken();
 
         if (customerToken == null) {
-            throw new IllegalStateException("customer must be logged in");
+            return Observable.error(new BuyClientError(new IllegalStateException("customer must be logged in")));
         }
 
         return retrofitService
