@@ -118,7 +118,7 @@ public class ProductTest extends ShopifyAndroidTestCase {
         tags.add("MISSION");
         tags.add("IMPOSSIBLE");
 
-        final CountDownLatch latch = new CountDownLatch(2);
+        final CountDownLatch latch = new CountDownLatch(1);
 
         buyClient.getProducts(1, tags, new Callback<List<Product>>() {
             @Override
@@ -134,15 +134,19 @@ public class ProductTest extends ShopifyAndroidTestCase {
             }
         });
 
+        latch.await();
+
         tags = new HashSet<>();
         tags.add(data.getValidTag());
+
+        final CountDownLatch latch1 = new CountDownLatch(1);
 
         buyClient.getProducts(1, tags, new Callback<List<Product>>() {
             @Override
             public void success(List<Product> response) {
                 assertNotNull(response);
                 assertTrue(!response.isEmpty());
-                latch.countDown();
+                latch1.countDown();
             }
 
             @Override
@@ -151,7 +155,7 @@ public class ProductTest extends ShopifyAndroidTestCase {
             }
         });
 
-        latch.await();
+        latch1.await();
     }
 
     @Test
