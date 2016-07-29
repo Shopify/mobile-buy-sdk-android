@@ -100,6 +100,21 @@ and add your Android Public key to the <kbd>shop.propertes</kbd> file
 ANDROID_PAY_PUBLIC_KEY=<your public key>
 ```
 
+By default the sample app will use the Androd Pay TEST environment.  The `Wallet` environment can be changed by editing the <kbd>SampleActivity</kbd> class:
+
+```java
+
+ // Use ENVIRONMENT_TEST for testing
+    public static final int WALLET_ENVIRONMENT = WalletConstants.ENVIRONMENT_TEST;
+    
+```
+
+*Note: You must install the Android Pay App on your test device, and add a valid credit card to Android Pay or you will not see Android Pay in the sample app*
+
+Because the sample app uses the `Wallet` test environment you will be able to get `MaskedWallet` and `FullWallet` objects from Android Pay, but you will not be able to complete a `Checkout` as the payment information returned in the `FullWallet` will not be valid.  Your credit card will not be charged.
+
+We recommend reading the great [Android Pay](https://developers.google.com/android-pay) documention before integrating Android Pay into your own application.
+
 There are three Activities that are important for Android Pay:
 
 ### DiscountActivity 
