@@ -115,10 +115,6 @@ public class CheckoutServiceCacheHookTest extends ShopifyAndroidTestCase {
                 return 1L;
             }
         });
-
-//        final Field customerServiceField = CheckoutService.class.getDeclaredField("customerService");
-//        customerServiceField.setAccessible(true);
-//        customerServiceField.set((((BuyClientDefault) buyClient).checkoutService), customerService);
     }
 
     @Test
