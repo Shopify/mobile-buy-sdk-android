@@ -21,42 +21,27 @@
  *   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  *   THE SOFTWARE.
  */
-package com.shopify.buy.dataprovider.cache;
+package com.shopify.buy.model.internal;
 
-import com.shopify.buy.model.Collection;
-import com.shopify.buy.model.Product;
+import com.google.gson.annotations.SerializedName;
 import com.shopify.buy.model.ProductTag;
 
 import java.util.List;
 
 /**
- * Cache hook that will be triggered by {@link com.shopify.buy.dataprovider.ProductService}. By default all caching operates
- * on background thread.
+ * Represents a wrapper for list of product tags
  */
-public interface ProductCacheHook {
+public class ProductTagsWrapper implements ResponseWrapper<List<ProductTag>> {
 
-    /**
-     * Caches product
-     */
-    void cacheProduct(Product product);
+    @SerializedName("tags")
+    private List<ProductTag> tags;
 
-    /**
-     * Caches products
-     */
-    void cacheProducts(List<Product> products);
+    @Override
+    public List<ProductTag> getContent() {
+        return tags;
+    }
 
-    /**
-     * Caches collection products
-     */
-    void cacheProducts(Long collectionId, List<Product> products);
-
-    /**
-     * Caches collections
-     */
-    void cacheCollections(List<Collection> collections);
-
-    /**
-     * Caches product tags
-     */
-    void cacheProductTags(List<ProductTag> tags);
+    public List<ProductTag> getTags() {
+        return tags;
+    }
 }

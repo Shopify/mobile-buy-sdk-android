@@ -33,13 +33,13 @@ public class Discount {
 
     protected String amount;
 
-    protected boolean applicable;
+    private Boolean applicable;
 
     protected String code;
 
     public Discount() {}
 
-    public Discount(String code) {
+    public Discount(final String code) {
         this.code = code;
     }
 
@@ -54,7 +54,7 @@ public class Discount {
      * @return {@code true} if this discount applies to the checkout, {@code false} otherwise.
      */
     public boolean isApplicable() {
-        return applicable;
+        return applicable != null && applicable;
     }
 
     /**

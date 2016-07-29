@@ -21,6 +21,7 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertNull;
+import static junit.framework.Assert.assertTrue;
 import static junit.framework.Assert.fail;
 
 /**
@@ -184,7 +185,7 @@ public class StorefrontTest extends ShopifyAndroidTestCase {
     public void testGetProductsInCollection() throws InterruptedException {
         final CountDownLatch latch = new CountDownLatch(1);
 
-        buyClient.getProducts(1, data.getCollectionId(), Collection.SortOrder.COLLECTION_DEFAULT, new Callback<List<Product>>() {
+        buyClient.getProducts(1, data.getCollectionId(), null, Collection.SortOrder.COLLECTION_DEFAULT, new Callback<List<Product>>() {
             @Override
             public void success(List<Product> products) {
                 assertNotNull(products);
@@ -210,7 +211,16 @@ public class StorefrontTest extends ShopifyAndroidTestCase {
             public void success(List<Collection> collections) {
                 assertNotNull(collections);
                 assertFalse(collections.isEmpty());
-                assertEquals(collections.get(0).getHandle(), "frontpage");
+
+                boolean found = false;
+                for (Collection collection : collections) {
+                    if (data.getCollectionHandle().equals(collection.getHandle())) {
+                        found = true;
+                        break;
+                    }
+                }
+                assertTrue(found);
+
                 latch.countDown();
             }
 
@@ -293,5 +303,56 @@ public class StorefrontTest extends ShopifyAndroidTestCase {
         }
 
         assertEquals(expectedProduct, actualProduct);
+    }
+
+    @Test
+    public void testGetCollectionByHandle() throws InterruptedException {
+        final AtomicReference<Collection> collectionRef = new AtomicReference<>();
+
+        final CountDownLatch getCollectionLatch = new CountDownLatch(1);
+        buyClient.getCollections(1, new Callback<List<Collection>>() {
+            @Override
+            public void success(List<Collection> response) {
+                if (response != null && response.size() > 0) {
+                    collectionRef.set(response.get(0));
+                }
+                getCollectionLatch.countDown();
+            }
+
+            @Override
+            public void failure(BuyClientError error) {
+                getCollectionLatch.countDown();
+            }
+        });
+        getCollectionLatch.await();
+
+        final Collection expectedCollection = collectionRef.get();
+        if (expectedCollection == null) {
+            fail("Expected some collection");
+        }
+
+        collectionRef.set(null);
+
+        final CountDownLatch getCollectionByHandleLatch = new CountDownLatch(1);
+        buyClient.getCollectionByHandle(expectedCollection.getHandle(), new Callback<Collection>() {
+            @Override
+            public void success(Collection response) {
+                collectionRef.set(response);
+                getCollectionByHandleLatch.countDown();
+            }
+
+            @Override
+            public void failure(BuyClientError error) {
+                getCollectionByHandleLatch.countDown();
+            }
+        });
+        getCollectionByHandleLatch.await();
+
+        final Collection actualCollection = collectionRef.get();
+        if (actualCollection == null) {
+            fail("Collection by handle not found");
+        }
+
+        assertEquals(expectedCollection, actualCollection);
     }
 }

@@ -26,6 +26,7 @@ package com.shopify.buy.dataprovider;
 import com.shopify.buy.dataprovider.cache.ProductCacheHook;
 import com.shopify.buy.model.Collection;
 import com.shopify.buy.model.Product;
+import com.shopify.buy.model.ProductTag;
 
 import java.util.List;
 
@@ -43,24 +44,6 @@ final class ProductCacheRxHookProvider {
 
     ProductCacheRxHookProvider(final ProductCacheHook cacheHook) {
         this.cacheHook = cacheHook;
-    }
-
-    @SuppressWarnings("unchecked")
-    Action1<List<Product>> getProductPageCacheHook(final int page, final int pageSize) {
-        if (cacheHook == null) {
-            return EMPTY_CACHE_HOOK;
-        } else {
-            return new Action1<List<Product>>() {
-                @Override
-                public void call(final List<Product> products) {
-                    try {
-                        cacheHook.cacheProducts(page, pageSize, products);
-                    } catch (Exception e) {
-
-                    }
-                }
-            };
-        }
     }
 
     @SuppressWarnings("unchecked")
@@ -100,7 +83,7 @@ final class ProductCacheRxHookProvider {
     }
 
     @SuppressWarnings("unchecked")
-    Action1<List<Product>> getCollectionProductPageCacheHook(final Long collectionId, final int page, final int pageSize) {
+    Action1<List<Product>> getCollectionProductsCacheHook(final Long collectionId) {
         if (cacheHook == null) {
             return EMPTY_CACHE_HOOK;
         } else {
@@ -108,7 +91,7 @@ final class ProductCacheRxHookProvider {
                 @Override
                 public void call(final List<Product> products) {
                     try {
-                        cacheHook.cacheProducts(collectionId, page, pageSize, products);
+                        cacheHook.cacheProducts(collectionId, products);
                     } catch (Exception e) {
 
                     }
@@ -118,7 +101,7 @@ final class ProductCacheRxHookProvider {
     }
 
     @SuppressWarnings("unchecked")
-    Action1<List<Collection>> getCollectionPageCacheHook(final int page, final int pageSize) {
+    Action1<List<Collection>> getCollectionsCacheHook() {
         if (cacheHook == null) {
             return EMPTY_CACHE_HOOK;
         } else {
@@ -126,7 +109,7 @@ final class ProductCacheRxHookProvider {
                 @Override
                 public void call(final List<Collection> collections) {
                     try {
-                        cacheHook.cacheCollections(page, pageSize, collections);
+                        cacheHook.cacheCollections(collections);
                     } catch (Exception e) {
 
                     }
@@ -134,4 +117,23 @@ final class ProductCacheRxHookProvider {
             };
         }
     }
+
+    @SuppressWarnings("unchecked")
+    Action1<List<ProductTag>> getProductTagsCacheHook() {
+        if (cacheHook == null) {
+            return EMPTY_CACHE_HOOK;
+        } else {
+            return new Action1<List<ProductTag>>() {
+                @Override
+                public void call(final List<ProductTag> productTags) {
+                    try {
+                        cacheHook.cacheProductTags(productTags);
+                    } catch (Exception e) {
+
+                    }
+                }
+            };
+        }
+    }
+
 }

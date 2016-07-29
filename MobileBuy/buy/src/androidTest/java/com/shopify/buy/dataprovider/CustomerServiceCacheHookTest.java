@@ -41,6 +41,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 
 import java.lang.reflect.Field;
+import java.util.concurrent.atomic.AtomicReference;
 
 import retrofit2.Response;
 import rx.Observable;
@@ -90,6 +91,15 @@ public class CustomerServiceCacheHookTest extends ShopifyAndroidTestCase {
         final Field cacheRxHookProviderField = CustomerServiceDefault.class.getDeclaredField("cacheRxHookProvider");
         cacheRxHookProviderField.setAccessible(true);
         cacheRxHookProviderField.set((((BuyClientDefault) buyClient).customerService), cacheRxHookProvider);
+
+        final Field customerTokenRefField = CustomerServiceDefault.class.getDeclaredField("customerTokenRef");
+        customerTokenRefField.setAccessible(true);
+        customerTokenRefField.set((((BuyClientDefault) buyClient).customerService), new AtomicReference<>(new CustomerToken() {
+            @Override
+            public Long getCustomerId() {
+                return customer.getId();
+            }
+        }));
     }
 
     @Test
@@ -164,11 +174,9 @@ public class CustomerServiceCacheHookTest extends ShopifyAndroidTestCase {
 
     @Test
     public void cacheCreateCustomer() {
-        final Observable<Response<CustomerTokenWrapper>> responseCustomerTokenObservable = Observable.just(Response.success(customerTokenWrapper));
-        final Response<CustomerWrapper> response = Response.success(customerWrapper);
-        final Observable<Response<CustomerWrapper>> responseObservable = Observable.just(response);
-        Mockito.when(customerRetrofitService.createCustomer(Mockito.any(AccountCredentialsWrapper.class))).thenReturn(responseObservable);
-        Mockito.when(customerRetrofitService.getCustomerToken(Mockito.any(AccountCredentialsWrapper.class))).thenReturn(responseCustomerTokenObservable);
+        Mockito.when(customerRetrofitService.createCustomer(Mockito.any(AccountCredentialsWrapper.class))).thenReturn(Observable.just(Response.success(customerWrapper)));
+        Mockito.when(customerRetrofitService.getCustomerToken(Mockito.any(AccountCredentialsWrapper.class))).thenReturn(Observable.just(Response.success(customerTokenWrapper)));
+        Mockito.when(customerRetrofitService.getCustomer(Mockito.anyLong())).thenReturn(Observable.just(Response.success(customerWrapper)));
         buyClient.createCustomer(new AccountCredentials("test@test.com", "123"), new Callback<Customer>() {
             @Override
             public void success(Customer response) {
@@ -180,7 +188,7 @@ public class CustomerServiceCacheHookTest extends ShopifyAndroidTestCase {
                 Assert.fail();
             }
         });
-        Mockito.verify(customerCacheHook, Mockito.times(1)).cacheCustomer(customer);
+        Mockito.verify(customerCacheHook, Mockito.times(2)).cacheCustomer(customer);
     }
 
     @Test
@@ -223,13 +231,12 @@ public class CustomerServiceCacheHookTest extends ShopifyAndroidTestCase {
 
     @Test
     public void cacheLoginCustomer() {
-        final Response<CustomerTokenWrapper> response = Response.success(customerTokenWrapper);
-        final Observable<Response<CustomerTokenWrapper>> responseObservable = Observable.just(response);
-        Mockito.when(customerRetrofitService.getCustomerToken(Mockito.any(AccountCredentialsWrapper.class))).thenReturn(responseObservable);
+        Mockito.when(customerRetrofitService.getCustomerToken(Mockito.any(AccountCredentialsWrapper.class))).thenReturn(Observable.just(Response.success(customerTokenWrapper)));
+        Mockito.when(customerRetrofitService.getCustomer(Mockito.anyLong())).thenReturn(Observable.just(Response.success(customerWrapper)));
         buyClient.loginCustomer(new AccountCredentials("test@test.com", "123"), new Callback<Customer>() {
             @Override
             public void success(Customer response) {
-                Assert.assertEquals(customerToken, response);
+                Assert.assertEquals(customer, response);
             }
 
             @Override
@@ -264,7 +271,7 @@ public class CustomerServiceCacheHookTest extends ShopifyAndroidTestCase {
         final Response<CustomerWrapper> response = Response.success(customerWrapper);
         final Observable<Response<CustomerWrapper>> responseObservable = Observable.just(response);
         Mockito.when(customerRetrofitService.getCustomer(Mockito.anyLong())).thenReturn(responseObservable);
-        buyClient.getCustomer(100L, new Callback<Customer>() {
+        buyClient.getCustomer(new Callback<Customer>() {
             @Override
             public void success(Customer response) {
                 Assert.assertEquals(customer, response);
@@ -284,9 +291,8 @@ public class CustomerServiceCacheHookTest extends ShopifyAndroidTestCase {
 
         Mockito.reset(customerCacheHook);
 
-        final Response<CustomerTokenWrapper> response = Response.success(customerTokenWrapper);
-        final Observable<Response<CustomerTokenWrapper>> responseObservable = Observable.just(response);
-        Mockito.when(customerRetrofitService.renewCustomerToken(Mockito.anyString(), Mockito.anyLong())).thenReturn(responseObservable);
+        Mockito.when(customerRetrofitService.renewCustomerToken(Mockito.anyString(), Mockito.anyLong())).thenReturn(Observable.just(Response.success(customerTokenWrapper)));
+        Mockito.when(customerRetrofitService.getCustomer(Mockito.anyLong())).thenReturn(Observable.just(Response.success(customerWrapper)));
         buyClient.renewCustomer(new Callback<CustomerToken>() {
             @Override
             public void success(CustomerToken response) {

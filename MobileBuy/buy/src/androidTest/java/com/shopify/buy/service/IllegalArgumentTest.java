@@ -29,9 +29,9 @@ import com.shopify.buy.extensions.ShopifyAndroidTestCase;
 import com.shopify.buy.model.AccountCredentials;
 import com.shopify.buy.model.Address;
 import com.shopify.buy.model.Checkout;
-import com.shopify.buy.model.Collection;
 import com.shopify.buy.model.CreditCard;
 import com.shopify.buy.model.Customer;
+import com.shopify.buy.model.CustomerToken;
 import com.shopify.buy.model.PaymentToken;
 
 import junit.framework.Assert;
@@ -40,6 +40,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Set;
+
+import rx.Subscriber;
 
 @RunWith(AndroidJUnit4.class)
 public class IllegalArgumentTest extends ShopifyAndroidTestCase {
@@ -67,6 +71,27 @@ public class IllegalArgumentTest extends ShopifyAndroidTestCase {
             }
         });
 
+        checkException(IllegalArgumentException.class, new Runnable() {
+            @Override
+            public void run() {
+                buyClient.getCollectionByHandle("");
+            }
+        });
+
+        checkException(NullPointerException.class, new Runnable() {
+            @Override
+            public void run() {
+                buyClient.getCollections(null);
+            }
+        });
+
+        checkException(IllegalArgumentException.class, new Runnable() {
+            @Override
+            public void run() {
+                buyClient.getCollections(Collections.<Long>emptyList());
+            }
+        });
+
         checkException(NullPointerException.class, new Runnable() {
             @Override
             public void run() {
@@ -91,21 +116,14 @@ public class IllegalArgumentTest extends ShopifyAndroidTestCase {
         checkException(IllegalArgumentException.class, new Runnable() {
             @Override
             public void run() {
-                buyClient.getProducts(0, 1L, Collection.SortOrder.BEST_SELLING);
+                buyClient.getProducts(0, null, null, null);
             }
         });
 
         checkException(NullPointerException.class, new Runnable() {
             @Override
             public void run() {
-                buyClient.getProducts(1, null, Collection.SortOrder.BEST_SELLING);
-            }
-        });
-
-        checkException(NullPointerException.class, new Runnable() {
-            @Override
-            public void run() {
-                buyClient.getProducts(1, 1L, (Collection.SortOrder) null);
+                buyClient.getProducts(1, null, null, null);
             }
         });
 
@@ -113,6 +131,20 @@ public class IllegalArgumentTest extends ShopifyAndroidTestCase {
             @Override
             public void run() {
                 buyClient.getCollections(0);
+            }
+        });
+
+        checkException(IllegalArgumentException.class, new Runnable() {
+            @Override
+            public void run() {
+                buyClient.getProductTags(0);
+            }
+        });
+
+        checkException(IllegalArgumentException.class, new Runnable() {
+            @Override
+            public void run() {
+                buyClient.getProducts(0, (Set<String>) null);
             }
         });
     }
@@ -290,6 +322,8 @@ public class IllegalArgumentTest extends ShopifyAndroidTestCase {
 
     @Test
     public void testCustomerServiceArguments() {
+        buyClient.setCustomerToken(new CustomerToken());
+
         checkException(NullPointerException.class, new Runnable() {
             @Override
             public void run() {
@@ -367,20 +401,6 @@ public class IllegalArgumentTest extends ShopifyAndroidTestCase {
             }
         });
 
-        checkException(IllegalArgumentException.class, new Runnable() {
-            @Override
-            public void run() {
-                buyClient.updateCustomer(new Customer());
-            }
-        });
-
-        checkException(NullPointerException.class, new Runnable() {
-            @Override
-            public void run() {
-                buyClient.getCustomer(null);
-            }
-        });
-
         checkException(NullPointerException.class, new Runnable() {
             @Override
             public void run() {
@@ -394,97 +414,109 @@ public class IllegalArgumentTest extends ShopifyAndroidTestCase {
                 buyClient.recoverPassword("");
             }
         });
+
+
+        // now clear the token
+        buyClient.setCustomerToken(null);
+
+        buyClient.updateCustomer(new Customer()).subscribe(illegalStateSubscriber);
+
+        buyClient.logoutCustomer().subscribe(illegalStateSubscriber);
+
+        buyClient.getCustomer().subscribe(illegalStateSubscriber);
+
+        buyClient.renewCustomer().subscribe(illegalStateSubscriber);
     }
 
     @Test
     public void testOrderServiceArguments() {
-        checkException(NullPointerException.class, new Runnable() {
-            @Override
-            public void run() {
-                buyClient.getOrders(null);
-            }
-        });
+        buyClient.setCustomerToken(new CustomerToken());
 
         checkException(NullPointerException.class, new Runnable() {
             @Override
             public void run() {
-                buyClient.getOrder(null, 1L);
+                buyClient.getOrder(null);
             }
         });
 
-        checkException(NullPointerException.class, new Runnable() {
-            @Override
-            public void run() {
-                buyClient.getOrder(1L, null);
-            }
-        });
+        // now clear the token
+        buyClient.setCustomerToken(null);
+
+        buyClient.getOrders().subscribe(illegalStateSubscriber);
+
+        buyClient.getOrder(1L).subscribe(illegalStateSubscriber);
     }
 
     @Test
     public void testAddressServiceArguments() {
+        buyClient.setCustomerToken(new CustomerToken());
+
         checkException(NullPointerException.class, new Runnable() {
             @Override
             public void run() {
-                buyClient.createAddress(null, new Address());
+                buyClient.createAddress(null);
             }
         });
 
         checkException(NullPointerException.class, new Runnable() {
             @Override
             public void run() {
-                buyClient.createAddress(1L, null);
+                buyClient.deleteAddress(null);
             }
         });
 
         checkException(NullPointerException.class, new Runnable() {
             @Override
             public void run() {
-                buyClient.deleteAddress(null, 1L);
+                buyClient.getAddress(null);
             }
         });
 
         checkException(NullPointerException.class, new Runnable() {
             @Override
             public void run() {
-                buyClient.deleteAddress(1L, null);
+                buyClient.updateAddress(null);
             }
         });
 
         checkException(NullPointerException.class, new Runnable() {
             @Override
             public void run() {
-                buyClient.getAddresses(null);
+                buyClient.updateAddress(null);
             }
         });
 
-        checkException(NullPointerException.class, new Runnable() {
-            @Override
-            public void run() {
-                buyClient.getAddress(null, 1L);
-            }
-        });
+        // now clear the token
+        buyClient.setCustomerToken(null);
 
-        checkException(NullPointerException.class, new Runnable() {
-            @Override
-            public void run() {
-                buyClient.getAddress(1L, null);
-            }
-        });
+        buyClient.createAddress(new Address()).subscribe(illegalStateSubscriber);
 
-        checkException(NullPointerException.class, new Runnable() {
-            @Override
-            public void run() {
-                buyClient.updateAddress(null, new Address());
-            }
-        });
+        buyClient.deleteAddress(1L).subscribe(illegalStateSubscriber);
 
-        checkException(NullPointerException.class, new Runnable() {
-            @Override
-            public void run() {
-                buyClient.updateAddress(1L, null);
-            }
-        });
+        buyClient.getAddresses().subscribe(illegalStateSubscriber);
+
+        buyClient.getAddress(1L).subscribe(illegalStateSubscriber);
+
+        buyClient.updateAddress(new Address()).subscribe(illegalStateSubscriber);
+
     }
+
+    private Subscriber illegalStateSubscriber = new Subscriber() {
+        @Override
+        public void onCompleted() {
+
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            Assert.assertEquals(IllegalStateException.class, e.getCause().getClass());
+        }
+
+        @Override
+        public void onNext(Object o) {
+            Assert.fail("Expected exception");
+        }
+    };
 
     private static void checkException(final Class exceptionClazz, final Runnable call) {
         try {

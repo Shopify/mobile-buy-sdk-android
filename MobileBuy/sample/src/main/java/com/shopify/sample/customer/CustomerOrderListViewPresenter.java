@@ -80,7 +80,7 @@ public final class CustomerOrderListViewPresenter extends BaseViewPresenter<Cust
 
         showProgress();
         final Subscription subscription = SampleApplication.getBuyClient()
-                .getOrders(customer.getId())
+                .getOrders()
                 .subscribe(new WeakObserver<>(
                         this,
                         new Action2<CustomerOrderListViewPresenter, List<Order>>() {
@@ -106,7 +106,7 @@ public final class CustomerOrderListViewPresenter extends BaseViewPresenter<Cust
 
         showProgress();
         final WeakReference<CustomerOrderListViewPresenter> presenterRef = new WeakReference<>(this);
-        fetchOrderListTask = SampleApplication.getBuyClient().getOrders(customer.getId(), new Callback<List<Order>>() {
+        fetchOrderListTask = SampleApplication.getBuyClient().getOrders(new Callback<List<Order>>() {
             @Override
             public void success(final List<Order> orders) {
                 final CustomerOrderListViewPresenter presenter = presenterRef.get();

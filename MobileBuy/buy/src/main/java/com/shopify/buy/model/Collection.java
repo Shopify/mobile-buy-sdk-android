@@ -26,14 +26,12 @@ package com.shopify.buy.model;
 
 import com.google.gson.annotations.SerializedName;
 import com.shopify.buy.dataprovider.BuyClientUtils;
-import com.shopify.buy.dataprovider.Callback;
 import com.shopify.buy.model.internal.CollectionImage;
 
 import java.util.Date;
 
 /**
  * Represents a collection of {@link Product}.
- * In order to get the list of products in a collection, use {@link com.shopify.buy.dataprovider.BuyClient#getProducts(int, Long, Callback)} .
  */
 public class Collection extends ShopifyObject {
 
@@ -65,7 +63,7 @@ public class Collection extends ShopifyObject {
 
     protected String handle;
 
-    protected boolean published;
+    protected Boolean published;
 
     @SerializedName("collection_id")
     protected Long collectionId;
@@ -151,7 +149,7 @@ public class Collection extends ShopifyObject {
      * @return {@code true} if this collection has been published on the shop, {@code false} otherwise.
      */
     public boolean isPublished() {
-        return published;
+        return published != null && published;
     }
 
     /**

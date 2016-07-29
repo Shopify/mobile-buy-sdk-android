@@ -28,6 +28,8 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -122,21 +124,40 @@ public class DiscountActivity extends SampleActivity implements GoogleApiClient.
      * 1) Google Play Services are available
      * 2) Android Pay App is installed, and has valid credit cards for in app purchase
      * 3) Android Pay is enable on the BuyClient
+     * 4) Android Pay must be enabled in the manifest
      */
     private void createAndAddAndroidPayButton() {
+        if (isAndroidPayEnabledInManifest()) {
+            // Check if device is configured to support Android Pay
+            AndroidPayHelper.androidPayIsAvailable(this, googleApiClient, new AndroidPayHelper.AndroidPayReadyCallback() {
+                @Override
+                public void onResult(boolean androidPayAvailable) {
 
-        // Check if device is configured to support Android Pay
-        AndroidPayHelper.androidPayIsAvailable(this, googleApiClient, new AndroidPayHelper.AndroidPayReadyCallback() {
-            @Override
-            public void onResult(boolean androidPayAvailable) {
-
-                if (androidPayAvailable) {
-                    createAndAddWalletFragment();
-                } else {
-                    Log.e(LOG_TAG, "Android Pay was not available");
+                    if (androidPayAvailable) {
+                        createAndAddWalletFragment();
+                    } else {
+                        Log.e(LOG_TAG, "Android Pay was not available");
+                    }
                 }
-            }
-        });
+            });
+        }
+    }
+
+    /**
+     *
+     * @return true if Android Pay is enabled in the manifest
+     */
+    private boolean isAndroidPayEnabledInManifest() {
+        boolean enabled = false;
+
+        try {
+            ApplicationInfo ai = getPackageManager().getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA);
+            enabled = ai.metaData.getBoolean("com.google.android.gms.wallet.api.enabled");
+        } catch (PackageManager.NameNotFoundException e) {
+            // ignore
+        }
+
+        return enabled;
     }
 
     /**

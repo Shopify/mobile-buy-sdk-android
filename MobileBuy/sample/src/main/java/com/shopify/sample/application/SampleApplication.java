@@ -180,7 +180,7 @@ public class SampleApplication extends Application {
 
     public void getProducts(Long collectionId, Callback<List<Product>> callback) {
         // For this sample app, we'll just fetch the first page of products in the collection
-        buyClient.getProducts(1, collectionId, callback);
+        buyClient.getProducts(1, collectionId, null, null, callback);
     }
 
     /**

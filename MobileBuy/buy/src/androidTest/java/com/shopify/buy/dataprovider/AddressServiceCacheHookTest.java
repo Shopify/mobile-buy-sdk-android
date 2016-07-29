@@ -29,6 +29,7 @@ import com.shopify.buy.dataprovider.cache.AddressCacheHook;
 import com.shopify.buy.extensions.ShopifyAndroidTestCase;
 import com.shopify.buy.model.Address;
 import com.shopify.buy.model.Customer;
+import com.shopify.buy.model.CustomerToken;
 import com.shopify.buy.model.internal.AddressWrapper;
 import com.shopify.buy.model.internal.AddressesWrapper;
 
@@ -64,6 +65,8 @@ public class AddressServiceCacheHookTest extends ShopifyAndroidTestCase {
     AddressRetrofitService addressRetrofitService;
 
     AddressCacheHook addressCacheHook;
+
+    CustomerService customerService;
 
     @Override
     public void setUp() throws Exception {
@@ -107,6 +110,18 @@ public class AddressServiceCacheHookTest extends ShopifyAndroidTestCase {
         final Field cacheRxHookProviderField = AddressServiceDefault.class.getDeclaredField("cacheRxHookProvider");
         cacheRxHookProviderField.setAccessible(true);
         cacheRxHookProviderField.set((((BuyClientDefault) buyClient).addressService), cacheRxHookProvider);
+
+        customerService = Mockito.mock(CustomerService.class);
+        Mockito.when(customerService.getCustomerToken()).thenReturn(new CustomerToken() {
+            @Override
+            public Long getCustomerId() {
+                return customer.getId();
+            }
+        });
+
+        final Field customerServiceField = AddressServiceDefault.class.getDeclaredField("customerService");
+        customerServiceField.setAccessible(true);
+        customerServiceField.set((((BuyClientDefault) buyClient).addressService), customerService);
     }
 
     @Test
@@ -187,7 +202,7 @@ public class AddressServiceCacheHookTest extends ShopifyAndroidTestCase {
         final Response<AddressWrapper> response = Response.success(addressWrapper1);
         final Observable<Response<AddressWrapper>> responseObservable = Observable.just(response);
         Mockito.when(addressRetrofitService.createAddress(Mockito.anyLong(), (AddressWrapper) Mockito.any())).thenReturn(responseObservable);
-        buyClient.createAddress(customer.getId(), address1, new Callback<Address>() {
+        buyClient.createAddress(address1, new Callback<Address>() {
             @Override
             public void success(Address response) {
                 Assert.assertEquals(address1, response);
@@ -206,7 +221,7 @@ public class AddressServiceCacheHookTest extends ShopifyAndroidTestCase {
         final Response<AddressesWrapper> response = Response.success(addressesWrapper);
         final Observable<Response<AddressesWrapper>> responseObservable = Observable.just(response);
         Mockito.when(addressRetrofitService.getAddresses(Mockito.anyLong())).thenReturn(responseObservable);
-        buyClient.getAddresses(customer.getId(), new Callback<List<Address>>() {
+        buyClient.getAddresses(new Callback<List<Address>>() {
             @Override
             public void success(List<Address> response) {
                 Assert.assertEquals(addressList.get(0), response.get(0));
@@ -226,7 +241,7 @@ public class AddressServiceCacheHookTest extends ShopifyAndroidTestCase {
         final Response<AddressWrapper> response = Response.success(addressWrapper1);
         final Observable<Response<AddressWrapper>> responseObservable = Observable.just(response);
         Mockito.when(addressRetrofitService.getAddress(Mockito.anyLong(), Mockito.anyLong())).thenReturn(responseObservable);
-        buyClient.getAddress(customer.getId(), address1.getId(), new Callback<Address>() {
+        buyClient.getAddress(address1.getId(), new Callback<Address>() {
             @Override
             public void success(Address response) {
                 Assert.assertEquals(address1, response);
@@ -245,7 +260,7 @@ public class AddressServiceCacheHookTest extends ShopifyAndroidTestCase {
         final Response<AddressWrapper> response = Response.success(addressWrapper1);
         final Observable<Response<AddressWrapper>> responseObservable = Observable.just(response);
         Mockito.when(addressRetrofitService.updateAddress(Mockito.anyLong(), (AddressWrapper) Mockito.any(), Mockito.anyLong())).thenReturn(responseObservable);
-        buyClient.updateAddress(customer.getId(), address1, new Callback<Address>() {
+        buyClient.updateAddress(address1, new Callback<Address>() {
             @Override
             public void success(Address response) {
                 Assert.assertEquals(address1, response);

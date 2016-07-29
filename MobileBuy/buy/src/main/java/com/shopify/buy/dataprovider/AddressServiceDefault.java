@@ -24,6 +24,7 @@
 package com.shopify.buy.dataprovider;
 
 import com.shopify.buy.model.Address;
+import com.shopify.buy.model.CustomerToken;
 import com.shopify.buy.model.internal.AddressWrapper;
 import com.shopify.buy.model.internal.AddressesWrapper;
 
@@ -50,58 +51,64 @@ final class AddressServiceDefault implements AddressService {
 
     final Scheduler callbackScheduler;
 
+    final CustomerService customerService;
+
     AddressServiceDefault(
         final Retrofit retrofit,
         final NetworkRetryPolicyProvider networkRetryPolicyProvider,
         final AddressCacheRxHookProvider cacheRxHookProvider,
+        final CustomerService customerService,
         final Scheduler callbackScheduler
     ) {
         this.retrofitService = retrofit.create(AddressRetrofitService.class);
         this.networkRetryPolicyProvider = networkRetryPolicyProvider;
         this.cacheRxHookProvider = cacheRxHookProvider;
         this.callbackScheduler = callbackScheduler;
+        this.customerService = customerService;
     }
 
     @Override
-    public CancellableTask createAddress(final Long customerId, final Address address, final Callback<Address> callback) {
-        return new CancellableTaskSubscriptionWrapper(createAddress(customerId, address).subscribe(new InternalCallbackSubscriber<>(callback)));
+    public CancellableTask createAddress(final Address address, final Callback<Address> callback) {
+        return new CancellableTaskSubscriptionWrapper(createAddress(address).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
-    public Observable<Address> createAddress(final Long customerId, final Address address) {
-        if (customerId == null) {
-            throw new NullPointerException("customerId cannot be null");
-        }
-
+    public Observable<Address> createAddress(final Address address) {
         if (address == null) {
             throw new NullPointerException("address cannot be null");
         }
 
+        final CustomerToken customerToken = customerService.getCustomerToken();
+        if (customerToken == null) {
+            return Observable.error(new BuyClientError(new IllegalStateException("customer must be logged in")));
+        }
+
         return retrofitService
-            .createAddress(customerId, new AddressWrapper(address))
+            .createAddress(customerToken.getCustomerId(), new AddressWrapper(address))
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<AddressWrapper, Address>())
-            .doOnNext(cacheRxHookProvider.getAddressCacheHook(customerId))
+            .doOnNext(cacheRxHookProvider.getAddressCacheHook(customerToken.getCustomerId()))
             .onErrorResumeNext(new BuyClientExceptionHandler<Address>())
             .observeOn(callbackScheduler);
     }
 
-    public CancellableTask deleteAddress(Long customerId, Long addressId, Callback<Void> callback) {
-        return new CancellableTaskSubscriptionWrapper(deleteAddress(customerId, addressId).subscribe(new InternalCallbackSubscriber<>(callback)));
+    public CancellableTask deleteAddress(Long addressId, Callback<Void> callback) {
+        return new CancellableTaskSubscriptionWrapper(deleteAddress(addressId).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
-    public Observable<Void> deleteAddress(Long customerId, Long addressId) {
-        if (customerId == null) {
-            throw new NullPointerException("customerId cannot be null");
-        }
-
+    public Observable<Void> deleteAddress(final Long addressId) {
         if (addressId == null) {
             throw new NullPointerException("addressId cannot be null");
         }
 
-        int[] successCodes = {HTTP_NO_CONTENT};
+        final CustomerToken customerToken = customerService.getCustomerToken();
+        if (customerToken == null) {
+            return Observable.error(new BuyClientError(new IllegalStateException("customer must be logged in")));
+        }
 
-        return retrofitService.deleteAddress(customerId, addressId)
+        final int[] successCodes = {HTTP_NO_CONTENT};
+
+        return retrofitService.deleteAddress(customerToken.getCustomerId(), addressId)
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>(successCodes))
             .map(new Func1<Response<Void>, Void>() {
                 @Override
@@ -109,77 +116,80 @@ final class AddressServiceDefault implements AddressService {
                     return voidResponse.body();
                 }
             })
-            .doOnNext(cacheRxHookProvider.getDeleteAddressCacheHook(customerId, addressId))
+            .doOnNext(cacheRxHookProvider.getDeleteAddressCacheHook(customerToken.getCustomerId(), addressId))
             .onErrorResumeNext(new BuyClientExceptionHandler<Void>())
             .observeOn(callbackScheduler);
     }
 
     @Override
-    public CancellableTask getAddresses(final Long customerId, final Callback<List<Address>> callback) {
-        return new CancellableTaskSubscriptionWrapper(getAddresses(customerId).subscribe(new InternalCallbackSubscriber<>(callback)));
+    public CancellableTask getAddresses(final Callback<List<Address>> callback) {
+        return new CancellableTaskSubscriptionWrapper(getAddresses().subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
-    public Observable<List<Address>> getAddresses(final Long customerId) {
-        if (customerId == null) {
-            throw new NullPointerException("customerId cannot be null");
+    public Observable<List<Address>> getAddresses() {
+        final CustomerToken customerToken = customerService.getCustomerToken();
+        if (customerToken == null) {
+            return Observable.error(new BuyClientError(new IllegalStateException("customer must be logged in")));
         }
 
         return retrofitService
-            .getAddresses(customerId)
+            .getAddresses(customerService.getCustomerToken().getCustomerId())
             .retryWhen(networkRetryPolicyProvider.provide())
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<AddressesWrapper, List<Address>>())
-            .doOnNext(cacheRxHookProvider.getAddressesCacheHook(customerId))
+            .doOnNext(cacheRxHookProvider.getAddressesCacheHook(customerToken.getCustomerId()))
             .onErrorResumeNext(new BuyClientExceptionHandler<List<Address>>())
             .observeOn(callbackScheduler);
     }
 
     @Override
-    public CancellableTask getAddress(final Long customerId, final Long addressId, final Callback<Address> callback) {
-        return new CancellableTaskSubscriptionWrapper(getAddress(customerId, addressId).subscribe(new InternalCallbackSubscriber<>(callback)));
+    public CancellableTask getAddress(final Long addressId, final Callback<Address> callback) {
+        return new CancellableTaskSubscriptionWrapper(getAddress(addressId).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
-    public Observable<Address> getAddress(final Long customerId, final Long addressId) {
-        if (customerId == null) {
-            throw new NullPointerException("customerId cannot be null");
-        }
-
+    public Observable<Address> getAddress(final Long addressId) {
         if (addressId == null) {
             throw new NullPointerException("addressId cannot be null");
         }
 
+        final CustomerToken customerToken = customerService.getCustomerToken();
+        if (customerToken == null) {
+            return Observable.error(new BuyClientError(new IllegalStateException("customer must be logged in")));
+        }
+
         return retrofitService
-            .getAddress(customerId, addressId)
+            .getAddress(customerToken.getCustomerId(), addressId)
             .retryWhen(networkRetryPolicyProvider.provide())
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<AddressWrapper, Address>())
-            .doOnNext(cacheRxHookProvider.getAddressCacheHook(customerId))
+            .doOnNext(cacheRxHookProvider.getAddressCacheHook(customerToken.getCustomerId()))
             .onErrorResumeNext(new BuyClientExceptionHandler<Address>())
             .observeOn(callbackScheduler);
     }
 
     @Override
-    public CancellableTask updateAddress(final Long customerId, final Address address, final Callback<Address> callback) {
-        return new CancellableTaskSubscriptionWrapper(updateAddress(customerId, address).subscribe(new InternalCallbackSubscriber<>(callback)));
+    public CancellableTask updateAddress(final Address address, final Callback<Address> callback) {
+        return new CancellableTaskSubscriptionWrapper(updateAddress(address).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
-    public Observable<Address> updateAddress(final Long customerId, final Address address) {
-        if (customerId == null) {
-            throw new NullPointerException("customerId cannot be null");
-        }
-
+    public Observable<Address> updateAddress(final Address address) {
         if (address == null) {
             throw new NullPointerException("address cannot be null");
         }
 
+        final CustomerToken customerToken = customerService.getCustomerToken();
+        if (customerToken == null) {
+            return Observable.error(new BuyClientError(new IllegalStateException("customer must be logged in")));
+        }
+
         return retrofitService
-            .updateAddress(customerId, new AddressWrapper(address), address.getId())
+            .updateAddress(customerToken.getCustomerId(), new AddressWrapper(address), address.getId())
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<AddressWrapper, Address>())
-            .doOnNext(cacheRxHookProvider.getAddressCacheHook(customerId))
+            .doOnNext(cacheRxHookProvider.getAddressCacheHook(customerToken.getCustomerId()))
             .onErrorResumeNext(new BuyClientExceptionHandler<Address>())
             .observeOn(callbackScheduler);
     }

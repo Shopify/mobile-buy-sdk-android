@@ -28,6 +28,7 @@ import android.support.test.runner.AndroidJUnit4;
 import com.shopify.buy.dataprovider.cache.CheckoutCacheHook;
 import com.shopify.buy.extensions.ShopifyAndroidTestCase;
 import com.shopify.buy.model.Checkout;
+import com.shopify.buy.model.CustomerToken;
 import com.shopify.buy.model.GiftCard;
 import com.shopify.buy.model.ShippingRate;
 import com.shopify.buy.model.internal.CheckoutWrapper;
@@ -71,6 +72,8 @@ public class CheckoutServiceCacheHookTest extends ShopifyAndroidTestCase {
 
     CheckoutCacheHook checkoutCacheHook;
 
+    CustomerService customerService;
+
     @Override
     public void setUp() throws Exception {
         super.setUp();
@@ -104,6 +107,18 @@ public class CheckoutServiceCacheHookTest extends ShopifyAndroidTestCase {
         final Field cacheRxHookProviderField = CheckoutServiceDefault.class.getDeclaredField("cacheRxHookProvider");
         cacheRxHookProviderField.setAccessible(true);
         cacheRxHookProviderField.set((((BuyClientDefault) buyClient).checkoutService), cacheRxHookProvider);
+
+        customerService = Mockito.mock(CustomerService.class);
+        Mockito.when(customerService.getCustomerToken()).thenReturn(new CustomerToken() {
+            @Override
+            public Long getCustomerId() {
+                return 1L;
+            }
+        });
+
+//        final Field customerServiceField = CheckoutService.class.getDeclaredField("customerService");
+//        customerServiceField.setAccessible(true);
+//        customerServiceField.set((((BuyClientDefault) buyClient).checkoutService), customerService);
     }
 
     @Test
@@ -221,7 +236,7 @@ public class CheckoutServiceCacheHookTest extends ShopifyAndroidTestCase {
         final Response<ShippingRatesWrapper> response = Response.success(shippingRatesWrapper);
         final Observable<Response<ShippingRatesWrapper>> responseObservable = Observable.just(response);
         Mockito.when(checkoutRetrofitService.getShippingRates(Mockito.anyString())).thenReturn(responseObservable);
-        buyClient.getShippingRates("", new Callback<List<ShippingRate>>() {
+        buyClient.getShippingRates("test", new Callback<List<ShippingRate>>() {
             @Override
             public void success(List<ShippingRate> response) {
                 Assert.assertEquals(shippingRateList.get(0), response.get(0));
@@ -233,27 +248,8 @@ public class CheckoutServiceCacheHookTest extends ShopifyAndroidTestCase {
                 Assert.fail();
             }
         });
-        Mockito.verify(checkoutCacheHook, Mockito.times(1)).cacheShippingRates("", shippingRateList);
+        Mockito.verify(checkoutCacheHook, Mockito.times(1)).cacheShippingRates("test", shippingRateList);
     }
-
-//    @Test
-//    public void cacheCompleteCheckout() {
-//        final Response<PaymentWrapper> response = Response.success(paymentWrapper);
-//        final Observable<Response<PaymentWrapper>> responseObservable = Observable.just(response);
-//        Mockito.when(checkoutRetrofitService.completeCheckout(Mockito.any(PaymentRequestWrapper.class), Mockito.anyString())).thenReturn(responseObservable);
-//        buyClient.completeCheckout(checkout, new Callback<Payment>() {
-//            @Override
-//            public void success(Payment response) {
-//                Assert.assertEquals(payment, response);
-//            }
-//
-//            @Override
-//            public void failure(RetrofitError error) {
-//                Assert.fail();
-//            }
-//        });
-//        Mockito.verify(checkoutCacheHook, Mockito.times(1)).cachePayment(checkout.getToken(), payment);
-//    }
 
     @Test
     public void cacheGetCheckout() {
