@@ -26,6 +26,7 @@ package com.shopify.buy.service;
 
 import android.support.test.runner.AndroidJUnit4;
 import android.test.suitebuilder.annotation.Suppress;
+import android.text.TextUtils;
 
 import com.shopify.buy.dataprovider.BuyClientError;
 import com.shopify.buy.dataprovider.Callback;
@@ -623,8 +624,8 @@ public class CustomerTest extends ShopifyAndroidTestCase {
 
             @Override
             public void failure(BuyClientError error) {
-                if (error.getErrors("customer", "email").containsKey("taken")) {
-                } else {
+                assertTrue(!TextUtils.isEmpty(error.getRetrofitErrorBody()));
+                if (!error.getErrors("customer", "email").containsKey("taken")) {
                     fail(String.format("Should be getting email already taken error. \nGot \"%s\"", error.getMessage()));
                 }
                 latch.countDown();
@@ -673,6 +674,8 @@ public class CustomerTest extends ShopifyAndroidTestCase {
 
             @Override
             public void failure(BuyClientError error) {
+                assertTrue(!TextUtils.isEmpty(error.getRetrofitErrorBody()));
+
                 final Map<String, String> passwordErrors = error.getErrors("customer", "password");
                 assertTrue(passwordErrors.containsKey("too_short"));
                 assertEquals("is too short (minimum is 5 characters)", passwordErrors.get("too_short"));
