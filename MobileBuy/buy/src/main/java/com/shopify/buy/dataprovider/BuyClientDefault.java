@@ -27,7 +27,6 @@ package com.shopify.buy.dataprovider;
 import android.text.TextUtils;
 
 import com.shopify.buy.dataprovider.cache.AddressCacheHook;
-import com.shopify.buy.dataprovider.cache.CheckoutCacheHook;
 import com.shopify.buy.dataprovider.cache.CustomerCacheHook;
 import com.shopify.buy.dataprovider.cache.OrderCacheHook;
 import com.shopify.buy.dataprovider.cache.ProductCacheHook;
@@ -94,7 +93,6 @@ final class BuyClientDefault implements BuyClient {
             final long httpConnectionTimeoutMs,
             final long httpReadWriteTimeoutMs,
             final AddressCacheHook addressCacheHook,
-            final CheckoutCacheHook checkoutCacheHook,
             final CustomerCacheHook customerCacheHook,
             final OrderCacheHook orderCacheHook,
             final ProductCacheHook productCacheHook,
@@ -151,7 +149,7 @@ final class BuyClientDefault implements BuyClient {
         storeService = new StoreServiceDefault(retrofit, networkRetryPolicyProvider, new StoreCacheRxHookProvider(storeCacheHook), callbackScheduler);
         customerService = new CustomerServiceDefault(retrofit, customerToken, networkRetryPolicyProvider, new CustomerCacheRxHookProvider(customerCacheHook), callbackScheduler);
         addressService = new AddressServiceDefault(retrofit, networkRetryPolicyProvider, new AddressCacheRxHookProvider(addressCacheHook), customerService, callbackScheduler);
-        checkoutService = new CheckoutServiceDefault(retrofit, apiKey, applicationName, networkRetryPolicyProvider, new CheckoutCacheRxHookProvider(checkoutCacheHook), callbackScheduler);
+        checkoutService = new CheckoutServiceDefault(retrofit, apiKey, applicationName, networkRetryPolicyProvider, callbackScheduler);
         orderService = new OrderServiceDefault(retrofit, networkRetryPolicyProvider, new OrderCacheRxHookProvider(orderCacheHook), customerService, callbackScheduler);
         productService = new ProductServiceDefault(retrofit, appId, productPageSize, networkRetryPolicyProvider, new ProductCacheRxHookProvider(productCacheHook), callbackScheduler);
     }

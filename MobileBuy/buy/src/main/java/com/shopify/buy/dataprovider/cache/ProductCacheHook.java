@@ -28,35 +28,84 @@ import com.shopify.buy.model.Product;
 import com.shopify.buy.model.ProductTag;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * Cache hook that will be triggered by {@link com.shopify.buy.dataprovider.ProductService}. By default all caching operates
- * on background thread.
+ * on the background thread.
  */
 public interface ProductCacheHook {
 
     /**
      * Caches product
+     *
+     * @param product product to cache
      */
     void cacheProduct(Product product);
 
     /**
+     * Caches product requested by handle
+     *
+     * @param handle  product handle
+     * @param product product to cache
+     */
+    void cacheProduct(String handle, Product product);
+
+    /**
      * Caches products
+     *
+     * @param productIds product ids
+     * @param products   products to cache
      */
-    void cacheProducts(List<Product> products);
+    void cacheProducts(List<Long> productIds, List<Product> products);
 
     /**
-     * Caches collection products
+     * Caches products
+     *
+     * @param page         page index
+     * @param collectionId collection id
+     * @param tags         filter tags
+     * @param sortOrder    collection product sort order
+     * @param products     products to cache
      */
-    void cacheProducts(Long collectionId, List<Product> products);
-
-    /**
-     * Caches collections
-     */
-    void cacheCollections(List<Collection> collections);
+    void cacheProducts(int page, Long collectionId, Set<String> tags, Collection.SortOrder sortOrder, List<Product> products);
 
     /**
      * Caches product tags
+     *
+     * @param page page index
+     * @param tags filter tags
      */
-    void cacheProductTags(List<ProductTag> tags);
+    void cacheProductTags(int page, List<ProductTag> tags);
+
+    /**
+     * Caches collections
+     *
+     * @param page page index
+     */
+    void cacheCollections(int page, List<Collection> collections);
+
+    /**
+     * Caches collections
+     *
+     * @param collectionIds collection ids
+     * @param collections   collections to cache
+     */
+    void cacheCollections(List<Long> collectionIds, List<Collection> collections);
+
+    /**
+     * Caches collection
+     *
+     * @param collection collection to cache
+     */
+    void cacheCollection(Collection collection);
+
+    /**
+     * Caches collection requested by handle
+     *
+     * @param handle     collection handle
+     * @param collection collection to cache
+     */
+    void cacheCollection(String handle, Collection collection);
+
 }

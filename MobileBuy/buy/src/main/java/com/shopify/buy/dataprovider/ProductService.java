@@ -179,7 +179,6 @@ public interface ProductService {
      */
     Observable<List<String>> getProductTags(int page);
 
-
     /**
      * Fetch the products filtered by specified tags
      *

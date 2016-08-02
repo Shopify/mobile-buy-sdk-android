@@ -28,17 +28,21 @@ import com.shopify.buy.model.CustomerToken;
 
 /**
  * Cache hook that will be triggered by {@link com.shopify.buy.dataprovider.CustomerService}. By default all caching operates
- * on background thread.
+ * on the background thread.
  */
 public interface CustomerCacheHook {
 
     /**
      * Caches customer
+     *
+     * @param customer customer
      */
     void cacheCustomer(Customer customer);
 
     /**
      * Caches customer token
+     *
+     * @param customerToken customer token
      */
     void cacheCustomerToken(CustomerToken customerToken);
 }

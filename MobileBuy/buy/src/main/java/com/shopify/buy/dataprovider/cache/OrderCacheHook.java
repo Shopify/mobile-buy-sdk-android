@@ -29,17 +29,23 @@ import java.util.List;
 
 /**
  * Cache hook that will be triggered by {@link com.shopify.buy.dataprovider.OrderService}. By default all caching operates
- * on background thread.
+ * on the background thread.
  */
 public interface OrderCacheHook {
 
     /**
      * Caches customer order
+     *
+     * @param customerId customer id
+     * @param order      customer order
      */
     void cacheOrder(Long customerId, Order order);
 
     /**
      * Caches customer list of orders
+     *
+     * @param customerId customer Id
+     * @param orders     customer orders
      */
     void cacheOrders(Long customerId, List<Order> orders);
 }

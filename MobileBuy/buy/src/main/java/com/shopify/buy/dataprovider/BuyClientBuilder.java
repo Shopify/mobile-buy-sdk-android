@@ -28,7 +28,6 @@ import android.text.TextUtils;
 import com.shopify.buy.BuildConfig;
 import com.shopify.buy.model.Customer;
 import com.shopify.buy.dataprovider.cache.AddressCacheHook;
-import com.shopify.buy.dataprovider.cache.CheckoutCacheHook;
 import com.shopify.buy.dataprovider.cache.CustomerCacheHook;
 import com.shopify.buy.dataprovider.cache.OrderCacheHook;
 import com.shopify.buy.dataprovider.cache.ProductCacheHook;
@@ -86,8 +85,6 @@ public final class BuyClientBuilder {
     private long httpReadWriteTimeoutMs = DEFAULT_HTTP_READ_WRITE_TIME_OUT_MS;
 
     private AddressCacheHook addressCacheHook;
-
-    private CheckoutCacheHook checkoutCacheHook;
 
     private CustomerCacheHook customerCacheHook;
 
@@ -217,16 +214,6 @@ public final class BuyClientBuilder {
     }
 
     /**
-     * Sets cache hook for {@link CheckoutService} API requests
-     *
-     * @param addressCacheHook cache hook
-     */
-    public BuyClientBuilder checkoutCacheHook(CheckoutCacheHook checkoutCacheHook) {
-        this.checkoutCacheHook = checkoutCacheHook;
-        return this;
-    }
-
-    /**
      * Sets cache hook for {@link CustomerService} API requests
      *
      * @param addressCacheHook cache hook
@@ -325,7 +312,6 @@ public final class BuyClientBuilder {
             httpConnectionTimeoutMs,
             httpReadWriteTimeoutMs,
             addressCacheHook,
-            checkoutCacheHook,
             customerCacheHook,
             orderCacheHook,
             productCacheHook,
