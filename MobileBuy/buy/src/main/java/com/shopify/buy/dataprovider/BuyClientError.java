@@ -63,12 +63,16 @@ public final class BuyClientError extends RuntimeException {
 
     private final Response retrofitResponse;
 
+    private final String retrofitErrorBody;
+
     private final JSONObject errorsRootJsonObject;
 
     public BuyClientError(final Throwable throwable) {
         super(throwable);
 
         retrofitResponse = null;
+        retrofitErrorBody = "";
+
         if (throwable instanceof IOException) {
             type = ERROR_TYPE_NETWORK;
             errorsRootJsonObject = null;
@@ -80,12 +84,15 @@ public final class BuyClientError extends RuntimeException {
 
     public BuyClientError(final Response retrofitResponse) {
         this.retrofitResponse = retrofitResponse;
+
         if (retrofitResponse != null) {
             type = ERROR_TYPE_API;
-            errorsRootJsonObject = parseRetrofitErrorResponse(retrofitResponse);
+            retrofitErrorBody = extractRetrofitErrorBody(retrofitResponse);
+            errorsRootJsonObject = parseRetrofitErrorResponse(retrofitErrorBody);
         } else {
             type = ERROR_TYPE_UNKNOWN;
             errorsRootJsonObject = null;
+            retrofitErrorBody = "";
         }
     }
 
@@ -113,14 +120,7 @@ public final class BuyClientError extends RuntimeException {
      * @return retrofit response error body
      */
     public String getRetrofitErrorBody() {
-        if (retrofitResponse != null) {
-            try {
-                return retrofitResponse.errorBody().string();
-            } catch (Exception e) {
-                // ignore
-            }
-        }
-        return "";
+        return retrofitErrorBody;
     }
 
     /**
@@ -219,21 +219,21 @@ public final class BuyClientError extends RuntimeException {
         }
     }
 
-    private JSONObject parseRetrofitErrorResponse(final Response retrofitResponse) {
-        final String jsonStr;
+    private String extractRetrofitErrorBody(final Response retrofitResponse) {
         try {
-            jsonStr = retrofitResponse.errorBody().string();
-        } catch (Throwable e) {
-            // ignore
+            return retrofitResponse.errorBody().string();
+        } catch (Exception e) {
+            return "";
+        }
+    }
+
+    private JSONObject parseRetrofitErrorResponse(final String retrofitErrorBody) {
+        if (TextUtils.isEmpty(retrofitErrorBody)) {
             return null;
         }
 
-        if (TextUtils.isEmpty(jsonStr)) {
-            return null;
-        }
-
         try {
-            final JSONObject jsonObject = new JSONObject(jsonStr);
+            final JSONObject jsonObject = new JSONObject(retrofitErrorBody);
             if (jsonObject.has("errors")) {
                 return jsonObject.getJSONObject("errors");
             }
