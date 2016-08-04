@@ -85,11 +85,11 @@ public class ShopifyAndroidTestCase {
             .networkRequestRetryPolicy(1, 100, 1);
 
         if (USE_MOCK_RESPONSES) {
-            buyClientBuilder.interceptors(new MockResponder(context), new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY));
+            buyClientBuilder.httpInterceptors(new MockResponder(context), new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY));
         } else if (GENERATE_MOCK_RESPONSES) {
-            buyClientBuilder.interceptors(new MockResponseGenerator(context), new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY));
+            buyClientBuilder.httpInterceptors(new MockResponseGenerator(context), new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY));
         } else {
-            buyClientBuilder.interceptors(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY));
+            buyClientBuilder.httpInterceptors(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY));
         }
 
         buyClient = buyClientBuilder.build();
