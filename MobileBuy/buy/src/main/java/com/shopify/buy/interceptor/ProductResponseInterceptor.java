@@ -38,9 +38,9 @@ public interface ProductResponseInterceptor {
 
     /**
      * Intercept responses returned by:
-     * <li>{@link com.shopify.buy.dataprovider.ProductService#getProducts(int)}</li>
-     * <li>{@link com.shopify.buy.dataprovider.ProductService#getProducts(int, Set)}</li>
-     * <li>{@link com.shopify.buy.dataprovider.ProductService#getProducts(int, Long, Set, Collection.SortOrder)}</li>
+     * {@link com.shopify.buy.dataprovider.ProductService#getProducts(int)}
+     * {@link com.shopify.buy.dataprovider.ProductService#getProducts(int, Set)}
+     * {@link com.shopify.buy.dataprovider.ProductService#getProducts(int, Long, Set, Collection.SortOrder)}
      *
      * @param page               the 1-based page index
      * @param collectionId       the collectionId that we want to fetch products for
