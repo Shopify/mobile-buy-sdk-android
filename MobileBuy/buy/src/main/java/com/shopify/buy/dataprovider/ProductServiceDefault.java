@@ -25,6 +25,9 @@ package com.shopify.buy.dataprovider;
 
 import android.text.TextUtils;
 
+import com.shopify.buy.interceptor.RequestInterceptorResponse;
+import com.shopify.buy.interceptor.ProductRequestInterceptor;
+import com.shopify.buy.interceptor.ProductResponseInterceptor;
 import com.shopify.buy.model.Collection;
 import com.shopify.buy.model.Product;
 import com.shopify.buy.model.ProductTag;
@@ -40,6 +43,7 @@ import retrofit2.Retrofit;
 import rx.Observable;
 import rx.Scheduler;
 import rx.functions.Func1;
+import rx.functions.Func2;
 
 /**
  * Default implementation of {@link ProductService}
@@ -56,18 +60,26 @@ final class ProductServiceDefault implements ProductService {
 
     final Scheduler callbackScheduler;
 
+    final ProductRequestInterceptor requestInterceptor;
+
+    final ProductResponseInterceptor responseInterceptor;
+
     ProductServiceDefault(
         final Retrofit retrofit,
         final String appId,
         final int pageSize,
         final NetworkRetryPolicyProvider networkRetryPolicyProvider,
-        final Scheduler callbackScheduler
+        final Scheduler callbackScheduler,
+        final ProductRequestInterceptor requestInterceptor,
+        final ProductResponseInterceptor responseInterceptor
     ) {
         this.retrofitService = retrofit.create(ProductRetrofitService.class);
         this.appId = appId;
         this.pageSize = pageSize;
         this.networkRetryPolicyProvider = networkRetryPolicyProvider;
         this.callbackScheduler = callbackScheduler;
+        this.requestInterceptor = requestInterceptor;
+        this.responseInterceptor = responseInterceptor;
     }
 
     @Override
@@ -100,14 +112,29 @@ final class ProductServiceDefault implements ProductService {
             throw new IllegalArgumentException("handle cannot be empty");
         }
 
-        return retrofitService
+        final Observable<Product> apiRequest = retrofitService
             .getProductByHandle(appId, handle)
             .retryWhen(networkRetryPolicyProvider.provide())
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<ProductListings, List<Product>>())
             .compose(new FirstListItemOrDefaultTransformer<Product>())
-            .onErrorResumeNext(new BuyClientExceptionHandler<Product>())
-            .observeOn(callbackScheduler);
+            .onErrorResumeNext(new BuyClientExceptionHandler<Product>());
+
+        return ApiCallInterceptWrapper.wrap(
+            apiRequest,
+            new ApiCallInterceptWrapper.RequestInterceptor<>(requestInterceptor, new Func1<ProductRequestInterceptor, Observable<RequestInterceptorResponse<Product>>>() {
+                @Override
+                public Observable<RequestInterceptorResponse<Product>> call(ProductRequestInterceptor interceptor) {
+                    return interceptor.getProductByHandle(handle);
+                }
+            }),
+            new ApiCallInterceptWrapper.ResponseInterceptor<>(responseInterceptor, new Func2<ProductResponseInterceptor, Observable<Product>, Observable<Product>>() {
+                @Override
+                public Observable<Product> call(ProductResponseInterceptor interceptor, Observable<Product> observable) {
+                    return interceptor.getProductByHandle(handle, observable);
+                }
+            })
+        ).observeOn(callbackScheduler);
     }
 
     @Override
@@ -121,14 +148,29 @@ final class ProductServiceDefault implements ProductService {
             throw new NullPointerException("productId cannot be null");
         }
 
-        return retrofitService
+        final Observable<Product> apiRequest = retrofitService
             .getProducts(appId, String.valueOf(productId))
             .retryWhen(networkRetryPolicyProvider.provide())
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<ProductListings, List<Product>>())
             .compose(new FirstListItemOrDefaultTransformer<Product>())
-            .onErrorResumeNext(new BuyClientExceptionHandler<Product>())
-            .observeOn(callbackScheduler);
+            .onErrorResumeNext(new BuyClientExceptionHandler<Product>());
+
+        return ApiCallInterceptWrapper.wrap(
+            apiRequest,
+            new ApiCallInterceptWrapper.RequestInterceptor<>(requestInterceptor, new Func1<ProductRequestInterceptor, Observable<RequestInterceptorResponse<Product>>>() {
+                @Override
+                public Observable<RequestInterceptorResponse<Product>> call(ProductRequestInterceptor interceptor) {
+                    return interceptor.getProduct(productId);
+                }
+            }),
+            new ApiCallInterceptWrapper.ResponseInterceptor<>(responseInterceptor, new Func2<ProductResponseInterceptor, Observable<Product>, Observable<Product>>() {
+                @Override
+                public Observable<Product> call(ProductResponseInterceptor interceptor, Observable<Product> observable) {
+                    return interceptor.getProduct(productId, observable);
+                }
+            })
+        ).observeOn(callbackScheduler);
     }
 
     @Override
@@ -151,13 +193,28 @@ final class ProductServiceDefault implements ProductService {
         // The returned product array will contain products for each id found.
         // If no ids were found, the array will be empty
         final String queryString = formatQueryString(productIds);
-        return retrofitService
+        final Observable<List<Product>> apiRequest = retrofitService
             .getProducts(appId, queryString)
             .retryWhen(networkRetryPolicyProvider.provide())
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<ProductListings, List<Product>>())
-            .onErrorResumeNext(new BuyClientExceptionHandler<List<Product>>())
-            .observeOn(callbackScheduler);
+            .onErrorResumeNext(new BuyClientExceptionHandler<List<Product>>());
+
+        return ApiCallInterceptWrapper.wrap(
+            apiRequest,
+            new ApiCallInterceptWrapper.RequestInterceptor<>(requestInterceptor, new Func1<ProductRequestInterceptor, Observable<RequestInterceptorResponse<List<Product>>>>() {
+                @Override
+                public Observable<RequestInterceptorResponse<List<Product>>> call(ProductRequestInterceptor interceptor) {
+                    return interceptor.getProducts(productIds);
+                }
+            }),
+            new ApiCallInterceptWrapper.ResponseInterceptor<>(responseInterceptor, new Func2<ProductResponseInterceptor, Observable<List<Product>>, Observable<List<Product>>>() {
+                @Override
+                public Observable<List<Product>> call(ProductResponseInterceptor interceptor, Observable<List<Product>> observable) {
+                    return interceptor.getProducts(productIds, observable);
+                }
+            })
+        ).observeOn(callbackScheduler);
     }
 
     @Override
@@ -175,14 +232,30 @@ final class ProductServiceDefault implements ProductService {
             throw new IllegalArgumentException("handle cannot be empty");
         }
 
-        return retrofitService
+        final Observable<Collection> apiRequest = retrofitService
             .getCollectionByHandle(appId, handle)
             .retryWhen(networkRetryPolicyProvider.provide())
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<CollectionListings, List<Collection>>())
             .compose(new FirstListItemOrDefaultTransformer<Collection>())
-            .onErrorResumeNext(new BuyClientExceptionHandler<Collection>())
-            .observeOn(callbackScheduler);
+            .onErrorResumeNext(new BuyClientExceptionHandler<Collection>());
+
+        return ApiCallInterceptWrapper.wrap(
+            apiRequest,
+            new ApiCallInterceptWrapper.RequestInterceptor<>(requestInterceptor, new Func1<ProductRequestInterceptor, Observable<RequestInterceptorResponse<Collection>>>() {
+                @Override
+                public Observable<RequestInterceptorResponse<Collection>> call(ProductRequestInterceptor interceptor) {
+                    return interceptor.getCollectionByHandle(handle);
+                }
+            }),
+            new ApiCallInterceptWrapper.ResponseInterceptor<>(responseInterceptor, new Func2<ProductResponseInterceptor, Observable<Collection>, Observable<Collection>>() {
+                @Override
+                public Observable<Collection> call(ProductResponseInterceptor interceptor, Observable<Collection> observable) {
+                    return interceptor.getCollectionByHandle(handle, observable);
+                }
+            })
+        ).observeOn(callbackScheduler);
+
     }
 
     @Override
@@ -198,13 +271,28 @@ final class ProductServiceDefault implements ProductService {
 
         // All collection responses from the server are wrapped in a CollectionListings object which contains and array of collections
         // For this call, we will clamp the size of the collection array returned to the page size
-        return retrofitService
+        final Observable<List<Collection>> apiRequest = retrofitService
             .getCollectionPage(appId, page, pageSize)
             .retryWhen(networkRetryPolicyProvider.provide())
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<CollectionListings, List<Collection>>())
-            .onErrorResumeNext(new BuyClientExceptionHandler<List<Collection>>())
-            .observeOn(callbackScheduler);
+            .onErrorResumeNext(new BuyClientExceptionHandler<List<Collection>>());
+
+        return ApiCallInterceptWrapper.wrap(
+            apiRequest,
+            new ApiCallInterceptWrapper.RequestInterceptor<>(requestInterceptor, new Func1<ProductRequestInterceptor, Observable<RequestInterceptorResponse<List<Collection>>>>() {
+                @Override
+                public Observable<RequestInterceptorResponse<List<Collection>>> call(ProductRequestInterceptor interceptor) {
+                    return interceptor.getCollections(page);
+                }
+            }),
+            new ApiCallInterceptWrapper.ResponseInterceptor<>(responseInterceptor, new Func2<ProductResponseInterceptor, Observable<List<Collection>>, Observable<List<Collection>>>() {
+                @Override
+                public Observable<List<Collection>> call(ProductResponseInterceptor interceptor, Observable<List<Collection>> observable) {
+                    return interceptor.getCollections(page, observable);
+                }
+            })
+        ).observeOn(callbackScheduler);
     }
 
     @Override
@@ -223,13 +311,28 @@ final class ProductServiceDefault implements ProductService {
         }
 
         final String queryString = TextUtils.join(",", collectionIds.toArray());
-        return retrofitService
+        final Observable<List<Collection>> apiRequest = retrofitService
             .getCollections(appId, queryString)
             .retryWhen(networkRetryPolicyProvider.provide())
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<CollectionListings, List<Collection>>())
-            .onErrorResumeNext(new BuyClientExceptionHandler<List<Collection>>())
-            .observeOn(callbackScheduler);
+            .onErrorResumeNext(new BuyClientExceptionHandler<List<Collection>>());
+
+        return ApiCallInterceptWrapper.wrap(
+            apiRequest,
+            new ApiCallInterceptWrapper.RequestInterceptor<>(requestInterceptor, new Func1<ProductRequestInterceptor, Observable<RequestInterceptorResponse<List<Collection>>>>() {
+                @Override
+                public Observable<RequestInterceptorResponse<List<Collection>>> call(ProductRequestInterceptor interceptor) {
+                    return interceptor.getCollections(collectionIds);
+                }
+            }),
+            new ApiCallInterceptWrapper.ResponseInterceptor<>(responseInterceptor, new Func2<ProductResponseInterceptor, Observable<List<Collection>>, Observable<List<Collection>>>() {
+                @Override
+                public Observable<List<Collection>> call(ProductResponseInterceptor interceptor, Observable<List<Collection>> observable) {
+                    return interceptor.getCollections(collectionIds, observable);
+                }
+            })
+        ).observeOn(callbackScheduler);
     }
 
     @Override
@@ -265,13 +368,29 @@ final class ProductServiceDefault implements ProductService {
         }
 
         final String tagsQueryStr = formatQueryString(tags);
-        return retrofitService
+
+        final Observable<List<Product>> apiRequest = retrofitService
             .getProducts(appId, null, tagsQueryStr, null, page, pageSize)
             .retryWhen(networkRetryPolicyProvider.provide())
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<ProductListings, List<Product>>())
-            .onErrorResumeNext(new BuyClientExceptionHandler<List<Product>>())
-            .observeOn(callbackScheduler);
+            .onErrorResumeNext(new BuyClientExceptionHandler<List<Product>>());
+
+        return ApiCallInterceptWrapper.wrap(
+            apiRequest,
+            new ApiCallInterceptWrapper.RequestInterceptor<>(requestInterceptor, new Func1<ProductRequestInterceptor, Observable<RequestInterceptorResponse<List<Product>>>>() {
+                @Override
+                public Observable<RequestInterceptorResponse<List<Product>>> call(ProductRequestInterceptor interceptor) {
+                    return interceptor.getProducts(page, null, tags, null);
+                }
+            }),
+            new ApiCallInterceptWrapper.ResponseInterceptor<>(responseInterceptor, new Func2<ProductResponseInterceptor, Observable<List<Product>>, Observable<List<Product>>>() {
+                @Override
+                public Observable<List<Product>> call(ProductResponseInterceptor interceptor, Observable<List<Product>> observable) {
+                    return interceptor.getProducts(page, null, tags, null, observable);
+                }
+            })
+        ).observeOn(callbackScheduler);
     }
 
     @Override
@@ -291,13 +410,28 @@ final class ProductServiceDefault implements ProductService {
 
         final String sortOrderStr = sortOrder != null ? sortOrder.toString() : Collection.SortOrder.COLLECTION_DEFAULT.toString();
         final String tagsQueryStr = formatQueryString(tags);
-        return retrofitService
+        final Observable<List<Product>> apiRequest = retrofitService
             .getProducts(appId, collectionId, tagsQueryStr, sortOrderStr, page, pageSize)
             .retryWhen(networkRetryPolicyProvider.provide())
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<ProductListings, List<Product>>())
-            .onErrorResumeNext(new BuyClientExceptionHandler<List<Product>>())
-            .observeOn(callbackScheduler);
+            .onErrorResumeNext(new BuyClientExceptionHandler<List<Product>>());
+
+        return ApiCallInterceptWrapper.wrap(
+            apiRequest,
+            new ApiCallInterceptWrapper.RequestInterceptor<>(requestInterceptor, new Func1<ProductRequestInterceptor, Observable<RequestInterceptorResponse<List<Product>>>>() {
+                @Override
+                public Observable<RequestInterceptorResponse<List<Product>>> call(ProductRequestInterceptor interceptor) {
+                    return interceptor.getProducts(page, collectionId, tags, sortOrder);
+                }
+            }),
+            new ApiCallInterceptWrapper.ResponseInterceptor<>(responseInterceptor, new Func2<ProductResponseInterceptor, Observable<List<Product>>, Observable<List<Product>>>() {
+                @Override
+                public Observable<List<Product>> call(ProductResponseInterceptor interceptor, Observable<List<Product>> observable) {
+                    return interceptor.getProducts(page, collectionId, tags, sortOrder, observable);
+                }
+            })
+        ).observeOn(callbackScheduler);
     }
 
     private Func1<List<ProductTag>, List<String>> unwrapProductTags() {
