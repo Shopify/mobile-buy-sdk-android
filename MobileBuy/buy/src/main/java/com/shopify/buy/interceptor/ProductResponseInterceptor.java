@@ -46,8 +46,8 @@ public interface ProductResponseInterceptor {
      * @param collectionId       the collectionId that we want to fetch products for
      * @param tags               set of tags which each product must contain
      * @param sortOrder          the sort order of products for the specified collection
-     * @param originalObservable the original API call observable
-     * @return observable that emits modified response or the original API call observable
+     * @param originalObservable original request observable
+     * @return modified or the same version of original request observable
      */
     Observable<List<Product>> getProducts(int page, Long collectionId, Set<String> tags, Collection.SortOrder sortOrder, Observable<List<Product>> originalObservable);
 
@@ -55,8 +55,8 @@ public interface ProductResponseInterceptor {
      * Intercept responses returned by {@link com.shopify.buy.dataprovider.ProductService#getProductByHandle(String)}
      *
      * @param handle             the handle for the product to fetch
-     * @param originalObservable the original API call observable
-     * @return observable that emits modified response or the original API call observable
+     * @param originalObservable original request observable
+     * @return modified or the same version of original request observable
      */
     Observable<Product> getProductByHandle(String handle, Observable<Product> originalObservable);
 
@@ -64,8 +64,8 @@ public interface ProductResponseInterceptor {
      * Intercept responses returned by {@link com.shopify.buy.dataprovider.ProductService#getProduct(Long)}
      *
      * @param productId          the productId for the product to fetch
-     * @param originalObservable the original API call observable
-     * @return observable that emits modified response or the original API call observable
+     * @param originalObservable original request observable
+     * @return modified or the same version of original request observable
      */
     Observable<Product> getProduct(Long productId, Observable<Product> originalObservable);
 
@@ -73,8 +73,8 @@ public interface ProductResponseInterceptor {
      * Intercept responses returned by {@link com.shopify.buy.dataprovider.ProductService#getProducts(List)}
      *
      * @param productIds         a List of the productIds to fetch
-     * @param originalObservable the original API call observable
-     * @return observable that emits modified response or the original API call observable
+     * @param originalObservable original request observable
+     * @return modified or the same version of original request observable
      */
     Observable<List<Product>> getProducts(List<Long> productIds, Observable<List<Product>> originalObservable);
 
@@ -82,8 +82,8 @@ public interface ProductResponseInterceptor {
      * Intercept responses returned by {@link com.shopify.buy.dataprovider.ProductService#getCollectionByHandle(String)}
      *
      * @param handle             the handle for the collection to fetch
-     * @param originalObservable the original API call observable
-     * @return observable that emits modified response or the original API call observable
+     * @param originalObservable original request observable
+     * @return modified or the same version of original request observable
      */
     Observable<Collection> getCollectionByHandle(String handle, Observable<Collection> originalObservable);
 
@@ -91,8 +91,8 @@ public interface ProductResponseInterceptor {
      * Intercept responses returned by {@link com.shopify.buy.dataprovider.ProductService#getCollections(int)}
      *
      * @param page               the 1-based page index
-     * @param originalObservable the original API call observable
-     * @return observable that emits modified response or the original API call observable
+     * @param originalObservable original request observable
+     * @return modified or the same version of original request observable
      */
     Observable<List<Collection>> getCollections(int page, Observable<List<Collection>> originalObservable);
 
@@ -100,8 +100,8 @@ public interface ProductResponseInterceptor {
      * Intercept responses returned by {@link com.shopify.buy.dataprovider.ProductService#getCollections(List)}
      *
      * @param collectionIds      a List of the ids to fetch
-     * @param originalObservable the original API call observable
-     * @return observable that emits modified response or the original API call observable
+     * @param originalObservable original request observable
+     * @return modified or the same version of original request observable
      */
     Observable<List<Collection>> getCollections(List<Long> collectionIds, Observable<List<Collection>> originalObservable);
 }
