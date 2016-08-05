@@ -26,8 +26,6 @@ package com.shopify.buy.dataprovider;
 import android.text.TextUtils;
 
 import com.shopify.buy.BuildConfig;
-import com.shopify.buy.interceptor.ProductRequestInterceptor;
-import com.shopify.buy.interceptor.ProductResponseInterceptor;
 import com.shopify.buy.model.Customer;
 import com.shopify.buy.model.CustomerToken;
 import com.shopify.buy.model.Product;
@@ -81,9 +79,9 @@ public final class BuyClientBuilder {
 
     private long httpReadWriteTimeoutMs = DEFAULT_HTTP_READ_WRITE_TIME_OUT_MS;
 
-    private ProductRequestInterceptor productRequestInterceptor;
+    private ProductApiInterceptor productRequestInterceptor;
 
-    private ProductResponseInterceptor productResponseInterceptor;
+    private ProductApiInterceptor productResponseInterceptor;
 
     /**
      * Sets store domain url (usually {store name}.myshopify.com
@@ -214,7 +212,7 @@ public final class BuyClientBuilder {
      * @param productRequestInterceptor interceptor
      * @return {@link BuyClientBuilder}
      */
-    public BuyClientBuilder productRequestInterceptor(final ProductRequestInterceptor productRequestInterceptor) {
+    public BuyClientBuilder productRequestInterceptor(final ProductApiInterceptor productRequestInterceptor) {
         this.productRequestInterceptor = productRequestInterceptor;
         return this;
     }
@@ -225,7 +223,7 @@ public final class BuyClientBuilder {
      * @param productResponseInterceptor interceptor
      * @return {@link BuyClientBuilder}
      */
-    public BuyClientBuilder productResponseInterceptor(final ProductResponseInterceptor productResponseInterceptor) {
+    public BuyClientBuilder productResponseInterceptor(final ProductApiInterceptor productResponseInterceptor) {
         this.productResponseInterceptor = productResponseInterceptor;
         return this;
     }

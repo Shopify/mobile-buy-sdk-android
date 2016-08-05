@@ -25,8 +25,6 @@ package com.shopify.buy.dataprovider;
 
 import android.text.TextUtils;
 
-import com.shopify.buy.interceptor.ProductRequestInterceptor;
-import com.shopify.buy.interceptor.ProductResponseInterceptor;
 import com.shopify.buy.model.Collection;
 import com.shopify.buy.model.Product;
 import com.shopify.buy.model.ProductTag;
@@ -58,9 +56,9 @@ final class ProductServiceDefault implements ProductService {
 
     final Scheduler callbackScheduler;
 
-    final ProductRequestInterceptor requestInterceptor;
+    final ProductApiInterceptor requestInterceptor;
 
-    final ProductResponseInterceptor responseInterceptor;
+    final ProductApiInterceptor responseInterceptor;
 
     ProductServiceDefault(
         final Retrofit retrofit,
@@ -68,8 +66,8 @@ final class ProductServiceDefault implements ProductService {
         final int pageSize,
         final NetworkRetryPolicyProvider networkRetryPolicyProvider,
         final Scheduler callbackScheduler,
-        final ProductRequestInterceptor requestInterceptor,
-        final ProductResponseInterceptor responseInterceptor
+        final ProductApiInterceptor requestInterceptor,
+        final ProductApiInterceptor responseInterceptor
     ) {
         this.retrofitService = retrofit.create(ProductRetrofitService.class);
         this.appId = appId;
@@ -120,15 +118,15 @@ final class ProductServiceDefault implements ProductService {
 
         return ApiRequestInterceptWrapper.wrap(
             apiRequest,
-            new ApiRequestInterceptWrapper.InterceptorCall<ProductRequestInterceptor, Product>(requestInterceptor) {
+            new ApiRequestInterceptWrapper.InterceptorCall<ProductApiInterceptor, Product>(requestInterceptor) {
                 @Override
-                public Observable<Product> call(ProductRequestInterceptor interceptor, Observable<Product> originalObservable) {
+                public Observable<Product> call(ProductApiInterceptor interceptor, Observable<Product> originalObservable) {
                     return interceptor.getProductByHandle(handle, originalObservable);
                 }
             },
-            new ApiRequestInterceptWrapper.InterceptorCall<ProductResponseInterceptor, Product>(responseInterceptor) {
+            new ApiRequestInterceptWrapper.InterceptorCall<ProductApiInterceptor, Product>(responseInterceptor) {
                 @Override
-                public Observable<Product> call(ProductResponseInterceptor interceptor, Observable<Product> originalObservable) {
+                public Observable<Product> call(ProductApiInterceptor interceptor, Observable<Product> originalObservable) {
                     return interceptor.getProductByHandle(handle, originalObservable);
                 }
             }
@@ -156,15 +154,15 @@ final class ProductServiceDefault implements ProductService {
 
         return ApiRequestInterceptWrapper.wrap(
             apiRequest,
-            new ApiRequestInterceptWrapper.InterceptorCall<ProductRequestInterceptor, Product>(requestInterceptor) {
+            new ApiRequestInterceptWrapper.InterceptorCall<ProductApiInterceptor, Product>(requestInterceptor) {
                 @Override
-                public Observable<Product> call(ProductRequestInterceptor interceptor, Observable<Product> originalObservable) {
+                public Observable<Product> call(ProductApiInterceptor interceptor, Observable<Product> originalObservable) {
                     return interceptor.getProduct(productId, originalObservable);
                 }
             },
-            new ApiRequestInterceptWrapper.InterceptorCall<ProductResponseInterceptor, Product>(responseInterceptor) {
+            new ApiRequestInterceptWrapper.InterceptorCall<ProductApiInterceptor, Product>(responseInterceptor) {
                 @Override
-                public Observable<Product> call(ProductResponseInterceptor interceptor, Observable<Product> originalObservable) {
+                public Observable<Product> call(ProductApiInterceptor interceptor, Observable<Product> originalObservable) {
                     return interceptor.getProduct(productId, originalObservable);
                 }
             }
@@ -200,15 +198,15 @@ final class ProductServiceDefault implements ProductService {
 
         return ApiRequestInterceptWrapper.wrap(
             apiRequest,
-            new ApiRequestInterceptWrapper.InterceptorCall<ProductRequestInterceptor, List<Product>>(requestInterceptor) {
+            new ApiRequestInterceptWrapper.InterceptorCall<ProductApiInterceptor, List<Product>>(requestInterceptor) {
                 @Override
-                public Observable<List<Product>> call(ProductRequestInterceptor interceptor, Observable<List<Product>> originalObservable) {
+                public Observable<List<Product>> call(ProductApiInterceptor interceptor, Observable<List<Product>> originalObservable) {
                     return interceptor.getProducts(productIds, originalObservable);
                 }
             },
-            new ApiRequestInterceptWrapper.InterceptorCall<ProductResponseInterceptor, List<Product>>(responseInterceptor) {
+            new ApiRequestInterceptWrapper.InterceptorCall<ProductApiInterceptor, List<Product>>(responseInterceptor) {
                 @Override
-                public Observable<List<Product>> call(ProductResponseInterceptor interceptor, Observable<List<Product>> originalObservable) {
+                public Observable<List<Product>> call(ProductApiInterceptor interceptor, Observable<List<Product>> originalObservable) {
                     return interceptor.getProducts(productIds, originalObservable);
                 }
             }
@@ -240,15 +238,15 @@ final class ProductServiceDefault implements ProductService {
 
         return ApiRequestInterceptWrapper.wrap(
             apiRequest,
-            new ApiRequestInterceptWrapper.InterceptorCall<ProductRequestInterceptor, Collection>(requestInterceptor) {
+            new ApiRequestInterceptWrapper.InterceptorCall<ProductApiInterceptor, Collection>(requestInterceptor) {
                 @Override
-                public Observable<Collection> call(ProductRequestInterceptor interceptor, Observable<Collection> originalObservable) {
+                public Observable<Collection> call(ProductApiInterceptor interceptor, Observable<Collection> originalObservable) {
                     return interceptor.getCollectionByHandle(handle, originalObservable);
                 }
             },
-            new ApiRequestInterceptWrapper.InterceptorCall<ProductResponseInterceptor, Collection>(responseInterceptor) {
+            new ApiRequestInterceptWrapper.InterceptorCall<ProductApiInterceptor, Collection>(responseInterceptor) {
                 @Override
-                public Observable<Collection> call(ProductResponseInterceptor interceptor, Observable<Collection> originalObservable) {
+                public Observable<Collection> call(ProductApiInterceptor interceptor, Observable<Collection> originalObservable) {
                     return interceptor.getCollectionByHandle(handle, originalObservable);
                 }
             }
@@ -278,15 +276,15 @@ final class ProductServiceDefault implements ProductService {
 
         return ApiRequestInterceptWrapper.wrap(
             apiRequest,
-            new ApiRequestInterceptWrapper.InterceptorCall<ProductRequestInterceptor, List<Collection>>(requestInterceptor) {
+            new ApiRequestInterceptWrapper.InterceptorCall<ProductApiInterceptor, List<Collection>>(requestInterceptor) {
                 @Override
-                public Observable<List<Collection>> call(ProductRequestInterceptor interceptor, Observable<List<Collection>> originalObservable) {
+                public Observable<List<Collection>> call(ProductApiInterceptor interceptor, Observable<List<Collection>> originalObservable) {
                     return interceptor.getCollections(page, originalObservable);
                 }
             },
-            new ApiRequestInterceptWrapper.InterceptorCall<ProductResponseInterceptor, List<Collection>>(responseInterceptor) {
+            new ApiRequestInterceptWrapper.InterceptorCall<ProductApiInterceptor, List<Collection>>(responseInterceptor) {
                 @Override
-                public Observable<List<Collection>> call(ProductResponseInterceptor interceptor, Observable<List<Collection>> originalObservable) {
+                public Observable<List<Collection>> call(ProductApiInterceptor interceptor, Observable<List<Collection>> originalObservable) {
                     return interceptor.getCollections(page, originalObservable);
                 }
             }
@@ -318,15 +316,15 @@ final class ProductServiceDefault implements ProductService {
 
         return ApiRequestInterceptWrapper.wrap(
             apiRequest,
-            new ApiRequestInterceptWrapper.InterceptorCall<ProductRequestInterceptor, List<Collection>>(requestInterceptor) {
+            new ApiRequestInterceptWrapper.InterceptorCall<ProductApiInterceptor, List<Collection>>(requestInterceptor) {
                 @Override
-                public Observable<List<Collection>> call(ProductRequestInterceptor interceptor, Observable<List<Collection>> originalObservable) {
+                public Observable<List<Collection>> call(ProductApiInterceptor interceptor, Observable<List<Collection>> originalObservable) {
                     return interceptor.getCollections(collectionIds, originalObservable);
                 }
             },
-            new ApiRequestInterceptWrapper.InterceptorCall<ProductResponseInterceptor, List<Collection>>(responseInterceptor) {
+            new ApiRequestInterceptWrapper.InterceptorCall<ProductApiInterceptor, List<Collection>>(responseInterceptor) {
                 @Override
-                public Observable<List<Collection>> call(ProductResponseInterceptor interceptor, Observable<List<Collection>> originalObservable) {
+                public Observable<List<Collection>> call(ProductApiInterceptor interceptor, Observable<List<Collection>> originalObservable) {
                     return interceptor.getCollections(collectionIds, originalObservable);
                 }
             }
@@ -376,15 +374,15 @@ final class ProductServiceDefault implements ProductService {
 
         return ApiRequestInterceptWrapper.wrap(
             apiRequest,
-            new ApiRequestInterceptWrapper.InterceptorCall<ProductRequestInterceptor, List<Product>>(requestInterceptor) {
+            new ApiRequestInterceptWrapper.InterceptorCall<ProductApiInterceptor, List<Product>>(requestInterceptor) {
                 @Override
-                public Observable<List<Product>> call(ProductRequestInterceptor interceptor, Observable<List<Product>> originalObservable) {
+                public Observable<List<Product>> call(ProductApiInterceptor interceptor, Observable<List<Product>> originalObservable) {
                     return interceptor.getProducts(page, null, tags, null, originalObservable);
                 }
             },
-            new ApiRequestInterceptWrapper.InterceptorCall<ProductResponseInterceptor, List<Product>>(responseInterceptor) {
+            new ApiRequestInterceptWrapper.InterceptorCall<ProductApiInterceptor, List<Product>>(responseInterceptor) {
                 @Override
-                public Observable<List<Product>> call(ProductResponseInterceptor interceptor, Observable<List<Product>> originalObservable) {
+                public Observable<List<Product>> call(ProductApiInterceptor interceptor, Observable<List<Product>> originalObservable) {
                     return interceptor.getProducts(page, null, tags, null, originalObservable);
                 }
             }
@@ -417,15 +415,15 @@ final class ProductServiceDefault implements ProductService {
 
         return ApiRequestInterceptWrapper.wrap(
             apiRequest,
-            new ApiRequestInterceptWrapper.InterceptorCall<ProductRequestInterceptor, List<Product>>(requestInterceptor) {
+            new ApiRequestInterceptWrapper.InterceptorCall<ProductApiInterceptor, List<Product>>(requestInterceptor) {
                 @Override
-                public Observable<List<Product>> call(ProductRequestInterceptor interceptor, Observable<List<Product>> originalObservable) {
+                public Observable<List<Product>> call(ProductApiInterceptor interceptor, Observable<List<Product>> originalObservable) {
                     return interceptor.getProducts(page, collectionId, tags, sortOrder, originalObservable);
                 }
             },
-            new ApiRequestInterceptWrapper.InterceptorCall<ProductResponseInterceptor, List<Product>>(responseInterceptor) {
+            new ApiRequestInterceptWrapper.InterceptorCall<ProductApiInterceptor, List<Product>>(responseInterceptor) {
                 @Override
-                public Observable<List<Product>> call(ProductResponseInterceptor interceptor, Observable<List<Product>> originalObservable) {
+                public Observable<List<Product>> call(ProductApiInterceptor interceptor, Observable<List<Product>> originalObservable) {
                     return interceptor.getProducts(page, collectionId, tags, sortOrder, originalObservable);
                 }
             }

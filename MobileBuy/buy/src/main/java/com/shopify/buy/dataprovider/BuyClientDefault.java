@@ -26,8 +26,6 @@ package com.shopify.buy.dataprovider;
 
 import android.text.TextUtils;
 
-import com.shopify.buy.interceptor.ProductRequestInterceptor;
-import com.shopify.buy.interceptor.ProductResponseInterceptor;
 import com.shopify.buy.model.AccountCredentials;
 import com.shopify.buy.model.Address;
 import com.shopify.buy.model.Checkout;
@@ -84,8 +82,8 @@ final class BuyClientDefault implements BuyClient {
         final CustomerToken customerToken,
         final Scheduler callbackScheduler,
         final int productPageSize,
-        final ProductRequestInterceptor productRequestInterceptor,
-        final ProductResponseInterceptor productResponseInterceptor,
+        final ProductApiInterceptor productRequestInterceptor,
+        final ProductApiInterceptor productResponseInterceptor,
         final int networkRequestRetryMaxCount,
         final long networkRequestRetryDelayMs,
         final float networkRequestRetryBackoffMultiplier,
