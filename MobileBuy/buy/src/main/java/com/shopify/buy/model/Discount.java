@@ -31,11 +31,11 @@ package com.shopify.buy.model;
  */
 public class Discount {
 
-    private String amount;
+    protected String amount;
 
     private Boolean applicable;
 
-    private String code;
+    protected String code;
 
     public Discount() {}
 

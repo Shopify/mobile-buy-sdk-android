@@ -364,7 +364,6 @@ final class CheckoutServiceDefault implements CheckoutService {
         }
 
         final Checkout safeCheckout = checkout.copy();
-
         return retrofitService
             .removeGiftCard(giftCardId, safeCheckout.getToken())
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())

@@ -21,23 +21,31 @@
  *   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  *   THE SOFTWARE.
  */
-package com.shopify.buy.model;
+package com.shopify.buy.dataprovider.cache;
 
-import com.google.gson.annotations.SerializedName;
+import com.shopify.buy.model.Order;
+
+import java.util.List;
 
 /**
- * Represents tag information attached to the product
+ * Cache hook that will be triggered by {@link com.shopify.buy.dataprovider.OrderService}. By default all caching operates
+ * on the background thread.
  */
-public class ProductTag extends ShopifyObject {
+public interface OrderCacheHook {
 
-    @SerializedName("title")
-    protected String title;
+    /**
+     * Caches customer order
+     *
+     * @param customerId customer id
+     * @param order      customer order
+     */
+    void cacheOrder(Long customerId, Order order);
 
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
+    /**
+     * Caches customer list of orders
+     *
+     * @param customerId customer Id
+     * @param orders     customer orders
+     */
+    void cacheOrders(Long customerId, List<Order> orders);
 }

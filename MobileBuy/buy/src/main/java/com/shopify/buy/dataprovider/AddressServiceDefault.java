@@ -47,6 +47,8 @@ final class AddressServiceDefault implements AddressService {
 
     final NetworkRetryPolicyProvider networkRetryPolicyProvider;
 
+    final AddressCacheRxHookProvider cacheRxHookProvider;
+
     final Scheduler callbackScheduler;
 
     final CustomerService customerService;
@@ -54,11 +56,13 @@ final class AddressServiceDefault implements AddressService {
     AddressServiceDefault(
         final Retrofit retrofit,
         final NetworkRetryPolicyProvider networkRetryPolicyProvider,
-        final Scheduler callbackScheduler,
-        final CustomerService customerService
+        final AddressCacheRxHookProvider cacheRxHookProvider,
+        final CustomerService customerService,
+        final Scheduler callbackScheduler
     ) {
         this.retrofitService = retrofit.create(AddressRetrofitService.class);
         this.networkRetryPolicyProvider = networkRetryPolicyProvider;
+        this.cacheRxHookProvider = cacheRxHookProvider;
         this.callbackScheduler = callbackScheduler;
         this.customerService = customerService;
     }
@@ -74,8 +78,7 @@ final class AddressServiceDefault implements AddressService {
             throw new NullPointerException("address cannot be null");
         }
 
-        CustomerToken customerToken = customerService.getCustomerToken();
-
+        final CustomerToken customerToken = customerService.getCustomerToken();
         if (customerToken == null) {
             return Observable.error(new BuyClientError(new IllegalStateException("customer must be logged in")));
         }
@@ -84,6 +87,7 @@ final class AddressServiceDefault implements AddressService {
             .createAddress(customerToken.getCustomerId(), new AddressWrapper(address))
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<AddressWrapper, Address>())
+            .doOnNext(cacheRxHookProvider.getAddressCacheHook(customerToken.getCustomerId()))
             .onErrorResumeNext(new BuyClientExceptionHandler<Address>())
             .observeOn(callbackScheduler);
     }
@@ -92,18 +96,17 @@ final class AddressServiceDefault implements AddressService {
         return new CancellableTaskSubscriptionWrapper(deleteAddress(addressId).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
-    public Observable<Void> deleteAddress(Long addressId) {
+    public Observable<Void> deleteAddress(final Long addressId) {
         if (addressId == null) {
             throw new NullPointerException("addressId cannot be null");
         }
 
-        CustomerToken customerToken = customerService.getCustomerToken();
-
+        final CustomerToken customerToken = customerService.getCustomerToken();
         if (customerToken == null) {
             return Observable.error(new BuyClientError(new IllegalStateException("customer must be logged in")));
         }
 
-        int[] successCodes = {HTTP_NO_CONTENT};
+        final int[] successCodes = {HTTP_NO_CONTENT};
 
         return retrofitService.deleteAddress(customerToken.getCustomerId(), addressId)
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>(successCodes))
@@ -113,6 +116,7 @@ final class AddressServiceDefault implements AddressService {
                     return voidResponse.body();
                 }
             })
+            .doOnNext(cacheRxHookProvider.getDeleteAddressCacheHook(customerToken.getCustomerId(), addressId))
             .onErrorResumeNext(new BuyClientExceptionHandler<Void>())
             .observeOn(callbackScheduler);
     }
@@ -124,7 +128,8 @@ final class AddressServiceDefault implements AddressService {
 
     @Override
     public Observable<List<Address>> getAddresses() {
-        if (customerService.getCustomerToken() == null) {
+        final CustomerToken customerToken = customerService.getCustomerToken();
+        if (customerToken == null) {
             return Observable.error(new BuyClientError(new IllegalStateException("customer must be logged in")));
         }
 
@@ -133,6 +138,7 @@ final class AddressServiceDefault implements AddressService {
             .retryWhen(networkRetryPolicyProvider.provide())
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<AddressesWrapper, List<Address>>())
+            .doOnNext(cacheRxHookProvider.getAddressesCacheHook(customerToken.getCustomerId()))
             .onErrorResumeNext(new BuyClientExceptionHandler<List<Address>>())
             .observeOn(callbackScheduler);
     }
@@ -148,8 +154,7 @@ final class AddressServiceDefault implements AddressService {
             throw new NullPointerException("addressId cannot be null");
         }
 
-        CustomerToken customerToken = customerService.getCustomerToken();
-
+        final CustomerToken customerToken = customerService.getCustomerToken();
         if (customerToken == null) {
             return Observable.error(new BuyClientError(new IllegalStateException("customer must be logged in")));
         }
@@ -159,6 +164,7 @@ final class AddressServiceDefault implements AddressService {
             .retryWhen(networkRetryPolicyProvider.provide())
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<AddressWrapper, Address>())
+            .doOnNext(cacheRxHookProvider.getAddressCacheHook(customerToken.getCustomerId()))
             .onErrorResumeNext(new BuyClientExceptionHandler<Address>())
             .observeOn(callbackScheduler);
     }
@@ -174,8 +180,7 @@ final class AddressServiceDefault implements AddressService {
             throw new NullPointerException("address cannot be null");
         }
 
-        CustomerToken customerToken = customerService.getCustomerToken();
-
+        final CustomerToken customerToken = customerService.getCustomerToken();
         if (customerToken == null) {
             return Observable.error(new BuyClientError(new IllegalStateException("customer must be logged in")));
         }
@@ -184,6 +189,7 @@ final class AddressServiceDefault implements AddressService {
             .updateAddress(customerToken.getCustomerId(), new AddressWrapper(address), address.getId())
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<AddressWrapper, Address>())
+            .doOnNext(cacheRxHookProvider.getAddressCacheHook(customerToken.getCustomerId()))
             .onErrorResumeNext(new BuyClientExceptionHandler<Address>())
             .observeOn(callbackScheduler);
     }

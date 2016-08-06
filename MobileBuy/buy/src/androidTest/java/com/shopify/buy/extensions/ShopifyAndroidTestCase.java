@@ -27,6 +27,8 @@ import rx.schedulers.Schedulers;
  */
 public class ShopifyAndroidTestCase {
 
+    protected final int productPageSize = 50;
+
     @Rule
     public TestName name = new TestName();
 
@@ -80,7 +82,7 @@ public class ShopifyAndroidTestCase {
             .appId(appId)
             .applicationName(applicationName)
             .callbackScheduler(Schedulers.immediate())
-            .productPageSize(50)
+            .productPageSize(productPageSize)
             .httpTimeout(TimeUnit.SECONDS.toMillis(60), TimeUnit.SECONDS.toMillis(60))
             .networkRequestRetryPolicy(1, 100, 1);
 
@@ -107,10 +109,6 @@ public class ShopifyAndroidTestCase {
 
     public String getAppId() {
         return USE_MOCK_RESPONSES ? "placeholderAppId" : BuildConfig.APP_ID;
-    }
-
-    protected String getAndroidPayPublicKey() {
-        return USE_MOCK_RESPONSES ? "placeholderAndroidPayPublicKey" : BuildConfig.ANDROID_PAY_PUBLIC_KEY;
     }
 
     public okhttp3.Response createResponse(int code) {

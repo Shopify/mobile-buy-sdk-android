@@ -1,0 +1,212 @@
+/*
+ *   The MIT License (MIT)
+ *
+ *   Copyright (c) 2015 Shopify Inc.
+ *
+ *   Permission is hereby granted, free of charge, to any person obtaining a copy
+ *   of this software and associated documentation files (the "Software"), to deal
+ *   in the Software without restriction, including without limitation the rights
+ *   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ *   copies of the Software, and to permit persons to whom the Software is
+ *   furnished to do so, subject to the following conditions:
+ *
+ *   The above copyright notice and this permission notice shall be included in
+ *   all copies or substantial portions of the Software.
+ *
+ *   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ *   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ *   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ *   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ *   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ *   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ *   THE SOFTWARE.
+ */
+package com.shopify.buy.dataprovider;
+
+import com.shopify.buy.dataprovider.cache.ProductCacheHook;
+import com.shopify.buy.model.Collection;
+import com.shopify.buy.model.Product;
+import com.shopify.buy.model.ProductTag;
+
+import java.util.List;
+import java.util.Set;
+
+import rx.functions.Action1;
+
+final class ProductCacheRxHookProvider {
+
+    private static final Action1 EMPTY_CACHE_HOOK = new Action1() {
+        @Override
+        public void call(Object o) {
+        }
+    };
+
+    final ProductCacheHook cacheHook;
+
+    ProductCacheRxHookProvider(final ProductCacheHook cacheHook) {
+        this.cacheHook = cacheHook;
+    }
+
+    @SuppressWarnings("unchecked")
+    Action1<Product> getProductCacheHook() {
+        if (cacheHook == null) {
+            return EMPTY_CACHE_HOOK;
+        } else {
+            return new Action1<Product>() {
+                @Override
+                public void call(final Product product) {
+                    try {
+                        cacheHook.cacheProduct(product);
+                    } catch (Exception e) {
+
+                    }
+                }
+            };
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    Action1<Product> getProductCacheHook(final String handle) {
+        if (cacheHook == null) {
+            return EMPTY_CACHE_HOOK;
+        } else {
+            return new Action1<Product>() {
+                @Override
+                public void call(final Product product) {
+                    try {
+                        cacheHook.cacheProduct(handle, product);
+                    } catch (Exception e) {
+
+                    }
+                }
+            };
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    Action1<List<Product>> getProductsCacheHook(final List<Long> productIds) {
+        if (cacheHook == null) {
+            return EMPTY_CACHE_HOOK;
+        } else {
+            return new Action1<List<Product>>() {
+                @Override
+                public void call(final List<Product> products) {
+                    try {
+                        cacheHook.cacheProducts(productIds, products);
+                    } catch (Exception e) {
+
+                    }
+                }
+            };
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    Action1<List<Product>> getProductsCacheHook(final int page, final Long collectionId, final Set<String> tags, final Collection.SortOrder sortOrder) {
+        if (cacheHook == null) {
+            return EMPTY_CACHE_HOOK;
+        } else {
+            return new Action1<List<Product>>() {
+                @Override
+                public void call(final List<Product> products) {
+                    try {
+                        cacheHook.cacheProducts(page, collectionId, tags, sortOrder, products);
+                    } catch (Exception e) {
+
+                    }
+                }
+            };
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    Action1<List<ProductTag>> getProductTagsCacheHook(final int page) {
+        if (cacheHook == null) {
+            return EMPTY_CACHE_HOOK;
+        } else {
+            return new Action1<List<ProductTag>>() {
+                @Override
+                public void call(final List<ProductTag> productTags) {
+                    try {
+                        cacheHook.cacheProductTags(page, productTags);
+                    } catch (Exception e) {
+
+                    }
+                }
+            };
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    Action1<Collection> getCollectionCacheHook() {
+        if (cacheHook == null) {
+            return EMPTY_CACHE_HOOK;
+        } else {
+            return new Action1<Collection>() {
+                @Override
+                public void call(final Collection collection) {
+                    try {
+                        cacheHook.cacheCollection(collection);
+                    } catch (Exception e) {
+
+                    }
+                }
+            };
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    Action1<Collection> getCollectionCacheHook(final String handle) {
+        if (cacheHook == null) {
+            return EMPTY_CACHE_HOOK;
+        } else {
+            return new Action1<Collection>() {
+                @Override
+                public void call(final Collection collection) {
+                    try {
+                        cacheHook.cacheCollection(handle, collection);
+                    } catch (Exception e) {
+
+                    }
+                }
+            };
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    Action1<List<Collection>> getCollectionsCacheHook(final int page) {
+        if (cacheHook == null) {
+            return EMPTY_CACHE_HOOK;
+        } else {
+            return new Action1<List<Collection>>() {
+                @Override
+                public void call(final List<Collection> collections) {
+                    try {
+                        cacheHook.cacheCollections(page, collections);
+                    } catch (Exception e) {
+
+                    }
+                }
+            };
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    Action1<List<Collection>> getCollectionsCacheHook(final List<Long> collectionIds) {
+        if (cacheHook == null) {
+            return EMPTY_CACHE_HOOK;
+        } else {
+            return new Action1<List<Collection>>() {
+                @Override
+                public void call(final List<Collection> collections) {
+                    try {
+                        cacheHook.cacheCollections(collectionIds, collections);
+                    } catch (Exception e) {
+
+                    }
+                }
+            };
+        }
+    }
+
+}

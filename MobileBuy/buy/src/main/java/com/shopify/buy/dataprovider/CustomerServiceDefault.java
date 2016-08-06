@@ -53,6 +53,8 @@ final class CustomerServiceDefault implements CustomerService {
 
     final NetworkRetryPolicyProvider networkRetryPolicyProvider;
 
+    final CustomerCacheRxHookProvider cacheRxHookProvider;
+
     final Scheduler callbackScheduler;
 
     final AtomicReference<CustomerToken> customerTokenRef = new AtomicReference<>();
@@ -61,11 +63,13 @@ final class CustomerServiceDefault implements CustomerService {
         final Retrofit retrofit,
         final CustomerToken customerToken,
         final NetworkRetryPolicyProvider networkRetryPolicyProvider,
+        final CustomerCacheRxHookProvider cacheRxHookProvider,
         final Scheduler callbackScheduler
     ) {
         this.retrofitService = retrofit.create(CustomerRetrofitService.class);
         this.customerTokenRef.set(customerToken);
         this.networkRetryPolicyProvider = networkRetryPolicyProvider;
+        this.cacheRxHookProvider = cacheRxHookProvider;
         this.callbackScheduler = callbackScheduler;
     }
 
@@ -95,6 +99,7 @@ final class CustomerServiceDefault implements CustomerService {
             .createCustomer(accountCredentialsWrapper)
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<CustomerWrapper, Customer>())
+            .doOnNext(cacheRxHookProvider.getCustomerCacheHook())
             .onErrorResumeNext(new BuyClientExceptionHandler<Customer>())
             .flatMap(new Func1<Customer, Observable<Customer>>() {
                 @Override
@@ -131,6 +136,7 @@ final class CustomerServiceDefault implements CustomerService {
             .activateCustomer(customerId, activationToken, accountCredentialsWrapper)
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<CustomerWrapper, Customer>())
+            .doOnNext(cacheRxHookProvider.getCustomerCacheHook())
             .onErrorResumeNext(new BuyClientExceptionHandler<Customer>())
             .observeOn(callbackScheduler);
     }
@@ -160,6 +166,7 @@ final class CustomerServiceDefault implements CustomerService {
             .resetPassword(customerId, resetToken, accountCredentialsWrapper)
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<CustomerWrapper, Customer>())
+            .doOnNext(cacheRxHookProvider.getCustomerCacheHook())
             .onErrorResumeNext(new BuyClientExceptionHandler<Customer>())
             .observeOn(callbackScheduler);
     }
@@ -181,6 +188,7 @@ final class CustomerServiceDefault implements CustomerService {
             .retryWhen(networkRetryPolicyProvider.provide())
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<CustomerTokenWrapper, CustomerToken>())
+            .doOnNext(cacheRxHookProvider.getCustomerTokenCacheHook())
             .onErrorResumeNext(new BuyClientExceptionHandler<CustomerToken>())
             .doOnNext(new Action1<CustomerToken>() {
                 @Override
@@ -251,6 +259,7 @@ final class CustomerServiceDefault implements CustomerService {
             .updateCustomer(customerToken.getCustomerId(), new CustomerWrapper(customer))
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<CustomerWrapper, Customer>())
+            .doOnNext(cacheRxHookProvider.getCustomerCacheHook())
             .onErrorResumeNext(new BuyClientExceptionHandler<Customer>())
             .observeOn(callbackScheduler);
     }
@@ -273,6 +282,7 @@ final class CustomerServiceDefault implements CustomerService {
             .retryWhen(networkRetryPolicyProvider.provide())
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<CustomerWrapper, Customer>())
+            .doOnNext(cacheRxHookProvider.getCustomerCacheHook())
             .onErrorResumeNext(new BuyClientExceptionHandler<Customer>())
             .observeOn(callbackScheduler);
     }
@@ -294,6 +304,7 @@ final class CustomerServiceDefault implements CustomerService {
             .renewCustomerToken(EMPTY_BODY, customerToken.getCustomerId())
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<CustomerTokenWrapper, CustomerToken>())
+            .doOnNext(cacheRxHookProvider.getCustomerTokenCacheHook())
             .onErrorResumeNext(new BuyClientExceptionHandler<CustomerToken>())
             .observeOn(callbackScheduler)
             .doOnNext(new Action1<CustomerToken>() {

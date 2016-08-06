@@ -120,7 +120,8 @@ android {
             buildConfigField "String", "APP_ID", "\"" + appId.toString() + "\""
             buildConfigField "String", "ANDROID_PAY_PUBLIC_KEY", "\"" + androidPayPublicKey.toString() + "\""
 
-            testCoverageEnabled runTestCoverage.toBoolean()
+            // do not enable test coverage for production builds as it modifies the classes to add agents and it crashes
+//            testCoverageEnabled true
         }
 
         release {
@@ -223,15 +224,14 @@ dependencies {
     compile 'com.google.android.gms:play-services-wallet:8.4.0'
 
     androidTestCompile 'org.mockito:mockito-core:1.9.5'
-    androidTestCompile 'com.google.dexmaker:dexmaker:1.1'
-    androidTestCompile 'com.google.dexmaker:dexmaker-mockito:1.1'
+    androidTestCompile 'com.google.dexmaker:dexmaker:1.2'
+    androidTestCompile 'com.google.dexmaker:dexmaker-mockito:1.2'
     androidTestCompile 'com.android.support:support-annotations:23.4.0'
     androidTestCompile 'com.android.support.test:runner:0.4.1'
     androidTestCompile 'com.android.support.test:rules:0.4.1'
 
     compile 'com.squareup.retrofit2:adapter-rxjava:2.0.0'
     compile 'io.reactivex:rxandroid:1.0.1'
-
 }
 
 /*

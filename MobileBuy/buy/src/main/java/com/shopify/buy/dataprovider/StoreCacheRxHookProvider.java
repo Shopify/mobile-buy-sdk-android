@@ -21,23 +21,41 @@
  *   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  *   THE SOFTWARE.
  */
-package com.shopify.buy.model;
+package com.shopify.buy.dataprovider;
 
-import com.google.gson.annotations.SerializedName;
+import com.shopify.buy.dataprovider.cache.StoreCacheHook;
+import com.shopify.buy.model.Shop;
 
-/**
- * Represents tag information attached to the product
- */
-public class ProductTag extends ShopifyObject {
+import rx.functions.Action1;
 
-    @SerializedName("title")
-    protected String title;
+final class StoreCacheRxHookProvider {
 
-    public String getTitle() {
-        return title;
+    private static final Action1 EMPTY_CACHE_HOOK = new Action1() {
+        @Override
+        public void call(Object o) {
+        }
+    };
+
+    final StoreCacheHook cacheHook;
+
+    StoreCacheRxHookProvider(final StoreCacheHook cacheHook) {
+        this.cacheHook = cacheHook;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    @SuppressWarnings("unchecked")
+    Action1<Shop> getStoreCacheHook() {
+        if (cacheHook == null) {
+            return EMPTY_CACHE_HOOK;
+        } else {
+            return new Action1<Shop>() {
+                @Override
+                public void call(final Shop shop) {
+                    try {
+                        cacheHook.cacheStore(shop);
+                    } catch (Exception e) {
+                    }
+                }
+            };
+        }
     }
 }

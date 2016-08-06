@@ -21,23 +21,40 @@
  *   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  *   THE SOFTWARE.
  */
-package com.shopify.buy.model;
+package com.shopify.buy.dataprovider.cache;
 
-import com.google.gson.annotations.SerializedName;
+import com.shopify.buy.model.Address;
+
+import java.util.List;
 
 /**
- * Represents tag information attached to the product
+ * Cache hook that will be triggered by {@link com.shopify.buy.dataprovider.AddressService}. By default all caching operates
+ * on the background thread.
  */
-public class ProductTag extends ShopifyObject {
+public interface AddressCacheHook {
 
-    @SerializedName("title")
-    protected String title;
+    /**
+     * Caches customer address
+     *
+     * @param customerId customer id
+     * @param address    customer address
+     */
+    void cacheAddress(Long customerId, Address address);
 
-    public String getTitle() {
-        return title;
-    }
+    /**
+     * Caches customer list of addresses
+     *
+     * @param customerId customer id
+     * @param addresses  customer addresses
+     */
+    void cacheAddresses(Long customerId, List<Address> addresses);
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
+    /**
+     * Deletes address from cache
+     *
+     * @param customerId customer id
+     * @param addressId  customer address id
+     */
+    void deleteAddress(Long customerId, Long addressId);
+
 }

@@ -27,6 +27,11 @@ import android.text.TextUtils;
 
 import com.shopify.buy.BuildConfig;
 import com.shopify.buy.model.Customer;
+import com.shopify.buy.dataprovider.cache.AddressCacheHook;
+import com.shopify.buy.dataprovider.cache.CustomerCacheHook;
+import com.shopify.buy.dataprovider.cache.OrderCacheHook;
+import com.shopify.buy.dataprovider.cache.ProductCacheHook;
+import com.shopify.buy.dataprovider.cache.StoreCacheHook;
 import com.shopify.buy.model.CustomerToken;
 import com.shopify.buy.model.Product;
 
@@ -47,9 +52,9 @@ public final class BuyClientBuilder {
 
     public static final int DEFAULT_PAGE_SIZE = 25;
 
-    public static final long DEFAULT_HTTP_CONNECTION_TIME_OUT_MS =  TimeUnit.SECONDS.toMillis(30);
+    public static final long DEFAULT_HTTP_CONNECTION_TIME_OUT_MS = TimeUnit.SECONDS.toMillis(30);
 
-    public static final long DEFAULT_HTTP_READ_WRITE_TIME_OUT_MS =  TimeUnit.SECONDS.toMillis(60);
+    public static final long DEFAULT_HTTP_READ_WRITE_TIME_OUT_MS = TimeUnit.SECONDS.toMillis(60);
 
     public static final long MIN_NETWORK_RETRY_DELAY = TimeUnit.MILLISECONDS.toMillis(500);
 
@@ -78,6 +83,16 @@ public final class BuyClientBuilder {
     private long httpConnectionTimeoutMs = DEFAULT_HTTP_CONNECTION_TIME_OUT_MS;
 
     private long httpReadWriteTimeoutMs = DEFAULT_HTTP_READ_WRITE_TIME_OUT_MS;
+
+    private AddressCacheHook addressCacheHook;
+
+    private CustomerCacheHook customerCacheHook;
+
+    private OrderCacheHook orderCacheHook;
+
+    private ProductCacheHook productCacheHook;
+
+    private StoreCacheHook storeCacheHook;
 
     /**
      * Sets store domain url (usually {store name}.myshopify.com
@@ -127,7 +142,6 @@ public final class BuyClientBuilder {
      * Sets the customer token
      *
      * @param customerToken The token associated with a {@link Customer}
-     *
      * @return a {@link BuyClientBuilder}
      */
     public BuyClientBuilder customerToken(final CustomerToken customerToken) {
@@ -140,7 +154,6 @@ public final class BuyClientBuilder {
      * in main thread.
      *
      * @param callbackScheduler The {@link Scheduler} to use for API callbacks.
-     *
      * @return a {@link BuyClientBuilder}
      */
     public BuyClientBuilder callbackScheduler(final Scheduler callbackScheduler) {
@@ -181,13 +194,62 @@ public final class BuyClientBuilder {
      * @param networkRequestRetryMaxCount          max count of retry attempts
      * @param networkRequestRetryDelayMs           delay between retry attempts in milliseconds
      * @param networkRequestRetryBackoffMultiplier backoff multiplier for next request attempts, can be used for "exponential backoff"
-     *
      * @return a {@link BuyClientBuilder}
      */
     public BuyClientBuilder networkRequestRetryPolicy(final int networkRequestRetryMaxCount, final long networkRequestRetryDelayMs, final float networkRequestRetryBackoffMultiplier) {
         this.networkRequestRetryMaxCount = networkRequestRetryMaxCount;
         this.networkRequestRetryDelayMs = Math.max(networkRequestRetryDelayMs, MIN_NETWORK_RETRY_DELAY);
         this.networkRequestRetryBackoffMultiplier = networkRequestRetryBackoffMultiplier;
+        return this;
+    }
+
+    /**
+     * Sets cache hook for {@link AddressService} API requests
+     *
+     * @param addressCacheHook cache hook
+     */
+    public BuyClientBuilder addressCacheHook(AddressCacheHook addressCacheHook) {
+        this.addressCacheHook = addressCacheHook;
+        return this;
+    }
+
+    /**
+     * Sets cache hook for {@link CustomerService} API requests
+     *
+     * @param addressCacheHook cache hook
+     */
+    public BuyClientBuilder customerCacheHook(CustomerCacheHook customerCacheHook) {
+        this.customerCacheHook = customerCacheHook;
+        return this;
+    }
+
+    /**
+     * Sets cache hook for {@link OrderService} API requests
+     *
+     * @param addressCacheHook cache hook
+     */
+    public BuyClientBuilder orderCacheHook(OrderCacheHook orderCacheHook) {
+        this.orderCacheHook = orderCacheHook;
+        return this;
+    }
+
+    /**
+     * Sets cache hook for {@link ProductService} API requests
+     *
+     * @param addressCacheHook cache hook
+     */
+    public BuyClientBuilder productCacheHook(ProductCacheHook productCacheHook) {
+        this.productCacheHook = productCacheHook;
+        return this;
+    }
+
+    /**
+     * Sets cache hook for {@link StoreService} API requests
+     *
+     * @param addressCacheHook cache hook
+     */
+    public BuyClientBuilder storeCacheHook(StoreCacheHook storeCacheHook) {
+        this.storeCacheHook = storeCacheHook;
         return this;
     }
 
@@ -246,6 +308,11 @@ public final class BuyClientBuilder {
             networkRequestRetryBackoffMultiplier,
             httpConnectionTimeoutMs,
             httpReadWriteTimeoutMs,
+            addressCacheHook,
+            customerCacheHook,
+            orderCacheHook,
+            productCacheHook,
+            storeCacheHook,
             interceptors
         );
     }

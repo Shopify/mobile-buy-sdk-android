@@ -34,14 +34,14 @@ import java.util.List;
  */
 public class ShippingRate {
 
-    private String id;
+    protected String id;
 
-    private String price;
+    protected String price;
 
-    private String title;
+    protected String title;
 
     @SerializedName("delivery_range")
-    private List<Date> deliveryRangeDates;
+    protected List<Date> deliveryRangeDates;
 
     /**
      * @return A list of one or two dates representing the possible range of delivery for this shipping rate.

@@ -39,13 +39,17 @@ final class StoreServiceDefault implements StoreService {
 
     final Scheduler callbackScheduler;
 
+    final StoreCacheRxHookProvider cacheRxHookProvider;
+
     StoreServiceDefault(
         final Retrofit retrofit,
         final NetworkRetryPolicyProvider networkRetryPolicyProvider,
+        final StoreCacheRxHookProvider cacheRxHookProvider,
         final Scheduler callbackScheduler
     ) {
         this.retrofitService = retrofit.create(StoreRetrofitService.class);
         this.networkRetryPolicyProvider = networkRetryPolicyProvider;
+        this.cacheRxHookProvider = cacheRxHookProvider;
         this.callbackScheduler = callbackScheduler;
     }
 
@@ -66,6 +70,7 @@ final class StoreServiceDefault implements StoreService {
                     return response.body();
                 }
             })
+            .doOnNext(cacheRxHookProvider.getStoreCacheHook())
             .onErrorResumeNext(new BuyClientExceptionHandler<Shop>())
             .observeOn(callbackScheduler);
     }

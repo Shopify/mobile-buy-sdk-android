@@ -43,6 +43,8 @@ final class OrderServiceDefault implements OrderService {
 
     final NetworkRetryPolicyProvider networkRetryPolicyProvider;
 
+    final OrderCacheRxHookProvider cacheRxHookProvider;
+
     final Scheduler callbackScheduler;
 
     final CustomerService customerService;
@@ -50,11 +52,13 @@ final class OrderServiceDefault implements OrderService {
     OrderServiceDefault(
         final Retrofit retrofit,
         final NetworkRetryPolicyProvider networkRetryPolicyProvider,
-        final Scheduler callbackScheduler,
-        final CustomerService customerService
+        final OrderCacheRxHookProvider cacheRxHookProvider,
+        final CustomerService customerService,
+        final Scheduler callbackScheduler
     ) {
         this.retrofitService = retrofit.create(OrderRetrofitService.class);
         this.networkRetryPolicyProvider = networkRetryPolicyProvider;
+        this.cacheRxHookProvider = cacheRxHookProvider;
         this.callbackScheduler = callbackScheduler;
         this.customerService = customerService;
     }
@@ -66,8 +70,7 @@ final class OrderServiceDefault implements OrderService {
 
     @Override
     public Observable<List<Order>> getOrders() {
-        CustomerToken customerToken = customerService.getCustomerToken();
-
+        final CustomerToken customerToken = customerService.getCustomerToken();
         if (customerToken == null) {
             return Observable.error(new BuyClientError(new IllegalStateException("customer must be logged in")));
         }
@@ -77,6 +80,7 @@ final class OrderServiceDefault implements OrderService {
             .retryWhen(networkRetryPolicyProvider.provide())
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<OrdersWrapper, List<Order>>())
+            .doOnNext(cacheRxHookProvider.getOrdersCacheHook(customerToken.getCustomerId()))
             .onErrorResumeNext(new BuyClientExceptionHandler<List<Order>>())
             .observeOn(callbackScheduler);
     }
@@ -92,8 +96,7 @@ final class OrderServiceDefault implements OrderService {
             throw new NullPointerException("orderId cannot be null");
         }
 
-        CustomerToken customerToken = customerService.getCustomerToken();
-
+        final CustomerToken customerToken = customerService.getCustomerToken();
         if (customerToken == null) {
             return Observable.error(new BuyClientError(new IllegalStateException("customer must be logged in")));
         }
@@ -103,6 +106,7 @@ final class OrderServiceDefault implements OrderService {
             .retryWhen(networkRetryPolicyProvider.provide())
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<OrderWrapper, Order>())
+            .doOnNext(cacheRxHookProvider.getOrderCacheHook(customerToken.getCustomerId()))
             .onErrorResumeNext(new BuyClientExceptionHandler<Order>())
             .observeOn(callbackScheduler);
     }

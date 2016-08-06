@@ -32,20 +32,20 @@ import com.google.gson.annotations.SerializedName;
  */
 public class CreditCard {
 
-    private String number;
+    protected String number;
 
     @SerializedName("first_name")
-    private String firstName;
+    protected String firstName;
 
     @SerializedName("last_name")
-    private String lastName;
+    protected String lastName;
 
-    private String month;
+    protected String month;
 
-    private String year;
+    protected String year;
 
     @SerializedName("verification_value")
-    private String verificationValue;
+    protected String verificationValue;
 
     /**
      * @return The full credit card number.

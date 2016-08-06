@@ -26,6 +26,11 @@ package com.shopify.buy.dataprovider;
 
 import android.text.TextUtils;
 
+import com.shopify.buy.dataprovider.cache.AddressCacheHook;
+import com.shopify.buy.dataprovider.cache.CustomerCacheHook;
+import com.shopify.buy.dataprovider.cache.OrderCacheHook;
+import com.shopify.buy.dataprovider.cache.ProductCacheHook;
+import com.shopify.buy.dataprovider.cache.StoreCacheHook;
 import com.shopify.buy.model.AccountCredentials;
 import com.shopify.buy.model.Address;
 import com.shopify.buy.model.Checkout;
@@ -75,19 +80,24 @@ final class BuyClientDefault implements BuyClient {
     final ProductService productService;
 
     BuyClientDefault(
-        final String apiKey,
-        final String appId,
-        final String applicationName,
-        final String shopDomain,
-        final CustomerToken customerToken,
-        final Scheduler callbackScheduler,
-        final int productPageSize,
-        final int networkRequestRetryMaxCount,
-        final long networkRequestRetryDelayMs,
-        final float networkRequestRetryBackoffMultiplier,
-        final long httpConnectionTimeoutMs,
-        final long httpReadWriteTimeoutMs,
-        final Interceptor... interceptors
+            final String apiKey,
+            final String appId,
+            final String applicationName,
+            final String shopDomain,
+            final CustomerToken customerToken,
+            final Scheduler callbackScheduler,
+            final int productPageSize,
+            final int networkRequestRetryMaxCount,
+            final long networkRequestRetryDelayMs,
+            final float networkRequestRetryBackoffMultiplier,
+            final long httpConnectionTimeoutMs,
+            final long httpReadWriteTimeoutMs,
+            final AddressCacheHook addressCacheHook,
+            final CustomerCacheHook customerCacheHook,
+            final OrderCacheHook orderCacheHook,
+            final ProductCacheHook productCacheHook,
+            final StoreCacheHook storeCacheHook,
+            final Interceptor... interceptors
     ) {
         this.apiKey = apiKey;
         this.appId = appId;
@@ -136,12 +146,12 @@ final class BuyClientDefault implements BuyClient {
 
         final NetworkRetryPolicyProvider networkRetryPolicyProvider = new NetworkRetryPolicyProvider(networkRequestRetryMaxCount, networkRequestRetryDelayMs, networkRequestRetryBackoffMultiplier);
 
-        storeService = new StoreServiceDefault(retrofit, networkRetryPolicyProvider, callbackScheduler);
+        storeService = new StoreServiceDefault(retrofit, networkRetryPolicyProvider, new StoreCacheRxHookProvider(storeCacheHook), callbackScheduler);
+        customerService = new CustomerServiceDefault(retrofit, customerToken, networkRetryPolicyProvider, new CustomerCacheRxHookProvider(customerCacheHook), callbackScheduler);
+        addressService = new AddressServiceDefault(retrofit, networkRetryPolicyProvider, new AddressCacheRxHookProvider(addressCacheHook), customerService, callbackScheduler);
         checkoutService = new CheckoutServiceDefault(retrofit, apiKey, applicationName, networkRetryPolicyProvider, callbackScheduler);
-        customerService = new CustomerServiceDefault(retrofit, customerToken, networkRetryPolicyProvider, callbackScheduler);
-        addressService = new AddressServiceDefault(retrofit, networkRetryPolicyProvider, callbackScheduler, customerService);
-        orderService = new OrderServiceDefault(retrofit, networkRetryPolicyProvider, callbackScheduler, customerService);
-        productService = new ProductServiceDefault(retrofit, appId, productPageSize, networkRetryPolicyProvider, callbackScheduler);
+        orderService = new OrderServiceDefault(retrofit, networkRetryPolicyProvider, new OrderCacheRxHookProvider(orderCacheHook), customerService, callbackScheduler);
+        productService = new ProductServiceDefault(retrofit, appId, productPageSize, networkRetryPolicyProvider, new ProductCacheRxHookProvider(productCacheHook), callbackScheduler);
     }
 
     @Override
