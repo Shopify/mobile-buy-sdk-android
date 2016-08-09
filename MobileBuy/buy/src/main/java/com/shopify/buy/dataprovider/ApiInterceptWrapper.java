@@ -26,24 +26,25 @@ package com.shopify.buy.dataprovider;
 import rx.Observable;
 import rx.functions.Func2;
 
-final class ApiRequestInterceptWrapper {
+final class ApiInterceptWrapper {
 
-    static <T, I1, I2> Observable<T> wrap(final Observable<T> apiRequest, final InterceptorCall<I1, T> requestInterceptor, final InterceptorCall<I2, T> responseInterceptor) {
-        return requestInterceptor.intercept(responseInterceptor.intercept(apiRequest));
+    static <T, I> Observable<T> wrap(final Observable<T> apiRequest, final I requestInterceptor, final I responseInterceptor, final InterceptorCall<I, T> interceptorCall) {
+        Observable<T> observable = apiRequest;
+        if (responseInterceptor != null) {
+            observable = interceptorCall.intercept(responseInterceptor, observable);
+        }
+        if (requestInterceptor != null) {
+            observable = interceptorCall.intercept(requestInterceptor, observable);
+        }
+        return observable;
     }
 
     static abstract class InterceptorCall<I, T> implements Func2<I, Observable<T>, Observable<T>> {
 
-        private final I interceptor;
-
-        public InterceptorCall(final I interceptor) {
-            this.interceptor = interceptor;
-        }
-
         @Override
         public abstract Observable<T> call(I interceptor, Observable<T> observable);
 
-        private Observable<T> intercept(final Observable<T> originalObservable) {
+        private Observable<T> intercept(final I interceptor, final Observable<T> originalObservable) {
             final Func2<I, Observable<T>, Observable<T>> interceptorCall = this;
             return originalObservable.compose(new Observable.Transformer<T, T>() {
                 @Override
