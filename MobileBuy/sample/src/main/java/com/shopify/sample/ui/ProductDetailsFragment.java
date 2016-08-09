@@ -227,7 +227,7 @@ public class ProductDetailsFragment extends Fragment {
                 .apiKey(apiKey)
                 .appId(appId)
                 .applicationName(applicationName)
-                .interceptors(logging)
+                .httpInterceptors(logging)
                 .build();
     }
 

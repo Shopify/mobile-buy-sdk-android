@@ -82,12 +82,14 @@ final class BuyClientDefault implements BuyClient {
         final CustomerToken customerToken,
         final Scheduler callbackScheduler,
         final int productPageSize,
+        final ProductApiInterceptor productRequestInterceptor,
+        final ProductApiInterceptor productResponseInterceptor,
         final int networkRequestRetryMaxCount,
         final long networkRequestRetryDelayMs,
         final float networkRequestRetryBackoffMultiplier,
         final long httpConnectionTimeoutMs,
         final long httpReadWriteTimeoutMs,
-        final Interceptor... interceptors
+        final Interceptor... httpInterceptors
     ) {
         this.apiKey = apiKey;
         this.appId = appId;
@@ -119,8 +121,8 @@ final class BuyClientDefault implements BuyClient {
             .writeTimeout(httpReadWriteTimeoutMs, TimeUnit.MILLISECONDS)
             .addInterceptor(requestInterceptor);
 
-        if (interceptors != null) {
-            for (Interceptor interceptor : interceptors) {
+        if (httpInterceptors != null) {
+            for (Interceptor interceptor : httpInterceptors) {
                 builder.addInterceptor(interceptor);
             }
         }
@@ -141,7 +143,7 @@ final class BuyClientDefault implements BuyClient {
         customerService = new CustomerServiceDefault(retrofit, customerToken, networkRetryPolicyProvider, callbackScheduler);
         addressService = new AddressServiceDefault(retrofit, networkRetryPolicyProvider, callbackScheduler, customerService);
         orderService = new OrderServiceDefault(retrofit, networkRetryPolicyProvider, callbackScheduler, customerService);
-        productService = new ProductServiceDefault(retrofit, appId, productPageSize, networkRetryPolicyProvider, callbackScheduler);
+        productService = new ProductServiceDefault(retrofit, appId, productPageSize, networkRetryPolicyProvider, callbackScheduler, productRequestInterceptor, productResponseInterceptor);
     }
 
     @Override

@@ -47,9 +47,9 @@ public final class BuyClientBuilder {
 
     public static final int DEFAULT_PAGE_SIZE = 25;
 
-    public static final long DEFAULT_HTTP_CONNECTION_TIME_OUT_MS =  TimeUnit.SECONDS.toMillis(30);
+    public static final long DEFAULT_HTTP_CONNECTION_TIME_OUT_MS = TimeUnit.SECONDS.toMillis(30);
 
-    public static final long DEFAULT_HTTP_READ_WRITE_TIME_OUT_MS =  TimeUnit.SECONDS.toMillis(60);
+    public static final long DEFAULT_HTTP_READ_WRITE_TIME_OUT_MS = TimeUnit.SECONDS.toMillis(60);
 
     public static final long MIN_NETWORK_RETRY_DELAY = TimeUnit.MILLISECONDS.toMillis(500);
 
@@ -65,7 +65,7 @@ public final class BuyClientBuilder {
 
     private Scheduler callbackScheduler = AndroidSchedulers.mainThread();
 
-    private Interceptor[] interceptors;
+    private Interceptor[] httpInterceptors;
 
     private int productPageSize = DEFAULT_PAGE_SIZE;
 
@@ -78,6 +78,10 @@ public final class BuyClientBuilder {
     private long httpConnectionTimeoutMs = DEFAULT_HTTP_CONNECTION_TIME_OUT_MS;
 
     private long httpReadWriteTimeoutMs = DEFAULT_HTTP_READ_WRITE_TIME_OUT_MS;
+
+    private ProductApiInterceptor productRequestInterceptor;
+
+    private ProductApiInterceptor productResponseInterceptor;
 
     /**
      * Sets store domain url (usually {store name}.myshopify.com
@@ -127,7 +131,6 @@ public final class BuyClientBuilder {
      * Sets the customer token
      *
      * @param customerToken The token associated with a {@link Customer}
-     *
      * @return a {@link BuyClientBuilder}
      */
     public BuyClientBuilder customerToken(final CustomerToken customerToken) {
@@ -140,7 +143,6 @@ public final class BuyClientBuilder {
      * in main thread.
      *
      * @param callbackScheduler The {@link Scheduler} to use for API callbacks.
-     *
      * @return a {@link BuyClientBuilder}
      */
     public BuyClientBuilder callbackScheduler(final Scheduler callbackScheduler) {
@@ -149,13 +151,13 @@ public final class BuyClientBuilder {
     }
 
     /**
-     * Sets custom OkHttp interceptors
+     * Sets custom OkHttp httpInterceptors
      *
-     * @param interceptors Interceptors to add to the OkHttp client.
+     * @param httpInterceptors Interceptors to add to the OkHttp client.
      * @return a {@link BuyClientBuilder}
      */
-    public BuyClientBuilder interceptors(final Interceptor... interceptors) {
-        this.interceptors = interceptors;
+    public BuyClientBuilder httpInterceptors(final Interceptor... httpInterceptors) {
+        this.httpInterceptors = httpInterceptors;
         return this;
     }
 
@@ -181,7 +183,6 @@ public final class BuyClientBuilder {
      * @param networkRequestRetryMaxCount          max count of retry attempts
      * @param networkRequestRetryDelayMs           delay between retry attempts in milliseconds
      * @param networkRequestRetryBackoffMultiplier backoff multiplier for next request attempts, can be used for "exponential backoff"
-     *
      * @return a {@link BuyClientBuilder}
      */
     public BuyClientBuilder networkRequestRetryPolicy(final int networkRequestRetryMaxCount, final long networkRequestRetryDelayMs, final float networkRequestRetryBackoffMultiplier) {
@@ -202,6 +203,28 @@ public final class BuyClientBuilder {
     public BuyClientBuilder httpTimeout(final long httpConnectionTimeoutMs, final long httpReadWriteTimeoutMs) {
         this.httpConnectionTimeoutMs = httpConnectionTimeoutMs;
         this.httpReadWriteTimeoutMs = httpReadWriteTimeoutMs;
+        return this;
+    }
+
+    /**
+     * Sets Product API request interceptor {@link ProductService}
+     *
+     * @param productRequestInterceptor interceptor
+     * @return {@link BuyClientBuilder}
+     */
+    public BuyClientBuilder productRequestInterceptor(final ProductApiInterceptor productRequestInterceptor) {
+        this.productRequestInterceptor = productRequestInterceptor;
+        return this;
+    }
+
+    /**
+     * Sets Product API response interceptor {@link ProductService}
+     *
+     * @param productResponseInterceptor interceptor
+     * @return {@link BuyClientBuilder}
+     */
+    public BuyClientBuilder productResponseInterceptor(final ProductApiInterceptor productResponseInterceptor) {
+        this.productResponseInterceptor = productResponseInterceptor;
         return this;
     }
 
@@ -241,12 +264,14 @@ public final class BuyClientBuilder {
             customerToken,
             callbackScheduler,
             productPageSize,
+            productRequestInterceptor,
+            productResponseInterceptor,
             networkRequestRetryMaxCount,
             networkRequestRetryDelayMs,
             networkRequestRetryBackoffMultiplier,
             httpConnectionTimeoutMs,
             httpReadWriteTimeoutMs,
-            interceptors
+            httpInterceptors
         );
     }
 }

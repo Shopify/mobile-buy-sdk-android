@@ -136,7 +136,7 @@ public class SampleApplication extends Application {
             .apiKey(shopifyApiKey)
             .appId(shopifyAppId)
             .applicationName(applicationName)
-            .interceptors(logging)
+            .httpInterceptors(logging)
             .networkRequestRetryPolicy(3, TimeUnit.MILLISECONDS.toMillis(200), 1.5f)
             .build();
 
