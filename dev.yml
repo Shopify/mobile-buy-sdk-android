@@ -56,3 +56,7 @@ commands:
     syntax: ""
     desc:   'Run android snapshot tests'
     run:    bundle exec fastlane android snapshot_tests
+
+packages:
+  - git@github.com:Shopify/dev-shopify.git
+
