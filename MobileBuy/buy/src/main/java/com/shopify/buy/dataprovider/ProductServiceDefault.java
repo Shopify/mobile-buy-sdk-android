@@ -308,6 +308,24 @@ final class ProductServiceDefault implements ProductService {
     }
 
     @Override
+    public CancellableTask getProductTags(int page, Long collectionId, Callback<List<String>> callback) {
+        return new CancellableTaskSubscriptionWrapper(getProductTags(page, collectionId).subscribe(new InternalCallbackSubscriber<>(callback)));
+    }
+
+    @Override
+    public Observable<List<String>> getProductTags(final int page, Long collectionId) {
+        if (page < 1) {
+            throw new IllegalArgumentException("page is a 1-based index, value cannot be less than 1");
+        }
+
+        if (collectionId == null) {
+            throw new NullPointerException("collectionId cannot be null");
+        }
+
+        return getProductTagsObservable(page, collectionId);
+    }
+
+    @Override
     public CancellableTask getProductTags(int page, Callback<List<String>> callback) {
         return new CancellableTaskSubscriptionWrapper(getProductTags(page).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
@@ -318,8 +336,12 @@ final class ProductServiceDefault implements ProductService {
             throw new IllegalArgumentException("page is a 1-based index, value cannot be less than 1");
         }
 
+        return getProductTagsObservable(page, null);
+    }
+
+    private Observable<List<String>> getProductTagsObservable(int page, Long collectionId) {
         return retrofitService
-            .getProductTagPage(appId, page, pageSize)
+            .getProductTagPage(appId, page, collectionId, pageSize)
             .retryWhen(networkRetryPolicyProvider.provide())
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<ProductTagsWrapper, List<ProductTag>>())
