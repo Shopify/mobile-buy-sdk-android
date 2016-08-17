@@ -668,7 +668,7 @@ public class BuyTest extends ShopifyAndroidTestCase {
 
         final CountDownLatch getCollectionsLatch = new CountDownLatch(1);
         final List<Long> expectedCollectionIds = collectionIdsRef.get();
-        buyClient.getCollections(expectedCollectionIds, new Callback<List<Collection>>() {
+        buyClient.getCollections(1, expectedCollectionIds, new Callback<List<Collection>>() {
             @Override
             public void success(List<Collection> response) {
                 assertNotNull(response);
