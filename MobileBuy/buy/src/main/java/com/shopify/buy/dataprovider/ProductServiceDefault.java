@@ -272,12 +272,12 @@ final class ProductServiceDefault implements ProductService {
     }
 
     @Override
-    public CancellableTask getCollections(int page, final List<Long> collectionIds, final Callback<List<Collection>> callback) {
+    public CancellableTask getCollections(final int page, final List<Long> collectionIds, final Callback<List<Collection>> callback) {
         return new CancellableTaskSubscriptionWrapper(getCollections(page, collectionIds).subscribe(new InternalCallbackSubscriber<>(callback)));
     }
 
     @Override
-    public Observable<List<Collection>> getCollections(int page, final List<Long> collectionIds) {
+    public Observable<List<Collection>> getCollections(final int page, final List<Long> collectionIds) {
         if (page < 1) {
             throw new IllegalArgumentException("page is a 1-based index, value cannot be less than 1");
         }
@@ -305,7 +305,7 @@ final class ProductServiceDefault implements ProductService {
             new ApiInterceptWrapper.InterceptorCall<ProductApiInterceptor, List<Collection>>() {
                 @Override
                 public Observable<List<Collection>> call(ProductApiInterceptor interceptor, Observable<List<Collection>> originalObservable) {
-                    return interceptor.getCollections(collectionIds, originalObservable);
+                    return interceptor.getCollections(page, collectionIds, originalObservable);
                 }
             }
         ).observeOn(callbackScheduler);

@@ -74,11 +74,12 @@ public interface ProductApiInterceptor {
     Observable<List<Collection>> getCollections(int page, Observable<List<Collection>> originalObservable);
 
     /**
-     * Intercepts request to {@link com.shopify.buy.dataprovider.ProductService#getCollections(List)}
+     * Intercepts request to {@link com.shopify.buy.dataprovider.ProductService#getCollections(int, List)}
      *
+     * @param page               the 1-based page index
      * @param collectionIds      a List of the ids to fetch
      * @param originalObservable original request observable
      * @return modified or the same version of original request observable
      */
-    Observable<List<Collection>> getCollections(List<Long> collectionIds, Observable<List<Collection>> originalObservable);
+    Observable<List<Collection>> getCollections(int page, List<Long> collectionIds, Observable<List<Collection>> originalObservable);
 }

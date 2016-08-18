@@ -34,6 +34,7 @@ public class ImageUtility {
     /**
      * See <a href="http://docs.shopify.com/themes/filters/product-img-url">Product_img_url</a> for details.
      *
+     * @return The suffix for the image of the requested dimensions.
      * @param width  The view width, in pixels.
      * @param height The view height, in pixels.
      */
