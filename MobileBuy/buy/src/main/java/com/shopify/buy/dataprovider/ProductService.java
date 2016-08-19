@@ -148,19 +148,21 @@ public interface ProductService {
     /**
      * Fetch collections by ids
      *
+     * @param page     the 1-based page index. The page size is set by {@link BuyClientBuilder#productPageSize} configuration.
      * @param collectionIds a list of the ids to fetch, not null or empty
      * @param callback      the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      * @return cancelable task
      */
-    CancellableTask getCollections(List<Long> collectionIds, Callback<List<Collection>> callback);
+    CancellableTask getCollections(int page, List<Long> collectionIds, Callback<List<Collection>> callback);
 
     /**
      * Fetch a page of collections
      *
+     * @param page     the 1-based page index. The page size is set by {@link BuyClientBuilder#productPageSize} configuration.
      * @param collectionIds a List of the ids to fetch, not null or empty
      * @return cold observable that emits requested list of collections
      */
-    Observable<List<Collection>> getCollections(List<Long> collectionIds);
+    Observable<List<Collection>> getCollections(int page, List<Long> collectionIds);
 
     /**
      * Fetch a page of product tags

@@ -154,9 +154,8 @@ public class ProductTest extends ShopifyAndroidTestCase {
 
     }
 
-
     @Test
-    public void testGetCollectionsByIds() throws InterruptedException {
+    public void testGetCollectionsByIds() throws Exception {
         final CountDownLatch getCollectionIdsLatch = new CountDownLatch(1);
         final AtomicReference<List<Long>> collectionIdsRef = new AtomicReference<>();
         buyClient.getCollections(1, new Callback<List<Collection>>() {
@@ -183,7 +182,7 @@ public class ProductTest extends ShopifyAndroidTestCase {
 
         final CountDownLatch getCollectionsLatch = new CountDownLatch(1);
         final List<Long> expectedCollectionIds = collectionIdsRef.get();
-        buyClient.getCollections(expectedCollectionIds, new Callback<List<Collection>>() {
+        buyClient.getCollections(1, expectedCollectionIds, new Callback<List<Collection>>() {
             @Override
             public void success(List<Collection> response) {
                 assertNotNull(response);
@@ -203,6 +202,7 @@ public class ProductTest extends ShopifyAndroidTestCase {
         });
         getCollectionsLatch.await();
     }
+
 
     @Test
     public void testGetProductsByTags() throws InterruptedException {
