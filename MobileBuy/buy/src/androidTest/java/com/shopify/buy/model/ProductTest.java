@@ -9,6 +9,7 @@ import com.shopify.buy.extensions.ShopifyAndroidTestCase;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -93,13 +94,13 @@ public class ProductTest extends ShopifyAndroidTestCase {
     }
 
     @Test
-    public void testGetProductTags() throws Exception {
+    public void testGetProductTags() throws InterruptedException {
         final CountDownLatch latch = new CountDownLatch(1);
         buyClient.getProductTags(1, new Callback<List<String>>() {
             @Override
             public void success(List<String> response) {
                 assertNotNull(response);
-                assertTrue(response.contains("don't touch me"));
+                assertEquals(true, response.contains("don't touch me"));
                 latch.countDown();
                 // well we can't really test response for some values, as we can't control from client list of tags
             }
@@ -112,8 +113,99 @@ public class ProductTest extends ShopifyAndroidTestCase {
         latch.await();
     }
 
+
     @Test
-    public void testGetProductsByTags() throws Exception {
+    public void testGetProductTagsByCollection() throws InterruptedException {
+        final CountDownLatch latch = new CountDownLatch(1);
+        buyClient.getProductTags(1, data.getCollectionId(), new Callback<List<String>>() {
+            @Override
+            public void success(List<String> response) {
+                assertNotNull(response);
+                assertEquals(true, response.contains("don't touch me"));
+                latch.countDown();
+            }
+
+            @Override
+            public void failure(BuyClientError error) {
+                fail(error.getRetrofitErrorBody());
+            }
+        });
+        latch.await();
+
+    }
+
+    @Test
+    public void testGetProductTagsByCollectionWithoutTag() throws InterruptedException {
+        final CountDownLatch latch = new CountDownLatch(1);
+        buyClient.getProductTags(1, data.getCollectionIdWithoutTags(), new Callback<List<String>>() {
+            @Override
+            public void success(List<String> response) {
+                assertNotNull(response);
+                assertEquals(false, response.contains("don't touch me"));
+                latch.countDown();
+            }
+
+            @Override
+            public void failure(BuyClientError error) {
+                fail(error.getRetrofitErrorBody());
+            }
+        });
+        latch.await();
+
+    }
+
+
+    @Test
+    public void testGetCollectionsByIds() throws InterruptedException {
+        final CountDownLatch getCollectionIdsLatch = new CountDownLatch(1);
+        final AtomicReference<List<Long>> collectionIdsRef = new AtomicReference<>();
+        buyClient.getCollections(1, new Callback<List<Collection>>() {
+            @Override
+            public void success(List<Collection> response) {
+                assertNotNull(response);
+                assertTrue(!response.isEmpty());
+
+                final List<Long> collectionIds = new ArrayList<>();
+                for (Collection collection : response) {
+                    collectionIds.add(collection.getCollectionId());
+                }
+                collectionIdsRef.set(collectionIds);
+
+                getCollectionIdsLatch.countDown();
+            }
+
+            @Override
+            public void failure(BuyClientError error) {
+                fail(error.getRetrofitErrorBody());
+            }
+        });
+        getCollectionIdsLatch.await();
+
+        final CountDownLatch getCollectionsLatch = new CountDownLatch(1);
+        final List<Long> expectedCollectionIds = collectionIdsRef.get();
+        buyClient.getCollections(expectedCollectionIds, new Callback<List<Collection>>() {
+            @Override
+            public void success(List<Collection> response) {
+                assertNotNull(response);
+                assertTrue(!response.isEmpty());
+
+                for (Collection collection : response) {
+                    assertTrue(expectedCollectionIds.contains(collection.getCollectionId()));
+                }
+
+                getCollectionsLatch.countDown();
+            }
+
+            @Override
+            public void failure(BuyClientError error) {
+                fail(error.getRetrofitErrorBody());
+            }
+        });
+        getCollectionsLatch.await();
+    }
+
+    @Test
+    public void testGetProductsByTags() throws InterruptedException {
         Set<String> tags = new HashSet<>();
         tags.add("MISSION");
         tags.add("IMPOSSIBLE");
@@ -159,7 +251,7 @@ public class ProductTest extends ShopifyAndroidTestCase {
     }
 
     @Test
-    public void testGetProductByCollectionAndTags() throws Exception {
+    public void testGetProductByCollectionAndTags() throws InterruptedException {
         final AtomicReference<Collection> collectionRef = new AtomicReference<>();
 
         final CountDownLatch getCollectionLatch = new CountDownLatch(1);
