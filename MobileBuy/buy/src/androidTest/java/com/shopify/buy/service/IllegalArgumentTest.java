@@ -142,6 +142,13 @@ public class IllegalArgumentTest extends ShopifyAndroidTestCase {
             }
         });
 
+        checkException(NullPointerException.class, new Runnable() {
+            @Override
+            public void run() {
+                buyClient.getProductTags(1, (Long) null);
+            }
+        });
+
         checkException(IllegalArgumentException.class, new Runnable() {
             @Override
             public void run() {
