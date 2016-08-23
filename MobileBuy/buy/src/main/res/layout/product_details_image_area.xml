@@ -17,8 +17,8 @@
     <android.support.design.widget.TabLayout
         android:id="@id/indicator"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/product_details_indicator_height"
-        app:tabIndicatorHeight="@dimen/product_details_indicator_height"
+        android:layout_height="@dimen/product_image_gallery_tab_indicator_height"
+        app:tabIndicatorHeight="@dimen/product_image_gallery_tab_indicator_height"
         android:layout_alignParentBottom="true" />
 
     <FrameLayout
