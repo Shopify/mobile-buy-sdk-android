@@ -27,11 +27,15 @@ package com.shopify.mobilebuysdk.demo.service;
 
 import com.shopify.buy.dataprovider.BuyClient;
 import com.shopify.buy.dataprovider.BuyClientBuilder;
+import com.shopify.buy.model.Product;
 import com.shopify.buy.model.Shop;
 import com.shopify.mobilebuysdk.demo.App;
 import com.shopify.mobilebuysdk.demo.BuildConfig;
+import com.shopify.mobilebuysdk.demo.util.StringUtils;
 
 import android.app.Application;
+
+import java.util.List;
 
 import rx.Observable;
 
@@ -56,12 +60,21 @@ public class ShopifyService {
   private final BuyClient mBuyClient;
 
   private ShopifyService(Application application) {
+    if (StringUtils.isEmpty(BuildConfig.SHOP_DOMAIN) ||
+        StringUtils.isEmpty(BuildConfig.API_KEY) ||
+        StringUtils.isEmpty(BuildConfig.APP_ID)) {
+      throw new IllegalStateException("You must add 'SHOP_DOMAIN', 'API_KEY', 'APP_ID' entries in app/shop.properties");
+    }
     mBuyClient = new BuyClientBuilder()
         .shopDomain(BuildConfig.SHOP_DOMAIN)
         .apiKey(BuildConfig.API_KEY)
         .appId(BuildConfig.APP_ID)
         .applicationName(application.getPackageName())
         .build();
+  }
+
+  public Observable<List<Product>> getProducts() {
+    return mBuyClient.getProducts(1);
   }
 
   public Observable<Shop> getShop() {

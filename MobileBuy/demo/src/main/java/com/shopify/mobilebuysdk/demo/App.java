@@ -25,6 +25,8 @@
 
 package com.shopify.mobilebuysdk.demo;
 
+import com.shopify.mobilebuysdk.demo.util.Logger;
+
 import android.app.Application;
 
 /**
@@ -32,6 +34,8 @@ import android.app.Application;
  */
 
 public class App extends Application {
+
+  public static final Logger logger = Logger.newInstance(BuildConfig.DEBUG ? Logger.LogLevel.VERBOSE : Logger.LogLevel.NONE);
 
   private static App sInstance;
 

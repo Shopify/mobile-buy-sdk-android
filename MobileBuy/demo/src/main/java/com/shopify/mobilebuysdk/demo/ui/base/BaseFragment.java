@@ -29,6 +29,7 @@ import com.shopify.mobilebuysdk.demo.util.rx.SubscriptionManager;
 import com.shopify.mobilebuysdk.demo.util.rx.UnsubscribeLifeCycle;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -43,6 +44,8 @@ import rx.Subscription;
 public abstract class BaseFragment extends Fragment implements BaseLifeCycle, BaseSubscription {
 
   public abstract View onInflateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState);
+
+  public abstract void onInitializeBundle(@NonNull Bundle savedInstanceState);
 
   private boolean mIsDestroy;
 
@@ -97,6 +100,7 @@ public abstract class BaseFragment extends Fragment implements BaseLifeCycle, Ba
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    onInitializeBundle(savedInstanceState != null ? savedInstanceState : new Bundle());
     onCreate();
   }
 

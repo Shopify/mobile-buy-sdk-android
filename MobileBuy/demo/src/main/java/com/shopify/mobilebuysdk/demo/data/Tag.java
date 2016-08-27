@@ -23,15 +23,51 @@
  *
  */
 
-package com.shopify.mobilebuysdk.demo.config;
+package com.shopify.mobilebuysdk.demo.data;
+
+import android.os.Parcel;
+import android.os.Parcelable;
 
 /**
  * Created by henrytao on 8/27/16.
  */
-public class Constants {
 
-  public interface Extra {
+public class Tag implements Parcelable {
 
-    String TAG = "TAG";
+  public static final Parcelable.Creator<Tag> CREATOR = new Parcelable.Creator<Tag>() {
+    @Override
+    public Tag createFromParcel(Parcel source) {
+      return new Tag(source);
+    }
+
+    @Override
+    public Tag[] newArray(int size) {
+      return new Tag[size];
+    }
+  };
+
+  public final String description;
+
+  public final String name;
+
+  public Tag(String name, String description) {
+    this.name = name;
+    this.description = description;
+  }
+
+  protected Tag(Parcel in) {
+    this.description = in.readString();
+    this.name = in.readString();
+  }
+
+  @Override
+  public int describeContents() {
+    return 0;
+  }
+
+  @Override
+  public void writeToParcel(Parcel dest, int flags) {
+    dest.writeString(this.description);
+    dest.writeString(this.name);
   }
 }

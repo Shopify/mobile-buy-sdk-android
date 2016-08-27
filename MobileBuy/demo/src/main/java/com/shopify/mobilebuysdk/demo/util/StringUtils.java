@@ -23,15 +23,18 @@
  *
  */
 
-package com.shopify.mobilebuysdk.demo.config;
+package com.shopify.mobilebuysdk.demo.util;
 
 /**
- * Created by henrytao on 8/27/16.
+ * Created by henrytao on 8/18/16.
  */
-public class Constants {
+public class StringUtils {
 
-  public interface Extra {
+  public static boolean equals(String a, String b) {
+    return (a == null && b == null) || (a != null && a.equals(b)) || (b != null && b.equals(a));
+  }
 
-    String TAG = "TAG";
+  public static boolean isEmpty(String value) {
+    return value == null || value.length() == 0;
   }
 }

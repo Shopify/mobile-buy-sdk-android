@@ -26,14 +26,23 @@
 package com.shopify.mobilebuysdk.demo.ui.shopping;
 
 import com.shopify.mobilebuysdk.demo.R;
+import com.shopify.mobilebuysdk.demo.data.Tag;
+import com.shopify.mobilebuysdk.demo.service.ShopifyService;
 import com.shopify.mobilebuysdk.demo.ui.base.BaseHomeActivity;
 import com.shopify.mobilebuysdk.demo.widget.BottomBar;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.RecyclerView;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
+
+import java.util.Arrays;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -43,11 +52,21 @@ import butterknife.ButterKnife;
  */
 public class ShoppingActivity extends BaseHomeActivity {
 
+  private final ShopifyService mShopifyService;
+
   @BindView(R.id.bottom_bar) BottomBar vBottomBar;
 
-  @BindView(R.id.list) RecyclerView vRecyclerView;
+  @BindView(R.id.tab_layout) TabLayout vTabLayout;
 
   @BindView(R.id.toolbar) Toolbar vToolbar;
+
+  @BindView(R.id.view_pager) ViewPager vViewPager;
+
+  private ViewPagerAdapter mAdapter;
+
+  public ShoppingActivity() {
+    mShopifyService = ShopifyService.getInstance();
+  }
 
   @Override
   public void onSetContentView(@Nullable Bundle savedInstanceState) {
@@ -70,5 +89,44 @@ public class ShoppingActivity extends BaseHomeActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setSupportActionBar(vToolbar);
+
+    mAdapter = new ViewPagerAdapter(getSupportFragmentManager(), Arrays.asList(
+        new Tag("new-arrival", "New Arrival"),
+        new Tag("chair", "Chairs"),
+        new Tag("lounge", "Lounge"),
+        new Tag("table", "Table"),
+        new Tag("cup", "Cup"),
+        new Tag("shoes", "Shoes")
+    ));
+    vViewPager.setAdapter(mAdapter);
+
+    vTabLayout.setupWithViewPager(vViewPager);
+    vTabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
+    vTabLayout.setTabGravity(TabLayout.GRAVITY_CENTER);
+  }
+
+  private static class ViewPagerAdapter extends FragmentStatePagerAdapter {
+
+    private final List<Tag> mTags;
+
+    ViewPagerAdapter(FragmentManager fm, List<Tag> tags) {
+      super(fm);
+      mTags = tags;
+    }
+
+    @Override
+    public int getCount() {
+      return mTags.size();
+    }
+
+    @Override
+    public Fragment getItem(int position) {
+      return ShoppingListFragment.newInstance(mTags.get(position));
+    }
+
+    @Override
+    public CharSequence getPageTitle(int position) {
+      return mTags.get(position).description;
+    }
   }
 }
