@@ -163,6 +163,5 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseLife
 
   @TargetApi(Build.VERSION_CODES.LOLLIPOP)
   protected void onSharedElementConfig(Window window) {
-
   }
 }
