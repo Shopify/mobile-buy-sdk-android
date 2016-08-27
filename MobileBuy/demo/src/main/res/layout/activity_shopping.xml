@@ -25,14 +25,40 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:tools="http://schemas.android.com/tools"
-  android:id="@+id/activity_main"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
   android:orientation="vertical"
-  tools:context="com.shopify.mobilebuysdk.demo.MainActivity">
+  tools:context="com.shopify.mobilebuysdk.demo.ui.MainActivity">
 
-  <TextView
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="Hello World!" />
+  <android.support.v7.widget.Toolbar
+    android:id="@+id/toolbar"
+    style="@style/MdToolbar" />
+
+  <FrameLayout
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:layout_weight="1">
+
+    <android.support.v7.widget.RecyclerView
+      android:id="@+id/list"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent" />
+
+    <View
+      android:layout_width="match_parent"
+      android:layout_height="@dimen/backgroundGradientSize"
+      android:layout_gravity="top"
+      android:background="@drawable/background_gradient_top_bottom" />
+
+    <View
+      android:layout_width="match_parent"
+      android:layout_height="@dimen/backgroundGradientSize"
+      android:layout_gravity="bottom"
+      android:background="@drawable/background_gradient_bottom_top" />
+  </FrameLayout>
+
+  <com.shopify.mobilebuysdk.demo.widget.BottomBar
+    android:id="@+id/bottom_bar"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" />
 </LinearLayout>

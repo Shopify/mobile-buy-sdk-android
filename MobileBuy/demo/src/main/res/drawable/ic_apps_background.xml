@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<!--
   ~ The MIT License (MIT)
   ~
   ~ Copyright (c) 2016 Shopify Inc.
@@ -23,31 +23,14 @@
   ~
   -->
 
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-  package="com.shopify.mobilebuysdk.demo">
-
-  <application
-    android:allowBackup="true"
-    android:icon="@mipmap/ic_launcher"
-    android:label="@string/app_name"
-    android:name=".App"
-    android:supportsRtl="true"
-    android:theme="@style/AppTheme">
-
-    <activity android:name=".ui.MainActivity">
-      <intent-filter>
-        <action android:name="android.intent.action.MAIN" />
-
-        <category android:name="android.intent.category.LAUNCHER" />
-      </intent-filter>
-    </activity>
-
-    <activity
-      android:label="@string/text_shopping"
-      android:name=".ui.shopping.ShoppingActivity" />
-
-    <activity
-      android:label="@string/text_cart"
-      android:name=".ui.cart.CartActivity" />
-  </application>
-</manifest>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+  android:autoMirrored="true"
+  android:height="24dp"
+  android:tint="?attr/mdIconColor_backgroundPalette"
+  android:viewportHeight="24.0"
+  android:viewportWidth="24.0"
+  android:width="24dp">
+  <path
+    android:fillColor="#FF000000"
+    android:pathData="M4,8h4L8,4L4,4v4zM10,20h4v-4h-4v4zM4,20h4v-4L4,16v4zM4,14h4v-4L4,10v4zM10,14h4v-4h-4v4zM16,4v4h4L20,4h-4zM10,8h4L14,4h-4v4zM16,14h4v-4h-4v4zM16,20h4v-4h-4v4z" />
+</vector>

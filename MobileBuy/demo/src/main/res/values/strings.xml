@@ -26,4 +26,7 @@
 <resources>
 
   <string name="app_name">MyShopify</string>
+
+  <string name="text_shopping">Shopping List</string>
+  <string name="text_cart">Cart</string>
 </resources>
