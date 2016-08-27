@@ -35,12 +35,12 @@ import android.support.annotation.Nullable;
 public class MainActivity extends BaseActivity {
 
   @Override
-  protected void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    NavigationUtils.startActivityAndFinishWithNoAnimation(this, BaseHomeActivity.newIntent(this));
+  public void onSetContentView(@Nullable Bundle savedInstanceState) {
   }
 
   @Override
-  protected void onSetContentView(@Nullable Bundle savedInstanceState) {
+  protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    NavigationUtils.startActivityAndFinishWithNoAnimation(this, BaseHomeActivity.newIntent(this));
   }
 }

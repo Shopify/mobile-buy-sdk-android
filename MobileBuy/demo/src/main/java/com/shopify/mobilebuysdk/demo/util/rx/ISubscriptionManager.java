@@ -23,48 +23,22 @@
  *
  */
 
-package com.shopify.mobilebuysdk.demo.service;
+package com.shopify.mobilebuysdk.demo.util.rx;
 
-import com.shopify.buy.dataprovider.BuyClient;
-import com.shopify.buy.dataprovider.BuyClientBuilder;
-import com.shopify.buy.model.Shop;
-import com.shopify.mobilebuysdk.demo.App;
-import com.shopify.mobilebuysdk.demo.BuildConfig;
-
-import android.app.Application;
-
-import rx.Observable;
+import rx.Subscription;
 
 /**
- * Created by henrytao on 8/27/16.
+ * Created by henrytao on 11/13/15.
  */
-public class ShopifyService {
+public interface ISubscriptionManager {
 
-  private static ShopifyService sInstance;
+  void manageSubscription(Subscription subscription, UnsubscribeLifeCycle unsubscribeLifeCycle);
 
-  public static ShopifyService getInstance() {
-    if (sInstance == null) {
-      synchronized (ShopifyService.class) {
-        if (sInstance == null) {
-          sInstance = new ShopifyService(App.getInstance());
-        }
-      }
-    }
-    return sInstance;
-  }
+  void manageSubscription(String id, Subscription subscription, UnsubscribeLifeCycle unsubscribeLifeCycle);
 
-  private final BuyClient mBuyClient;
+  void unsubscribe();
 
-  private ShopifyService(Application application) {
-    mBuyClient = new BuyClientBuilder()
-        .shopDomain(BuildConfig.SHOP_DOMAIN)
-        .apiKey(BuildConfig.API_KEY)
-        .appId(BuildConfig.APP_ID)
-        .applicationName(application.getPackageName())
-        .build();
-  }
+  void unsubscribe(UnsubscribeLifeCycle unsubscribeLifeCycle);
 
-  public Observable<Shop> getShop() {
-    return mBuyClient.getShop();
-  }
+  void unsubscribe(String id);
 }

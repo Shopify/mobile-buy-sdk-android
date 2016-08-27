@@ -32,6 +32,7 @@ import com.shopify.mobilebuysdk.demo.widget.BottomBar;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 
 import butterknife.BindView;
@@ -44,7 +45,15 @@ public class ShoppingActivity extends BaseHomeActivity {
 
   @BindView(R.id.bottom_bar) BottomBar vBottomBar;
 
+  @BindView(R.id.list) RecyclerView vRecyclerView;
+
   @BindView(R.id.toolbar) Toolbar vToolbar;
+
+  @Override
+  public void onSetContentView(@Nullable Bundle savedInstanceState) {
+    setContentView(R.layout.activity_shopping);
+    ButterKnife.bind(this);
+  }
 
   @Override
   protected int getBottomBarIndex() {
@@ -61,11 +70,5 @@ public class ShoppingActivity extends BaseHomeActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setSupportActionBar(vToolbar);
-  }
-
-  @Override
-  protected void onSetContentView(@Nullable Bundle savedInstanceState) {
-    setContentView(R.layout.activity_shopping);
-    ButterKnife.bind(this);
   }
 }

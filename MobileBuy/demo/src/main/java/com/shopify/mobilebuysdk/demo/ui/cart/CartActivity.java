@@ -47,6 +47,12 @@ public class CartActivity extends BaseHomeActivity {
   @BindView(R.id.toolbar) Toolbar vToolbar;
 
   @Override
+  public void onSetContentView(@Nullable Bundle savedInstanceState) {
+    setContentView(R.layout.activity_cart);
+    ButterKnife.bind(this);
+  }
+
+  @Override
   protected int getBottomBarIndex() {
     return INDEX_CART;
   }
@@ -61,11 +67,5 @@ public class CartActivity extends BaseHomeActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setSupportActionBar(vToolbar);
-  }
-
-  @Override
-  protected void onSetContentView(@Nullable Bundle savedInstanceState) {
-    setContentView(R.layout.activity_shopping);
-    ButterKnife.bind(this);
   }
 }

@@ -23,48 +23,14 @@
  *
  */
 
-package com.shopify.mobilebuysdk.demo.service;
-
-import com.shopify.buy.dataprovider.BuyClient;
-import com.shopify.buy.dataprovider.BuyClientBuilder;
-import com.shopify.buy.model.Shop;
-import com.shopify.mobilebuysdk.demo.App;
-import com.shopify.mobilebuysdk.demo.BuildConfig;
-
-import android.app.Application;
-
-import rx.Observable;
+package com.shopify.mobilebuysdk.demo.util.rx;
 
 /**
- * Created by henrytao on 8/27/16.
+ * Created by henrytao on 11/13/15.
  */
-public class ShopifyService {
-
-  private static ShopifyService sInstance;
-
-  public static ShopifyService getInstance() {
-    if (sInstance == null) {
-      synchronized (ShopifyService.class) {
-        if (sInstance == null) {
-          sInstance = new ShopifyService(App.getInstance());
-        }
-      }
-    }
-    return sInstance;
-  }
-
-  private final BuyClient mBuyClient;
-
-  private ShopifyService(Application application) {
-    mBuyClient = new BuyClientBuilder()
-        .shopDomain(BuildConfig.SHOP_DOMAIN)
-        .apiKey(BuildConfig.API_KEY)
-        .appId(BuildConfig.APP_ID)
-        .applicationName(application.getPackageName())
-        .build();
-  }
-
-  public Observable<Shop> getShop() {
-    return mBuyClient.getShop();
-  }
+public enum UnsubscribeLifeCycle {
+  PAUSE,
+  STOP,
+  DESTROY_VIEW,
+  DESTROY
 }

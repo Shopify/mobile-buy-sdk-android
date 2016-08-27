@@ -23,48 +23,43 @@
  *
  */
 
-package com.shopify.mobilebuysdk.demo.service;
+package com.shopify.mobilebuysdk.demo.util.rx;
 
-import com.shopify.buy.dataprovider.BuyClient;
-import com.shopify.buy.dataprovider.BuyClientBuilder;
-import com.shopify.buy.model.Shop;
-import com.shopify.mobilebuysdk.demo.App;
-import com.shopify.mobilebuysdk.demo.BuildConfig;
-
-import android.app.Application;
-
-import rx.Observable;
+import rx.Subscriber;
 
 /**
- * Created by henrytao on 8/27/16.
+ * Created by henrytao on 4/15/16.
  */
-public class ShopifyService {
+public class SubscriptionUtils {
 
-  private static ShopifyService sInstance;
-
-  public static ShopifyService getInstance() {
-    if (sInstance == null) {
-      synchronized (ShopifyService.class) {
-        if (sInstance == null) {
-          sInstance = new ShopifyService(App.getInstance());
-        }
-      }
+  public static <T> void onComplete(Subscriber<T> subscriber) {
+    if (subscriber != null && !subscriber.isUnsubscribed()) {
+      subscriber.onCompleted();
     }
-    return sInstance;
   }
 
-  private final BuyClient mBuyClient;
-
-  private ShopifyService(Application application) {
-    mBuyClient = new BuyClientBuilder()
-        .shopDomain(BuildConfig.SHOP_DOMAIN)
-        .apiKey(BuildConfig.API_KEY)
-        .appId(BuildConfig.APP_ID)
-        .applicationName(application.getPackageName())
-        .build();
+  public static <T> void onError(Subscriber<T> subscriber, Throwable throwable) {
+    if (subscriber != null && !subscriber.isUnsubscribed()) {
+      subscriber.onError(throwable);
+    }
   }
 
-  public Observable<Shop> getShop() {
-    return mBuyClient.getShop();
+  public static <T> void onNext(Subscriber<T> subscriber, T data) {
+    if (subscriber != null && !subscriber.isUnsubscribed()) {
+      subscriber.onNext(data);
+    }
+  }
+
+  public static <T> void onNext(Subscriber<T> subscriber) {
+    onNext(subscriber, null);
+  }
+
+  public static <T> void onNextAndComplete(Subscriber<T> subscriber, T data) {
+    onNext(subscriber, data);
+    onComplete(subscriber);
+  }
+
+  public static <T> void onNextAndComplete(Subscriber<T> subscriber) {
+    onNextAndComplete(subscriber, null);
   }
 }

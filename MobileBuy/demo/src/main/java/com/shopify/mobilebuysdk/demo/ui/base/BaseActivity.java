@@ -25,20 +25,127 @@
 
 package com.shopify.mobilebuysdk.demo.ui.base;
 
+import com.shopify.mobilebuysdk.demo.util.rx.SubscriptionManager;
+import com.shopify.mobilebuysdk.demo.util.rx.UnsubscribeLifeCycle;
+
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+
+import rx.Subscription;
 
 /**
  * Created by henrytao on 8/26/16.
  */
-public abstract class BaseActivity extends AppCompatActivity {
+public abstract class BaseActivity extends AppCompatActivity implements BaseLifeCycle, BaseSubscription {
 
-  protected abstract void onSetContentView(@Nullable Bundle savedInstanceState);
+  public abstract void onSetContentView(Bundle savedInstanceState);
+
+  private boolean mIsDestroy;
+
+  private boolean mIsDestroyView;
+
+  private boolean mIsPause;
+
+  private boolean mIsStop;
+
+  private SubscriptionManager mSubscriptionManager = new SubscriptionManager();
 
   @Override
-  protected void onCreate(@Nullable Bundle savedInstanceState) {
+  public void manageSubscription(UnsubscribeLifeCycle unsubscribeLifeCycle, Subscription... subscriptions) {
+    for (Subscription subscription : subscriptions) {
+      manageSubscription(subscription, unsubscribeLifeCycle);
+    }
+  }
+
+  @Override
+  public void manageSubscription(Subscription subscription, UnsubscribeLifeCycle unsubscribeLifeCycle) {
+    if ((unsubscribeLifeCycle == UnsubscribeLifeCycle.DESTROY && mIsDestroy) ||
+        (unsubscribeLifeCycle == UnsubscribeLifeCycle.DESTROY_VIEW && mIsDestroyView) ||
+        (unsubscribeLifeCycle == UnsubscribeLifeCycle.STOP && mIsStop) ||
+        (unsubscribeLifeCycle == UnsubscribeLifeCycle.PAUSE && mIsPause)) {
+      if (subscription != null && !subscription.isUnsubscribed()) {
+        subscription.unsubscribe();
+      }
+      return;
+    }
+    mSubscriptionManager.manageSubscription(subscription, unsubscribeLifeCycle);
+  }
+
+  @Override
+  public void manageSubscription(String id, Subscription subscription, UnsubscribeLifeCycle unsubscribeLifeCycle) {
+    if ((unsubscribeLifeCycle == UnsubscribeLifeCycle.DESTROY && mIsDestroy) ||
+        (unsubscribeLifeCycle == UnsubscribeLifeCycle.DESTROY_VIEW && mIsDestroyView) ||
+        (unsubscribeLifeCycle == UnsubscribeLifeCycle.STOP && mIsStop) ||
+        (unsubscribeLifeCycle == UnsubscribeLifeCycle.PAUSE && mIsPause)) {
+      if (subscription != null && !subscription.isUnsubscribed()) {
+        subscription.unsubscribe();
+      }
+      return;
+    }
+    mSubscriptionManager.manageSubscription(id, subscription, unsubscribeLifeCycle);
+  }
+
+  @Override
+  public void onCreate() {
+    mIsDestroy = false;
+  }
+
+  @Override
+  public void onCreateView() {
+    mIsDestroyView = false;
+  }
+
+  @Override
+  public void onDestroy() {
+    onDestroyView();
+    mIsDestroy = true;
+    mSubscriptionManager.unsubscribe(UnsubscribeLifeCycle.DESTROY);
+    mSubscriptionManager.unsubscribe();
+    super.onDestroy();
+  }
+
+  @Override
+  public void onDestroyView() {
+    mIsDestroyView = true;
+    mSubscriptionManager.unsubscribe(UnsubscribeLifeCycle.DESTROY_VIEW);
+  }
+
+  @Override
+  public void onPause() {
+    mIsPause = true;
+    mSubscriptionManager.unsubscribe(UnsubscribeLifeCycle.PAUSE);
+    super.onPause();
+  }
+
+  @Override
+  public void onResume() {
+    mIsPause = false;
+    super.onResume();
+  }
+
+  @Override
+  public void onStart() {
+    mIsStop = false;
+    super.onStart();
+  }
+
+  @Override
+  public void onStop() {
+    mIsStop = true;
+    mSubscriptionManager.unsubscribe(UnsubscribeLifeCycle.STOP);
+    super.onStop();
+  }
+
+  @Override
+  public void unsubscribe(String id) {
+    mSubscriptionManager.unsubscribe(id);
+  }
+
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    onCreate();
     onSetContentView(savedInstanceState);
+    onCreateView();
   }
 }
