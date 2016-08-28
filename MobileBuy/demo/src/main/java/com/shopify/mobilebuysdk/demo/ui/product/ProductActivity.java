@@ -37,6 +37,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.transition.Explode;
 import android.view.Window;
 
 import butterknife.BindView;
@@ -82,5 +83,6 @@ public class ProductActivity extends BaseActivity {
         DraweeTransition.createTransitionSet(ScalingUtils.ScaleType.FIT_CENTER, ScalingUtils.ScaleType.FIT_CENTER));
     window.setSharedElementReturnTransition(
         DraweeTransition.createTransitionSet(ScalingUtils.ScaleType.FIT_CENTER, ScalingUtils.ScaleType.FIT_CENTER));
+    window.setEnterTransition(new Explode());
   }
 }

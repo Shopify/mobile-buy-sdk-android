@@ -41,8 +41,10 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.transition.Explode;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -76,7 +78,10 @@ public class ShoppingListViewHolder extends BaseRecyclerPagerViewHolder implemen
     Intent intent = ProductActivity.newIntent(getActivity());
     Activity activity = getActivity();
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-      TransitionUtils.addOnTransitionEndListener(activity.getWindow().getSharedElementReenterTransition(), view, View::requestLayout);
+      Window window = activity.getWindow();
+      window.setExitTransition(new Explode());
+      window.setReenterTransition(new Explode());
+      TransitionUtils.addOnTransitionEndListener(window.getSharedElementReenterTransition(), view, View::requestLayout);
       ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(),
           view.findViewById(R.id.thumbnail), getContext().getString(R.string.transition_product_thumbnail));
       activity.startActivity(intent, options.toBundle());
