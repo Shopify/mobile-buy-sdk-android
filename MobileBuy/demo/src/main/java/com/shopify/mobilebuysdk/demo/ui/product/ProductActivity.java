@@ -30,6 +30,7 @@ import com.facebook.drawee.view.DraweeTransition;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.shopify.buy.model.Product;
 import com.shopify.mobilebuysdk.demo.R;
+import com.shopify.mobilebuysdk.demo.config.Constants;
 import com.shopify.mobilebuysdk.demo.ui.base.BaseActivity;
 
 import android.annotation.TargetApi;
@@ -37,26 +38,49 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
 import android.transition.Explode;
 import android.view.Window;
+import android.widget.TextView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static android.text.Html.FROM_HTML_MODE_LEGACY;
 
 /**
  * Created by henrytao on 8/28/16.
  */
 public class ProductActivity extends BaseActivity {
 
-  public static Intent newIntent(Activity activity, Product data) {
+  public static Intent newIntent(Activity activity, Product product) {
     Intent intent = new Intent(activity, ProductActivity.class);
+    Bundle bundle = new Bundle();
+    bundle.putString(Constants.Extra.PRODUCT, product.toJsonString());
+    intent.putExtras(bundle);
     return intent;
   }
 
+  @BindView(R.id.description) TextView vDescription;
+
+  @BindView(R.id.price) TextView vPrice;
+
   @BindView(R.id.thumbnail) SimpleDraweeView vThumbnail;
 
+  @BindView(R.id.title) TextView vTitle;
+
   @BindView(R.id.toolbar) Toolbar vToolbar;
+
+  private Product mProduct;
+
+  @Override
+  public void onInitializedBundle(@NonNull Bundle savedInstanceState) {
+    super.onInitializedBundle(savedInstanceState);
+    Bundle bundle = getIntent().getExtras();
+    mProduct = Product.fromJson(bundle.getString(Constants.Extra.PRODUCT));
+  }
 
   @Override
   public void onSetContentView(Bundle savedInstanceState) {
@@ -71,8 +95,14 @@ public class ProductActivity extends BaseActivity {
     setSupportActionBar(vToolbar);
     vToolbar.setNavigationOnClickListener(view -> onBackPressed());
 
-    vThumbnail.setImageURI(
-        "https://firebasestorage.googleapis.com/v0/b/android-shopify.appspot.com/o/public%2FRoyale-Flight-Jacket-Nero-Product-01_8555ba9a-6945-4c9a-85d5-e794e54263f6.jpg?alt=media");
+    vThumbnail.setImageURI(mProduct.getFirstImageUrl());
+    vTitle.setText(mProduct.getTitle());
+    vPrice.setText(getString(R.string.currency_format, mProduct.getMinimumPrice()));
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+      vDescription.setText(Html.fromHtml(mProduct.getBodyHtml(), FROM_HTML_MODE_LEGACY));
+    } else {
+      vDescription.setText(Html.fromHtml(mProduct.getBodyHtml()));
+    }
   }
 
   @TargetApi(Build.VERSION_CODES.LOLLIPOP)

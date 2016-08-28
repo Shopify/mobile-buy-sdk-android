@@ -86,8 +86,8 @@ public class ShoppingListViewHolder extends BaseRecyclerPagerViewHolder implemen
   }
 
   @Override
-  public void onItemClick(View view, Product data) {
-    Intent intent = ProductActivity.newIntent(getActivity(), data);
+  public void onItemClick(View view, Product product) {
+    Intent intent = ProductActivity.newIntent(getActivity(), product);
     Activity activity = getActivity();
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
       Window window = activity.getWindow();

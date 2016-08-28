@@ -31,6 +31,7 @@ import com.shopify.mobilebuysdk.demo.util.rx.UnsubscribeLifeCycle;
 import android.annotation.TargetApi;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Window;
 
@@ -146,6 +147,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseLife
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
+    onInitializedBundle(savedInstanceState != null ? savedInstanceState : new Bundle());
     super.onCreate(savedInstanceState);
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
       onSharedElementConfig(getWindow());
@@ -153,6 +155,10 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseLife
     onCreate();
     onSetContentView(savedInstanceState);
     onCreateView();
+  }
+
+  public void onInitializedBundle(@NonNull Bundle savedInstanceState) {
+
   }
 
   @TargetApi(Build.VERSION_CODES.LOLLIPOP)

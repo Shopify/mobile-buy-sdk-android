@@ -35,8 +35,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import java.util.Locale;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -53,28 +51,27 @@ public class ShoppingListItemViewHolder extends BaseViewHolder {
 
   @BindView(R.id.title) TextView vTitle;
 
-  private Product mData;
+  private Product mProduct;
 
   public ShoppingListItemViewHolder(ViewGroup parent, OnItemClickListener onItemClickListener) {
     super(LayoutInflaterUtils.inflate(parent, R.layout.item_shopping_list));
     ButterKnife.bind(this, itemView);
     vContainer.setOnClickListener(view -> {
-      if (onItemClickListener != null && mData != null) {
-        onItemClickListener.onItemClick(view, mData);
+      if (onItemClickListener != null && mProduct != null) {
+        onItemClickListener.onItemClick(view, mProduct);
       }
     });
   }
 
-  public void bind(Product data) {
-    mData = data;
-    vThumbnail.setImageURI(data.getFirstImageUrl());
-    vTitle.setText(data.getTitle());
-    // TODO: need to extract to resource
-    vPrice.setText(String.format(Locale.US, "$%s", data.getMinimumPrice()));
+  public void bind(Product product) {
+    mProduct = product;
+    vThumbnail.setImageURI(product.getFirstImageUrl());
+    vTitle.setText(product.getTitle());
+    vPrice.setText(itemView.getContext().getString(R.string.currency_format, product.getMinimumPrice()));
   }
 
   public interface OnItemClickListener {
 
-    void onItemClick(View view, Product data);
+    void onItemClick(View view, Product product);
   }
 }

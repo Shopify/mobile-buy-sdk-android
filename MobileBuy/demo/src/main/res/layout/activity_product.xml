@@ -80,25 +80,28 @@
         <LinearLayout style="@style/Base.MdListItem.Wrapper">
 
           <TextView
-            android:text="$296.00"
+            android:id="@+id/price"
             android:textColor="?attr/mdTextColorPrimary_backgroundPalette"
             android:textSize="@dimen/mdFontSize_title"
+            tools:text="$296.00"
             style="@style/Base.MdListItem.Title" />
 
           <TextView
-            android:text="@string/text_short"
+            android:id="@+id/title"
             android:textColor="?attr/mdTextColorSecondary_backgroundPalette"
+            tools:text="@string/text_short"
             style="@style/Base.MdListItem.Subtitle" />
         </LinearLayout>
       </RelativeLayout>
 
       <TextView
+        android:id="@+id/description"
         android:layout_width="match_parent"
         android:paddingBottom="@dimen/mdLayoutSpacing"
         android:paddingLeft="@dimen/mdLayoutSpacing"
         android:paddingRight="@dimen/mdLayoutSpacing"
-        android:text="@string/text_long"
         android:textColor="?attr/mdTextColorPrimary_backgroundPalette"
+        tools:text="@string/text_long"
         style="@style/MdText.Body1" />
     </LinearLayout>
   </android.support.v4.widget.NestedScrollView>

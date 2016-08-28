@@ -96,6 +96,8 @@
     nullam quis.
   </string>
 
+  <string name="currency_format">$%1$s</string>
+
   <string name="text_shopping">@string/app_name</string>
   <string name="text_cart">Cart</string>
   <string name="text_retry_message">Network error. Tap to retry.</string>

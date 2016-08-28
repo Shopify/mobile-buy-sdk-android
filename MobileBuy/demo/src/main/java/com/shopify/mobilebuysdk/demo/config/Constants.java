@@ -32,6 +32,7 @@ public class Constants {
 
   public interface Extra {
 
+    String PRODUCT = "PRODUCT";
     String TAG = "TAG";
   }
 
