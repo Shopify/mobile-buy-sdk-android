@@ -72,6 +72,5 @@
   <com.shopify.mobilebuysdk.demo.widget.BottomBar
     android:id="@+id/bottom_bar"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="?attr/mdColor_primaryPalette" />
+    android:layout_height="wrap_content" />
 </LinearLayout>

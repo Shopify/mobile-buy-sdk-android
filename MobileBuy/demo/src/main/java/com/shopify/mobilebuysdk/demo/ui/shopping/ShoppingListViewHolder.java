@@ -27,13 +27,17 @@ package com.shopify.mobilebuysdk.demo.ui.shopping;
 
 import com.shopify.buy.model.Product;
 import com.shopify.mobilebuysdk.demo.R;
+import com.shopify.mobilebuysdk.demo.ui.base.BaseRecyclerPagerViewHolder;
 import com.shopify.mobilebuysdk.demo.ui.base.BaseSubscription;
 import com.shopify.mobilebuysdk.demo.ui.base.RecyclerViewEndlessWrapperAdapter;
+import com.shopify.mobilebuysdk.demo.ui.product.ProductActivity;
 import com.shopify.mobilebuysdk.demo.util.LayoutInflaterUtils;
+import com.shopify.mobilebuysdk.demo.util.NavigationUtils;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
@@ -41,30 +45,31 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import me.henrytao.recyclerpageradapter.RecyclerPagerAdapter;
 
 /**
  * Created by henrytao on 8/27/16.
  */
-public class ShoppingListViewHolder extends RecyclerPagerAdapter.ViewHolder {
+public class ShoppingListViewHolder extends BaseRecyclerPagerViewHolder implements ShoppingListItemViewHolder.OnItemClickListener {
 
   private final Adapter mAdapter;
 
   private final RecyclerViewEndlessWrapperAdapter mEndlessWrapperAdapter;
 
-  private final BaseSubscription mSubscription;
-
   @BindView(R.id.list) RecyclerView vRecyclerView;
 
   public ShoppingListViewHolder(BaseSubscription subscription, ViewGroup parent) {
-    super(LayoutInflaterUtils.inflate(parent, R.layout.view_shopping_list));
-    mSubscription = subscription;
+    super(subscription, LayoutInflaterUtils.inflate(parent, R.layout.view_shopping_list));
     ButterKnife.bind(this, itemView);
 
-    mAdapter = new Adapter();
+    mAdapter = new Adapter(this);
     mEndlessWrapperAdapter = new RecyclerViewEndlessWrapperAdapter(mAdapter, null);
     vRecyclerView.setAdapter(mEndlessWrapperAdapter);
     vRecyclerView.setLayoutManager(new LinearLayoutManager(itemView.getContext()));
+  }
+
+  @Override
+  public void onItemClick(View view, Product data) {
+    NavigationUtils.startActivity(getActivity(), ProductActivity.newIntent(getActivity()));
   }
 
   public void bind(@NonNull List<Product> products) {
@@ -73,7 +78,13 @@ public class ShoppingListViewHolder extends RecyclerPagerAdapter.ViewHolder {
 
   private static class Adapter extends RecyclerView.Adapter<ShoppingListItemViewHolder> {
 
+    private final ShoppingListItemViewHolder.OnItemClickListener mOnItemClickListener;
+
     private List<Product> mData = new ArrayList<>();
+
+    public Adapter(ShoppingListItemViewHolder.OnItemClickListener onItemClickListener) {
+      mOnItemClickListener = onItemClickListener;
+    }
 
     @Override
     public int getItemCount() {
@@ -87,7 +98,7 @@ public class ShoppingListViewHolder extends RecyclerPagerAdapter.ViewHolder {
 
     @Override
     public ShoppingListItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-      return new ShoppingListItemViewHolder(parent);
+      return new ShoppingListItemViewHolder(parent, mOnItemClickListener);
     }
 
     public void bind(@NonNull List<Product> products) {

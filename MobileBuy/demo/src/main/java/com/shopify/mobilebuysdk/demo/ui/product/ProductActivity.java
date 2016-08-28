@@ -23,22 +23,36 @@
  *
  */
 
-package com.shopify.mobilebuysdk.demo.util.rx;
+package com.shopify.mobilebuysdk.demo.ui.product;
 
-import rx.Subscription;
+import com.shopify.mobilebuysdk.demo.R;
+import com.shopify.mobilebuysdk.demo.ui.base.BaseActivity;
+
+import android.app.Activity;
+import android.content.Intent;
+import android.os.Bundle;
+
+import butterknife.ButterKnife;
 
 /**
- * Created by henrytao on 11/13/15.
+ * Created by henrytao on 8/28/16.
  */
-interface ISubscriptionManager {
+public class ProductActivity extends BaseActivity {
 
-  void manageSubscription(Subscription subscription, UnsubscribeLifeCycle unsubscribeLifeCycle);
+  public static Intent newIntent(Activity activity) {
+    Intent intent = new Intent(activity, ProductActivity.class);
+    return intent;
+  }
 
-  void manageSubscription(String id, Subscription subscription, UnsubscribeLifeCycle unsubscribeLifeCycle);
+  @Override
+  public void onSetContentView(Bundle savedInstanceState) {
+    setContentView(R.layout.activity_product);
+    ButterKnife.bind(this);
+  }
 
-  void unsubscribe();
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
 
-  void unsubscribe(UnsubscribeLifeCycle unsubscribeLifeCycle);
-
-  void unsubscribe(String id);
+  }
 }

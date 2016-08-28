@@ -30,7 +30,7 @@
     <item name="android:layout_height">@dimen/mdActionBarSize</item>
     <item name="android:minHeight">@dimen/mdActionBarSize</item>
     <item name="android:orientation">horizontal</item>
-    <item name="android:background">?attr/mdColor_backgroundPalette_dark</item>
+    <item name="android:background">?attr/mdColor_primaryPalette</item>
   </style>
 
   <style name="Widget.BottomBar.Item" parent="">

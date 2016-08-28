@@ -38,7 +38,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
-import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.view.ViewGroup;
@@ -137,7 +136,9 @@ public class ShoppingActivity extends BaseHomeActivity {
     public void onBindViewHolder(ShoppingListViewHolder holder, int position) {
       String tag = mTags.get(position);
       if (!mCaches.containsKey(tag)) {
-        mCaches.put(tag, Arrays.asList(null, null, null, null, null, null, null, null, null, null, null, null, null, null));
+        mCaches.put(tag,
+            Arrays.asList(new Product(), new Product(), new Product(), new Product(), new Product(), new Product(), new Product(),
+                new Product(), new Product(), new Product(), new Product(), new Product(), new Product(), new Product()));
       }
       holder.bind(mCaches.get(tag));
     }

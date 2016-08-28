@@ -25,13 +25,16 @@
 
 package com.shopify.mobilebuysdk.demo.ui.shopping;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.shopify.buy.model.Product;
 import com.shopify.mobilebuysdk.demo.R;
 import com.shopify.mobilebuysdk.demo.ui.base.BaseViewHolder;
 import com.shopify.mobilebuysdk.demo.util.LayoutInflaterUtils;
 
+import android.view.View;
 import android.view.ViewGroup;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -39,12 +42,30 @@ import butterknife.ButterKnife;
  */
 public class ShoppingListItemViewHolder extends BaseViewHolder {
 
-  public ShoppingListItemViewHolder(ViewGroup parent) {
+  @BindView(R.id.container) View vContainer;
+
+  @BindView(R.id.thumbnail) SimpleDraweeView vThumbnail;
+
+  private Product mData;
+
+  public ShoppingListItemViewHolder(ViewGroup parent, OnItemClickListener onItemClickListener) {
     super(LayoutInflaterUtils.inflate(parent, R.layout.item_shopping_list));
     ButterKnife.bind(this, itemView);
+    vContainer.setOnClickListener(view -> {
+      if (onItemClickListener != null && mData != null) {
+        onItemClickListener.onItemClick(view, mData);
+      }
+    });
   }
 
   public void bind(Product data) {
+    mData = data;
+    vThumbnail.setImageURI(
+        "https://firebasestorage.googleapis.com/v0/b/android-shopify.appspot.com/o/public%2FRoyale-Flight-Jacket-Nero-Product-01_8555ba9a-6945-4c9a-85d5-e794e54263f6.jpg?alt=media");
+  }
 
+  public interface OnItemClickListener {
+
+    void onItemClick(View view, Product data);
   }
 }

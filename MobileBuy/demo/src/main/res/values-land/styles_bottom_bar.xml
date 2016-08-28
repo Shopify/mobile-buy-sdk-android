@@ -23,35 +23,13 @@
   ~
   -->
 
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-  package="com.shopify.mobilebuysdk.demo">
+<resources>
 
-  <uses-permission android:name="android.permission.INTERNET" />
+  <style name="Widget.BottomBar.Item.Icon" parent="Base.Widget.BottomBar.Item.Icon">
+    <item name="android:layout_gravity">center_horizontal|center_vertical</item>
+  </style>
 
-  <application
-    android:allowBackup="true"
-    android:icon="@mipmap/ic_launcher"
-    android:label="@string/app_name"
-    android:name=".App"
-    android:supportsRtl="true"
-    android:theme="@style/AppTheme">
-
-    <activity android:name=".ui.MainActivity">
-      <intent-filter>
-        <action android:name="android.intent.action.MAIN" />
-
-        <category android:name="android.intent.category.LAUNCHER" />
-      </intent-filter>
-    </activity>
-
-    <activity
-      android:label="@string/text_shopping"
-      android:name=".ui.shopping.ShoppingActivity" />
-
-    <activity
-      android:label="@string/text_cart"
-      android:name=".ui.cart.CartActivity" />
-
-    <activity android:name=".ui.product.ProductActivity" />
-  </application>
-</manifest>
+  <style name="Widget.BottomBar.Item.Title" parent="Base.Widget.BottomBar.Item.Title">
+    <item name="android:visibility">gone</item>
+  </style>
+</resources>

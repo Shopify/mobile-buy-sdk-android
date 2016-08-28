@@ -30,14 +30,17 @@
   style="@style/MdCardView.Card.Full">
 
   <FrameLayout
+    android:id="@+id/container"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="?attr/selectableItemBackground">
 
     <com.facebook.drawee.view.SimpleDraweeView
       android:id="@+id/thumbnail"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_marginBottom="@dimen/mdListItemHeight_lg"
+      fresco:actualImageScaleType="fitCenter"
       fresco:viewAspectRatio="@dimen/thumbnail_ratio" />
 
     <RelativeLayout

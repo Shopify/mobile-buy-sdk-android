@@ -35,6 +35,10 @@ import android.support.annotation.NonNull;
 
 public class NavigationUtils {
 
+  public static void startActivity(@NonNull Activity activity, @NonNull Intent intent) {
+    activity.startActivity(intent);
+  }
+
   public static void startActivityAndFinishWithNoAnimation(@NonNull Activity activity, @NonNull Intent intent) {
     intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION | Intent.FLAG_ACTIVITY_CLEAR_TASK);
     activity.startActivity(intent);
