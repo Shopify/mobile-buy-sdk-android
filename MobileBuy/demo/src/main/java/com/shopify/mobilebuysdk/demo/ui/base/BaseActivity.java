@@ -28,8 +28,11 @@ package com.shopify.mobilebuysdk.demo.ui.base;
 import com.shopify.mobilebuysdk.demo.util.rx.SubscriptionManager;
 import com.shopify.mobilebuysdk.demo.util.rx.UnsubscribeLifeCycle;
 
+import android.annotation.TargetApi;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Window;
 
 import rx.Subscription;
 
@@ -144,8 +147,16 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseLife
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+      onSharedElementConfig(getWindow());
+    }
     onCreate();
     onSetContentView(savedInstanceState);
     onCreateView();
+  }
+
+  @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+  protected void onSharedElementConfig(Window window) {
+
   }
 }

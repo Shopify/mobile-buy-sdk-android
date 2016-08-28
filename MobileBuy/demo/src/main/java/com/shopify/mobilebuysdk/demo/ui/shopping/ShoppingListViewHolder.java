@@ -32,14 +32,19 @@ import com.shopify.mobilebuysdk.demo.ui.base.BaseSubscription;
 import com.shopify.mobilebuysdk.demo.ui.base.RecyclerViewEndlessWrapperAdapter;
 import com.shopify.mobilebuysdk.demo.ui.product.ProductActivity;
 import com.shopify.mobilebuysdk.demo.util.LayoutInflaterUtils;
-import com.shopify.mobilebuysdk.demo.util.NavigationUtils;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.transition.Transition;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -69,7 +74,47 @@ public class ShoppingListViewHolder extends BaseRecyclerPagerViewHolder implemen
 
   @Override
   public void onItemClick(View view, Product data) {
-    NavigationUtils.startActivity(getActivity(), ProductActivity.newIntent(getActivity()));
+    Intent intent = ProductActivity.newIntent(getActivity());
+    Activity activity = getActivity();
+    WeakReference<View> viewWeakReference = new WeakReference<View>(view);
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+
+      getActivity().getWindow().getSharedElementReenterTransition().addListener(new Transition.TransitionListener() {
+        @Override
+        public void onTransitionCancel(Transition transition) {
+
+        }
+
+        @Override
+        public void onTransitionEnd(Transition transition) {
+          View v = viewWeakReference.get();
+          if (v != null) {
+            v.requestLayout();
+          }
+        }
+
+        @Override
+        public void onTransitionPause(Transition transition) {
+
+        }
+
+        @Override
+        public void onTransitionResume(Transition transition) {
+
+        }
+
+        @Override
+        public void onTransitionStart(Transition transition) {
+
+        }
+      });
+
+      ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+          getActivity(), view.findViewById(R.id.thumbnail), getContext().getString(R.string.transition_product_thumbnail));
+      activity.startActivity(intent, options.toBundle());
+    } else {
+      activity.startActivity(intent);
+    }
   }
 
   public void bind(@NonNull List<Product> products) {

@@ -25,6 +25,8 @@
 
 package com.shopify.mobilebuysdk.demo.ui.shopping;
 
+import com.facebook.drawee.drawable.ScalingUtils;
+import com.facebook.drawee.view.DraweeTransition;
 import com.shopify.buy.model.Product;
 import com.shopify.mobilebuysdk.demo.R;
 import com.shopify.mobilebuysdk.demo.config.Constants;
@@ -33,6 +35,7 @@ import com.shopify.mobilebuysdk.demo.ui.base.BaseHomeActivity;
 import com.shopify.mobilebuysdk.demo.ui.base.BaseSubscription;
 import com.shopify.mobilebuysdk.demo.widget.BottomBar;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -41,6 +44,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.view.ViewGroup;
+import android.view.Window;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -76,6 +80,20 @@ public class ShoppingActivity extends BaseHomeActivity {
 
   @Override
   public void onSetContentView(@Nullable Bundle savedInstanceState) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+      Window window = getWindow();
+      window.requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
+
+      window.setSharedElementExitTransition(
+          DraweeTransition.createTransitionSet(ScalingUtils.ScaleType.FIT_CENTER, ScalingUtils.ScaleType.FIT_CENTER));
+      window.setSharedElementReenterTransition(
+          DraweeTransition.createTransitionSet(ScalingUtils.ScaleType.FIT_CENTER, ScalingUtils.ScaleType.FIT_CENTER));
+
+      window.setSharedElementEnterTransition(
+          DraweeTransition.createTransitionSet(ScalingUtils.ScaleType.FIT_CENTER, ScalingUtils.ScaleType.FIT_CENTER));
+      window.setSharedElementReturnTransition(
+          DraweeTransition.createTransitionSet(ScalingUtils.ScaleType.FIT_CENTER, ScalingUtils.ScaleType.FIT_CENTER));
+    }
     setContentView(R.layout.activity_shopping);
     ButterKnife.bind(this);
   }

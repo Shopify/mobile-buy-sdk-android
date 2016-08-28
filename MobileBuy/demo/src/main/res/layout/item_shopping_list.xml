@@ -24,6 +24,7 @@
   -->
 
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
   android:layout_marginBottom="@dimen/mdLayoutSpacing_sm"
   android:layout_marginTop="@dimen/mdLayoutSpacing_sm"
   xmlns:fresco="http://schemas.android.com/apk/res-auto"
@@ -40,8 +41,10 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_marginBottom="@dimen/mdListItemHeight_lg"
+      android:background="@android:color/white"
       fresco:actualImageScaleType="fitCenter"
-      fresco:viewAspectRatio="@dimen/thumbnail_ratio" />
+      fresco:viewAspectRatio="@dimen/thumbnail_ratio"
+      tools:targetApi="lollipop" />
 
     <RelativeLayout
       android:layout_width="match_parent"

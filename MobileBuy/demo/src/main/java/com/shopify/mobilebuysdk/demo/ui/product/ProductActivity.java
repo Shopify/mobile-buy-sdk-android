@@ -25,14 +25,18 @@
 
 package com.shopify.mobilebuysdk.demo.ui.product;
 
+import com.facebook.drawee.drawable.ScalingUtils;
+import com.facebook.drawee.view.DraweeTransition;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.shopify.mobilebuysdk.demo.R;
 import com.shopify.mobilebuysdk.demo.ui.base.BaseActivity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.Window;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -53,6 +57,20 @@ public class ProductActivity extends BaseActivity {
 
   @Override
   public void onSetContentView(Bundle savedInstanceState) {
+    Window window = getWindow();
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+      window.requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
+
+      window.setSharedElementExitTransition(
+          DraweeTransition.createTransitionSet(ScalingUtils.ScaleType.FIT_CENTER, ScalingUtils.ScaleType.FIT_CENTER));
+      window.setSharedElementReenterTransition(
+          DraweeTransition.createTransitionSet(ScalingUtils.ScaleType.FIT_CENTER, ScalingUtils.ScaleType.FIT_CENTER));
+
+      window.setSharedElementEnterTransition(
+          DraweeTransition.createTransitionSet(ScalingUtils.ScaleType.FIT_CENTER, ScalingUtils.ScaleType.FIT_CENTER));
+      window.setSharedElementReturnTransition(
+          DraweeTransition.createTransitionSet(ScalingUtils.ScaleType.FIT_CENTER, ScalingUtils.ScaleType.FIT_CENTER));
+    }
     setContentView(R.layout.activity_product);
     ButterKnife.bind(this);
   }
