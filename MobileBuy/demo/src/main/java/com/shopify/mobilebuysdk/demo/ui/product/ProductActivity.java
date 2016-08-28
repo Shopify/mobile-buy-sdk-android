@@ -25,13 +25,16 @@
 
 package com.shopify.mobilebuysdk.demo.ui.product;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.shopify.mobilebuysdk.demo.R;
 import com.shopify.mobilebuysdk.demo.ui.base.BaseActivity;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -44,6 +47,10 @@ public class ProductActivity extends BaseActivity {
     return intent;
   }
 
+  @BindView(R.id.thumbnail) SimpleDraweeView vThumbnail;
+
+  @BindView(R.id.toolbar) Toolbar vToolbar;
+
   @Override
   public void onSetContentView(Bundle savedInstanceState) {
     setContentView(R.layout.activity_product);
@@ -54,5 +61,10 @@ public class ProductActivity extends BaseActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
+    setSupportActionBar(vToolbar);
+    vToolbar.setNavigationOnClickListener(view -> onBackPressed());
+
+    vThumbnail.setImageURI(
+        "https://firebasestorage.googleapis.com/v0/b/android-shopify.appspot.com/o/public%2FRoyale-Flight-Jacket-Nero-Product-01_8555ba9a-6945-4c9a-85d5-e794e54263f6.jpg?alt=media");
   }
 }

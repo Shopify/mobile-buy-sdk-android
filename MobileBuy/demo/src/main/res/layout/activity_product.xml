@@ -23,12 +23,86 @@
   ~
   -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  android:orientation="vertical">
+  xmlns:fresco="http://schemas.android.com/apk/res-auto">
 
-  <TextView
-    android:text="Hello product"
-    style="@style/MdText.Subhead1" />
-</LinearLayout>
+  <android.support.design.widget.AppBarLayout
+    android:id="@+id/app_bar_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <android.support.v7.widget.Toolbar
+      android:id="@+id/toolbar"
+      app:navigationIcon="@drawable/ic_arrow_back_primary"
+      style="@style/MdToolbar" />
+  </android.support.design.widget.AppBarLayout>
+
+  <Button
+    android:id="@+id/btn_add_to_cart"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/mdListItemHeight_lg"
+    android:layout_alignParentBottom="true"
+    android:layout_marginBottom="@dimen/mdLayoutSpacingInverse_sm"
+    android:layout_marginLeft="@dimen/mdLayoutSpacingInverse_sm"
+    android:layout_marginRight="@dimen/mdLayoutSpacingInverse_sm"
+    android:layout_marginTop="@dimen/mdLayoutSpacingInverse_sm"
+    android:text="@string/text_add_to_cart"
+    style="@style/MdButton.Colored" />
+
+  <android.support.v4.widget.NestedScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_above="@id/btn_add_to_cart"
+    android:layout_below="@id/app_bar_layout"
+    android:background="?attr/mdColor_backgroundPalette_light">
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical">
+
+      <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/thumbnail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        fresco:actualImageScaleType="fitCenter"
+        fresco:viewAspectRatio="@dimen/thumbnail_ratio" />
+
+      <RelativeLayout style="@style/MdListItem.TwoLine.TextOnly">
+
+        <LinearLayout style="@style/Base.MdListItem.Wrapper">
+
+          <TextView
+            android:text="$296.00"
+            android:textColor="?attr/mdTextColorPrimary_backgroundPalette"
+            android:textSize="@dimen/mdFontSize_title"
+            style="@style/Base.MdListItem.Title" />
+
+          <TextView
+            android:text="@string/text_short"
+            android:textColor="?attr/mdTextColorSecondary_backgroundPalette"
+            style="@style/Base.MdListItem.Subtitle" />
+        </LinearLayout>
+      </RelativeLayout>
+
+      <TextView
+        android:layout_width="match_parent"
+        android:paddingBottom="@dimen/mdLayoutSpacing"
+        android:paddingLeft="@dimen/mdLayoutSpacing"
+        android:paddingRight="@dimen/mdLayoutSpacing"
+        android:text="@string/text_long"
+        android:textColor="?attr/mdTextColorPrimary_backgroundPalette"
+        style="@style/MdText.Body1" />
+    </LinearLayout>
+  </android.support.v4.widget.NestedScrollView>
+
+  <View
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/backgroundGradientSize_preLollipopOnly"
+    android:layout_below="@id/app_bar_layout"
+    android:background="@drawable/background_gradient_top_bottom" />
+</RelativeLayout>
