@@ -100,4 +100,6 @@
   <string name="text_cart">Cart</string>
   <string name="text_retry_message">Network error. Tap to retry.</string>
   <string name="text_add_to_cart">Add to Cart</string>
+  <string name="text_store_is_empty">Store is empty</string>
+  <string name="text_loading_store_items">Loading store items</string>
 </resources>

@@ -102,7 +102,7 @@ public class RecyclerViewEndlessWrapperAdapter extends SimpleRecyclerViewAdapter
     @BindView(R.id.retry) View vRetry;
 
     protected EndlessFooterViewHolder(ViewGroup parent, Action0 onRetryAction) {
-      super(LayoutInflaterUtils.inflate(parent, R.layout.item_endless_footer));
+      super(LayoutInflaterUtils.inflate(parent, R.layout.item_endless_view));
       mOnRetryAction = onRetryAction;
       ButterKnife.bind(this, itemView);
       vRetry.setOnClickListener(view -> {

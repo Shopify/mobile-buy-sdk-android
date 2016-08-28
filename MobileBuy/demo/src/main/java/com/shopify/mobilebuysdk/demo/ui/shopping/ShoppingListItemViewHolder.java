@@ -33,6 +33,9 @@ import com.shopify.mobilebuysdk.demo.util.LayoutInflaterUtils;
 
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -44,7 +47,11 @@ public class ShoppingListItemViewHolder extends BaseViewHolder {
 
   @BindView(R.id.container) View vContainer;
 
+  @BindView(R.id.price) TextView vPrice;
+
   @BindView(R.id.thumbnail) SimpleDraweeView vThumbnail;
+
+  @BindView(R.id.title) TextView vTitle;
 
   private Product mData;
 
@@ -60,8 +67,10 @@ public class ShoppingListItemViewHolder extends BaseViewHolder {
 
   public void bind(Product data) {
     mData = data;
-    vThumbnail.setImageURI(
-        "https://firebasestorage.googleapis.com/v0/b/android-shopify.appspot.com/o/public%2FRoyale-Flight-Jacket-Nero-Product-01_8555ba9a-6945-4c9a-85d5-e794e54263f6.jpg?alt=media");
+    vThumbnail.setImageURI(data.getFirstImageUrl());
+    vTitle.setText(data.getTitle());
+    // TODO: need to extract to resource
+    vPrice.setText(String.format(Locale.US, "$%s", data.getMinimumPrice()));
   }
 
   public interface OnItemClickListener {

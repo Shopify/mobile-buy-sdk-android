@@ -47,6 +47,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.ViewGroup;
 import android.view.Window;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -101,8 +102,15 @@ public class ShoppingActivity extends BaseHomeActivity {
     super.onCreate(savedInstanceState);
     setSupportActionBar(vToolbar);
 
+    // TODO: need to load category dynamically
     mAdapter = new ViewPagerAdapter(this, Arrays.asList(
-        Constants.Tag.ALL
+        "New Arrivals",
+        Constants.Tag.ALL,
+        "G-Knit",
+        "Rosen",
+        "Royale",
+        "Wilson",
+        "Wooster"
     ));
     vViewPager.setAdapter(mAdapter);
 
@@ -149,11 +157,9 @@ public class ShoppingActivity extends BaseHomeActivity {
     public void onBindViewHolder(ShoppingListViewHolder holder, int position) {
       String tag = mTags.get(position);
       if (!mCaches.containsKey(tag)) {
-        mCaches.put(tag,
-            Arrays.asList(new Product(), new Product(), new Product(), new Product(), new Product(), new Product(), new Product(),
-                new Product(), new Product(), new Product(), new Product(), new Product(), new Product(), new Product()));
+        mCaches.put(tag, new ArrayList<>());
       }
-      holder.bind(mCaches.get(tag));
+      holder.bind(tag, mCaches.get(tag));
     }
 
     @Override

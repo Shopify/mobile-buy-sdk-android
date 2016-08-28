@@ -27,12 +27,16 @@ package com.shopify.mobilebuysdk.demo.ui.shopping;
 
 import com.shopify.buy.model.Product;
 import com.shopify.mobilebuysdk.demo.R;
+import com.shopify.mobilebuysdk.demo.service.ShopifyService;
 import com.shopify.mobilebuysdk.demo.ui.base.BaseRecyclerPagerViewHolder;
 import com.shopify.mobilebuysdk.demo.ui.base.BaseSubscription;
 import com.shopify.mobilebuysdk.demo.ui.base.RecyclerViewEndlessWrapperAdapter;
+import com.shopify.mobilebuysdk.demo.ui.base.RecyclerViewLoadingEmptyErrorWrapperAdapter;
 import com.shopify.mobilebuysdk.demo.ui.product.ProductActivity;
 import com.shopify.mobilebuysdk.demo.util.LayoutInflaterUtils;
 import com.shopify.mobilebuysdk.demo.util.TransitionUtils;
+import com.shopify.mobilebuysdk.demo.util.rx.Transformer;
+import com.shopify.mobilebuysdk.demo.util.rx.UnsubscribeLifeCycle;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -61,21 +65,29 @@ public class ShoppingListViewHolder extends BaseRecyclerPagerViewHolder implemen
 
   private final RecyclerViewEndlessWrapperAdapter mEndlessWrapperAdapter;
 
+  private final RecyclerViewLoadingEmptyErrorWrapperAdapter mLoadingEmptyErrorWrapperAdapter;
+
+  private final ShopifyService mShopifyService;
+
   @BindView(R.id.list) RecyclerView vRecyclerView;
+
+  private String mTag;
 
   public ShoppingListViewHolder(BaseSubscription subscription, ViewGroup parent) {
     super(subscription, LayoutInflaterUtils.inflate(parent, R.layout.view_shopping_list));
+    mShopifyService = ShopifyService.getInstance();
     ButterKnife.bind(this, itemView);
 
     mAdapter = new Adapter(this);
     mEndlessWrapperAdapter = new RecyclerViewEndlessWrapperAdapter(mAdapter, null);
-    vRecyclerView.setAdapter(mEndlessWrapperAdapter);
+    mLoadingEmptyErrorWrapperAdapter = new RecyclerViewLoadingEmptyErrorWrapperAdapter(mEndlessWrapperAdapter, this::onLoadNewData);
+    vRecyclerView.setAdapter(mLoadingEmptyErrorWrapperAdapter);
     vRecyclerView.setLayoutManager(new LinearLayoutManager(itemView.getContext()));
   }
 
   @Override
   public void onItemClick(View view, Product data) {
-    Intent intent = ProductActivity.newIntent(getActivity());
+    Intent intent = ProductActivity.newIntent(getActivity(), data);
     Activity activity = getActivity();
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
       Window window = activity.getWindow();
@@ -90,8 +102,34 @@ public class ShoppingListViewHolder extends BaseRecyclerPagerViewHolder implemen
     }
   }
 
-  public void bind(@NonNull List<Product> products) {
+  public void bind(String tag, @NonNull List<Product> products) {
+    mTag = tag;
     mAdapter.bind(products);
+    if (products.size() == 0) {
+      onLoadNewData();
+    } else {
+      // TODO: either do endless query or just show the list
+    }
+  }
+
+  private void onLoadNewData() {
+    mLoadingEmptyErrorWrapperAdapter.showLoadingView();
+    manageSubscription(UnsubscribeLifeCycle.DESTROY_VIEW,
+        mShopifyService
+            .getProducts()
+            .compose(Transformer.applyIoScheduler())
+            .subscribe(data -> {
+              if (data.size() == 0) {
+                mLoadingEmptyErrorWrapperAdapter.showEmptyView();
+              } else {
+                mLoadingEmptyErrorWrapperAdapter.hide();
+                mAdapter.add(data);
+              }
+            }, throwable -> {
+              throwable.printStackTrace();
+              mLoadingEmptyErrorWrapperAdapter.showErrorView();
+            })
+    );
   }
 
   private static class Adapter extends RecyclerView.Adapter<ShoppingListItemViewHolder> {
@@ -117,6 +155,12 @@ public class ShoppingListViewHolder extends BaseRecyclerPagerViewHolder implemen
     @Override
     public ShoppingListItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
       return new ShoppingListItemViewHolder(parent, mOnItemClickListener);
+    }
+
+    public void add(List<Product> products) {
+      int count = mData.size();
+      mData.addAll(products);
+      notifyItemRangeInserted(count, products.size());
     }
 
     public void bind(@NonNull List<Product> products) {

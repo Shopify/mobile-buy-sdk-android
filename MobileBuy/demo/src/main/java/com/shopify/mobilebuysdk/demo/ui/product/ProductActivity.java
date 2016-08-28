@@ -28,6 +28,7 @@ package com.shopify.mobilebuysdk.demo.ui.product;
 import com.facebook.drawee.drawable.ScalingUtils;
 import com.facebook.drawee.view.DraweeTransition;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.shopify.buy.model.Product;
 import com.shopify.mobilebuysdk.demo.R;
 import com.shopify.mobilebuysdk.demo.ui.base.BaseActivity;
 
@@ -48,7 +49,7 @@ import butterknife.ButterKnife;
  */
 public class ProductActivity extends BaseActivity {
 
-  public static Intent newIntent(Activity activity) {
+  public static Intent newIntent(Activity activity, Product data) {
     Intent intent = new Intent(activity, ProductActivity.class);
     return intent;
   }
