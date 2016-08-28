@@ -35,6 +35,7 @@ import com.shopify.mobilebuysdk.demo.ui.base.BaseHomeActivity;
 import com.shopify.mobilebuysdk.demo.ui.base.BaseSubscription;
 import com.shopify.mobilebuysdk.demo.widget.BottomBar;
 
+import android.annotation.TargetApi;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -80,20 +81,6 @@ public class ShoppingActivity extends BaseHomeActivity {
 
   @Override
   public void onSetContentView(@Nullable Bundle savedInstanceState) {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-      Window window = getWindow();
-      window.requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
-
-      window.setSharedElementExitTransition(
-          DraweeTransition.createTransitionSet(ScalingUtils.ScaleType.FIT_CENTER, ScalingUtils.ScaleType.FIT_CENTER));
-      window.setSharedElementReenterTransition(
-          DraweeTransition.createTransitionSet(ScalingUtils.ScaleType.FIT_CENTER, ScalingUtils.ScaleType.FIT_CENTER));
-
-      window.setSharedElementEnterTransition(
-          DraweeTransition.createTransitionSet(ScalingUtils.ScaleType.FIT_CENTER, ScalingUtils.ScaleType.FIT_CENTER));
-      window.setSharedElementReturnTransition(
-          DraweeTransition.createTransitionSet(ScalingUtils.ScaleType.FIT_CENTER, ScalingUtils.ScaleType.FIT_CENTER));
-    }
     setContentView(R.layout.activity_shopping);
     ButterKnife.bind(this);
   }
@@ -114,9 +101,6 @@ public class ShoppingActivity extends BaseHomeActivity {
     super.onCreate(savedInstanceState);
     setSupportActionBar(vToolbar);
 
-    //ViewCompat.setElevation(vAppBarLayout, 12);
-    //ViewCompat.setElevation(vBottomBar, 12);
-
     mAdapter = new ViewPagerAdapter(this, Arrays.asList(
         Constants.Tag.ALL
     ));
@@ -125,6 +109,17 @@ public class ShoppingActivity extends BaseHomeActivity {
     vTabLayout.setupWithViewPager(vViewPager);
     vTabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
     vTabLayout.setTabGravity(TabLayout.GRAVITY_CENTER);
+  }
+
+  @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+  @Override
+  protected void onSharedElementConfig(Window window) {
+    super.onSharedElementConfig(window);
+    window.requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
+    window.setSharedElementExitTransition(
+        DraweeTransition.createTransitionSet(ScalingUtils.ScaleType.FIT_CENTER, ScalingUtils.ScaleType.FIT_CENTER));
+    window.setSharedElementReenterTransition(
+        DraweeTransition.createTransitionSet(ScalingUtils.ScaleType.FIT_CENTER, ScalingUtils.ScaleType.FIT_CENTER));
   }
 
   private static class ViewPagerAdapter extends RecyclerPagerAdapter<ShoppingListViewHolder> {

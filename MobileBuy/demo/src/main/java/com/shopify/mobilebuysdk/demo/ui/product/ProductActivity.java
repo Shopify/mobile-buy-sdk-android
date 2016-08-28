@@ -31,6 +31,7 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.shopify.mobilebuysdk.demo.R;
 import com.shopify.mobilebuysdk.demo.ui.base.BaseActivity;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
@@ -57,20 +58,6 @@ public class ProductActivity extends BaseActivity {
 
   @Override
   public void onSetContentView(Bundle savedInstanceState) {
-    Window window = getWindow();
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-      window.requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
-
-      window.setSharedElementExitTransition(
-          DraweeTransition.createTransitionSet(ScalingUtils.ScaleType.FIT_CENTER, ScalingUtils.ScaleType.FIT_CENTER));
-      window.setSharedElementReenterTransition(
-          DraweeTransition.createTransitionSet(ScalingUtils.ScaleType.FIT_CENTER, ScalingUtils.ScaleType.FIT_CENTER));
-
-      window.setSharedElementEnterTransition(
-          DraweeTransition.createTransitionSet(ScalingUtils.ScaleType.FIT_CENTER, ScalingUtils.ScaleType.FIT_CENTER));
-      window.setSharedElementReturnTransition(
-          DraweeTransition.createTransitionSet(ScalingUtils.ScaleType.FIT_CENTER, ScalingUtils.ScaleType.FIT_CENTER));
-    }
     setContentView(R.layout.activity_product);
     ButterKnife.bind(this);
   }
@@ -84,5 +71,16 @@ public class ProductActivity extends BaseActivity {
 
     vThumbnail.setImageURI(
         "https://firebasestorage.googleapis.com/v0/b/android-shopify.appspot.com/o/public%2FRoyale-Flight-Jacket-Nero-Product-01_8555ba9a-6945-4c9a-85d5-e794e54263f6.jpg?alt=media");
+  }
+
+  @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+  @Override
+  protected void onSharedElementConfig(Window window) {
+    super.onSharedElementConfig(window);
+    window.requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
+    window.setSharedElementEnterTransition(
+        DraweeTransition.createTransitionSet(ScalingUtils.ScaleType.FIT_CENTER, ScalingUtils.ScaleType.FIT_CENTER));
+    window.setSharedElementReturnTransition(
+        DraweeTransition.createTransitionSet(ScalingUtils.ScaleType.FIT_CENTER, ScalingUtils.ScaleType.FIT_CENTER));
   }
 }
