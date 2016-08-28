@@ -25,7 +25,8 @@
 
 <resources>
 
-  <dimen name="backgroundGradientSize">4dp</dimen>
+  <dimen name="backgroundGradientSize">6dp</dimen>
+  <dimen name="backgroundGradientSize_preLollipopOnly">6dp</dimen>
 
   <item name="thumbnail_ratio" format="float" type="dimen">1.77</item>
 </resources>

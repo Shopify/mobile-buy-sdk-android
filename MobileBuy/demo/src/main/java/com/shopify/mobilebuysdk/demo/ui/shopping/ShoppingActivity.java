@@ -36,7 +36,9 @@ import com.shopify.mobilebuysdk.demo.widget.BottomBar;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.view.ViewGroup;
@@ -56,6 +58,8 @@ import me.henrytao.recyclerpageradapter.RecyclerPagerAdapter;
 public class ShoppingActivity extends BaseHomeActivity {
 
   private final ShopifyService mShopifyService;
+
+  @BindView(R.id.app_bar_layout) AppBarLayout vAppBarLayout;
 
   @BindView(R.id.bottom_bar) BottomBar vBottomBar;
 
@@ -92,6 +96,9 @@ public class ShoppingActivity extends BaseHomeActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setSupportActionBar(vToolbar);
+
+    //ViewCompat.setElevation(vAppBarLayout, 12);
+    //ViewCompat.setElevation(vBottomBar, 12);
 
     mAdapter = new ViewPagerAdapter(this, Arrays.asList(
         Constants.Tag.ALL

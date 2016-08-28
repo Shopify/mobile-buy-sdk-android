@@ -28,4 +28,8 @@
   <color name="color_shopify">#95be47</color>
   <color name="color_shopify_dark">#799a39</color>
   <color name="color_shopify_light">#b4d17d</color>
+
+  <color name="color_background">#F5F5F5</color>
+  <color name="color_background_dark">#DDDDDD</color>
+  <color name="color_background_light">#FAFAFA</color>
 </resources>

@@ -31,8 +31,10 @@
   tools:context="com.shopify.mobilebuysdk.demo.ui.MainActivity">
 
   <android.support.design.widget.AppBarLayout
+    android:id="@+id/app_bar_layout"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    tools:targetApi="lollipop">
 
     <android.support.v7.widget.Toolbar
       android:id="@+id/toolbar"
@@ -56,7 +58,7 @@
 
     <View
       android:layout_width="match_parent"
-      android:layout_height="@dimen/backgroundGradientSize"
+      android:layout_height="@dimen/backgroundGradientSize_preLollipopOnly"
       android:layout_gravity="top"
       android:background="@drawable/background_gradient_top_bottom" />
 
@@ -70,5 +72,6 @@
   <com.shopify.mobilebuysdk.demo.widget.BottomBar
     android:id="@+id/bottom_bar"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content" />
+    android:layout_height="wrap_content"
+    android:background="?attr/mdColor_primaryPalette" />
 </LinearLayout>

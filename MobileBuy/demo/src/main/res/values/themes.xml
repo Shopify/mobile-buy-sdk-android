@@ -39,6 +39,10 @@
     <item name="mdColor_accentPalette_dark">@color/color_shopify_dark</item>
     <item name="mdColor_accentPalette_light">@color/color_shopify_light</item>
 
+    <item name="mdColor_backgroundPalette">@color/color_background</item>
+    <item name="mdColor_backgroundPalette_dark">@color/color_background_dark</item>
+    <item name="mdColor_backgroundPalette_light">@color/color_background_light</item>
+
     <!-- textColor for primary palette -->
     <item name="mdTextColorPrimary_primaryPalette">@color/mdTextColorPrimary_light</item>
     <item name="mdTextColorPrimary_primaryPalette_dark">@color/mdTextColorPrimary_light</item>

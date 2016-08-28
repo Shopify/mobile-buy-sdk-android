@@ -27,6 +27,6 @@
   android:id="@+id/list"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  android:clipToPadding="true"
+  android:clipToPadding="false"
   android:paddingBottom="@dimen/mdListItemSpacing"
   android:paddingTop="@dimen/mdListItemSpacing" />

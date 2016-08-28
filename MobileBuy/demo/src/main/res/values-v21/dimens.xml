@@ -23,12 +23,7 @@
   ~
   -->
 
-<shape xmlns:android="http://schemas.android.com/apk/res/android">
+<resources>
 
-  <gradient
-    android:angle="270"
-    android:centerColor="#25CCCCCC"
-    android:endColor="#00FFFFFF"
-    android:startColor="#FFCCCCCC"
-    android:type="linear" />
-</shape>
+  <dimen name="backgroundGradientSize_preLollipopOnly">0dp</dimen>
+</resources>
