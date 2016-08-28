@@ -23,33 +23,28 @@
   ~
   -->
 
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-  package="com.shopify.mobilebuysdk.demo">
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="@dimen/mdListItemHeight_sm">
 
-  <uses-permission android:name="android.permission.INTERNET" />
+  <ProgressBar
+    android:id="@+id/loading"
+    android:layout_width="24dp"
+    android:layout_height="24dp"
+    android:layout_gravity="center_horizontal|center_vertical"
+    android:visibility="gone"
+    style="@style/Widget.AppCompat.ProgressBar" />
 
-  <application
-    android:allowBackup="true"
-    android:icon="@mipmap/ic_launcher"
-    android:label="@string/app_name"
-    android:name=".App"
-    android:supportsRtl="true"
-    android:theme="@style/AppTheme">
+  <TextView
+    android:id="@+id/retry"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/selectableItemBackground"
+    android:gravity="center"
+    android:paddingLeft="@dimen/mdLayoutSpacing"
+    android:paddingRight="@dimen/mdLayoutSpacing"
+    android:text="@string/text_retry_message"
+    android:visibility="gone"
+    style="@style/MdText.Body1.SingleLine" />
+</FrameLayout>
 
-    <activity android:name=".ui.MainActivity">
-      <intent-filter>
-        <action android:name="android.intent.action.MAIN" />
-
-        <category android:name="android.intent.category.LAUNCHER" />
-      </intent-filter>
-    </activity>
-
-    <activity
-      android:label="@string/text_shopping"
-      android:name=".ui.shopping.ShoppingActivity" />
-
-    <activity
-      android:label="@string/text_cart"
-      android:name=".ui.cart.CartActivity" />
-  </application>
-</manifest>

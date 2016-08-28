@@ -26,4 +26,6 @@
 <resources>
 
   <dimen name="backgroundGradientSize">4dp</dimen>
+
+  <item name="thumbnail_ratio" format="float" type="dimen">1.77</item>
 </resources>

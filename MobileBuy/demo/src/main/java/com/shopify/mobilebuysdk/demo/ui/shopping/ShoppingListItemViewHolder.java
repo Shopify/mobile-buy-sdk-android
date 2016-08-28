@@ -25,16 +25,11 @@
 
 package com.shopify.mobilebuysdk.demo.ui.shopping;
 
+import com.shopify.buy.model.Product;
 import com.shopify.mobilebuysdk.demo.R;
-import com.shopify.mobilebuysdk.demo.config.Constants;
-import com.shopify.mobilebuysdk.demo.data.Tag;
-import com.shopify.mobilebuysdk.demo.ui.base.BaseFragment;
+import com.shopify.mobilebuysdk.demo.ui.base.BaseViewHolder;
+import com.shopify.mobilebuysdk.demo.util.LayoutInflaterUtils;
 
-import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import butterknife.ButterKnife;
@@ -42,32 +37,14 @@ import butterknife.ButterKnife;
 /**
  * Created by henrytao on 8/27/16.
  */
-public class ShoppingListFragment extends BaseFragment {
+public class ShoppingListItemViewHolder extends BaseViewHolder {
 
-  public static ShoppingListFragment newInstance(Tag tag) {
-    ShoppingListFragment fragment = new ShoppingListFragment();
-    Bundle bundle = new Bundle();
-    bundle.putParcelable(Constants.Extra.TAG, tag);
-    fragment.setArguments(bundle);
-    return fragment;
+  public ShoppingListItemViewHolder(ViewGroup parent) {
+    super(LayoutInflaterUtils.inflate(parent, R.layout.item_shopping_list));
+    ButterKnife.bind(this, itemView);
   }
 
-  private Tag mTag;
+  public void bind(Product data) {
 
-  @Override
-  public View onInflateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-    View view = inflater.inflate(R.layout.fragment_shopping_list, container, false);
-    ButterKnife.bind(this, view);
-    return view;
-  }
-
-  @Override
-  public void onInitializeBundle(@NonNull Bundle savedInstanceState) {
-    mTag = savedInstanceState.getParcelable(Constants.Extra.TAG);
-  }
-
-  @Override
-  public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-    super.onViewCreated(view, savedInstanceState);
   }
 }

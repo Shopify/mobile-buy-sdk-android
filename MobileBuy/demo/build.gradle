@@ -118,10 +118,18 @@ dependencies {
   compile "com.android.support:design:24.2.0"
   compile "com.android.support:recyclerview-v7:24.2.0"
 
+  compile "com.facebook.fresco:fresco:0.12.0"
+
   compile "com.jakewharton:butterknife:8.0.1"
   apt "com.jakewharton:butterknife-compiler:8.0.1"
 
   compile("me.henrytao:mdcore:3.3.2") {
+    exclude group: "com.android.support"
+  }
+  compile("me.henrytao:recycler-pager-adapter:2.0.1") {
+    exclude group: "com.android.support"
+  }
+  compile("me.henrytao:recyclerview:3.0.7") {
     exclude group: "com.android.support"
   }
 

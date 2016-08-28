@@ -34,4 +34,9 @@ public class Constants {
 
     String TAG = "TAG";
   }
+
+  public interface Tag {
+
+    String ALL = "All";
+  }
 }

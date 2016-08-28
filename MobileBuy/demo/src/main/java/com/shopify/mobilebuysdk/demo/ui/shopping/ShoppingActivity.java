@@ -25,27 +25,30 @@
 
 package com.shopify.mobilebuysdk.demo.ui.shopping;
 
+import com.shopify.buy.model.Product;
 import com.shopify.mobilebuysdk.demo.R;
-import com.shopify.mobilebuysdk.demo.data.Tag;
+import com.shopify.mobilebuysdk.demo.config.Constants;
 import com.shopify.mobilebuysdk.demo.service.ShopifyService;
 import com.shopify.mobilebuysdk.demo.ui.base.BaseHomeActivity;
+import com.shopify.mobilebuysdk.demo.ui.base.BaseSubscription;
 import com.shopify.mobilebuysdk.demo.widget.BottomBar;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
+import android.view.ViewGroup;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import me.henrytao.recyclerpageradapter.RecyclerPagerAdapter;
 
 /**
  * Created by henrytao on 8/27/16.
@@ -90,13 +93,8 @@ public class ShoppingActivity extends BaseHomeActivity {
     super.onCreate(savedInstanceState);
     setSupportActionBar(vToolbar);
 
-    mAdapter = new ViewPagerAdapter(getSupportFragmentManager(), Arrays.asList(
-        new Tag("new-arrival", "New Arrival"),
-        new Tag("chair", "Chairs"),
-        new Tag("lounge", "Lounge"),
-        new Tag("table", "Table"),
-        new Tag("cup", "Cup"),
-        new Tag("shoes", "Shoes")
+    mAdapter = new ViewPagerAdapter(this, Arrays.asList(
+        Constants.Tag.ALL
     ));
     vViewPager.setAdapter(mAdapter);
 
@@ -105,28 +103,41 @@ public class ShoppingActivity extends BaseHomeActivity {
     vTabLayout.setTabGravity(TabLayout.GRAVITY_CENTER);
   }
 
-  private static class ViewPagerAdapter extends FragmentStatePagerAdapter {
+  private static class ViewPagerAdapter extends RecyclerPagerAdapter<ShoppingListViewHolder> {
 
-    private final List<Tag> mTags;
+    private final Map<String, List<Product>> mCaches = new HashMap<>();
 
-    ViewPagerAdapter(FragmentManager fm, List<Tag> tags) {
-      super(fm);
+    private final BaseSubscription mSubscription;
+
+    private final List<String> mTags;
+
+    ViewPagerAdapter(BaseSubscription subscription, List<String> tags) {
+      mSubscription = subscription;
       mTags = tags;
     }
 
     @Override
-    public int getCount() {
+    public int getItemCount() {
       return mTags.size();
     }
 
     @Override
-    public Fragment getItem(int position) {
-      return ShoppingListFragment.newInstance(mTags.get(position));
+    public CharSequence getPageTitle(int position) {
+      return mTags.get(position);
     }
 
     @Override
-    public CharSequence getPageTitle(int position) {
-      return mTags.get(position).description;
+    public void onBindViewHolder(ShoppingListViewHolder holder, int position) {
+      String tag = mTags.get(position);
+      if (!mCaches.containsKey(tag)) {
+        mCaches.put(tag, Arrays.asList(null, null, null, null, null, null, null, null, null, null, null, null, null, null));
+      }
+      holder.bind(mCaches.get(tag));
+    }
+
+    @Override
+    public ShoppingListViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+      return new ShoppingListViewHolder(mSubscription, parent);
     }
   }
 }

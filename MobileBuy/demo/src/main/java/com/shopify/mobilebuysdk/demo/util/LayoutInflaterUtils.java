@@ -23,51 +23,20 @@
  *
  */
 
-package com.shopify.mobilebuysdk.demo.data;
+package com.shopify.mobilebuysdk.demo.util;
 
-import android.os.Parcel;
-import android.os.Parcelable;
+import android.support.annotation.LayoutRes;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 /**
  * Created by henrytao on 8/27/16.
  */
 
-public class Tag implements Parcelable {
+public class LayoutInflaterUtils {
 
-  public static final Parcelable.Creator<Tag> CREATOR = new Parcelable.Creator<Tag>() {
-    @Override
-    public Tag createFromParcel(Parcel source) {
-      return new Tag(source);
-    }
-
-    @Override
-    public Tag[] newArray(int size) {
-      return new Tag[size];
-    }
-  };
-
-  public final String description;
-
-  public final String name;
-
-  public Tag(String name, String description) {
-    this.name = name;
-    this.description = description;
-  }
-
-  protected Tag(Parcel in) {
-    this.description = in.readString();
-    this.name = in.readString();
-  }
-
-  @Override
-  public int describeContents() {
-    return 0;
-  }
-
-  @Override
-  public void writeToParcel(Parcel dest, int flags) {
-    dest.writeString(this.description);
-    dest.writeString(this.name);
+  public static View inflate(ViewGroup parent, @LayoutRes int layoutId) {
+    return LayoutInflater.from(parent.getContext()).inflate(layoutId, parent, false);
   }
 }
