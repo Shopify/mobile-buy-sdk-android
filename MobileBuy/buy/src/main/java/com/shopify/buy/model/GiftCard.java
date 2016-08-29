@@ -31,21 +31,24 @@ import com.google.gson.annotations.SerializedName;
  */
 public class GiftCard extends ShopifyObject {
 
+    protected String code;
+
+    protected Checkout checkout;
+
+    @SerializedName("last_characters")
+    protected String lastCharacters;
+
+    protected String balance;
+
+    @SerializedName("amount_used")
+    protected String amountUsed;
+
+    protected GiftCard() {
+    }
+
     public GiftCard(String code) {
         this.code = code;
     }
-
-    private String code;
-
-    private Checkout checkout;
-
-    @SerializedName("last_characters")
-    private String lastCharacters;
-
-    private String balance;
-
-    @SerializedName("amount_used")
-    private String amountUsed;
 
     /**
      * @return The unique identifier of this gift card.
