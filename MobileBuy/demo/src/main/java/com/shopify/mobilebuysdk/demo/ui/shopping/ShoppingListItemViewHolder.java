@@ -33,6 +33,7 @@ import com.shopify.mobilebuysdk.demo.util.LayoutInflaterUtils;
 
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import butterknife.BindView;
@@ -42,6 +43,8 @@ import butterknife.ButterKnife;
  * Created by henrytao on 8/27/16.
  */
 public class ShoppingListItemViewHolder extends BaseViewHolder {
+
+  @BindView(R.id.btn_add_to_cart) Button vBtnAddToCart;
 
   @BindView(R.id.container) View vContainer;
 
@@ -53,12 +56,18 @@ public class ShoppingListItemViewHolder extends BaseViewHolder {
 
   private Product mProduct;
 
-  public ShoppingListItemViewHolder(ViewGroup parent, OnItemClickListener onItemClickListener) {
+  public ShoppingListItemViewHolder(ViewGroup parent, OnItemClickListener onItemClickListener,
+      OnAddToCartClickListener onAddToCartClickListener) {
     super(LayoutInflaterUtils.inflate(parent, R.layout.item_shopping_list));
     ButterKnife.bind(this, itemView);
     vContainer.setOnClickListener(view -> {
       if (onItemClickListener != null && mProduct != null) {
         onItemClickListener.onItemClick(view, mProduct);
+      }
+    });
+    vBtnAddToCart.setOnClickListener(view -> {
+      if (onAddToCartClickListener != null && mProduct != null) {
+        onAddToCartClickListener.onAddToCartClick(view, mProduct);
       }
     });
   }
@@ -68,6 +77,11 @@ public class ShoppingListItemViewHolder extends BaseViewHolder {
     vThumbnail.setImageURI(product.getFirstImageUrl());
     vTitle.setText(product.getTitle());
     vPrice.setText(itemView.getContext().getString(R.string.currency_format, product.getMinimumPrice()));
+  }
+
+  public interface OnAddToCartClickListener {
+
+    void onAddToCartClick(View view, Product product);
   }
 
   public interface OnItemClickListener {

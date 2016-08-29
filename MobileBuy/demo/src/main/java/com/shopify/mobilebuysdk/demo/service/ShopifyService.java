@@ -27,7 +27,9 @@ package com.shopify.mobilebuysdk.demo.service;
 
 import com.shopify.buy.dataprovider.BuyClient;
 import com.shopify.buy.dataprovider.BuyClientBuilder;
+import com.shopify.buy.model.Cart;
 import com.shopify.buy.model.Product;
+import com.shopify.buy.model.ProductVariant;
 import com.shopify.buy.model.Shop;
 import com.shopify.mobilebuysdk.demo.App;
 import com.shopify.mobilebuysdk.demo.BuildConfig;
@@ -38,6 +40,7 @@ import android.app.Application;
 import java.util.List;
 
 import rx.Observable;
+import rx.subjects.BehaviorSubject;
 
 /**
  * Created by henrytao on 8/27/16.
@@ -46,6 +49,7 @@ public class ShopifyService {
 
   private static ShopifyService sInstance;
 
+  // TODO: consider using DI or not?
   public static ShopifyService getInstance() {
     if (sInstance == null) {
       synchronized (ShopifyService.class) {
@@ -59,6 +63,10 @@ public class ShopifyService {
 
   private final BuyClient mBuyClient;
 
+  private final Cart mCart;
+
+  private final BehaviorSubject<Integer> mCartQuantitySubject;
+
   private ShopifyService(Application application) {
     if (StringUtils.isEmpty(BuildConfig.SHOP_DOMAIN) ||
         StringUtils.isEmpty(BuildConfig.API_KEY) ||
@@ -71,6 +79,14 @@ public class ShopifyService {
         .appId(BuildConfig.APP_ID)
         .applicationName(application.getPackageName())
         .build();
+
+    mCart = new Cart();
+    mCartQuantitySubject = BehaviorSubject.create(0);
+  }
+
+  public void addToCart(ProductVariant productVariant) {
+    mCart.addVariant(productVariant);
+    mCartQuantitySubject.onNext(mCart.getTotalQuantity());
   }
 
   public Observable<List<Product>> getProducts() {
@@ -79,5 +95,9 @@ public class ShopifyService {
 
   public Observable<Shop> getShop() {
     return mBuyClient.getShop();
+  }
+
+  public Observable<Integer> observeCartQuantity() {
+    return mCartQuantitySubject;
   }
 }

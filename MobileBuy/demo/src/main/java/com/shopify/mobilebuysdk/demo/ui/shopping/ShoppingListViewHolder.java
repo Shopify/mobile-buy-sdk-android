@@ -59,7 +59,8 @@ import butterknife.ButterKnife;
 /**
  * Created by henrytao on 8/27/16.
  */
-public class ShoppingListViewHolder extends BaseRecyclerPagerViewHolder implements ShoppingListItemViewHolder.OnItemClickListener {
+public class ShoppingListViewHolder extends BaseRecyclerPagerViewHolder implements ShoppingListItemViewHolder.OnItemClickListener,
+    ShoppingListItemViewHolder.OnAddToCartClickListener {
 
   private final Adapter mAdapter;
 
@@ -78,11 +79,16 @@ public class ShoppingListViewHolder extends BaseRecyclerPagerViewHolder implemen
     mShopifyService = ShopifyService.getInstance();
     ButterKnife.bind(this, itemView);
 
-    mAdapter = new Adapter(this);
+    mAdapter = new Adapter(this, this);
     mEndlessWrapperAdapter = new RecyclerViewEndlessWrapperAdapter(mAdapter, null);
     mLoadingEmptyErrorWrapperAdapter = new RecyclerViewLoadingEmptyErrorWrapperAdapter(mEndlessWrapperAdapter, this::onLoadNewData);
     vRecyclerView.setAdapter(mLoadingEmptyErrorWrapperAdapter);
     vRecyclerView.setLayoutManager(new LinearLayoutManager(itemView.getContext()));
+  }
+
+  @Override
+  public void onAddToCartClick(View view, Product product) {
+    mShopifyService.addToCart(product.getVariants().get(0));
   }
 
   @Override
@@ -134,12 +140,16 @@ public class ShoppingListViewHolder extends BaseRecyclerPagerViewHolder implemen
 
   private static class Adapter extends RecyclerView.Adapter<ShoppingListItemViewHolder> {
 
+    private final ShoppingListItemViewHolder.OnAddToCartClickListener mOnAddToCartClickListener;
+
     private final ShoppingListItemViewHolder.OnItemClickListener mOnItemClickListener;
 
     private List<Product> mData = new ArrayList<>();
 
-    public Adapter(ShoppingListItemViewHolder.OnItemClickListener onItemClickListener) {
+    public Adapter(ShoppingListItemViewHolder.OnItemClickListener onItemClickListener,
+        ShoppingListItemViewHolder.OnAddToCartClickListener onAddToCartClickListener) {
       mOnItemClickListener = onItemClickListener;
+      mOnAddToCartClickListener = onAddToCartClickListener;
     }
 
     @Override
@@ -154,7 +164,7 @@ public class ShoppingListViewHolder extends BaseRecyclerPagerViewHolder implemen
 
     @Override
     public ShoppingListItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-      return new ShoppingListItemViewHolder(parent, mOnItemClickListener);
+      return new ShoppingListItemViewHolder(parent, mOnItemClickListener, mOnAddToCartClickListener);
     }
 
     public void add(List<Product> products) {

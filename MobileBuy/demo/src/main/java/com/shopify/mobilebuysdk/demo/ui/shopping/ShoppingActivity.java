@@ -30,7 +30,6 @@ import com.facebook.drawee.view.DraweeTransition;
 import com.shopify.buy.model.Product;
 import com.shopify.mobilebuysdk.demo.R;
 import com.shopify.mobilebuysdk.demo.config.Constants;
-import com.shopify.mobilebuysdk.demo.service.ShopifyService;
 import com.shopify.mobilebuysdk.demo.ui.base.BaseHomeActivity;
 import com.shopify.mobilebuysdk.demo.ui.base.BaseSubscription;
 import com.shopify.mobilebuysdk.demo.widget.BottomBar;
@@ -62,8 +61,6 @@ import me.henrytao.recyclerpageradapter.RecyclerPagerAdapter;
  */
 public class ShoppingActivity extends BaseHomeActivity {
 
-  private final ShopifyService mShopifyService;
-
   @BindView(R.id.app_bar_layout) AppBarLayout vAppBarLayout;
 
   @BindView(R.id.bottom_bar) BottomBar vBottomBar;
@@ -75,10 +72,6 @@ public class ShoppingActivity extends BaseHomeActivity {
   @BindView(R.id.view_pager) ViewPager vViewPager;
 
   private ViewPagerAdapter mAdapter;
-
-  public ShoppingActivity() {
-    mShopifyService = ShopifyService.getInstance();
-  }
 
   @Override
   public void onSetContentView(@Nullable Bundle savedInstanceState) {
