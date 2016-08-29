@@ -97,6 +97,7 @@
   </string>
 
   <string name="currency_format">$%1$s</string>
+  <string name="decimal_format">#,###,##0.00</string>
 
   <string name="text_shopping">@string/app_name</string>
   <string name="text_cart">Cart</string>
@@ -105,5 +106,5 @@
   <string name="text_store_is_empty">Store is empty</string>
   <string name="text_loading_store_items">Loading store items</string>
   <string name="text_checkout">Checkout</string>
-  <string name="text_total">Total</string>
+  <string name="text_subtotal">Subtotal</string>
 </resources>

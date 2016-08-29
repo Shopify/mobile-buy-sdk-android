@@ -41,6 +41,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import java.text.DecimalFormat;
@@ -59,6 +60,8 @@ public class CartActivity extends BaseHomeActivity implements CartItemViewHolder
     CartItemViewHolder.OnCartItemRemoveClickListener {
 
   @BindView(R.id.bottom_bar) BottomBar vBottomBar;
+
+  @BindView(R.id.btn_checkout) Button vBtnCheckout;
 
   @BindView(R.id.recycler_view) RecyclerView vRecyclerView;
 
@@ -113,7 +116,7 @@ public class CartActivity extends BaseHomeActivity implements CartItemViewHolder
             .observeCartSubtotal()
             .compose(Transformer.applyComputationScheduler())
             .subscribe(subtotal -> {
-              DecimalFormat format = new DecimalFormat("#,###,##0.00");
+              DecimalFormat format = new DecimalFormat(getString(R.string.decimal_format));
               vSubtotal.setText(getString(R.string.currency_format, format.format(subtotal)));
             }, Throwable::printStackTrace)
     );

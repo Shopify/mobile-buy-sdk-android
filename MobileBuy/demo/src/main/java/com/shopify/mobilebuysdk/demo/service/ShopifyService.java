@@ -84,7 +84,6 @@ public class ShopifyService {
         .appId(BuildConfig.APP_ID)
         .applicationName(application.getPackageName())
         .build();
-
     mCart = new Cart();
   }
 
