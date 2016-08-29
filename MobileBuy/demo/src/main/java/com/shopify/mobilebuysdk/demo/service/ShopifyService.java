@@ -41,6 +41,7 @@ import java.util.List;
 
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
+import rx.subjects.PublishSubject;
 
 /**
  * Created by henrytao on 8/27/16.
@@ -65,7 +66,11 @@ public class ShopifyService {
 
   private final Cart mCart;
 
-  private final BehaviorSubject<Integer> mCartQuantitySubject;
+  private final PublishSubject<Void> mCartChangeSubject = PublishSubject.create();
+
+  private final BehaviorSubject<Integer> mCartQuantitySubject = BehaviorSubject.create(0);
+
+  private final BehaviorSubject<Double> mCartSubtotalSubject = BehaviorSubject.create(0d);
 
   private ShopifyService(Application application) {
     if (StringUtils.isEmpty(BuildConfig.SHOP_DOMAIN) ||
@@ -81,12 +86,17 @@ public class ShopifyService {
         .build();
 
     mCart = new Cart();
-    mCartQuantitySubject = BehaviorSubject.create(0);
   }
 
   public void addToCart(ProductVariant productVariant) {
     mCart.addVariant(productVariant);
     mCartQuantitySubject.onNext(mCart.getTotalQuantity());
+    mCartChangeSubject.onNext(null);
+    mCartSubtotalSubject.onNext(mCart.getSubtotal());
+  }
+
+  public Cart getCart() {
+    return mCart;
   }
 
   public Observable<List<Product>> getProducts() {
@@ -97,7 +107,22 @@ public class ShopifyService {
     return mBuyClient.getShop();
   }
 
+  public Observable<Void> observeCartChange() {
+    return mCartChangeSubject;
+  }
+
   public Observable<Integer> observeCartQuantity() {
     return mCartQuantitySubject;
+  }
+
+  public Observable<Double> observeCartSubtotal() {
+    return mCartSubtotalSubject;
+  }
+
+  public void removeFromCart(ProductVariant productVariant) {
+    mCart.decrementVariant(productVariant);
+    mCartQuantitySubject.onNext(mCart.getTotalQuantity());
+    mCartChangeSubject.onNext(null);
+    mCartSubtotalSubject.onNext(mCart.getSubtotal());
   }
 }

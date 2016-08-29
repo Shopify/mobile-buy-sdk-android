@@ -34,28 +34,82 @@
     android:id="@+id/toolbar"
     style="@style/MdToolbar" />
 
-  <FrameLayout
+  <RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="0dp"
     android:layout_weight="1">
 
+    <android.support.v7.widget.CardView
+      android:id="@+id/summary_container"
+      android:layout_alignParentBottom="true"
+      android:layout_marginBottom="@dimen/mdLayoutSpacingInverse_xs"
+      style="@style/MdCardView.Card.Full">
+
+      <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/mdLayoutSpacing">
+
+        <Button
+          android:id="@+id/btn_checkout"
+          android:layout_alignParentEnd="true"
+          android:layout_alignParentRight="true"
+          android:layout_centerVertical="true"
+          android:layout_marginEnd="@dimen/mdLayoutSpacingInverse_xs"
+          android:layout_marginRight="@dimen/mdLayoutSpacingInverse_xs"
+          android:text="@string/text_checkout"
+          style="@style/MdButton.Colored" />
+
+        <TextView
+          android:id="@+id/title"
+          android:layout_alignParentLeft="true"
+          android:layout_alignParentStart="true"
+          android:layout_toLeftOf="@id/btn_checkout"
+          android:layout_toStartOf="@id/btn_checkout"
+          android:text="@string/text_total"
+          android:textColor="?attr/mdTextColorPrimary_backgroundPalette"
+          style="@style/MdText.Subhead1.SingleLine" />
+
+        <TextView
+          android:id="@+id/subtotal"
+          android:layout_alignParentLeft="true"
+          android:layout_alignParentStart="true"
+          android:layout_below="@id/title"
+          android:layout_toLeftOf="@id/btn_checkout"
+          android:layout_toStartOf="@id/btn_checkout"
+          android:textColor="?attr/mdTextColorPrimary_backgroundPalette"
+          tools:text="$1.485.09"
+          style="@style/MdText.Title" />
+      </RelativeLayout>
+    </android.support.v7.widget.CardView>
+
     <android.support.v7.widget.RecyclerView
-      android:id="@+id/list"
+      android:id="@+id/recycler_view"
       android:layout_width="match_parent"
-      android:layout_height="match_parent" />
+      android:layout_height="match_parent"
+      android:layout_above="@id/summary_container"
+      android:clipToPadding="false"
+      android:paddingBottom="@dimen/mdListItemSpacing"
+      android:paddingLeft="@dimen/mdLayoutSpacing_sm"
+      android:paddingRight="@dimen/mdLayoutSpacing_sm"
+      android:paddingTop="@dimen/mdListItemSpacing" />
 
     <View
       android:layout_width="match_parent"
       android:layout_height="@dimen/backgroundGradientSize"
-      android:layout_gravity="top"
-      android:background="@drawable/background_gradient_top_bottom" />
+      android:layout_alignParentTop="true"
+      android:background="@drawable/background_gradient_top_bottom"
+      android:elevation="16dp"
+      tools:targetApi="lollipop" />
 
     <View
       android:layout_width="match_parent"
       android:layout_height="@dimen/backgroundGradientSize"
-      android:layout_gravity="bottom"
-      android:background="@drawable/background_gradient_bottom_top" />
-  </FrameLayout>
+      android:layout_alignParentBottom="true"
+      android:background="@drawable/background_gradient_bottom_top"
+      android:elevation="16dp"
+      tools:targetApi="lollipop" />
+  </RelativeLayout>
 
   <com.shopify.mobilebuysdk.demo.widget.BottomBar
     android:id="@+id/bottom_bar"

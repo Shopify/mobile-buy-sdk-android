@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<!--
   ~ The MIT License (MIT)
   ~
   ~ Copyright (c) 2016 Shopify Inc.
@@ -23,10 +23,14 @@
   ~
   -->
 
-<android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
-  android:id="@+id/recycler_view"
-  android:layout_width="match_parent"
-  android:layout_height="match_parent"
-  android:clipToPadding="false"
-  android:paddingBottom="@dimen/mdListItemSpacing"
-  android:paddingTop="@dimen/mdListItemSpacing" />
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+  android:autoMirrored="true"
+  android:height="24dp"
+  android:tint="?attr/mdIconColor_backgroundPalette"
+  android:viewportHeight="24.0"
+  android:viewportWidth="24.0"
+  android:width="24dp">
+  <path
+    android:fillColor="#FF000000"
+    android:pathData="M12,2C6.48,2 2,6.48 2,12s4.48,10 10,10 10,-4.48 10,-10S17.52,2 12,2zM17,13L7,13v-2h10v2z" />
+</vector>

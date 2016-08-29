@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ The MIT License (MIT)
+  ~
+  ~ Copyright (c) 2016 Shopify Inc.
+  ~
+  ~ Permission is hereby granted, free of charge, to any person obtaining a copy
+  ~ of this software and associated documentation files (the "Software"), to deal
+  ~ in the Software without restriction, including without limitation the rights
+  ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  ~ copies of the Software, and to permit persons to whom the Software is
+  ~ furnished to do so, subject to the following conditions:
+  ~
+  ~ The above copyright notice and this permission notice shall be included in
+  ~ all copies or substantial portions of the Software.
+  ~
+  ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+  ~ THE SOFTWARE.
+  ~
+  -->
+
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  xmlns:fresco="http://schemas.android.com/apk/res-auto"
+  style="@style/MdCardView.Card">
+
+  <RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="@dimen/mdLayoutSpacing_sm"
+    android:paddingTop="@dimen/mdLayoutSpacing_sm">
+
+    <com.facebook.drawee.view.SimpleDraweeView
+      android:id="@+id/thumbnail"
+      android:layout_width="128dp"
+      android:layout_height="wrap_content"
+      android:layout_centerVertical="true"
+      fresco:actualImageScaleType="fitCenter"
+      fresco:viewAspectRatio="@dimen/thumbnail_ratio" />
+
+    <LinearLayout
+      android:id="@+id/add_remove_container"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_alignParentEnd="true"
+      android:layout_alignParentRight="true"
+      android:layout_centerVertical="true"
+      android:orientation="horizontal">
+
+      <ImageView
+        android:id="@+id/btn_remove"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        app:srcCompat="@drawable/ic_remove_circle_background"
+        style="@style/MdIcon" />
+
+      <TextView
+        android:id="@+id/quantity"
+        android:layout_gravity="center"
+        tools:text="1"
+        style="@style/MdText.Body1.SingleLine" />
+
+      <ImageView
+        android:id="@+id/btn_add"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        app:srcCompat="@drawable/ic_add_circle_background"
+        style="@style/MdIcon" />
+    </LinearLayout>
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_centerVertical="true"
+      android:layout_toEndOf="@id/thumbnail"
+      android:layout_toLeftOf="@id/add_remove_container"
+      android:layout_toRightOf="@id/thumbnail"
+      android:layout_toStartOf="@id/add_remove_container"
+      android:orientation="vertical">
+
+      <TextView
+        android:id="@+id/title"
+        android:ellipsize="end"
+        android:lineSpacingExtra="0dp"
+        android:maxLines="2"
+        android:textColor="?attr/mdTextColorPrimary_backgroundPalette"
+        tools:text="Micke"
+        style="@style/MdText.Subhead1" />
+
+      <TextView
+        android:id="@+id/price"
+        android:textColor="?attr/mdTextColorSecondary_backgroundPalette"
+        tools:text="$144"
+        style="@style/MdText.Body1.SingleLine" />
+    </LinearLayout>
+  </RelativeLayout>
+</android.support.v7.widget.CardView>

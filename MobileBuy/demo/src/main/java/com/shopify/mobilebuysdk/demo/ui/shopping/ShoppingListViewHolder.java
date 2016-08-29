@@ -70,7 +70,7 @@ public class ShoppingListViewHolder extends BaseRecyclerPagerViewHolder implemen
 
   private final ShopifyService mShopifyService;
 
-  @BindView(R.id.list) RecyclerView vRecyclerView;
+  @BindView(R.id.recycler_view) RecyclerView vRecyclerView;
 
   private String mTag;
 

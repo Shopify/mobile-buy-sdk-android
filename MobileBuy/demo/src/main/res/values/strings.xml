@@ -104,4 +104,6 @@
   <string name="text_add_to_cart">Add to Cart</string>
   <string name="text_store_is_empty">Store is empty</string>
   <string name="text_loading_store_items">Loading store items</string>
+  <string name="text_checkout">Checkout</string>
+  <string name="text_total">Total</string>
 </resources>
