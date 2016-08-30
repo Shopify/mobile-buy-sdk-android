@@ -66,7 +66,9 @@
           android:layout_alignParentStart="true"
           android:layout_toLeftOf="@id/btn_checkout"
           android:layout_toStartOf="@id/btn_checkout"
+          android:gravity="start"
           android:text="@string/text_subtotal"
+          android:textAlignment="viewStart"
           android:textColor="?attr/mdTextColorPrimary_backgroundPalette"
           style="@style/MdText.Subhead1.SingleLine" />
 
@@ -77,6 +79,8 @@
           android:layout_below="@id/title"
           android:layout_toLeftOf="@id/btn_checkout"
           android:layout_toStartOf="@id/btn_checkout"
+          android:gravity="start"
+          android:textAlignment="viewStart"
           android:textColor="?attr/mdTextColorPrimary_backgroundPalette"
           tools:text="$1.485.09"
           style="@style/MdText.Title" />
