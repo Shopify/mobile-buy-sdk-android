@@ -107,4 +107,7 @@
   <string name="text_loading_store_items">Loading store items</string>
   <string name="text_checkout">Checkout</string>
   <string name="text_subtotal">Subtotal</string>
+  <string name="text_loading">Loading</string>
+  <string name="text_empty">Empty</string>
+  <string name="text_cart_is_empty">Cart is empty</string>
 </resources>

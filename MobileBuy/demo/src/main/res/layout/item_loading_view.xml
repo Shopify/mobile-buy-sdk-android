@@ -36,8 +36,9 @@
     style="@style/Widget.AppCompat.ProgressBar" />
 
   <TextView
+    android:id="@+id/title"
     android:layout_marginTop="@dimen/mdLayoutSpacing_sm"
-    android:text="@string/text_loading_store_items"
+    android:text="@string/text_loading"
     android:textColor="?attr/mdTextColorSecondary_backgroundPalette"
     style="@style/MdText.Body1" />
 </LinearLayout>

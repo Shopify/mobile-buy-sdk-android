@@ -23,39 +23,9 @@
   ~
   -->
 
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-  package="com.shopify.mobilebuysdk.demo">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:orientation="vertical">
 
-  <uses-permission android:name="android.permission.INTERNET" />
-
-  <application
-    android:allowBackup="true"
-    android:icon="@mipmap/ic_launcher"
-    android:label="@string/app_name"
-    android:name=".App"
-    android:supportsRtl="true"
-    android:theme="@style/AppTheme">
-
-    <activity android:name=".ui.MainActivity">
-      <intent-filter>
-        <action android:name="android.intent.action.MAIN" />
-
-        <category android:name="android.intent.category.LAUNCHER" />
-      </intent-filter>
-    </activity>
-
-    <activity
-      android:label="@string/text_shopping"
-      android:name=".ui.shopping.ShoppingActivity" />
-
-    <activity
-      android:label="@string/text_cart"
-      android:name=".ui.cart.CartActivity" />
-
-    <activity android:name=".ui.product.ProductActivity" />
-
-    <activity
-      android:label="@string/text_checkout"
-      android:name=".ui.checkout.CheckoutActivity" />
-  </application>
-</manifest>
+</LinearLayout>

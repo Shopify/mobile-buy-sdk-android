@@ -39,6 +39,7 @@ import com.shopify.mobilebuysdk.demo.util.rx.Transformer;
 import com.shopify.mobilebuysdk.demo.util.rx.UnsubscribeLifeCycle;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.support.annotation.NonNull;
@@ -79,9 +80,13 @@ public class ShoppingListViewHolder extends BaseRecyclerPagerViewHolder implemen
     mShopifyService = ShopifyService.getInstance();
     ButterKnife.bind(this, itemView);
 
+    Context context = itemView.getContext();
+
     mAdapter = new Adapter(this, this);
     mEndlessWrapperAdapter = new RecyclerViewEndlessWrapperAdapter(mAdapter, null);
     mLoadingEmptyErrorWrapperAdapter = new RecyclerViewLoadingEmptyErrorWrapperAdapter(mEndlessWrapperAdapter, this::onLoadNewData);
+    mLoadingEmptyErrorWrapperAdapter.setLoadingText(context.getString(R.string.text_loading_store_items));
+    mLoadingEmptyErrorWrapperAdapter.setEmptyText(context.getString(R.string.text_store_is_empty));
     vRecyclerView.setAdapter(mLoadingEmptyErrorWrapperAdapter);
     vRecyclerView.setLayoutManager(new LinearLayoutManager(itemView.getContext()));
   }

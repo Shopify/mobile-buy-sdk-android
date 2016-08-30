@@ -30,6 +30,7 @@ import com.shopify.buy.model.ProductVariant;
 import com.shopify.mobilebuysdk.demo.R;
 import com.shopify.mobilebuysdk.demo.data.CartItemInfo;
 import com.shopify.mobilebuysdk.demo.ui.base.BaseHomeActivity;
+import com.shopify.mobilebuysdk.demo.ui.base.RecyclerViewLoadingEmptyErrorWrapperAdapter;
 import com.shopify.mobilebuysdk.demo.util.rx.Transformer;
 import com.shopify.mobilebuysdk.demo.util.rx.UnsubscribeLifeCycle;
 import com.shopify.mobilebuysdk.demo.widget.BottomBar;
@@ -71,6 +72,8 @@ public class CartActivity extends BaseHomeActivity implements CartItemViewHolder
 
   private Adapter mAdapter;
 
+  private RecyclerViewLoadingEmptyErrorWrapperAdapter mLoadingEmptyErrorWrapperAdapter;
+
   @Override
   public void onCartItemAddClick(ProductVariant productVariant) {
     mShopifyService.addToCart(productVariant);
@@ -104,8 +107,15 @@ public class CartActivity extends BaseHomeActivity implements CartItemViewHolder
     setSupportActionBar(vToolbar);
 
     mAdapter = new Adapter(mShopifyService.getCart().getLineItems(), this, this);
-    vRecyclerView.setAdapter(mAdapter);
+    mLoadingEmptyErrorWrapperAdapter = new RecyclerViewLoadingEmptyErrorWrapperAdapter(mAdapter);
+    mLoadingEmptyErrorWrapperAdapter.setEmptyText(getString(R.string.text_cart_is_empty));
+    vRecyclerView.setAdapter(mLoadingEmptyErrorWrapperAdapter);
     vRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+
+    if (mAdapter.getItemCount() == 0) {
+      mLoadingEmptyErrorWrapperAdapter.showEmptyView();
+      vBtnCheckout.setEnabled(false);
+    }
 
     manageSubscription(UnsubscribeLifeCycle.DESTROY,
         mShopifyService

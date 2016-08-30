@@ -27,10 +27,12 @@ package com.shopify.mobilebuysdk.demo.ui.base;
 
 import com.shopify.mobilebuysdk.demo.R;
 
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import me.henrytao.recyclerview.RecyclerViewAdapter;
 import me.henrytao.recyclerview.config.Constants;
@@ -51,7 +53,17 @@ public class RecyclerViewLoadingEmptyErrorWrapperAdapter extends RecyclerViewAda
 
   private final Action0 mOnRetryAction;
 
-  public RecyclerViewLoadingEmptyErrorWrapperAdapter(RecyclerView.Adapter baseAdapter, Action0 onRetryAction) {
+  private CharSequence mEmptyText;
+
+  private CharSequence mErrorText;
+
+  private CharSequence mLoadingText;
+
+  public RecyclerViewLoadingEmptyErrorWrapperAdapter(RecyclerView.Adapter baseAdapter) {
+    this(baseAdapter, null);
+  }
+
+  public RecyclerViewLoadingEmptyErrorWrapperAdapter(RecyclerView.Adapter baseAdapter, @Nullable Action0 onRetryAction) {
     super(3, 0, baseAdapter);
     mOnRetryAction = onRetryAction;
     hide();
@@ -59,12 +71,31 @@ public class RecyclerViewLoadingEmptyErrorWrapperAdapter extends RecyclerViewAda
 
   @Override
   public void onBindFooterViewHolder(RecyclerView.ViewHolder holder, int index) {
-
+    // do nothing
   }
 
   @Override
   public void onBindHeaderViewHolder(RecyclerView.ViewHolder holder, int index) {
-
+    switch (index) {
+      case HEADER_LOADING:
+        TextView loadingTitle = (TextView) holder.itemView.findViewById(R.id.title);
+        if (mLoadingText != null && loadingTitle != null) {
+          loadingTitle.setText(mLoadingText);
+        }
+        break;
+      case HEADER_EMPTY:
+        TextView emptyTitle = (TextView) holder.itemView.findViewById(R.id.title);
+        if (mEmptyText != null && emptyTitle != null) {
+          emptyTitle.setText(mEmptyText);
+        }
+        break;
+      case HEADER_ERROR:
+        TextView errorTitle = (TextView) holder.itemView.findViewById(R.id.title);
+        if (mErrorText != null && errorTitle != null) {
+          errorTitle.setText(mErrorText);
+        }
+        break;
+    }
   }
 
   @Override
@@ -96,6 +127,21 @@ public class RecyclerViewLoadingEmptyErrorWrapperAdapter extends RecyclerViewAda
     setVisibility(HEADER_LOADING, View.GONE, Constants.Type.HEADER);
     setVisibility(HEADER_EMPTY, View.GONE, Constants.Type.HEADER);
     setVisibility(HEADER_ERROR, View.GONE, Constants.Type.HEADER);
+  }
+
+  public void setEmptyText(CharSequence emptyText) {
+    mEmptyText = emptyText;
+    notifyHeaderChanged(HEADER_LOADING);
+  }
+
+  public void setErrorText(CharSequence errorText) {
+    mErrorText = errorText;
+    notifyHeaderChanged(HEADER_ERROR);
+  }
+
+  public void setLoadingText(CharSequence loadingText) {
+    mLoadingText = loadingText;
+    notifyHeaderChanged(HEADER_LOADING);
   }
 
   public void showEmptyView() {
