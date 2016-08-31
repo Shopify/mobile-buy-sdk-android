@@ -35,7 +35,7 @@ import com.shopify.mobilebuysdk.demo.service.ShopifyService;
 import com.shopify.mobilebuysdk.demo.ui.base.BaseActivity;
 
 import android.annotation.TargetApi;
-import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -57,8 +57,8 @@ import static android.text.Html.FROM_HTML_MODE_LEGACY;
  */
 public class ProductActivity extends BaseActivity {
 
-  public static Intent newIntent(Activity activity, Product product) {
-    Intent intent = new Intent(activity, ProductActivity.class);
+  public static Intent newIntent(Context context, Product product) {
+    Intent intent = new Intent(context, ProductActivity.class);
     Bundle bundle = new Bundle();
     bundle.putString(Constants.Extra.PRODUCT, product.toJsonString());
     intent.putExtras(bundle);

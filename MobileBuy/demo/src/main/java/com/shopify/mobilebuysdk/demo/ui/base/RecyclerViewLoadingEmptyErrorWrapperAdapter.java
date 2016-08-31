@@ -42,7 +42,6 @@ import rx.functions.Action0;
 /**
  * Created by henrytao on 8/28/16.
  */
-
 public class RecyclerViewLoadingEmptyErrorWrapperAdapter extends RecyclerViewAdapter {
 
   private static final int HEADER_EMPTY = 1;

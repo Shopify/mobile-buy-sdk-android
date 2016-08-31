@@ -31,6 +31,8 @@ import com.shopify.mobilebuysdk.demo.R;
 import com.shopify.mobilebuysdk.demo.data.CartItemInfo;
 import com.shopify.mobilebuysdk.demo.ui.base.BaseHomeActivity;
 import com.shopify.mobilebuysdk.demo.ui.base.RecyclerViewLoadingEmptyErrorWrapperAdapter;
+import com.shopify.mobilebuysdk.demo.ui.checkout.CheckoutActivity;
+import com.shopify.mobilebuysdk.demo.util.NavigationUtils;
 import com.shopify.mobilebuysdk.demo.util.rx.Transformer;
 import com.shopify.mobilebuysdk.demo.util.rx.UnsubscribeLifeCycle;
 import com.shopify.mobilebuysdk.demo.widget.BottomBar;
@@ -116,6 +118,8 @@ public class CartActivity extends BaseHomeActivity implements CartItemViewHolder
       mLoadingEmptyErrorWrapperAdapter.showEmptyView();
       vBtnCheckout.setEnabled(false);
     }
+
+    vBtnCheckout.setOnClickListener(view -> NavigationUtils.startActivity(this, CheckoutActivity.newIntent(this)));
 
     manageSubscription(UnsubscribeLifeCycle.DESTROY,
         mShopifyService

@@ -28,20 +28,35 @@ package com.shopify.mobilebuysdk.demo.ui.checkout;
 import com.shopify.mobilebuysdk.demo.R;
 import com.shopify.mobilebuysdk.demo.ui.base.BaseActivity;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * Created by henrytao on 8/30/16.
  */
 public class CheckoutActivity extends BaseActivity {
 
+  public static Intent newIntent(Context context) {
+    Intent intent = new Intent(context, CheckoutActivity.class);
+    return intent;
+  }
+
+  @BindView(R.id.toolbar) Toolbar vToolbar;
+
   @Override
   public void onSetContentView(Bundle savedInstanceState) {
     setContentView(R.layout.activity_checkout);
+    ButterKnife.bind(this);
   }
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    setSupportActionBar(vToolbar);
   }
 }
