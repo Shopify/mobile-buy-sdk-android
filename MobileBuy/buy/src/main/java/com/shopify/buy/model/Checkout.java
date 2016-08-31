@@ -611,6 +611,14 @@ public class Checkout extends ShopifyObject {
         return quantity;
     }
 
+    public String getWebReturnToUrl() {
+        return webReturnToUrl;
+    }
+
+    public String getWebReturnToLabel() {
+        return webReturnToLabel;
+    }
+
     /**
      * @param json The json input.
      * @return A checkout object created using the values in the JSON string.
