@@ -98,6 +98,6 @@
     <item name="mdColorDividerInverse_accentPalette_light">@color/mdColorDivider_dark</item>
 
     <!-- override them attribute -->
-    <item name="android:windowLightStatusBar" tools:ignore="NewApi">true</item>
+    <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
   </style>
 </resources>

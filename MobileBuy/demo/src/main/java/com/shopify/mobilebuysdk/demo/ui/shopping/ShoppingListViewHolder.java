@@ -39,6 +39,7 @@ import com.shopify.mobilebuysdk.demo.util.rx.Transformer;
 import com.shopify.mobilebuysdk.demo.util.rx.UnsubscribeLifeCycle;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.support.annotation.NonNull;
@@ -59,7 +60,8 @@ import butterknife.ButterKnife;
 /**
  * Created by henrytao on 8/27/16.
  */
-public class ShoppingListViewHolder extends BaseRecyclerPagerViewHolder implements ShoppingListItemViewHolder.OnItemClickListener {
+public class ShoppingListViewHolder extends BaseRecyclerPagerViewHolder implements ShoppingListItemViewHolder.OnItemClickListener,
+    ShoppingListItemViewHolder.OnAddToCartClickListener {
 
   private final Adapter mAdapter;
 
@@ -69,7 +71,7 @@ public class ShoppingListViewHolder extends BaseRecyclerPagerViewHolder implemen
 
   private final ShopifyService mShopifyService;
 
-  @BindView(R.id.list) RecyclerView vRecyclerView;
+  @BindView(R.id.recycler_view) RecyclerView vRecyclerView;
 
   private String mTag;
 
@@ -78,11 +80,20 @@ public class ShoppingListViewHolder extends BaseRecyclerPagerViewHolder implemen
     mShopifyService = ShopifyService.getInstance();
     ButterKnife.bind(this, itemView);
 
-    mAdapter = new Adapter(this);
+    Context context = itemView.getContext();
+
+    mAdapter = new Adapter(this, this);
     mEndlessWrapperAdapter = new RecyclerViewEndlessWrapperAdapter(mAdapter, null);
     mLoadingEmptyErrorWrapperAdapter = new RecyclerViewLoadingEmptyErrorWrapperAdapter(mEndlessWrapperAdapter, this::onLoadNewData);
+    mLoadingEmptyErrorWrapperAdapter.setLoadingText(context.getString(R.string.text_loading_store_items));
+    mLoadingEmptyErrorWrapperAdapter.setEmptyText(context.getString(R.string.text_store_is_empty));
     vRecyclerView.setAdapter(mLoadingEmptyErrorWrapperAdapter);
     vRecyclerView.setLayoutManager(new LinearLayoutManager(itemView.getContext()));
+  }
+
+  @Override
+  public void onAddToCartClick(View view, Product product) {
+    mShopifyService.addToCart(product.getVariants().get(0));
   }
 
   @Override
@@ -134,12 +145,16 @@ public class ShoppingListViewHolder extends BaseRecyclerPagerViewHolder implemen
 
   private static class Adapter extends RecyclerView.Adapter<ShoppingListItemViewHolder> {
 
+    private final ShoppingListItemViewHolder.OnAddToCartClickListener mOnAddToCartClickListener;
+
     private final ShoppingListItemViewHolder.OnItemClickListener mOnItemClickListener;
 
     private List<Product> mData = new ArrayList<>();
 
-    public Adapter(ShoppingListItemViewHolder.OnItemClickListener onItemClickListener) {
+    public Adapter(ShoppingListItemViewHolder.OnItemClickListener onItemClickListener,
+        ShoppingListItemViewHolder.OnAddToCartClickListener onAddToCartClickListener) {
       mOnItemClickListener = onItemClickListener;
+      mOnAddToCartClickListener = onAddToCartClickListener;
     }
 
     @Override
@@ -154,7 +169,7 @@ public class ShoppingListViewHolder extends BaseRecyclerPagerViewHolder implemen
 
     @Override
     public ShoppingListItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-      return new ShoppingListItemViewHolder(parent, mOnItemClickListener);
+      return new ShoppingListItemViewHolder(parent, mOnItemClickListener, mOnAddToCartClickListener);
     }
 
     public void add(List<Product> products) {

@@ -28,9 +28,10 @@
   android:layout_height="match_parent">
 
   <TextView
+    android:id="@+id/title"
     android:layout_gravity="center"
     android:layout_margin="@dimen/mdLayoutSpacing"
-    android:text="@string/text_store_is_empty"
+    android:text="@string/text_empty"
     android:textColor="?attr/mdTextColorSecondary_backgroundPalette"
     style="@style/MdText.Body1" />
 </FrameLayout>

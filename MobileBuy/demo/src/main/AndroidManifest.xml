@@ -53,5 +53,9 @@
       android:name=".ui.cart.CartActivity" />
 
     <activity android:name=".ui.product.ProductActivity" />
+
+    <activity
+      android:label="@string/text_checkout"
+      android:name=".ui.checkout.CheckoutActivity" />
   </application>
 </manifest>

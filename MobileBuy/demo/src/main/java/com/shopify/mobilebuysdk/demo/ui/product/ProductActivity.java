@@ -31,10 +31,11 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.shopify.buy.model.Product;
 import com.shopify.mobilebuysdk.demo.R;
 import com.shopify.mobilebuysdk.demo.config.Constants;
+import com.shopify.mobilebuysdk.demo.service.ShopifyService;
 import com.shopify.mobilebuysdk.demo.ui.base.BaseActivity;
 
 import android.annotation.TargetApi;
-import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -43,6 +44,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.transition.Explode;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.TextView;
 
 import butterknife.BindView;
@@ -55,13 +57,17 @@ import static android.text.Html.FROM_HTML_MODE_LEGACY;
  */
 public class ProductActivity extends BaseActivity {
 
-  public static Intent newIntent(Activity activity, Product product) {
-    Intent intent = new Intent(activity, ProductActivity.class);
+  public static Intent newIntent(Context context, Product product) {
+    Intent intent = new Intent(context, ProductActivity.class);
     Bundle bundle = new Bundle();
     bundle.putString(Constants.Extra.PRODUCT, product.toJsonString());
     intent.putExtras(bundle);
     return intent;
   }
+
+  private final ShopifyService mShopifyService;
+
+  @BindView(R.id.btn_add_to_cart) Button vBtnAddToCart;
 
   @BindView(R.id.description) TextView vDescription;
 
@@ -74,6 +80,10 @@ public class ProductActivity extends BaseActivity {
   @BindView(R.id.toolbar) Toolbar vToolbar;
 
   private Product mProduct;
+
+  public ProductActivity() {
+    mShopifyService = ShopifyService.getInstance();
+  }
 
   @Override
   public void onInitializedBundle(@NonNull Bundle savedInstanceState) {
@@ -103,6 +113,8 @@ public class ProductActivity extends BaseActivity {
     } else {
       vDescription.setText(Html.fromHtml(mProduct.getBodyHtml()));
     }
+
+    vBtnAddToCart.setOnClickListener(view -> mShopifyService.addToCart(mProduct.getVariants().get(0)));
   }
 
   @TargetApi(Build.VERSION_CODES.LOLLIPOP)

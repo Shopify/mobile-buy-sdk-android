@@ -38,6 +38,7 @@
     app:srcCompat="@drawable/ic_sync_problem_background" />
 
   <TextView
+    android:id="@+id/title"
     android:layout_marginTop="@dimen/mdLayoutSpacing_sm"
     android:text="@string/text_retry_message"
     android:textColor="?attr/mdTextColorSecondary_backgroundPalette"

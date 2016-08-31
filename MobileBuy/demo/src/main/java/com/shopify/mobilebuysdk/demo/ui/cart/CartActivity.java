@@ -25,14 +25,33 @@
 
 package com.shopify.mobilebuysdk.demo.ui.cart;
 
+import com.shopify.buy.model.CartLineItem;
+import com.shopify.buy.model.ProductVariant;
 import com.shopify.mobilebuysdk.demo.R;
+import com.shopify.mobilebuysdk.demo.data.CartItemInfo;
 import com.shopify.mobilebuysdk.demo.ui.base.BaseHomeActivity;
+import com.shopify.mobilebuysdk.demo.ui.base.RecyclerViewLoadingEmptyErrorWrapperAdapter;
+import com.shopify.mobilebuysdk.demo.ui.checkout.CheckoutActivity;
+import com.shopify.mobilebuysdk.demo.util.NavigationUtils;
+import com.shopify.mobilebuysdk.demo.util.rx.Transformer;
+import com.shopify.mobilebuysdk.demo.util.rx.UnsubscribeLifeCycle;
 import com.shopify.mobilebuysdk.demo.widget.BottomBar;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
+
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -40,11 +59,32 @@ import butterknife.ButterKnife;
 /**
  * Created by henrytao on 8/27/16.
  */
-public class CartActivity extends BaseHomeActivity {
+public class CartActivity extends BaseHomeActivity implements CartItemViewHolder.OnCartItemAddClickListener,
+    CartItemViewHolder.OnCartItemRemoveClickListener {
 
   @BindView(R.id.bottom_bar) BottomBar vBottomBar;
 
+  @BindView(R.id.btn_checkout) Button vBtnCheckout;
+
+  @BindView(R.id.recycler_view) RecyclerView vRecyclerView;
+
+  @BindView(R.id.subtotal) TextView vSubtotal;
+
   @BindView(R.id.toolbar) Toolbar vToolbar;
+
+  private Adapter mAdapter;
+
+  private RecyclerViewLoadingEmptyErrorWrapperAdapter mLoadingEmptyErrorWrapperAdapter;
+
+  @Override
+  public void onCartItemAddClick(ProductVariant productVariant) {
+    mShopifyService.addToCart(productVariant);
+  }
+
+  @Override
+  public void onCartItemRemoveClick(ProductVariant productVariant) {
+    mShopifyService.removeFromCart(productVariant);
+  }
 
   @Override
   public void onSetContentView(@Nullable Bundle savedInstanceState) {
@@ -67,5 +107,95 @@ public class CartActivity extends BaseHomeActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setSupportActionBar(vToolbar);
+
+    mAdapter = new Adapter(mShopifyService.getCart().getLineItems(), this, this);
+    mLoadingEmptyErrorWrapperAdapter = new RecyclerViewLoadingEmptyErrorWrapperAdapter(mAdapter);
+    mLoadingEmptyErrorWrapperAdapter.setEmptyText(getString(R.string.text_cart_is_empty));
+    vRecyclerView.setAdapter(mLoadingEmptyErrorWrapperAdapter);
+    vRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+
+    if (mAdapter.getItemCount() == 0) {
+      mLoadingEmptyErrorWrapperAdapter.showEmptyView();
+      vBtnCheckout.setEnabled(false);
+    }
+
+    vBtnCheckout.setOnClickListener(view -> NavigationUtils.startActivity(this, CheckoutActivity.newIntent(this)));
+
+    manageSubscription(UnsubscribeLifeCycle.DESTROY,
+        mShopifyService
+            .observeCartChange()
+            .compose(Transformer.applyComputationScheduler())
+            .subscribe(aVoid -> mAdapter.addOrSetToZero(mShopifyService.getCart().getLineItems()), Throwable::printStackTrace),
+        mShopifyService
+            .observeCartSubtotal()
+            .compose(Transformer.applyComputationScheduler())
+            .subscribe(subtotal -> {
+              DecimalFormat format = new DecimalFormat(getString(R.string.decimal_format));
+              vSubtotal.setText(getString(R.string.currency_format, format.format(subtotal)));
+            }, Throwable::printStackTrace)
+    );
+  }
+
+  private static class Adapter extends RecyclerView.Adapter<CartItemViewHolder> {
+
+    private final List<CartItemInfo> mData;
+
+    private final CartItemViewHolder.OnCartItemAddClickListener mOnCartItemAddClickListener;
+
+    private final CartItemViewHolder.OnCartItemRemoveClickListener mOnCartItemRemoveClickListener;
+
+    public Adapter(List<CartLineItem> cartLineItems, CartItemViewHolder.OnCartItemAddClickListener onCartItemAddClickListener,
+        CartItemViewHolder.OnCartItemRemoveClickListener onCartItemRemoveClickListener) {
+      mOnCartItemAddClickListener = onCartItemAddClickListener;
+      mOnCartItemRemoveClickListener = onCartItemRemoveClickListener;
+      mData = new ArrayList<>();
+      for (CartLineItem cartLineItem : cartLineItems) {
+        mData.add(new CartItemInfo(cartLineItem));
+      }
+    }
+
+    @Override
+    public int getItemCount() {
+      return mData.size();
+    }
+
+    @Override
+    public void onBindViewHolder(CartItemViewHolder holder, int position) {
+      holder.bind(mData.get(position));
+    }
+
+    @Override
+    public CartItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+      return new CartItemViewHolder(parent, mOnCartItemAddClickListener, mOnCartItemRemoveClickListener);
+    }
+
+    public void addOrSetToZero(List<CartLineItem> cartLineItems) {
+      Map<ProductVariant, Boolean> caches = new HashMap<>();
+      Map<ProductVariant, Integer> indexes = new HashMap<>();
+      int n = mData.size();
+      for (int i = 0; i < n; i++) {
+        caches.put(mData.get(i).getProductVariant(), false);
+        indexes.put(mData.get(i).getProductVariant(), i);
+      }
+      for (CartLineItem cartLineItem : cartLineItems) {
+        ProductVariant productVariant = cartLineItem.getVariant();
+        if (caches.containsKey(productVariant)) {
+          caches.put(productVariant, true);
+          if (mData.get(indexes.get(productVariant)).setQuantity(cartLineItem.getQuantity())) {
+            notifyItemChanged(indexes.get(productVariant));
+          }
+        } else {
+          mData.add(new CartItemInfo(cartLineItem));
+          notifyItemInserted(mData.size() - 1);
+        }
+      }
+      for (Map.Entry<ProductVariant, Boolean> entry : caches.entrySet()) {
+        if (!entry.getValue()) {
+          if (mData.get(indexes.get(entry.getKey())).setQuantity(0)) {
+            notifyItemChanged(indexes.get(entry.getKey()));
+          }
+        }
+      }
+    }
   }
 }

@@ -31,10 +31,13 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
 import android.support.annotation.DrawableRes;
+import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -75,6 +78,25 @@ public class BottomBar extends LinearLayout {
     view.setTag(R.id.item, getChildCount());
     view.setOnClickListener(v -> setItemEnabled((int) v.getTag(R.id.item)));
     addView(view);
+  }
+
+  @Nullable
+  public ViewGroup getItemView(int index) {
+    if (index < 0 && index >= getChildCount()) {
+      return null;
+    }
+    View child = getChildAt(index);
+    return child instanceof ViewGroup ? (ViewGroup) child : null;
+  }
+
+  public void setBadge(int index, CharSequence value) {
+    ViewGroup item = getItemView(index);
+    if (item == null) {
+      return;
+    }
+    TextView badge = (TextView) item.findViewById(R.id.badge);
+    badge.setVisibility(TextUtils.isEmpty(value) ? GONE : VISIBLE);
+    badge.setText(!TextUtils.isEmpty(value) ? value : "");
   }
 
   public void setItemEnabled(int index) {

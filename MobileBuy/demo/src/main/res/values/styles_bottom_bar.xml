@@ -47,6 +47,8 @@
 
   <style name="Widget.BottomBar.Item.Title" parent="Base.Widget.BottomBar.Item.Title" />
 
+  <style name="Widget.BottomBar.Item.Badge" parent="Base.Widget.BottomBar.Item.Badge" />
+
   <!-- base -->
   <style name="Base.Widget.BottomBar.Item.Icon" parent="">
     <item name="android:layout_width">28dp</item>
@@ -61,5 +63,16 @@
     <item name="android:paddingRight">@dimen/mdLayoutSpacing_xs</item>
     <item name="android:layout_gravity">center_horizontal|bottom</item>
     <item name="android:textColor">?attr/mdIconColor_backgroundPalette</item>
+  </style>
+
+  <style name="Base.Widget.BottomBar.Item.Badge" parent="MdText.Caption">
+    <item name="android:layout_width">wrap_content</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:layout_gravity">top|center_horizontal</item>
+    <item name="android:layout_marginRight">-24dp</item>
+    <item name="android:paddingLeft">@dimen/mdLayoutSpacing_xs</item>
+    <item name="android:paddingRight">@dimen/mdLayoutSpacing_xs</item>
+    <item name="android:background">?attr/mdColor_warnPalette</item>
+    <item name="android:textColor">?attr/mdTextColorPrimary_warnPalette</item>
   </style>
 </resources>
