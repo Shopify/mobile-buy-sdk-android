@@ -57,5 +57,22 @@
     <activity
       android:label="@string/text_checkout"
       android:name=".ui.checkout.CheckoutActivity" />
+
+    <activity
+      android:label="@string/text_processing"
+      android:name=".ui.checkout.CallbackActivity">
+
+      <intent-filter>
+        <action android:name="android.intent.action.VIEW" />
+
+        <category android:name="android.intent.category.DEFAULT" />
+        <category android:name="android.intent.category.BROWSABLE" />
+
+        <data
+          android:host="${packageName}"
+          android:pathPrefix="@string/appLink_path_callback"
+          android:scheme="@string/appLink_scheme" />
+      </intent-filter>
+    </activity>
   </application>
 </manifest>

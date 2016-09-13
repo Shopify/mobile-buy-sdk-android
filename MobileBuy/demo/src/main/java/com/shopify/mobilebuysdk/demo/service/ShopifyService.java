@@ -28,16 +28,19 @@ package com.shopify.mobilebuysdk.demo.service;
 import com.shopify.buy.dataprovider.BuyClient;
 import com.shopify.buy.dataprovider.BuyClientBuilder;
 import com.shopify.buy.model.Cart;
+import com.shopify.buy.model.Checkout;
 import com.shopify.buy.model.Product;
 import com.shopify.buy.model.ProductVariant;
 import com.shopify.buy.model.Shop;
 import com.shopify.mobilebuysdk.demo.App;
 import com.shopify.mobilebuysdk.demo.BuildConfig;
+import com.shopify.mobilebuysdk.demo.R;
 import com.shopify.mobilebuysdk.demo.util.StringUtils;
 
-import android.app.Application;
+import android.content.Context;
 
 import java.util.List;
+import java.util.Locale;
 
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
@@ -72,7 +75,12 @@ public class ShopifyService {
 
   private final BehaviorSubject<Double> mCartSubtotalSubject = BehaviorSubject.create(0d);
 
-  private ShopifyService(Application application) {
+  private final Context mContext;
+
+  private Checkout mCheckout;
+
+  private ShopifyService(Context context) {
+    mContext = context;
     if (StringUtils.isEmpty(BuildConfig.SHOP_DOMAIN) ||
         StringUtils.isEmpty(BuildConfig.API_KEY) ||
         StringUtils.isEmpty(BuildConfig.APP_ID)) {
@@ -82,7 +90,7 @@ public class ShopifyService {
         .shopDomain(BuildConfig.SHOP_DOMAIN)
         .apiKey(BuildConfig.API_KEY)
         .appId(BuildConfig.APP_ID)
-        .applicationName(application.getPackageName())
+        .applicationName(mContext.getPackageName())
         .build();
     mCart = new Cart();
   }
@@ -92,6 +100,19 @@ public class ShopifyService {
     mCartQuantitySubject.onNext(mCart.getTotalQuantity());
     mCartChangeSubject.onNext(null);
     mCartSubtotalSubject.onNext(mCart.getSubtotal());
+  }
+
+  public Observable<Checkout> createCheckout() {
+    if (mCheckout != null) {
+      return Observable.just(mCheckout);
+    }
+    Checkout checkout = new Checkout(mCart);
+    checkout.setWebReturnToUrl(String.format(Locale.US, "%s://%s%s",
+        mContext.getString(R.string.appLink_scheme),
+        mContext.getPackageName(),
+        mContext.getString(R.string.appLink_path_callback)));
+    checkout.setWebReturnToLabel(mContext.getString(R.string.text_return_to_app));
+    return mBuyClient.createCheckout(checkout).doOnNext(co -> mCheckout = co);
   }
 
   public Cart getCart() {

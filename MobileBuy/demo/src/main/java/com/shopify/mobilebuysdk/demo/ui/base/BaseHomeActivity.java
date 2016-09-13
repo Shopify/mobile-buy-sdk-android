@@ -26,7 +26,6 @@
 package com.shopify.mobilebuysdk.demo.ui.base;
 
 import com.shopify.mobilebuysdk.demo.R;
-import com.shopify.mobilebuysdk.demo.service.ShopifyService;
 import com.shopify.mobilebuysdk.demo.ui.cart.CartActivity;
 import com.shopify.mobilebuysdk.demo.ui.shopping.ShoppingActivity;
 import com.shopify.mobilebuysdk.demo.util.NavigationUtils;
@@ -89,13 +88,7 @@ public abstract class BaseHomeActivity extends BaseActivity {
     return new Intent(activity, sActivities.get(index));
   }
 
-  protected final ShopifyService mShopifyService;
-
   private int mCurrentIndex;
-
-  public BaseHomeActivity() {
-    mShopifyService = ShopifyService.getInstance();
-  }
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -119,7 +112,7 @@ public abstract class BaseHomeActivity extends BaseActivity {
     if (bottomBarItem.index == mCurrentIndex) {
       return;
     }
-    NavigationUtils.startActivityAndFinishWithNoAnimation(this, newIntent(this, bottomBarItem.index));
+    NavigationUtils.startActivityAndFinishWithoutAnimation(this, newIntent(this, bottomBarItem.index));
   }
 
   private void setBottomBarItemEnabled(@Index int index) {

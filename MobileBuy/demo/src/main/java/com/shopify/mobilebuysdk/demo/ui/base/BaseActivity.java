@@ -25,6 +25,7 @@
 
 package com.shopify.mobilebuysdk.demo.ui.base;
 
+import com.shopify.mobilebuysdk.demo.service.ShopifyService;
 import com.shopify.mobilebuysdk.demo.util.rx.SubscriptionManager;
 import com.shopify.mobilebuysdk.demo.util.rx.UnsubscribeLifeCycle;
 
@@ -44,6 +45,8 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseLife
 
   public abstract void onSetContentView(Bundle savedInstanceState);
 
+  protected final ShopifyService mShopifyService;
+
   private boolean mIsDestroy;
 
   private boolean mIsDestroyView;
@@ -53,6 +56,10 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseLife
   private boolean mIsStop;
 
   private SubscriptionManager mSubscriptionManager = new SubscriptionManager();
+
+  public BaseActivity() {
+    mShopifyService = ShopifyService.getInstance();
+  }
 
   @Override
   public void manageSubscription(UnsubscribeLifeCycle unsubscribeLifeCycle, Subscription... subscriptions) {

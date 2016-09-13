@@ -23,49 +23,14 @@
   ~
   -->
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
   android:layout_width="match_parent"
-  android:layout_height="match_parent">
+  android:layout_height="match_parent"
+  android:orientation="vertical">
 
   <android.support.v7.widget.Toolbar
     android:id="@+id/toolbar"
     app:navigationIcon="@drawable/ic_arrow_back_primary"
     style="@style/MdToolbar" />
-
-  <LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_below="@id/toolbar"
-    android:orientation="vertical"
-    android:gravity="center"
-    android:padding="@dimen/mdLayoutSpacing">
-
-    <Button
-      android:id="@+id/btn_web_checkout"
-      android:layout_width="match_parent"
-      android:layout_height="@dimen/mdListItemHeight"
-      android:text="@string/text_web_checkout"
-      style="@style/MdButton.Colored" />
-
-    <Button
-      android:id="@+id/btn_android_pay_checkout"
-      android:layout_width="match_parent"
-      android:layout_height="@dimen/mdListItemHeight"
-      android:text="@string/text_android_pay_checkout"
-      style="@style/MdButton.Colored" />
-
-    <Button
-      android:id="@+id/btn_native_checkout"
-      android:layout_width="match_parent"
-      android:layout_height="@dimen/mdListItemHeight"
-      android:text="@string/text_native_checkout"
-      style="@style/MdButton.Colored" />
-  </LinearLayout>
-
-  <View
-    android:layout_width="match_parent"
-    android:layout_height="@dimen/backgroundGradientSize"
-    android:layout_below="@id/toolbar"
-    android:background="@drawable/background_gradient_top_bottom" />
-</RelativeLayout>
+</LinearLayout>

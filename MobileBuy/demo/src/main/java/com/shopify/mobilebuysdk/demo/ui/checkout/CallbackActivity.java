@@ -23,26 +23,34 @@
  *
  */
 
-package com.shopify.mobilebuysdk.demo.config;
+package com.shopify.mobilebuysdk.demo.ui.checkout;
+
+import com.shopify.mobilebuysdk.demo.R;
+import com.shopify.mobilebuysdk.demo.ui.base.BaseActivity;
+
+import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
- * Created by henrytao on 8/27/16.
+ * Created by henrytao on 9/10/16.
  */
-public class Constants {
+public class CallbackActivity extends BaseActivity {
 
-  public interface Extra {
+  @BindView(R.id.toolbar) Toolbar vToolbar;
 
-    String PRODUCT = "PRODUCT";
-    String TAG = "TAG";
+  @Override
+  public void onSetContentView(Bundle savedInstanceState) {
+    setContentView(R.layout.activity_callback);
+    ButterKnife.bind(this);
   }
 
-  public interface Tag {
-
-    String ALL = "All";
-  }
-
-  public interface Timeout {
-
-    long MEDIUM = 400;
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setSupportActionBar(vToolbar);
+    vToolbar.setNavigationOnClickListener(view -> onBackPressed());
   }
 }

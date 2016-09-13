@@ -119,7 +119,7 @@ public class CartActivity extends BaseHomeActivity implements CartItemViewHolder
       vBtnCheckout.setEnabled(false);
     }
 
-    vBtnCheckout.setOnClickListener(view -> NavigationUtils.startActivity(this, CheckoutActivity.newIntent(this)));
+    vBtnCheckout.setOnClickListener(view -> onCheckoutClick());
 
     manageSubscription(UnsubscribeLifeCycle.DESTROY,
         mShopifyService
@@ -134,6 +134,10 @@ public class CartActivity extends BaseHomeActivity implements CartItemViewHolder
               vSubtotal.setText(getString(R.string.currency_format, format.format(subtotal)));
             }, Throwable::printStackTrace)
     );
+  }
+
+  private void onCheckoutClick() {
+    NavigationUtils.startActivity(this, CheckoutActivity.newIntent(this));
   }
 
   private static class Adapter extends RecyclerView.Adapter<CartItemViewHolder> {

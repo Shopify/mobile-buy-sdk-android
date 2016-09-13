@@ -30,16 +30,10 @@
   android:layout_height="match_parent"
   xmlns:fresco="http://schemas.android.com/apk/res-auto">
 
-  <android.support.design.widget.AppBarLayout
-    android:id="@+id/app_bar_layout"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-
-    <android.support.v7.widget.Toolbar
-      android:id="@+id/toolbar"
-      app:navigationIcon="@drawable/ic_arrow_back_primary"
-      style="@style/MdToolbar" />
-  </android.support.design.widget.AppBarLayout>
+  <android.support.v7.widget.Toolbar
+    android:id="@+id/toolbar"
+    app:navigationIcon="@drawable/ic_arrow_back_primary"
+    style="@style/MdToolbar" />
 
   <Button
     android:id="@+id/btn_add_to_cart"
@@ -57,7 +51,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_above="@id/btn_add_to_cart"
-    android:layout_below="@id/app_bar_layout"
+    android:layout_below="@id/toolbar"
     android:background="?attr/mdColor_backgroundPalette_light">
 
     <LinearLayout
@@ -108,7 +102,7 @@
 
   <View
     android:layout_width="match_parent"
-    android:layout_height="@dimen/backgroundGradientSize_preLollipopOnly"
-    android:layout_below="@id/app_bar_layout"
+    android:layout_height="@dimen/backgroundGradientSize"
+    android:layout_below="@id/toolbar"
     android:background="@drawable/background_gradient_top_bottom" />
 </RelativeLayout>

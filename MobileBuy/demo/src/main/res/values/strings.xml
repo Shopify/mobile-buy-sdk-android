@@ -110,4 +110,9 @@
   <string name="text_loading">Loading</string>
   <string name="text_empty">Empty</string>
   <string name="text_cart_is_empty">Cart is empty</string>
+  <string name="text_processing">Processing</string>
+  <string name="text_return_to_app">Return to App</string>
+  <string name="text_web_checkout">Web checkout</string>
+  <string name="text_android_pay_checkout">Android Pay checkout</string>
+  <string name="text_native_checkout">Native checkout</string>
 </resources>

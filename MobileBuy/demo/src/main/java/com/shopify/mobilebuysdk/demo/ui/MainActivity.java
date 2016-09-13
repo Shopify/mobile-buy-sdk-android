@@ -41,6 +41,6 @@ public class MainActivity extends BaseActivity {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    NavigationUtils.startActivityAndFinishWithNoAnimation(this, BaseHomeActivity.newIntent(this));
+    NavigationUtils.startActivityAndFinishWithoutAnimation(this, BaseHomeActivity.newIntent(this));
   }
 }
