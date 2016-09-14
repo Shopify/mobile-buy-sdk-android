@@ -84,6 +84,8 @@ final class BuyClientDefault implements BuyClient {
         final int productPageSize,
         final ProductApiInterceptor productRequestInterceptor,
         final ProductApiInterceptor productResponseInterceptor,
+        final CustomerApiInterceptor customerRequestInterceptor,
+        final CustomerApiInterceptor customerResponseInterceptor,
         final int networkRequestRetryMaxCount,
         final long networkRequestRetryDelayMs,
         final float networkRequestRetryBackoffMultiplier,
@@ -140,7 +142,7 @@ final class BuyClientDefault implements BuyClient {
 
         storeService = new StoreServiceDefault(retrofit, networkRetryPolicyProvider, callbackScheduler);
         checkoutService = new CheckoutServiceDefault(retrofit, apiKey, applicationName, networkRetryPolicyProvider, callbackScheduler);
-        customerService = new CustomerServiceDefault(retrofit, customerToken, networkRetryPolicyProvider, callbackScheduler);
+        customerService = new CustomerServiceDefault(retrofit, customerToken, networkRetryPolicyProvider, callbackScheduler, customerRequestInterceptor, customerResponseInterceptor);
         addressService = new AddressServiceDefault(retrofit, networkRetryPolicyProvider, callbackScheduler, customerService);
         orderService = new OrderServiceDefault(retrofit, networkRetryPolicyProvider, callbackScheduler, customerService);
         productService = new ProductServiceDefault(retrofit, appId, productPageSize, networkRetryPolicyProvider, callbackScheduler, productRequestInterceptor, productResponseInterceptor);
