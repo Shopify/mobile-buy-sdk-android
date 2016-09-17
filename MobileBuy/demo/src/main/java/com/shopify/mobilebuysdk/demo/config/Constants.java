@@ -25,6 +25,8 @@
 
 package com.shopify.mobilebuysdk.demo.config;
 
+import android.content.Context;
+
 /**
  * Created by henrytao on 8/27/16.
  */
@@ -34,6 +36,12 @@ public class Constants {
 
     String PRODUCT = "PRODUCT";
     String TAG = "TAG";
+  }
+
+  public interface Preferences {
+
+    String KEY = "myshopify";
+    int MODE = Context.MODE_PRIVATE;
   }
 
   public interface Tag {

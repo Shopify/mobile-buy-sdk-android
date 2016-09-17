@@ -37,6 +37,7 @@ import com.shopify.mobilebuysdk.demo.BuildConfig;
 import com.shopify.mobilebuysdk.demo.R;
 import com.shopify.mobilebuysdk.demo.util.StringUtils;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 
 import java.util.List;
@@ -51,14 +52,15 @@ import rx.subjects.PublishSubject;
  */
 public class ShopifyService {
 
+  @SuppressLint("StaticFieldLeak")
   private static ShopifyService sInstance;
 
-  // TODO: consider using DI or not?
+  // TODO: should use DI instead
   public static ShopifyService getInstance() {
     if (sInstance == null) {
       synchronized (ShopifyService.class) {
         if (sInstance == null) {
-          sInstance = new ShopifyService(App.getInstance());
+          sInstance = new ShopifyService(App.getInstance(), StorageService.getInstance());
         }
       }
     }
@@ -77,10 +79,16 @@ public class ShopifyService {
 
   private final Context mContext;
 
+  private final String mPackageName;
+
+  private final StorageService mStorageService;
+
   private Checkout mCheckout;
 
-  private ShopifyService(Context context) {
-    mContext = context;
+  private ShopifyService(Context context, StorageService storageService) {
+    mStorageService = storageService;
+    mPackageName = context.getPackageName();
+    mContext = context.getApplicationContext();
     if (StringUtils.isEmpty(BuildConfig.SHOP_DOMAIN) ||
         StringUtils.isEmpty(BuildConfig.API_KEY) ||
         StringUtils.isEmpty(BuildConfig.APP_ID)) {
@@ -90,9 +98,9 @@ public class ShopifyService {
         .shopDomain(BuildConfig.SHOP_DOMAIN)
         .apiKey(BuildConfig.API_KEY)
         .appId(BuildConfig.APP_ID)
-        .applicationName(mContext.getPackageName())
+        .applicationName(mPackageName)
         .build();
-    mCart = new Cart();
+    mCart = mStorageService.getCart().toBlocking().first();
   }
 
   public void addToCart(ProductVariant productVariant) {
@@ -100,6 +108,7 @@ public class ShopifyService {
     mCartQuantitySubject.onNext(mCart.getTotalQuantity());
     mCartChangeSubject.onNext(null);
     mCartSubtotalSubject.onNext(mCart.getSubtotal());
+    mStorageService.setCart(mCart);
   }
 
   public Observable<Checkout> createCheckout() {
@@ -109,7 +118,7 @@ public class ShopifyService {
     Checkout checkout = new Checkout(mCart);
     checkout.setWebReturnToUrl(String.format(Locale.US, "%s://%s%s",
         mContext.getString(R.string.appLink_scheme),
-        mContext.getPackageName(),
+        mPackageName,
         mContext.getString(R.string.appLink_path_callback)));
     checkout.setWebReturnToLabel(mContext.getString(R.string.text_return_to_app));
     return mBuyClient.createCheckout(checkout).doOnNext(co -> mCheckout = co);
@@ -144,5 +153,14 @@ public class ShopifyService {
     mCartQuantitySubject.onNext(mCart.getTotalQuantity());
     mCartChangeSubject.onNext(null);
     mCartSubtotalSubject.onNext(mCart.getSubtotal());
+  }
+
+  public enum CheckoutState {
+    PAYMENT_METHOD,
+    SHIPPING_ADDRESS,
+    SHIPPING_RATES,
+    SUMMARY_BEFORE_PAYMENT,
+    PROCESSING,
+    PAYMENT_SUCCESS
   }
 }

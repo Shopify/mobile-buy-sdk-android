@@ -86,9 +86,8 @@ public class ProductActivity extends BaseActivity {
   }
 
   @Override
-  public void onInitializedBundle(@NonNull Bundle savedInstanceState) {
-    super.onInitializedBundle(savedInstanceState);
-    Bundle bundle = getIntent().getExtras();
+  public void onInitializedBundle(@NonNull Bundle bundle, @NonNull Bundle savedInstanceState) {
+    super.onInitializedBundle(bundle, savedInstanceState);
     mProduct = Product.fromJson(bundle.getString(Constants.Extra.PRODUCT));
   }
 

@@ -154,7 +154,8 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseLife
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
-    onInitializedBundle(savedInstanceState != null ? savedInstanceState : new Bundle());
+    Bundle bundle = getIntent().getExtras();
+    onInitializedBundle(bundle != null ? bundle : new Bundle(), savedInstanceState != null ? savedInstanceState : new Bundle());
     super.onCreate(savedInstanceState);
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
       onSharedElementConfig(getWindow());
@@ -164,8 +165,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseLife
     onCreateView();
   }
 
-  public void onInitializedBundle(@NonNull Bundle savedInstanceState) {
-
+  public void onInitializedBundle(@NonNull Bundle bundle, @NonNull Bundle savedInstanceState) {
   }
 
   @TargetApi(Build.VERSION_CODES.LOLLIPOP)

@@ -25,6 +25,7 @@
 
 package com.shopify.mobilebuysdk.demo.ui.base;
 
+import com.shopify.mobilebuysdk.demo.service.ShopifyService;
 import com.shopify.mobilebuysdk.demo.util.rx.SubscriptionManager;
 import com.shopify.mobilebuysdk.demo.util.rx.UnsubscribeLifeCycle;
 
@@ -45,7 +46,7 @@ public abstract class BaseFragment extends Fragment implements BaseLifeCycle, Ba
 
   public abstract View onInflateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState);
 
-  public abstract void onInitializeBundle(@NonNull Bundle savedInstanceState);
+  protected final ShopifyService mShopifyService;
 
   private boolean mIsDestroy;
 
@@ -56,6 +57,10 @@ public abstract class BaseFragment extends Fragment implements BaseLifeCycle, Ba
   private boolean mIsStop;
 
   private SubscriptionManager mSubscriptionManager = new SubscriptionManager();
+
+  public BaseFragment() {
+    mShopifyService = ShopifyService.getInstance();
+  }
 
   @Override
   public void manageSubscription(UnsubscribeLifeCycle unsubscribeLifeCycle, Subscription... subscriptions) {
@@ -99,8 +104,9 @@ public abstract class BaseFragment extends Fragment implements BaseLifeCycle, Ba
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
+    Bundle bundle = getArguments();
+    onInitializeBundle(bundle != null ? bundle : new Bundle(), savedInstanceState != null ? savedInstanceState : new Bundle());
     super.onCreate(savedInstanceState);
-    onInitializeBundle(savedInstanceState != null ? savedInstanceState : new Bundle());
     onCreate();
   }
 
@@ -164,5 +170,8 @@ public abstract class BaseFragment extends Fragment implements BaseLifeCycle, Ba
   @Override
   public void unsubscribe(String id) {
     mSubscriptionManager.unsubscribe(id);
+  }
+
+  public void onInitializeBundle(@NonNull Bundle bundle, @NonNull Bundle savedInstanceState) {
   }
 }

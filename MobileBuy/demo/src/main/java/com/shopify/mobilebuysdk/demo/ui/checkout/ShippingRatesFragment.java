@@ -25,48 +25,21 @@
 
 package com.shopify.mobilebuysdk.demo.ui.checkout;
 
-import com.shopify.mobilebuysdk.demo.R;
-import com.shopify.mobilebuysdk.demo.ui.base.BaseActivity;
+import com.shopify.mobilebuysdk.demo.ui.base.BaseFragment;
 
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
+import android.support.annotation.Nullable;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 /**
- * Created by henrytao on 8/30/16.
+ * Created by henrytao on 9/14/16.
  */
-public class CheckoutActivity extends BaseActivity {
-
-  public static Intent newIntent(Context context) {
-    Intent intent = new Intent(context, CheckoutActivity.class);
-    return intent;
-  }
-
-  @BindView(R.id.toolbar) Toolbar vToolbar;
+public class ShippingRatesFragment extends BaseFragment {
 
   @Override
-  public void onBackPressed() {
-    super.onBackPressed();
-    if (!isTaskRoot()) {
-      overridePendingTransition(R.anim.enter_ltr, R.anim.exit_ltr);
-    }
-  }
-
-  @Override
-  public void onSetContentView(Bundle savedInstanceState) {
-    setContentView(R.layout.activity_checkout);
-    ButterKnife.bind(this);
-  }
-
-  @Override
-  protected void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-
-    setSupportActionBar(vToolbar);
-    vToolbar.setNavigationOnClickListener(view -> onBackPressed());
+  public View onInflateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    return null;
   }
 }
