@@ -93,7 +93,11 @@ public class ShoppingListViewHolder extends BaseRecyclerPagerViewHolder implemen
 
   @Override
   public void onAddToCartClick(View view, Product product) {
-    mShopifyService.addToCart(product.getVariants().get(0));
+    manageSubscription(UnsubscribeLifeCycle.DESTROY_VIEW, mShopifyService
+        .addToCart(product.getVariants().get(0))
+        .compose(Transformer.applyIoScheduler())
+        .subscribe(aVoid -> {
+        }, Throwable::printStackTrace));
   }
 
   @Override

@@ -67,6 +67,10 @@ public class StorageService {
     return mRxSharedPreferences.getObject(Cart.class, Key.CART, new Cart());
   }
 
+  public Observable<Cart> observeCart() {
+    return mRxSharedPreferences.observeObject(Cart.class, Key.CART, new Cart());
+  }
+
   public Observable<Void> setCart(Cart cart) {
     return mRxSharedPreferences.putObject(Cart.class, Key.CART, cart);
   }

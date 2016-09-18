@@ -78,12 +78,20 @@ public class CartActivity extends BaseHomeActivity implements CartItemViewHolder
 
   @Override
   public void onCartItemAddClick(ProductVariant productVariant) {
-    mShopifyService.addToCart(productVariant);
+    manageSubscription(UnsubscribeLifeCycle.DESTROY_VIEW, mShopifyService
+        .addToCart(productVariant)
+        .compose(Transformer.applyIoScheduler())
+        .subscribe(aVoid -> {
+        }, Throwable::printStackTrace));
   }
 
   @Override
   public void onCartItemRemoveClick(ProductVariant productVariant) {
-    mShopifyService.removeFromCart(productVariant);
+    manageSubscription(UnsubscribeLifeCycle.DESTROY_VIEW, mShopifyService
+        .removeFromCart(productVariant)
+        .compose(Transformer.applyIoScheduler())
+        .subscribe(aVoid -> {
+        }, Throwable::printStackTrace));
   }
 
   @Override
@@ -108,16 +116,14 @@ public class CartActivity extends BaseHomeActivity implements CartItemViewHolder
     super.onCreate(savedInstanceState);
     setSupportActionBar(vToolbar);
 
-    mAdapter = new Adapter(mShopifyService.getCart().getLineItems(), this, this);
+    mAdapter = new Adapter(this, this);
     mLoadingEmptyErrorWrapperAdapter = new RecyclerViewLoadingEmptyErrorWrapperAdapter(mAdapter);
     mLoadingEmptyErrorWrapperAdapter.setEmptyText(getString(R.string.text_cart_is_empty));
     vRecyclerView.setAdapter(mLoadingEmptyErrorWrapperAdapter);
     vRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
 
-    if (mAdapter.getItemCount() == 0) {
-      mLoadingEmptyErrorWrapperAdapter.showEmptyView();
-      vBtnCheckout.setEnabled(false);
-    }
+    mLoadingEmptyErrorWrapperAdapter.showEmptyView();
+    vBtnCheckout.setEnabled(false);
 
     vBtnCheckout.setOnClickListener(view -> onCheckoutClick());
 
@@ -125,7 +131,20 @@ public class CartActivity extends BaseHomeActivity implements CartItemViewHolder
         mShopifyService
             .observeCartChange()
             .compose(Transformer.applyComputationScheduler())
-            .subscribe(aVoid -> mAdapter.addOrSetToZero(mShopifyService.getCart().getLineItems()), Throwable::printStackTrace),
+            .subscribe(cart -> {
+              mAdapter.addOrSetToZero(cart.getLineItems());
+              if (mAdapter.mData.size() > 0) {
+                mLoadingEmptyErrorWrapperAdapter.hide();
+              } else {
+                mLoadingEmptyErrorWrapperAdapter.showEmptyView();
+              }
+            }, Throwable::printStackTrace),
+        mShopifyService
+            .observeCartQuantity()
+            .compose(Transformer.applyComputationScheduler())
+            .subscribe(quantity -> {
+              vBtnCheckout.setEnabled(quantity > 0);
+            }, Throwable::printStackTrace),
         mShopifyService
             .observeCartSubtotal()
             .compose(Transformer.applyComputationScheduler())
@@ -148,14 +167,11 @@ public class CartActivity extends BaseHomeActivity implements CartItemViewHolder
 
     private final CartItemViewHolder.OnCartItemRemoveClickListener mOnCartItemRemoveClickListener;
 
-    public Adapter(List<CartLineItem> cartLineItems, CartItemViewHolder.OnCartItemAddClickListener onCartItemAddClickListener,
+    public Adapter(CartItemViewHolder.OnCartItemAddClickListener onCartItemAddClickListener,
         CartItemViewHolder.OnCartItemRemoveClickListener onCartItemRemoveClickListener) {
       mOnCartItemAddClickListener = onCartItemAddClickListener;
       mOnCartItemRemoveClickListener = onCartItemRemoveClickListener;
       mData = new ArrayList<>();
-      for (CartLineItem cartLineItem : cartLineItems) {
-        mData.add(new CartItemInfo(cartLineItem));
-      }
     }
 
     @Override

@@ -33,6 +33,8 @@ import com.shopify.mobilebuysdk.demo.R;
 import com.shopify.mobilebuysdk.demo.config.Constants;
 import com.shopify.mobilebuysdk.demo.service.ShopifyService;
 import com.shopify.mobilebuysdk.demo.ui.base.BaseActivity;
+import com.shopify.mobilebuysdk.demo.util.rx.Transformer;
+import com.shopify.mobilebuysdk.demo.util.rx.UnsubscribeLifeCycle;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -113,7 +115,13 @@ public class ProductActivity extends BaseActivity {
       vDescription.setText(Html.fromHtml(mProduct.getBodyHtml()));
     }
 
-    vBtnAddToCart.setOnClickListener(view -> mShopifyService.addToCart(mProduct.getVariants().get(0)));
+    vBtnAddToCart.setOnClickListener(view -> {
+      manageSubscription(UnsubscribeLifeCycle.DESTROY_VIEW, mShopifyService
+          .addToCart(mProduct.getVariants().get(0))
+          .compose(Transformer.applyIoScheduler())
+          .subscribe(aVoid -> {
+          }, Throwable::printStackTrace));
+    });
   }
 
   @TargetApi(Build.VERSION_CODES.LOLLIPOP)

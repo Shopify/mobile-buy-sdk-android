@@ -31,7 +31,6 @@ import com.shopify.buy.model.Cart;
 import com.shopify.buy.model.Checkout;
 import com.shopify.buy.model.Product;
 import com.shopify.buy.model.ProductVariant;
-import com.shopify.buy.model.Shop;
 import com.shopify.mobilebuysdk.demo.App;
 import com.shopify.mobilebuysdk.demo.BuildConfig;
 import com.shopify.mobilebuysdk.demo.R;
@@ -44,8 +43,6 @@ import java.util.List;
 import java.util.Locale;
 
 import rx.Observable;
-import rx.subjects.BehaviorSubject;
-import rx.subjects.PublishSubject;
 
 /**
  * Created by henrytao on 8/27/16.
@@ -68,14 +65,6 @@ public class ShopifyService {
   }
 
   private final BuyClient mBuyClient;
-
-  private final Cart mCart;
-
-  private final PublishSubject<Void> mCartChangeSubject = PublishSubject.create();
-
-  private final BehaviorSubject<Integer> mCartQuantitySubject = BehaviorSubject.create(0);
-
-  private final BehaviorSubject<Double> mCartSubtotalSubject = BehaviorSubject.create(0d);
 
   private final Context mContext;
 
@@ -100,59 +89,55 @@ public class ShopifyService {
         .appId(BuildConfig.APP_ID)
         .applicationName(mPackageName)
         .build();
-    mCart = mStorageService.getCart().toBlocking().first();
   }
 
-  public void addToCart(ProductVariant productVariant) {
-    mCart.addVariant(productVariant);
-    mCartQuantitySubject.onNext(mCart.getTotalQuantity());
-    mCartChangeSubject.onNext(null);
-    mCartSubtotalSubject.onNext(mCart.getSubtotal());
-    mStorageService.setCart(mCart);
+  public Observable<Void> addToCart(ProductVariant productVariant) {
+    return getCart().flatMap(cart -> {
+      cart.addVariant(productVariant);
+      return mStorageService.setCart(cart);
+    });
   }
 
   public Observable<Checkout> createCheckout() {
     if (mCheckout != null) {
       return Observable.just(mCheckout);
     }
-    Checkout checkout = new Checkout(mCart);
-    checkout.setWebReturnToUrl(String.format(Locale.US, "%s://%s%s",
-        mContext.getString(R.string.appLink_scheme),
-        mPackageName,
-        mContext.getString(R.string.appLink_path_callback)));
-    checkout.setWebReturnToLabel(mContext.getString(R.string.text_return_to_app));
-    return mBuyClient.createCheckout(checkout).doOnNext(co -> mCheckout = co);
+    return getCart().flatMap(cart -> {
+      Checkout checkout = new Checkout(cart);
+      checkout.setWebReturnToUrl(String.format(Locale.US, "%s://%s%s",
+          mContext.getString(R.string.appLink_scheme),
+          mPackageName,
+          mContext.getString(R.string.appLink_path_callback)));
+      checkout.setWebReturnToLabel(mContext.getString(R.string.text_return_to_app));
+      return mBuyClient.createCheckout(checkout).doOnNext(co -> mCheckout = co);
+    });
   }
 
-  public Cart getCart() {
-    return mCart;
+  public Observable<Cart> getCart() {
+    return mStorageService.getCart();
   }
 
   public Observable<List<Product>> getProducts() {
     return mBuyClient.getProducts(1);
   }
 
-  public Observable<Shop> getShop() {
-    return mBuyClient.getShop();
-  }
-
-  public Observable<Void> observeCartChange() {
-    return mCartChangeSubject;
+  public Observable<Cart> observeCartChange() {
+    return mStorageService.observeCart();
   }
 
   public Observable<Integer> observeCartQuantity() {
-    return mCartQuantitySubject;
+    return mStorageService.observeCart().map(Cart::getTotalQuantity).distinctUntilChanged();
   }
 
   public Observable<Double> observeCartSubtotal() {
-    return mCartSubtotalSubject;
+    return mStorageService.observeCart().map(Cart::getSubtotal).distinctUntilChanged();
   }
 
-  public void removeFromCart(ProductVariant productVariant) {
-    mCart.decrementVariant(productVariant);
-    mCartQuantitySubject.onNext(mCart.getTotalQuantity());
-    mCartChangeSubject.onNext(null);
-    mCartSubtotalSubject.onNext(mCart.getSubtotal());
+  public Observable<Void> removeFromCart(ProductVariant productVariant) {
+    return getCart().flatMap(cart -> {
+      cart.decrementVariant(productVariant);
+      return mStorageService.setCart(cart);
+    });
   }
 
   public enum CheckoutState {
