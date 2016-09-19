@@ -26,11 +26,15 @@
 package com.shopify.mobilebuysdk.demo.ui.checkout;
 
 import com.shopify.mobilebuysdk.demo.R;
+import com.shopify.mobilebuysdk.demo.data.CheckoutState;
 import com.shopify.mobilebuysdk.demo.ui.base.BaseActivity;
+import com.shopify.mobilebuysdk.demo.util.rx.Transformer;
+import com.shopify.mobilebuysdk.demo.util.rx.UnsubscribeLifeCycle;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
 
 import butterknife.BindView;
@@ -68,5 +72,38 @@ public class CheckoutActivity extends BaseActivity {
 
     setSupportActionBar(vToolbar);
     vToolbar.setNavigationOnClickListener(view -> onBackPressed());
+
+    manageSubscription(UnsubscribeLifeCycle.DESTROY,
+        mShopifyService
+            .observeCheckoutState()
+            .compose(Transformer.applyComputationScheduler())
+            .subscribe(this::onCheckoutStateChanged, Throwable::printStackTrace)
+    );
+  }
+
+  private void onCheckoutStateChanged(CheckoutState state) {
+    Fragment fragment;
+    switch (state) {
+      case PAYMENT_METHOD:
+        fragment = PaymentMethodFragment.newInstance();
+        break;
+      //case SHIPPING_ADDRESS:
+      //  break;
+      //case SHIPPING_RATES:
+      //  break;
+      //case SUMMARY_BEFORE_PAYMENT:
+      //  break;
+      //case PROCESSING:
+      //  break;
+      //case PAYMENT_SUCCESS:
+      //  break;
+      default:
+        fragment = PaymentMethodFragment.newInstance();
+        break;
+    }
+    getSupportFragmentManager()
+        .beginTransaction()
+        .replace(R.id.fragment, fragment)
+        .commit();
   }
 }

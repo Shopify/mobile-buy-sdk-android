@@ -25,6 +25,7 @@
 
 package com.shopify.mobilebuysdk.demo.ui.checkout;
 
+import com.shopify.buy.model.Checkout;
 import com.shopify.mobilebuysdk.demo.R;
 import com.shopify.mobilebuysdk.demo.ui.base.BaseFragment;
 import com.shopify.mobilebuysdk.demo.util.NavigationUtils;
@@ -46,6 +47,10 @@ import butterknife.Unbinder;
  * Created by henrytao on 9/14/16.
  */
 public class PaymentMethodFragment extends BaseFragment {
+
+  public static PaymentMethodFragment newInstance() {
+    return new PaymentMethodFragment();
+  }
 
   private Unbinder mUnbinder;
 
@@ -69,6 +74,11 @@ public class PaymentMethodFragment extends BaseFragment {
     //      String merchantName = getString(R.string.app_name);
     //      MaskedWalletRequest maskedWalletRequest = AndroidPayHelper.createMaskedWalletRequest(merchantName, checkout, )
     //    }, Throwable::printStackTrace));
+  }
+
+  @OnClick(R.id.btn_native_checkout)
+  protected void onNativeCheckoutClick() {
+    
   }
 
   @OnClick(R.id.btn_web_checkout)

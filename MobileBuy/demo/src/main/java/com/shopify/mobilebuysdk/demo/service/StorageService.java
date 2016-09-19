@@ -30,6 +30,7 @@ import com.google.gson.Gson;
 import com.shopify.buy.model.Cart;
 import com.shopify.mobilebuysdk.demo.App;
 import com.shopify.mobilebuysdk.demo.config.Constants;
+import com.shopify.mobilebuysdk.demo.data.CheckoutState;
 
 import android.content.Context;
 
@@ -61,22 +62,36 @@ public class StorageService {
     Gson gson = new Gson();
     mRxSharedPreferences = new RxSharedPreferences(context.getSharedPreferences(Constants.Preferences.KEY, Constants.Preferences.MODE));
     mRxSharedPreferences.register(Cart.class, gson::toJson, s -> gson.fromJson(s, Cart.class));
+    mRxSharedPreferences.register(CheckoutState.class, CheckoutState::toString, CheckoutState::from);
   }
 
   public Observable<Cart> getCart() {
     return mRxSharedPreferences.getObject(Cart.class, Key.CART, new Cart());
   }
 
+  public Observable<CheckoutState> getCheckoutState() {
+    return mRxSharedPreferences.getObject(CheckoutState.class, Key.CHECKOUT_STATE, CheckoutState.NONE);
+  }
+
   public Observable<Cart> observeCart() {
     return mRxSharedPreferences.observeObject(Cart.class, Key.CART, new Cart());
+  }
+
+  public Observable<CheckoutState> observeCheckoutState() {
+    return mRxSharedPreferences.observeObject(CheckoutState.class, Key.CHECKOUT_STATE, CheckoutState.NONE);
   }
 
   public Observable<Void> setCart(Cart cart) {
     return mRxSharedPreferences.putObject(Cart.class, Key.CART, cart);
   }
 
+  public Observable<Void> setCheckoutState(CheckoutState state) {
+    return mRxSharedPreferences.putObject(CheckoutState.class, Key.CHECKOUT_STATE, state);
+  }
+
   private interface Key {
 
     String CART = "CART";
+    String CHECKOUT_STATE = "CHECKOUT_STATE";
   }
 }

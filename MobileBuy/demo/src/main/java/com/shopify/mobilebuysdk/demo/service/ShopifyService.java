@@ -34,6 +34,7 @@ import com.shopify.buy.model.ProductVariant;
 import com.shopify.mobilebuysdk.demo.App;
 import com.shopify.mobilebuysdk.demo.BuildConfig;
 import com.shopify.mobilebuysdk.demo.R;
+import com.shopify.mobilebuysdk.demo.data.CheckoutState;
 import com.shopify.mobilebuysdk.demo.util.StringUtils;
 
 import android.annotation.SuppressLint;
@@ -133,6 +134,10 @@ public class ShopifyService {
     return mStorageService.observeCart().map(Cart::getSubtotal).distinctUntilChanged();
   }
 
+  public Observable<CheckoutState> observeCheckoutState() {
+    return mStorageService.observeCheckoutState();
+  }
+
   public Observable<Void> removeFromCart(ProductVariant productVariant) {
     return getCart().flatMap(cart -> {
       cart.decrementVariant(productVariant);
@@ -140,12 +145,12 @@ public class ShopifyService {
     });
   }
 
-  public enum CheckoutState {
-    PAYMENT_METHOD,
-    SHIPPING_ADDRESS,
-    SHIPPING_RATES,
-    SUMMARY_BEFORE_PAYMENT,
-    PROCESSING,
-    PAYMENT_SUCCESS
+  public Observable<Void> resetCheckout() {
+    return mStorageService
+        .setCheckoutState(CheckoutState.NONE)
+        .map(aVoid -> {
+          mCheckout = null;
+          return null;
+        });
   }
 }
