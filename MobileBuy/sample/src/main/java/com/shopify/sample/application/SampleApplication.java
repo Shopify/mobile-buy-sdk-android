@@ -232,7 +232,7 @@ public class SampleApplication extends Application {
 
     public String getCartPermalink() {
         Uri.Builder uri = new Uri.Builder();
-        uri.scheme("http").path(buyClient.getShopDomain()).appendPath("cart");
+        uri.scheme("http").authority(buyClient.getShopDomain()).appendPath("cart");
 
         StringBuilder lineItemsStr = new StringBuilder();
         String prefix = "";
