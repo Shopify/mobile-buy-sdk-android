@@ -83,6 +83,10 @@ public final class BuyClientBuilder {
 
     private ProductApiInterceptor productResponseInterceptor;
 
+    private CustomerApiInterceptor customerRequestInterceptor;
+
+    private CustomerApiInterceptor customerResponseInterceptor;
+
     /**
      * Sets store domain url (usually {store name}.myshopify.com
      *
@@ -229,6 +233,28 @@ public final class BuyClientBuilder {
     }
 
     /**
+     * Sets Customer API request interceptor {@link CustomerService}
+     *
+     * @param customerRequestInterceptor interceptor
+     * @return {@link BuyClientBuilder}
+     */
+    public BuyClientBuilder customerRequestInterceptor(final CustomerApiInterceptor customerRequestInterceptor) {
+        this.customerRequestInterceptor = customerRequestInterceptor;
+        return this;
+    }
+
+    /**
+     * Sets Customer API response interceptor {@link CustomerService}
+     *
+     * @param customerResponseInterceptor interceptor
+     * @return {@link BuyClientBuilder}
+     */
+    public BuyClientBuilder customerResponseInterceptor(final CustomerApiInterceptor customerResponseInterceptor) {
+        this.customerResponseInterceptor = customerResponseInterceptor;
+        return this;
+    }
+
+    /**
      * Builds default implementation of {@link BuyClient}
      *
      * @return A {@link BuyClient}.
@@ -266,6 +292,8 @@ public final class BuyClientBuilder {
             productPageSize,
             productRequestInterceptor,
             productResponseInterceptor,
+            customerRequestInterceptor,
+            customerResponseInterceptor,
             networkRequestRetryMaxCount,
             networkRequestRetryDelayMs,
             networkRequestRetryBackoffMultiplier,

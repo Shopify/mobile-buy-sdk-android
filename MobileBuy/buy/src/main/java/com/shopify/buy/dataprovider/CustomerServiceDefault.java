@@ -57,16 +57,24 @@ final class CustomerServiceDefault implements CustomerService {
 
     final AtomicReference<CustomerToken> customerTokenRef = new AtomicReference<>();
 
+    final CustomerApiInterceptor requestInterceptor;
+
+    final CustomerApiInterceptor responseInterceptor;
+
     CustomerServiceDefault(
         final Retrofit retrofit,
         final CustomerToken customerToken,
         final NetworkRetryPolicyProvider networkRetryPolicyProvider,
-        final Scheduler callbackScheduler
+        final Scheduler callbackScheduler,
+        final CustomerApiInterceptor requestInterceptor,
+        final CustomerApiInterceptor responseInterceptor
     ) {
         this.retrofitService = retrofit.create(CustomerRetrofitService.class);
         this.customerTokenRef.set(customerToken);
         this.networkRetryPolicyProvider = networkRetryPolicyProvider;
         this.callbackScheduler = callbackScheduler;
+        this.requestInterceptor = requestInterceptor;
+        this.responseInterceptor = responseInterceptor;
     }
 
     @Override
@@ -91,7 +99,7 @@ final class CustomerServiceDefault implements CustomerService {
         }
 
         final AccountCredentialsWrapper accountCredentialsWrapper = new AccountCredentialsWrapper(accountCredentials);
-        return retrofitService
+        final Observable<Customer> apiRequest = retrofitService
             .createCustomer(accountCredentialsWrapper)
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<CustomerWrapper, Customer>())
@@ -101,8 +109,19 @@ final class CustomerServiceDefault implements CustomerService {
                 public Observable<Customer> call(final Customer customer) {
                     return loginCustomer(accountCredentials);
                 }
-            })
-            .observeOn(callbackScheduler);
+            });
+
+        return ApiInterceptWrapper.wrap(
+            apiRequest,
+            requestInterceptor,
+            responseInterceptor,
+            new ApiInterceptWrapper.InterceptorCall<CustomerApiInterceptor, Customer>() {
+                @Override
+                public Observable<Customer> call(CustomerApiInterceptor interceptor, Observable<Customer> originalObservable) {
+                    return interceptor.createCustomer(accountCredentials, originalObservable);
+                }
+            }
+        ).observeOn(callbackScheduler);
     }
 
     @Deprecated
@@ -127,12 +146,23 @@ final class CustomerServiceDefault implements CustomerService {
         }
 
         final AccountCredentialsWrapper accountCredentialsWrapper = new AccountCredentialsWrapper(accountCredentials);
-        return retrofitService
+        final Observable<Customer> apiRequest = retrofitService
             .activateCustomer(customerId, activationToken, accountCredentialsWrapper)
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<CustomerWrapper, Customer>())
-            .onErrorResumeNext(new BuyClientExceptionHandler<Customer>())
-            .observeOn(callbackScheduler);
+            .onErrorResumeNext(new BuyClientExceptionHandler<Customer>());
+
+        return ApiInterceptWrapper.wrap(
+            apiRequest,
+            requestInterceptor,
+            responseInterceptor,
+            new ApiInterceptWrapper.InterceptorCall<CustomerApiInterceptor, Customer>() {
+                @Override
+                public Observable<Customer> call(CustomerApiInterceptor interceptor, Observable<Customer> originalObservable) {
+                    return interceptor.activateCustomer(customerId, activationToken, accountCredentials, originalObservable);
+                }
+            }
+        ).observeOn(callbackScheduler);
     }
 
     @Override
@@ -156,12 +186,23 @@ final class CustomerServiceDefault implements CustomerService {
         }
 
         final AccountCredentialsWrapper accountCredentialsWrapper = new AccountCredentialsWrapper(accountCredentials);
-        return retrofitService
+        final Observable<Customer> apiRequest = retrofitService
             .resetPassword(customerId, resetToken, accountCredentialsWrapper)
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<CustomerWrapper, Customer>())
-            .onErrorResumeNext(new BuyClientExceptionHandler<Customer>())
-            .observeOn(callbackScheduler);
+            .onErrorResumeNext(new BuyClientExceptionHandler<Customer>());
+
+        return ApiInterceptWrapper.wrap(
+            apiRequest,
+            requestInterceptor,
+            responseInterceptor,
+            new ApiInterceptWrapper.InterceptorCall<CustomerApiInterceptor, Customer>() {
+                @Override
+                public Observable<Customer> call(CustomerApiInterceptor interceptor, Observable<Customer> originalObservable) {
+                    return interceptor.resetPassword(customerId, resetToken, accountCredentials, originalObservable);
+                }
+            }
+        ).observeOn(callbackScheduler);
     }
 
     @Override
@@ -176,11 +217,24 @@ final class CustomerServiceDefault implements CustomerService {
         }
 
         final AccountCredentialsWrapper accountCredentialsWrapper = new AccountCredentialsWrapper(accountCredentials);
-        return retrofitService
+        final Observable<CustomerToken> apiRequest = retrofitService
             .getCustomerToken(accountCredentialsWrapper)
             .retryWhen(networkRetryPolicyProvider.provide())
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
-            .compose(new UnwrapRetrofitBodyTransformer<CustomerTokenWrapper, CustomerToken>())
+            .compose(new UnwrapRetrofitBodyTransformer<CustomerTokenWrapper, CustomerToken>());
+
+        return ApiInterceptWrapper
+            .wrap(
+                apiRequest,
+                requestInterceptor,
+                responseInterceptor,
+                new ApiInterceptWrapper.InterceptorCall<CustomerApiInterceptor, CustomerToken>() {
+                    @Override
+                    public Observable<CustomerToken> call(CustomerApiInterceptor interceptor, Observable<CustomerToken> originalObservable) {
+                        return interceptor.loginCustomer(accountCredentials, originalObservable);
+                    }
+                }
+            )
             .onErrorResumeNext(new BuyClientExceptionHandler<CustomerToken>())
             .doOnNext(new Action1<CustomerToken>() {
                 @Override
@@ -204,13 +258,12 @@ final class CustomerServiceDefault implements CustomerService {
 
     @Override
     public Observable<Void> logoutCustomer() {
-        CustomerToken customerToken = getCustomerToken();
-
+        final CustomerToken customerToken = getCustomerToken();
         if (customerToken == null) {
             return Observable.error(new BuyClientError(new IllegalStateException("customer must be logged in")));
         }
 
-        return retrofitService
+        final Observable<Void> apiRequest = retrofitService
             .removeCustomerToken(customerToken.getCustomerId())
             .retryWhen(networkRetryPolicyProvider.provide())
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
@@ -221,13 +274,24 @@ final class CustomerServiceDefault implements CustomerService {
                 }
             })
             .onErrorResumeNext(new BuyClientExceptionHandler<Void>())
-            .observeOn(callbackScheduler)
             .doOnNext(new Action1<Void>() {
                 @Override
                 public void call(Void aVoid) {
                     customerTokenRef.set(null);
                 }
             });
+
+        return ApiInterceptWrapper.wrap(
+            apiRequest,
+            requestInterceptor,
+            responseInterceptor,
+            new ApiInterceptWrapper.InterceptorCall<CustomerApiInterceptor, Void>() {
+                @Override
+                public Observable<Void> call(CustomerApiInterceptor interceptor, Observable<Void> originalObservable) {
+                    return interceptor.logoutCustomer(customerToken, originalObservable);
+                }
+            }
+        ).observeOn(callbackScheduler);
     }
 
     @Override
@@ -247,12 +311,23 @@ final class CustomerServiceDefault implements CustomerService {
             return Observable.error(new BuyClientError(new IllegalStateException("customer must be logged in")));
         }
 
-        return retrofitService
+        final Observable<Customer> apiRequest = retrofitService
             .updateCustomer(customerToken.getCustomerId(), new CustomerWrapper(customer))
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<CustomerWrapper, Customer>())
-            .onErrorResumeNext(new BuyClientExceptionHandler<Customer>())
-            .observeOn(callbackScheduler);
+            .onErrorResumeNext(new BuyClientExceptionHandler<Customer>());
+
+        return ApiInterceptWrapper.wrap(
+            apiRequest,
+            requestInterceptor,
+            responseInterceptor,
+            new ApiInterceptWrapper.InterceptorCall<CustomerApiInterceptor, Customer>() {
+                @Override
+                public Observable<Customer> call(CustomerApiInterceptor interceptor, Observable<Customer> originalObservable) {
+                    return interceptor.updateCustomer(customer, originalObservable);
+                }
+            }
+        ).observeOn(callbackScheduler);
     }
 
     @Override
@@ -262,19 +337,29 @@ final class CustomerServiceDefault implements CustomerService {
 
     @Override
     public Observable<Customer> getCustomer() {
-        CustomerToken customerToken = getCustomerToken();
-
+        final CustomerToken customerToken = getCustomerToken();
         if (customerToken == null) {
             return Observable.error(new BuyClientError(new IllegalStateException("customer must be logged in")));
         }
 
-        return retrofitService
+        final Observable<Customer> apiRequest = retrofitService
             .getCustomer(customerToken.getCustomerId())
             .retryWhen(networkRetryPolicyProvider.provide())
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<CustomerWrapper, Customer>())
-            .onErrorResumeNext(new BuyClientExceptionHandler<Customer>())
-            .observeOn(callbackScheduler);
+            .onErrorResumeNext(new BuyClientExceptionHandler<Customer>());
+
+        return ApiInterceptWrapper.wrap(
+            apiRequest,
+            requestInterceptor,
+            responseInterceptor,
+            new ApiInterceptWrapper.InterceptorCall<CustomerApiInterceptor, Customer>() {
+                @Override
+                public Observable<Customer> call(CustomerApiInterceptor interceptor, Observable<Customer> originalObservable) {
+                    return interceptor.getCustomer(originalObservable);
+                }
+            }
+        ).observeOn(callbackScheduler);
     }
 
     @Override
@@ -290,18 +375,29 @@ final class CustomerServiceDefault implements CustomerService {
             return Observable.error(new BuyClientError(new IllegalStateException("customer must be logged in")));
         }
 
-        return retrofitService
+        final Observable<CustomerToken> apiRequest = retrofitService
             .renewCustomerToken(EMPTY_BODY, customerToken.getCustomerId())
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<CustomerTokenWrapper, CustomerToken>())
             .onErrorResumeNext(new BuyClientExceptionHandler<CustomerToken>())
-            .observeOn(callbackScheduler)
             .doOnNext(new Action1<CustomerToken>() {
                 @Override
                 public void call(CustomerToken token) {
                     customerTokenRef.set(token);
                 }
             });
+
+        return ApiInterceptWrapper.wrap(
+            apiRequest,
+            requestInterceptor,
+            responseInterceptor,
+            new ApiInterceptWrapper.InterceptorCall<CustomerApiInterceptor, CustomerToken>() {
+                @Override
+                public Observable<CustomerToken> call(CustomerApiInterceptor interceptor, Observable<CustomerToken> originalObservable) {
+                    return interceptor.renewCustomer(originalObservable);
+                }
+            }
+        ).observeOn(callbackScheduler);
     }
 
     @Override
@@ -318,7 +414,7 @@ final class CustomerServiceDefault implements CustomerService {
             throw new IllegalArgumentException("email cannot be empty");
         }
 
-        return retrofitService
+        final Observable<Void> apiRequest = retrofitService
             .recoverCustomer(new EmailWrapper(email))
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .map(new Func1<Response<Void>, Void>() {
@@ -327,7 +423,18 @@ final class CustomerServiceDefault implements CustomerService {
                     return response.body();
                 }
             })
-            .onErrorResumeNext(new BuyClientExceptionHandler<Void>())
-            .observeOn(callbackScheduler);
+            .onErrorResumeNext(new BuyClientExceptionHandler<Void>());
+
+        return ApiInterceptWrapper.wrap(
+            apiRequest,
+            requestInterceptor,
+            responseInterceptor,
+            new ApiInterceptWrapper.InterceptorCall<CustomerApiInterceptor, Void>() {
+                @Override
+                public Observable<Void> call(CustomerApiInterceptor interceptor, Observable<Void> originalObservable) {
+                    return interceptor.recoverPassword(email, originalObservable);
+                }
+            }
+        ).observeOn(callbackScheduler);
     }
 }
