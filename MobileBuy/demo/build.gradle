@@ -98,8 +98,14 @@ android {
       buildConfigField "String", "ANDROID_PAY_PUBLIC_KEY", "\"" + androidPayPublicKey.toString() + "\""
       buildConfigField "boolean", "USE_RX_API", "true"
     }
-    release {
+    debug {
       minifyEnabled false
+      shrinkResources false
+      proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+    }
+    release {
+      minifyEnabled true
+      shrinkResources true
       proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
     }
   }
