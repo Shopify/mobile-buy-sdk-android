@@ -34,9 +34,9 @@ import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.WindowManager;
 
-import com.shopify.buy.R;
 import com.shopify.buy.model.Product;
 import com.shopify.buy.utils.DeviceUtils;
+import com.shopify.sample.R;
 
 /**
  * Activity that shows the details of a {@link Product}.

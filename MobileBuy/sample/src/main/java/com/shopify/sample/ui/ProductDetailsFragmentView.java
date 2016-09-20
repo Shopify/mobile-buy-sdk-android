@@ -37,7 +37,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
-
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.TabLayout;
@@ -62,13 +61,13 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.shopify.buy.R;
 import com.shopify.buy.model.Image;
 import com.shopify.buy.model.OptionValue;
 import com.shopify.buy.model.Product;
 import com.shopify.buy.model.ProductVariant;
 import com.shopify.buy.utils.ColorBlender;
 import com.shopify.buy.utils.DeviceUtils;
+import com.shopify.sample.R;
 
 import java.text.NumberFormat;
 import java.util.Arrays;
