@@ -214,9 +214,6 @@ final class CheckoutServiceDefault implements CheckoutService {
 
     @Override
     public Observable<Checkout> completeCheckout(final PaymentToken paymentToken, final String checkoutToken) {
-        if (paymentToken == null) {
-            throw new NullPointerException("paymentToken cannot be null");
-        }
         if (checkoutToken == null) {
             throw new NullPointerException("checkoutToken cannot be null");
         }
@@ -224,8 +221,10 @@ final class CheckoutServiceDefault implements CheckoutService {
             throw new IllegalArgumentException("checkout token cannot be empty");
         }
 
+        final PaymentToken paymentTokenToSend = paymentToken != null ? paymentToken : PaymentToken.createEmptyPaymentToken();
+
         return retrofitService
-            .completeCheckout(paymentToken, checkoutToken)
+            .completeCheckout(paymentTokenToSend, checkoutToken)
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<Response<Void>>())
             .flatMap(new Func1<Response<Void>, Observable<Checkout>>() {
                 @Override
