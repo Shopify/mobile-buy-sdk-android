@@ -97,7 +97,7 @@ public interface CheckoutService {
     /**
      * Complete the checkout and process the payment session
      *
-     * @param paymentToken  a {@link PaymentToken} associated with the checkout to be completed, not null if {@link Checkout#getPaymentDue()} is > 0
+     * @param paymentToken  a {@link PaymentToken} associated with the checkout to be completed, not null if {@link Checkout#getPaymentDue()} is greater than 0
      * @param checkoutToken checkout token associated with the specified payment token, not null or empty
      * @param callback the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      * @return cancelable task
@@ -107,7 +107,7 @@ public interface CheckoutService {
     /**
      * Complete the checkout and process the payment session
      *
-     * @param paymentToken a {@link PaymentToken} associated with the checkout to be completed, not null if {@link Checkout#getPaymentDue()} is > 0
+     * @param paymentToken a {@link PaymentToken} associated with the checkout to be completed, not null if {@link Checkout#getPaymentDue()} is greater than 0
      * @param checkoutToken checkout token associated with the specified payment token, not null or empty
      * @return cold observable that emits completed checkout
      */
