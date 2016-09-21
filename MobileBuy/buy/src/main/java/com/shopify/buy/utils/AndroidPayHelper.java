@@ -35,11 +35,14 @@ import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.BooleanResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.identity.intents.model.CountrySpecification;
 import com.google.android.gms.identity.intents.model.UserAddress;
 import com.google.android.gms.wallet.Cart;
+import com.google.android.gms.wallet.Cart.Builder;
 import com.google.android.gms.wallet.FullWallet;
 import com.google.android.gms.wallet.FullWalletRequest;
 import com.google.android.gms.wallet.LineItem;
+import com.google.android.gms.wallet.LineItem.Role;
 import com.google.android.gms.wallet.MaskedWallet;
 import com.google.android.gms.wallet.MaskedWalletRequest;
 import com.google.android.gms.wallet.PaymentMethodTokenizationParameters;
@@ -55,6 +58,8 @@ import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.Collection;
 
 
 /**
@@ -85,7 +90,7 @@ public final class AndroidPayHelper {
             throw new NullPointerException("shop cannot be null");
         }
 
-        Cart.Builder builder = Cart.newBuilder();
+        Builder builder = Cart.newBuilder();
         builder.setCurrencyCode(shop.getCurrency());
         BigDecimal totalPrice = new BigDecimal(0);
         for (com.shopify.buy.model.LineItem shopifyLineItem : shopifyCart.getLineItems()) {
@@ -108,7 +113,7 @@ public final class AndroidPayHelper {
             throw new NullPointerException("checkout cannot be null");
         }
 
-        Cart.Builder builder = Cart.newBuilder();
+        Builder builder = Cart.newBuilder();
         builder.setCurrencyCode(checkout.getCurrency());
         for (com.shopify.buy.model.LineItem shopifyLineItem : checkout.getLineItems()) {
             LineItem lineItem = createWalletLineItem(shopifyLineItem, checkout.getCurrency());
@@ -127,7 +132,7 @@ public final class AndroidPayHelper {
 
         if (checkout.getShippingRate() != null) {
             LineItem lineItem = LineItem.newBuilder()
-                .setRole(LineItem.Role.SHIPPING)
+                .setRole(Role.SHIPPING)
                 .setTotalPrice(checkout.getShippingRate().getPrice())
                 .build();
             builder.addLineItem(lineItem);
@@ -144,7 +149,7 @@ public final class AndroidPayHelper {
                 .setTotalPrice(lineTotal.toString())
                 .setDescription(shopifyLineItem.getTitle())
                 .setCurrencyCode(currencyCode)
-                .setRole(LineItem.Role.REGULAR)
+                .setRole(Role.REGULAR)
                 .build();
     }
 
@@ -253,9 +258,62 @@ public final class AndroidPayHelper {
                 .setEstimatedTotalPrice(checkout.getPaymentDue())
                 .setPaymentMethodTokenizationParameters(parameters)
                 .setCart(walletCart)
-                .setPhoneNumberRequired(phoneNumberRequired)
                 .build();
     }
+
+
+    public static MaskedWalletRequest createMaskedWalletRequest(Checkout checkout, Shop shop, String publicKey, boolean phoneNumberRequired) {
+        if (checkout == null) {
+            throw new NullPointerException("checkout cannot be null");
+        }
+
+        if (publicKey == null) {
+            throw new IllegalArgumentException("publicKey cannot be empty");
+        }
+
+        if (shop == null) {
+            throw new IllegalArgumentException("shop cannot be null");
+        }
+
+        // Create the parameters that will be used for encrypting Network Tokens.
+        PaymentMethodTokenizationParameters parameters =
+            PaymentMethodTokenizationParameters.newBuilder()
+                .setPaymentMethodTokenizationType(PaymentMethodTokenizationType.NETWORK_TOKEN)
+                .addParameter("publicKey", publicKey)
+                .build();
+
+        // Create a Wallet cart from our Checkout.
+        Cart walletCart = createWalletCart(checkout);
+
+        // These settings should be updated to reflect the requirements of the app.
+        // The merchant name will be shown on the top of the Android Pay dialogs
+        return MaskedWalletRequest.newBuilder()
+            .setMerchantName(shop.getName())
+            .setPhoneNumberRequired(phoneNumberRequired)
+            .setShippingAddressRequired(checkout.isRequiresShipping())
+            .setCurrencyCode(checkout.getCurrency())
+            .setEstimatedTotalPrice(checkout.getPaymentDue())
+            .setPaymentMethodTokenizationParameters(parameters)
+            .addAllowedCountrySpecificationsForShipping(getCountrySpecifications(shop))
+            .setCart(walletCart)
+            .build();
+
+    }
+
+    private static Collection<CountrySpecification> getCountrySpecifications(Shop shop) {
+        Collection<CountrySpecification> countryCodes = new ArrayList<>();
+
+        String endDelimiter = "*";
+
+        for (String countryCode : shop.getShipsToCountries()) {
+            if (!endDelimiter.equals(countryCode)) {
+                countryCodes.add(new CountrySpecification(countryCode));
+            }
+        }
+
+        return countryCodes;
+    }
+
 
     /**
      * Creates a Full Wallet Request from a Shopify Checkout
