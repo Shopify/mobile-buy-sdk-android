@@ -39,14 +39,22 @@ final class StoreServiceDefault implements StoreService {
 
     final Scheduler callbackScheduler;
 
+    final StoreApiInterceptor requestInterceptor;
+
+    final StoreApiInterceptor responseInterceptor;
+
     StoreServiceDefault(
         final Retrofit retrofit,
         final NetworkRetryPolicyProvider networkRetryPolicyProvider,
-        final Scheduler callbackScheduler
+        final Scheduler callbackScheduler,
+        final StoreApiInterceptor requestInterceptor,
+        final StoreApiInterceptor responseInterceptor
     ) {
         this.retrofitService = retrofit.create(StoreRetrofitService.class);
         this.networkRetryPolicyProvider = networkRetryPolicyProvider;
         this.callbackScheduler = callbackScheduler;
+        this.requestInterceptor = requestInterceptor;
+        this.responseInterceptor = responseInterceptor;
     }
 
     @Override
@@ -56,7 +64,7 @@ final class StoreServiceDefault implements StoreService {
 
     @Override
     public Observable<Shop> getShop() {
-        return retrofitService
+        final Observable<Shop> apiRequest = retrofitService
             .getShop()
             .retryWhen(networkRetryPolicyProvider.provide())
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
@@ -66,7 +74,18 @@ final class StoreServiceDefault implements StoreService {
                     return response.body();
                 }
             })
-            .onErrorResumeNext(new BuyClientExceptionHandler<Shop>())
-            .observeOn(callbackScheduler);
+            .onErrorResumeNext(new BuyClientExceptionHandler<Shop>());
+
+        return ApiInterceptWrapper.wrap(
+            apiRequest,
+            requestInterceptor,
+            responseInterceptor,
+            new ApiInterceptWrapper.InterceptorCall<StoreApiInterceptor, Shop>() {
+                @Override
+                public Observable<Shop> call(StoreApiInterceptor interceptor, Observable<Shop> originalObservable) {
+                    return interceptor.getShop(originalObservable);
+                }
+            }
+        ).observeOn(callbackScheduler);
     }
 }
