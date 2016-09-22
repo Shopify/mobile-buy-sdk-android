@@ -39,6 +39,7 @@ import android.support.v7.widget.Toolbar;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Created by henrytao on 8/30/16.
@@ -81,22 +82,67 @@ public class CheckoutActivity extends BaseActivity {
     );
   }
 
+  @OnClick(R.id.btn_payment_method)
+  protected void onPaymentMethodClicked() {
+    manageSubscription(UnsubscribeLifeCycle.DESTROY_VIEW,
+        mShopifyService
+            .setCheckoutState(CheckoutState.PAYMENT_METHOD)
+            .compose(Transformer.applyComputationScheduler())
+            .subscribe(aVoid -> {
+            }, Throwable::printStackTrace));
+  }
+
+  @OnClick(R.id.btn_shipping_address)
+  protected void onShippingAddressClicked() {
+    manageSubscription(UnsubscribeLifeCycle.DESTROY_VIEW,
+        mShopifyService
+            .setCheckoutState(CheckoutState.SHIPPING_ADDRESS)
+            .compose(Transformer.applyComputationScheduler())
+            .subscribe(aVoid -> {
+            }, Throwable::printStackTrace));
+  }
+
+  @OnClick(R.id.btn_shipping_rates)
+  protected void onShippingRatesClicked() {
+    manageSubscription(UnsubscribeLifeCycle.DESTROY_VIEW,
+        mShopifyService
+            .setCheckoutState(CheckoutState.SHIPPING_RATES)
+            .compose(Transformer.applyComputationScheduler())
+            .subscribe(aVoid -> {
+            }, Throwable::printStackTrace));
+  }
+
+  @OnClick(R.id.btn_summary)
+  protected void onSummaryClicked() {
+    manageSubscription(UnsubscribeLifeCycle.DESTROY_VIEW,
+        mShopifyService
+            .setCheckoutState(CheckoutState.SUMMARY_BEFORE_PAYMENT)
+            .compose(Transformer.applyComputationScheduler())
+            .subscribe(aVoid -> {
+            }, Throwable::printStackTrace));
+  }
+
   private void onCheckoutStateChanged(CheckoutState state) {
     Fragment fragment;
     switch (state) {
       case PAYMENT_METHOD:
         fragment = PaymentMethodFragment.newInstance();
         break;
-      //case SHIPPING_ADDRESS:
-      //  break;
-      //case SHIPPING_RATES:
-      //  break;
-      //case SUMMARY_BEFORE_PAYMENT:
-      //  break;
-      //case PROCESSING:
-      //  break;
-      //case PAYMENT_SUCCESS:
-      //  break;
+      case SHIPPING_ADDRESS:
+        fragment = ShippingAddressFragment.newInstance();
+        break;
+      case SHIPPING_RATES:
+        fragment = ShippingRatesFragment.newInstance();
+        break;
+      case SUMMARY_BEFORE_PAYMENT:
+        fragment = SummaryFragment.newInstance();
+        break;
+      case PROCESSING:
+        fragment = ProcessingFragment.newInstance();
+        break;
+      case PAYMENT_SUCCESS:
+        fragment = PurchaseSuccessFragment.newInstance();
+        break;
       default:
         fragment = PaymentMethodFragment.newInstance();
         break;

@@ -34,12 +34,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 /**
- * Created by henrytao on 9/15/16.
+ * Created by henrytao on 9/20/16.
  */
-public class SummaryFragment extends BaseFragment {
+public class PurchaseSuccessFragment extends BaseFragment {
 
-  public static SummaryFragment newInstance() {
-    return new SummaryFragment();
+  public static PurchaseSuccessFragment newInstance() {
+    return new PurchaseSuccessFragment();
   }
 
   @Override

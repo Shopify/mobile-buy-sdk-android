@@ -115,4 +115,8 @@
   <string name="text_web_checkout">Web checkout</string>
   <string name="text_android_pay_checkout">Android Pay checkout</string>
   <string name="text_native_checkout">Native checkout</string>
+  <string name="text_payment_method">Payment method</string>
+  <string name="text_shipping_address">Shipping address</string>
+  <string name="text_shipping_rates">Shipping rates</string>
+  <string name="text_summary">Summary</string>
 </resources>

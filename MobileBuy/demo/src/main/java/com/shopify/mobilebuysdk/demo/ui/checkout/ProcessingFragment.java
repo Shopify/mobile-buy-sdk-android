@@ -38,6 +38,10 @@ import android.view.ViewGroup;
  */
 public class ProcessingFragment extends BaseFragment {
 
+  public static ProcessingFragment newInstance() {
+    return new ProcessingFragment();
+  }
+
   @Override
   public View onInflateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
     return null;

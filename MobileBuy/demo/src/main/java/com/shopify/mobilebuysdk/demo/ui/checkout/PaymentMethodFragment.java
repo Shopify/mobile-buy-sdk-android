@@ -25,10 +25,11 @@
 
 package com.shopify.mobilebuysdk.demo.ui.checkout;
 
-import com.shopify.buy.model.Checkout;
 import com.shopify.mobilebuysdk.demo.R;
+import com.shopify.mobilebuysdk.demo.data.CheckoutState;
 import com.shopify.mobilebuysdk.demo.ui.base.BaseFragment;
 import com.shopify.mobilebuysdk.demo.util.NavigationUtils;
+import com.shopify.mobilebuysdk.demo.util.rx.Transformer;
 import com.shopify.mobilebuysdk.demo.util.rx.UnsubscribeLifeCycle;
 
 import android.content.Intent;
@@ -78,16 +79,24 @@ public class PaymentMethodFragment extends BaseFragment {
 
   @OnClick(R.id.btn_native_checkout)
   protected void onNativeCheckoutClick() {
-    
+    manageSubscription(UnsubscribeLifeCycle.DESTROY_VIEW,
+        mShopifyService
+            .setCheckoutState(CheckoutState.SHIPPING_ADDRESS)
+            .compose(Transformer.applyComputationScheduler())
+            .subscribe()
+    );
   }
 
   @OnClick(R.id.btn_web_checkout)
   protected void onWebCheckoutClick() {
     manageSubscription(UnsubscribeLifeCycle.DESTROY_VIEW,
-        mShopifyService.createCheckout().subscribe(checkout -> {
-          Intent intent = new Intent(Intent.ACTION_VIEW);
-          intent.setData(Uri.parse(checkout.getWebUrl()));
-          NavigationUtils.startActivity(getActivity(), intent);
-        }, Throwable::printStackTrace));
+        mShopifyService
+            .createCheckout()
+            .compose(Transformer.applyIoScheduler())
+            .subscribe(checkout -> {
+              Intent intent = new Intent(Intent.ACTION_VIEW);
+              intent.setData(Uri.parse(checkout.getWebUrl()));
+              NavigationUtils.startActivity(getActivity(), intent);
+            }, Throwable::printStackTrace));
   }
 }

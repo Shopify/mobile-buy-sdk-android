@@ -38,6 +38,10 @@ import android.view.ViewGroup;
  */
 public class ShippingRatesFragment extends BaseFragment {
 
+  public static ShippingRatesFragment newInstance() {
+    return new ShippingRatesFragment();
+  }
+
   @Override
   public View onInflateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
     return null;

@@ -129,7 +129,7 @@ dependencies {
   compile "com.jakewharton:butterknife:8.0.1"
   apt "com.jakewharton:butterknife-compiler:8.0.1"
 
-  compile("me.henrytao:mdcore:3.3.2") {
+  compile("me.henrytao:mdcore:3.3.6") {
     exclude group: "com.android.support"
   }
   compile("me.henrytao:recycler-pager-adapter:2.0.1") {

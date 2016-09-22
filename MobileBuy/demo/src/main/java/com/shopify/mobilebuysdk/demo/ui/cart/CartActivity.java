@@ -156,7 +156,13 @@ public class CartActivity extends BaseHomeActivity implements CartItemViewHolder
   }
 
   private void onCheckoutClick() {
-    NavigationUtils.startActivity(this, CheckoutActivity.newIntent(this));
+    manageSubscription(UnsubscribeLifeCycle.DESTROY_VIEW,
+        mShopifyService
+            .createCheckout()
+            .compose(Transformer.applyIoScheduler())
+            .subscribe(checkout -> {
+              NavigationUtils.startActivity(this, CheckoutActivity.newIntent(this));
+            }, Throwable::printStackTrace));
   }
 
   private static class Adapter extends RecyclerView.Adapter<CartItemViewHolder> {
@@ -190,6 +196,7 @@ public class CartActivity extends BaseHomeActivity implements CartItemViewHolder
     }
 
     public void addOrSetToZero(List<CartLineItem> cartLineItems) {
+      // TODO: this is work around to support 0 count in cart items.
       Map<ProductVariant, Boolean> caches = new HashMap<>();
       Map<ProductVariant, Integer> indexes = new HashMap<>();
       int n = mData.size();

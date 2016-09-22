@@ -36,6 +36,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Window;
 
+import me.henrytao.mdcore.core.MdCore;
 import rx.Subscription;
 
 /**
@@ -154,6 +155,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseLife
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
+    MdCore.init(this);
     Bundle bundle = getIntent().getExtras();
     onInitializedBundle(bundle != null ? bundle : new Bundle(), savedInstanceState != null ? savedInstanceState : new Bundle());
     super.onCreate(savedInstanceState);

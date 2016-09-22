@@ -145,12 +145,16 @@ public class ShopifyService {
     });
   }
 
-  public Observable<Void> resetCheckout() {
-    return mStorageService
-        .setCheckoutState(CheckoutState.NONE)
-        .map(aVoid -> {
-          mCheckout = null;
-          return null;
-        });
+  //public Observable<Void> resetCheckout() {
+  //  return mStorageService
+  //      .setCheckoutState(CheckoutState.NONE)
+  //      .map(aVoid -> {
+  //        mCheckout = null;
+  //        return null;
+  //      });
+  //}
+
+  public Observable<Void> setCheckoutState(CheckoutState state) {
+    return mStorageService.setCheckoutState(state);
   }
 }

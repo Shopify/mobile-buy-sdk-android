@@ -18,7 +18,7 @@
 
 # mobile-buy-sdk
 
--keep public class com.shopify.buy.** { *; }
+-keep public class com.shopify.buy.model.** { *; }
 
 
 # Created by https://proguard.herokuapp.com/api/
@@ -36,14 +36,9 @@
     public <init>(android.content.Context);
 }
 
-# If in your rest service interface you use methods with Callback argument.
 -keepattributes Exceptions
 
-# If your rest service methods throw custom exceptions, because you've defined an ErrorHandler.
 -keepattributes Signature
-
-# Also you must note that if you are using GSON for conversion from JSON to POJO representation, you must ignore those POJO classes from being obfuscated.
-# Here include the POJO's that have you have created for mapping JSON response to POJO for example.
 
 
 # Retrofit 2.X
@@ -85,6 +80,7 @@
 }
 
 -keepnames @com.google.android.gms.common.annotation.KeepName class *
+
 -keepclassmembernames class * {
     @com.google.android.gms.common.annotation.KeepName *;
 }
@@ -93,7 +89,7 @@
     public static final ** CREATOR;
 }
 
-# RxJava 0.21
+# RxJava
 
 -dontwarn rx.**
 
