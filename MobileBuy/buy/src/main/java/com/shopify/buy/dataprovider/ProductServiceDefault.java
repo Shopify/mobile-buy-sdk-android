@@ -92,12 +92,17 @@ final class ProductServiceDefault implements ProductService {
     }
 
     @Override
-    public int getCollectionPageSize() {
+    public int getProductRequestPageSize() {
+        return productPageSize;
+    }
+
+    @Override
+    public int getCollectionRequestPageSize() {
         return collectionPageSize;
     }
 
     @Override
-    public int getProductTagPageSize() {
+    public int getProductTagRequestPageSize() {
         return productTagPageSize;
     }
 

@@ -56,9 +56,10 @@ public class BuyClientFacadeTest extends ShopifyAndroidTestCase {
         Assert.assertNotNull(buyClient.getApplicationName());
         Assert.assertNotNull(buyClient.getShopDomain());
         Assert.assertNotNull(buyClient.getShop());
-        Assert.assertEquals(PRODUCT_PAGE_SIZE, buyClient.getProductPageSize());
-        Assert.assertEquals(COLLECTION_PAGE_SIZE, buyClient.getCollectionPageSize());
-        Assert.assertEquals(PRODUCT_TAG_PAGE_SIZE, buyClient.getProductTagPageSize());
+        Assert.assertEquals(PRODUCT_PAGE_SIZE, buyClient.getProductRequestPageSize());
+        Assert.assertEquals(PRODUCT_PAGE_SIZE, buyClient.getProductRequestPageSize());
+        Assert.assertEquals(COLLECTION_PAGE_SIZE, buyClient.getCollectionRequestPageSize());
+        Assert.assertEquals(PRODUCT_TAG_PAGE_SIZE, buyClient.getProductTagRequestPageSize());
         Assert.assertNotNull(buyClient.createCheckout(new Checkout("test")));
         Assert.assertNotNull(buyClient.updateCheckout(new Checkout("test")));
         Assert.assertNotNull(buyClient.getShippingRates("test"));
@@ -112,8 +113,9 @@ public class BuyClientFacadeTest extends ShopifyAndroidTestCase {
             .build();
 
         Assert.assertEquals(PRODUCT_PAGE_SIZE, buyClient1.getProductPageSize());
-        Assert.assertEquals(PRODUCT_PAGE_SIZE, buyClient1.getCollectionPageSize());
-        Assert.assertEquals(PRODUCT_PAGE_SIZE, buyClient1.getProductTagPageSize());
+        Assert.assertEquals(PRODUCT_PAGE_SIZE, buyClient1.getProductRequestPageSize());
+        Assert.assertEquals(PRODUCT_PAGE_SIZE, buyClient1.getCollectionRequestPageSize());
+        Assert.assertEquals(PRODUCT_PAGE_SIZE, buyClient1.getProductTagRequestPageSize());
 
     }
 }

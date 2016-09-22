@@ -470,13 +470,18 @@ final class BuyClientDefault implements BuyClient {
     }
 
     @Override
-    public int getCollectionPageSize() {
-        return productService.getCollectionPageSize();
+    public int getProductRequestPageSize() {
+        return productService.getProductRequestPageSize();
     }
 
     @Override
-    public int getProductTagPageSize() {
-        return productService.getProductTagPageSize();
+    public int getCollectionRequestPageSize() {
+        return productService.getCollectionRequestPageSize();
+    }
+
+    @Override
+    public int getProductTagRequestPageSize() {
+        return productService.getProductTagRequestPageSize();
     }
 
     @Override
