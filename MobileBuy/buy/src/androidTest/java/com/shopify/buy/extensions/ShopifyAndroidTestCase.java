@@ -27,6 +27,12 @@ import rx.schedulers.Schedulers;
  */
 public class ShopifyAndroidTestCase {
 
+    public static int PRODUCT_PAGE_SIZE = 50;
+
+    public static int COLLECTION_PAGE_SIZE = 60;
+
+    public static int PRODUCT_TAG_PAGE_SIZE = 100;
+
     @Rule
     public TestName name = new TestName();
 
@@ -80,7 +86,9 @@ public class ShopifyAndroidTestCase {
             .appId(appId)
             .applicationName(applicationName)
             .callbackScheduler(Schedulers.immediate())
-            .productPageSize(50)
+            .productPageSize(PRODUCT_PAGE_SIZE)
+            .collectionPageSize(COLLECTION_PAGE_SIZE)
+            .productTagPageSize(PRODUCT_TAG_PAGE_SIZE)
             .httpTimeout(TimeUnit.SECONDS.toMillis(60), TimeUnit.SECONDS.toMillis(60))
             .networkRequestRetryPolicy(1, 100, 1);
 

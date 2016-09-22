@@ -69,6 +69,10 @@ public final class BuyClientBuilder {
 
     private int productPageSize = DEFAULT_PAGE_SIZE;
 
+    private int collectionPageSize = -1;
+
+    private int productTagPageSize = -1;
+
     private int networkRequestRetryMaxCount;
 
     private long networkRequestRetryDelayMs;
@@ -181,6 +185,36 @@ public final class BuyClientBuilder {
      */
     public BuyClientBuilder productPageSize(final int productPageSize) {
         this.productPageSize = Math.max(Math.min(productPageSize, MAX_PAGE_SIZE), MIN_PAGE_SIZE);
+        return this;
+    }
+
+    /**
+     * Sets the page size used for paged collection API queries. The number of {@link com.shopify.buy.model.Collection} to include in a page.
+     * The maximum page size is {@link #MAX_PAGE_SIZE} and the minimum page size is {@link #MIN_PAGE_SIZE}.
+     * If the page size is less than {@code MIN_PAGE_SIZE}, it will be set to {@code MIN_PAGE_SIZE}.
+     * If the page size is greater than MAX_PAGE_SIZE it will be set to {@code MAX_PAGE_SIZE}.
+     * The default value is {@link #DEFAULT_PAGE_SIZE}
+     *
+     * @param collectionPageSize The number of collections to return in a page.
+     * @return a {@link BuyClientBuilder}
+     */
+    public BuyClientBuilder collectionPageSize(final int collectionPageSize) {
+        this.collectionPageSize = Math.max(Math.min(collectionPageSize, MAX_PAGE_SIZE), MIN_PAGE_SIZE);
+        return this;
+    }
+
+    /**
+     * Sets the page size used for paged product tag API queries. The number of tags to include in a page.
+     * The maximum page size is {@link #MAX_PAGE_SIZE} and the minimum page size is {@link #MIN_PAGE_SIZE}.
+     * If the page size is less than {@code MIN_PAGE_SIZE}, it will be set to {@code MIN_PAGE_SIZE}.
+     * If the page size is greater than MAX_PAGE_SIZE it will be set to {@code MAX_PAGE_SIZE}.
+     * The default value is {@link #DEFAULT_PAGE_SIZE}
+     *
+     * @param productTagPageSize The number of product tags to return in a page.
+     * @return a {@link BuyClientBuilder}
+     */
+    public BuyClientBuilder productTagPageSize(final int productTagPageSize) {
+        this.productTagPageSize = Math.max(Math.min(productTagPageSize, MAX_PAGE_SIZE), MIN_PAGE_SIZE);
         return this;
     }
 
@@ -316,6 +350,8 @@ public final class BuyClientBuilder {
             customerToken,
             callbackScheduler,
             productPageSize,
+            collectionPageSize > 0 ? collectionPageSize : productPageSize,
+            productTagPageSize > 0 ? productTagPageSize : productPageSize,
             productRequestInterceptor,
             productResponseInterceptor,
             customerRequestInterceptor,

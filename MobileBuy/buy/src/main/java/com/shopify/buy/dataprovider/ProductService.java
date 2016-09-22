@@ -44,6 +44,20 @@ public interface ProductService {
     int getProductPageSize();
 
     /**
+     * Returns the page size used for paged collection API queries.
+     *
+     * @return page size
+     */
+    int getCollectionPageSize();
+
+    /**
+     * Returns the page size used for paged product tag API queries.
+     *
+     * @return page size
+     */
+    int getProductTagPageSize();
+
+    /**
      * Fetch a page of products
      *
      * @param page     the 1-based page index. The page size is set by {@link BuyClientBuilder#productPageSize} configuration.

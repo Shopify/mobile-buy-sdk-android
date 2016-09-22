@@ -82,6 +82,8 @@ final class BuyClientDefault implements BuyClient {
         final CustomerToken customerToken,
         final Scheduler callbackScheduler,
         final int productPageSize,
+        final int collectionPageSize,
+        final int productTagPageSize,
         final ProductApiInterceptor productRequestInterceptor,
         final ProductApiInterceptor productResponseInterceptor,
         final CustomerApiInterceptor customerRequestInterceptor,
@@ -147,7 +149,7 @@ final class BuyClientDefault implements BuyClient {
         customerService = new CustomerServiceDefault(retrofit, customerToken, networkRetryPolicyProvider, callbackScheduler, customerRequestInterceptor, customerResponseInterceptor);
         addressService = new AddressServiceDefault(retrofit, networkRetryPolicyProvider, callbackScheduler, customerService);
         orderService = new OrderServiceDefault(retrofit, networkRetryPolicyProvider, callbackScheduler, customerService);
-        productService = new ProductServiceDefault(retrofit, appId, productPageSize, networkRetryPolicyProvider, callbackScheduler, productRequestInterceptor, productResponseInterceptor);
+        productService = new ProductServiceDefault(retrofit, appId, productPageSize, collectionPageSize, productTagPageSize, networkRetryPolicyProvider, callbackScheduler, productRequestInterceptor, productResponseInterceptor);
     }
 
     @Override
@@ -465,6 +467,16 @@ final class BuyClientDefault implements BuyClient {
     @Override
     public int getProductPageSize() {
         return productService.getProductPageSize();
+    }
+
+    @Override
+    public int getCollectionPageSize() {
+        return productService.getCollectionPageSize();
+    }
+
+    @Override
+    public int getProductTagPageSize() {
+        return productService.getProductTagPageSize();
     }
 
     @Override

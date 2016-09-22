@@ -25,6 +25,8 @@ package com.shopify.buy.service;
 
 import android.support.test.runner.AndroidJUnit4;
 
+import com.shopify.buy.dataprovider.BuyClient;
+import com.shopify.buy.dataprovider.BuyClientBuilder;
 import com.shopify.buy.extensions.ShopifyAndroidTestCase;
 import com.shopify.buy.model.AccountCredentials;
 import com.shopify.buy.model.Address;
@@ -54,6 +56,9 @@ public class BuyClientFacadeTest extends ShopifyAndroidTestCase {
         Assert.assertNotNull(buyClient.getApplicationName());
         Assert.assertNotNull(buyClient.getShopDomain());
         Assert.assertNotNull(buyClient.getShop());
+        Assert.assertEquals(PRODUCT_PAGE_SIZE, buyClient.getProductPageSize());
+        Assert.assertEquals(COLLECTION_PAGE_SIZE, buyClient.getCollectionPageSize());
+        Assert.assertEquals(PRODUCT_TAG_PAGE_SIZE, buyClient.getProductTagPageSize());
         Assert.assertNotNull(buyClient.createCheckout(new Checkout("test")));
         Assert.assertNotNull(buyClient.updateCheckout(new Checkout("test")));
         Assert.assertNotNull(buyClient.getShippingRates("test"));
@@ -94,5 +99,21 @@ public class BuyClientFacadeTest extends ShopifyAndroidTestCase {
         Assert.assertNotNull(buyClient.getCollections(1, Arrays.asList(1L)));
         Assert.assertNotNull(buyClient.getProductTags(1));
         Assert.assertNotNull(buyClient.getProducts(1, 1L, new LinkedHashSet<String>(), null));
+    }
+
+    @Test
+    public void testDefaultPageSizes() {
+        final BuyClient buyClient1 = new BuyClientBuilder()
+            .shopDomain(getShopDomain())
+            .apiKey(getApiKey())
+            .appId(getAppId())
+            .applicationName(data.getApplicationName())
+            .productPageSize(PRODUCT_PAGE_SIZE)
+            .build();
+
+        Assert.assertEquals(PRODUCT_PAGE_SIZE, buyClient1.getProductPageSize());
+        Assert.assertEquals(PRODUCT_PAGE_SIZE, buyClient1.getCollectionPageSize());
+        Assert.assertEquals(PRODUCT_PAGE_SIZE, buyClient1.getProductTagPageSize());
+
     }
 }
