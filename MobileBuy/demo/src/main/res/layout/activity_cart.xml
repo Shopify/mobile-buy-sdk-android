@@ -60,6 +60,8 @@
           android:layout_marginEnd="@dimen/mdLayoutSpacingInverse_xs"
           android:layout_marginRight="@dimen/mdLayoutSpacingInverse_xs"
           android:minWidth="0dp"
+          android:paddingLeft="@dimen/mdLayoutSpacing_xs"
+          android:paddingRight="@dimen/mdLayoutSpacing_xs"
           app:drawableStartCompat="@drawable/ic_arrow_drop_down_accent"
           tools:ignore="MissingPrefix"
           style="@style/MdButton.Colored" />

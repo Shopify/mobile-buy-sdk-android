@@ -30,6 +30,7 @@ import com.shopify.buy.model.ProductVariant;
 import com.shopify.mobilebuysdk.demo.R;
 import com.shopify.mobilebuysdk.demo.data.CartItemInfo;
 import com.shopify.mobilebuysdk.demo.ui.base.BaseHomeActivity;
+import com.shopify.mobilebuysdk.demo.ui.base.DialogHelper;
 import com.shopify.mobilebuysdk.demo.ui.base.RecyclerViewLoadingEmptyErrorWrapperAdapter;
 import com.shopify.mobilebuysdk.demo.ui.checkout.CheckoutActivity;
 import com.shopify.mobilebuysdk.demo.util.NavigationUtils;
@@ -37,6 +38,8 @@ import com.shopify.mobilebuysdk.demo.util.rx.Transformer;
 import com.shopify.mobilebuysdk.demo.util.rx.UnsubscribeLifeCycle;
 import com.shopify.mobilebuysdk.demo.widget.BottomBar;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -65,6 +68,8 @@ public class CartActivity extends BaseHomeActivity implements CartItemViewHolder
   @BindView(R.id.bottom_bar) BottomBar vBottomBar;
 
   @BindView(R.id.btn_checkout) Button vBtnCheckout;
+
+  @BindView(R.id.btn_checkout_options) Button vBtnCheckoutOptions;
 
   @BindView(R.id.recycler_view) RecyclerView vRecyclerView;
 
@@ -124,8 +129,10 @@ public class CartActivity extends BaseHomeActivity implements CartItemViewHolder
 
     mLoadingEmptyErrorWrapperAdapter.showEmptyView();
     vBtnCheckout.setEnabled(false);
+    vBtnCheckoutOptions.setEnabled(false);
 
     vBtnCheckout.setOnClickListener(view -> onCheckoutClick());
+    vBtnCheckoutOptions.setOnClickListener(view -> onCheckoutClick());
 
     manageSubscription(UnsubscribeLifeCycle.DESTROY,
         mShopifyService
@@ -144,6 +151,7 @@ public class CartActivity extends BaseHomeActivity implements CartItemViewHolder
             .compose(Transformer.applyComputationScheduler())
             .subscribe(quantity -> {
               vBtnCheckout.setEnabled(quantity > 0);
+              vBtnCheckoutOptions.setEnabled(quantity > 0);
             }, Throwable::printStackTrace),
         mShopifyService
             .observeCartSubtotal()
@@ -157,12 +165,27 @@ public class CartActivity extends BaseHomeActivity implements CartItemViewHolder
 
   private void onCheckoutClick() {
     manageSubscription(UnsubscribeLifeCycle.DESTROY_VIEW,
-        mShopifyService
-            .createCheckout()
-            .compose(Transformer.applyIoScheduler())
-            .subscribe(checkout -> {
-              NavigationUtils.startActivity(this, CheckoutActivity.newIntent(this));
-            }, Throwable::printStackTrace));
+        DialogHelper
+            .showPaymentMethodDialog(this)
+            .filter(result -> result.action == DialogHelper.Action.POSITIVE)
+            .zipWith(mShopifyService.createCheckout().compose(Transformer.applyIoScheduler()), (result, checkout) -> {
+              switch (result.paymentMethod) {
+                case WEB:
+                  Intent intent = new Intent(Intent.ACTION_VIEW);
+                  intent.setData(Uri.parse(checkout.getWebUrl()));
+                  NavigationUtils.startActivity(this, intent);
+                  break;
+                case ANDROID_PAY:
+                  break;
+                case NATIVE:
+                  NavigationUtils.startActivity(this, CheckoutActivity.newIntent(this));
+                  break;
+              }
+              return null;
+            })
+            .subscribe(o -> {
+            }, Throwable::printStackTrace)
+    );
   }
 
   private static class Adapter extends RecyclerView.Adapter<CartItemViewHolder> {
@@ -173,7 +196,7 @@ public class CartActivity extends BaseHomeActivity implements CartItemViewHolder
 
     private final CartItemViewHolder.OnCartItemRemoveClickListener mOnCartItemRemoveClickListener;
 
-    public Adapter(CartItemViewHolder.OnCartItemAddClickListener onCartItemAddClickListener,
+    Adapter(CartItemViewHolder.OnCartItemAddClickListener onCartItemAddClickListener,
         CartItemViewHolder.OnCartItemRemoveClickListener onCartItemRemoveClickListener) {
       mOnCartItemAddClickListener = onCartItemAddClickListener;
       mOnCartItemRemoveClickListener = onCartItemRemoveClickListener;
@@ -195,7 +218,7 @@ public class CartActivity extends BaseHomeActivity implements CartItemViewHolder
       return new CartItemViewHolder(parent, mOnCartItemAddClickListener, mOnCartItemRemoveClickListener);
     }
 
-    public void addOrSetToZero(List<CartLineItem> cartLineItems) {
+    void addOrSetToZero(List<CartLineItem> cartLineItems) {
       // TODO: this is work around to support 0 count in cart items.
       Map<ProductVariant, Boolean> caches = new HashMap<>();
       Map<ProductVariant, Integer> indexes = new HashMap<>();
