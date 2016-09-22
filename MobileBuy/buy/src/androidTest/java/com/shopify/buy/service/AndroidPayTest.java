@@ -62,6 +62,7 @@ import java.security.MessageDigest;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 
@@ -178,7 +179,7 @@ public class AndroidPayTest extends ShopifyAndroidTestCase {
         assertWalletCart(request.getCart());
         Assert.assertEquals(shop.getName(), request.getMerchantName());
         Assert.assertEquals(CURRENCY, request.getCurrencyCode());
-        Assert.assertEquals(convertToCountryCodes(request.getAllowedCountrySpecificationsForShipping()), shop.getShipsToCountries());
+        Assert.assertEquals(new HashSet<>(convertToCountryCodes(request.getAllowedCountrySpecificationsForShipping())), new HashSet<>(shop.getShipsToCountries()));
         Assert.assertEquals(checkout.getPaymentDue(), request.getEstimatedTotalPrice());
     }
 
