@@ -201,7 +201,7 @@ public final class BuyClientBuilder {
      * If the page size is greater than MAX_PAGE_SIZE it will be set to {@code MAX_PAGE_SIZE}.
      * The default value is {@link #DEFAULT_PAGE_SIZE}
      *
-     * @param productPageSize The number of products to return in a page.
+     * @param productRequestPageSize The number of products to return in a page.
      * @return a {@link BuyClientBuilder}
      */
     public BuyClientBuilder productRequestPageSize(final int productRequestPageSize) {
