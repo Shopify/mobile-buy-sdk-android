@@ -176,6 +176,7 @@ public class CartActivity extends BaseHomeActivity implements CartItemViewHolder
                   NavigationUtils.startActivity(this, intent);
                   break;
                 case ANDROID_PAY:
+                  // TODO: setup Android Pay
                   break;
                 case NATIVE:
                   NavigationUtils.startActivity(this, CheckoutActivity.newIntent(this));
