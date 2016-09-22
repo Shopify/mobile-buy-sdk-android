@@ -220,12 +220,14 @@ public final class AndroidPayHelper {
     /**
      * Creates a Masked Wallet Request from a Shopify Checkout
      *
-     * @deprecated use {@link AndroidPayHelper#createMaskedWalletRequest(Checkout, Shop, String, boolean)}
      * @param merchantName        The merchant name to show on the Android Pay dialogs, not null or empty
      * @param checkout            The {@link Checkout} to use, not null.
      * @param publicKey           The Public Key to use, not empty.
      * @param phoneNumberRequired If true, the phone number will be required as part of the Shipping Address in Android Pay
      * @return A {@link MaskedWalletRequest}
+     *
+     *
+     * @deprecated use {@link AndroidPayHelper#createMaskedWalletRequest(Checkout, Shop, String, boolean)} instead.
      */
     @Deprecated
     public static MaskedWalletRequest createMaskedWalletRequest(String merchantName, Checkout checkout, String publicKey, boolean phoneNumberRequired) {

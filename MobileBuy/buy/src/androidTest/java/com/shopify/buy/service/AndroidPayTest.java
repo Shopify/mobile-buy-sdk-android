@@ -93,7 +93,7 @@ public class AndroidPayTest extends ShopifyAndroidTestCase {
 
         currencyFormatter = CurrencyFormatter.getFormatter(Locale.CANADA, CURRENCY, false, false, true);
 
-        List<String> shipsToCountries = new ArrayList<>();
+        final List<String> shipsToCountries = new ArrayList<>();
         shipsToCountries.add("US");
         shipsToCountries.add("UK");
         shipsToCountries.add("CA");
@@ -178,17 +178,17 @@ public class AndroidPayTest extends ShopifyAndroidTestCase {
         assertWalletCart(request.getCart());
         Assert.assertEquals(shop.getName(), request.getMerchantName());
         Assert.assertEquals(CURRENCY, request.getCurrencyCode());
-        Assert.assertEquals(request.getAllowedShippingCountrySpecifications(), convertToCountrySpecifications(shop.getShipsToCountries()));
+        Assert.assertEquals(convertToCountryCodes(request.getAllowedCountrySpecificationsForShipping()), shop.getShipsToCountries());
         Assert.assertEquals(checkout.getPaymentDue(), request.getEstimatedTotalPrice());
     }
 
-    private ArrayList<CountrySpecification> convertToCountrySpecifications(List<String> countryCodes) {
-        ArrayList<CountrySpecification> countrySpecifications = new ArrayList<>();
+    private ArrayList<String> convertToCountryCodes(List<CountrySpecification> countrySpecifications) {
+        ArrayList<String> countryCodes = new ArrayList<>();
 
-        for (String countryCode : countryCodes) {
-            countrySpecifications.add(new CountrySpecification(countryCode));
+        for (CountrySpecification countrySpecification : countrySpecifications) {
+            countryCodes.add(countrySpecification.getCountryCode());
         }
-        return countrySpecifications;
+        return countryCodes;
     }
 
     @Test
