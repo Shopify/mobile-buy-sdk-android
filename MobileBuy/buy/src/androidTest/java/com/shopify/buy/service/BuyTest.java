@@ -24,6 +24,7 @@ import org.apache.http.HttpStatus;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
@@ -649,9 +650,13 @@ public class BuyTest extends ShopifyAndroidTestCase {
 
         // add some custom properties
         LineItem lineItem = cart.getLineItems().get(0);
-        Map<String, String> properties = lineItem.getProperties();
+        Map<String, Object> properties = lineItem.getProperties();
         properties.put("color", "red");
         properties.put("size", "large");
+
+        // Add a couple non-primitive properties
+        properties.put("materials", Collections.singletonList("hello"));
+        properties.put("foo", PaymentToken.createCreditCardPaymentToken("bar"));
 
         return cart;
     }
@@ -731,7 +736,7 @@ public class BuyTest extends ShopifyAndroidTestCase {
         assertNotNull(checkout.getLineItems());
         assertEquals(1, checkout.getLineItems().size());
         assertNotNull(checkout.getLineItems().get(0).getProperties());
-        assertEquals(2, checkout.getLineItems().get(0).getProperties().size());
+        assertEquals(4, checkout.getLineItems().get(0).getProperties().size());
         assertEquals(checkout.getSourceName(), "mobile_app");
     }
 
