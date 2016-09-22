@@ -58,8 +58,10 @@ import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Locale;
+import java.util.Set;
 
 
 /**
@@ -67,7 +69,6 @@ import java.util.Collection;
  */
 
 public final class AndroidPayHelper {
-
     private static final int FIRST_NAME_PART = 0;
     private static final int LAST_NAME_PART = 1;
 
@@ -219,12 +220,14 @@ public final class AndroidPayHelper {
     /**
      * Creates a Masked Wallet Request from a Shopify Checkout
      *
+     * @deprecated use {@link AndroidPayHelper#createMaskedWalletRequest(Checkout, Shop, String, boolean)}
      * @param merchantName        The merchant name to show on the Android Pay dialogs, not null or empty
      * @param checkout            The {@link Checkout} to use, not null.
      * @param publicKey           The Public Key to use, not empty.
      * @param phoneNumberRequired If true, the phone number will be required as part of the Shipping Address in Android Pay
      * @return A {@link MaskedWalletRequest}
      */
+    @Deprecated
     public static MaskedWalletRequest createMaskedWalletRequest(String merchantName, Checkout checkout, String publicKey, boolean phoneNumberRequired) {
         if (checkout == null) {
             throw new NullPointerException("checkout cannot be null");
@@ -262,6 +265,15 @@ public final class AndroidPayHelper {
     }
 
 
+    /**
+     * Creates a Masked Wallet Request from a Shopify Checkout and Shop
+     *
+     * @param checkout            The {@link Checkout} to use, not null.
+     * @param shop                The {@link Shop} to use, not null.
+     * @param publicKey           The Public Key to use, not empty.
+     * @param phoneNumberRequired If true, the phone number will be required as part of the Shipping Address in Android Pay
+     * @return
+     */
     public static MaskedWalletRequest createMaskedWalletRequest(Checkout checkout, Shop shop, String publicKey, boolean phoneNumberRequired) {
         if (checkout == null) {
             throw new NullPointerException("checkout cannot be null");
@@ -301,12 +313,16 @@ public final class AndroidPayHelper {
     }
 
     private static Collection<CountrySpecification> getCountrySpecifications(Shop shop) {
-        Collection<CountrySpecification> countryCodes = new ArrayList<>();
+        Set<CountrySpecification> countryCodes = new HashSet<>();
 
-        String endDelimiter = "*";
+        String wildcard = "*";
 
         for (String countryCode : shop.getShipsToCountries()) {
-            if (!endDelimiter.equals(countryCode)) {
+            if (wildcard.equals(countryCode)) {
+                countryCodes.addAll(getAllCountryCodes());
+            }
+
+            if (!wildcard.equals(countryCode)) {
                 countryCodes.add(new CountrySpecification(countryCode));
             }
         }
@@ -314,6 +330,15 @@ public final class AndroidPayHelper {
         return countryCodes;
     }
 
+    private static Set<CountrySpecification> getAllCountryCodes() {
+        Set<CountrySpecification> countrySpecifications = new HashSet<>();
+
+        for (String countryCode : Locale.getISOCountries()) {
+            countrySpecifications.add(new CountrySpecification(countryCode));
+        }
+
+        return countrySpecifications;
+    }
 
     /**
      * Creates a Full Wallet Request from a Shopify Checkout
