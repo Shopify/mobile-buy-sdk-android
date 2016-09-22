@@ -167,7 +167,6 @@ public class AndroidPayTest extends ShopifyAndroidTestCase {
     }
 
     @Test
-    @Deprecated
     public void testCreateMaskedWalletRequestWithShop() {
         final Checkout checkout = Mockito.mock(Checkout.class);
         Mockito.doReturn(Arrays.asList(lineItem1, lineItem2)).when(checkout).getLineItems();
@@ -180,6 +179,34 @@ public class AndroidPayTest extends ShopifyAndroidTestCase {
         Assert.assertEquals(shop.getName(), request.getMerchantName());
         Assert.assertEquals(CURRENCY, request.getCurrencyCode());
         Assert.assertEquals(new HashSet<>(convertToCountryCodes(request.getAllowedCountrySpecificationsForShipping())), new HashSet<>(shop.getShipsToCountries()));
+        Assert.assertEquals(checkout.getPaymentDue(), request.getEstimatedTotalPrice());
+    }
+
+
+    @Test
+    public void testCreateMaskedWalletRequestWithShopWildCardShipsTo() {
+        final Checkout checkout = Mockito.mock(Checkout.class);
+        Mockito.doReturn(Arrays.asList(lineItem1, lineItem2)).when(checkout).getLineItems();
+        Mockito.doReturn(CURRENCY).when(checkout).getCurrency();
+        Mockito.doReturn(currencyFormatter.format(LINE_ITEM_TOTAL_PRICE_1 + LINE_ITEM_TOTAL_PRICE_2)).when(checkout).getPaymentDue();
+        Mockito.doReturn(true).when(checkout).isRequiresShipping();
+
+        final List<String> shipsToCountries = new ArrayList<>();
+        shipsToCountries.add("US");
+        shipsToCountries.add("*");
+
+        // We want to make sure that we don't send duplicate country codes to Google
+        Shop shop = Mockito.mock(Shop.class);
+        Mockito.when(shop.getCurrency()).thenReturn("CAD");
+        Mockito.when(shop.getShipsToCountries()).thenReturn(shipsToCountries);
+
+        final MaskedWalletRequest request = AndroidPayHelper.createMaskedWalletRequest(checkout, shop, "ANDROID_PAY_PUBLIC_KEY", true);
+        assertWalletCart(request.getCart());
+        Assert.assertEquals(shop.getName(), request.getMerchantName());
+        Assert.assertEquals(CURRENCY, request.getCurrencyCode());
+
+        // ISOCountries is a superset of all country codes.  Adding "US" to this should not change the count as we do not allow duplicates.
+        Assert.assertEquals(Locale.getISOCountries().length, request.getAllowedCountrySpecificationsForShipping().size());
         Assert.assertEquals(checkout.getPaymentDue(), request.getEstimatedTotalPrice());
     }
 

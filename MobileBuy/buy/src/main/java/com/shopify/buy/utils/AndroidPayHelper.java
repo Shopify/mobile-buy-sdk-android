@@ -58,6 +58,8 @@ import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Locale;
@@ -311,31 +313,24 @@ public final class AndroidPayHelper {
             .addAllowedCountrySpecificationsForShipping(getCountrySpecifications(shop))
             .setCart(walletCart)
             .build();
-
     }
 
     private static Collection<CountrySpecification> getCountrySpecifications(Shop shop) {
-        Set<CountrySpecification> countryCodes = new HashSet<>();
+        Set<String> countryCodes = new HashSet<>();
 
         String wildcard = "*";
 
         for (String countryCode : shop.getShipsToCountries()) {
             if (wildcard.equals(countryCode)) {
-                countryCodes.addAll(getAllCountryCodes());
-            }
-
-            if (!wildcard.equals(countryCode)) {
-                countryCodes.add(new CountrySpecification(countryCode));
+                countryCodes.addAll(Arrays.asList(Locale.getISOCountries()));
+            } else {
+                countryCodes.add(countryCode);
             }
         }
 
-        return countryCodes;
-    }
+        ArrayList<CountrySpecification> countrySpecifications = new ArrayList<>(countryCodes.size());
 
-    private static Set<CountrySpecification> getAllCountryCodes() {
-        Set<CountrySpecification> countrySpecifications = new HashSet<>();
-
-        for (String countryCode : Locale.getISOCountries()) {
+        for(String countryCode : countryCodes) {
             countrySpecifications.add(new CountrySpecification(countryCode));
         }
 
