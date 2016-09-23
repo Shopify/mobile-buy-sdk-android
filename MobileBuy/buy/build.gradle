@@ -200,7 +200,7 @@ android {
         }
     }
 
-    sourceSets { main { assets.srcDirs = ['src/main/assets', 'src/androidTest/assets/'] } }
+    sourceSets { main { assets.srcDirs = ['src/main/assets'] } }
 
     lintOptions {
         abortOnError false
