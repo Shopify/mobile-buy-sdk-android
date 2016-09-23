@@ -54,7 +54,7 @@ public final class PaymentToken {
      * @return an empty {@code PaymentToken}
      */
     public static PaymentToken createEmptyPaymentToken() {
-        return new PaymentToken(null);
+        return new PaymentToken();
     }
 
     @SerializedName("payment_session_id")
@@ -65,6 +65,11 @@ public final class PaymentToken {
 
     private PaymentToken(String paymentSessionId) {
         this.paymentSessionId = paymentSessionId;
+        wrapper = null;
+    }
+
+    private PaymentToken() {
+        paymentSessionId = null;
         wrapper = null;
     }
 
@@ -83,7 +88,7 @@ public final class PaymentToken {
         @SerializedName("type")
         private final String type;
 
-        private final String source;
+        private final String source = SOURCE_NAME;
 
         @SerializedName("identifier")
         private final String identifier;
@@ -92,7 +97,6 @@ public final class PaymentToken {
             this.paymentData = paymentData;
             this.type = type;
             this.identifier = identifier;
-            source = SOURCE_NAME;
         }
     }
 }
