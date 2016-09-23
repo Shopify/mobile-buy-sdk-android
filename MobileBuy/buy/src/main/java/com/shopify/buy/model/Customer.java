@@ -24,10 +24,21 @@
 
 package com.shopify.buy.model;
 
-import com.google.gson.annotations.SerializedName;
+import android.text.TextUtils;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
+import com.google.gson.annotations.SerializedName;
+import com.shopify.buy.dataprovider.BuyClientUtils;
+
+import java.lang.reflect.Type;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class Customer extends ShopifyObject {
 
@@ -56,6 +67,8 @@ public class Customer extends ShopifyObject {
     @SerializedName("total_spent")
     protected String totalSpent;
 
+    protected String note;
+
     @SerializedName("verified_email")
     protected Boolean verifiedEmail;
 
@@ -64,6 +77,9 @@ public class Customer extends ShopifyObject {
 
     @SerializedName("tax_exempt")
     protected Boolean taxExempt;
+
+    protected String tags;
+    private Set<String> tagSet;
 
     @SerializedName("last_order_id")
     protected Long lastOrderId;
@@ -145,6 +161,13 @@ public class Customer extends ShopifyObject {
     }
 
     /**
+     * @return A note about the customer.
+     */
+    public String getNote() {
+        return note;
+    }
+
+    /**
      * @return {code true} if the customer email address has been verified.
      */
     public boolean isVerifiedEmail() {
@@ -163,6 +186,13 @@ public class Customer extends ShopifyObject {
      **/
     public boolean isTaxExempt() {
         return taxExempt != null && taxExempt;
+    }
+
+    /**
+     * @return A list of additional categorizations that a customer can be tagged with.
+     */
+    public Set<String> getTags() {
+        return tagSet;
     }
 
     /**
@@ -201,6 +231,14 @@ public class Customer extends ShopifyObject {
         this.addresses = addresses;
     }
 
+    public void setTaxExempt(boolean taxExempt) {
+        this.taxExempt = taxExempt;
+    }
+
+    public void setMultipassIdentifier(String multipassIdentifier) {
+        this.multipassIdentifier = multipassIdentifier;
+    }
+
     public void setEmail(String email) {
         this.email = email;
     }
@@ -211,6 +249,46 @@ public class Customer extends ShopifyObject {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
+    }
+
+    public void setTags(Set<String> tags) {
+        tagSet = tags;
+        this.tags = TextUtils.join(",", tags);
+    }
+
+    public static class CustomerDeserializer implements JsonDeserializer<Customer> {
+        @Override
+        public Customer deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+            return fromJson(json.toString());
+        }
+    }
+
+    /**
+     * A Customer object created using the values in the JSON string.
+     *
+     * @param json The input json.
+     * @return A {@link Customer}
+     */
+    public static Customer fromJson(String json) {
+        Gson gson = BuyClientUtils.createDefaultGson(Customer.class);
+        Customer customer = gson.fromJson(json, Customer.class);
+
+        // Create the tagSet.
+        customer.tagSet = new HashSet<>();
+
+        // Populate the tagSet from the comma separated list.
+        if (!TextUtils.isEmpty(customer.tags)) {
+            for (String tag : customer.tags.split(",")) {
+                String myTag = tag.trim();
+                customer.tagSet.add(myTag);
+            }
+        }
+
+        return customer;
     }
 
 }

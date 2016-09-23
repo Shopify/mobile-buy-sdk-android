@@ -28,6 +28,7 @@ import android.util.Base64;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.shopify.buy.model.Checkout;
+import com.shopify.buy.model.Customer;
 import com.shopify.buy.model.Product;
 import com.shopify.buy.utils.DateUtility;
 
@@ -48,6 +49,10 @@ public final class BuyClientUtils {
 
         if (!Product.class.equals(forClass)) {
             builder.registerTypeAdapter(Product.class, new Product.ProductDeserializer());
+        }
+
+        if (!Customer.class.equals(forClass)) {
+            builder.registerTypeAdapter(Customer.class, new Customer.CustomerDeserializer());
         }
 
         if (!Checkout.class.equals(forClass)) {
