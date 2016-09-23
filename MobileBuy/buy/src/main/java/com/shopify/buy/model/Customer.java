@@ -26,15 +26,8 @@ package com.shopify.buy.model;
 
 import android.text.TextUtils;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParseException;
 import com.google.gson.annotations.SerializedName;
-import com.shopify.buy.dataprovider.BuyClientUtils;
 
-import java.lang.reflect.Type;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -83,7 +76,7 @@ public class Customer extends ShopifyObject {
     protected String tags;
 
     @Deprecated
-    private Set<String> tagSet;
+    private Set<String> tagSet = new HashSet<>();
 
     @SerializedName("last_order_id")
     protected Long lastOrderId;
@@ -286,37 +279,6 @@ public class Customer extends ShopifyObject {
     public void setTags(Set<String> tags) {
         tagSet = tags;
         this.tags = TextUtils.join(",", tags);
-    }
-
-    public static class CustomerDeserializer implements JsonDeserializer<Customer> {
-        @Override
-        public Customer deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-            return fromJson(json.toString());
-        }
-    }
-
-    /**
-     * A Customer object created using the values in the JSON string.
-     *
-     * @param json The input json.
-     * @return A {@link Customer}
-     */
-    public static Customer fromJson(String json) {
-        Gson gson = BuyClientUtils.createDefaultGson(Customer.class);
-        Customer customer = gson.fromJson(json, Customer.class);
-
-        // Create the tagSet.
-        customer.tagSet = new HashSet<>();
-
-        // Populate the tagSet from the comma separated list.
-        if (!TextUtils.isEmpty(customer.tags)) {
-            for (String tag : customer.tags.split(",")) {
-                String myTag = tag.trim();
-                customer.tagSet.add(myTag);
-            }
-        }
-
-        return customer;
     }
 
 }
