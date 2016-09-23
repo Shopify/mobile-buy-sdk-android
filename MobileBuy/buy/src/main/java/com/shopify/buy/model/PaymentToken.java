@@ -75,11 +75,15 @@ public final class PaymentToken {
 
     private static final class Wrapper {
 
+        private final static String SOURCE_NAME = "sdk";
+
         @SerializedName("payment_data")
         private final String paymentData;
 
         @SerializedName("type")
         private final String type;
+
+        private final String source = SOURCE_NAME;
 
         @SerializedName("identifier")
         private final String identifier;

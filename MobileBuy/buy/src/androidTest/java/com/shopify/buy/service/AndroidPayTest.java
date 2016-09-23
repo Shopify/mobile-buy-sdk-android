@@ -368,12 +368,16 @@ public class AndroidPayTest extends ShopifyAndroidTestCase {
         final Field paymentTypeField = Class.forName("com.shopify.buy.model.PaymentToken$Wrapper").getDeclaredField("type");
         paymentTypeField.setAccessible(true);
 
+        final Field paymentSourceField = Class.forName("com.shopify.buy.model.PaymentToken$Wrapper").getDeclaredField("source");
+        paymentSourceField.setAccessible(true);
+
         final Field paymentTokenWrapperField = PaymentToken.class.getDeclaredField("wrapper");
         paymentTokenWrapperField.setAccessible(true);
         final Object paymentTokenWrapper = paymentTokenWrapperField.get(paymentToken);
 
         Assert.assertEquals("android_pay", paymentTypeField.get(paymentTokenWrapper));
         Assert.assertEquals(paymentMethodToken.getToken(), paymentDataField.get(paymentTokenWrapper));
+        Assert.assertEquals("sdk", paymentSourceField.get(paymentTokenWrapper));
 
         final MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
         final byte[] digest = messageDigest.digest("androidPayPublicKey".getBytes("UTF-8"));
