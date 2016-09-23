@@ -48,6 +48,10 @@ public class TestData {
         return data.get("product_ids").getAsJsonArray().get(0).getAsLong();
     }
 
+    public Long getProductIdWithNoCost() {
+        return data.get("product_ids").getAsJsonArray().get(2).getAsLong();
+    }
+
     public Long getProductIdWithVariants() {
         return data.get("product_ids").getAsJsonArray().get(1).getAsLong();
     }

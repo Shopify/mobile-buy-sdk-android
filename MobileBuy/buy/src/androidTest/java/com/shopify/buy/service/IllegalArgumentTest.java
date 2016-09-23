@@ -188,13 +188,6 @@ public class IllegalArgumentTest extends ShopifyAndroidTestCase {
         checkException(NullPointerException.class, new Runnable() {
             @Override
             public void run() {
-                buyClient.completeCheckout(null, "test");
-            }
-        });
-
-        checkException(NullPointerException.class, new Runnable() {
-            @Override
-            public void run() {
                 buyClient.completeCheckout(PaymentToken.createCreditCardPaymentToken("test"), null);
             }
         });
@@ -203,13 +196,6 @@ public class IllegalArgumentTest extends ShopifyAndroidTestCase {
             @Override
             public void run() {
                 buyClient.completeCheckout(PaymentToken.createCreditCardPaymentToken("test"), "");
-            }
-        });
-
-        checkException(NullPointerException.class, new Runnable() {
-            @Override
-            public void run() {
-                buyClient.completeCheckout(null, "test");
             }
         });
 
