@@ -29,9 +29,9 @@ import android.view.View;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
+import com.shopify.buy.R;
 import com.shopify.buy.model.OptionValue;
 import com.shopify.buy.model.Product;
-import com.shopify.sample.R;
 
 /**
  * Displays the options available for the {@link Product}.
@@ -48,7 +48,7 @@ class ProductDetailsVariantOptionView {
     public ProductDetailsVariantOptionView(View rootView, int index, Resources resources, ProductDetailsTheme theme) {
         this.resources = resources;
         this.index = index;
-        parentTable = (TableLayout) rootView.findViewById(R.id.product_variant_selection_container);
+        this.parentTable = (TableLayout) rootView.findViewById(R.id.product_variant_selection_container);
 
         parentTable.setBackgroundDrawable(theme.getBackgroundSelectorDrawable(resources));
 
