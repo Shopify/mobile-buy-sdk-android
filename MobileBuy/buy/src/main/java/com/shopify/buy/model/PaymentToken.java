@@ -54,7 +54,7 @@ public final class PaymentToken {
      * @return an empty {@code PaymentToken}
      */
     public static PaymentToken createEmptyPaymentToken() {
-        return new PaymentToken(null, null, null);
+        return new PaymentToken(null);
     }
 
     @SerializedName("payment_session_id")
@@ -83,7 +83,7 @@ public final class PaymentToken {
         @SerializedName("type")
         private final String type;
 
-        private final String source = SOURCE_NAME;
+        private final String source;
 
         @SerializedName("identifier")
         private final String identifier;
@@ -92,6 +92,7 @@ public final class PaymentToken {
             this.paymentData = paymentData;
             this.type = type;
             this.identifier = identifier;
+            source = SOURCE_NAME;
         }
     }
 }
