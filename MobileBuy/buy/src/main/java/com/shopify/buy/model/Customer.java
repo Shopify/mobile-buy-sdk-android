@@ -67,6 +67,7 @@ public class Customer extends ShopifyObject {
     @SerializedName("total_spent")
     protected String totalSpent;
 
+    @Deprecated
     protected String note;
 
     @SerializedName("verified_email")
@@ -78,7 +79,10 @@ public class Customer extends ShopifyObject {
     @SerializedName("tax_exempt")
     protected Boolean taxExempt;
 
+    @Deprecated
     protected String tags;
+
+    @Deprecated
     private Set<String> tagSet;
 
     @SerializedName("last_order_id")
@@ -162,7 +166,10 @@ public class Customer extends ShopifyObject {
 
     /**
      * @return A note about the customer.
+     *
+     * @deprecated This field is never returned from the server and will be empty.
      */
+    @Deprecated
     public String getNote() {
         return note;
     }
@@ -190,7 +197,10 @@ public class Customer extends ShopifyObject {
 
     /**
      * @return A list of additional categorizations that a customer can be tagged with.
+     *
+     * @deprecated This field is never returned by the server and will always be empty.
      */
+    @Deprecated
     public Set<String> getTags() {
         return tagSet;
     }
@@ -231,10 +241,20 @@ public class Customer extends ShopifyObject {
         this.addresses = addresses;
     }
 
+    /**
+     * @deprecated This field is read only on the server and updates will be ignored.
+     * @param taxExempt ignored
+     */
+    @Deprecated
     public void setTaxExempt(boolean taxExempt) {
         this.taxExempt = taxExempt;
     }
 
+    /**
+     * @deprecated This field is read only on the server and updates will be ignored.
+     * @param multipassIdentifier ignored
+     */
+    @Deprecated
     public void setMultipassIdentifier(String multipassIdentifier) {
         this.multipassIdentifier = multipassIdentifier;
     }
@@ -251,10 +271,18 @@ public class Customer extends ShopifyObject {
         this.lastName = lastName;
     }
 
+    /**
+     * @deprecated This field is read only on the server and updates will be ignored.
+     */
+    @Deprecated
     public void setNote(String note) {
         this.note = note;
     }
 
+    /**
+     * @deprecated This field is read only on the server and updates will be ignored.
+     */
+    @Deprecated
     public void setTags(Set<String> tags) {
         tagSet = tags;
         this.tags = TextUtils.join(",", tags);
