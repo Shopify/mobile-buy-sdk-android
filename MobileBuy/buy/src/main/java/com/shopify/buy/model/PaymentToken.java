@@ -54,7 +54,7 @@ public final class PaymentToken {
      * @return an empty {@code PaymentToken}
      */
     public static PaymentToken createEmptyPaymentToken() {
-        return new PaymentToken(null, null, null);
+        return new PaymentToken();
     }
 
     @SerializedName("payment_session_id")
@@ -68,6 +68,11 @@ public final class PaymentToken {
         wrapper = null;
     }
 
+    private PaymentToken() {
+        paymentSessionId = null;
+        wrapper = null;
+    }
+
     private PaymentToken(String token, String type, String publicKeyHash) {
         paymentSessionId = null;
         wrapper = new Wrapper(token, type, publicKeyHash);
@@ -75,11 +80,15 @@ public final class PaymentToken {
 
     private static final class Wrapper {
 
+        private final static String SOURCE_NAME = "sdk";
+
         @SerializedName("payment_data")
         private final String paymentData;
 
         @SerializedName("type")
         private final String type;
+
+        private final String source = SOURCE_NAME;
 
         @SerializedName("identifier")
         private final String identifier;
