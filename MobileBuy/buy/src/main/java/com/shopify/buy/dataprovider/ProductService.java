@@ -40,8 +40,31 @@ public interface ProductService {
      * Returns the page size used for paged product API queries.
      *
      * @return page size
+     * @deprecated use {@link #getProductRequestPageSize()} instead
      */
+    @Deprecated
     int getProductPageSize();
+
+    /**
+     * Returns the page size used for paged product API queries.
+     *
+     * @return page size
+     */
+    int getProductRequestPageSize();
+
+    /**
+     * Returns the page size used for paged collection API queries.
+     *
+     * @return page size
+     */
+    int getCollectionRequestPageSize();
+
+    /**
+     * Returns the page size used for paged product tag API queries.
+     *
+     * @return page size
+     */
+    int getProductTagRequestPageSize();
 
     /**
      * Fetch a page of products
@@ -148,7 +171,7 @@ public interface ProductService {
     /**
      * Fetch collections by ids
      *
-     * @param page     the 1-based page index. The page size is set by {@link BuyClientBuilder#productPageSize} configuration.
+     * @param page          the 1-based page index. The page size is set by {@link BuyClientBuilder#productPageSize} configuration.
      * @param collectionIds a list of the ids to fetch, not null or empty
      * @param callback      the {@link Callback} that will be used to indicate the response from the asynchronous network operation, not null
      * @return cancelable task
@@ -158,7 +181,7 @@ public interface ProductService {
     /**
      * Fetch a page of collections
      *
-     * @param page     the 1-based page index. The page size is set by {@link BuyClientBuilder#productPageSize} configuration.
+     * @param page          the 1-based page index. The page size is set by {@link BuyClientBuilder#productPageSize} configuration.
      * @param collectionIds a List of the ids to fetch, not null or empty
      * @return cold observable that emits requested list of collections
      */

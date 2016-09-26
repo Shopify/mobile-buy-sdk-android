@@ -50,7 +50,11 @@ final class ProductServiceDefault implements ProductService {
 
     final String appId;
 
-    final int pageSize;
+    final int productPageSize;
+
+    final int collectionPageSize;
+
+    final int productTagPageSize;
 
     final NetworkRetryPolicyProvider networkRetryPolicyProvider;
 
@@ -63,7 +67,9 @@ final class ProductServiceDefault implements ProductService {
     ProductServiceDefault(
         final Retrofit retrofit,
         final String appId,
-        final int pageSize,
+        final int productPageSize,
+        final int collectionPageSize,
+        final int productTagPageSize,
         final NetworkRetryPolicyProvider networkRetryPolicyProvider,
         final Scheduler callbackScheduler,
         final ProductApiInterceptor requestInterceptor,
@@ -71,7 +77,9 @@ final class ProductServiceDefault implements ProductService {
     ) {
         this.retrofitService = retrofit.create(ProductRetrofitService.class);
         this.appId = appId;
-        this.pageSize = pageSize;
+        this.productPageSize = productPageSize;
+        this.collectionPageSize = collectionPageSize;
+        this.productTagPageSize = productTagPageSize;
         this.networkRetryPolicyProvider = networkRetryPolicyProvider;
         this.callbackScheduler = callbackScheduler;
         this.requestInterceptor = requestInterceptor;
@@ -80,7 +88,22 @@ final class ProductServiceDefault implements ProductService {
 
     @Override
     public int getProductPageSize() {
-        return pageSize;
+        return productPageSize;
+    }
+
+    @Override
+    public int getProductRequestPageSize() {
+        return productPageSize;
+    }
+
+    @Override
+    public int getCollectionRequestPageSize() {
+        return collectionPageSize;
+    }
+
+    @Override
+    public int getProductTagRequestPageSize() {
+        return productTagPageSize;
     }
 
     @Override
@@ -252,7 +275,7 @@ final class ProductServiceDefault implements ProductService {
         // All collection responses from the server are wrapped in a CollectionListings object which contains and array of collections
         // For this call, we will clamp the size of the collection array returned to the page size
         final Observable<List<Collection>> apiRequest = retrofitService
-            .getCollectionPage(appId, page, pageSize)
+            .getCollectionPage(appId, page, collectionPageSize)
             .retryWhen(networkRetryPolicyProvider.provide())
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<CollectionListings, List<Collection>>())
@@ -345,7 +368,7 @@ final class ProductServiceDefault implements ProductService {
 
     private Observable<List<String>> getProductTagsObservable(int page, Long collectionId) {
         return retrofitService
-            .getProductTagPage(appId, page, collectionId, pageSize)
+            .getProductTagPage(appId, page, collectionId, productTagPageSize)
             .retryWhen(networkRetryPolicyProvider.provide())
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<ProductTagsWrapper, List<ProductTag>>())
@@ -368,7 +391,7 @@ final class ProductServiceDefault implements ProductService {
         final String tagsQueryStr = formatQueryString(tags);
 
         final Observable<List<Product>> apiRequest = retrofitService
-            .getProducts(appId, null, tagsQueryStr, null, page, pageSize)
+            .getProducts(appId, null, tagsQueryStr, null, page, productPageSize)
             .retryWhen(networkRetryPolicyProvider.provide())
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<ProductListings, List<Product>>())
@@ -405,7 +428,7 @@ final class ProductServiceDefault implements ProductService {
         final String sortOrderStr = sortOrder != null ? sortOrder.toString() : Collection.SortOrder.COLLECTION_DEFAULT.toString();
         final String tagsQueryStr = formatQueryString(tags);
         final Observable<List<Product>> apiRequest = retrofitService
-            .getProducts(appId, collectionId, tagsQueryStr, sortOrderStr, page, pageSize)
+            .getProducts(appId, collectionId, tagsQueryStr, sortOrderStr, page, productPageSize)
             .retryWhen(networkRetryPolicyProvider.provide())
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<ProductListings, List<Product>>())
