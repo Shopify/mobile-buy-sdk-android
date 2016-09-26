@@ -41,24 +41,24 @@
     android:orientation="horizontal">
 
     <Button
-      android:id="@+id/btn_payment_method"
+      android:id="@+id/btn_address"
       android:layout_width="0dp"
       android:layout_weight="1"
-      android:text="@string/text_payment_method"
+      android:text="@string/text_address"
       style="@style/MdButton" />
 
     <Button
-      android:id="@+id/btn_shipping_address"
+      android:id="@+id/btn_shipping"
       android:layout_width="0dp"
       android:layout_weight="1"
-      android:text="@string/text_shipping_address"
+      android:text="@string/text_shipping"
       style="@style/MdButton" />
 
     <Button
-      android:id="@+id/btn_shipping_rates"
+      android:id="@+id/btn_payment"
       android:layout_width="0dp"
       android:layout_weight="1"
-      android:text="@string/text_shipping_rates"
+      android:text="@string/text_payment"
       style="@style/MdButton" />
 
     <Button
@@ -73,8 +73,7 @@
     android:id="@+id/fragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_below="@id/checkout_state"
-    android:layout_marginTop="?attr/actionBarSize" />
+    android:layout_below="@id/checkout_state" />
 
   <View
     android:layout_width="match_parent"

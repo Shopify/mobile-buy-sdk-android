@@ -26,32 +26,54 @@
 package com.shopify.mobilebuysdk.demo.ui.checkout;
 
 import com.shopify.mobilebuysdk.demo.R;
-import com.shopify.mobilebuysdk.demo.data.CheckoutState;
 import com.shopify.mobilebuysdk.demo.ui.base.BaseFragment;
-import com.shopify.mobilebuysdk.demo.util.NavigationUtils;
-import com.shopify.mobilebuysdk.demo.util.rx.Transformer;
-import com.shopify.mobilebuysdk.demo.util.rx.UnsubscribeLifeCycle;
 
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import butterknife.Unbinder;
 
 /**
  * Created by henrytao on 9/14/16.
  */
-public class PaymentMethodFragment extends BaseFragment {
+public class AddressFragment extends BaseFragment {
 
-  public static PaymentMethodFragment newInstance() {
-    return new PaymentMethodFragment();
+  public static AddressFragment newInstance() {
+    return new AddressFragment();
   }
+
+  @BindView(R.id.input_address_1)
+  EditText vAddress1;
+
+  @BindView(R.id.input_address_2)
+  EditText vAddress2;
+
+  @BindView(R.id.input_city)
+  EditText vCity;
+
+  @BindView(R.id.input_country)
+  EditText vCountry;
+
+  @BindView(R.id.input_email)
+  EditText vEmail;
+
+  @BindView(R.id.input_first_name)
+  EditText vFirstName;
+
+  @BindView(R.id.input_last_name)
+  EditText vLastName;
+
+  @BindView(R.id.input_province)
+  EditText vProvince;
+
+  @BindView(R.id.input_zip)
+  EditText vZip;
 
   private Unbinder mUnbinder;
 
@@ -63,40 +85,14 @@ public class PaymentMethodFragment extends BaseFragment {
 
   @Override
   public View onInflateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-    View view = inflater.inflate(R.layout.fragment_payment_method, container, false);
+    View view = inflater.inflate(R.layout.fragment_address, container, false);
     mUnbinder = ButterKnife.bind(this, view);
     return view;
   }
 
-  @OnClick(R.id.btn_android_pay_checkout)
-  protected void onAndroidPayCheckoutClick() {
-    //manageSubscription(UnsubscribeLifeCycle.DESTROY_VIEW,
-    //    mShopifyService.createCheckout().subscribe(checkout -> {
-    //      String merchantName = getString(R.string.app_name);
-    //      MaskedWalletRequest maskedWalletRequest = AndroidPayHelper.createMaskedWalletRequest(merchantName, checkout, )
-    //    }, Throwable::printStackTrace));
-  }
+  @Override
+  public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    super.onViewCreated(view, savedInstanceState);
 
-  @OnClick(R.id.btn_native_checkout)
-  protected void onNativeCheckoutClick() {
-    manageSubscription(UnsubscribeLifeCycle.DESTROY_VIEW,
-        mShopifyService
-            .setCheckoutState(CheckoutState.SHIPPING_ADDRESS)
-            .compose(Transformer.applyComputationScheduler())
-            .subscribe()
-    );
-  }
-
-  @OnClick(R.id.btn_web_checkout)
-  protected void onWebCheckoutClick() {
-    manageSubscription(UnsubscribeLifeCycle.DESTROY_VIEW,
-        mShopifyService
-            .createCheckout()
-            .compose(Transformer.applyIoScheduler())
-            .subscribe(checkout -> {
-              Intent intent = new Intent(Intent.ACTION_VIEW);
-              intent.setData(Uri.parse(checkout.getWebUrl()));
-              NavigationUtils.startActivity(getActivity(), intent);
-            }, Throwable::printStackTrace));
   }
 }

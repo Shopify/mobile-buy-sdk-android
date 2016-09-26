@@ -32,12 +32,12 @@ import android.util.SparseArray;
  */
 public enum CheckoutState {
   NONE(0),
-  PAYMENT_METHOD(1),
-  SHIPPING_ADDRESS(2),
-  SHIPPING_RATES(3),
-  SUMMARY_BEFORE_PAYMENT(4),
+  ADDRESS(1),
+  SHIPPING(2),
+  PAYMENT(3),
+  SUMMARY(4),
   PROCESSING(5),
-  PAYMENT_SUCCESS(6);
+  SUCCESS(6);
 
   private static final SparseArray<CheckoutState> sCaches = new SparseArray<>();
 

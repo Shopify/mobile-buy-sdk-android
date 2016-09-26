@@ -82,31 +82,31 @@ public class CheckoutActivity extends BaseActivity {
     );
   }
 
-  @OnClick(R.id.btn_payment_method)
+  @OnClick(R.id.btn_payment)
   protected void onPaymentMethodClicked() {
     manageSubscription(UnsubscribeLifeCycle.DESTROY_VIEW,
         mShopifyService
-            .setCheckoutState(CheckoutState.PAYMENT_METHOD)
+            .setCheckoutState(CheckoutState.PAYMENT)
             .compose(Transformer.applyComputationScheduler())
             .subscribe(aVoid -> {
             }, Throwable::printStackTrace));
   }
 
-  @OnClick(R.id.btn_shipping_address)
+  @OnClick(R.id.btn_address)
   protected void onShippingAddressClicked() {
     manageSubscription(UnsubscribeLifeCycle.DESTROY_VIEW,
         mShopifyService
-            .setCheckoutState(CheckoutState.SHIPPING_ADDRESS)
+            .setCheckoutState(CheckoutState.ADDRESS)
             .compose(Transformer.applyComputationScheduler())
             .subscribe(aVoid -> {
             }, Throwable::printStackTrace));
   }
 
-  @OnClick(R.id.btn_shipping_rates)
+  @OnClick(R.id.btn_shipping)
   protected void onShippingRatesClicked() {
     manageSubscription(UnsubscribeLifeCycle.DESTROY_VIEW,
         mShopifyService
-            .setCheckoutState(CheckoutState.SHIPPING_RATES)
+            .setCheckoutState(CheckoutState.SHIPPING)
             .compose(Transformer.applyComputationScheduler())
             .subscribe(aVoid -> {
             }, Throwable::printStackTrace));
@@ -116,7 +116,7 @@ public class CheckoutActivity extends BaseActivity {
   protected void onSummaryClicked() {
     manageSubscription(UnsubscribeLifeCycle.DESTROY_VIEW,
         mShopifyService
-            .setCheckoutState(CheckoutState.SUMMARY_BEFORE_PAYMENT)
+            .setCheckoutState(CheckoutState.SUMMARY)
             .compose(Transformer.applyComputationScheduler())
             .subscribe(aVoid -> {
             }, Throwable::printStackTrace));
@@ -125,26 +125,26 @@ public class CheckoutActivity extends BaseActivity {
   private void onCheckoutStateChanged(CheckoutState state) {
     Fragment fragment;
     switch (state) {
-      case PAYMENT_METHOD:
-        fragment = PaymentMethodFragment.newInstance();
+      case ADDRESS:
+        fragment = AddressFragment.newInstance();
         break;
-      case SHIPPING_ADDRESS:
-        fragment = ShippingAddressFragment.newInstance();
+      case SHIPPING:
+        fragment = ShippingFragment.newInstance();
         break;
-      case SHIPPING_RATES:
-        fragment = ShippingRatesFragment.newInstance();
+      case PAYMENT:
+        fragment = PaymentFragment.newInstance();
         break;
-      case SUMMARY_BEFORE_PAYMENT:
+      case SUMMARY:
         fragment = SummaryFragment.newInstance();
         break;
       case PROCESSING:
         fragment = ProcessingFragment.newInstance();
         break;
-      case PAYMENT_SUCCESS:
+      case SUCCESS:
         fragment = PurchaseSuccessFragment.newInstance();
         break;
       default:
-        fragment = PaymentMethodFragment.newInstance();
+        fragment = AddressFragment.newInstance();
         break;
     }
     getSupportFragmentManager()

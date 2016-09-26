@@ -25,7 +25,6 @@
 
 package com.shopify.mobilebuysdk.demo.ui.checkout;
 
-import com.shopify.mobilebuysdk.demo.R;
 import com.shopify.mobilebuysdk.demo.ui.base.BaseFragment;
 
 import android.os.Bundle;
@@ -33,66 +32,18 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 
 /**
  * Created by henrytao on 9/14/16.
  */
-public class ShippingAddressFragment extends BaseFragment {
+public class ShippingFragment extends BaseFragment {
 
-  public static ShippingAddressFragment newInstance() {
-    return new ShippingAddressFragment();
-  }
-
-  @BindView(R.id.input_address_1)
-  EditText vAddress1;
-
-  @BindView(R.id.input_address_2)
-  EditText vAddress2;
-
-  @BindView(R.id.input_city)
-  EditText vCity;
-
-  @BindView(R.id.input_country)
-  EditText vCountry;
-
-  @BindView(R.id.input_email)
-  EditText vEmail;
-
-  @BindView(R.id.input_first_name)
-  EditText vFirstName;
-
-  @BindView(R.id.input_last_name)
-  EditText vLastName;
-
-  @BindView(R.id.input_province)
-  EditText vProvince;
-
-  @BindView(R.id.input_zip)
-  EditText vZip;
-
-  private Unbinder mUnbinder;
-
-  @Override
-  public void onDestroyView() {
-    super.onDestroyView();
-    mUnbinder.unbind();
+  public static ShippingFragment newInstance() {
+    return new ShippingFragment();
   }
 
   @Override
   public View onInflateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-    View view = inflater.inflate(R.layout.fragment_shipping_address, container, false);
-    mUnbinder = ButterKnife.bind(this, view);
-    return view;
-  }
-
-  @Override
-  public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-    super.onViewCreated(view, savedInstanceState);
-
+    return null;
   }
 }
