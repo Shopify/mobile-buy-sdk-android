@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ The MIT License (MIT)
+  ~
+  ~ Copyright (c) 2016 Shopify Inc.
+  ~
+  ~ Permission is hereby granted, free of charge, to any person obtaining a copy
+  ~ of this software and associated documentation files (the "Software"), to deal
+  ~ in the Software without restriction, including without limitation the rights
+  ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  ~ copies of the Software, and to permit persons to whom the Software is
+  ~ furnished to do so, subject to the following conditions:
+  ~
+  ~ The above copyright notice and this permission notice shall be included in
+  ~ all copies or substantial portions of the Software.
+  ~
+  ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+  ~ THE SOFTWARE.
+  ~
+  -->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:layout_below="@id/toolbar"
+  android:orientation="vertical"
+  android:gravity="center"
+  android:padding="@dimen/mdLayoutSpacing">
+
+  <android.support.v4.widget.NestedScrollView
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:layout_weight="1">
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical">
+
+      <EditText
+        android:id="@+id/input_email"
+        android:hint="Email"
+        style="@style/MdTextField.TextOnly" />
+
+      <EditText
+        android:id="@+id/input_first_name"
+        android:hint="First name"
+        style="@style/MdTextField.TextOnly" />
+
+      <EditText
+        android:id="@+id/input_last_name"
+        android:hint="Last name"
+        style="@style/MdTextField.TextOnly" />
+
+      <EditText
+        android:id="@+id/input_address_1"
+        android:hint="Address line"
+        style="@style/MdTextField.TextOnly" />
+
+      <EditText
+        android:id="@+id/input_address_2"
+        android:hint="Address line 2"
+        style="@style/MdTextField.TextOnly" />
+
+      <EditText
+        android:id="@+id/input_city"
+        android:hint="City"
+        style="@style/MdTextField.TextOnly" />
+
+      <EditText
+        android:id="@+id/input_zip"
+        android:hint="Zip"
+        style="@style/MdTextField.TextOnly" />
+
+      <EditText
+        android:id="@+id/input_province"
+        android:hint="Province"
+        style="@style/MdTextField.TextOnly" />
+
+      <EditText
+        android:id="@+id/input_country"
+        android:hint="Country"
+        style="@style/MdTextField.TextOnly" />
+    </LinearLayout>
+  </android.support.v4.widget.NestedScrollView>
+
+  <Button
+    android:id="@+id/btn_next"
+    android:layout_width="match_parent"
+    android:text="Next"
+    style="@style/MdButton.Colored" />
+</LinearLayout>

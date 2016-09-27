@@ -39,15 +39,14 @@ import rx.subscriptions.Subscriptions;
  */
 public class DialogHelper {
 
-  public static Observable<PaymentMethodResult> showPaymentMethodDialog(Context context) {
+  public static Observable<PaymentMethodResult> showOtherPaymentMethodsDialog(Context context) {
     return Observable.create(subscriber -> {
       CharSequence[] options = new CharSequence[]{
           context.getString(R.string.text_web_checkout),
-          context.getString(R.string.text_android_pay_checkout),
-          context.getString(R.string.text_native_checkout)
+          context.getString(R.string.text_android_pay_checkout)
       };
       AlertDialog.Builder builder = new AlertDialog.Builder(context)
-          .setTitle(context.getString(R.string.text_select_payment_method))
+          .setTitle(context.getString(R.string.text_select_other_payment_methods))
           .setOnDismissListener(dialogInterface -> {
             SubscriptionUtils.onNextAndComplete(subscriber, new PaymentMethodResult(Action.NEGATIVE, PaymentMethod.NONE));
           })

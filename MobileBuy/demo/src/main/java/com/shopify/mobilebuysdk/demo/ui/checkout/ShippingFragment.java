@@ -25,6 +25,7 @@
 
 package com.shopify.mobilebuysdk.demo.ui.checkout;
 
+import com.shopify.mobilebuysdk.demo.R;
 import com.shopify.mobilebuysdk.demo.ui.base.BaseFragment;
 
 import android.os.Bundle;
@@ -32,6 +33,9 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 /**
  * Created by henrytao on 9/14/16.
@@ -42,8 +46,24 @@ public class ShippingFragment extends BaseFragment {
     return new ShippingFragment();
   }
 
+  private Unbinder mUnBinder;
+
+  @Override
+  public void onDestroyView() {
+    super.onDestroyView();
+    mUnBinder.unbind();
+  }
+
   @Override
   public View onInflateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-    return null;
+    View view = inflater.inflate(R.layout.fragment_shipping, container, false);
+    mUnBinder = ButterKnife.bind(this, view);
+    return view;
+  }
+
+  @Override
+  public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    super.onViewCreated(view, savedInstanceState);
+
   }
 }

@@ -132,7 +132,7 @@ public class CartActivity extends BaseHomeActivity implements CartItemViewHolder
     vBtnCheckoutOptions.setEnabled(false);
 
     vBtnCheckout.setOnClickListener(view -> onCheckoutClick());
-    vBtnCheckoutOptions.setOnClickListener(view -> onCheckoutClick());
+    vBtnCheckoutOptions.setOnClickListener(view -> onCheckoutOptionsClick());
 
     manageSubscription(UnsubscribeLifeCycle.DESTROY,
         mShopifyService
@@ -165,8 +165,18 @@ public class CartActivity extends BaseHomeActivity implements CartItemViewHolder
 
   private void onCheckoutClick() {
     manageSubscription(UnsubscribeLifeCycle.DESTROY_VIEW,
+        mShopifyService
+            .createCheckout()
+            .compose(Transformer.applyIoScheduler())
+            .subscribe(checkout -> {
+              NavigationUtils.startActivity(this, CheckoutActivity.newIntent(this));
+            }, Throwable::printStackTrace));
+  }
+
+  private void onCheckoutOptionsClick() {
+    manageSubscription(UnsubscribeLifeCycle.DESTROY_VIEW,
         DialogHelper
-            .showPaymentMethodDialog(this)
+            .showOtherPaymentMethodsDialog(this)
             .filter(result -> result.action == DialogHelper.Action.POSITIVE)
             .zipWith(mShopifyService.createCheckout().compose(Transformer.applyIoScheduler()), (result, checkout) -> {
               switch (result.paymentMethod) {
@@ -177,9 +187,6 @@ public class CartActivity extends BaseHomeActivity implements CartItemViewHolder
                   break;
                 case ANDROID_PAY:
                   // TODO: setup Android Pay
-                  break;
-                case NATIVE:
-                  NavigationUtils.startActivity(this, CheckoutActivity.newIntent(this));
                   break;
               }
               return null;
