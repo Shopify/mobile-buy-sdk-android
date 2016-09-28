@@ -73,8 +73,6 @@ public class ShopifyService {
 
   private final StorageService mStorageService;
 
-  private Checkout mCheckout;
-
   private ShopifyService(Context context, StorageService storageService) {
     mStorageService = storageService;
     mPackageName = context.getPackageName();
@@ -93,26 +91,32 @@ public class ShopifyService {
   }
 
   public Observable<Void> addToCart(ProductVariant productVariant) {
-    return getCart().flatMap(cart -> {
-      cart.addVariant(productVariant);
-      return mStorageService.setCart(cart);
-    });
-  }
-
-  public Observable<Checkout> createCheckout() {
-    if (mCheckout != null) {
-      return Observable.just(mCheckout);
-    }
     return resetCheckout()
         .flatMap(aVoid -> getCart())
         .flatMap(cart -> {
-          Checkout checkout = new Checkout(cart);
-          checkout.setWebReturnToUrl(String.format(Locale.US, "%s://%s%s",
-              mContext.getString(R.string.appLink_scheme),
-              mPackageName,
-              mContext.getString(R.string.appLink_path_callback)));
-          checkout.setWebReturnToLabel(mContext.getString(R.string.text_return_to_app));
-          return mBuyClient.createCheckout(checkout).doOnNext(co -> mCheckout = co);
+          cart.addVariant(productVariant);
+          return mStorageService.setCart(cart);
+        });
+  }
+
+  public Observable<Checkout> createCheckout() {
+    return mStorageService
+        .getCheckout()
+        .flatMap(checkout -> {
+          if (checkout != null) {
+            return Observable.just(checkout);
+          }
+          return getCart()
+              .flatMap(cart -> {
+                Checkout co = new Checkout(cart);
+                co.setWebReturnToUrl(String.format(Locale.US, "%s://%s%s",
+                    mContext.getString(R.string.appLink_scheme),
+                    mPackageName,
+                    mContext.getString(R.string.appLink_path_callback)));
+                co.setWebReturnToLabel(mContext.getString(R.string.text_return_to_app));
+                return mBuyClient.createCheckout(co);
+              })
+              .flatMap(co -> mStorageService.setCheckout(co).map(aVoid -> co));
         });
   }
 
@@ -136,27 +140,34 @@ public class ShopifyService {
     return mStorageService.observeCart().map(Cart::getSubtotal).distinctUntilChanged();
   }
 
+  public Observable<Checkout> observeCheckout() {
+    return mStorageService.observeCheckout();
+  }
+
   public Observable<CheckoutState> observeCheckoutState() {
     return mStorageService.observeCheckoutState();
   }
 
   public Observable<Void> removeFromCart(ProductVariant productVariant) {
-    return getCart().flatMap(cart -> {
-      cart.decrementVariant(productVariant);
-      return mStorageService.setCart(cart);
-    });
+    return resetCheckout()
+        .flatMap(aVoid -> getCart())
+        .flatMap(cart -> {
+          cart.decrementVariant(productVariant);
+          return mStorageService.setCart(cart);
+        });
   }
 
   public Observable<Void> resetCheckout() {
     return mStorageService
         .setCheckoutState(CheckoutState.NONE)
-        .map(aVoid -> {
-          mCheckout = null;
-          return null;
-        });
+        .flatMap(aVoid -> mStorageService.setCheckout(null));
   }
 
   public Observable<Void> setCheckoutState(CheckoutState state) {
     return mStorageService.setCheckoutState(state);
+  }
+
+  public Observable<Checkout> updateCheckout(Checkout checkout) {
+    return mBuyClient.updateCheckout(checkout).flatMap(co -> mStorageService.setCheckout(co).map(aVoid -> co));
   }
 }

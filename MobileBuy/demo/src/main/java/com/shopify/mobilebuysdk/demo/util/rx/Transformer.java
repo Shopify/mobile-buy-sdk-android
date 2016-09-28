@@ -25,6 +25,9 @@
 
 package com.shopify.mobilebuysdk.demo.util.rx;
 
+import android.os.Build;
+import android.os.Looper;
+
 import rx.Observable;
 import rx.Scheduler;
 import rx.android.schedulers.AndroidSchedulers;
@@ -52,6 +55,21 @@ public class Transformer {
   public static <T> Observable.Transformer<T, T> applyIoScheduler() {
     return observable -> observable
         .subscribeOn(sIoScheduler.get())
+        .observeOn(sMainThreadScheduler.get());
+  }
+
+  public static <T> Observable.Transformer<T, T> applyMainThreadScheduler() {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+      if (Looper.getMainLooper().isCurrentThread()) {
+        return observable -> observable;
+      }
+    } else {
+      if (Thread.currentThread() == Looper.getMainLooper().getThread()) {
+        return observable -> observable;
+      }
+    }
+    return observable -> observable
+        .subscribeOn(sMainThreadScheduler.get())
         .observeOn(sMainThreadScheduler.get());
   }
 

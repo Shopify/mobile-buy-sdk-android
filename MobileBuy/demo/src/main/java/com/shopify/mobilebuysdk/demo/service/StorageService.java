@@ -28,6 +28,8 @@ package com.shopify.mobilebuysdk.demo.service;
 import com.google.gson.Gson;
 
 import com.shopify.buy.model.Cart;
+import com.shopify.buy.model.Checkout;
+import com.shopify.buy.model.ShopifyObject;
 import com.shopify.mobilebuysdk.demo.App;
 import com.shopify.mobilebuysdk.demo.config.Constants;
 import com.shopify.mobilebuysdk.demo.data.CheckoutState;
@@ -63,10 +65,15 @@ public class StorageService {
     mRxSharedPreferences = new RxSharedPreferences(context.getSharedPreferences(Constants.Preferences.KEY, Constants.Preferences.MODE));
     mRxSharedPreferences.register(Cart.class, gson::toJson, s -> gson.fromJson(s, Cart.class));
     mRxSharedPreferences.register(CheckoutState.class, CheckoutState::toString, CheckoutState::from);
+    mRxSharedPreferences.register(Checkout.class, ShopifyObject::toJsonString, Checkout::fromJson);
   }
 
   public Observable<Cart> getCart() {
     return mRxSharedPreferences.getObject(Cart.class, Key.CART, new Cart());
+  }
+
+  public Observable<Checkout> getCheckout() {
+    return mRxSharedPreferences.getObject(Checkout.class, Key.CHECKOUT, null);
   }
 
   public Observable<CheckoutState> getCheckoutState() {
@@ -77,12 +84,20 @@ public class StorageService {
     return mRxSharedPreferences.observeObject(Cart.class, Key.CART, new Cart());
   }
 
+  public Observable<Checkout> observeCheckout() {
+    return mRxSharedPreferences.observeObject(Checkout.class, Key.CHECKOUT, null);
+  }
+
   public Observable<CheckoutState> observeCheckoutState() {
     return mRxSharedPreferences.observeObject(CheckoutState.class, Key.CHECKOUT_STATE, CheckoutState.NONE);
   }
 
   public Observable<Void> setCart(Cart cart) {
     return mRxSharedPreferences.putObject(Cart.class, Key.CART, cart);
+  }
+
+  public Observable<Void> setCheckout(Checkout checkout) {
+    return mRxSharedPreferences.putObject(Checkout.class, Key.CHECKOUT, checkout);
   }
 
   public Observable<Void> setCheckoutState(CheckoutState state) {
@@ -92,6 +107,7 @@ public class StorageService {
   private interface Key {
 
     String CART = "CART";
+    String CHECKOUT = "CHECKOUT";
     String CHECKOUT_STATE = "CHECKOUT_STATE";
   }
 }

@@ -34,6 +34,8 @@ import com.shopify.mobilebuysdk.demo.ui.base.DialogHelper;
 import com.shopify.mobilebuysdk.demo.ui.base.RecyclerViewLoadingEmptyErrorWrapperAdapter;
 import com.shopify.mobilebuysdk.demo.ui.checkout.CheckoutActivity;
 import com.shopify.mobilebuysdk.demo.util.NavigationUtils;
+import com.shopify.mobilebuysdk.demo.util.ProgressDialogUtils;
+import com.shopify.mobilebuysdk.demo.util.ToastUtils;
 import com.shopify.mobilebuysdk.demo.util.rx.Transformer;
 import com.shopify.mobilebuysdk.demo.util.rx.UnsubscribeLifeCycle;
 import com.shopify.mobilebuysdk.demo.widget.BottomBar;
@@ -167,10 +169,14 @@ public class CartActivity extends BaseHomeActivity implements CartItemViewHolder
     manageSubscription(UnsubscribeLifeCycle.DESTROY_VIEW,
         mShopifyService
             .createCheckout()
+            .compose(ProgressDialogUtils.apply(this, R.string.text_creating_checkout))
             .compose(Transformer.applyIoScheduler())
             .subscribe(checkout -> {
               NavigationUtils.startActivity(this, CheckoutActivity.newIntent(this));
-            }, Throwable::printStackTrace));
+            }, throwable -> {
+              throwable.printStackTrace();
+              ToastUtils.showGenericErrorToast(this);
+            }));
   }
 
   private void onCheckoutOptionsClick() {
@@ -178,7 +184,10 @@ public class CartActivity extends BaseHomeActivity implements CartItemViewHolder
         DialogHelper
             .showOtherPaymentMethodsDialog(this)
             .filter(result -> result.action == DialogHelper.Action.POSITIVE)
-            .zipWith(mShopifyService.createCheckout().compose(Transformer.applyIoScheduler()), (result, checkout) -> {
+            .zipWith(mShopifyService
+                .createCheckout()
+                .compose(ProgressDialogUtils.apply(this, R.string.text_creating_checkout))
+                .compose(Transformer.applyIoScheduler()), (result, checkout) -> {
               switch (result.paymentMethod) {
                 case WEB:
                   Intent intent = new Intent(Intent.ACTION_VIEW);
@@ -192,7 +201,10 @@ public class CartActivity extends BaseHomeActivity implements CartItemViewHolder
               return null;
             })
             .subscribe(o -> {
-            }, Throwable::printStackTrace)
+            }, throwable -> {
+              throwable.printStackTrace();
+              ToastUtils.showGenericErrorToast(this);
+            })
     );
   }
 

@@ -25,14 +25,21 @@
 
 package com.shopify.mobilebuysdk.demo.ui.checkout;
 
+import com.shopify.buy.model.Address;
 import com.shopify.mobilebuysdk.demo.R;
 import com.shopify.mobilebuysdk.demo.ui.base.BaseFragment;
+import com.shopify.mobilebuysdk.demo.util.ProgressDialogUtils;
+import com.shopify.mobilebuysdk.demo.util.ToastUtils;
+import com.shopify.mobilebuysdk.demo.util.rx.Transformer;
+import com.shopify.mobilebuysdk.demo.util.rx.UnsubscribeLifeCycle;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 
 import butterknife.BindView;
@@ -54,6 +61,9 @@ public class AddressFragment extends BaseFragment {
   @BindView(R.id.input_address_2)
   EditText vAddress2;
 
+  @BindView(R.id.btn_next)
+  Button vBtnNext;
+
   @BindView(R.id.input_city)
   EditText vCity;
 
@@ -69,11 +79,8 @@ public class AddressFragment extends BaseFragment {
   @BindView(R.id.input_last_name)
   EditText vLastName;
 
-  @BindView(R.id.input_province)
-  EditText vProvince;
-
-  @BindView(R.id.input_zip)
-  EditText vZip;
+  @BindView(R.id.input_postal_code)
+  EditText vPostalCode;
 
   private Unbinder mUnbinder;
 
@@ -93,6 +100,46 @@ public class AddressFragment extends BaseFragment {
   @Override
   public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
+    vBtnNext.setOnClickListener(this::onNextClicked);
+  }
 
+  private String getInputValue(EditText editText, boolean required) throws IllegalArgumentException {
+    String value = editText.getText().toString();
+    if (TextUtils.isEmpty(value) && required) {
+      throw new IllegalArgumentException("Input is required");
+    }
+    return value;
+  }
+
+  private void onNextClicked(View view) {
+    manageSubscription(UnsubscribeLifeCycle.DESTROY_VIEW,
+        mShopifyService
+            .createCheckout()
+            .compose(ProgressDialogUtils.apply(this, R.string.text_creating_checkout))
+            .compose(Transformer.applyIoScheduler())
+            .flatMap(checkout -> {
+              Address address = new Address();
+              address.setAddress1(getInputValue(vAddress1, true));
+              address.setAddress2(getInputValue(vAddress2, false));
+              address.setCity(getInputValue(vCity, true));
+              address.setCountry(getInputValue(vCountry, true));
+              address.setZip(getInputValue(vPostalCode, true));
+              checkout.setEmail(getInputValue(vEmail, true));
+              checkout.setShippingAddress(address);
+              checkout.setBillingAddress(address);
+              return mShopifyService
+                  .updateCheckout(checkout)
+                  .compose(ProgressDialogUtils.apply(this, R.string.text_creating_checkout))
+                  .compose(Transformer.applyIoScheduler());
+            })
+            .subscribe(checkout -> {
+            }, throwable -> {
+              throwable.printStackTrace();
+              if (throwable instanceof IllegalArgumentException) {
+                ToastUtils.showCheckRequiredFieldsToast(getContext());
+              } else {
+                ToastUtils.showGenericErrorToast(getContext());
+              }
+            }));
   }
 }

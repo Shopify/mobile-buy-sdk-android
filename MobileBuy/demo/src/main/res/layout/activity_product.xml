@@ -37,15 +37,9 @@
 
   <Button
     android:id="@+id/btn_add_to_cart"
-    android:layout_width="match_parent"
-    android:layout_height="@dimen/mdListItemHeight_lg"
     android:layout_alignParentBottom="true"
-    android:layout_marginBottom="@dimen/mdLayoutSpacingInverse_sm"
-    android:layout_marginLeft="@dimen/mdLayoutSpacingInverse_sm"
-    android:layout_marginRight="@dimen/mdLayoutSpacingInverse_sm"
-    android:layout_marginTop="@dimen/mdLayoutSpacingInverse_sm"
     android:text="@string/text_add_to_cart"
-    style="@style/MdButton.Colored" />
+    style="@style/AppStyle.Button.Colored.Full" />
 
   <android.support.v4.widget.NestedScrollView
     android:layout_width="match_parent"

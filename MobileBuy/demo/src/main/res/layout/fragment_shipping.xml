@@ -72,7 +72,7 @@
         style="@style/MdTextField.TextOnly" />
 
       <EditText
-        android:id="@+id/input_zip"
+        android:id="@+id/input_postal_code"
         android:hint="Zip"
         style="@style/MdTextField.TextOnly" />
 

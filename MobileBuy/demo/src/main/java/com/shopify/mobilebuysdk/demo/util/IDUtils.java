@@ -23,33 +23,15 @@
  *
  */
 
-package com.shopify.mobilebuysdk.demo.config;
+package com.shopify.mobilebuysdk.demo.util;
 
-import android.content.Context;
+public class IDUtils {
 
-/**
- * Created by henrytao on 8/27/16.
- */
-public class Constants {
+  private static String TAG = "ID";
 
-  public interface Extra {
+  private static long sIndex = 0;
 
-    String PRODUCT = "PRODUCT";
-  }
-
-  public interface Preferences {
-
-    String KEY = "myshopify";
-    int MODE = Context.MODE_PRIVATE;
-  }
-
-  public interface Tag {
-
-    String ALL = "All";
-  }
-
-  public interface Timeout {
-
-    long MEDIUM = 400;
+  public static String generate() {
+    return TAG + "_" + (++sIndex);
   }
 }

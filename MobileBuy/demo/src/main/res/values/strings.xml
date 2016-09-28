@@ -120,4 +120,16 @@
   <string name="text_shipping">Shipping</string>
   <string name="text_summary">Summary</string>
   <string name="text_select_other_payment_methods">Select other payment methods</string>
+  <string name="text_email">Email (*)</string>
+  <string name="text_first_name">First name (*)</string>
+  <string name="text_last_name">Last name (*)</string>
+  <string name="text_address_line">Address line (*)</string>
+  <string name="text_address_line_2">Address line 2</string>
+  <string name="text_city">City (*)</string>
+  <string name="text_country">Country (*)</string>
+  <string name="text_postal_code">Postal code (*)</string>
+  <string name="text_next">Next</string>
+  <string name="text_creating_checkout">Creating checkout...</string>
+  <string name="text_check_required_fields">Please check required fields and try again.</string>
+  <string name="text_generic_error">Service is not available. Please try again.</string>
 </resources>
