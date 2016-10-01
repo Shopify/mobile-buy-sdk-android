@@ -69,7 +69,7 @@
             android:id="@+id/input_first_name"
             android:hint="@string/text_first_name"
             android:imeOptions="actionNext"
-            android:inputType="textPersonName"
+            android:inputType="textCapSentences|textPersonName"
             android:maxLines="1"
             style="@style/MdTextField.TextWithLabel.Text" />
         </android.support.design.widget.TextInputLayout>
@@ -83,7 +83,7 @@
             android:id="@+id/input_last_name"
             android:hint="@string/text_last_name"
             android:imeOptions="actionNext"
-            android:inputType="textPersonName"
+            android:inputType="textCapSentences|textPersonName"
             android:maxLines="1"
             style="@style/MdTextField.TextWithLabel.Text" />
         </android.support.design.widget.TextInputLayout>
@@ -95,7 +95,7 @@
           android:id="@+id/input_address_1"
           android:hint="@string/text_address_line"
           android:imeOptions="actionNext"
-          android:inputType="text"
+          android:inputType="textCapSentences"
           android:maxLines="1"
           style="@style/MdTextField.TextWithLabel.Text" />
       </android.support.design.widget.TextInputLayout>
@@ -106,7 +106,7 @@
           android:id="@+id/input_address_2"
           android:hint="@string/text_address_line_2"
           android:imeOptions="actionNext"
-          android:inputType="text"
+          android:inputType="textCapSentences"
           android:maxLines="1"
           style="@style/MdTextField.TextWithLabel.Text" />
       </android.support.design.widget.TextInputLayout>
@@ -117,7 +117,7 @@
           android:id="@+id/input_city"
           android:hint="@string/text_city"
           android:imeOptions="actionNext"
-          android:inputType="text"
+          android:inputType="textCapWords"
           android:maxLines="1"
           style="@style/MdTextField.TextWithLabel.Text" />
       </android.support.design.widget.TextInputLayout>
@@ -137,7 +137,7 @@
             android:id="@+id/input_country"
             android:hint="@string/text_country"
             android:imeOptions="actionNext"
-            android:inputType="text"
+            android:inputType="textCapWords"
             android:maxLines="1"
             style="@style/MdTextField.TextWithLabel.Text" />
         </android.support.design.widget.TextInputLayout>
@@ -150,8 +150,7 @@
           <android.support.design.widget.TextInputEditText
             android:id="@+id/input_postal_code"
             android:hint="@string/text_postal_code"
-            android:imeOptions="actionNext"
-            android:inputType="textPostalAddress"
+            android:inputType="textCapCharacters"
             android:maxLines="1"
             style="@style/MdTextField.TextWithLabel.Text" />
         </android.support.design.widget.TextInputLayout>

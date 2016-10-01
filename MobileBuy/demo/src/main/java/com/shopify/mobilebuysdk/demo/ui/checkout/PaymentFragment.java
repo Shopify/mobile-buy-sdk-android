@@ -71,7 +71,7 @@ public class PaymentFragment extends BaseFragment {
   @OnClick(R.id.btn_android_pay_checkout)
   protected void onAndroidPayCheckoutClick() {
     //manageSubscription(UnsubscribeLifeCycle.DESTROY_VIEW,
-    //    mShopifyService.createCheckout().subscribe(checkout -> {
+    //    mShopifyService.getCheckout().subscribe(checkout -> {
     //      String merchantName = getString(R.string.app_name);
     //      MaskedWalletRequest maskedWalletRequest = AndroidPayHelper.createMaskedWalletRequest(merchantName, checkout, )
     //    }, Throwable::printStackTrace));
@@ -91,7 +91,7 @@ public class PaymentFragment extends BaseFragment {
   protected void onWebCheckoutClick() {
     manageSubscription(UnsubscribeLifeCycle.DESTROY_VIEW,
         mShopifyService
-            .createCheckout()
+            .getCheckout()
             .compose(Transformer.applyIoScheduler())
             .subscribe(checkout -> {
               Intent intent = new Intent(Intent.ACTION_VIEW);

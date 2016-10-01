@@ -26,7 +26,9 @@
 package com.shopify.mobilebuysdk.demo.ui.checkout;
 
 import com.shopify.buy.model.Address;
+import com.shopify.buy.model.Checkout;
 import com.shopify.mobilebuysdk.demo.R;
+import com.shopify.mobilebuysdk.demo.data.CheckoutState;
 import com.shopify.mobilebuysdk.demo.ui.base.BaseFragment;
 import com.shopify.mobilebuysdk.demo.util.ProgressDialogUtils;
 import com.shopify.mobilebuysdk.demo.util.ToastUtils;
@@ -34,6 +36,7 @@ import com.shopify.mobilebuysdk.demo.util.rx.Transformer;
 import com.shopify.mobilebuysdk.demo.util.rx.UnsubscribeLifeCycle;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -101,6 +104,17 @@ public class AddressFragment extends BaseFragment {
   public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
     vBtnNext.setOnClickListener(this::onNextClicked);
+    manageSubscription(UnsubscribeLifeCycle.DESTROY_VIEW,
+        mShopifyService
+            .getCheckout()
+            .compose(ProgressDialogUtils.apply(this, R.string.text_creating_checkout))
+            .compose(Transformer.applyIoScheduler())
+            .filter(checkout -> checkout != null)
+            .subscribe(this::onLoad, throwable -> {
+              throwable.printStackTrace();
+              ToastUtils.showGenericErrorToast(getContext());
+            })
+    );
   }
 
   private String getInputValue(EditText editText, boolean required) throws IllegalArgumentException {
@@ -111,14 +125,30 @@ public class AddressFragment extends BaseFragment {
     return value;
   }
 
+  private void onLoad(@NonNull Checkout checkout) {
+    Address address = checkout.getShippingAddress();
+    vEmail.setText(checkout.getEmail());
+    if (address != null) {
+      vFirstName.setText(address.getFirstName());
+      vLastName.setText(address.getLastName());
+      vAddress1.setText(address.getAddress1());
+      vAddress2.setText(address.getAddress2());
+      vCity.setText(address.getCity());
+      vCountry.setText(address.getCountry());
+      vPostalCode.setText(address.getZip());
+    }
+  }
+
   private void onNextClicked(View view) {
     manageSubscription(UnsubscribeLifeCycle.DESTROY_VIEW,
         mShopifyService
-            .createCheckout()
-            .compose(ProgressDialogUtils.apply(this, R.string.text_creating_checkout))
+            .getCheckout()
+            .compose(ProgressDialogUtils.apply(this, R.string.text_updating_checkout))
             .compose(Transformer.applyIoScheduler())
             .flatMap(checkout -> {
               Address address = new Address();
+              address.setFirstName(getInputValue(vFirstName, true));
+              address.setLastName(getInputValue(vLastName, true));
               address.setAddress1(getInputValue(vAddress1, true));
               address.setAddress2(getInputValue(vAddress2, false));
               address.setCity(getInputValue(vCity, true));
@@ -129,10 +159,14 @@ public class AddressFragment extends BaseFragment {
               checkout.setBillingAddress(address);
               return mShopifyService
                   .updateCheckout(checkout)
-                  .compose(ProgressDialogUtils.apply(this, R.string.text_creating_checkout))
+                  .compose(ProgressDialogUtils.apply(this, R.string.text_updating_checkout))
                   .compose(Transformer.applyIoScheduler());
             })
-            .subscribe(checkout -> {
+            .flatMap(checkout -> mShopifyService
+                .setCheckoutState(CheckoutState.SHIPPING)
+                .compose(Transformer.applyIoScheduler())
+            )
+            .subscribe(o -> {
             }, throwable -> {
               throwable.printStackTrace();
               if (throwable instanceof IllegalArgumentException) {

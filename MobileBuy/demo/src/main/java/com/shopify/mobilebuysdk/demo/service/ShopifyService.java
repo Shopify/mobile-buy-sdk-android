@@ -99,7 +99,11 @@ public class ShopifyService {
         });
   }
 
-  public Observable<Checkout> createCheckout() {
+  public Observable<Cart> getCart() {
+    return mStorageService.getCart();
+  }
+
+  public Observable<Checkout> getCheckout() {
     return mStorageService
         .getCheckout()
         .flatMap(checkout -> {
@@ -118,10 +122,6 @@ public class ShopifyService {
               })
               .flatMap(co -> mStorageService.setCheckout(co).map(aVoid -> co));
         });
-  }
-
-  public Observable<Cart> getCart() {
-    return mStorageService.getCart();
   }
 
   public Observable<List<Product>> getProducts() {

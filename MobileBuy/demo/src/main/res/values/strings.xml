@@ -129,7 +129,8 @@
   <string name="text_country">Country (*)</string>
   <string name="text_postal_code">Postal code (*)</string>
   <string name="text_next">Next</string>
-  <string name="text_creating_checkout">Creating checkout...</string>
+  <string name="text_creating_checkout">Creating checkout…</string>
   <string name="text_check_required_fields">Please check required fields and try again.</string>
   <string name="text_generic_error">Service is not available. Please try again.</string>
+  <string name="text_updating_checkout">Updating checkout…</string>
 </resources>

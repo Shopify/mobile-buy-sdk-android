@@ -168,7 +168,7 @@ public class CartActivity extends BaseHomeActivity implements CartItemViewHolder
   private void onCheckoutClick() {
     manageSubscription(UnsubscribeLifeCycle.DESTROY_VIEW,
         mShopifyService
-            .createCheckout()
+            .getCheckout()
             .compose(ProgressDialogUtils.apply(this, R.string.text_creating_checkout))
             .compose(Transformer.applyIoScheduler())
             .subscribe(checkout -> {
@@ -185,7 +185,7 @@ public class CartActivity extends BaseHomeActivity implements CartItemViewHolder
             .showOtherPaymentMethodsDialog(this)
             .filter(result -> result.action == DialogHelper.Action.POSITIVE)
             .zipWith(mShopifyService
-                .createCheckout()
+                .getCheckout()
                 .compose(ProgressDialogUtils.apply(this, R.string.text_creating_checkout))
                 .compose(Transformer.applyIoScheduler()), (result, checkout) -> {
               switch (result.paymentMethod) {

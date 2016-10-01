@@ -45,28 +45,28 @@
       android:layout_width="0dp"
       android:layout_weight="1"
       android:text="@string/text_address"
-      style="@style/MdButton" />
+      style="@style/MdButton.Borderless" />
 
     <Button
       android:id="@+id/btn_shipping"
       android:layout_width="0dp"
       android:layout_weight="1"
       android:text="@string/text_shipping"
-      style="@style/MdButton" />
+      style="@style/MdButton.Borderless" />
 
     <Button
       android:id="@+id/btn_payment"
       android:layout_width="0dp"
       android:layout_weight="1"
       android:text="@string/text_payment"
-      style="@style/MdButton" />
+      style="@style/MdButton.Borderless" />
 
     <Button
       android:id="@+id/btn_summary"
       android:layout_width="0dp"
       android:layout_weight="1"
       android:text="@string/text_summary"
-      style="@style/MdButton" />
+      style="@style/MdButton.Borderless" />
   </LinearLayout>
 
   <FrameLayout

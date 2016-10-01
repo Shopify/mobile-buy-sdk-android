@@ -73,7 +73,7 @@ public class StorageService {
   }
 
   public Observable<Checkout> getCheckout() {
-    return mRxSharedPreferences.getObject(Checkout.class, Key.CHECKOUT, null);
+    return mRxSharedPreferences.getObject(Checkout.class, Key.CHECKOUT, null).map(checkout -> checkout != null ? checkout.copy() : null);
   }
 
   public Observable<CheckoutState> getCheckoutState() {
@@ -85,7 +85,8 @@ public class StorageService {
   }
 
   public Observable<Checkout> observeCheckout() {
-    return mRxSharedPreferences.observeObject(Checkout.class, Key.CHECKOUT, null);
+    return mRxSharedPreferences.observeObject(Checkout.class, Key.CHECKOUT, null)
+        .map(checkout -> checkout != null ? checkout.copy() : null);
   }
 
   public Observable<CheckoutState> observeCheckoutState() {
