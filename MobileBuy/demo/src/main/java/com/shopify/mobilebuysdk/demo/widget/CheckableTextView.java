@@ -25,7 +25,10 @@
 
 package com.shopify.mobilebuysdk.demo.widget;
 
+import com.shopify.mobilebuysdk.demo.R;
+
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
 import android.widget.Checkable;
@@ -41,14 +44,17 @@ public class CheckableTextView extends AppCompatTextView implements Checkable {
 
   public CheckableTextView(Context context) {
     super(context);
+    init(context, null);
   }
 
   public CheckableTextView(Context context, AttributeSet attrs) {
     super(context, attrs);
+    init(context, attrs);
   }
 
   public CheckableTextView(Context context, AttributeSet attrs, int defStyleAttr) {
     super(context, attrs, defStyleAttr);
+    init(context, attrs);
   }
 
   @Override
@@ -74,5 +80,16 @@ public class CheckableTextView extends AppCompatTextView implements Checkable {
   @Override
   public void toggle() {
     setChecked(!mChecked);
+  }
+
+  private void init(Context context, AttributeSet attrs) {
+    TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.Checkable, 0, 0);
+    boolean checked = false;
+    try {
+      checked = a.getBoolean(R.styleable.Checkable_checked, false);
+    } finally {
+      a.recycle();
+    }
+    setChecked(checked);
   }
 }

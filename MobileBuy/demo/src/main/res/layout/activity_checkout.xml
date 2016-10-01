@@ -36,37 +36,53 @@
   <LinearLayout
     android:id="@+id/checkout_state"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="@dimen/mdSecondaryActionBarSize"
     android:layout_below="@id/toolbar"
     android:orientation="horizontal">
 
-    <Button
+    <com.shopify.mobilebuysdk.demo.widget.CheckableTextView
       android:id="@+id/btn_address"
       android:layout_width="0dp"
+      android:layout_height="match_parent"
       android:layout_weight="1"
+      android:background="?attr/selectableItemBackground"
+      android:gravity="center"
       android:text="@string/text_address"
-      style="@style/MdButton.Borderless" />
+      android:textColor="?attr/mdIconColor_backgroundPalette"
+      style="@style/MdText.Button" />
 
-    <Button
+    <com.shopify.mobilebuysdk.demo.widget.CheckableTextView
       android:id="@+id/btn_shipping"
       android:layout_width="0dp"
+      android:layout_height="match_parent"
       android:layout_weight="1"
+      android:background="?attr/selectableItemBackground"
+      android:gravity="center"
       android:text="@string/text_shipping"
-      style="@style/MdButton.Borderless" />
+      android:textColor="?attr/mdIconColor_backgroundPalette"
+      style="@style/MdText.Button" />
 
-    <Button
+    <com.shopify.mobilebuysdk.demo.widget.CheckableTextView
       android:id="@+id/btn_payment"
       android:layout_width="0dp"
+      android:layout_height="match_parent"
       android:layout_weight="1"
+      android:background="?attr/selectableItemBackground"
+      android:gravity="center"
       android:text="@string/text_payment"
-      style="@style/MdButton.Borderless" />
+      android:textColor="?attr/mdIconColor_backgroundPalette"
+      style="@style/MdText.Button" />
 
-    <Button
+    <com.shopify.mobilebuysdk.demo.widget.CheckableTextView
       android:id="@+id/btn_summary"
       android:layout_width="0dp"
+      android:layout_height="match_parent"
       android:layout_weight="1"
+      android:background="?attr/selectableItemBackground"
+      android:gravity="center"
       android:text="@string/text_summary"
-      style="@style/MdButton.Borderless" />
+      android:textColor="?attr/mdIconColor_backgroundPalette"
+      style="@style/MdText.Button" />
   </LinearLayout>
 
   <FrameLayout

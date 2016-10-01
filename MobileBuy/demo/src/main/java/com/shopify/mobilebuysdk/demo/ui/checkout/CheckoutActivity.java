@@ -30,6 +30,7 @@ import com.shopify.mobilebuysdk.demo.data.CheckoutState;
 import com.shopify.mobilebuysdk.demo.ui.base.BaseActivity;
 import com.shopify.mobilebuysdk.demo.util.rx.Transformer;
 import com.shopify.mobilebuysdk.demo.util.rx.UnsubscribeLifeCycle;
+import com.shopify.mobilebuysdk.demo.widget.CheckableTextView;
 
 import android.content.Context;
 import android.content.Intent;
@@ -50,6 +51,14 @@ public class CheckoutActivity extends BaseActivity {
     Intent intent = new Intent(context, CheckoutActivity.class);
     return intent;
   }
+
+  @BindView(R.id.btn_address) CheckableTextView vBtnAddress;
+
+  @BindView(R.id.btn_payment) CheckableTextView vBtnPayment;
+
+  @BindView(R.id.btn_shipping) CheckableTextView vBtnShipping;
+
+  @BindView(R.id.btn_summary) CheckableTextView vBtnSummary;
 
   @BindView(R.id.toolbar) Toolbar vToolbar;
 
@@ -124,17 +133,25 @@ public class CheckoutActivity extends BaseActivity {
 
   private void onCheckoutStateChanged(CheckoutState state) {
     Fragment fragment;
+    vBtnAddress.setChecked(false);
+    vBtnShipping.setChecked(false);
+    vBtnPayment.setChecked(false);
+    vBtnSummary.setChecked(false);
     switch (state) {
       case ADDRESS:
+        vBtnAddress.setChecked(true);
         fragment = AddressFragment.newInstance();
         break;
       case SHIPPING:
+        vBtnShipping.setChecked(true);
         fragment = ShippingFragment.newInstance();
         break;
       case PAYMENT:
+        vBtnPayment.setChecked(true);
         fragment = PaymentFragment.newInstance();
         break;
       case SUMMARY:
+        vBtnSummary.setChecked(true);
         fragment = SummaryFragment.newInstance();
         break;
       case PROCESSING:
