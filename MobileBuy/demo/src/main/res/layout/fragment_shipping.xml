@@ -23,74 +23,97 @@
   ~
   -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="match_parent"
-  android:layout_height="match_parent"
-  android:layout_below="@id/toolbar"
-  android:orientation="vertical"
-  android:gravity="center"
-  android:padding="@dimen/mdLayoutSpacing">
+  android:layout_height="match_parent">
+
+  <Button
+    android:id="@+id/btn_next"
+    android:layout_alignParentBottom="true"
+    android:text="@string/text_next"
+    style="@style/AppStyle.Button.Colored.Full" />
 
   <android.support.v4.widget.NestedScrollView
     android:layout_width="match_parent"
-    android:layout_height="0dp"
-    android:layout_weight="1">
+    android:layout_height="match_parent"
+    android:layout_above="@id/btn_next"
+    android:paddingBottom="@dimen/mdListItemSpacing"
+    android:paddingTop="@dimen/mdListItemSpacing">
 
     <LinearLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:orientation="vertical">
 
-      <EditText
-        android:id="@+id/input_email"
-        android:hint="Email"
-        style="@style/MdTextField.TextOnly" />
+      <TextView
+        android:text="@string/text_which_shipping_partner_do_you_like"
+        style="@style/MdSubHeader.List" />
 
-      <EditText
-        android:id="@+id/input_first_name"
-        android:hint="First name"
-        style="@style/MdTextField.TextOnly" />
+      <RelativeLayout
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        style="@style/MdListItem.TwoLine.IconWithText">
 
-      <EditText
-        android:id="@+id/input_last_name"
-        android:hint="Last name"
-        style="@style/MdTextField.TextOnly" />
+        <CheckBox
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_centerVertical="true" />
 
-      <EditText
-        android:id="@+id/input_address_1"
-        android:hint="Address line"
-        style="@style/MdTextField.TextOnly" />
+        <LinearLayout style="@style/Base.MdListItem.Wrapper">
 
-      <EditText
-        android:id="@+id/input_address_2"
-        android:hint="Address line 2"
-        style="@style/MdTextField.TextOnly" />
+          <TextView
+            android:text="DHL"
+            style="@style/Base.MdListItem.Title.Left" />
 
-      <EditText
-        android:id="@+id/input_city"
-        android:hint="City"
-        style="@style/MdTextField.TextOnly" />
+          <TextView
+            android:text="No additional cost"
+            style="@style/Base.MdListItem.Subtitle.Left" />
+        </LinearLayout>
+      </RelativeLayout>
 
-      <EditText
-        android:id="@+id/input_postal_code"
-        android:hint="Zip"
-        style="@style/MdTextField.TextOnly" />
+      <RelativeLayout
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        style="@style/MdListItem.TwoLine.IconWithText">
 
-      <EditText
-        android:id="@+id/input_province"
-        android:hint="Province"
-        style="@style/MdTextField.TextOnly" />
+        <CheckBox
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_centerVertical="true" />
 
-      <EditText
-        android:id="@+id/input_country"
-        android:hint="Country"
-        style="@style/MdTextField.TextOnly" />
+        <LinearLayout style="@style/Base.MdListItem.Wrapper">
+
+          <TextView
+            android:text="DHL"
+            style="@style/Base.MdListItem.Title.Left" />
+
+          <TextView
+            android:text="No additional cost"
+            style="@style/Base.MdListItem.Subtitle.Left" />
+        </LinearLayout>
+      </RelativeLayout>
+
+      <RelativeLayout
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        style="@style/MdListItem.TwoLine.IconWithText">
+
+        <CheckBox
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_centerVertical="true" />
+
+        <LinearLayout style="@style/Base.MdListItem.Wrapper">
+
+          <TextView
+            android:text="DHL"
+            style="@style/Base.MdListItem.Title.Left" />
+
+          <TextView
+            android:text="No additional cost"
+            style="@style/Base.MdListItem.Subtitle.Left" />
+        </LinearLayout>
+      </RelativeLayout>
     </LinearLayout>
   </android.support.v4.widget.NestedScrollView>
-
-  <Button
-    android:id="@+id/btn_next"
-    android:layout_width="match_parent"
-    android:text="Next"
-    style="@style/MdButton.Colored" />
-</LinearLayout>
+</RelativeLayout>

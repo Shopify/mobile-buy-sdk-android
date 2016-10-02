@@ -110,7 +110,7 @@
   <string name="text_loading">Loading</string>
   <string name="text_empty">Empty</string>
   <string name="text_cart_is_empty">Cart is empty</string>
-  <string name="text_processing">Processing</string>
+  <string name="text_processing">Processing…</string>
   <string name="text_return_to_app">Return to App</string>
   <string name="text_web_checkout">Web checkout</string>
   <string name="text_android_pay_checkout">Android Pay checkout</string>
@@ -133,4 +133,5 @@
   <string name="text_check_required_fields">Please check required fields and try again.</string>
   <string name="text_generic_error">Service is not available. Please try again.</string>
   <string name="text_updating_checkout">Updating checkout…</string>
+  <string name="text_which_shipping_partner_do_you_like">Which shipping partner do you like?</string>
 </resources>

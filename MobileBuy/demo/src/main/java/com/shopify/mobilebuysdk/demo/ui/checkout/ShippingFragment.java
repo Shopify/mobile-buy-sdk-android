@@ -27,6 +27,9 @@ package com.shopify.mobilebuysdk.demo.ui.checkout;
 
 import com.shopify.mobilebuysdk.demo.R;
 import com.shopify.mobilebuysdk.demo.ui.base.BaseFragment;
+import com.shopify.mobilebuysdk.demo.util.ProgressDialogUtils;
+import com.shopify.mobilebuysdk.demo.util.ToastUtils;
+import com.shopify.mobilebuysdk.demo.util.rx.UnsubscribeLifeCycle;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -65,5 +68,17 @@ public class ShippingFragment extends BaseFragment {
   public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
 
+    manageSubscription(UnsubscribeLifeCycle.DESTROY_VIEW,
+        mShopifyService
+            .getShippingRates()
+            .compose(ProgressDialogUtils.apply(this, R.string.text_processing))
+            .subscribe(shippingRates -> {
+              boolean tmp = false;
+              tmp = true;
+            }, throwable -> {
+              throwable.printStackTrace();
+              ToastUtils.showGenericErrorToast(getContext());
+            })
+    );
   }
 }

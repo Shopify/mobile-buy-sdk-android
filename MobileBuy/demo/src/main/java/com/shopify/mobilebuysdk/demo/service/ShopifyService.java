@@ -31,6 +31,7 @@ import com.shopify.buy.model.Cart;
 import com.shopify.buy.model.Checkout;
 import com.shopify.buy.model.Product;
 import com.shopify.buy.model.ProductVariant;
+import com.shopify.buy.model.ShippingRate;
 import com.shopify.mobilebuysdk.demo.App;
 import com.shopify.mobilebuysdk.demo.BuildConfig;
 import com.shopify.mobilebuysdk.demo.R;
@@ -126,6 +127,10 @@ public class ShopifyService {
 
   public Observable<List<Product>> getProducts() {
     return mBuyClient.getProducts(1);
+  }
+
+  public Observable<List<ShippingRate>> getShippingRates() {
+    return getCheckout().flatMap(checkout -> mBuyClient.getShippingRates(checkout.getToken()));
   }
 
   public Observable<Cart> observeCartChange() {

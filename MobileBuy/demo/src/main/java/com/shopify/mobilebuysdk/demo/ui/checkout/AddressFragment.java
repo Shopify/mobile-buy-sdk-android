@@ -48,6 +48,7 @@ import android.widget.EditText;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import rx.Observable;
 
 /**
  * Created by henrytao on 9/14/16.
@@ -141,31 +142,31 @@ public class AddressFragment extends BaseFragment {
 
   private void onNextClicked(View view) {
     manageSubscription(UnsubscribeLifeCycle.DESTROY_VIEW,
-        mShopifyService
-            .getCheckout()
-            .compose(ProgressDialogUtils.apply(this, R.string.text_updating_checkout))
-            .compose(Transformer.applyIoScheduler())
-            .flatMap(checkout -> {
-              Address address = new Address();
-              address.setFirstName(getInputValue(vFirstName, true));
-              address.setLastName(getInputValue(vLastName, true));
-              address.setAddress1(getInputValue(vAddress1, true));
-              address.setAddress2(getInputValue(vAddress2, false));
-              address.setCity(getInputValue(vCity, true));
-              address.setCountry(getInputValue(vCountry, true));
-              address.setZip(getInputValue(vPostalCode, true));
-              checkout.setEmail(getInputValue(vEmail, true));
-              checkout.setShippingAddress(address);
-              checkout.setBillingAddress(address);
-              return mShopifyService
-                  .updateCheckout(checkout)
-                  .compose(ProgressDialogUtils.apply(this, R.string.text_updating_checkout))
-                  .compose(Transformer.applyIoScheduler());
-            })
-            .flatMap(checkout -> mShopifyService
-                .setCheckoutState(CheckoutState.SHIPPING)
+        Observable.just(null)
+            .flatMap(o -> mShopifyService
+                .getCheckout()
                 .compose(Transformer.applyIoScheduler())
-            )
+                .flatMap(checkout -> {
+                  Address address = new Address();
+                  address.setFirstName(getInputValue(vFirstName, true));
+                  address.setLastName(getInputValue(vLastName, true));
+                  address.setAddress1(getInputValue(vAddress1, true));
+                  address.setAddress2(getInputValue(vAddress2, false));
+                  address.setCity(getInputValue(vCity, true));
+                  address.setCountry(getInputValue(vCountry, true));
+                  address.setZip(getInputValue(vPostalCode, true));
+                  checkout.setEmail(getInputValue(vEmail, true));
+                  checkout.setShippingAddress(address);
+                  checkout.setBillingAddress(address);
+                  return mShopifyService
+                      .updateCheckout(checkout)
+                      .compose(Transformer.applyIoScheduler());
+                })
+                .flatMap(checkout -> mShopifyService
+                    .setCheckoutState(CheckoutState.SHIPPING)
+                    .compose(Transformer.applyIoScheduler())
+                ))
+            .compose(ProgressDialogUtils.apply(this, R.string.text_updating_checkout))
             .subscribe(o -> {
             }, throwable -> {
               throwable.printStackTrace();
