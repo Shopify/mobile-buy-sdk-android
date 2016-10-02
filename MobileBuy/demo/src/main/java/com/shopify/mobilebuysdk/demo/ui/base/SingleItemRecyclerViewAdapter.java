@@ -23,35 +23,57 @@
  *
  */
 
-package com.shopify.mobilebuysdk.demo.config;
+package com.shopify.mobilebuysdk.demo.ui.base;
 
-import android.content.Context;
+import android.support.v7.widget.RecyclerView;
+import android.view.ViewGroup;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Created by henrytao on 8/27/16.
+ * Created by henrytao on 10/2/16.
  */
-public class Constants {
+public abstract class SingleItemRecyclerViewAdapter<VH extends RecyclerView.ViewHolder, D> extends RecyclerView.Adapter<VH> {
 
-  public interface Extra {
+  public abstract void onBindViewHolder(VH holder);
 
-    String PRODUCT = "PRODUCT";
+  public abstract VH onCreateViewHolder(ViewGroup parent);
+
+  private final List<D> mData;
+
+  public SingleItemRecyclerViewAdapter() {
+    mData = new ArrayList<>();
   }
 
-  public interface Preferences {
-
-    String KEY = "myshopify";
-    int MODE = Context.MODE_PRIVATE;
+  @Override
+  public int getItemCount() {
+    return mData.size();
   }
 
-  public interface Tag {
-
-    String ALL = "All";
+  @Override
+  public void onBindViewHolder(VH holder, int position) {
+    onBindViewHolder(holder);
   }
 
-  public interface Timeout {
+  @Override
+  public VH onCreateViewHolder(ViewGroup parent, int viewType) {
+    return onCreateViewHolder(parent);
+  }
 
-    long LONG = 800;
-    long MEDIUM = 400;
-    long SHORT = 200;
+  public void clear() {
+    mData.clear();
+    notifyItemRemoved(0);
+  }
+
+  public void setData(D data) {
+    if (mData.size() == 0) {
+      mData.add(data);
+      notifyItemInserted(0);
+    } else {
+      mData.clear();
+      mData.add(data);
+      notifyItemChanged(0);
+    }
   }
 }

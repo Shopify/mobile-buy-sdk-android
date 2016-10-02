@@ -36,7 +36,6 @@ import com.shopify.mobilebuysdk.demo.util.rx.Transformer;
 import com.shopify.mobilebuysdk.demo.util.rx.UnsubscribeLifeCycle;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -104,13 +103,14 @@ public class AddressFragment extends BaseFragment {
   @Override
   public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
+
     vBtnNext.setOnClickListener(this::onNextClicked);
+
     manageSubscription(UnsubscribeLifeCycle.DESTROY_VIEW,
         mShopifyService
             .getCheckout()
             .compose(ProgressDialogUtils.apply(this, R.string.text_creating_checkout))
             .compose(Transformer.applyIoScheduler())
-            .filter(checkout -> checkout != null)
             .subscribe(this::onLoad, throwable -> {
               throwable.printStackTrace();
               ToastUtils.showGenericErrorToast(getContext());
@@ -126,9 +126,12 @@ public class AddressFragment extends BaseFragment {
     return value;
   }
 
-  private void onLoad(@NonNull Checkout checkout) {
-    Address address = checkout.getShippingAddress();
+  private void onLoad(Checkout checkout) {
+    if (checkout == null) {
+      return;
+    }
     vEmail.setText(checkout.getEmail());
+    Address address = checkout.getShippingAddress();
     if (address != null) {
       vFirstName.setText(address.getFirstName());
       vLastName.setText(address.getLastName());

@@ -25,6 +25,7 @@
 
 package com.shopify.mobilebuysdk.demo.util;
 
+import com.shopify.mobilebuysdk.demo.config.Constants;
 import com.shopify.mobilebuysdk.demo.ui.base.BaseActivity;
 import com.shopify.mobilebuysdk.demo.ui.base.BaseFragment;
 import com.shopify.mobilebuysdk.demo.util.rx.Transformer;
@@ -33,6 +34,8 @@ import com.shopify.mobilebuysdk.demo.util.rx.UnsubscribeLifeCycle;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.support.annotation.StringRes;
+
+import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 import rx.subscriptions.Subscriptions;
@@ -48,8 +51,11 @@ public class ProgressDialogUtils {
     return observable -> observable
         .doOnSubscribe(() -> observer.manageSubscription(
             ID,
-            showProgressDialog(observer.getActivity(), message).compose(Transformer.applyMainThreadScheduler()).subscribe(aVoid -> {
-            }, Throwable::printStackTrace),
+            Observable.just(null)
+                .delay(Constants.Timeout.SHORT, TimeUnit.MILLISECONDS)
+                .flatMap(o -> showProgressDialog(observer.getActivity(), message).compose(Transformer.applyMainThreadScheduler()))
+                .subscribe(aVoid -> {
+                }, Throwable::printStackTrace),
             UnsubscribeLifeCycle.DESTROY_VIEW))
         .doOnCompleted(() -> observer.unsubscribe(ID))
         .doOnError(throwable -> observer.unsubscribe(ID))
@@ -61,8 +67,11 @@ public class ProgressDialogUtils {
     return observable -> observable
         .doOnSubscribe(() -> observer.manageSubscription(
             ID,
-            showProgressDialog(observer, message).compose(Transformer.applyMainThreadScheduler()).subscribe(aVoid -> {
-            }, Throwable::printStackTrace),
+            Observable.just(null)
+                .delay(Constants.Timeout.SHORT, TimeUnit.MILLISECONDS)
+                .flatMap(o -> showProgressDialog(observer, message).compose(Transformer.applyMainThreadScheduler()))
+                .subscribe(aVoid -> {
+                }, Throwable::printStackTrace),
             UnsubscribeLifeCycle.DESTROY_VIEW))
         .doOnCompleted(() -> observer.unsubscribe(ID))
         .doOnError(throwable -> observer.unsubscribe(ID))

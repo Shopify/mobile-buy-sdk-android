@@ -37,6 +37,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -132,6 +135,8 @@ public class CheckoutActivity extends BaseActivity {
   }
 
   private void onCheckoutStateChanged(CheckoutState state) {
+    state = state == null || state == CheckoutState.NONE ? CheckoutState.ADDRESS : state;
+    final String TAG = state.toString();
     Fragment fragment;
     vBtnAddress.setChecked(false);
     vBtnShipping.setChecked(false);
@@ -164,9 +169,21 @@ public class CheckoutActivity extends BaseActivity {
         fragment = AddressFragment.newInstance();
         break;
     }
-    getSupportFragmentManager()
-        .beginTransaction()
-        .replace(R.id.fragment, fragment)
-        .commit();
+    // detach all existing fragments except next active fragment
+    List<Fragment> frags = getSupportFragmentManager().getFragments();
+    if (frags != null) {
+      for (Fragment frag : frags) {
+        if (!frag.isDetached() && !TextUtils.equals(frag.getTag(), TAG)) {
+          getSupportFragmentManager().beginTransaction().detach(frag).commit();
+        }
+      }
+    }
+    // attach or add current fragment
+    Fragment attachedFragment = getSupportFragmentManager().findFragmentByTag(TAG);
+    if (attachedFragment == null) {
+      getSupportFragmentManager().beginTransaction().add(R.id.fragment, fragment, TAG).commit();
+    } else if (attachedFragment.isDetached()) {
+      getSupportFragmentManager().beginTransaction().attach(attachedFragment).commit();
+    }
   }
 }
