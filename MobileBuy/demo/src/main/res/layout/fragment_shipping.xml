@@ -33,87 +33,12 @@
     android:text="@string/text_next"
     style="@style/AppStyle.Button.Colored.Full" />
 
-  <android.support.v4.widget.NestedScrollView
+  <android.support.v7.widget.RecyclerView
+    android:id="@+id/list"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_above="@id/btn_next"
+    android:clipToPadding="true"
     android:paddingBottom="@dimen/mdListItemSpacing"
-    android:paddingTop="@dimen/mdListItemSpacing">
-
-    <LinearLayout
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:orientation="vertical">
-
-      <TextView
-        android:text="@string/text_which_shipping_partner_do_you_like"
-        style="@style/MdSubHeader.List" />
-
-      <RelativeLayout
-        android:background="?attr/selectableItemBackground"
-        android:clickable="true"
-        style="@style/MdListItem.TwoLine.IconWithText">
-
-        <CheckBox
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_centerVertical="true" />
-
-        <LinearLayout style="@style/Base.MdListItem.Wrapper">
-
-          <TextView
-            android:text="DHL"
-            style="@style/Base.MdListItem.Title.Left" />
-
-          <TextView
-            android:text="No additional cost"
-            style="@style/Base.MdListItem.Subtitle.Left" />
-        </LinearLayout>
-      </RelativeLayout>
-
-      <RelativeLayout
-        android:background="?attr/selectableItemBackground"
-        android:clickable="true"
-        style="@style/MdListItem.TwoLine.IconWithText">
-
-        <CheckBox
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_centerVertical="true" />
-
-        <LinearLayout style="@style/Base.MdListItem.Wrapper">
-
-          <TextView
-            android:text="DHL"
-            style="@style/Base.MdListItem.Title.Left" />
-
-          <TextView
-            android:text="No additional cost"
-            style="@style/Base.MdListItem.Subtitle.Left" />
-        </LinearLayout>
-      </RelativeLayout>
-
-      <RelativeLayout
-        android:background="?attr/selectableItemBackground"
-        android:clickable="true"
-        style="@style/MdListItem.TwoLine.IconWithText">
-
-        <CheckBox
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_centerVertical="true" />
-
-        <LinearLayout style="@style/Base.MdListItem.Wrapper">
-
-          <TextView
-            android:text="DHL"
-            style="@style/Base.MdListItem.Title.Left" />
-
-          <TextView
-            android:text="No additional cost"
-            style="@style/Base.MdListItem.Subtitle.Left" />
-        </LinearLayout>
-      </RelativeLayout>
-    </LinearLayout>
-  </android.support.v4.widget.NestedScrollView>
+    android:paddingTop="@dimen/mdListItemSpacing" />
 </RelativeLayout>

@@ -208,7 +208,7 @@ public class CartActivity extends BaseHomeActivity implements CartItemViewHolder
     );
   }
 
-  private static class Adapter extends RecyclerView.Adapter<CartItemViewHolder> {
+  static class Adapter extends RecyclerView.Adapter<CartItemViewHolder> {
 
     private final List<CartItemInfo> mData;
 

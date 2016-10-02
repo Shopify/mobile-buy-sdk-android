@@ -76,7 +76,7 @@ public class ShoppingListViewHolder extends BaseRecyclerPagerViewHolder implemen
   private String mTag;
 
   public ShoppingListViewHolder(BaseSubscription subscription, ViewGroup parent) {
-    super(subscription, LayoutInflaterUtils.inflate(parent, R.layout.view_shopping_list));
+    super(subscription, LayoutInflaterUtils.inflate(parent, R.layout.view_holder_shopping_list));
     mShopifyService = ShopifyService.getInstance();
     ButterKnife.bind(this, itemView);
 

@@ -38,7 +38,8 @@
     android:layout_width="match_parent"
     android:layout_height="@dimen/mdSecondaryActionBarSize"
     android:layout_below="@id/toolbar"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:background="?attr/mdColor_primaryPalette">
 
     <com.shopify.mobilebuysdk.demo.widget.CheckableTextView
       android:id="@+id/btn_address"

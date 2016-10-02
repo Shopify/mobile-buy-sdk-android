@@ -25,18 +25,28 @@
 
 package com.shopify.mobilebuysdk.demo.ui.checkout;
 
+import com.shopify.buy.model.ShippingRate;
 import com.shopify.mobilebuysdk.demo.R;
 import com.shopify.mobilebuysdk.demo.ui.base.BaseFragment;
+import com.shopify.mobilebuysdk.demo.util.LayoutInflaterUtils;
 import com.shopify.mobilebuysdk.demo.util.ProgressDialogUtils;
 import com.shopify.mobilebuysdk.demo.util.ToastUtils;
 import com.shopify.mobilebuysdk.demo.util.rx.UnsubscribeLifeCycle;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
@@ -48,6 +58,10 @@ public class ShippingFragment extends BaseFragment {
   public static ShippingFragment newInstance() {
     return new ShippingFragment();
   }
+
+  @BindView(R.id.list) RecyclerView vRecyclerView;
+
+  private Adapter mAdapter;
 
   private Unbinder mUnBinder;
 
@@ -68,17 +82,67 @@ public class ShippingFragment extends BaseFragment {
   public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
 
+    mAdapter = new Adapter();
+    vRecyclerView.setAdapter(mAdapter);
+    vRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
     manageSubscription(UnsubscribeLifeCycle.DESTROY_VIEW,
         mShopifyService
             .getShippingRates()
             .compose(ProgressDialogUtils.apply(this, R.string.text_processing))
-            .subscribe(shippingRates -> {
-              boolean tmp = false;
-              tmp = true;
-            }, throwable -> {
+            .subscribe(mAdapter::set, throwable -> {
               throwable.printStackTrace();
               ToastUtils.showGenericErrorToast(getContext());
             })
     );
+  }
+
+  static class Adapter extends RecyclerView.Adapter<ShippingItemViewHolder> {
+
+    private final List<ShippingRate> mData;
+
+    Adapter() {
+      mData = new ArrayList<>();
+    }
+
+    @Override
+    public int getItemCount() {
+      return mData.size();
+    }
+
+    @Override
+    public void onBindViewHolder(ShippingItemViewHolder holder, int position) {
+      holder.bind(mData.get(position));
+    }
+
+    @Override
+    public ShippingItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+      return new ShippingItemViewHolder(parent);
+    }
+
+    void set(List<ShippingRate> shippingRates) {
+      mData.clear();
+      mData.addAll(shippingRates);
+      notifyDataSetChanged();
+    }
+  }
+
+  static class ShippingItemViewHolder extends RecyclerView.ViewHolder {
+
+    @BindView(R.id.checkbox) CheckBox vCheckbox;
+
+    @BindView(R.id.subtitle) TextView vSubtitle;
+
+    @BindView(R.id.title) TextView vTitle;
+
+    ShippingItemViewHolder(ViewGroup parent) {
+      super(LayoutInflaterUtils.inflate(parent, R.layout.view_holder_shipping_item));
+      ButterKnife.bind(this, itemView);
+    }
+
+    public void bind(ShippingRate shippingRate) {
+      vTitle.setText(shippingRate.getTitle());
+      vSubtitle.setText(shippingRate.getPrice());
+    }
   }
 }

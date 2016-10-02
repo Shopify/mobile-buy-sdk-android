@@ -23,28 +23,6 @@
   ~
   -->
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:tools="http://schemas.android.com/tools"
-  android:background="?attr/selectableItemBackground"
-  android:clickable="true"
-  style="@style/MdListItem.TwoLine.IconWithText">
-
-  <CheckBox
-    android:id="@+id/checkbox"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_centerVertical="true" />
-
-  <LinearLayout style="@style/Base.MdListItem.Wrapper">
-
-    <TextView
-      android:id="@+id/title"
-      tools:text="DHL"
-      style="@style/Base.MdListItem.Title.Left" />
-
-    <TextView
-      android:id="@+id/subtitle"
-      tools:text="No additional cost"
-      style="@style/Base.MdListItem.Subtitle.Left" />
-  </LinearLayout>
-</RelativeLayout>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+  android:text="@string/text_which_shipping_partner_do_you_like"
+  style="@style/MdSubHeader.List" />

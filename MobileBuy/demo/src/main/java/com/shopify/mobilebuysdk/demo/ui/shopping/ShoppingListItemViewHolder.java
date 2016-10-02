@@ -58,7 +58,7 @@ public class ShoppingListItemViewHolder extends BaseViewHolder {
 
   public ShoppingListItemViewHolder(ViewGroup parent, OnItemClickListener onItemClickListener,
       OnAddToCartClickListener onAddToCartClickListener) {
-    super(LayoutInflaterUtils.inflate(parent, R.layout.item_shopping_list));
+    super(LayoutInflaterUtils.inflate(parent, R.layout.view_holder_shopping_list_item));
     ButterKnife.bind(this, itemView);
     vContainer.setOnClickListener(view -> {
       if (onItemClickListener != null && mProduct != null) {

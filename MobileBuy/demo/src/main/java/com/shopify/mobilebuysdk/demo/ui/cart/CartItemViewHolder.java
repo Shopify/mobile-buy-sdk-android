@@ -60,7 +60,7 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
 
   public CartItemViewHolder(ViewGroup parent, OnCartItemAddClickListener onCartItemAddClickListener,
       OnCartItemRemoveClickListener onCartItemRemoveClickListener) {
-    super(LayoutInflaterUtils.inflate(parent, R.layout.item_cart));
+    super(LayoutInflaterUtils.inflate(parent, R.layout.view_holder_cart_item));
     ButterKnife.bind(this, itemView);
     vBtnAdd.setOnClickListener(view -> {
       if (onCartItemAddClickListener != null && mCartLineItem != null) {
