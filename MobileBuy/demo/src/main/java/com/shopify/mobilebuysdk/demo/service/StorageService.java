@@ -29,12 +29,17 @@ import com.google.gson.Gson;
 
 import com.shopify.buy.model.Cart;
 import com.shopify.buy.model.Checkout;
+import com.shopify.buy.model.ShippingRate;
 import com.shopify.buy.model.ShopifyObject;
 import com.shopify.mobilebuysdk.demo.App;
 import com.shopify.mobilebuysdk.demo.config.Constants;
 import com.shopify.mobilebuysdk.demo.data.CheckoutState;
 
 import android.content.Context;
+import android.os.Bundle;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import me.henrytao.rxsharedpreferences.RxSharedPreferences;
 import rx.Observable;
@@ -80,6 +85,23 @@ public class StorageService {
     return mRxSharedPreferences.getObject(CheckoutState.class, Key.CHECKOUT_STATE, CheckoutState.NONE);
   }
 
+  public Observable<List<ShippingRate>> getShippingRates() {
+    return mRxSharedPreferences
+        .getBundle(Key.SHIPPING_RATES, new Bundle())
+        .map(bundle -> {
+          ArrayList<String> rates = bundle.getStringArrayList(Key.SHIPPING_RATES);
+          if (rates == null) {
+            return null;
+          }
+          List<ShippingRate> shippingRates = new ArrayList<>();
+          Gson gson = new Gson();
+          for (String rate : rates) {
+            shippingRates.add(gson.fromJson(rate, ShippingRate.class));
+          }
+          return shippingRates;
+        });
+  }
+
   public Observable<Cart> observeCart() {
     return mRxSharedPreferences.observeObject(Cart.class, Key.CART, new Cart());
   }
@@ -105,10 +127,28 @@ public class StorageService {
     return mRxSharedPreferences.putObject(CheckoutState.class, Key.CHECKOUT_STATE, state);
   }
 
+  public Observable<Void> setShippingRates(List<ShippingRate> shippingRates) {
+    return Observable.just(null)
+        .flatMap(o -> {
+          if (shippingRates == null) {
+            return mRxSharedPreferences.putBundle(Key.SHIPPING_RATES, null);
+          }
+          Gson gson = new Gson();
+          ArrayList<String> rates = new ArrayList<>();
+          for (ShippingRate shippingRate : shippingRates) {
+            rates.add(gson.toJson(shippingRate));
+          }
+          Bundle bundle = new Bundle();
+          bundle.putStringArrayList(Key.SHIPPING_RATES, rates);
+          return mRxSharedPreferences.putBundle(Key.SHIPPING_RATES, bundle);
+        });
+  }
+
   private interface Key {
 
     String CART = "CART";
     String CHECKOUT = "CHECKOUT";
     String CHECKOUT_STATE = "CHECKOUT_STATE";
+    String SHIPPING_RATES = "SHIPPING_RATES";
   }
 }

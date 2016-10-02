@@ -130,7 +130,18 @@ public class ShopifyService {
   }
 
   public Observable<List<ShippingRate>> getShippingRates() {
-    return getCheckout().flatMap(checkout -> mBuyClient.getShippingRates(checkout.getToken()));
+    return mStorageService.getShippingRates()
+        .flatMap(shippingRates -> {
+          if (shippingRates != null) {
+            return Observable.just(shippingRates);
+          }
+          return getCheckout()
+              .flatMap(checkout -> mBuyClient.getShippingRates(checkout.getToken()))
+              .flatMap(rates -> mStorageService
+                  .setShippingRates(rates)
+                  .map(aVoid -> rates)
+              );
+        });
   }
 
   public Observable<Cart> observeCartChange() {
@@ -165,7 +176,8 @@ public class ShopifyService {
   public Observable<Void> resetCheckout() {
     return mStorageService
         .setCheckoutState(CheckoutState.NONE)
-        .flatMap(aVoid -> mStorageService.setCheckout(null));
+        .flatMap(aVoid -> mStorageService.setCheckout(null))
+        .flatMap(aVoid -> mStorageService.setShippingRates(null));
   }
 
   public Observable<Void> setCheckoutState(CheckoutState state) {

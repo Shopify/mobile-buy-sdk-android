@@ -166,6 +166,11 @@ public class AddressFragment extends BaseFragment {
                       .compose(Transformer.applyIoScheduler());
                 })
                 .flatMap(checkout -> mShopifyService
+                    .getShippingRates()
+                    .compose(Transformer.applyIoScheduler())
+                    .map(shippingRates -> checkout)
+                )
+                .flatMap(checkout -> mShopifyService
                     .setCheckoutState(CheckoutState.SHIPPING)
                     .compose(Transformer.applyIoScheduler())
                 ))
