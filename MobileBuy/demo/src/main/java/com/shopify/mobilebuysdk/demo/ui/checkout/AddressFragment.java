@@ -37,6 +37,7 @@ import com.shopify.mobilebuysdk.demo.util.rx.UnsubscribeLifeCycle;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputLayout;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -85,6 +86,30 @@ public class AddressFragment extends BaseFragment {
   @BindView(R.id.input_postal_code)
   EditText vPostalCode;
 
+  @BindView(R.id.til_address_1)
+  TextInputLayout vTilAddress1;
+
+  @BindView(R.id.til_address_2)
+  TextInputLayout vTilAddress2;
+
+  @BindView(R.id.til_city)
+  TextInputLayout vTilCity;
+
+  @BindView(R.id.til_country)
+  TextInputLayout vTilCountry;
+
+  @BindView(R.id.til_email)
+  TextInputLayout vTilEmail;
+
+  @BindView(R.id.til_first_name)
+  TextInputLayout vTilFirstName;
+
+  @BindView(R.id.til_last_name)
+  TextInputLayout vTilLastName;
+
+  @BindView(R.id.til_postal_code)
+  TextInputLayout vTilPostalCode;
+
   private Unbinder mUnbinder;
 
   @Override
@@ -130,6 +155,16 @@ public class AddressFragment extends BaseFragment {
     if (checkout == null) {
       return;
     }
+
+    vTilEmail.setHintAnimationEnabled(false);
+    vTilFirstName.setHintAnimationEnabled(false);
+    vTilLastName.setHintAnimationEnabled(false);
+    vTilAddress1.setHintAnimationEnabled(false);
+    vTilAddress2.setHintAnimationEnabled(false);
+    vTilCity.setHintAnimationEnabled(false);
+    vTilCountry.setHintAnimationEnabled(false);
+    vTilPostalCode.setHintAnimationEnabled(false);
+
     vEmail.setText(checkout.getEmail());
     Address address = checkout.getShippingAddress();
     if (address != null) {
@@ -141,6 +176,15 @@ public class AddressFragment extends BaseFragment {
       vCountry.setText(address.getCountry());
       vPostalCode.setText(address.getZip());
     }
+
+    vTilEmail.setHintAnimationEnabled(true);
+    vTilFirstName.setHintAnimationEnabled(true);
+    vTilLastName.setHintAnimationEnabled(true);
+    vTilAddress1.setHintAnimationEnabled(true);
+    vTilAddress2.setHintAnimationEnabled(true);
+    vTilCity.setHintAnimationEnabled(true);
+    vTilCountry.setHintAnimationEnabled(true);
+    vTilPostalCode.setHintAnimationEnabled(true);
   }
 
   private void onNextClicked(View view) {
