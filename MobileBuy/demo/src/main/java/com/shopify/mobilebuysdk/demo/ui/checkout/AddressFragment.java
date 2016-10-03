@@ -189,10 +189,9 @@ public class AddressFragment extends BaseFragment {
 
   private void onNextClicked(View view) {
     manageSubscription(UnsubscribeLifeCycle.DESTROY_VIEW,
-        Observable.just(null)
-            .flatMap(o -> mShopifyService
+        Observable.concat(
+            mShopifyService
                 .getCheckout()
-                .compose(Transformer.applyIoScheduler())
                 .flatMap(checkout -> {
                   Address address = new Address();
                   address.setFirstName(getInputValue(vFirstName, true));
@@ -208,17 +207,11 @@ public class AddressFragment extends BaseFragment {
                   return mShopifyService
                       .updateCheckout(checkout)
                       .compose(Transformer.applyIoScheduler());
-                })
-                .flatMap(checkout -> mShopifyService
-                    .getShippingRates()
-                    .compose(Transformer.applyIoScheduler())
-                    .map(shippingRates -> checkout)
-                )
-                .flatMap(checkout -> mShopifyService
-                    .setCheckoutState(CheckoutState.SHIPPING)
-                    .compose(Transformer.applyIoScheduler())
-                ))
+                }),
+            mShopifyService.getShippingRates(),
+            mShopifyService.setCheckoutState(CheckoutState.SHIPPING))
             .compose(ProgressDialogUtils.apply(this, R.string.text_updating_checkout))
+            .compose(Transformer.applyIoScheduler())
             .subscribe(o -> {
             }, throwable -> {
               throwable.printStackTrace();
@@ -227,6 +220,7 @@ public class AddressFragment extends BaseFragment {
               } else {
                 ToastUtils.showGenericErrorToast(getContext());
               }
-            }));
+            })
+    );
   }
 }

@@ -27,10 +27,13 @@ package com.shopify.mobilebuysdk.demo.ui.checkout;
 
 import com.shopify.buy.model.ShippingRate;
 import com.shopify.mobilebuysdk.demo.R;
+import com.shopify.mobilebuysdk.demo.data.CheckoutState;
 import com.shopify.mobilebuysdk.demo.ui.base.BaseFragment;
 import com.shopify.mobilebuysdk.demo.util.LayoutInflaterUtils;
 import com.shopify.mobilebuysdk.demo.util.ProgressDialogUtils;
+import com.shopify.mobilebuysdk.demo.util.StringUtils;
 import com.shopify.mobilebuysdk.demo.util.ToastUtils;
+import com.shopify.mobilebuysdk.demo.util.rx.Transformer;
 import com.shopify.mobilebuysdk.demo.util.rx.UnsubscribeLifeCycle;
 
 import android.os.Bundle;
@@ -40,7 +43,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
+import android.widget.Button;
+import android.widget.RadioButton;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -49,6 +53,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import rx.Observable;
 
 /**
  * Created by henrytao on 9/14/16.
@@ -58,6 +63,8 @@ public class ShippingFragment extends BaseFragment {
   public static ShippingFragment newInstance() {
     return new ShippingFragment();
   }
+
+  @BindView(R.id.btn_next) Button vBtnNext;
 
   @BindView(R.id.list) RecyclerView vRecyclerView;
 
@@ -82,24 +89,56 @@ public class ShippingFragment extends BaseFragment {
   public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
 
+    vBtnNext.setOnClickListener(this::onNextClicked);
+
     mAdapter = new Adapter();
     vRecyclerView.setAdapter(mAdapter);
     vRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
     manageSubscription(UnsubscribeLifeCycle.DESTROY_VIEW,
-        mShopifyService
-            .getShippingRates()
+        Observable.merge(
+            mShopifyService
+                .getCheckout()
+                .compose(Transformer.applyIoScheduler())
+                .doOnNext(checkout -> mAdapter.setSelectedShippingRate(checkout.getShippingRate())),
+            mShopifyService
+                .getShippingRates()
+                .compose(Transformer.applyIoScheduler())
+                .doOnNext(mAdapter::set))
             .compose(ProgressDialogUtils.apply(this, R.string.text_processing))
-            .subscribe(mAdapter::set, throwable -> {
+            .subscribe(o -> {
+            }, throwable -> {
               throwable.printStackTrace();
               ToastUtils.showGenericErrorToast(getContext());
             })
     );
   }
 
+  private void onNextClicked(View view) {
+    manageSubscription(UnsubscribeLifeCycle.DESTROY_VIEW,
+        Observable.concat(
+            mShopifyService.setShippingRate(mAdapter.getSelectedShippingRate()),
+            mShopifyService.setCheckoutState(CheckoutState.PAYMENT))
+            .compose(ProgressDialogUtils.apply(this, R.string.text_updating_checkout))
+            .compose(Transformer.applyIoScheduler())
+            .subscribe(aVoid -> {
+            }, throwable -> {
+              throwable.printStackTrace();
+              ToastUtils.showGenericErrorToast(getContext());
+            })
+    );
+  }
+
+  interface OnCheckedChangeListener {
+
+    void onCheckChanged(ShippingRate shippingRate);
+  }
+
   static class Adapter extends RecyclerView.Adapter<ShippingItemViewHolder> {
 
     private final List<ShippingRate> mData;
+
+    private ShippingRate mSelectedShippingRate;
 
     Adapter() {
       mData = new ArrayList<>();
@@ -112,12 +151,28 @@ public class ShippingFragment extends BaseFragment {
 
     @Override
     public void onBindViewHolder(ShippingItemViewHolder holder, int position) {
-      holder.bind(mData.get(position));
+      ShippingRate shippingRate = mData.get(position);
+      holder.bind(shippingRate,
+          StringUtils.equals(shippingRate.getId(), mSelectedShippingRate != null ? mSelectedShippingRate.getId() : null));
     }
 
     @Override
     public ShippingItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-      return new ShippingItemViewHolder(parent);
+      return new ShippingItemViewHolder(parent, shippingRate -> {
+        mSelectedShippingRate = shippingRate;
+        int index = mData.indexOf(shippingRate);
+        notifyItemRangeChanged(0, index);
+        notifyItemRangeChanged(index + 1, getItemCount() - (index + 1));
+      });
+    }
+
+    public ShippingRate getSelectedShippingRate() {
+      return mSelectedShippingRate;
+    }
+
+    public void setSelectedShippingRate(ShippingRate shippingRate) {
+      mSelectedShippingRate = shippingRate;
+      notifyDataSetChanged();
     }
 
     void set(List<ShippingRate> shippingRates) {
@@ -129,20 +184,30 @@ public class ShippingFragment extends BaseFragment {
 
   static class ShippingItemViewHolder extends RecyclerView.ViewHolder {
 
-    @BindView(R.id.checkbox) CheckBox vCheckbox;
+    @BindView(R.id.radio_button) RadioButton vRadioButton;
 
     @BindView(R.id.subtitle) TextView vSubtitle;
 
     @BindView(R.id.title) TextView vTitle;
 
-    ShippingItemViewHolder(ViewGroup parent) {
+    private ShippingRate mShippingRate;
+
+    ShippingItemViewHolder(ViewGroup parent, OnCheckedChangeListener onCheckedChangeListener) {
       super(LayoutInflaterUtils.inflate(parent, R.layout.view_holder_shipping_item));
       ButterKnife.bind(this, itemView);
+      itemView.setOnClickListener(view -> {
+        vRadioButton.setChecked(true);
+        if (onCheckedChangeListener != null) {
+          onCheckedChangeListener.onCheckChanged(mShippingRate);
+        }
+      });
     }
 
-    public void bind(ShippingRate shippingRate) {
+    public void bind(ShippingRate shippingRate, boolean isChecked) {
+      mShippingRate = shippingRate;
       vTitle.setText(shippingRate.getTitle());
       vSubtitle.setText(shippingRate.getPrice());
+      vRadioButton.setChecked(isChecked);
     }
   }
 }

@@ -36,6 +36,7 @@ import com.shopify.mobilebuysdk.demo.App;
 import com.shopify.mobilebuysdk.demo.BuildConfig;
 import com.shopify.mobilebuysdk.demo.R;
 import com.shopify.mobilebuysdk.demo.data.CheckoutState;
+import com.shopify.mobilebuysdk.demo.exception.InvalidShippingRateException;
 import com.shopify.mobilebuysdk.demo.util.StringUtils;
 
 import android.annotation.SuppressLint;
@@ -182,6 +183,18 @@ public class ShopifyService {
 
   public Observable<Void> setCheckoutState(CheckoutState state) {
     return mStorageService.setCheckoutState(state);
+  }
+
+  public Observable<Void> setShippingRate(ShippingRate shippingRate) {
+    return Observable.just(null)
+        .flatMap(o -> shippingRate != null ? Observable.just(null) : Observable.error(new InvalidShippingRateException()))
+        .flatMap(o -> getCheckout()
+            .map(checkout -> {
+              checkout.setShippingRate(shippingRate);
+              return checkout;
+            })
+            .flatMap(this::updateCheckout)
+            .map(checkout -> null));
   }
 
   public Observable<Checkout> updateCheckout(Checkout checkout) {
