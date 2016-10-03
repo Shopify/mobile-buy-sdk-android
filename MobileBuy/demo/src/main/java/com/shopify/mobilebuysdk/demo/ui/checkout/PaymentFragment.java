@@ -68,35 +68,35 @@ public class PaymentFragment extends BaseFragment {
     return view;
   }
 
-  @OnClick(R.id.btn_android_pay_checkout)
-  protected void onAndroidPayCheckoutClick() {
-    //manageSubscription(UnsubscribeLifeCycle.DESTROY_VIEW,
-    //    mShopifyService.getCheckout().subscribe(checkout -> {
-    //      String merchantName = getString(R.string.app_name);
-    //      MaskedWalletRequest maskedWalletRequest = AndroidPayHelper.createMaskedWalletRequest(merchantName, checkout, )
-    //    }, Throwable::printStackTrace));
-  }
-
-  @OnClick(R.id.btn_native_checkout)
-  protected void onNativeCheckoutClick() {
-    manageSubscription(UnsubscribeLifeCycle.DESTROY_VIEW,
-        mShopifyService
-            .setCheckoutState(CheckoutState.ADDRESS)
-            .compose(Transformer.applyComputationScheduler())
-            .subscribe()
-    );
-  }
-
-  @OnClick(R.id.btn_web_checkout)
-  protected void onWebCheckoutClick() {
-    manageSubscription(UnsubscribeLifeCycle.DESTROY_VIEW,
-        mShopifyService
-            .getCheckout()
-            .compose(Transformer.applyIoScheduler())
-            .subscribe(checkout -> {
-              Intent intent = new Intent(Intent.ACTION_VIEW);
-              intent.setData(Uri.parse(checkout.getWebUrl()));
-              NavigationUtils.startActivity(getActivity(), intent);
-            }, Throwable::printStackTrace));
-  }
+  //@OnClick(R.id.btn_android_pay_checkout)
+  //protected void onAndroidPayCheckoutClick() {
+  //  //manageSubscription(UnsubscribeLifeCycle.DESTROY_VIEW,
+  //  //    mShopifyService.getCheckout().subscribe(checkout -> {
+  //  //      String merchantName = getString(R.string.app_name);
+  //  //      MaskedWalletRequest maskedWalletRequest = AndroidPayHelper.createMaskedWalletRequest(merchantName, checkout, )
+  //  //    }, Throwable::printStackTrace));
+  //}
+  //
+  //@OnClick(R.id.btn_native_checkout)
+  //protected void onNativeCheckoutClick() {
+  //  manageSubscription(UnsubscribeLifeCycle.DESTROY_VIEW,
+  //      mShopifyService
+  //          .setCheckoutState(CheckoutState.ADDRESS)
+  //          .compose(Transformer.applyComputationScheduler())
+  //          .subscribe()
+  //  );
+  //}
+  //
+  //@OnClick(R.id.btn_web_checkout)
+  //protected void onWebCheckoutClick() {
+  //  manageSubscription(UnsubscribeLifeCycle.DESTROY_VIEW,
+  //      mShopifyService
+  //          .getCheckout()
+  //          .compose(Transformer.applyIoScheduler())
+  //          .subscribe(checkout -> {
+  //            Intent intent = new Intent(Intent.ACTION_VIEW);
+  //            intent.setData(Uri.parse(checkout.getWebUrl()));
+  //            NavigationUtils.startActivity(getActivity(), intent);
+  //          }, Throwable::printStackTrace));
+  //}
 }

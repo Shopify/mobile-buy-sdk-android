@@ -57,7 +57,7 @@
     <activity
       android:label="@string/text_checkout"
       android:name=".ui.checkout.CheckoutActivity"
-      android:windowSoftInputMode="adjustResize" />
+      android:windowSoftInputMode="adjustResize|stateHidden" />
 
     <activity
       android:label="@string/text_processing"
