@@ -26,22 +26,21 @@
 package com.shopify.mobilebuysdk.demo.ui.checkout;
 
 import com.shopify.mobilebuysdk.demo.R;
-import com.shopify.mobilebuysdk.demo.data.CheckoutState;
 import com.shopify.mobilebuysdk.demo.ui.base.BaseFragment;
-import com.shopify.mobilebuysdk.demo.util.NavigationUtils;
-import com.shopify.mobilebuysdk.demo.util.rx.Transformer;
-import com.shopify.mobilebuysdk.demo.util.rx.UnsubscribeLifeCycle;
+import com.shopify.mobilebuysdk.demo.util.ToastUtils;
+import com.shopify.mobilebuysdk.demo.widget.MaskedEditText;
 
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import butterknife.Unbinder;
 
 /**
@@ -52,6 +51,22 @@ public class PaymentFragment extends BaseFragment {
   public static PaymentFragment newInstance() {
     return new PaymentFragment();
   }
+
+  @BindView(R.id.btn_android_pay) Button vBtnAndroidPay;
+
+  @BindView(R.id.btn_next) Button vBtnNext;
+
+  @BindView(R.id.input_cvv_code) EditText vInputCVVCode;
+
+  @BindView(R.id.input_card_number) EditText vInputCardNumber;
+
+  @BindView(R.id.input_expires) MaskedEditText vInputExpires;
+
+  @BindView(R.id.til_cvv_code) TextInputLayout vTilCVVCode;
+
+  @BindView(R.id.til_card_number) TextInputLayout vTilCardNumber;
+
+  @BindView(R.id.til_expires) TextInputLayout vTilExpires;
 
   private Unbinder mUnbinder;
 
@@ -66,6 +81,24 @@ public class PaymentFragment extends BaseFragment {
     View view = inflater.inflate(R.layout.fragment_payment, container, false);
     mUnbinder = ButterKnife.bind(this, view);
     return view;
+  }
+
+  @Override
+  public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    super.onViewCreated(view, savedInstanceState);
+
+    vBtnAndroidPay.setOnClickListener(this::onAndroidPayClicked);
+
+    vInputExpires.setText("01-04");
+
+    //manageSubscription(UnsubscribeLifeCycle.DESTROY_VIEW,
+    //    mShopifyService
+    //
+    //);
+  }
+
+  private void onAndroidPayClicked(View view) {
+    ToastUtils.showAndroidPaySetupMessage(getContext());
   }
 
   //@OnClick(R.id.btn_android_pay_checkout)

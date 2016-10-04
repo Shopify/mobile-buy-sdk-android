@@ -36,6 +36,10 @@ import android.widget.Toast;
  */
 public class ToastUtils {
 
+  public static Toast showAndroidPaySetupMessage(Context context) {
+    return showShortToast(context, R.string.text_android_pay_setup_message);
+  }
+
   public static Toast showCheckRequiredFieldsToast(Context context) {
     return showShortToast(context, R.string.text_check_required_fields);
   }

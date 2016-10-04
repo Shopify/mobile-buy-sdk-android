@@ -54,9 +54,10 @@
           style="@style/MdCardView.Wrapper">
 
           <Button
+            android:id="@+id/btn_android_pay"
             android:paddingLeft="@dimen/mdLayoutSpacing"
             android:paddingRight="@dimen/mdLayoutSpacing"
-            android:text="Continue with Android Pay"
+            android:text="@string/text_continue_with_android_pay"
             app:drawableStartCompat="@drawable/ic_android_pay"
             style="@style/AppStyle.Button.Colored.Full" />
         </LinearLayout>
@@ -64,7 +65,7 @@
 
       <TextView
         android:layout_gravity="center"
-        android:text="--- Or ---"
+        android:text="@string/text_payment_option_message"
         android:textColor="?attr/mdTextColorHint_backgroundPalette"
         style="@style/MdText.Body1.SingleLine" />
 
@@ -82,7 +83,7 @@
             android:paddingLeft="@dimen/mdLayoutSpacing_sm"
             android:paddingRight="@dimen/mdLayoutSpacing_sm"
             android:paddingTop="@dimen/mdLayoutSpacing_sm"
-            android:text="Use credit card"
+            android:text="@string/text_use_credit_card"
             style="@style/MdText.Subhead1.SingleLine" />
 
           <android.support.design.widget.TextInputLayout
@@ -91,7 +92,7 @@
 
             <android.support.design.widget.TextInputEditText
               android:id="@+id/input_card_number"
-              android:hint="Credit Card #No"
+              android:hint="@string/text_credit_card_no"
               android:imeOptions="actionNext"
               android:inputType="numberSigned"
               android:maxLines="1"
@@ -109,12 +110,14 @@
               android:layout_weight="1"
               style="@style/MdTextField.TextWithLabel">
 
-              <android.support.design.widget.TextInputEditText
+              <com.shopify.mobilebuysdk.demo.widget.MaskedEditText
                 android:id="@+id/input_expires"
-                android:hint="Expires (mm/yy)"
+                android:hint="@string/text_expires"
                 android:imeOptions="actionNext"
-                android:inputType="textCapSentences"
+                android:inputType="numberSigned"
+                android:maxLength="5"
                 android:maxLines="1"
+                app:mask="##-##"
                 style="@style/MdTextField.TextWithLabel.Text" />
             </android.support.design.widget.TextInputLayout>
 
@@ -126,7 +129,7 @@
 
               <android.support.design.widget.TextInputEditText
                 android:id="@+id/input_cvv_code"
-                android:hint="CVV-Code"
+                android:hint="@string/text_cvv_code"
                 android:imeOptions="actionDone"
                 android:inputType="numberSigned"
                 android:maxLines="1"
