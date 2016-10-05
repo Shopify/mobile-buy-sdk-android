@@ -193,11 +193,11 @@ public class AddressFragment extends BaseFragment {
 
   private void onNextClicked(View view) {
     manageSubscription(UnsubscribeLifeCycle.DESTROY_VIEW,
-        Observable.concat(
-            mShopifyService.setEmail(EditTextUtils.getText(vEmail, true)).compose(Transformer.applyIoScheduler()),
-            mShopifyService.setAddress(getAddressFromInput()).compose(Transformer.applyIoScheduler()),
+        Observable.defer(() -> Observable.concat(
+            mShopifyService.setEmail(EditTextUtils.getText(vEmail, true)),
+            mShopifyService.setAddress(getAddressFromInput()),
             mShopifyService.getShippingRates(),
-            mShopifyService.setCheckoutState(CheckoutState.SHIPPING))
+            mShopifyService.setCheckoutState(CheckoutState.SHIPPING)))
             .compose(ProgressDialogUtils.apply(this, R.string.text_updating_checkout))
             .compose(Transformer.applyIoScheduler())
             .subscribe(o -> {

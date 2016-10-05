@@ -116,9 +116,9 @@ public class ShippingFragment extends BaseFragment {
 
   private void onNextClicked(View view) {
     manageSubscription(UnsubscribeLifeCycle.DESTROY_VIEW,
-        Observable.concat(
+        Observable.defer(() -> Observable.concat(
             mShopifyService.setShippingRate(mAdapter.getSelectedShippingRate()),
-            mShopifyService.setCheckoutState(CheckoutState.PAYMENT))
+            mShopifyService.setCheckoutState(CheckoutState.PAYMENT)))
             .compose(ProgressDialogUtils.apply(this, R.string.text_updating_checkout))
             .compose(Transformer.applyIoScheduler())
             .subscribe(aVoid -> {

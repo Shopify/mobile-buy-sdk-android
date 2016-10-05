@@ -133,9 +133,9 @@ public class PaymentFragment extends BaseFragment {
 
   private void onNextClicked(View view) {
     manageSubscription(UnsubscribeLifeCycle.DESTROY_VIEW,
-        Observable.concat(
+        Observable.defer(() -> Observable.concat(
             mShopifyService.setCreditCard(getCreditCardFromInput()),
-            mShopifyService.setCheckoutState(CheckoutState.SUMMARY))
+            mShopifyService.setCheckoutState(CheckoutState.SUMMARY)))
             .compose(ProgressDialogUtils.apply(this, R.string.text_updating_checkout))
             .compose(Transformer.applyIoScheduler())
             .subscribe(o -> {
