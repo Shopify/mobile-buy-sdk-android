@@ -30,6 +30,7 @@ import com.shopify.buy.model.Checkout;
 import com.shopify.mobilebuysdk.demo.R;
 import com.shopify.mobilebuysdk.demo.data.CheckoutState;
 import com.shopify.mobilebuysdk.demo.ui.base.BaseFragment;
+import com.shopify.mobilebuysdk.demo.util.EditTextUtils;
 import com.shopify.mobilebuysdk.demo.util.ProgressDialogUtils;
 import com.shopify.mobilebuysdk.demo.util.ToastUtils;
 import com.shopify.mobilebuysdk.demo.util.rx.Transformer;
@@ -38,7 +39,6 @@ import com.shopify.mobilebuysdk.demo.util.rx.UnsubscribeLifeCycle;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -143,12 +143,16 @@ public class AddressFragment extends BaseFragment {
     );
   }
 
-  private String getInputValue(EditText editText, boolean required) throws IllegalArgumentException {
-    String value = editText.getText().toString();
-    if (TextUtils.isEmpty(value) && required) {
-      throw new IllegalArgumentException("Input is required");
-    }
-    return value;
+  private Address getAddressFromInput() throws IllegalArgumentException {
+    Address address = new Address();
+    address.setFirstName(EditTextUtils.getText(vFirstName, true));
+    address.setLastName(EditTextUtils.getText(vLastName, true));
+    address.setAddress1(EditTextUtils.getText(vAddress1, true));
+    address.setAddress2(EditTextUtils.getText(vAddress2, false));
+    address.setCity(EditTextUtils.getText(vCity, true));
+    address.setCountry(EditTextUtils.getText(vCountry, true));
+    address.setZip(EditTextUtils.getText(vPostalCode, true));
+    return address;
   }
 
   private void onLoad(Checkout checkout) {
@@ -190,24 +194,8 @@ public class AddressFragment extends BaseFragment {
   private void onNextClicked(View view) {
     manageSubscription(UnsubscribeLifeCycle.DESTROY_VIEW,
         Observable.concat(
-            mShopifyService
-                .getCheckout()
-                .flatMap(checkout -> {
-                  Address address = new Address();
-                  address.setFirstName(getInputValue(vFirstName, true));
-                  address.setLastName(getInputValue(vLastName, true));
-                  address.setAddress1(getInputValue(vAddress1, true));
-                  address.setAddress2(getInputValue(vAddress2, false));
-                  address.setCity(getInputValue(vCity, true));
-                  address.setCountry(getInputValue(vCountry, true));
-                  address.setZip(getInputValue(vPostalCode, true));
-                  checkout.setEmail(getInputValue(vEmail, true));
-                  checkout.setShippingAddress(address);
-                  checkout.setBillingAddress(address);
-                  return mShopifyService
-                      .updateCheckout(checkout)
-                      .compose(Transformer.applyIoScheduler());
-                }),
+            mShopifyService.setEmail(EditTextUtils.getText(vEmail, true)).compose(Transformer.applyIoScheduler()),
+            mShopifyService.setAddress(getAddressFromInput()).compose(Transformer.applyIoScheduler()),
             mShopifyService.getShippingRates(),
             mShopifyService.setCheckoutState(CheckoutState.SHIPPING))
             .compose(ProgressDialogUtils.apply(this, R.string.text_updating_checkout))

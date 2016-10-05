@@ -25,14 +25,21 @@
 
 package com.shopify.mobilebuysdk.demo.ui.checkout;
 
+import com.shopify.buy.model.CreditCard;
 import com.shopify.mobilebuysdk.demo.R;
+import com.shopify.mobilebuysdk.demo.data.CheckoutState;
 import com.shopify.mobilebuysdk.demo.ui.base.BaseFragment;
+import com.shopify.mobilebuysdk.demo.util.EditTextUtils;
+import com.shopify.mobilebuysdk.demo.util.ProgressDialogUtils;
 import com.shopify.mobilebuysdk.demo.util.ToastUtils;
+import com.shopify.mobilebuysdk.demo.util.rx.Transformer;
+import com.shopify.mobilebuysdk.demo.util.rx.UnsubscribeLifeCycle;
 import com.shopify.mobilebuysdk.demo.widget.MaskedEditText;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,6 +49,7 @@ import android.widget.EditText;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import rx.Observable;
 
 /**
  * Created by henrytao on 9/14/16.
@@ -62,11 +70,19 @@ public class PaymentFragment extends BaseFragment {
 
   @BindView(R.id.input_expires) MaskedEditText vInputExpires;
 
+  @BindView(R.id.input_first_name) EditText vInputFirstName;
+
+  @BindView(R.id.input_last_name) EditText vInputLastName;
+
   @BindView(R.id.til_cvv_code) TextInputLayout vTilCVVCode;
 
   @BindView(R.id.til_card_number) TextInputLayout vTilCardNumber;
 
   @BindView(R.id.til_expires) TextInputLayout vTilExpires;
+
+  @BindView(R.id.til_first_name) TextInputLayout vTilFirstName;
+
+  @BindView(R.id.til_last_name) TextInputLayout vTilLastName;
 
   private Unbinder mUnbinder;
 
@@ -88,8 +104,7 @@ public class PaymentFragment extends BaseFragment {
     super.onViewCreated(view, savedInstanceState);
 
     vBtnAndroidPay.setOnClickListener(this::onAndroidPayClicked);
-
-    vInputExpires.setText("01-04");
+    vBtnNext.setOnClickListener(this::onNextClicked);
 
     //manageSubscription(UnsubscribeLifeCycle.DESTROY_VIEW,
     //    mShopifyService
@@ -97,39 +112,41 @@ public class PaymentFragment extends BaseFragment {
     //);
   }
 
+  private CreditCard getCreditCardFromInput() throws IllegalArgumentException {
+    CreditCard creditCard = new CreditCard();
+    String expires = vInputExpires.getUnmaskText();
+    if (TextUtils.isEmpty(expires) || expires.length() != 4) {
+      throw new IllegalArgumentException("Invalid expires");
+    }
+    creditCard.setFirstName(EditTextUtils.getText(vInputFirstName, true));
+    creditCard.setLastName(EditTextUtils.getText(vInputLastName, true));
+    creditCard.setNumber(EditTextUtils.getText(vInputCardNumber, true));
+    creditCard.setMonth(expires.substring(0, 1));
+    creditCard.setYear(expires.substring(2, 3));
+    creditCard.setVerificationValue(EditTextUtils.getText(vInputCVVCode, true));
+    return creditCard;
+  }
+
   private void onAndroidPayClicked(View view) {
     ToastUtils.showAndroidPaySetupMessage(getContext());
   }
 
-  //@OnClick(R.id.btn_android_pay_checkout)
-  //protected void onAndroidPayCheckoutClick() {
-  //  //manageSubscription(UnsubscribeLifeCycle.DESTROY_VIEW,
-  //  //    mShopifyService.getCheckout().subscribe(checkout -> {
-  //  //      String merchantName = getString(R.string.app_name);
-  //  //      MaskedWalletRequest maskedWalletRequest = AndroidPayHelper.createMaskedWalletRequest(merchantName, checkout, )
-  //  //    }, Throwable::printStackTrace));
-  //}
-  //
-  //@OnClick(R.id.btn_native_checkout)
-  //protected void onNativeCheckoutClick() {
-  //  manageSubscription(UnsubscribeLifeCycle.DESTROY_VIEW,
-  //      mShopifyService
-  //          .setCheckoutState(CheckoutState.ADDRESS)
-  //          .compose(Transformer.applyComputationScheduler())
-  //          .subscribe()
-  //  );
-  //}
-  //
-  //@OnClick(R.id.btn_web_checkout)
-  //protected void onWebCheckoutClick() {
-  //  manageSubscription(UnsubscribeLifeCycle.DESTROY_VIEW,
-  //      mShopifyService
-  //          .getCheckout()
-  //          .compose(Transformer.applyIoScheduler())
-  //          .subscribe(checkout -> {
-  //            Intent intent = new Intent(Intent.ACTION_VIEW);
-  //            intent.setData(Uri.parse(checkout.getWebUrl()));
-  //            NavigationUtils.startActivity(getActivity(), intent);
-  //          }, Throwable::printStackTrace));
-  //}
+  private void onNextClicked(View view) {
+    manageSubscription(UnsubscribeLifeCycle.DESTROY_VIEW,
+        Observable.concat(
+            mShopifyService.setCreditCard(getCreditCardFromInput()),
+            mShopifyService.setCheckoutState(CheckoutState.SUMMARY))
+            .compose(ProgressDialogUtils.apply(this, R.string.text_updating_checkout))
+            .compose(Transformer.applyIoScheduler())
+            .subscribe(o -> {
+            }, throwable -> {
+              throwable.printStackTrace();
+              if (throwable instanceof IllegalArgumentException) {
+                ToastUtils.showCheckRequiredFieldsToast(getContext());
+              } else {
+                ToastUtils.showGenericErrorToast(getContext());
+              }
+            })
+    );
+  }
 }

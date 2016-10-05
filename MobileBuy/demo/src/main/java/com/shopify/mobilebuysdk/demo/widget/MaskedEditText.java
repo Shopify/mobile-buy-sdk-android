@@ -40,7 +40,7 @@ import android.util.AttributeSet;
  */
 public class MaskedEditText extends AppCompatEditText {
 
-  public static String applyMask(String text, String mask) {
+  public static String mask(String text, String mask) {
     if (TextUtils.isEmpty(mask)) {
       return text;
     }
@@ -68,7 +68,7 @@ public class MaskedEditText extends AppCompatEditText {
     if (maskIndex < output.length()) {
       output.delete(maskIndex, output.length());
     }
-    // trim maskgi
+    // trim mask
     int i = output.length() - 1;
     while (i >= 0 && i < maskLength) {
       if (mask.charAt(i) != '#') {
@@ -77,6 +77,21 @@ public class MaskedEditText extends AppCompatEditText {
         break;
       }
       i--;
+    }
+    return output.toString();
+  }
+
+  public static String unmask(String maskedText, String mask) {
+    if (TextUtils.isEmpty(mask)) {
+      return maskedText;
+    }
+    StringBuilder output = new StringBuilder();
+    int maskLength = mask.length();
+    int n = maskedText.length();
+    for (int i = 0; i < n; i++) {
+      if (i >= maskLength || mask.charAt(i) == '#') {
+        output.append(maskedText.charAt(i));
+      }
     }
     return output.toString();
   }
@@ -112,13 +127,17 @@ public class MaskedEditText extends AppCompatEditText {
     removeTextChangedListener(mTextChangedListener);
   }
 
+  public String getUnmaskText() {
+    return unmask(getText().toString(), mMask);
+  }
+
   public void setMask(String mask) {
     mMask = mask;
   }
 
   private void applyMask() {
     String currentText = getText().toString();
-    String maskedText = applyMask(currentText, mMask);
+    String maskedText = mask(currentText, mMask);
     if (!TextUtils.equals(currentText, maskedText)) {
       setText(maskedText);
       setSelection(getText().length());

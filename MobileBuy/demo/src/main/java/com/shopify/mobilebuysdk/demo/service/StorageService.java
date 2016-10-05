@@ -29,6 +29,7 @@ import com.google.gson.Gson;
 
 import com.shopify.buy.model.Cart;
 import com.shopify.buy.model.Checkout;
+import com.shopify.buy.model.PaymentToken;
 import com.shopify.buy.model.ShippingRate;
 import com.shopify.buy.model.ShopifyObject;
 import com.shopify.mobilebuysdk.demo.App;
@@ -71,6 +72,7 @@ public class StorageService {
     mRxSharedPreferences.register(Cart.class, gson::toJson, s -> gson.fromJson(s, Cart.class));
     mRxSharedPreferences.register(CheckoutState.class, CheckoutState::toString, CheckoutState::from);
     mRxSharedPreferences.register(Checkout.class, ShopifyObject::toJsonString, Checkout::fromJson);
+    mRxSharedPreferences.register(PaymentToken.class, gson::toJson, s -> gson.fromJson(s, PaymentToken.class));
   }
 
   public Observable<Cart> getCart() {
@@ -83,6 +85,10 @@ public class StorageService {
 
   public Observable<CheckoutState> getCheckoutState() {
     return mRxSharedPreferences.getObject(CheckoutState.class, Key.CHECKOUT_STATE, CheckoutState.NONE);
+  }
+
+  public Observable<PaymentToken> getPaymentToken() {
+    return mRxSharedPreferences.getObject(PaymentToken.class, Key.PAYMENT_TOKEN, null);
   }
 
   public Observable<List<ShippingRate>> getShippingRates() {
@@ -127,6 +133,10 @@ public class StorageService {
     return mRxSharedPreferences.putObject(CheckoutState.class, Key.CHECKOUT_STATE, state);
   }
 
+  public Observable<Void> setPaymentToken(PaymentToken paymentToken) {
+    return mRxSharedPreferences.putObject(PaymentToken.class, Key.PAYMENT_TOKEN, paymentToken);
+  }
+
   public Observable<Void> setShippingRates(List<ShippingRate> shippingRates) {
     return Observable.just(null)
         .flatMap(o -> {
@@ -149,6 +159,7 @@ public class StorageService {
     String CART = "CART";
     String CHECKOUT = "CHECKOUT";
     String CHECKOUT_STATE = "CHECKOUT_STATE";
+    String PAYMENT_TOKEN = "PAYMENT_TOKEN";
     String SHIPPING_RATES = "SHIPPING_RATES";
   }
 }

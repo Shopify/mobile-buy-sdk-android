@@ -27,8 +27,10 @@ package com.shopify.mobilebuysdk.demo.service;
 
 import com.shopify.buy.dataprovider.BuyClient;
 import com.shopify.buy.dataprovider.BuyClientBuilder;
+import com.shopify.buy.model.Address;
 import com.shopify.buy.model.Cart;
 import com.shopify.buy.model.Checkout;
+import com.shopify.buy.model.CreditCard;
 import com.shopify.buy.model.Product;
 import com.shopify.buy.model.ProductVariant;
 import com.shopify.buy.model.ShippingRate;
@@ -181,8 +183,33 @@ public class ShopifyService {
         .flatMap(aVoid -> mStorageService.setShippingRates(null));
   }
 
+  public Observable<Void> setAddress(Address address) {
+    return getCheckout()
+        .flatMap(checkout -> {
+          checkout.setShippingAddress(address);
+          checkout.setBillingAddress(address);
+          return updateCheckout(checkout);
+        })
+        .map(checkout -> null);
+  }
+
   public Observable<Void> setCheckoutState(CheckoutState state) {
     return mStorageService.setCheckoutState(state);
+  }
+
+  public Observable<Void> setCreditCard(CreditCard creditCard) {
+    return getCheckout()
+        .flatMap(checkout -> mBuyClient.storeCreditCard(creditCard, checkout))
+        .flatMap(mStorageService::setPaymentToken);
+  }
+
+  public Observable<Void> setEmail(String email) {
+    return getCheckout()
+        .flatMap(checkout -> {
+          checkout.setEmail(email);
+          return updateCheckout(checkout);
+        })
+        .map(checkout -> null);
   }
 
   public Observable<Void> setShippingRate(ShippingRate shippingRate) {
@@ -197,7 +224,7 @@ public class ShopifyService {
             .map(checkout -> null));
   }
 
-  public Observable<Checkout> updateCheckout(Checkout checkout) {
+  private Observable<Checkout> updateCheckout(Checkout checkout) {
     return mBuyClient.updateCheckout(checkout).flatMap(co -> mStorageService.setCheckout(co).map(aVoid -> co));
   }
 }

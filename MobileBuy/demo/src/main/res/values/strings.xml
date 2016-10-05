@@ -138,7 +138,7 @@
   <string name="text_continue_with_android_pay">Continue with Android Pay</string>
   <string name="text_payment_option_message">--- Or ---</string>
   <string name="text_use_credit_card">Use credit card</string>
-  <string name="text_credit_card_no">Credit Card #No</string>
-  <string name="text_expires">Expires (mm-yy)</string>
-  <string name="text_cvv_code">CVV-Code</string>
+  <string name="text_credit_card_no">Credit Card #No (*)</string>
+  <string name="text_expires">Expires (mm-yy) (*)</string>
+  <string name="text_cvv_code">CVV-Code (*)</string>
 </resources>
