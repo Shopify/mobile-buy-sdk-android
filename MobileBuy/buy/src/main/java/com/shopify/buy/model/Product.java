@@ -254,12 +254,15 @@ public class Product extends ShopifyObject {
             return false;
         }
 
-        ProductVariant firstVariant = variants.get(0);
-        List<OptionValue> optionValues = firstVariant.getOptionValues();
+        final List<OptionValue> optionValues = variants.get(0).getOptionValues();
+        if (CollectionUtils.isEmpty(optionValues) || optionValues.size() != 1) {
+            return false;
+        }
 
-        return firstVariant.getTitle().equals("Default Title")
-                && !CollectionUtils.isEmpty(optionValues)
-                && (optionValues.get(0).getValue().equals("Default Title") || optionValues.get(0).getValue().equals("Default"));
+        final OptionValue optionValue = optionValues.get(0);
+
+        return "Title".equals(optionValue.getName())
+            && ("Default Title".equals(optionValue.getValue()) || "Default".equals(optionValue.getValue()));
     }
 
     /**
