@@ -141,4 +141,5 @@
   <string name="text_credit_card_no">Credit Card #No (*)</string>
   <string name="text_expires">Expires (mm-yy) (*)</string>
   <string name="text_cvv_code">CVV-Code (*)</string>
+  <string name="text_purchase">Purchase</string>
 </resources>

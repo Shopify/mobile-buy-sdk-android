@@ -105,11 +105,6 @@ public class PaymentFragment extends BaseFragment {
 
     vBtnAndroidPay.setOnClickListener(this::onAndroidPayClicked);
     vBtnNext.setOnClickListener(this::onNextClicked);
-
-    //manageSubscription(UnsubscribeLifeCycle.DESTROY_VIEW,
-    //    mShopifyService
-    //
-    //);
   }
 
   private CreditCard getCreditCardFromInput() throws IllegalArgumentException {

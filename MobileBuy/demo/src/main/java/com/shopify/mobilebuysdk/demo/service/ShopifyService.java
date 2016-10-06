@@ -225,6 +225,8 @@ public class ShopifyService {
   }
 
   private Observable<Checkout> updateCheckout(Checkout checkout) {
-    return mBuyClient.updateCheckout(checkout).flatMap(co -> mStorageService.setCheckout(co).map(aVoid -> co));
+    return mBuyClient.updateCheckout(checkout)
+        .onErrorResumeNext(throwable -> mBuyClient.updateCheckout(checkout))
+        .flatMap(co -> mStorageService.setCheckout(co).map(aVoid -> co));
   }
 }
