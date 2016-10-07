@@ -28,9 +28,9 @@ package com.shopify.mobilebuysdk.demo.ui.shopping;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.shopify.buy.model.Product;
 import com.shopify.mobilebuysdk.demo.R;
-import com.shopify.mobilebuysdk.demo.ui.base.BaseViewHolder;
 import com.shopify.mobilebuysdk.demo.util.LayoutInflaterUtils;
 
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -42,7 +42,7 @@ import butterknife.ButterKnife;
 /**
  * Created by henrytao on 8/27/16.
  */
-public class ShoppingListItemViewHolder extends BaseViewHolder {
+public class ShoppingListItemViewHolder extends RecyclerView.ViewHolder {
 
   @BindView(R.id.btn_add_to_cart) Button vBtnAddToCart;
 

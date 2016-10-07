@@ -27,6 +27,9 @@ package com.shopify.mobilebuysdk.demo.ui.checkout;
 
 import com.shopify.mobilebuysdk.demo.R;
 import com.shopify.mobilebuysdk.demo.ui.base.BaseFragment;
+import com.shopify.mobilebuysdk.demo.ui.base.BlankViewHolder;
+import com.shopify.mobilebuysdk.demo.ui.checkout.summary.SummaryAddressViewHolder;
+import com.shopify.mobilebuysdk.demo.ui.checkout.summary.SummaryCartViewHolder;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -35,11 +38,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import me.henrytao.recyclerview.MergeAdapter;
 
 /**
  * Created by henrytao on 9/15/16.
@@ -49,6 +52,8 @@ public class SummaryFragment extends BaseFragment {
   public static SummaryFragment newInstance() {
     return new SummaryFragment();
   }
+
+  @BindView(R.id.btn_purchase) Button vBtnPurchase;
 
   @BindView(R.id.list) RecyclerView vRecyclerView;
 
@@ -71,8 +76,56 @@ public class SummaryFragment extends BaseFragment {
   public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
 
-    //vRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-    //vRecyclerView.setAdapter(new MergeAdapter(
-    //));
+    vRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+    vRecyclerView.setAdapter(new Adapter());
+
+    vBtnPurchase.setOnClickListener(this::onPurchaseClicked);
+  }
+
+  private void onPurchaseClicked(View view) {
+
+  }
+
+  private static class Adapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+
+    private static final int ADDRESS_INDEX = 1;
+
+    private static final int CART_INDEX = 0;
+
+    private static final int COUNT = 4;
+
+    private static final int PAYMENT_INDEX = 3;
+
+    private static final int SHIPPING_INDEX = 2;
+
+    @Override
+    public int getItemCount() {
+      return COUNT;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+      return position;
+    }
+
+    @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+
+    }
+
+    @Override
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+      switch (viewType) {
+        case CART_INDEX:
+          return new SummaryCartViewHolder(parent);
+        case ADDRESS_INDEX:
+          return new SummaryAddressViewHolder(parent);
+        case SHIPPING_INDEX:
+          break;
+        case PAYMENT_INDEX:
+          break;
+      }
+      return new BlankViewHolder(parent);
+    }
   }
 }

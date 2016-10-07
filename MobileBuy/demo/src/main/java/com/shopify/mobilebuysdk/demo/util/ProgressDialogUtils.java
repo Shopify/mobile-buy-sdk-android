@@ -43,7 +43,6 @@ import rx.subscriptions.Subscriptions;
 /**
  * Created by henrytao on 9/28/16.
  */
-
 public class ProgressDialogUtils {
 
   public static <T> Observable.Transformer<T, T> apply(BaseFragment observer, @StringRes int message) {
@@ -78,7 +77,7 @@ public class ProgressDialogUtils {
         .doOnUnsubscribe(() -> observer.unsubscribe(ID));
   }
 
-  public static Observable<Void> showProgressDialog(Activity activity, @StringRes int message) {
+  private static Observable<Void> showProgressDialog(Activity activity, @StringRes int message) {
     return Observable.create(subscriber -> {
       if (activity != null) {
         ProgressDialog progressDialog = ProgressDialog.show(activity, null, activity.getString(message));

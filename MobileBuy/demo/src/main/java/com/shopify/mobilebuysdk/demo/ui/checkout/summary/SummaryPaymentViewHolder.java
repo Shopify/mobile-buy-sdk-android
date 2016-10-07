@@ -23,17 +23,11 @@
  *
  */
 
-package com.shopify.mobilebuysdk.demo.ui.base;
-
-import android.support.v7.widget.RecyclerView;
-import android.view.View;
+package com.shopify.mobilebuysdk.demo.ui.checkout.summary;
 
 /**
- * Created by henrytao on 8/27/16.
+ * Created by henrytao on 10/7/16.
  */
-public abstract class BaseViewHolder extends RecyclerView.ViewHolder {
+public class SummaryPaymentViewHolder {
 
-  public BaseViewHolder(View itemView) {
-    super(itemView);
-  }
 }

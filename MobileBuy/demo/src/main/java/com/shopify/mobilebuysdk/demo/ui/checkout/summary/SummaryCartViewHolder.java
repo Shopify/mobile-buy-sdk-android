@@ -23,57 +23,20 @@
  *
  */
 
-package com.shopify.mobilebuysdk.demo.ui.base;
+package com.shopify.mobilebuysdk.demo.ui.checkout.summary;
+
+import com.shopify.mobilebuysdk.demo.R;
+import com.shopify.mobilebuysdk.demo.util.LayoutInflaterUtils;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
- * Created by henrytao on 10/2/16.
+ * Created by henrytao on 10/7/16.
  */
-public class SingleItemRecyclerViewAdapter<VH extends RecyclerView.ViewHolder, D> extends RecyclerView.Adapter<VH> {
+public class SummaryCartViewHolder extends RecyclerView.ViewHolder {
 
-  private final Class<VH> mClsView;
-
-  private final List<D> mData;
-
-  public SingleItemRecyclerViewAdapter(Class<VH> clsView) {
-    mClsView = clsView;
-    mData = new ArrayList<>();
-  }
-
-  @Override
-  public int getItemCount() {
-    return mData.size();
-  }
-
-  @Override
-  public void onBindViewHolder(VH holder, int position) {
-    //onBindViewHolder(holder);
-  }
-
-  @Override
-  public VH onCreateViewHolder(ViewGroup parent, int viewType) {
-    //return onCreateViewHolder(parent);
-    return null;
-  }
-
-  public void clear() {
-    mData.clear();
-    notifyItemRemoved(0);
-  }
-
-  public void setData(D data) {
-    if (mData.size() == 0) {
-      mData.add(data);
-      notifyItemInserted(0);
-    } else {
-      mData.clear();
-      mData.add(data);
-      notifyItemChanged(0);
-    }
+  public SummaryCartViewHolder(ViewGroup parent) {
+    super(LayoutInflaterUtils.inflate(parent, R.layout.view_holder_summary_cart));
   }
 }
