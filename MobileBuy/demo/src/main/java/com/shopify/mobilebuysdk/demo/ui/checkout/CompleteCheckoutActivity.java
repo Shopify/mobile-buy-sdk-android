@@ -28,6 +28,7 @@ package com.shopify.mobilebuysdk.demo.ui.checkout;
 import com.shopify.mobilebuysdk.demo.R;
 import com.shopify.mobilebuysdk.demo.ui.MainActivity;
 import com.shopify.mobilebuysdk.demo.ui.base.BaseActivity;
+import com.shopify.mobilebuysdk.demo.util.ExceptionUtils;
 import com.shopify.mobilebuysdk.demo.util.NavigationUtils;
 import com.shopify.mobilebuysdk.demo.util.rx.Transformer;
 import com.shopify.mobilebuysdk.demo.util.rx.UnsubscribeLifeCycle;
@@ -70,10 +71,10 @@ public class CompleteCheckoutActivity extends BaseActivity {
         Observable.concat(
             mShopifyService.resetCheckout(),
             mShopifyService.resetCart())
+            .toList().map(objects -> null)
             .compose(Transformer.applyIoScheduler())
-            .toList().map(voids -> null)
             .subscribe(aVoid -> {
-            }, Throwable::printStackTrace)
+            }, ExceptionUtils::onError)
     );
   }
 

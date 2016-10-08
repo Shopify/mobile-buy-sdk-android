@@ -31,6 +31,7 @@ import com.shopify.mobilebuysdk.demo.R;
 import com.shopify.mobilebuysdk.demo.data.CheckoutState;
 import com.shopify.mobilebuysdk.demo.ui.base.BaseFragment;
 import com.shopify.mobilebuysdk.demo.util.EditTextUtils;
+import com.shopify.mobilebuysdk.demo.util.ExceptionUtils;
 import com.shopify.mobilebuysdk.demo.util.ProgressDialogUtils;
 import com.shopify.mobilebuysdk.demo.util.ToastUtils;
 import com.shopify.mobilebuysdk.demo.util.rx.Transformer;
@@ -137,7 +138,7 @@ public class AddressFragment extends BaseFragment {
             .compose(ProgressDialogUtils.apply(this, R.string.text_creating_checkout))
             .compose(Transformer.applyIoScheduler())
             .subscribe(this::onLoad, throwable -> {
-              throwable.printStackTrace();
+              ExceptionUtils.onError(throwable);
               ToastUtils.showGenericErrorToast(getContext());
             })
     );
@@ -189,7 +190,7 @@ public class AddressFragment extends BaseFragment {
             .compose(Transformer.applyIoScheduler())
             .subscribe(o -> {
             }, throwable -> {
-              throwable.printStackTrace();
+              ExceptionUtils.onError(throwable);
               if (throwable instanceof IllegalArgumentException) {
                 ToastUtils.showCheckRequiredFieldsToast(getContext());
               } else {

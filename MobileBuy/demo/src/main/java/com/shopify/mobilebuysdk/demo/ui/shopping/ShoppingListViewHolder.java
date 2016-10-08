@@ -33,6 +33,7 @@ import com.shopify.mobilebuysdk.demo.ui.base.BaseSubscription;
 import com.shopify.mobilebuysdk.demo.ui.base.RecyclerViewEndlessWrapperAdapter;
 import com.shopify.mobilebuysdk.demo.ui.base.RecyclerViewLoadingEmptyErrorWrapperAdapter;
 import com.shopify.mobilebuysdk.demo.ui.product.ProductActivity;
+import com.shopify.mobilebuysdk.demo.util.ExceptionUtils;
 import com.shopify.mobilebuysdk.demo.util.LayoutInflaterUtils;
 import com.shopify.mobilebuysdk.demo.util.TransitionUtils;
 import com.shopify.mobilebuysdk.demo.util.rx.Transformer;
@@ -97,7 +98,7 @@ public class ShoppingListViewHolder extends BaseRecyclerPagerViewHolder implemen
         .addToCart(product.getVariants().get(0))
         .compose(Transformer.applyIoScheduler())
         .subscribe(aVoid -> {
-        }, Throwable::printStackTrace));
+        }, ExceptionUtils::onError));
   }
 
   @Override
@@ -141,7 +142,7 @@ public class ShoppingListViewHolder extends BaseRecyclerPagerViewHolder implemen
                 mAdapter.add(data);
               }
             }, throwable -> {
-              throwable.printStackTrace();
+              ExceptionUtils.onError(throwable);
               mLoadingEmptyErrorWrapperAdapter.showErrorView();
             })
     );

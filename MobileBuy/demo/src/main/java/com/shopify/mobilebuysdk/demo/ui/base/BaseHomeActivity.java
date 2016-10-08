@@ -28,6 +28,7 @@ package com.shopify.mobilebuysdk.demo.ui.base;
 import com.shopify.mobilebuysdk.demo.R;
 import com.shopify.mobilebuysdk.demo.ui.cart.CartActivity;
 import com.shopify.mobilebuysdk.demo.ui.shopping.ShoppingActivity;
+import com.shopify.mobilebuysdk.demo.util.ExceptionUtils;
 import com.shopify.mobilebuysdk.demo.util.NavigationUtils;
 import com.shopify.mobilebuysdk.demo.util.rx.Transformer;
 import com.shopify.mobilebuysdk.demo.util.rx.UnsubscribeLifeCycle;
@@ -104,7 +105,7 @@ public abstract class BaseHomeActivity extends BaseActivity {
             .observeCartQuantity()
             .compose(Transformer.applyComputationScheduler())
             .subscribe(quantity -> getBottomBarView().setBadge(INDEX_CART, quantity > 0 ? String.valueOf(quantity) : null),
-                Throwable::printStackTrace)
+                ExceptionUtils::onError)
     );
   }
 

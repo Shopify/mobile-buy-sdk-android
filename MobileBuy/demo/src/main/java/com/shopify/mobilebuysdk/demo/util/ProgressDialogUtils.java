@@ -54,7 +54,7 @@ public class ProgressDialogUtils {
                 .delay(Constants.Timeout.SHORT, TimeUnit.MILLISECONDS)
                 .flatMap(o -> showProgressDialog(observer.getActivity(), message).compose(Transformer.applyMainThreadScheduler()))
                 .subscribe(aVoid -> {
-                }, Throwable::printStackTrace),
+                }, ExceptionUtils::onError),
             UnsubscribeLifeCycle.DESTROY_VIEW))
         .doOnCompleted(() -> observer.unsubscribe(ID))
         .doOnError(throwable -> observer.unsubscribe(ID))
@@ -70,7 +70,7 @@ public class ProgressDialogUtils {
                 .delay(Constants.Timeout.SHORT, TimeUnit.MILLISECONDS)
                 .flatMap(o -> showProgressDialog(observer, message).compose(Transformer.applyMainThreadScheduler()))
                 .subscribe(aVoid -> {
-                }, Throwable::printStackTrace),
+                }, ExceptionUtils::onError),
             UnsubscribeLifeCycle.DESTROY_VIEW))
         .doOnCompleted(() -> observer.unsubscribe(ID))
         .doOnError(throwable -> observer.unsubscribe(ID))

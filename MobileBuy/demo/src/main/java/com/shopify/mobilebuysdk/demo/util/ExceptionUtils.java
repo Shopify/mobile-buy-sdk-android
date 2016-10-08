@@ -25,24 +25,18 @@
 
 package com.shopify.mobilebuysdk.demo.util;
 
-import com.shopify.mobilebuysdk.demo.widget.MaskedEditText;
-
-import android.text.TextUtils;
-import android.widget.EditText;
+import com.shopify.buy.dataprovider.BuyClientError;
+import com.shopify.mobilebuysdk.demo.App;
 
 /**
- * Created by henrytao on 10/5/16.
+ * Created by henrytao on 10/8/16.
  */
-public class EditTextUtils {
+public class ExceptionUtils {
 
-  public static String getText(EditText editText, boolean required) throws IllegalArgumentException {
-    if (editText == null) {
-      throw new IllegalArgumentException("Input is null");
+  public static void onError(Throwable throwable) {
+    App.logger.e(throwable);
+    if (throwable instanceof BuyClientError) {
+      App.logger.e("%s", ((BuyClientError) throwable).getRetrofitErrorBody());
     }
-    String value = editText instanceof MaskedEditText ? ((MaskedEditText) editText).getUnmaskText() : editText.getText().toString();
-    if (TextUtils.isEmpty(value) && required) {
-      throw new IllegalArgumentException("Input is required");
-    }
-    return value;
   }
 }

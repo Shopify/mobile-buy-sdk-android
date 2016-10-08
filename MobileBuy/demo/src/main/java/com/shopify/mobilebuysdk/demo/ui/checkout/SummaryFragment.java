@@ -32,6 +32,7 @@ import com.shopify.mobilebuysdk.demo.ui.base.BlankViewHolder;
 import com.shopify.mobilebuysdk.demo.ui.checkout.summary.SummaryAddressViewHolder;
 import com.shopify.mobilebuysdk.demo.ui.checkout.summary.SummaryCartViewHolder;
 import com.shopify.mobilebuysdk.demo.ui.checkout.summary.SummaryShippingViewHolder;
+import com.shopify.mobilebuysdk.demo.util.ExceptionUtils;
 import com.shopify.mobilebuysdk.demo.util.NavigationUtils;
 import com.shopify.mobilebuysdk.demo.util.ProgressDialogUtils;
 import com.shopify.mobilebuysdk.demo.util.ToastUtils;
@@ -100,7 +101,7 @@ public class SummaryFragment extends BaseFragment {
             .compose(ProgressDialogUtils.apply(this, R.string.text_loading))
             .compose(Transformer.applyIoScheduler())
             .subscribe(this::bind, throwable -> {
-              throwable.printStackTrace();
+              ExceptionUtils.onError(throwable);
               ToastUtils.showGenericErrorToast(getContext());
             })
     );
@@ -120,7 +121,7 @@ public class SummaryFragment extends BaseFragment {
             .subscribe(aVoid -> {
               NavigationUtils.startActivityAndFinishWithoutAnimation(getActivity(), CompleteCheckoutActivity.newIntent(getActivity()));
             }, throwable -> {
-              throwable.printStackTrace();
+              ExceptionUtils.onError(throwable);
               ToastUtils.showInvalidPayment(getContext());
             })
     );

@@ -28,6 +28,7 @@ package com.shopify.mobilebuysdk.demo.ui.checkout;
 import com.shopify.mobilebuysdk.demo.R;
 import com.shopify.mobilebuysdk.demo.data.CheckoutState;
 import com.shopify.mobilebuysdk.demo.ui.base.BaseActivity;
+import com.shopify.mobilebuysdk.demo.util.ExceptionUtils;
 import com.shopify.mobilebuysdk.demo.util.ToastUtils;
 import com.shopify.mobilebuysdk.demo.util.rx.Transformer;
 import com.shopify.mobilebuysdk.demo.util.rx.UnsubscribeLifeCycle;
@@ -103,8 +104,8 @@ public class CheckoutActivity extends BaseActivity {
                 .observeCheckoutState()
                 .compose(Transformer.applyComputationScheduler())
                 .doOnNext(this::onCheckoutStateChanged)
-        ).subscribe(o -> {
-        }, Throwable::printStackTrace)
+        ).toList().map(objects -> null).subscribe(o -> {
+        }, ExceptionUtils::onError)
     );
   }
 

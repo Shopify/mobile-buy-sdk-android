@@ -29,6 +29,7 @@ import com.shopify.mobilebuysdk.demo.R;
 import com.shopify.mobilebuysdk.demo.ui.MainActivity;
 import com.shopify.mobilebuysdk.demo.ui.base.BaseActivity;
 import com.shopify.mobilebuysdk.demo.ui.checkout.CompleteCheckoutActivity;
+import com.shopify.mobilebuysdk.demo.util.ExceptionUtils;
 import com.shopify.mobilebuysdk.demo.util.NavigationUtils;
 import com.shopify.mobilebuysdk.demo.util.rx.Transformer;
 import com.shopify.mobilebuysdk.demo.util.rx.UnsubscribeLifeCycle;
@@ -69,7 +70,7 @@ public class CallbackActivity extends BaseActivity {
                 NavigationUtils.startActivityAndFinishWithoutAnimation(this, MainActivity.newIntent(this));
               }
             }, throwable -> {
-              throwable.printStackTrace();
+              ExceptionUtils.onError(throwable);
               NavigationUtils.startActivityAndFinishWithoutAnimation(this, MainActivity.newIntent(this));
             })
     );

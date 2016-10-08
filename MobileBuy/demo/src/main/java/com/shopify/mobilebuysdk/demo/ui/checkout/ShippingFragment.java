@@ -29,6 +29,7 @@ import com.shopify.buy.model.ShippingRate;
 import com.shopify.mobilebuysdk.demo.R;
 import com.shopify.mobilebuysdk.demo.data.CheckoutState;
 import com.shopify.mobilebuysdk.demo.ui.base.BaseFragment;
+import com.shopify.mobilebuysdk.demo.util.ExceptionUtils;
 import com.shopify.mobilebuysdk.demo.util.LayoutInflaterUtils;
 import com.shopify.mobilebuysdk.demo.util.ProgressDialogUtils;
 import com.shopify.mobilebuysdk.demo.util.StringUtils;
@@ -108,7 +109,7 @@ public class ShippingFragment extends BaseFragment {
             .compose(ProgressDialogUtils.apply(this, R.string.text_processing))
             .subscribe(o -> {
             }, throwable -> {
-              throwable.printStackTrace();
+              ExceptionUtils.onError(throwable);
               ToastUtils.showGenericErrorToast(getContext());
             })
     );
@@ -124,7 +125,7 @@ public class ShippingFragment extends BaseFragment {
             .compose(Transformer.applyIoScheduler())
             .subscribe(aVoid -> {
             }, throwable -> {
-              throwable.printStackTrace();
+              ExceptionUtils.onError(throwable);
               ToastUtils.showGenericErrorToast(getContext());
             })
     );

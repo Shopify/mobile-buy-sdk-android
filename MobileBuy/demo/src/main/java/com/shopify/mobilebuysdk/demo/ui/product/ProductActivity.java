@@ -33,6 +33,7 @@ import com.shopify.mobilebuysdk.demo.R;
 import com.shopify.mobilebuysdk.demo.config.Constants;
 import com.shopify.mobilebuysdk.demo.service.ShopifyService;
 import com.shopify.mobilebuysdk.demo.ui.base.BaseActivity;
+import com.shopify.mobilebuysdk.demo.util.ExceptionUtils;
 import com.shopify.mobilebuysdk.demo.util.rx.Transformer;
 import com.shopify.mobilebuysdk.demo.util.rx.UnsubscribeLifeCycle;
 
@@ -120,7 +121,7 @@ public class ProductActivity extends BaseActivity {
           .addToCart(mProduct.getVariants().get(0))
           .compose(Transformer.applyIoScheduler())
           .subscribe(aVoid -> {
-          }, Throwable::printStackTrace));
+          }, ExceptionUtils::onError));
     });
   }
 

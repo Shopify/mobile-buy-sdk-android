@@ -33,6 +33,7 @@ import com.shopify.mobilebuysdk.demo.ui.base.BaseHomeActivity;
 import com.shopify.mobilebuysdk.demo.ui.base.DialogHelper;
 import com.shopify.mobilebuysdk.demo.ui.base.RecyclerViewLoadingEmptyErrorWrapperAdapter;
 import com.shopify.mobilebuysdk.demo.ui.checkout.CheckoutActivity;
+import com.shopify.mobilebuysdk.demo.util.ExceptionUtils;
 import com.shopify.mobilebuysdk.demo.util.NavigationUtils;
 import com.shopify.mobilebuysdk.demo.util.ProgressDialogUtils;
 import com.shopify.mobilebuysdk.demo.util.ToastUtils;
@@ -89,7 +90,7 @@ public class CartActivity extends BaseHomeActivity implements CartItemViewHolder
         .addToCart(productVariant)
         .compose(Transformer.applyIoScheduler())
         .subscribe(aVoid -> {
-        }, Throwable::printStackTrace));
+        }, ExceptionUtils::onError));
   }
 
   @Override
@@ -98,7 +99,7 @@ public class CartActivity extends BaseHomeActivity implements CartItemViewHolder
         .removeFromCart(productVariant)
         .compose(Transformer.applyIoScheduler())
         .subscribe(aVoid -> {
-        }, Throwable::printStackTrace));
+        }, ExceptionUtils::onError));
   }
 
   @Override
@@ -147,21 +148,21 @@ public class CartActivity extends BaseHomeActivity implements CartItemViewHolder
               } else {
                 mLoadingEmptyErrorWrapperAdapter.showEmptyView();
               }
-            }, Throwable::printStackTrace),
+            }, ExceptionUtils::onError),
         mShopifyService
             .observeCartQuantity()
             .compose(Transformer.applyComputationScheduler())
             .subscribe(quantity -> {
               vBtnCheckout.setEnabled(quantity > 0);
               vBtnCheckoutOptions.setEnabled(quantity > 0);
-            }, Throwable::printStackTrace),
+            }, ExceptionUtils::onError),
         mShopifyService
             .observeCartSubtotal()
             .compose(Transformer.applyComputationScheduler())
             .subscribe(subtotal -> {
               DecimalFormat format = new DecimalFormat(getString(R.string.decimal_format));
               vSubtotal.setText(getString(R.string.currency_format, format.format(subtotal)));
-            }, Throwable::printStackTrace)
+            }, ExceptionUtils::onError)
     );
   }
 
@@ -174,7 +175,7 @@ public class CartActivity extends BaseHomeActivity implements CartItemViewHolder
             .subscribe(checkout -> {
               NavigationUtils.startActivity(this, CheckoutActivity.newIntent(this));
             }, throwable -> {
-              throwable.printStackTrace();
+              ExceptionUtils.onError(throwable);
               ToastUtils.showGenericErrorToast(this);
             }));
   }
@@ -202,7 +203,7 @@ public class CartActivity extends BaseHomeActivity implements CartItemViewHolder
             })
             .subscribe(o -> {
             }, throwable -> {
-              throwable.printStackTrace();
+              ExceptionUtils.onError(throwable);
               ToastUtils.showGenericErrorToast(this);
             })
     );

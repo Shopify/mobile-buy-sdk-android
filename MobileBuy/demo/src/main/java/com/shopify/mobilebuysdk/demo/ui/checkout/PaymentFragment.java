@@ -30,6 +30,7 @@ import com.shopify.mobilebuysdk.demo.R;
 import com.shopify.mobilebuysdk.demo.data.CheckoutState;
 import com.shopify.mobilebuysdk.demo.ui.base.BaseFragment;
 import com.shopify.mobilebuysdk.demo.util.EditTextUtils;
+import com.shopify.mobilebuysdk.demo.util.ExceptionUtils;
 import com.shopify.mobilebuysdk.demo.util.ProgressDialogUtils;
 import com.shopify.mobilebuysdk.demo.util.ToastUtils;
 import com.shopify.mobilebuysdk.demo.util.rx.Transformer;
@@ -124,8 +125,8 @@ public class PaymentFragment extends BaseFragment {
     creditCard.setFirstName(EditTextUtils.getText(vInputFirstName, true));
     creditCard.setLastName(EditTextUtils.getText(vInputLastName, true));
     creditCard.setNumber(EditTextUtils.getText(vInputCardNumber, true));
-    creditCard.setMonth(expires.substring(0, 1));
-    creditCard.setYear(expires.substring(2, 3));
+    creditCard.setMonth(expires.substring(0, 2));
+    creditCard.setYear(expires.substring(2, 4));
     creditCard.setVerificationValue(EditTextUtils.getText(vInputCVVCode, true));
     return creditCard;
   }
@@ -139,12 +140,12 @@ public class PaymentFragment extends BaseFragment {
         Observable.defer(() -> Observable.concat(
             mShopifyService.setCreditCard(getCreditCardFromInput()),
             mShopifyService.setCheckoutState(CheckoutState.SUMMARY, true))
-        )
+            .toList().map(objects -> null))
             .compose(ProgressDialogUtils.apply(this, R.string.text_updating_checkout))
             .compose(Transformer.applyIoScheduler())
             .subscribe(o -> {
             }, throwable -> {
-              throwable.printStackTrace();
+              ExceptionUtils.onError(throwable);
               if (throwable instanceof IllegalArgumentException) {
                 ToastUtils.showCheckRequiredFieldsToast(getContext());
               } else {
