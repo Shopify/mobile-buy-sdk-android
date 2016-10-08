@@ -35,22 +35,15 @@ import com.shopify.mobilebuysdk.demo.ui.base.RecyclerViewLoadingEmptyErrorWrappe
 import com.shopify.mobilebuysdk.demo.ui.product.ProductActivity;
 import com.shopify.mobilebuysdk.demo.util.ExceptionUtils;
 import com.shopify.mobilebuysdk.demo.util.LayoutInflaterUtils;
-import com.shopify.mobilebuysdk.demo.util.TransitionUtils;
 import com.shopify.mobilebuysdk.demo.util.rx.Transformer;
 import com.shopify.mobilebuysdk.demo.util.rx.UnsubscribeLifeCycle;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
-import android.os.Build;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.transition.Explode;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,7 +54,7 @@ import butterknife.ButterKnife;
 /**
  * Created by henrytao on 8/27/16.
  */
-public class ShoppingListViewHolder extends BaseRecyclerPagerViewHolder implements ShoppingListItemViewHolder.OnItemClickListener,
+public class ShoppingListViewHolder extends BaseRecyclerPagerViewHolder implements ShoppingListItemViewHolder.OnThumbnailClickListener,
     ShoppingListItemViewHolder.OnAddToCartClickListener {
 
   private final Adapter mAdapter;
@@ -102,20 +95,8 @@ public class ShoppingListViewHolder extends BaseRecyclerPagerViewHolder implemen
   }
 
   @Override
-  public void onItemClick(View view, Product product) {
-    Intent intent = ProductActivity.newIntent(getActivity(), product);
-    Activity activity = getActivity();
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-      Window window = activity.getWindow();
-      window.setExitTransition(new Explode());
-      window.setReenterTransition(new Explode());
-      TransitionUtils.addOnTransitionEndListener(window.getSharedElementReenterTransition(), view, View::requestLayout);
-      ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(),
-          view.findViewById(R.id.thumbnail), getContext().getString(R.string.transition_product_thumbnail));
-      activity.startActivity(intent, options.toBundle());
-    } else {
-      activity.startActivity(intent);
-    }
+  public void onThumbnailClick(View view, Product product) {
+    ProductActivity.startActivityWithAnimation(getActivity(), product, view);
   }
 
   public void bind(String tag, @NonNull List<Product> products) {
@@ -152,13 +133,13 @@ public class ShoppingListViewHolder extends BaseRecyclerPagerViewHolder implemen
 
     private final ShoppingListItemViewHolder.OnAddToCartClickListener mOnAddToCartClickListener;
 
-    private final ShoppingListItemViewHolder.OnItemClickListener mOnItemClickListener;
+    private final ShoppingListItemViewHolder.OnThumbnailClickListener mOnThumbnailClickListener;
 
     private List<Product> mData = new ArrayList<>();
 
-    public Adapter(ShoppingListItemViewHolder.OnItemClickListener onItemClickListener,
+    public Adapter(ShoppingListItemViewHolder.OnThumbnailClickListener onThumbnailClickListener,
         ShoppingListItemViewHolder.OnAddToCartClickListener onAddToCartClickListener) {
-      mOnItemClickListener = onItemClickListener;
+      mOnThumbnailClickListener = onThumbnailClickListener;
       mOnAddToCartClickListener = onAddToCartClickListener;
     }
 
@@ -174,7 +155,7 @@ public class ShoppingListViewHolder extends BaseRecyclerPagerViewHolder implemen
 
     @Override
     public ShoppingListItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-      return new ShoppingListItemViewHolder(parent, mOnItemClickListener, mOnAddToCartClickListener);
+      return new ShoppingListItemViewHolder(parent, mOnThumbnailClickListener, mOnAddToCartClickListener);
     }
 
     public void add(List<Product> products) {

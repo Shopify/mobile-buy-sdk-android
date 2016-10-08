@@ -33,6 +33,7 @@ import com.shopify.mobilebuysdk.demo.ui.base.BaseHomeActivity;
 import com.shopify.mobilebuysdk.demo.ui.base.DialogHelper;
 import com.shopify.mobilebuysdk.demo.ui.base.RecyclerViewLoadingEmptyErrorWrapperAdapter;
 import com.shopify.mobilebuysdk.demo.ui.checkout.CheckoutActivity;
+import com.shopify.mobilebuysdk.demo.ui.product.ProductActivity;
 import com.shopify.mobilebuysdk.demo.util.ExceptionUtils;
 import com.shopify.mobilebuysdk.demo.util.NavigationUtils;
 import com.shopify.mobilebuysdk.demo.util.ProgressDialogUtils;
@@ -49,6 +50,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
@@ -66,7 +68,7 @@ import butterknife.ButterKnife;
  * Created by henrytao on 8/27/16.
  */
 public class CartActivity extends BaseHomeActivity implements CartItemViewHolder.OnCartItemAddClickListener,
-    CartItemViewHolder.OnCartItemRemoveClickListener {
+    CartItemViewHolder.OnCartItemRemoveClickListener, CartItemViewHolder.OnCartItemThumbnailClickListener {
 
   @BindView(R.id.bottom_bar) BottomBar vBottomBar;
 
@@ -103,6 +105,22 @@ public class CartActivity extends BaseHomeActivity implements CartItemViewHolder
   }
 
   @Override
+  public void onCartItemThumbnailClick(View view, ProductVariant productVariant) {
+    manageSubscription(UnsubscribeLifeCycle.DESTROY_VIEW,
+        mShopifyService
+            .getProduct(productVariant.getProductId())
+            .compose(ProgressDialogUtils.apply(this, R.string.text_loading))
+            .compose(Transformer.applyIoScheduler())
+            .subscribe(product -> {
+              ProductActivity.startActivityWithAnimation(this, product, view);
+            }, throwable -> {
+              ExceptionUtils.onError(throwable);
+              ToastUtils.showGenericErrorToast(this);
+            })
+    );
+  }
+
+  @Override
   public void onSetContentView(@Nullable Bundle savedInstanceState) {
     setContentView(R.layout.activity_cart);
     ButterKnife.bind(this);
@@ -124,7 +142,7 @@ public class CartActivity extends BaseHomeActivity implements CartItemViewHolder
     super.onCreate(savedInstanceState);
     setSupportActionBar(vToolbar);
 
-    mAdapter = new Adapter(this, this);
+    mAdapter = new Adapter(this, this, this);
     mLoadingEmptyErrorWrapperAdapter = new RecyclerViewLoadingEmptyErrorWrapperAdapter(mAdapter);
     mLoadingEmptyErrorWrapperAdapter.setEmptyText(getString(R.string.text_cart_is_empty));
     vRecyclerView.setAdapter(mLoadingEmptyErrorWrapperAdapter);
@@ -213,14 +231,18 @@ public class CartActivity extends BaseHomeActivity implements CartItemViewHolder
 
     private final List<CartItemInfo> mData;
 
+    private final CartItemViewHolder.OnCartItemThumbnailClickListener mOnCarItemThumbnailClickListener;
+
     private final CartItemViewHolder.OnCartItemAddClickListener mOnCartItemAddClickListener;
 
     private final CartItemViewHolder.OnCartItemRemoveClickListener mOnCartItemRemoveClickListener;
 
     Adapter(CartItemViewHolder.OnCartItemAddClickListener onCartItemAddClickListener,
-        CartItemViewHolder.OnCartItemRemoveClickListener onCartItemRemoveClickListener) {
+        CartItemViewHolder.OnCartItemRemoveClickListener onCartItemRemoveClickListener,
+        CartItemViewHolder.OnCartItemThumbnailClickListener onCartItemThumbnailClickListener) {
       mOnCartItemAddClickListener = onCartItemAddClickListener;
       mOnCartItemRemoveClickListener = onCartItemRemoveClickListener;
+      mOnCarItemThumbnailClickListener = onCartItemThumbnailClickListener;
       mData = new ArrayList<>();
     }
 
@@ -236,7 +258,7 @@ public class CartActivity extends BaseHomeActivity implements CartItemViewHolder
 
     @Override
     public CartItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-      return new CartItemViewHolder(parent, mOnCartItemAddClickListener, mOnCartItemRemoveClickListener);
+      return new CartItemViewHolder(parent, mOnCartItemAddClickListener, mOnCartItemRemoveClickListener, mOnCarItemThumbnailClickListener);
     }
 
     void addOrSetToZero(List<CartLineItem> cartLineItems) {

@@ -148,6 +148,10 @@ public class ShopifyService {
     return mStorageService.getLatestCheckoutState();
   }
 
+  public Observable<Product> getProduct(long productId) {
+    return mBuyClient.getProduct(productId);
+  }
+
   public Observable<List<Product>> getProducts() {
     return mBuyClient.getProducts(1);
   }

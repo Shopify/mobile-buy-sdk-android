@@ -56,13 +56,13 @@ public class ShoppingListItemViewHolder extends RecyclerView.ViewHolder {
 
   private Product mProduct;
 
-  public ShoppingListItemViewHolder(ViewGroup parent, OnItemClickListener onItemClickListener,
+  public ShoppingListItemViewHolder(ViewGroup parent, OnThumbnailClickListener onThumbnailClickListener,
       OnAddToCartClickListener onAddToCartClickListener) {
     super(LayoutInflaterUtils.inflate(parent, R.layout.view_holder_shopping_list_item));
     ButterKnife.bind(this, itemView);
-    vContainer.setOnClickListener(view -> {
-      if (onItemClickListener != null && mProduct != null) {
-        onItemClickListener.onItemClick(view, mProduct);
+    vThumbnail.setOnClickListener(view -> {
+      if (onThumbnailClickListener != null && mProduct != null) {
+        onThumbnailClickListener.onThumbnailClick(view, mProduct);
       }
     });
     vBtnAddToCart.setOnClickListener(view -> {
@@ -84,8 +84,8 @@ public class ShoppingListItemViewHolder extends RecyclerView.ViewHolder {
     void onAddToCartClick(View view, Product product);
   }
 
-  public interface OnItemClickListener {
+  public interface OnThumbnailClickListener {
 
-    void onItemClick(View view, Product product);
+    void onThumbnailClick(View view, Product product);
   }
 }

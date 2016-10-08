@@ -134,7 +134,7 @@
   <string name="text_generic_error">Service is not available. Please try again.</string>
   <string name="text_updating_checkout">Updating checkout…</string>
   <string name="text_which_shipping_partner_do_you_like">Which shipping partner do you like?</string>
-  <string name="text_android_pay_setup_message">Android Pay has been setup properly. Please try again.</string>
+  <string name="text_android_pay_setup_message">Android Pay has not been setup properly. Please try again.</string>
   <string name="text_continue_with_android_pay">Continue with Android Pay</string>
   <string name="text_payment_option_message">--- Or ---</string>
   <string name="text_use_credit_card">Use credit card</string>
