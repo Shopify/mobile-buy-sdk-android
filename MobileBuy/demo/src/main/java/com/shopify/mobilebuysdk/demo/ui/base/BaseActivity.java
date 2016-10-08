@@ -25,6 +25,7 @@
 
 package com.shopify.mobilebuysdk.demo.ui.base;
 
+import com.shopify.mobilebuysdk.demo.service.ShopifyService;
 import com.shopify.mobilebuysdk.demo.util.rx.SubscriptionManager;
 import com.shopify.mobilebuysdk.demo.util.rx.UnsubscribeLifeCycle;
 
@@ -35,6 +36,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Window;
 
+import me.henrytao.mdcore.core.MdCore;
 import rx.Subscription;
 
 /**
@@ -43,6 +45,8 @@ import rx.Subscription;
 public abstract class BaseActivity extends AppCompatActivity implements BaseLifeCycle, BaseSubscription {
 
   public abstract void onSetContentView(Bundle savedInstanceState);
+
+  protected final ShopifyService mShopifyService;
 
   private boolean mIsDestroy;
 
@@ -53,6 +57,10 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseLife
   private boolean mIsStop;
 
   private SubscriptionManager mSubscriptionManager = new SubscriptionManager();
+
+  public BaseActivity() {
+    mShopifyService = ShopifyService.getInstance();
+  }
 
   @Override
   public void manageSubscription(UnsubscribeLifeCycle unsubscribeLifeCycle, Subscription... subscriptions) {
@@ -147,7 +155,9 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseLife
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
-    onInitializedBundle(savedInstanceState != null ? savedInstanceState : new Bundle());
+    MdCore.init(this);
+    Bundle bundle = getIntent().getExtras();
+    onInitializedBundle(bundle != null ? bundle : new Bundle(), savedInstanceState != null ? savedInstanceState : new Bundle());
     super.onCreate(savedInstanceState);
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
       onSharedElementConfig(getWindow());
@@ -157,8 +167,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseLife
     onCreateView();
   }
 
-  public void onInitializedBundle(@NonNull Bundle savedInstanceState) {
-
+  public void onInitializedBundle(@NonNull Bundle bundle, @NonNull Bundle savedInstanceState) {
   }
 
   @TargetApi(Build.VERSION_CODES.LOLLIPOP)

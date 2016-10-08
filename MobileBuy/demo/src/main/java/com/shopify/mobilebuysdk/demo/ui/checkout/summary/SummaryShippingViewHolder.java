@@ -23,17 +23,41 @@
  *
  */
 
-package com.shopify.mobilebuysdk.demo.ui.base;
+package com.shopify.mobilebuysdk.demo.ui.checkout.summary;
 
+import com.shopify.buy.model.Checkout;
+import com.shopify.buy.model.ShippingRate;
+import com.shopify.mobilebuysdk.demo.R;
+import com.shopify.mobilebuysdk.demo.util.LayoutInflaterUtils;
+
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
+
+import java.util.Locale;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
- * Created by henrytao on 8/27/16.
+ * Created by henrytao on 10/7/16.
  */
-public abstract class BaseViewHolder extends RecyclerView.ViewHolder {
+public class SummaryShippingViewHolder extends RecyclerView.ViewHolder {
 
-  public BaseViewHolder(View itemView) {
-    super(itemView);
+  @BindView(R.id.title) TextView vTitle;
+
+  public SummaryShippingViewHolder(ViewGroup parent) {
+    super(LayoutInflaterUtils.inflate(parent, R.layout.view_holder_summary_shipping));
+    ButterKnife.bind(this, itemView);
+  }
+
+  public void bind(Checkout checkout) {
+    ShippingRate rate = checkout.getShippingRate();
+    vTitle.setText(String.format(Locale.US, "%s - %s", rate.getTitle(), getContext().getString(R.string.currency_format, rate.getPrice())));
+  }
+
+  private Context getContext() {
+    return itemView.getContext();
   }
 }

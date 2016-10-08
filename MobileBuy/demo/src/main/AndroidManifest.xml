@@ -56,6 +56,28 @@
 
     <activity
       android:label="@string/text_checkout"
-      android:name=".ui.checkout.CheckoutActivity" />
+      android:name=".ui.checkout.CheckoutActivity"
+      android:windowSoftInputMode="adjustResize|stateHidden" />
+
+    <activity
+      android:label="@string/app_name"
+      android:name=".ui.callback.CallbackActivity">
+
+      <intent-filter>
+        <action android:name="android.intent.action.VIEW" />
+
+        <category android:name="android.intent.category.DEFAULT" />
+        <category android:name="android.intent.category.BROWSABLE" />
+
+        <data
+          android:host="${packageName}"
+          android:pathPrefix="@string/appLink_path_callback"
+          android:scheme="@string/appLink_scheme" />
+      </intent-filter>
+    </activity>
+
+    <activity
+      android:label="@string/app_name"
+      android:name=".ui.checkout.CompleteCheckoutActivity" />
   </application>
 </manifest>

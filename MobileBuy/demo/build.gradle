@@ -43,7 +43,7 @@ android {
   }
 
   compileSdkVersion 24
-  buildToolsVersion "24.0.1"
+  buildToolsVersion "24.0.2"
 
   defaultConfig {
     applicationId "com.shopify.mobilebuysdk.demo"
@@ -98,8 +98,14 @@ android {
       buildConfigField "String", "ANDROID_PAY_PUBLIC_KEY", "\"" + androidPayPublicKey.toString() + "\""
       buildConfigField "boolean", "USE_RX_API", "true"
     }
-    release {
+    debug {
       minifyEnabled false
+      shrinkResources false
+      proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+    }
+    release {
+      minifyEnabled true
+      shrinkResources true
       proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
     }
   }
@@ -112,25 +118,27 @@ retrolambda {
 dependencies {
   compile fileTree(dir: "libs", include: ["*.jar"])
 
-  compile "com.android.support:appcompat-v7:24.2.0"
-  compile "com.android.support:appcompat-v7:24.2.0"
-  compile "com.android.support:cardview-v7:24.2.0"
-  compile "com.android.support:design:24.2.0"
-  compile "com.android.support:recyclerview-v7:24.2.0"
+  compile "com.android.support:appcompat-v7:24.2.1"
+  compile "com.android.support:cardview-v7:24.2.1"
+  compile "com.android.support:design:24.2.1"
+  compile "com.android.support:recyclerview-v7:24.2.1"
 
   compile "com.facebook.fresco:fresco:0.12.0"
 
   compile "com.jakewharton:butterknife:8.0.1"
   apt "com.jakewharton:butterknife-compiler:8.0.1"
 
-  compile("me.henrytao:mdcore:3.3.2") {
+  compile("me.henrytao:mdcore:3.3.6") {
     exclude group: "com.android.support"
   }
-  compile("me.henrytao:recycler-pager-adapter:2.0.1") {
+  compile("me.henrytao:recycler-pager-adapter:2.1.0") {
     exclude group: "com.android.support"
   }
-  compile("me.henrytao:recyclerview:3.0.7") {
+  compile("me.henrytao:recyclerview:3.1.1") {
     exclude group: "com.android.support"
+  }
+  compile("me.henrytao:rx-shared-preferences:1.4.1") {
+    exclude group: "io.reactivex"
   }
 
   compile(project(":buy")) {

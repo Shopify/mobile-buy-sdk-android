@@ -106,11 +106,11 @@ public class RecyclerViewLoadingEmptyErrorWrapperAdapter extends RecyclerViewAda
   public RecyclerView.ViewHolder onCreateHeaderViewHolder(LayoutInflater inflater, ViewGroup parent, int index) {
     switch (index) {
       case HEADER_LOADING:
-        return new HeaderHolder(inflater, parent, R.layout.item_loading_view);
+        return new HeaderHolder(inflater, parent, R.layout.view_holder_loading_item);
       case HEADER_EMPTY:
-        return new HeaderHolder(inflater, parent, R.layout.item_empty_view);
+        return new HeaderHolder(inflater, parent, R.layout.view_holder_empty_item);
       case HEADER_ERROR:
-        HeaderHolder holder = new HeaderHolder(inflater, parent, R.layout.item_error_view);
+        HeaderHolder holder = new HeaderHolder(inflater, parent, R.layout.view_holder_error_item);
         holder.itemView.setOnClickListener(view -> {
           if (mOnRetryAction != null) {
             mOnRetryAction.call();

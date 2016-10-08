@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ The MIT License (MIT)
+  ~
+  ~ Copyright (c) 2016 Shopify Inc.
+  ~
+  ~ Permission is hereby granted, free of charge, to any person obtaining a copy
+  ~ of this software and associated documentation files (the "Software"), to deal
+  ~ in the Software without restriction, including without limitation the rights
+  ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  ~ copies of the Software, and to permit persons to whom the Software is
+  ~ furnished to do so, subject to the following conditions:
+  ~
+  ~ The above copyright notice and this permission notice shall be included in
+  ~ all copies or substantial portions of the Software.
+  ~
+  ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+  ~ THE SOFTWARE.
+  ~
+  -->
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent">
+
+  <Button
+    android:id="@+id/btn_next"
+    android:layout_alignParentBottom="true"
+    android:text="@string/text_next"
+    style="@style/AppStyle.Button.Colored.Full" />
+
+  <android.support.v4.widget.NestedScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_above="@id/btn_next">
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      android:padding="@dimen/mdLayoutSpacing_sm">
+
+      <android.support.design.widget.TextInputLayout
+        android:id="@+id/til_email"
+        style="@style/MdTextField.TextWithLabel">
+
+        <android.support.design.widget.TextInputEditText
+          android:id="@+id/input_email"
+          android:hint="@string/text_email"
+          android:imeOptions="actionNext"
+          android:inputType="textEmailAddress"
+          android:maxLines="1"
+          style="@style/MdTextField.TextWithLabel.Text" />
+      </android.support.design.widget.TextInputLayout>
+
+      <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <android.support.design.widget.TextInputLayout
+          android:id="@+id/til_first_name"
+          android:layout_width="0dp"
+          android:layout_weight="1"
+          style="@style/MdTextField.TextWithLabel">
+
+          <android.support.design.widget.TextInputEditText
+            android:id="@+id/input_first_name"
+            android:hint="@string/text_first_name"
+            android:imeOptions="actionNext"
+            android:inputType="textCapSentences|textPersonName"
+            android:maxLines="1"
+            style="@style/MdTextField.TextWithLabel.Text" />
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+          android:id="@+id/til_last_name"
+          android:layout_width="0dp"
+          android:layout_weight="1"
+          style="@style/MdTextField.TextWithLabel">
+
+          <android.support.design.widget.TextInputEditText
+            android:id="@+id/input_last_name"
+            android:hint="@string/text_last_name"
+            android:imeOptions="actionNext"
+            android:inputType="textCapSentences|textPersonName"
+            android:maxLines="1"
+            style="@style/MdTextField.TextWithLabel.Text" />
+        </android.support.design.widget.TextInputLayout>
+      </LinearLayout>
+
+      <android.support.design.widget.TextInputLayout
+        android:id="@+id/til_address_1"
+        style="@style/MdTextField.TextWithLabel">
+
+        <android.support.design.widget.TextInputEditText
+          android:id="@+id/input_address_1"
+          android:hint="@string/text_address_line"
+          android:imeOptions="actionNext"
+          android:inputType="textCapSentences"
+          android:maxLines="1"
+          style="@style/MdTextField.TextWithLabel.Text" />
+      </android.support.design.widget.TextInputLayout>
+
+      <android.support.design.widget.TextInputLayout
+        android:id="@+id/til_address_2"
+        style="@style/MdTextField.TextWithLabel">
+
+        <android.support.design.widget.TextInputEditText
+          android:id="@+id/input_address_2"
+          android:hint="@string/text_address_line_2"
+          android:imeOptions="actionNext"
+          android:inputType="textCapSentences"
+          android:maxLines="1"
+          style="@style/MdTextField.TextWithLabel.Text" />
+      </android.support.design.widget.TextInputLayout>
+
+      <android.support.design.widget.TextInputLayout
+        android:id="@+id/til_city"
+        style="@style/MdTextField.TextWithLabel">
+
+        <android.support.design.widget.TextInputEditText
+          android:id="@+id/input_city"
+          android:hint="@string/text_city"
+          android:imeOptions="actionNext"
+          android:inputType="textCapWords"
+          android:maxLines="1"
+          style="@style/MdTextField.TextWithLabel.Text" />
+      </android.support.design.widget.TextInputLayout>
+
+
+      <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <android.support.design.widget.TextInputLayout
+          android:id="@+id/til_country"
+          android:layout_width="0dp"
+          android:layout_weight="1"
+          style="@style/MdTextField.TextWithLabel">
+
+          <android.support.design.widget.TextInputEditText
+            android:id="@+id/input_country"
+            android:hint="@string/text_country"
+            android:imeOptions="actionNext"
+            android:inputType="textCapWords"
+            android:maxLines="1"
+            style="@style/MdTextField.TextWithLabel.Text" />
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+          android:id="@+id/til_postal_code"
+          android:layout_width="0dp"
+          android:layout_weight="1"
+          style="@style/MdTextField.TextWithLabel">
+
+          <android.support.design.widget.TextInputEditText
+            android:id="@+id/input_postal_code"
+            android:hint="@string/text_postal_code"
+            android:inputType="textCapCharacters"
+            android:maxLines="1"
+            style="@style/MdTextField.TextWithLabel.Text" />
+        </android.support.design.widget.TextInputLayout>
+      </LinearLayout>
+    </LinearLayout>
+  </android.support.v4.widget.NestedScrollView>
+</RelativeLayout>

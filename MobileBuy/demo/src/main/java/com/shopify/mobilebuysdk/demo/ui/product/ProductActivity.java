@@ -33,16 +33,23 @@ import com.shopify.mobilebuysdk.demo.R;
 import com.shopify.mobilebuysdk.demo.config.Constants;
 import com.shopify.mobilebuysdk.demo.service.ShopifyService;
 import com.shopify.mobilebuysdk.demo.ui.base.BaseActivity;
+import com.shopify.mobilebuysdk.demo.util.ExceptionUtils;
+import com.shopify.mobilebuysdk.demo.util.TransitionUtils;
+import com.shopify.mobilebuysdk.demo.util.rx.Transformer;
+import com.shopify.mobilebuysdk.demo.util.rx.UnsubscribeLifeCycle;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.transition.Explode;
+import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
@@ -63,6 +70,21 @@ public class ProductActivity extends BaseActivity {
     bundle.putString(Constants.Extra.PRODUCT, product.toJsonString());
     intent.putExtras(bundle);
     return intent;
+  }
+
+  public static void startActivityWithAnimation(Activity activity, Product product, View thumbnail) {
+    Intent intent = newIntent(activity, product);
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+      Window window = activity.getWindow();
+      window.setExitTransition(new Explode());
+      window.setReenterTransition(new Explode());
+      TransitionUtils.addOnTransitionEndListener(window.getSharedElementReenterTransition(), thumbnail, View::requestLayout);
+      ActivityOptionsCompat options = ActivityOptionsCompat
+          .makeSceneTransitionAnimation(activity, thumbnail, activity.getString(R.string.transition_product_thumbnail));
+      activity.startActivity(intent, options.toBundle());
+    } else {
+      activity.startActivity(intent);
+    }
   }
 
   private final ShopifyService mShopifyService;
@@ -86,9 +108,8 @@ public class ProductActivity extends BaseActivity {
   }
 
   @Override
-  public void onInitializedBundle(@NonNull Bundle savedInstanceState) {
-    super.onInitializedBundle(savedInstanceState);
-    Bundle bundle = getIntent().getExtras();
+  public void onInitializedBundle(@NonNull Bundle bundle, @NonNull Bundle savedInstanceState) {
+    super.onInitializedBundle(bundle, savedInstanceState);
     mProduct = Product.fromJson(bundle.getString(Constants.Extra.PRODUCT));
   }
 
@@ -114,7 +135,13 @@ public class ProductActivity extends BaseActivity {
       vDescription.setText(Html.fromHtml(mProduct.getBodyHtml()));
     }
 
-    vBtnAddToCart.setOnClickListener(view -> mShopifyService.addToCart(mProduct.getVariants().get(0)));
+    vBtnAddToCart.setOnClickListener(view -> {
+      manageSubscription(UnsubscribeLifeCycle.DESTROY_VIEW, mShopifyService
+          .addToCart(mProduct.getVariants().get(0))
+          .compose(Transformer.applyIoScheduler())
+          .subscribe(aVoid -> {
+          }, ExceptionUtils::onError));
+    });
   }
 
   @TargetApi(Build.VERSION_CODES.LOLLIPOP)

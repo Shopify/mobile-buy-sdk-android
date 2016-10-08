@@ -28,9 +28,9 @@ package com.shopify.mobilebuysdk.demo.ui.shopping;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.shopify.buy.model.Product;
 import com.shopify.mobilebuysdk.demo.R;
-import com.shopify.mobilebuysdk.demo.ui.base.BaseViewHolder;
 import com.shopify.mobilebuysdk.demo.util.LayoutInflaterUtils;
 
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -42,7 +42,7 @@ import butterknife.ButterKnife;
 /**
  * Created by henrytao on 8/27/16.
  */
-public class ShoppingListItemViewHolder extends BaseViewHolder {
+public class ShoppingListItemViewHolder extends RecyclerView.ViewHolder {
 
   @BindView(R.id.btn_add_to_cart) Button vBtnAddToCart;
 
@@ -56,13 +56,13 @@ public class ShoppingListItemViewHolder extends BaseViewHolder {
 
   private Product mProduct;
 
-  public ShoppingListItemViewHolder(ViewGroup parent, OnItemClickListener onItemClickListener,
+  public ShoppingListItemViewHolder(ViewGroup parent, OnThumbnailClickListener onThumbnailClickListener,
       OnAddToCartClickListener onAddToCartClickListener) {
-    super(LayoutInflaterUtils.inflate(parent, R.layout.item_shopping_list));
+    super(LayoutInflaterUtils.inflate(parent, R.layout.view_holder_shopping_list_item));
     ButterKnife.bind(this, itemView);
-    vContainer.setOnClickListener(view -> {
-      if (onItemClickListener != null && mProduct != null) {
-        onItemClickListener.onItemClick(view, mProduct);
+    vThumbnail.setOnClickListener(view -> {
+      if (onThumbnailClickListener != null && mProduct != null) {
+        onThumbnailClickListener.onThumbnailClick(view, mProduct);
       }
     });
     vBtnAddToCart.setOnClickListener(view -> {
@@ -84,8 +84,8 @@ public class ShoppingListItemViewHolder extends BaseViewHolder {
     void onAddToCartClick(View view, Product product);
   }
 
-  public interface OnItemClickListener {
+  public interface OnThumbnailClickListener {
 
-    void onItemClick(View view, Product product);
+    void onThumbnailClick(View view, Product product);
   }
 }

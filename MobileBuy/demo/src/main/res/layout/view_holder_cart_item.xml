@@ -86,8 +86,10 @@
       <TextView
         android:id="@+id/title"
         android:ellipsize="end"
+        android:gravity="start"
         android:lineSpacingExtra="0dp"
         android:maxLines="2"
+        android:textAlignment="viewStart"
         android:textColor="?attr/mdTextColorPrimary_backgroundPalette"
         tools:text="Micke"
         style="@style/MdText.Subhead1" />

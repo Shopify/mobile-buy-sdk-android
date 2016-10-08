@@ -30,19 +30,27 @@ import com.shopify.buy.model.ProductVariant;
 import com.shopify.mobilebuysdk.demo.R;
 import com.shopify.mobilebuysdk.demo.data.CartItemInfo;
 import com.shopify.mobilebuysdk.demo.ui.base.BaseHomeActivity;
+import com.shopify.mobilebuysdk.demo.ui.base.DialogHelper;
 import com.shopify.mobilebuysdk.demo.ui.base.RecyclerViewLoadingEmptyErrorWrapperAdapter;
 import com.shopify.mobilebuysdk.demo.ui.checkout.CheckoutActivity;
+import com.shopify.mobilebuysdk.demo.ui.product.ProductActivity;
+import com.shopify.mobilebuysdk.demo.util.ExceptionUtils;
 import com.shopify.mobilebuysdk.demo.util.NavigationUtils;
+import com.shopify.mobilebuysdk.demo.util.ProgressDialogUtils;
+import com.shopify.mobilebuysdk.demo.util.ToastUtils;
 import com.shopify.mobilebuysdk.demo.util.rx.Transformer;
 import com.shopify.mobilebuysdk.demo.util.rx.UnsubscribeLifeCycle;
 import com.shopify.mobilebuysdk.demo.widget.BottomBar;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
@@ -60,11 +68,13 @@ import butterknife.ButterKnife;
  * Created by henrytao on 8/27/16.
  */
 public class CartActivity extends BaseHomeActivity implements CartItemViewHolder.OnCartItemAddClickListener,
-    CartItemViewHolder.OnCartItemRemoveClickListener {
+    CartItemViewHolder.OnCartItemRemoveClickListener, CartItemViewHolder.OnCartItemThumbnailClickListener {
 
   @BindView(R.id.bottom_bar) BottomBar vBottomBar;
 
   @BindView(R.id.btn_checkout) Button vBtnCheckout;
+
+  @BindView(R.id.btn_checkout_options) Button vBtnCheckoutOptions;
 
   @BindView(R.id.recycler_view) RecyclerView vRecyclerView;
 
@@ -78,12 +88,36 @@ public class CartActivity extends BaseHomeActivity implements CartItemViewHolder
 
   @Override
   public void onCartItemAddClick(ProductVariant productVariant) {
-    mShopifyService.addToCart(productVariant);
+    manageSubscription(UnsubscribeLifeCycle.DESTROY_VIEW, mShopifyService
+        .addToCart(productVariant)
+        .compose(Transformer.applyIoScheduler())
+        .subscribe(aVoid -> {
+        }, ExceptionUtils::onError));
   }
 
   @Override
   public void onCartItemRemoveClick(ProductVariant productVariant) {
-    mShopifyService.removeFromCart(productVariant);
+    manageSubscription(UnsubscribeLifeCycle.DESTROY_VIEW, mShopifyService
+        .removeFromCart(productVariant)
+        .compose(Transformer.applyIoScheduler())
+        .subscribe(aVoid -> {
+        }, ExceptionUtils::onError));
+  }
+
+  @Override
+  public void onCartItemThumbnailClick(View view, ProductVariant productVariant) {
+    manageSubscription(UnsubscribeLifeCycle.DESTROY_VIEW,
+        mShopifyService
+            .getProduct(productVariant.getProductId())
+            .compose(ProgressDialogUtils.apply(this, R.string.text_loading))
+            .compose(Transformer.applyIoScheduler())
+            .subscribe(product -> {
+              ProductActivity.startActivityWithAnimation(this, product, view);
+            }, throwable -> {
+              ExceptionUtils.onError(throwable);
+              ToastUtils.showGenericErrorToast(this);
+            })
+    );
   }
 
   @Override
@@ -108,50 +142,108 @@ public class CartActivity extends BaseHomeActivity implements CartItemViewHolder
     super.onCreate(savedInstanceState);
     setSupportActionBar(vToolbar);
 
-    mAdapter = new Adapter(mShopifyService.getCart().getLineItems(), this, this);
+    mAdapter = new Adapter(this, this, this);
     mLoadingEmptyErrorWrapperAdapter = new RecyclerViewLoadingEmptyErrorWrapperAdapter(mAdapter);
     mLoadingEmptyErrorWrapperAdapter.setEmptyText(getString(R.string.text_cart_is_empty));
     vRecyclerView.setAdapter(mLoadingEmptyErrorWrapperAdapter);
     vRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
 
-    if (mAdapter.getItemCount() == 0) {
-      mLoadingEmptyErrorWrapperAdapter.showEmptyView();
-      vBtnCheckout.setEnabled(false);
-    }
+    mLoadingEmptyErrorWrapperAdapter.showEmptyView();
+    vBtnCheckout.setEnabled(false);
+    vBtnCheckoutOptions.setEnabled(false);
 
-    vBtnCheckout.setOnClickListener(view -> NavigationUtils.startActivity(this, CheckoutActivity.newIntent(this)));
+    vBtnCheckout.setOnClickListener(view -> onCheckoutClick());
+    vBtnCheckoutOptions.setOnClickListener(view -> onCheckoutOptionsClick());
 
     manageSubscription(UnsubscribeLifeCycle.DESTROY,
         mShopifyService
             .observeCartChange()
             .compose(Transformer.applyComputationScheduler())
-            .subscribe(aVoid -> mAdapter.addOrSetToZero(mShopifyService.getCart().getLineItems()), Throwable::printStackTrace),
+            .subscribe(cart -> {
+              mAdapter.addOrSetToZero(cart.getLineItems());
+              if (mAdapter.mData.size() > 0) {
+                mLoadingEmptyErrorWrapperAdapter.hide();
+              } else {
+                mLoadingEmptyErrorWrapperAdapter.showEmptyView();
+              }
+            }, ExceptionUtils::onError),
+        mShopifyService
+            .observeCartQuantity()
+            .compose(Transformer.applyComputationScheduler())
+            .subscribe(quantity -> {
+              vBtnCheckout.setEnabled(quantity > 0);
+              vBtnCheckoutOptions.setEnabled(quantity > 0);
+            }, ExceptionUtils::onError),
         mShopifyService
             .observeCartSubtotal()
             .compose(Transformer.applyComputationScheduler())
             .subscribe(subtotal -> {
               DecimalFormat format = new DecimalFormat(getString(R.string.decimal_format));
               vSubtotal.setText(getString(R.string.currency_format, format.format(subtotal)));
-            }, Throwable::printStackTrace)
+            }, ExceptionUtils::onError)
     );
   }
 
-  private static class Adapter extends RecyclerView.Adapter<CartItemViewHolder> {
+  private void onCheckoutClick() {
+    manageSubscription(UnsubscribeLifeCycle.DESTROY_VIEW,
+        mShopifyService
+            .getCheckout()
+            .compose(ProgressDialogUtils.apply(this, R.string.text_creating_checkout))
+            .compose(Transformer.applyIoScheduler())
+            .subscribe(checkout -> {
+              NavigationUtils.startActivity(this, CheckoutActivity.newIntent(this));
+            }, throwable -> {
+              ExceptionUtils.onError(throwable);
+              ToastUtils.showGenericErrorToast(this);
+            }));
+  }
+
+  private void onCheckoutOptionsClick() {
+    manageSubscription(UnsubscribeLifeCycle.DESTROY_VIEW,
+        DialogHelper
+            .showOtherPaymentMethodsDialog(this)
+            .filter(result -> result.action == DialogHelper.Action.POSITIVE)
+            .zipWith(mShopifyService
+                .getCheckout()
+                .compose(ProgressDialogUtils.apply(this, R.string.text_creating_checkout))
+                .compose(Transformer.applyIoScheduler()), (result, checkout) -> {
+              switch (result.paymentMethod) {
+                case WEB:
+                  Intent intent = new Intent(Intent.ACTION_VIEW);
+                  intent.setData(Uri.parse(checkout.getWebUrl()));
+                  NavigationUtils.startActivity(this, intent);
+                  break;
+                case ANDROID_PAY:
+                  // TODO: setup Android Pay
+                  break;
+              }
+              return null;
+            })
+            .subscribe(o -> {
+            }, throwable -> {
+              ExceptionUtils.onError(throwable);
+              ToastUtils.showGenericErrorToast(this);
+            })
+    );
+  }
+
+  static class Adapter extends RecyclerView.Adapter<CartItemViewHolder> {
 
     private final List<CartItemInfo> mData;
+
+    private final CartItemViewHolder.OnCartItemThumbnailClickListener mOnCarItemThumbnailClickListener;
 
     private final CartItemViewHolder.OnCartItemAddClickListener mOnCartItemAddClickListener;
 
     private final CartItemViewHolder.OnCartItemRemoveClickListener mOnCartItemRemoveClickListener;
 
-    public Adapter(List<CartLineItem> cartLineItems, CartItemViewHolder.OnCartItemAddClickListener onCartItemAddClickListener,
-        CartItemViewHolder.OnCartItemRemoveClickListener onCartItemRemoveClickListener) {
+    Adapter(CartItemViewHolder.OnCartItemAddClickListener onCartItemAddClickListener,
+        CartItemViewHolder.OnCartItemRemoveClickListener onCartItemRemoveClickListener,
+        CartItemViewHolder.OnCartItemThumbnailClickListener onCartItemThumbnailClickListener) {
       mOnCartItemAddClickListener = onCartItemAddClickListener;
       mOnCartItemRemoveClickListener = onCartItemRemoveClickListener;
+      mOnCarItemThumbnailClickListener = onCartItemThumbnailClickListener;
       mData = new ArrayList<>();
-      for (CartLineItem cartLineItem : cartLineItems) {
-        mData.add(new CartItemInfo(cartLineItem));
-      }
     }
 
     @Override
@@ -166,10 +258,11 @@ public class CartActivity extends BaseHomeActivity implements CartItemViewHolder
 
     @Override
     public CartItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-      return new CartItemViewHolder(parent, mOnCartItemAddClickListener, mOnCartItemRemoveClickListener);
+      return new CartItemViewHolder(parent, mOnCartItemAddClickListener, mOnCartItemRemoveClickListener, mOnCarItemThumbnailClickListener);
     }
 
-    public void addOrSetToZero(List<CartLineItem> cartLineItems) {
+    void addOrSetToZero(List<CartLineItem> cartLineItems) {
+      // TODO: this is work around to support 0 count in cart items.
       Map<ProductVariant, Boolean> caches = new HashMap<>();
       Map<ProductVariant, Integer> indexes = new HashMap<>();
       int n = mData.size();

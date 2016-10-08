@@ -25,14 +25,33 @@
 
 package com.shopify.mobilebuysdk.demo.ui;
 
+import com.shopify.mobilebuysdk.demo.config.Constants;
 import com.shopify.mobilebuysdk.demo.ui.base.BaseActivity;
 import com.shopify.mobilebuysdk.demo.ui.base.BaseHomeActivity;
 import com.shopify.mobilebuysdk.demo.util.NavigationUtils;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 public class MainActivity extends BaseActivity {
+
+  public static Intent newIntent(Context context) {
+    Intent intent = new Intent(context, MainActivity.class);
+    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+    intent.putExtra(Constants.Extra.INDEX, BaseHomeActivity.INDEX_SHOPPING);
+    return intent;
+  }
+
+  private int mIndex;
+
+  @Override
+  public void onInitializedBundle(@NonNull Bundle bundle, @NonNull Bundle savedInstanceState) {
+    super.onInitializedBundle(bundle, savedInstanceState);
+    mIndex = bundle.getInt(Constants.Extra.INDEX, -1);
+  }
 
   @Override
   public void onSetContentView(@Nullable Bundle savedInstanceState) {
@@ -41,6 +60,6 @@ public class MainActivity extends BaseActivity {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    NavigationUtils.startActivityAndFinishWithNoAnimation(this, BaseHomeActivity.newIntent(this));
+    NavigationUtils.startActivityAndFinishWithoutAnimation(this, BaseHomeActivity.newIntent(this, mIndex));
   }
 }

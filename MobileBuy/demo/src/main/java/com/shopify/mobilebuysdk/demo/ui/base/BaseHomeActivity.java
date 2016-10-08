@@ -26,9 +26,9 @@
 package com.shopify.mobilebuysdk.demo.ui.base;
 
 import com.shopify.mobilebuysdk.demo.R;
-import com.shopify.mobilebuysdk.demo.service.ShopifyService;
 import com.shopify.mobilebuysdk.demo.ui.cart.CartActivity;
 import com.shopify.mobilebuysdk.demo.ui.shopping.ShoppingActivity;
+import com.shopify.mobilebuysdk.demo.util.ExceptionUtils;
 import com.shopify.mobilebuysdk.demo.util.NavigationUtils;
 import com.shopify.mobilebuysdk.demo.util.rx.Transformer;
 import com.shopify.mobilebuysdk.demo.util.rx.UnsubscribeLifeCycle;
@@ -85,17 +85,11 @@ public abstract class BaseHomeActivity extends BaseActivity {
   }
 
   public static Intent newIntent(Activity activity, @Index int index) {
-    DEFAULT_INDEX = index;
-    return new Intent(activity, sActivities.get(index));
+    DEFAULT_INDEX = index >= 0 && sActivities.containsKey(index) ? index : DEFAULT_INDEX;
+    return new Intent(activity, sActivities.get(DEFAULT_INDEX));
   }
-
-  protected final ShopifyService mShopifyService;
 
   private int mCurrentIndex;
-
-  public BaseHomeActivity() {
-    mShopifyService = ShopifyService.getInstance();
-  }
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -111,7 +105,7 @@ public abstract class BaseHomeActivity extends BaseActivity {
             .observeCartQuantity()
             .compose(Transformer.applyComputationScheduler())
             .subscribe(quantity -> getBottomBarView().setBadge(INDEX_CART, quantity > 0 ? String.valueOf(quantity) : null),
-                Throwable::printStackTrace)
+                ExceptionUtils::onError)
     );
   }
 
@@ -119,7 +113,7 @@ public abstract class BaseHomeActivity extends BaseActivity {
     if (bottomBarItem.index == mCurrentIndex) {
       return;
     }
-    NavigationUtils.startActivityAndFinishWithNoAnimation(this, newIntent(this, bottomBarItem.index));
+    NavigationUtils.startActivityAndFinishWithoutAnimation(this, newIntent(this, bottomBarItem.index));
   }
 
   private void setBottomBarItemEnabled(@Index int index) {

@@ -32,6 +32,7 @@ import com.shopify.mobilebuysdk.demo.data.CartItemInfo;
 import com.shopify.mobilebuysdk.demo.util.LayoutInflaterUtils;
 
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -59,8 +60,8 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
   private CartItemInfo mCartLineItem;
 
   public CartItemViewHolder(ViewGroup parent, OnCartItemAddClickListener onCartItemAddClickListener,
-      OnCartItemRemoveClickListener onCartItemRemoveClickListener) {
-    super(LayoutInflaterUtils.inflate(parent, R.layout.item_cart));
+      OnCartItemRemoveClickListener onCartItemRemoveClickListener, OnCartItemThumbnailClickListener onCartItemThumbnailClickListener) {
+    super(LayoutInflaterUtils.inflate(parent, R.layout.view_holder_cart_item));
     ButterKnife.bind(this, itemView);
     vBtnAdd.setOnClickListener(view -> {
       if (onCartItemAddClickListener != null && mCartLineItem != null) {
@@ -70,6 +71,11 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
     vBtnRemove.setOnClickListener(view -> {
       if (onCartItemRemoveClickListener != null && mCartLineItem != null) {
         onCartItemRemoveClickListener.onCartItemRemoveClick(mCartLineItem.getProductVariant());
+      }
+    });
+    vThumbnail.setOnClickListener(view -> {
+      if (onCartItemThumbnailClickListener != null && mCartLineItem != null) {
+        onCartItemThumbnailClickListener.onCartItemThumbnailClick(view, mCartLineItem.getProductVariant());
       }
     });
   }
@@ -92,5 +98,10 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
   public interface OnCartItemRemoveClickListener {
 
     void onCartItemRemoveClick(ProductVariant productVariant);
+  }
+
+  public interface OnCartItemThumbnailClickListener {
+
+    void onCartItemThumbnailClick(View view, ProductVariant productVariant);
   }
 }

@@ -26,6 +26,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
   <style name="Base.AppTheme" parent="MdTheme.Light">
+    <item name="mdIconColor_accentPalette">@color/icon_color_button_accent</item>
     <item name="BottomBarStyle">@style/Widget.BottomBar</item>
   </style>
 
