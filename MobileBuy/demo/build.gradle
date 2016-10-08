@@ -36,6 +36,13 @@ apply plugin: "com.android.application"
 apply plugin: "com.neenbedankt.android-apt"
 apply plugin: "me.tatarka.retrolambda"
 
+ext {
+  versioning = [
+      versionMajor: 1,
+      versionMinor: 0
+  ]
+}
+
 android {
   compileOptions {
     sourceCompatibility JavaVersion.VERSION_1_8
@@ -147,3 +154,5 @@ dependencies {
 
   testCompile "junit:junit:4.12"
 }
+
+apply from: "versioning.gradle"
