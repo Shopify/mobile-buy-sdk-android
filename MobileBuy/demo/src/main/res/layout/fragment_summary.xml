@@ -24,20 +24,68 @@
   -->
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="match_parent">
 
-  <Button
-    android:id="@+id/btn_purchase"
+  <LinearLayout
+    android:id="@+id/summary_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:layout_alignParentBottom="true"
-    android:text="@string/text_purchase"
-    style="@style/AppStyle.Button.Colored.Full" />
+    android:orientation="vertical"
+    android:background="?attr/mdColor_backgroundPalette">
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="horizontal"
+      android:gravity="center_vertical"
+      android:minHeight="@dimen/mdListItemHeight"
+      android:paddingBottom="@dimen/mdLayoutSpacing_sm"
+      android:paddingLeft="@dimen/mdLayoutSpacing"
+      android:paddingRight="@dimen/mdLayoutSpacing"
+      android:paddingTop="@dimen/mdLayoutSpacing_sm">
+
+      <TextView
+        android:paddingEnd="@dimen/mdLayoutSpacing"
+        android:paddingLeft="0dp"
+        android:paddingRight="@dimen/mdLayoutSpacing"
+        android:paddingStart="0dp"
+        android:text="@string/text_total"
+        android:textColor="?attr/mdTextColorPrimary_backgroundPalette"
+        style="@style/MdText.Title" />
+
+      <TextView
+        android:id="@+id/total"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:gravity="end"
+        android:textAlignment="viewEnd"
+        android:textColor="?attr/mdTextColorPrimary_backgroundPalette"
+        tools:text="$1.485.09"
+        style="@style/MdText.Display1.SingleLine" />
+    </LinearLayout>
+
+    <Button
+      android:id="@+id/btn_purchase"
+      android:text="@string/text_purchase"
+      style="@style/AppStyle.Button.Colored.Full" />
+  </LinearLayout>
 
   <android.support.v7.widget.RecyclerView
     android:id="@+id/list"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_above="@id/btn_purchase"
+    android:layout_above="@id/summary_container"
     android:clipToPadding="false"
     android:padding="@dimen/mdLayoutSpacing_xs" />
+
+  <View
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/backgroundGradientSize"
+    android:layout_above="@id/summary_container"
+    android:background="@drawable/background_gradient_bottom_top"
+    android:elevation="16dp"
+    tools:targetApi="lollipop" />
 </RelativeLayout>

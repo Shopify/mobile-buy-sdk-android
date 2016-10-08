@@ -25,18 +25,41 @@
 
 package com.shopify.mobilebuysdk.demo.ui.checkout.summary;
 
+import com.shopify.buy.model.Address;
+import com.shopify.buy.model.Checkout;
 import com.shopify.mobilebuysdk.demo.R;
 import com.shopify.mobilebuysdk.demo.util.LayoutInflaterUtils;
+import com.shopify.mobilebuysdk.demo.util.StringUtils;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
+import android.widget.TextView;
+
+import java.util.Locale;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * Created by henrytao on 10/7/16.
  */
 public class SummaryAddressViewHolder extends RecyclerView.ViewHolder {
 
+  @BindView(R.id.address) TextView vAddress;
+
   public SummaryAddressViewHolder(ViewGroup parent) {
-    super(LayoutInflaterUtils.inflate(parent, R.layout.view_holder_summary_cart));
+    super(LayoutInflaterUtils.inflate(parent, R.layout.view_holder_summary_address));
+    ButterKnife.bind(this, itemView);
+  }
+
+  public void bind(Checkout checkout) {
+    Address address = checkout.getShippingAddress();
+    String address2 = address.getAddress2();
+    vAddress.setText(String.format(Locale.US, "%s %s\n%s\n%s\n%s, %s, %s",
+        address.getFirstName(), address.getLastName(),
+        checkout.getEmail(),
+        address.getAddress1() + (!StringUtils.isEmpty(address2) ? String.format(Locale.US, " (or %s)", address2) : ""),
+        address.getCity(), address.getCountry(), address.getZip()
+    ));
   }
 }

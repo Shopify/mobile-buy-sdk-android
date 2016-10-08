@@ -25,11 +25,17 @@
 
 package com.shopify.mobilebuysdk.demo.ui.checkout;
 
+import com.shopify.buy.model.Checkout;
 import com.shopify.mobilebuysdk.demo.R;
 import com.shopify.mobilebuysdk.demo.ui.base.BaseFragment;
 import com.shopify.mobilebuysdk.demo.ui.base.BlankViewHolder;
 import com.shopify.mobilebuysdk.demo.ui.checkout.summary.SummaryAddressViewHolder;
 import com.shopify.mobilebuysdk.demo.ui.checkout.summary.SummaryCartViewHolder;
+import com.shopify.mobilebuysdk.demo.ui.checkout.summary.SummaryShippingViewHolder;
+import com.shopify.mobilebuysdk.demo.util.ProgressDialogUtils;
+import com.shopify.mobilebuysdk.demo.util.ToastUtils;
+import com.shopify.mobilebuysdk.demo.util.rx.Transformer;
+import com.shopify.mobilebuysdk.demo.util.rx.UnsubscribeLifeCycle;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -39,6 +45,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -56,6 +63,10 @@ public class SummaryFragment extends BaseFragment {
   @BindView(R.id.btn_purchase) Button vBtnPurchase;
 
   @BindView(R.id.list) RecyclerView vRecyclerView;
+
+  @BindView(R.id.total) TextView vTotal;
+
+  private Adapter mAdapter;
 
   private Unbinder mUnbinder;
 
@@ -76,10 +87,27 @@ public class SummaryFragment extends BaseFragment {
   public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
 
+    mAdapter = new Adapter();
     vRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-    vRecyclerView.setAdapter(new Adapter());
+    vRecyclerView.setAdapter(mAdapter);
 
     vBtnPurchase.setOnClickListener(this::onPurchaseClicked);
+
+    manageSubscription(UnsubscribeLifeCycle.DESTROY_VIEW,
+        mShopifyService
+            .getCheckout()
+            .compose(ProgressDialogUtils.apply(this, R.string.text_loading))
+            .compose(Transformer.applyIoScheduler())
+            .subscribe(this::bind, throwable -> {
+              throwable.printStackTrace();
+              ToastUtils.showGenericErrorToast(getContext());
+            })
+    );
+  }
+
+  private void bind(Checkout checkout) {
+    vTotal.setText(getContext().getString(R.string.currency_format, checkout.getTotalPrice()));
+    mAdapter.set(checkout);
   }
 
   private void onPurchaseClicked(View view) {
@@ -92,15 +120,15 @@ public class SummaryFragment extends BaseFragment {
 
     private static final int CART_INDEX = 0;
 
-    private static final int COUNT = 4;
-
-    private static final int PAYMENT_INDEX = 3;
+    private static final int COUNT = 3;
 
     private static final int SHIPPING_INDEX = 2;
 
+    private Checkout mCheckout;
+
     @Override
     public int getItemCount() {
-      return COUNT;
+      return mCheckout != null ? COUNT : 0;
     }
 
     @Override
@@ -110,7 +138,13 @@ public class SummaryFragment extends BaseFragment {
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-
+      if (holder instanceof SummaryCartViewHolder) {
+        ((SummaryCartViewHolder) holder).bind(mCheckout);
+      } else if (holder instanceof SummaryAddressViewHolder) {
+        ((SummaryAddressViewHolder) holder).bind(mCheckout);
+      } else if (holder instanceof SummaryShippingViewHolder) {
+        ((SummaryShippingViewHolder) holder).bind(mCheckout);
+      }
     }
 
     @Override
@@ -121,11 +155,14 @@ public class SummaryFragment extends BaseFragment {
         case ADDRESS_INDEX:
           return new SummaryAddressViewHolder(parent);
         case SHIPPING_INDEX:
-          break;
-        case PAYMENT_INDEX:
-          break;
+          return new SummaryShippingViewHolder(parent);
       }
       return new BlankViewHolder(parent);
+    }
+
+    public void set(Checkout checkout) {
+      mCheckout = checkout;
+      notifyDataSetChanged();
     }
   }
 }

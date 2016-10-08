@@ -25,18 +25,70 @@
 
 package com.shopify.mobilebuysdk.demo.ui.checkout.summary;
 
+import com.shopify.buy.model.Checkout;
+import com.shopify.buy.model.LineItem;
 import com.shopify.mobilebuysdk.demo.R;
 import com.shopify.mobilebuysdk.demo.util.LayoutInflaterUtils;
 
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * Created by henrytao on 10/7/16.
  */
 public class SummaryCartViewHolder extends RecyclerView.ViewHolder {
 
+  private final Adapter mAdapter;
+
+  @BindView(R.id.list) RecyclerView vRecyclerView;
+
   public SummaryCartViewHolder(ViewGroup parent) {
     super(LayoutInflaterUtils.inflate(parent, R.layout.view_holder_summary_cart));
+    ButterKnife.bind(this, itemView);
+    mAdapter = new Adapter();
+    vRecyclerView.setNestedScrollingEnabled(false);
+    vRecyclerView.setLayoutManager(new LinearLayoutManager(itemView.getContext()));
+    vRecyclerView.setAdapter(mAdapter);
+  }
+
+  public void bind(Checkout checkout) {
+    mAdapter.set(checkout.getLineItems());
+  }
+
+  private static class Adapter extends RecyclerView.Adapter<SummaryCartItemViewHolder> {
+
+    private final List<LineItem> mData;
+
+    public Adapter() {
+      mData = new ArrayList<>();
+    }
+
+    @Override
+    public int getItemCount() {
+      return mData.size();
+    }
+
+    @Override
+    public void onBindViewHolder(SummaryCartItemViewHolder holder, int position) {
+      holder.bind(mData.get(position));
+    }
+
+    @Override
+    public SummaryCartItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+      return new SummaryCartItemViewHolder(parent);
+    }
+
+    public void set(List<LineItem> lineItems) {
+      mData.clear();
+      mData.addAll(lineItems);
+      notifyDataSetChanged();
+    }
   }
 }

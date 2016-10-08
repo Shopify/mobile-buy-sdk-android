@@ -25,6 +25,7 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="match_parent">
 
@@ -60,6 +61,7 @@
             android:paddingRight="@dimen/mdLayoutSpacing"
             android:text="@string/text_continue_with_android_pay"
             app:drawableStartCompat="@drawable/ic_android_pay"
+            tools:ignore="MissingPrefix"
             style="@style/AppStyle.Button.Colored.Full" />
         </LinearLayout>
       </android.support.v7.widget.CardView>
@@ -81,7 +83,6 @@
           style="@style/MdCardView.Wrapper">
 
           <TextView
-            android:layout_marginTop="@dimen/mdLayoutSpacing_xs"
             android:paddingLeft="@dimen/mdLayoutSpacing_sm"
             android:paddingRight="@dimen/mdLayoutSpacing_sm"
             android:paddingTop="@dimen/mdLayoutSpacing_sm"
