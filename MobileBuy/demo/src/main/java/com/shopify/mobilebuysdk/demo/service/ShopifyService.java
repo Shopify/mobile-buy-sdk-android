@@ -177,10 +177,12 @@ public class ShopifyService {
   }
 
   public Observable<Void> resetCheckout() {
-    return mStorageService
-        .setCheckoutState(CheckoutState.NONE)
-        .flatMap(aVoid -> mStorageService.setCheckout(null))
-        .flatMap(aVoid -> mStorageService.setShippingRates(null));
+    return Observable.concat(
+        mStorageService.setLatestCheckoutState(CheckoutState.NONE),
+        mStorageService.setCheckoutState(CheckoutState.NONE),
+        mStorageService.setCheckout(null),
+        mStorageService.setShippingRates(null)
+    ).toList().map(voids -> null);
   }
 
   public Observable<Void> setAddress(Address address) {
@@ -194,7 +196,29 @@ public class ShopifyService {
   }
 
   public Observable<Void> setCheckoutState(CheckoutState state) {
-    return mStorageService.setCheckoutState(state);
+    return setCheckoutState(state, false);
+  }
+
+  public Observable<Void> setCheckoutState(CheckoutState state, boolean force) {
+    return Observable.defer(() -> {
+      if (force || state == CheckoutState.NONE) {
+        return Observable.concat(
+            mStorageService.setLatestCheckoutState(state),
+            mStorageService.setCheckoutState(state)
+        ).toList().map(voids -> null);
+      } else {
+        return mStorageService
+            .getLatestCheckoutState()
+            .flatMap(latestState -> {
+              int diff = state.toInt() - latestState.toInt();
+              if (diff > 0) {
+                return Observable.error(new IllegalStateException("Need to finish current state"));
+              } else {
+                return mStorageService.setCheckoutState(state);
+              }
+            });
+      }
+    });
   }
 
   public Observable<Void> setCreditCard(CreditCard creditCard) {

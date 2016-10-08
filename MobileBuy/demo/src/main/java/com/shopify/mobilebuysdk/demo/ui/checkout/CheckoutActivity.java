@@ -28,6 +28,7 @@ package com.shopify.mobilebuysdk.demo.ui.checkout;
 import com.shopify.mobilebuysdk.demo.R;
 import com.shopify.mobilebuysdk.demo.data.CheckoutState;
 import com.shopify.mobilebuysdk.demo.ui.base.BaseActivity;
+import com.shopify.mobilebuysdk.demo.util.ToastUtils;
 import com.shopify.mobilebuysdk.demo.util.rx.Transformer;
 import com.shopify.mobilebuysdk.demo.util.rx.UnsubscribeLifeCycle;
 import com.shopify.mobilebuysdk.demo.widget.CheckableTextView;
@@ -101,7 +102,9 @@ public class CheckoutActivity extends BaseActivity {
             .setCheckoutState(CheckoutState.PAYMENT)
             .compose(Transformer.applyComputationScheduler())
             .subscribe(aVoid -> {
-            }, Throwable::printStackTrace));
+            }, throwable -> {
+              ToastUtils.showInvalidCheckoutState(this);
+            }));
   }
 
   @OnClick(R.id.btn_address)
@@ -111,7 +114,9 @@ public class CheckoutActivity extends BaseActivity {
             .setCheckoutState(CheckoutState.ADDRESS)
             .compose(Transformer.applyComputationScheduler())
             .subscribe(aVoid -> {
-            }, Throwable::printStackTrace));
+            }, throwable -> {
+              ToastUtils.showInvalidCheckoutState(this);
+            }));
   }
 
   @OnClick(R.id.btn_shipping)
@@ -121,7 +126,9 @@ public class CheckoutActivity extends BaseActivity {
             .setCheckoutState(CheckoutState.SHIPPING)
             .compose(Transformer.applyComputationScheduler())
             .subscribe(aVoid -> {
-            }, Throwable::printStackTrace));
+            }, throwable -> {
+              ToastUtils.showInvalidCheckoutState(this);
+            }));
   }
 
   @OnClick(R.id.btn_summary)
@@ -131,7 +138,9 @@ public class CheckoutActivity extends BaseActivity {
             .setCheckoutState(CheckoutState.SUMMARY)
             .compose(Transformer.applyComputationScheduler())
             .subscribe(aVoid -> {
-            }, Throwable::printStackTrace));
+            }, throwable -> {
+              ToastUtils.showInvalidCheckoutState(this);
+            }));
   }
 
   private void onCheckoutStateChanged(CheckoutState state) {

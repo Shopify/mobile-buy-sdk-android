@@ -34,7 +34,7 @@
     android:layout_height="wrap_content"
     android:layout_alignParentBottom="true"
     android:orientation="vertical"
-    android:background="?attr/mdColor_backgroundPalette">
+    android:background="?attr/mdColor_backgroundPalette_light">
 
     <LinearLayout
       android:layout_width="match_parent"

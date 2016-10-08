@@ -65,4 +65,8 @@ public enum CheckoutState {
   public String toString() {
     return String.valueOf(value);
   }
+
+  public int toInt() {
+    return value;
+  }
 }

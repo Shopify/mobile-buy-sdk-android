@@ -197,7 +197,8 @@ public class AddressFragment extends BaseFragment {
             mShopifyService.setEmail(EditTextUtils.getText(vEmail, true)),
             mShopifyService.setAddress(getAddressFromInput()),
             mShopifyService.getShippingRates(),
-            mShopifyService.setCheckoutState(CheckoutState.SHIPPING)))
+            mShopifyService.setCheckoutState(CheckoutState.SHIPPING, true))
+            .toList().map(objects -> null))
             .compose(ProgressDialogUtils.apply(this, R.string.text_updating_checkout))
             .compose(Transformer.applyIoScheduler())
             .subscribe(o -> {

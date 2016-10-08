@@ -38,6 +38,7 @@ import com.shopify.mobilebuysdk.demo.data.CheckoutState;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -87,6 +88,10 @@ public class StorageService {
     return mRxSharedPreferences.getObject(CheckoutState.class, Key.CHECKOUT_STATE, CheckoutState.NONE);
   }
 
+  public Observable<CheckoutState> getLatestCheckoutState() {
+    return mRxSharedPreferences.getObject(CheckoutState.class, Key.LATEST_CHECKOUT_STATE, CheckoutState.NONE);
+  }
+
   public Observable<PaymentToken> getPaymentToken() {
     return mRxSharedPreferences.getObject(PaymentToken.class, Key.PAYMENT_TOKEN, null);
   }
@@ -129,8 +134,21 @@ public class StorageService {
     return mRxSharedPreferences.putObject(Checkout.class, Key.CHECKOUT, checkout);
   }
 
-  public Observable<Void> setCheckoutState(CheckoutState state) {
+  public Observable<Void> setCheckoutState(@NonNull CheckoutState state) {
     return mRxSharedPreferences.putObject(CheckoutState.class, Key.CHECKOUT_STATE, state);
+  }
+
+  public Observable<Void> setLatestCheckoutState(@NonNull CheckoutState state) {
+    return getLatestCheckoutState()
+        .flatMap(latestState -> {
+          if (state == CheckoutState.NONE) {
+            return mRxSharedPreferences.putObject(CheckoutState.class, Key.LATEST_CHECKOUT_STATE, CheckoutState.NONE);
+          } else if (state.toInt() > latestState.toInt()) {
+            return mRxSharedPreferences.putObject(CheckoutState.class, Key.LATEST_CHECKOUT_STATE, state);
+          } else {
+            return Observable.just(null);
+          }
+        });
   }
 
   public Observable<Void> setPaymentToken(PaymentToken paymentToken) {
@@ -159,6 +177,7 @@ public class StorageService {
     String CART = "CART";
     String CHECKOUT = "CHECKOUT";
     String CHECKOUT_STATE = "CHECKOUT_STATE";
+    String LATEST_CHECKOUT_STATE = "LATEST_CHECKOUT_STATE";
     String PAYMENT_TOKEN = "PAYMENT_TOKEN";
     String SHIPPING_RATES = "SHIPPING_RATES";
   }
