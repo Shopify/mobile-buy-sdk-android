@@ -60,8 +60,8 @@
       android:windowSoftInputMode="adjustResize|stateHidden" />
 
     <activity
-      android:label="@string/text_processing"
-      android:name=".ui.checkout.CallbackActivity">
+      android:label="@string/app_name"
+      android:name=".ui.callback.CallbackActivity">
 
       <intent-filter>
         <action android:name="android.intent.action.VIEW" />
@@ -75,5 +75,9 @@
           android:scheme="@string/appLink_scheme" />
       </intent-filter>
     </activity>
+
+    <activity
+      android:label="@string/app_name"
+      android:name=".ui.checkout.CompleteCheckoutActivity" />
   </application>
 </manifest>

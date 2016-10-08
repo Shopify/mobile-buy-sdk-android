@@ -34,6 +34,7 @@ public class Constants {
 
   public interface Extra {
 
+    String INDEX = "INDEX";
     String PRODUCT = "PRODUCT";
   }
 

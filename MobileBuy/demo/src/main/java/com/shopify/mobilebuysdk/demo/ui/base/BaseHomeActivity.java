@@ -84,8 +84,8 @@ public abstract class BaseHomeActivity extends BaseActivity {
   }
 
   public static Intent newIntent(Activity activity, @Index int index) {
-    DEFAULT_INDEX = index;
-    return new Intent(activity, sActivities.get(index));
+    DEFAULT_INDEX = index >= 0 && sActivities.containsKey(index) ? index : DEFAULT_INDEX;
+    return new Intent(activity, sActivities.get(DEFAULT_INDEX));
   }
 
   private int mCurrentIndex;

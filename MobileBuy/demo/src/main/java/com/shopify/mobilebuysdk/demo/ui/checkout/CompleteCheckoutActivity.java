@@ -26,31 +26,58 @@
 package com.shopify.mobilebuysdk.demo.ui.checkout;
 
 import com.shopify.mobilebuysdk.demo.R;
+import com.shopify.mobilebuysdk.demo.ui.MainActivity;
 import com.shopify.mobilebuysdk.demo.ui.base.BaseActivity;
+import com.shopify.mobilebuysdk.demo.util.NavigationUtils;
+import com.shopify.mobilebuysdk.demo.util.rx.Transformer;
+import com.shopify.mobilebuysdk.demo.util.rx.UnsubscribeLifeCycle;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
+import android.view.View;
+import android.widget.Button;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import rx.Observable;
 
 /**
  * Created by henrytao on 9/10/16.
  */
-public class CallbackActivity extends BaseActivity {
+public class CompleteCheckoutActivity extends BaseActivity {
 
-  @BindView(R.id.toolbar) Toolbar vToolbar;
+  public static Intent newIntent(Context context) {
+    Intent intent = new Intent(context, CompleteCheckoutActivity.class);
+    return intent;
+  }
+
+  @BindView(R.id.btn_back) Button vBtnBack;
 
   @Override
   public void onSetContentView(Bundle savedInstanceState) {
-    setContentView(R.layout.activity_callback);
+    setContentView(R.layout.activity_complete_checkout);
     ButterKnife.bind(this);
   }
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setSupportActionBar(vToolbar);
-    vToolbar.setNavigationOnClickListener(view -> onBackPressed());
+
+    vBtnBack.setOnClickListener(this::onBackClicked);
+
+    manageSubscription(UnsubscribeLifeCycle.DESTROY,
+        Observable.concat(
+            mShopifyService.resetCheckout(),
+            mShopifyService.resetCart())
+            .compose(Transformer.applyIoScheduler())
+            .toList().map(voids -> null)
+            .subscribe(aVoid -> {
+            }, Throwable::printStackTrace)
+    );
+  }
+
+  private void onBackClicked(View view) {
+    NavigationUtils.startActivityAndFinishWithoutAnimation(this, MainActivity.newIntent(this));
   }
 }

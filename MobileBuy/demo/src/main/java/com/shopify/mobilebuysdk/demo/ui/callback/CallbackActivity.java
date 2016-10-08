@@ -23,43 +23,55 @@
  *
  */
 
-package com.shopify.mobilebuysdk.demo.ui;
+package com.shopify.mobilebuysdk.demo.ui.callback;
 
-import com.shopify.mobilebuysdk.demo.config.Constants;
+import com.shopify.mobilebuysdk.demo.R;
+import com.shopify.mobilebuysdk.demo.ui.MainActivity;
 import com.shopify.mobilebuysdk.demo.ui.base.BaseActivity;
-import com.shopify.mobilebuysdk.demo.ui.base.BaseHomeActivity;
+import com.shopify.mobilebuysdk.demo.ui.checkout.CompleteCheckoutActivity;
 import com.shopify.mobilebuysdk.demo.util.NavigationUtils;
+import com.shopify.mobilebuysdk.demo.util.rx.Transformer;
+import com.shopify.mobilebuysdk.demo.util.rx.UnsubscribeLifeCycle;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
-public class MainActivity extends BaseActivity {
+import butterknife.ButterKnife;
+
+/**
+ * Created by henrytao on 9/10/16.
+ */
+public class CallbackActivity extends BaseActivity {
 
   public static Intent newIntent(Context context) {
-    Intent intent = new Intent(context, MainActivity.class);
-    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-    intent.putExtra(Constants.Extra.INDEX, BaseHomeActivity.INDEX_SHOPPING);
-    return intent;
-  }
-
-  private int mIndex;
-
-  @Override
-  public void onInitializedBundle(@NonNull Bundle bundle, @NonNull Bundle savedInstanceState) {
-    super.onInitializedBundle(bundle, savedInstanceState);
-    mIndex = bundle.getInt(Constants.Extra.INDEX, -1);
+    return new Intent(context, CallbackActivity.class);
   }
 
   @Override
-  public void onSetContentView(@Nullable Bundle savedInstanceState) {
+  public void onSetContentView(Bundle savedInstanceState) {
+    setContentView(R.layout.activity_callback);
+    ButterKnife.bind(this);
   }
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    NavigationUtils.startActivityAndFinishWithoutAnimation(this, BaseHomeActivity.newIntent(this, mIndex));
+
+    manageSubscription(UnsubscribeLifeCycle.DESTROY,
+        mShopifyService
+            .getCheckoutFromServer()
+            .compose(Transformer.applyIoScheduler())
+            .subscribe(checkout -> {
+              if (checkout.hasOrderId()) {
+                NavigationUtils.startActivityAndFinishWithoutAnimation(this, CompleteCheckoutActivity.newIntent(this));
+              } else {
+                NavigationUtils.startActivityAndFinishWithoutAnimation(this, MainActivity.newIntent(this));
+              }
+            }, throwable -> {
+              throwable.printStackTrace();
+              NavigationUtils.startActivityAndFinishWithoutAnimation(this, MainActivity.newIntent(this));
+            })
+    );
   }
 }

@@ -52,6 +52,10 @@ public class ToastUtils {
     return showShortToast(context, R.string.text_invalid_checkout_state);
   }
 
+  public static Toast showInvalidPayment(Context context) {
+    return showShortToast(context, R.string.invalid_payment);
+  }
+
   private static Toast showLongToast(Context context, @StringRes int id) {
     Toast toast = Toast.makeText(context, id, Toast.LENGTH_LONG);
     toast.show();

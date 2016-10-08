@@ -23,20 +23,30 @@
   ~
   -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  android:orientation="vertical"
-  android:gravity="center">
+  android:fillViewport="true">
 
-  <ProgressBar
-    android:layout_width="32dp"
-    android:layout_height="32dp"
-    style="@style/Widget.AppCompat.ProgressBar" />
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center_vertical"
+    android:padding="@dimen/mdLayoutSpacing">
 
-  <TextView
-    android:layout_marginTop="@dimen/mdLayoutSpacing_sm"
-    android:text="@string/text_processing"
-    android:textColor="?attr/mdTextColorHint_backgroundPalette"
-    style="@style/MdText.Body1" />
-</LinearLayout>
+    <TextView
+      android:layout_gravity="center"
+      android:gravity="center"
+      android:text="@string/text_thank_you_in_complete_checkout"
+      android:textColor="?attr/mdTextColorPrimary_backgroundPalette"
+      style="@style/MdText.Subhead1" />
+
+    <Button
+      android:id="@+id/btn_back"
+      android:layout_gravity="center"
+      android:layout_marginTop="@dimen/mdLayoutSpacing_sm"
+      android:text="@string/text_back_to_the_store"
+      style="@style/MdButton.Colored" />
+  </LinearLayout>
+</ScrollView>

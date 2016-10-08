@@ -103,6 +103,15 @@ public class ShopifyService {
         });
   }
 
+  public Observable<Void> completeCheckout() {
+    return Observable.zip(
+        getCheckout(),
+        mStorageService.getPaymentToken(),
+        (checkout, paymentToken) -> mBuyClient.completeCheckout(paymentToken, checkout.getToken()))
+        .flatMap(observable -> observable)
+        .flatMap(mStorageService::setCheckout);
+  }
+
   public Observable<Cart> getCart() {
     return mStorageService.getCart();
   }
@@ -126,6 +135,13 @@ public class ShopifyService {
               })
               .flatMap(co -> mStorageService.setCheckout(co).map(aVoid -> co));
         });
+  }
+
+  public Observable<Checkout> getCheckoutFromServer() {
+    return getCheckout()
+        .flatMap(checkout -> mBuyClient.getCheckout(checkout.getToken()))
+        .flatMap(mStorageService::setCheckout)
+        .flatMap(aVoid -> mStorageService.getCheckout());
   }
 
   public Observable<CheckoutState> getLatestCheckoutState() {
@@ -178,6 +194,10 @@ public class ShopifyService {
           cart.decrementVariant(productVariant);
           return mStorageService.setCart(cart);
         });
+  }
+
+  public Observable<Void> resetCart() {
+    return mStorageService.setCart(null);
   }
 
   public Observable<Void> resetCheckout() {

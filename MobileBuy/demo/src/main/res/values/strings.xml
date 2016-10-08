@@ -144,4 +144,8 @@
   <string name="text_purchase">Purchase</string>
   <string name="text_total">Total</string>
   <string name="text_invalid_checkout_state">Please finish current step</string>
+  <string name="invalid_payment">Invalid payment</string>
+  <string name="text_complete_checkout">Complete checkout</string>
+  <string name="text_thank_you_in_complete_checkout">We have received your order\nand it is in process.\nThank you.</string>
+  <string name="text_back_to_the_store">Back to the store</string>
 </resources>
