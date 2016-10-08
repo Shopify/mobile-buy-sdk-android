@@ -45,6 +45,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import rx.Observable;
 
 /**
  * Created by henrytao on 8/30/16.
@@ -88,10 +89,22 @@ public class CheckoutActivity extends BaseActivity {
     vToolbar.setNavigationOnClickListener(view -> onBackPressed());
 
     manageSubscription(UnsubscribeLifeCycle.DESTROY,
-        mShopifyService
-            .observeCheckoutState()
-            .compose(Transformer.applyComputationScheduler())
-            .subscribe(this::onCheckoutStateChanged, Throwable::printStackTrace)
+        Observable.concat(
+            mShopifyService
+                .getLatestCheckoutState()
+                .compose(Transformer.applyComputationScheduler())
+                .flatMap(state -> {
+                  if (state.toInt() > CheckoutState.PAYMENT.toInt()) {
+                    return mShopifyService.setLatestCheckoutState(CheckoutState.PAYMENT);
+                  }
+                  return Observable.just(null);
+                }),
+            mShopifyService
+                .observeCheckoutState()
+                .compose(Transformer.applyComputationScheduler())
+                .doOnNext(this::onCheckoutStateChanged)
+        ).subscribe(o -> {
+        }, Throwable::printStackTrace)
     );
   }
 

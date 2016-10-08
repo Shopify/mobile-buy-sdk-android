@@ -100,11 +100,19 @@ public class PaymentFragment extends BaseFragment {
   }
 
   @Override
+  public void onResume() {
+    super.onResume();
+    setHintAnimationEnabled(true);
+  }
+
+  @Override
   public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
 
     vBtnAndroidPay.setOnClickListener(this::onAndroidPayClicked);
     vBtnNext.setOnClickListener(this::onNextClicked);
+
+    setHintAnimationEnabled(false);
   }
 
   private CreditCard getCreditCardFromInput() throws IllegalArgumentException {
@@ -131,7 +139,7 @@ public class PaymentFragment extends BaseFragment {
         Observable.defer(() -> Observable.concat(
             mShopifyService.setCreditCard(getCreditCardFromInput()),
             mShopifyService.setCheckoutState(CheckoutState.SUMMARY, true))
-            .toList().map(voids -> null))
+        )
             .compose(ProgressDialogUtils.apply(this, R.string.text_updating_checkout))
             .compose(Transformer.applyIoScheduler())
             .subscribe(o -> {
@@ -144,5 +152,13 @@ public class PaymentFragment extends BaseFragment {
               }
             })
     );
+  }
+
+  private void setHintAnimationEnabled(boolean enabled) {
+    vTilFirstName.setHintAnimationEnabled(enabled);
+    vTilLastName.setHintAnimationEnabled(enabled);
+    vTilCardNumber.setHintAnimationEnabled(enabled);
+    vTilExpires.setHintAnimationEnabled(enabled);
+    vTilCVVCode.setHintAnimationEnabled(enabled);
   }
 }

@@ -128,6 +128,10 @@ public class ShopifyService {
         });
   }
 
+  public Observable<CheckoutState> getLatestCheckoutState() {
+    return mStorageService.getLatestCheckoutState();
+  }
+
   public Observable<List<Product>> getProducts() {
     return mBuyClient.getProducts(1);
   }
@@ -199,13 +203,20 @@ public class ShopifyService {
     return setCheckoutState(state, false);
   }
 
+  /**
+   * Set checkout state, make sure latest checkout state is not smaller than current state
+   */
   public Observable<Void> setCheckoutState(CheckoutState state, boolean force) {
     return Observable.defer(() -> {
       if (force || state == CheckoutState.NONE) {
-        return Observable.concat(
-            mStorageService.setLatestCheckoutState(state),
-            mStorageService.setCheckoutState(state)
-        ).toList().map(voids -> null);
+        return Observable.zip(Observable.just(state), mStorageService.getLatestCheckoutState(), (newState, latestState) -> {
+          if (latestState.toInt() < newState.toInt()) {
+            return mStorageService
+                .setLatestCheckoutState(newState)
+                .flatMap(aVoid -> mStorageService.setCheckoutState(newState));
+          }
+          return mStorageService.setCheckoutState(newState);
+        }).flatMap(observable -> observable);
       } else {
         return mStorageService
             .getLatestCheckoutState()
@@ -234,6 +245,23 @@ public class ShopifyService {
           return updateCheckout(checkout);
         })
         .map(checkout -> null);
+  }
+
+  /**
+   * Set latest checkout state, make sure that current state is not larger than lastet state
+   */
+  public Observable<Void> setLatestCheckoutState(CheckoutState state) {
+    return mStorageService
+        .setLatestCheckoutState(state)
+        .flatMap(aVoid -> mStorageService.getLatestCheckoutState())
+        .zipWith(mStorageService.getCheckoutState(), (latestState, currentState) -> {
+          if (currentState.toInt() > latestState.toInt()) {
+            return mStorageService.setCheckoutState(latestState);
+          }
+          return Observable.just(null);
+        })
+        .flatMap(observable -> observable)
+        .map(o -> null);
   }
 
   public Observable<Void> setShippingRate(ShippingRate shippingRate) {

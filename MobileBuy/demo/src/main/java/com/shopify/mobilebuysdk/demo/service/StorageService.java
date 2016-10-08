@@ -139,16 +139,7 @@ public class StorageService {
   }
 
   public Observable<Void> setLatestCheckoutState(@NonNull CheckoutState state) {
-    return getLatestCheckoutState()
-        .flatMap(latestState -> {
-          if (state == CheckoutState.NONE) {
-            return mRxSharedPreferences.putObject(CheckoutState.class, Key.LATEST_CHECKOUT_STATE, CheckoutState.NONE);
-          } else if (state.toInt() > latestState.toInt()) {
-            return mRxSharedPreferences.putObject(CheckoutState.class, Key.LATEST_CHECKOUT_STATE, state);
-          } else {
-            return Observable.just(null);
-          }
-        });
+    return mRxSharedPreferences.putObject(CheckoutState.class, Key.LATEST_CHECKOUT_STATE, state);
   }
 
   public Observable<Void> setPaymentToken(PaymentToken paymentToken) {

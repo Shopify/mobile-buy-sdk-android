@@ -160,14 +160,7 @@ public class AddressFragment extends BaseFragment {
       return;
     }
 
-    vTilEmail.setHintAnimationEnabled(false);
-    vTilFirstName.setHintAnimationEnabled(false);
-    vTilLastName.setHintAnimationEnabled(false);
-    vTilAddress1.setHintAnimationEnabled(false);
-    vTilAddress2.setHintAnimationEnabled(false);
-    vTilCity.setHintAnimationEnabled(false);
-    vTilCountry.setHintAnimationEnabled(false);
-    vTilPostalCode.setHintAnimationEnabled(false);
+    setHintAnimationEnabled(false);
 
     vEmail.setText(checkout.getEmail());
     Address address = checkout.getShippingAddress();
@@ -181,14 +174,7 @@ public class AddressFragment extends BaseFragment {
       vPostalCode.setText(address.getZip());
     }
 
-    vTilEmail.setHintAnimationEnabled(true);
-    vTilFirstName.setHintAnimationEnabled(true);
-    vTilLastName.setHintAnimationEnabled(true);
-    vTilAddress1.setHintAnimationEnabled(true);
-    vTilAddress2.setHintAnimationEnabled(true);
-    vTilCity.setHintAnimationEnabled(true);
-    vTilCountry.setHintAnimationEnabled(true);
-    vTilPostalCode.setHintAnimationEnabled(true);
+    setHintAnimationEnabled(true);
   }
 
   private void onNextClicked(View view) {
@@ -211,5 +197,16 @@ public class AddressFragment extends BaseFragment {
               }
             })
     );
+  }
+
+  private void setHintAnimationEnabled(boolean enabled) {
+    vTilEmail.setHintAnimationEnabled(enabled);
+    vTilFirstName.setHintAnimationEnabled(enabled);
+    vTilLastName.setHintAnimationEnabled(enabled);
+    vTilAddress1.setHintAnimationEnabled(enabled);
+    vTilAddress2.setHintAnimationEnabled(enabled);
+    vTilCity.setHintAnimationEnabled(enabled);
+    vTilCountry.setHintAnimationEnabled(enabled);
+    vTilPostalCode.setHintAnimationEnabled(enabled);
   }
 }
