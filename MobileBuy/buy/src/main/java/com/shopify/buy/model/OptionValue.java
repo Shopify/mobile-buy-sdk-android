@@ -66,4 +66,10 @@ public class OptionValue {
 
     }
 
+    @Override
+    public int hashCode() {
+        return 31*((name == null ? 0 : name.hashCode()) +
+                31*(value == null ? 0 : value.hashCode())) +
+                (optionId == null ? 0 : optionId.hashCode());
+    }
 }
