@@ -23,4 +23,38 @@
  *
  */
 
-include ":sample", ":buy", ":demo"
+package com.shopify.mobilebuysdk.demo.data;
+
+import com.shopify.buy.model.CartLineItem;
+import com.shopify.buy.model.ProductVariant;
+
+/**
+ * Created by henrytao on 8/30/16.
+ */
+public class CartItemInfo {
+
+  private ProductVariant mProductVariant;
+
+  private long mQuantity;
+
+  public CartItemInfo(CartLineItem cartLineItem) {
+    mProductVariant = cartLineItem.getVariant();
+    mQuantity = cartLineItem.getQuantity();
+  }
+
+  public ProductVariant getProductVariant() {
+    return mProductVariant;
+  }
+
+  public long getQuantity() {
+    return mQuantity;
+  }
+
+  public boolean setQuantity(long quantity) {
+    if (quantity != mQuantity) {
+      mQuantity = quantity;
+      return true;
+    }
+    return false;
+  }
+}

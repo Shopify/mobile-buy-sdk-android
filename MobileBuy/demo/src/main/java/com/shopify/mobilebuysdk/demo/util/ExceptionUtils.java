@@ -23,4 +23,20 @@
  *
  */
 
-include ":sample", ":buy", ":demo"
+package com.shopify.mobilebuysdk.demo.util;
+
+import com.shopify.buy.dataprovider.BuyClientError;
+import com.shopify.mobilebuysdk.demo.App;
+
+/**
+ * Created by henrytao on 10/8/16.
+ */
+public class ExceptionUtils {
+
+  public static void onError(Throwable throwable) {
+    App.logger.e(throwable);
+    if (throwable instanceof BuyClientError) {
+      App.logger.e("%s", ((BuyClientError) throwable).getRetrofitErrorBody());
+    }
+  }
+}

@@ -23,4 +23,33 @@
  *
  */
 
-include ":sample", ":buy", ":demo"
+package com.shopify.mobilebuysdk.demo.util;
+
+import com.shopify.mobilebuysdk.demo.R;
+
+import android.app.Activity;
+import android.content.Intent;
+import android.support.annotation.NonNull;
+
+/**
+ * Created by henrytao on 8/27/16.
+ */
+
+public class NavigationUtils {
+
+  public static void startActivity(@NonNull Activity activity, @NonNull Intent intent) {
+    activity.startActivity(intent);
+    activity.overridePendingTransition(R.anim.enter_rtl, R.anim.exit_rtl);
+  }
+
+  public static void startActivityAndFinishWithoutAnimation(@NonNull Activity activity, @NonNull Intent intent) {
+    startActivityWithoutAnimation(activity, intent);
+    activity.finish();
+  }
+
+  public static void startActivityWithoutAnimation(@NonNull Activity activity, @NonNull Intent intent) {
+    intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+    activity.startActivity(intent);
+    activity.overridePendingTransition(0, 0);
+  }
+}

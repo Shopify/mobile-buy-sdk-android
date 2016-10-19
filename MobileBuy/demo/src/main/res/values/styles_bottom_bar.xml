@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ The MIT License (MIT)
+  ~
+  ~ Copyright (c) 2016 Shopify Inc.
+  ~
+  ~ Permission is hereby granted, free of charge, to any person obtaining a copy
+  ~ of this software and associated documentation files (the "Software"), to deal
+  ~ in the Software without restriction, including without limitation the rights
+  ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  ~ copies of the Software, and to permit persons to whom the Software is
+  ~ furnished to do so, subject to the following conditions:
+  ~
+  ~ The above copyright notice and this permission notice shall be included in
+  ~ all copies or substantial portions of the Software.
+  ~
+  ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+  ~ THE SOFTWARE.
+  ~
+  -->
+
+<resources>
+
+  <style name="Widget.BottomBar" parent="">
+    <item name="android:layout_width">match_parent</item>
+    <item name="android:layout_height">@dimen/mdActionBarSize</item>
+    <item name="android:minHeight">@dimen/mdActionBarSize</item>
+    <item name="android:orientation">horizontal</item>
+    <item name="android:background">?attr/mdColor_primaryPalette</item>
+  </style>
+
+  <style name="Widget.BottomBar.Item" parent="">
+    <item name="android:layout_width">0dp</item>
+    <item name="android:layout_height">match_parent</item>
+    <item name="android:layout_weight">1</item>
+    <item name="android:paddingTop">@dimen/mdLayoutSpacing_xs</item>
+    <item name="android:paddingBottom">@dimen/mdLayoutSpacing_xs</item>
+    <item name="android:background">?attr/selectableItemBackground</item>
+    <item name="android:clickable">true</item>
+  </style>
+
+  <style name="Widget.BottomBar.Item.Icon" parent="Base.Widget.BottomBar.Item.Icon" />
+
+  <style name="Widget.BottomBar.Item.Title" parent="Base.Widget.BottomBar.Item.Title" />
+
+  <style name="Widget.BottomBar.Item.Badge" parent="Base.Widget.BottomBar.Item.Badge" />
+
+  <!-- base -->
+  <style name="Base.Widget.BottomBar.Item.Icon" parent="">
+    <item name="android:layout_width">28dp</item>
+    <item name="android:layout_height">28dp</item>
+    <item name="android:layout_gravity">center_horizontal</item>
+  </style>
+
+  <style name="Base.Widget.BottomBar.Item.Title" parent="MdText.Body1.SingleLine">
+    <item name="android:layout_width">wrap_content</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:paddingLeft">@dimen/mdLayoutSpacing_xs</item>
+    <item name="android:paddingRight">@dimen/mdLayoutSpacing_xs</item>
+    <item name="android:layout_gravity">center_horizontal|bottom</item>
+    <item name="android:textColor">?attr/mdIconColor_backgroundPalette</item>
+  </style>
+
+  <style name="Base.Widget.BottomBar.Item.Badge" parent="MdText.Caption">
+    <item name="android:layout_width">wrap_content</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:layout_gravity">top|center_horizontal</item>
+    <item name="android:layout_marginRight">-24dp</item>
+    <item name="android:paddingLeft">@dimen/mdLayoutSpacing_xs</item>
+    <item name="android:paddingRight">@dimen/mdLayoutSpacing_xs</item>
+    <item name="android:background">?attr/mdColor_warnPalette</item>
+    <item name="android:textColor">?attr/mdTextColorPrimary_warnPalette</item>
+  </style>
+</resources>

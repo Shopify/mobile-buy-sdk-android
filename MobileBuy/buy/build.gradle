@@ -59,6 +59,7 @@ android {
         targetSdkVersion 23
         versionName VERSION_NAME
         version VERSION_NAME
+        consumerProguardFiles "proguard-rules.pro"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }

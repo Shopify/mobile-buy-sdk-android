@@ -23,4 +23,50 @@
  *
  */
 
-include ":sample", ":buy", ":demo"
+package com.shopify.mobilebuysdk.demo.data;
+
+import android.util.SparseArray;
+
+/**
+ * Created by henrytao on 9/18/16.
+ */
+public enum CheckoutState {
+  NONE(0),
+  ADDRESS(1),
+  SHIPPING(2),
+  PAYMENT(3),
+  SUMMARY(4),
+  PROCESSING(5),
+  SUCCESS(6);
+
+  private static final SparseArray<CheckoutState> sCaches = new SparseArray<>();
+
+  static {
+    for (CheckoutState state : CheckoutState.values()) {
+      sCaches.put(state.value, state);
+    }
+  }
+
+  public static CheckoutState from(String value) {
+    try {
+      return sCaches.get(Integer.valueOf(value), NONE);
+    } catch (Exception ignore) {
+      return NONE;
+    }
+  }
+
+  private final int value;
+
+  CheckoutState(int value) {
+    this.value = value;
+  }
+
+  @Override
+  public String toString() {
+    return String.valueOf(value);
+  }
+
+  public int toInt() {
+    return value;
+  }
+}

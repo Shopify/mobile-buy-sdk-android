@@ -23,4 +23,34 @@
  *
  */
 
-include ":sample", ":buy", ":demo"
+package com.shopify.mobilebuysdk.demo;
+
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.shopify.mobilebuysdk.demo.util.Logger;
+
+import android.app.Application;
+
+/**
+ * Created by henrytao on 8/26/16.
+ */
+
+public class App extends Application {
+
+  public static final Logger logger = Logger.newInstance(BuildConfig.DEBUG ? Logger.LogLevel.VERBOSE : Logger.LogLevel.NONE);
+
+  private static App sInstance;
+
+  public static App getInstance() {
+    return sInstance;
+  }
+
+  public App() {
+    sInstance = this;
+  }
+
+  @Override
+  public void onCreate() {
+    super.onCreate();
+    Fresco.initialize(this);
+  }
+}

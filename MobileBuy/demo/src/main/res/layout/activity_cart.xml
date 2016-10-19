@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ The MIT License (MIT)
+  ~
+  ~ Copyright (c) 2016 Shopify Inc.
+  ~
+  ~ Permission is hereby granted, free of charge, to any person obtaining a copy
+  ~ of this software and associated documentation files (the "Software"), to deal
+  ~ in the Software without restriction, including without limitation the rights
+  ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  ~ copies of the Software, and to permit persons to whom the Software is
+  ~ furnished to do so, subject to the following conditions:
+  ~
+  ~ The above copyright notice and this permission notice shall be included in
+  ~ all copies or substantial portions of the Software.
+  ~
+  ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+  ~ THE SOFTWARE.
+  ~
+  -->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:orientation="vertical"
+  tools:context="com.shopify.mobilebuysdk.demo.ui.MainActivity">
+
+  <android.support.v7.widget.Toolbar
+    android:id="@+id/toolbar"
+    style="@style/MdToolbar" />
+
+  <RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:layout_weight="1">
+
+    <android.support.v7.widget.CardView
+      android:id="@+id/summary_container"
+      android:layout_alignParentBottom="true"
+      android:layout_marginBottom="@dimen/mdLayoutSpacingInverse_xs"
+      style="@style/MdCardView.Card.Full">
+
+      <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/mdLayoutSpacing">
+
+        <Button
+          android:id="@+id/btn_checkout_options"
+          android:layout_width="wrap_content"
+          android:layout_alignParentEnd="true"
+          android:layout_alignParentRight="true"
+          android:layout_centerVertical="true"
+          android:layout_marginEnd="@dimen/mdLayoutSpacingInverse_xs"
+          android:layout_marginRight="@dimen/mdLayoutSpacingInverse_xs"
+          android:minWidth="0dp"
+          android:paddingLeft="@dimen/mdLayoutSpacing_xs"
+          android:paddingRight="@dimen/mdLayoutSpacing_xs"
+          app:drawableStartCompat="@drawable/ic_arrow_drop_down_accent"
+          tools:ignore="MissingPrefix"
+          style="@style/MdButton.Colored" />
+
+        <Button
+          android:id="@+id/btn_checkout"
+          android:layout_centerVertical="true"
+          android:layout_marginEnd="@dimen/mdLayoutSpacingInverse_xs"
+          android:layout_marginRight="@dimen/mdLayoutSpacingInverse_xs"
+          android:layout_toLeftOf="@id/btn_checkout_options"
+          android:layout_toStartOf="@id/btn_checkout_options"
+          android:text="@string/text_checkout"
+          style="@style/MdButton.Colored" />
+
+        <TextView
+          android:id="@+id/title"
+          android:layout_alignParentLeft="true"
+          android:layout_alignParentStart="true"
+          android:layout_toLeftOf="@id/btn_checkout"
+          android:layout_toStartOf="@id/btn_checkout"
+          android:gravity="start"
+          android:text="@string/text_subtotal"
+          android:textAlignment="viewStart"
+          android:textColor="?attr/mdTextColorPrimary_backgroundPalette"
+          style="@style/MdText.Subhead1.SingleLine" />
+
+        <TextView
+          android:id="@+id/subtotal"
+          android:layout_alignParentLeft="true"
+          android:layout_alignParentStart="true"
+          android:layout_below="@id/title"
+          android:layout_toLeftOf="@id/btn_checkout"
+          android:layout_toStartOf="@id/btn_checkout"
+          android:gravity="start"
+          android:textAlignment="viewStart"
+          android:textColor="?attr/mdTextColorPrimary_backgroundPalette"
+          tools:text="$1.485.09"
+          style="@style/MdText.Title" />
+      </RelativeLayout>
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.RecyclerView
+      android:id="@+id/recycler_view"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:layout_above="@id/summary_container"
+      android:clipToPadding="false"
+      android:paddingBottom="@dimen/mdListItemSpacing"
+      android:paddingLeft="@dimen/mdLayoutSpacing_sm"
+      android:paddingRight="@dimen/mdLayoutSpacing_sm"
+      android:paddingTop="@dimen/mdListItemSpacing" />
+
+    <View
+      android:layout_width="match_parent"
+      android:layout_height="@dimen/backgroundGradientSize"
+      android:layout_alignParentTop="true"
+      android:background="@drawable/background_gradient_top_bottom"
+      android:elevation="16dp"
+      tools:targetApi="lollipop" />
+
+    <View
+      android:layout_width="match_parent"
+      android:layout_height="@dimen/backgroundGradientSize"
+      android:layout_alignParentBottom="true"
+      android:background="@drawable/background_gradient_bottom_top"
+      android:elevation="16dp"
+      tools:targetApi="lollipop" />
+  </RelativeLayout>
+
+  <com.shopify.mobilebuysdk.demo.widget.BottomBar
+    android:id="@+id/bottom_bar"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" />
+</LinearLayout>

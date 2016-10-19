@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ The MIT License (MIT)
+  ~
+  ~ Copyright (c) 2016 Shopify Inc.
+  ~
+  ~ Permission is hereby granted, free of charge, to any person obtaining a copy
+  ~ of this software and associated documentation files (the "Software"), to deal
+  ~ in the Software without restriction, including without limitation the rights
+  ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  ~ copies of the Software, and to permit persons to whom the Software is
+  ~ furnished to do so, subject to the following conditions:
+  ~
+  ~ The above copyright notice and this permission notice shall be included in
+  ~ all copies or substantial portions of the Software.
+  ~
+  ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+  ~ THE SOFTWARE.
+  ~
+  -->
+
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_margin="@dimen/mdLayoutSpacing_xs"
+  style="@style/MdCardView.Card">
+
+  <LinearLayout
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    style="@style/MdCardView.Wrapper">
+
+    <TextView
+      android:padding="@dimen/mdLayoutSpacing_sm"
+      android:text="@string/text_shipping"
+      android:textColor="?attr/mdTextColorPrimary_backgroundPalette"
+      style="@style/MdText.Title" />
+
+    <TextView
+      android:id="@+id/title"
+      android:layout_width="0dp"
+      android:layout_weight="1"
+      android:gravity="end"
+      android:padding="@dimen/mdLayoutSpacing_sm"
+      android:textAlignment="viewEnd"
+      android:textColor="?attr/mdTextColorPrimary_backgroundPalette"
+      tools:text="$0.0"
+      style="@style/MdText.Body1" />
+  </LinearLayout>
+</android.support.v7.widget.CardView>

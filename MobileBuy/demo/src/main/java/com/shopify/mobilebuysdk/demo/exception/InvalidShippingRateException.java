@@ -23,4 +23,11 @@
  *
  */
 
-include ":sample", ":buy", ":demo"
+package com.shopify.mobilebuysdk.demo.exception;
+
+/**
+ * Created by henrytao on 10/3/16.
+ */
+public class InvalidShippingRateException extends Exception {
+
+}

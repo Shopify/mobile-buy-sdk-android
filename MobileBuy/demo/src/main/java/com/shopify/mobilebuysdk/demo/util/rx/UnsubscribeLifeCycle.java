@@ -23,4 +23,14 @@
  *
  */
 
-include ":sample", ":buy", ":demo"
+package com.shopify.mobilebuysdk.demo.util.rx;
+
+/**
+ * Created by henrytao on 11/13/15.
+ */
+public enum UnsubscribeLifeCycle {
+  PAUSE,
+  STOP,
+  DESTROY_VIEW,
+  DESTROY
+}

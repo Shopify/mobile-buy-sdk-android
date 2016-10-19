@@ -23,4 +23,20 @@
  *
  */
 
-include ":sample", ":buy", ":demo"
+package com.shopify.mobilebuysdk.demo.util;
+
+import android.support.annotation.LayoutRes;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
+/**
+ * Created by henrytao on 8/27/16.
+ */
+
+public class LayoutInflaterUtils {
+
+  public static View inflate(ViewGroup parent, @LayoutRes int layoutId) {
+    return LayoutInflater.from(parent.getContext()).inflate(layoutId, parent, false);
+  }
+}

@@ -23,4 +23,26 @@
  *
  */
 
-include ":sample", ":buy", ":demo"
+package com.shopify.mobilebuysdk.demo.ui.base;
+
+/**
+ * Created by henrytao on 12/15/15.
+ */
+public interface BaseLifeCycle {
+
+  void onCreate();
+
+  void onCreateView();
+
+  void onDestroy();
+
+  void onDestroyView();
+
+  void onPause();
+
+  void onResume();
+
+  void onStart();
+
+  void onStop();
+}

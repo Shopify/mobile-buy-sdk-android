@@ -23,4 +23,26 @@
  *
  */
 
-include ":sample", ":buy", ":demo"
+def gitSha() {
+  return "git --git-dir=${projectDir}/../../.git --work-tree=${projectDir}/.. rev-parse --short HEAD".execute().text.trim()
+}
+
+def getCommitsCount() {
+  return "git --git-dir=${projectDir}/../../.git --work-tree=${projectDir}/.. rev-list --count HEAD".execute().text.toInteger()
+}
+
+project.ext.preprocessVersionBuild = getCommitsCount()
+project.ext.preprocessVersionMajor = project.ext.versioning.versionMajor
+project.ext.preprocessVersionMinor = project.ext.versioning.versionMinor
+project.ext.preprocessVersionPatch = ("${project.ext.preprocessVersionBuild}." + gitSha())
+project.ext.preprocessVersionName =
+    ("${project.ext.preprocessVersionMajor}.${project.ext.preprocessVersionMinor}.${project.ext.preprocessVersionPatch}")
+project.ext.preprocessVersionCode = ((((project.ext.preprocessVersionMajor * 100) + project.ext.preprocessVersionMinor) * 100) * 100000 +
+    project.ext.preprocessVersionBuild)
+
+android {
+  defaultConfig {
+    versionCode project.ext.preprocessVersionCode
+    versionName project.ext.preprocessVersionName
+  }
+}

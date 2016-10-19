@@ -23,4 +23,43 @@
  *
  */
 
-include ":sample", ":buy", ":demo"
+package com.shopify.mobilebuysdk.demo.util.rx;
+
+import rx.Subscriber;
+
+/**
+ * Created by henrytao on 4/15/16.
+ */
+public class SubscriptionUtils {
+
+  public static <T> void onComplete(Subscriber<T> subscriber) {
+    if (subscriber != null && !subscriber.isUnsubscribed()) {
+      subscriber.onCompleted();
+    }
+  }
+
+  public static <T> void onError(Subscriber<T> subscriber, Throwable throwable) {
+    if (subscriber != null && !subscriber.isUnsubscribed()) {
+      subscriber.onError(throwable);
+    }
+  }
+
+  public static <T> void onNext(Subscriber<T> subscriber, T data) {
+    if (subscriber != null && !subscriber.isUnsubscribed()) {
+      subscriber.onNext(data);
+    }
+  }
+
+  public static <T> void onNext(Subscriber<T> subscriber) {
+    onNext(subscriber, null);
+  }
+
+  public static <T> void onNextAndComplete(Subscriber<T> subscriber, T data) {
+    onNext(subscriber, data);
+    onComplete(subscriber);
+  }
+
+  public static <T> void onNextAndComplete(Subscriber<T> subscriber) {
+    onNextAndComplete(subscriber, null);
+  }
+}

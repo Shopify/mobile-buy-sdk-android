@@ -23,4 +23,18 @@
  *
  */
 
-include ":sample", ":buy", ":demo"
+package com.shopify.mobilebuysdk.demo.ui.base;
+
+import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.view.ViewGroup;
+
+/**
+ * Created by henrytao on 10/7/16.
+ */
+public class BlankViewHolder extends RecyclerView.ViewHolder {
+
+  public BlankViewHolder(ViewGroup parent) {
+    super(new View(parent.getContext()));
+  }
+}

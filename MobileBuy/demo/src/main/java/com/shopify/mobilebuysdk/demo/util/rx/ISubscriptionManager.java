@@ -23,4 +23,22 @@
  *
  */
 
-include ":sample", ":buy", ":demo"
+package com.shopify.mobilebuysdk.demo.util.rx;
+
+import rx.Subscription;
+
+/**
+ * Created by henrytao on 11/13/15.
+ */
+interface ISubscriptionManager {
+
+  void manageSubscription(Subscription subscription, UnsubscribeLifeCycle unsubscribeLifeCycle);
+
+  void manageSubscription(String id, Subscription subscription, UnsubscribeLifeCycle unsubscribeLifeCycle);
+
+  void unsubscribe();
+
+  void unsubscribe(UnsubscribeLifeCycle unsubscribeLifeCycle);
+
+  void unsubscribe(String id);
+}

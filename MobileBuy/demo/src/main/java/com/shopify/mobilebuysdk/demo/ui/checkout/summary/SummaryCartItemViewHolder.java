@@ -23,4 +23,40 @@
  *
  */
 
-include ":sample", ":buy", ":demo"
+package com.shopify.mobilebuysdk.demo.ui.checkout.summary;
+
+import com.shopify.buy.model.LineItem;
+import com.shopify.mobilebuysdk.demo.R;
+import com.shopify.mobilebuysdk.demo.util.LayoutInflaterUtils;
+
+import android.support.v7.widget.RecyclerView;
+import android.view.ViewGroup;
+import android.widget.TextView;
+
+import java.util.Locale;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
+/**
+ * Created by henrytao on 10/7/16.
+ */
+public class SummaryCartItemViewHolder extends RecyclerView.ViewHolder {
+
+  @BindView(R.id.price) TextView vPrice;
+
+  @BindView(R.id.quantity) TextView vQuantity;
+
+  @BindView(R.id.title) TextView vTitle;
+
+  public SummaryCartItemViewHolder(ViewGroup parent) {
+    super(LayoutInflaterUtils.inflate(parent, R.layout.view_holder_summary_cart_item));
+    ButterKnife.bind(this, itemView);
+  }
+
+  public void bind(LineItem data) {
+    vTitle.setText(data.getTitle());
+    vPrice.setText(itemView.getContext().getString(R.string.currency_format, data.getPrice()));
+    vQuantity.setText(String.format(Locale.US, "x %s", data.getQuantity()));
+  }
+}

@@ -23,4 +23,37 @@
  *
  */
 
-include ":sample", ":buy", ":demo"
+package com.shopify.mobilebuysdk.demo.widget;
+
+import android.content.Context;
+import android.util.AttributeSet;
+
+/**
+ * Created by henrytao on 10/3/16.
+ */
+public class ToggleRelativeLayout extends CheckableRelativeLayout {
+
+  public ToggleRelativeLayout(Context context) {
+    super(context);
+    init();
+  }
+
+  public ToggleRelativeLayout(Context context, AttributeSet attrs) {
+    super(context, attrs);
+    init();
+  }
+
+  public ToggleRelativeLayout(Context context, AttributeSet attrs, int defStyleAttr) {
+    super(context, attrs, defStyleAttr);
+    init();
+  }
+
+  public ToggleRelativeLayout(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    super(context, attrs, defStyleAttr, defStyleRes);
+    init();
+  }
+
+  private void init() {
+    setOnClickListener(view -> toggle());
+  }
+}

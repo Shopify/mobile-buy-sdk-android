@@ -23,4 +23,15 @@
  *
  */
 
-include ":sample", ":buy", ":demo"
+package com.shopify.mobilebuysdk.demo.util;
+
+public class IDUtils {
+
+  private static String TAG = "ID";
+
+  private static long sIndex = 0;
+
+  public static String generate() {
+    return TAG + "_" + (++sIndex);
+  }
+}

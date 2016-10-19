@@ -23,4 +23,27 @@
  *
  */
 
-include ":sample", ":buy", ":demo"
+package com.shopify.mobilebuysdk.demo.ui.checkout;
+
+import com.shopify.mobilebuysdk.demo.ui.base.BaseFragment;
+
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
+/**
+ * Created by henrytao on 9/20/16.
+ */
+public class PurchaseSuccessFragment extends BaseFragment {
+
+  public static PurchaseSuccessFragment newInstance() {
+    return new PurchaseSuccessFragment();
+  }
+
+  @Override
+  public View onInflateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    return null;
+  }
+}

@@ -23,4 +23,18 @@
  *
  */
 
-include ":sample", ":buy", ":demo"
+package com.shopify.mobilebuysdk.demo.util;
+
+/**
+ * Created by henrytao on 8/18/16.
+ */
+public class StringUtils {
+
+  public static boolean equals(String a, String b) {
+    return (a == null && b == null) || (a != null && a.equals(b)) || (b != null && b.equals(a));
+  }
+
+  public static boolean isEmpty(String value) {
+    return value == null || value.length() == 0;
+  }
+}

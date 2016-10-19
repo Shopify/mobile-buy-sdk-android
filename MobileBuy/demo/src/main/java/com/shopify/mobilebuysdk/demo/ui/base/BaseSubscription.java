@@ -23,4 +23,22 @@
  *
  */
 
-include ":sample", ":buy", ":demo"
+package com.shopify.mobilebuysdk.demo.ui.base;
+
+import com.shopify.mobilebuysdk.demo.util.rx.UnsubscribeLifeCycle;
+
+import rx.Subscription;
+
+/**
+ * Created by henrytao on 2/17/16.
+ */
+public interface BaseSubscription {
+
+  void manageSubscription(UnsubscribeLifeCycle unsubscribeLifeCycle, Subscription... subscriptions);
+
+  void manageSubscription(String id, Subscription subscription, UnsubscribeLifeCycle unsubscribeLifeCycle);
+
+  void manageSubscription(Subscription subscription, UnsubscribeLifeCycle unsubscribeLifeCycle);
+
+  void unsubscribe(String id);
+}

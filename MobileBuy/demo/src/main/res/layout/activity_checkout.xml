@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ The MIT License (MIT)
+  ~
+  ~ Copyright (c) 2016 Shopify Inc.
+  ~
+  ~ Permission is hereby granted, free of charge, to any person obtaining a copy
+  ~ of this software and associated documentation files (the "Software"), to deal
+  ~ in the Software without restriction, including without limitation the rights
+  ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  ~ copies of the Software, and to permit persons to whom the Software is
+  ~ furnished to do so, subject to the following conditions:
+  ~
+  ~ The above copyright notice and this permission notice shall be included in
+  ~ all copies or substantial portions of the Software.
+  ~
+  ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+  ~ THE SOFTWARE.
+  ~
+  -->
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent">
+
+  <android.support.v7.widget.Toolbar
+    android:id="@+id/toolbar"
+    app:navigationIcon="@drawable/ic_arrow_back_primary"
+    style="@style/MdToolbar" />
+
+  <LinearLayout
+    android:id="@+id/checkout_state"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/mdSecondaryActionBarSize"
+    android:layout_below="@id/toolbar"
+    android:orientation="horizontal"
+    android:background="?attr/mdColor_primaryPalette">
+
+    <com.shopify.mobilebuysdk.demo.widget.CheckableTextView
+      android:id="@+id/btn_address"
+      android:layout_width="0dp"
+      android:layout_height="match_parent"
+      android:layout_weight="1"
+      android:background="?attr/selectableItemBackground"
+      android:gravity="center"
+      android:text="@string/text_address"
+      android:textColor="?attr/mdIconColor_backgroundPalette"
+      style="@style/MdText.Button" />
+
+    <com.shopify.mobilebuysdk.demo.widget.CheckableTextView
+      android:id="@+id/btn_shipping"
+      android:layout_width="0dp"
+      android:layout_height="match_parent"
+      android:layout_weight="1"
+      android:background="?attr/selectableItemBackground"
+      android:gravity="center"
+      android:text="@string/text_shipping"
+      android:textColor="?attr/mdIconColor_backgroundPalette"
+      style="@style/MdText.Button" />
+
+    <com.shopify.mobilebuysdk.demo.widget.CheckableTextView
+      android:id="@+id/btn_payment"
+      android:layout_width="0dp"
+      android:layout_height="match_parent"
+      android:layout_weight="1"
+      android:background="?attr/selectableItemBackground"
+      android:gravity="center"
+      android:text="@string/text_payment"
+      android:textColor="?attr/mdIconColor_backgroundPalette"
+      style="@style/MdText.Button" />
+
+    <com.shopify.mobilebuysdk.demo.widget.CheckableTextView
+      android:id="@+id/btn_summary"
+      android:layout_width="0dp"
+      android:layout_height="match_parent"
+      android:layout_weight="1"
+      android:background="?attr/selectableItemBackground"
+      android:gravity="center"
+      android:text="@string/text_summary"
+      android:textColor="?attr/mdIconColor_backgroundPalette"
+      style="@style/MdText.Button" />
+  </LinearLayout>
+
+  <FrameLayout
+    android:id="@+id/fragment"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_below="@id/checkout_state" />
+
+  <View
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/backgroundGradientSize"
+    android:layout_below="@id/checkout_state"
+    android:background="@drawable/background_gradient_top_bottom" />
+</RelativeLayout>
