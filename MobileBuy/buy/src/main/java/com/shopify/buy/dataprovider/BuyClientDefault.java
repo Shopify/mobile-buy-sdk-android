@@ -82,10 +82,14 @@ final class BuyClientDefault implements BuyClient {
         final CustomerToken customerToken,
         final Scheduler callbackScheduler,
         final int productPageSize,
+        final int collectionPageSize,
+        final int productTagPageSize,
         final ProductApiInterceptor productRequestInterceptor,
         final ProductApiInterceptor productResponseInterceptor,
         final CustomerApiInterceptor customerRequestInterceptor,
         final CustomerApiInterceptor customerResponseInterceptor,
+        final StoreApiInterceptor storeRequestInterceptor,
+        final StoreApiInterceptor storeResponseInterceptor,
         final int networkRequestRetryMaxCount,
         final long networkRequestRetryDelayMs,
         final float networkRequestRetryBackoffMultiplier,
@@ -140,12 +144,12 @@ final class BuyClientDefault implements BuyClient {
 
         final NetworkRetryPolicyProvider networkRetryPolicyProvider = new NetworkRetryPolicyProvider(networkRequestRetryMaxCount, networkRequestRetryDelayMs, networkRequestRetryBackoffMultiplier);
 
-        storeService = new StoreServiceDefault(retrofit, networkRetryPolicyProvider, callbackScheduler);
+        storeService = new StoreServiceDefault(retrofit, networkRetryPolicyProvider, callbackScheduler, storeRequestInterceptor, storeResponseInterceptor);
         checkoutService = new CheckoutServiceDefault(retrofit, apiKey, applicationName, networkRetryPolicyProvider, callbackScheduler);
         customerService = new CustomerServiceDefault(retrofit, customerToken, networkRetryPolicyProvider, callbackScheduler, customerRequestInterceptor, customerResponseInterceptor);
         addressService = new AddressServiceDefault(retrofit, networkRetryPolicyProvider, callbackScheduler, customerService);
         orderService = new OrderServiceDefault(retrofit, networkRetryPolicyProvider, callbackScheduler, customerService);
-        productService = new ProductServiceDefault(retrofit, appId, productPageSize, networkRetryPolicyProvider, callbackScheduler, productRequestInterceptor, productResponseInterceptor);
+        productService = new ProductServiceDefault(retrofit, appId, productPageSize, collectionPageSize, productTagPageSize, networkRetryPolicyProvider, callbackScheduler, productRequestInterceptor, productResponseInterceptor);
     }
 
     @Override
@@ -463,6 +467,21 @@ final class BuyClientDefault implements BuyClient {
     @Override
     public int getProductPageSize() {
         return productService.getProductPageSize();
+    }
+
+    @Override
+    public int getProductRequestPageSize() {
+        return productService.getProductRequestPageSize();
+    }
+
+    @Override
+    public int getCollectionRequestPageSize() {
+        return productService.getCollectionRequestPageSize();
+    }
+
+    @Override
+    public int getProductTagRequestPageSize() {
+        return productService.getProductTagRequestPageSize();
     }
 
     @Override
