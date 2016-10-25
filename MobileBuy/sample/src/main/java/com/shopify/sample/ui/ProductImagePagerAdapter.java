@@ -34,8 +34,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.shopify.buy.R;
 import com.shopify.buy.model.Image;
-import com.shopify.sample.R;
 import com.shopify.sample.utils.ImageUtility;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;

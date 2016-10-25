@@ -53,38 +53,4 @@
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="Divider">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">1dp</item>
-    </style>
-
-    <!-- the theme applied to the application or activity -->
-    <style name="CustomActionBarTheme"
-           parent="@style/Theme.AppCompat.DialogWhenLarge">
-        <item name="android:windowActionBarOverlay">true</item>
-        <item name="android:actionBarSize">@dimen/action_bar_height</item>
-
-        <item name="android:background">@android:color/transparent</item>
-
-        <item name="android:windowIsFloating">false</item>
-        <item name="android:windowIsTranslucent">true</item>
-
-        <!-- Support library compatibility -->
-        <item name="windowActionBarOverlay">true</item>
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-    </style>
-
-    <style name="VariantOptionName">
-        <item name="android:maxLines">1</item>
-        <item name="android:ellipsize">end</item>
-        <item name="android:textSize">@dimen/text_small</item>
-        <item name="android:fontFamily">sans-serif-medium</item>
-    </style>
-
-    <style name="VariantOptionValue">
-        <item name="android:maxLines">1</item>
-        <item name="android:ellipsize">end</item>
-        <item name="android:textSize">@dimen/text_medium</item>
-    </style>
 </resources>
