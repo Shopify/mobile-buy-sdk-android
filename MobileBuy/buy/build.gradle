@@ -192,12 +192,6 @@ android {
                 into(baseName + "-" + version)
             }
         }
-
-        project.gradle.taskGraph.whenReady {
-            connectedDebugAndroidTest {
-                ignoreFailures = false
-            }
-        }
     }
 
     sourceSets { main { assets.srcDirs = ['src/main/assets'] } }
