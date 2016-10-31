@@ -266,6 +266,7 @@ public class Customer extends ShopifyObject {
 
     /**
      * @deprecated This field is read only on the server and updates will be ignored.
+     * @param note The note to set.
      */
     @Deprecated
     public void setNote(String note) {
@@ -274,6 +275,7 @@ public class Customer extends ShopifyObject {
 
     /**
      * @deprecated This field is read only on the server and updates will be ignored.
+     * @param tags The set of tags to set.
      */
     @Deprecated
     public void setTags(Set<String> tags) {

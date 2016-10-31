@@ -276,7 +276,7 @@ public final class AndroidPayHelper {
      * @param shop                The {@link Shop} to use, not null.
      * @param publicKey           The Public Key to use, not empty.
      * @param phoneNumberRequired If true, the phone number will be required as part of the Shipping Address in Android Pay
-     * @return
+     * @return A {@link MaskedWalletRequest}
      */
     public static MaskedWalletRequest createMaskedWalletRequest(Checkout checkout, Shop shop, String publicKey, boolean phoneNumberRequired) {
         if (checkout == null) {
