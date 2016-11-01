@@ -71,7 +71,7 @@ public class LineItem {
     @SerializedName("fulfillment_service")
     protected String fulfillmentService;
 
-    protected Map<String, String> properties;
+    protected Map<String, Object> properties;
 
     @SerializedName("total_discount")
     protected String totalDiscount;
@@ -153,7 +153,7 @@ public class LineItem {
     /**
      * @return Custom properties set on this line item.
      */
-    public Map<String, String> getProperties() {
+    public Map<String, Object> getProperties() {
         if (properties == null) {
             properties = new HashMap<>();
         }

@@ -30,12 +30,31 @@ import com.google.gson.annotations.SerializedName;
  */
 public final class PaymentToken {
 
+    /**
+     * Creates a {@code PaymentToken} for use in completing credit card transaction
+     * @param paymentSessionId The payment session id
+     * @return a {@code PaymentToken}
+     */
     public static PaymentToken createCreditCardPaymentToken(String paymentSessionId) {
         return new PaymentToken(paymentSessionId);
     }
 
+    /**
+     * Creates a {@code PaymentToken} for use in completing an Android Pay transaction
+     * @param token The Android Pay token
+     * @param publicKeyHash The Android Pay public key
+     * @return an empty {@code PaymentToken}
+     */
     public static PaymentToken createAndroidPayPaymentToken(String token, String publicKeyHash) {
         return new PaymentToken(token, "android_pay", publicKeyHash);
+    }
+
+    /**
+     * Creates a {@code PaymentToken} with an empty body.  This token is only valid if the {@link Checkout#getPaymentDue()} is 0.
+     * @return an empty {@code PaymentToken}
+     */
+    public static PaymentToken createEmptyPaymentToken() {
+        return new PaymentToken();
     }
 
     @SerializedName("payment_session_id")
@@ -46,21 +65,30 @@ public final class PaymentToken {
 
     private PaymentToken(String paymentSessionId) {
         this.paymentSessionId = paymentSessionId;
-        this.wrapper = null;
+        wrapper = null;
+    }
+
+    private PaymentToken() {
+        paymentSessionId = null;
+        wrapper = null;
     }
 
     private PaymentToken(String token, String type, String publicKeyHash) {
-        this.paymentSessionId = null;
-        this.wrapper = new Wrapper(token, type, publicKeyHash);
+        paymentSessionId = null;
+        wrapper = new Wrapper(token, type, publicKeyHash);
     }
 
     private static final class Wrapper {
+
+        private final static String SOURCE_NAME = "sdk";
 
         @SerializedName("payment_data")
         private final String paymentData;
 
         @SerializedName("type")
         private final String type;
+
+        private final String source = SOURCE_NAME;
 
         @SerializedName("identifier")
         private final String identifier;

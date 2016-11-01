@@ -185,7 +185,7 @@ public class DiscountActivity extends SampleActivity implements GoogleApiClient.
         String merchantName = getString(R.string.merchant_name);
 
         // Create the Masked Wallet request
-        MaskedWalletRequest maskedWalletRequest = AndroidPayHelper.createMaskedWalletRequest(merchantName, checkout, BuildConfig.ANDROID_PAY_PUBLIC_KEY, true);
+        MaskedWalletRequest maskedWalletRequest = AndroidPayHelper.createMaskedWalletRequest(checkout, SampleApplication.getShop(), BuildConfig.ANDROID_PAY_PUBLIC_KEY, true);
 
         WalletFragmentInitParams.Builder startParamsBuilder = WalletFragmentInitParams.newBuilder()
                 .setMaskedWalletRequest(maskedWalletRequest)

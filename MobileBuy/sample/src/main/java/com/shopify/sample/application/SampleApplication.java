@@ -82,6 +82,8 @@ public class SampleApplication extends Application {
         return customer;
     }
 
+    public static Shop getShop() { return instance.shop; }
+
     public static void setCustomer(Customer customer) {
         SampleApplication.customer = customer;
     }
@@ -232,7 +234,7 @@ public class SampleApplication extends Application {
 
     public String getCartPermalink() {
         Uri.Builder uri = new Uri.Builder();
-        uri.scheme("http").path(buyClient.getShopDomain()).appendPath("cart");
+        uri.scheme("http").authority(buyClient.getShopDomain()).appendPath("cart");
 
         StringBuilder lineItemsStr = new StringBuilder();
         String prefix = "";
@@ -279,10 +281,6 @@ public class SampleApplication extends Application {
 
     public Checkout getCheckout() {
         return checkout;
-    }
-
-    public Shop getShop() {
-        return shop;
     }
 
     public MaskedWallet getMaskedWallet() {

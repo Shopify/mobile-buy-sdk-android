@@ -1,6 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <resources>
+
+    <!-- Colors for ProductDetailsTheme : https://docs.google.com/spreadsheets/d/14a2tgQikazziLQK1m9Ejkk70Zj6PSmjObWhiz2lsoh8-->
+
+    <color name="default_accent">#8BBF6F</color>
+    <color name="body_grey">#989898</color>
+    <color name="error_background">#DC6060</color>
+
+    <color name="light_background">#FAFAFA</color>
+    <color name="light_product_title">#333333</color>
+    <color name="light_dialog_title">#FFFFFF</color>
+    <color name="light_low_contrast_grey">#CCCCCC</color>
+    <color name="light_low_contrast_background">#f0f0f0</color>
+
+    <color name="dark_background">#303030</color>
+    <color name="dark_product_title">#FFFFFF</color>
+    <color name="dark_dialog_title">#000000</color>
+    <color name="dark_low_contrast_grey">#666666</color>
+    <color name="dark_low_contrast_background">#212121</color>
+
     <color name="discount_button">#388E8E</color>
     <color name="shopify_green">#8BBF6F</color>
 </resources>
