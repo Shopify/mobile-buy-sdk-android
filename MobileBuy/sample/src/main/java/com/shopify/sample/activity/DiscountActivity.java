@@ -236,10 +236,12 @@ public class DiscountActivity extends SampleActivity implements GoogleApiClient.
      * Create a Google Api client for use in Android Pay
      */
     private void createGoogleAPIClient() {
-        googleApiClient = new GoogleApiClient.Builder(this)
+        if (AndroidPayHelper.hasGooglePlayServices(this)) {
+            googleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(Wallet.API, new Wallet.WalletOptions.Builder().build())
                 .enableAutoManage(this, this)
                 .build();
+        }
     }
 
     @Override
