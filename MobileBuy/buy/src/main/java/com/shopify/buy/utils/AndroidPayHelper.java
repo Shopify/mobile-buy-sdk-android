@@ -62,7 +62,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
@@ -320,8 +319,6 @@ public final class AndroidPayHelper {
     private static Collection<CountrySpecification> getCountrySpecifications(Shop shop) {
         Set<String> countryCodes = new HashSet<>();
 
-        List<String> unsupportedCountryCodes = Arrays.asList(UNSUPPORTED_COUNTRIES_FOR_SHIPPING);
-
         String wildcard = "*";
 
         for (String countryCode : shop.getShipsToCountries()) {
@@ -332,12 +329,13 @@ public final class AndroidPayHelper {
             }
         }
 
+        // Remove the Country Codes not supported by Android Pay
+        countryCodes.removeAll(Arrays.asList(UNSUPPORTED_COUNTRIES_FOR_SHIPPING));
+
         ArrayList<CountrySpecification> countrySpecifications = new ArrayList<>(countryCodes.size());
 
         for (String countryCode : countryCodes) {
-            if (!unsupportedCountryCodes.contains(countryCode)) {
-                countrySpecifications.add(new CountrySpecification(countryCode));
-            }
+            countrySpecifications.add(new CountrySpecification(countryCode));
         }
 
         return countrySpecifications;
