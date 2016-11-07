@@ -206,7 +206,7 @@ public class AndroidPayTest extends ShopifyAndroidTestCase {
         Assert.assertEquals(CURRENCY, request.getCurrencyCode());
 
         // ISOCountries is a superset of all country codes.  Adding "US" to this should not change the count as we do not allow duplicates.
-        Assert.assertEquals(Locale.getISOCountries().length, request.getAllowedCountrySpecificationsForShipping().size());
+        Assert.assertEquals(Locale.getISOCountries().length - AndroidPayHelper.UNSUPPORTED_COUNTRIES_FOR_SHIPPING.length, request.getAllowedCountrySpecificationsForShipping().size());
         Assert.assertEquals(checkout.getPaymentDue(), request.getEstimatedTotalPrice());
     }
 

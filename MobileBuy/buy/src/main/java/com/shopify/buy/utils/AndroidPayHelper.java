@@ -80,6 +80,8 @@ public final class AndroidPayHelper {
     public static final int REQUEST_CODE_CHANGE_MASKED_WALLET = 501;
     public static final int REQUEST_CODE_FULL_WALLET = 502;
 
+    public static final String[] UNSUPPORTED_COUNTRIES_FOR_SHIPPING = {"MM", "SS", "GG", "IM", "KP", "SX", "SY", "IR", "BL", "BQ", "SD", "CU", "CW", "AX", "MF", "JE"};
+
     /**
      * Creates a Wallet Cart from a Shopify Cart for use in Wallet Requests.
      *
@@ -318,8 +320,7 @@ public final class AndroidPayHelper {
     private static Collection<CountrySpecification> getCountrySpecifications(Shop shop) {
         Set<String> countryCodes = new HashSet<>();
 
-        String[] unsupportedCountryCodeStrings = {"MM", "SS", "GG", "IM", "KP", "SX", "SY", "IR", "BL", "BQ", "SD", "CU", "CW", "AX", "MF", "JE"};
-        List<String> unsupportedCountryCodes = Arrays.asList(unsupportedCountryCodeStrings);
+        List<String> unsupportedCountryCodes = Arrays.asList(UNSUPPORTED_COUNTRIES_FOR_SHIPPING);
 
         String wildcard = "*";
 
