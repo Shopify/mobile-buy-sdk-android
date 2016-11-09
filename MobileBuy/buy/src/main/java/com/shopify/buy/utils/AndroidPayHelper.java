@@ -62,6 +62,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
@@ -230,7 +231,7 @@ public final class AndroidPayHelper {
      * @param publicKey           The Public Key to use, not empty.
      * @param phoneNumberRequired If true, the phone number will be required as part of the Shipping Address in Android Pay
      * @return A {@link MaskedWalletRequest}
-     * @deprecated use {@link AndroidPayHelper#createMaskedWalletRequest(Checkout, Shop, String, boolean)} instead.
+     * @deprecated use {@link AndroidPayHelper#createMaskedWalletRequest(Checkout, Shop, String, boolean, List)} instead.
      */
     @Deprecated
     public static MaskedWalletRequest createMaskedWalletRequest(String merchantName, Checkout checkout, String publicKey, boolean phoneNumberRequired) {
@@ -276,10 +277,14 @@ public final class AndroidPayHelper {
      * @param checkout            The {@link Checkout} to use, not null.
      * @param shop                The {@link Shop} to use, not null.
      * @param publicKey           The Public Key to use, not empty.
+     * @param shipsToCountries    The list of <a href="http://www.iso.org/iso/home/standards/country_codes.htm">ISO 3166-2 Country Codes</a> to allow shipping to.
+     *                            If {@code shipsToCountries} is null, the list of countries will be determined by {@link Shop#getShipsToCountries()}.
+     *                            Android Pay does not support the countries listed in {@link AndroidPayHelper#UNSUPPORTED_COUNTRIES_FOR_SHIPPING}
      * @param phoneNumberRequired If true, the phone number will be required as part of the Shipping Address in Android Pay
      * @return A {@link MaskedWalletRequest}
+     *
      */
-    public static MaskedWalletRequest createMaskedWalletRequest(Checkout checkout, Shop shop, String publicKey, boolean phoneNumberRequired) {
+    public static MaskedWalletRequest createMaskedWalletRequest(Checkout checkout, Shop shop, String publicKey, boolean phoneNumberRequired, List<String> shipsToCountries) {
         if (checkout == null) {
             throw new NullPointerException("checkout cannot be null");
         }
@@ -302,8 +307,14 @@ public final class AndroidPayHelper {
         // Create a Wallet cart from our Checkout.
         Cart walletCart = createWalletCart(checkout);
 
-        // These settings should be updated to reflect the requirements of the app.
-        // The merchant name will be shown on the top of the Android Pay dialogs
+        // Create the list of countries to allow shipping to
+        Collection<CountrySpecification> countryCodes;
+        if (shipsToCountries != null) {
+            countryCodes = convertToCountryCodes(shipsToCountries);
+        } else {
+            countryCodes = convertToCountryCodes(getShipsToCountries(shop));
+        }
+
         return MaskedWalletRequest.newBuilder()
             .setMerchantName(shop.getName())
             .setPhoneNumberRequired(phoneNumberRequired)
@@ -311,13 +322,21 @@ public final class AndroidPayHelper {
             .setCurrencyCode(checkout.getCurrency())
             .setEstimatedTotalPrice(checkout.getPaymentDue())
             .setPaymentMethodTokenizationParameters(parameters)
-            .addAllowedCountrySpecificationsForShipping(getCountrySpecifications(shop))
+            .addAllowedCountrySpecificationsForShipping(countryCodes)
             .setCart(walletCart)
             .build();
     }
 
-    private static Collection<CountrySpecification> getCountrySpecifications(Shop shop) {
-        Set<String> countryCodes = new HashSet<>();
+    private static Collection<CountrySpecification> convertToCountryCodes(List<String> countryCodes ) {
+        Set<CountrySpecification> countrySpecifications = new HashSet<>(countryCodes.size());
+        for (String countryCode : countryCodes) {
+            countrySpecifications.add(new CountrySpecification(countryCode));
+        }
+        return countrySpecifications;
+    }
+
+    private static List<String> getShipsToCountries(Shop shop) {
+        List<String> countryCodes = new ArrayList<>();
 
         String wildcard = "*";
 
@@ -332,13 +351,7 @@ public final class AndroidPayHelper {
         // Remove the Country Codes not supported by Android Pay
         countryCodes.removeAll(Arrays.asList(UNSUPPORTED_COUNTRIES_FOR_SHIPPING));
 
-        ArrayList<CountrySpecification> countrySpecifications = new ArrayList<>(countryCodes.size());
-
-        for (String countryCode : countryCodes) {
-            countrySpecifications.add(new CountrySpecification(countryCode));
-        }
-
-        return countrySpecifications;
+        return countryCodes;
     }
 
     /**
