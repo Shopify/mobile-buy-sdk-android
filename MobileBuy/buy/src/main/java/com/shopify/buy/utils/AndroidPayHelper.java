@@ -232,7 +232,7 @@ public final class AndroidPayHelper {
      * @param phoneNumberRequired If true, the phone number will be required as part of the Shipping Address in Android Pay
      * @return A {@link MaskedWalletRequest}
      *
-     * @deprecated Use {@link AndroidPayHelper#createFullWalletRequest(Checkout, MaskedWallet)}
+     * @deprecated Use {@link AndroidPayHelper#createMaskedWalletRequest(String, Checkout, String, boolean, Collection)}
      */
     @Deprecated
     public static MaskedWalletRequest createMaskedWalletRequest(String merchantName, Checkout checkout, String publicKey, boolean phoneNumberRequired) {
