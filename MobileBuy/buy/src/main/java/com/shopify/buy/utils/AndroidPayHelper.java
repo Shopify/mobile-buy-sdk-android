@@ -58,6 +58,7 @@ import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -246,6 +247,7 @@ public final class AndroidPayHelper {
      * @param publicKey           The Public Key to use, not empty.
      * @param phoneNumberRequired If true, the phone number will be required as part of the Shipping Address in Android Pay
      * @param shipsToCountries    The list of <a href="http://www.iso.org/iso/home/standards/country_codes.htm">ISO 3166-2 Country Codes</a> to allow shipping to.
+     *                            A value of '*' can be used to indicate support for shipping to all available countries.
      *                            The following country codes are not supported by Android Pay: MM, SS, GG, IM, KP, SX, SY, IR, BL, BQ, SD, CU, CW, AX, MF
      * @return A {@link MaskedWalletRequest}
      */
@@ -283,41 +285,38 @@ public final class AndroidPayHelper {
             .setCurrencyCode(checkout.getCurrency())
             .setEstimatedTotalPrice(checkout.getPaymentDue())
             .setPaymentMethodTokenizationParameters(parameters)
-            .addAllowedCountrySpecificationsForShipping(convertToCountryCodes(shipsToCountries))
+            .addAllowedCountrySpecificationsForShipping(getCountrySpecifications(shipsToCountries))
             .setCart(walletCart)
             .build();
     }
 
-    /**
-     * Return the list of countries for shipping from the {@code Shop}
-     * @param shop The shop to use for deriving the list of countries for shipping
-     * @return A list of ISO-3166-2 country codes that are allowed for shipping
-     */
-    public static Set<String> extractShippingCountries(Shop shop) {
+
+    private static Collection<CountrySpecification> getCountrySpecifications(Collection<String> shipsToCountries) {
         Set<String> countryCodes = new HashSet<>();
 
         String wildcard = "*";
 
-        for (String countryCode : shop.getShipsToCountries()) {
+        List<String> wildCardCodes;
+
+        for (String countryCode : shipsToCountries) {
             if (wildcard.equals(countryCode)) {
-                countryCodes.addAll(Arrays.asList(Locale.getISOCountries()));
+
+                // Get all ISO Country Codes
+                wildCardCodes = new ArrayList<>(Arrays.asList(Locale.getISOCountries()));
+
+                // Remove the Country Codes not supported by Android Pay
+                wildCardCodes.removeAll(Arrays.asList(UNSUPPORTED_COUNTRIES_FOR_SHIPPING));
+
+                // Add the remaining wildcard codes to the list
+                countryCodes.addAll(wildCardCodes);
+
             } else {
+                // if a Country Code has been explicitly listed, always add it
                 countryCodes.add(countryCode);
             }
         }
 
-        // Remove the Country Codes not supported by Android Pay
-        countryCodes.removeAll(Arrays.asList(UNSUPPORTED_COUNTRIES_FOR_SHIPPING));
-
-        return countryCodes;
-    }
-
-    private static Collection<CountrySpecification> convertToCountryCodes(Collection<String> countryCodes ) {
-        Set<CountrySpecification> countrySpecifications = new HashSet<>();
-
-        if (countryCodes == null) {
-            return countrySpecifications;
-        }
+        List<CountrySpecification> countrySpecifications = new ArrayList<>(countryCodes.size());
 
         for (String countryCode : countryCodes) {
             countrySpecifications.add(new CountrySpecification(countryCode));
@@ -325,6 +324,7 @@ public final class AndroidPayHelper {
 
         return countrySpecifications;
     }
+
 
     /**
      * Creates a Full Wallet Request from a Shopify Checkout
