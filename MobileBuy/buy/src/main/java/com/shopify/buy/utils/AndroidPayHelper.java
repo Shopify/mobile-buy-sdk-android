@@ -60,7 +60,9 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
@@ -223,58 +225,34 @@ public final class AndroidPayHelper {
 
     /**
      * Creates a Masked Wallet Request from a Shopify Checkout.
-     * This call will allow shipping to the US only.
      *
      * @param merchantName        The merchant name to show on the Android Pay dialogs, not null or empty
      * @param checkout            The {@link Checkout} to use, not null.
      * @param publicKey           The Public Key to use, not empty.
      * @param phoneNumberRequired If true, the phone number will be required as part of the Shipping Address in Android Pay
      * @return A {@link MaskedWalletRequest}
-     * @deprecated use {@link AndroidPayHelper#createMaskedWalletRequest(Checkout, Shop, String, boolean, Collection)} instead.
      */
     @Deprecated
     public static MaskedWalletRequest createMaskedWalletRequest(String merchantName, Checkout checkout, String publicKey, boolean phoneNumberRequired) {
+        List<String> countryCodes = Collections.singletonList("US");
+        return createMaskedWalletRequest(merchantName, checkout, publicKey, phoneNumberRequired, countryCodes);
+    }
+
+    /**
+     * Creates a Masked Wallet Request from a Shopify Checkout.
+     *
+     * @param merchantName        The merchant name to show on the Android Pay dialogs, not null or empty
+     * @param checkout            The {@link Checkout} to use, not null.
+     * @param publicKey           The Public Key to use, not empty.
+     * @param phoneNumberRequired If true, the phone number will be required as part of the Shipping Address in Android Pay
+     * @param shipsToCountries    The list of <a href="http://www.iso.org/iso/home/standards/country_codes.htm">ISO 3166-2 Country Codes</a> to allow shipping to.
+     *                            The following country codes are not supported by Android Pay: MM, SS, GG, IM, KP, SX, SY, IR, BL, BQ, SD, CU, CW, AX, MF
+     * @return A {@link MaskedWalletRequest}
+     */
+    public static MaskedWalletRequest createMaskedWalletRequest(String merchantName, Checkout checkout, String publicKey, boolean phoneNumberRequired, Collection<String> shipsToCountries) {
         if (TextUtils.isEmpty(merchantName)) {
             throw new IllegalArgumentException("merchantName cannot be empty");
         }
-
-        return createMaskedWalletRequest(checkout, merchantName, publicKey, phoneNumberRequired, null);
-    }
-
-    /**
-     * Creates a Masked Wallet Request from a Shopify Checkout and Shop.
-     *
-     * @param checkout            The {@link Checkout} to use, not null.
-     * @param shop                The {@link Shop} to use, not null.
-     * @param publicKey           The Public Key to use, not empty.
-     * @param phoneNumberRequired If true, the phone number will be required as part of the Shipping Address in Android Pay
-     * @return A {@link MaskedWalletRequest}
-     *
-     */
-    public static MaskedWalletRequest createMaskedWalletRequest(Checkout checkout, Shop shop, String publicKey, boolean phoneNumberRequired) {
-        return createMaskedWalletRequest(checkout, shop, publicKey, phoneNumberRequired, null);
-    }
-
-    /**
-     * Creates a Masked Wallet Request from a Shopify Checkout and Shop, allowing explicit override of the allowed countries for shipping addresses
-     *
-     * @param checkout            The {@link Checkout} to use, not null.
-     * @param shop                The {@link Shop} to use, not null.
-     * @param publicKey           The Public Key to use, not empty.
-     * @param shipsToCountries    The list of <a href="http://www.iso.org/iso/home/standards/country_codes.htm">ISO 3166-2 Country Codes</a> to allow shipping to.
-     *                            The following country codes are not currently supported by Android Pay: MM, SS, GG, IM, KP, SX, SY, IR, BL, BQ, SD, CU, CW, AX, MF, JE.
-     * @param phoneNumberRequired If true, the phone number will be required as part of the Shipping Address in Android Pay
-     * @return A {@link MaskedWalletRequest}
-     */
-    public static MaskedWalletRequest createMaskedWalletRequest(Checkout checkout, Shop shop, String publicKey, boolean phoneNumberRequired, Collection<String> shipsToCountries) {
-        if (shop == null) {
-            throw new IllegalArgumentException("shop cannot be null");
-        }
-
-        return createMaskedWalletRequest(checkout, shop.getName(), publicKey, phoneNumberRequired, CollectionUtils.isEmpty(shipsToCountries) ? getShipsToCountries(shop) : shipsToCountries);
-    }
-
-    private static MaskedWalletRequest createMaskedWalletRequest(Checkout checkout, String merchantName, String publicKey, boolean phoneNumberRequired, Collection<String> shipsToCountries) {
 
         if (checkout == null) {
             throw new NullPointerException("checkout cannot be null");
@@ -282,6 +260,10 @@ public final class AndroidPayHelper {
 
         if (publicKey == null) {
             throw new IllegalArgumentException("publicKey cannot be empty");
+        }
+
+        if (CollectionUtils.isEmpty(shipsToCountries)) {
+            throw new IllegalArgumentException("shipsToCountries cannot be empty");
         }
 
         // Create the parameters that will be used for encrypting Network Tokens.
@@ -306,21 +288,12 @@ public final class AndroidPayHelper {
             .build();
     }
 
-    private static Collection<CountrySpecification> convertToCountryCodes(Collection<String> countryCodes ) {
-        Set<CountrySpecification> countrySpecifications = new HashSet<>();
-
-        if (countryCodes == null) {
-            return countrySpecifications;
-        }
-
-        for (String countryCode : countryCodes) {
-            countrySpecifications.add(new CountrySpecification(countryCode));
-        }
-
-        return countrySpecifications;
-    }
-
-    private static Set<String> getShipsToCountries(Shop shop) {
+    /**
+     * Return the list of countries for shipping from the {@code Shop}
+     * @param shop The shop to use for deriving the list of countries for shipping
+     * @return A list of ISO-3166-2 country codes that are allowed for shipping
+     */
+    public static Set<String> extractShippingCountries(Shop shop) {
         Set<String> countryCodes = new HashSet<>();
 
         String wildcard = "*";
@@ -337,6 +310,20 @@ public final class AndroidPayHelper {
         countryCodes.removeAll(Arrays.asList(UNSUPPORTED_COUNTRIES_FOR_SHIPPING));
 
         return countryCodes;
+    }
+
+    private static Collection<CountrySpecification> convertToCountryCodes(Collection<String> countryCodes ) {
+        Set<CountrySpecification> countrySpecifications = new HashSet<>();
+
+        if (countryCodes == null) {
+            return countrySpecifications;
+        }
+
+        for (String countryCode : countryCodes) {
+            countrySpecifications.add(new CountrySpecification(countryCode));
+        }
+
+        return countrySpecifications;
     }
 
     /**
