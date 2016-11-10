@@ -65,6 +65,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 @RunWith(AndroidJUnit4.class)
 public class AndroidPayTest extends ShopifyAndroidTestCase {
@@ -174,7 +175,7 @@ public class AndroidPayTest extends ShopifyAndroidTestCase {
         Mockito.doReturn(currencyFormatter.format(LINE_ITEM_TOTAL_PRICE_1 + LINE_ITEM_TOTAL_PRICE_2)).when(checkout).getPaymentDue();
         Mockito.doReturn(true).when(checkout).isRequiresShipping();
 
-        final MaskedWalletRequest request = AndroidPayHelper.createMaskedWalletRequest(checkout, shop, "ANDROID_PAY_PUBLIC_KEY", true);
+        final MaskedWalletRequest request = AndroidPayHelper.createMaskedWalletRequest(checkout, shop, "ANDROID_PAY_PUBLIC_KEY", true, null);
         assertWalletCart(request.getCart());
         Assert.assertEquals(shop.getName(), request.getMerchantName());
         Assert.assertEquals(CURRENCY, request.getCurrencyCode());
@@ -182,6 +183,26 @@ public class AndroidPayTest extends ShopifyAndroidTestCase {
         Assert.assertEquals(checkout.getPaymentDue(), request.getEstimatedTotalPrice());
     }
 
+    @Test
+    public void testCreateMaskedWalletRequestWithList() {
+        final Checkout checkout = Mockito.mock(Checkout.class);
+        Mockito.doReturn(Arrays.asList(lineItem1, lineItem2)).when(checkout).getLineItems();
+        Mockito.doReturn(CURRENCY).when(checkout).getCurrency();
+        Mockito.doReturn(currencyFormatter.format(LINE_ITEM_TOTAL_PRICE_1 + LINE_ITEM_TOTAL_PRICE_2)).when(checkout).getPaymentDue();
+        Mockito.doReturn(true).when(checkout).isRequiresShipping();
+
+        Set<String> shipsToCountries = new HashSet<>();
+        shipsToCountries.add("US");
+        shipsToCountries.add("CAD");
+        shipsToCountries.add("UK");
+
+        final MaskedWalletRequest request = AndroidPayHelper.createMaskedWalletRequest(checkout, shop, "ANDROID_PAY_PUBLIC_KEY", true, shipsToCountries);
+        assertWalletCart(request.getCart());
+        Assert.assertEquals(shop.getName(), request.getMerchantName());
+        Assert.assertEquals(CURRENCY, request.getCurrencyCode());
+        Assert.assertEquals(new HashSet<>(convertToCountryCodes(request.getAllowedCountrySpecificationsForShipping())), shipsToCountries);
+        Assert.assertEquals(checkout.getPaymentDue(), request.getEstimatedTotalPrice());
+    }
 
     @Test
     public void testCreateMaskedWalletRequestWithShopWildCardShipsTo() {
@@ -200,13 +221,13 @@ public class AndroidPayTest extends ShopifyAndroidTestCase {
         Mockito.when(shop.getCurrency()).thenReturn("CAD");
         Mockito.when(shop.getShipsToCountries()).thenReturn(shipsToCountries);
 
-        final MaskedWalletRequest request = AndroidPayHelper.createMaskedWalletRequest(checkout, shop, "ANDROID_PAY_PUBLIC_KEY", true);
+        final MaskedWalletRequest request = AndroidPayHelper.createMaskedWalletRequest(checkout, shop, "ANDROID_PAY_PUBLIC_KEY", true, null);
         assertWalletCart(request.getCart());
         Assert.assertEquals(shop.getName(), request.getMerchantName());
         Assert.assertEquals(CURRENCY, request.getCurrencyCode());
 
         // ISOCountries is a superset of all country codes.  Adding "US" to this should not change the count as we do not allow duplicates.
-        Assert.assertEquals(Locale.getISOCountries().length, request.getAllowedCountrySpecificationsForShipping().size());
+        Assert.assertEquals(Locale.getISOCountries().length - AndroidPayHelper.UNSUPPORTED_COUNTRIES_FOR_SHIPPING.length, request.getAllowedCountrySpecificationsForShipping().size());
         Assert.assertEquals(checkout.getPaymentDue(), request.getEstimatedTotalPrice());
     }
 
