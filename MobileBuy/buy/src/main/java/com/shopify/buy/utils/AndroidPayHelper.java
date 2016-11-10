@@ -235,8 +235,7 @@ public final class AndroidPayHelper {
      */
     @Deprecated
     public static MaskedWalletRequest createMaskedWalletRequest(String merchantName, Checkout checkout, String publicKey, boolean phoneNumberRequired) {
-        List<String> countryCodes = Collections.singletonList("US");
-        return createMaskedWalletRequest(merchantName, checkout, publicKey, phoneNumberRequired, countryCodes);
+        return createMaskedWalletRequest(merchantName, checkout, publicKey, phoneNumberRequired, Collections.singletonList("US"));
     }
 
     /**
