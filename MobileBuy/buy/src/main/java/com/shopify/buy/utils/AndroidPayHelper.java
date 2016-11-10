@@ -284,7 +284,7 @@ public final class AndroidPayHelper {
      * @return A {@link MaskedWalletRequest}
      *
      */
-    public static MaskedWalletRequest createMaskedWalletRequest(Checkout checkout, Shop shop, String publicKey, boolean phoneNumberRequired, List<String> shipsToCountries) {
+    public static MaskedWalletRequest createMaskedWalletRequest(Checkout checkout, Shop shop, String publicKey, boolean phoneNumberRequired, Collection<String> shipsToCountries) {
         if (checkout == null) {
             throw new NullPointerException("checkout cannot be null");
         }
@@ -327,7 +327,7 @@ public final class AndroidPayHelper {
             .build();
     }
 
-    private static Collection<CountrySpecification> convertToCountryCodes(List<String> countryCodes ) {
+    private static Collection<CountrySpecification> convertToCountryCodes(Collection<String> countryCodes ) {
         Set<CountrySpecification> countrySpecifications = new HashSet<>(countryCodes.size());
         for (String countryCode : countryCodes) {
             countrySpecifications.add(new CountrySpecification(countryCode));
