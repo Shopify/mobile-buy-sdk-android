@@ -65,6 +65,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 @RunWith(AndroidJUnit4.class)
 public class AndroidPayTest extends ShopifyAndroidTestCase {
@@ -83,6 +84,8 @@ public class AndroidPayTest extends ShopifyAndroidTestCase {
 
     private Shop shop;
 
+    private Shop shopWithWildcardShipping;
+
     private LineItem lineItem1;
 
     private LineItem lineItem2;
@@ -96,12 +99,24 @@ public class AndroidPayTest extends ShopifyAndroidTestCase {
 
         final List<String> shipsToCountries = new ArrayList<>();
         shipsToCountries.add("US");
-        shipsToCountries.add("UK");
+        shipsToCountries.add("GB");
         shipsToCountries.add("CA");
 
+        final List<String> shipsToCountriesWithWildCard = new ArrayList<>();
+        shipsToCountriesWithWildCard.add("US");
+        shipsToCountriesWithWildCard.add("GB");
+        shipsToCountriesWithWildCard.add("CA");
+        shipsToCountriesWithWildCard.add("*");
+
         shop = Mockito.mock(Shop.class);
+        Mockito.when(shop.getName()).thenReturn("My Test Shop shipping to US, UK, CA");
         Mockito.when(shop.getCurrency()).thenReturn("CAD");
         Mockito.when(shop.getShipsToCountries()).thenReturn(shipsToCountries);
+
+        shopWithWildcardShipping = Mockito.mock(Shop.class);
+        Mockito.when(shopWithWildcardShipping.getName()).thenReturn("My Test Shop shipping everywhere");
+        Mockito.when(shopWithWildcardShipping.getCurrency()).thenReturn("CAD");
+        Mockito.when(shopWithWildcardShipping.getShipsToCountries()).thenReturn(shipsToCountriesWithWildCard);
 
         lineItem1 = Mockito.mock(LineItem.class);
         Mockito.when(lineItem1.getTitle()).thenReturn("lineItem1");
@@ -167,51 +182,45 @@ public class AndroidPayTest extends ShopifyAndroidTestCase {
     }
 
     @Test
-    public void testCreateMaskedWalletRequestWithShop() {
+    public void testCreateMaskedWalletRequestWithoutWildcard() {
         final Checkout checkout = Mockito.mock(Checkout.class);
         Mockito.doReturn(Arrays.asList(lineItem1, lineItem2)).when(checkout).getLineItems();
         Mockito.doReturn(CURRENCY).when(checkout).getCurrency();
         Mockito.doReturn(currencyFormatter.format(LINE_ITEM_TOTAL_PRICE_1 + LINE_ITEM_TOTAL_PRICE_2)).when(checkout).getPaymentDue();
         Mockito.doReturn(true).when(checkout).isRequiresShipping();
 
-        final MaskedWalletRequest request = AndroidPayHelper.createMaskedWalletRequest(checkout, shop, "ANDROID_PAY_PUBLIC_KEY", true);
+        final MaskedWalletRequest request = AndroidPayHelper.createMaskedWalletRequest(shop.getName(), checkout, "ANDROID_PAY_PUBLIC_KEY", true, shop.getShipsToCountries());
         assertWalletCart(request.getCart());
         Assert.assertEquals(shop.getName(), request.getMerchantName());
         Assert.assertEquals(CURRENCY, request.getCurrencyCode());
-        Assert.assertEquals(new HashSet<>(convertToCountryCodes(request.getAllowedCountrySpecificationsForShipping())), new HashSet<>(shop.getShipsToCountries()));
+        Assert.assertEquals(shop.getShipsToCountries().size(), request.getAllowedCountrySpecificationsForShipping().size());
+        Assert.assertEquals(convertToCountryCodes(request.getAllowedCountrySpecificationsForShipping()), new HashSet<>(shop.getShipsToCountries()));
         Assert.assertEquals(checkout.getPaymentDue(), request.getEstimatedTotalPrice());
     }
-
 
     @Test
-    public void testCreateMaskedWalletRequestWithShopWildCardShipsTo() {
+    public void testCreateMaskedWalletRequestWithWildcard() {
         final Checkout checkout = Mockito.mock(Checkout.class);
         Mockito.doReturn(Arrays.asList(lineItem1, lineItem2)).when(checkout).getLineItems();
         Mockito.doReturn(CURRENCY).when(checkout).getCurrency();
         Mockito.doReturn(currencyFormatter.format(LINE_ITEM_TOTAL_PRICE_1 + LINE_ITEM_TOTAL_PRICE_2)).when(checkout).getPaymentDue();
         Mockito.doReturn(true).when(checkout).isRequiresShipping();
 
-        final List<String> shipsToCountries = new ArrayList<>();
-        shipsToCountries.add("US");
-        shipsToCountries.add("*");
-
-        // We want to make sure that we don't send duplicate country codes to Google
-        Shop shop = Mockito.mock(Shop.class);
-        Mockito.when(shop.getCurrency()).thenReturn("CAD");
-        Mockito.when(shop.getShipsToCountries()).thenReturn(shipsToCountries);
-
-        final MaskedWalletRequest request = AndroidPayHelper.createMaskedWalletRequest(checkout, shop, "ANDROID_PAY_PUBLIC_KEY", true);
+        final MaskedWalletRequest request = AndroidPayHelper.createMaskedWalletRequest(shopWithWildcardShipping.getName(), checkout, "ANDROID_PAY_PUBLIC_KEY", true, shopWithWildcardShipping.getShipsToCountries());
         assertWalletCart(request.getCart());
-        Assert.assertEquals(shop.getName(), request.getMerchantName());
+        Assert.assertEquals(shopWithWildcardShipping.getName(), request.getMerchantName());
         Assert.assertEquals(CURRENCY, request.getCurrencyCode());
 
-        // ISOCountries is a superset of all country codes.  Adding "US" to this should not change the count as we do not allow duplicates.
-        Assert.assertEquals(Locale.getISOCountries().length, request.getAllowedCountrySpecificationsForShipping().size());
+        List<String> expectedShipsToCountries = new ArrayList<>(Arrays.asList(Locale.getISOCountries()));
+        expectedShipsToCountries.removeAll(Arrays.asList(AndroidPayHelper.UNSUPPORTED_COUNTRIES_FOR_SHIPPING));
+
+        Assert.assertEquals(new HashSet<>(expectedShipsToCountries), convertToCountryCodes(request.getAllowedCountrySpecificationsForShipping()));
+        Assert.assertEquals(expectedShipsToCountries.size(), request.getAllowedCountrySpecificationsForShipping().size());
         Assert.assertEquals(checkout.getPaymentDue(), request.getEstimatedTotalPrice());
     }
 
-    private ArrayList<String> convertToCountryCodes(List<CountrySpecification> countrySpecifications) {
-        ArrayList<String> countryCodes = new ArrayList<>();
+    private Set<String> convertToCountryCodes(List<CountrySpecification> countrySpecifications) {
+        Set<String> countryCodes = new HashSet<>();
 
         for (CountrySpecification countrySpecification : countrySpecifications) {
             countryCodes.add(countrySpecification.getCountryCode());

@@ -62,6 +62,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
@@ -71,12 +72,15 @@ import java.util.Set;
  */
 
 public final class AndroidPayHelper {
+
     private static final int FIRST_NAME_PART = 0;
     private static final int LAST_NAME_PART = 1;
 
     public static final int REQUEST_CODE_MASKED_WALLET = 500;
     public static final int REQUEST_CODE_CHANGE_MASKED_WALLET = 501;
     public static final int REQUEST_CODE_FULL_WALLET = 502;
+
+    public static final String[] UNSUPPORTED_COUNTRIES_FOR_SHIPPING = {"MM", "SS", "GG", "IM", "KP", "SX", "SY", "IR", "BL", "BQ", "SD", "CU", "CW", "AX", "MF", "JE"};
 
     /**
      * Creates a Wallet Cart from a Shopify Cart for use in Wallet Requests.
@@ -148,12 +152,12 @@ public final class AndroidPayHelper {
     private static LineItem createWalletLineItem(com.shopify.buy.model.LineItem shopifyLineItem, String currencyCode) {
         BigDecimal lineTotal = new BigDecimal(shopifyLineItem.getPrice()).multiply(new BigDecimal(shopifyLineItem.getQuantity()));
         return LineItem.newBuilder().setQuantity(Long.toString(shopifyLineItem.getQuantity()))
-                .setUnitPrice(shopifyLineItem.getPrice())
-                .setTotalPrice(lineTotal.toString())
-                .setDescription(shopifyLineItem.getTitle())
-                .setCurrencyCode(currencyCode)
-                .setRole(Role.REGULAR)
-                .build();
+            .setUnitPrice(shopifyLineItem.getPrice())
+            .setTotalPrice(lineTotal.toString())
+            .setDescription(shopifyLineItem.getTitle())
+            .setCurrencyCode(currencyCode)
+            .setRole(Role.REGULAR)
+            .build();
     }
 
     /**
@@ -220,7 +224,7 @@ public final class AndroidPayHelper {
     }
 
     /**
-     * Creates a Masked Wallet Request from a Shopify Checkout
+     * Creates a Masked Wallet Request from a Shopify Checkout.
      *
      * @param merchantName        The merchant name to show on the Android Pay dialogs, not null or empty
      * @param checkout            The {@link Checkout} to use, not null.
@@ -228,67 +232,37 @@ public final class AndroidPayHelper {
      * @param phoneNumberRequired If true, the phone number will be required as part of the Shipping Address in Android Pay
      * @return A {@link MaskedWalletRequest}
      *
-     *
-     * @deprecated use {@link AndroidPayHelper#createMaskedWalletRequest(Checkout, Shop, String, boolean)} instead.
+     * @deprecated Use {@link AndroidPayHelper#createMaskedWalletRequest(String, Checkout, String, boolean, Collection)}
      */
     @Deprecated
     public static MaskedWalletRequest createMaskedWalletRequest(String merchantName, Checkout checkout, String publicKey, boolean phoneNumberRequired) {
-        if (checkout == null) {
-            throw new NullPointerException("checkout cannot be null");
-        }
+        return createMaskedWalletRequest(merchantName, checkout, publicKey, phoneNumberRequired, null);
+    }
 
-        if (publicKey == null) {
-            throw new IllegalArgumentException("publicKey cannot be empty");
-        }
-
+    /**
+     * Creates a Masked Wallet Request from a Shopify Checkout.
+     *
+     * @param merchantName        The merchant name to show on the Android Pay dialogs, not null or empty
+     * @param checkout            The {@link Checkout} to use, not null.
+     * @param publicKey           The Public Key to use, not empty.
+     * @param phoneNumberRequired If true, the phone number will be required as part of the Shipping Address in Android Pay
+     * @param shipsToCountries    The list of <a href="http://www.iso.org/iso/home/standards/country_codes.htm">ISO 3166-2 Country Codes</a> to allow shipping to.
+     *                            If null, the default Android Pay settings will be used.
+     *                            A value of '*' can be used to indicate support for shipping to all available countries supported by AP.
+     *                            The following country codes are not supported by Android Pay: MM, SS, GG, IM, KP, SX, SY, IR, BL, BQ, SD, CU, CW, AX, MF
+     * @return A {@link MaskedWalletRequest}
+     */
+    public static MaskedWalletRequest createMaskedWalletRequest(String merchantName, Checkout checkout, String publicKey, boolean phoneNumberRequired, Collection<String> shipsToCountries) {
         if (TextUtils.isEmpty(merchantName)) {
             throw new IllegalArgumentException("merchantName cannot be empty");
         }
 
-        // Create the parameters that will be used for encrypting Network Tokens.
-        PaymentMethodTokenizationParameters parameters =
-                PaymentMethodTokenizationParameters.newBuilder()
-                        .setPaymentMethodTokenizationType(PaymentMethodTokenizationType.NETWORK_TOKEN)
-                        .addParameter("publicKey", publicKey)
-                        .build();
-
-        // Create a Wallet cart from our Checkout.
-        Cart walletCart = createWalletCart(checkout);
-
-        // These settings should be updated to reflect the requirements of the app.
-        // The merchant name will be shown on the top of the Android Pay dialogs
-        return MaskedWalletRequest.newBuilder()
-                .setMerchantName(merchantName)
-                .setPhoneNumberRequired(phoneNumberRequired)
-                .setShippingAddressRequired(checkout.isRequiresShipping())
-                .setCurrencyCode(checkout.getCurrency())
-                .setEstimatedTotalPrice(checkout.getPaymentDue())
-                .setPaymentMethodTokenizationParameters(parameters)
-                .setCart(walletCart)
-                .build();
-    }
-
-
-    /**
-     * Creates a Masked Wallet Request from a Shopify Checkout and Shop
-     *
-     * @param checkout            The {@link Checkout} to use, not null.
-     * @param shop                The {@link Shop} to use, not null.
-     * @param publicKey           The Public Key to use, not empty.
-     * @param phoneNumberRequired If true, the phone number will be required as part of the Shipping Address in Android Pay
-     * @return A {@link MaskedWalletRequest}
-     */
-    public static MaskedWalletRequest createMaskedWalletRequest(Checkout checkout, Shop shop, String publicKey, boolean phoneNumberRequired) {
         if (checkout == null) {
             throw new NullPointerException("checkout cannot be null");
         }
 
         if (publicKey == null) {
             throw new IllegalArgumentException("publicKey cannot be empty");
-        }
-
-        if (shop == null) {
-            throw new IllegalArgumentException("shop cannot be null");
         }
 
         // Create the parameters that will be used for encrypting Network Tokens.
@@ -301,41 +275,50 @@ public final class AndroidPayHelper {
         // Create a Wallet cart from our Checkout.
         Cart walletCart = createWalletCart(checkout);
 
-        // These settings should be updated to reflect the requirements of the app.
-        // The merchant name will be shown on the top of the Android Pay dialogs
-        return MaskedWalletRequest.newBuilder()
-            .setMerchantName(shop.getName())
+        MaskedWalletRequest.Builder builder = MaskedWalletRequest.newBuilder();
+
+        builder.setMerchantName(merchantName)
             .setPhoneNumberRequired(phoneNumberRequired)
             .setShippingAddressRequired(checkout.isRequiresShipping())
             .setCurrencyCode(checkout.getCurrency())
             .setEstimatedTotalPrice(checkout.getPaymentDue())
             .setPaymentMethodTokenizationParameters(parameters)
-            .addAllowedCountrySpecificationsForShipping(getCountrySpecifications(shop))
-            .setCart(walletCart)
-            .build();
+            .setCart(walletCart);
+
+        if (shipsToCountries != null) {
+            builder.addAllowedCountrySpecificationsForShipping(getCountrySpecifications(shipsToCountries));
+        }
+
+        return builder.build();
     }
 
-    private static Collection<CountrySpecification> getCountrySpecifications(Shop shop) {
-        Set<String> countryCodes = new HashSet<>();
+
+    private static Collection<CountrySpecification> getCountrySpecifications(Collection<String> shipsToCountries) {
+        Set<String> countryCodes = new HashSet<>(shipsToCountries);
 
         String wildcard = "*";
 
-        for (String countryCode : shop.getShipsToCountries()) {
-            if (wildcard.equals(countryCode)) {
-                countryCodes.addAll(Arrays.asList(Locale.getISOCountries()));
-            } else {
-                countryCodes.add(countryCode);
-            }
+        if (countryCodes.remove(wildcard)) {
+
+            // Get all ISO Country Codes
+            List<String> wildCardCodes = new ArrayList<>(Arrays.asList(Locale.getISOCountries()));
+
+            // Remove the Country Codes not supported by Android Pay
+            wildCardCodes.removeAll(Arrays.asList(UNSUPPORTED_COUNTRIES_FOR_SHIPPING));
+
+            // Add the remaining wildcard codes to the list
+            countryCodes.addAll(wildCardCodes);
         }
 
-        ArrayList<CountrySpecification> countrySpecifications = new ArrayList<>(countryCodes.size());
+        List<CountrySpecification> countrySpecifications = new ArrayList<>(countryCodes.size());
 
-        for(String countryCode : countryCodes) {
+        for (String countryCode : countryCodes) {
             countrySpecifications.add(new CountrySpecification(countryCode));
         }
 
         return countrySpecifications;
     }
+
 
     /**
      * Creates a Full Wallet Request from a Shopify Checkout
@@ -354,9 +337,9 @@ public final class AndroidPayHelper {
         }
 
         return FullWalletRequest.newBuilder()
-                .setGoogleTransactionId(maskedWallet.getGoogleTransactionId())
-                .setCart(createWalletCart(checkout))
-                .build();
+            .setGoogleTransactionId(maskedWallet.getGoogleTransactionId())
+            .setCart(createWalletCart(checkout))
+            .build();
     }
 
     /**
@@ -364,7 +347,7 @@ public final class AndroidPayHelper {
      * If any of the address attributes (City, Country Code, Province Code, ZIP code) or email have changed for specified checkout
      * it requires to be updated.
      *
-     * @param checkout the {@link Checkout} to be verified
+     * @param checkout     the {@link Checkout} to be verified
      * @param maskedWallet the {@link MaskedWallet} to check with
      * @return {@code true} if checkout should be updated, {@code false} otherwise
      */
@@ -387,12 +370,12 @@ public final class AndroidPayHelper {
 
     /**
      * Checks to see if Android Pay is available on device.
-     *
+     * <p>
      * It will check that:
      * 1) Play Services are available using {@link AndroidPayHelper#hasGooglePlayServices(Context)}
      * 2) The Android Pay application is installed on device, and user has setup a valid card for In App Purchase using {@link AndroidPayHelper#isReadyToPay(GoogleApiClient, AndroidPayReadyCallback)}
      *
-     * @param context The context to use.
+     * @param context   The context to use.
      * @param apiClient The {@link GoogleApiClient}, not null
      * @param delegate  The {@link AndroidPayReadyCallback} delegate for receiving the result
      */
@@ -467,18 +450,18 @@ public final class AndroidPayHelper {
 
         // Check that the user has installed and setup the Android Pay app on their device
         Wallet.Payments.isReadyToPay(apiClient).setResultCallback(
-                new ResultCallback<BooleanResult>() {
-                    @Override
-                    public void onResult(@NonNull BooleanResult booleanResult) {
+            new ResultCallback<BooleanResult>() {
+                @Override
+                public void onResult(@NonNull BooleanResult booleanResult) {
 
-                        if (booleanResult.getStatus().isSuccess()) {
-                            delegate.onResult(booleanResult.getValue());
-                        } else {
-                            // We could not make the call so must assume it is not available
-                            delegate.onResult(false);
-                        }
+                    if (booleanResult.getStatus().isSuccess()) {
+                        delegate.onResult(booleanResult.getValue());
+                    } else {
+                        // We could not make the call so must assume it is not available
+                        delegate.onResult(false);
                     }
-                });
+                }
+            });
     }
 
     public static PaymentToken getAndroidPaymentToken(final FullWallet fullWallet, final String androidPayPublicKey) {
@@ -509,6 +492,6 @@ public final class AndroidPayHelper {
     }
 
 
-    private AndroidPayHelper(){
+    private AndroidPayHelper() {
     }
 }
