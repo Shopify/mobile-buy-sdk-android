@@ -298,8 +298,7 @@ public final class AndroidPayHelper {
 
         String wildcard = "*";
 
-        if (countryCodes.contains(wildcard)) {
-            countryCodes.remove(wildcard);
+        if (countryCodes.remove(wildcard)) {
 
             // Get all ISO Country Codes
             List<String> wildCardCodes = new ArrayList<>(Arrays.asList(Locale.getISOCountries()));
