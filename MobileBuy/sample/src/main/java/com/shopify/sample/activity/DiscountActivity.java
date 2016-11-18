@@ -54,6 +54,7 @@ import com.shopify.buy.dataprovider.BuyClient;
 import com.shopify.buy.dataprovider.BuyClientError;
 import com.shopify.buy.dataprovider.Callback;
 import com.shopify.buy.model.Checkout;
+import com.shopify.buy.model.Shop;
 import com.shopify.buy.utils.AndroidPayHelper;
 import com.shopify.sample.BuildConfig;
 import com.shopify.sample.R;
@@ -181,11 +182,9 @@ public class DiscountActivity extends SampleActivity implements GoogleApiClient.
                 .build();
         SupportWalletFragment walletFragment = SupportWalletFragment.newInstance(walletFragmentOptions);
 
-        // The Merchant Name will be shown on the Android Pay dialogs, and should be representative of your shop
-        String merchantName = getString(R.string.merchant_name);
-
         // Create the Masked Wallet request
-        MaskedWalletRequest maskedWalletRequest = AndroidPayHelper.createMaskedWalletRequest(merchantName, checkout, BuildConfig.ANDROID_PAY_PUBLIC_KEY, true);
+        Shop shop = SampleApplication.getShop();
+        MaskedWalletRequest maskedWalletRequest = AndroidPayHelper.createMaskedWalletRequest(shop.getName(), checkout, BuildConfig.ANDROID_PAY_PUBLIC_KEY, true, shop.getShipsToCountries());
 
         WalletFragmentInitParams.Builder startParamsBuilder = WalletFragmentInitParams.newBuilder()
                 .setMaskedWalletRequest(maskedWalletRequest)
@@ -236,10 +235,12 @@ public class DiscountActivity extends SampleActivity implements GoogleApiClient.
      * Create a Google Api client for use in Android Pay
      */
     private void createGoogleAPIClient() {
-        googleApiClient = new GoogleApiClient.Builder(this)
+        if (AndroidPayHelper.hasGooglePlayServices(this)) {
+            googleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(Wallet.API, new Wallet.WalletOptions.Builder().build())
                 .enableAutoManage(this, this)
                 .build();
+        }
     }
 
     @Override

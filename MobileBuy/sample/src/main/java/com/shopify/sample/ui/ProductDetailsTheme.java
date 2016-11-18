@@ -32,7 +32,8 @@ import android.graphics.drawable.Drawable;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.shopify.buy.R;
+import com.shopify.sample.R;
+
 
 /**
  * Describes the colors and backgrounds to use for the {@link ProductDetailsFragmentView}.

@@ -82,12 +82,20 @@ final class BuyClientDefault implements BuyClient {
         final CustomerToken customerToken,
         final Scheduler callbackScheduler,
         final int productPageSize,
+        final int collectionPageSize,
+        final int productTagPageSize,
+        final ProductApiInterceptor productRequestInterceptor,
+        final ProductApiInterceptor productResponseInterceptor,
+        final CustomerApiInterceptor customerRequestInterceptor,
+        final CustomerApiInterceptor customerResponseInterceptor,
+        final StoreApiInterceptor storeRequestInterceptor,
+        final StoreApiInterceptor storeResponseInterceptor,
         final int networkRequestRetryMaxCount,
         final long networkRequestRetryDelayMs,
         final float networkRequestRetryBackoffMultiplier,
         final long httpConnectionTimeoutMs,
         final long httpReadWriteTimeoutMs,
-        final Interceptor... interceptors
+        final Interceptor... httpInterceptors
     ) {
         this.apiKey = apiKey;
         this.appId = appId;
@@ -119,8 +127,8 @@ final class BuyClientDefault implements BuyClient {
             .writeTimeout(httpReadWriteTimeoutMs, TimeUnit.MILLISECONDS)
             .addInterceptor(requestInterceptor);
 
-        if (interceptors != null) {
-            for (Interceptor interceptor : interceptors) {
+        if (httpInterceptors != null) {
+            for (Interceptor interceptor : httpInterceptors) {
                 builder.addInterceptor(interceptor);
             }
         }
@@ -136,12 +144,12 @@ final class BuyClientDefault implements BuyClient {
 
         final NetworkRetryPolicyProvider networkRetryPolicyProvider = new NetworkRetryPolicyProvider(networkRequestRetryMaxCount, networkRequestRetryDelayMs, networkRequestRetryBackoffMultiplier);
 
-        storeService = new StoreServiceDefault(retrofit, networkRetryPolicyProvider, callbackScheduler);
+        storeService = new StoreServiceDefault(retrofit, networkRetryPolicyProvider, callbackScheduler, storeRequestInterceptor, storeResponseInterceptor);
         checkoutService = new CheckoutServiceDefault(retrofit, apiKey, applicationName, networkRetryPolicyProvider, callbackScheduler);
-        customerService = new CustomerServiceDefault(retrofit, customerToken, networkRetryPolicyProvider, callbackScheduler);
+        customerService = new CustomerServiceDefault(retrofit, customerToken, networkRetryPolicyProvider, callbackScheduler, customerRequestInterceptor, customerResponseInterceptor);
         addressService = new AddressServiceDefault(retrofit, networkRetryPolicyProvider, callbackScheduler, customerService);
         orderService = new OrderServiceDefault(retrofit, networkRetryPolicyProvider, callbackScheduler, customerService);
-        productService = new ProductServiceDefault(retrofit, appId, productPageSize, networkRetryPolicyProvider, callbackScheduler);
+        productService = new ProductServiceDefault(retrofit, appId, productPageSize, collectionPageSize, productTagPageSize, networkRetryPolicyProvider, callbackScheduler, productRequestInterceptor, productResponseInterceptor);
     }
 
     @Override
@@ -462,6 +470,21 @@ final class BuyClientDefault implements BuyClient {
     }
 
     @Override
+    public int getProductRequestPageSize() {
+        return productService.getProductRequestPageSize();
+    }
+
+    @Override
+    public int getCollectionRequestPageSize() {
+        return productService.getCollectionRequestPageSize();
+    }
+
+    @Override
+    public int getProductTagRequestPageSize() {
+        return productService.getProductTagRequestPageSize();
+    }
+
+    @Override
     public CancellableTask getProducts(int page, Callback<List<Product>> callback) {
         return productService.getProducts(page, callback);
     }
@@ -507,6 +530,21 @@ final class BuyClientDefault implements BuyClient {
     }
 
     @Override
+    public Observable<List<Collection>> getCollections(int page) {
+        return productService.getCollections(page);
+    }
+
+    @Override
+    public CancellableTask getCollections(int page, List<Long> collectionIds, Callback<List<Collection>> callback) {
+        return productService.getCollections(page, collectionIds, callback);
+    }
+
+    @Override
+    public Observable<List<Collection>> getCollections(int page, List<Long> collectionIds) {
+        return productService.getCollections(page, collectionIds);
+    }
+
+    @Override
     public CancellableTask getCollectionByHandle(String handle, Callback<Collection> callback) {
         return productService.getCollectionByHandle(handle, callback);
     }
@@ -517,8 +555,13 @@ final class BuyClientDefault implements BuyClient {
     }
 
     @Override
-    public Observable<List<Collection>> getCollections(int page) {
-        return productService.getCollections(page);
+    public CancellableTask getProductTags(int page, Long collectionId, Callback<List<String>> callback) {
+        return productService.getProductTags(page, collectionId, callback);
+    }
+
+    @Override
+    public Observable<List<String>> getProductTags(int page, Long collectionId) {
+        return productService.getProductTags(page, collectionId);
     }
 
     @Override

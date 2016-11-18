@@ -47,9 +47,9 @@ public final class BuyClientBuilder {
 
     public static final int DEFAULT_PAGE_SIZE = 25;
 
-    public static final long DEFAULT_HTTP_CONNECTION_TIME_OUT_MS =  TimeUnit.SECONDS.toMillis(30);
+    public static final long DEFAULT_HTTP_CONNECTION_TIME_OUT_MS = TimeUnit.SECONDS.toMillis(30);
 
-    public static final long DEFAULT_HTTP_READ_WRITE_TIME_OUT_MS =  TimeUnit.SECONDS.toMillis(60);
+    public static final long DEFAULT_HTTP_READ_WRITE_TIME_OUT_MS = TimeUnit.SECONDS.toMillis(60);
 
     public static final long MIN_NETWORK_RETRY_DELAY = TimeUnit.MILLISECONDS.toMillis(500);
 
@@ -65,9 +65,16 @@ public final class BuyClientBuilder {
 
     private Scheduler callbackScheduler = AndroidSchedulers.mainThread();
 
-    private Interceptor[] interceptors;
+    private Interceptor[] httpInterceptors;
 
+    @Deprecated
     private int productPageSize = DEFAULT_PAGE_SIZE;
+
+    private int productRequestPageSize = -1;
+
+    private int collectionRequestPageSize = -1;
+
+    private int productTagRequestPageSize = -1;
 
     private int networkRequestRetryMaxCount;
 
@@ -78,6 +85,18 @@ public final class BuyClientBuilder {
     private long httpConnectionTimeoutMs = DEFAULT_HTTP_CONNECTION_TIME_OUT_MS;
 
     private long httpReadWriteTimeoutMs = DEFAULT_HTTP_READ_WRITE_TIME_OUT_MS;
+
+    private ProductApiInterceptor productRequestInterceptor;
+
+    private ProductApiInterceptor productResponseInterceptor;
+
+    private CustomerApiInterceptor customerRequestInterceptor;
+
+    private CustomerApiInterceptor customerResponseInterceptor;
+
+    private StoreApiInterceptor storeRequestInterceptor;
+
+    private StoreApiInterceptor storeResponseInterceptor;
 
     /**
      * Sets store domain url (usually {store name}.myshopify.com
@@ -127,7 +146,6 @@ public final class BuyClientBuilder {
      * Sets the customer token
      *
      * @param customerToken The token associated with a {@link Customer}
-     *
      * @return a {@link BuyClientBuilder}
      */
     public BuyClientBuilder customerToken(final CustomerToken customerToken) {
@@ -140,7 +158,6 @@ public final class BuyClientBuilder {
      * in main thread.
      *
      * @param callbackScheduler The {@link Scheduler} to use for API callbacks.
-     *
      * @return a {@link BuyClientBuilder}
      */
     public BuyClientBuilder callbackScheduler(final Scheduler callbackScheduler) {
@@ -149,13 +166,13 @@ public final class BuyClientBuilder {
     }
 
     /**
-     * Sets custom OkHttp interceptors
+     * Sets custom OkHttp httpInterceptors
      *
-     * @param interceptors Interceptors to add to the OkHttp client.
+     * @param httpInterceptors Interceptors to add to the OkHttp client.
      * @return a {@link BuyClientBuilder}
      */
-    public BuyClientBuilder interceptors(final Interceptor... interceptors) {
-        this.interceptors = interceptors;
+    public BuyClientBuilder httpInterceptors(final Interceptor... httpInterceptors) {
+        this.httpInterceptors = httpInterceptors;
         return this;
     }
 
@@ -168,9 +185,57 @@ public final class BuyClientBuilder {
      *
      * @param productPageSize The number of products to return in a page.
      * @return a {@link BuyClientBuilder}
+     *
+     * @deprecated use {@link #productRequestPageSize(int)} instead
      */
+    @Deprecated()
     public BuyClientBuilder productPageSize(final int productPageSize) {
         this.productPageSize = Math.max(Math.min(productPageSize, MAX_PAGE_SIZE), MIN_PAGE_SIZE);
+        return this;
+    }
+
+    /**
+     * Sets the page size used for paged product API queries. The number of {@link Product} to include in a page.
+     * The maximum page size is {@link #MAX_PAGE_SIZE} and the minimum page size is {@link #MIN_PAGE_SIZE}.
+     * If the page size is less than {@code MIN_PAGE_SIZE}, it will be set to {@code MIN_PAGE_SIZE}.
+     * If the page size is greater than MAX_PAGE_SIZE it will be set to {@code MAX_PAGE_SIZE}.
+     * The default value is {@link #DEFAULT_PAGE_SIZE}
+     *
+     * @param productRequestPageSize The number of products to return in a page.
+     * @return a {@link BuyClientBuilder}
+     */
+    public BuyClientBuilder productRequestPageSize(final int productRequestPageSize) {
+        this.productRequestPageSize = Math.max(Math.min(productRequestPageSize, MAX_PAGE_SIZE), MIN_PAGE_SIZE);
+        return this;
+    }
+
+    /**
+     * Sets the page size used for paged collection API queries. The number of {@link com.shopify.buy.model.Collection} to include in a page.
+     * The maximum page size is {@link #MAX_PAGE_SIZE} and the minimum page size is {@link #MIN_PAGE_SIZE}.
+     * If the page size is less than {@code MIN_PAGE_SIZE}, it will be set to {@code MIN_PAGE_SIZE}.
+     * If the page size is greater than MAX_PAGE_SIZE it will be set to {@code MAX_PAGE_SIZE}.
+     * The default value is {@link #DEFAULT_PAGE_SIZE}
+     *
+     * @param collectionRequestPageSize The number of collections to return in a page.
+     * @return a {@link BuyClientBuilder}
+     */
+    public BuyClientBuilder collectionRequestPageSize(final int collectionRequestPageSize) {
+        this.collectionRequestPageSize = Math.max(Math.min(collectionRequestPageSize, MAX_PAGE_SIZE), MIN_PAGE_SIZE);
+        return this;
+    }
+
+    /**
+     * Sets the page size used for paged product tag API queries. The number of tags to include in a page.
+     * The maximum page size is {@link #MAX_PAGE_SIZE} and the minimum page size is {@link #MIN_PAGE_SIZE}.
+     * If the page size is less than {@code MIN_PAGE_SIZE}, it will be set to {@code MIN_PAGE_SIZE}.
+     * If the page size is greater than MAX_PAGE_SIZE it will be set to {@code MAX_PAGE_SIZE}.
+     * The default value is {@link #DEFAULT_PAGE_SIZE}
+     *
+     * @param productTagRequestPageSize The number of product tags to return in a page.
+     * @return a {@link BuyClientBuilder}
+     */
+    public BuyClientBuilder productTagRequesPageSize(final int productTagRequestPageSize) {
+        this.productTagRequestPageSize = Math.max(Math.min(productTagRequestPageSize, MAX_PAGE_SIZE), MIN_PAGE_SIZE);
         return this;
     }
 
@@ -181,7 +246,6 @@ public final class BuyClientBuilder {
      * @param networkRequestRetryMaxCount          max count of retry attempts
      * @param networkRequestRetryDelayMs           delay between retry attempts in milliseconds
      * @param networkRequestRetryBackoffMultiplier backoff multiplier for next request attempts, can be used for "exponential backoff"
-     *
      * @return a {@link BuyClientBuilder}
      */
     public BuyClientBuilder networkRequestRetryPolicy(final int networkRequestRetryMaxCount, final long networkRequestRetryDelayMs, final float networkRequestRetryBackoffMultiplier) {
@@ -202,6 +266,72 @@ public final class BuyClientBuilder {
     public BuyClientBuilder httpTimeout(final long httpConnectionTimeoutMs, final long httpReadWriteTimeoutMs) {
         this.httpConnectionTimeoutMs = httpConnectionTimeoutMs;
         this.httpReadWriteTimeoutMs = httpReadWriteTimeoutMs;
+        return this;
+    }
+
+    /**
+     * Sets Product API request interceptor {@link ProductService}
+     *
+     * @param productRequestInterceptor interceptor
+     * @return {@link BuyClientBuilder}
+     */
+    public BuyClientBuilder productRequestInterceptor(final ProductApiInterceptor productRequestInterceptor) {
+        this.productRequestInterceptor = productRequestInterceptor;
+        return this;
+    }
+
+    /**
+     * Sets Product API response interceptor {@link ProductService}
+     *
+     * @param productResponseInterceptor interceptor
+     * @return {@link BuyClientBuilder}
+     */
+    public BuyClientBuilder productResponseInterceptor(final ProductApiInterceptor productResponseInterceptor) {
+        this.productResponseInterceptor = productResponseInterceptor;
+        return this;
+    }
+
+    /**
+     * Sets Customer API request interceptor {@link CustomerService}
+     *
+     * @param customerRequestInterceptor interceptor
+     * @return {@link BuyClientBuilder}
+     */
+    public BuyClientBuilder customerRequestInterceptor(final CustomerApiInterceptor customerRequestInterceptor) {
+        this.customerRequestInterceptor = customerRequestInterceptor;
+        return this;
+    }
+
+    /**
+     * Sets Customer API response interceptor {@link CustomerService}
+     *
+     * @param customerResponseInterceptor interceptor
+     * @return {@link BuyClientBuilder}
+     */
+    public BuyClientBuilder customerResponseInterceptor(final CustomerApiInterceptor customerResponseInterceptor) {
+        this.customerResponseInterceptor = customerResponseInterceptor;
+        return this;
+    }
+
+    /**
+     * Sets Store API response interceptor {@link StoreService}
+     *
+     * @param storeRequestInterceptor interceptor
+     * @return {@link BuyClientBuilder}
+     */
+    public BuyClientBuilder storeRequestInterceptor(final StoreApiInterceptor storeRequestInterceptor) {
+        this.storeRequestInterceptor = storeRequestInterceptor;
+        return this;
+    }
+
+    /**
+     * Sets Store API response interceptor {@link StoreService}
+     *
+     * @param storeResponseInterceptor interceptor
+     * @return {@link BuyClientBuilder}
+     */
+    public BuyClientBuilder storeResponseInterceptor(final StoreApiInterceptor storeResponseInterceptor) {
+        this.storeResponseInterceptor = storeResponseInterceptor;
         return this;
     }
 
@@ -240,13 +370,21 @@ public final class BuyClientBuilder {
             shopDomain,
             customerToken,
             callbackScheduler,
-            productPageSize,
+            productRequestPageSize > 0 ? productRequestPageSize : productPageSize,
+            collectionRequestPageSize > 0 ? collectionRequestPageSize : productPageSize,
+            productTagRequestPageSize > 0 ? productTagRequestPageSize : productPageSize,
+            productRequestInterceptor,
+            productResponseInterceptor,
+            customerRequestInterceptor,
+            customerResponseInterceptor,
+            storeRequestInterceptor,
+            storeResponseInterceptor,
             networkRequestRetryMaxCount,
             networkRequestRetryDelayMs,
             networkRequestRetryBackoffMultiplier,
             httpConnectionTimeoutMs,
             httpReadWriteTimeoutMs,
-            interceptors
+            httpInterceptors
         );
     }
 }

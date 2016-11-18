@@ -44,6 +44,10 @@ public class TestData {
         return data.get("collection_id").getAsLong();
     }
 
+    public Long getCollectionIdWithoutTags() {
+        return data.get("collection_id_without_tags").getAsLong();
+    }
+
     public Long getProductId() {
         return data.get("product_ids").getAsJsonArray().get(0).getAsLong();
     }

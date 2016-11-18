@@ -82,6 +82,8 @@ public class SampleApplication extends Application {
         return customer;
     }
 
+    public static Shop getShop() { return instance.shop; }
+
     public static void setCustomer(Customer customer) {
         SampleApplication.customer = customer;
     }
@@ -136,7 +138,7 @@ public class SampleApplication extends Application {
             .apiKey(shopifyApiKey)
             .appId(shopifyAppId)
             .applicationName(applicationName)
-            .interceptors(logging)
+            .httpInterceptors(logging)
             .networkRequestRetryPolicy(3, TimeUnit.MILLISECONDS.toMillis(200), 1.5f)
             .build();
 
@@ -279,10 +281,6 @@ public class SampleApplication extends Application {
 
     public Checkout getCheckout() {
         return checkout;
-    }
-
-    public Shop getShop() {
-        return shop;
     }
 
     public MaskedWallet getMaskedWallet() {

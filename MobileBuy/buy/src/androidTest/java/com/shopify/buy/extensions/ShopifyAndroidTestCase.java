@@ -27,6 +27,12 @@ import rx.schedulers.Schedulers;
  */
 public class ShopifyAndroidTestCase {
 
+    public static int PRODUCT_PAGE_SIZE = 50;
+
+    public static int COLLECTION_PAGE_SIZE = 59;
+
+    public static int PRODUCT_TAG_PAGE_SIZE = 69;
+
     @Rule
     public TestName name = new TestName();
 
@@ -80,16 +86,18 @@ public class ShopifyAndroidTestCase {
             .appId(appId)
             .applicationName(applicationName)
             .callbackScheduler(Schedulers.immediate())
-            .productPageSize(50)
+            .productRequestPageSize(PRODUCT_PAGE_SIZE)
+            .collectionRequestPageSize(COLLECTION_PAGE_SIZE)
+            .productTagRequesPageSize(PRODUCT_TAG_PAGE_SIZE)
             .httpTimeout(TimeUnit.SECONDS.toMillis(60), TimeUnit.SECONDS.toMillis(60))
             .networkRequestRetryPolicy(1, 100, 1);
 
         if (USE_MOCK_RESPONSES) {
-            buyClientBuilder.interceptors(new MockResponder(context), new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY));
+            buyClientBuilder.httpInterceptors(new MockResponder(context), new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY));
         } else if (GENERATE_MOCK_RESPONSES) {
-            buyClientBuilder.interceptors(new MockResponseGenerator(context), new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY));
+            buyClientBuilder.httpInterceptors(new MockResponseGenerator(context), new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY));
         } else {
-            buyClientBuilder.interceptors(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY));
+            buyClientBuilder.httpInterceptors(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY));
         }
 
         buyClient = buyClientBuilder.build();

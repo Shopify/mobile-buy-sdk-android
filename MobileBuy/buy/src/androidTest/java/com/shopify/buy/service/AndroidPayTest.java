@@ -30,6 +30,7 @@ package com.shopify.buy.service;
 import android.support.test.runner.AndroidJUnit4;
 import android.util.Base64;
 
+import com.google.android.gms.identity.intents.model.CountrySpecification;
 import com.google.android.gms.identity.intents.model.UserAddress;
 import com.google.android.gms.wallet.Cart;
 import com.google.android.gms.wallet.FullWallet;
@@ -59,8 +60,12 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.security.MessageDigest;
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 @RunWith(AndroidJUnit4.class)
 public class AndroidPayTest extends ShopifyAndroidTestCase {
@@ -79,6 +84,8 @@ public class AndroidPayTest extends ShopifyAndroidTestCase {
 
     private Shop shop;
 
+    private Shop shopWithWildcardShipping;
+
     private LineItem lineItem1;
 
     private LineItem lineItem2;
@@ -90,8 +97,26 @@ public class AndroidPayTest extends ShopifyAndroidTestCase {
 
         currencyFormatter = CurrencyFormatter.getFormatter(Locale.CANADA, CURRENCY, false, false, true);
 
+        final List<String> shipsToCountries = new ArrayList<>();
+        shipsToCountries.add("US");
+        shipsToCountries.add("GB");
+        shipsToCountries.add("CA");
+
+        final List<String> shipsToCountriesWithWildCard = new ArrayList<>();
+        shipsToCountriesWithWildCard.add("US");
+        shipsToCountriesWithWildCard.add("GB");
+        shipsToCountriesWithWildCard.add("CA");
+        shipsToCountriesWithWildCard.add("*");
+
         shop = Mockito.mock(Shop.class);
+        Mockito.when(shop.getName()).thenReturn("My Test Shop shipping to US, UK, CA");
         Mockito.when(shop.getCurrency()).thenReturn("CAD");
+        Mockito.when(shop.getShipsToCountries()).thenReturn(shipsToCountries);
+
+        shopWithWildcardShipping = Mockito.mock(Shop.class);
+        Mockito.when(shopWithWildcardShipping.getName()).thenReturn("My Test Shop shipping everywhere");
+        Mockito.when(shopWithWildcardShipping.getCurrency()).thenReturn("CAD");
+        Mockito.when(shopWithWildcardShipping.getShipsToCountries()).thenReturn(shipsToCountriesWithWildCard);
 
         lineItem1 = Mockito.mock(LineItem.class);
         Mockito.when(lineItem1.getTitle()).thenReturn("lineItem1");
@@ -141,6 +166,7 @@ public class AndroidPayTest extends ShopifyAndroidTestCase {
     }
 
     @Test
+    @Deprecated
     public void testCreateMaskedWalletRequest() {
         final Checkout checkout = Mockito.mock(Checkout.class);
         Mockito.doReturn(Arrays.asList(lineItem1, lineItem2)).when(checkout).getLineItems();
@@ -153,6 +179,53 @@ public class AndroidPayTest extends ShopifyAndroidTestCase {
         Assert.assertEquals("merchantName", request.getMerchantName());
         Assert.assertEquals(CURRENCY, request.getCurrencyCode());
         Assert.assertEquals(checkout.getPaymentDue(), request.getEstimatedTotalPrice());
+    }
+
+    @Test
+    public void testCreateMaskedWalletRequestWithoutWildcard() {
+        final Checkout checkout = Mockito.mock(Checkout.class);
+        Mockito.doReturn(Arrays.asList(lineItem1, lineItem2)).when(checkout).getLineItems();
+        Mockito.doReturn(CURRENCY).when(checkout).getCurrency();
+        Mockito.doReturn(currencyFormatter.format(LINE_ITEM_TOTAL_PRICE_1 + LINE_ITEM_TOTAL_PRICE_2)).when(checkout).getPaymentDue();
+        Mockito.doReturn(true).when(checkout).isRequiresShipping();
+
+        final MaskedWalletRequest request = AndroidPayHelper.createMaskedWalletRequest(shop.getName(), checkout, "ANDROID_PAY_PUBLIC_KEY", true, shop.getShipsToCountries());
+        assertWalletCart(request.getCart());
+        Assert.assertEquals(shop.getName(), request.getMerchantName());
+        Assert.assertEquals(CURRENCY, request.getCurrencyCode());
+        Assert.assertEquals(shop.getShipsToCountries().size(), request.getAllowedCountrySpecificationsForShipping().size());
+        Assert.assertEquals(convertToCountryCodes(request.getAllowedCountrySpecificationsForShipping()), new HashSet<>(shop.getShipsToCountries()));
+        Assert.assertEquals(checkout.getPaymentDue(), request.getEstimatedTotalPrice());
+    }
+
+    @Test
+    public void testCreateMaskedWalletRequestWithWildcard() {
+        final Checkout checkout = Mockito.mock(Checkout.class);
+        Mockito.doReturn(Arrays.asList(lineItem1, lineItem2)).when(checkout).getLineItems();
+        Mockito.doReturn(CURRENCY).when(checkout).getCurrency();
+        Mockito.doReturn(currencyFormatter.format(LINE_ITEM_TOTAL_PRICE_1 + LINE_ITEM_TOTAL_PRICE_2)).when(checkout).getPaymentDue();
+        Mockito.doReturn(true).when(checkout).isRequiresShipping();
+
+        final MaskedWalletRequest request = AndroidPayHelper.createMaskedWalletRequest(shopWithWildcardShipping.getName(), checkout, "ANDROID_PAY_PUBLIC_KEY", true, shopWithWildcardShipping.getShipsToCountries());
+        assertWalletCart(request.getCart());
+        Assert.assertEquals(shopWithWildcardShipping.getName(), request.getMerchantName());
+        Assert.assertEquals(CURRENCY, request.getCurrencyCode());
+
+        List<String> expectedShipsToCountries = new ArrayList<>(Arrays.asList(Locale.getISOCountries()));
+        expectedShipsToCountries.removeAll(Arrays.asList(AndroidPayHelper.UNSUPPORTED_COUNTRIES_FOR_SHIPPING));
+
+        Assert.assertEquals(new HashSet<>(expectedShipsToCountries), convertToCountryCodes(request.getAllowedCountrySpecificationsForShipping()));
+        Assert.assertEquals(expectedShipsToCountries.size(), request.getAllowedCountrySpecificationsForShipping().size());
+        Assert.assertEquals(checkout.getPaymentDue(), request.getEstimatedTotalPrice());
+    }
+
+    private Set<String> convertToCountryCodes(List<CountrySpecification> countrySpecifications) {
+        Set<String> countryCodes = new HashSet<>();
+
+        for (CountrySpecification countrySpecification : countrySpecifications) {
+            countryCodes.add(countrySpecification.getCountryCode());
+        }
+        return countryCodes;
     }
 
     @Test
@@ -304,12 +377,16 @@ public class AndroidPayTest extends ShopifyAndroidTestCase {
         final Field paymentTypeField = Class.forName("com.shopify.buy.model.PaymentToken$Wrapper").getDeclaredField("type");
         paymentTypeField.setAccessible(true);
 
+        final Field paymentSourceField = Class.forName("com.shopify.buy.model.PaymentToken$Wrapper").getDeclaredField("source");
+        paymentSourceField.setAccessible(true);
+
         final Field paymentTokenWrapperField = PaymentToken.class.getDeclaredField("wrapper");
         paymentTokenWrapperField.setAccessible(true);
         final Object paymentTokenWrapper = paymentTokenWrapperField.get(paymentToken);
 
         Assert.assertEquals("android_pay", paymentTypeField.get(paymentTokenWrapper));
         Assert.assertEquals(paymentMethodToken.getToken(), paymentDataField.get(paymentTokenWrapper));
+        Assert.assertEquals("sdk", paymentSourceField.get(paymentTokenWrapper));
 
         final MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
         final byte[] digest = messageDigest.digest("androidPayPublicKey".getBytes("UTF-8"));

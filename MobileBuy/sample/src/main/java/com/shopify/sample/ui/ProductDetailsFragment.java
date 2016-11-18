@@ -42,7 +42,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.shopify.buy.R;
 import com.shopify.buy.customTabs.CustomTabActivityHelper;
 import com.shopify.buy.dataprovider.BuyClient;
 import com.shopify.buy.dataprovider.BuyClientBuilder;
@@ -55,6 +54,7 @@ import com.shopify.buy.model.ProductVariant;
 import com.shopify.buy.model.Shop;
 import com.shopify.buy.utils.CurrencyFormatter;
 import com.shopify.sample.BuildConfig;
+import com.shopify.sample.R;
 
 import java.text.NumberFormat;
 import java.util.Locale;
@@ -227,7 +227,7 @@ public class ProductDetailsFragment extends Fragment {
                 .apiKey(apiKey)
                 .appId(appId)
                 .applicationName(applicationName)
-                .interceptors(logging)
+                .httpInterceptors(logging)
                 .build();
     }
 

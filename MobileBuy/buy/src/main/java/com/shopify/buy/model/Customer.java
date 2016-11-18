@@ -26,15 +26,8 @@ package com.shopify.buy.model;
 
 import android.text.TextUtils;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParseException;
 import com.google.gson.annotations.SerializedName;
-import com.shopify.buy.dataprovider.BuyClientUtils;
 
-import java.lang.reflect.Type;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -42,55 +35,59 @@ import java.util.Set;
 
 public class Customer extends ShopifyObject {
 
-    private String email;
+    protected String email;
 
     @SerializedName("accepts_marketing")
-    private Boolean acceptsMarketing;
+    protected Boolean acceptsMarketing;
 
     @SerializedName("created_at")
-    private Date createdAtDate;
+    protected Date createdAtDate;
 
     @SerializedName("updated_at")
-    private Date updatedAtDate;
+    protected Date updatedAtDate;
 
     @SerializedName("first_name")
-    private String firstName;
+    protected String firstName;
 
     @SerializedName("last_name")
-    private String lastName;
+    protected String lastName;
 
     @SerializedName("orders_count")
-    private Long ordersCount;
+    protected Long ordersCount;
 
-    private String state;
+    protected String state;
 
     @SerializedName("total_spent")
-    private String totalSpent;
+    protected String totalSpent;
 
-    private String note;
+    @Deprecated
+    protected String note;
 
     @SerializedName("verified_email")
-    private Boolean verifiedEmail;
+    protected Boolean verifiedEmail;
 
     @SerializedName("multipass_identifier")
-    private String multipassIdentifier;
+    protected String multipassIdentifier;
 
     @SerializedName("tax_exempt")
-    private Boolean taxExempt;
+    protected Boolean taxExempt;
 
-    private String tags;
-    private Set<String> tagSet;
+    @Deprecated
+    protected String tags;
+
+    @Deprecated
+    private Set<String> tagSet = new HashSet<>();
 
     @SerializedName("last_order_id")
-    private Long lastOrderId;
+    protected Long lastOrderId;
 
     @SerializedName("last_order_name")
-    private String lastOrderName;
+    protected String lastOrderName;
 
     private List<Address> addresses;
 
     @SerializedName("default_address")
-    private Address defaultAddress;
+    protected Address defaultAddress;
 
     @Override
     public Long getId() {
@@ -162,7 +159,10 @@ public class Customer extends ShopifyObject {
 
     /**
      * @return A note about the customer.
+     *
+     * @deprecated This field is never returned from the server and will be empty.
      */
+    @Deprecated
     public String getNote() {
         return note;
     }
@@ -190,7 +190,10 @@ public class Customer extends ShopifyObject {
 
     /**
      * @return A list of additional categorizations that a customer can be tagged with.
+     *
+     * @deprecated This field is never returned by the server and will always be empty.
      */
+    @Deprecated
     public Set<String> getTags() {
         return tagSet;
     }
@@ -231,10 +234,20 @@ public class Customer extends ShopifyObject {
         this.addresses = addresses;
     }
 
+    /**
+     * @deprecated This field is read only on the server and updates will be ignored.
+     * @param taxExempt ignored
+     */
+    @Deprecated
     public void setTaxExempt(boolean taxExempt) {
         this.taxExempt = taxExempt;
     }
 
+    /**
+     * @deprecated This field is read only on the server and updates will be ignored.
+     * @param multipassIdentifier ignored
+     */
+    @Deprecated
     public void setMultipassIdentifier(String multipassIdentifier) {
         this.multipassIdentifier = multipassIdentifier;
     }
@@ -251,44 +264,23 @@ public class Customer extends ShopifyObject {
         this.lastName = lastName;
     }
 
+    /**
+     * @deprecated This field is read only on the server and updates will be ignored.
+     * @param note The note to set.
+     */
+    @Deprecated
     public void setNote(String note) {
         this.note = note;
     }
 
+    /**
+     * @deprecated This field is read only on the server and updates will be ignored.
+     * @param tags The set of tags to set.
+     */
+    @Deprecated
     public void setTags(Set<String> tags) {
         tagSet = tags;
         this.tags = TextUtils.join(",", tags);
-    }
-
-    public static class CustomerDeserializer implements JsonDeserializer<Customer> {
-        @Override
-        public Customer deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-            return fromJson(json.toString());
-        }
-    }
-
-    /**
-     * A Customer object created using the values in the JSON string.
-     *
-     * @param json The input json.
-     * @return A {@link Customer}
-     */
-    public static Customer fromJson(String json) {
-        Gson gson = BuyClientUtils.createDefaultGson(Customer.class);
-        Customer customer = gson.fromJson(json, Customer.class);
-
-        // Create the tagSet.
-        customer.tagSet = new HashSet<>();
-
-        // Populate the tagSet from the comma separated list.
-        if (!TextUtils.isEmpty(customer.tags)) {
-            for (String tag : customer.tags.split(",")) {
-                String myTag = tag.trim();
-                customer.tagSet.add(myTag);
-            }
-        }
-
-        return customer;
     }
 
 }

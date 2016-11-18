@@ -45,10 +45,13 @@ interface ProductRetrofitService {
     Observable<Response<CollectionListings>> getCollectionPage(@Path("appId") String appId, @Query("page") int page, @Query("limit") int pageSize);
 
     @GET("api/apps/{appId}/collection_listings.json")
+    Observable<Response<CollectionListings>> getCollections(@Path("appId") String appId, @Query("collection_ids") String collectionIds);
+
+    @GET("api/apps/{appId}/collection_listings.json")
     Observable<Response<CollectionListings>> getCollectionByHandle(@Path("appId") String appId, @Query("handle") String handle);
 
     @GET("api/apps/{appId}/product_listings/tags.json")
-    Observable<Response<ProductTagsWrapper>> getProductTagPage(@Path("appId") String appId, @Query("page") int page, @Query("limit") int pageSize);
+    Observable<Response<ProductTagsWrapper>> getProductTagPage(@Path("appId") String appId, @Query("page") int page, @Query("collection_id") Long collectionId, @Query("limit") int pageSize);
 
     @GET("api/apps/{appId}/product_listings.json")
     Observable<Response<ProductListings>> getProducts(@Path("appId") String appId, @Query("collection_id") Long collectionId, @Query("tag") String tags, @Query("sort_by") String sortOrder, @Query("page") int page, @Query("limit") int pageSize);

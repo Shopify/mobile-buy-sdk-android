@@ -17,7 +17,9 @@
     <dimen name="dialog_rounded_corner">2dp</dimen>
 
     <!--Custom Dimensions-->
-    <dimen name="product_details_indicator_height">3dp</dimen>
+    <dimen name="product_image_gallery_tab_indicator_height">3dp</dimen>
+    <dimen name="product_image_gallery_thumbnail_indicator_width">60dp</dimen>
+    <dimen name="product_image_gallery_thumbnail_indicator_height">60dp</dimen>
     <dimen name="dialog_title_view_gap">32dp</dimen>
     <dimen name="checkout_button_height">54dp</dimen>
     <dimen name="scroll_view_bottom_padding">110dp</dimen>
