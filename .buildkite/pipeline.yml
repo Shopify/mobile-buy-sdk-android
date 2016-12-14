@@ -2,20 +2,22 @@ steps:
    - 
     name: "Android Tests"
     command: "bundle install && bundle exec fastlane android tests"
-    artifact_paths: "/tmp/artifacts/**/*"
+    artifact_paths: "/tmp/artifacts"
     timeout_in_minutes: 15
-    agents: 
-      android: true
-      env: production
+    agents:
+      macstadium-scheduler: true
+    env:
+      TARGET_IMAGE: ubuntu
 
    - type: waiter
 
    - 
     name: "Android Release"
     command: "bundle install && bundle exec fastlane android release"
-    artifact_paths: "/tmp/artifacts/**/*"
+    artifact_paths: "/tmp/artifacts"
     timeout_in_minutes: 15
-    agents: 
-      android: true
-      env: production
+    agents:
+      macstadium-scheduler: true
+    env:
+      TARGET_IMAGE: ubuntu
 
