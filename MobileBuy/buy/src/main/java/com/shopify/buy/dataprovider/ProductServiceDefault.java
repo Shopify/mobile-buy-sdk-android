@@ -366,15 +366,26 @@ final class ProductServiceDefault implements ProductService {
         return getProductTagsObservable(page, null);
     }
 
-    private Observable<List<String>> getProductTagsObservable(int page, Long collectionId) {
-        return retrofitService
+    private Observable<List<String>> getProductTagsObservable(final int page, final Long collectionId) {
+        final Observable<List<String>> apiRequest = retrofitService
             .getProductTagPage(appId, page, collectionId, productTagPageSize)
             .retryWhen(networkRetryPolicyProvider.provide())
             .doOnNext(new RetrofitSuccessHttpStatusCodeHandler<>())
             .compose(new UnwrapRetrofitBodyTransformer<ProductTagsWrapper, List<ProductTag>>())
             .map(unwrapProductTags())
-            .onErrorResumeNext(new BuyClientExceptionHandler<List<String>>())
-            .observeOn(callbackScheduler);
+            .onErrorResumeNext(new BuyClientExceptionHandler<List<String>>());
+
+        return ApiInterceptWrapper.wrap(
+            apiRequest,
+            requestInterceptor,
+            responseInterceptor,
+            new ApiInterceptWrapper.InterceptorCall<ProductApiInterceptor, List<String>>() {
+                @Override
+                public Observable<List<String>> call(ProductApiInterceptor interceptor, Observable<List<String>> originalObservable) {
+                    return interceptor.getProductTags(page, collectionId, originalObservable);
+                }
+            }
+        ).observeOn(callbackScheduler);
     }
 
     @Override
