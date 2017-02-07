@@ -82,4 +82,14 @@ public interface ProductApiInterceptor {
      * @return modified or the same version of original request observable
      */
     Observable<List<Collection>> getCollections(int page, List<Long> collectionIds, Observable<List<Collection>> originalObservable);
+
+    /**
+     * Intercepts request to (@link com.shopify.buy.dataprovider.ProductService#getProductTags(int, Long)}
+     *
+     * @param page               the 1-based page index
+     * @param collectionId       the collectionId for the collection product tags to fetch
+     * @param originalObservable original request observable
+     * @return modified or the same version of original request observable
+     */
+    Observable<List<String>> getProductTags(int page, Long collectionId, Observable<List<String>> originalObservable);
 }
