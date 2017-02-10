@@ -1,7 +1,7 @@
 ![Mobile Buy SDK](http://s3.amazonaws.com/shopify-marketing_assets/static/mbsdk-github.png)
 
 [![GitHub license](https://img.shields.io/badge/license-MIT-lightgrey.svg)](https://github.com/Shopify/mobile-buy-sdk-android/blob/master/LICENSE)
-[![Build status](https://badge.buildkite.com/79fc5fd5079ed7e7f5316bbcd36e2f8101ff0b6ac99670c3ee.svg)](https://buildkite.com/shopify/mobile-buy-sdk-android)
+[![Build status](https://badge.buildkite.com/149efb293231822e041943f1d158d6975c819b67de6c6df3be.svg)](https://buildkite.com/shopify/mobile-buy-sdk-android-public)
 [![GitHub release](https://img.shields.io/github/release/shopify/mobile-buy-sdk-android.svg)](https://github.com/Shopify/mobile-buy-sdk-android/releases)
 
 # Mobile Buy SDK for Android
