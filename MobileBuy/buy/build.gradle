@@ -1,26 +1,16 @@
 apply plugin: 'com.android.library'
-apply plugin: 'jacoco-android'
 apply plugin: 'maven'
 apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
 apply plugin: 'maven-publish'
 
-def VERSION_NAME = '2.1.0'
+def VERSION_NAME = '3.0.0'
 
 buildscript {
     System.properties['com.android.build.gradle.overrideVersionCheck'] = 'true'
     repositories {
         jcenter()
     }
-    dependencies {
-        classpath 'com.dicedmelon.gradle:jacoco-android:0.1.1'
-    }
-}
-
-jacocoAndroidUnitTestReport {
-    csv.enabled false
-    html.enabled true
-    xml.enabled true
 }
 
 buildscript {
@@ -33,8 +23,8 @@ ext {
     bintrayRepo = 'shopify-android'
     bintrayName = 'mobile-buy-sdk'
 
-    publishedGroupId = 'com.shopify.mobilebuysdk'
-    libraryName = 'MobileBuySDK'
+    publishedGroupId = 'com.shopify.mobilebuysdk3'
+    libraryName = 'MobileBuySDK3'
     artifact = 'buy'
 
     libraryDescription = 'Shopify\'s Mobile Buy SDK makes it simple to sell physical products inside your mobile app.'
@@ -66,9 +56,6 @@ android {
     buildTypes {
         debug {
             buildConfigField 'okhttp3.logging.HttpLoggingInterceptor.Level', 'OKHTTP_LOG_LEVEL', 'okhttp3.logging.HttpLoggingInterceptor.Level.BODY'
-
-            // for legacy http support
-            useLibrary 'org.apache.http.legacy'
 
             // We pull the shop settings either from the Environment or a file called shop.properties at the root of the project.
             // Environment variables will take precedence, we will attempt to read those first.
@@ -203,17 +190,9 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.squareup.retrofit2:retrofit:2.0.1'
-    compile 'com.squareup.okhttp3:okhttp-urlconnection:3.2.0'
     compile 'com.squareup.okhttp3:logging-interceptor:3.2.0'
-    compile 'com.squareup.retrofit2:converter-gson:2.0.1'
 
     compile 'com.google.android.gms:play-services-wallet:9.8.0'
-
-    compile 'com.android.support:customtabs:24.0.0'
-
-    compile 'com.squareup.retrofit2:adapter-rxjava:2.0.1'
-    compile 'io.reactivex:rxandroid:1.0.1'
 
     androidTestCompile 'org.mockito:mockito-core:1.9.5'
     androidTestCompile 'com.google.dexmaker:dexmaker:1.1'
