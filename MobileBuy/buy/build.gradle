@@ -4,49 +4,14 @@ apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
 apply plugin: 'maven-publish'
 
-def VERSION_NAME = '3.0.0'
-
-buildscript {
-    System.properties['com.android.build.gradle.overrideVersionCheck'] = 'true'
-    repositories {
-        jcenter()
-    }
-}
-
-buildscript {
-    System.properties['com.android.build.gradle.overrideVersionCheck'] = 'true'
-}
-
-// Params for bintrayUpload
-ext {
-    bintrayOrg = 'shopify'
-    bintrayRepo = 'shopify-android'
-    bintrayName = 'mobile-buy-sdk'
-
-    publishedGroupId = 'com.shopify.mobilebuysdk3'
-    libraryName = 'MobileBuySDK3'
-    artifact = 'buy'
-
-    libraryDescription = 'Shopify\'s Mobile Buy SDK makes it simple to sell physical products inside your mobile app.'
-
-    siteUrl = 'https://github.com/Shopify/mobile-buy-sdk-android'
-    gitUrl = 'https://github.com/Shopify/mobile-buy-sdk-android.git'
-
-    libraryVersion = VERSION_NAME
-
-    licenseName = 'The MIT License'
-    licenseUrl = 'https://opensource.org/licenses/MIT'
-    allLicenses = ["MIT"]
-}
-
 android {
-    compileSdkVersion 24
-    buildToolsVersion "24.0.1"
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
     com.android.ddmlib.DdmPreferences.setTimeOut(60000) // https://code.google.com/p/android/issues/detail?id=104305
 
     defaultConfig {
-        minSdkVersion 14
-        targetSdkVersion 24
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
         versionName VERSION_NAME
         version VERSION_NAME
 
@@ -121,7 +86,7 @@ android {
         variant.outputs.each { output ->
             def outputFile = output.outputFile
             if (outputFile != null && outputFile.name.endsWith('.aar')) {
-                def fileName = "${archivesBaseName}-${version}.aar"
+                def fileName = "${archivesBaseName}-${VERSION_NAME}.aar"
                 output.outputFile = new File(outputFile.parent, fileName)
             }
         }
@@ -168,7 +133,7 @@ android {
                 }
 
                 from("./build/outputs/aar") {
-                    include "buy-" + version + ".aar"
+                    include "buy-" + VERSION_NAME + ".aar"
                 }
 
                 from("../..") {
@@ -176,7 +141,7 @@ android {
                     include "NOTICE"
                 }
 
-                into(baseName + "-" + version)
+                into(baseName + "-" + VERSION_NAME)
             }
         }
     }
@@ -189,15 +154,14 @@ android {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.squareup.okhttp3:logging-interceptor:3.2.0'
-
-    compile 'com.google.android.gms:play-services-wallet:9.8.0'
+    compile dep.okhttp
+    compile dep.okhttpLogging
+    compile dep.androidSupportAnnotations
+    compile dep.playServicesWallet
 
     androidTestCompile 'org.mockito:mockito-core:1.9.5'
     androidTestCompile 'com.google.dexmaker:dexmaker:1.1'
     androidTestCompile 'com.google.dexmaker:dexmaker-mockito:1.1'
-    androidTestCompile 'com.android.support:support-annotations:24.0.0'
     androidTestCompile 'com.android.support.test:runner:0.5'
     androidTestCompile 'com.android.support.test:rules:0.5'
 }
@@ -213,43 +177,37 @@ Steps:
 gradlew install
 gradlew bintrayUpload
 */
-
-group = publishedGroupId
-
 install {
     repositories.mavenInstaller {
         // This generates POM.xml with proper parameters
         pom {
             project {
-                packaging 'aar'
-                groupId publishedGroupId
-                artifactId artifact
+                packaging POM_PACKAGING
+                groupId POM_GROUP_ID
+                artifactId POM_ARTIFACT_ID
 
                 // Add your description here
-                name libraryName
-                description libraryDescription
-                url siteUrl
+                name POM_NAME
+                description POM_DESCRIPTION
+                url POM_WEB_URL
 
                 // Set your license
                 licenses {
                     license {
-                        name licenseName
-                        url licenseUrl
+                        name POM_LICENSE
+                        url POM_LICENSE_URL
                     }
                 }
 
                 scm {
-                    connection gitUrl
-                    developerConnection gitUrl
-                    url siteUrl
-
+                    connection POM_DEVELOPER_URL
+                    developerConnection POM_DEVELOPER_URL
+                    url POM_WEB_URL
                 }
             }
         }
     }
 }
-
-version = VERSION_NAME
 
 task sourcesJar(type: Jar) {
     from android.sourceSets.main.java.srcDirs
@@ -272,18 +230,17 @@ bintray {
 
     configurations = ['archives']
     pkg {
-        userOrg = bintrayOrg
-        repo = bintrayRepo
-        name = bintrayName
-        desc = libraryDescription
-        websiteUrl = siteUrl
-        vcsUrl = gitUrl
-        licenses = allLicenses
+        userOrg = POM_DEVELOPER_NAME
+        repo = POM_REPO
+        name = POM_NAME
+        desc = POM_DESCRIPTION
+        websiteUrl = POM_WEB_URL
+        vcsUrl = POM_DEVELOPER_URL
+        licenses = [POM_LICENSE]
         publish = true
         publicDownloadNumbers = true
         version {
-            desc = libraryDescription
+            desc = POM_DESCRIPTION
         }
     }
-
 }

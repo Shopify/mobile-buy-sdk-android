@@ -1,4 +1,57 @@
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
+ext {
+    kotlinVersion = '1.0.6'
+
+    minSdkVersion = 14
+    compileSdkVersion = 25
+    targetSdkVersion = 24
+    buildToolsVersion = '25.0.2'
+    androidSupportVersion = '25.1.1'
+    okHttpVersion = '3.6.0'
+    playServicesVersion = '9.8.0'
+
+    dep = [
+        androidPlugin            : "com.android.tools.build:gradle:2.3.0-beta3",
+        androidSupportAnnotations: "com.android.support:support-annotations:$androidSupportVersion",
+        androidSupportDesign     : "com.android.support:design:$androidSupportVersion",
+        androidSupportV4         : "com.android.support:support-v4:$androidSupportVersion",
+        androidSupportV7         : "com.android.support:appcompat-v7:$androidSupportVersion",
+        okhttp                   : "com.squareup.okhttp3:logging-interceptor:$okHttpVersion",
+        okhttpLogging            : "com.squareup.okhttp3:logging-interceptor:$okHttpVersion",
+        playServicesWallet       : "com.google.android.gms:play-services-wallet:$playServicesVersion"
+    ]
+}
+
+subprojects {
+    buildscript {
+        System.properties['com.android.build.gradle.overrideVersionCheck'] = 'true'
+        repositories {
+            jcenter()
+            mavenCentral()
+        }
+    }
+
+    apply plugin: 'checkstyle'
+
+    checkstyle {
+        configFile rootProject.file('checkstyle.xml')
+        configProperties = ['checkstyle.cache.file': rootProject.file('build/checkstyle.cache')]
+        ignoreFailures false
+        showViolations true
+    }
+
+    task checkstyle(type: Checkstyle) {
+        source 'src/main/java'
+        include '**/*.java'
+
+        classpath = files()
+    }
+
+    afterEvaluate {
+        if (project.tasks.findByName('check')) {
+            check.dependsOn('checkstyle')
+        }
+    }
+}
 
 buildscript {
     System.properties['com.android.build.gradle.overrideVersionCheck'] = 'true'
@@ -7,7 +60,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.2.1'
+        classpath 'com.android.tools.build:gradle:2.2.3'
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.2'
         classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
         // NOTE: Do not place your application dependencies here; they belong
