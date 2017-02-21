@@ -1,51 +1,33 @@
 package com.shopify.buy3;
 
-import com.google.gson.Gson;
-import com.shopify.graphql.support.TopLevelResponse;
-
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
 import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
-import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
 
-public final class GraphClient {
-  private static final MediaType GRAPHQL_MEDIA_TYPE = MediaType.parse("application/graphql; charset=utf-8");
-
-  private final HttpUrl endpointUrl;
-  private final OkHttpClient httpClient;
+public final class GraphClient implements GraphCallFactory {
+  private final HttpUrl serverUrl;
+  private final Call.Factory httpCallFactory;
 
   private GraphClient(final String shopDomain, final String apiKey, final String applicationName, final long httpConnectionTimeoutMs,
                       final long httpReadWriteTimeoutMs, final Interceptor[] httpInterceptors) {
-    this.endpointUrl = HttpUrl.parse("https://" + shopDomain + "/api/graphql");
-    this.httpClient = buildHttpClient(apiKey, applicationName, httpConnectionTimeoutMs, httpReadWriteTimeoutMs, httpInterceptors);
+    this.serverUrl = HttpUrl.parse("https://" + shopDomain + "/api/graphql");
+    this.httpCallFactory = buildHttpCallFactory(apiKey, applicationName, httpConnectionTimeoutMs, httpReadWriteTimeoutMs, httpInterceptors);
   }
 
-  public Cancelable queryGraph(final APISchema.QueryRootQuery query, final QueryCallback callback) {
-    final Call call = createGraphQLCall(query.toString());
-    call.enqueue(new OperationResponseCallback<>(
-      this::parseTopLevelResponse,
-      response -> new APISchema.QueryRoot(response.getData()),
-      callback));
-    return call::cancel;
+  @Override public QueryGraphCall queryGraph(final APISchema.QueryRootQuery query) {
+    return new RealQueryGraphCall(query, serverUrl, httpCallFactory);
   }
 
-  public Cancelable mutateGraph(final APISchema.MutationQuery query, final MutationCallback callback) {
-    final Call call = createGraphQLCall(query.toString());
-    call.enqueue(new OperationResponseCallback<>(
-      this::parseTopLevelResponse,
-      response -> new APISchema.Mutation(response.getData()),
-      callback));
-    return call::cancel;
+  @Override public MutationGraphCall mutateGraph(final APISchema.MutationQuery query) {
+    return new RealMutationGraphCall(query, serverUrl, httpCallFactory);
   }
 
-  private OkHttpClient buildHttpClient(final String apiKey, final String applicationName, final long httpConnectionTimeoutMs,
-                                       final long httpReadWriteTimeoutMs, final Interceptor[] httpInterceptors) {
+  private OkHttpClient buildHttpCallFactory(final String apiKey, final String applicationName, final long httpConnectionTimeoutMs,
+                                            final long httpReadWriteTimeoutMs, final Interceptor[] httpInterceptors) {
     final Interceptor requestInterceptor = chain -> {
       final Request original = chain.request();
       final Request.Builder builder = original.newBuilder().method(original.method(), original.body());
@@ -70,21 +52,6 @@ public final class GraphClient {
     }
 
     return builder.build();
-  }
-
-  private Call createGraphQLCall(final String operation) {
-    RequestBody body = RequestBody.create(GRAPHQL_MEDIA_TYPE, operation);
-    Request request = new Request.Builder()
-      .url(endpointUrl)
-      .post(body)
-      .header("Accept", "application/json")
-      .header("Content-Type", "application/graphql")
-      .build();
-    return httpClient.newCall(request);
-  }
-
-  private TopLevelResponse parseTopLevelResponse(final Response response) {
-    return new Gson().fromJson(response.body().toString(), TopLevelResponse.class);
   }
 
   public static final class Builder {
