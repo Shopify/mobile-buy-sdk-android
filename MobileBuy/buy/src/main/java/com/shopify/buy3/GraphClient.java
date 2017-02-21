@@ -18,12 +18,12 @@ public final class GraphClient implements GraphCallFactory {
     this.httpCallFactory = buildHttpCallFactory(apiKey, applicationName, httpConnectionTimeoutMs, httpReadWriteTimeoutMs, httpInterceptors);
   }
 
-  @Override public QueryGraphCall queryGraph(final APISchema.QueryRootQuery query) {
-    return new RealQueryGraphCall(query, serverUrl, httpCallFactory);
+  @Override public GraphCall<APISchema.QueryRoot> queryGraph(final APISchema.QueryRootQuery query) {
+    return new RealGraphCall<>(query, serverUrl, httpCallFactory, response -> new APISchema.QueryRoot(response.getData()));
   }
 
-  @Override public MutationGraphCall mutateGraph(final APISchema.MutationQuery query) {
-    return new RealMutationGraphCall(query, serverUrl, httpCallFactory);
+  @Override public GraphCall<APISchema.Mutation> mutateGraph(final APISchema.MutationQuery query) {
+    return new RealGraphCall<>(query, serverUrl, httpCallFactory, response -> new APISchema.Mutation(response.getData()));
   }
 
   private OkHttpClient buildHttpCallFactory(final String apiKey, final String applicationName, final long httpConnectionTimeoutMs,

@@ -2,7 +2,7 @@ package com.shopify.buy3;
 
 public interface GraphCallFactory {
 
-  QueryGraphCall queryGraph(APISchema.QueryRootQuery query);
+  GraphCall<APISchema.QueryRoot> queryGraph(APISchema.QueryRootQuery query);
 
-  MutationGraphCall mutateGraph(APISchema.MutationQuery query);
+  GraphCall<APISchema.Mutation> mutateGraph(APISchema.MutationQuery query);
 }

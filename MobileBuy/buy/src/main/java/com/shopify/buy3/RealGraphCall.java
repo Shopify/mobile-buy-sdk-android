@@ -17,21 +17,24 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-abstract class RealGraphCall<T extends AbstractResponse<T>> implements GraphCall<T> {
+final class RealGraphCall<T extends AbstractResponse<T>> implements GraphCall<T> {
   private static final String ACCEPT_HEADER = "application/json";
   private static final String CONTENT_TYPE_HEADER = "application/graphql";
   private static final MediaType GRAPHQL_MEDIA_TYPE = MediaType.parse("application/graphql; charset=utf-8");
 
-  final Query query;
-  final HttpUrl serverUrl;
-  final Call.Factory httpCallFactory;
+  private final Query query;
+  private final HttpUrl serverUrl;
+  private final Call.Factory httpCallFactory;
+  private final ResponseConverter<T> responseConverter;
   private volatile Call httpCall;
   private boolean executed;
 
-  RealGraphCall(final Query query, final HttpUrl serverUrl, final Call.Factory httpCallFactory) {
+  RealGraphCall(final Query query, final HttpUrl serverUrl, final Call.Factory httpCallFactory,
+                final ResponseConverter<T> responseConverter) {
     this.query = query;
     this.serverUrl = serverUrl;
     this.httpCallFactory = httpCallFactory;
+    this.responseConverter = responseConverter;
   }
 
   @Override public void cancel() {
@@ -39,6 +42,11 @@ abstract class RealGraphCall<T extends AbstractResponse<T>> implements GraphCall
     if (call != null) {
       call.cancel();
     }
+  }
+
+  @SuppressWarnings("CloneDoesntCallSuperClone")
+  @NonNull @Override public GraphCall<T> clone() {
+    return new RealGraphCall<>(query, serverUrl, httpCallFactory, responseConverter);
   }
 
   @NonNull @Override public T execute() throws IOException, SchemaViolationError {
@@ -49,7 +57,7 @@ abstract class RealGraphCall<T extends AbstractResponse<T>> implements GraphCall
     httpCall = httpCall();
     Response response = httpCall.execute();
     TopLevelResponse topLevelResponse = parse(response);
-    return responseConverter().convert(topLevelResponse);
+    return responseConverter.convert(topLevelResponse);
   }
 
   @NonNull @Override public GraphCall<T> enqueue(@NonNull final Callback<T> callback) {
@@ -67,7 +75,7 @@ abstract class RealGraphCall<T extends AbstractResponse<T>> implements GraphCall
       @Override public void onResponse(final Call call, final Response response) throws IOException {
         try {
           TopLevelResponse topLevelResponse = parse(response);
-          callback.onResponse(responseConverter().convert(topLevelResponse));
+          callback.onResponse(responseConverter.convert(topLevelResponse));
         } catch (Exception e) {
           callback.onFailure(e);
         }
@@ -76,8 +84,6 @@ abstract class RealGraphCall<T extends AbstractResponse<T>> implements GraphCall
 
     return this;
   }
-
-  @NonNull abstract ResponseConverter<T> responseConverter();
 
   private Call httpCall() {
     RequestBody body = RequestBody.create(GRAPHQL_MEDIA_TYPE, query.toString());
