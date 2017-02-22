@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import com.shopify.graphql.support.AbstractResponse;
 
 public interface GraphCall<T extends AbstractResponse<T>> {
+
   void cancel();
 
   @NonNull GraphCall<T> clone();
