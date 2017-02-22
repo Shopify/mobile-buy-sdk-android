@@ -69,7 +69,7 @@ public final class GraphClient implements GraphCallFactory {
      * Sets store domain url (usually {store name}.myshopify.com
      *
      * @param shopDomain The domain for the shop.
-     * @return a {@link BuyClientBuilder}
+     * @return a {@link GraphClient.Builder}
      */
     public Builder shopDomain(final String shopDomain) {
       this.shopDomain = shopDomain;
@@ -80,7 +80,7 @@ public final class GraphClient implements GraphCallFactory {
      * Sets Shopify store api key
      *
      * @param apiKey The Api Key.
-     * @return a {@link BuyClientBuilder}
+     * @return a {@link GraphClient.Builder}
      */
     public Builder apiKey(final String apiKey) {
       this.apiKey = apiKey;
@@ -91,7 +91,7 @@ public final class GraphClient implements GraphCallFactory {
      * Sets Shopify store application name
      *
      * @param applicationName The application name.
-     * @return a {@link BuyClientBuilder}
+     * @return a {@link GraphClient.Builder}
      */
     public Builder applicationName(final String applicationName) {
       this.applicationName = applicationName;
@@ -102,7 +102,7 @@ public final class GraphClient implements GraphCallFactory {
      * Sets custom OkHttp httpInterceptors
      *
      * @param httpInterceptors Interceptors to add to the OkHttp client.
-     * @return a {@link BuyClientBuilder}
+     * @return a {@link GraphClient.Builder}
      */
     public Builder httpInterceptors(final Interceptor... httpInterceptors) {
       this.httpInterceptors = httpInterceptors;
@@ -115,7 +115,7 @@ public final class GraphClient implements GraphCallFactory {
      *
      * @param httpConnectionTimeoutMs default connect timeout for new connections in milliseconds
      * @param httpReadWriteTimeoutMs  default read/write timeout for new connections in milliseconds
-     * @return {@link BuyClientBuilder}
+     * @return {@link GraphClient.Builder}
      */
     public Builder httpTimeout(final long httpConnectionTimeoutMs, final long httpReadWriteTimeoutMs) {
       this.httpConnectionTimeoutMs = httpConnectionTimeoutMs;
