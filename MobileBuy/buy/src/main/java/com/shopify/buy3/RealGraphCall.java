@@ -2,7 +2,9 @@ package com.shopify.buy3;
 
 import android.support.annotation.NonNull;
 
-import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.stream.JsonReader;
 import com.shopify.graphql.support.AbstractResponse;
 import com.shopify.graphql.support.Query;
 import com.shopify.graphql.support.SchemaViolationError;
@@ -25,16 +27,16 @@ final class RealGraphCall<T extends AbstractResponse<T>> implements GraphCall<T>
   private final Query query;
   private final HttpUrl serverUrl;
   private final Call.Factory httpCallFactory;
-  private final ResponseConverter<T> responseConverter;
+  private final ResponseDataConverter<T> responseDataConverter;
   private volatile Call httpCall;
   private boolean executed;
 
   RealGraphCall(final Query query, final HttpUrl serverUrl, final Call.Factory httpCallFactory,
-                final ResponseConverter<T> responseConverter) {
+                final ResponseDataConverter<T> responseDataConverter) {
     this.query = query;
     this.serverUrl = serverUrl;
     this.httpCallFactory = httpCallFactory;
-    this.responseConverter = responseConverter;
+    this.responseDataConverter = responseDataConverter;
   }
 
   @Override public void cancel() {
@@ -46,18 +48,26 @@ final class RealGraphCall<T extends AbstractResponse<T>> implements GraphCall<T>
 
   @SuppressWarnings("CloneDoesntCallSuperClone")
   @NonNull @Override public GraphCall<T> clone() {
-    return new RealGraphCall<>(query, serverUrl, httpCallFactory, responseConverter);
+    return new RealGraphCall<>(query, serverUrl, httpCallFactory, responseDataConverter);
   }
 
-  @NonNull @Override public T execute() throws IOException, SchemaViolationError {
+  @NonNull @Override public GraphResponse<T> execute() throws GraphError {
     synchronized (this) {
       if (executed) throw new IllegalStateException("Already Executed");
       executed = true;
     }
     httpCall = httpCall();
-    Response response = httpCall.execute();
-    TopLevelResponse topLevelResponse = parse(response);
-    return responseConverter.convert(topLevelResponse);
+
+    Response response;
+    try {
+      response = httpCall.execute();
+    } catch (IOException e) {
+      throw GraphError.networkError(null, e);
+    }
+
+    checkResponse(response);
+
+    return parseResponse(response);
   }
 
   @NonNull @Override public GraphCall<T> enqueue(@NonNull final Callback<T> callback) {
@@ -69,15 +79,15 @@ final class RealGraphCall<T extends AbstractResponse<T>> implements GraphCall<T>
     httpCall = httpCall();
     httpCall.enqueue(new okhttp3.Callback() {
       @Override public void onFailure(final Call call, final IOException e) {
-        callback.onFailure(e);
+        callback.onFailure(GraphError.networkError(null, e));
       }
 
       @Override public void onResponse(final Call call, final Response response) throws IOException {
         try {
-          TopLevelResponse topLevelResponse = parse(response);
-          callback.onResponse(responseConverter.convert(topLevelResponse));
-        } catch (Exception e) {
-          callback.onFailure(e);
+          checkResponse(response);
+          callback.onResponse(parseResponse(response));
+        } catch (GraphError error) {
+          callback.onFailure(error);
         }
       }
     });
@@ -96,11 +106,33 @@ final class RealGraphCall<T extends AbstractResponse<T>> implements GraphCall<T>
     return httpCallFactory.newCall(request);
   }
 
-  private TopLevelResponse parse(final Response response) {
-    return new Gson().fromJson(response.body().toString(), TopLevelResponse.class);
+  private void checkResponse(final Response response) throws GraphError {
+    if (!response.isSuccessful()) {
+      throw GraphError.networkError(response, null);
+    }
   }
 
-  interface ResponseConverter<R extends AbstractResponse<R>> {
+  private GraphResponse<T> parseResponse(final Response response) throws GraphError {
+    TopLevelResponse topLevelResponse = parseTopLevelResponse(response);
+    try {
+      T data = responseDataConverter.convert(topLevelResponse);
+      return new GraphResponse<T>(data, topLevelResponse.getErrors());
+    } catch (Exception e) {
+      throw GraphError.parseError(response, e);
+    }
+  }
+
+  private TopLevelResponse parseTopLevelResponse(final Response response) throws GraphError {
+    try {
+      JsonReader reader = new JsonReader(response.body().charStream());
+      JsonObject root = (JsonObject) new JsonParser().parse(reader);
+      return new TopLevelResponse(root);
+    } catch (Exception e) {
+      throw GraphError.parseError(response, e);
+    }
+  }
+
+  interface ResponseDataConverter<R extends AbstractResponse<R>> {
     R convert(TopLevelResponse response) throws SchemaViolationError;
   }
 }
