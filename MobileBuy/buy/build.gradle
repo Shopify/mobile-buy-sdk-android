@@ -162,6 +162,7 @@ android {
 
     lintOptions {
         abortOnError false
+        disable 'APISchema'
     }
 }
 
