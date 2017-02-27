@@ -28,37 +28,39 @@ import android.app.Application;
 import android.text.TextUtils;
 
 import com.google.android.gms.wallet.WalletConstants;
+import com.shopify.buy3.GraphClient;
 import com.shopify.sample.BuildConfig;
 
+import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 
 /**
  * Application class that maintains instances of BuyClient and Checkout for the lifetime of the app.
  */
 public class SampleApplication extends Application {
-
   private static final String SHOP_PROPERTIES_INSTRUCTION =
     "\n\tAdd your shop credentials to a shop.properties file in the main app folder (e.g. 'app/shop.properties')."
       + "Include these keys:\n" + "\t\tSHOP_DOMAIN=<myshop>.myshopify.com\n"
       + "\t\tAPI_KEY=0123456789abcdefghijklmnopqrstuvw\n";
-
-  private static SampleApplication instance;
-
   public static final String ANDROID_PAY_FLOW = "com.shopify.sample.androidpayflow";
-
   // Use ENVIRONMENT_TEST for testing
   public static final int WALLET_ENVIRONMENT = WalletConstants.ENVIRONMENT_TEST;
+  private static SampleApplication instance;
+
+  private GraphClient graphClient;
 
   @Override
   public void onCreate() {
     super.onCreate();
-
     instance = this;
-
-    initializeBuyClient();
+    initializeGraphClient();
   }
 
-  private void initializeBuyClient() {
+  public static GraphClient graphClient() {
+    return instance.graphClient;
+  }
+
+  private void initializeGraphClient() {
     String shopUrl = BuildConfig.SHOP_DOMAIN;
     if (TextUtils.isEmpty(shopUrl)) {
       throw new IllegalArgumentException(SHOP_PROPERTIES_INSTRUCTION + "You must add 'SHOP_DOMAIN' entry in "
@@ -71,14 +73,14 @@ public class SampleApplication extends Application {
         + "app/shop.properties");
     }
 
-    String shopifyAppId = BuildConfig.APP_ID;
-    if (TextUtils.isEmpty(shopifyAppId)) {
-      throw new IllegalArgumentException(SHOP_PROPERTIES_INSTRUCTION + "You must populate the 'APP_ID' entry in "
-        + "app/shop.properties");
-    }
+    OkHttpClient httpClient = new OkHttpClient.Builder()
+      .addNetworkInterceptor(new HttpLoggingInterceptor().setLevel(BuildConfig.OKHTTP_LOG_LEVEL))
+      .build();
 
-    String applicationName = getPackageName();
-
-    final HttpLoggingInterceptor logging = new HttpLoggingInterceptor().setLevel(BuildConfig.OKHTTP_LOG_LEVEL);
+    graphClient = GraphClient.builder(this)
+      .shopDomain(BuildConfig.SHOP_DOMAIN)
+      .apiKey(BuildConfig.API_KEY)
+      .httpClient(httpClient)
+      .build();
   }
 }
