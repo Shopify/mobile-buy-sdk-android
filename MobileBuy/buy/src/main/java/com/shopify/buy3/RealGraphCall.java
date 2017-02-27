@@ -1,6 +1,8 @@
 package com.shopify.buy3;
 
+import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -71,6 +73,10 @@ final class RealGraphCall<T extends AbstractResponse<T>> implements GraphCall<T>
   }
 
   @NonNull @Override public GraphCall<T> enqueue(@NonNull final Callback<T> callback) {
+    return enqueue(callback, null);
+  }
+
+  @NonNull @Override public GraphCall<T> enqueue(@NonNull final Callback<T> callback, @Nullable final Handler handler) {
     synchronized (this) {
       if (executed) throw new IllegalStateException("Already Executed");
       executed = true;
@@ -79,15 +85,28 @@ final class RealGraphCall<T extends AbstractResponse<T>> implements GraphCall<T>
     httpCall = httpCall();
     httpCall.enqueue(new okhttp3.Callback() {
       @Override public void onFailure(final Call call, final IOException e) {
-        callback.onFailure(GraphError.networkError(null, e));
+        Runnable action = () -> callback.onFailure(GraphError.networkError(null, e));
+        if (handler != null) {
+          handler.post(action);
+        } else {
+          action.run();
+        }
       }
 
       @Override public void onResponse(final Call call, final Response response) throws IOException {
-        try {
-          checkResponse(response);
-          callback.onResponse(parseResponse(response));
-        } catch (GraphError error) {
-          callback.onFailure(error);
+        Runnable action = () -> {
+          try {
+            checkResponse(response);
+            callback.onResponse(parseResponse(response));
+          } catch (GraphError error) {
+            callback.onFailure(error);
+          }
+        };
+
+        if (handler != null) {
+          handler.post(action);
+        } else {
+          action.run();
         }
       }
     });
