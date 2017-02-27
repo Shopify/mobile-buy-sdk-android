@@ -10,6 +10,8 @@ import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 
+import static com.shopify.buy3.Utils.checkNotNull;
+
 public final class GraphClient {
   public static Builder builder(final Context context) {
     return new Builder(context);
@@ -51,6 +53,7 @@ public final class GraphClient {
      * @return a {@link GraphClient.Builder}
      */
     public Builder shopDomain(@NonNull final String shopDomain) {
+      checkNotNull(shopDomain, "shopDomain == null");
       this.shopDomain = shopDomain;
       return this;
     }
@@ -62,16 +65,21 @@ public final class GraphClient {
      * @return a {@link GraphClient.Builder}
      */
     public Builder apiKey(@NonNull final String apiKey) {
+      checkNotNull(apiKey, "apiKey == null");
       this.apiKey = apiKey;
       return this;
     }
 
     public Builder httpClient(@NonNull OkHttpClient httpClient) {
+      checkNotNull(httpClient, "httpClient == null");
       this.httpClient = httpClient;
       return this;
     }
 
     public GraphClient build() {
+      checkNotNull(shopDomain, "shopDomain == null");
+      checkNotNull(apiKey, "apiKey == null");
+
       Call.Factory httpCallFactory;
       if (httpClient == null) {
         OkHttpClient.Builder httpClientBuilder = new OkHttpClient.Builder()
