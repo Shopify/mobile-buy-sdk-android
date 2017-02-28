@@ -19,7 +19,7 @@
 
     <!-- Checks for Javadoc comments.                     -->
     <!-- See http://checkstyle.sf.net/config_javadoc.html -->
-    <!--module name="JavadocMethod"/-->
+    <!--<module name="JavadocMethod">-->
     <!--module name="JavadocType"/-->
     <!--module name="JavadocVariable"/-->
     <!--module name="JavadocStyle"/-->
@@ -51,7 +51,7 @@
     <!-- Checks for Size Violations.                    -->
     <!-- See http://checkstyle.sf.net/config_sizes.html -->
     <module name="LineLength">
-      <property name="max" value="120"/>
+      <property name="max" value="140"/>
     </module>
     <!--<module name="MethodLength"/>-->
     <!--module name="ParameterNumber"/-->
@@ -100,7 +100,9 @@
     <!--module name="InnerAssignment"/-->
     <!--module name="MagicNumber"/-->
     <module name="MissingSwitchDefault"/>
-    <module name="RedundantThrows"/>
+    <module name="RedundantThrows">
+      <property name="suppressLoadErrors" value="true"/>
+    </module>
     <module name="SimplifyBooleanExpression"/>
     <module name="SimplifyBooleanReturn"/>
 

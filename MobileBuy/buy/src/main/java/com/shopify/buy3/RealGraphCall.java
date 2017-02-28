@@ -147,7 +147,7 @@ final class RealGraphCall<T extends AbstractResponse<T>> implements GraphCall<T>
       JsonObject root = (JsonObject) new JsonParser().parse(reader);
       return new TopLevelResponse(root);
     } catch (Exception e) {
-      throw GraphError.parseError(response, e);
+      throw GraphError.invalidResponseError(response, e);
     }
   }
 
