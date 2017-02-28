@@ -164,6 +164,10 @@ android {
         abortOnError false
         disable 'APISchema'
     }
+
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
 }
 
 dependencies {
@@ -174,11 +178,14 @@ dependencies {
     compile dep.shopifyGraphqlSupport
     compile dep.jodaTime
 
-    androidTestCompile 'org.mockito:mockito-core:1.9.5'
-    androidTestCompile 'com.google.dexmaker:dexmaker:1.1'
-    androidTestCompile 'com.google.dexmaker:dexmaker-mockito:1.1'
+    androidTestCompile dep.mockitoCore
     androidTestCompile 'com.android.support.test:runner:0.5'
     androidTestCompile 'com.android.support.test:rules:0.5'
+
+    testCompile dep.mockitoCore
+    testCompile dep.junit
+    testCompile dep.truth
+    testCompile dep.mockWebServer
 }
 
 /*
