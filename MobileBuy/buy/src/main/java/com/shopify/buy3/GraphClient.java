@@ -17,11 +17,11 @@ public final class GraphClient {
     return new Builder(context);
   }
 
-  private final HttpUrl serverUrl;
-  private final Call.Factory httpCallFactory;
+  final HttpUrl serverUrl;
+  final Call.Factory httpCallFactory;
 
-  private GraphClient(final String shopDomain, final Call.Factory httpCallFactory) {
-    this.serverUrl = HttpUrl.parse("https://" + shopDomain + "/api/graphql");
+  private GraphClient(final HttpUrl serverUrl, final Call.Factory httpCallFactory) {
+    this.serverUrl = serverUrl;
     this.httpCallFactory = httpCallFactory;
   }
 
@@ -38,11 +38,14 @@ public final class GraphClient {
     public static final long DEFAULT_HTTP_READ_WRITE_TIME_OUT_MS = TimeUnit.SECONDS.toMillis(60);
 
     private String shopDomain;
+    private HttpUrl endpointUrl;
     private String apiKey;
+    private String authHeader;
     private String applicationName;
     private OkHttpClient httpClient;
 
-    private Builder(final Context context) {
+    private Builder(@NonNull final Context context) {
+      checkNotNull(context, "context == null");
       applicationName = context.getPackageName();
     }
 
@@ -76,39 +79,60 @@ public final class GraphClient {
       return this;
     }
 
-    public GraphClient build() {
-      checkNotNull(shopDomain, "shopDomain == null");
-      checkNotNull(apiKey, "apiKey == null");
+    Builder serverUrl(@NonNull HttpUrl endpointUrl) {
+      checkNotNull(endpointUrl, "endpointUrl == null");
+      this.endpointUrl = endpointUrl;
+      return this;
+    }
 
-      Call.Factory httpCallFactory;
+    Builder authHeader(@NonNull String authHeader) {
+      checkNotNull(authHeader, "authHeader == null");
+      this.authHeader = authHeader;
+      return this;
+    }
+
+    public GraphClient build() {
+      if (endpointUrl == null) {
+        checkNotNull(shopDomain, "shopDomain == null");
+        endpointUrl = HttpUrl.parse("https://" + shopDomain + "/api/graphql");
+      }
+
+      if (authHeader == null) {
+        checkNotNull(apiKey, "apiKey == null");
+        authHeader = Utils.formatBasicAuthorization(apiKey);
+      }
+
+      return new GraphClient(endpointUrl, buildOkHttpClient());
+    }
+
+    private OkHttpClient buildOkHttpClient() {
       if (httpClient == null) {
         OkHttpClient.Builder httpClientBuilder = new OkHttpClient.Builder()
           .connectTimeout(DEFAULT_HTTP_CONNECTION_TIME_OUT_MS, TimeUnit.MILLISECONDS)
           .readTimeout(DEFAULT_HTTP_READ_WRITE_TIME_OUT_MS, TimeUnit.MILLISECONDS)
           .writeTimeout(DEFAULT_HTTP_READ_WRITE_TIME_OUT_MS, TimeUnit.MILLISECONDS);
-        httpCallFactory = configureHttpClient(httpClientBuilder, apiKey, applicationName).build();
+        return configureHttpClient(httpClientBuilder, authHeader, applicationName).build();
       } else {
-        httpCallFactory = configureHttpClient(httpClient, apiKey, applicationName);
+        return configureHttpClient(httpClient, authHeader, applicationName);
       }
-      return new GraphClient(shopDomain, httpCallFactory);
     }
 
-    private OkHttpClient configureHttpClient(final OkHttpClient httpClient, final String apiKey, final String applicationName) {
-      return configureHttpClient(httpClient.newBuilder(), apiKey, applicationName).build();
+    private OkHttpClient configureHttpClient(final OkHttpClient httpClient, final String authHeader, final String applicationName) {
+      return configureHttpClient(httpClient.newBuilder(), authHeader, applicationName).build();
     }
 
-    private static OkHttpClient.Builder configureHttpClient(final OkHttpClient.Builder httpClientBuilder, final String apiKey,
+    private static OkHttpClient.Builder configureHttpClient(final OkHttpClient.Builder httpClientBuilder, final String authHeader,
                                                             final String applicationName) {
-      addAuthorizationInterceptor(httpClientBuilder, apiKey);
+      addAuthorizationInterceptor(httpClientBuilder, authHeader);
       addUserAgentInterceptor(httpClientBuilder, applicationName);
       return httpClientBuilder;
     }
 
-    private static void addAuthorizationInterceptor(final OkHttpClient.Builder httpClientBuilder, final String apiKey) {
+    private static void addAuthorizationInterceptor(final OkHttpClient.Builder httpClientBuilder, final String authHeader) {
       httpClientBuilder.addInterceptor(chain -> {
         Request original = chain.request();
         Request.Builder builder = original.newBuilder().method(original.method(), original.body());
-        builder.header("Authorization", Utils.formatBasicAuthorization(apiKey));
+        builder.header("Authorization", authHeader);
         return chain.proceed(builder.build());
       });
     }
