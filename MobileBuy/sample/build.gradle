@@ -1,4 +1,11 @@
+buildscript {
+    dependencies {
+        classpath 'me.tatarka:gradle-retrolambda:3.5.0'
+    }
+}
+
 apply plugin: 'com.android.application'
+apply plugin: 'me.tatarka.retrolambda'
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -11,6 +18,12 @@ android {
         versionCode 1
         versionName "1.0"
     }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
     buildTypes {
         all {
             buildConfigField 'okhttp3.logging.HttpLoggingInterceptor.Level', 'OKHTTP_LOG_LEVEL', 'okhttp3.logging.HttpLoggingInterceptor.Level.BODY'
@@ -58,6 +71,9 @@ android {
             buildConfigField "String", "APP_ID", "\"" + appId.toString() + "\""
             buildConfigField "String", "ANDROID_PAY_PUBLIC_KEY",  "\"" + androidPayPublicKey.toString() + "\""
             buildConfigField "boolean", "USE_RX_API", "false"
+
+            debuggable = true
+            minifyEnabled = false
         }
     }
 
