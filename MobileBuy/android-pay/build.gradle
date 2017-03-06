@@ -1,25 +1,12 @@
-buildscript {
-    dependencies {
-        classpath 'me.tatarka:gradle-retrolambda:3.5.0'
-    }
-}
-
 apply plugin: 'com.android.library'
 apply plugin: 'maven'
 apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
 apply plugin: 'maven-publish'
-apply plugin: 'me.tatarka.retrolambda'
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
-    com.android.ddmlib.DdmPreferences.setTimeOut(60000) // https://code.google.com/p/android/issues/detail?id=104305
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
 
     defaultConfig {
         minSdkVersion rootProject.ext.minSdkVersion
@@ -31,66 +18,9 @@ android {
     }
 
     buildTypes {
-        debug {
-            buildConfigField 'okhttp3.logging.HttpLoggingInterceptor.Level', 'OKHTTP_LOG_LEVEL', 'okhttp3.logging.HttpLoggingInterceptor.Level.BODY'
-
-            // We pull the shop settings either from the Environment or a file called shop.properties at the root of the project.
-            // Environment variables will take precedence, we will attempt to read those first.
-            def shopDomain
-            def apiKey
-            def appId
-            def useMockResponses
-            def androidPayPublicKey
-            def runTestCoverage
-
-            // get the shop setting from the environment if there any
-            shopDomain = System.getenv("SHOP_DOMAIN")
-            apiKey = System.getenv("API_KEY")
-            appId = System.getenv("APP_ID")
-            androidPayPublicKey = System.getenv("ANDROID_PAY_PUBLIC_KEY")
-
-            runTestCoverage = System.getProperty("RunTestCoverage")
-
-            // pull the store properties from the local file if it exists.  Environment variables take precedence
-            def shopProperties = new Properties();
-            File shopPropertiesFile = project.file('shop.properties')
-
-            if (shopPropertiesFile.exists()) {
-                shopProperties.load(new FileInputStream(shopPropertiesFile))
-                shopDomain = shopDomain ?: shopProperties["SHOP_DOMAIN"]
-                apiKey = apiKey ?: shopProperties["API_KEY"]
-                appId = appId ?: shopProperties["APP_ID"]
-                androidPayPublicKey = androidPayPublicKey ?: shopProperties["ANDROID_PAY_PUBLIC_KEY"]
-            }
-
-            if (!shopDomain) {
-                shopDomain = ""
-            }
-            if (!apiKey) {
-                apiKey = ""
-            }
-            if (!appId) {
-                appId = ""
-            }
-            if (!androidPayPublicKey) {
-                androidPayPublicKey = ""
-            }
-            if (!runTestCoverage) {
-                runTestCoverage = "false"
-            }
-
-            buildConfigField "String", "SHOP_DOMAIN", "\"" + shopDomain.toString() + "\""
-            buildConfigField "String", "API_KEY", "\"" + apiKey.toString() + "\""
-            buildConfigField "String", "APP_ID", "\"" + appId.toString() + "\""
-            buildConfigField "String", "ANDROID_PAY_PUBLIC_KEY", "\"" + androidPayPublicKey.toString() + "\""
-
-            testCoverageEnabled runTestCoverage.toBoolean()
-        }
-
         release {
-            minifyEnabled = false
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            buildConfigField 'okhttp3.logging.HttpLoggingInterceptor.Level', 'OKHTTP_LOG_LEVEL', 'okhttp3.logging.HttpLoggingInterceptor.Level.NONE'
         }
     }
 
@@ -158,29 +88,11 @@ android {
 
     lintOptions {
         abortOnError false
-        disable 'APISchema'
     }
 
     testOptions {
         unitTests.returnDefaultValues = true
     }
-}
-
-dependencies {
-    compile dep.okhttp
-    compile dep.okhttpLogging
-    compile dep.androidSupportAnnotations
-    compile dep.shopifyGraphqlSupport
-    compile dep.jodaTime
-
-    androidTestCompile dep.mockitoCore
-    androidTestCompile 'com.android.support.test:runner:0.5'
-    androidTestCompile 'com.android.support.test:rules:0.5'
-
-    testCompile dep.mockitoCore
-    testCompile dep.junit
-    testCompile dep.truth
-    testCompile dep.mockWebServer
 }
 
 /*
@@ -262,24 +174,7 @@ bintray {
     }
 }
 
-task updateSchema(type: DefaultTask, group: "GraphQL", description: "Download GraphQL store front API schema and run generation script") {
-    doLast {
-        println("Updating GraphQL API schema...")
-        def scriptFilePath = project.file('update_schema.rb').absolutePath
-        def targetFilePath = project.projectDir.absolutePath + '/src/main/java/com/shopify/buy3/APISchema.java'
-        def scriptCommand = "${scriptFilePath} -t ${targetFilePath}"
-        println("Running script: " + scriptCommand)
-        def scriptProc = scriptCommand.execute()
-        scriptProc.in.eachLine {line -> println line}
-        scriptProc.err.eachLine {line -> println 'ERROR: ' + line}
-        if (scriptProc.waitFor() != 0) {
-            throw new GradleException('Failed to update API schema')
-        }
-        println("API schema has been updated!")
-    }
+dependencies {
+    compile dep.playServicesWallet
+    provided project(':buy')
 }
-
-tasks.withType(Checkstyle) {
-    exclude '**/APISchema.java'
-}
-

@@ -4,6 +4,7 @@ ext {
     minSdkVersion = 14
     compileSdkVersion = 25
     targetSdkVersion = 24
+    gradlePlugin = '2.3.0'
     buildToolsVersion = '25.0.2'
     androidSupportVersion = '25.1.1'
     okHttpVersion = '3.6.0'
@@ -12,7 +13,7 @@ ext {
     jodaTimeVersion = '2.9.5.1'
 
     dep = [
-        androidPlugin            : "com.android.tools.build:gradle:2.3.0-beta3",
+        androidPlugin            : "com.android.tools.build:gradle:$gradlePlugin",
         androidSupportAnnotations: "com.android.support:support-annotations:$androidSupportVersion",
         androidSupportDesign     : "com.android.support:design:$androidSupportVersion",
         androidSupportV4         : "com.android.support:support-v4:$androidSupportVersion",
@@ -68,7 +69,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.2.3'
+        classpath 'com.android.tools.build:gradle:2.3.0'
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.2'
         classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
         // NOTE: Do not place your application dependencies here; they belong
