@@ -20,7 +20,7 @@ import static com.shopify.sample.util.Util.mapItems;
 public final class RealCatalogRepository implements CatalogRepository {
   private final GraphClient graphClient = SampleApplication.graphClient();
 
-  @Override public @NonNull Single<List<Collection>> browseNextCollectionPage(@Nullable final String cursor, final int perPage) {
+  @Override @NonNull public Single<List<Collection>> browseNextCollectionPage(@Nullable final String cursor, final int perPage) {
     GraphCall<APISchema.QueryRoot> call = graphClient.queryGraph(APISchema.query(
       root -> root.shop(
         shop -> shop.collections(
@@ -50,11 +50,11 @@ public final class RealCatalogRepository implements CatalogRepository {
     ));
     return Single.fromCallable(call::execute)
       .map(queryRoot -> queryRoot.data().getShop().getCollections().getEdges())
-      .map(this::convertCollectionsToPresenterModels)
+      .map(RealCatalogRepository::convertCollectionsToPresenterModels)
       .subscribeOn(Schedulers.io());
   }
 
-  private List<Collection> convertCollectionsToPresenterModels(final List<APISchema.CollectionEdge> edges) {
+  private static List<Collection> convertCollectionsToPresenterModels(final List<APISchema.CollectionEdge> edges) {
     return mapItems(edges, collectionEdge -> {
       APISchema.Collection collection = collectionEdge.getNode();
       String collectionImageUrl = collection.getImage() != null ? collection.getImage().getSrc() : null;

@@ -42,11 +42,11 @@ public final class RealCollectionListViewPresenter extends BaseViewPresenter<Col
           })
           .create())
         .compose(new NextPageRequestComposer())
-        .retry()
         .observeOn(AndroidSchedulers.mainThread())
         .doOnError(WeakConsumer.<RealCollectionListViewPresenter, Throwable>forTarget(this)
           .delegateAccept(RealCollectionListViewPresenter::onNextPageError)
           .create())
+        .retry()
         .subscribeWith(
           WeakObserver.<RealCollectionListViewPresenter, List<ListItemViewModel>>forTarget(this)
             .delegateOnNext(RealCollectionListViewPresenter::onNextPageResponse)
