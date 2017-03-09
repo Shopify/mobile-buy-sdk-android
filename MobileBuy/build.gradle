@@ -1,96 +1,51 @@
-ext {
-    kotlinVersion = '1.0.6'
-
-    minSdkVersion = 14
-    compileSdkVersion = 25
-    targetSdkVersion = 24
-    gradlePlugin = '2.3.0'
-    buildToolsVersion = '25.0.2'
-    androidSupportVersion = '25.1.1'
-    okHttpVersion = '3.6.0'
-    playServicesVersion = '9.8.0'
-    shopifyGraphqlSupportVersion = '0.1.0'
-    jodaTimeVersion = '2.9.5.1'
-
-    dep = [
-        androidPlugin            : "com.android.tools.build:gradle:$gradlePlugin",
-        androidSupportAnnotations: "com.android.support:support-annotations:$androidSupportVersion",
-        androidSupportDesign     : "com.android.support:design:$androidSupportVersion",
-        androidSupportV4         : "com.android.support:support-v4:$androidSupportVersion",
-        androidSupportV7         : "com.android.support:appcompat-v7:$androidSupportVersion",
-        okhttp                   : "com.squareup.okhttp3:logging-interceptor:$okHttpVersion",
-        okhttpLogging            : "com.squareup.okhttp3:logging-interceptor:$okHttpVersion",
-        playServicesWallet       : "com.google.android.gms:play-services-wallet:$playServicesVersion",
-        shopifyGraphqlSupport    : "com.shopify.graphql.support:support:$shopifyGraphqlSupportVersion",
-        jodaTime                 : "net.danlew:android.joda:$jodaTimeVersion",
-        junit                    : "junit:junit:4.12",
-        truth                    : "com.google.truth:truth:0.30",
-        mockWebServer            : "com.squareup.okhttp3:mockwebserver:$okHttpVersion",
-        mockitoCore              : "org.mockito:mockito-core:2.6.3",
-    ]
-}
-
 subprojects {
-    buildscript {
-        System.properties['com.android.build.gradle.overrideVersionCheck'] = 'true'
-        repositories {
-            jcenter()
-            mavenCentral()
-        }
-    }
+  apply from: "../gradle/dependencies.gradle"
 
-    apply plugin: 'checkstyle'
-
-    checkstyle {
-        configFile rootProject.file('checkstyle.xml')
-        configProperties = ['checkstyle.cache.file': rootProject.file('build/checkstyle.cache')]
-        ignoreFailures false
-        showViolations true
-    }
-
-    task checkstyle(type: Checkstyle) {
-        source 'src/main/java'
-        include '**/*.java'
-
-        classpath = files()
-    }
-
-    afterEvaluate {
-        if (project.tasks.findByName('check')) {
-            check.dependsOn('checkstyle')
-        }
-    }
-}
-
-buildscript {
+  buildscript {
     System.properties['com.android.build.gradle.overrideVersionCheck'] = 'true'
-
     repositories {
-        jcenter()
+      jcenter()
+      mavenCentral()
     }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.0'
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.2'
-        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
+  }
+
+  apply plugin: 'checkstyle'
+
+  checkstyle {
+    configFile rootProject.file('checkstyle.xml')
+    configProperties = ['checkstyle.cache.file': rootProject.file('build/checkstyle.cache')]
+    ignoreFailures false
+    showViolations true
+  }
+
+  task checkstyle(type: Checkstyle) {
+    source 'src/main/java'
+    include '**/*.java'
+
+    classpath = files()
+  }
+
+  afterEvaluate {
+    if (project.tasks.findByName('check')) {
+      check.dependsOn('checkstyle')
     }
+  }
 }
 
 allprojects {
-    repositories {
-        jcenter()
-    }
+  repositories {
+    jcenter()
+  }
 }
 
-project.ext.preDexLibs = !project.hasProperty('disablePreDex')
+//project.ext.preDexLibs = !project.hasProperty('disablePreDex')
 
-subprojects {
-    project.plugins.whenPluginAdded { plugin ->
-        if ("com.android.build.gradle.AppPlugin".equals(plugin.class.name)) {
-            project.android.dexOptions.preDexLibraries = rootProject.ext.preDexLibs
-        } else if ("com.android.build.gradle.LibraryPlugin".equals(plugin.class.name)) {
-            project.android.dexOptions.preDexLibraries = rootProject.ext.preDexLibs
-        }
-    }
-}
+//subprojects {
+//  project.plugins.whenPluginAdded { plugin ->
+//    if ("com.android.build.gradle.AppPlugin".equals(plugin.class.name)) {
+//      project.android.dexOptions.preDexLibraries = rootProject.ext.preDexLibs
+//    } else if ("com.android.build.gradle.LibraryPlugin".equals(plugin.class.name)) {
+//      project.android.dexOptions.preDexLibraries = rootProject.ext.preDexLibs
+//    }
+//  }
+//}

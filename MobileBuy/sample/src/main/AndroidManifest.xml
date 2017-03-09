@@ -6,16 +6,20 @@
     <uses-sdk tools:overrideLibrary="android.support.customtabs" />
 
     <application
-        android:name=".application.SampleApplication"
+        android:name=".SampleApplication"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
+
         <meta-data
             android:name="com.google.android.gms.wallet.api.enabled"
             android:value="false" />
 
-        <activity android:name=".application.MainActivity">
+        <activity
+            android:name=".view.collections.CollectionListActivity"
+            android:icon="@drawable/ic_logo"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

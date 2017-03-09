@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Mobile Buy Sample</string>
+    <string name="collection_list_title">Collections</string>
 </resources>
