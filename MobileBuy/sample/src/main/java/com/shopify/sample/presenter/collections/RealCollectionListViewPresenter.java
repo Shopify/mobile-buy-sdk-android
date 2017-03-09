@@ -21,12 +21,7 @@ import io.reactivex.schedulers.Schedulers;
 
 public final class RealCollectionListViewPresenter extends BaseViewPresenter<CollectionListViewPresenter.View>
   implements CollectionListViewPresenter {
-  private final CatalogRepository catalogRepository;
   private boolean resetRequested;
-
-  public RealCollectionListViewPresenter() {
-    this.catalogRepository = new RealCatalogRepository();
-  }
 
   @Override public void reset() {
     cancelAllRequests();
@@ -46,7 +41,7 @@ public final class RealCollectionListViewPresenter extends BaseViewPresenter<Col
             target.showProgress(REQUEST_ID_NEXT_PAGE);
           })
           .create())
-        .compose(new NextPageRequestComposer(catalogRepository))
+        .compose(new NextPageRequestComposer())
         .retry()
         .observeOn(AndroidSchedulers.mainThread())
         .doOnError(WeakConsumer.<RealCollectionListViewPresenter, Throwable>forTarget(this)
@@ -79,8 +74,8 @@ public final class RealCollectionListViewPresenter extends BaseViewPresenter<Col
   private static class NextPageRequestComposer implements ObservableTransformer<String, List<ListItemViewModel>> {
     final CatalogRepository catalogRepository;
 
-    NextPageRequestComposer(final CatalogRepository catalogRepository) {
-      this.catalogRepository = catalogRepository;
+    NextPageRequestComposer() {
+      this.catalogRepository = new RealCatalogRepository();
     }
 
     @Override public ObservableSource<List<ListItemViewModel>> apply(final Observable<String> upstream) {
