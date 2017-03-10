@@ -31,7 +31,7 @@ public final class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
   }
 
   @Override public int getItemViewType(final int position) {
-    return itemAt(position).getViewType();
+    return itemAt(position).viewType();
   }
 
   @SuppressWarnings("unchecked") @Nullable public <T> ListItemViewModel<T> itemAt(final int position) {

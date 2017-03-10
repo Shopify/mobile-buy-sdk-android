@@ -21,16 +21,16 @@ public abstract class ListItemViewModel<T> {
     if (payload == null) {
       return 0;
     } else {
-      return getPayload().hashCode();
+      return payload().hashCode();
     }
   }
 
-  public T getPayload() {
+  public T payload() {
     return payload;
   }
 
   @LayoutRes
-  public int getViewType() {
+  public int viewType() {
     return viewType;
   }
 

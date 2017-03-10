@@ -38,7 +38,7 @@
                 android:layout_height="match_parent"
                 android:background="@android:color/transparent"
                 android:clipToPadding="false"
-                android:scrollbars="vertical" />
+                android:listDivider="@android:color/holo_green_dark" />
         </android.support.v4.widget.SwipeRefreshLayout>
     </com.shopify.sample.view.collections.CollectionListView>
 </android.support.design.widget.CoordinatorLayout>

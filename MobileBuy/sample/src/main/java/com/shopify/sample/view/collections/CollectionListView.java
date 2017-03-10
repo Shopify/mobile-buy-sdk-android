@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
@@ -19,6 +20,7 @@ import com.shopify.sample.presenter.collections.model.Collection;
 import com.shopify.sample.view.base.ListItemViewModel;
 import com.shopify.sample.view.base.RecyclerViewAdapter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -80,8 +82,14 @@ public final class CollectionListView extends FrameLayout implements CollectionL
       .mergeWith(refreshSubject);
   }
 
-  @Override public void addItems(final List<ListItemViewModel> items) {
-    listViewAdapter.addItems(items);
+  @Override public void addItems(final List<Collection> items) {
+    List<ListItemViewModel> viewModels = new ArrayList<>();
+    for (Collection collection : items) {
+      viewModels.add(new CollectionTitleListItemViewModel(collection));
+      viewModels.add(new CollectionImageListItemViewModel(collection));
+      viewModels.add(new ProductsListItemViewModel(collection.products()));
+    }
+    listViewAdapter.addItems(viewModels);
   }
 
   @Override public void clearItems() {
@@ -107,9 +115,11 @@ public final class CollectionListView extends FrameLayout implements CollectionL
   }
 
   private String nextPageCursor() {
-    ListItemViewModel<Collection> item = listViewAdapter.lastItem();
-    if (item != null) {
-      return item.getPayload().cursor();
+    for (int i = listViewAdapter.getItemCount(); i >= 0; i--) {
+      ListItemViewModel item = listViewAdapter.itemAt(i);
+      if (item != null && item.payload() instanceof Collection) {
+        return ((Collection) item.payload()).cursor();
+      }
     }
     return "";
   }

@@ -1,5 +1,6 @@
 buildscript {
   dependencies {
+    classpath dep.androidPlugin
     classpath dep.retrolambda
     classpath dep.butterknifePlugin
   }

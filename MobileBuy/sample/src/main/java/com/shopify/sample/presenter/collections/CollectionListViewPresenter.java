@@ -1,6 +1,7 @@
 package com.shopify.sample.presenter.collections;
 
 import com.shopify.sample.mvp.ViewPresenter;
+import com.shopify.sample.presenter.collections.model.Collection;
 import com.shopify.sample.view.base.ListItemViewModel;
 
 import java.util.List;
@@ -16,7 +17,7 @@ public interface CollectionListViewPresenter extends ViewPresenter<CollectionLis
   interface View extends com.shopify.sample.mvp.View {
     Observable<String> nextPageObservable();
 
-    void addItems(List<ListItemViewModel> items);
+    void addItems(List<Collection> items);
 
     void clearItems();
   }

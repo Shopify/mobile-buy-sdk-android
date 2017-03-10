@@ -6,11 +6,7 @@ import com.shopify.sample.repository.CatalogRepository;
 import com.shopify.sample.repository.RealCatalogRepository;
 import com.shopify.sample.util.WeakConsumer;
 import com.shopify.sample.util.WeakObserver;
-import com.shopify.sample.view.base.ListItemViewModel;
-import com.shopify.sample.view.collections.CollectionImageListItemViewModel;
-import com.shopify.sample.view.collections.CollectionTitleListItemViewModel;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.Observable;
@@ -48,14 +44,14 @@ public final class RealCollectionListViewPresenter extends BaseViewPresenter<Col
           .create())
         .retry()
         .subscribeWith(
-          WeakObserver.<RealCollectionListViewPresenter, List<ListItemViewModel>>forTarget(this)
+          WeakObserver.<RealCollectionListViewPresenter, List<Collection>>forTarget(this)
             .delegateOnNext(RealCollectionListViewPresenter::onNextPageResponse)
             .create()
         )
     );
   }
 
-  private void onNextPageResponse(List<ListItemViewModel> pageList) {
+  private void onNextPageResponse(List<Collection> pageList) {
     hideProgress(REQUEST_ID_NEXT_PAGE);
     if (isViewAttached()) {
       if (resetRequested) {
@@ -67,32 +63,23 @@ public final class RealCollectionListViewPresenter extends BaseViewPresenter<Col
   }
 
   private void onNextPageError(final Throwable t) {
+    t.printStackTrace();
     hideProgress(REQUEST_ID_NEXT_PAGE);
     showError(REQUEST_ID_NEXT_PAGE, t);
   }
 
-  private static class NextPageRequestComposer implements ObservableTransformer<String, List<ListItemViewModel>> {
+  private static class NextPageRequestComposer implements ObservableTransformer<String, List<Collection>> {
     final CatalogRepository catalogRepository;
 
     NextPageRequestComposer() {
       this.catalogRepository = new RealCatalogRepository();
     }
 
-    @Override public ObservableSource<List<ListItemViewModel>> apply(final Observable<String> upstream) {
+    @Override public ObservableSource<List<Collection>> apply(final Observable<String> upstream) {
       return upstream.flatMapSingle(
         cursor -> catalogRepository.browseNextCollectionPage(cursor, PER_PAGE)
-          .map(this::convertToViewModel)
           .subscribeOn(Schedulers.io())
       );
-    }
-
-    private List<ListItemViewModel> convertToViewModel(final List<Collection> collections) {
-      List<ListItemViewModel> result = new ArrayList<>();
-      for (Collection collection : collections) {
-        result.add(new CollectionTitleListItemViewModel(collection));
-        result.add(new CollectionImageListItemViewModel(collection));
-      }
-      return result;
     }
   }
 }

@@ -12,7 +12,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public final class CollectionListActivity extends AppCompatActivity {
-
   @BindView(R.id.collection_list) CollectionListView collectionListView;
   @BindView(R.id.toolbar) Toolbar toolbarView;
 

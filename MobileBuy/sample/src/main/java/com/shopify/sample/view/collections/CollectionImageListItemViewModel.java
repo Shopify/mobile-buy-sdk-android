@@ -8,23 +8,22 @@ import com.shopify.sample.view.base.ShopifyDraweeView;
 
 import butterknife.BindView;
 
-public final class CollectionImageListItemViewModel extends ListItemViewModel<Collection> {
+final class CollectionImageListItemViewModel extends ListItemViewModel<Collection> {
 
-  public CollectionImageListItemViewModel(final Collection payload) {
-    super(payload, R.layout.collection_image_list_view_item);
+  CollectionImageListItemViewModel(final Collection payload) {
+    super(payload, R.layout.collection_image_list_item);
   }
 
   @Override public ListViewItemHolder<Collection, ListItemViewModel<Collection>> createViewHolder() {
     return new ViewItemHolder();
   }
 
-  public static final class ViewItemHolder extends ListViewItemHolder<Collection, ListItemViewModel<Collection>> {
-
+  static final class ViewItemHolder extends ListViewItemHolder<Collection, ListItemViewModel<Collection>> {
     @BindView(R.id.image) ShopifyDraweeView imageView;
 
     @Override public void bindModel(final ListItemViewModel<Collection> listViewItemModel) {
       super.bindModel(listViewItemModel);
-      imageView.loadShopifyImage(listViewItemModel.getPayload().imageUrl());
+      imageView.loadShopifyImage(listViewItemModel.payload().imageUrl());
     }
   }
 }

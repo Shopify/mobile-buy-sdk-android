@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.shopify.sample.view.collections.ProductListView android:id="@+id/product_list"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:clipToPadding="false"
+        android:paddingBottom="@dimen/default_padding"
+        android:paddingTop="@dimen/default_padding" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_gravity="bottom"
+        android:background="?attr/colorAccent" />
+
+</com.shopify.sample.view.collections.ProductListView>
