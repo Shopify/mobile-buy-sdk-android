@@ -5,6 +5,7 @@ def versions = [
     shopifyGraphqlSupportVersion: '0.1.0',
     jodaTimeVersion             : '2.9.5.1',
     butterKnifeVersion          : '8.5.1',
+    apolloVersion               : '0.2.2-SNAPSHOT'
 ]
 
 ext.isCi = "true" == System.getenv('CI')
@@ -42,4 +43,7 @@ ext.dep = [
     bintrayGradlePlugin      : "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.2",
     fresco                   : "com.facebook.fresco:fresco:0.14.1",
     rxbindingRecyclerView    : "com.jakewharton.rxbinding2:rxbinding-recyclerview-v7:2.0.0",
+    apolloPlugin             : "com.apollographql.android:gradle-plugin:$versions.apolloVersion",
+    apolloApi                : "com.apollographql.android:api:$versions.apolloVersion",
+    apolloRuntime            : "com.apollographql.android:runtime:$versions.apolloVersion"
 ]

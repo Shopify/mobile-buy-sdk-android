@@ -1,0 +1,32 @@
+query CollectionsWithProducts($perPage: Int!, $nextPageCursor: String, $collectionSortKey: CollectionSortKeys!) {
+  shop {
+    collections(first: $perPage, after: $nextPageCursor, sortKey: $collectionSortKey) {
+      edges {
+        cursor
+        node {
+          id
+          title
+          image {
+            src
+          }
+          products(first: $perPage) {
+            edges {
+              cursor
+              node {
+                id
+                title
+                images(first: 1) {
+                  edges {
+                    node {
+                      src
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

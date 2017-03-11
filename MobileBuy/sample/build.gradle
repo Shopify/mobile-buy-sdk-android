@@ -3,12 +3,14 @@ buildscript {
     classpath dep.androidPlugin
     classpath dep.retrolambda
     classpath dep.butterknifePlugin
+    classpath dep.apolloPlugin
   }
 }
 
 apply plugin: 'com.android.application'
 apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'com.jakewharton.butterknife'
+apply plugin: 'com.apollographql.android'
 
 android {
   compileSdkVersion androidConfig.compileSdkVersion
@@ -83,6 +85,9 @@ android {
   productFlavors {
     shopify {
     }
+
+    apollo {
+    }
   }
 
   lintOptions {
@@ -100,9 +105,34 @@ dependencies {
   compile dep.timber
   compile dep.butterKnife
   annotationProcessor dep.butterKnifeCompiler
-  compile (dep.fresco) {
+  compile(dep.fresco) {
     exclude group: 'com.android.support'
   }
   compile dep.rxbindingRecyclerView
-  compile project(':buy')
+
+  shopifyCompile project(':buy')
+
+  apolloCompile dep.apolloApi
+  apolloCompile dep.apolloRuntime
+  apolloCompile dep.okhttpLogging
+}
+
+task downloadApolloSchema(type: DefaultTask, group: "GraphQL", description: "Download GraphQL store front API schema") {
+  doLast {
+    println("Downloading GraphQL schema...")
+    def schemaFile = new File(project.projectDir.absolutePath + '/src/apollo/graphql/schema.json')
+    if (schemaFile.exists()) {
+      schemaFile.delete()
+    }
+    new URL('https://app.shopify.com/services/ping/storefront_graphql_schema').withInputStream { i ->
+      schemaFile.withOutputStream {
+        it << i
+      }
+    }
+    println("GraphQL schema has been downloaded!")
+  }
+}
+
+apollo {
+  customTypeMapping['URL'] = "String"
 }

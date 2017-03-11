@@ -28,8 +28,9 @@ public final class Util {
     return result;
   }
 
-  @Nullable public static <T> T firstItem(@Nullable List<T> source) {
-    return source != null && !source.isEmpty() ? source.get(0) : null;
+  @Nullable public static <T, R> R firstItem(@Nullable List<T> source, @NonNull Function<T, R> transformer) {
+    checkNotNull(transformer, "transformer == null");
+    return source != null && !source.isEmpty() ? transformer.apply(source.get(0)) : null;
   }
 
   private Util() {

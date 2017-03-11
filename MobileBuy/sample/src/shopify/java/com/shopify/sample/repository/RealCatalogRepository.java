@@ -61,8 +61,8 @@ public final class RealCatalogRepository implements CatalogRepository {
       return new Collection(collection.getId().toString(), collection.getTitle(), collectionImageUrl, collectionEdge.getCursor(),
         mapItems(collection.getProducts().getEdges(), productEdge -> {
           APISchema.Product product = productEdge.getNode();
-          APISchema.ImageEdge productImage = firstItem(product.getImages() != null ? product.getImages().getEdges() : null);
-          String productImageUrl = productImage != null ? productImage.getNode().getSrc() : null;
+          String productImageUrl = firstItem(product.getImages() != null ? product.getImages().getEdges() : null,
+            image -> image != null ? image.getNode().getSrc() : null);
           return new Collection.Product(product.getId().toString(), product.getTitle(), productImageUrl, productEdge.getCursor());
         }));
     });
