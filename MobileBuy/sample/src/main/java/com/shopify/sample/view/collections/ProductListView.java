@@ -41,7 +41,10 @@ public final class ProductListView extends FrameLayout {
   @Override protected void onFinishInflate() {
     super.onFinishInflate();
     ButterKnife.bind(this);
-    listView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+
+    LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+    layoutManager.setInitialPrefetchItemCount(prefetchItemCount());
+    listView.setLayoutManager(layoutManager);
     listView.setAdapter(listViewAdapter);
 
     int defaultPadding = getResources().getDimensionPixelOffset(R.dimen.default_padding);
@@ -65,5 +68,10 @@ public final class ProductListView extends FrameLayout {
       viewModels.add(new ProductListItemViewModel(item));
     }
     listViewAdapter.addItems(viewModels);
+  }
+
+  private int prefetchItemCount() {
+    return getResources().getDisplayMetrics().widthPixels
+      / getResources().getDimensionPixelOffset(R.dimen.collection_list_product_image_height) + 1;
   }
 }

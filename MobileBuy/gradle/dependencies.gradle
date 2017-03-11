@@ -1,5 +1,5 @@
 def versions = [
-    androidSupportVersion       : '25.1.1',
+    androidSupportVersion       : '25.2.0',
     okHttpVersion               : '3.6.0',
     playServicesVersion         : '9.8.0',
     shopifyGraphqlSupportVersion: '0.1.0',
@@ -13,7 +13,7 @@ ext.isCi = "true" == System.getenv('CI')
 ext.androidConfig = [
     compileSdkVersion: 24,
     buildToolsVersion: '25.0.2',
-    minSdkVersion    : 16,
+    minSdkVersion    : 19,
     targetSdkVersion : 24,
 ]
 
