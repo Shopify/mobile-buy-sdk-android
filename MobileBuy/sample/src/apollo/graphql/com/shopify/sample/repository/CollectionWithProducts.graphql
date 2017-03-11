@@ -1,6 +1,6 @@
 query CollectionsWithProducts($perPage: Int!, $nextPageCursor: String, $collectionSortKey: CollectionSortKeys!) {
   shop {
-    collections(first: $perPage, after: $nextPageCursor, sortKey: $collectionSortKey) {
+    collectionConnection: collections(first: $perPage, after: $nextPageCursor, sortKey: $collectionSortKey) {
       edges {
         cursor
         collection: node {
@@ -9,13 +9,13 @@ query CollectionsWithProducts($perPage: Int!, $nextPageCursor: String, $collecti
           image {
             src
           }
-          products(first: $perPage) {
+          productConnection:  products(first: $perPage) {
             edges {
               cursor
               product: node {
                 id
                 title
-                images(first: 1) {
+                imageConnection: images(first: 1) {
                   edges {
                     image: node {
                       src

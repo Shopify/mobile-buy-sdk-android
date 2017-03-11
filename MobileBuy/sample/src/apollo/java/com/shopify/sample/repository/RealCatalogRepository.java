@@ -30,17 +30,17 @@ public final class RealCatalogRepository implements CatalogRepository {
       .build());
     ApolloCall<CollectionsWithProducts.Data> call = apolloClient.newCall(query).httpCacheControl(HttpCacheControl.CACHE_FIRST);
     return Single.fromCallable(call::execute)
-      .map(response -> response.data().shop().collections())
+      .map(response -> response.data().shop().collectionConnection())
       .map(RealCatalogRepository::convertCollectionsToPresenterModels)
       .subscribeOn(Schedulers.io());
   }
 
-  private static List<Collection> convertCollectionsToPresenterModels(CollectionsWithProducts.Data.Shop.Collection collections) {
+  private static List<Collection> convertCollectionsToPresenterModels(CollectionsWithProducts.Data.Shop.CollectionConnection collections) {
     return mapItems(collections.edges(), collectionEdge -> {
         String collectionImageUrl = collectionEdge.collection().image() != null ? collectionEdge.collection().image().src() : null;
         return new Collection(collectionEdge.collection().id(), collectionEdge.collection().title(), collectionImageUrl,
-          collectionEdge.cursor(), mapItems(collectionEdge.collection().products().edges(), productEdge -> {
-          String productImageUrl = firstItem(productEdge.product().images().edges(),
+          collectionEdge.cursor(), mapItems(collectionEdge.collection().productConnection().edges(), productEdge -> {
+          String productImageUrl = firstItem(productEdge.product().imageConnection().edges(),
             imageEdge -> imageEdge != null ? imageEdge.image().src() : null);
           return new Collection.Product(productEdge.product().id(), productEdge.product().title(), productImageUrl, productEdge.cursor());
         }));

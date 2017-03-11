@@ -70,7 +70,7 @@ public class SampleApplication extends BaseApplication {
     apolloClient = ApolloClient.builder()
       .okHttpClient(httpClient)
       .serverUrl(HttpUrl.parse("https://" + shopUrl + "/api/graphql"))
-//      .httpCache(new DiskLruCacheStore(getCacheDir(), 1000 * 1024), new TimeoutEvictionStrategy(10, TimeUnit.MINUTES))
+      .httpCache(new DiskLruCacheStore(getCacheDir(), 1000 * 1024), new TimeoutEvictionStrategy(5, TimeUnit.MINUTES))
       .build();
   }
 }
