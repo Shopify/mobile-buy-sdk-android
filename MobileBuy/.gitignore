@@ -47,3 +47,5 @@ sample/bin
 sample/target
 sample/gen
 sample/build
+node_modules
+package.json

@@ -36,13 +36,14 @@ public final class RealCatalogRepository implements CatalogRepository {
   }
 
   private static List<Collection> convertCollectionsToPresenterModels(CollectionsWithProducts.Data.Shop.Collection collections) {
-    return mapItems(collections.edges(), edge -> {
-        String collectionImageUrl = edge.node().image() != null ? edge.node().image().src() : null;
-        return new Collection(edge.node().id(), edge.node().title(), collectionImageUrl, edge.cursor(),
-          mapItems(edge.node().products().edges(), productEdge -> {
-            String productImageUrl = firstItem(productEdge.node().images().edges(), image -> image != null ? image.node().src() : null);
-            return new Collection.Product(productEdge.node().id(), productEdge.node().title(), productImageUrl, productEdge.cursor());
-          }));
+    return mapItems(collections.edges(), collectionEdge -> {
+        String collectionImageUrl = collectionEdge.collection().image() != null ? collectionEdge.collection().image().src() : null;
+        return new Collection(collectionEdge.collection().id(), collectionEdge.collection().title(), collectionImageUrl,
+          collectionEdge.cursor(), mapItems(collectionEdge.collection().products().edges(), productEdge -> {
+          String productImageUrl = firstItem(productEdge.product().images().edges(),
+            imageEdge -> imageEdge != null ? imageEdge.image().src() : null);
+          return new Collection.Product(productEdge.product().id(), productEdge.product().title(), productImageUrl, productEdge.cursor());
+        }));
       }
     );
   }

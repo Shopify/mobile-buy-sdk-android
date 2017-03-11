@@ -3,7 +3,7 @@ query CollectionsWithProducts($perPage: Int!, $nextPageCursor: String, $collecti
     collections(first: $perPage, after: $nextPageCursor, sortKey: $collectionSortKey) {
       edges {
         cursor
-        node {
+        collection: node {
           id
           title
           image {
@@ -12,12 +12,12 @@ query CollectionsWithProducts($perPage: Int!, $nextPageCursor: String, $collecti
           products(first: $perPage) {
             edges {
               cursor
-              node {
+              product: node {
                 id
                 title
                 images(first: 1) {
                   edges {
-                    node {
+                    image: node {
                       src
                     }
                   }
