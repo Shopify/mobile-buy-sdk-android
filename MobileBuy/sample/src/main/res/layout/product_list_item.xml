@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@android:color/white"
     android:orientation="vertical">
 
     <com.shopify.sample.view.base.ShopifyDraweeView
@@ -22,6 +23,8 @@
         android:ellipsize="end"
         android:gravity="center"
         android:lines="2"
+        android:paddingLeft="@dimen/default_padding_half"
+        android:paddingRight="@dimen/default_padding_half"
         android:paddingTop="@dimen/default_padding_half"
         android:textColor="?android:attr/textColorPrimary"
         android:textSize="@dimen/text_size"
@@ -35,6 +38,8 @@
         android:gravity="center"
         android:lines="1"
         android:paddingBottom="@dimen/default_padding_half"
+        android:paddingLeft="@dimen/default_padding_half"
+        android:paddingRight="@dimen/default_padding_half"
         android:textColor="?android:attr/textColorSecondary"
         android:textSize="@dimen/small_text_size"
         tools:text="50.99" />

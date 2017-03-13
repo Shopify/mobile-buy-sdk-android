@@ -83,12 +83,18 @@ public final class ProductListView extends FrameLayout implements PageListViewPr
     int defaultPadding = getResources().getDimensionPixelOffset(R.dimen.default_padding);
     listView.addItemDecoration(new RecyclerView.ItemDecoration() {
       @Override public void getItemOffsets(final Rect outRect, final View view, final RecyclerView parent, final RecyclerView.State state) {
+        GridLayoutManager layoutManager = (GridLayoutManager) parent.getLayoutManager();
+
         int position = parent.getChildAdapterPosition(view);
         if (position == RecyclerView.NO_POSITION) {
           return;
         }
-        outRect.left = position % 2 == 0 ? defaultPadding : defaultPadding / 2;
-        outRect.right = position % 2 == 0 ? defaultPadding / 2 : defaultPadding;
+        outRect.left = position % 2 == 0 ? defaultPadding / 2 : defaultPadding / 4;
+        outRect.right = position % 2 == 0 ? defaultPadding / 4 : defaultPadding / 2;
+        if (position / layoutManager.getSpanCount() > 0) {
+          outRect.top = defaultPadding / 4;
+        }
+        outRect.bottom = defaultPadding / 4;
       }
     });
   }
