@@ -22,4 +22,9 @@
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="ExpandedTitleTextAppearance" parent="TextAppearance.AppCompat.Title">
+        <item name="android:textSize">26sp</item>
+    </style>
+
 </resources>
