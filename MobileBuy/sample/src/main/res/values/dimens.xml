@@ -8,7 +8,8 @@
     <dimen name="default_padding">16dp</dimen>
     <dimen name="default_padding_half">8dp</dimen>
     <dimen name="title_text_size">16sp</dimen>
-    <dimen name="default_text_size">14sp</dimen>
+    <dimen name="text_size">14sp</dimen>
+    <dimen name="small_text_size">12sp</dimen>
 
     <dimen name="collection_list_product_image_height">100dp</dimen>
 </resources>

@@ -1,7 +1,7 @@
 package com.shopify.sample.view.collections;
 
 import com.shopify.sample.R;
-import com.shopify.sample.presenter.collections.model.Collection;
+import com.shopify.sample.presenter.collections.Collection;
 import com.shopify.sample.view.base.ListItemViewModel;
 import com.shopify.sample.view.base.ListViewItemHolder;
 

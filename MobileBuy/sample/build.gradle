@@ -135,4 +135,5 @@ task downloadApolloSchema(type: DefaultTask, group: "GraphQL", description: "Dow
 
 apollo {
   customTypeMapping['URL'] = "String"
+  customTypeMapping['Money'] = "java.math.BigDecimal"
 }

@@ -1,0 +1,29 @@
+query CollectionProducts($perPage: Int!, $nextPageCursor: String, $collectionId: ID!) {
+  collection: node(id: $collectionId) {
+    ... on Collection {
+      productConnection: products(first: $perPage, after: $nextPageCursor) {
+        productEdges: edges {
+          cursor
+          product: node {
+            id
+            title
+            imageConnection: images(first: 1) {
+              imageEdges: edges {
+                image: node {
+                  src
+                }
+              }
+            }
+            variantConnection: variants(first: 250) {
+              variantEdges: edges {
+                variant: node {
+                  price
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -2,15 +2,15 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
     <com.shopify.sample.view.base.ShopifyDraweeView
         android:id="@+id/image"
         style="@style/ShopifyDraweeView"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/collection_list_product_image_height"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         app:actualImageScaleType="centerCrop"
         app:viewAspectRatio="1"
         tools:layout_height="200dp" />
@@ -21,7 +21,22 @@
         android:layout_height="wrap_content"
         android:ellipsize="end"
         android:gravity="center"
-        android:padding="@dimen/default_padding_half"
+        android:lines="2"
+        android:paddingTop="@dimen/default_padding_half"
+        android:textColor="?android:attr/textColorPrimary"
         android:textSize="@dimen/text_size"
         tools:text="Product Title" />
+
+    <TextView
+        android:id="@+id/price"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:lines="1"
+        android:paddingBottom="@dimen/default_padding_half"
+        android:textColor="?android:attr/textColorSecondary"
+        android:textSize="@dimen/small_text_size"
+        tools:text="50.99" />
+
 </LinearLayout>

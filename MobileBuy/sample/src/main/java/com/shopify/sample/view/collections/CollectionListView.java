@@ -6,7 +6,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
@@ -14,9 +13,11 @@ import android.widget.FrameLayout;
 
 import com.jakewharton.rxbinding2.support.v7.widget.RxRecyclerView;
 import com.shopify.sample.R;
-import com.shopify.sample.presenter.collections.CollectionListViewPresenter;
+import com.shopify.sample.mvp.BasePageListViewPresenter;
+import com.shopify.sample.mvp.PageListViewPresenter;
+import com.shopify.sample.presenter.collections.Collection;
 import com.shopify.sample.presenter.collections.RealCollectionListViewPresenter;
-import com.shopify.sample.presenter.collections.model.Collection;
+import com.shopify.sample.repository.RealCatalogRepository;
 import com.shopify.sample.view.base.ListItemViewModel;
 import com.shopify.sample.view.base.RecyclerViewAdapter;
 
@@ -29,12 +30,13 @@ import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.subjects.PublishSubject;
 
-public final class CollectionListView extends FrameLayout implements CollectionListViewPresenter.View {
+public final class CollectionListView extends FrameLayout implements PageListViewPresenter.View<Collection> {
   @BindView(R.id.list) RecyclerView listView;
   @BindView(R.id.swipe_refresh_layout) SwipeRefreshLayout swipeRefreshLayoutView;
 
   private final RecyclerViewAdapter listViewAdapter = new RecyclerViewAdapter();
-  private final CollectionListViewPresenter presenter = new RealCollectionListViewPresenter();
+  private final BasePageListViewPresenter<Collection, PageListViewPresenter.View<Collection>> presenter =
+    new RealCollectionListViewPresenter(new RealCatalogRepository());
   private final PublishSubject<String> refreshSubject = PublishSubject.create();
 
   public CollectionListView(@NonNull final Context context) {
@@ -111,7 +113,7 @@ public final class CollectionListView extends FrameLayout implements CollectionL
 
   private boolean shouldRequestNextPage() {
     LinearLayoutManager layoutManager = (LinearLayoutManager) listView.getLayoutManager();
-    return layoutManager.findLastVisibleItemPosition() > listViewAdapter.getItemCount() - CollectionListViewPresenter.PER_PAGE / 2;
+    return layoutManager.findLastVisibleItemPosition() > listViewAdapter.getItemCount() - PageListViewPresenter.PER_PAGE / 2;
   }
 
   private String nextPageCursor() {

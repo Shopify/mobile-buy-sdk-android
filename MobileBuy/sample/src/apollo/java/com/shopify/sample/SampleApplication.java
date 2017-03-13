@@ -1,6 +1,5 @@
 package com.shopify.sample;
 
-import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Base64;
 
@@ -10,6 +9,7 @@ import com.apollographql.android.cache.http.TimeoutEvictionStrategy;
 import com.apollographql.android.impl.ApolloClient;
 import com.shopify.sample.repository.type.CustomType;
 
+import java.math.BigDecimal;
 import java.nio.charset.Charset;
 import java.util.concurrent.TimeUnit;
 
@@ -71,6 +71,15 @@ public class SampleApplication extends BaseApplication {
       .okHttpClient(httpClient)
       .serverUrl(HttpUrl.parse("https://" + shopUrl + "/api/graphql"))
       .httpCache(new DiskLruCacheStore(getCacheDir(), 1000 * 1024), new TimeoutEvictionStrategy(5, TimeUnit.MINUTES))
+      .withCustomTypeAdapter(CustomType.MONEY, new CustomTypeAdapter<BigDecimal>() {
+        @Override public BigDecimal decode(final String value) {
+          return new BigDecimal(value);
+        }
+
+        @Override public String encode(final BigDecimal value) {
+          return value.toString();
+        }
+      })
       .build();
   }
 }

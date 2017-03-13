@@ -12,7 +12,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 
 import com.shopify.sample.R;
-import com.shopify.sample.presenter.collections.model.Collection;
+import com.shopify.sample.presenter.collections.Collection;
 import com.shopify.sample.view.base.ListItemViewModel;
 import com.shopify.sample.view.base.RecyclerViewAdapter;
 

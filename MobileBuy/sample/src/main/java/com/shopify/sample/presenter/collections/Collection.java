@@ -1,4 +1,4 @@
-package com.shopify.sample.presenter.collections.model;
+package com.shopify.sample.presenter.collections;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
