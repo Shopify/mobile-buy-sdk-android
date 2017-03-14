@@ -77,6 +77,7 @@ public final class ProductListView extends FrameLayout implements PageListViewPr
     ButterKnife.bind(this);
 
     listView.setLayoutManager(new GridLayoutManager(getContext(), 2));
+    listView.setHasFixedSize(true);
     listView.setAdapter(listViewAdapter);
     swipeRefreshLayoutView.setOnRefreshListener(this::refresh);
 
@@ -113,7 +114,7 @@ public final class ProductListView extends FrameLayout implements PageListViewPr
 
   @Override public Observable<String> nextPageObservable() {
     return RxRecyclerView.scrollStateChanges(listView)
-      .filter(event -> event.equals(RecyclerView.SCROLL_STATE_IDLE) && shouldRequestNextPage())
+      .filter(this::shouldRequestNextPage)
       .map(event -> nextPageCursor())
       .subscribeOn(AndroidSchedulers.mainThread())
       .mergeWith(refreshSubject);
@@ -150,9 +151,13 @@ public final class ProductListView extends FrameLayout implements PageListViewPr
     }
   }
 
-  private boolean shouldRequestNextPage() {
+  private boolean shouldRequestNextPage(final int scrollState) {
     GridLayoutManager layoutManager = (GridLayoutManager) listView.getLayoutManager();
-    return layoutManager.findLastVisibleItemPosition() > listViewAdapter.getItemCount() - PageListViewPresenter.PER_PAGE;
+    if (scrollState == RecyclerView.SCROLL_STATE_IDLE) {
+      return layoutManager.findLastVisibleItemPosition() > listViewAdapter.getItemCount() - PageListViewPresenter.PER_PAGE / 2;
+    } else {
+      return layoutManager.findLastVisibleItemPosition() >= listViewAdapter.getItemCount() - 2;
+    }
   }
 
   private String nextPageCursor() {

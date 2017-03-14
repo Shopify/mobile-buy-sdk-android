@@ -1,7 +1,5 @@
 package com.shopify.sample.view.collections;
 
-import android.widget.TextView;
-
 import com.shopify.sample.R;
 import com.shopify.sample.presenter.collections.Collection;
 import com.shopify.sample.view.base.ListItemViewModel;
@@ -22,12 +20,10 @@ final class ProductListItemViewModel extends ListItemViewModel<Collection.Produc
 
   static final class ViewItemHolder extends ListViewItemHolder<Collection.Product, ListItemViewModel<Collection.Product>> {
     @BindView(R.id.image) ShopifyDraweeView imageView;
-    @BindView(R.id.title) TextView titleView;
 
     @Override public void bindModel(final ListItemViewModel<Collection.Product> listViewItemModel) {
       super.bindModel(listViewItemModel);
       imageView.loadShopifyImage(listViewItemModel.payload().imageUrl());
-      titleView.setText(listViewItemModel.payload().title());
     }
   }
 }

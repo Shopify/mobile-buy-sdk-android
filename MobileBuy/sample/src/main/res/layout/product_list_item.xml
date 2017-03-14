@@ -12,7 +12,7 @@
         style="@style/ShopifyDraweeView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:actualImageScaleType="centerCrop"
+        app:actualImageScaleType="fitCenter"
         app:viewAspectRatio="1"
         tools:layout_height="200dp" />
 
@@ -40,8 +40,8 @@
         android:paddingBottom="@dimen/default_padding_half"
         android:paddingLeft="@dimen/default_padding_half"
         android:paddingRight="@dimen/default_padding_half"
-        android:textColor="?android:attr/textColorSecondary"
-        android:textSize="@dimen/small_text_size"
+        android:textColor="?attr/colorAccent"
+        android:textSize="@dimen/text_size"
         tools:text="50.99" />
 
 </LinearLayout>

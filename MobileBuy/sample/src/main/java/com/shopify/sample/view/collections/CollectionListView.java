@@ -72,13 +72,14 @@ public final class CollectionListView extends FrameLayout implements PageListVie
     super.onFinishInflate();
     ButterKnife.bind(this);
     listView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+    listView.setHasFixedSize(true);
     listView.setAdapter(listViewAdapter);
     swipeRefreshLayoutView.setOnRefreshListener(this::refresh);
   }
 
   @Override public Observable<String> nextPageObservable() {
     return RxRecyclerView.scrollStateChanges(listView)
-      .filter(event -> event.equals(RecyclerView.SCROLL_STATE_IDLE) && shouldRequestNextPage())
+      .filter(this::shouldRequestNextPage)
       .map(event -> nextPageCursor())
       .subscribeOn(AndroidSchedulers.mainThread())
       .mergeWith(refreshSubject);
@@ -111,9 +112,13 @@ public final class CollectionListView extends FrameLayout implements PageListVie
     presenter.detachView();
   }
 
-  private boolean shouldRequestNextPage() {
+  private boolean shouldRequestNextPage(final int scrollState) {
     LinearLayoutManager layoutManager = (LinearLayoutManager) listView.getLayoutManager();
-    return layoutManager.findLastVisibleItemPosition() > listViewAdapter.getItemCount() - PageListViewPresenter.PER_PAGE / 2;
+    if (scrollState == RecyclerView.SCROLL_STATE_IDLE) {
+      return layoutManager.findLastVisibleItemPosition() > listViewAdapter.getItemCount() - PageListViewPresenter.PER_PAGE / 2;
+    } else {
+      return layoutManager.findLastVisibleItemPosition() >= listViewAdapter.getItemCount() - 2;
+    }
   }
 
   private String nextPageCursor() {

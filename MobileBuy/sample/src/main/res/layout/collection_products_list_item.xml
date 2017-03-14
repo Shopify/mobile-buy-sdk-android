@@ -10,8 +10,8 @@
         android:layout_height="wrap_content"
         android:background="@android:color/transparent"
         android:clipToPadding="false"
-        android:paddingBottom="@dimen/default_padding"
-        android:paddingTop="@dimen/default_padding" />
+        android:paddingBottom="@dimen/default_padding_half"
+        android:paddingTop="@dimen/default_padding_half" />
 
     <View
         android:layout_width="match_parent"

@@ -20,7 +20,7 @@ public final class RealProductListViewPresenter extends BasePageListViewPresente
 
   @Override protected ObservableTransformer<String, List<Product>> nextPageRequestComposer() {
     return upstream -> upstream.flatMapSingle(
-      cursor -> catalogRepository.browseNextProductPage(collectionId, cursor, PER_PAGE)
+      cursor -> catalogRepository.browseNextProductPage(collectionId, cursor, PER_PAGE * 2)
         .subscribeOn(Schedulers.io()));
   }
 }

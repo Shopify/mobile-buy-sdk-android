@@ -15,6 +15,10 @@ import java.util.List;
 public final class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewItemHolder> {
   private final List<ListItemViewModel> items = new ArrayList<>();
 
+  public RecyclerViewAdapter() {
+    setHasStableIds(true);
+  }
+
   @Override public RecyclerViewItemHolder onCreateViewHolder(final ViewGroup parentView, final int layoutId) {
     final LayoutInflater layoutInflater = LayoutInflater.from(parentView.getContext());
     final View view = layoutInflater.inflate(layoutId, parentView, false);
@@ -32,6 +36,15 @@ public final class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
 
   @Override public int getItemViewType(final int position) {
     return itemAt(position).viewType();
+  }
+
+  @Override public long getItemId(final int position) {
+    long hash = 1;
+    hash *= 1000003;
+    hash ^= getItemViewType(position);
+    hash *= 1000003;
+    hash ^= itemAt(position).hashCode();
+    return hash;
   }
 
   @SuppressWarnings("unchecked") @Nullable public <T> ListItemViewModel<T> itemAt(final int position) {

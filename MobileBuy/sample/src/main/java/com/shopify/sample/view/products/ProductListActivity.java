@@ -33,7 +33,6 @@ public final class ProductListActivity extends AppCompatActivity {
 
     checkNotNull(collectionId, "collectionId == null");
     checkNotNull(collectionTitle, "collectionTitle == null");
-    checkNotNull(collectionImageUrl, "collectionImageUrl == null");
 
     setSupportActionBar(toolbarView);
     getSupportActionBar().setTitle(collectionTitle);

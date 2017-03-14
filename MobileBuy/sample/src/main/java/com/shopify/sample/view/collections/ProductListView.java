@@ -54,8 +54,8 @@ public final class ProductListView extends FrameLayout {
         if (position == RecyclerView.NO_POSITION) {
           return;
         }
-        outRect.left = position == 0 ? defaultPadding : defaultPadding / 2;
-        outRect.right = position == 0 ? defaultPadding : defaultPadding / 2;
+        outRect.left = position == 0 ? defaultPadding / 2 : defaultPadding / 4;
+        outRect.right = position == parent.getAdapter().getItemCount() ? defaultPadding / 2 : defaultPadding / 4;
       }
     });
   }
