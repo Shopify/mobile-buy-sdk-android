@@ -13,6 +13,7 @@ import android.widget.FrameLayout;
 
 import com.shopify.sample.R;
 import com.shopify.sample.presenter.collections.Collection;
+import com.shopify.sample.view.ScreenRouter;
 import com.shopify.sample.view.base.ListItemViewModel;
 import com.shopify.sample.view.base.RecyclerViewAdapter;
 
@@ -22,9 +23,9 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public final class ProductListView extends FrameLayout {
+public final class ProductListView extends FrameLayout implements RecyclerViewAdapter.OnItemClickListener {
   @BindView(R.id.list) RecyclerView listView;
-  private final RecyclerViewAdapter listViewAdapter = new RecyclerViewAdapter();
+  private final RecyclerViewAdapter listViewAdapter = new RecyclerViewAdapter(this);
 
   public ProductListView(@NonNull final Context context) {
     super(context);
@@ -38,12 +39,27 @@ public final class ProductListView extends FrameLayout {
     super(context, attrs, defStyleAttr);
   }
 
+  public void setItems(@NonNull final List<Collection.Product> items) {
+    listViewAdapter.clearItems();
+
+    List<ListItemViewModel> viewModels = new ArrayList<>();
+    for (Collection.Product item : items) {
+      viewModels.add(new ProductListItemViewModel(item));
+    }
+    listViewAdapter.addItems(viewModels);
+  }
+
+  @Override public void onItemClick(final ListItemViewModel itemViewModel) {
+    ScreenRouter.route(getContext(), new CollectionProductClickActionEvent((Collection.Product) itemViewModel.payload()));
+  }
+
   @Override protected void onFinishInflate() {
     super.onFinishInflate();
     ButterKnife.bind(this);
 
     LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
     layoutManager.setInitialPrefetchItemCount(prefetchItemCount());
+    layoutManager.setItemPrefetchEnabled(true);
     listView.setLayoutManager(layoutManager);
     listView.setAdapter(listViewAdapter);
 
@@ -58,16 +74,6 @@ public final class ProductListView extends FrameLayout {
         outRect.right = position == parent.getAdapter().getItemCount() ? defaultPadding / 2 : defaultPadding / 4;
       }
     });
-  }
-
-  public void setItems(@NonNull final List<Collection.Product> items) {
-    listViewAdapter.clearItems();
-
-    List<ListItemViewModel> viewModels = new ArrayList<>();
-    for (Collection.Product item : items) {
-      viewModels.add(new ProductListItemViewModel(item));
-    }
-    listViewAdapter.addItems(viewModels);
   }
 
   private int prefetchItemCount() {

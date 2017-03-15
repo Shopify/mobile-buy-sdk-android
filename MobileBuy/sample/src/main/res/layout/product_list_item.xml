@@ -7,7 +7,7 @@
     android:background="@android:color/white"
     android:orientation="vertical">
 
-    <com.shopify.sample.view.base.ShopifyDraweeView
+    <com.shopify.sample.view.widget.image.ShopifyDraweeView
         android:id="@+id/image"
         style="@style/ShopifyDraweeView"
         android:layout_width="match_parent"
@@ -26,7 +26,7 @@
         android:paddingLeft="@dimen/default_padding_half"
         android:paddingRight="@dimen/default_padding_half"
         android:paddingTop="@dimen/default_padding_half"
-        android:textColor="?android:attr/textColorPrimary"
+        android:textColor="?android:attr/textColorPrimaryInverse"
         android:textSize="@dimen/text_size"
         tools:text="Product Title" />
 

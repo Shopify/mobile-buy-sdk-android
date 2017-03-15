@@ -6,7 +6,6 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
-
     <uses-sdk tools:overrideLibrary="android.support.customtabs" />
 
     <application
@@ -32,6 +31,10 @@
 
         <activity
             android:name=".view.products.ProductListActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
+            android:name=".view.product.ProductDetailsActivity"
             android:theme="@style/AppTheme.NoActionBar" />
     </application>
 </manifest>

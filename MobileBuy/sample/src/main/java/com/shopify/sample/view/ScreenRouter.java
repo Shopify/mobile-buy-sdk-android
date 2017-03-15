@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 
 import com.shopify.sample.view.collections.CollectionClickActionEvent;
+import com.shopify.sample.view.collections.CollectionProductClickActionEvent;
+import com.shopify.sample.view.product.ProductDetailsActivity;
 import com.shopify.sample.view.products.ProductListActivity;
 
 import java.util.LinkedHashMap;
@@ -34,7 +36,15 @@ public final class ScreenRouter {
         intent.putExtra(ProductListActivity.EXTRAS_COLLECTION_TITLE, event.title());
         intent.putExtra(ScreenActionEvent.class.getName(), event);
         context.startActivity(intent);
-      });
+      })
+      .<CollectionProductClickActionEvent>registerInternal(CollectionProductClickActionEvent.ACTION, ((context, event) -> {
+        Intent intent = new Intent(context, ProductDetailsActivity.class);
+        intent.putExtra(ProductDetailsActivity.EXTRAS_PRODUCT_ID, event.id());
+        intent.putExtra(ProductDetailsActivity.EXTRAS_PRODUCT_IMAGE_URL, event.imageUrl());
+        intent.putExtra(ProductDetailsActivity.EXTRAS_PRODUCT_TITLE, event.title());
+        intent.putExtra(ScreenActionEvent.class.getName(), event);
+        context.startActivity(intent);
+      }));
   }
 
   private <T extends ScreenActionEvent> ScreenRouter registerInternal(final String action, final BiConsumer<Context, T> consumer) {

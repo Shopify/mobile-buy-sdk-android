@@ -6,7 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 import com.shopify.sample.R;
-import com.shopify.sample.view.base.ShopifyDraweeView;
+import com.shopify.sample.view.widget.image.ShopifyDraweeView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

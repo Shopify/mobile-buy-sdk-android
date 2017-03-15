@@ -1,13 +1,13 @@
 package com.shopify.sample.view.collections;
 
+import android.support.annotation.NonNull;
 import android.view.View;
 
 import com.shopify.sample.R;
 import com.shopify.sample.presenter.collections.Collection;
-import com.shopify.sample.view.ScreenRouter;
+import com.shopify.sample.view.base.ListItemViewHolder;
 import com.shopify.sample.view.base.ListItemViewModel;
-import com.shopify.sample.view.base.ListViewItemHolder;
-import com.shopify.sample.view.base.ShopifyDraweeView;
+import com.shopify.sample.view.widget.image.ShopifyDraweeView;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -18,21 +18,26 @@ final class CollectionImageListItemViewModel extends ListItemViewModel<Collectio
     super(payload, R.layout.collection_image_list_item);
   }
 
-  @Override public ListViewItemHolder<Collection, ListItemViewModel<Collection>> createViewHolder() {
-    return new ViewItemHolder();
+  @Override public ListItemViewHolder<Collection, ListItemViewModel<Collection>> createViewHolder(
+    final ListItemViewHolder.OnClickListener onClickListener) {
+    return new ItemViewHolder(onClickListener);
   }
 
-  static final class ViewItemHolder extends ListViewItemHolder<Collection, ListItemViewModel<Collection>> {
+  static final class ItemViewHolder extends ListItemViewHolder<Collection, ListItemViewModel<Collection>> {
     @BindView(R.id.image) ShopifyDraweeView imageView;
 
-    @Override public void bindModel(final ListItemViewModel<Collection> listViewItemModel) {
+    ItemViewHolder(@NonNull final ListItemViewHolder.OnClickListener onClickListener) {
+      super(onClickListener);
+    }
+
+    @Override public void bindModel(@NonNull final ListItemViewModel<Collection> listViewItemModel) {
       super.bindModel(listViewItemModel);
       imageView.loadShopifyImage(listViewItemModel.payload().imageUrl());
     }
 
-    @OnClick(R.id.image)
-    void onImageClick(final View v) {
-      ScreenRouter.route(v.getContext(), new CollectionClickActionEvent(itemModel().payload()));
+    @SuppressWarnings("unchecked") @OnClick(R.id.image)
+    void onImageClick() {
+      onClickListener().onClick(itemModel());
     }
   }
 }

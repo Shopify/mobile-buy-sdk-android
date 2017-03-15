@@ -7,6 +7,8 @@ import android.support.annotation.NonNull;
 import com.shopify.sample.presenter.collections.Collection;
 import com.shopify.sample.view.ScreenActionEvent;
 
+import static com.shopify.sample.util.Util.checkNotNull;
+
 public final class CollectionClickActionEvent extends ScreenActionEvent implements Parcelable {
   public static final Creator<CollectionClickActionEvent> CREATOR = new Creator<CollectionClickActionEvent>() {
     @Override
@@ -27,12 +29,13 @@ public final class CollectionClickActionEvent extends ScreenActionEvent implemen
 
   CollectionClickActionEvent(@NonNull final Collection collection) {
     super(ACTION);
+    checkNotNull(collection, "collection == null");
     payload.putString(EXTRAS_ID, collection.id());
     payload.putString(EXTRAS_IMAGE_URL, collection.imageUrl());
     payload.putString(EXTRAS_TITLE, collection.title());
   }
 
-  CollectionClickActionEvent(Parcel in) {
+  @SuppressWarnings("WeakerAccess") CollectionClickActionEvent(Parcel in) {
     super(in);
   }
 

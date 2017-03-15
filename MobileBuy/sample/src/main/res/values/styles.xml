@@ -8,9 +8,8 @@
         <item name="placeholderImageScaleType">fitXY</item>
     </style>
 
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!--<item name="colorPrimary">@color/colorPrimary</item>-->
-        <!--<item name="colorPrimaryDark">@color/colorPrimaryDark</item>-->
+    <style name="AppTheme" parent="Theme.AppCompat">
+        <item name="colorControlNormal">@android:color/white</item>
         <item name="colorAccent">@android:color/holo_green_dark</item>
     </style>
 
@@ -18,10 +17,6 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
-
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
     <style name="ExpandedTitleTextAppearance" parent="TextAppearance.AppCompat.Title">
         <item name="android:textSize">26sp</item>

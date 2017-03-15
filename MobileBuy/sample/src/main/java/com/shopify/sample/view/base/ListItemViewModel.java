@@ -11,9 +11,9 @@ public abstract class ListItemViewModel<T> {
     this.viewType = viewType;
   }
 
-  public abstract ListViewItemHolder<T, ListItemViewModel<T>> createViewHolder();
+  public abstract ListItemViewHolder<T, ListItemViewModel<T>> createViewHolder(final ListItemViewHolder.OnClickListener onClickListener);
 
-  public void bindView(final ListViewItemHolder<T, ListItemViewModel<T>> viewHolder, final int position) {
+  public void bindView(final ListItemViewHolder<T, ListItemViewModel<T>> viewHolder, final int position) {
     viewHolder.bindModel(this);
   }
 

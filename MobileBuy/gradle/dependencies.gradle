@@ -45,5 +45,6 @@ ext.dep = [
     rxbindingRecyclerView    : "com.jakewharton.rxbinding2:rxbinding-recyclerview-v7:2.0.0",
     apolloPlugin             : "com.apollographql.android:gradle-plugin:$versions.apolloVersion",
     apolloApi                : "com.apollographql.android:api:$versions.apolloVersion",
-    apolloRuntime            : "com.apollographql.android:runtime:$versions.apolloVersion"
+    apolloRuntime            : "com.apollographql.android:runtime:$versions.apolloVersion",
+    constraintLayout         : "com.android.support.constraint:constraint-layout:1.0.2"
 ]

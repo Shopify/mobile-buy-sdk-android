@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="80dp"
+    android:layout_height="80dp"
+    android:padding="@dimen/image_selection_frame_size">
+
+    <com.shopify.sample.view.widget.image.ShopifyDraweeView
+        android:id="@+id/image"
+        style="@style/ShopifyDraweeView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/white"
+        app:actualImageScaleType="fitCenter" />
+</FrameLayout>
+
+

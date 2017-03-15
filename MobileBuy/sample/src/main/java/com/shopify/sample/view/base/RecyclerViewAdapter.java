@@ -7,27 +7,35 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.shopify.sample.util.Util;
-
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.shopify.sample.util.Util.checkNotNull;
+
 public final class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewItemHolder> {
   private final List<ListItemViewModel> items = new ArrayList<>();
+  private final RecyclerViewItemHolder.OnClickListener itemClickListener;
 
   public RecyclerViewAdapter() {
+    setHasStableIds(true);
+    this.itemClickListener = itemModel -> {
+    };
+  }
+
+  public RecyclerViewAdapter(@NonNull final OnItemClickListener itemClickListener) {
+    checkNotNull(itemClickListener, "itemClickListener == null");
+    this.itemClickListener = itemClickListener::onItemClick;
     setHasStableIds(true);
   }
 
   @Override public RecyclerViewItemHolder onCreateViewHolder(final ViewGroup parentView, final int layoutId) {
     final LayoutInflater layoutInflater = LayoutInflater.from(parentView.getContext());
     final View view = layoutInflater.inflate(layoutId, parentView, false);
-    return new RecyclerViewItemHolder(view);
+    return new RecyclerViewItemHolder(view, itemClickListener);
   }
 
   @Override public void onBindViewHolder(final RecyclerViewItemHolder viewHolder, final int position) {
-    final ListItemViewModel item = itemAt(position);
-    viewHolder.bindModel(item, position);
+    viewHolder.bindModel(items.get(position), position);
   }
 
   @Override public int getItemCount() {
@@ -35,7 +43,7 @@ public final class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
   }
 
   @Override public int getItemViewType(final int position) {
-    return itemAt(position).viewType();
+    return items.get(position).viewType();
   }
 
   @Override public long getItemId(final int position) {
@@ -43,7 +51,7 @@ public final class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
     hash *= 1000003;
     hash ^= getItemViewType(position);
     hash *= 1000003;
-    hash ^= itemAt(position).hashCode();
+    hash ^= items.get(position).hashCode();
     return hash;
   }
 
@@ -62,7 +70,7 @@ public final class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
   }
 
   public void addItems(@NonNull final List<ListItemViewModel> newItems) {
-    Util.checkNotNull(newItems, "newItems == null");
+    checkNotNull(newItems, "newItems == null");
     int prevSize = items.size();
     items.addAll(newItems);
     notifyItemRangeInserted(prevSize, newItems.size());
@@ -72,5 +80,9 @@ public final class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
     int prevSize = items.size();
     items.clear();
     notifyItemRangeRemoved(0, prevSize);
+  }
+
+  public interface OnItemClickListener {
+    void onItemClick(@NonNull ListItemViewModel itemViewModel);
   }
 }

@@ -109,6 +109,7 @@ dependencies {
     exclude group: 'com.android.support'
   }
   compile dep.rxbindingRecyclerView
+  compile dep.constraintLayout
 
   shopifyCompile project(':buy')
 

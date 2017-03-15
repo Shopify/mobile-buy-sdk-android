@@ -1,6 +1,7 @@
 package com.shopify.sample.view.collections;
 
 import android.content.Context;
+import android.os.Parcel;
 import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -18,6 +19,7 @@ import com.shopify.sample.mvp.PageListViewPresenter;
 import com.shopify.sample.presenter.collections.Collection;
 import com.shopify.sample.presenter.collections.RealCollectionListViewPresenter;
 import com.shopify.sample.repository.RealCatalogRepository;
+import com.shopify.sample.view.ScreenRouter;
 import com.shopify.sample.view.base.ListItemViewModel;
 import com.shopify.sample.view.base.RecyclerViewAdapter;
 
@@ -30,11 +32,12 @@ import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.subjects.PublishSubject;
 
-public final class CollectionListView extends FrameLayout implements PageListViewPresenter.View<Collection> {
+public final class CollectionListView extends FrameLayout implements PageListViewPresenter.View<Collection>,
+  RecyclerViewAdapter.OnItemClickListener {
   @BindView(R.id.list) RecyclerView listView;
   @BindView(R.id.swipe_refresh_layout) SwipeRefreshLayout swipeRefreshLayoutView;
 
-  private final RecyclerViewAdapter listViewAdapter = new RecyclerViewAdapter();
+  private final RecyclerViewAdapter listViewAdapter = new RecyclerViewAdapter(this);
   private final BasePageListViewPresenter<Collection, PageListViewPresenter.View<Collection>> presenter =
     new RealCollectionListViewPresenter(new RealCatalogRepository());
   private final PublishSubject<String> refreshSubject = PublishSubject.create();
@@ -68,15 +71,6 @@ public final class CollectionListView extends FrameLayout implements PageListVie
     refreshSubject.onNext("");
   }
 
-  @Override protected void onFinishInflate() {
-    super.onFinishInflate();
-    ButterKnife.bind(this);
-    listView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
-    listView.setHasFixedSize(true);
-    listView.setAdapter(listViewAdapter);
-    swipeRefreshLayoutView.setOnRefreshListener(this::refresh);
-  }
-
   @Override public Observable<String> nextPageObservable() {
     return RxRecyclerView.scrollStateChanges(listView)
       .filter(this::shouldRequestNextPage)
@@ -97,6 +91,21 @@ public final class CollectionListView extends FrameLayout implements PageListVie
 
   @Override public void clearItems() {
     listViewAdapter.clearItems();
+  }
+
+  @Override public void onItemClick(final ListItemViewModel itemViewModel) {
+    if (itemViewModel.payload() instanceof Collection) {
+      ScreenRouter.route(getContext(), new CollectionClickActionEvent((Collection) itemViewModel.payload()));
+    }
+  }
+
+  @Override protected void onFinishInflate() {
+    super.onFinishInflate();
+    ButterKnife.bind(this);
+    listView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+    listView.setHasFixedSize(true);
+    listView.setAdapter(listViewAdapter);
+    swipeRefreshLayoutView.setOnRefreshListener(this::refresh);
   }
 
   @Override protected void onAttachedToWindow() {

@@ -1,4 +1,4 @@
-package com.shopify.sample.view.base;
+package com.shopify.sample.view.widget.image;
 
 import android.content.Context;
 import android.net.Uri;

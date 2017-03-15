@@ -9,7 +9,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fitsSystemWindows="true"
-        android:theme="@style/AppTheme.AppBarOverlay"
         app:layout_behavior="com.shopify.sample.util.FlingBehavior">
 
         <android.support.design.widget.CollapsingToolbarLayout
@@ -24,7 +23,7 @@
             app:expandedTitleTextAppearance="@style/ExpandedTitleTextAppearance"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
-            <com.shopify.sample.view.base.ShopifyDraweeView
+            <com.shopify.sample.view.widget.image.ShopifyDraweeView
                 android:id="@+id/collection_image"
                 style="@style/ShopifyDraweeView"
                 android:layout_width="match_parent"
@@ -40,8 +39,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 app:contentInsetStartWithNavigation="0dp"
-                app:layout_collapseMode="pin"
-                app:popupTheme="@style/AppTheme.PopupOverlay" />
+                app:layout_collapseMode="pin"/>
         </android.support.design.widget.CollapsingToolbarLayout>
 
     </android.support.design.widget.AppBarLayout>
