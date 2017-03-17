@@ -8,7 +8,6 @@ import android.widget.TextView;
 
 import com.shopify.sample.R;
 import com.shopify.sample.presenter.product.Product;
-import com.shopify.sample.util.Util;
 
 import java.math.BigDecimal;
 import java.text.NumberFormat;

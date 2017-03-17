@@ -14,5 +14,5 @@
 
     <dimen name="image_selection_frame_size">3dp</dimen>
 
-    <dimen name="collection_list_product_image_height">100dp</dimen>
+    <dimen name="collection_list_product_image_height">80dp</dimen>
 </resources>

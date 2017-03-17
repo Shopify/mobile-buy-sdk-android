@@ -14,7 +14,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:contentScrim="?attr/colorPrimary"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
             app:titleEnabled="false">
 
             <com.shopify.sample.view.widget.image.ImageGalleryView
@@ -50,7 +50,8 @@
         <com.shopify.sample.view.product.ProductDetailsView
             android:id="@+id/product_details"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
             <include
                 layout="@layout/product_details"
@@ -63,7 +64,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|right|end"
-        android:layout_margin="@dimen/default_padding"
+        android:layout_margin="24dp"
         android:clickable="true"
         android:src="@drawable/ic_add_shopping_cart"
         app:fabSize="normal"
