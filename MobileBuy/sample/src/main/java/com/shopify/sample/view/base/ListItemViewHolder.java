@@ -16,7 +16,7 @@ public abstract class ListItemViewHolder<T, MODEL extends ListItemViewModel<T>> 
     this.onClickListener = onClickListener;
   }
 
-  void bindView(@NonNull final View view) {
+  protected void bindView(@NonNull final View view) {
     ButterKnife.bind(this, view);
   }
 

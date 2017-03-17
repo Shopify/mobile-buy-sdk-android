@@ -82,6 +82,10 @@ public final class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
     notifyItemRangeRemoved(0, prevSize);
   }
 
+  public int itemPosition(ListItemViewModel item) {
+    return items.indexOf(item);
+  }
+
   public interface OnItemClickListener {
     void onItemClick(@NonNull ListItemViewModel itemViewModel);
   }

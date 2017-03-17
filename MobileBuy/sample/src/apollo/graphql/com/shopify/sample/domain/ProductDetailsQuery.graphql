@@ -1,0 +1,36 @@
+query ProductDetailsQuery($id: ID!) {
+  node(id: $id) {
+    ... on Product {
+      id
+      title
+      descriptionHtml
+      tags
+      imageConnection: images(first: 250) {
+        imageEdge: edges {
+          image: node {
+            src
+          }
+        }
+      }
+      options {
+        id
+        name
+        values
+      }
+      variantConnection: variants(first: 250) {
+        variantEdge: edges {
+          variant: node {
+            id
+            title
+            available
+            selectedOptions {
+              name
+              value
+            }
+            price
+          }
+        }
+      }
+    }
+  }
+}

@@ -3,6 +3,8 @@ package com.shopify.sample.util;
 import android.content.Context;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.v4.view.ScrollingView;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
@@ -30,6 +32,8 @@ public class FlingBehavior extends AppBarLayout.Behavior {
       consumed = consumed((SwipeRefreshLayout) target, consumed);
     } else if (target instanceof RecyclerView) {
       consumed = consumed((RecyclerView) target);
+    } else if (target instanceof ScrollingView) {
+      consumed = target.getScrollY() < 0;
     }
 
     return super.onNestedFling(coordinatorLayout, child, target, velocityX, velocityY, consumed);
@@ -43,8 +47,12 @@ public class FlingBehavior extends AppBarLayout.Behavior {
   }
 
   private boolean consumed(final SwipeRefreshLayout swipeRefreshLayout, final boolean defaultValue) {
-    if (swipeRefreshLayout.getChildCount() > 0 && swipeRefreshLayout.getChildAt(0) instanceof RecyclerView) {
-      return consumed((RecyclerView) swipeRefreshLayout.getChildAt(0));
+    if (swipeRefreshLayout.getChildCount() > 0) {
+      if (swipeRefreshLayout.getChildAt(0) instanceof RecyclerView) {
+        return consumed((RecyclerView) swipeRefreshLayout.getChildAt(0));
+      } else if (swipeRefreshLayout.getChildAt(0) instanceof ScrollingView) {
+        return swipeRefreshLayout.getScrollY() < 0;
+      }
     }
     return defaultValue;
   }

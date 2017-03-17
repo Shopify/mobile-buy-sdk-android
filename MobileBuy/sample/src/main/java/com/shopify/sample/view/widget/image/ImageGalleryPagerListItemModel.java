@@ -8,6 +8,7 @@ import com.shopify.sample.view.base.ListItemViewModel;
 import com.shopify.sample.view.base.ListItemViewHolder;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 
 final class ImageGalleryPagerListItemModel extends ListItemViewModel<String> {
 
@@ -31,6 +32,11 @@ final class ImageGalleryPagerListItemModel extends ListItemViewModel<String> {
     @Override public void bindModel(@NonNull final ListItemViewModel<String> listViewItemModel) {
       super.bindModel(listViewItemModel);
       imageView.loadShopifyImage(listViewItemModel.payload());
+    }
+
+    @SuppressWarnings("unchecked") @OnClick(R.id.image)
+    void onImageClick() {
+      onClickListener().onClick(itemModel());
     }
   }
 }

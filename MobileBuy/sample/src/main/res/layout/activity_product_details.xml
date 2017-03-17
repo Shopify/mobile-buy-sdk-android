@@ -1,63 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-    <android.support.design.widget.CoordinatorLayout
+    <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent">
 
-        <android.support.design.widget.AppBarLayout
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/collapsing_toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
-            app:layout_behavior="com.shopify.sample.util.FlingBehavior">
+            app:contentScrim="?attr/colorPrimary"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            app:titleEnabled="false">
 
-            <android.support.design.widget.CollapsingToolbarLayout
-                android:id="@+id/collapsing_toolbar"
+            <com.shopify.sample.view.widget.image.ImageGalleryView
+                android:id="@+id/image_gallery"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:contentScrim="?attr/colorPrimary"
-                app:layout_scrollFlags="scroll|exitUntilCollapsed"
-                app:titleEnabled="false">
+                android:layout_marginTop="?attr/actionBarSize"
+                app:layout_collapseMode="parallax">
 
-                <com.shopify.sample.view.widget.image.ImageGalleryView
-                    android:id="@+id/image_gallery"
+                <include
+                    layout="@layout/image_gallery"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="?attr/actionBarSize"
-                    app:layout_collapseMode="parallax">
+                    android:layout_height="wrap_content" />
+            </com.shopify.sample.view.widget.image.ImageGalleryView>
 
-                    <include
-                        layout="@layout/image_gallery"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-                </com.shopify.sample.view.widget.image.ImageGalleryView>
-
-                <android.support.v7.widget.Toolbar
-                    android:id="@+id/toolbar"
-                    android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
-                    android:background="?attr/colorPrimary"
-                    app:contentInsetStartWithNavigation="0dp"
-                    app:layout_collapseMode="pin" />
-
-            </android.support.design.widget.CollapsingToolbarLayout>
-        </android.support.design.widget.AppBarLayout>
-
-        <android.support.v4.widget.NestedScrollView
-            android:layout_width="match_parent"
-            android:layout_height="800dp"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-            <View
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="800dp" />
-        </android.support.v4.widget.NestedScrollView>
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                app:contentInsetStartWithNavigation="0dp"
+                app:layout_collapseMode="pin" />
 
-    </android.support.design.widget.CoordinatorLayout>
+        </android.support.design.widget.CollapsingToolbarLayout>
+    </android.support.design.widget.AppBarLayout>
 
-</LinearLayout>
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <com.shopify.sample.view.product.ProductDetailsView
+            android:id="@+id/product_details"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <include
+                layout="@layout/product_details"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </com.shopify.sample.view.product.ProductDetailsView>
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right|end"
+        android:layout_margin="@dimen/default_padding"
+        android:clickable="true"
+        android:src="@drawable/ic_add_shopping_cart"
+        app:fabSize="normal"
+        app:layout_behavior="com.shopify.sample.view.product.ProductDetailsActivity$FabBehaviour" />
+</android.support.design.widget.CoordinatorLayout>

@@ -49,10 +49,18 @@ public final class ImageGalleryView extends FrameLayout {
     super(context, attrs, defStyleAttr);
   }
 
-  public void images(@NonNull final List<String> images) {
+  public void renderImages(@NonNull final List<String> images) {
     checkNotNull(images, "images == null");
     imagePagerView.setAdapter(new ImageGalleryViewPageAdapter(getContext(), images, onItemClickListener));
-    initPagerIndicator(images);
+
+    RecyclerViewAdapter adapter = new RecyclerViewAdapter(it -> imagePagerView.setCurrentItem(it.position()));
+    List<ListItemViewModel> items = new ArrayList<>();
+    for (String image : images) {
+      items.add(new ImageGalleryPagerListItemModel(image));
+    }
+    adapter.addItems(items);
+    thumbnailListView.setAdapter(adapter);
+
   }
 
   public View anchorPreview() {
@@ -69,6 +77,7 @@ public final class ImageGalleryView extends FrameLayout {
     super.onFinishInflate();
     ButterKnife.bind(this);
     initPagerView();
+    initPagerIndicator();
   }
 
   private void initPagerView() {
@@ -108,7 +117,7 @@ public final class ImageGalleryView extends FrameLayout {
     });
   }
 
-  private void initPagerIndicator(final List<String> images) {
+  private void initPagerIndicator() {
     LinearLayoutManager layoutManager = (LinearLayoutManager) thumbnailListView.getLayoutManager();
     thumbnailListView.setHasFixedSize(true);
     thumbnailListView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -123,7 +132,7 @@ public final class ImageGalleryView extends FrameLayout {
       }
     });
 
-    int defaultPadding = getResources().getDimensionPixelOffset(R.dimen.default_padding);
+    int defaultPadding = getResources().getDimensionPixelOffset(R.dimen.default_padding_half);
     thumbnailListView.addItemDecoration(new RecyclerView.ItemDecoration() {
       @Override public void getItemOffsets(final Rect outRect, final View view, final RecyclerView parent, final RecyclerView.State state) {
         int position = parent.getChildAdapterPosition(view);
@@ -134,18 +143,10 @@ public final class ImageGalleryView extends FrameLayout {
         outRect.right = position == parent.getAdapter().getItemCount() ? defaultPadding / 2 : defaultPadding / 4;
       }
     });
-
-    RecyclerViewAdapter adapter = new RecyclerViewAdapter();
-    List<ListItemViewModel> items = new ArrayList<>();
-    for (String image : images) {
-      items.add(new ImageGalleryPagerListItemModel(image));
-    }
-    adapter.addItems(items);
-    thumbnailListView.setAdapter(adapter);
   }
 
   private final static class DepthPageTransformer implements ViewPager.PageTransformer {
-    static final float MIN_SCALE = 0.5f;
+    static final float MIN_SCALE = 0.8f;
 
     @Override
     public void transformPage(View view, float position) {

@@ -7,7 +7,7 @@ import com.apollographql.android.CustomTypeAdapter;
 import com.apollographql.android.cache.http.DiskLruCacheStore;
 import com.apollographql.android.cache.http.TimeoutEvictionStrategy;
 import com.apollographql.android.impl.ApolloClient;
-import com.shopify.sample.repository.type.CustomType;
+import com.shopify.sample.domain.type.CustomType;
 
 import java.math.BigDecimal;
 import java.nio.charset.Charset;

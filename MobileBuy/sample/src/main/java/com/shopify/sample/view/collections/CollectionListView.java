@@ -1,7 +1,6 @@
 package com.shopify.sample.view.collections;
 
 import android.content.Context;
-import android.os.Parcel;
 import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -14,11 +13,11 @@ import android.widget.FrameLayout;
 
 import com.jakewharton.rxbinding2.support.v7.widget.RxRecyclerView;
 import com.shopify.sample.R;
+import com.shopify.sample.interactor.collections.RealFetchCollectionNextPage;
 import com.shopify.sample.mvp.BasePageListViewPresenter;
 import com.shopify.sample.mvp.PageListViewPresenter;
 import com.shopify.sample.presenter.collections.Collection;
-import com.shopify.sample.presenter.collections.RealCollectionListViewPresenter;
-import com.shopify.sample.repository.RealCatalogRepository;
+import com.shopify.sample.presenter.collections.CollectionListViewPresenter;
 import com.shopify.sample.view.ScreenRouter;
 import com.shopify.sample.view.base.ListItemViewModel;
 import com.shopify.sample.view.base.RecyclerViewAdapter;
@@ -39,7 +38,7 @@ public final class CollectionListView extends FrameLayout implements PageListVie
 
   private final RecyclerViewAdapter listViewAdapter = new RecyclerViewAdapter(this);
   private final BasePageListViewPresenter<Collection, PageListViewPresenter.View<Collection>> presenter =
-    new RealCollectionListViewPresenter(new RealCatalogRepository());
+    new CollectionListViewPresenter(new RealFetchCollectionNextPage());
   private final PublishSubject<String> refreshSubject = PublishSubject.create();
 
   public CollectionListView(@NonNull final Context context) {

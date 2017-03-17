@@ -1,26 +1,26 @@
 package com.shopify.sample.presenter.products;
 
+import com.shopify.sample.interactor.products.FetchProductNextPage;
 import com.shopify.sample.mvp.BasePageListViewPresenter;
 import com.shopify.sample.mvp.PageListViewPresenter;
-import com.shopify.sample.repository.CatalogRepository;
 
 import java.util.List;
 
 import io.reactivex.ObservableTransformer;
 import io.reactivex.schedulers.Schedulers;
 
-public final class RealProductListViewPresenter extends BasePageListViewPresenter<Product, PageListViewPresenter.View<Product>> {
+public final class ProductListViewPresenter extends BasePageListViewPresenter<Product, PageListViewPresenter.View<Product>> {
   private final String collectionId;
-  private final CatalogRepository catalogRepository;
+  private final FetchProductNextPage fetchProductNextPage;
 
-  public RealProductListViewPresenter(final String collectionId, final CatalogRepository catalogRepository) {
+  public ProductListViewPresenter(final String collectionId, final FetchProductNextPage fetchProductNextPage) {
     this.collectionId = collectionId;
-    this.catalogRepository = catalogRepository;
+    this.fetchProductNextPage = fetchProductNextPage;
   }
 
   @Override protected ObservableTransformer<String, List<Product>> nextPageRequestComposer() {
     return upstream -> upstream.flatMapSingle(
-      cursor -> catalogRepository.browseNextProductPage(collectionId, cursor, PER_PAGE * 2)
+      cursor -> fetchProductNextPage.call(collectionId, cursor, PER_PAGE * 2)
         .subscribeOn(Schedulers.io()));
   }
 }

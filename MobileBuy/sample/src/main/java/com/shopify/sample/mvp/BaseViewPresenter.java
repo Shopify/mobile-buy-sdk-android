@@ -1,7 +1,5 @@
 package com.shopify.sample.mvp;
 
-import android.content.Context;
-
 import com.shopify.sample.util.RequestRegister;
 
 import java.lang.ref.WeakReference;
@@ -46,11 +44,6 @@ public abstract class BaseViewPresenter<V extends View> implements ViewPresenter
 
   protected V view() {
     return viewRef.get();
-  }
-
-  protected Context getContext() {
-    final V view = viewRef.get();
-    return view != null ? view.getContext() : null;
   }
 
   protected void registerRequest(final int requestId, @NonNull final Disposable disposable) {

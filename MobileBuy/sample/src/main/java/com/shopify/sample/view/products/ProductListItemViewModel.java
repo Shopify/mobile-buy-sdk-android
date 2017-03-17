@@ -1,6 +1,7 @@
 package com.shopify.sample.view.products;
 
 import android.support.annotation.NonNull;
+import android.view.View;
 import android.widget.TextView;
 
 import com.shopify.sample.R;
@@ -12,6 +13,7 @@ import com.shopify.sample.view.widget.image.ShopifyDraweeView;
 import java.text.NumberFormat;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 
 final class ProductListItemViewModel extends ListItemViewModel<Product> {
 
@@ -39,6 +41,11 @@ final class ProductListItemViewModel extends ListItemViewModel<Product> {
       imageView.loadShopifyImage(listViewItemModel.payload().imageUrl());
       titleView.setText(listViewItemModel.payload().title());
       priceView.setText(CURRENCY_FORMAT.format(listViewItemModel.payload().minPrice()));
+    }
+
+    @SuppressWarnings("unchecked") @OnClick({R.id.image, R.id.title, R.id.price})
+    void onClick() {
+      onClickListener().onClick(itemModel());
     }
   }
 }

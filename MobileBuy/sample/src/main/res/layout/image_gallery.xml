@@ -23,21 +23,25 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/thumbnail_list"
         android:layout_width="0dp"
-        android:layout_height="80dp"
-        android:layout_marginTop="@dimen/default_padding_half"
+        android:layout_height="wrap_content"
         android:clipToPadding="false"
         android:orientation="horizontal"
+        android:paddingTop="@dimen/default_padding_half"
+        android:paddingBottom="@dimen/default_padding_half"
         app:layoutManager="android.support.v7.widget.LinearLayoutManager"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/image_pager" />
+        app:layout_constraintTop_toBottomOf="@id/image_pager"
+        app:layout_constraintVertical_bias="0.5" />
 
     <View
         android:id="@+id/thumbnail_selection_frame"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_gravity="center_vertical"
+        android:layout_marginBottom="@dimen/default_padding_half"
+        android:layout_marginTop="@dimen/default_padding_half"
         android:background="@drawable/image_selection_frame"
         app:layout_constraintBottom_toBottomOf="@+id/thumbnail_list"
         app:layout_constraintDimensionRatio="w,1:1"

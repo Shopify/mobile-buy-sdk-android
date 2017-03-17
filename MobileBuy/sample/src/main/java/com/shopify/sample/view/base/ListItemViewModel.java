@@ -5,6 +5,7 @@ import android.support.annotation.LayoutRes;
 public abstract class ListItemViewModel<T> {
   private final T payload;
   private final int viewType;
+  private int position;
 
   public ListItemViewModel(final T payload, final @LayoutRes int viewType) {
     this.payload = payload;
@@ -14,6 +15,7 @@ public abstract class ListItemViewModel<T> {
   public abstract ListItemViewHolder<T, ListItemViewModel<T>> createViewHolder(final ListItemViewHolder.OnClickListener onClickListener);
 
   public void bindView(final ListItemViewHolder<T, ListItemViewModel<T>> viewHolder, final int position) {
+    this.position = position;
     viewHolder.bindModel(this);
   }
 
@@ -32,6 +34,10 @@ public abstract class ListItemViewModel<T> {
   @LayoutRes
   public int viewType() {
     return viewType;
+  }
+
+  public int position() {
+    return position;
   }
 
   @Override

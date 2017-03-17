@@ -2,6 +2,7 @@ package com.shopify.sample.view.products;
 
 import android.content.Context;
 import android.graphics.Rect;
+import android.os.Parcel;
 import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -15,11 +16,12 @@ import android.widget.FrameLayout;
 
 import com.jakewharton.rxbinding2.support.v7.widget.RxRecyclerView;
 import com.shopify.sample.R;
+import com.shopify.sample.interactor.products.RealFetchProductNextPage;
 import com.shopify.sample.mvp.BasePageListViewPresenter;
 import com.shopify.sample.mvp.PageListViewPresenter;
 import com.shopify.sample.presenter.products.Product;
-import com.shopify.sample.presenter.products.RealProductListViewPresenter;
-import com.shopify.sample.repository.RealCatalogRepository;
+import com.shopify.sample.presenter.products.ProductListViewPresenter;
+import com.shopify.sample.view.ScreenRouter;
 import com.shopify.sample.view.base.ListItemViewModel;
 import com.shopify.sample.view.base.RecyclerViewAdapter;
 
@@ -32,11 +34,12 @@ import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.subjects.PublishSubject;
 
-public final class ProductListView extends FrameLayout implements PageListViewPresenter.View<Product> {
+public final class ProductListView extends FrameLayout implements PageListViewPresenter.View<Product>,
+  RecyclerViewAdapter.OnItemClickListener {
   @BindView(R.id.list) RecyclerView listView;
   @BindView(R.id.swipe_refresh_layout) SwipeRefreshLayout swipeRefreshLayoutView;
 
-  private final RecyclerViewAdapter listViewAdapter = new RecyclerViewAdapter();
+  private final RecyclerViewAdapter listViewAdapter = new RecyclerViewAdapter(this);
   private BasePageListViewPresenter<Product, PageListViewPresenter.View<Product>> presenter;
   private final PublishSubject<String> refreshSubject = PublishSubject.create();
 
@@ -56,7 +59,7 @@ public final class ProductListView extends FrameLayout implements PageListViewPr
     if (presenter != null) {
       presenter.detachView();
     }
-    presenter = new RealProductListViewPresenter(collectionId, new RealCatalogRepository());
+    presenter = new ProductListViewPresenter(collectionId, new RealFetchProductNextPage());
     if (isAttachedToWindow()) {
       presenter.attachView(this);
       refresh();
@@ -130,6 +133,12 @@ public final class ProductListView extends FrameLayout implements PageListViewPr
 
   @Override public void clearItems() {
     listViewAdapter.clearItems();
+  }
+
+  @Override public void onItemClick(@NonNull final ListItemViewModel itemViewModel) {
+    if (itemViewModel.payload() instanceof Product) {
+      ScreenRouter.route(getContext(), new ProductClickActionEvent((Product) itemViewModel.payload()));
+    }
   }
 
   @Override protected void onAttachedToWindow() {
