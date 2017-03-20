@@ -27,17 +27,22 @@ package com.shopify.sample.presenter.product;
 import android.support.annotation.NonNull;
 
 import com.shopify.sample.interactor.product.FetchProductDetails;
+import com.shopify.sample.model.cart.CartItem;
+import com.shopify.sample.model.cart.CartManager;
 import com.shopify.sample.mvp.BaseViewPresenter;
 import com.shopify.sample.util.WeakObserver;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 
 import static com.shopify.sample.util.Util.checkNotNull;
+import static com.shopify.sample.util.Util.firstItem;
+import static com.shopify.sample.util.Util.mapItems;
 
 public final class ProductDetailsViewPresenter extends BaseViewPresenter<ProductDetailsViewPresenter.View> {
   public static final int REQUEST_ID_PRODUCT_DETAILS = 1;
   private final String productId;
   private final FetchProductDetails fetchProductDetails;
+  private Product product;
 
   public ProductDetailsViewPresenter(@NonNull final String productId, final FetchProductDetails fetchProductDetails) {
     checkNotNull(productId, "productId == null");
@@ -63,7 +68,19 @@ public final class ProductDetailsViewPresenter extends BaseViewPresenter<Product
     }
   }
 
+  public void addToCart() {
+    if (product == null) {
+      return;
+    }
+
+    Product.Variant firstVariant = checkNotNull(firstItem(product.variants), "can't find default variant");
+    CartItem cartItem = new CartItem(product.id, firstVariant.id, product.title, firstVariant.price,
+      mapItems(firstVariant.selectedOptions, it -> new CartItem.Option(it.name, it.value)), firstItem(product.images));
+    CartManager.instance().addCartItem(cartItem);
+  }
+
   private void onProductDetailsResponse(final Product product) {
+    this.product = product;
     if (isViewAttached()) {
       view().hideProgress(REQUEST_ID_PRODUCT_DETAILS);
       view().renderProduct(product);
@@ -76,7 +93,6 @@ public final class ProductDetailsViewPresenter extends BaseViewPresenter<Product
       view().showError(REQUEST_ID_PRODUCT_DETAILS, t);
     }
   }
-
 
   public interface View extends com.shopify.sample.mvp.View {
     void renderProduct(Product product);

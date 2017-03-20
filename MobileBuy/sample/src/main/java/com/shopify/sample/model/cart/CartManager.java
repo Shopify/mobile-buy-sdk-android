@@ -22,38 +22,36 @@
  *   THE SOFTWARE.
  */
 
-package com.shopify.sample.view.collections;
+package com.shopify.sample.model.cart;
 
-import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuInflater;
+import io.reactivex.Observable;
+import io.reactivex.subjects.BehaviorSubject;
+import io.reactivex.subjects.Subject;
 
-import com.shopify.sample.R;
+public final class CartManager {
+  private static final CartManager instance = new CartManager();
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
+  private final Cart cart = new Cart();
+  private final Subject<Cart> updateCartSubject = BehaviorSubject.create();
 
-public final class CollectionListActivity extends AppCompatActivity {
-  @BindView(R.id.collection_list) CollectionListView collectionListView;
-  @BindView(R.id.toolbar) Toolbar toolbarView;
-
-  @SuppressWarnings("ConstantConditions") @Override protected void onCreate(@Nullable final Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_collection_list);
-    ButterKnife.bind(this);
-
-    setSupportActionBar(toolbarView);
-    getSupportActionBar().setTitle(R.string.collection_list_title);
-    getSupportActionBar().setLogo(R.drawable.ic_logo);
+  public static CartManager instance() {
+    return instance;
   }
 
-  @Override public boolean onCreateOptionsMenu(final Menu menu) {
-    MenuInflater inflater = getMenuInflater();
-    inflater.inflate(R.menu.menu, menu);
-    return true;
+  public void addCartItem(final CartItem cartItem) {
+    cart.add(cartItem);
+    updateCartSubject.onNext(cart);
+  }
+
+  public void removeCartItem(final CartItem cartItem) {
+    cart.remove(cartItem);
+    updateCartSubject.onNext(cart);
+  }
+
+  public Observable<Cart> updateCartObservable() {
+    return updateCartSubject;
+  }
+
+  private CartManager() {
   }
 }

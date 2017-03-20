@@ -37,7 +37,7 @@ import java.util.function.Function;
 
 public final class Util {
 
-  public static <I, T extends Collection<I>> T checkEmpty(T reference, @Nullable Object errorMessage) {
+  public static <I, T extends Collection<I>> T checkNotEmpty(T reference, @Nullable Object errorMessage) {
     if (reference == null) throw new NullPointerException(String.valueOf(errorMessage));
     if (reference.isEmpty()) throw new IllegalArgumentException(String.valueOf(errorMessage));
     return reference;
@@ -58,6 +58,10 @@ public final class Util {
       result.add(transformer.apply(item));
     }
     return result;
+  }
+
+  @Nullable public static <T> T firstItem(@Nullable List<T> source) {
+    return source != null && !source.isEmpty() ? source.get(0) : null;
   }
 
   @Nullable public static <T, R> R firstItem(@Nullable List<T> source, @NonNull Function<T, R> transformer) {

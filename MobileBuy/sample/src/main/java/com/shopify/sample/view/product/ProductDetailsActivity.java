@@ -35,6 +35,8 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 
 import com.shopify.sample.R;
@@ -47,6 +49,7 @@ import java.util.Arrays;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 import static com.shopify.sample.util.Util.checkNotNull;
 
@@ -55,10 +58,11 @@ public final class ProductDetailsActivity extends AppCompatActivity implements P
   public static final String EXTRAS_PRODUCT_IMAGE_URL = "product_image_url";
   public static final String EXTRAS_PRODUCT_TITLE = "product_title";
 
+  @BindView(R.id.root) View rootView;
   @BindView(R.id.swipe_refresh) SwipeRefreshLayout swipeRefreshLayoutView;
   @BindView(R.id.toolbar) Toolbar toolbarView;
   @BindView(R.id.image_gallery) ImageGalleryView imageGalleryView;
-  @BindView(R.id.product_details) ProductDetailsView productDetailsView;
+  @BindView(R.id.product_details) ProductDescriptionView productDetailsView;
 
   private ProductDetailsViewPresenter presenter;
 
@@ -80,6 +84,7 @@ public final class ProductDetailsActivity extends AppCompatActivity implements P
     getSupportActionBar().setTitle(productTitle);
     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     swipeRefreshLayoutView.setOnRefreshListener(() -> presenter.fetchProduct());
+
 
     imageGalleryView.renderImages(Arrays.asList(productImageUrl));
   }
@@ -104,12 +109,23 @@ public final class ProductDetailsActivity extends AppCompatActivity implements P
   }
 
   @Override public void showError(final long requestId, final Throwable t) {
-    Snackbar.make(productDetailsView, R.string.default_error, Snackbar.LENGTH_LONG).show();
+    Snackbar.make(rootView, R.string.default_error, Snackbar.LENGTH_LONG).show();
   }
 
   @Override public void renderProduct(final Product product) {
     imageGalleryView.renderImages(product.images);
     productDetailsView.renderProduct(product);
+  }
+
+  @Override public boolean onCreateOptionsMenu(final Menu menu) {
+    MenuInflater inflater = getMenuInflater();
+    inflater.inflate(R.menu.menu, menu);
+    return true;
+  }
+
+  @OnClick(R.id.add_to_cart)
+  void onAddToCartClick() {
+    presenter.addToCart();
   }
 
   @SuppressWarnings("unused")

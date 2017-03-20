@@ -28,10 +28,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import java.math.BigDecimal;
-import java.util.Collections;
 import java.util.List;
 
-import static com.shopify.sample.util.Util.checkEmpty;
+import static com.shopify.sample.util.Util.checkNotEmpty;
 import static com.shopify.sample.util.Util.checkNotNull;
 import static java.util.Collections.unmodifiableList;
 
@@ -42,15 +41,30 @@ public final class CartItem {
   @NonNull public final BigDecimal price;
   @NonNull public final List<Option> options;
   @Nullable public final String image;
+  public final int quantity;
 
   public CartItem(@NonNull final String productId, @NonNull final String productVariantId, @NonNull final String title,
     @NonNull final BigDecimal price, @NonNull final List<Option> options, @Nullable final String image) {
+    this(productId, productVariantId, title, price, options, image, 1);
+  }
+
+  private CartItem(@NonNull final String productId, @NonNull final String productVariantId, @NonNull final String title,
+    @NonNull final BigDecimal price, @NonNull final List<Option> options, @Nullable final String image, final int quantity) {
     this.productId = checkNotNull(productId, "productId == null");
     this.productVariantId = checkNotNull(productVariantId, "productVariantId == null");
     this.title = checkNotNull(title, "title == null");
     this.price = checkNotNull(price, "price == null");
-    this.options = unmodifiableList(checkEmpty(options, "options is empty"));
+    this.options = unmodifiableList(checkNotEmpty(options, "options is empty"));
     this.image = image;
+    this.quantity = Math.max(0, quantity);
+  }
+
+  CartItem incrementQuantity(final int by) {
+    return new CartItem(productId, productVariantId, title, price, options, image, Math.max(0, quantity + by));
+  }
+
+  CartItem decrementQuantity(final int by) {
+    return new CartItem(productId, productVariantId, title, price, options, image, Math.max(0, quantity - by));
   }
 
   public static final class Option {
