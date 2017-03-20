@@ -108,7 +108,7 @@ public final class ProductDetailsActivity extends AppCompatActivity implements P
   }
 
   @Override public void renderProduct(final Product product) {
-    imageGalleryView.renderImages(product.images());
+    imageGalleryView.renderImages(product.images);
     productDetailsView.renderProduct(product);
   }
 

@@ -54,9 +54,9 @@ public final class CollectionClickActionEvent extends ScreenActionEvent implemen
   CollectionClickActionEvent(@NonNull final Collection collection) {
     super(ACTION);
     checkNotNull(collection, "collection == null");
-    payload.putString(EXTRAS_ID, collection.id());
-    payload.putString(EXTRAS_IMAGE_URL, collection.imageUrl());
-    payload.putString(EXTRAS_TITLE, collection.title());
+    payload.putString(EXTRAS_ID, collection.id);
+    payload.putString(EXTRAS_IMAGE_URL, collection.image);
+    payload.putString(EXTRAS_TITLE, collection.title);
   }
 
   @SuppressWarnings("WeakerAccess") CollectionClickActionEvent(Parcel in) {

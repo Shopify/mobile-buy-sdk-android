@@ -107,7 +107,7 @@ public final class CollectionListView extends FrameLayout implements PageListVie
     for (Collection collection : items) {
       viewModels.add(new CollectionTitleListItemViewModel(collection));
       viewModels.add(new CollectionImageListItemViewModel(collection));
-      viewModels.add(new ProductsListItemViewModel(collection.products()));
+      viewModels.add(new ProductsListItemViewModel(collection.products));
     }
     listViewAdapter.addItems(viewModels);
   }
@@ -157,7 +157,7 @@ public final class CollectionListView extends FrameLayout implements PageListVie
     for (int i = listViewAdapter.getItemCount(); i >= 0; i--) {
       ListItemViewModel item = listViewAdapter.itemAt(i);
       if (item != null && item.payload() instanceof Collection) {
-        return ((Collection) item.payload()).cursor();
+        return ((Collection) item.payload()).cursor;
       }
     }
     return "";

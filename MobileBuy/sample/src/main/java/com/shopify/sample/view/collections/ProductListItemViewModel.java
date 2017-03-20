@@ -56,7 +56,7 @@ final class ProductListItemViewModel extends ListItemViewModel<Collection.Produc
 
     @Override public void bindModel(@NonNull final ListItemViewModel<Collection.Product> listViewItemModel) {
       super.bindModel(listViewItemModel);
-      imageView.loadShopifyImage(listViewItemModel.payload().imageUrl());
+      imageView.loadShopifyImage(listViewItemModel.payload().imageUrl);
     }
 
     @SuppressWarnings("unchecked") @OnClick(R.id.image)

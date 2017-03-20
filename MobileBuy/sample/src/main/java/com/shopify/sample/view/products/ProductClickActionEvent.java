@@ -28,7 +28,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
-import com.shopify.sample.presenter.collections.Collection;
 import com.shopify.sample.presenter.products.Product;
 import com.shopify.sample.view.ScreenActionEvent;
 
@@ -55,9 +54,9 @@ public final class ProductClickActionEvent extends ScreenActionEvent implements 
   ProductClickActionEvent(@NonNull final Product product) {
     super(ACTION);
     checkNotNull(product, "collectionProduct == null");
-    payload.putString(EXTRAS_ID, product.id());
-    payload.putString(EXTRAS_IMAGE_URL, product.imageUrl());
-    payload.putString(EXTRAS_TITLE, product.title());
+    payload.putString(EXTRAS_ID, product.id);
+    payload.putString(EXTRAS_IMAGE_URL, product.image);
+    payload.putString(EXTRAS_TITLE, product.title);
   }
 
   @SuppressWarnings("WeakerAccess") ProductClickActionEvent(Parcel in) {

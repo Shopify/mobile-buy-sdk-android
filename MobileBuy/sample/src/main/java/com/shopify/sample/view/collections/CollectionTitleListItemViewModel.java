@@ -54,7 +54,7 @@ final class CollectionTitleListItemViewModel extends ListItemViewModel<Collectio
 
     @Override public void bindModel(@NonNull final ListItemViewModel<Collection> listViewItemModel) {
       super.bindModel(listViewItemModel);
-      titleView.setText(listViewItemModel.payload().title());
+      titleView.setText(listViewItemModel.payload().title);
     }
   }
 }

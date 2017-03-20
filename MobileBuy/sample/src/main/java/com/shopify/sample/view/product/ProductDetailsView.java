@@ -68,13 +68,13 @@ public final class ProductDetailsView extends NestedScrollView {
   }
 
   public void renderProduct(final Product product) {
-    titleView.setText(product.title());
+    titleView.setText(product.title);
     priceView.setText(getResources().getString(R.string.price_from, formatMinPrice(product)));
-    descriptionView.setText(Html.fromHtml(product.description()));
+    descriptionView.setText(Html.fromHtml(product.description));
   }
 
   private String formatMinPrice(final Product product) {
-    List<BigDecimal> prices = mapItems(product.variants(), Product.Variant::price);
+    List<BigDecimal> prices = mapItems(product.variants, variant -> variant.price);
     BigDecimal minPrice = minItem(prices, BigDecimal.ZERO, BigDecimal::compareTo);
     return CURRENCY_FORMAT.format(minPrice);
   }

@@ -25,13 +25,12 @@
 package com.shopify.sample.view.products;
 
 import android.support.annotation.NonNull;
-import android.view.View;
 import android.widget.TextView;
 
 import com.shopify.sample.R;
 import com.shopify.sample.presenter.products.Product;
-import com.shopify.sample.view.base.ListItemViewModel;
 import com.shopify.sample.view.base.ListItemViewHolder;
+import com.shopify.sample.view.base.ListItemViewModel;
 import com.shopify.sample.view.widget.image.ShopifyDraweeView;
 
 import java.text.NumberFormat;
@@ -62,9 +61,9 @@ final class ProductListItemViewModel extends ListItemViewModel<Product> {
 
     @Override public void bindModel(@NonNull final ListItemViewModel<Product> listViewItemModel) {
       super.bindModel(listViewItemModel);
-      imageView.loadShopifyImage(listViewItemModel.payload().imageUrl());
-      titleView.setText(listViewItemModel.payload().title());
-      priceView.setText(CURRENCY_FORMAT.format(listViewItemModel.payload().minPrice()));
+      imageView.loadShopifyImage(listViewItemModel.payload().image);
+      titleView.setText(listViewItemModel.payload().title);
+      priceView.setText(CURRENCY_FORMAT.format(listViewItemModel.payload().minPrice));
     }
 
     @SuppressWarnings("unchecked") @OnClick({R.id.image, R.id.title, R.id.price})

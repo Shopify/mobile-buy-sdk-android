@@ -197,7 +197,7 @@ public final class ProductListView extends FrameLayout implements PageListViewPr
     for (int i = listViewAdapter.getItemCount(); i >= 0; i--) {
       ListItemViewModel item = listViewAdapter.itemAt(i);
       if (item != null) {
-        return ((Product) item.payload()).cursor();
+        return ((Product) item.payload()).cursor;
       }
     }
     return "";

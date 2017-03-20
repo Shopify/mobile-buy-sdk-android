@@ -27,54 +27,30 @@ package com.shopify.sample.presenter.product;
 import android.support.annotation.NonNull;
 
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
 
+import static com.shopify.sample.util.Util.checkNotNull;
+import static java.util.Collections.unmodifiableList;
+
 public final class Product {
-  @NonNull private final String id;
-  @NonNull private final String title;
-  @NonNull private final String description;
-  @NonNull private List<String> tags;
-  @NonNull private List<String> images;
-  @NonNull private List<Option> options;
-  @NonNull private List<Variant> variants;
+  @NonNull public final String id;
+  @NonNull public final String title;
+  @NonNull public final String description;
+  @NonNull public List<String> tags;
+  @NonNull public List<String> images;
+  @NonNull public List<Option> options;
+  @NonNull public List<Variant> variants;
 
   public Product(@NonNull final String id, @NonNull final String title, @NonNull final String description, @NonNull final List<String> tags,
     @NonNull final List<String> images, @NonNull final List<Option> options, @NonNull final List<Variant> variants) {
-    this.id = id;
-    this.title = title;
-    this.description = description;
-    this.tags = tags;
-    this.images = images;
-    this.options = options;
-    this.variants = variants;
-  }
-
-  @NonNull public String id() {
-    return id;
-  }
-
-  @NonNull public String title() {
-    return title;
-  }
-
-  @NonNull public String description() {
-    return description;
-  }
-
-  @NonNull public List<String> tags() {
-    return tags;
-  }
-
-  @NonNull public List<String> images() {
-    return images;
-  }
-
-  @NonNull public List<Option> options() {
-    return options;
-  }
-
-  @NonNull public List<Variant> variants() {
-    return variants;
+    this.id = checkNotNull(id, "id == null");
+    this.title = checkNotNull(title, "title == null");
+    this.description = checkNotNull(description, "description == null");
+    this.tags = checkNotNull(tags, "id == null");
+    this.images = unmodifiableList(checkNotNull(images, "images == null"));
+    this.options = unmodifiableList(checkNotNull(options, "options == null"));
+    this.variants = unmodifiableList(checkNotNull(variants, "variants == null"));
   }
 
   @Override public String toString() {
@@ -90,26 +66,14 @@ public final class Product {
   }
 
   public static final class Option {
-    @NonNull private final String id;
-    @NonNull private final String name;
-    @NonNull private final List<String> values;
+    @NonNull public final String id;
+    @NonNull public final String name;
+    @NonNull public final List<String> values;
 
     public Option(@NonNull final String id, @NonNull final String name, @NonNull final List<String> values) {
-      this.id = id;
-      this.name = name;
-      this.values = values;
-    }
-
-    @NonNull public String id() {
-      return id;
-    }
-
-    @NonNull public String name() {
-      return name;
-    }
-
-    @NonNull public List<String> values() {
-      return values;
+      this.id = checkNotNull(id, "id == null");
+      this.name = checkNotNull(name, "name == null");
+      this.values = unmodifiableList(checkNotNull(values, "values == null"));
     }
 
     @Override public String toString() {
@@ -122,20 +86,12 @@ public final class Product {
   }
 
   public static final class SelectedOption {
-    @NonNull private final String name;
-    @NonNull private final String value;
+    @NonNull public final String name;
+    @NonNull public final String value;
 
     public SelectedOption(@NonNull final String name, @NonNull final String value) {
-      this.name = name;
-      this.value = value;
-    }
-
-    @NonNull public String name() {
-      return name;
-    }
-
-    @NonNull public String value() {
-      return value;
+      this.name = checkNotNull(name, "name == null");
+      this.value = checkNotNull(value, "value == null");
     }
 
     @Override public String toString() {
@@ -147,39 +103,19 @@ public final class Product {
   }
 
   public static final class Variant {
-    @NonNull private final String id;
-    @NonNull private final String title;
-    private final boolean available;
-    @NonNull private final List<SelectedOption> selectedOptions;
-    @NonNull private final BigDecimal price;
+    @NonNull public final String id;
+    @NonNull public final String title;
+    public final boolean available;
+    @NonNull public final List<SelectedOption> selectedOptions;
+    @NonNull public final BigDecimal price;
 
     public Variant(@NonNull final String id, @NonNull final String title, final boolean available,
       @NonNull final List<SelectedOption> selectedOptions, @NonNull final BigDecimal price) {
-      this.id = id;
-      this.title = title;
+      this.id = checkNotNull(id, "name == null");
+      this.title = checkNotNull(title, "title == null");
       this.available = available;
-      this.selectedOptions = selectedOptions;
-      this.price = price;
-    }
-
-    @NonNull public String id() {
-      return id;
-    }
-
-    @NonNull public String title() {
-      return title;
-    }
-
-    public boolean isAvailable() {
-      return available;
-    }
-
-    @NonNull public List<SelectedOption> selectedOptions() {
-      return selectedOptions;
-    }
-
-    @NonNull public BigDecimal price() {
-      return price;
+      this.selectedOptions = unmodifiableList(checkNotNull(selectedOptions, "selectedOptions == null"));
+      this.price = checkNotNull(price, "price == null");
     }
 
     @Override public String toString() {
@@ -192,6 +128,4 @@ public final class Product {
         '}';
     }
   }
-
-
 }

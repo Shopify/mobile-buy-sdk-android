@@ -25,7 +25,6 @@
 package com.shopify.sample.view.collections;
 
 import android.support.annotation.NonNull;
-import android.view.View;
 
 import com.shopify.sample.R;
 import com.shopify.sample.presenter.collections.Collection;
@@ -56,7 +55,7 @@ final class CollectionImageListItemViewModel extends ListItemViewModel<Collectio
 
     @Override public void bindModel(@NonNull final ListItemViewModel<Collection> listViewItemModel) {
       super.bindModel(listViewItemModel);
-      imageView.loadShopifyImage(listViewItemModel.payload().imageUrl());
+      imageView.loadShopifyImage(listViewItemModel.payload().image);
     }
 
     @SuppressWarnings("unchecked") @OnClick(R.id.image)

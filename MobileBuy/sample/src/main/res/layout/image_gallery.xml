@@ -13,7 +13,7 @@
         android:layout_height="0dp"
         android:background="@android:color/white"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintDimensionRatio="h,16:9"
+        app:layout_constraintDimensionRatio="h,4:3"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
