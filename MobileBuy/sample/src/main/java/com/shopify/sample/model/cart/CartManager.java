@@ -38,6 +38,10 @@ public final class CartManager {
     return instance;
   }
 
+  public Cart cart() {
+    return cart;
+  }
+
   public void addCartItem(final CartItem cartItem) {
     cart.add(cartItem);
     updateCartSubject.onNext(cart);
@@ -48,7 +52,7 @@ public final class CartManager {
     updateCartSubject.onNext(cart);
   }
 
-  public Observable<Cart> updateCartObservable() {
+  public Observable<Cart> cartObservable() {
     return updateCartSubject;
   }
 

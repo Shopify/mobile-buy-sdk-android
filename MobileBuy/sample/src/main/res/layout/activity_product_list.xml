@@ -31,15 +31,15 @@
                 android:fitsSystemWindows="true"
                 app:actualImageScaleType="centerCrop"
                 app:layout_collapseMode="parallax"
-                app:viewAspectRatio="1.77"
-                app:overlayImage="@drawable/collection_image_overlay_scrim"/>
+                app:overlayImage="@drawable/collection_image_overlay_scrim"
+                app:viewAspectRatio="1.77" />
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 app:contentInsetStartWithNavigation="0dp"
-                app:layout_collapseMode="pin"/>
+                app:layout_collapseMode="pin" />
         </android.support.design.widget.CollapsingToolbarLayout>
 
     </android.support.design.widget.AppBarLayout>
@@ -47,24 +47,17 @@
     <com.shopify.sample.view.products.ProductListView
         android:id="@+id/product_list"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:clipToPadding="false"
+        android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <android.support.v4.widget.SwipeRefreshLayout
-            android:id="@+id/swipe_refresh_layout"
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/list"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/list"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@android:color/transparent"
-                android:clipToPadding="false"
-                android:paddingBottom="@dimen/default_padding"
-                android:paddingTop="@dimen/default_padding" />
-        </android.support.v4.widget.SwipeRefreshLayout>
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"
+            android:clipToPadding="false"
+            android:paddingBottom="@dimen/default_padding"
+            android:paddingTop="@dimen/default_padding" />
 
     </com.shopify.sample.view.products.ProductListView>
 

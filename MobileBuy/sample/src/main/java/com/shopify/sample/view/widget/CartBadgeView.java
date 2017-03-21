@@ -68,7 +68,7 @@ public final class CartBadgeView extends FrameLayout {
   @Override protected void onAttachedToWindow() {
     super.onAttachedToWindow();
     cartSubscription = CartManager.instance()
-      .updateCartObservable()
+      .cartObservable()
       .subscribeOn(AndroidSchedulers.mainThread())
       .subscribeWith(WeakObserver.<CartBadgeView, Cart>forTarget(this)
         .delegateOnNext(CartBadgeView::onCartUpdate)

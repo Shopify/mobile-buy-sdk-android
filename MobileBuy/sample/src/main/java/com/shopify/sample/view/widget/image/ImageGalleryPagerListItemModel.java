@@ -53,8 +53,8 @@ final class ImageGalleryPagerListItemModel extends ListItemViewModel<String> {
       super(onClickListener);
     }
 
-    @Override public void bindModel(@NonNull final ListItemViewModel<String> listViewItemModel) {
-      super.bindModel(listViewItemModel);
+    @Override public void bindModel(@NonNull final ListItemViewModel<String> listViewItemModel, final int position) {
+      super.bindModel(listViewItemModel, position);
       imageView.loadShopifyImage(listViewItemModel.payload());
     }
 

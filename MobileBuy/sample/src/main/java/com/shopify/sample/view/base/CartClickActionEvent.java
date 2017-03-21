@@ -24,38 +24,42 @@
 
 package com.shopify.sample.view.base;
 
-import android.support.annotation.NonNull;
-import android.view.View;
+import android.os.Parcel;
+import android.os.Parcelable;
 
-import butterknife.ButterKnife;
+import com.shopify.sample.view.ScreenActionEvent;
+import com.shopify.sample.view.collections.CollectionClickActionEvent;
 
-import static com.shopify.sample.util.Util.checkNotNull;
+public final class CartClickActionEvent extends ScreenActionEvent implements Parcelable {
+  public static final String ACTION = CartClickActionEvent.class.getSimpleName();
 
-public abstract class ListItemViewHolder<T, MODEL extends ListItemViewModel<T>> {
-  private final OnClickListener onClickListener;
-  private MODEL itemModel;
-
-  public ListItemViewHolder(@NonNull final OnClickListener onClickListener) {
-    this.onClickListener = checkNotNull(onClickListener, "clickListener == null");
+  public CartClickActionEvent() {
+    super(ACTION);
   }
 
-  protected void bindView(@NonNull final View view) {
-    ButterKnife.bind(this, view);
+  protected CartClickActionEvent(Parcel in) {
+    super(in);
   }
 
-  public void bindModel(@NonNull final MODEL listViewItemModel, final int position) {
-    itemModel = listViewItemModel;
+  @Override
+  public void writeToParcel(Parcel dest, int flags) {
+    super.writeToParcel(dest, flags);
   }
 
-  @SuppressWarnings("WeakerAccess") public MODEL itemModel() {
-    return itemModel;
+  @Override
+  public int describeContents() {
+    return 0;
   }
 
-  @NonNull protected OnClickListener onClickListener() {
-    return onClickListener;
-  }
+  public static final Creator<CartClickActionEvent> CREATOR = new Creator<CartClickActionEvent>() {
+    @Override
+    public CartClickActionEvent createFromParcel(Parcel in) {
+      return new CartClickActionEvent(in);
+    }
 
-  public interface OnClickListener<T, MODEL extends ListItemViewModel<T>> {
-    void onClick(@NonNull MODEL itemModel);
-  }
+    @Override
+    public CartClickActionEvent[] newArray(int size) {
+      return new CartClickActionEvent[size];
+    }
+  };
 }

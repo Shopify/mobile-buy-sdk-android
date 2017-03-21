@@ -28,6 +28,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 
+import com.shopify.sample.view.base.CartClickActionEvent;
+import com.shopify.sample.view.cart.CartActivity;
 import com.shopify.sample.view.collections.CollectionClickActionEvent;
 import com.shopify.sample.view.collections.CollectionProductClickActionEvent;
 import com.shopify.sample.view.product.ProductDetailsActivity;
@@ -75,6 +77,11 @@ public final class ScreenRouter {
         intent.putExtra(ProductDetailsActivity.EXTRAS_PRODUCT_ID, event.id());
         intent.putExtra(ProductDetailsActivity.EXTRAS_PRODUCT_IMAGE_URL, event.imageUrl());
         intent.putExtra(ProductDetailsActivity.EXTRAS_PRODUCT_TITLE, event.title());
+        intent.putExtra(ScreenActionEvent.class.getName(), event);
+        context.startActivity(intent);
+      }))
+      .<CartClickActionEvent>registerInternal(CartClickActionEvent.ACTION, ((context, event) -> {
+        Intent intent = new Intent(context, CartActivity.class);
         intent.putExtra(ScreenActionEvent.class.getName(), event);
         context.startActivity(intent);
       }));

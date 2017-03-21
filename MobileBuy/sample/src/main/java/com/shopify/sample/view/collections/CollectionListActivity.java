@@ -31,8 +31,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 
 import com.shopify.sample.R;
+import com.shopify.sample.view.ScreenRouter;
+import com.shopify.sample.view.base.CartClickActionEvent;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -54,6 +57,9 @@ public final class CollectionListActivity extends AppCompatActivity {
   @Override public boolean onCreateOptionsMenu(final Menu menu) {
     MenuInflater inflater = getMenuInflater();
     inflater.inflate(R.menu.menu, menu);
+    menu.findItem(R.id.cart).getActionView().setOnClickListener(v -> {
+      ScreenRouter.route(this, new CartClickActionEvent());
+    });
     return true;
   }
 }

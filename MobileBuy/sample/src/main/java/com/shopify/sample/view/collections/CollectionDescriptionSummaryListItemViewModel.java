@@ -25,20 +25,21 @@
 package com.shopify.sample.view.collections;
 
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
+import android.view.View;
+import android.widget.TextView;
 
 import com.shopify.sample.R;
 import com.shopify.sample.presenter.collections.Collection;
 import com.shopify.sample.view.base.ListItemViewHolder;
 import com.shopify.sample.view.base.ListItemViewModel;
-import com.shopify.sample.view.widget.image.ShopifyDraweeView;
 
 import butterknife.BindView;
-import butterknife.OnClick;
 
-final class CollectionImageListItemViewModel extends ListItemViewModel<Collection> {
+final class CollectionDescriptionSummaryListItemViewModel extends ListItemViewModel<Collection> {
 
-  CollectionImageListItemViewModel(final Collection payload) {
-    super(payload, R.layout.collection_image_list_item);
+  CollectionDescriptionSummaryListItemViewModel(final Collection payload) {
+    super(payload, R.layout.collection_description_summary_list_item);
   }
 
   @Override public ListItemViewHolder<Collection, ListItemViewModel<Collection>> createViewHolder(
@@ -47,20 +48,17 @@ final class CollectionImageListItemViewModel extends ListItemViewModel<Collectio
   }
 
   static final class ItemViewHolder extends ListItemViewHolder<Collection, ListItemViewModel<Collection>> {
-    @BindView(R.id.image) ShopifyDraweeView imageView;
+    @BindView(R.id.description) TextView descriptionView;
 
-    ItemViewHolder(@NonNull final ListItemViewHolder.OnClickListener onClickListener) {
+    ItemViewHolder(@NonNull final OnClickListener onClickListener) {
       super(onClickListener);
     }
 
     @Override public void bindModel(@NonNull final ListItemViewModel<Collection> listViewItemModel, final int position) {
       super.bindModel(listViewItemModel, position);
-      imageView.loadShopifyImage(listViewItemModel.payload().image);
-    }
-
-    @SuppressWarnings("unchecked") @OnClick(R.id.image)
-    void onImageClick() {
-      onClickListener().onClick(itemModel());
+      boolean descriptionVisible = !TextUtils.isEmpty(listViewItemModel.payload().description);
+      descriptionView.setText(listViewItemModel.payload().description);
+      descriptionView.setVisibility(descriptionVisible ? View.VISIBLE : View.GONE);
     }
   }
 }

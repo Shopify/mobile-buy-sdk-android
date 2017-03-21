@@ -43,13 +43,14 @@ import com.shopify.sample.R;
 import com.shopify.sample.interactor.product.RealFetchProductDetails;
 import com.shopify.sample.presenter.product.Product;
 import com.shopify.sample.presenter.product.ProductDetailsViewPresenter;
+import com.shopify.sample.view.ScreenRouter;
+import com.shopify.sample.view.base.CartClickActionEvent;
 import com.shopify.sample.view.widget.image.ImageGalleryView;
 
 import java.util.Arrays;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 import static com.shopify.sample.util.Util.checkNotNull;
 
@@ -85,6 +86,7 @@ public final class ProductDetailsActivity extends AppCompatActivity implements P
     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     swipeRefreshLayoutView.setOnRefreshListener(() -> presenter.fetchProduct());
 
+    productDetailsView.setOnAddToCartClickListener(() -> presenter.addToCart());
 
     imageGalleryView.renderImages(Arrays.asList(productImageUrl));
   }
@@ -120,12 +122,10 @@ public final class ProductDetailsActivity extends AppCompatActivity implements P
   @Override public boolean onCreateOptionsMenu(final Menu menu) {
     MenuInflater inflater = getMenuInflater();
     inflater.inflate(R.menu.menu, menu);
+    menu.findItem(R.id.cart).getActionView().setOnClickListener(v -> {
+      ScreenRouter.route(this, new CartClickActionEvent());
+    });
     return true;
-  }
-
-  @OnClick(R.id.add_to_cart)
-  void onAddToCartClick() {
-    presenter.addToCart();
   }
 
   @SuppressWarnings("unused")

@@ -40,7 +40,7 @@ public abstract class ListItemViewModel<T> {
 
   public void bindView(final ListItemViewHolder<T, ListItemViewModel<T>> viewHolder, final int position) {
     this.position = position;
-    viewHolder.bindModel(this);
+    viewHolder.bindModel(this, position);
   }
 
   public long itemId() {

@@ -37,22 +37,26 @@ import static java.util.Collections.unmodifiableList;
 public final class CartItem {
   @NonNull public final String productId;
   @NonNull public final String productVariantId;
-  @NonNull public final String title;
+  @NonNull public final String productTitle;
+  @NonNull public final String variantTitle;
   @NonNull public final BigDecimal price;
   @NonNull public final List<Option> options;
   @Nullable public final String image;
   public final int quantity;
 
-  public CartItem(@NonNull final String productId, @NonNull final String productVariantId, @NonNull final String title,
-    @NonNull final BigDecimal price, @NonNull final List<Option> options, @Nullable final String image) {
-    this(productId, productVariantId, title, price, options, image, 1);
+  public CartItem(@NonNull final String productId, @NonNull final String productVariantId, @NonNull final String productTitle,
+    @NonNull final String variantTitle, @NonNull final BigDecimal price, @NonNull final List<Option> options,
+    @Nullable final String image) {
+    this(productId, productVariantId, productTitle, variantTitle, price, options, image, 1);
   }
 
-  private CartItem(@NonNull final String productId, @NonNull final String productVariantId, @NonNull final String title,
-    @NonNull final BigDecimal price, @NonNull final List<Option> options, @Nullable final String image, final int quantity) {
+  private CartItem(@NonNull final String productId, @NonNull final String productVariantId, @NonNull final String productTitle,
+    @NonNull final String variantTitle, @NonNull final BigDecimal price, @NonNull final List<Option> options,
+    @Nullable final String image, final int quantity) {
     this.productId = checkNotNull(productId, "productId == null");
     this.productVariantId = checkNotNull(productVariantId, "productVariantId == null");
-    this.title = checkNotNull(title, "title == null");
+    this.productTitle = checkNotNull(productTitle, "productTitle == null");
+    this.variantTitle = checkNotNull(variantTitle, "variantTitle == null");
     this.price = checkNotNull(price, "price == null");
     this.options = unmodifiableList(checkNotEmpty(options, "options is empty"));
     this.image = image;
@@ -60,11 +64,59 @@ public final class CartItem {
   }
 
   CartItem incrementQuantity(final int by) {
-    return new CartItem(productId, productVariantId, title, price, options, image, Math.max(0, quantity + by));
+    return new CartItem(productId, productVariantId, productTitle, variantTitle, price, options, image, Math.max(0, quantity + by));
   }
 
   CartItem decrementQuantity(final int by) {
-    return new CartItem(productId, productVariantId, title, price, options, image, Math.max(0, quantity - by));
+    return new CartItem(productId, productVariantId, productTitle, variantTitle, price, options, image, Math.max(0, quantity - by));
+  }
+
+  @Override public String toString() {
+    return "CartItem{" +
+      "productId='" + productId + '\'' +
+      ", productVariantId='" + productVariantId + '\'' +
+      ", productTitle='" + productTitle + '\'' +
+      ", variantTitle='" + variantTitle + '\'' +
+      ", price=" + price +
+      ", options=" + options +
+      ", image='" + image + '\'' +
+      ", quantity=" + quantity +
+      '}';
+  }
+
+//  @Override public boolean equals(final Object o) {
+//    if (this == o) return true;
+//    if (!(o instanceof CartItem)) return false;
+//
+//    final CartItem cartItem = (CartItem) o;
+//
+//    if (!productId.equals(cartItem.productId)) return false;
+//    return productVariantId.equals(cartItem.productVariantId);
+//
+//  }
+
+
+  @Override public boolean equals(final Object o) {
+    if (this == o) return true;
+    if (!(o instanceof CartItem)) return false;
+
+    final CartItem cartItem = (CartItem) o;
+
+    if (quantity != cartItem.quantity) return false;
+    if (!productId.equals(cartItem.productId)) return false;
+    if (!productVariantId.equals(cartItem.productVariantId)) return false;
+    if (!productTitle.equals(cartItem.productTitle)) return false;
+    if (!variantTitle.equals(cartItem.variantTitle)) return false;
+    if (!price.equals(cartItem.price)) return false;
+    if (!options.equals(cartItem.options)) return false;
+    return image != null ? image.equals(cartItem.image) : cartItem.image == null;
+
+  }
+
+  @Override public int hashCode() {
+    int result = productId.hashCode();
+    result = 31 * result + productVariantId.hashCode();
+    return result;
   }
 
   public static final class Option {
@@ -81,6 +133,23 @@ public final class CartItem {
         "name='" + name + '\'' +
         ", value='" + value + '\'' +
         '}';
+    }
+
+    @Override public boolean equals(final Object o) {
+      if (this == o) return true;
+      if (!(o instanceof Option)) return false;
+
+      final Option option = (Option) o;
+
+      if (!name.equals(option.name)) return false;
+      return value.equals(option.value);
+
+    }
+
+    @Override public int hashCode() {
+      int result = name.hashCode();
+      result = 31 * result + value.hashCode();
+      return result;
     }
   }
 }

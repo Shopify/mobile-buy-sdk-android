@@ -22,40 +22,37 @@
  *   THE SOFTWARE.
  */
 
-package com.shopify.sample.view.base;
+package com.shopify.sample.presenter.cart;
 
-import android.support.annotation.NonNull;
-import android.view.View;
+import com.shopify.sample.model.cart.Cart;
+import com.shopify.sample.model.cart.CartItem;
+import com.shopify.sample.model.cart.CartManager;
+import com.shopify.sample.mvp.BasePageListViewPresenter;
+import com.shopify.sample.mvp.PageListViewPresenter;
 
-import butterknife.ButterKnife;
+import java.util.List;
 
-import static com.shopify.sample.util.Util.checkNotNull;
+import io.reactivex.Observable;
+import io.reactivex.ObservableTransformer;
+import io.reactivex.Single;
 
-public abstract class ListItemViewHolder<T, MODEL extends ListItemViewModel<T>> {
-  private final OnClickListener onClickListener;
-  private MODEL itemModel;
+public final class CartLisViewPresenter extends BasePageListViewPresenter<CartItem, PageListViewPresenter.View<CartItem>> {
 
-  public ListItemViewHolder(@NonNull final OnClickListener onClickListener) {
-    this.onClickListener = checkNotNull(onClickListener, "clickListener == null");
+  public Observable<Cart> cartObservable() {
+    return CartManager.instance().cartObservable();
   }
 
-  protected void bindView(@NonNull final View view) {
-    ButterKnife.bind(this, view);
+  @Override protected ObservableTransformer<String, List<CartItem>> nextPageRequestComposer() {
+    return upstream -> upstream.flatMapSingle(cursor -> Single.fromCallable(() -> {
+      return CartManager.instance().cart().cartItems();
+    }));
   }
 
-  public void bindModel(@NonNull final MODEL listViewItemModel, final int position) {
-    itemModel = listViewItemModel;
+  public void addCartItem(final CartItem cartItem) {
+    CartManager.instance().addCartItem(cartItem);
   }
 
-  @SuppressWarnings("WeakerAccess") public MODEL itemModel() {
-    return itemModel;
-  }
-
-  @NonNull protected OnClickListener onClickListener() {
-    return onClickListener;
-  }
-
-  public interface OnClickListener<T, MODEL extends ListItemViewModel<T>> {
-    void onClick(@NonNull MODEL itemModel);
+  public void removeCartItem(final CartItem cartItem) {
+    CartManager.instance().removeCartItem(cartItem);
   }
 }

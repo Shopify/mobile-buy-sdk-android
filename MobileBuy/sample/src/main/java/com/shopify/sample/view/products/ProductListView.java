@@ -58,10 +58,9 @@ import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.subjects.PublishSubject;
 
-public final class ProductListView extends FrameLayout implements PageListViewPresenter.View<Product>,
+public final class ProductListView extends SwipeRefreshLayout implements PageListViewPresenter.View<Product>,
   RecyclerViewAdapter.OnItemClickListener {
   @BindView(R.id.list) RecyclerView listView;
-  @BindView(R.id.swipe_refresh_layout) SwipeRefreshLayout swipeRefreshLayoutView;
 
   private final RecyclerViewAdapter listViewAdapter = new RecyclerViewAdapter(this);
   private BasePageListViewPresenter<Product, PageListViewPresenter.View<Product>> presenter;
@@ -73,10 +72,6 @@ public final class ProductListView extends FrameLayout implements PageListViewPr
 
   public ProductListView(@NonNull final Context context, @Nullable final AttributeSet attrs) {
     super(context, attrs);
-  }
-
-  public ProductListView(@NonNull final Context context, @Nullable final AttributeSet attrs, @AttrRes final int defStyleAttr) {
-    super(context, attrs, defStyleAttr);
   }
 
   public void refresh(final String collectionId) {
@@ -106,7 +101,7 @@ public final class ProductListView extends FrameLayout implements PageListViewPr
     listView.setLayoutManager(new GridLayoutManager(getContext(), 2));
     listView.setHasFixedSize(true);
     listView.setAdapter(listViewAdapter);
-    swipeRefreshLayoutView.setOnRefreshListener(this::refresh);
+    setOnRefreshListener(this::refresh);
 
     int defaultPadding = getResources().getDimensionPixelOffset(R.dimen.default_padding);
     listView.addItemDecoration(new RecyclerView.ItemDecoration() {
@@ -128,15 +123,15 @@ public final class ProductListView extends FrameLayout implements PageListViewPr
   }
 
   @Override public void showProgress(final long requestId) {
-    swipeRefreshLayoutView.setRefreshing(true);
+    setRefreshing(true);
   }
 
   @Override public void hideProgress(final long requestId) {
-    swipeRefreshLayoutView.setRefreshing(false);
+    setRefreshing(false);
   }
 
   @Override public void showError(final long requestId, final Throwable t) {
-    Snackbar.make(swipeRefreshLayoutView, R.string.default_error, Snackbar.LENGTH_LONG).show();
+    Snackbar.make(this, R.string.default_error, Snackbar.LENGTH_LONG).show();
   }
 
   @Override public Observable<String> nextPageObservable() {

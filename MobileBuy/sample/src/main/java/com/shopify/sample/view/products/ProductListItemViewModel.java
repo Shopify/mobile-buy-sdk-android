@@ -59,8 +59,8 @@ final class ProductListItemViewModel extends ListItemViewModel<Product> {
       super(onClickListener);
     }
 
-    @Override public void bindModel(@NonNull final ListItemViewModel<Product> listViewItemModel) {
-      super.bindModel(listViewItemModel);
+    @Override public void bindModel(@NonNull final ListItemViewModel<Product> listViewItemModel, final int position) {
+      super.bindModel(listViewItemModel, position);
       imageView.loadShopifyImage(listViewItemModel.payload().image);
       titleView.setText(listViewItemModel.payload().title);
       priceView.setText(CURRENCY_FORMAT.format(listViewItemModel.payload().minPrice));

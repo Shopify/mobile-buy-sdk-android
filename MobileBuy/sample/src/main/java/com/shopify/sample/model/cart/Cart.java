@@ -105,7 +105,7 @@ public final class Cart {
 
       CartItem existing = cartItems.get(cartItem.productVariantId);
       if (existing != null) {
-        existing = existing.decrementQuantity(1);
+        cartItems.put(existing.productVariantId, existing = existing.decrementQuantity(1));
         if (existing.quantity == 0) {
           cartItems.remove(cartItem.productVariantId);
         }

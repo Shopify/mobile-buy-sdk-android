@@ -26,6 +26,7 @@ package com.shopify.sample.view.base;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,7 +38,7 @@ import java.util.List;
 import static com.shopify.sample.util.Util.checkNotNull;
 
 public final class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewItemHolder> {
-  private final List<ListItemViewModel> items = new ArrayList<>();
+  private List<ListItemViewModel> items = new ArrayList<>();
   private final RecyclerViewItemHolder.OnClickListener itemClickListener;
 
   public RecyclerViewAdapter() {
@@ -106,11 +107,54 @@ public final class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
     notifyItemRangeRemoved(0, prevSize);
   }
 
+  public void swapItemsAndNotify(final List<ListItemViewModel> newItems, final ItemContentComparator itemContentComparator) {
+    final DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new ItemsDiffCallback(items, newItems, itemContentComparator));
+    items = new ArrayList<>(newItems);
+    diffResult.dispatchUpdatesTo(this);
+  }
+
   public int itemPosition(ListItemViewModel item) {
     return items.indexOf(item);
   }
 
   public interface OnItemClickListener {
     void onItemClick(@NonNull ListItemViewModel itemViewModel);
+  }
+
+  private static final class ItemsDiffCallback extends DiffUtil.Callback {
+    private final List<ListItemViewModel> oldItems;
+    private final List<ListItemViewModel> newItems;
+    private final ItemContentComparator contentComparator;
+
+    ItemsDiffCallback(final List<ListItemViewModel> oldItems, final List<ListItemViewModel> newItems,
+      final ItemContentComparator contentComparator) {
+      this.oldItems = oldItems;
+      this.newItems = newItems;
+      this.contentComparator = contentComparator;
+    }
+
+    @Override
+    public int getOldListSize() {
+      return oldItems.size();
+    }
+
+    @Override
+    public int getNewListSize() {
+      return newItems.size();
+    }
+
+    @Override
+    public boolean areItemsTheSame(final int oldItemPosition, final int newItemPosition) {
+      return oldItems.get(oldItemPosition).equals(newItems.get(newItemPosition));
+    }
+
+    @Override
+    public boolean areContentsTheSame(final int oldItemPosition, final int newItemPosition) {
+      return contentComparator.equalsByContent(oldItems.get(oldItemPosition), newItems.get(newItemPosition));
+    }
+  }
+
+  public interface ItemContentComparator {
+    boolean equalsByContent(ListItemViewModel oldItem, ListItemViewModel newItem);
   }
 }

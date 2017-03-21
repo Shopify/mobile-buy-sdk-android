@@ -58,6 +58,7 @@ public final class RealFetchCollectionNextPage implements FetchCollectionNextPag
               .cursor()
               .node(collection -> collection
                 .title()
+                .descriptionPlainSummary()
                 .image(APISchema.ImageQuery::src)
                 .products(perPage, productConnection -> productConnection
                   .edges(productEdge -> productEdge
@@ -85,13 +86,13 @@ public final class RealFetchCollectionNextPage implements FetchCollectionNextPag
     return mapItems(edges, collectionEdge -> {
       APISchema.Collection collection = collectionEdge.getNode();
       String collectionImageUrl = collection.getImage() != null ? collection.getImage().getSrc() : null;
-      return new Collection(collection.getId().toString(), collection.getTitle(), collectionImageUrl, collectionEdge.getCursor(),
-        mapItems(collection.getProducts().getEdges(), productEdge -> {
-          APISchema.Product product = productEdge.getNode();
-          String productImageUrl = firstItem(product.getImages() != null ? product.getImages().getEdges() : null,
-            image -> image != null ? image.getNode().getSrc() : null);
-          return new Collection.Product(product.getId().toString(), product.getTitle(), productImageUrl, productEdge.getCursor());
-        }));
+      return new Collection(collection.getId().toString(), collection.getTitle(), collection.getDescriptionPlainSummary(),
+        collectionImageUrl, collectionEdge.getCursor(), mapItems(collection.getProducts().getEdges(), productEdge -> {
+        APISchema.Product product = productEdge.getNode();
+        String productImageUrl = firstItem(product.getImages() != null ? product.getImages().getEdges() : null,
+          image -> image != null ? image.getNode().getSrc() : null);
+        return new Collection.Product(product.getId().toString(), product.getTitle(), productImageUrl, productEdge.getCursor());
+      }));
     });
   }
 }

@@ -52,8 +52,8 @@ final class ProductsListItemViewModel extends ListItemViewModel<List<Collection.
       super(onClickListener);
     }
 
-    @Override public void bindModel(@NonNull final ListItemViewModel<List<Collection.Product>> listViewItemModel) {
-      super.bindModel(listViewItemModel);
+    @Override public void bindModel(@NonNull final ListItemViewModel<List<Collection.Product>> listViewItemModel, final int position) {
+      super.bindModel(listViewItemModel, position);
       productListView.setItems(listViewItemModel.payload());
     }
   }

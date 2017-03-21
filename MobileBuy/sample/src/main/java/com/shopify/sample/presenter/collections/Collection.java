@@ -35,14 +35,16 @@ import static java.util.Collections.unmodifiableList;
 public final class Collection {
   @NonNull public final String id;
   @NonNull public final String title;
+  @NonNull public final String description;
   @Nullable public final String image;
   @NonNull public final String cursor;
   @NonNull public final List<Product> products;
 
-  public Collection(@NonNull final String id, @NonNull final String title, @Nullable final String image, @NonNull final String cursor,
-    @NonNull final List<Product> products) {
+  public Collection(@NonNull final String id, @NonNull final String title, @NonNull final String description,
+    @Nullable final String image, @NonNull final String cursor, @NonNull final List<Product> products) {
     this.id = checkNotNull(id, "id == null");
     this.title = checkNotNull(title, "title == null");
+    this.description = checkNotNull(description, "description == null");
     this.image = image;
     this.cursor = checkNotNull(cursor, "cursor == null");
     this.products = unmodifiableList(checkNotNull(products, "products == null"));
@@ -52,6 +54,7 @@ public final class Collection {
     return "Collection{" +
       "id='" + id + '\'' +
       ", title='" + title + '\'' +
+      ", description='" + description + '\'' +
       ", image='" + image + '\'' +
       ", cursor='" + cursor + '\'' +
       ", products=" + products +

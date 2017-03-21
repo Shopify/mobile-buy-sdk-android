@@ -74,7 +74,7 @@ public final class ProductDetailsViewPresenter extends BaseViewPresenter<Product
     }
 
     Product.Variant firstVariant = checkNotNull(firstItem(product.variants), "can't find default variant");
-    CartItem cartItem = new CartItem(product.id, firstVariant.id, product.title, firstVariant.price,
+    CartItem cartItem = new CartItem(product.id, firstVariant.id, product.title, firstVariant.title, firstVariant.price,
       mapItems(firstVariant.selectedOptions, it -> new CartItem.Option(it.name, it.value)), firstItem(product.images));
     CartManager.instance().addCartItem(cartItem);
   }

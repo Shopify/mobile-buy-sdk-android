@@ -22,40 +22,34 @@
  *   THE SOFTWARE.
  */
 
-package com.shopify.sample.view.base;
+package com.shopify.sample.view.cart;
 
-import android.support.annotation.NonNull;
-import android.view.View;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 
+import com.shopify.sample.R;
+
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.shopify.sample.util.Util.checkNotNull;
+public final class CartActivity extends AppCompatActivity {
+  @BindView(R.id.cart_list) CartListView cartListView;
+  @BindView(R.id.toolbar) Toolbar toolbarView;
 
-public abstract class ListItemViewHolder<T, MODEL extends ListItemViewModel<T>> {
-  private final OnClickListener onClickListener;
-  private MODEL itemModel;
+  @SuppressWarnings("ConstantConditions") @Override protected void onCreate(@Nullable final Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setContentView(R.layout.activity_cart);
+    ButterKnife.bind(this);
 
-  public ListItemViewHolder(@NonNull final OnClickListener onClickListener) {
-    this.onClickListener = checkNotNull(onClickListener, "clickListener == null");
+    setSupportActionBar(toolbarView);
+    getSupportActionBar().setTitle("Cart");
+    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
   }
 
-  protected void bindView(@NonNull final View view) {
-    ButterKnife.bind(this, view);
-  }
-
-  public void bindModel(@NonNull final MODEL listViewItemModel, final int position) {
-    itemModel = listViewItemModel;
-  }
-
-  @SuppressWarnings("WeakerAccess") public MODEL itemModel() {
-    return itemModel;
-  }
-
-  @NonNull protected OnClickListener onClickListener() {
-    return onClickListener;
-  }
-
-  public interface OnClickListener<T, MODEL extends ListItemViewModel<T>> {
-    void onClick(@NonNull MODEL itemModel);
+  @Override public boolean onSupportNavigateUp() {
+    finish();
+    return true;
   }
 }

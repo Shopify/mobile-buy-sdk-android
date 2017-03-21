@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <style name="Shopify" />
+
     <style name="ShopifyDraweeView">
         <item name="failureImage">@drawable/no_product_image</item>
         <item name="failureImageScaleType">fitCenter</item>
@@ -22,4 +24,40 @@
         <item name="android:textSize">26sp</item>
     </style>
 
+    <style name="Shopify.HeaderText" parent="TextAppearance.AppCompat">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="Shopify.HeaderText.Inverse" parent="Shopify.HeaderText">
+        <item name="android:textColor">@android:color/black</item>
+    </style>
+
+
+    <style name="Shopify.TitleText" parent="TextAppearance.AppCompat">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="Shopify.TitleText.Inverse" parent="Shopify.TitleText">
+        <item name="android:textColor">@android:color/black</item>
+    </style>
+
+    <style name="Shopify.SubTitleText" parent="TextAppearance.AppCompat">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="Shopify.SubTitleText.Inverse" parent="Shopify.SubTitleText">
+        <item name="android:textColor">@android:color/black</item>
+    </style>
+
+    <style name="Shopify.BodyText" parent="TextAppearance.AppCompat">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="Shopify.BodyText.Inverse" parent="Shopify.BodyText">
+        <item name="android:textColor">@android:color/black</item>
+    </style>
 </resources>

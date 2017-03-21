@@ -108,6 +108,8 @@ public final class CollectionListView extends FrameLayout implements PageListVie
       viewModels.add(new CollectionTitleListItemViewModel(collection));
       viewModels.add(new CollectionImageListItemViewModel(collection));
       viewModels.add(new ProductsListItemViewModel(collection.products));
+      viewModels.add(new CollectionDescriptionSummaryListItemViewModel(collection));
+      viewModels.add(new CollectionDividerListItemViewModel(collection));
     }
     listViewAdapter.addItems(viewModels);
   }

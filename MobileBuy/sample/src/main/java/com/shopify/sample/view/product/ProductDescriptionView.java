@@ -39,6 +39,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 import static com.shopify.sample.util.Util.mapItems;
 import static com.shopify.sample.util.Util.minItem;
@@ -49,6 +50,7 @@ public final class ProductDescriptionView extends NestedScrollView {
   @BindView(R.id.title) TextView titleView;
   @BindView(R.id.price) TextView priceView;
   @BindView(R.id.description) TextView descriptionView;
+  private OnAddToCartClickListener onAddToCartClickListener;
 
   public ProductDescriptionView(final Context context) {
     super(context);
@@ -73,9 +75,24 @@ public final class ProductDescriptionView extends NestedScrollView {
     descriptionView.setText(Html.fromHtml(product.description));
   }
 
+  public void setOnAddToCartClickListener(final OnAddToCartClickListener onAddToCartClickListener) {
+    this.onAddToCartClickListener = onAddToCartClickListener;
+  }
+
+  @OnClick(R.id.price)
+  void onAddToCartClick() {
+    if (onAddToCartClickListener != null) {
+      onAddToCartClickListener.onAddToCartClick();
+    }
+  }
+
   private String formatMinPrice(final Product product) {
     List<BigDecimal> prices = mapItems(product.variants, variant -> variant.price);
     BigDecimal minPrice = minItem(prices, BigDecimal.ZERO, BigDecimal::compareTo);
     return CURRENCY_FORMAT.format(minPrice);
+  }
+
+  public interface OnAddToCartClickListener {
+    void onAddToCartClick();
   }
 }

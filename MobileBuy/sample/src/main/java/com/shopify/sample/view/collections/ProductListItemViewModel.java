@@ -54,8 +54,8 @@ final class ProductListItemViewModel extends ListItemViewModel<Collection.Produc
       super(onClickListener);
     }
 
-    @Override public void bindModel(@NonNull final ListItemViewModel<Collection.Product> listViewItemModel) {
-      super.bindModel(listViewItemModel);
+    @Override public void bindModel(@NonNull final ListItemViewModel<Collection.Product> listViewItemModel, final int position) {
+      super.bindModel(listViewItemModel, position);
       imageView.loadShopifyImage(listViewItemModel.payload().imageUrl);
     }
 
