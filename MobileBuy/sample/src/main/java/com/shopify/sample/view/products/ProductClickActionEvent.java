@@ -31,6 +31,8 @@ import android.support.annotation.NonNull;
 import com.shopify.sample.presenter.products.Product;
 import com.shopify.sample.view.ScreenActionEvent;
 
+import java.math.BigDecimal;
+
 import static com.shopify.sample.util.Util.checkNotNull;
 
 public final class ProductClickActionEvent extends ScreenActionEvent implements Parcelable {
@@ -50,6 +52,7 @@ public final class ProductClickActionEvent extends ScreenActionEvent implements 
   private static final String EXTRAS_ID = "product_id";
   private static final String EXTRAS_IMAGE_URL = "product_image_url";
   private static final String EXTRAS_TITLE = "product_title";
+  private static final String EXTRAS_PRICE = "product_price";
 
   ProductClickActionEvent(@NonNull final Product product) {
     super(ACTION);
@@ -57,6 +60,7 @@ public final class ProductClickActionEvent extends ScreenActionEvent implements 
     payload.putString(EXTRAS_ID, product.id);
     payload.putString(EXTRAS_IMAGE_URL, product.image);
     payload.putString(EXTRAS_TITLE, product.title);
+    payload.putDouble(EXTRAS_PRICE, product.price.doubleValue());
   }
 
   @SuppressWarnings("WeakerAccess") ProductClickActionEvent(Parcel in) {
@@ -83,5 +87,9 @@ public final class ProductClickActionEvent extends ScreenActionEvent implements 
 
   public String title() {
     return payload().getString(EXTRAS_TITLE);
+  }
+
+  public BigDecimal price() {
+    return BigDecimal.valueOf(payload().getDouble(EXTRAS_PRICE, 0));
   }
 }

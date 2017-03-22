@@ -98,7 +98,8 @@
             android:layout_width="32dp"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:background="?attr/selectableItemBackground"
+            android:background="@android:color/white"
+            android:foreground="?attr/selectableItemBackground"
             android:src="@drawable/variant_decrease" />
 
         <TextView
@@ -118,7 +119,9 @@
             android:layout_width="32dp"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:background="?attr/selectableItemBackground"
+            android:background="@android:color/white"
+            android:foreground="?attr/selectableItemBackground"
+
             android:src="@drawable/variant_increase" />
 
     </LinearLayout>

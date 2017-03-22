@@ -25,15 +25,14 @@
 package com.shopify.sample.view.cart;
 
 import android.content.Context;
-import android.graphics.Rect;
 import android.support.design.widget.Snackbar;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SimpleItemAnimator;
 import android.util.AttributeSet;
-import android.view.View;
 import android.widget.FrameLayout;
 
 import com.shopify.sample.R;
+import com.shopify.sample.model.cart.Cart;
 import com.shopify.sample.model.cart.CartItem;
 import com.shopify.sample.mvp.PageListViewPresenter;
 import com.shopify.sample.presenter.cart.CartLisViewPresenter;
@@ -52,15 +51,29 @@ public final class CartListView extends FrameLayout implements PageListViewPrese
   @BindView(R.id.list) RecyclerView listView;
   private final RecyclerViewAdapter listViewAdapter = new RecyclerViewAdapter();
   private final CartLisViewPresenter presenter = new CartLisViewPresenter();
-  private final RecyclerViewAdapter.ItemContentComparator itemContentComparator = (oldItem, newItem) -> {
-    CartItem oldCartItem = (CartItem) oldItem.payload();
-    CartItem newCartItem = (CartItem) newItem.payload();
-    return oldCartItem.quantity == newCartItem.quantity
-      && oldCartItem.productTitle.equals(newCartItem.productTitle)
-      && oldCartItem.variantTitle.equals(newCartItem.variantTitle)
-      && oldCartItem.price.equals(newCartItem.price)
-      && oldCartItem.options.equals(newCartItem.options)
-      && (oldCartItem.image != null ? oldCartItem.image.equals(newCartItem.image) : newCartItem.image == null);
+  private final RecyclerViewAdapter.ItemComparator itemComparator = new RecyclerViewAdapter.ItemComparator() {
+    @Override public boolean equalsById(final ListItemViewModel oldItem, final ListItemViewModel newItem) {
+      if (oldItem.payload() instanceof CartItem && newItem.payload() instanceof CartItem) {
+        return oldItem.equals(newItem);
+      } else {
+        return oldItem.payload() instanceof Cart && newItem.payload() instanceof Cart;
+      }
+    }
+
+    @Override public boolean equalsByContent(final ListItemViewModel oldItem, final ListItemViewModel newItem) {
+      if (oldItem.payload() instanceof CartItem && newItem.payload() instanceof CartItem) {
+        CartItem oldCartItem = (CartItem) oldItem.payload();
+        CartItem newCartItem = (CartItem) newItem.payload();
+        return oldCartItem.quantity == newCartItem.quantity
+          && oldCartItem.productTitle.equals(newCartItem.productTitle)
+          && oldCartItem.variantTitle.equals(newCartItem.variantTitle)
+          && oldCartItem.price.equals(newCartItem.price)
+          && oldCartItem.options.equals(newCartItem.options)
+          && (oldCartItem.image != null ? oldCartItem.image.equals(newCartItem.image) : newCartItem.image == null);
+      } else {
+        return false;
+      }
+    }
   };
 
   public CartListView(final Context context) {
@@ -90,7 +103,10 @@ public final class CartListView extends FrameLayout implements PageListViewPrese
     for (CartItem item : cartItems) {
       viewModels.add(new CartListItemViewModel(item, this));
     }
-    listViewAdapter.swapItemsAndNotify(viewModels, itemContentComparator);
+    if (!cartItems.isEmpty()) {
+      viewModels.add(new CartSubtotalListItemViewModel(presenter.cart()));
+    }
+    listViewAdapter.swapItemsAndNotify(viewModels, itemComparator);
   }
 
   @Override public void clearItems() {
@@ -114,20 +130,7 @@ public final class CartListView extends FrameLayout implements PageListViewPrese
 
     listView.setHasFixedSize(true);
     listView.setAdapter(listViewAdapter);
-
-//    listView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
-
-//    int defaultPadding = getResources().getDimensionPixelOffset(R.dimen.default_padding);
-//    listView.addItemDecoration(new RecyclerView.ItemDecoration() {
-//      @Override public void getItemOffsets(final Rect outRect, final View view, final RecyclerView parent, final RecyclerView.State state) {
-//        int position = parent.getChildAdapterPosition(view);
-//        if (position == RecyclerView.NO_POSITION) {
-//          return;
-//        }
-//        outRect.top = position == 0 ? defaultPadding / 2 : defaultPadding / 4;
-//        outRect.bottom = position == parent.getAdapter().getItemCount() - 1 ? defaultPadding / 2 : defaultPadding / 4;
-//      }
-//    });
+    ((SimpleItemAnimator) listView.getItemAnimator()).setSupportsChangeAnimations(false);
   }
 
   @Override protected void onAttachedToWindow() {

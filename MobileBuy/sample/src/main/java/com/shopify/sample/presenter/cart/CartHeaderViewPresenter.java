@@ -22,35 +22,40 @@
  *   THE SOFTWARE.
  */
 
-package com.shopify.sample.view.cart;
+package com.shopify.sample.presenter.cart;
 
-import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import com.shopify.sample.model.cart.Cart;
+import com.shopify.sample.model.cart.CartManager;
+import com.shopify.sample.mvp.BaseViewPresenter;
+import com.shopify.sample.util.WeakObserver;
 
-import com.shopify.sample.R;
+import java.text.NumberFormat;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 
-public final class CartActivity extends AppCompatActivity {
-  @BindView(R.id.cart_list) CartListView cartListView;
-  @BindView(R.id.toolbar) Toolbar toolbarView;
+public final class CartHeaderViewPresenter extends BaseViewPresenter<CartHeaderViewPresenter.View> {
+  static final NumberFormat CURRENCY_FORMAT = NumberFormat.getCurrencyInstance();
 
-  @SuppressWarnings("ConstantConditions") @Override protected void onCreate(@Nullable final Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_cart);
-    ButterKnife.bind(this);
-
-    setSupportActionBar(toolbarView);
-    getSupportActionBar().setTitle("Cart");
-    getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close);
-    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+  @Override public void attachView(final View view) {
+    super.attachView(view);
+    registerRequest(
+      0,
+      CartManager.instance().cartObservable()
+        .map(Cart::totalPrice)
+        .subscribeOn(AndroidSchedulers.mainThread())
+        .subscribeWith(WeakObserver.<CartHeaderViewPresenter, Double>forTarget(this)
+          .delegateOnNext(CartHeaderViewPresenter::onTotalPriceUpdated)
+          .create())
+    );
   }
 
-  @Override public boolean onSupportNavigateUp() {
-    finish();
-    return true;
+  private void onTotalPriceUpdated(final double total) {
+    if (isViewAttached()) {
+      view().renderTotal(CURRENCY_FORMAT.format(total));
+    }
+  }
+
+  public interface View extends com.shopify.sample.mvp.View {
+    void renderTotal(String total);
   }
 }

@@ -35,15 +35,15 @@ public final class Product {
   @NonNull public final String id;
   @NonNull public final String title;
   @Nullable public final String image;
-  @NonNull public final BigDecimal minPrice;
+  @NonNull public final BigDecimal price;
   @NonNull public final String cursor;
 
   public Product(@NonNull final String id, @NonNull final String title, @Nullable final String image,
-    final @NonNull BigDecimal minPrice, @NonNull final String cursor) {
+    final @NonNull BigDecimal price, @NonNull final String cursor) {
     this.id = checkNotNull(id, "id == null");
     this.title = checkNotNull(title, "title == null");
     this.image = image;
-    this.minPrice = minPrice;
+    this.price = price;
     this.cursor = checkNotNull(cursor, "cursor == null");
   }
 
@@ -52,7 +52,7 @@ public final class Product {
       "id='" + id + '\'' +
       ", title='" + title + '\'' +
       ", image='" + image + '\'' +
-      ", minPrice='" + minPrice + '\'' +
+      ", price='" + price + '\'' +
       ", cursor='" + cursor + '\'' +
       '}';
   }

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/title1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/cart_subtotal_title"
+        android:textAppearance="@style/Shopify.TitleText"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/subtotal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/default_padding_half"
+        android:maxLines="1"
+        android:textAppearance="@style/Shopify.HeaderText"
+        android:textColor="?attr/colorAccent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/title1"
+        tools:text="$59.99" />
+
+    <TextView
+        android:id="@+id/title2"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/cart_subtotal_subtitle"
+        android:textAppearance="@style/Shopify.BodyText"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/subtotal" />
+
+    <Button
+        android:id="@+id/android_pay"
+        android:layout_width="160dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/default_padding"
+        android:text="@string/android_pay"
+        app:layout_constraintRight_toLeftOf="@+id/guideline"
+        app:layout_constraintTop_toBottomOf="@+id/title2" />
+
+    <Button
+        android:id="@+id/web_checkout"
+        android:layout_width="160dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/default_padding"
+        android:text="@string/web_checkout"
+        app:layout_constraintLeft_toLeftOf="@+id/guideline"
+        app:layout_constraintTop_toBottomOf="@+id/title2" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
+
+</android.support.constraint.ConstraintLayout>

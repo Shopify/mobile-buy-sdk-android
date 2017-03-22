@@ -4,4 +4,9 @@
     <string name="default_error">Oops, something went wrong, please try again …</string>
     <string name="price_from">From %s</string>
     <string name="quantity_title">Quantity:</string>
+    <string name="android_pay">Android Pay</string>
+    <string name="web_checkout">Web Checkout</string>
+    <string name="cart_subtotal_title">SubTotal</string>
+    <string name="cart_subtotal_subtitle">Shipping and taxes are calculated at checkout</string>
+    <string name="cart_subtotal_price">SubTotal: %s</string>
 </resources>

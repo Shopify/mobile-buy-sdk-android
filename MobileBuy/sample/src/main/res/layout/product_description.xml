@@ -25,11 +25,13 @@
         android:layout_marginEnd="@dimen/default_padding_half"
         android:layout_marginTop="@dimen/default_padding"
         android:background="?attr/colorAccent"
+        android:foreground="?attr/selectableItemBackground"
+        android:drawableStart="@drawable/ic_add_shopping_cart"
+        android:gravity="center"
         android:padding="@dimen/default_padding_half"
         android:textAppearance="@style/Shopify.BodyText"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:drawableLeft="@drawable/ic_add_shopping_cart"
         tools:text="From $29.00" />
 
     <TextView

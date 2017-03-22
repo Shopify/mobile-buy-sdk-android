@@ -8,11 +8,13 @@
         <item name="failureImageScaleType">fitCenter</item>
         <item name="placeholderImage">@drawable/shopify_drawee_place_holder</item>
         <item name="placeholderImageScaleType">fitXY</item>
+        <item name="android:foreground">?attr/selectableItemBackground</item>
     </style>
 
     <style name="AppTheme" parent="Theme.AppCompat">
         <item name="colorControlNormal">@android:color/white</item>
         <item name="colorAccent">@android:color/holo_green_dark</item>
+        <item name="colorControlHighlight">#65669900</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -32,7 +34,6 @@
     <style name="Shopify.HeaderText.Inverse" parent="Shopify.HeaderText">
         <item name="android:textColor">@android:color/black</item>
     </style>
-
 
     <style name="Shopify.TitleText" parent="TextAppearance.AppCompat">
         <item name="android:textSize">18sp</item>

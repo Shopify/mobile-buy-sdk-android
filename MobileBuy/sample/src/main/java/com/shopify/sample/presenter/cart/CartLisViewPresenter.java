@@ -55,4 +55,8 @@ public final class CartLisViewPresenter extends BasePageListViewPresenter<CartIt
   public void removeCartItem(final CartItem cartItem) {
     CartManager.instance().removeCartItem(cartItem);
   }
+
+  public Cart cart() {
+    return CartManager.instance().cart();
+  }
 }

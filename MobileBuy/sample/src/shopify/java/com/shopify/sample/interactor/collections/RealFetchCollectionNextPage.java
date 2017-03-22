@@ -34,6 +34,7 @@ import com.shopify.buy3.GraphClient;
 import com.shopify.sample.SampleApplication;
 import com.shopify.sample.presenter.collections.Collection;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import io.reactivex.Single;
@@ -41,6 +42,7 @@ import io.reactivex.schedulers.Schedulers;
 
 import static com.shopify.sample.util.Util.firstItem;
 import static com.shopify.sample.util.Util.mapItems;
+import static com.shopify.sample.util.Util.minItem;
 
 public final class RealFetchCollectionNextPage implements FetchCollectionNextPage {
   private final GraphClient graphClient = SampleApplication.graphClient();
@@ -68,6 +70,9 @@ public final class RealFetchCollectionNextPage implements FetchCollectionNextPag
                       .images(1, imageConnection -> imageConnection
                         .edges(imageEdge -> imageEdge
                           .node(APISchema.ImageQuery::src)))
+                      .variants(250, variantConnection -> variantConnection
+                        .edges(variantEdge -> variantEdge
+                          .node(APISchema.ProductVariantQuery::price)))
                     )
                   )
                 )
@@ -91,7 +96,9 @@ public final class RealFetchCollectionNextPage implements FetchCollectionNextPag
         APISchema.Product product = productEdge.getNode();
         String productImageUrl = firstItem(product.getImages() != null ? product.getImages().getEdges() : null,
           image -> image != null ? image.getNode().getSrc() : null);
-        return new Collection.Product(product.getId().toString(), product.getTitle(), productImageUrl, productEdge.getCursor());
+        List<BigDecimal> prices = mapItems(product.getVariants().getEdges(), variantEdge -> variantEdge.getNode().getPrice());
+        BigDecimal minPrice = minItem(prices, BigDecimal.ZERO, BigDecimal::compareTo);
+        return new Collection.Product(product.getId().toString(), product.getTitle(), productImageUrl, minPrice, productEdge.getCursor());
       }));
     });
   }

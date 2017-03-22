@@ -57,7 +57,7 @@ public final class Cart {
     try {
       double total = 0;
       for (CartItem cartItem : cartItems.values()) {
-        total += cartItem.price.doubleValue();
+        total += cartItem.price.doubleValue() * cartItem.quantity;
       }
       return total;
     } finally {

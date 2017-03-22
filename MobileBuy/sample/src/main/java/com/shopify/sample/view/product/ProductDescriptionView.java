@@ -69,6 +69,11 @@ public final class ProductDescriptionView extends NestedScrollView {
     ButterKnife.bind(this);
   }
 
+  public void renderProduct(final String title, final double price) {
+    titleView.setText(title);
+    priceView.setText(getResources().getString(R.string.price_from, CURRENCY_FORMAT.format(price)));
+  }
+
   public void renderProduct(final Product product) {
     titleView.setText(product.title);
     priceView.setText(getResources().getString(R.string.price_from, formatMinPrice(product)));

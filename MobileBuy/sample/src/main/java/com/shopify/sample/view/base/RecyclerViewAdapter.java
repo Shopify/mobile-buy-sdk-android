@@ -107,8 +107,8 @@ public final class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
     notifyItemRangeRemoved(0, prevSize);
   }
 
-  public void swapItemsAndNotify(final List<ListItemViewModel> newItems, final ItemContentComparator itemContentComparator) {
-    final DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new ItemsDiffCallback(items, newItems, itemContentComparator));
+  public void swapItemsAndNotify(final List<ListItemViewModel> newItems, final ItemComparator itemComparator) {
+    final DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new ItemsDiffCallback(items, newItems, itemComparator));
     items = new ArrayList<>(newItems);
     diffResult.dispatchUpdatesTo(this);
   }
@@ -124,10 +124,10 @@ public final class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
   private static final class ItemsDiffCallback extends DiffUtil.Callback {
     private final List<ListItemViewModel> oldItems;
     private final List<ListItemViewModel> newItems;
-    private final ItemContentComparator contentComparator;
+    private final ItemComparator contentComparator;
 
     ItemsDiffCallback(final List<ListItemViewModel> oldItems, final List<ListItemViewModel> newItems,
-      final ItemContentComparator contentComparator) {
+      final ItemComparator contentComparator) {
       this.oldItems = oldItems;
       this.newItems = newItems;
       this.contentComparator = contentComparator;
@@ -145,7 +145,7 @@ public final class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
 
     @Override
     public boolean areItemsTheSame(final int oldItemPosition, final int newItemPosition) {
-      return oldItems.get(oldItemPosition).equals(newItems.get(newItemPosition));
+      return contentComparator.equalsById(oldItems.get(oldItemPosition), newItems.get(newItemPosition));
     }
 
     @Override
@@ -154,7 +154,9 @@ public final class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
     }
   }
 
-  public interface ItemContentComparator {
+  public interface ItemComparator {
+    boolean equalsById(ListItemViewModel oldItem, ListItemViewModel newItem);
+
     boolean equalsByContent(ListItemViewModel oldItem, ListItemViewModel newItem);
   }
 }

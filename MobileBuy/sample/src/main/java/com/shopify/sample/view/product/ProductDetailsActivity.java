@@ -58,12 +58,13 @@ public final class ProductDetailsActivity extends AppCompatActivity implements P
   public static final String EXTRAS_PRODUCT_ID = "product_id";
   public static final String EXTRAS_PRODUCT_IMAGE_URL = "product_image_url";
   public static final String EXTRAS_PRODUCT_TITLE = "product_title";
+  public static final String EXTRAS_PRODUCT_PRICE = "product_price";
 
   @BindView(R.id.root) View rootView;
   @BindView(R.id.swipe_refresh) SwipeRefreshLayout swipeRefreshLayoutView;
   @BindView(R.id.toolbar) Toolbar toolbarView;
   @BindView(R.id.image_gallery) ImageGalleryView imageGalleryView;
-  @BindView(R.id.product_details) ProductDescriptionView productDetailsView;
+  @BindView(R.id.product_description) ProductDescriptionView productDescriptionView;
 
   private ProductDetailsViewPresenter presenter;
 
@@ -75,6 +76,7 @@ public final class ProductDetailsActivity extends AppCompatActivity implements P
     String productId = getIntent().getStringExtra(EXTRAS_PRODUCT_ID);
     String productTitle = getIntent().getStringExtra(EXTRAS_PRODUCT_TITLE);
     String productImageUrl = getIntent().getStringExtra(EXTRAS_PRODUCT_IMAGE_URL);
+    double productPrice = getIntent().getDoubleExtra(EXTRAS_PRODUCT_PRICE, 0);
 
     checkNotNull(productId, "productId == null");
     checkNotNull(productTitle, "productTitle == null");
@@ -86,7 +88,8 @@ public final class ProductDetailsActivity extends AppCompatActivity implements P
     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     swipeRefreshLayoutView.setOnRefreshListener(() -> presenter.fetchProduct());
 
-    productDetailsView.setOnAddToCartClickListener(() -> presenter.addToCart());
+    productDescriptionView.renderProduct(productTitle, productPrice);
+    productDescriptionView.setOnAddToCartClickListener(() -> presenter.addToCart());
 
     imageGalleryView.renderImages(Arrays.asList(productImageUrl));
   }
@@ -116,7 +119,7 @@ public final class ProductDetailsActivity extends AppCompatActivity implements P
 
   @Override public void renderProduct(final Product product) {
     imageGalleryView.renderImages(product.images);
-    productDetailsView.renderProduct(product);
+    productDescriptionView.renderProduct(product);
   }
 
   @Override public boolean onCreateOptionsMenu(final Menu menu) {

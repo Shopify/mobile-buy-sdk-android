@@ -84,32 +84,14 @@ public final class CartItem {
       '}';
   }
 
-//  @Override public boolean equals(final Object o) {
-//    if (this == o) return true;
-//    if (!(o instanceof CartItem)) return false;
-//
-//    final CartItem cartItem = (CartItem) o;
-//
-//    if (!productId.equals(cartItem.productId)) return false;
-//    return productVariantId.equals(cartItem.productVariantId);
-//
-//  }
-
-
   @Override public boolean equals(final Object o) {
     if (this == o) return true;
     if (!(o instanceof CartItem)) return false;
 
     final CartItem cartItem = (CartItem) o;
 
-    if (quantity != cartItem.quantity) return false;
     if (!productId.equals(cartItem.productId)) return false;
-    if (!productVariantId.equals(cartItem.productVariantId)) return false;
-    if (!productTitle.equals(cartItem.productTitle)) return false;
-    if (!variantTitle.equals(cartItem.variantTitle)) return false;
-    if (!price.equals(cartItem.price)) return false;
-    if (!options.equals(cartItem.options)) return false;
-    return image != null ? image.equals(cartItem.image) : cartItem.image == null;
+    return productVariantId.equals(cartItem.productVariantId);
 
   }
 
