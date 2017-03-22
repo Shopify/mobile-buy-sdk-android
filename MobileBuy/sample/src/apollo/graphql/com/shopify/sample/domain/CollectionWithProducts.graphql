@@ -6,6 +6,7 @@ query CollectionsWithProducts($perPage: Int!, $nextPageCursor: String, $collecti
         collection: node {
           id
           title
+          descriptionPlainSummary
           image {
             src
           }
@@ -19,6 +20,13 @@ query CollectionsWithProducts($perPage: Int!, $nextPageCursor: String, $collecti
                   edges {
                     image: node {
                       src
+                    }
+                  }
+                }
+                variantConnection: variants(first: 250) {
+                  variantEdge: edges {
+                    variant: node {
+                      price
                     }
                   }
                 }

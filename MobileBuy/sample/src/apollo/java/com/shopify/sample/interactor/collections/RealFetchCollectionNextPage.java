@@ -13,6 +13,7 @@ import com.shopify.sample.domain.CollectionsWithProducts;
 import com.shopify.sample.domain.type.CollectionSortKeys;
 import com.shopify.sample.presenter.collections.Collection;
 
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 
@@ -21,21 +22,20 @@ import io.reactivex.schedulers.Schedulers;
 
 import static com.shopify.sample.util.Util.firstItem;
 import static com.shopify.sample.util.Util.mapItems;
+import static com.shopify.sample.util.Util.minItem;
 
 public final class RealFetchCollectionNextPage implements FetchCollectionNextPage {
   private final ApolloClient apolloClient = SampleApplication.apolloClient();
 
   @SuppressWarnings("Convert2MethodRef")
   @Override @NonNull public Single<List<Collection>> call(@Nullable final String cursor, final int perPage) {
-    CollectionsWithProducts query = new CollectionsWithProducts(CollectionsWithProducts.Variables.builder()
+    CollectionsWithProducts query = CollectionsWithProducts.builder()
       .perPage(perPage)
       .nextPageCursor(TextUtils.isEmpty(cursor) ? null : cursor)
       .collectionSortKey(CollectionSortKeys.TITLE)
-      .build());
-    ApolloCall<CollectionsWithProducts.Data> call = apolloClient.newCall(query).httpCacheControl(HttpCacheControl.CACHE_FIRST);
-    return Single.fromCallable(call::execute)
-      .map(response -> Optional.fromNullable(response.data()))
-      .map(data -> data
+      .build();
+    return Single.fromCallable(() -> apolloClient.newCall(query).execute())
+      .map(response -> response.data()
         .transform(it -> it.shop())
         .transform(it -> it.collectionConnection())
         .transform(it -> it.edges())
@@ -49,12 +49,17 @@ public final class RealFetchCollectionNextPage implements FetchCollectionNextPag
     collectionEdges) {
     return mapItems(collectionEdges, collectionEdge -> {
         String collectionImageUrl = collectionEdge.collection().image().transform(it -> it.src()).or("");
-        return new Collection(collectionEdge.collection().id(), collectionEdge.collection().title(), collectionImageUrl,
-          collectionEdge.cursor(), mapItems(collectionEdge.collection().productConnection().edges(), productEdge -> {
-          String productImageUrl = firstItem(productEdge.product().imageConnection().edges(),
-            imageEdge -> imageEdge != null ? imageEdge.image().src() : null);
-          return new Collection.Product(productEdge.product().id(), productEdge.product().title(), productImageUrl, productEdge.cursor());
-        }));
+        return new Collection(collectionEdge.collection().id(), collectionEdge.collection().title(),
+          collectionEdge.collection().descriptionPlainSummary(), collectionImageUrl, collectionEdge.cursor(),
+          mapItems(collectionEdge.collection().productConnection().edges(), productEdge -> {
+            String productImageUrl = firstItem(productEdge.product().imageConnection().edges(),
+              imageEdge -> imageEdge != null ? imageEdge.image().src() : null);
+            List<BigDecimal> prices = mapItems(productEdge.product().variantConnection().variantEdge(),
+              variantEdge -> variantEdge.variant().price());
+            BigDecimal minPrice = minItem(prices, BigDecimal.ZERO, BigDecimal::compareTo);
+            return new Collection.Product(productEdge.product().id(), productEdge.product().title(), productImageUrl, minPrice, productEdge
+              .cursor());
+          }));
       }
     );
   }

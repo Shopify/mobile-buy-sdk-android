@@ -22,14 +22,9 @@ public final class RealFetchProductDetails implements FetchProductDetails {
   private final ApolloClient apolloClient = SampleApplication.apolloClient();
 
   @NonNull @Override public Single<Product> call(final String productId) {
-    ProductDetailsQuery query = new ProductDetailsQuery(ProductDetailsQuery.Variables.builder()
-      .id(productId)
-      .build());
-
-    ApolloCall<ProductDetailsQuery.Data> call = apolloClient.newCall(query).httpCacheControl(HttpCacheControl.CACHE_FIRST);
-    return Single.fromCallable(call::execute)
-      .map(response -> Optional.fromNullable(response.data()))
-      .map(data -> data
+    ProductDetailsQuery query = new ProductDetailsQuery(productId);
+    return Single.fromCallable(() -> apolloClient.newCall(query).execute())
+      .map(response -> response.data()
         .transform(it -> it.node().orNull())
         .transform(it -> it.asProduct().orNull())
         .get()

@@ -5,6 +5,7 @@ import android.util.Base64;
 
 import com.apollographql.android.CustomTypeAdapter;
 import com.apollographql.android.cache.http.DiskLruCacheStore;
+import com.apollographql.android.cache.http.HttpCacheControl;
 import com.apollographql.android.cache.http.TimeoutEvictionStrategy;
 import com.apollographql.android.impl.ApolloClient;
 import com.shopify.sample.domain.type.CustomType;
@@ -71,6 +72,7 @@ public class SampleApplication extends BaseApplication {
       .okHttpClient(httpClient)
       .serverUrl(HttpUrl.parse("https://" + shopUrl + "/api/graphql"))
       .httpCache(new DiskLruCacheStore(getCacheDir(), 1000 * 1024), new TimeoutEvictionStrategy(5, TimeUnit.MINUTES))
+      .defaultHttpCacheControl(HttpCacheControl.CACHE_FIRST)
       .withCustomTypeAdapter(CustomType.MONEY, new CustomTypeAdapter<BigDecimal>() {
         @Override public BigDecimal decode(final String value) {
           return new BigDecimal(value);

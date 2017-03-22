@@ -27,15 +27,13 @@ public final class RealFetchProductNextPage implements FetchProductNextPage {
 
   @SuppressWarnings({"Convert2MethodRef", "ConstantConditions"})
   @Override public @NonNull Single<List<Product>> call(final String collectionId, final String cursor, final int perPage) {
-    CollectionProducts query = new CollectionProducts(CollectionProducts.Variables.builder()
+    CollectionProducts query = CollectionProducts.builder()
       .perPage(perPage)
       .nextPageCursor(TextUtils.isEmpty(cursor) ? null : cursor)
       .collectionId(collectionId)
-      .build());
-    ApolloCall<CollectionProducts.Data> call = apolloClient.newCall(query).httpCacheControl(HttpCacheControl.CACHE_FIRST);
-    return Single.fromCallable(call::execute)
-      .map(response -> Optional.fromNullable(response.data()))
-      .map(data -> data
+      .build();
+    return Single.fromCallable(() -> apolloClient.newCall(query).execute())
+      .map(response -> response.data()
         .transform(it -> it.collection().orNull())
         .transform(it -> it.asCollection().orNull())
         .transform(it -> it.productConnection())
