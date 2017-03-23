@@ -86,12 +86,13 @@ public final class ProductDetailsActivity extends AppCompatActivity implements P
     setSupportActionBar(toolbarView);
     getSupportActionBar().setTitle(productTitle);
     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+    imageGalleryView.renderImages(Arrays.asList(productImageUrl));
+
     swipeRefreshLayoutView.setOnRefreshListener(() -> presenter.fetchProduct());
 
     productDescriptionView.renderProduct(productTitle, productPrice);
     productDescriptionView.setOnAddToCartClickListener(() -> presenter.addToCart());
-
-    imageGalleryView.renderImages(Arrays.asList(productImageUrl));
   }
 
   @Override public boolean onSupportNavigateUp() {
