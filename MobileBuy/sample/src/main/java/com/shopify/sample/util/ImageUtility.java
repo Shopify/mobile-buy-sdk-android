@@ -91,10 +91,12 @@ public final class ImageUtility {
       return "_large";
     } else if (pixels <= 600) {
       return "_grande";
-    } else if (pixels <= 1024) {
-      return "_1024x1024";
     } else {
-      return "_2048x2048";
+      return "_1024x1024";
+//    } else if (pixels <= 1024) {
+//      return "_1024x1024";
+//    } else {
+//      return "_2048x2048";
     }
   }
 

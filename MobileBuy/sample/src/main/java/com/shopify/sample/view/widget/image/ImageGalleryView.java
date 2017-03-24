@@ -56,7 +56,6 @@ public final class ImageGalleryView extends FrameLayout implements RecyclerViewA
 
   private final RecyclerViewAdapter pagerAdapter = new RecyclerViewAdapter();
   private final RecyclerViewAdapter pagerIndicatorAdapter = new RecyclerViewAdapter(this);
-  private int currentPageIndex = 0;
   private final RecyclerViewAdapter.ItemComparator itemComparator = new RecyclerViewAdapter.ItemComparator() {
     @Override public boolean equalsById(final ListItemViewModel oldItem, final ListItemViewModel newItem) {
       return oldItem.equals(newItem);
@@ -116,15 +115,14 @@ public final class ImageGalleryView extends FrameLayout implements RecyclerViewA
     pagerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
       @Override public void onScrolled(final RecyclerView recyclerView, final int dx, final int dy) {
         int index = ((LinearLayoutManager) pagerView.getLayoutManager()).findFirstVisibleItemPosition();
-        View pageView = ImageGalleryView.this.pagerView.getLayoutManager().findViewByPosition(index);
-        View pageIndicatorView = pagerIndicatorView.getLayoutManager().findViewByPosition(index);
+        View pagerItemView = ImageGalleryView.this.pagerView.getLayoutManager().findViewByPosition(index);
 
-        float offset = 1f * pageView.getLeft() / pagerView.getWidth();
-        pagerIndicatorFrameView.setTranslationX(pageIndicatorView.getLeft() - pagerIndicatorFrameView.getWidth() * offset);
-      }
+        index = ((LinearLayoutManager) pagerIndicatorView.getLayoutManager()).findFirstVisibleItemPosition();
+        View pagerIndicatorItemView = pagerIndicatorView.getLayoutManager().findViewByPosition(index);
 
-      @Override public void onScrollStateChanged(final RecyclerView recyclerView, final int newState) {
-        currentPageIndex = Math.max(0, ((LinearLayoutManager) pagerView.getLayoutManager()).findFirstVisibleItemPosition());
+        float offset = 1f * dx / (pagerView.getAdapter().getItemCount() * pagerItemView.getWidth());
+        pagerIndicatorFrameView.setTranslationX(pagerIndicatorFrameView.getTranslationX()
+          + offset * pagerIndicatorItemView.getWidth() * pagerIndicatorView.getAdapter().getItemCount());
       }
     });
   }
@@ -136,12 +134,7 @@ public final class ImageGalleryView extends FrameLayout implements RecyclerViewA
     pagerIndicatorView.addOnScrollListener(new RecyclerView.OnScrollListener() {
       @Override
       public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-        View view = layoutManager.findViewByPosition(currentPageIndex);
-        if (view != null) {
-          pagerIndicatorFrameView.setTranslationX(view.getLeft());
-        } else {
-          pagerIndicatorFrameView.setTranslationX(pagerIndicatorView.getWidth());
-        }
+        pagerIndicatorFrameView.setTranslationX(pagerIndicatorFrameView.getTranslationX() - dx);
       }
     });
 
@@ -156,7 +149,7 @@ public final class ImageGalleryView extends FrameLayout implements RecyclerViewA
         outRect.right = parent.getAdapter().getItemCount() > 1 && position == parent.getAdapter().getItemCount() - 1 ? padding : 0;
       }
     });
-
+    pagerIndicatorFrameView.setTranslationX(padding);
     pagerIndicatorView.setAdapter(pagerIndicatorAdapter);
   }
 

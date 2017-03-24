@@ -124,7 +124,7 @@ public final class ShopifyDraweeView extends SimpleDraweeView {
       return ImageRequestBuilder.newBuilderWithSource(Uri.EMPTY).build();
     } else {
       final String url = ImageUtility.getSizedImageUrl(baseUrl, width, height);
-      final Uri imageUrl = Uri.parse(baseUrl.replace(".jpg", ".progressive.jpg").replace(".jpeg", ".progressive.jpeg"));
+      final Uri imageUrl = Uri.parse(url.replace(".jpg", ".progressive.jpg").replace(".jpeg", ".progressive.jpeg"));
       return ImageRequestBuilder
         .newBuilderWithSource(imageUrl)
         .setProgressiveRenderingEnabled(true)

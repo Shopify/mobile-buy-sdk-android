@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/default_padding_half"
         android:maxLines="1"
-        android:textAppearance="@style/Shopify.HeaderText"
+        android:textAppearance="@style/ExpandedTitleTextAppearance"
         android:textColor="?attr/colorAccent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"

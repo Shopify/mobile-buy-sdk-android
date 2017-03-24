@@ -102,6 +102,6 @@ public final class ProductListView extends FrameLayout implements RecyclerViewAd
 
   private int prefetchItemCount() {
     return getResources().getDisplayMetrics().widthPixels
-      / getResources().getDimensionPixelOffset(R.dimen.collection_list_product_image_height) + 1;
+      / getResources().getDimensionPixelOffset(R.dimen.product_thumbnail_size) + 1;
   }
 }
