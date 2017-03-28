@@ -360,10 +360,14 @@ public final class AndroidPayHelper {
             throw new NullPointerException("maskedWallet cannot be null");
         }
 
-        final Address shippingAddress = createShopifyAddress(maskedWallet.getBuyerShippingAddress());
+        Address shippingAddress = null;
+        if (checkout.isRequiresShipping()) {
+           shippingAddress = createShopifyAddress(maskedWallet.getBuyerShippingAddress());
+        }
+
         final Address billingAddress = createShopifyAddress(maskedWallet.getBuyerBillingAddress());
 
-        return !shippingAddress.locationsAreEqual(checkout.getShippingAddress())
+        return (checkout.isRequiresShipping() && shippingAddress != null && !shippingAddress.locationsAreEqual(checkout.getShippingAddress()))
             || !billingAddress.locationsAreEqual(checkout.getBillingAddress())
             || !TextUtils.equals(maskedWallet.getEmail(), checkout.getEmail());
     }
