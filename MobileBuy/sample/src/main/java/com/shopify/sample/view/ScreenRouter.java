@@ -28,6 +28,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 
+import com.shopify.sample.util.BiConsumer;
 import com.shopify.sample.view.base.CartClickActionEvent;
 import com.shopify.sample.view.cart.CartActivity;
 import com.shopify.sample.view.collections.CollectionClickActionEvent;
@@ -38,7 +39,6 @@ import com.shopify.sample.view.products.ProductListActivity;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.function.BiConsumer;
 
 import static com.shopify.sample.util.Util.checkNotNull;
 

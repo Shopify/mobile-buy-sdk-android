@@ -29,31 +29,43 @@ import android.support.annotation.NonNull;
 import com.shopify.buy3.GraphCall;
 import com.shopify.buy3.GraphClient;
 import com.shopify.buy3.Storefront;
+import com.shopify.buy3.pay.PayAddress;
 import com.shopify.graphql.support.ID;
 import com.shopify.sample.SampleApplication;
 import com.shopify.sample.presenter.cart.Checkout;
-
-import java.util.List;
 
 import io.reactivex.Single;
 import io.reactivex.schedulers.Schedulers;
 
 import static com.shopify.sample.RxUtil.rxGraphMutationCall;
-import static com.shopify.sample.util.Util.checkNotEmpty;
+import static com.shopify.sample.util.Util.checkNotBlank;
+import static com.shopify.sample.util.Util.checkNotNull;
 import static com.shopify.sample.util.Util.mapItems;
 
-public final class RealCreateCheckout implements CreateCheckout {
+@SuppressWarnings("WeakerAccess")
+public final class RealUpdateCheckoutShippingAddress implements UpdateCheckoutShippingAddress {
   private final GraphClient graphClient = SampleApplication.graphClient();
 
-  @Override public Single<Checkout> call(@NonNull final List<LineItem> lineItems) {
-    checkNotEmpty(lineItems, "lineItems can't be empty");
+  @Override public Single<Checkout> call(@NonNull final String checkoutId, @NonNull final PayAddress address) {
+    checkNotBlank(checkoutId, "checkoutId can't be empty");
+    checkNotNull(address, "address == null");
 
-    List<Storefront.LineItemInput> storefrontLineItems = mapItems(lineItems, lineItem ->
-      new Storefront.LineItemInput(lineItem.quantity, new ID(lineItem.variantId)));
-    Storefront.CheckoutCreateInput input = new Storefront.CheckoutCreateInput().setLineItems(storefrontLineItems);
+    Storefront.MailingAddressInput mailingAddressInput = new Storefront.MailingAddressInput()
+      .setAddress1(address.address1)
+      .setAddress2(address.address2)
+      .setCity(address.city)
+      .setCountry(address.country)
+      .setFirstName(address.firstName)
+      .setLastName(address.lastName)
+      .setPhone(address.phone)
+      .setProvince(address.province)
+      .setZip(address.zip);
+
+    Storefront.CheckoutShippingAddressUpdateInput input = new Storefront.CheckoutShippingAddressUpdateInput(new ID(checkoutId),
+      mailingAddressInput);
+
     GraphCall<Storefront.Mutation> call = graphClient.mutateGraph(Storefront.mutation(
-      root -> root.checkoutCreate(
-        input,
+      root -> root.checkoutShippingAddressUpdate(input,
         query -> query.checkout(
           checkout -> checkout
             .webUrl()
@@ -72,9 +84,10 @@ public final class RealCreateCheckout implements CreateCheckout {
         )
       ))
     );
+
     return rxGraphMutationCall(call)
-      .map(it -> it.data().getCheckoutCreate().getCheckout())
-      .map(RealCreateCheckout::map)
+      .map(it -> it.data().getCheckoutShippingAddressUpdate().getCheckout())
+      .map(RealUpdateCheckoutShippingAddress::map)
       .subscribeOn(Schedulers.io());
   }
 

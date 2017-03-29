@@ -26,24 +26,60 @@ package com.shopify.sample.presenter.cart;
 
 import android.support.annotation.NonNull;
 
+import java.math.BigDecimal;
+import java.util.List;
+
+import static com.shopify.sample.util.Util.checkNotEmpty;
 import static com.shopify.sample.util.Util.checkNotNull;
 
+@SuppressWarnings("WeakerAccess")
 public final class Checkout {
   @NonNull public final String id;
   @NonNull public final String webUrl;
+  @NonNull public final String currency;
   public final boolean requiresShipping;
+  @NonNull public final List<LineItem> lineItems;
 
-  public Checkout(@NonNull final String id, @NonNull final String webUrl, final boolean requiresShipping) {
+  public Checkout(@NonNull final String id, @NonNull final String webUrl, @NonNull final String currency, final boolean requiresShipping,
+    @NonNull final List<LineItem> lineItems) {
     this.id = checkNotNull(id, "id == null");
     this.webUrl = checkNotNull(webUrl, "webUrl == null");
+    this.currency = checkNotNull(currency, "currency == null");
     this.requiresShipping = requiresShipping;
+    this.lineItems = checkNotEmpty(lineItems, "lineItems can't be empty");
   }
 
   @Override public String toString() {
     return "Checkout{" +
       "id='" + id + '\'' +
       ", webUrl='" + webUrl + '\'' +
+      ", currency='" + currency + '\'' +
       ", requiresShipping=" + requiresShipping +
+      ", lineItems=" + lineItems +
       '}';
+  }
+
+  @SuppressWarnings("WeakerAccess")
+  public static final class LineItem {
+    @NonNull public final String variantId;
+    @NonNull public final String title;
+    public final int quantity;
+    @NonNull public final BigDecimal price;
+
+    public LineItem(@NonNull final String variantId, @NonNull final String title, final int quantity, @NonNull final BigDecimal price) {
+      this.variantId = checkNotNull(variantId, "variantId == null");
+      this.title = checkNotNull(title, "title == null");
+      this.quantity = quantity;
+      this.price = checkNotNull(price, "price == null");
+    }
+
+    @Override public String toString() {
+      return "LineItem{" +
+        "variantId='" + variantId + '\'' +
+        ", title='" + title + '\'' +
+        ", quantity=" + quantity +
+        ", price=" + price +
+        '}';
+    }
   }
 }

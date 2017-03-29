@@ -24,17 +24,20 @@
 
 package com.shopify.sample.view.cart;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
+import com.shopify.buy3.pay.PayHelper;
 import com.shopify.sample.R;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public final class CartActivity extends AppCompatActivity {
+  @BindView(R.id.cart_header) CartHeaderView cartHeaderView;
   @BindView(R.id.cart_list) CartListView cartListView;
   @BindView(R.id.toolbar) Toolbar toolbarView;
 
@@ -52,5 +55,13 @@ public final class CartActivity extends AppCompatActivity {
   @Override public boolean onSupportNavigateUp() {
     finish();
     return true;
+  }
+
+  @Override protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
+
+    if (requestCode == PayHelper.REQUEST_CODE_MASKED_WALLET) {
+      cartHeaderView.handleMaskedWalletResponse(resultCode, data != null ? data.getExtras() : null);
+    }
   }
 }
