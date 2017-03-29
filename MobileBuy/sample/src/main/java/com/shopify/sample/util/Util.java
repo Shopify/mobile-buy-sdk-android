@@ -29,11 +29,8 @@ import android.support.annotation.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
-import java.util.function.Function;
 
 public final class Util {
 
@@ -43,14 +40,14 @@ public final class Util {
     return reference;
   }
 
-  public static <T> T checkNotNull(T reference, @Nullable Object errorMessage) {
+  public static <T> T checkNotNull(final T reference, @Nullable final Object errorMessage) {
     if (reference == null) {
       throw new NullPointerException(String.valueOf(errorMessage));
     }
     return reference;
   }
 
-  @NonNull public static <T, R> List<R> mapItems(@NonNull Collection<T> source, @NonNull Function<T, R> transformer) {
+  @NonNull public static <T, R> List<R> mapItems(@NonNull final Collection<T> source, @NonNull final Function<T, R> transformer) {
     checkNotNull(source, "source == null");
     checkNotNull(transformer, "transformer == null");
     List<R> result = new ArrayList<>();
@@ -60,16 +57,17 @@ public final class Util {
     return result;
   }
 
-  @Nullable public static <T> T firstItem(@Nullable List<T> source) {
+  @Nullable public static <T> T firstItem(@Nullable final List<T> source) {
     return source != null && !source.isEmpty() ? source.get(0) : null;
   }
 
-  @Nullable public static <T, R> R firstItem(@Nullable List<T> source, @NonNull Function<T, R> transformer) {
+  @Nullable public static <T, R> R firstItem(@Nullable final List<T> source, @NonNull final Function<T, R> transformer) {
     checkNotNull(transformer, "transformer == null");
     return source != null && !source.isEmpty() ? transformer.apply(source.get(0)) : null;
   }
 
-  @NonNull public static <T> T minItem(@NonNull Collection<T> source, @NonNull T defaultValue, @NonNull Comparator<T> comparator) {
+  @NonNull public static <T> T minItem(@NonNull final Collection<T> source, @NonNull final T defaultValue,
+    @NonNull final Comparator<T> comparator) {
     checkNotNull(source, "source == null");
     checkNotNull(comparator, "comparator == null");
     if (source.isEmpty()) {
@@ -89,6 +87,17 @@ public final class Util {
 
     //noinspection ConstantConditions
     return minItem;
+  }
+
+  public static <T, R> R fold(@Nullable final R initialValue, @NonNull final Collection<T> source,
+    @NonNull final BiFunction<R, T, R> accumulator) {
+    checkNotNull(source, "source == null");
+    checkNotNull(accumulator, "accumulator == null");
+    R result = initialValue;
+    for (T item : source) {
+      result = accumulator.apply(result, item);
+    }
+    return result;
   }
 
   private Util() {

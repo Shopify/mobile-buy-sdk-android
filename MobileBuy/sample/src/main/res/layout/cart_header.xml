@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:animateLayoutChanges="true">
 
     <TextView
         android:id="@+id/title1"
@@ -39,29 +40,34 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/subtotal" />
 
-    <Button
-        android:id="@+id/android_pay"
+    <ImageButton
+        android:id="@+id/android_pay_checkout"
         android:layout_width="160dp"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
+        android:layout_marginEnd="@dimen/default_padding_half"
+        android:layout_marginStart="@dimen/default_padding_half"
         android:layout_marginTop="@dimen/default_padding"
+        android:padding="12dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_android_pay"
         android:text="@string/android_pay"
-        app:layout_constraintRight_toLeftOf="@+id/guideline"
-        app:layout_constraintTop_toBottomOf="@+id/title2" />
+        android:visibility="gone"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/web_checkout"
+        app:layout_constraintTop_toBottomOf="@+id/title2"
+        tools:visibility="visible" />
 
     <Button
         android:id="@+id/web_checkout"
         android:layout_width="160dp"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
+        android:layout_marginEnd="@dimen/default_padding_half"
+        android:layout_marginStart="@dimen/default_padding_half"
         android:layout_marginTop="@dimen/default_padding"
         android:text="@string/web_checkout"
-        app:layout_constraintLeft_toLeftOf="@+id/guideline"
+        app:layout_constraintLeft_toRightOf="@+id/android_pay_checkout"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/title2" />
-
-    <android.support.constraint.Guideline
-        android:id="@+id/guideline"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.5" />
 
 </android.support.constraint.ConstraintLayout>

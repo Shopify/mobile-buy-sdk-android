@@ -34,6 +34,6 @@ custom_scalars = [
 GraphQLJavaGen.new(
   schema,
   package_name: "com.shopify.buy3",
-  nest_under: 'APISchema',
+  nest_under: 'Storefront',
   custom_scalars: custom_scalars
 ).save(target_filename)
