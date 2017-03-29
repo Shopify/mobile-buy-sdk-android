@@ -360,17 +360,26 @@ public final class AndroidPayHelper {
             throw new NullPointerException("maskedWallet cannot be null");
         }
 
-        Address shippingAddress = null;
-        if (checkout.isRequiresShipping()) {
-           shippingAddress = createShopifyAddress(maskedWallet.getBuyerShippingAddress());
-        }
-
-        final Address billingAddress = createShopifyAddress(maskedWallet.getBuyerBillingAddress());
-
-        return (checkout.isRequiresShipping() && shippingAddress != null && !shippingAddress.locationsAreEqual(checkout.getShippingAddress()))
-            || !billingAddress.locationsAreEqual(checkout.getBillingAddress())
-            || !TextUtils.equals(maskedWallet.getEmail(), checkout.getEmail());
+        return isShippingAddressChanged(checkout, maskedWallet) || isBillingAddressChanged(checkout, maskedWallet) || isEmailChanged(checkout, maskedWallet);
     }
+
+    private static boolean isEmailChanged(final Checkout checkout, final MaskedWallet maskedWallet) {
+        return !TextUtils.equals(maskedWallet.getEmail(), checkout.getEmail());
+    }
+
+    private static boolean isShippingAddressChanged(final Checkout checkout, final MaskedWallet maskedWallet) {
+        if (checkout.isRequiresShipping()) {
+            Address shippingAddress = createShopifyAddress(maskedWallet.getBuyerShippingAddress());
+            return !shippingAddress.locationsAreEqual(checkout.getShippingAddress());
+        }
+        return false;
+    }
+
+    private static boolean isBillingAddressChanged(final Checkout checkout, final MaskedWallet maskedWallet) {
+        final Address billingAddress = createShopifyAddress(maskedWallet.getBuyerBillingAddress());
+        return !billingAddress.locationsAreEqual(checkout.getBillingAddress());
+    }
+
 
     /**
      * Checks to see if Android Pay is available on device.
