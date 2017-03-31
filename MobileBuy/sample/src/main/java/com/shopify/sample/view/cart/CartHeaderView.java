@@ -36,14 +36,12 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import com.google.android.gms.wallet.MaskedWallet;
 import com.shopify.buy3.pay.PayCart;
 import com.shopify.sample.R;
 import com.shopify.sample.interactor.cart.RealCreateCheckout;
 import com.shopify.sample.interactor.cart.RealUpdateCheckoutShippingAddress;
 import com.shopify.sample.presenter.cart.CartHeaderViewPresenter;
 import com.shopify.sample.presenter.cart.Checkout;
-import com.shopify.sample.util.Util;
 import com.shopify.sample.view.ProgressDialogHelper;
 
 import butterknife.BindView;
@@ -58,6 +56,7 @@ public final class CartHeaderView extends FrameLayout implements CartHeaderViewP
   private final CartHeaderViewPresenter presenter = new CartHeaderViewPresenter(new RealCreateCheckout(),
     new RealUpdateCheckoutShippingAddress());
   private ProgressDialogHelper progressDialogHelper;
+  private OnConfirmAndroidPayListener onConfirmAndroidPayListener;
 
   public CartHeaderView(@NonNull final Context context) {
     super(context);
@@ -106,13 +105,18 @@ public final class CartHeaderView extends FrameLayout implements CartHeaderViewP
     getContext().startActivity(intent);
   }
 
-  @Override public void showAndroidPayConfirmation(@NonNull final String checkoutId, @NonNull final PayCart payCart,
-    @NonNull final MaskedWallet maskedWallet) {
-    //TODO show confirmation screen
+  @Override public void showAndroidPayConfirmation(@NonNull final String checkoutId, @NonNull final PayCart payCart) {
+    if (onConfirmAndroidPayListener != null) {
+      onConfirmAndroidPayListener.onConfirmAndroidPay(checkoutId, payCart);
+    }
   }
 
   public void handleMaskedWalletResponse(final int resultCode, @Nullable final Bundle data) {
     presenter.handleMaskedWalletResponse(resultCode, data);
+  }
+
+  public void setOnConfirmAndroidPayListener(final OnConfirmAndroidPayListener onConfirmAndroidPayListener) {
+    this.onConfirmAndroidPayListener = onConfirmAndroidPayListener;
   }
 
   @Override protected void onFinishInflate() {
@@ -138,5 +142,9 @@ public final class CartHeaderView extends FrameLayout implements CartHeaderViewP
 
   @OnClick(R.id.android_pay_checkout) void onAndroidPayCheckoutClick() {
     presenter.createAndroidPayCheckout();
+  }
+
+  public static interface OnConfirmAndroidPayListener {
+    void onConfirmAndroidPay(@NonNull String checkoutId, @NonNull PayCart payCart);
   }
 }

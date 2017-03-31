@@ -44,7 +44,7 @@ import com.shopify.sample.interactor.product.RealFetchProductDetails;
 import com.shopify.sample.presenter.product.Product;
 import com.shopify.sample.presenter.product.ProductDetailsViewPresenter;
 import com.shopify.sample.view.ScreenRouter;
-import com.shopify.sample.view.base.CartClickActionEvent;
+import com.shopify.sample.view.cart.CartClickActionEvent;
 import com.shopify.sample.view.widget.image.ImageGalleryView;
 
 import java.util.Arrays;

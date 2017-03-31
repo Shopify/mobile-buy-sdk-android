@@ -32,6 +32,7 @@ import android.support.v7.widget.Toolbar;
 
 import com.shopify.buy3.pay.PayHelper;
 import com.shopify.sample.R;
+import com.shopify.sample.view.ScreenRouter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -50,6 +51,9 @@ public final class CartActivity extends AppCompatActivity {
     getSupportActionBar().setTitle("Cart");
     getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close);
     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+    cartHeaderView.setOnConfirmAndroidPayListener((checkoutId, payCart) ->
+      ScreenRouter.route(this, new AndroidPayConfirmationClickActionEvent(checkoutId, payCart)));
   }
 
   @Override public boolean onSupportNavigateUp() {

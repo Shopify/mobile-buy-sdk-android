@@ -208,7 +208,8 @@ public final class CartHeaderViewPresenter extends BaseViewPresenter<CartHeaderV
     if (isViewAttached()) {
       this.currentCheckoutId = checkout.id;
       view().hideProgress(REQUEST_ID_UPDATE_CHECKOUT_SHIPPING_ADDRESS);
-      view().showAndroidPayConfirmation(checkout.id, payCart, currentMaskedWallet);
+      view().showAndroidPayConfirmation(checkout.id, payCart.toBuilder().maskedWallet(currentMaskedWallet)
+        .build());
     }
   }
 
@@ -259,6 +260,6 @@ public final class CartHeaderViewPresenter extends BaseViewPresenter<CartHeaderV
 
     void showWebCheckout(@NonNull Checkout checkout);
 
-    void showAndroidPayConfirmation(@NonNull String checkoutId, @NonNull PayCart payCart, @NonNull MaskedWallet maskedWallet);
+    void showAndroidPayConfirmation(@NonNull String checkoutId, @NonNull PayCart payCart);
   }
 }

@@ -29,10 +29,12 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 
 import com.shopify.sample.util.BiConsumer;
-import com.shopify.sample.view.base.CartClickActionEvent;
+import com.shopify.sample.view.cart.CartClickActionEvent;
 import com.shopify.sample.view.cart.CartActivity;
+import com.shopify.sample.view.cart.AndroidPayConfirmationClickActionEvent;
 import com.shopify.sample.view.collections.CollectionClickActionEvent;
 import com.shopify.sample.view.collections.CollectionProductClickActionEvent;
+import com.shopify.sample.view.order.OrderConfirmationActivity;
 import com.shopify.sample.view.product.ProductDetailsActivity;
 import com.shopify.sample.view.products.ProductClickActionEvent;
 import com.shopify.sample.view.products.ProductListActivity;
@@ -86,7 +88,14 @@ public final class ScreenRouter {
         Intent intent = new Intent(context, CartActivity.class);
         intent.putExtra(ScreenActionEvent.class.getName(), event);
         context.startActivity(intent);
-      }));
+      }))
+      .<AndroidPayConfirmationClickActionEvent>registerInternal(AndroidPayConfirmationClickActionEvent.ACTION, (context, event) -> {
+        Intent intent = new Intent(context, OrderConfirmationActivity.class);
+        intent.putExtra(ScreenActionEvent.class.getName(), event);
+        intent.putExtra(OrderConfirmationActivity.EXTRAS_CHECKOUT_ID, event.checkoutId());
+        intent.putExtra(OrderConfirmationActivity.EXTRAS_PAY_CART, event.payCart());
+        context.startActivity(intent);
+      });
   }
 
   private <T extends ScreenActionEvent> ScreenRouter registerInternal(final String action, final BiConsumer<Context, T> consumer) {

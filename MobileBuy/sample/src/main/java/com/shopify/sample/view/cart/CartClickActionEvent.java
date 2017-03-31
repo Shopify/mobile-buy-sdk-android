@@ -22,13 +22,12 @@
  *   THE SOFTWARE.
  */
 
-package com.shopify.sample.view.base;
+package com.shopify.sample.view.cart;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.shopify.sample.view.ScreenActionEvent;
-import com.shopify.sample.view.collections.CollectionClickActionEvent;
 
 public final class CartClickActionEvent extends ScreenActionEvent implements Parcelable {
   public static final String ACTION = CartClickActionEvent.class.getSimpleName();

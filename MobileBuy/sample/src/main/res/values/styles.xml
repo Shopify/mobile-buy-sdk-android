@@ -28,6 +28,7 @@
 
     <style name="Shopify.HeaderText" parent="TextAppearance.AppCompat">
         <item name="android:textSize">20sp</item>
+        <item name="android:textStyle">normal</item>
         <item name="android:textColor">@android:color/white</item>
     </style>
 
@@ -38,6 +39,7 @@
     <style name="Shopify.TitleText" parent="TextAppearance.AppCompat">
         <item name="android:textSize">18sp</item>
         <item name="android:textColor">@android:color/white</item>
+        <item name="android:textStyle">normal</item>
     </style>
 
     <style name="Shopify.TitleText.Inverse" parent="Shopify.TitleText">
@@ -46,6 +48,7 @@
 
     <style name="Shopify.SubTitleText" parent="TextAppearance.AppCompat">
         <item name="android:textSize">16sp</item>
+        <item name="android:textStyle">normal</item>
         <item name="android:textColor">@android:color/white</item>
     </style>
 
@@ -55,10 +58,22 @@
 
     <style name="Shopify.BodyText" parent="TextAppearance.AppCompat">
         <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">normal</item>
         <item name="android:textColor">@android:color/white</item>
     </style>
 
     <style name="Shopify.BodyText.Inverse" parent="Shopify.BodyText">
         <item name="android:textColor">@android:color/black</item>
+    </style>
+
+    <style name="WalletDetailsHeaderTextAppearance" parent="Shopify.TitleText.Inverse">
+    </style>
+
+    <style name="WalletDetailsTextAppearance" parent="Shopify.SubTitleText.Inverse">
+        <item name="android:textColor">@color/text_grey</item>
+    </style>
+
+    <style name="WalletDetailsButton" parent="Shopify.SubTitleText">
+        <item name="android:textColor">@android:color/holo_green_dark</item>
     </style>
 </resources>
