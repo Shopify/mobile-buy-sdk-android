@@ -49,12 +49,12 @@ public final class GraphClient {
     this.httpCallFactory = httpCallFactory;
   }
 
-  public GraphCall<APISchema.QueryRoot> queryGraph(final APISchema.QueryRootQuery query) {
-    return new RealGraphCall<>(query, serverUrl, httpCallFactory, response -> new APISchema.QueryRoot(response.getData()));
+  public GraphCall<Storefront.QueryRoot> queryGraph(final Storefront.QueryRootQuery query) {
+    return new RealGraphCall<>(query, serverUrl, httpCallFactory, response -> new Storefront.QueryRoot(response.getData()));
   }
 
-  public GraphCall<APISchema.Mutation> mutateGraph(final APISchema.MutationQuery query) {
-    return new RealGraphCall<>(query, serverUrl, httpCallFactory, response -> new APISchema.Mutation(response.getData()));
+  public GraphCall<Storefront.Mutation> mutateGraph(final Storefront.MutationQuery query) {
+    return new RealGraphCall<>(query, serverUrl, httpCallFactory, response -> new Storefront.Mutation(response.getData()));
   }
 
   public static final class Builder {

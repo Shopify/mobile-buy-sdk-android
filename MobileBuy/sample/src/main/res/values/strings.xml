@@ -9,4 +9,5 @@
     <string name="cart_subtotal_title">SubTotal</string>
     <string name="cart_subtotal_subtitle">Shipping and taxes are calculated at checkout</string>
     <string name="cart_subtotal_price">SubTotal: %s</string>
+    <string name="progress_loading">Loading…</string>
 </resources>

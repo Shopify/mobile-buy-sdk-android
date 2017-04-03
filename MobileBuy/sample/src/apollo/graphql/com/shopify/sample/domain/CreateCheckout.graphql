@@ -1,0 +1,9 @@
+mutation CreateCheckoutQuery($input: CheckoutCreateInput!) {
+  checkoutCreate(input:$input) {
+    checkout {
+      id
+      requiresShipping
+      webUrl
+    }
+  }
+}

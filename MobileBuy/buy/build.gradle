@@ -268,7 +268,7 @@ task updateSchema(type: DefaultTask, group: "GraphQL", description: "Download Gr
   doLast {
     println("Updating GraphQL API schema...")
     def scriptFilePath = project.file('update_schema.rb').absolutePath
-    def targetFilePath = project.projectDir.absolutePath + '/src/main/java/com/shopify/buy3/APISchema.java'
+    def targetFilePath = project.projectDir.absolutePath + '/src/main/java/com/shopify/buy3/Storefront.java'
     def scriptCommand = "${scriptFilePath} -t ${targetFilePath}"
     println("Running script: " + scriptCommand)
     def scriptProc = scriptCommand.execute()
@@ -282,6 +282,6 @@ task updateSchema(type: DefaultTask, group: "GraphQL", description: "Download Gr
 }
 
 tasks.withType(Checkstyle) {
-  exclude '**/APISchema.java'
+  exclude '**/Storefront.java'
 }
 

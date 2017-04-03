@@ -39,12 +39,14 @@ android {
       def apiKey
       def appId
       def androidPayPublicKey
+      def androidPayEnvironment
 
       // get the shop setting from the environment if there any
       shopDomain = System.getenv("SHOP_DOMAIN")
       apiKey = System.getenv("API_KEY")
       appId = System.getenv("APP_ID")
       androidPayPublicKey = System.getenv("ANDROID_PAY_PUBLIC_KEY")
+      androidPayEnvironment = System.getenv("ANDROID_PAY_ENVIRONMENT")
 
       // pull the store properties from the local file if it exists.  Environment variables take precedence
       def shopProperties = new Properties();
@@ -56,6 +58,7 @@ android {
         apiKey = apiKey ?: shopProperties["API_KEY"]
         appId = appId ?: shopProperties["APP_ID"]
         androidPayPublicKey = androidPayPublicKey ?: shopProperties["ANDROID_PAY_PUBLIC_KEY"]
+        androidPayEnvironment = androidPayEnvironment ?: shopProperties["ANDROID_PAY_ENVIRONMENT"]
       }
 
       if (!shopDomain) {
@@ -75,7 +78,7 @@ android {
       buildConfigField "String", "API_KEY", "\"" + apiKey.toString() + "\""
       buildConfigField "String", "APP_ID", "\"" + appId.toString() + "\""
       buildConfigField "String", "ANDROID_PAY_PUBLIC_KEY", "\"" + androidPayPublicKey.toString() + "\""
-      buildConfigField "boolean", "USE_RX_API", "false"
+      buildConfigField "int", "ANDROID_PAY_ENVIRONMENT", androidPayEnvironment
 
       debuggable = true
       minifyEnabled = false
@@ -111,6 +114,7 @@ dependencies {
   compile dep.rxbindingRecyclerView
   compile dep.constraintLayout
 
+  compile project(':android-pay')
   shopifyCompile project(':buy')
 
   apolloCompile dep.apolloApi

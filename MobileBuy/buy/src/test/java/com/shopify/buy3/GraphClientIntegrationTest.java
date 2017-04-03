@@ -78,7 +78,7 @@ public class GraphClientIntegrationTest {
   @Test public void headerInterceptors() throws InterruptedException {
     server.enqueue(new MockResponse().setResponseCode(500).setBody(""));
     try {
-      graphClient.queryGraph(APISchema.query(root -> root.shop(APISchema.ShopQuery::name))).execute();
+      graphClient.queryGraph(Storefront.query(root -> root.shop(Storefront.ShopQuery::name))).execute();
       Assert.fail("expected exception to be thrown");
     } catch (GraphError error) {
       // ignore

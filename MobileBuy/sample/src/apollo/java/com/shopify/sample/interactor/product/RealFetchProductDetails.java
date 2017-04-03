@@ -2,9 +2,6 @@ package com.shopify.sample.interactor.product;
 
 import android.support.annotation.NonNull;
 
-import com.apollographql.android.ApolloCall;
-import com.apollographql.android.api.graphql.internal.Optional;
-import com.apollographql.android.cache.http.HttpCacheControl;
 import com.apollographql.android.impl.ApolloClient;
 import com.shopify.sample.SampleApplication;
 import com.shopify.sample.domain.ProductDetailsQuery;
@@ -15,6 +12,7 @@ import java.util.List;
 import io.reactivex.Single;
 import io.reactivex.schedulers.Schedulers;
 
+import static com.shopify.sample.RxUtil.rxApolloCall;
 import static com.shopify.sample.util.Util.mapItems;
 
 public final class RealFetchProductDetails implements FetchProductDetails {
@@ -23,7 +21,7 @@ public final class RealFetchProductDetails implements FetchProductDetails {
 
   @NonNull @Override public Single<Product> call(final String productId) {
     ProductDetailsQuery query = new ProductDetailsQuery(productId);
-    return Single.fromCallable(() -> apolloClient.newCall(query).execute())
+    return rxApolloCall(apolloClient.newCall(query))
       .map(response -> response.data()
         .transform(it -> it.node().orNull())
         .transform(it -> it.asProduct().orNull())

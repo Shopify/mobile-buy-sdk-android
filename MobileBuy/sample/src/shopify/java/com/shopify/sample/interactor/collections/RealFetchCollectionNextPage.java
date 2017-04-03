@@ -28,9 +28,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
-import com.shopify.buy3.APISchema;
 import com.shopify.buy3.GraphCall;
 import com.shopify.buy3.GraphClient;
+import com.shopify.buy3.Storefront;
 import com.shopify.sample.SampleApplication;
 import com.shopify.sample.presenter.collections.Collection;
 
@@ -40,6 +40,7 @@ import java.util.List;
 import io.reactivex.Single;
 import io.reactivex.schedulers.Schedulers;
 
+import static com.shopify.sample.RxUtil.rxGraphQueryCall;
 import static com.shopify.sample.util.Util.firstItem;
 import static com.shopify.sample.util.Util.mapItems;
 import static com.shopify.sample.util.Util.minItem;
@@ -48,20 +49,20 @@ public final class RealFetchCollectionNextPage implements FetchCollectionNextPag
   private final GraphClient graphClient = SampleApplication.graphClient();
 
   @NonNull @Override public Single<List<Collection>> call(@Nullable final String cursor, final int perPage) {
-    GraphCall<APISchema.QueryRoot> call = graphClient.queryGraph(APISchema.query(
+    GraphCall<Storefront.QueryRoot> call = graphClient.queryGraph(Storefront.query(
       root -> root.shop(
         shop -> shop.collections(
           perPage,
           args -> args
             .after(TextUtils.isEmpty(cursor) ? null : cursor)
-            .sortKey(APISchema.CollectionSortKeys.TITLE),
+            .sortKey(Storefront.CollectionSortKeys.TITLE),
           collectionConnection -> collectionConnection
             .edges(collectionEdge -> collectionEdge
               .cursor()
               .node(collection -> collection
                 .title()
                 .descriptionPlainSummary()
-                .image(APISchema.ImageQuery::src)
+                .image(Storefront.ImageQuery::src)
                 .products(perPage, productConnection -> productConnection
                   .edges(productEdge -> productEdge
                     .cursor()
@@ -69,10 +70,10 @@ public final class RealFetchCollectionNextPage implements FetchCollectionNextPag
                       .title()
                       .images(1, imageConnection -> imageConnection
                         .edges(imageEdge -> imageEdge
-                          .node(APISchema.ImageQuery::src)))
+                          .node(Storefront.ImageQuery::src)))
                       .variants(250, variantConnection -> variantConnection
                         .edges(variantEdge -> variantEdge
-                          .node(APISchema.ProductVariantQuery::price)))
+                          .node(Storefront.ProductVariantQuery::price)))
                     )
                   )
                 )
@@ -81,19 +82,19 @@ public final class RealFetchCollectionNextPage implements FetchCollectionNextPag
         )
       )
     ));
-    return Single.fromCallable(call::execute)
+    return rxGraphQueryCall(call)
       .map(queryRoot -> queryRoot.data().getShop().getCollections().getEdges())
       .map(RealFetchCollectionNextPage::convert)
       .subscribeOn(Schedulers.io());
   }
 
-  private static List<Collection> convert(final List<APISchema.CollectionEdge> edges) {
+  private static List<Collection> convert(final List<Storefront.CollectionEdge> edges) {
     return mapItems(edges, collectionEdge -> {
-      APISchema.Collection collection = collectionEdge.getNode();
+      Storefront.Collection collection = collectionEdge.getNode();
       String collectionImageUrl = collection.getImage() != null ? collection.getImage().getSrc() : null;
       return new Collection(collection.getId().toString(), collection.getTitle(), collection.getDescriptionPlainSummary(),
         collectionImageUrl, collectionEdge.getCursor(), mapItems(collection.getProducts().getEdges(), productEdge -> {
-        APISchema.Product product = productEdge.getNode();
+        Storefront.Product product = productEdge.getNode();
         String productImageUrl = firstItem(product.getImages() != null ? product.getImages().getEdges() : null,
           image -> image != null ? image.getNode().getSrc() : null);
         List<BigDecimal> prices = mapItems(product.getVariants().getEdges(), variantEdge -> variantEdge.getNode().getPrice());

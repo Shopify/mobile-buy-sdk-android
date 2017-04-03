@@ -4,9 +4,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
-import com.apollographql.android.ApolloCall;
-import com.apollographql.android.api.graphql.internal.Optional;
-import com.apollographql.android.cache.http.HttpCacheControl;
 import com.apollographql.android.impl.ApolloClient;
 import com.shopify.sample.SampleApplication;
 import com.shopify.sample.domain.CollectionsWithProducts;
@@ -20,6 +17,7 @@ import java.util.List;
 import io.reactivex.Single;
 import io.reactivex.schedulers.Schedulers;
 
+import static com.shopify.sample.RxUtil.rxApolloCall;
 import static com.shopify.sample.util.Util.firstItem;
 import static com.shopify.sample.util.Util.mapItems;
 import static com.shopify.sample.util.Util.minItem;
@@ -34,7 +32,8 @@ public final class RealFetchCollectionNextPage implements FetchCollectionNextPag
       .nextPageCursor(TextUtils.isEmpty(cursor) ? null : cursor)
       .collectionSortKey(CollectionSortKeys.TITLE)
       .build();
-    return Single.fromCallable(() -> apolloClient.newCall(query).execute())
+
+    return rxApolloCall(apolloClient.newCall(query))
       .map(response -> response.data()
         .transform(it -> it.shop())
         .transform(it -> it.collectionConnection())

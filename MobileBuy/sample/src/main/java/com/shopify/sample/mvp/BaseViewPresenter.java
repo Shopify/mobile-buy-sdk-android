@@ -77,13 +77,13 @@ public abstract class BaseViewPresenter<V extends View> implements ViewPresenter
     }
   }
 
-  protected void cancelRequest(final int requestId) {
+  public void cancelRequest(final int requestId) {
     if (requestRegister != null) {
       requestRegister.delete(requestId);
     }
   }
 
-  protected void cancelAllRequests() {
+  public void cancelAllRequests() {
     if (requestRegister != null) {
       requestRegister.deleteAll();
     }

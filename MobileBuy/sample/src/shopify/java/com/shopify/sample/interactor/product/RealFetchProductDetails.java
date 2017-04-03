@@ -26,9 +26,9 @@ package com.shopify.sample.interactor.product;
 
 import android.support.annotation.NonNull;
 
-import com.shopify.buy3.APISchema;
 import com.shopify.buy3.GraphCall;
 import com.shopify.buy3.GraphClient;
+import com.shopify.buy3.Storefront;
 import com.shopify.graphql.support.ID;
 import com.shopify.sample.SampleApplication;
 import com.shopify.sample.presenter.product.Product;
@@ -38,13 +38,14 @@ import java.util.List;
 import io.reactivex.Single;
 import io.reactivex.schedulers.Schedulers;
 
+import static com.shopify.sample.RxUtil.rxGraphQueryCall;
 import static com.shopify.sample.util.Util.mapItems;
 
 public final class RealFetchProductDetails implements FetchProductDetails {
   private final GraphClient graphClient = SampleApplication.graphClient();
 
   @NonNull @Override public Single<Product> call(final String productId) {
-    GraphCall<APISchema.QueryRoot> call = graphClient.queryGraph(APISchema.query(
+    GraphCall<Storefront.QueryRoot> call = graphClient.queryGraph(Storefront.query(
       root -> root
         .node(new ID(productId), node -> node
           .onProduct(product -> product
@@ -53,7 +54,7 @@ public final class RealFetchProductDetails implements FetchProductDetails {
             .tags()
             .images(250, imageConnection -> imageConnection
               .edges(imageEdge -> imageEdge
-                .node(APISchema.ImageQuery::src)
+                .node(Storefront.ImageQuery::src)
               )
             )
             .options(option -> option
@@ -76,13 +77,13 @@ public final class RealFetchProductDetails implements FetchProductDetails {
           )
         )
     ));
-    return Single.fromCallable(call::execute)
-      .map(queryRoot -> ((APISchema.Product) queryRoot.data().getNode()))
+    return rxGraphQueryCall(call)
+      .map(queryRoot -> ((Storefront.Product) queryRoot.data().getNode()))
       .map(RealFetchProductDetails::convert)
       .subscribeOn(Schedulers.io());
   }
 
-  private static Product convert(final APISchema.Product product) {
+  private static Product convert(final Storefront.Product product) {
     List<String> images = mapItems(product.getImages().getEdges(), imageEdge -> imageEdge.getNode().getSrc());
     List<Product.Option> options = mapItems(product.getOptions(), option -> new Product.Option(option.getId().toString(), option.getName(),
       option.getValues()));
