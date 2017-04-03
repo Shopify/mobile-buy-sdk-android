@@ -68,7 +68,7 @@ android {
         androidPayPublicKey = ""
       }
       if (!androidPayEnvironment) {
-        androidPayEnvironment = com.google.android.gms.wallet.WalletConstants.ENVIRONMENT_SANDBOX
+        androidPayEnvironment = "com.google.android.gms.wallet.WalletConstants.ENVIRONMENT_SANDBOX"
       }
 
       buildConfigField "String", "SHOP_DOMAIN", "\"" + shopDomain.toString() + "\""
