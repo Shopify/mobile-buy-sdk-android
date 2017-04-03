@@ -42,7 +42,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
-            android:name=".view.order.OrderConfirmationActivity"
+            android:name=".view.checkout.CheckoutConfirmationActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 </manifest>

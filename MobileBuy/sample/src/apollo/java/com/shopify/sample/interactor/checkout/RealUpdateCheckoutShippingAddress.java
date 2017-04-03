@@ -22,18 +22,18 @@
  *   THE SOFTWARE.
  */
 
-package com.shopify.sample.interactor.cart;
+package com.shopify.sample.interactor.checkout;
 
 import android.support.annotation.NonNull;
 
-import com.apollographql.android.cache.http.HttpCacheControl;
-import com.apollographql.android.impl.ApolloClient;
+import com.apollographql.apollo.ApolloClient;
+import com.apollographql.apollo.cache.http.HttpCacheControl;
 import com.shopify.buy3.pay.PayAddress;
 import com.shopify.sample.SampleApplication;
 import com.shopify.sample.domain.UpdateCheckoutShippingAddressQuery;
 import com.shopify.sample.domain.type.CheckoutShippingAddressUpdateInput;
 import com.shopify.sample.domain.type.MailingAddressInput;
-import com.shopify.sample.presenter.cart.Checkout;
+import com.shopify.sample.presenter.checkout.Checkout;
 
 import io.reactivex.Single;
 import io.reactivex.schedulers.Schedulers;
@@ -46,20 +46,20 @@ import static com.shopify.sample.util.Util.mapItems;
 public final class RealUpdateCheckoutShippingAddress implements UpdateCheckoutShippingAddress {
   private final ApolloClient apolloClient = SampleApplication.apolloClient();
 
-  @Override public Single<Checkout> call(@NonNull final String checkoutId, @NonNull final PayAddress address) {
+  @Override public Single<Checkout> call(@NonNull final String checkoutId, @NonNull final PayAddress payAddress) {
     checkNotBlank(checkoutId, "checkoutId can't be empty");
-    checkNotNull(address, "address == null");
+    checkNotNull(payAddress, "payAddress == null");
 
     MailingAddressInput mailingAddressInput = MailingAddressInput.builder()
-      .address1(address.address1)
-      .address2(address.address2)
-      .city(address.city)
-      .country(address.country)
-      .firstName(address.firstName)
-      .lastName(address.lastName)
-      .phone(address.phone)
-      .province(address.province)
-      .zip(address.zip)
+      .address1(payAddress.address1)
+      .address2(payAddress.address2)
+      .city(payAddress.city)
+      .country(payAddress.country)
+      .firstName(payAddress.firstName)
+      .lastName(payAddress.lastName)
+      .phone(payAddress.phone)
+      .province(payAddress.province)
+      .zip(payAddress.zip)
       .build();
 
     CheckoutShippingAddressUpdateInput input = CheckoutShippingAddressUpdateInput
@@ -71,17 +71,17 @@ public final class RealUpdateCheckoutShippingAddress implements UpdateCheckoutSh
     UpdateCheckoutShippingAddressQuery query = UpdateCheckoutShippingAddressQuery.builder().input(input).build();
     return rxApolloCall(apolloClient.newCall(query).httpCacheControl(HttpCacheControl.NETWORK_ONLY))
       .map(response -> response.data()
-        .transform(it -> it.checkoutShippingAddressUpdate().orNull())
-        .transform(it -> it.checkout())
+        .transform(it -> it.checkoutShippingAddressUpdate.orNull())
+        .transform(it -> it.checkout)
         .get())
       .map(RealUpdateCheckoutShippingAddress::map)
       .subscribeOn(Schedulers.io());
   }
 
   private static Checkout map(final UpdateCheckoutShippingAddressQuery.Data.CheckoutShippingAddressUpdate.Checkout checkout) {
-    return new Checkout(checkout.id(), checkout.webUrl(), checkout.currencyCode().toString(),
-      checkout.requiresShipping(), mapItems(checkout.lineItemConnection().lineItemEdges(), lineItemEdge ->
-      new Checkout.LineItem(lineItemEdge.lineItem().variant().get().id(), lineItemEdge.lineItem().title(),
-        lineItemEdge.lineItem().quantity(), lineItemEdge.lineItem().variant().get().price())));
+    return new Checkout(checkout.id, checkout.webUrl, checkout.currencyCode.toString(),
+      checkout.requiresShipping, mapItems(checkout.lineItemConnection.lineItemEdges, lineItemEdge ->
+      new Checkout.LineItem(lineItemEdge.lineItem.variant.get().id, lineItemEdge.lineItem.title,
+        lineItemEdge.lineItem.quantity, lineItemEdge.lineItem.variant.get().price)));
   }
 }

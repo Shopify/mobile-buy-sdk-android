@@ -142,4 +142,5 @@ apollo {
   customTypeMapping['URL'] = "String"
   customTypeMapping['Money'] = "java.math.BigDecimal"
   generateOptional = true
+  generateAccessors = false
 }

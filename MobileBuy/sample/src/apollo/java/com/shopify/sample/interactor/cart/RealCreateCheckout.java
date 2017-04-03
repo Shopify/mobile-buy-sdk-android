@@ -26,8 +26,8 @@ package com.shopify.sample.interactor.cart;
 
 import android.support.annotation.NonNull;
 
-import com.apollographql.android.cache.http.HttpCacheControl;
-import com.apollographql.android.impl.ApolloClient;
+import com.apollographql.apollo.ApolloClient;
+import com.apollographql.apollo.cache.http.HttpCacheControl;
 import com.shopify.sample.SampleApplication;
 import com.shopify.sample.domain.CreateCheckoutQuery;
 import com.shopify.sample.domain.type.CheckoutCreateInput;
@@ -58,17 +58,17 @@ public final class RealCreateCheckout implements CreateCheckout {
 
     return rxApolloCall(apolloClient.newCall(query).httpCacheControl(HttpCacheControl.NETWORK_ONLY))
       .map(response -> response.data()
-        .transform(it -> it.checkoutCreate().orNull())
-        .transform(it -> it.checkout().orNull())
+        .transform(it -> it.checkoutCreate.orNull())
+        .transform(it -> it.checkout.orNull())
         .get())
       .map(RealCreateCheckout::map)
       .subscribeOn(Schedulers.io());
   }
 
   private static Checkout map(final CreateCheckoutQuery.Data.CheckoutCreate.Checkout checkout) {
-    return new Checkout(checkout.id(), checkout.webUrl(), checkout.currencyCode().toString(),
-      checkout.requiresShipping(), mapItems(checkout.lineItemConnection().lineItemEdges(), lineItemEdge ->
-      new Checkout.LineItem(lineItemEdge.lineItem().variant().get().id(), lineItemEdge.lineItem().title(),
-        lineItemEdge.lineItem().quantity(), lineItemEdge.lineItem().variant().get().price())));
+    return new Checkout(checkout.id, checkout.webUrl, checkout.currencyCode.toString(),
+      checkout.requiresShipping, mapItems(checkout.lineItemConnection.lineItemEdges, lineItemEdge ->
+      new Checkout.LineItem(lineItemEdge.lineItem.variant.get().id, lineItemEdge.lineItem.title,
+        lineItemEdge.lineItem.quantity, lineItemEdge.lineItem.variant.get().price)));
   }
 }

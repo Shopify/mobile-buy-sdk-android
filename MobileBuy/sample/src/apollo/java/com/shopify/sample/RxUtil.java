@@ -24,8 +24,8 @@
 
 package com.shopify.sample;
 
-import com.apollographql.android.ApolloCall;
-import com.apollographql.android.api.graphql.Response;
+import com.apollographql.apollo.ApolloCall;
+import com.apollographql.apollo.api.Response;
 
 import io.reactivex.Single;
 import io.reactivex.exceptions.Exceptions;

@@ -39,7 +39,7 @@ import android.widget.TextView;
 import com.shopify.buy3.pay.PayCart;
 import com.shopify.sample.R;
 import com.shopify.sample.interactor.cart.RealCreateCheckout;
-import com.shopify.sample.interactor.cart.RealUpdateCheckoutShippingAddress;
+import com.shopify.sample.interactor.checkout.RealUpdateCheckoutShippingAddress;
 import com.shopify.sample.presenter.cart.CartHeaderViewPresenter;
 import com.shopify.sample.presenter.cart.Checkout;
 import com.shopify.sample.view.ProgressDialogHelper;
@@ -53,8 +53,7 @@ import static com.shopify.sample.util.Util.checkNotNull;
 public final class CartHeaderView extends FrameLayout implements CartHeaderViewPresenter.View {
   @BindView(R.id.android_pay_checkout) View androidPayCheckoutView;
   @BindView(R.id.subtotal) TextView subtotalView;
-  private final CartHeaderViewPresenter presenter = new CartHeaderViewPresenter(new RealCreateCheckout(),
-    new RealUpdateCheckoutShippingAddress());
+  private final CartHeaderViewPresenter presenter = new CartHeaderViewPresenter(new RealCreateCheckout());
   private ProgressDialogHelper progressDialogHelper;
   private OnConfirmAndroidPayListener onConfirmAndroidPayListener;
 

@@ -35,12 +35,10 @@ import com.google.android.gms.wallet.MaskedWallet;
 import com.google.android.gms.wallet.MaskedWalletRequest;
 import com.google.android.gms.wallet.Wallet;
 import com.google.android.gms.wallet.WalletConstants;
-import com.shopify.buy3.pay.PayAddress;
 import com.shopify.buy3.pay.PayCart;
 import com.shopify.buy3.pay.PayHelper;
 import com.shopify.sample.BuildConfig;
 import com.shopify.sample.interactor.cart.CreateCheckout;
-import com.shopify.sample.interactor.cart.UpdateCheckoutShippingAddress;
 import com.shopify.sample.model.cart.Cart;
 import com.shopify.sample.model.cart.CartManager;
 import com.shopify.sample.mvp.BaseViewPresenter;
@@ -64,20 +62,15 @@ public final class CartHeaderViewPresenter extends BaseViewPresenter<CartHeaderV
   public static final int REQUEST_ID_CREATE_ANDROID_PAY_CHECKOUT = 2;
   public static final int REQUEST_ID_CREATE_WEB_CHECKOUT = 3;
   public static final int REQUEST_ID_PREPARE_ANDROID_PAY = 4;
-  public static final int REQUEST_ID_UPDATE_CHECKOUT_SHIPPING_ADDRESS = 5;
   private static final NumberFormat CURRENCY_FORMAT = NumberFormat.getCurrencyInstance();
 
   private final CreateCheckout createCheckout;
-  private final UpdateCheckoutShippingAddress updateCheckoutShippingAddress;
   private GoogleApiClient googleApiClient;
   private String currentCheckoutId;
-  private MaskedWallet currentMaskedWallet;
   private PayCart payCart;
 
-  public CartHeaderViewPresenter(@NonNull final CreateCheckout createCheckout,
-    @NonNull final UpdateCheckoutShippingAddress updateCheckoutShippingAddress) {
+  public CartHeaderViewPresenter(@NonNull final CreateCheckout createCheckout) {
     this.createCheckout = checkNotNull(createCheckout, "createCheckout == null");
-    this.updateCheckoutShippingAddress = checkNotNull(updateCheckoutShippingAddress, "updateCheckoutShippingAddress == null");
   }
 
   @Override public void attachView(final View view) {
@@ -139,25 +132,15 @@ public final class CartHeaderViewPresenter extends BaseViewPresenter<CartHeaderV
       return;
     }
 
-    currentMaskedWallet = data.getParcelable(WalletConstants.EXTRA_MASKED_WALLET);
-    if (currentMaskedWallet == null) {
+    MaskedWallet maskedWallet = data.getParcelable(WalletConstants.EXTRA_MASKED_WALLET);
+    if (maskedWallet == null) {
       showError(REQUEST_ID_PREPARE_ANDROID_PAY, new RuntimeException("Failed to extract masked wallet, empty"));
       return;
     }
 
-    PayAddress payAddress = PayAddress.fromUserAddress(currentMaskedWallet.getBuyerShippingAddress());
-
-    showProgress(REQUEST_ID_UPDATE_CHECKOUT_SHIPPING_ADDRESS);
-    registerRequest(
-      REQUEST_ID_UPDATE_CHECKOUT_SHIPPING_ADDRESS,
-      updateCheckoutShippingAddress.call(currentCheckoutId, payAddress)
-        .toObservable()
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribeWith(WeakObserver.<CartHeaderViewPresenter, Checkout>forTarget(this)
-          .delegateOnNext(CartHeaderViewPresenter::onUpdateCheckoutShippingAddress)
-          .delegateOnError(CartHeaderViewPresenter::onUpdateCheckoutShippingError)
-          .create())
-    );
+    if (isViewAttached()) {
+      view().showAndroidPayConfirmation(currentCheckoutId, payCart.toBuilder().maskedWallet(maskedWallet).build());
+    }
   }
 
   private void createCheckout(final int requestId) {
@@ -201,22 +184,6 @@ public final class CartHeaderViewPresenter extends BaseViewPresenter<CartHeaderV
     if (isViewAttached()) {
       view().hideProgress(requestId);
       view().showError(requestId, t);
-    }
-  }
-
-  private void onUpdateCheckoutShippingAddress(final Checkout checkout) {
-    if (isViewAttached()) {
-      this.currentCheckoutId = checkout.id;
-      view().hideProgress(REQUEST_ID_UPDATE_CHECKOUT_SHIPPING_ADDRESS);
-      view().showAndroidPayConfirmation(checkout.id, payCart.toBuilder().maskedWallet(currentMaskedWallet)
-        .build());
-    }
-  }
-
-  private void onUpdateCheckoutShippingError(final Throwable t) {
-    if (isViewAttached()) {
-      view().hideProgress(REQUEST_ID_UPDATE_CHECKOUT_SHIPPING_ADDRESS);
-      view().showError(REQUEST_ID_UPDATE_CHECKOUT_SHIPPING_ADDRESS, t);
     }
   }
 

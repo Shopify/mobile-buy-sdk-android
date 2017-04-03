@@ -22,16 +22,16 @@
  *   THE SOFTWARE.
  */
 
-package com.shopify.sample.interactor.cart;
+package com.shopify.sample.interactor.checkout;
 
 import android.support.annotation.NonNull;
 
 import com.shopify.buy3.pay.PayAddress;
-import com.shopify.sample.presenter.cart.Checkout;
+import com.shopify.sample.presenter.checkout.Checkout;
 
 import io.reactivex.Single;
 
 public interface UpdateCheckoutShippingAddress {
 
-  Single<Checkout> call(@NonNull String checkoutId, @NonNull PayAddress address);
+  Single<Checkout> call(@NonNull String checkoutId, @NonNull PayAddress payAddress);
 }
