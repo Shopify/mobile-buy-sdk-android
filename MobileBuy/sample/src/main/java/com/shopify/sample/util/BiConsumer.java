@@ -22,44 +22,9 @@
  *   THE SOFTWARE.
  */
 
-package com.shopify.sample.view.base;
+package com.shopify.sample.util;
 
-import android.os.Parcel;
-import android.os.Parcelable;
+public interface BiConsumer<T, U> {
 
-import com.shopify.sample.view.ScreenActionEvent;
-import com.shopify.sample.view.collections.CollectionClickActionEvent;
-
-public final class CartClickActionEvent extends ScreenActionEvent implements Parcelable {
-  public static final String ACTION = CartClickActionEvent.class.getSimpleName();
-
-  public CartClickActionEvent() {
-    super(ACTION);
-  }
-
-  protected CartClickActionEvent(Parcel in) {
-    super(in);
-  }
-
-  @Override
-  public void writeToParcel(Parcel dest, int flags) {
-    super.writeToParcel(dest, flags);
-  }
-
-  @Override
-  public int describeContents() {
-    return 0;
-  }
-
-  public static final Creator<CartClickActionEvent> CREATOR = new Creator<CartClickActionEvent>() {
-    @Override
-    public CartClickActionEvent createFromParcel(Parcel in) {
-      return new CartClickActionEvent(in);
-    }
-
-    @Override
-    public CartClickActionEvent[] newArray(int size) {
-      return new CartClickActionEvent[size];
-    }
-  };
+  void accept(T t, U u);
 }

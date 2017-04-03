@@ -26,16 +26,14 @@ package com.shopify.sample.view.collections;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 
 import com.shopify.sample.R;
 import com.shopify.sample.view.ScreenRouter;
-import com.shopify.sample.view.base.CartClickActionEvent;
+import com.shopify.sample.view.cart.CartClickActionEvent;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

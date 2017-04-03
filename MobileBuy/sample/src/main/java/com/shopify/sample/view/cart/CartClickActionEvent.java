@@ -22,28 +22,43 @@
  *   THE SOFTWARE.
  */
 
-package com.shopify.sample;
+package com.shopify.sample.view.cart;
 
-import com.apollographql.apollo.ApolloCall;
-import com.apollographql.apollo.api.Response;
+import android.os.Parcel;
+import android.os.Parcelable;
 
-import io.reactivex.Single;
-import io.reactivex.exceptions.Exceptions;
+import com.shopify.sample.view.ScreenActionEvent;
 
-public final class RxUtil {
+public final class CartClickActionEvent extends ScreenActionEvent implements Parcelable {
+  public static final String ACTION = CartClickActionEvent.class.getSimpleName();
 
-  public static <T> Single<Response<T>> rxApolloCall(final ApolloCall<T> call) {
-    return Single.create(emitter -> {
-      emitter.setCancellable(call::cancel);
-      try {
-        emitter.onSuccess(call.execute());
-      } catch (Exception e) {
-        Exceptions.throwIfFatal(e);
-        emitter.onError(e);
-      }
-    });
+  public CartClickActionEvent() {
+    super(ACTION);
   }
 
-  private RxUtil() {
+  protected CartClickActionEvent(Parcel in) {
+    super(in);
   }
+
+  @Override
+  public void writeToParcel(Parcel dest, int flags) {
+    super.writeToParcel(dest, flags);
+  }
+
+  @Override
+  public int describeContents() {
+    return 0;
+  }
+
+  public static final Creator<CartClickActionEvent> CREATOR = new Creator<CartClickActionEvent>() {
+    @Override
+    public CartClickActionEvent createFromParcel(Parcel in) {
+      return new CartClickActionEvent(in);
+    }
+
+    @Override
+    public CartClickActionEvent[] newArray(int size) {
+      return new CartClickActionEvent[size];
+    }
+  };
 }

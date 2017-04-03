@@ -22,50 +22,63 @@
  *   THE SOFTWARE.
  */
 
-package com.shopify.sample.interactor.cart;
+package com.shopify.sample.interactor.checkout;
 
 import android.support.annotation.NonNull;
 
 import com.apollographql.apollo.ApolloClient;
 import com.apollographql.apollo.cache.http.HttpCacheControl;
+import com.shopify.buy3.pay.PayAddress;
 import com.shopify.sample.SampleApplication;
-import com.shopify.sample.domain.CreateCheckoutQuery;
-import com.shopify.sample.domain.type.CheckoutCreateInput;
-import com.shopify.sample.domain.type.LineItemInput;
-import com.shopify.sample.presenter.cart.Checkout;
-
-import java.util.List;
+import com.shopify.sample.domain.UpdateCheckoutShippingAddressQuery;
+import com.shopify.sample.domain.type.CheckoutShippingAddressUpdateInput;
+import com.shopify.sample.domain.type.MailingAddressInput;
+import com.shopify.sample.presenter.checkout.Checkout;
 
 import io.reactivex.Single;
 import io.reactivex.schedulers.Schedulers;
 
 import static com.shopify.sample.RxUtil.rxApolloCall;
-import static com.shopify.sample.util.Util.checkNotEmpty;
+import static com.shopify.sample.util.Util.checkNotBlank;
+import static com.shopify.sample.util.Util.checkNotNull;
 import static com.shopify.sample.util.Util.mapItems;
 
-public final class RealCreateCheckout implements CreateCheckout {
+public final class RealUpdateCheckoutShippingAddress implements UpdateCheckoutShippingAddress {
   private final ApolloClient apolloClient = SampleApplication.apolloClient();
 
-  @SuppressWarnings("ConstantConditions") @Override public Single<Checkout> call(@NonNull final List<LineItem> lineItems) {
-    checkNotEmpty(lineItems, "lineItems can't be empty");
-    List<LineItemInput> lineItemInputs = mapItems(lineItems, lineItem ->
-      LineItemInput.builder()
-        .variantId(lineItem.variantId)
-        .quantity(lineItem.quantity)
-        .build());
-    CheckoutCreateInput input = CheckoutCreateInput.builder().lineItems(lineItemInputs).build();
-    CreateCheckoutQuery query = CreateCheckoutQuery.builder().input(input).build();
+  @Override public Single<Checkout> call(@NonNull final String checkoutId, @NonNull final PayAddress payAddress) {
+    checkNotBlank(checkoutId, "checkoutId can't be empty");
+    checkNotNull(payAddress, "payAddress == null");
 
+    MailingAddressInput mailingAddressInput = MailingAddressInput.builder()
+      .address1(payAddress.address1)
+      .address2(payAddress.address2)
+      .city(payAddress.city)
+      .country(payAddress.country)
+      .firstName(payAddress.firstName)
+      .lastName(payAddress.lastName)
+      .phone(payAddress.phone)
+      .province(payAddress.province)
+      .zip(payAddress.zip)
+      .build();
+
+    CheckoutShippingAddressUpdateInput input = CheckoutShippingAddressUpdateInput
+      .builder()
+      .checkoutId(checkoutId)
+      .shippingAddress(mailingAddressInput)
+      .build();
+
+    UpdateCheckoutShippingAddressQuery query = UpdateCheckoutShippingAddressQuery.builder().input(input).build();
     return rxApolloCall(apolloClient.newCall(query).httpCacheControl(HttpCacheControl.NETWORK_ONLY))
       .map(response -> response.data()
-        .transform(it -> it.checkoutCreate.orNull())
-        .transform(it -> it.checkout.orNull())
+        .transform(it -> it.checkoutShippingAddressUpdate.orNull())
+        .transform(it -> it.checkout)
         .get())
-      .map(RealCreateCheckout::map)
+      .map(RealUpdateCheckoutShippingAddress::map)
       .subscribeOn(Schedulers.io());
   }
 
-  private static Checkout map(final CreateCheckoutQuery.Data.CheckoutCreate.Checkout checkout) {
+  private static Checkout map(final UpdateCheckoutShippingAddressQuery.Data.CheckoutShippingAddressUpdate.Checkout checkout) {
     return new Checkout(checkout.id, checkout.webUrl, checkout.currencyCode.toString(),
       checkout.requiresShipping, mapItems(checkout.lineItemConnection.lineItemEdges, lineItemEdge ->
       new Checkout.LineItem(lineItemEdge.lineItem.variant.get().id, lineItemEdge.lineItem.title,

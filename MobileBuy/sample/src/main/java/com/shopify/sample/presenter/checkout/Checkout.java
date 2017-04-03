@@ -22,7 +22,7 @@
  *   THE SOFTWARE.
  */
 
-package com.shopify.sample.presenter.cart;
+package com.shopify.sample.presenter.checkout;
 
 import android.support.annotation.NonNull;
 

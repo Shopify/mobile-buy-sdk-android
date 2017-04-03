@@ -24,14 +24,19 @@
 
 package com.shopify.sample.presenter.cart;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.wallet.MaskedWallet;
+import com.google.android.gms.wallet.MaskedWalletRequest;
 import com.google.android.gms.wallet.Wallet;
 import com.google.android.gms.wallet.WalletConstants;
+import com.shopify.buy3.pay.PayCart;
+import com.shopify.buy3.pay.PayHelper;
 import com.shopify.sample.BuildConfig;
 import com.shopify.sample.interactor.cart.CreateCheckout;
 import com.shopify.sample.model.cart.Cart;
@@ -47,6 +52,8 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import static com.shopify.buy3.pay.PayHelper.androidPayIsAvailable;
 import static com.shopify.buy3.pay.PayHelper.isAndroidPayEnabledInManifest;
 import static com.shopify.sample.util.Util.checkNotNull;
+
+import static com.shopify.sample.util.Util.fold;
 import static com.shopify.sample.util.Util.mapItems;
 
 @SuppressWarnings("WeakerAccess")
@@ -55,10 +62,13 @@ public final class CartHeaderViewPresenter extends BaseViewPresenter<CartHeaderV
   public static final int REQUEST_ID_UPDATE_CART = 1;
   public static final int REQUEST_ID_CREATE_ANDROID_PAY_CHECKOUT = 2;
   public static final int REQUEST_ID_CREATE_WEB_CHECKOUT = 3;
+  public static final int REQUEST_ID_PREPARE_ANDROID_PAY = 4;
   private static final NumberFormat CURRENCY_FORMAT = NumberFormat.getCurrencyInstance();
 
-  private CreateCheckout createCheckout;
+  private final CreateCheckout createCheckout;
   private GoogleApiClient googleApiClient;
+  private String currentCheckoutId;
+  private PayCart payCart;
 
   public CartHeaderViewPresenter(@NonNull final CreateCheckout createCheckout) {
     this.createCheckout = checkNotNull(createCheckout, "createCheckout == null");
@@ -105,17 +115,50 @@ public final class CartHeaderViewPresenter extends BaseViewPresenter<CartHeaderV
   }
 
   public void createWebCheckout() {
-    showProgress(REQUEST_ID_CREATE_WEB_CHECKOUT);
+    createCheckout(REQUEST_ID_CREATE_WEB_CHECKOUT);
+  }
+
+  public void createAndroidPayCheckout() {
+    createCheckout(REQUEST_ID_CREATE_ANDROID_PAY_CHECKOUT);
+  }
+
+  public void handleMaskedWalletResponse(final int resultCode, @Nullable final Bundle data) {
+    int errorCode = data != null ? data.getInt(WalletConstants.EXTRA_ERROR_CODE, -1) : -1;
+    if (errorCode != -1 || data == null) {
+      showError(REQUEST_ID_PREPARE_ANDROID_PAY, new RuntimeException("Failed to fetch masked wallet, errorCode: " + errorCode));
+      return;
+    }
+
+    if (resultCode != Activity.RESULT_OK) {
+      return;
+    }
+
+    MaskedWallet maskedWallet = data.getParcelable(WalletConstants.EXTRA_MASKED_WALLET);
+    if (maskedWallet == null) {
+      showError(REQUEST_ID_PREPARE_ANDROID_PAY, new RuntimeException("Failed to extract masked wallet, empty"));
+      return;
+    }
+
+    if (isViewAttached()) {
+      view().showAndroidPayConfirmation(currentCheckoutId, payCart.toBuilder().maskedWallet(maskedWallet).build());
+    }
+  }
+
+  private void createCheckout(final int requestId) {
+    cancelRequest(REQUEST_ID_CREATE_WEB_CHECKOUT);
+    cancelRequest(REQUEST_ID_CREATE_ANDROID_PAY_CHECKOUT);
+
+    showProgress(requestId);
     List<CreateCheckout.LineItem> lineItems = mapItems(CartManager.instance().cart().cartItems(),
       cartItem -> new CreateCheckout.LineItem(cartItem.productVariantId, cartItem.quantity));
     registerRequest(
-      REQUEST_ID_CREATE_WEB_CHECKOUT,
+      requestId,
       createCheckout.call(lineItems)
         .toObservable()
         .observeOn(AndroidSchedulers.mainThread())
         .subscribeWith(WeakObserver.<CartHeaderViewPresenter, Checkout>forTarget(this)
-          .delegateOnNext(CartHeaderViewPresenter::onCreateWebCheckout)
-          .delegateOnError(CartHeaderViewPresenter::onCreateWebCheckoutError)
+          .delegateOnNext((presenter, checkout) -> presenter.onCreateCheckout(requestId, checkout))
+          .delegateOnError((presenter, t) -> presenter.onCreateCheckoutError(requestId, t))
           .create())
     );
   }
@@ -126,17 +169,23 @@ public final class CartHeaderViewPresenter extends BaseViewPresenter<CartHeaderV
     }
   }
 
-  private void onCreateWebCheckout(final Checkout checkout) {
+
+  private void onCreateCheckout(final int requestId, final Checkout checkout) {
     if (isViewAttached()) {
-      view().hideProgress(REQUEST_ID_CREATE_WEB_CHECKOUT);
-      view().showWebCheckout(checkout);
+      view().hideProgress(requestId);
+      this.currentCheckoutId = checkout.id;
+      if (requestId == REQUEST_ID_CREATE_WEB_CHECKOUT) {
+        view().showWebCheckout(checkout);
+      } else if (requestId == REQUEST_ID_CREATE_ANDROID_PAY_CHECKOUT) {
+        prepareForAndroidPayCheckout(checkout);
+      }
     }
   }
 
-  private void onCreateWebCheckoutError(final Throwable t) {
+  private void onCreateCheckoutError(final int requestId, final Throwable t) {
     if (isViewAttached()) {
-      view().hideProgress(REQUEST_ID_CREATE_WEB_CHECKOUT);
-      view().showError(REQUEST_ID_CREATE_WEB_CHECKOUT, t);
+      view().hideProgress(requestId);
+      view().showError(requestId, t);
     }
   }
 
@@ -155,13 +204,31 @@ public final class CartHeaderViewPresenter extends BaseViewPresenter<CartHeaderV
     }
   }
 
+  private void prepareForAndroidPayCheckout(final Checkout checkout) {
+    PayCart.Builder payCartBuilder = PayCart.builder()
+      .merchantName("SampleApp")
+      .currencyCode(checkout.currency)
+      .phoneNumberRequired(true)
+      .shippingAddressRequired(checkout.requiresShipping);
+
+    fold(payCartBuilder, checkout.lineItems, (accumulator, lineItem) ->
+      accumulator.addLineItem(lineItem.title, lineItem.quantity, lineItem.price));
+
+    payCart = payCartBuilder.build();
+    MaskedWalletRequest maskedWalletRequest = payCart.maskedWalletRequest(BuildConfig.ANDROID_PAY_PUBLIC_KEY);
+    Wallet.Payments.loadMaskedWallet(googleApiClient, maskedWalletRequest, PayHelper.REQUEST_CODE_MASKED_WALLET);
+  }
+
   public interface View extends com.shopify.sample.mvp.View {
+
     Context context();
 
-    void renderTotal(String total);
+    void renderTotal(@NonNull String total);
 
     void showAndroidPayCheckout();
 
-    void showWebCheckout(Checkout checkout);
+    void showWebCheckout(@NonNull Checkout checkout);
+
+    void showAndroidPayConfirmation(@NonNull String checkoutId, @NonNull PayCart payCart);
   }
 }

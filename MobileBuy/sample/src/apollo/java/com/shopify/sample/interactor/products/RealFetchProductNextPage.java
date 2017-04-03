@@ -3,7 +3,7 @@ package com.shopify.sample.interactor.products;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
-import com.apollographql.android.impl.ApolloClient;
+import com.apollographql.apollo.ApolloClient;
 import com.shopify.sample.SampleApplication;
 import com.shopify.sample.domain.CollectionProducts;
 import com.shopify.sample.presenter.products.Product;
@@ -32,10 +32,10 @@ public final class RealFetchProductNextPage implements FetchProductNextPage {
       .build();
     return rxApolloCall(apolloClient.newCall(query))
       .map(response -> response.data()
-        .transform(it -> it.collection().orNull())
-        .transform(it -> it.asCollection().orNull())
-        .transform(it -> it.productConnection())
-        .transform(it -> it.productEdges())
+        .transform(it -> it.collection.orNull())
+        .transform(it -> it.asCollection.orNull())
+        .transform(it -> it.productConnection)
+        .transform(it -> it.productEdges)
         .or(Collections.emptyList()))
       .map(RealFetchProductNextPage::convert)
       .subscribeOn(Schedulers.io());
@@ -44,12 +44,12 @@ public final class RealFetchProductNextPage implements FetchProductNextPage {
   private static List<Product> convert(final List<CollectionProducts.Data.Collection.AsCollection.ProductConnection.ProductEdge>
     productEdges) {
     return mapItems(productEdges, productEdge -> {
-      String productImageUrl = firstItem(productEdge.product().imageConnection().imageEdges(),
-        imageEdge -> imageEdge != null ? imageEdge.image().src() : null);
-      List<BigDecimal> prices = mapItems(productEdge.product().variantConnection().variantEdges(),
-        variantEdge -> variantEdge.variant().price());
+      String productImageUrl = firstItem(productEdge.product.imageConnection.imageEdges,
+        imageEdge -> imageEdge != null ? imageEdge.image.src : null);
+      List<BigDecimal> prices = mapItems(productEdge.product.variantConnection.variantEdges,
+        variantEdge -> variantEdge.variant.price);
       BigDecimal minPrice = minItem(prices, BigDecimal.ZERO, BigDecimal::compareTo);
-      return new Product(productEdge.product().id(), productEdge.product().title(), productImageUrl, minPrice, productEdge.cursor());
+      return new Product(productEdge.product.id, productEdge.product.title, productImageUrl, minPrice, productEdge.cursor);
     });
   }
 

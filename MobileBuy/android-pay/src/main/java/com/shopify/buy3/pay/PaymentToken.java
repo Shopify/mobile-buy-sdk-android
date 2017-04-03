@@ -22,28 +22,17 @@
  *   THE SOFTWARE.
  */
 
-package com.shopify.sample;
+package com.shopify.buy3.pay;
 
-import com.apollographql.apollo.ApolloCall;
-import com.apollographql.apollo.api.Response;
+import static com.shopify.buy3.pay.Util.checkNotEmpty;
 
-import io.reactivex.Single;
-import io.reactivex.exceptions.Exceptions;
+@SuppressWarnings("WeakerAccess")
+public final class PaymentToken {
+  public final String token;
+  public String publicKeyHash;
 
-public final class RxUtil {
-
-  public static <T> Single<Response<T>> rxApolloCall(final ApolloCall<T> call) {
-    return Single.create(emitter -> {
-      emitter.setCancellable(call::cancel);
-      try {
-        emitter.onSuccess(call.execute());
-      } catch (Exception e) {
-        Exceptions.throwIfFatal(e);
-        emitter.onError(e);
-      }
-    });
-  }
-
-  private RxUtil() {
+  public PaymentToken(final String token, final String publicKeyHash) {
+    this.token = checkNotEmpty(token, "token can't be empty");
+    this.publicKeyHash = checkNotEmpty(publicKeyHash, "publicKeyHash can't be empty");
   }
 }

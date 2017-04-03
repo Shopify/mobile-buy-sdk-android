@@ -3,11 +3,11 @@ package com.shopify.sample;
 import android.text.TextUtils;
 import android.util.Base64;
 
-import com.apollographql.android.CustomTypeAdapter;
-import com.apollographql.android.cache.http.DiskLruCacheStore;
-import com.apollographql.android.cache.http.HttpCacheControl;
-import com.apollographql.android.cache.http.TimeoutEvictionStrategy;
-import com.apollographql.android.impl.ApolloClient;
+import com.apollographql.apollo.ApolloClient;
+import com.apollographql.apollo.CustomTypeAdapter;
+import com.apollographql.apollo.cache.http.DiskLruCacheStore;
+import com.apollographql.apollo.cache.http.HttpCacheControl;
+import com.apollographql.apollo.cache.http.TimeoutEvictionStrategy;
 import com.shopify.sample.domain.type.CustomType;
 
 import java.math.BigDecimal;

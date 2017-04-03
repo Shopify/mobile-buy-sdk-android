@@ -44,7 +44,7 @@ import com.shopify.sample.interactor.product.RealFetchProductDetails;
 import com.shopify.sample.presenter.product.Product;
 import com.shopify.sample.presenter.product.ProductDetailsViewPresenter;
 import com.shopify.sample.view.ScreenRouter;
-import com.shopify.sample.view.base.CartClickActionEvent;
+import com.shopify.sample.view.cart.CartClickActionEvent;
 import com.shopify.sample.view.widget.image.ImageGalleryView;
 
 import java.util.Arrays;
@@ -112,6 +112,11 @@ public final class ProductDetailsActivity extends AppCompatActivity implements P
     super.onAttachedToWindow();
     presenter.attachView(this);
     presenter.fetchProduct();
+  }
+
+  @Override public void onDetachedFromWindow() {
+    super.onDetachedFromWindow();
+    presenter.detachView();
   }
 
   @Override public void showError(final long requestId, final Throwable t) {

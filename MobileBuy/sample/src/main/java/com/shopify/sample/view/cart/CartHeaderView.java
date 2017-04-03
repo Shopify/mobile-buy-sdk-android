@@ -27,6 +27,7 @@ package com.shopify.sample.view.cart;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -35,8 +36,10 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.shopify.buy3.pay.PayCart;
 import com.shopify.sample.R;
 import com.shopify.sample.interactor.cart.RealCreateCheckout;
+import com.shopify.sample.interactor.checkout.RealUpdateCheckoutShippingAddress;
 import com.shopify.sample.presenter.cart.CartHeaderViewPresenter;
 import com.shopify.sample.presenter.cart.Checkout;
 import com.shopify.sample.view.ProgressDialogHelper;
@@ -45,11 +48,14 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.shopify.sample.util.Util.checkNotNull;
+
 public final class CartHeaderView extends FrameLayout implements CartHeaderViewPresenter.View {
   @BindView(R.id.android_pay_checkout) View androidPayCheckoutView;
   @BindView(R.id.subtotal) TextView subtotalView;
   private final CartHeaderViewPresenter presenter = new CartHeaderViewPresenter(new RealCreateCheckout());
   private ProgressDialogHelper progressDialogHelper;
+  private OnConfirmAndroidPayListener onConfirmAndroidPayListener;
 
   public CartHeaderView(@NonNull final Context context) {
     super(context);
@@ -80,8 +86,8 @@ public final class CartHeaderView extends FrameLayout implements CartHeaderViewP
     //TODO show error message
   }
 
-  @Override public void renderTotal(final String total) {
-    subtotalView.setText(total);
+  @Override public void renderTotal(@NonNull final String total) {
+    subtotalView.setText(checkNotNull(total, "total == null"));
   }
 
   @Override public Context context() {
@@ -92,9 +98,24 @@ public final class CartHeaderView extends FrameLayout implements CartHeaderViewP
     androidPayCheckoutView.setVisibility(VISIBLE);
   }
 
-  @Override public void showWebCheckout(final Checkout checkout) {
+  @Override public void showWebCheckout(@NonNull final Checkout checkout) {
+    checkNotNull(checkout, "checkout == null");
     Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(checkout.webUrl));
     getContext().startActivity(intent);
+  }
+
+  @Override public void showAndroidPayConfirmation(@NonNull final String checkoutId, @NonNull final PayCart payCart) {
+    if (onConfirmAndroidPayListener != null) {
+      onConfirmAndroidPayListener.onConfirmAndroidPay(checkoutId, payCart);
+    }
+  }
+
+  public void handleMaskedWalletResponse(final int resultCode, @Nullable final Bundle data) {
+    presenter.handleMaskedWalletResponse(resultCode, data);
+  }
+
+  public void setOnConfirmAndroidPayListener(final OnConfirmAndroidPayListener onConfirmAndroidPayListener) {
+    this.onConfirmAndroidPayListener = onConfirmAndroidPayListener;
   }
 
   @Override protected void onFinishInflate() {
@@ -114,7 +135,15 @@ public final class CartHeaderView extends FrameLayout implements CartHeaderViewP
     presenter.detachView();
   }
 
-  @OnClick(R.id.web_checkout) void onAndroidPayCheckoutClick() {
+  @OnClick(R.id.web_checkout) void onWebCheckoutClick() {
     presenter.createWebCheckout();
+  }
+
+  @OnClick(R.id.android_pay_checkout) void onAndroidPayCheckoutClick() {
+    presenter.createAndroidPayCheckout();
+  }
+
+  public static interface OnConfirmAndroidPayListener {
+    void onConfirmAndroidPay(@NonNull String checkoutId, @NonNull PayCart payCart);
   }
 }

@@ -4,7 +4,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
-import com.apollographql.android.impl.ApolloClient;
+
+import com.apollographql.apollo.ApolloClient;
 import com.shopify.sample.SampleApplication;
 import com.shopify.sample.domain.CollectionsWithProducts;
 import com.shopify.sample.domain.type.CollectionSortKeys;
@@ -35,9 +36,9 @@ public final class RealFetchCollectionNextPage implements FetchCollectionNextPag
 
     return rxApolloCall(apolloClient.newCall(query))
       .map(response -> response.data()
-        .transform(it -> it.shop())
-        .transform(it -> it.collectionConnection())
-        .transform(it -> it.edges())
+        .transform(it -> it.shop)
+        .transform(it -> it.collectionConnection)
+        .transform(it -> it.edges)
         .or(Collections.emptyList()))
       .map(RealFetchCollectionNextPage::convert)
       .subscribeOn(Schedulers.io());
@@ -47,17 +48,17 @@ public final class RealFetchCollectionNextPage implements FetchCollectionNextPag
   private static List<Collection> convert(final List<CollectionsWithProducts.Data.Shop.CollectionConnection.Edge>
     collectionEdges) {
     return mapItems(collectionEdges, collectionEdge -> {
-        String collectionImageUrl = collectionEdge.collection().image().transform(it -> it.src()).or("");
-        return new Collection(collectionEdge.collection().id(), collectionEdge.collection().title(),
-          collectionEdge.collection().descriptionPlainSummary(), collectionImageUrl, collectionEdge.cursor(),
-          mapItems(collectionEdge.collection().productConnection().edges(), productEdge -> {
-            String productImageUrl = firstItem(productEdge.product().imageConnection().edges(),
-              imageEdge -> imageEdge != null ? imageEdge.image().src() : null);
-            List<BigDecimal> prices = mapItems(productEdge.product().variantConnection().variantEdge(),
-              variantEdge -> variantEdge.variant().price());
+        String collectionImageUrl = collectionEdge.collection.image.transform(it -> it.src).or("");
+        return new Collection(collectionEdge.collection.id, collectionEdge.collection.title,
+          collectionEdge.collection.descriptionPlainSummary, collectionImageUrl, collectionEdge.cursor,
+          mapItems(collectionEdge.collection.productConnection.edges, productEdge -> {
+            String productImageUrl = firstItem(productEdge.product.imageConnection.edges,
+              imageEdge -> imageEdge != null ? imageEdge.image.src : null);
+            List<BigDecimal> prices = mapItems(productEdge.product.variantConnection.variantEdge,
+              variantEdge -> variantEdge.variant.price);
             BigDecimal minPrice = minItem(prices, BigDecimal.ZERO, BigDecimal::compareTo);
-            return new Collection.Product(productEdge.product().id(), productEdge.product().title(), productImageUrl, minPrice, productEdge
-              .cursor());
+            return new Collection.Product(productEdge.product.id, productEdge.product.title, productImageUrl, minPrice, productEdge
+              .cursor);
           }));
       }
     );

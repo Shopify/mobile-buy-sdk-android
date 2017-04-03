@@ -10,4 +10,9 @@
     <string name="cart_subtotal_subtitle">Shipping and taxes are calculated at checkout</string>
     <string name="cart_subtotal_price">SubTotal: %s</string>
     <string name="progress_loading">Loading…</string>
+    <string name="order_confirmation_title">Order Confirmation</string>
+    <string name="order_confirmation_subtotal">Subtotal</string>
+    <string name="order_confirmation_shipping">Shipping</string>
+    <string name="order_confirmation_tax">Tax</string>
+    <string name="order_confirmation_total">Total</string>
 </resources>

@@ -22,28 +22,16 @@
  *   THE SOFTWARE.
  */
 
-package com.shopify.sample;
+package com.shopify.sample.interactor.checkout;
 
-import com.apollographql.apollo.ApolloCall;
-import com.apollographql.apollo.api.Response;
+import android.support.annotation.NonNull;
+
+import com.shopify.buy3.pay.PayAddress;
+import com.shopify.sample.presenter.checkout.Checkout;
 
 import io.reactivex.Single;
-import io.reactivex.exceptions.Exceptions;
 
-public final class RxUtil {
+public interface UpdateCheckoutShippingAddress {
 
-  public static <T> Single<Response<T>> rxApolloCall(final ApolloCall<T> call) {
-    return Single.create(emitter -> {
-      emitter.setCancellable(call::cancel);
-      try {
-        emitter.onSuccess(call.execute());
-      } catch (Exception e) {
-        Exceptions.throwIfFatal(e);
-        emitter.onError(e);
-      }
-    });
-  }
-
-  private RxUtil() {
-  }
+  Single<Checkout> call(@NonNull String checkoutId, @NonNull PayAddress payAddress);
 }

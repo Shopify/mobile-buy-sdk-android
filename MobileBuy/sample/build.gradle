@@ -37,14 +37,12 @@ android {
       // Environment variables will take precedence, we will attempt to read those first.
       def shopDomain
       def apiKey
-      def appId
       def androidPayPublicKey
       def androidPayEnvironment
 
       // get the shop setting from the environment if there any
       shopDomain = System.getenv("SHOP_DOMAIN")
       apiKey = System.getenv("API_KEY")
-      appId = System.getenv("APP_ID")
       androidPayPublicKey = System.getenv("ANDROID_PAY_PUBLIC_KEY")
       androidPayEnvironment = System.getenv("ANDROID_PAY_ENVIRONMENT")
 
@@ -56,7 +54,6 @@ android {
         shopProperties.load(new FileInputStream(shopPropertiesFile))
         shopDomain = shopDomain ?: shopProperties["SHOP_DOMAIN"]
         apiKey = apiKey ?: shopProperties["API_KEY"]
-        appId = appId ?: shopProperties["APP_ID"]
         androidPayPublicKey = androidPayPublicKey ?: shopProperties["ANDROID_PAY_PUBLIC_KEY"]
         androidPayEnvironment = androidPayEnvironment ?: shopProperties["ANDROID_PAY_ENVIRONMENT"]
       }
@@ -67,16 +64,15 @@ android {
       if (!apiKey) {
         apiKey = ""
       }
-      if (!appId) {
-        appId = ""
-      }
       if (!androidPayPublicKey) {
         androidPayPublicKey = ""
+      }
+      if (!androidPayEnvironment) {
+        androidPayEnvironment = "com.google.android.gms.wallet.WalletConstants.ENVIRONMENT_SANDBOX"
       }
 
       buildConfigField "String", "SHOP_DOMAIN", "\"" + shopDomain.toString() + "\""
       buildConfigField "String", "API_KEY", "\"" + apiKey.toString() + "\""
-      buildConfigField "String", "APP_ID", "\"" + appId.toString() + "\""
       buildConfigField "String", "ANDROID_PAY_PUBLIC_KEY", "\"" + androidPayPublicKey.toString() + "\""
       buildConfigField "int", "ANDROID_PAY_ENVIRONMENT", androidPayEnvironment
 
@@ -142,4 +138,5 @@ apollo {
   customTypeMapping['URL'] = "String"
   customTypeMapping['Money'] = "java.math.BigDecimal"
   generateOptional = true
+  generateAccessors = false
 }

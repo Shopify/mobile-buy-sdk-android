@@ -33,7 +33,7 @@ import android.view.MenuInflater;
 
 import com.shopify.sample.R;
 import com.shopify.sample.view.ScreenRouter;
-import com.shopify.sample.view.base.CartClickActionEvent;
+import com.shopify.sample.view.cart.CartClickActionEvent;
 import com.shopify.sample.view.widget.image.ShopifyDraweeView;
 
 import butterknife.BindView;

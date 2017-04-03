@@ -22,28 +22,31 @@
  *   THE SOFTWARE.
  */
 
-package com.shopify.sample;
+package com.shopify.buy3.pay;
 
-import com.apollographql.apollo.ApolloCall;
-import com.apollographql.apollo.api.Response;
+import android.support.annotation.Nullable;
+import android.text.TextUtils;
 
-import io.reactivex.Single;
-import io.reactivex.exceptions.Exceptions;
+final class Util {
+  static String checkNotEmpty(final String value, @Nullable Object errorMessage) {
+    if (value == null) {
+      throw new NullPointerException(String.valueOf(errorMessage));
+    }
 
-public final class RxUtil {
+    if (TextUtils.isEmpty(value.trim())) {
+      throw new IllegalArgumentException(String.valueOf(errorMessage));
+    }
 
-  public static <T> Single<Response<T>> rxApolloCall(final ApolloCall<T> call) {
-    return Single.create(emitter -> {
-      emitter.setCancellable(call::cancel);
-      try {
-        emitter.onSuccess(call.execute());
-      } catch (Exception e) {
-        Exceptions.throwIfFatal(e);
-        emitter.onError(e);
-      }
-    });
+    return value;
   }
 
-  private RxUtil() {
+  static <T> T checkNotNull(final T reference, @Nullable final Object errorMessage) {
+    if (reference == null) {
+      throw new NullPointerException(String.valueOf(errorMessage));
+    }
+    return reference;
+  }
+
+  private Util() {
   }
 }
