@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
+
 import com.apollographql.apollo.ApolloClient;
 import com.shopify.sample.SampleApplication;
 import com.shopify.sample.domain.CollectionsWithProducts;

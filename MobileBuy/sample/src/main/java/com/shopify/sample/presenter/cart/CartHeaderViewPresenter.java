@@ -52,6 +52,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import static com.shopify.buy3.pay.PayHelper.androidPayIsAvailable;
 import static com.shopify.buy3.pay.PayHelper.isAndroidPayEnabledInManifest;
 import static com.shopify.sample.util.Util.checkNotNull;
+
 import static com.shopify.sample.util.Util.fold;
 import static com.shopify.sample.util.Util.mapItems;
 
@@ -167,6 +168,7 @@ public final class CartHeaderViewPresenter extends BaseViewPresenter<CartHeaderV
       view().renderTotal(CURRENCY_FORMAT.format(total));
     }
   }
+
 
   private void onCreateCheckout(final int requestId, final Checkout checkout) {
     if (isViewAttached()) {

@@ -118,6 +118,19 @@ public final class CartHeaderView extends FrameLayout implements CartHeaderViewP
     this.onConfirmAndroidPayListener = onConfirmAndroidPayListener;
   }
 
+  @Override public Context context() {
+    return getContext();
+  }
+
+  @Override public void showAndroidPayCheckout() {
+    androidPayCheckoutView.setVisibility(VISIBLE);
+  }
+
+  @Override public void showWebCheckout(final Checkout checkout) {
+    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(checkout.webUrl));
+    getContext().startActivity(intent);
+  }
+
   @Override protected void onFinishInflate() {
     super.onFinishInflate();
     ButterKnife.bind(this);
