@@ -30,6 +30,10 @@ import android.support.annotation.Nullable;
 import okhttp3.Response;
 
 public final class GraphError extends Exception {
+  static GraphError runtimeError(final Throwable cause) {
+    return new GraphError(Type.NETWORK, null, cause);
+  }
+
   static GraphError networkError(final Response rawResponse, final Throwable cause) {
     return new GraphError(Type.NETWORK, rawResponse, cause);
   }
@@ -60,8 +64,16 @@ public final class GraphError extends Exception {
   }
 
   public enum Type {
+    RUNTIME,
     NETWORK,
     INVALID_RESPONSE,
     PARSE
+  }
+
+  @Override public String toString() {
+    return "GraphError{" +
+      "type=" + type +
+      ", rawResponse=" + rawResponse +
+      '}';
   }
 }

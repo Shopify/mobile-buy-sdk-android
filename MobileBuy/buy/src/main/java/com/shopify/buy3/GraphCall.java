@@ -42,6 +42,8 @@ public interface GraphCall<T extends AbstractResponse<T>> {
 
   @NonNull GraphCall<T> enqueue(@NonNull Callback<T> callback, @Nullable Handler handler);
 
+  @NonNull GraphCall<T> enqueue(@NonNull Callback<T> callback, @Nullable Handler handler, @Nullable RetryHandler retryHandler);
+
   interface Callback<T extends AbstractResponse<T>> {
 
     void onResponse(@NonNull GraphResponse<T> response);

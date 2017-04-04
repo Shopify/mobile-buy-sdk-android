@@ -52,6 +52,13 @@ final class Utils {
     return reference;
   }
 
+  static int checkRange(final int value, final int min, final int max, @Nullable Object errorMessage) {
+    if (value < min || value > max) {
+      throw new IllegalArgumentException(String.valueOf(errorMessage));
+    }
+    return value;
+  }
+
   private Utils() {
   }
 }

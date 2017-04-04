@@ -27,6 +27,7 @@ package com.shopify.buy3;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
@@ -43,18 +44,23 @@ public final class GraphClient {
 
   final HttpUrl serverUrl;
   final Call.Factory httpCallFactory;
+  final ScheduledThreadPoolExecutor dispatcher;
 
   private GraphClient(final HttpUrl serverUrl, final Call.Factory httpCallFactory) {
     this.serverUrl = serverUrl;
     this.httpCallFactory = httpCallFactory;
+
+    this.dispatcher = new ScheduledThreadPoolExecutor(2, runnable -> new Thread(runnable, "GraphClient Dispatcher"));
+    this.dispatcher.setKeepAliveTime(1, TimeUnit.SECONDS);
+    this.dispatcher.allowCoreThreadTimeOut(true);
   }
 
   public GraphCall<Storefront.QueryRoot> queryGraph(final Storefront.QueryRootQuery query) {
-    return new RealGraphCall<>(query, serverUrl, httpCallFactory, response -> new Storefront.QueryRoot(response.getData()));
+    return new RealGraphCall<>(query, serverUrl, httpCallFactory, response -> new Storefront.QueryRoot(response.getData()), dispatcher);
   }
 
   public GraphCall<Storefront.Mutation> mutateGraph(final Storefront.MutationQuery query) {
-    return new RealGraphCall<>(query, serverUrl, httpCallFactory, response -> new Storefront.Mutation(response.getData()));
+    return new RealGraphCall<>(query, serverUrl, httpCallFactory, response -> new Storefront.Mutation(response.getData()), dispatcher);
   }
 
   public static final class Builder {
@@ -146,7 +152,7 @@ public final class GraphClient {
     }
 
     private static OkHttpClient.Builder configureHttpClient(final OkHttpClient.Builder httpClientBuilder, final String authHeader,
-                                                            final String applicationName) {
+      final String applicationName) {
       addAuthorizationInterceptor(httpClientBuilder, authHeader);
       addUserAgentInterceptor(httpClientBuilder, applicationName);
       return httpClientBuilder;
