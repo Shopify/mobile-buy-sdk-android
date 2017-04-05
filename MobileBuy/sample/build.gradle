@@ -121,7 +121,7 @@ dependencies {
 task downloadApolloSchema(type: DefaultTask, group: "GraphQL", description: "Download GraphQL store front API schema") {
   doLast {
     println("Downloading GraphQL schema...")
-    def schemaFile = new File(project.projectDir.absolutePath + '/src/apollo/graphql/schema.json')
+    def schemaFile = new File(project.projectDir.absolutePath + '/src/apollo/graphql/com/shopify/sample/domain/schema.json')
     if (schemaFile.exists()) {
       schemaFile.delete()
     }
@@ -137,6 +137,6 @@ task downloadApolloSchema(type: DefaultTask, group: "GraphQL", description: "Dow
 apollo {
   customTypeMapping['URL'] = "String"
   customTypeMapping['Money'] = "java.math.BigDecimal"
-  generateOptional = true
+  nullableValueType = "apolloOptional"
   generateAccessors = false
 }
