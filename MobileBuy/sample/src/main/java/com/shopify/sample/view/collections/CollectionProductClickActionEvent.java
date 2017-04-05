@@ -28,7 +28,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
-import com.shopify.sample.presenter.collections.Collection;
+import com.shopify.sample.domain.model.Product;
 import com.shopify.sample.view.ScreenActionEvent;
 
 import java.math.BigDecimal;
@@ -54,11 +54,11 @@ public final class CollectionProductClickActionEvent extends ScreenActionEvent i
   private static final String EXTRAS_TITLE = "product_title";
   private static final String EXTRAS_PRICE = "product_price";
 
-  CollectionProductClickActionEvent(@NonNull final Collection.Product product) {
+  CollectionProductClickActionEvent(@NonNull final Product product) {
     super(ACTION);
     checkNotNull(product, "collectionProduct == null");
     payload.putString(EXTRAS_ID, product.id);
-    payload.putString(EXTRAS_IMAGE_URL, product.imageUrl);
+    payload.putString(EXTRAS_IMAGE_URL, product.image);
     payload.putString(EXTRAS_TITLE, product.title);
     payload.putDouble(EXTRAS_PRICE, product.price.doubleValue());
   }

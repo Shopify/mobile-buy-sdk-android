@@ -33,7 +33,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.shopify.sample.R;
-import com.shopify.sample.model.cart.Cart;
+import com.shopify.sample.domain.model.Cart;
 import com.shopify.sample.view.base.ListItemViewHolder;
 import com.shopify.sample.view.base.ListItemViewModel;
 

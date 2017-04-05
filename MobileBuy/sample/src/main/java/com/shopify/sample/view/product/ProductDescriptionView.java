@@ -31,7 +31,7 @@ import android.util.AttributeSet;
 import android.widget.TextView;
 
 import com.shopify.sample.R;
-import com.shopify.sample.presenter.product.Product;
+import com.shopify.sample.domain.model.ProductDetails;
 
 import java.math.BigDecimal;
 import java.text.NumberFormat;
@@ -74,7 +74,7 @@ public final class ProductDescriptionView extends NestedScrollView {
     priceView.setText(getResources().getString(R.string.price_from, CURRENCY_FORMAT.format(price)));
   }
 
-  public void renderProduct(final Product product) {
+  public void renderProduct(final ProductDetails product) {
     titleView.setText(product.title);
     priceView.setText(getResources().getString(R.string.price_from, formatMinPrice(product)));
     descriptionView.setText(Html.fromHtml(product.description));
@@ -91,7 +91,7 @@ public final class ProductDescriptionView extends NestedScrollView {
     }
   }
 
-  private String formatMinPrice(final Product product) {
+  private String formatMinPrice(final ProductDetails product) {
     List<BigDecimal> prices = mapItems(product.variants, variant -> variant.price);
     BigDecimal minPrice = minItem(prices, BigDecimal.ZERO, BigDecimal::compareTo);
     return CURRENCY_FORMAT.format(minPrice);

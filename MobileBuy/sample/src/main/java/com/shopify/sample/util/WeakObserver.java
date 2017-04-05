@@ -30,10 +30,10 @@ import io.reactivex.annotations.Nullable;
 import io.reactivex.observers.DisposableObserver;
 
 /**
- * Rx observer implementation that delegates calls {@link Observer#onNext(Object)}, {@link Observer#onError(Throwable)}, {@link Observer#onCompleted()}
- * to specified actions. The purpose of this class is to avoid memory leaks in such way that anonymous action implementations,
- * shouldn't keep implicit reference to the outer object but have access to it as parameter. This class keeps weak reference
- * to the target object and provides it as a parameter during delegation calls. Delegated actions will be invoked only in
+ * Rx observer implementation that delegates calls {@link Observer#onNext(Object)}, {@link Observer#onError(Throwable)},
+ * {@link Observer#onCompleted()} to specified actions. The purpose of this class is to avoid memory leaks in such way that anonymous
+ * action implementations, shouldn't keep implicit reference to the outer object but have access to it as parameter. This class keeps
+ * weak reference to the target object and provides it as a parameter during delegation calls. Delegated actions will be invoked only in
  * case if there is reference to target object.
  *
  * @param <TARGET>   class of target weak referenced object that will be passed to actions as a parameter

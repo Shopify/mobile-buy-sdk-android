@@ -46,6 +46,8 @@ import static junit.framework.Assert.fail;
 
 @RunWith(MockitoJUnitRunner.class)
 public class RetryTest {
+  private static final String AUTH_HEADER = "Basic YXBpS2V5";
+
   @Mock public Context mockContext;
   @Rule public MockWebServer server = new MockWebServer();
   private GraphClient graphClient;
@@ -56,6 +58,7 @@ public class RetryTest {
 
     graphClient = GraphClient.builder(mockContext)
       .httpClient(httpClient)
+      .authHeader(AUTH_HEADER)
       .serverUrl(server.url("/"))
       .build();
   }
@@ -251,6 +254,7 @@ public class RetryTest {
 
   @Test public void retryAndCancel() throws Exception {
     server.enqueue(new MockResponse().setResponseCode(500).setBody(""));
+    server.enqueue(new MockResponse().setResponseCode(500).setBody(""));
     server.enqueue(new MockResponse().setResponseCode(200).setBody("{\n" +
       "  \"data\": {\n" +
       "    \"shop\": {\n" +
@@ -261,18 +265,15 @@ public class RetryTest {
 
     AtomicReference<GraphResponse<Storefront.QueryRoot>> graphResponse = new AtomicReference<>();
     AtomicReference<GraphError> graphError = new AtomicReference<>();
-    NamedCountDownLatch latch = new NamedCountDownLatch("retryAndCancel", 1);
     GraphCall<Storefront.QueryRoot> call = graphClient
       .queryGraph(Storefront.query(root -> root.shop(Storefront.ShopQuery::name)))
       .enqueue(new GraphCall.Callback<Storefront.QueryRoot>() {
         @Override public void onResponse(@NonNull final GraphResponse<Storefront.QueryRoot> response) {
           graphResponse.set(response);
-          latch.countDown();
         }
 
         @Override public void onFailure(@NonNull final GraphError error) {
           graphError.set(error);
-          latch.countDown();
         }
       }, null, RetryHandler.builder()
         .maxCount(3)
@@ -281,10 +282,8 @@ public class RetryTest {
         .<Storefront.QueryRoot>responseRetryCondition(response -> response.data().getShop().getName().equals("Empty"))
         .build());
 
-    Thread.sleep(TimeUnit.SECONDS.toMillis(1));
+    Thread.sleep(TimeUnit.SECONDS.toMillis(3));
     call.cancel();
-
-    latch.awaitOrThrowWithTimeout(10, TimeUnit.SECONDS);
 
     if (graphError.get() != null || graphResponse.get() != null) {
       fail("Expected to cancel");

@@ -26,7 +26,6 @@ package com.shopify.sample.util;
 
 import java.lang.ref.WeakReference;
 
-import io.reactivex.annotations.NonNull;
 import io.reactivex.annotations.Nullable;
 import io.reactivex.functions.Consumer;
 
@@ -48,17 +47,15 @@ public class WeakConsumer<TARGET, RESPONSE> {
   }
 
   public Consumer<RESPONSE> create() {
-    return new Consumer<RESPONSE>() {
-      @Override public void accept(@NonNull final RESPONSE response) throws Exception {
-        final TARGET target = targetRef.get();
-        if (target != null && acceptDelegate != null) {
-          acceptDelegate.accept(target, response);
-        }
+    return response -> {
+      final TARGET target = targetRef.get();
+      if (target != null && acceptDelegate != null) {
+        acceptDelegate.accept(target, response);
       }
     };
   }
 
-  public static interface AcceptDelegate<TARGET, RESPONSE> {
+  public interface AcceptDelegate<TARGET, RESPONSE> {
     void accept(TARGET target, RESPONSE response);
   }
 }

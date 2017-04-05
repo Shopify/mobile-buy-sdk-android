@@ -32,8 +32,9 @@ import android.util.AttributeSet;
 import android.widget.FrameLayout;
 
 import com.shopify.sample.R;
-import com.shopify.sample.model.cart.Cart;
-import com.shopify.sample.model.cart.CartItem;
+import com.shopify.sample.domain.model.Cart;
+import com.shopify.sample.domain.model.CartItem;
+import com.shopify.sample.domain.repository.RealCartRepository;
 import com.shopify.sample.mvp.PageListViewPresenter;
 import com.shopify.sample.presenter.cart.CartLisViewPresenter;
 import com.shopify.sample.view.base.ListItemViewModel;
@@ -50,7 +51,7 @@ public final class CartListView extends FrameLayout implements PageListViewPrese
   CartListItemViewModel.OnChangeQuantityClickListener {
   @BindView(R.id.list) RecyclerView listView;
   private final RecyclerViewAdapter listViewAdapter = new RecyclerViewAdapter();
-  private final CartLisViewPresenter presenter = new CartLisViewPresenter();
+  private final CartLisViewPresenter presenter = new CartLisViewPresenter(new RealCartRepository());
   private final RecyclerViewAdapter.ItemComparator itemComparator = new RecyclerViewAdapter.ItemComparator() {
     @Override public boolean equalsById(final ListItemViewModel oldItem, final ListItemViewModel newItem) {
       if (oldItem.payload() instanceof CartItem && newItem.payload() instanceof CartItem) {

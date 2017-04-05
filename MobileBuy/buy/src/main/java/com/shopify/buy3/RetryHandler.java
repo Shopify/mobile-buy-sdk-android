@@ -92,11 +92,11 @@ public final class RetryHandler {
     return Math.max((long) (delayBetweenRetriesMs * Math.pow(backoffMultiplier, retryAttempt.get())), delayBetweenRetriesMs);
   }
 
-  public static interface Condition<T> {
+  public interface Condition<T> {
     boolean check(T t);
   }
 
-  public final static class Builder {
+  public static final class Builder {
     private static final int DEFAULT_MAX_COUNT = 3;
     private static final long DEFAULT_DELAY_BETWEEN_RETRIES = TimeUnit.MILLISECONDS.toMillis(200);
     private static final float DEFAULT_BACKOFF_MULTIPLIER = 1.5f;

@@ -26,8 +26,6 @@ package com.shopify.sample.view.products;
 
 import android.content.Context;
 import android.graphics.Rect;
-import android.os.Parcel;
-import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -36,14 +34,13 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.FrameLayout;
 
 import com.jakewharton.rxbinding2.support.v7.widget.RxRecyclerView;
 import com.shopify.sample.R;
-import com.shopify.sample.interactor.products.RealFetchProductNextPage;
+import com.shopify.sample.domain.model.Product;
+import com.shopify.sample.domain.repository.RealProductRepository;
 import com.shopify.sample.mvp.BasePageListViewPresenter;
 import com.shopify.sample.mvp.PageListViewPresenter;
-import com.shopify.sample.presenter.products.Product;
 import com.shopify.sample.presenter.products.ProductListViewPresenter;
 import com.shopify.sample.view.ScreenRouter;
 import com.shopify.sample.view.base.ListItemViewModel;
@@ -78,7 +75,7 @@ public final class ProductListView extends SwipeRefreshLayout implements PageLis
     if (presenter != null) {
       presenter.detachView();
     }
-    presenter = new ProductListViewPresenter(collectionId, new RealFetchProductNextPage());
+    presenter = new ProductListViewPresenter(collectionId, new RealProductRepository());
     if (isAttachedToWindow()) {
       presenter.attachView(this);
       refresh();

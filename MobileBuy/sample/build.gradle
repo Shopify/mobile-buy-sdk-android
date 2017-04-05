@@ -109,6 +109,7 @@ dependencies {
   }
   compile dep.rxbindingRecyclerView
   compile dep.constraintLayout
+  compile dep.rxrelay
 
   compile project(':android-pay')
   shopifyCompile project(':buy')

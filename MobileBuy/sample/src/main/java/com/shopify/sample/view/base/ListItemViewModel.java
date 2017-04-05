@@ -31,7 +31,7 @@ public abstract class ListItemViewModel<T> {
   private final int viewType;
   private int position;
 
-  public ListItemViewModel(final T payload, final @LayoutRes int viewType) {
+  public ListItemViewModel(final T payload, @LayoutRes final int viewType) {
     this.payload = payload;
     this.viewType = viewType;
   }

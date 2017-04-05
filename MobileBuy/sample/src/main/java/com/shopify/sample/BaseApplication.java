@@ -35,7 +35,6 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.imagepipeline.core.ImagePipelineConfig;
 import com.facebook.imagepipeline.listener.RequestListener;
 import com.facebook.imagepipeline.listener.RequestLoggingListener;
-import com.shopify.sample.view.ScreenRouter;
 
 import java.io.File;
 import java.util.HashSet;
@@ -95,6 +94,9 @@ public abstract class BaseApplication extends Application {
       case TRIM_MEMORY_RUNNING_CRITICAL:
       case TRIM_MEMORY_COMPLETE:
         frescoMemoryTrimmableRegistry.trim(MemoryTrimType.OnCloseToDalvikHeapLimit);
+        break;
+
+      default:
         break;
     }
   }

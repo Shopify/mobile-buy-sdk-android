@@ -38,7 +38,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public final class CartActivity extends AppCompatActivity {
-  @BindView(R.id.cart_header) CartHeaderView cartHeaderView;
+  @BindView(R.id.cart_header) CartCheckoutView cartHeaderView;
   @BindView(R.id.cart_list) CartListView cartListView;
   @BindView(R.id.toolbar) Toolbar toolbarView;
 

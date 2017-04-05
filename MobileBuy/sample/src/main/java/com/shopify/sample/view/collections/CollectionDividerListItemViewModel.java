@@ -27,7 +27,7 @@ package com.shopify.sample.view.collections;
 import android.support.annotation.NonNull;
 
 import com.shopify.sample.R;
-import com.shopify.sample.presenter.collections.Collection;
+import com.shopify.sample.domain.model.Collection;
 import com.shopify.sample.view.base.ListItemViewHolder;
 import com.shopify.sample.view.base.ListItemViewModel;
 

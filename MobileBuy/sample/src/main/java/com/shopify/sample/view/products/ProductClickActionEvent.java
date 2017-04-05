@@ -28,7 +28,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
-import com.shopify.sample.presenter.products.Product;
+import com.shopify.sample.domain.model.Product;
 import com.shopify.sample.view.ScreenActionEvent;
 
 import java.math.BigDecimal;

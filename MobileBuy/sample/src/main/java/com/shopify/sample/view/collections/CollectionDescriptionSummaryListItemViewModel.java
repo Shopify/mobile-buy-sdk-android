@@ -30,7 +30,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.shopify.sample.R;
-import com.shopify.sample.presenter.collections.Collection;
+import com.shopify.sample.domain.model.Collection;
 import com.shopify.sample.view.base.ListItemViewHolder;
 import com.shopify.sample.view.base.ListItemViewModel;
 

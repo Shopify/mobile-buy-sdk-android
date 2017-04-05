@@ -66,7 +66,10 @@
       <property name="tokens" value="BNOT, DEC, DOT, INC, LNOT, UNARY_MINUS, UNARY_PLUS"/>
     </module>
     <module name="NoWhitespaceBefore"/>
-    <module name="OperatorWrap"/>
+    <module name="OperatorWrap">
+      <property name="tokens"
+        value="BAND, BOR, BSR, BXOR, COLON, DIV, EQUAL, GE, GT, LAND, LE, LITERAL_INSTANCEOF, LOR, LT, MINUS, MOD, NOT_EQUAL, QUESTION, SL, SR, STAR"/>
+    </module>
     <module name="ParenPad"/>
     <module name="TypecastParenPad"/>
     <module name="WhitespaceAfter"/>
@@ -82,7 +85,10 @@
     <!-- Checks for blocks. You know, those {}'s         -->
     <!-- See http://checkstyle.sf.net/config_blocks.html -->
     <!--module name="AvoidNestedBlocks"/-->
-    <module name="EmptyBlock"/>
+    <module name="EmptyBlock">
+      <property name="option" value="text"/>
+      <property name="tokens" value="LITERAL_CATCH"/>
+    </module>
     <module name="LeftCurly"/>
     <!--<module name="NeedBraces"/>-->
     <module name="RightCurly"/>
@@ -111,7 +117,7 @@
     <!--module name="DesignForExtension"/-->
     <!--module name="FinalClass"/-->
     <!--module name="HideUtilityClassConstructor"/-->
-    <module name="InterfaceIsType"/>
+    <!--<module name="InterfaceIsType"/>-->
     <!--module name="VisibilityModifier"/-->
 
 

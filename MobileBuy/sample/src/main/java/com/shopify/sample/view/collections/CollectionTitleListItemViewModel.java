@@ -28,7 +28,7 @@ import android.support.annotation.NonNull;
 import android.widget.TextView;
 
 import com.shopify.sample.R;
-import com.shopify.sample.presenter.collections.Collection;
+import com.shopify.sample.domain.model.Collection;
 import com.shopify.sample.view.base.ListItemViewModel;
 import com.shopify.sample.view.base.ListItemViewHolder;
 

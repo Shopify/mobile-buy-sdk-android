@@ -36,7 +36,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 
 import com.shopify.sample.R;
-import com.shopify.sample.presenter.collections.Collection;
+import com.shopify.sample.domain.model.Product;
 import com.shopify.sample.view.ScreenRouter;
 import com.shopify.sample.view.base.ListItemViewModel;
 import com.shopify.sample.view.base.RecyclerViewAdapter;
@@ -63,18 +63,18 @@ public final class ProductListView extends FrameLayout implements RecyclerViewAd
     super(context, attrs, defStyleAttr);
   }
 
-  public void setItems(@NonNull final List<Collection.Product> items) {
+  public void setItems(@NonNull final List<Product> items) {
     listViewAdapter.clearItems();
 
     List<ListItemViewModel> viewModels = new ArrayList<>();
-    for (Collection.Product item : items) {
+    for (Product item : items) {
       viewModels.add(new ProductListItemViewModel(item));
     }
     listViewAdapter.addItems(viewModels);
   }
 
   @Override public void onItemClick(final ListItemViewModel itemViewModel) {
-    ScreenRouter.route(getContext(), new CollectionProductClickActionEvent((Collection.Product) itemViewModel.payload()));
+    ScreenRouter.route(getContext(), new CollectionProductClickActionEvent((Product) itemViewModel.payload()));
   }
 
   @Override protected void onFinishInflate() {

@@ -40,8 +40,9 @@ import android.view.MenuInflater;
 import android.view.View;
 
 import com.shopify.sample.R;
-import com.shopify.sample.interactor.product.RealFetchProductDetails;
-import com.shopify.sample.presenter.product.Product;
+import com.shopify.sample.domain.model.ProductDetails;
+import com.shopify.sample.domain.repository.RealCartRepository;
+import com.shopify.sample.domain.repository.RealProductRepository;
 import com.shopify.sample.presenter.product.ProductDetailsViewPresenter;
 import com.shopify.sample.view.ScreenRouter;
 import com.shopify.sample.view.cart.CartClickActionEvent;
@@ -81,7 +82,7 @@ public final class ProductDetailsActivity extends AppCompatActivity implements P
     checkNotNull(productId, "productId == null");
     checkNotNull(productTitle, "productTitle == null");
 
-    presenter = new ProductDetailsViewPresenter(productId, new RealFetchProductDetails());
+    presenter = new ProductDetailsViewPresenter(productId, new RealProductRepository(), new RealCartRepository());
 
     setSupportActionBar(toolbarView);
     getSupportActionBar().setTitle(productTitle);
@@ -123,7 +124,7 @@ public final class ProductDetailsActivity extends AppCompatActivity implements P
     Snackbar.make(rootView, R.string.default_error, Snackbar.LENGTH_LONG).show();
   }
 
-  @Override public void renderProduct(final Product product) {
+  @Override public void renderProduct(final ProductDetails product) {
     imageGalleryView.renderImages(product.images);
     productDescriptionView.renderProduct(product);
   }

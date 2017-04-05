@@ -24,9 +24,11 @@
 
 package com.shopify.sample.presenter.cart;
 
-import com.shopify.sample.model.cart.Cart;
-import com.shopify.sample.model.cart.CartItem;
-import com.shopify.sample.model.cart.CartManager;
+import android.support.annotation.NonNull;
+
+import com.shopify.sample.domain.model.Cart;
+import com.shopify.sample.domain.model.CartItem;
+import com.shopify.sample.domain.repository.CartRepository;
 import com.shopify.sample.mvp.BasePageListViewPresenter;
 import com.shopify.sample.mvp.PageListViewPresenter;
 
@@ -36,27 +38,34 @@ import io.reactivex.Observable;
 import io.reactivex.ObservableTransformer;
 import io.reactivex.Single;
 
+import static com.shopify.sample.util.Util.checkNotNull;
+
 public final class CartLisViewPresenter extends BasePageListViewPresenter<CartItem, PageListViewPresenter.View<CartItem>> {
+  private final CartRepository cartRepository;
+
+  public CartLisViewPresenter(@NonNull final CartRepository cartRepository) {
+    this.cartRepository = checkNotNull(cartRepository, "cartRepository == null");
+  }
 
   public Observable<Cart> cartObservable() {
-    return CartManager.instance().cartObservable();
+    return cartRepository.watch();
   }
 
   @Override protected ObservableTransformer<String, List<CartItem>> nextPageRequestComposer() {
     return upstream -> upstream.flatMapSingle(cursor -> Single.fromCallable(() -> {
-      return CartManager.instance().cart().cartItems();
+      return cartRepository.cart().cartItems();
     }));
   }
 
   public void addCartItem(final CartItem cartItem) {
-    CartManager.instance().addCartItem(cartItem);
+    cartRepository.addCartItem(cartItem);
   }
 
   public void removeCartItem(final CartItem cartItem) {
-    CartManager.instance().removeCartItem(cartItem);
+    cartRepository.removeCartItem(cartItem);
   }
 
   public Cart cart() {
-    return CartManager.instance().cart();
+    return cartRepository.cart();
   }
 }

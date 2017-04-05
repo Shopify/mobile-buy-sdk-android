@@ -24,7 +24,10 @@
 
 package com.shopify.sample.presenter.collections;
 
-import com.shopify.sample.interactor.collections.FetchCollectionNextPage;
+import android.support.annotation.NonNull;
+
+import com.shopify.sample.domain.model.Collection;
+import com.shopify.sample.domain.repository.CollectionRepository;
 import com.shopify.sample.mvp.BasePageListViewPresenter;
 import com.shopify.sample.mvp.PageListViewPresenter;
 
@@ -33,16 +36,18 @@ import java.util.List;
 import io.reactivex.ObservableTransformer;
 import io.reactivex.schedulers.Schedulers;
 
-public final class CollectionListViewPresenter extends BasePageListViewPresenter<Collection, PageListViewPresenter.View<Collection>> {
-  private final FetchCollectionNextPage fetchCollectionNextPage;
+import static com.shopify.sample.util.Util.checkNotNull;
 
-  public CollectionListViewPresenter(final FetchCollectionNextPage fetchCollectionNextPage) {
-    this.fetchCollectionNextPage = fetchCollectionNextPage;
+public final class CollectionListViewPresenter extends BasePageListViewPresenter<Collection, PageListViewPresenter.View<Collection>> {
+  private final CollectionRepository collectionRepository;
+
+  public CollectionListViewPresenter(@NonNull final CollectionRepository collectionRepository) {
+    this.collectionRepository = checkNotNull(collectionRepository, "collectionRepository == null");
   }
 
   @Override protected ObservableTransformer<String, List<Collection>> nextPageRequestComposer() {
     return upstream -> upstream.flatMapSingle(
-      cursor -> fetchCollectionNextPage.call(cursor, PER_PAGE)
+      cursor -> collectionRepository.fetchNextPage(cursor, PER_PAGE)
         .subscribeOn(Schedulers.io())
     );
   }

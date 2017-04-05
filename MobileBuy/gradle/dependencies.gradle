@@ -46,5 +46,6 @@ ext.dep = [
     apolloPlugin             : "com.apollographql.apollo:gradle-plugin:$versions.apolloVersion",
     apolloApi                : "com.apollographql.apollo:apollo-api:$versions.apolloVersion",
     apolloRuntime            : "com.apollographql.apollo:apollo-runtime:$versions.apolloVersion",
-    constraintLayout         : "com.android.support.constraint:constraint-layout:1.0.2"
+    constraintLayout         : "com.android.support.constraint:constraint-layout:1.0.2",
+    rxrelay                  : "com.jakewharton.rxrelay2:rxrelay:2.0.0"
 ]

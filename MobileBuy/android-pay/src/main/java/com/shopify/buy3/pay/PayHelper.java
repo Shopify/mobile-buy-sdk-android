@@ -59,7 +59,7 @@ public final class PayHelper {
     try {
       ApplicationInfo ai = context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA);
       enabled = ai.metaData.getBoolean("com.google.android.gms.wallet.api.enabled");
-    } catch (PackageManager.NameNotFoundException e) {
+    } catch (PackageManager.NameNotFoundException ignore) {
       // ignore
     }
     return enabled;

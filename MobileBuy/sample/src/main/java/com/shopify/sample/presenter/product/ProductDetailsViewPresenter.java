@@ -26,9 +26,10 @@ package com.shopify.sample.presenter.product;
 
 import android.support.annotation.NonNull;
 
-import com.shopify.sample.interactor.product.FetchProductDetails;
-import com.shopify.sample.model.cart.CartItem;
-import com.shopify.sample.model.cart.CartManager;
+import com.shopify.sample.domain.model.CartItem;
+import com.shopify.sample.domain.model.ProductDetails;
+import com.shopify.sample.domain.repository.CartRepository;
+import com.shopify.sample.domain.repository.ProductRepository;
 import com.shopify.sample.mvp.BaseViewPresenter;
 import com.shopify.sample.util.WeakObserver;
 
@@ -41,13 +42,15 @@ import static com.shopify.sample.util.Util.mapItems;
 public final class ProductDetailsViewPresenter extends BaseViewPresenter<ProductDetailsViewPresenter.View> {
   public static final int REQUEST_ID_PRODUCT_DETAILS = 1;
   private final String productId;
-  private final FetchProductDetails fetchProductDetails;
-  private Product product;
+  private final ProductRepository productRepository;
+  private final CartRepository cartRepository;
+  private ProductDetails product;
 
-  public ProductDetailsViewPresenter(@NonNull final String productId, final FetchProductDetails fetchProductDetails) {
-    checkNotNull(productId, "productId == null");
-    this.productId = productId;
-    this.fetchProductDetails = fetchProductDetails;
+  public ProductDetailsViewPresenter(@NonNull final String productId, @NonNull final ProductRepository productRepository,
+    @NonNull final CartRepository cartRepository) {
+    this.productId = checkNotNull(productId, "productId == null");
+    this.productRepository = checkNotNull(productRepository, "productRepository == null");
+    this.cartRepository = checkNotNull(cartRepository, "cartRepository == null");
   }
 
   public void fetchProduct() {
@@ -55,11 +58,11 @@ public final class ProductDetailsViewPresenter extends BaseViewPresenter<Product
       view().showProgress(REQUEST_ID_PRODUCT_DETAILS);
       registerRequest(
         REQUEST_ID_PRODUCT_DETAILS,
-        fetchProductDetails.call(productId)
+        productRepository.fetchDetails(productId)
           .toObservable()
           .observeOn(AndroidSchedulers.mainThread())
           .subscribeWith(
-            WeakObserver.<ProductDetailsViewPresenter, Product>forTarget(this)
+            WeakObserver.<ProductDetailsViewPresenter, ProductDetails>forTarget(this)
               .delegateOnNext(ProductDetailsViewPresenter::onProductDetailsResponse)
               .delegateOnError(ProductDetailsViewPresenter::onProductDetailsError)
               .create()
@@ -73,13 +76,13 @@ public final class ProductDetailsViewPresenter extends BaseViewPresenter<Product
       return;
     }
 
-    Product.Variant firstVariant = checkNotNull(firstItem(product.variants), "can't find default variant");
+    ProductDetails.Variant firstVariant = checkNotNull(firstItem(product.variants), "can't find default variant");
     CartItem cartItem = new CartItem(product.id, firstVariant.id, product.title, firstVariant.title, firstVariant.price,
       mapItems(firstVariant.selectedOptions, it -> new CartItem.Option(it.name, it.value)), firstItem(product.images));
-    CartManager.instance().addCartItem(cartItem);
+    cartRepository.addCartItem(cartItem);
   }
 
-  private void onProductDetailsResponse(final Product product) {
+  private void onProductDetailsResponse(final ProductDetails product) {
     this.product = product;
     if (isViewAttached()) {
       view().hideProgress(REQUEST_ID_PRODUCT_DETAILS);
@@ -95,6 +98,6 @@ public final class ProductDetailsViewPresenter extends BaseViewPresenter<Product
   }
 
   public interface View extends com.shopify.sample.mvp.View {
-    void renderProduct(Product product);
+    void renderProduct(ProductDetails product);
   }
 }

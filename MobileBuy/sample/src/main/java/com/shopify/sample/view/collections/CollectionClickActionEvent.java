@@ -28,7 +28,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
-import com.shopify.sample.presenter.collections.Collection;
+import com.shopify.sample.domain.model.Collection;
 import com.shopify.sample.view.ScreenActionEvent;
 
 import static com.shopify.sample.util.Util.checkNotNull;

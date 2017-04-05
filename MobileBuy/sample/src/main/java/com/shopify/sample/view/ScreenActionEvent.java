@@ -32,8 +32,8 @@ import android.support.annotation.NonNull;
 import com.shopify.sample.util.Util;
 
 public abstract class ScreenActionEvent implements Parcelable {
-  protected @NonNull final String action;
-  protected @NonNull final Bundle payload;
+  @NonNull protected final String action;
+  @NonNull protected final Bundle payload;
 
   protected ScreenActionEvent(@NonNull final String action) {
     this(action, new Bundle());

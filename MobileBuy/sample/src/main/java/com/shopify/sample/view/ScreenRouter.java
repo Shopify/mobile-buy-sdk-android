@@ -32,9 +32,9 @@ import com.shopify.sample.util.BiConsumer;
 import com.shopify.sample.view.cart.CartClickActionEvent;
 import com.shopify.sample.view.cart.CartActivity;
 import com.shopify.sample.view.cart.AndroidPayConfirmationClickActionEvent;
+import com.shopify.sample.view.checkout.CheckoutActivity;
 import com.shopify.sample.view.collections.CollectionClickActionEvent;
 import com.shopify.sample.view.collections.CollectionProductClickActionEvent;
-import com.shopify.sample.view.checkout.CheckoutConfirmationActivity;
 import com.shopify.sample.view.product.ProductDetailsActivity;
 import com.shopify.sample.view.products.ProductClickActionEvent;
 import com.shopify.sample.view.products.ProductListActivity;
@@ -90,10 +90,10 @@ public final class ScreenRouter {
         context.startActivity(intent);
       }))
       .<AndroidPayConfirmationClickActionEvent>registerInternal(AndroidPayConfirmationClickActionEvent.ACTION, (context, event) -> {
-        Intent intent = new Intent(context, CheckoutConfirmationActivity.class);
+        Intent intent = new Intent(context, CheckoutActivity.class);
         intent.putExtra(ScreenActionEvent.class.getName(), event);
-        intent.putExtra(CheckoutConfirmationActivity.EXTRAS_CHECKOUT_ID, event.checkoutId());
-        intent.putExtra(CheckoutConfirmationActivity.EXTRAS_PAY_CART, event.payCart());
+        intent.putExtra(CheckoutActivity.EXTRAS_CHECKOUT_ID, event.checkoutId());
+        intent.putExtra(CheckoutActivity.EXTRAS_PAY_CART, event.payCart());
         context.startActivity(intent);
       });
   }

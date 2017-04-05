@@ -34,8 +34,9 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.shopify.sample.R;
-import com.shopify.sample.model.cart.Cart;
-import com.shopify.sample.model.cart.CartManager;
+import com.shopify.sample.domain.model.Cart;
+import com.shopify.sample.domain.repository.CartRepository;
+import com.shopify.sample.domain.repository.RealCartRepository;
 import com.shopify.sample.util.WeakObserver;
 
 import butterknife.BindView;
@@ -46,6 +47,7 @@ import io.reactivex.disposables.Disposable;
 public final class CartBadgeView extends FrameLayout {
   @BindView(R.id.count) TextView countView;
 
+  private CartRepository cartRepository = new RealCartRepository();
   private Disposable cartSubscription;
 
   public CartBadgeView(@NonNull final Context context) {
@@ -67,8 +69,7 @@ public final class CartBadgeView extends FrameLayout {
 
   @Override protected void onAttachedToWindow() {
     super.onAttachedToWindow();
-    cartSubscription = CartManager.instance()
-      .cartObservable()
+    cartSubscription = cartRepository.watch()
       .subscribeOn(AndroidSchedulers.mainThread())
       .subscribeWith(WeakObserver.<CartBadgeView, Cart>forTarget(this)
         .delegateOnNext(CartBadgeView::onCartUpdate)

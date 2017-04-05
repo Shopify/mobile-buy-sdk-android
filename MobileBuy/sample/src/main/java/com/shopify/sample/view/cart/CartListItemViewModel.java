@@ -29,7 +29,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.shopify.sample.R;
-import com.shopify.sample.model.cart.CartItem;
+import com.shopify.sample.domain.model.CartItem;
 import com.shopify.sample.view.base.ListItemViewHolder;
 import com.shopify.sample.view.base.ListItemViewModel;
 import com.shopify.sample.view.widget.image.ShopifyDraweeView;
