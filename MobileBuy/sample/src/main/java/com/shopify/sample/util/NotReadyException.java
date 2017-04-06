@@ -22,24 +22,13 @@
  *   THE SOFTWARE.
  */
 
-package com.shopify.sample.domain.repository;
+package com.shopify.sample.util;
 
-import android.support.annotation.NonNull;
+public class NotReadyException extends RuntimeException {
+  public NotReadyException() {
+  }
 
-import com.shopify.buy3.pay.PayAddress;
-import com.shopify.sample.domain.model.Checkout;
-
-import java.util.List;
-
-import io.reactivex.Single;
-
-public interface CheckoutRepository {
-
-  Single<Checkout> create(@NonNull List<Checkout.LineItem> lineItems);
-
-  Single<Checkout> updateShippingAddress(@NonNull String checkoutId, @NonNull PayAddress payAddress);
-
-  Single<Checkout> fetch(@NonNull String checkoutId);
-
-  Single<Checkout.ShippingRates> fetchShippingRates(@NonNull String checkoutId);
+  public NotReadyException(final String message) {
+    super(message);
+  }
 }

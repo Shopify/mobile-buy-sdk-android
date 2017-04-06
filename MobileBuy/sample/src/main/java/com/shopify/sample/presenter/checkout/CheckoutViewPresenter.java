@@ -44,6 +44,7 @@ import static com.shopify.sample.util.Util.fold;
 
 public final class CheckoutViewPresenter extends BaseViewPresenter<CheckoutViewPresenter.View> {
   public static final int REQUEST_ID_UPDATE_CHECKOUT_SHIPPING_ADDRESS = 1;
+  public static final int REQUEST_ID_SHIPPING_RATES = 2;
 
   private final CheckoutRepository checkoutRepository;
   private String checkoutId;
@@ -113,6 +114,10 @@ public final class CheckoutViewPresenter extends BaseViewPresenter<CheckoutViewP
       view().hideProgress(REQUEST_ID_UPDATE_CHECKOUT_SHIPPING_ADDRESS);
       view().showError(REQUEST_ID_UPDATE_CHECKOUT_SHIPPING_ADDRESS, t);
     }
+  }
+
+  private void requestShippingRates() {
+
   }
 
   public interface View extends com.shopify.sample.mvp.View {

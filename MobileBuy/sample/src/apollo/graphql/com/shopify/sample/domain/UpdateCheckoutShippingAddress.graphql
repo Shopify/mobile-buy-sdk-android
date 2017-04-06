@@ -1,22 +1,7 @@
 mutation UpdateCheckoutShippingAddressQuery($input: CheckoutShippingAddressUpdateInput!) {
   checkoutShippingAddressUpdate(input: $input) {
     checkout {
-      id
-      webUrl
-      requiresShipping
-      currencyCode
-      lineItemConnection: lineItems(first: 250) {
-        lineItemEdges: edges {
-          lineItem: node {
-            title
-            quantity
-            variant {
-              id
-              price
-            }
-          }
-        }
-      }
+      ... CheckoutFragment
     }
   }
 }

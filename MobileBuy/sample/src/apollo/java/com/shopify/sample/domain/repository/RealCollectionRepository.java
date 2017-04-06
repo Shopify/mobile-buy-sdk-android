@@ -69,7 +69,7 @@ public final class RealCollectionRepository implements CollectionRepository {
   }
 
   @SuppressWarnings("Convert2MethodRef")
-  private static List<Collection> map(final List<CollectionsWithProducts.Data.Shop.CollectionConnection.Edge>
+  private static List<Collection> map(final List<CollectionsWithProducts.Data.Edge>
     collectionEdges) {
     return mapItems(collectionEdges, collectionEdge -> {
         String collectionImageUrl = collectionEdge.collection.image.transform(it -> it.src).or("");

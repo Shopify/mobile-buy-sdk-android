@@ -1,0 +1,21 @@
+fragment CheckoutFragment on Checkout {
+  id
+  webUrl
+  requiresShipping
+  currencyCode
+  lineItemConnection: lineItems(first: 250) {
+    lineItemEdges: edges {
+      lineItem: node {
+        title
+        quantity
+        variant {
+          id
+          price
+        }
+      }
+    }
+  }
+  availableShippingRates {
+    ... CheckoutShippingRatesFragment
+  }
+}

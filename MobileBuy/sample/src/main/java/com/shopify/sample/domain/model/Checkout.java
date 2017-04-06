@@ -39,14 +39,16 @@ public final class Checkout {
   @NonNull public final String currency;
   public final boolean requiresShipping;
   @NonNull public final List<LineItem> lineItems;
+  @NonNull public final ShippingRates shippingRates;
 
   public Checkout(@NonNull final String id, @NonNull final String webUrl, @NonNull final String currency, final boolean requiresShipping,
-    @NonNull final List<LineItem> lineItems) {
+    @NonNull final List<LineItem> lineItems, @NonNull final ShippingRates shippingRates) {
     this.id = checkNotNull(id, "id == null");
     this.webUrl = checkNotNull(webUrl, "webUrl == null");
     this.currency = checkNotNull(currency, "currency == null");
     this.requiresShipping = requiresShipping;
     this.lineItems = checkNotEmpty(lineItems, "lineItems can't be empty");
+    this.shippingRates = checkNotNull(shippingRates, "shippingRates == null");
   }
 
   @Override public String toString() {
@@ -56,6 +58,7 @@ public final class Checkout {
       ", currency='" + currency + '\'' +
       ", requiresShipping=" + requiresShipping +
       ", lineItems=" + lineItems +
+      ", shippingRates=" + shippingRates +
       '}';
   }
 
@@ -79,6 +82,43 @@ public final class Checkout {
         ", title='" + title + '\'' +
         ", quantity=" + quantity +
         ", price=" + price +
+        '}';
+    }
+  }
+
+  public static final class ShippingRates {
+    public final boolean ready;
+    @NonNull public final List<ShippingRate> shippingRates;
+
+    public ShippingRates(final boolean ready, @NonNull final List<ShippingRate> shippingRates) {
+      this.ready = ready;
+      this.shippingRates = checkNotNull(shippingRates, "shippingRates == null");
+    }
+
+    @Override public String toString() {
+      return "ShippingRates{" +
+        "ready=" + ready +
+        ", shippingRates=" + shippingRates +
+        '}';
+    }
+  }
+
+  public static final class ShippingRate {
+    @NonNull public final String handle;
+    @NonNull public final BigDecimal price;
+    @NonNull public final String title;
+
+    public ShippingRate(@NonNull final String handle, @NonNull final BigDecimal price, @NonNull final String title) {
+      this.handle = checkNotNull(handle, "handle == null");
+      this.price = checkNotNull(price, "price == null");
+      this.title = checkNotNull(title, "title == null");
+    }
+
+    @Override public String toString() {
+      return "ShippingRate{" +
+        "handle='" + handle + '\'' +
+        ", price=" + price +
+        ", title='" + title + '\'' +
         '}';
     }
   }

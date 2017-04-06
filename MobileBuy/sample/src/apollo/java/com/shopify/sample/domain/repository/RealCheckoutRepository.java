@@ -27,18 +27,27 @@ package com.shopify.sample.domain.repository;
 import android.support.annotation.NonNull;
 
 import com.apollographql.apollo.ApolloClient;
+import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.cache.http.HttpCacheControl;
 import com.shopify.buy3.pay.PayAddress;
 import com.shopify.sample.SampleApplication;
 import com.shopify.sample.domain.CreateCheckoutQuery;
+import com.shopify.sample.domain.FetchCheckoutQuery;
+import com.shopify.sample.domain.FetchCheckoutShippingRatesQuery;
 import com.shopify.sample.domain.UpdateCheckoutShippingAddressQuery;
+import com.shopify.sample.domain.fragment.CheckoutFragment;
+import com.shopify.sample.domain.fragment.CheckoutShippingRatesFragment;
 import com.shopify.sample.domain.model.Checkout;
 import com.shopify.sample.domain.type.CheckoutCreateInput;
 import com.shopify.sample.domain.type.CheckoutShippingAddressUpdateInput;
 import com.shopify.sample.domain.type.LineItemInput;
 import com.shopify.sample.domain.type.MailingAddressInput;
+import com.shopify.sample.util.NotReadyException;
+import com.shopify.sample.util.RxRetryHandler;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Single;
 import io.reactivex.schedulers.Schedulers;
@@ -64,8 +73,9 @@ public final class RealCheckoutRepository implements CheckoutRepository {
 
     return rxApolloCall(apolloClient.newCall(query).httpCacheControl(HttpCacheControl.NETWORK_ONLY))
       .map(response -> response.data()
-        .transform(it -> it.checkoutCreate.orNull())
-        .transform(it -> it.checkout.orNull())
+        .transform(it -> it.checkoutCreate.get())
+        .transform(it -> it.checkout.get())
+        .transform(it -> it.fragments.checkoutFragment.get())
         .get())
       .map(RealCheckoutRepository::map)
       .subscribeOn(Schedulers.io());
@@ -96,24 +106,56 @@ public final class RealCheckoutRepository implements CheckoutRepository {
     UpdateCheckoutShippingAddressQuery query = UpdateCheckoutShippingAddressQuery.builder().input(input).build();
     return rxApolloCall(apolloClient.newCall(query).httpCacheControl(HttpCacheControl.NETWORK_ONLY))
       .map(response -> response.data()
-        .transform(it -> it.checkoutShippingAddressUpdate.orNull())
-        .transform(it -> it.checkout)
+        .transform(it -> it.checkoutShippingAddressUpdate.get())
+        .transform(it -> it.checkout.fragments.checkoutFragment.get())
         .get())
       .map(RealCheckoutRepository::map)
       .subscribeOn(Schedulers.io());
   }
 
-  private static Checkout map(final CreateCheckoutQuery.Data.CheckoutCreate.Checkout checkout) {
-    return new Checkout(checkout.id, checkout.webUrl, checkout.currencyCode.toString(),
-      checkout.requiresShipping, mapItems(checkout.lineItemConnection.lineItemEdges, lineItemEdge ->
-      new Checkout.LineItem(lineItemEdge.lineItem.variant.get().id, lineItemEdge.lineItem.title,
-        lineItemEdge.lineItem.quantity, lineItemEdge.lineItem.variant.get().price)));
+  @Override public Single<Checkout> fetch(@NonNull final String checkoutId) {
+    checkNotBlank(checkoutId, "checkoutId can't be empty");
+    FetchCheckoutQuery query = new FetchCheckoutQuery(checkoutId);
+    return rxApolloCall(apolloClient.newCall(query).httpCacheControl(HttpCacheControl.NETWORK_ONLY))
+      .map(response -> response.data()
+        .transform(it -> it.node.get())
+        .transform(it -> it.fragments.checkoutFragment.get())
+        .get())
+      .map(RealCheckoutRepository::map)
+      .subscribeOn(Schedulers.io());
   }
 
-  private static Checkout map(final UpdateCheckoutShippingAddressQuery.Data.CheckoutShippingAddressUpdate.Checkout checkout) {
-    return new Checkout(checkout.id, checkout.webUrl, checkout.currencyCode.toString(),
-      checkout.requiresShipping, mapItems(checkout.lineItemConnection.lineItemEdges, lineItemEdge ->
-      new Checkout.LineItem(lineItemEdge.lineItem.variant.get().id, lineItemEdge.lineItem.title,
-        lineItemEdge.lineItem.quantity, lineItemEdge.lineItem.variant.get().price)));
+  @Override public Single<Checkout.ShippingRates> fetchShippingRates(@NonNull final String checkoutId) {
+    checkNotBlank(checkoutId, "checkoutId can't be empty");
+    FetchCheckoutShippingRatesQuery query = new FetchCheckoutShippingRatesQuery(checkoutId);
+    return rxApolloCall(apolloClient.newCall(query).httpCacheControl(HttpCacheControl.NETWORK_ONLY))
+      .map(response -> response.data()
+        .transform(it -> it.node.get())
+        .transform(it -> it.asCheckout.get())
+        .transform(it -> it.availableShippingRates.get())
+        .transform(it -> it.fragments.checkoutShippingRatesFragment)
+        .get())
+      .map(RealCheckoutRepository::map)
+      .doAfterSuccess(shippingRates -> {
+        if (!shippingRates.ready) throw new NotReadyException("Shipping rates not available yet");
+      })
+      .subscribeOn(Schedulers.io())
+      .retryWhen(RxRetryHandler.exponentialBackoff(1, TimeUnit.SECONDS, 1.5f)
+        .maxRetries(5)
+        .when(t -> t instanceof NotReadyException)
+        .build());
+  }
+
+  private static Checkout map(final CheckoutFragment checkout) {
+    List<Checkout.LineItem> lineItems = mapItems(checkout.lineItemConnection.lineItemEdges, it ->
+      new Checkout.LineItem(it.lineItem.variant.get().id, it.lineItem.title, it.lineItem.quantity, it.lineItem.variant.get().price));
+    return new Checkout(checkout.id, checkout.webUrl, checkout.currencyCode.toString(), checkout.requiresShipping, lineItems,
+      map(checkout.availableShippingRates.transform(it -> it.fragments.checkoutShippingRatesFragment.get())));
+  }
+
+  private static Checkout.ShippingRates map(final Optional<CheckoutShippingRatesFragment> availableShippingRates) {
+    List<Checkout.ShippingRate> shippingRates = mapItems(availableShippingRates.transform(it -> it.shippingRates.get())
+      .or(Collections.emptyList()), it -> new Checkout.ShippingRate(it.handle, it.price, it.title));
+    return new Checkout.ShippingRates(availableShippingRates.transform(it -> it.ready).or(false), shippingRates);
   }
 }

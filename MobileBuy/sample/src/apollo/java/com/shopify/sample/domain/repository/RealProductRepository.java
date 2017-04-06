@@ -77,7 +77,7 @@ public final class RealProductRepository implements ProductRepository {
       .subscribeOn(Schedulers.io());
   }
 
-  private static List<Product> map(final List<CollectionProducts.Data.Collection.AsCollection.ProductConnection.ProductEdge>
+  private static List<Product> map(final List<CollectionProducts.Data.ProductEdge>
     productEdges) {
     return mapItems(productEdges, productEdge -> {
       String productImageUrl = firstItem(productEdge.product.imageConnection.imageEdges,
@@ -89,8 +89,7 @@ public final class RealProductRepository implements ProductRepository {
     });
   }
 
-
-  private static ProductDetails map(ProductDetailsQuery.Data.Node.AsProduct product) {
+  private static ProductDetails map(ProductDetailsQuery.Data.AsProduct product) {
     List<String> images = mapItems(product.imageConnection.imageEdge, imageEdge -> imageEdge.image.src);
     List<ProductDetails.Option> options = mapItems(product.options, option -> new ProductDetails.Option(option.id, option.name,
       option.values));
