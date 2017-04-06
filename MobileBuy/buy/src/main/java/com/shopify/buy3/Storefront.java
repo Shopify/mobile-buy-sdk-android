@@ -105,6 +105,143 @@ public class Storefront {
         }
     }
 
+    public interface AppliedGiftCardQueryDefinition {
+        void define(AppliedGiftCardQuery _queryBuilder);
+    }
+
+    public static class AppliedGiftCardQuery extends Query<AppliedGiftCardQuery> {
+        AppliedGiftCardQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+
+            startField("id");
+        }
+
+        public AppliedGiftCardQuery amountUsed() {
+            startField("amountUsed");
+
+            return this;
+        }
+
+        public AppliedGiftCardQuery balance() {
+            startField("balance");
+
+            return this;
+        }
+
+        public AppliedGiftCardQuery lastCharacters() {
+            startField("lastCharacters");
+
+            return this;
+        }
+    }
+
+    public static class AppliedGiftCard extends AbstractResponse<AppliedGiftCard> implements Node {
+        public AppliedGiftCard() {
+        }
+
+        public AppliedGiftCard(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "amountUsed": {
+                        responseData.put(key, new BigDecimal(jsonAsString(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "balance": {
+                        responseData.put(key, new BigDecimal(jsonAsString(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "id": {
+                        responseData.put(key, new ID(jsonAsString(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "lastCharacters": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public AppliedGiftCard(ID id) {
+            this();
+            optimisticData.put("id", id);
+        }
+
+        public List<Node> getNodes() {
+            List<Node> children = new ArrayList<>();
+
+            children.add(this);
+
+            return children;
+        }
+
+        public String getGraphQlTypeName() {
+            return "AppliedGiftCard";
+        }
+
+        public BigDecimal getAmountUsed() {
+            return (BigDecimal) get("amountUsed");
+        }
+
+        public AppliedGiftCard setAmountUsed(BigDecimal arg) {
+            optimisticData.put("amountUsed", arg);
+            return this;
+        }
+
+        public BigDecimal getBalance() {
+            return (BigDecimal) get("balance");
+        }
+
+        public AppliedGiftCard setBalance(BigDecimal arg) {
+            optimisticData.put("balance", arg);
+            return this;
+        }
+
+        public ID getId() {
+            return (ID) get("id");
+        }
+
+        public String getLastCharacters() {
+            return (String) get("lastCharacters");
+        }
+
+        public AppliedGiftCard setLastCharacters(String arg) {
+            optimisticData.put("lastCharacters", arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (key) {
+                case "amountUsed": return false;
+
+                case "balance": return false;
+
+                case "id": return false;
+
+                case "lastCharacters": return false;
+
+                default: return false;
+            }
+        }
+    }
+
     public interface AttributeQueryDefinition {
         void define(AttributeQuery _queryBuilder);
     }
@@ -250,6 +387,119 @@ public class Storefront {
         }
     }
 
+    public interface AvailableShippingRatesQueryDefinition {
+        void define(AvailableShippingRatesQuery _queryBuilder);
+    }
+
+    public static class AvailableShippingRatesQuery extends Query<AvailableShippingRatesQuery> {
+        AvailableShippingRatesQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        public AvailableShippingRatesQuery ready() {
+            startField("ready");
+
+            return this;
+        }
+
+        public AvailableShippingRatesQuery shippingRates(ShippingRateQueryDefinition queryDef) {
+            startField("shippingRates");
+
+            _queryBuilder.append('{');
+            queryDef.define(new ShippingRateQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+    }
+
+    public static class AvailableShippingRates extends AbstractResponse<AvailableShippingRates> {
+        public AvailableShippingRates() {
+        }
+
+        public AvailableShippingRates(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "ready": {
+                        responseData.put(key, jsonAsBoolean(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "shippingRates": {
+                        List<ShippingRate> optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            List<ShippingRate> list1 = new ArrayList<>();
+                            for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                                list1.add(new ShippingRate(jsonAsObject(element1, key)));
+                            }
+
+                            optional1 = list1;
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public List<Node> getNodes() {
+            List<Node> children = new ArrayList<>();
+
+            if (getShippingRates() != null) {
+                for (ShippingRate elem: getShippingRates()) {
+                    children.addAll(elem.getNodes());
+                }
+            }
+
+            return children;
+        }
+
+        public String getGraphQlTypeName() {
+            return "AvailableShippingRates";
+        }
+
+        public Boolean getReady() {
+            return (Boolean) get("ready");
+        }
+
+        public AvailableShippingRates setReady(Boolean arg) {
+            optimisticData.put("ready", arg);
+            return this;
+        }
+
+        public List<ShippingRate> getShippingRates() {
+            return (List<ShippingRate>) get("shippingRates");
+        }
+
+        public AvailableShippingRates setShippingRates(List<ShippingRate> arg) {
+            optimisticData.put("shippingRates", arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (key) {
+                case "ready": return false;
+
+                case "shippingRates": return true;
+
+                default: return false;
+            }
+        }
+    }
+
     public interface CheckoutQueryDefinition {
         void define(CheckoutQuery _queryBuilder);
     }
@@ -259,6 +509,26 @@ public class Storefront {
             super(_queryBuilder);
 
             startField("id");
+        }
+
+        public CheckoutQuery appliedGiftCards(AppliedGiftCardQueryDefinition queryDef) {
+            startField("appliedGiftCards");
+
+            _queryBuilder.append('{');
+            queryDef.define(new AppliedGiftCardQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        public CheckoutQuery availableShippingRates(AvailableShippingRatesQueryDefinition queryDef) {
+            startField("availableShippingRates");
+
+            _queryBuilder.append('{');
+            queryDef.define(new AvailableShippingRatesQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
         }
 
         public CheckoutQuery completedAt() {
@@ -285,6 +555,28 @@ public class Storefront {
             _queryBuilder.append('{');
             queryDef.define(new AttributeQuery(_queryBuilder));
             _queryBuilder.append('}');
+
+            return this;
+        }
+
+        public CheckoutQuery customer(CustomerQueryDefinition queryDef) {
+            startField("customer");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CustomerQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        public CheckoutQuery discountCode() {
+            startField("discountCode");
+
+            return this;
+        }
+
+        public CheckoutQuery email() {
+            startField("email");
 
             return this;
         }
@@ -414,6 +706,12 @@ public class Storefront {
             return this;
         }
 
+        public CheckoutQuery totalDiscounts() {
+            startField("totalDiscounts");
+
+            return this;
+        }
+
         public CheckoutQuery totalPrice() {
             startField("totalPrice");
 
@@ -448,6 +746,28 @@ public class Storefront {
                 String key = field.getKey();
                 String fieldName = getFieldName(key);
                 switch (fieldName) {
+                    case "appliedGiftCards": {
+                        List<AppliedGiftCard> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new AppliedGiftCard(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "availableShippingRates": {
+                        AvailableShippingRates optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new AvailableShippingRates(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
                     case "completedAt": {
                         DateTime optional1 = null;
                         if (!field.getValue().isJsonNull()) {
@@ -478,6 +798,39 @@ public class Storefront {
                         }
 
                         responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "customer": {
+                        Customer optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new Customer(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "discountCode": {
+                        String optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = jsonAsString(field.getValue(), key);
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "email": {
+                        String optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = jsonAsString(field.getValue(), key);
+                        }
+
+                        responseData.put(key, optional1);
 
                         break;
                     }
@@ -585,6 +938,12 @@ public class Storefront {
                         break;
                     }
 
+                    case "totalDiscounts": {
+                        responseData.put(key, new BigDecimal(jsonAsString(field.getValue(), key)));
+
+                        break;
+                    }
+
                     case "totalPrice": {
                         responseData.put(key, new BigDecimal(jsonAsString(field.getValue(), key)));
 
@@ -630,10 +989,24 @@ public class Storefront {
 
             children.add(this);
 
+            if (getAppliedGiftCards() != null) {
+                for (AppliedGiftCard elem: getAppliedGiftCards()) {
+                    children.addAll(elem.getNodes());
+                }
+            }
+
+            if (getAvailableShippingRates() != null) {
+                children.addAll(getAvailableShippingRates().getNodes());
+            }
+
             if (getCustomAttributes() != null) {
                 for (Attribute elem: getCustomAttributes()) {
                     children.addAll(elem.getNodes());
                 }
+            }
+
+            if (getCustomer() != null) {
+                children.addAll(getCustomer().getNodes());
             }
 
             if (getLineItems() != null) {
@@ -657,6 +1030,24 @@ public class Storefront {
 
         public String getGraphQlTypeName() {
             return "Checkout";
+        }
+
+        public List<AppliedGiftCard> getAppliedGiftCards() {
+            return (List<AppliedGiftCard>) get("appliedGiftCards");
+        }
+
+        public Checkout setAppliedGiftCards(List<AppliedGiftCard> arg) {
+            optimisticData.put("appliedGiftCards", arg);
+            return this;
+        }
+
+        public AvailableShippingRates getAvailableShippingRates() {
+            return (AvailableShippingRates) get("availableShippingRates");
+        }
+
+        public Checkout setAvailableShippingRates(AvailableShippingRates arg) {
+            optimisticData.put("availableShippingRates", arg);
+            return this;
         }
 
         public DateTime getCompletedAt() {
@@ -692,6 +1083,33 @@ public class Storefront {
 
         public Checkout setCustomAttributes(List<Attribute> arg) {
             optimisticData.put("customAttributes", arg);
+            return this;
+        }
+
+        public Customer getCustomer() {
+            return (Customer) get("customer");
+        }
+
+        public Checkout setCustomer(Customer arg) {
+            optimisticData.put("customer", arg);
+            return this;
+        }
+
+        public String getDiscountCode() {
+            return (String) get("discountCode");
+        }
+
+        public Checkout setDiscountCode(String arg) {
+            optimisticData.put("discountCode", arg);
+            return this;
+        }
+
+        public String getEmail() {
+            return (String) get("email");
+        }
+
+        public Checkout setEmail(String arg) {
+            optimisticData.put("email", arg);
             return this;
         }
 
@@ -807,6 +1225,15 @@ public class Storefront {
             return this;
         }
 
+        public BigDecimal getTotalDiscounts() {
+            return (BigDecimal) get("totalDiscounts");
+        }
+
+        public Checkout setTotalDiscounts(BigDecimal arg) {
+            optimisticData.put("totalDiscounts", arg);
+            return this;
+        }
+
         public BigDecimal getTotalPrice() {
             return (BigDecimal) get("totalPrice");
         }
@@ -845,6 +1272,10 @@ public class Storefront {
 
         public boolean unwrapsToObject(String key) {
             switch (key) {
+                case "appliedGiftCards": return true;
+
+                case "availableShippingRates": return true;
+
                 case "completedAt": return false;
 
                 case "createdAt": return false;
@@ -852,6 +1283,12 @@ public class Storefront {
                 case "currencyCode": return false;
 
                 case "customAttributes": return true;
+
+                case "customer": return true;
+
+                case "discountCode": return false;
+
+                case "email": return false;
 
                 case "id": return false;
 
@@ -878,6 +1315,8 @@ public class Storefront {
                 case "taxExempt": return false;
 
                 case "taxesIncluded": return false;
+
+                case "totalDiscounts": return false;
 
                 case "totalPrice": return false;
 
@@ -984,12 +1423,6 @@ public class Storefront {
             return this;
         }
 
-        public CheckoutAddLineItemsPayloadQuery clientMutationId() {
-            startField("clientMutationId");
-
-            return this;
-        }
-
         public CheckoutAddLineItemsPayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
 
@@ -1014,17 +1447,6 @@ public class Storefront {
                         Checkout optional1 = null;
                         if (!field.getValue().isJsonNull()) {
                             optional1 = new Checkout(jsonAsObject(field.getValue(), key));
-                        }
-
-                        responseData.put(key, optional1);
-
-                        break;
-                    }
-
-                    case "clientMutationId": {
-                        String optional1 = null;
-                        if (!field.getValue().isJsonNull()) {
-                            optional1 = jsonAsString(field.getValue(), key);
                         }
 
                         responseData.put(key, optional1);
@@ -1083,15 +1505,6 @@ public class Storefront {
             return this;
         }
 
-        public String getClientMutationId() {
-            return (String) get("clientMutationId");
-        }
-
-        public CheckoutAddLineItemsPayload setClientMutationId(String arg) {
-            optimisticData.put("clientMutationId", arg);
-            return this;
-        }
-
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -1105,8 +1518,6 @@ public class Storefront {
             switch (key) {
                 case "checkout": return true;
 
-                case "clientMutationId": return false;
-
                 case "userErrors": return true;
 
                 default: return false;
@@ -1116,6 +1527,8 @@ public class Storefront {
 
     public static class CheckoutAttributesUpdateInput implements Serializable {
         private ID checkoutId;
+
+        private Boolean allowPartialAddresses;
 
         private String clientMutationId;
 
@@ -1133,6 +1546,15 @@ public class Storefront {
 
         public CheckoutAttributesUpdateInput setCheckoutId(ID checkoutId) {
             this.checkoutId = checkoutId;
+            return this;
+        }
+
+        public Boolean getAllowPartialAddresses() {
+            return allowPartialAddresses;
+        }
+
+        public CheckoutAttributesUpdateInput setAllowPartialAddresses(Boolean allowPartialAddresses) {
+            this.allowPartialAddresses = allowPartialAddresses;
             return this;
         }
 
@@ -1171,6 +1593,13 @@ public class Storefront {
             separator = ",";
             _queryBuilder.append("checkoutId:");
             Query.appendQuotedString(_queryBuilder, checkoutId.toString());
+
+            if (allowPartialAddresses != null) {
+                _queryBuilder.append(separator);
+                separator = ",";
+                _queryBuilder.append("allowPartialAddresses:");
+                _queryBuilder.append(allowPartialAddresses);
+            }
 
             if (clientMutationId != null) {
                 _queryBuilder.append(separator);
@@ -1224,12 +1653,6 @@ public class Storefront {
             return this;
         }
 
-        public CheckoutAttributesUpdatePayloadQuery clientMutationId() {
-            startField("clientMutationId");
-
-            return this;
-        }
-
         public CheckoutAttributesUpdatePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
 
@@ -1252,17 +1675,6 @@ public class Storefront {
                 switch (fieldName) {
                     case "checkout": {
                         responseData.put(key, new Checkout(jsonAsObject(field.getValue(), key)));
-
-                        break;
-                    }
-
-                    case "clientMutationId": {
-                        String optional1 = null;
-                        if (!field.getValue().isJsonNull()) {
-                            optional1 = jsonAsString(field.getValue(), key);
-                        }
-
-                        responseData.put(key, optional1);
 
                         break;
                     }
@@ -1318,15 +1730,6 @@ public class Storefront {
             return this;
         }
 
-        public String getClientMutationId() {
-            return (String) get("clientMutationId");
-        }
-
-        public CheckoutAttributesUpdatePayload setClientMutationId(String arg) {
-            optimisticData.put("clientMutationId", arg);
-            return this;
-        }
-
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -1339,8 +1742,6 @@ public class Storefront {
         public boolean unwrapsToObject(String key) {
             switch (key) {
                 case "checkout": return true;
-
-                case "clientMutationId": return false;
 
                 case "userErrors": return true;
 
@@ -1505,12 +1906,6 @@ public class Storefront {
             return this;
         }
 
-        public CheckoutCompleteWithCreditCardPayloadQuery clientMutationId() {
-            startField("clientMutationId");
-
-            return this;
-        }
-
         public CheckoutCompleteWithCreditCardPayloadQuery payment(PaymentQueryDefinition queryDef) {
             startField("payment");
 
@@ -1543,17 +1938,6 @@ public class Storefront {
                 switch (fieldName) {
                     case "checkout": {
                         responseData.put(key, new Checkout(jsonAsObject(field.getValue(), key)));
-
-                        break;
-                    }
-
-                    case "clientMutationId": {
-                        String optional1 = null;
-                        if (!field.getValue().isJsonNull()) {
-                            optional1 = jsonAsString(field.getValue(), key);
-                        }
-
-                        responseData.put(key, optional1);
 
                         break;
                     }
@@ -1624,15 +2008,6 @@ public class Storefront {
             return this;
         }
 
-        public String getClientMutationId() {
-            return (String) get("clientMutationId");
-        }
-
-        public CheckoutCompleteWithCreditCardPayload setClientMutationId(String arg) {
-            optimisticData.put("clientMutationId", arg);
-            return this;
-        }
-
         public Payment getPayment() {
             return (Payment) get("payment");
         }
@@ -1654,8 +2029,6 @@ public class Storefront {
         public boolean unwrapsToObject(String key) {
             switch (key) {
                 case "checkout": return true;
-
-                case "clientMutationId": return false;
 
                 case "payment": return true;
 
@@ -1858,12 +2231,6 @@ public class Storefront {
             return this;
         }
 
-        public CheckoutCompleteWithTokenizedPaymentPayloadQuery clientMutationId() {
-            startField("clientMutationId");
-
-            return this;
-        }
-
         public CheckoutCompleteWithTokenizedPaymentPayloadQuery payment(PaymentQueryDefinition queryDef) {
             startField("payment");
 
@@ -1896,17 +2263,6 @@ public class Storefront {
                 switch (fieldName) {
                     case "checkout": {
                         responseData.put(key, new Checkout(jsonAsObject(field.getValue(), key)));
-
-                        break;
-                    }
-
-                    case "clientMutationId": {
-                        String optional1 = null;
-                        if (!field.getValue().isJsonNull()) {
-                            optional1 = jsonAsString(field.getValue(), key);
-                        }
-
-                        responseData.put(key, optional1);
 
                         break;
                     }
@@ -1977,15 +2333,6 @@ public class Storefront {
             return this;
         }
 
-        public String getClientMutationId() {
-            return (String) get("clientMutationId");
-        }
-
-        public CheckoutCompleteWithTokenizedPaymentPayload setClientMutationId(String arg) {
-            optimisticData.put("clientMutationId", arg);
-            return this;
-        }
-
         public Payment getPayment() {
             return (Payment) get("payment");
         }
@@ -2008,8 +2355,6 @@ public class Storefront {
             switch (key) {
                 case "checkout": return true;
 
-                case "clientMutationId": return false;
-
                 case "payment": return true;
 
                 case "userErrors": return true;
@@ -2020,6 +2365,8 @@ public class Storefront {
     }
 
     public static class CheckoutCreateInput implements Serializable {
+        private Boolean allowPartialAddresses;
+
         private String clientMutationId;
 
         private List<AttributeInput> customAttributes;
@@ -2031,6 +2378,15 @@ public class Storefront {
         private String note;
 
         private MailingAddressInput shippingAddress;
+
+        public Boolean getAllowPartialAddresses() {
+            return allowPartialAddresses;
+        }
+
+        public CheckoutCreateInput setAllowPartialAddresses(Boolean allowPartialAddresses) {
+            this.allowPartialAddresses = allowPartialAddresses;
+            return this;
+        }
 
         public String getClientMutationId() {
             return clientMutationId;
@@ -2089,6 +2445,13 @@ public class Storefront {
         public void appendTo(StringBuilder _queryBuilder) {
             String separator = "";
             _queryBuilder.append('{');
+
+            if (allowPartialAddresses != null) {
+                _queryBuilder.append(separator);
+                separator = ",";
+                _queryBuilder.append("allowPartialAddresses:");
+                _queryBuilder.append(allowPartialAddresses);
+            }
 
             if (clientMutationId != null) {
                 _queryBuilder.append(separator);
@@ -2171,12 +2534,6 @@ public class Storefront {
             return this;
         }
 
-        public CheckoutCreatePayloadQuery clientMutationId() {
-            startField("clientMutationId");
-
-            return this;
-        }
-
         public CheckoutCreatePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
 
@@ -2201,17 +2558,6 @@ public class Storefront {
                         Checkout optional1 = null;
                         if (!field.getValue().isJsonNull()) {
                             optional1 = new Checkout(jsonAsObject(field.getValue(), key));
-                        }
-
-                        responseData.put(key, optional1);
-
-                        break;
-                    }
-
-                    case "clientMutationId": {
-                        String optional1 = null;
-                        if (!field.getValue().isJsonNull()) {
-                            optional1 = jsonAsString(field.getValue(), key);
                         }
 
                         responseData.put(key, optional1);
@@ -2270,15 +2616,6 @@ public class Storefront {
             return this;
         }
 
-        public String getClientMutationId() {
-            return (String) get("clientMutationId");
-        }
-
-        public CheckoutCreatePayload setClientMutationId(String arg) {
-            optimisticData.put("clientMutationId", arg);
-            return this;
-        }
-
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -2292,7 +2629,711 @@ public class Storefront {
             switch (key) {
                 case "checkout": return true;
 
-                case "clientMutationId": return false;
+                case "userErrors": return true;
+
+                default: return false;
+            }
+        }
+    }
+
+    public static class CheckoutCustomerAssociateInput implements Serializable {
+        private ID checkoutId;
+
+        private String customerAccessToken;
+
+        private String clientMutationId;
+
+        public CheckoutCustomerAssociateInput(ID checkoutId, String customerAccessToken) {
+            this.checkoutId = checkoutId;
+
+            this.customerAccessToken = customerAccessToken;
+        }
+
+        public ID getCheckoutId() {
+            return checkoutId;
+        }
+
+        public CheckoutCustomerAssociateInput setCheckoutId(ID checkoutId) {
+            this.checkoutId = checkoutId;
+            return this;
+        }
+
+        public String getCustomerAccessToken() {
+            return customerAccessToken;
+        }
+
+        public CheckoutCustomerAssociateInput setCustomerAccessToken(String customerAccessToken) {
+            this.customerAccessToken = customerAccessToken;
+            return this;
+        }
+
+        public String getClientMutationId() {
+            return clientMutationId;
+        }
+
+        public CheckoutCustomerAssociateInput setClientMutationId(String clientMutationId) {
+            this.clientMutationId = clientMutationId;
+            return this;
+        }
+
+        public void appendTo(StringBuilder _queryBuilder) {
+            String separator = "";
+            _queryBuilder.append('{');
+
+            _queryBuilder.append(separator);
+            separator = ",";
+            _queryBuilder.append("checkoutId:");
+            Query.appendQuotedString(_queryBuilder, checkoutId.toString());
+
+            _queryBuilder.append(separator);
+            separator = ",";
+            _queryBuilder.append("customerAccessToken:");
+            Query.appendQuotedString(_queryBuilder, customerAccessToken.toString());
+
+            if (clientMutationId != null) {
+                _queryBuilder.append(separator);
+                separator = ",";
+                _queryBuilder.append("clientMutationId:");
+                Query.appendQuotedString(_queryBuilder, clientMutationId.toString());
+            }
+
+            _queryBuilder.append('}');
+        }
+    }
+
+    public interface CheckoutCustomerAssociatePayloadQueryDefinition {
+        void define(CheckoutCustomerAssociatePayloadQuery _queryBuilder);
+    }
+
+    public static class CheckoutCustomerAssociatePayloadQuery extends Query<CheckoutCustomerAssociatePayloadQuery> {
+        CheckoutCustomerAssociatePayloadQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        public CheckoutCustomerAssociatePayloadQuery checkout(CheckoutQueryDefinition queryDef) {
+            startField("checkout");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CheckoutQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        public CheckoutCustomerAssociatePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
+            startField("userErrors");
+
+            _queryBuilder.append('{');
+            queryDef.define(new UserErrorQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+    }
+
+    public static class CheckoutCustomerAssociatePayload extends AbstractResponse<CheckoutCustomerAssociatePayload> {
+        public CheckoutCustomerAssociatePayload() {
+        }
+
+        public CheckoutCustomerAssociatePayload(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "checkout": {
+                        responseData.put(key, new Checkout(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "userErrors": {
+                        List<UserError> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new UserError(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public List<Node> getNodes() {
+            List<Node> children = new ArrayList<>();
+
+            if (getCheckout() != null) {
+                children.addAll(getCheckout().getNodes());
+            }
+
+            if (getUserErrors() != null) {
+                for (UserError elem: getUserErrors()) {
+                    children.addAll(elem.getNodes());
+                }
+            }
+
+            return children;
+        }
+
+        public String getGraphQlTypeName() {
+            return "CheckoutCustomerAssociatePayload";
+        }
+
+        public Checkout getCheckout() {
+            return (Checkout) get("checkout");
+        }
+
+        public CheckoutCustomerAssociatePayload setCheckout(Checkout arg) {
+            optimisticData.put("checkout", arg);
+            return this;
+        }
+
+        public List<UserError> getUserErrors() {
+            return (List<UserError>) get("userErrors");
+        }
+
+        public CheckoutCustomerAssociatePayload setUserErrors(List<UserError> arg) {
+            optimisticData.put("userErrors", arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (key) {
+                case "checkout": return true;
+
+                case "userErrors": return true;
+
+                default: return false;
+            }
+        }
+    }
+
+    public static class CheckoutCustomerDisassociateInput implements Serializable {
+        private ID checkoutId;
+
+        private String clientMutationId;
+
+        public CheckoutCustomerDisassociateInput(ID checkoutId) {
+            this.checkoutId = checkoutId;
+        }
+
+        public ID getCheckoutId() {
+            return checkoutId;
+        }
+
+        public CheckoutCustomerDisassociateInput setCheckoutId(ID checkoutId) {
+            this.checkoutId = checkoutId;
+            return this;
+        }
+
+        public String getClientMutationId() {
+            return clientMutationId;
+        }
+
+        public CheckoutCustomerDisassociateInput setClientMutationId(String clientMutationId) {
+            this.clientMutationId = clientMutationId;
+            return this;
+        }
+
+        public void appendTo(StringBuilder _queryBuilder) {
+            String separator = "";
+            _queryBuilder.append('{');
+
+            _queryBuilder.append(separator);
+            separator = ",";
+            _queryBuilder.append("checkoutId:");
+            Query.appendQuotedString(_queryBuilder, checkoutId.toString());
+
+            if (clientMutationId != null) {
+                _queryBuilder.append(separator);
+                separator = ",";
+                _queryBuilder.append("clientMutationId:");
+                Query.appendQuotedString(_queryBuilder, clientMutationId.toString());
+            }
+
+            _queryBuilder.append('}');
+        }
+    }
+
+    public interface CheckoutCustomerDisassociatePayloadQueryDefinition {
+        void define(CheckoutCustomerDisassociatePayloadQuery _queryBuilder);
+    }
+
+    public static class CheckoutCustomerDisassociatePayloadQuery extends Query<CheckoutCustomerDisassociatePayloadQuery> {
+        CheckoutCustomerDisassociatePayloadQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        public CheckoutCustomerDisassociatePayloadQuery checkout(CheckoutQueryDefinition queryDef) {
+            startField("checkout");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CheckoutQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        public CheckoutCustomerDisassociatePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
+            startField("userErrors");
+
+            _queryBuilder.append('{');
+            queryDef.define(new UserErrorQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+    }
+
+    public static class CheckoutCustomerDisassociatePayload extends AbstractResponse<CheckoutCustomerDisassociatePayload> {
+        public CheckoutCustomerDisassociatePayload() {
+        }
+
+        public CheckoutCustomerDisassociatePayload(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "checkout": {
+                        responseData.put(key, new Checkout(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "userErrors": {
+                        List<UserError> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new UserError(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public List<Node> getNodes() {
+            List<Node> children = new ArrayList<>();
+
+            if (getCheckout() != null) {
+                children.addAll(getCheckout().getNodes());
+            }
+
+            if (getUserErrors() != null) {
+                for (UserError elem: getUserErrors()) {
+                    children.addAll(elem.getNodes());
+                }
+            }
+
+            return children;
+        }
+
+        public String getGraphQlTypeName() {
+            return "CheckoutCustomerDisassociatePayload";
+        }
+
+        public Checkout getCheckout() {
+            return (Checkout) get("checkout");
+        }
+
+        public CheckoutCustomerDisassociatePayload setCheckout(Checkout arg) {
+            optimisticData.put("checkout", arg);
+            return this;
+        }
+
+        public List<UserError> getUserErrors() {
+            return (List<UserError>) get("userErrors");
+        }
+
+        public CheckoutCustomerDisassociatePayload setUserErrors(List<UserError> arg) {
+            optimisticData.put("userErrors", arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (key) {
+                case "checkout": return true;
+
+                case "userErrors": return true;
+
+                default: return false;
+            }
+        }
+    }
+
+    public static class CheckoutEmailUpdateInput implements Serializable {
+        private ID checkoutId;
+
+        private String email;
+
+        private String clientMutationId;
+
+        public CheckoutEmailUpdateInput(ID checkoutId, String email) {
+            this.checkoutId = checkoutId;
+
+            this.email = email;
+        }
+
+        public ID getCheckoutId() {
+            return checkoutId;
+        }
+
+        public CheckoutEmailUpdateInput setCheckoutId(ID checkoutId) {
+            this.checkoutId = checkoutId;
+            return this;
+        }
+
+        public String getEmail() {
+            return email;
+        }
+
+        public CheckoutEmailUpdateInput setEmail(String email) {
+            this.email = email;
+            return this;
+        }
+
+        public String getClientMutationId() {
+            return clientMutationId;
+        }
+
+        public CheckoutEmailUpdateInput setClientMutationId(String clientMutationId) {
+            this.clientMutationId = clientMutationId;
+            return this;
+        }
+
+        public void appendTo(StringBuilder _queryBuilder) {
+            String separator = "";
+            _queryBuilder.append('{');
+
+            _queryBuilder.append(separator);
+            separator = ",";
+            _queryBuilder.append("checkoutId:");
+            Query.appendQuotedString(_queryBuilder, checkoutId.toString());
+
+            _queryBuilder.append(separator);
+            separator = ",";
+            _queryBuilder.append("email:");
+            Query.appendQuotedString(_queryBuilder, email.toString());
+
+            if (clientMutationId != null) {
+                _queryBuilder.append(separator);
+                separator = ",";
+                _queryBuilder.append("clientMutationId:");
+                Query.appendQuotedString(_queryBuilder, clientMutationId.toString());
+            }
+
+            _queryBuilder.append('}');
+        }
+    }
+
+    public interface CheckoutEmailUpdatePayloadQueryDefinition {
+        void define(CheckoutEmailUpdatePayloadQuery _queryBuilder);
+    }
+
+    public static class CheckoutEmailUpdatePayloadQuery extends Query<CheckoutEmailUpdatePayloadQuery> {
+        CheckoutEmailUpdatePayloadQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        public CheckoutEmailUpdatePayloadQuery checkout(CheckoutQueryDefinition queryDef) {
+            startField("checkout");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CheckoutQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        public CheckoutEmailUpdatePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
+            startField("userErrors");
+
+            _queryBuilder.append('{');
+            queryDef.define(new UserErrorQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+    }
+
+    public static class CheckoutEmailUpdatePayload extends AbstractResponse<CheckoutEmailUpdatePayload> {
+        public CheckoutEmailUpdatePayload() {
+        }
+
+        public CheckoutEmailUpdatePayload(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "checkout": {
+                        responseData.put(key, new Checkout(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "userErrors": {
+                        List<UserError> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new UserError(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public List<Node> getNodes() {
+            List<Node> children = new ArrayList<>();
+
+            if (getCheckout() != null) {
+                children.addAll(getCheckout().getNodes());
+            }
+
+            if (getUserErrors() != null) {
+                for (UserError elem: getUserErrors()) {
+                    children.addAll(elem.getNodes());
+                }
+            }
+
+            return children;
+        }
+
+        public String getGraphQlTypeName() {
+            return "CheckoutEmailUpdatePayload";
+        }
+
+        public Checkout getCheckout() {
+            return (Checkout) get("checkout");
+        }
+
+        public CheckoutEmailUpdatePayload setCheckout(Checkout arg) {
+            optimisticData.put("checkout", arg);
+            return this;
+        }
+
+        public List<UserError> getUserErrors() {
+            return (List<UserError>) get("userErrors");
+        }
+
+        public CheckoutEmailUpdatePayload setUserErrors(List<UserError> arg) {
+            optimisticData.put("userErrors", arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (key) {
+                case "checkout": return true;
+
+                case "userErrors": return true;
+
+                default: return false;
+            }
+        }
+    }
+
+    public static class CheckoutGiftCardApplyInput implements Serializable {
+        private ID checkoutId;
+
+        private String giftCardCode;
+
+        private String clientMutationId;
+
+        public CheckoutGiftCardApplyInput(ID checkoutId, String giftCardCode) {
+            this.checkoutId = checkoutId;
+
+            this.giftCardCode = giftCardCode;
+        }
+
+        public ID getCheckoutId() {
+            return checkoutId;
+        }
+
+        public CheckoutGiftCardApplyInput setCheckoutId(ID checkoutId) {
+            this.checkoutId = checkoutId;
+            return this;
+        }
+
+        public String getGiftCardCode() {
+            return giftCardCode;
+        }
+
+        public CheckoutGiftCardApplyInput setGiftCardCode(String giftCardCode) {
+            this.giftCardCode = giftCardCode;
+            return this;
+        }
+
+        public String getClientMutationId() {
+            return clientMutationId;
+        }
+
+        public CheckoutGiftCardApplyInput setClientMutationId(String clientMutationId) {
+            this.clientMutationId = clientMutationId;
+            return this;
+        }
+
+        public void appendTo(StringBuilder _queryBuilder) {
+            String separator = "";
+            _queryBuilder.append('{');
+
+            _queryBuilder.append(separator);
+            separator = ",";
+            _queryBuilder.append("checkoutId:");
+            Query.appendQuotedString(_queryBuilder, checkoutId.toString());
+
+            _queryBuilder.append(separator);
+            separator = ",";
+            _queryBuilder.append("giftCardCode:");
+            Query.appendQuotedString(_queryBuilder, giftCardCode.toString());
+
+            if (clientMutationId != null) {
+                _queryBuilder.append(separator);
+                separator = ",";
+                _queryBuilder.append("clientMutationId:");
+                Query.appendQuotedString(_queryBuilder, clientMutationId.toString());
+            }
+
+            _queryBuilder.append('}');
+        }
+    }
+
+    public interface CheckoutGiftCardApplyPayloadQueryDefinition {
+        void define(CheckoutGiftCardApplyPayloadQuery _queryBuilder);
+    }
+
+    public static class CheckoutGiftCardApplyPayloadQuery extends Query<CheckoutGiftCardApplyPayloadQuery> {
+        CheckoutGiftCardApplyPayloadQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        public CheckoutGiftCardApplyPayloadQuery checkout(CheckoutQueryDefinition queryDef) {
+            startField("checkout");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CheckoutQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        public CheckoutGiftCardApplyPayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
+            startField("userErrors");
+
+            _queryBuilder.append('{');
+            queryDef.define(new UserErrorQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+    }
+
+    public static class CheckoutGiftCardApplyPayload extends AbstractResponse<CheckoutGiftCardApplyPayload> {
+        public CheckoutGiftCardApplyPayload() {
+        }
+
+        public CheckoutGiftCardApplyPayload(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "checkout": {
+                        responseData.put(key, new Checkout(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "userErrors": {
+                        List<UserError> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new UserError(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public List<Node> getNodes() {
+            List<Node> children = new ArrayList<>();
+
+            if (getCheckout() != null) {
+                children.addAll(getCheckout().getNodes());
+            }
+
+            if (getUserErrors() != null) {
+                for (UserError elem: getUserErrors()) {
+                    children.addAll(elem.getNodes());
+                }
+            }
+
+            return children;
+        }
+
+        public String getGraphQlTypeName() {
+            return "CheckoutGiftCardApplyPayload";
+        }
+
+        public Checkout getCheckout() {
+            return (Checkout) get("checkout");
+        }
+
+        public CheckoutGiftCardApplyPayload setCheckout(Checkout arg) {
+            optimisticData.put("checkout", arg);
+            return this;
+        }
+
+        public List<UserError> getUserErrors() {
+            return (List<UserError>) get("userErrors");
+        }
+
+        public CheckoutGiftCardApplyPayload setUserErrors(List<UserError> arg) {
+            optimisticData.put("userErrors", arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (key) {
+                case "checkout": return true;
 
                 case "userErrors": return true;
 
@@ -2385,12 +3426,6 @@ public class Storefront {
             return this;
         }
 
-        public CheckoutShippingAddressUpdatePayloadQuery clientMutationId() {
-            startField("clientMutationId");
-
-            return this;
-        }
-
         public CheckoutShippingAddressUpdatePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
 
@@ -2413,17 +3448,6 @@ public class Storefront {
                 switch (fieldName) {
                     case "checkout": {
                         responseData.put(key, new Checkout(jsonAsObject(field.getValue(), key)));
-
-                        break;
-                    }
-
-                    case "clientMutationId": {
-                        String optional1 = null;
-                        if (!field.getValue().isJsonNull()) {
-                            optional1 = jsonAsString(field.getValue(), key);
-                        }
-
-                        responseData.put(key, optional1);
 
                         break;
                     }
@@ -2479,15 +3503,6 @@ public class Storefront {
             return this;
         }
 
-        public String getClientMutationId() {
-            return (String) get("clientMutationId");
-        }
-
-        public CheckoutShippingAddressUpdatePayload setClientMutationId(String arg) {
-            optimisticData.put("clientMutationId", arg);
-            return this;
-        }
-
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -2500,8 +3515,6 @@ public class Storefront {
         public boolean unwrapsToObject(String key) {
             switch (key) {
                 case "checkout": return true;
-
-                case "clientMutationId": return false;
 
                 case "userErrors": return true;
 
@@ -2594,12 +3607,6 @@ public class Storefront {
             return this;
         }
 
-        public CheckoutShippingLineUpdatePayloadQuery clientMutationId() {
-            startField("clientMutationId");
-
-            return this;
-        }
-
         public CheckoutShippingLineUpdatePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
 
@@ -2624,17 +3631,6 @@ public class Storefront {
                         Checkout optional1 = null;
                         if (!field.getValue().isJsonNull()) {
                             optional1 = new Checkout(jsonAsObject(field.getValue(), key));
-                        }
-
-                        responseData.put(key, optional1);
-
-                        break;
-                    }
-
-                    case "clientMutationId": {
-                        String optional1 = null;
-                        if (!field.getValue().isJsonNull()) {
-                            optional1 = jsonAsString(field.getValue(), key);
                         }
 
                         responseData.put(key, optional1);
@@ -2693,15 +3689,6 @@ public class Storefront {
             return this;
         }
 
-        public String getClientMutationId() {
-            return (String) get("clientMutationId");
-        }
-
-        public CheckoutShippingLineUpdatePayload setClientMutationId(String arg) {
-            optimisticData.put("clientMutationId", arg);
-            return this;
-        }
-
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -2714,8 +3701,6 @@ public class Storefront {
         public boolean unwrapsToObject(String key) {
             switch (key) {
                 case "checkout": return true;
-
-                case "clientMutationId": return false;
 
                 case "userErrors": return true;
 
@@ -3617,6 +4602,10 @@ public class Storefront {
 
         CENTER,
 
+        LEFT,
+
+        RIGHT,
+
         TOP,
 
         UNKNOWN_VALUE;
@@ -3633,6 +4622,14 @@ public class Storefront {
 
                 case "CENTER": {
                     return CENTER;
+                }
+
+                case "LEFT": {
+                    return LEFT;
+                }
+
+                case "RIGHT": {
+                    return RIGHT;
                 }
 
                 case "TOP": {
@@ -3652,6 +4649,14 @@ public class Storefront {
 
                 case CENTER: {
                     return "CENTER";
+                }
+
+                case LEFT: {
+                    return "LEFT";
+                }
+
+                case RIGHT: {
+                    return "RIGHT";
                 }
 
                 case TOP: {
@@ -5199,6 +6204,12 @@ public class Storefront {
             return this;
         }
 
+        public CustomerQuery phone() {
+            startField("phone");
+
+            return this;
+        }
+
         public CustomerQuery updatedAt() {
             startField("updatedAt");
 
@@ -5291,6 +6302,17 @@ public class Storefront {
 
                     case "orders": {
                         responseData.put(key, new OrderConnection(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "phone": {
+                        String optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = jsonAsString(field.getValue(), key);
+                        }
+
+                        responseData.put(key, optional1);
 
                         break;
                     }
@@ -5424,6 +6446,15 @@ public class Storefront {
             return this;
         }
 
+        public String getPhone() {
+            return (String) get("phone");
+        }
+
+        public Customer setPhone(String arg) {
+            optimisticData.put("phone", arg);
+            return this;
+        }
+
         public DateTime getUpdatedAt() {
             return (DateTime) get("updatedAt");
         }
@@ -5454,6 +6485,8 @@ public class Storefront {
                 case "lastName": return false;
 
                 case "orders": return true;
+
+                case "phone": return false;
 
                 case "updatedAt": return false;
 
@@ -5629,12 +6662,6 @@ public class Storefront {
             super(_queryBuilder);
         }
 
-        public CustomerAccessTokenCreatePayloadQuery clientMutationId() {
-            startField("clientMutationId");
-
-            return this;
-        }
-
         public CustomerAccessTokenCreatePayloadQuery customerAccessToken(CustomerAccessTokenQueryDefinition queryDef) {
             startField("customerAccessToken");
 
@@ -5665,17 +6692,6 @@ public class Storefront {
                 String key = field.getKey();
                 String fieldName = getFieldName(key);
                 switch (fieldName) {
-                    case "clientMutationId": {
-                        String optional1 = null;
-                        if (!field.getValue().isJsonNull()) {
-                            optional1 = jsonAsString(field.getValue(), key);
-                        }
-
-                        responseData.put(key, optional1);
-
-                        break;
-                    }
-
                     case "customerAccessToken": {
                         CustomerAccessToken optional1 = null;
                         if (!field.getValue().isJsonNull()) {
@@ -5729,15 +6745,6 @@ public class Storefront {
             return "CustomerAccessTokenCreatePayload";
         }
 
-        public String getClientMutationId() {
-            return (String) get("clientMutationId");
-        }
-
-        public CustomerAccessTokenCreatePayload setClientMutationId(String arg) {
-            optimisticData.put("clientMutationId", arg);
-            return this;
-        }
-
         public CustomerAccessToken getCustomerAccessToken() {
             return (CustomerAccessToken) get("customerAccessToken");
         }
@@ -5758,8 +6765,6 @@ public class Storefront {
 
         public boolean unwrapsToObject(String key) {
             switch (key) {
-                case "clientMutationId": return false;
-
                 case "customerAccessToken": return true;
 
                 case "userErrors": return true;
@@ -5770,20 +6775,20 @@ public class Storefront {
     }
 
     public static class CustomerAccessTokenDeleteInput implements Serializable {
-        private String accessToken;
+        private String customerAccessToken;
 
         private String clientMutationId;
 
-        public CustomerAccessTokenDeleteInput(String accessToken) {
-            this.accessToken = accessToken;
+        public CustomerAccessTokenDeleteInput(String customerAccessToken) {
+            this.customerAccessToken = customerAccessToken;
         }
 
-        public String getAccessToken() {
-            return accessToken;
+        public String getCustomerAccessToken() {
+            return customerAccessToken;
         }
 
-        public CustomerAccessTokenDeleteInput setAccessToken(String accessToken) {
-            this.accessToken = accessToken;
+        public CustomerAccessTokenDeleteInput setCustomerAccessToken(String customerAccessToken) {
+            this.customerAccessToken = customerAccessToken;
             return this;
         }
 
@@ -5802,8 +6807,8 @@ public class Storefront {
 
             _queryBuilder.append(separator);
             separator = ",";
-            _queryBuilder.append("accessToken:");
-            Query.appendQuotedString(_queryBuilder, accessToken.toString());
+            _queryBuilder.append("customerAccessToken:");
+            Query.appendQuotedString(_queryBuilder, customerAccessToken.toString());
 
             if (clientMutationId != null) {
                 _queryBuilder.append(separator);
@@ -5823,12 +6828,6 @@ public class Storefront {
     public static class CustomerAccessTokenDeletePayloadQuery extends Query<CustomerAccessTokenDeletePayloadQuery> {
         CustomerAccessTokenDeletePayloadQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
-        }
-
-        public CustomerAccessTokenDeletePayloadQuery clientMutationId() {
-            startField("clientMutationId");
-
-            return this;
         }
 
         public CustomerAccessTokenDeletePayloadQuery deletedAccessToken() {
@@ -5863,17 +6862,6 @@ public class Storefront {
                 String key = field.getKey();
                 String fieldName = getFieldName(key);
                 switch (fieldName) {
-                    case "clientMutationId": {
-                        String optional1 = null;
-                        if (!field.getValue().isJsonNull()) {
-                            optional1 = jsonAsString(field.getValue(), key);
-                        }
-
-                        responseData.put(key, optional1);
-
-                        break;
-                    }
-
                     case "deletedAccessToken": {
                         String optional1 = null;
                         if (!field.getValue().isJsonNull()) {
@@ -5934,15 +6922,6 @@ public class Storefront {
             return "CustomerAccessTokenDeletePayload";
         }
 
-        public String getClientMutationId() {
-            return (String) get("clientMutationId");
-        }
-
-        public CustomerAccessTokenDeletePayload setClientMutationId(String arg) {
-            optimisticData.put("clientMutationId", arg);
-            return this;
-        }
-
         public String getDeletedAccessToken() {
             return (String) get("deletedAccessToken");
         }
@@ -5972,8 +6951,6 @@ public class Storefront {
 
         public boolean unwrapsToObject(String key) {
             switch (key) {
-                case "clientMutationId": return false;
-
                 case "deletedAccessToken": return false;
 
                 case "deletedCustomerAccessTokenId": return false;
@@ -5986,20 +6963,20 @@ public class Storefront {
     }
 
     public static class CustomerAccessTokenRenewInput implements Serializable {
-        private String accessToken;
+        private String customerAccessToken;
 
         private String clientMutationId;
 
-        public CustomerAccessTokenRenewInput(String accessToken) {
-            this.accessToken = accessToken;
+        public CustomerAccessTokenRenewInput(String customerAccessToken) {
+            this.customerAccessToken = customerAccessToken;
         }
 
-        public String getAccessToken() {
-            return accessToken;
+        public String getCustomerAccessToken() {
+            return customerAccessToken;
         }
 
-        public CustomerAccessTokenRenewInput setAccessToken(String accessToken) {
-            this.accessToken = accessToken;
+        public CustomerAccessTokenRenewInput setCustomerAccessToken(String customerAccessToken) {
+            this.customerAccessToken = customerAccessToken;
             return this;
         }
 
@@ -6018,8 +6995,8 @@ public class Storefront {
 
             _queryBuilder.append(separator);
             separator = ",";
-            _queryBuilder.append("accessToken:");
-            Query.appendQuotedString(_queryBuilder, accessToken.toString());
+            _queryBuilder.append("customerAccessToken:");
+            Query.appendQuotedString(_queryBuilder, customerAccessToken.toString());
 
             if (clientMutationId != null) {
                 _queryBuilder.append(separator);
@@ -6039,12 +7016,6 @@ public class Storefront {
     public static class CustomerAccessTokenRenewPayloadQuery extends Query<CustomerAccessTokenRenewPayloadQuery> {
         CustomerAccessTokenRenewPayloadQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
-        }
-
-        public CustomerAccessTokenRenewPayloadQuery clientMutationId() {
-            startField("clientMutationId");
-
-            return this;
         }
 
         public CustomerAccessTokenRenewPayloadQuery customerAccessToken(CustomerAccessTokenQueryDefinition queryDef) {
@@ -6077,17 +7048,6 @@ public class Storefront {
                 String key = field.getKey();
                 String fieldName = getFieldName(key);
                 switch (fieldName) {
-                    case "clientMutationId": {
-                        String optional1 = null;
-                        if (!field.getValue().isJsonNull()) {
-                            optional1 = jsonAsString(field.getValue(), key);
-                        }
-
-                        responseData.put(key, optional1);
-
-                        break;
-                    }
-
                     case "customerAccessToken": {
                         CustomerAccessToken optional1 = null;
                         if (!field.getValue().isJsonNull()) {
@@ -6141,15 +7101,6 @@ public class Storefront {
             return "CustomerAccessTokenRenewPayload";
         }
 
-        public String getClientMutationId() {
-            return (String) get("clientMutationId");
-        }
-
-        public CustomerAccessTokenRenewPayload setClientMutationId(String arg) {
-            optimisticData.put("clientMutationId", arg);
-            return this;
-        }
-
         public CustomerAccessToken getCustomerAccessToken() {
             return (CustomerAccessToken) get("customerAccessToken");
         }
@@ -6170,8 +7121,6 @@ public class Storefront {
 
         public boolean unwrapsToObject(String key) {
             switch (key) {
-                case "clientMutationId": return false;
-
                 case "customerAccessToken": return true;
 
                 case "userErrors": return true;
@@ -6273,12 +7222,6 @@ public class Storefront {
             super(_queryBuilder);
         }
 
-        public CustomerActivatePayloadQuery clientMutationId() {
-            startField("clientMutationId");
-
-            return this;
-        }
-
         public CustomerActivatePayloadQuery customer(CustomerQueryDefinition queryDef) {
             startField("customer");
 
@@ -6309,17 +7252,6 @@ public class Storefront {
                 String key = field.getKey();
                 String fieldName = getFieldName(key);
                 switch (fieldName) {
-                    case "clientMutationId": {
-                        String optional1 = null;
-                        if (!field.getValue().isJsonNull()) {
-                            optional1 = jsonAsString(field.getValue(), key);
-                        }
-
-                        responseData.put(key, optional1);
-
-                        break;
-                    }
-
                     case "customer": {
                         Customer optional1 = null;
                         if (!field.getValue().isJsonNull()) {
@@ -6373,15 +7305,6 @@ public class Storefront {
             return "CustomerActivatePayload";
         }
 
-        public String getClientMutationId() {
-            return (String) get("clientMutationId");
-        }
-
-        public CustomerActivatePayload setClientMutationId(String arg) {
-            optimisticData.put("clientMutationId", arg);
-            return this;
-        }
-
         public Customer getCustomer() {
             return (Customer) get("customer");
         }
@@ -6402,8 +7325,6 @@ public class Storefront {
 
         public boolean unwrapsToObject(String key) {
             switch (key) {
-                case "clientMutationId": return false;
-
                 case "customer": return true;
 
                 case "userErrors": return true;
@@ -6414,25 +7335,16 @@ public class Storefront {
     }
 
     public static class CustomerAddressCreateInput implements Serializable {
-        private String accessToken;
-
         private MailingAddressInput address;
+
+        private String customerAccessToken;
 
         private String clientMutationId;
 
-        public CustomerAddressCreateInput(String accessToken, MailingAddressInput address) {
-            this.accessToken = accessToken;
-
+        public CustomerAddressCreateInput(MailingAddressInput address, String customerAccessToken) {
             this.address = address;
-        }
 
-        public String getAccessToken() {
-            return accessToken;
-        }
-
-        public CustomerAddressCreateInput setAccessToken(String accessToken) {
-            this.accessToken = accessToken;
-            return this;
+            this.customerAccessToken = customerAccessToken;
         }
 
         public MailingAddressInput getAddress() {
@@ -6441,6 +7353,15 @@ public class Storefront {
 
         public CustomerAddressCreateInput setAddress(MailingAddressInput address) {
             this.address = address;
+            return this;
+        }
+
+        public String getCustomerAccessToken() {
+            return customerAccessToken;
+        }
+
+        public CustomerAddressCreateInput setCustomerAccessToken(String customerAccessToken) {
+            this.customerAccessToken = customerAccessToken;
             return this;
         }
 
@@ -6459,13 +7380,13 @@ public class Storefront {
 
             _queryBuilder.append(separator);
             separator = ",";
-            _queryBuilder.append("accessToken:");
-            Query.appendQuotedString(_queryBuilder, accessToken.toString());
+            _queryBuilder.append("address:");
+            address.appendTo(_queryBuilder);
 
             _queryBuilder.append(separator);
             separator = ",";
-            _queryBuilder.append("address:");
-            address.appendTo(_queryBuilder);
+            _queryBuilder.append("customerAccessToken:");
+            Query.appendQuotedString(_queryBuilder, customerAccessToken.toString());
 
             if (clientMutationId != null) {
                 _queryBuilder.append(separator);
@@ -6485,12 +7406,6 @@ public class Storefront {
     public static class CustomerAddressCreatePayloadQuery extends Query<CustomerAddressCreatePayloadQuery> {
         CustomerAddressCreatePayloadQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
-        }
-
-        public CustomerAddressCreatePayloadQuery clientMutationId() {
-            startField("clientMutationId");
-
-            return this;
         }
 
         public CustomerAddressCreatePayloadQuery customerAddress(MailingAddressQueryDefinition queryDef) {
@@ -6523,17 +7438,6 @@ public class Storefront {
                 String key = field.getKey();
                 String fieldName = getFieldName(key);
                 switch (fieldName) {
-                    case "clientMutationId": {
-                        String optional1 = null;
-                        if (!field.getValue().isJsonNull()) {
-                            optional1 = jsonAsString(field.getValue(), key);
-                        }
-
-                        responseData.put(key, optional1);
-
-                        break;
-                    }
-
                     case "customerAddress": {
                         MailingAddress optional1 = null;
                         if (!field.getValue().isJsonNull()) {
@@ -6587,15 +7491,6 @@ public class Storefront {
             return "CustomerAddressCreatePayload";
         }
 
-        public String getClientMutationId() {
-            return (String) get("clientMutationId");
-        }
-
-        public CustomerAddressCreatePayload setClientMutationId(String arg) {
-            optimisticData.put("clientMutationId", arg);
-            return this;
-        }
-
         public MailingAddress getCustomerAddress() {
             return (MailingAddress) get("customerAddress");
         }
@@ -6616,8 +7511,6 @@ public class Storefront {
 
         public boolean unwrapsToObject(String key) {
             switch (key) {
-                case "clientMutationId": return false;
-
                 case "customerAddress": return true;
 
                 case "userErrors": return true;
@@ -6628,24 +7521,24 @@ public class Storefront {
     }
 
     public static class CustomerAddressDeleteInput implements Serializable {
-        private String accessToken;
+        private String customerAccessToken;
 
         private ID id;
 
         private String clientMutationId;
 
-        public CustomerAddressDeleteInput(String accessToken, ID id) {
-            this.accessToken = accessToken;
+        public CustomerAddressDeleteInput(String customerAccessToken, ID id) {
+            this.customerAccessToken = customerAccessToken;
 
             this.id = id;
         }
 
-        public String getAccessToken() {
-            return accessToken;
+        public String getCustomerAccessToken() {
+            return customerAccessToken;
         }
 
-        public CustomerAddressDeleteInput setAccessToken(String accessToken) {
-            this.accessToken = accessToken;
+        public CustomerAddressDeleteInput setCustomerAccessToken(String customerAccessToken) {
+            this.customerAccessToken = customerAccessToken;
             return this;
         }
 
@@ -6673,8 +7566,8 @@ public class Storefront {
 
             _queryBuilder.append(separator);
             separator = ",";
-            _queryBuilder.append("accessToken:");
-            Query.appendQuotedString(_queryBuilder, accessToken.toString());
+            _queryBuilder.append("customerAccessToken:");
+            Query.appendQuotedString(_queryBuilder, customerAccessToken.toString());
 
             _queryBuilder.append(separator);
             separator = ",";
@@ -6699,12 +7592,6 @@ public class Storefront {
     public static class CustomerAddressDeletePayloadQuery extends Query<CustomerAddressDeletePayloadQuery> {
         CustomerAddressDeletePayloadQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
-        }
-
-        public CustomerAddressDeletePayloadQuery clientMutationId() {
-            startField("clientMutationId");
-
-            return this;
         }
 
         public CustomerAddressDeletePayloadQuery deletedCustomerAddressId() {
@@ -6733,17 +7620,6 @@ public class Storefront {
                 String key = field.getKey();
                 String fieldName = getFieldName(key);
                 switch (fieldName) {
-                    case "clientMutationId": {
-                        String optional1 = null;
-                        if (!field.getValue().isJsonNull()) {
-                            optional1 = jsonAsString(field.getValue(), key);
-                        }
-
-                        responseData.put(key, optional1);
-
-                        break;
-                    }
-
                     case "deletedCustomerAddressId": {
                         String optional1 = null;
                         if (!field.getValue().isJsonNull()) {
@@ -6793,15 +7669,6 @@ public class Storefront {
             return "CustomerAddressDeletePayload";
         }
 
-        public String getClientMutationId() {
-            return (String) get("clientMutationId");
-        }
-
-        public CustomerAddressDeletePayload setClientMutationId(String arg) {
-            optimisticData.put("clientMutationId", arg);
-            return this;
-        }
-
         public String getDeletedCustomerAddressId() {
             return (String) get("deletedCustomerAddressId");
         }
@@ -6822,8 +7689,6 @@ public class Storefront {
 
         public boolean unwrapsToObject(String key) {
             switch (key) {
-                case "clientMutationId": return false;
-
                 case "deletedCustomerAddressId": return false;
 
                 case "userErrors": return true;
@@ -6834,29 +7699,20 @@ public class Storefront {
     }
 
     public static class CustomerAddressUpdateInput implements Serializable {
-        private String accessToken;
-
         private MailingAddressInput address;
+
+        private String customerAccessToken;
 
         private ID id;
 
         private String clientMutationId;
 
-        public CustomerAddressUpdateInput(String accessToken, MailingAddressInput address, ID id) {
-            this.accessToken = accessToken;
-
+        public CustomerAddressUpdateInput(MailingAddressInput address, String customerAccessToken, ID id) {
             this.address = address;
 
+            this.customerAccessToken = customerAccessToken;
+
             this.id = id;
-        }
-
-        public String getAccessToken() {
-            return accessToken;
-        }
-
-        public CustomerAddressUpdateInput setAccessToken(String accessToken) {
-            this.accessToken = accessToken;
-            return this;
         }
 
         public MailingAddressInput getAddress() {
@@ -6865,6 +7721,15 @@ public class Storefront {
 
         public CustomerAddressUpdateInput setAddress(MailingAddressInput address) {
             this.address = address;
+            return this;
+        }
+
+        public String getCustomerAccessToken() {
+            return customerAccessToken;
+        }
+
+        public CustomerAddressUpdateInput setCustomerAccessToken(String customerAccessToken) {
+            this.customerAccessToken = customerAccessToken;
             return this;
         }
 
@@ -6892,13 +7757,13 @@ public class Storefront {
 
             _queryBuilder.append(separator);
             separator = ",";
-            _queryBuilder.append("accessToken:");
-            Query.appendQuotedString(_queryBuilder, accessToken.toString());
+            _queryBuilder.append("address:");
+            address.appendTo(_queryBuilder);
 
             _queryBuilder.append(separator);
             separator = ",";
-            _queryBuilder.append("address:");
-            address.appendTo(_queryBuilder);
+            _queryBuilder.append("customerAccessToken:");
+            Query.appendQuotedString(_queryBuilder, customerAccessToken.toString());
 
             _queryBuilder.append(separator);
             separator = ",";
@@ -6923,12 +7788,6 @@ public class Storefront {
     public static class CustomerAddressUpdatePayloadQuery extends Query<CustomerAddressUpdatePayloadQuery> {
         CustomerAddressUpdatePayloadQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
-        }
-
-        public CustomerAddressUpdatePayloadQuery clientMutationId() {
-            startField("clientMutationId");
-
-            return this;
         }
 
         public CustomerAddressUpdatePayloadQuery customerAddress(MailingAddressQueryDefinition queryDef) {
@@ -6961,17 +7820,6 @@ public class Storefront {
                 String key = field.getKey();
                 String fieldName = getFieldName(key);
                 switch (fieldName) {
-                    case "clientMutationId": {
-                        String optional1 = null;
-                        if (!field.getValue().isJsonNull()) {
-                            optional1 = jsonAsString(field.getValue(), key);
-                        }
-
-                        responseData.put(key, optional1);
-
-                        break;
-                    }
-
                     case "customerAddress": {
                         MailingAddress optional1 = null;
                         if (!field.getValue().isJsonNull()) {
@@ -7025,15 +7873,6 @@ public class Storefront {
             return "CustomerAddressUpdatePayload";
         }
 
-        public String getClientMutationId() {
-            return (String) get("clientMutationId");
-        }
-
-        public CustomerAddressUpdatePayload setClientMutationId(String arg) {
-            optimisticData.put("clientMutationId", arg);
-            return this;
-        }
-
         public MailingAddress getCustomerAddress() {
             return (MailingAddress) get("customerAddress");
         }
@@ -7054,8 +7893,6 @@ public class Storefront {
 
         public boolean unwrapsToObject(String key) {
             switch (key) {
-                case "clientMutationId": return false;
-
                 case "customerAddress": return true;
 
                 case "userErrors": return true;
@@ -7193,12 +8030,6 @@ public class Storefront {
             super(_queryBuilder);
         }
 
-        public CustomerCreatePayloadQuery clientMutationId() {
-            startField("clientMutationId");
-
-            return this;
-        }
-
         public CustomerCreatePayloadQuery customer(CustomerQueryDefinition queryDef) {
             startField("customer");
 
@@ -7229,17 +8060,6 @@ public class Storefront {
                 String key = field.getKey();
                 String fieldName = getFieldName(key);
                 switch (fieldName) {
-                    case "clientMutationId": {
-                        String optional1 = null;
-                        if (!field.getValue().isJsonNull()) {
-                            optional1 = jsonAsString(field.getValue(), key);
-                        }
-
-                        responseData.put(key, optional1);
-
-                        break;
-                    }
-
                     case "customer": {
                         Customer optional1 = null;
                         if (!field.getValue().isJsonNull()) {
@@ -7293,15 +8113,6 @@ public class Storefront {
             return "CustomerCreatePayload";
         }
 
-        public String getClientMutationId() {
-            return (String) get("clientMutationId");
-        }
-
-        public CustomerCreatePayload setClientMutationId(String arg) {
-            optimisticData.put("clientMutationId", arg);
-            return this;
-        }
-
         public Customer getCustomer() {
             return (Customer) get("customer");
         }
@@ -7322,8 +8133,6 @@ public class Storefront {
 
         public boolean unwrapsToObject(String key) {
             switch (key) {
-                case "clientMutationId": return false;
-
                 case "customer": return true;
 
                 case "userErrors": return true;
@@ -7389,12 +8198,6 @@ public class Storefront {
             super(_queryBuilder);
         }
 
-        public CustomerRecoverPayloadQuery clientMutationId() {
-            startField("clientMutationId");
-
-            return this;
-        }
-
         public CustomerRecoverPayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
 
@@ -7415,17 +8218,6 @@ public class Storefront {
                 String key = field.getKey();
                 String fieldName = getFieldName(key);
                 switch (fieldName) {
-                    case "clientMutationId": {
-                        String optional1 = null;
-                        if (!field.getValue().isJsonNull()) {
-                            optional1 = jsonAsString(field.getValue(), key);
-                        }
-
-                        responseData.put(key, optional1);
-
-                        break;
-                    }
-
                     case "userErrors": {
                         List<UserError> list1 = new ArrayList<>();
                         for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
@@ -7464,15 +8256,6 @@ public class Storefront {
             return "CustomerRecoverPayload";
         }
 
-        public String getClientMutationId() {
-            return (String) get("clientMutationId");
-        }
-
-        public CustomerRecoverPayload setClientMutationId(String arg) {
-            optimisticData.put("clientMutationId", arg);
-            return this;
-        }
-
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -7484,8 +8267,6 @@ public class Storefront {
 
         public boolean unwrapsToObject(String key) {
             switch (key) {
-                case "clientMutationId": return false;
-
                 case "userErrors": return true;
 
                 default: return false;
@@ -7585,12 +8366,6 @@ public class Storefront {
             super(_queryBuilder);
         }
 
-        public CustomerResetPayloadQuery clientMutationId() {
-            startField("clientMutationId");
-
-            return this;
-        }
-
         public CustomerResetPayloadQuery customer(CustomerQueryDefinition queryDef) {
             startField("customer");
 
@@ -7621,17 +8396,6 @@ public class Storefront {
                 String key = field.getKey();
                 String fieldName = getFieldName(key);
                 switch (fieldName) {
-                    case "clientMutationId": {
-                        String optional1 = null;
-                        if (!field.getValue().isJsonNull()) {
-                            optional1 = jsonAsString(field.getValue(), key);
-                        }
-
-                        responseData.put(key, optional1);
-
-                        break;
-                    }
-
                     case "customer": {
                         Customer optional1 = null;
                         if (!field.getValue().isJsonNull()) {
@@ -7685,15 +8449,6 @@ public class Storefront {
             return "CustomerResetPayload";
         }
 
-        public String getClientMutationId() {
-            return (String) get("clientMutationId");
-        }
-
-        public CustomerResetPayload setClientMutationId(String arg) {
-            optimisticData.put("clientMutationId", arg);
-            return this;
-        }
-
         public Customer getCustomer() {
             return (Customer) get("customer");
         }
@@ -7714,8 +8469,6 @@ public class Storefront {
 
         public boolean unwrapsToObject(String key) {
             switch (key) {
-                case "clientMutationId": return false;
-
                 case "customer": return true;
 
                 case "userErrors": return true;
@@ -7726,7 +8479,7 @@ public class Storefront {
     }
 
     public static class CustomerUpdateInput implements Serializable {
-        private String accessToken;
+        private String customerAccessToken;
 
         private Boolean acceptsMarketing;
 
@@ -7740,16 +8493,16 @@ public class Storefront {
 
         private String password;
 
-        public CustomerUpdateInput(String accessToken) {
-            this.accessToken = accessToken;
+        public CustomerUpdateInput(String customerAccessToken) {
+            this.customerAccessToken = customerAccessToken;
         }
 
-        public String getAccessToken() {
-            return accessToken;
+        public String getCustomerAccessToken() {
+            return customerAccessToken;
         }
 
-        public CustomerUpdateInput setAccessToken(String accessToken) {
-            this.accessToken = accessToken;
+        public CustomerUpdateInput setCustomerAccessToken(String customerAccessToken) {
+            this.customerAccessToken = customerAccessToken;
             return this;
         }
 
@@ -7813,8 +8566,8 @@ public class Storefront {
 
             _queryBuilder.append(separator);
             separator = ",";
-            _queryBuilder.append("accessToken:");
-            Query.appendQuotedString(_queryBuilder, accessToken.toString());
+            _queryBuilder.append("customerAccessToken:");
+            Query.appendQuotedString(_queryBuilder, customerAccessToken.toString());
 
             if (acceptsMarketing != null) {
                 _queryBuilder.append(separator);
@@ -7871,12 +8624,6 @@ public class Storefront {
             super(_queryBuilder);
         }
 
-        public CustomerUpdatePayloadQuery clientMutationId() {
-            startField("clientMutationId");
-
-            return this;
-        }
-
         public CustomerUpdatePayloadQuery customer(CustomerQueryDefinition queryDef) {
             startField("customer");
 
@@ -7907,17 +8654,6 @@ public class Storefront {
                 String key = field.getKey();
                 String fieldName = getFieldName(key);
                 switch (fieldName) {
-                    case "clientMutationId": {
-                        String optional1 = null;
-                        if (!field.getValue().isJsonNull()) {
-                            optional1 = jsonAsString(field.getValue(), key);
-                        }
-
-                        responseData.put(key, optional1);
-
-                        break;
-                    }
-
                     case "customer": {
                         Customer optional1 = null;
                         if (!field.getValue().isJsonNull()) {
@@ -7971,15 +8707,6 @@ public class Storefront {
             return "CustomerUpdatePayload";
         }
 
-        public String getClientMutationId() {
-            return (String) get("clientMutationId");
-        }
-
-        public CustomerUpdatePayload setClientMutationId(String arg) {
-            optimisticData.put("clientMutationId", arg);
-            return this;
-        }
-
         public Customer getCustomer() {
             return (Customer) get("customer");
         }
@@ -8000,8 +8727,6 @@ public class Storefront {
 
         public boolean unwrapsToObject(String key) {
             switch (key) {
-                case "clientMutationId": return false;
-
                 case "customer": return true;
 
                 case "userErrors": return true;
@@ -9967,6 +10692,66 @@ public class Storefront {
             return this;
         }
 
+        public MutationQuery checkoutCustomerAssociate(CheckoutCustomerAssociateInput input, CheckoutCustomerAssociatePayloadQueryDefinition queryDef) {
+            startField("checkoutCustomerAssociate");
+
+            _queryBuilder.append("(input:");
+            input.appendTo(_queryBuilder);
+
+            _queryBuilder.append(')');
+
+            _queryBuilder.append('{');
+            queryDef.define(new CheckoutCustomerAssociatePayloadQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        public MutationQuery checkoutCustomerDisassociate(CheckoutCustomerDisassociateInput input, CheckoutCustomerDisassociatePayloadQueryDefinition queryDef) {
+            startField("checkoutCustomerDisassociate");
+
+            _queryBuilder.append("(input:");
+            input.appendTo(_queryBuilder);
+
+            _queryBuilder.append(')');
+
+            _queryBuilder.append('{');
+            queryDef.define(new CheckoutCustomerDisassociatePayloadQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        public MutationQuery checkoutEmailUpdate(CheckoutEmailUpdateInput input, CheckoutEmailUpdatePayloadQueryDefinition queryDef) {
+            startField("checkoutEmailUpdate");
+
+            _queryBuilder.append("(input:");
+            input.appendTo(_queryBuilder);
+
+            _queryBuilder.append(')');
+
+            _queryBuilder.append('{');
+            queryDef.define(new CheckoutEmailUpdatePayloadQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        public MutationQuery checkoutGiftCardApply(CheckoutGiftCardApplyInput input, CheckoutGiftCardApplyPayloadQueryDefinition queryDef) {
+            startField("checkoutGiftCardApply");
+
+            _queryBuilder.append("(input:");
+            input.appendTo(_queryBuilder);
+
+            _queryBuilder.append(')');
+
+            _queryBuilder.append('{');
+            queryDef.define(new CheckoutGiftCardApplyPayloadQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
         public MutationQuery checkoutShippingAddressUpdate(CheckoutShippingAddressUpdateInput input, CheckoutShippingAddressUpdatePayloadQueryDefinition queryDef) {
             startField("checkoutShippingAddressUpdate");
 
@@ -10231,6 +11016,50 @@ public class Storefront {
                         break;
                     }
 
+                    case "checkoutCustomerAssociate": {
+                        CheckoutCustomerAssociatePayload optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new CheckoutCustomerAssociatePayload(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "checkoutCustomerDisassociate": {
+                        CheckoutCustomerDisassociatePayload optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new CheckoutCustomerDisassociatePayload(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "checkoutEmailUpdate": {
+                        CheckoutEmailUpdatePayload optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new CheckoutEmailUpdatePayload(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "checkoutGiftCardApply": {
+                        CheckoutGiftCardApplyPayload optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new CheckoutGiftCardApplyPayload(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
                     case "checkoutShippingAddressUpdate": {
                         CheckoutShippingAddressUpdatePayload optional1 = null;
                         if (!field.getValue().isJsonNull()) {
@@ -10408,6 +11237,22 @@ public class Storefront {
                 children.addAll(getCheckoutCreate().getNodes());
             }
 
+            if (getCheckoutCustomerAssociate() != null) {
+                children.addAll(getCheckoutCustomerAssociate().getNodes());
+            }
+
+            if (getCheckoutCustomerDisassociate() != null) {
+                children.addAll(getCheckoutCustomerDisassociate().getNodes());
+            }
+
+            if (getCheckoutEmailUpdate() != null) {
+                children.addAll(getCheckoutEmailUpdate().getNodes());
+            }
+
+            if (getCheckoutGiftCardApply() != null) {
+                children.addAll(getCheckoutGiftCardApply().getNodes());
+            }
+
             if (getCheckoutShippingAddressUpdate() != null) {
                 children.addAll(getCheckoutShippingAddressUpdate().getNodes());
             }
@@ -10509,6 +11354,42 @@ public class Storefront {
 
         public Mutation setCheckoutCreate(CheckoutCreatePayload arg) {
             optimisticData.put("checkoutCreate", arg);
+            return this;
+        }
+
+        public CheckoutCustomerAssociatePayload getCheckoutCustomerAssociate() {
+            return (CheckoutCustomerAssociatePayload) get("checkoutCustomerAssociate");
+        }
+
+        public Mutation setCheckoutCustomerAssociate(CheckoutCustomerAssociatePayload arg) {
+            optimisticData.put("checkoutCustomerAssociate", arg);
+            return this;
+        }
+
+        public CheckoutCustomerDisassociatePayload getCheckoutCustomerDisassociate() {
+            return (CheckoutCustomerDisassociatePayload) get("checkoutCustomerDisassociate");
+        }
+
+        public Mutation setCheckoutCustomerDisassociate(CheckoutCustomerDisassociatePayload arg) {
+            optimisticData.put("checkoutCustomerDisassociate", arg);
+            return this;
+        }
+
+        public CheckoutEmailUpdatePayload getCheckoutEmailUpdate() {
+            return (CheckoutEmailUpdatePayload) get("checkoutEmailUpdate");
+        }
+
+        public Mutation setCheckoutEmailUpdate(CheckoutEmailUpdatePayload arg) {
+            optimisticData.put("checkoutEmailUpdate", arg);
+            return this;
+        }
+
+        public CheckoutGiftCardApplyPayload getCheckoutGiftCardApply() {
+            return (CheckoutGiftCardApplyPayload) get("checkoutGiftCardApply");
+        }
+
+        public Mutation setCheckoutGiftCardApply(CheckoutGiftCardApplyPayload arg) {
+            optimisticData.put("checkoutGiftCardApply", arg);
             return this;
         }
 
@@ -10641,6 +11522,14 @@ public class Storefront {
 
                 case "checkoutCreate": return true;
 
+                case "checkoutCustomerAssociate": return true;
+
+                case "checkoutCustomerDisassociate": return true;
+
+                case "checkoutEmailUpdate": return true;
+
+                case "checkoutGiftCardApply": return true;
+
                 case "checkoutShippingAddressUpdate": return true;
 
                 case "checkoutShippingLineUpdate": return true;
@@ -10686,6 +11575,13 @@ public class Storefront {
         public NodeQuery id() {
             startField("id");
 
+            return this;
+        }
+
+        public NodeQuery onAppliedGiftCard(AppliedGiftCardQueryDefinition queryDef) {
+            startInlineFragment("AppliedGiftCard");
+            queryDef.define(new AppliedGiftCardQuery(_queryBuilder));
+            _queryBuilder.append('}');
             return this;
         }
 
@@ -10794,6 +11690,10 @@ public class Storefront {
         public static Node create(JsonObject fields) throws SchemaViolationError {
             String typeName = fields.getAsJsonPrimitive("__typename").getAsString();
             switch (typeName) {
+                case "AppliedGiftCard": {
+                    return new AppliedGiftCard(fields);
+                }
+
                 case "Checkout": {
                     return new Checkout(fields);
                 }
@@ -14045,11 +14945,11 @@ public class Storefront {
             super(_queryBuilder);
         }
 
-        public QueryRootQuery customer(String accessToken, CustomerQueryDefinition queryDef) {
+        public QueryRootQuery customer(String customerAccessToken, CustomerQueryDefinition queryDef) {
             startField("customer");
 
-            _queryBuilder.append("(accessToken:");
-            Query.appendQuotedString(_queryBuilder, accessToken.toString());
+            _queryBuilder.append("(customerAccessToken:");
+            Query.appendQuotedString(_queryBuilder, customerAccessToken.toString());
 
             _queryBuilder.append(')');
 

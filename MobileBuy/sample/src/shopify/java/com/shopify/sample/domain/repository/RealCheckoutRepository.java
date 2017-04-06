@@ -34,6 +34,7 @@ import com.shopify.graphql.support.ID;
 import com.shopify.sample.SampleApplication;
 import com.shopify.sample.domain.model.Checkout;
 
+import java.util.Collections;
 import java.util.List;
 
 import io.reactivex.Single;
@@ -54,6 +55,8 @@ public final class RealCheckoutRepository implements CheckoutRepository {
     List<Storefront.LineItemInput> storefrontLineItems = mapItems(lineItems, lineItem ->
       new Storefront.LineItemInput(lineItem.quantity, new ID(lineItem.variantId)));
     Storefront.CheckoutCreateInput input = new Storefront.CheckoutCreateInput().setLineItems(storefrontLineItems);
+
+    //TODO introduce fragments
     GraphCall<Storefront.Mutation> call = graphClient.mutateGraph(Storefront.mutation(
       root -> root.checkoutCreate(
         input,
@@ -70,6 +73,14 @@ public final class RealCheckoutRepository implements CheckoutRepository {
                     .quantity()
                     .title()
                 )
+              )
+            )
+            .availableShippingRates(availableShippingRates -> availableShippingRates
+              .ready()
+              .shippingRates(shippingRate -> shippingRate
+                .price()
+                .title()
+                .handle()
               )
             )
         )
@@ -99,6 +110,7 @@ public final class RealCheckoutRepository implements CheckoutRepository {
     Storefront.CheckoutShippingAddressUpdateInput input = new Storefront.CheckoutShippingAddressUpdateInput(new ID(checkoutId),
       mailingAddressInput);
 
+    //TODO introduce fragments
     GraphCall<Storefront.Mutation> call = graphClient.mutateGraph(Storefront.mutation(
       root -> root.checkoutShippingAddressUpdate(input,
         query -> query.checkout(
@@ -116,6 +128,14 @@ public final class RealCheckoutRepository implements CheckoutRepository {
                 )
               )
             )
+            .availableShippingRates(availableShippingRates -> availableShippingRates
+              .ready()
+              .shippingRates(shippingRate -> shippingRate
+                .price()
+                .title()
+                .handle()
+              )
+            )
         )
       ))
     );
@@ -126,12 +146,29 @@ public final class RealCheckoutRepository implements CheckoutRepository {
       .subscribeOn(Schedulers.io());
   }
 
+  @Override public Single<Checkout> fetch(@NonNull final String checkoutId) {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override public Single<Checkout.ShippingRates> fetchShippingRates(@NonNull final String checkoutId) {
+    throw new UnsupportedOperationException();
+  }
+
   private static Checkout map(final Storefront.Checkout checkout) {
+    List<Checkout.LineItem> lineItems = mapItems(checkout.getLineItems().getEdges(), it ->
+      new Checkout.LineItem(it.getNode().getVariant().getId().toString(), it.getNode().getTitle(), it.getNode().getQuantity(),
+        it.getNode().getVariant().getPrice()));
     return new Checkout(checkout.getId().toString(), checkout.getWebUrl(), checkout.getCurrencyCode().toString(),
-      checkout.getRequiresShipping(), mapItems(checkout.getLineItems().getEdges(), lineItemEdge -> {
-      Storefront.LineItem lineItem = lineItemEdge.getNode();
-      return new Checkout.LineItem(lineItem.getVariant().getId().toString(), lineItem.getTitle(), lineItem.getQuantity(),
-        lineItem.getVariant().getPrice());
-    }));
+      checkout.getRequiresShipping(), lineItems, map(checkout.getAvailableShippingRates()));
+  }
+
+  private static Checkout.ShippingRates map(final Storefront.AvailableShippingRates availableShippingRates) {
+    if (availableShippingRates == null) {
+      return new Checkout.ShippingRates(false, Collections.emptyList());
+    }
+
+    List<Checkout.ShippingRate> shippingRates = mapItems(availableShippingRates.getShippingRates(),
+      it -> new Checkout.ShippingRate(it.getHandle(), it.getPrice(), it.getTitle()));
+    return new Checkout.ShippingRates(availableShippingRates.getReady(), shippingRates);
   }
 }
