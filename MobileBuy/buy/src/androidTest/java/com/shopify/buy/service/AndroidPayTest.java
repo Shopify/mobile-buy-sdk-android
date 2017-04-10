@@ -253,6 +253,7 @@ public class AndroidPayTest extends ShopifyAndroidTestCase {
         Mockito.doReturn(shippingShopifyAddress).when(checkout).getShippingAddress();
         Mockito.doReturn(billingShopifyAddress).when(checkout).getBillingAddress();
         Mockito.doReturn("email").when(checkout).getEmail();
+        Mockito.doReturn(true).when(checkout).isRequiresShipping();
 
         final MaskedWallet maskedWallet = createMaskedWallet(userAddress, userAddress, "email", null);
 
