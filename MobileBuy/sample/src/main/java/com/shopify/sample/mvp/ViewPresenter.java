@@ -26,9 +26,11 @@ package com.shopify.sample.mvp;
 
 public interface ViewPresenter<V extends View> {
 
-    void attachView(V view);
+  void attachView(V view);
 
-    void detachView();
+  void detachView();
 
-    boolean isViewAttached();
+  boolean isViewAttached();
+
+  boolean isViewDetached();
 }

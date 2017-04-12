@@ -1,0 +1,7 @@
+mutation CheckoutUpdateEmailQuery($input: CheckoutEmailUpdateInput!) {
+  checkoutEmailUpdate(input: $input) {
+    checkout {
+      ...CheckoutFragment
+    }
+  }
+}

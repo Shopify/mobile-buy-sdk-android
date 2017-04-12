@@ -26,37 +26,51 @@ package com.shopify.sample.domain.repository;
 
 import android.support.annotation.NonNull;
 
+import com.apollographql.apollo.ApolloCall;
 import com.apollographql.apollo.ApolloClient;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.cache.http.HttpCacheControl;
 import com.shopify.buy3.pay.PayAddress;
+import com.shopify.buy3.pay.PayCart;
+import com.shopify.buy3.pay.PaymentToken;
+import com.shopify.sample.RxUtil;
 import com.shopify.sample.SampleApplication;
+import com.shopify.sample.domain.CheckoutShippingLineUpdateQuery;
+import com.shopify.sample.domain.CheckoutUpdateEmailQuery;
+import com.shopify.sample.domain.CompleteCheckoutQuery;
 import com.shopify.sample.domain.CreateCheckoutQuery;
 import com.shopify.sample.domain.FetchCheckoutQuery;
 import com.shopify.sample.domain.FetchCheckoutShippingRatesQuery;
 import com.shopify.sample.domain.UpdateCheckoutShippingAddressQuery;
 import com.shopify.sample.domain.fragment.CheckoutFragment;
 import com.shopify.sample.domain.fragment.CheckoutShippingRatesFragment;
+import com.shopify.sample.domain.fragment.PaymentFragment;
 import com.shopify.sample.domain.model.Checkout;
+import com.shopify.sample.domain.model.Payment;
+import com.shopify.sample.domain.type.CheckoutCompleteWithTokenizedPaymentInput;
 import com.shopify.sample.domain.type.CheckoutCreateInput;
+import com.shopify.sample.domain.type.CheckoutEmailUpdateInput;
 import com.shopify.sample.domain.type.CheckoutShippingAddressUpdateInput;
+import com.shopify.sample.domain.type.CheckoutShippingLineUpdateInput;
 import com.shopify.sample.domain.type.LineItemInput;
 import com.shopify.sample.domain.type.MailingAddressInput;
 import com.shopify.sample.util.NotReadyException;
 import com.shopify.sample.util.RxRetryHandler;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Single;
 import io.reactivex.schedulers.Schedulers;
 
+import static com.shopify.sample.RxUtil.queryResponseTransformer;
 import static com.shopify.sample.RxUtil.rxApolloCall;
 import static com.shopify.sample.util.Util.checkNotBlank;
 import static com.shopify.sample.util.Util.checkNotEmpty;
 import static com.shopify.sample.util.Util.checkNotNull;
+import static com.shopify.sample.util.Util.fold;
 import static com.shopify.sample.util.Util.mapItems;
+import static java.util.Collections.emptyList;
 
 public final class RealCheckoutRepository implements CheckoutRepository {
   private final ApolloClient apolloClient = SampleApplication.apolloClient();
@@ -119,7 +133,7 @@ public final class RealCheckoutRepository implements CheckoutRepository {
     return rxApolloCall(apolloClient.newCall(query).httpCacheControl(HttpCacheControl.NETWORK_ONLY))
       .map(response -> response.data()
         .transform(it -> it.node.get())
-        .transform(it -> it.fragments.checkoutFragment.get())
+        .transform(it -> it.fragments.checkoutFragment)
         .get())
       .map(RealCheckoutRepository::map)
       .subscribeOn(Schedulers.io());
@@ -128,7 +142,10 @@ public final class RealCheckoutRepository implements CheckoutRepository {
   @Override public Single<Checkout.ShippingRates> fetchShippingRates(@NonNull final String checkoutId) {
     checkNotBlank(checkoutId, "checkoutId can't be empty");
     FetchCheckoutShippingRatesQuery query = new FetchCheckoutShippingRatesQuery(checkoutId);
-    return rxApolloCall(apolloClient.newCall(query).httpCacheControl(HttpCacheControl.NETWORK_ONLY))
+    ApolloCall<Optional<FetchCheckoutShippingRatesQuery.Data>> call = apolloClient.newCall(query)
+      .httpCacheControl(HttpCacheControl.NETWORK_ONLY);
+    return Single.fromCallable(call::clone)
+      .flatMap(RxUtil::rxApolloCall)
       .map(response -> response.data()
         .transform(it -> it.node.get())
         .transform(it -> it.asCheckout.get())
@@ -136,26 +153,121 @@ public final class RealCheckoutRepository implements CheckoutRepository {
         .transform(it -> it.fragments.checkoutShippingRatesFragment)
         .get())
       .map(RealCheckoutRepository::map)
-      .doAfterSuccess(shippingRates -> {
-        if (!shippingRates.ready) throw new NotReadyException("Shipping rates not available yet");
-      })
-      .subscribeOn(Schedulers.io())
-      .retryWhen(RxRetryHandler.exponentialBackoff(1, TimeUnit.SECONDS, 1.5f)
-        .maxRetries(5)
+      .flatMap(shippingRates ->
+        shippingRates.ready ? Single.just(shippingRates) : Single.error(new NotReadyException("Shipping rates not available yet")))
+      .retryWhen(RxRetryHandler.exponentialBackoff(500, TimeUnit.MILLISECONDS, 1.2f)
+        .maxRetries(10)
         .when(t -> t instanceof NotReadyException)
-        .build());
+        .build())
+      .subscribeOn(Schedulers.io());
+  }
+
+  @Override public Single<Checkout> applyShippingRate(@NonNull final String checkoutId, @NonNull final String shippingRateHandle) {
+    CheckoutShippingLineUpdateInput input = CheckoutShippingLineUpdateInput.builder()
+      .checkoutId(checkNotBlank(checkoutId, "checkoutId can't be empty"))
+      .shippingRateHandle(checkNotBlank(shippingRateHandle, "shippingRateHandle can't be empty"))
+      .build();
+
+    CheckoutShippingLineUpdateQuery query = new CheckoutShippingLineUpdateQuery(input);
+    return rxApolloCall(apolloClient.newCall(query).httpCacheControl(HttpCacheControl.NETWORK_ONLY))
+      .map(response -> response.data()
+        .transform(it -> it.checkoutShippingLineUpdate.get())
+        .transform(it -> it.checkout.get())
+        .transform(it -> it.fragments.checkoutFragment.get())
+        .get())
+      .map(RealCheckoutRepository::map)
+      .subscribeOn(Schedulers.io());
+  }
+
+  @Override public Single<Checkout> updateEmail(@NonNull final String checkoutId, @NonNull final String email) {
+    checkNotBlank(checkoutId, "checkoutId can't be empty");
+    checkNotBlank(email, "email can't be empty");
+
+    CheckoutEmailUpdateInput input = CheckoutEmailUpdateInput.builder()
+      .checkoutId(checkoutId)
+      .email(email)
+      .build();
+
+    CheckoutUpdateEmailQuery query = new CheckoutUpdateEmailQuery(input);
+    return rxApolloCall(apolloClient.newCall(query).httpCacheControl(HttpCacheControl.NETWORK_ONLY))
+      .compose(queryResponseTransformer())
+      .map(it -> it.checkoutEmailUpdate.get())
+      .map(it -> it.checkout)
+      .map(it -> it.fragments)
+      .map(it -> it.checkoutFragment.get())
+      .map(RealCheckoutRepository::map)
+      .subscribeOn(Schedulers.io());
+  }
+
+  @Override public Single<Payment> completeCheckout(@NonNull final String checkoutId, @NonNull final PayCart payCart,
+    @NonNull final PaymentToken paymentToken, @NonNull final String email, @NonNull final PayAddress billingAddress) {
+    checkNotBlank(checkoutId, "checkoutId can't be empty");
+    checkNotNull(payCart, "payCart == null");
+    checkNotNull(paymentToken, "paymentToken == null");
+    checkNotBlank(email, "email can't be empty");
+    checkNotNull(billingAddress, "billingAddress == null");
+
+    MailingAddressInput mailingAddressInput = MailingAddressInput.builder()
+      .address1(billingAddress.address1)
+      .address2(billingAddress.address2)
+      .city(billingAddress.city)
+      .country(billingAddress.country)
+      .firstName(billingAddress.firstName)
+      .lastName(billingAddress.lastName)
+      .phone(billingAddress.phone)
+      .province(billingAddress.province)
+      .zip(billingAddress.zip)
+      .build();
+
+    CheckoutCompleteWithTokenizedPaymentInput input = CheckoutCompleteWithTokenizedPaymentInput.builder()
+      .checkoutId(checkoutId)
+      .amount(payCart.totalPrice)
+      .idempotencyKey(paymentToken.token)
+      .type("android_pay")
+      .paymentData(paymentToken.token)
+      .identifier(paymentToken.publicKeyHash)
+      .billingAddress(mailingAddressInput)
+      .build();
+
+    CompleteCheckoutQuery query = new CompleteCheckoutQuery(input);
+
+    return updateEmail(checkoutId, email)
+      .flatMap(it -> rxApolloCall(apolloClient.newCall(query).httpCacheControl(HttpCacheControl.NETWORK_ONLY)))
+      .compose(queryResponseTransformer())
+      .map(it -> it.checkoutCompleteWithTokenizedPayment.get())
+      .flatMap(it -> {
+        if (it.userErrors.isEmpty()) {
+          return Single.just(it);
+        } else {
+          String errorMessage = fold(new StringBuilder(), it.userErrors,
+            (builder, error) -> builder.append(error.field).append(" : ").append(error.message).append("\n")).toString();
+          return Single.error(new RuntimeException(errorMessage));
+        }
+      })
+      .map(it -> it.payment.get())
+      .map(it -> it.fragments.paymentFragment.get())
+      .map(RealCheckoutRepository::map)
+      .subscribeOn(Schedulers.io());
   }
 
   private static Checkout map(final CheckoutFragment checkout) {
     List<Checkout.LineItem> lineItems = mapItems(checkout.lineItemConnection.lineItemEdges, it ->
       new Checkout.LineItem(it.lineItem.variant.get().id, it.lineItem.title, it.lineItem.quantity, it.lineItem.variant.get().price));
+    Checkout.ShippingRate shippingLine = checkout.shippingLine.transform(it -> new Checkout.ShippingRate(it.handle, it.price, it.title))
+      .orNull();
     return new Checkout(checkout.id, checkout.webUrl, checkout.currencyCode.toString(), checkout.requiresShipping, lineItems,
-      map(checkout.availableShippingRates.transform(it -> it.fragments.checkoutShippingRatesFragment.get())));
+      map(checkout.availableShippingRates.transform(it -> it.fragments.checkoutShippingRatesFragment.orNull())), shippingLine,
+      checkout.totalTax, checkout.subtotalPrice, checkout.totalPrice);
   }
 
   private static Checkout.ShippingRates map(final Optional<CheckoutShippingRatesFragment> availableShippingRates) {
-    List<Checkout.ShippingRate> shippingRates = mapItems(availableShippingRates.transform(it -> it.shippingRates.get())
-      .or(Collections.emptyList()), it -> new Checkout.ShippingRate(it.handle, it.price, it.title));
+    List<Checkout.ShippingRate> shippingRates = mapItems(availableShippingRates.transform(it -> it.shippingRates.or(emptyList()))
+      .or(emptyList()), it -> new Checkout.ShippingRate(it.handle, it.price, it.title));
     return new Checkout.ShippingRates(availableShippingRates.transform(it -> it.ready).or(false), shippingRates);
+  }
+
+  private static Payment map(final PaymentFragment payment) {
+    return new Payment(payment.id, payment.errorMessage.orNull(), payment.ready,
+      payment.transaction.transform(it -> new Payment.Transaction(it.status.name())).orNull());
   }
 }

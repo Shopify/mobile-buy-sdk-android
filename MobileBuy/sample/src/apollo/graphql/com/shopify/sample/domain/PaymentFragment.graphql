@@ -1,0 +1,8 @@
+fragment PaymentFragment on Payment {
+  id
+  errorMessage
+  ready
+  transaction {
+    status
+  }
+}

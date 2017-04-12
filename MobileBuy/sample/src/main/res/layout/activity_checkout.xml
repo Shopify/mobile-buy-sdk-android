@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:id="@+id/root"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        app:contentInsetStartWithNavigation="0dp" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <include
+                android:id="@+id/total_summary"
+                layout="@layout/checkout_total_summary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <FrameLayout
+                android:id="@+id/android_pay_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/default_padding_half"
+                android:layout_marginTop="@dimen/default_padding_half"
+                android:background="@android:color/white"
+                android:paddingBottom="@dimen/default_padding_half"
+                android:paddingStart="@dimen/default_padding_half"
+                android:paddingTop="@dimen/default_padding_half"
+                tools:layout_height="200dp" />
+
+            <include
+                android:id="@+id/shipping_method"
+                layout="@layout/checkout_shipping_method"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+    </ScrollView>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?android:attr/windowBackground"
+        android:padding="@dimen/default_padding">
+
+        <Button
+            android:id="@+id/confirm"
+            android:layout_width="320dp"
+            android:layout_height="48dp"
+            android:layout_gravity="center"
+            android:background="?attr/colorAccent"
+            android:foreground="?attr/selectableItemBackground"
+            android:text="@string/checkout_confirm" />
+    </FrameLayout>
+</LinearLayout>

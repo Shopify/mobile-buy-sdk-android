@@ -70,6 +70,7 @@ public final class TotalSummaryView extends ConstraintLayout {
     subtotalView.setText(CURRENCY_FORMAT.format(checkNotNull(subtotal, "subtotal == null")));
     shippingView.setText(CURRENCY_FORMAT.format(checkNotNull(shipping, "shipping == null")));
     taxView.setText(CURRENCY_FORMAT.format(checkNotNull(tax, "tax == null")));
-    totalView.setText(CURRENCY_FORMAT.format(checkNotNull(total, "total == null")));
+    totalView.setText(getResources().getString(R.string.checkout_summary_total,
+      CURRENCY_FORMAT.format(checkNotNull(total, "total == null"))));
   }
 }

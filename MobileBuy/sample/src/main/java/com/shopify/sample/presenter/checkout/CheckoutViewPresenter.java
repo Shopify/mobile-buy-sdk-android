@@ -24,52 +24,86 @@
 
 package com.shopify.sample.presenter.checkout;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.wallet.FullWallet;
+import com.google.android.gms.wallet.FullWalletRequest;
 import com.google.android.gms.wallet.MaskedWallet;
+import com.google.android.gms.wallet.MaskedWalletRequest;
+import com.google.android.gms.wallet.Wallet;
+import com.google.android.gms.wallet.WalletConstants;
 import com.shopify.buy3.pay.PayAddress;
 import com.shopify.buy3.pay.PayCart;
+import com.shopify.buy3.pay.PayHelper;
+import com.shopify.buy3.pay.PaymentToken;
+import com.shopify.sample.BuildConfig;
 import com.shopify.sample.domain.model.Checkout;
+import com.shopify.sample.domain.model.Payment;
 import com.shopify.sample.domain.repository.CheckoutRepository;
 import com.shopify.sample.mvp.BaseViewPresenter;
-import com.shopify.sample.util.WeakObserver;
+import com.shopify.sample.util.WeakSingleObserver;
 
 import java.math.BigDecimal;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 
+import static com.shopify.buy3.pay.PayHelper.isAndroidPayEnabledInManifest;
 import static com.shopify.sample.util.Util.checkNotBlank;
 import static com.shopify.sample.util.Util.checkNotNull;
 import static com.shopify.sample.util.Util.fold;
+import static java.util.Collections.emptyList;
 
 public final class CheckoutViewPresenter extends BaseViewPresenter<CheckoutViewPresenter.View> {
   public static final int REQUEST_ID_UPDATE_CHECKOUT_SHIPPING_ADDRESS = 1;
-  public static final int REQUEST_ID_SHIPPING_RATES = 2;
+  public static final int REQUEST_ID_FETCH_SHIPPING_RATES = 2;
+  public static final int REQUEST_ID_APPLY_SHIPPING_RATE = 3;
+  public static final int REQUEST_ID_COMPLETE_CHECKOUT = 4;
 
   private final CheckoutRepository checkoutRepository;
-  private String checkoutId;
+  private final String checkoutId;
   private PayCart payCart;
+  private Checkout.ShippingRates shippingRates;
+  private GoogleApiClient googleApiClient;
 
-  public CheckoutViewPresenter(@NonNull final CheckoutRepository checkoutRepository) {
+  public CheckoutViewPresenter(@NonNull final String checkoutId, @NonNull final PayCart payCart,
+    @NonNull final CheckoutRepository checkoutRepository) {
+    this.checkoutId = checkNotBlank(checkoutId, "checkoutId can't be empty");
+    this.payCart = checkNotNull(payCart, "payCart == null");
     this.checkoutRepository = checkNotNull(checkoutRepository, "checkoutRepository == null");
   }
 
-  public void attachView(final View view, @NonNull final String checkoutId, @NonNull final PayCart payCart) {
+  public void attachView(final View view) {
     super.attachView(view);
-    this.checkoutId = checkNotBlank(checkoutId, "checkoutId can't be empty");
-    this.payCart = checkNotNull(payCart, "payCart == null");
-
+    googleApiClient = googleApiClient();
+    googleApiClient.connect();
     view.renderTotalSummary(payCart.subtotal, payCart.shippingPrice != null ? payCart.shippingPrice : BigDecimal.ZERO,
       payCart.taxPrice != null ? payCart.taxPrice : BigDecimal.ZERO, payCart.totalPrice);
-
     updateMaskedWallet(checkNotNull(payCart.maskedWallet, "payCart.maskedWallet == null"));
+  }
+
+  @Override public void detachView() {
+    super.detachView();
+    if (googleApiClient != null) {
+      googleApiClient.disconnect();
+      googleApiClient = null;
+    }
+  }
+
+  public void requestMaskedWalletUpdate() {
+    MaskedWalletRequest maskedWalletRequest = payCart.maskedWalletRequest(BuildConfig.ANDROID_PAY_PUBLIC_KEY);
+    Wallet.Payments.loadMaskedWallet(googleApiClient, maskedWalletRequest, PayHelper.REQUEST_CODE_MASKED_WALLET);
   }
 
   public void updateMaskedWallet(@NonNull final MaskedWallet maskedWallet) {
     checkNotNull(maskedWallet, "maskedWallet == null");
-    if (!isViewAttached()) {
+    invalidateShippingRates(new Checkout.ShippingRates(false, emptyList()));
+
+    if (isViewDetached()) {
       return;
     }
+
     view().updateMaskedWallet(maskedWallet);
 
     PayAddress payAddress = PayAddress.fromUserAddress(maskedWallet.getBuyerShippingAddress());
@@ -77,52 +111,161 @@ public final class CheckoutViewPresenter extends BaseViewPresenter<CheckoutViewP
     registerRequest(
       REQUEST_ID_UPDATE_CHECKOUT_SHIPPING_ADDRESS,
       checkoutRepository.updateShippingAddress(checkNotBlank(checkoutId, "checkoutId can't be empty"), payAddress)
-        .toObservable()
         .observeOn(AndroidSchedulers.mainThread())
-        .subscribeWith(WeakObserver.<CheckoutViewPresenter, Checkout>forTarget(this)
-          .delegateOnNext((presenter, checkout) -> presenter.onUpdateCheckoutShippingAddress(checkout, maskedWallet))
-          .delegateOnError(CheckoutViewPresenter::onUpdateCheckoutShippingError)
+        .subscribeWith(WeakSingleObserver.<CheckoutViewPresenter, Checkout>forTarget(this)
+          .delegateOnSuccess((presenter, checkout) -> presenter.onUpdateCheckoutShippingAddress(checkout, maskedWallet))
+          .delegateOnError((presenter, t) -> presenter.onRequestError(REQUEST_ID_UPDATE_CHECKOUT_SHIPPING_ADDRESS, t))
           .create())
     );
   }
 
-  private void onUpdateCheckoutShippingAddress(final Checkout checkout, final MaskedWallet maskedWallet) {
-    if (isViewAttached()) {
-      view().hideProgress(REQUEST_ID_UPDATE_CHECKOUT_SHIPPING_ADDRESS);
+  public void applyShippingRate(@NonNull final Checkout.ShippingRate shippingRate) {
+    checkNotNull(shippingRate, "shippingRate == null");
 
-      PayCart.Builder payCartBuilder = PayCart.builder()
-        .merchantName("SampleApp")
-        .currencyCode(checkout.currency)
-        .phoneNumberRequired(true)
-        .shippingAddressRequired(checkout.requiresShipping)
-        .maskedWallet(maskedWallet);
-
-      fold(payCartBuilder, checkout.lineItems, (accumulator, lineItem) ->
-        accumulator.addLineItem(lineItem.title, lineItem.quantity, lineItem.price));
-
-      payCart = payCartBuilder.build();
-
-      if (isViewAttached()) {
-        view().renderTotalSummary(payCart.subtotal, payCart.shippingPrice != null ? payCart.shippingPrice : BigDecimal.ZERO,
-          payCart.taxPrice != null ? payCart.taxPrice : BigDecimal.ZERO, payCart.totalPrice);
-      }
+    if (isViewDetached()) {
+      return;
     }
+
+    view().showProgress(REQUEST_ID_APPLY_SHIPPING_RATE);
+    registerRequest(
+      REQUEST_ID_APPLY_SHIPPING_RATE,
+      checkoutRepository.applyShippingRate(checkoutId, shippingRate.handle)
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribeWith(WeakSingleObserver.<CheckoutViewPresenter, Checkout>forTarget(this)
+          .delegateOnSuccess((presenter, checkout) -> presenter.onCheckout(checkout, REQUEST_ID_APPLY_SHIPPING_RATE))
+          .delegateOnError((presenter, t) -> presenter.onRequestError(REQUEST_ID_FETCH_SHIPPING_RATES, t))
+          .create()
+        )
+    );
   }
 
-  private void onUpdateCheckoutShippingError(final Throwable t) {
+  public void confirmCheckout() {
+    FullWalletRequest fullWalletRequest = payCart.fullWalletRequest();
+    Wallet.Payments.loadFullWallet(googleApiClient, fullWalletRequest, PayHelper.REQUEST_CODE_FULL_WALLET);
+  }
+
+  public void completeCheckout(final FullWallet fullWallet) {
+    if (isViewDetached()) {
+      return;
+    }
+
+    String androidPayPublicKey = BuildConfig.ANDROID_PAY_PUBLIC_KEY;
+    PaymentToken paymentToken = PayHelper.extractPaymentToken(fullWallet, androidPayPublicKey);
+    PayAddress billingAddress = PayAddress.fromUserAddress(fullWallet.getBuyerBillingAddress());
+
+    view().showProgress(REQUEST_ID_COMPLETE_CHECKOUT);
+    registerRequest(
+      REQUEST_ID_COMPLETE_CHECKOUT,
+      checkoutRepository.completeCheckout(checkoutId, payCart, paymentToken, fullWallet.getEmail(), billingAddress)
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribeWith(WeakSingleObserver.<CheckoutViewPresenter, Payment>forTarget(this)
+          .delegateOnSuccess(CheckoutViewPresenter::onCompleteCheckout)
+          .delegateOnError((presenter, t) -> presenter.onRequestError(REQUEST_ID_COMPLETE_CHECKOUT, t))
+          .create()
+        )
+    );
+  }
+
+  private void onUpdateCheckoutShippingAddress(final Checkout checkout, final MaskedWallet maskedWallet) {
+    invalidatePayCart(checkout, maskedWallet);
+    requestShippingRates();
+  }
+
+  private void invalidatePayCart(final Checkout checkout, final MaskedWallet maskedWallet) {
+    PayCart.Builder payCartBuilder = PayCart.builder()
+      .merchantName("SampleApp")
+      .currencyCode(checkout.currency)
+      .phoneNumberRequired(true)
+      .shippingAddressRequired(checkout.requiresShipping)
+      .maskedWallet(maskedWallet)
+      .shippingPrice(checkout.shippingLine != null ? checkout.shippingLine.price : null)
+      .totalPrice(checkout.totalPrice)
+      .taxPrice(checkout.taxPrice)
+      .subtotal(checkout.subtotalPrice);
+
+    fold(payCartBuilder, checkout.lineItems, (accumulator, lineItem) ->
+      accumulator.addLineItem(lineItem.title, lineItem.quantity, lineItem.price));
+
+    payCart = payCartBuilder.build();
+
     if (isViewAttached()) {
-      view().hideProgress(REQUEST_ID_UPDATE_CHECKOUT_SHIPPING_ADDRESS);
-      view().showError(REQUEST_ID_UPDATE_CHECKOUT_SHIPPING_ADDRESS, t);
+      view().renderTotalSummary(payCart.subtotal, payCart.shippingPrice != null ? payCart.shippingPrice : BigDecimal.ZERO,
+        payCart.taxPrice != null ? payCart.taxPrice : BigDecimal.ZERO, payCart.totalPrice);
     }
   }
 
   private void requestShippingRates() {
+    if (isViewDetached()) {
+      return;
+    }
 
+    view().showProgress(REQUEST_ID_FETCH_SHIPPING_RATES);
+    registerRequest(
+      REQUEST_ID_FETCH_SHIPPING_RATES,
+      checkoutRepository.fetchShippingRates(checkoutId)
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribeWith(WeakSingleObserver.<CheckoutViewPresenter, Checkout.ShippingRates>forTarget(this)
+          .delegateOnSuccess(CheckoutViewPresenter::invalidateShippingRates)
+          .delegateOnError((presenter, t) -> presenter.onRequestError(REQUEST_ID_FETCH_SHIPPING_RATES, t))
+          .create()
+        )
+    );
+  }
+
+  private void invalidateShippingRates(@NonNull final Checkout.ShippingRates shippingRates) {
+    this.shippingRates = checkNotNull(shippingRates, "shippingRates == null");
+
+    if (isViewDetached()) {
+      return;
+    }
+
+    if (!shippingRates.ready || shippingRates.shippingRates.isEmpty()) {
+      hideProgress(REQUEST_ID_FETCH_SHIPPING_RATES);
+      return;
+    }
+
+    applyShippingRate(shippingRates.shippingRates.get(0));
+  }
+
+  private void onCheckout(final Checkout checkout, final int requestId) {
+    hideProgress(requestId);
+
+    if (isViewDetached()) {
+      return;
+    }
+
+    this.shippingRates = checkNotNull(checkout.shippingRates, "checkout.shippingRates == null");
+
+    invalidatePayCart(checkout, payCart.maskedWallet);
+    view().renderShippingRates(shippingRates, checkout.shippingLine);
+  }
+
+  private GoogleApiClient googleApiClient() {
+    if (isAndroidPayEnabledInManifest(view().context())) {
+      return new GoogleApiClient.Builder(view().context())
+        .addApi(Wallet.API, new Wallet.WalletOptions.Builder()
+          .setEnvironment(BuildConfig.ANDROID_PAY_ENVIRONMENT)
+          .setTheme(WalletConstants.THEME_LIGHT)
+          .build())
+        .build();
+    }
+    return null;
+  }
+
+  private void onCompleteCheckout(final Payment payment) {
+    hideProgress(REQUEST_ID_COMPLETE_CHECKOUT);
+    if (isViewDetached()) {
+      return;
+    }
   }
 
   public interface View extends com.shopify.sample.mvp.View {
+    Context context();
+
     void updateMaskedWallet(@NonNull MaskedWallet maskedWallet);
 
     void renderTotalSummary(@NonNull BigDecimal subtotal, @NonNull BigDecimal shipping, @NonNull BigDecimal tax, @NonNull BigDecimal total);
+
+    void renderShippingRates(Checkout.ShippingRates shippingRates, Checkout.ShippingRate shippingLine);
   }
 }

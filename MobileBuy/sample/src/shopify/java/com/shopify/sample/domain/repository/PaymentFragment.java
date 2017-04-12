@@ -24,33 +24,13 @@
 
 package com.shopify.sample.domain.repository;
 
-import android.support.annotation.NonNull;
+import com.shopify.buy3.Storefront;
 
-import com.shopify.buy3.pay.PayAddress;
-import com.shopify.buy3.pay.PayCart;
-import com.shopify.buy3.pay.PaymentToken;
-import com.shopify.sample.domain.model.Checkout;
-import com.shopify.sample.domain.model.Payment;
-
-import java.util.List;
-
-import io.reactivex.Single;
-
-public interface CheckoutRepository {
-
-  Single<Checkout> create(@NonNull List<Checkout.LineItem> lineItems);
-
-  Single<Checkout> updateShippingAddress(@NonNull String checkoutId, @NonNull PayAddress payAddress);
-
-  Single<Checkout> fetch(@NonNull String checkoutId);
-
-  Single<Checkout.ShippingRates> fetchShippingRates(@NonNull String checkoutId);
-
-  Single<Checkout> applyShippingRate(@NonNull String checkoutId, @NonNull String shippingRateHandle);
-
-  Single<Checkout> updateEmail(@NonNull String checkoutId, @NonNull String email);
-
-  Single<Payment> completeCheckout(@NonNull String checkoutId, @NonNull PayCart payCart, @NonNull PaymentToken paymentToken,
-    @NonNull String email, @NonNull PayAddress billingAddress);
-
+public final class PaymentFragment implements Storefront.PaymentQueryDefinition {
+  @Override public void define(final Storefront.PaymentQuery query) {
+    query
+      .ready()
+      .errorMessage()
+      .transaction(Storefront.TransactionQuery::status);
+  }
 }

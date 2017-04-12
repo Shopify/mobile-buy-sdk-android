@@ -25,6 +25,7 @@
 package com.shopify.sample.view.checkout;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -32,6 +33,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
+import com.google.android.gms.wallet.FullWallet;
 import com.google.android.gms.wallet.MaskedWallet;
 import com.google.android.gms.wallet.WalletConstants;
 import com.google.android.gms.wallet.fragment.SupportWalletFragment;
@@ -43,6 +45,7 @@ import com.shopify.buy3.pay.PayCart;
 import com.shopify.buy3.pay.PayHelper;
 import com.shopify.sample.BuildConfig;
 import com.shopify.sample.R;
+import com.shopify.sample.domain.model.Checkout;
 import com.shopify.sample.domain.repository.RealCheckoutRepository;
 import com.shopify.sample.presenter.checkout.CheckoutViewPresenter;
 import com.shopify.sample.view.ProgressDialogHelper;
@@ -51,7 +54,11 @@ import java.math.BigDecimal;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
+import static com.shopify.sample.presenter.checkout.CheckoutViewPresenter.REQUEST_ID_APPLY_SHIPPING_RATE;
+import static com.shopify.sample.presenter.checkout.CheckoutViewPresenter.REQUEST_ID_COMPLETE_CHECKOUT;
+import static com.shopify.sample.presenter.checkout.CheckoutViewPresenter.REQUEST_ID_FETCH_SHIPPING_RATES;
 import static com.shopify.sample.presenter.checkout.CheckoutViewPresenter.REQUEST_ID_UPDATE_CHECKOUT_SHIPPING_ADDRESS;
 import static com.shopify.sample.util.Util.checkNotBlank;
 import static com.shopify.sample.util.Util.checkNotNull;
@@ -61,39 +68,41 @@ public final class CheckoutActivity extends AppCompatActivity implements Checkou
   public static final String EXTRAS_PAY_CART = "pay_cart";
 
   @BindView(R.id.toolbar) Toolbar toolbarView;
-  @BindView(R.id.order_total_summary) TotalSummaryView totalSummaryView;
+  @BindView(R.id.total_summary) TotalSummaryView totalSummaryView;
+  @BindView(R.id.shipping_method) ShippingMethodView shippingMethodView;
 
   private ProgressDialogHelper progressDialogHelper;
-  private String checkoutId;
-  private PayCart payCart;
   private CheckoutViewPresenter presenter;
 
   @Override protected void onCreate(@Nullable final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_order_confirmation);
+    setContentView(R.layout.activity_checkout);
     ButterKnife.bind(this);
 
     setSupportActionBar(toolbarView);
-    getSupportActionBar().setTitle(R.string.order_confirmation_title);
+    getSupportActionBar().setTitle(R.string.checkout_title);
     getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close);
     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
     progressDialogHelper = new ProgressDialogHelper(this);
 
-    checkoutId = getIntent().getStringExtra(EXTRAS_CHECKOUT_ID);
-    payCart = getIntent().getParcelableExtra(EXTRAS_PAY_CART);
+    String checkoutId = getIntent().getStringExtra(EXTRAS_CHECKOUT_ID);
+    PayCart payCart = getIntent().getParcelableExtra(EXTRAS_PAY_CART);
 
     checkNotBlank(checkoutId, "checkoutId can't be empty");
     checkNotNull(payCart, "payCart == null");
     checkNotNull(payCart.maskedWallet, "payCart.maskedWallet == null");
 
-    presenter = new CheckoutViewPresenter(new RealCheckoutRepository());
+    presenter = new CheckoutViewPresenter(checkoutId, payCart, new RealCheckoutRepository());
+
+    shippingMethodView.onShippingRateSelectListener(shippingRate -> presenter.applyShippingRate(shippingRate));
   }
 
   @Override protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
     super.onActivityResult(requestCode, resultCode, data);
 
-    if (requestCode == PayHelper.REQUEST_CODE_CHANGE_MASKED_WALLET) {
+    if (requestCode == PayHelper.REQUEST_CODE_CHANGE_MASKED_WALLET
+      || requestCode == PayHelper.REQUEST_CODE_MASKED_WALLET) {
       final int errorCode = data != null ? data.getIntExtra(WalletConstants.EXTRA_ERROR_CODE, -1) : -1;
       if (errorCode != -1 || data == null) {
         //TODO show error
@@ -101,33 +110,27 @@ public final class CheckoutActivity extends AppCompatActivity implements Checkou
         final MaskedWallet maskedWallet = data.getParcelableExtra(WalletConstants.EXTRA_MASKED_WALLET);
         presenter.updateMaskedWallet(maskedWallet);
       }
-      return;
+    } else if (requestCode == PayHelper.REQUEST_CODE_FULL_WALLET) {
+      final int errorCode = data != null ? data.getIntExtra(WalletConstants.EXTRA_ERROR_CODE, -1) : -1;
+      if (errorCode != -1 || data == null) {
+        if (errorCode == WalletConstants.ERROR_CODE_INVALID_TRANSACTION) {
+          presenter.requestMaskedWalletUpdate();
+        }
+        //TODO show error
+      } else if (resultCode == Activity.RESULT_OK) {
+        final FullWallet fullWallet = data.getParcelableExtra(WalletConstants.EXTRA_FULL_WALLET);
+        final MaskedWallet maskedWallet = data.getParcelableExtra(WalletConstants.EXTRA_MASKED_WALLET);
+        if (fullWallet != null) {
+          presenter.completeCheckout(fullWallet);
+        } else if (maskedWallet != null) {
+          // instead of full wallet response we got new version of masked wallet
+          // try to update checkout and if update is not required then try to confirm the order again
+          presenter.updateMaskedWallet(maskedWallet);
+        } else {
+          //TODO show error
+        }
+      }
     }
-
-//    if (requestCode == P.REQUEST_CODE_FULL_WALLET) {
-//      final int errorCode = data != null ? data.getIntExtra(WalletConstants.EXTRA_ERROR_CODE, -1) : -1;
-//      if (errorCode != -1 || data == null) {
-//        handleGoogleWalletError(errorCode);
-//      } else if (resultCode == Activity.RESULT_OK) {
-//        final FullWallet fullWallet = data.getParcelableExtra(WalletConstants.EXTRA_FULL_WALLET);
-//        final MaskedWallet maskedWallet = data.getParcelableExtra(WalletConstants.EXTRA_MASKED_WALLET);
-//        if (fullWallet != null) {
-//          presenter.completeCheckout(fullWallet);
-//        } else if (maskedWallet != null) {
-//          // instead of full wallet response we got new version of masked wallet
-//          // try to update checkout and if update is not required then try to confirm the order again
-//          final boolean retryConfirmOrder = !presenter.updateMaskedWallet(maskedWallet);
-//          if (retryConfirmOrder) {
-//            onConfirmClick();
-//          } else {
-//            hideProgress();
-//          }
-//        } else {
-//          hideProgress();
-//          showErrorSnackbar(getString(R.string.order_confirmation_error_general));
-//        }
-//      }
-//    }
   }
 
   @Override public boolean onSupportNavigateUp() {
@@ -137,7 +140,7 @@ public final class CheckoutActivity extends AppCompatActivity implements Checkou
 
   @Override public void onAttachedToWindow() {
     super.onAttachedToWindow();
-    presenter.attachView(this, checkoutId, payCart);
+    presenter.attachView(this);
   }
 
   @Override public void onDetachedFromWindow() {
@@ -146,21 +149,28 @@ public final class CheckoutActivity extends AppCompatActivity implements Checkou
     progressDialogHelper.dismiss();
   }
 
-  @Override public void showProgress(final long requestId) {
+  @Override public void showProgress(final int requestId) {
+    final String message;
     if (requestId == REQUEST_ID_UPDATE_CHECKOUT_SHIPPING_ADDRESS) {
-      progressDialogHelper.show(requestId, null, getResources().getString(R.string.progress_loading),
-        () -> presenter.cancelRequest(REQUEST_ID_UPDATE_CHECKOUT_SHIPPING_ADDRESS));
+      message = getString(R.string.checkout_update_shipping_address_progress);
+    } else if (requestId == REQUEST_ID_FETCH_SHIPPING_RATES) {
+      message = getString(R.string.checkout_fetch_shipping_rates_progress);
+    } else if (requestId == REQUEST_ID_APPLY_SHIPPING_RATE) {
+      message = getString(R.string.checkout_apply_shipping_rate_progress);
+    } else if (requestId == REQUEST_ID_COMPLETE_CHECKOUT) {
+      message = getString(R.string.checkout_complete_progress);
+    } else {
+      message = getString(R.string.progress_loading);
     }
+    progressDialogHelper.show(requestId, null, message, this::finish);
   }
 
-  @Override public void hideProgress(final long requestId) {
-    if (requestId == REQUEST_ID_UPDATE_CHECKOUT_SHIPPING_ADDRESS) {
-      progressDialogHelper.dismiss(requestId);
-    }
+  @Override public void hideProgress(final int requestId) {
+    progressDialogHelper.dismiss(requestId);
   }
 
   @Override public void showError(final long requestId, final Throwable t) {
-
+    t.printStackTrace();
   }
 
   @Override public void updateMaskedWallet(@NonNull final MaskedWallet maskedWallet) {
@@ -200,5 +210,18 @@ public final class CheckoutActivity extends AppCompatActivity implements Checkou
   @Override public void renderTotalSummary(@NonNull final BigDecimal subtotal, @NonNull final BigDecimal shipping,
     @NonNull final BigDecimal tax, @NonNull final BigDecimal total) {
     totalSummaryView.render(subtotal, shipping, tax, total);
+  }
+
+  @Override public void renderShippingRates(final Checkout.ShippingRates shippingRates, final Checkout.ShippingRate shippingLine) {
+    shippingMethodView.render(shippingLine, shippingRates);
+  }
+
+  @Override public Context context() {
+    return this;
+  }
+
+  @OnClick(R.id.confirm)
+  void onConfirmClick() {
+    presenter.confirmCheckout();
   }
 }

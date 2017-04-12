@@ -5,14 +5,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white"
-    android:padding="@dimen/default_padding">
+    android:paddingBottom="@dimen/default_padding"
+    android:paddingEnd="@dimen/default_padding"
+    android:paddingStart="@dimen/default_padding"
+    android:paddingTop="@dimen/default_padding">
 
     <TextView
         android:id="@+id/subtotal_title"
         android:layout_width="100dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/default_padding_half"
-        android:text="@string/order_confirmation_subtotal"
+        android:text="@string/checkout_summary_subtotal"
         android:textAppearance="@style/Shopify.SubTitleText.Inverse"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -22,7 +24,7 @@
         android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/default_padding_half"
-        android:text="@string/order_confirmation_shipping"
+        android:text="@string/checkout_summary_shipping"
         android:textAppearance="@style/Shopify.SubTitleText"
         android:textColor="@color/text_grey"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -33,7 +35,7 @@
         android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/default_padding_half"
-        android:text="@string/order_confirmation_tax"
+        android:text="@string/checkout_summary_tax"
         android:textAppearance="@style/Shopify.SubTitleText"
         android:textColor="@color/text_grey"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -43,7 +45,6 @@
         android:id="@+id/subtotal"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/default_padding_half"
         android:ellipsize="end"
         android:gravity="end"
         android:lines="1"
@@ -89,33 +90,24 @@
         android:layout_height="1dp"
         android:layout_marginTop="@dimen/default_padding"
         android:background="?attr/colorAccent"
-        app:layout_constraintLeft_toLeftOf="@+id/total_title"
+        app:layout_constraintLeft_toLeftOf="@+id/total"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tax" />
 
     <TextView
-        android:id="@+id/total_title"
+        android:id="@+id/total"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/default_padding_half"
-        android:layout_marginTop="@dimen/default_padding_half"
-        android:paddingStart="@dimen/default_padding"
-        android:text="@string/order_confirmation_total"
-        android:textAppearance="@style/Shopify.TitleText.Inverse"
-        app:layout_constraintRight_toLeftOf="@+id/total"
-        app:layout_constraintTop_toBottomOf="@+id/view" />
-
-    <TextView
-        android:id="@+id/total"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/default_padding_half"
         android:layout_marginTop="@dimen/default_padding_half"
         android:ellipsize="end"
         android:gravity="end"
         android:lines="1"
         android:textAppearance="@style/Shopify.TitleText.Inverse"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/view"
-        tools:text="$20.00" />
+        tools:text="Total: $20.00" />
 
 </com.shopify.sample.view.checkout.TotalSummaryView>

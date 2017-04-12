@@ -25,6 +25,7 @@
 package com.shopify.sample.domain.model;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -40,15 +41,24 @@ public final class Checkout {
   public final boolean requiresShipping;
   @NonNull public final List<LineItem> lineItems;
   @NonNull public final ShippingRates shippingRates;
+  @Nullable public final ShippingRate shippingLine;
+  @NonNull public final BigDecimal taxPrice;
+  @NonNull public final BigDecimal subtotalPrice;
+  @NonNull public final BigDecimal totalPrice;
 
   public Checkout(@NonNull final String id, @NonNull final String webUrl, @NonNull final String currency, final boolean requiresShipping,
-    @NonNull final List<LineItem> lineItems, @NonNull final ShippingRates shippingRates) {
+    @NonNull final List<LineItem> lineItems, @NonNull final ShippingRates shippingRates, @Nullable final ShippingRate shippingLine,
+    @NonNull final BigDecimal taxPrice, @NonNull final BigDecimal subtotalPrice, @NonNull final BigDecimal totalPrice) {
     this.id = checkNotNull(id, "id == null");
     this.webUrl = checkNotNull(webUrl, "webUrl == null");
     this.currency = checkNotNull(currency, "currency == null");
     this.requiresShipping = requiresShipping;
     this.lineItems = checkNotEmpty(lineItems, "lineItems can't be empty");
     this.shippingRates = checkNotNull(shippingRates, "shippingRates == null");
+    this.shippingLine = shippingLine;
+    this.taxPrice = checkNotNull(taxPrice, "taxPrice == null");
+    this.subtotalPrice = checkNotNull(subtotalPrice, "subtotalPrice == null");
+    this.totalPrice = checkNotNull(totalPrice, "totalPrice == null");
   }
 
   @Override public String toString() {
@@ -59,6 +69,10 @@ public final class Checkout {
       ", requiresShipping=" + requiresShipping +
       ", lineItems=" + lineItems +
       ", shippingRates=" + shippingRates +
+      ", shippingLine=" + shippingLine +
+      ", taxPrice=" + taxPrice +
+      ", subtotalPrice=" + subtotalPrice +
+      ", totalPrice=" + totalPrice +
       '}';
   }
 
@@ -120,6 +134,25 @@ public final class Checkout {
         ", price=" + price +
         ", title='" + title + '\'' +
         '}';
+    }
+
+    @Override public boolean equals(final Object o) {
+      if (this == o) return true;
+      if (!(o instanceof ShippingRate)) return false;
+
+      final ShippingRate that = (ShippingRate) o;
+
+      if (!handle.equals(that.handle)) return false;
+      if (!price.equals(that.price)) return false;
+      return title.equals(that.title);
+
+    }
+
+    @Override public int hashCode() {
+      int result = handle.hashCode();
+      result = 31 * result + price.hashCode();
+      result = 31 * result + title.hashCode();
+      return result;
     }
   }
 }

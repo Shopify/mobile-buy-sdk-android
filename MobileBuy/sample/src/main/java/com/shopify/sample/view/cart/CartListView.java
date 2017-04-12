@@ -85,10 +85,10 @@ public final class CartListView extends FrameLayout implements PageListViewPrese
     super(context, attrs);
   }
 
-  @Override public void showProgress(final long requestId) {
+  @Override public void showProgress(final int requestId) {
   }
 
-  @Override public void hideProgress(final long requestId) {
+  @Override public void hideProgress(final int requestId) {
   }
 
   @Override public void showError(final long requestId, final Throwable t) {

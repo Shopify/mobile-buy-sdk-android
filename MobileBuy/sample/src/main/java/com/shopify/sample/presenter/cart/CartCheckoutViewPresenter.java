@@ -170,7 +170,6 @@ public final class CartCheckoutViewPresenter extends BaseViewPresenter<CartCheck
     }
   }
 
-
   private void onCreateCheckout(final int requestId, final Checkout checkout) {
     if (isViewAttached()) {
       view().hideProgress(requestId);

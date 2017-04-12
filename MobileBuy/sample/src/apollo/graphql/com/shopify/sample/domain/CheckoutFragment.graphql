@@ -3,6 +3,9 @@ fragment CheckoutFragment on Checkout {
   webUrl
   requiresShipping
   currencyCode
+  totalPrice
+  totalTax
+  subtotalPrice
   lineItemConnection: lineItems(first: 250) {
     lineItemEdges: edges {
       lineItem: node {
@@ -17,5 +20,10 @@ fragment CheckoutFragment on Checkout {
   }
   availableShippingRates {
     ... CheckoutShippingRatesFragment
+  }
+  shippingLine {
+    handle
+    price
+    title
   }
 }

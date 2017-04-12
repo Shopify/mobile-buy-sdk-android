@@ -169,10 +169,10 @@ public final class PayCart implements Parcelable {
     return builder.build();
   }
 
-  public FullWalletRequest fullWalletRequest(@NonNull final String androidPayTransactionId) {
-    checkNotEmpty(androidPayTransactionId, "androidPayTransactionId can't be empty");
+  public FullWalletRequest fullWalletRequest() {
+    checkNotNull(maskedWallet, "maskedWallet can't be empty");
     return FullWalletRequest.newBuilder()
-      .setGoogleTransactionId(androidPayTransactionId)
+      .setGoogleTransactionId(maskedWallet.getGoogleTransactionId())
       .setCart(cartBuilder().build())
       .build();
   }
@@ -241,7 +241,8 @@ public final class PayCart implements Parcelable {
     List<String> shipsToCountries = Collections.emptyList();
     boolean phoneNumberRequired;
     List<LineItem> lineItems = new ArrayList<>();
-    BigDecimal subtotal = BigDecimal.ZERO;
+    BigDecimal lineItemSubtotal = BigDecimal.ZERO;
+    BigDecimal subtotal;
     BigDecimal taxPrice;
     BigDecimal shippingPrice;
     BigDecimal totalPrice;
@@ -279,9 +280,7 @@ public final class PayCart implements Parcelable {
         .setRole(Role.REGULAR)
         .build();
       lineItems.add(lineItem);
-
-      subtotal = subtotal.add(price.multiply(BigDecimal.valueOf(quantity)));
-
+      lineItemSubtotal = lineItemSubtotal.add(price.multiply(BigDecimal.valueOf(quantity)));
       return this;
     }
 
@@ -304,13 +303,19 @@ public final class PayCart implements Parcelable {
       return this;
     }
 
-    public Builder taxPrice(@NonNull final BigDecimal taxPrice) {
-      this.taxPrice = checkNotNull(taxPrice, "taxPrice can't be null");
+    public Builder shippingPrice(@Nullable final BigDecimal shippingPrice) {
+      this.shippingPrice = shippingPrice;
       return this;
     }
 
-    public Builder shippingPrice(@NonNull final BigDecimal shippingPrice) {
-      this.shippingPrice = checkNotNull(shippingPrice, "shippingPrice can't be null");
+    public Builder taxPrice(@NonNull final BigDecimal taxPrice) {
+      this.taxPrice = checkNotNull(taxPrice, "taxPrice == null");
+      ;
+      return this;
+    }
+
+    public Builder subtotal(@NonNull final BigDecimal subtotal) {
+      this.subtotal = checkNotNull(subtotal, "subtotal == null");
       return this;
     }
 
@@ -325,6 +330,9 @@ public final class PayCart implements Parcelable {
     }
 
     public PayCart build() {
+      if (subtotal == null) {
+        subtotal = lineItemSubtotal;
+      }
       return new PayCart(this);
     }
   }

@@ -77,11 +77,11 @@ public final class CollectionListView extends FrameLayout implements PageListVie
     super(context, attrs, defStyleAttr);
   }
 
-  @Override public void showProgress(final long requestId) {
+  @Override public void showProgress(final int requestId) {
     swipeRefreshLayoutView.setRefreshing(true);
   }
 
-  @Override public void hideProgress(final long requestId) {
+  @Override public void hideProgress(final int requestId) {
     swipeRefreshLayoutView.setRefreshing(false);
   }
 

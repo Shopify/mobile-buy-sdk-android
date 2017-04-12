@@ -22,35 +22,47 @@
  *   THE SOFTWARE.
  */
 
-package com.shopify.sample.domain.repository;
+package com.shopify.sample.domain.model;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
-import com.shopify.buy3.pay.PayAddress;
-import com.shopify.buy3.pay.PayCart;
-import com.shopify.buy3.pay.PaymentToken;
-import com.shopify.sample.domain.model.Checkout;
-import com.shopify.sample.domain.model.Payment;
+import static com.shopify.sample.util.Util.checkNotBlank;
 
-import java.util.List;
+public final class Payment {
+  @NonNull public final String id;
+  @Nullable public final String errorMessage;
+  public final boolean ready;
+  @Nullable public final Transaction transaction;
 
-import io.reactivex.Single;
+  public Payment(@NonNull final String id, @Nullable final String errorMessage, final boolean ready,
+    @Nullable final Transaction transaction) {
+    this.id = checkNotBlank(id, "id == null");
+    this.errorMessage = errorMessage;
+    this.ready = ready;
+    this.transaction = transaction;
+  }
 
-public interface CheckoutRepository {
+  @Override public String toString() {
+    return "Payment{" +
+      "id='" + id + '\'' +
+      ", errorMessage='" + errorMessage + '\'' +
+      ", ready=" + ready +
+      ", transaction=" + transaction +
+      '}';
+  }
 
-  Single<Checkout> create(@NonNull List<Checkout.LineItem> lineItems);
+  public static final class Transaction {
+    @NonNull public final String status;
 
-  Single<Checkout> updateShippingAddress(@NonNull String checkoutId, @NonNull PayAddress payAddress);
+    public Transaction(@NonNull final String status) {
+      this.status = checkNotBlank(status, "status == null");
+    }
 
-  Single<Checkout> fetch(@NonNull String checkoutId);
-
-  Single<Checkout.ShippingRates> fetchShippingRates(@NonNull String checkoutId);
-
-  Single<Checkout> applyShippingRate(@NonNull String checkoutId, @NonNull String shippingRateHandle);
-
-  Single<Checkout> updateEmail(@NonNull String checkoutId, @NonNull String email);
-
-  Single<Payment> completeCheckout(@NonNull String checkoutId, @NonNull PayCart payCart, @NonNull PaymentToken paymentToken,
-    @NonNull String email, @NonNull PayAddress billingAddress);
-
+    @Override public String toString() {
+      return "Transaction{" +
+        "status='" + status + '\'' +
+        '}';
+    }
+  }
 }

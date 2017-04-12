@@ -1,0 +1,7 @@
+mutation CheckoutShippingLineUpdateQuery($input: CheckoutShippingLineUpdateInput!) {
+  checkoutShippingLineUpdate(input: $input) {
+    checkout {
+      ...CheckoutFragment
+    }
+  }
+}

@@ -1,0 +1,11 @@
+mutation CompleteCheckoutQuery($input: CheckoutCompleteWithTokenizedPaymentInput!) {
+  checkoutCompleteWithTokenizedPayment(input: $input) {
+    payment {
+      ...PaymentFragment
+    }
+    userErrors {
+      field
+      message
+    }
+  }
+}

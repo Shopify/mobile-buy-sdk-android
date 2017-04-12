@@ -35,7 +35,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import static com.shopify.sample.util.Util.checkNotNull;
 
-public class ProgressDialogHelper {
+public final class ProgressDialogHelper {
   private final ProgressDialog dialog;
   private final AtomicLong requestId = new AtomicLong(0);
   private final AtomicBoolean canBeShown = new AtomicBoolean(true);
@@ -53,24 +53,20 @@ public class ProgressDialogHelper {
 
   public boolean show(final long requestId, @Nullable final String title, @Nullable final String message,
     @Nullable final Runnable onCancel) {
-    if (canBeShown.compareAndSet(true, false)) {
+    uiHandler.post(() -> {
       this.requestId.set(requestId);
-      uiHandler.post(() -> {
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.setTitle(title);
-        dialog.setMessage(message);
-        dialog.setOnCancelListener(dialog -> {
-          dialog.dismiss();
-          if (onCancel != null) {
-            onCancel.run();
-          }
-        });
-        dialog.show();
+      dialog.setCanceledOnTouchOutside(false);
+      dialog.setTitle(title);
+      dialog.setMessage(message);
+      dialog.setOnCancelListener(dialog -> {
+        dialog.dismiss();
+        if (onCancel != null) {
+          onCancel.run();
+        }
       });
-      return true;
-    } else {
-      return false;
-    }
+      dialog.show();
+    });
+    return true;
   }
 
   public void dismiss() {

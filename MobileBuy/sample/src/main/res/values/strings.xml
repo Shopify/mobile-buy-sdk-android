@@ -10,9 +10,18 @@
     <string name="cart_subtotal_subtitle">Shipping and taxes are calculated at checkout</string>
     <string name="cart_subtotal_price">SubTotal: %s</string>
     <string name="progress_loading">Loading…</string>
-    <string name="order_confirmation_title">Order Confirmation</string>
-    <string name="order_confirmation_subtotal">Subtotal</string>
-    <string name="order_confirmation_shipping">Shipping</string>
-    <string name="order_confirmation_tax">Tax</string>
-    <string name="order_confirmation_total">Total</string>
+    <string name="checkout_title">Order Confirmation</string>
+    <string name="checkout_summary_subtotal">Subtotal</string>
+    <string name="checkout_summary_shipping">Shipping</string>
+    <string name="checkout_summary_tax">Tax</string>
+    <string name="checkout_summary_total">Total: %s</string>
+    <string name="checkout_update_shipping_address_progress">Updating shipping address…</string>
+    <string name="checkout_fetch_shipping_rates_progress">Fetching shipping rates…</string>
+    <string name="checkout_apply_shipping_rate_progress">Applying shipping rate…</string>
+    <string name="checkout_shipping_method_title">Shipping Method</string>
+    <string name="checkout_shipping_method_change">CHANGE</string>
+    <string name="checkout_shipping_method_not_available">Not Available</string>
+    <string name="checkout_shipping_method_select_title">Select Shipping Method</string>
+    <string name="checkout_confirm">Confirm Order</string>
+    <string name="checkout_complete_progress">Confirming Order …</string>
 </resources>

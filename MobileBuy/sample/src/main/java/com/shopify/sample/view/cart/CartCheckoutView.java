@@ -69,14 +69,14 @@ public final class CartCheckoutView extends FrameLayout implements CartCheckoutV
     super(context, attrs, defStyleAttr);
   }
 
-  @Override public void showProgress(final long requestId) {
+  @Override public void showProgress(final int requestId) {
     if (requestId == CartCheckoutViewPresenter.REQUEST_ID_CREATE_WEB_CHECKOUT) {
       progressDialogHelper.show(requestId, null, getResources().getString(R.string.progress_loading),
         () -> presenter.cancelRequest(CartCheckoutViewPresenter.REQUEST_ID_CREATE_WEB_CHECKOUT));
     }
   }
 
-  @Override public void hideProgress(final long requestId) {
+  @Override public void hideProgress(final int requestId) {
     if (requestId == CartCheckoutViewPresenter.REQUEST_ID_CREATE_WEB_CHECKOUT) {
       progressDialogHelper.dismiss(requestId);
     }

@@ -29,6 +29,7 @@ import android.text.TextUtils;
 
 import com.shopify.buy3.GraphCall;
 import com.shopify.buy3.GraphClient;
+import com.shopify.buy3.GraphResponse;
 import com.shopify.buy3.Storefront;
 import com.shopify.graphql.support.ID;
 import com.shopify.sample.SampleApplication;
@@ -79,7 +80,10 @@ public final class RealProductRepository implements ProductRepository {
         )
     ));
     return rxGraphQueryCall(call)
-      .map(queryRoot -> ((Storefront.Collection) queryRoot.data().getNode()).getProducts().getEdges())
+      .map(GraphResponse::data)
+      .map(it -> (Storefront.Collection) it.getNode())
+      .map(Storefront.Collection::getProducts)
+      .map(Storefront.ProductConnection::getEdges)
       .map(RealProductRepository::map)
       .subscribeOn(Schedulers.io());
   }
@@ -118,7 +122,8 @@ public final class RealProductRepository implements ProductRepository {
         )
     ));
     return rxGraphQueryCall(call)
-      .map(queryRoot -> ((Storefront.Product) queryRoot.data().getNode()))
+      .map(GraphResponse::data)
+      .map(it -> (Storefront.Product) it.getNode())
       .map(RealProductRepository::map)
       .subscribeOn(Schedulers.io());
   }

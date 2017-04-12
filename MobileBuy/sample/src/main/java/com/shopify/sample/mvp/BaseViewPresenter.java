@@ -66,6 +66,10 @@ public abstract class BaseViewPresenter<V extends View> implements ViewPresenter
     return viewAttached;
   }
 
+  @Override public boolean isViewDetached() {
+    return !viewAttached;
+  }
+
   protected V view() {
     return viewRef.get();
   }
@@ -89,7 +93,7 @@ public abstract class BaseViewPresenter<V extends View> implements ViewPresenter
     }
   }
 
-  protected void showProgress(final long requestId) {
+  protected void showProgress(final int requestId) {
     if (isViewAttached()) {
       final V view = view();
       if (view != null) {
@@ -98,12 +102,12 @@ public abstract class BaseViewPresenter<V extends View> implements ViewPresenter
     }
   }
 
-  protected void onRequestError(final long requestId, final Throwable t) {
+  protected void onRequestError(final int requestId, final Throwable t) {
     hideProgress(requestId);
     showError(requestId, t);
   }
 
-  protected void hideProgress(final long requestId) {
+  protected void hideProgress(final int requestId) {
     if (isViewAttached()) {
       final V view = view();
       if (view != null) {

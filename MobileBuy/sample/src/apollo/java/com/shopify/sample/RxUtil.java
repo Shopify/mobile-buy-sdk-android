@@ -26,9 +26,14 @@ package com.shopify.sample;
 
 import com.apollographql.apollo.ApolloCall;
 import com.apollographql.apollo.api.Response;
+import com.apollographql.apollo.api.internal.Optional;
 
 import io.reactivex.Single;
+import io.reactivex.SingleSource;
+import io.reactivex.SingleTransformer;
 import io.reactivex.exceptions.Exceptions;
+
+import static com.shopify.sample.util.Util.fold;
 
 public final class RxUtil {
 
@@ -40,6 +45,18 @@ public final class RxUtil {
       } catch (Exception e) {
         Exceptions.throwIfFatal(e);
         emitter.onError(e);
+      }
+    });
+  }
+
+  public static <T> SingleTransformer<Response<Optional<T>>, T> queryResponseTransformer() {
+    return upstream -> upstream.flatMap(response -> {
+      if (response.errors().isEmpty()) {
+        return Single.just(response.data().get());
+      } else {
+        String errorMessage = fold(new StringBuilder(), response.errors(),
+          (builder, error) -> builder.append(error.message()).append("\n")).toString();
+        return Single.error(new RuntimeException(errorMessage));
       }
     });
   }

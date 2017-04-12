@@ -30,6 +30,7 @@ import android.text.TextUtils;
 
 import com.shopify.buy3.GraphCall;
 import com.shopify.buy3.GraphClient;
+import com.shopify.buy3.GraphResponse;
 import com.shopify.buy3.Storefront;
 import com.shopify.sample.SampleApplication;
 import com.shopify.sample.domain.model.Collection;
@@ -84,7 +85,10 @@ public final class RealCollectionRepository implements CollectionRepository {
       )
     ));
     return rxGraphQueryCall(call)
-      .map(queryRoot -> queryRoot.data().getShop().getCollections().getEdges())
+      .map(GraphResponse::data)
+      .map(Storefront.QueryRoot::getShop)
+      .map(Storefront.Shop::getCollections)
+      .map(Storefront.CollectionConnection::getEdges)
       .map(RealCollectionRepository::map)
       .subscribeOn(Schedulers.io());
   }

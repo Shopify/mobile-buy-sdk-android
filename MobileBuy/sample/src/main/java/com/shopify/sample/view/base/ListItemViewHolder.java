@@ -55,6 +55,10 @@ public abstract class ListItemViewHolder<T, MODEL extends ListItemViewModel<T>> 
     return onClickListener;
   }
 
+  protected void notifyOnClickListener() {
+    onClickListener.onClick(itemModel);
+  }
+
   public interface OnClickListener<T, MODEL extends ListItemViewModel<T>> {
     void onClick(@NonNull MODEL itemModel);
   }

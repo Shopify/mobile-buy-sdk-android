@@ -119,11 +119,11 @@ public final class ProductListView extends SwipeRefreshLayout implements PageLis
     });
   }
 
-  @Override public void showProgress(final long requestId) {
+  @Override public void showProgress(final int requestId) {
     setRefreshing(true);
   }
 
-  @Override public void hideProgress(final long requestId) {
+  @Override public void hideProgress(final int requestId) {
     setRefreshing(false);
   }
 

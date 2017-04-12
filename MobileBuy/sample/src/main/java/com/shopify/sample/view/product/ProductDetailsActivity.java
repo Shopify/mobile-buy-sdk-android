@@ -101,11 +101,11 @@ public final class ProductDetailsActivity extends AppCompatActivity implements P
     return true;
   }
 
-  @Override public void showProgress(final long requestId) {
+  @Override public void showProgress(final int requestId) {
     swipeRefreshLayoutView.setRefreshing(true);
   }
 
-  @Override public void hideProgress(final long requestId) {
+  @Override public void hideProgress(final int requestId) {
     swipeRefreshLayoutView.setRefreshing(false);
   }
 

@@ -15,6 +15,7 @@
         <item name="colorControlNormal">@android:color/white</item>
         <item name="colorAccent">@android:color/holo_green_dark</item>
         <item name="colorControlHighlight">#65669900</item>
+        <item name="colorPrimary">#0A0A0B</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
