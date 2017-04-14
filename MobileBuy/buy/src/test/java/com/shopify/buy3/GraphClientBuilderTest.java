@@ -26,8 +26,6 @@ package com.shopify.buy3;
 
 import android.content.Context;
 
-import junit.framework.Assert;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -93,9 +91,8 @@ public class GraphClientBuilderTest {
     checkForNullPointerException(() -> builder.httpClient(null));
 
     checkForNullPointerException(builder::build);
-    builder.shopDomain("");
-    checkForNullPointerException(builder::build);
-    builder.apiKey("");
+    checkIllegalArgumentException(() -> builder.shopDomain(""));
+    checkIllegalArgumentException(() -> builder.apiKey(""));
     builder.build();
   }
 
@@ -104,6 +101,14 @@ public class GraphClientBuilderTest {
       action.run();
       fail("expected NullPointerException");
     } catch (NullPointerException expected) {
+    }
+  }
+
+  private void checkIllegalArgumentException(final Runnable action) {
+    try {
+      action.run();
+      fail("expected IllegalArgumentException");
+    } catch (IllegalArgumentException expected) {
     }
   }
 }

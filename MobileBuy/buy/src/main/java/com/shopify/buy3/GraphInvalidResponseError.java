@@ -25,46 +25,38 @@
 package com.shopify.buy3;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
-import com.shopify.graphql.support.AbstractResponse;
-import com.shopify.graphql.support.Error;
+import okhttp3.Response;
 
-import java.util.Collections;
-import java.util.List;
+public class GraphInvalidResponseError extends GraphError {
+  private final int code;
+  private final String message;
+  private final transient Response rawResponse;
 
-public final class GraphResponse<T extends AbstractResponse<T>> {
-  private final T data;
-  private final List<Error> errors;
-
-  GraphResponse(final T data, final List<Error> errors) {
-    this.data = data;
-    this.errors = errors != null ? errors : Collections.emptyList();
+  public GraphInvalidResponseError(@NonNull final Response rawResponse) {
+    super(formatMessage(rawResponse));
+    this.code = rawResponse.code();
+    this.message = rawResponse.message();
+    this.rawResponse = rawResponse;
   }
 
-  @Nullable public T data() {
-    return data;
+  public int code() {
+    return code;
   }
 
-  @NonNull public List<Error> errors() {
-    return errors;
+  public String message() {
+    return message;
   }
 
-  public boolean hasErrors() {
-    return !errors.isEmpty();
+  @NonNull public Response rawResponse() {
+    return rawResponse;
   }
 
-  @NonNull public String formatErrorMessage() {
-    StringBuilder message = new StringBuilder();
-    boolean first = true;
-    for (Error error : errors) {
-      if (first) {
-        first = false;
-      } else {
-        message.append("\n");
-      }
-      message.append(error.message());
-    }
-    return message.toString();
+  public void dispose() {
+    rawResponse.close();
+  }
+
+  private static String formatMessage(Response response) {
+    return "HTTP " + response.code() + " " + response.message();
   }
 }

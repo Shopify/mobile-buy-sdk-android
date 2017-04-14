@@ -34,6 +34,8 @@ public interface GraphCall<T extends AbstractResponse<T>> {
 
   void cancel();
 
+  boolean isCanceled();
+
   @NonNull GraphCall<T> clone();
 
   @NonNull GraphResponse<T> execute() throws GraphError;
@@ -42,13 +44,24 @@ public interface GraphCall<T extends AbstractResponse<T>> {
 
   @NonNull GraphCall<T> enqueue(@NonNull Callback<T> callback, @Nullable Handler handler);
 
-  @NonNull GraphCall<T> enqueue(@NonNull Callback<T> callback, @Nullable Handler handler, @Nullable RetryHandler retryHandler);
+  @NonNull GraphCall<T> enqueue(@NonNull Callback<T> callback, @Nullable Handler handler, @NonNull RetryHandler retryHandler);
 
-  interface Callback<T extends AbstractResponse<T>> {
+  abstract class Callback<T extends AbstractResponse<T>> {
+    public abstract void onResponse(@NonNull GraphResponse<T> response);
 
-    void onResponse(@NonNull GraphResponse<T> response);
+    public abstract void onFailure(@NonNull GraphError error);
 
-    void onFailure(@NonNull GraphError error);
+    public void onNetworkError(@NonNull final GraphNetworkError error) {
+      onFailure(error);
+    }
 
+    public void onInvalidResponseError(@NonNull final GraphInvalidResponseError error) {
+      onFailure(error);
+      error.dispose();
+    }
+
+    public void onParseError(@NonNull final GraphParseError error) {
+      onFailure(error);
+    }
   }
 }

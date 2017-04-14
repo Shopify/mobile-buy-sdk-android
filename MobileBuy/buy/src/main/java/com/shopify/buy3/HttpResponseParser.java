@@ -46,16 +46,20 @@ final class HttpResponseParser<T extends AbstractResponse<T>> {
   GraphResponse<T> parse(final Response response) throws GraphError {
     TopLevelResponse topLevelResponse = parseTopLevelResponse(checkResponse(response));
     try {
-      T data = responseDataConverter.convert(topLevelResponse);
-      return new GraphResponse<T>(data, topLevelResponse.getErrors());
+      if (topLevelResponse.getErrors() != null && !topLevelResponse.getErrors().isEmpty()) {
+        return new GraphResponse<T>(null, topLevelResponse.getErrors());
+      } else {
+        T data = responseDataConverter.convert(topLevelResponse);
+        return new GraphResponse<T>(data, topLevelResponse.getErrors());
+      }
     } catch (Exception e) {
-      throw GraphError.invalidResponseError(response, e);
+      throw new GraphError("Failed to process GraphQL response ", e);
     }
   }
 
   private Response checkResponse(final Response httpResponse) throws GraphError {
     if (!httpResponse.isSuccessful()) {
-      throw GraphError.networkError(httpResponse, null);
+      throw new GraphInvalidResponseError(httpResponse);
     }
     return httpResponse;
   }
@@ -66,7 +70,9 @@ final class HttpResponseParser<T extends AbstractResponse<T>> {
       JsonObject root = (JsonObject) new JsonParser().parse(reader);
       return new TopLevelResponse(root);
     } catch (Exception e) {
-      throw GraphError.parseError(response, e);
+      throw new GraphParseError("Failed to parse GraphQL http response", e);
+    } finally {
+      response.close();
     }
   }
 }

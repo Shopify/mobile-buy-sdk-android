@@ -62,7 +62,7 @@ final class HttpCallbackWithRetry<T extends AbstractResponse<T>> implements okht
   }
 
   @Override public void onFailure(final Call call, final IOException e) {
-    handleError(GraphError.networkError(null, e));
+    handleError(new GraphNetworkError("Failed to execute GraphQL http request", e));
   }
 
   @Override public void onResponse(final Call call, final Response response) throws IOException {
@@ -75,13 +75,12 @@ final class HttpCallbackWithRetry<T extends AbstractResponse<T>> implements okht
     }
 
     try {
-
       if (retryHandler.retry(graphResponse)) {
         schedule();
         return;
       }
     } catch (Exception e) {
-      notifyError(GraphError.runtimeError(e));
+      notifyError(new GraphError("Failed to reschedule GraphQL query execution", e));
     }
 
     notifyResponse(graphResponse);
@@ -106,6 +105,10 @@ final class HttpCallbackWithRetry<T extends AbstractResponse<T>> implements okht
   }
 
   private void notifyResponse(final GraphResponse<T> response) {
+    if (httpCall.isCanceled()) {
+      return;
+    }
+
     Runnable action = () -> graphCallback.onResponse(response);
     if (handler != null) {
       handler.post(action);
@@ -115,7 +118,21 @@ final class HttpCallbackWithRetry<T extends AbstractResponse<T>> implements okht
   }
 
   private void notifyError(final GraphError error) {
-    Runnable action = () -> graphCallback.onFailure(error);
+    if (httpCall.isCanceled()) {
+      return;
+    }
+
+    Runnable action = () -> {
+      if (error instanceof GraphNetworkError) {
+        graphCallback.onNetworkError((GraphNetworkError) error);
+      } else if (error instanceof GraphInvalidResponseError) {
+        graphCallback.onInvalidResponseError((GraphInvalidResponseError) error);
+      } else if (error instanceof GraphParseError) {
+        graphCallback.onParseError((GraphParseError) error);
+      } else {
+        graphCallback.onFailure(error);
+      }
+    };
     if (handler != null) {
       handler.post(action);
     } else {
@@ -124,11 +141,11 @@ final class HttpCallbackWithRetry<T extends AbstractResponse<T>> implements okht
   }
 
   void cancel() {
-    httpCall.cancel();
-
     ScheduledFuture<Void> scheduledFuture = this.scheduledFuture;
     if (scheduledFuture != null) {
       scheduledFuture.cancel(true);
     }
+
+    httpCall.cancel();
   }
 }

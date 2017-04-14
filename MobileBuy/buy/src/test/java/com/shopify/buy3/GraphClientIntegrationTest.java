@@ -26,6 +26,8 @@ package com.shopify.buy3;
 
 import android.content.Context;
 
+import com.google.common.base.Charsets;
+
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -33,13 +35,13 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.util.concurrent.atomic.AtomicReference;
+import java.net.SocketTimeoutException;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
+import okhttp3.mockwebserver.RecordedRequest;
 
 import static com.google.common.truth.Truth.assertThat;
 import static junit.framework.Assert.fail;
@@ -49,42 +51,126 @@ import static org.mockito.Mockito.when;
 public class GraphClientIntegrationTest {
   private static final String PACKAGE_NAME = "com.shopify.buy3.test";
   private static final String AUTH_HEADER = "Basic YXBpS2V5";
+  private static final String SHOP_DOMAIN = "myshop.shopify.com";
 
   @Mock public Context mockContext;
   @Rule public MockWebServer server = new MockWebServer();
   private GraphClient graphClient;
-  private final AtomicReference<Response> lastHttResponse = new AtomicReference<>();
+  private final Storefront.QueryRootQuery shopNameQuery = Storefront.query(root -> root.shop(Storefront.ShopQuery::name));
 
   @Before public void setUp() {
     when(mockContext.getPackageName()).thenReturn(PACKAGE_NAME);
-
-    OkHttpClient httpClient = new OkHttpClient.Builder()
-      .addInterceptor(chain -> {
-        Request request = chain.request();
-        okhttp3.Response response = chain.proceed(request);
-        lastHttResponse.set(response);
-        return response;
-      })
-      .build();
-
     graphClient = GraphClient.builder(mockContext)
       .authHeader(AUTH_HEADER)
-      .httpClient(httpClient)
-      .serverUrl(server.url("/"))
+      .serverUrl(server.url(SHOP_DOMAIN))
+      .httpClient(new OkHttpClient.Builder()
+        .connectTimeout(3, TimeUnit.SECONDS)
+        .readTimeout(3, TimeUnit.SECONDS)
+        .build())
       .build();
   }
 
-  @Test public void headerInterceptors() throws InterruptedException {
-    server.enqueue(new MockResponse().setResponseCode(500).setBody(""));
+  @Test public void httpHeaders() throws Exception {
+    server.enqueue(new MockResponse().setResponseCode(200).setBody(""));
     try {
-      graphClient.queryGraph(Storefront.query(root -> root.shop(Storefront.ShopQuery::name))).execute();
+      graphClient.queryGraph(shopNameQuery).execute();
       fail("expected exception to be thrown");
     } catch (GraphError error) {
       // ignore
     }
 
-    assertThat(lastHttResponse.get().request().header("Authorization")).isEqualTo(AUTH_HEADER);
-    assertThat(lastHttResponse.get().request().header("User-Agent")).isEqualTo("Mobile Buy SDK Android/" + BuildConfig.VERSION_NAME + "/" +
-      PACKAGE_NAME);
+    RecordedRequest recordedRequest = server.takeRequest();
+    assertThat(recordedRequest.getHeader("Authorization")).isEqualTo(AUTH_HEADER);
+    assertThat(recordedRequest.getHeader("User-Agent")).isEqualTo("Mobile Buy SDK Android/" + BuildConfig.VERSION_NAME + "/" + PACKAGE_NAME);
+    assertThat(recordedRequest.getHeader("Accept")).isEqualTo(RealGraphCall.ACCEPT_HEADER);
+    assertThat(recordedRequest.getHeader("Content-Type")).isEqualTo(RealGraphCall.GRAPHQL_MEDIA_TYPE.toString());
+  }
+
+  @Test public void httpRequest() throws Exception {
+    server.enqueue(new MockResponse().setResponseCode(200).setBody(""));
+    try {
+      graphClient.queryGraph(shopNameQuery).execute();
+      fail("expected exception to be thrown");
+    } catch (GraphError error) {
+      // ignore
+    }
+
+    RecordedRequest recordedRequest = server.takeRequest();
+    assertThat(recordedRequest.getMethod()).isEqualTo("POST");
+    assertThat(recordedRequest.getBody().readString(Charsets.UTF_8)).isEqualTo("{shop{name}}");
+  }
+
+  @Test public void graphResponse() throws Exception {
+    server.enqueue(new MockResponse().setResponseCode(200).setBody("{"
+      + "  \"data\": {"
+      + "    \"shop\": {"
+      + "      \"name\": \"MyShop\""
+      + "    }"
+      + "  }"
+      + "}"));
+    GraphResponse<Storefront.QueryRoot> response = graphClient.queryGraph(shopNameQuery).execute();
+    assertThat(response.data()).isNotNull();
+    assertThat(response.data().getShop()).isNotNull();
+    assertThat(response.data().getShop().getName()).isEqualTo("MyShop");
+  }
+
+  @Test public void graphResponseErrors() throws Exception {
+    server.enqueue(new MockResponse().setResponseCode(200).setBody("{"
+      + "  \"errors\": ["
+      + "    {"
+      + "      \"message\": \"Field 'names' doesn't exist on type 'Shop'\","
+      + "      \"locations\": ["
+      + "        {"
+      + "          \"line\": 1,"
+      + "          \"column\": 7"
+      + "        }"
+      + "      ],"
+      + "      \"fields\": ["
+      + "        \"query\","
+      + "        \"shop\","
+      + "        \"names\""
+      + "      ]"
+      + "    }"
+      + "  ]"
+      + "}"));
+    GraphResponse<Storefront.QueryRoot> response = graphClient.queryGraph(shopNameQuery).execute();
+    assertThat(response.data()).isNull();
+    assertThat(response.hasErrors()).isTrue();
+    assertThat(response.errors()).isNotEmpty();
+    assertThat(response.formatErrorMessage()).isEqualTo("Field 'names' doesn't exist on type 'Shop'");
+  }
+
+  @Test public void invalidResponseError() throws Exception {
+    server.enqueue(new MockResponse().setResponseCode(401).setBody("Unauthorized request!"));
+    try {
+      graphClient.queryGraph(shopNameQuery).execute();
+      fail("expected GraphInvalidResponseError");
+    } catch (GraphInvalidResponseError e) {
+      assertThat(e.code()).isEqualTo(401);
+      assertThat(e.message()).isEqualTo("Client Error");
+      assertThat(e.rawResponse().body().string()).isEqualTo("Unauthorized request!");
+      assertThat(e.getMessage()).isEqualTo("HTTP 401 Client Error");
+      e.dispose();
+    }
+  }
+
+  @Test public void networkError() throws Exception {
+    try {
+      graphClient.queryGraph(shopNameQuery).execute();
+      fail("expected ApolloNetworkException");
+    } catch (GraphNetworkError e) {
+      assertThat(e.getMessage()).isEqualTo("Failed to execute GraphQL http request");
+      assertThat(e.getCause().getClass()).isEqualTo(SocketTimeoutException.class);
+    }
+  }
+
+  @Test public void parseError() throws Exception {
+    server.enqueue(new MockResponse().setBody("Noise"));
+    try {
+      graphClient.queryGraph(shopNameQuery).execute();
+      fail("Expected ApolloParseException");
+    } catch (GraphParseError e) {
+      assertThat(e.getMessage()).isEqualTo("Failed to parse GraphQL http response");
+    }
   }
 }

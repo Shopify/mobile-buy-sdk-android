@@ -24,47 +24,25 @@
 
 package com.shopify.buy3;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
-import com.shopify.graphql.support.AbstractResponse;
-import com.shopify.graphql.support.Error;
+public class NamedCountDownLatch extends CountDownLatch {
 
-import java.util.Collections;
-import java.util.List;
+  private String name;
 
-public final class GraphResponse<T extends AbstractResponse<T>> {
-  private final T data;
-  private final List<Error> errors;
-
-  GraphResponse(final T data, final List<Error> errors) {
-    this.data = data;
-    this.errors = errors != null ? errors : Collections.emptyList();
+  public NamedCountDownLatch(String name, int count) {
+    super(count);
+    this.name = name;
   }
 
-  @Nullable public T data() {
-    return data;
-  }
-
-  @NonNull public List<Error> errors() {
-    return errors;
-  }
-
-  public boolean hasErrors() {
-    return !errors.isEmpty();
-  }
-
-  @NonNull public String formatErrorMessage() {
-    StringBuilder message = new StringBuilder();
-    boolean first = true;
-    for (Error error : errors) {
-      if (first) {
-        first = false;
-      } else {
-        message.append("\n");
-      }
-      message.append(error.message());
+  public void awaitOrThrowWithTimeout(long timeout, TimeUnit timeUnit)
+    throws InterruptedException, TimeoutException {
+    this.await(timeout, timeUnit);
+    if (this.getCount() != 0) {
+      throw new TimeoutException("Time expired before latch, " + this.name + "count went to zero.");
     }
-    return message.toString();
   }
 }
+

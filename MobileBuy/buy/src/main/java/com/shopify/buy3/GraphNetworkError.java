@@ -24,47 +24,15 @@
 
 package com.shopify.buy3;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-
-import com.shopify.graphql.support.AbstractResponse;
-import com.shopify.graphql.support.Error;
-
-import java.util.Collections;
-import java.util.List;
-
-public final class GraphResponse<T extends AbstractResponse<T>> {
-  private final T data;
-  private final List<Error> errors;
-
-  GraphResponse(final T data, final List<Error> errors) {
-    this.data = data;
-    this.errors = errors != null ? errors : Collections.emptyList();
+public class GraphNetworkError extends GraphError {
+  public GraphNetworkError() {
   }
 
-  @Nullable public T data() {
-    return data;
+  public GraphNetworkError(final String message) {
+    super(message);
   }
 
-  @NonNull public List<Error> errors() {
-    return errors;
-  }
-
-  public boolean hasErrors() {
-    return !errors.isEmpty();
-  }
-
-  @NonNull public String formatErrorMessage() {
-    StringBuilder message = new StringBuilder();
-    boolean first = true;
-    for (Error error : errors) {
-      if (first) {
-        first = false;
-      } else {
-        message.append("\n");
-      }
-      message.append(error.message());
-    }
-    return message.toString();
+  public GraphNetworkError(final String message, final Throwable cause) {
+    super(message, cause);
   }
 }

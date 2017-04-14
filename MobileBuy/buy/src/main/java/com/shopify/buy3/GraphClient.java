@@ -27,6 +27,7 @@ package com.shopify.buy3;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -35,6 +36,7 @@ import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 
+import static com.shopify.buy3.Utils.checkNotBlank;
 import static com.shopify.buy3.Utils.checkNotNull;
 
 public final class GraphClient {
@@ -44,15 +46,21 @@ public final class GraphClient {
 
   final HttpUrl serverUrl;
   final Call.Factory httpCallFactory;
-  final ScheduledThreadPoolExecutor dispatcher;
+  final ScheduledExecutorService dispatcher;
 
-  private GraphClient(final HttpUrl serverUrl, final Call.Factory httpCallFactory) {
-    this.serverUrl = serverUrl;
-    this.httpCallFactory = httpCallFactory;
+  private GraphClient(final Builder builder) {
+    this.serverUrl = builder.endpointUrl;
+    this.httpCallFactory = builder.httpClient;
 
-    this.dispatcher = new ScheduledThreadPoolExecutor(2, runnable -> new Thread(runnable, "GraphClient Dispatcher"));
-    this.dispatcher.setKeepAliveTime(1, TimeUnit.SECONDS);
-    this.dispatcher.allowCoreThreadTimeOut(true);
+    if (builder.dispatcher == null) {
+      ScheduledThreadPoolExecutor threadPoolExecutor = new ScheduledThreadPoolExecutor(2,
+        runnable -> new Thread(runnable, "GraphClient Dispatcher"));
+      threadPoolExecutor.setKeepAliveTime(1, TimeUnit.SECONDS);
+      threadPoolExecutor.allowCoreThreadTimeOut(true);
+      this.dispatcher = threadPoolExecutor;
+    } else {
+      this.dispatcher = builder.dispatcher;
+    }
   }
 
   public GraphCall<Storefront.QueryRoot> queryGraph(final Storefront.QueryRootQuery query) {
@@ -67,16 +75,16 @@ public final class GraphClient {
     public static final long DEFAULT_HTTP_CONNECTION_TIME_OUT_MS = TimeUnit.SECONDS.toMillis(30);
     public static final long DEFAULT_HTTP_READ_WRITE_TIME_OUT_MS = TimeUnit.SECONDS.toMillis(60);
 
+    private final String applicationName;
     private String shopDomain;
     private HttpUrl endpointUrl;
     private String apiKey;
     private String authHeader;
-    private String applicationName;
     private OkHttpClient httpClient;
+    private ScheduledExecutorService dispatcher;
 
     private Builder(@NonNull final Context context) {
-      checkNotNull(context, "context == null");
-      applicationName = context.getPackageName();
+      applicationName = checkNotNull(context, "context == null").getPackageName();
     }
 
     /**
@@ -86,8 +94,7 @@ public final class GraphClient {
      * @return a {@link GraphClient.Builder}
      */
     public Builder shopDomain(@NonNull final String shopDomain) {
-      checkNotNull(shopDomain, "shopDomain == null");
-      this.shopDomain = shopDomain;
+      this.shopDomain = checkNotNull(shopDomain, "shopDomain == null");
       return this;
     }
 
@@ -98,53 +105,54 @@ public final class GraphClient {
      * @return a {@link GraphClient.Builder}
      */
     public Builder apiKey(@NonNull final String apiKey) {
-      checkNotNull(apiKey, "apiKey == null");
-      this.apiKey = apiKey;
+      this.apiKey = checkNotBlank(apiKey, "apiKey == null");
       return this;
     }
 
     public Builder httpClient(@NonNull OkHttpClient httpClient) {
-      checkNotNull(httpClient, "httpClient == null");
-      this.httpClient = httpClient;
+      this.httpClient = checkNotNull(httpClient, "httpClient == null");
       return this;
     }
 
     Builder serverUrl(@NonNull HttpUrl endpointUrl) {
-      checkNotNull(endpointUrl, "endpointUrl == null");
-      this.endpointUrl = endpointUrl;
+      this.endpointUrl = checkNotNull(endpointUrl, "endpointUrl == null");
       return this;
     }
 
     Builder authHeader(@NonNull String authHeader) {
-      checkNotNull(authHeader, "authHeader == null");
-      this.authHeader = authHeader;
+      this.authHeader = checkNotBlank(authHeader, "authHeader == null");
+      return this;
+    }
+
+    Builder dispatcher(@NonNull final ScheduledExecutorService dispatcher) {
+      this.dispatcher = checkNotNull(dispatcher, "dispatcher == null");
       return this;
     }
 
     public GraphClient build() {
       if (endpointUrl == null) {
-        checkNotNull(shopDomain, "shopDomain == null");
+        checkNotBlank(shopDomain, "shopDomain == null");
         endpointUrl = HttpUrl.parse("https://" + shopDomain + "/api/graphql");
       }
 
       if (authHeader == null) {
-        checkNotNull(apiKey, "apiKey == null");
-        authHeader = Utils.formatBasicAuthorization(apiKey);
+        authHeader = Utils.formatBasicAuthorization(checkNotBlank(apiKey, "apiKey == null"));
       }
 
-      return new GraphClient(endpointUrl, buildOkHttpClient());
+      if (httpClient == null) {
+        httpClient = defaultOkHttpClient();
+      }
+      httpClient = configureHttpClient(httpClient, authHeader, applicationName);
+
+      return new GraphClient(this);
     }
 
-    private OkHttpClient buildOkHttpClient() {
-      if (httpClient == null) {
-        OkHttpClient.Builder httpClientBuilder = new OkHttpClient.Builder()
-          .connectTimeout(DEFAULT_HTTP_CONNECTION_TIME_OUT_MS, TimeUnit.MILLISECONDS)
-          .readTimeout(DEFAULT_HTTP_READ_WRITE_TIME_OUT_MS, TimeUnit.MILLISECONDS)
-          .writeTimeout(DEFAULT_HTTP_READ_WRITE_TIME_OUT_MS, TimeUnit.MILLISECONDS);
-        return configureHttpClient(httpClientBuilder, authHeader, applicationName).build();
-      } else {
-        return configureHttpClient(httpClient, authHeader, applicationName);
-      }
+    OkHttpClient defaultOkHttpClient() {
+      return new OkHttpClient.Builder()
+        .connectTimeout(DEFAULT_HTTP_CONNECTION_TIME_OUT_MS, TimeUnit.MILLISECONDS)
+        .readTimeout(DEFAULT_HTTP_READ_WRITE_TIME_OUT_MS, TimeUnit.MILLISECONDS)
+        .writeTimeout(DEFAULT_HTTP_READ_WRITE_TIME_OUT_MS, TimeUnit.MILLISECONDS)
+        .build();
     }
 
     private OkHttpClient configureHttpClient(final OkHttpClient httpClient, final String authHeader, final String applicationName) {

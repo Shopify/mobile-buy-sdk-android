@@ -51,6 +51,7 @@ public class RetryTest {
   @Mock public Context mockContext;
   @Rule public MockWebServer server = new MockWebServer();
   private GraphClient graphClient;
+  private final Storefront.QueryRootQuery shopNameQuery = Storefront.query(root -> root.shop(Storefront.ShopQuery::name));
 
   @Before public void setUp() {
     OkHttpClient httpClient = new OkHttpClient.Builder()
@@ -61,36 +62,6 @@ public class RetryTest {
       .authHeader(AUTH_HEADER)
       .serverUrl(server.url("/"))
       .build();
-  }
-
-  @Test public void noRetryNetworkError() throws Exception {
-    server.enqueue(new MockResponse().setResponseCode(500).setBody(""));
-    server.enqueue(new MockResponse().setResponseCode(500).setBody(""));
-
-    AtomicReference<GraphError> graphError = new AtomicReference<>();
-    NamedCountDownLatch latch = new NamedCountDownLatch("noRetryNetworkError", 1);
-    graphClient
-      .queryGraph(Storefront.query(root -> root.shop(Storefront.ShopQuery::name)))
-      .enqueue(new GraphCall.Callback<Storefront.QueryRoot>() {
-        @Override public void onResponse(@NonNull final GraphResponse<Storefront.QueryRoot> response) {
-          latch.countDown();
-        }
-
-        @Override public void onFailure(@NonNull final GraphError error) {
-          graphError.set(error);
-          latch.countDown();
-        }
-      });
-
-    latch.awaitOrThrowWithTimeout(3, TimeUnit.SECONDS);
-
-    GraphError error = graphError.get();
-    if (error == null) {
-      fail("expected GraphError");
-    }
-
-    assertThat(server.getRequestCount()).isEqualTo(1);
-    assertThat(error.type()).isEqualTo(GraphError.Type.NETWORK);
   }
 
   @Test public void retryNoConditionNetworkError() throws Exception {
@@ -113,7 +84,7 @@ public class RetryTest {
           graphError.set(error);
           latch.countDown();
         }
-      }, null, RetryHandler.simple(3, 100, TimeUnit.MILLISECONDS, 1));
+      }, null, RetryHandler.delay(100, TimeUnit.MILLISECONDS).maxCount(3).build());
 
     latch.awaitOrThrowWithTimeout(10, TimeUnit.SECONDS);
 
@@ -123,7 +94,7 @@ public class RetryTest {
     }
 
     assertThat(server.getRequestCount()).isEqualTo(4);
-    assertThat(error.type()).isEqualTo(GraphError.Type.NETWORK);
+    assertThat(error).isInstanceOf(GraphInvalidResponseError.class);
   }
 
   @Test public void retryWihConditionNetworkError() throws Exception {
@@ -135,23 +106,19 @@ public class RetryTest {
 
     AtomicReference<GraphError> graphError = new AtomicReference<>();
     NamedCountDownLatch latch = new NamedCountDownLatch("retryWihConditionNetworkError", 1);
-    graphClient
-      .queryGraph(Storefront.query(root -> root.shop(Storefront.ShopQuery::name)))
-      .enqueue(new GraphCall.Callback<Storefront.QueryRoot>() {
-        @Override public void onResponse(@NonNull final GraphResponse<Storefront.QueryRoot> response) {
-          latch.countDown();
-        }
+    graphClient.queryGraph(shopNameQuery).enqueue(new GraphCall.Callback<Storefront.QueryRoot>() {
+      @Override public void onResponse(@NonNull final GraphResponse<Storefront.QueryRoot> response) {
+        latch.countDown();
+      }
 
-        @Override public void onFailure(@NonNull final GraphError error) {
-          graphError.set(error);
-          latch.countDown();
-        }
-      }, null, RetryHandler.builder()
-        .maxCount(4)
-        .delayBetweenRetries(100, TimeUnit.MILLISECONDS)
-        .backoffMultiplier(1)
-        .errorRetryCondition(error -> error.type() == GraphError.Type.NETWORK)
-        .build());
+      @Override public void onFailure(@NonNull final GraphError error) {
+        graphError.set(error);
+        latch.countDown();
+      }
+    }, null, RetryHandler.delay(100, TimeUnit.MILLISECONDS)
+      .maxCount(4)
+      .whenError(error -> error instanceof GraphInvalidResponseError)
+      .build());
 
     latch.awaitOrThrowWithTimeout(10, TimeUnit.SECONDS);
 
@@ -161,36 +128,34 @@ public class RetryTest {
     }
 
     assertThat(server.getRequestCount()).isEqualTo(4);
-    assertThat(error.type()).isEqualTo(GraphError.Type.PARSE);
+    assertThat(error).isInstanceOf(GraphParseError.class);
   }
 
   @Test public void retryNoConditionSuccess() throws Exception {
     server.enqueue(new MockResponse().setResponseCode(500).setBody(""));
     server.enqueue(new MockResponse().setResponseCode(500).setBody(""));
-    server.enqueue(new MockResponse().setResponseCode(200).setBody("{\n" +
-      "  \"data\": {\n" +
-      "    \"shop\": {\n" +
-      "      \"name\": \"Greats Clone\"\n" +
-      "    }\n" +
-      "  }\n" +
+    server.enqueue(new MockResponse().setResponseCode(200).setBody("{" +
+      "  \"data\": {" +
+      "    \"shop\": {" +
+      "      \"name\": \"MyShop\"" +
+      "    }" +
+      "  }" +
       "}"));
 
     AtomicReference<GraphResponse<Storefront.QueryRoot>> graphResponse = new AtomicReference<>();
     AtomicReference<GraphError> graphError = new AtomicReference<>();
     NamedCountDownLatch latch = new NamedCountDownLatch("retryNoConditionSuccess", 1);
-    graphClient
-      .queryGraph(Storefront.query(root -> root.shop(Storefront.ShopQuery::name)))
-      .enqueue(new GraphCall.Callback<Storefront.QueryRoot>() {
-        @Override public void onResponse(@NonNull final GraphResponse<Storefront.QueryRoot> response) {
-          graphResponse.set(response);
-          latch.countDown();
-        }
+    graphClient.queryGraph(shopNameQuery).enqueue(new GraphCall.Callback<Storefront.QueryRoot>() {
+      @Override public void onResponse(@NonNull final GraphResponse<Storefront.QueryRoot> response) {
+        graphResponse.set(response);
+        latch.countDown();
+      }
 
-        @Override public void onFailure(@NonNull final GraphError error) {
-          graphError.set(error);
-          latch.countDown();
-        }
-      }, null, RetryHandler.simple(3, 100, TimeUnit.MILLISECONDS, 1));
+      @Override public void onFailure(@NonNull final GraphError error) {
+        graphError.set(error);
+        latch.countDown();
+      }
+    }, null, RetryHandler.delay(100, TimeUnit.MILLISECONDS).maxCount(3).build());
 
     latch.awaitOrThrowWithTimeout(5, TimeUnit.SECONDS);
 
@@ -199,48 +164,44 @@ public class RetryTest {
       throw error;
     }
 
-    assertThat(graphResponse.get().data().getShop().getName()).isEqualTo("Greats Clone");
+    assertThat(graphResponse.get().data().getShop().getName()).isEqualTo("MyShop");
   }
 
   @Test public void retryWithConditionSuccess() throws Exception {
     server.enqueue(new MockResponse().setResponseCode(500).setBody(""));
-    server.enqueue(new MockResponse().setResponseCode(200).setBody("{\n" +
-      "  \"data\": {\n" +
-      "    \"shop\": {\n" +
-      "      \"name\": \"Empty\"\n" +
-      "    }\n" +
-      "  }\n" +
+    server.enqueue(new MockResponse().setResponseCode(200).setBody("{" +
+      "  \"data\": {" +
+      "    \"shop\": {" +
+      "      \"name\": \"Empty\"" +
+      "    }" +
+      "  }" +
       "}"));
     server.enqueue(new MockResponse().setResponseCode(500).setBody(""));
-    server.enqueue(new MockResponse().setResponseCode(200).setBody("{\n" +
-      "  \"data\": {\n" +
-      "    \"shop\": {\n" +
-      "      \"name\": \"Greats Clone\"\n" +
-      "    }\n" +
-      "  }\n" +
+    server.enqueue(new MockResponse().setResponseCode(200).setBody("{" +
+      "  \"data\": {" +
+      "    \"shop\": {" +
+      "      \"name\": \"MyShop\"" +
+      "    }" +
+      "  }" +
       "}"));
 
     AtomicReference<GraphResponse<Storefront.QueryRoot>> graphResponse = new AtomicReference<>();
     AtomicReference<GraphError> graphError = new AtomicReference<>();
     NamedCountDownLatch latch = new NamedCountDownLatch("retryWithConditionSuccess", 1);
-    graphClient
-      .queryGraph(Storefront.query(root -> root.shop(Storefront.ShopQuery::name)))
-      .enqueue(new GraphCall.Callback<Storefront.QueryRoot>() {
-        @Override public void onResponse(@NonNull final GraphResponse<Storefront.QueryRoot> response) {
-          graphResponse.set(response);
-          latch.countDown();
-        }
+    graphClient.queryGraph(shopNameQuery).enqueue(new GraphCall.Callback<Storefront.QueryRoot>() {
+      @Override public void onResponse(@NonNull final GraphResponse<Storefront.QueryRoot> response) {
+        graphResponse.set(response);
+        latch.countDown();
+      }
 
-        @Override public void onFailure(@NonNull final GraphError error) {
-          graphError.set(error);
-          latch.countDown();
-        }
-      }, null, RetryHandler.builder()
-        .maxCount(3)
-        .delayBetweenRetries(100, TimeUnit.MILLISECONDS)
-        .backoffMultiplier(1)
-        .<Storefront.QueryRoot>responseRetryCondition(response -> response.data().getShop().getName().equals("Empty"))
-        .build());
+      @Override public void onFailure(@NonNull final GraphError error) {
+        graphError.set(error);
+        latch.countDown();
+      }
+    }, null, RetryHandler.delay(100, TimeUnit.MILLISECONDS)
+      .maxCount(3)
+      .<Storefront.QueryRoot>whenResponse(response -> response.data().getShop().getName().equals("Empty"))
+      .build());
 
     latch.awaitOrThrowWithTimeout(5, TimeUnit.SECONDS);
 
@@ -249,18 +210,18 @@ public class RetryTest {
       throw error;
     }
 
-    assertThat(graphResponse.get().data().getShop().getName()).isEqualTo("Greats Clone");
+    assertThat(graphResponse.get().data().getShop().getName()).isEqualTo("MyShop");
   }
 
   @Test public void retryAndCancel() throws Exception {
     server.enqueue(new MockResponse().setResponseCode(500).setBody(""));
     server.enqueue(new MockResponse().setResponseCode(500).setBody(""));
-    server.enqueue(new MockResponse().setResponseCode(200).setBody("{\n" +
-      "  \"data\": {\n" +
-      "    \"shop\": {\n" +
-      "      \"name\": \"Greats Clone\"\n" +
-      "    }\n" +
-      "  }\n" +
+    server.enqueue(new MockResponse().setResponseCode(200).setBody("{" +
+      "  \"data\": {" +
+      "    \"shop\": {" +
+      "      \"name\": \"MyShop\"" +
+      "    }" +
+      "  }" +
       "}"));
 
     AtomicReference<GraphResponse<Storefront.QueryRoot>> graphResponse = new AtomicReference<>();
@@ -275,11 +236,9 @@ public class RetryTest {
         @Override public void onFailure(@NonNull final GraphError error) {
           graphError.set(error);
         }
-      }, null, RetryHandler.builder()
+      }, null, RetryHandler.delay(3, TimeUnit.SECONDS)
         .maxCount(3)
-        .delayBetweenRetries(3, TimeUnit.SECONDS)
-        .backoffMultiplier(1)
-        .<Storefront.QueryRoot>responseRetryCondition(response -> response.data().getShop().getName().equals("Empty"))
+        .<Storefront.QueryRoot>whenResponse(response -> response.data().getShop().getName().equals("Empty"))
         .build());
 
     Thread.sleep(TimeUnit.SECONDS.toMillis(3));

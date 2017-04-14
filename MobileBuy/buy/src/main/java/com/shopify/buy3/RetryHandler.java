@@ -35,26 +35,18 @@ import static com.shopify.buy3.Utils.checkNotNull;
 
 @SuppressWarnings("unchecked")
 public final class RetryHandler {
-  public static RetryHandler.Builder builder() {
-    return new Builder();
+  public static final RetryHandler NO_RETRY = noRetry();
+
+  public static Builder delay(final long delay, @NonNull final TimeUnit timeUnit) {
+    return new Builder().delay(delay, timeUnit);
   }
 
-  public static RetryHandler simple(final int maxCount, final long delay, @NonNull final TimeUnit timeUnit, final float backoffMultiplier) {
-    return new Builder()
-      .maxCount(maxCount)
-      .delayBetweenRetries(delay, timeUnit)
-      .backoffMultiplier(backoffMultiplier)
-      .build();
+  public static Builder exponentialBackoff(final long delay, @NonNull final TimeUnit timeUnit, final float multiplier) {
+    return new Builder().exponentialBackoff(delay, timeUnit, multiplier);
   }
 
-  private static final RetryHandler NO_RETRY = builder()
-    .maxCount(0)
-    .responseRetryCondition(response -> false)
-    .errorRetryCondition(error -> false)
-    .build();
-
-  static <T extends AbstractResponse> RetryHandler noRetry() {
-    return NO_RETRY;
+  private static <T extends AbstractResponse> RetryHandler noRetry() {
+    return delay(0, TimeUnit.MILLISECONDS).maxCount(0).build();
   }
 
   private final int maxCount;
@@ -65,7 +57,7 @@ public final class RetryHandler {
   private final Condition<GraphError> errorRetryCondition;
 
   private RetryHandler(final Builder builder) {
-    this.maxCount = builder.maxCount;
+    this.maxCount = builder.maxCount == -1 ? Integer.MAX_VALUE : builder.maxCount;
     this.delayBetweenRetriesMs = builder.delayBetweenRetriesMs;
     this.backoffMultiplier = builder.backoffMultiplier;
     this.responseRetryCondition = builder.responseRetryCondition;
@@ -73,11 +65,11 @@ public final class RetryHandler {
   }
 
   public boolean retry(final GraphResponse response) {
-    return responseRetryCondition != null && responseRetryCondition.check(response) && retry();
+    return responseRetryCondition.check(response) && retry();
   }
 
   public boolean retry(final GraphError error) {
-    return (errorRetryCondition == null || errorRetryCondition.check(error)) && retry();
+    return errorRetryCondition.check(error) && retry();
   }
 
   private boolean retry() {
@@ -97,41 +89,38 @@ public final class RetryHandler {
   }
 
   public static final class Builder {
-    private static final int DEFAULT_MAX_COUNT = 3;
-    private static final long DEFAULT_DELAY_BETWEEN_RETRIES = TimeUnit.MILLISECONDS.toMillis(200);
-    private static final float DEFAULT_BACKOFF_MULTIPLIER = 1.5f;
+    int maxCount = -1;
+    long delayBetweenRetriesMs;
+    float backoffMultiplier = 1;
+    Condition<GraphResponse> responseRetryCondition = it -> false;
+    Condition<GraphError> errorRetryCondition = it -> true;
 
-    int maxCount = DEFAULT_MAX_COUNT;
-    long delayBetweenRetriesMs = DEFAULT_DELAY_BETWEEN_RETRIES;
-    float backoffMultiplier = DEFAULT_BACKOFF_MULTIPLIER;
-    Condition<GraphResponse> responseRetryCondition;
-    Condition<GraphError> errorRetryCondition;
+    private Builder() {
+    }
 
-    public Builder() {
+    Builder delay(final long delay, @NonNull final TimeUnit timeUnit) {
+      this.delayBetweenRetriesMs = checkNotNull(timeUnit, "timeUnit == null").toMillis(delay);
+      return this;
+    }
+
+    Builder exponentialBackoff(final long delay, @NonNull final TimeUnit timeUnit, final float multiplier) {
+      this.delayBetweenRetriesMs = checkNotNull(timeUnit, "timeUnit == null").toMillis(delay);
+      this.backoffMultiplier = Math.max(multiplier, 1f);
+      return this;
     }
 
     public Builder maxCount(final int maxCount) {
-      this.maxCount = Math.max(maxCount, 0);
+      this.maxCount = maxCount;
       return this;
     }
 
-    public Builder delayBetweenRetries(final long delay, @NonNull final TimeUnit timeUnit) {
-      this.delayBetweenRetriesMs = Math.max(timeUnit.toMillis(delay), DEFAULT_DELAY_BETWEEN_RETRIES);
-      return this;
-    }
-
-    public Builder backoffMultiplier(final float backoffMultiplier) {
-      this.backoffMultiplier = Math.max(backoffMultiplier, 1f);
-      return this;
-    }
-
-    public <T extends AbstractResponse<T>> Builder responseRetryCondition(@NonNull final Condition<GraphResponse<T>> retryCondition) {
+    public <T extends AbstractResponse<T>> Builder whenResponse(@NonNull final Condition<GraphResponse<T>> retryCondition) {
       checkNotNull(retryCondition, "retryCondition == null");
       this.responseRetryCondition = (Condition) retryCondition;
       return this;
     }
 
-    public Builder errorRetryCondition(@NonNull final Condition<GraphError> retryCondition) {
+    public Builder whenError(@NonNull final Condition<GraphError> retryCondition) {
       this.errorRetryCondition = checkNotNull(retryCondition, "retryCondition == null");
       return this;
     }

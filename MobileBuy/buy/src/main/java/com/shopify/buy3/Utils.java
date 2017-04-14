@@ -52,11 +52,10 @@ final class Utils {
     return reference;
   }
 
-  static int checkRange(final int value, final int min, final int max, @Nullable Object errorMessage) {
-    if (value < min || value > max) {
-      throw new IllegalArgumentException(String.valueOf(errorMessage));
-    }
-    return value;
+  public static String checkNotBlank(String reference, @Nullable Object errorMessage) {
+    if (reference == null) throw new NullPointerException(String.valueOf(errorMessage));
+    if (reference.isEmpty()) throw new IllegalArgumentException(String.valueOf(errorMessage));
+    return reference;
   }
 
   private Utils() {

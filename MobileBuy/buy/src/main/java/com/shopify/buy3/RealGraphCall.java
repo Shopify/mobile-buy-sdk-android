@@ -44,10 +44,12 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+import static com.shopify.buy3.Utils.checkNotNull;
+
 final class RealGraphCall<T extends AbstractResponse<T>> implements GraphCall<T> {
-  private static final String ACCEPT_HEADER = "application/json";
-  private static final String CONTENT_TYPE_HEADER = "application/graphql";
-  private static final MediaType GRAPHQL_MEDIA_TYPE = MediaType.parse("application/graphql; charset=utf-8");
+  static final String ACCEPT_HEADER = "application/json";
+//  static final String CONTENT_TYPE_HEADER = "application/graphql";
+  static final MediaType GRAPHQL_MEDIA_TYPE = MediaType.parse("application/graphql; charset=utf-8");
 
   private final Query query;
   private final HttpUrl serverUrl;
@@ -57,6 +59,7 @@ final class RealGraphCall<T extends AbstractResponse<T>> implements GraphCall<T>
   private final AtomicBoolean executed = new AtomicBoolean();
   private volatile Call httpCall;
   private volatile HttpCallbackWithRetry httpCallbackWithRetry;
+  private volatile boolean canceled;
 
   RealGraphCall(final Query query, final HttpUrl serverUrl, final Call.Factory httpCallFactory,
     final ResponseDataConverter<T> responseDataConverter, final ScheduledExecutorService dispatcher) {
@@ -77,15 +80,21 @@ final class RealGraphCall<T extends AbstractResponse<T>> implements GraphCall<T>
   }
 
   @Override public void cancel() {
-    Call httpCall = this.httpCall;
-    if (httpCall != null) {
-      httpCall.cancel();
-    }
+    canceled = true;
 
     HttpCallbackWithRetry httpCallbackWithRetry = this.httpCallbackWithRetry;
     if (httpCallbackWithRetry != null) {
       httpCallbackWithRetry.cancel();
     }
+
+    Call httpCall = this.httpCall;
+    if (httpCall != null) {
+      httpCall.cancel();
+    }
+  }
+
+  @Override public boolean isCanceled() {
+    return canceled;
   }
 
   @SuppressWarnings("CloneDoesntCallSuperClone")
@@ -104,30 +113,31 @@ final class RealGraphCall<T extends AbstractResponse<T>> implements GraphCall<T>
     try {
       response = httpCall.execute();
     } catch (IOException e) {
-      throw GraphError.networkError(null, e);
+      throw new GraphNetworkError("Failed to execute GraphQL http request", e);
     }
 
     return httpResponseParser.parse(response);
   }
 
   @NonNull @Override public GraphCall<T> enqueue(@NonNull final Callback<T> callback) {
-    return enqueue(callback, null, null);
+    return enqueue(callback, null, RetryHandler.NO_RETRY);
   }
 
   @NonNull @Override public GraphCall<T> enqueue(@NonNull final Callback<T> callback, @Nullable final Handler handler) {
-    return enqueue(callback, null, null);
+    return enqueue(callback, handler, RetryHandler.NO_RETRY);
   }
 
   @NonNull @Override public GraphCall<T> enqueue(@NonNull final Callback<T> callback, @Nullable final Handler handler,
-    @Nullable final RetryHandler retryHandler) {
+    @NonNull final RetryHandler retryHandler) {
     if (!executed.compareAndSet(false, true)) {
       throw new IllegalStateException("Already Executed");
     }
 
+    checkNotNull(retryHandler, "retryHandler == null");
+
     dispatcher.execute(() -> {
       httpCall = httpCall();
-      httpCallbackWithRetry = new HttpCallbackWithRetry<>(httpCall, httpResponseParser,
-        retryHandler == null ? RetryHandler.noRetry() : retryHandler, callback, dispatcher, handler);
+      httpCallbackWithRetry = new HttpCallbackWithRetry<>(httpCall, httpResponseParser, retryHandler, callback, dispatcher, handler);
       httpCall.enqueue(httpCallbackWithRetry);
     });
     return this;
@@ -139,7 +149,6 @@ final class RealGraphCall<T extends AbstractResponse<T>> implements GraphCall<T>
       .url(serverUrl)
       .post(body)
       .header("Accept", ACCEPT_HEADER)
-      .header("Content-Type", CONTENT_TYPE_HEADER)
       .build();
     return httpCallFactory.newCall(request);
   }
