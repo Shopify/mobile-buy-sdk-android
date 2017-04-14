@@ -57,10 +57,10 @@ public final class RealProductRepository implements ProductRepository {
       .build();
     return rxApolloCall(apolloClient.newCall(query))
       .map(response -> response.data()
-        .transform(it -> it.collection.orNull())
-        .transform(it -> it.asCollection.orNull())
-        .transform(it -> it.productConnection)
-        .transform(it -> it.productEdges)
+        .flatMap(it -> it.collection)
+        .flatMap(it -> it.asCollection)
+        .map(it -> it.productConnection)
+        .map(it -> it.productEdges)
         .or(Collections.emptyList()))
       .map(RealProductRepository::map)
       .subscribeOn(Schedulers.io());
@@ -70,10 +70,10 @@ public final class RealProductRepository implements ProductRepository {
     ProductDetailsQuery query = new ProductDetailsQuery(productId);
     return rxApolloCall(apolloClient.newCall(query))
       .map(response -> response.data()
-        .transform(it -> it.node.orNull())
-        .transform(it -> it.asProduct.orNull())
-        .get()
-      ).map(RealProductRepository::map)
+        .flatMap(it -> it.node)
+        .flatMap(it -> it.asProduct)
+        .get())
+      .map(RealProductRepository::map)
       .subscribeOn(Schedulers.io());
   }
 

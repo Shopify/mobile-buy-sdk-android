@@ -43,7 +43,6 @@ import io.reactivex.Single;
 import io.reactivex.schedulers.Schedulers;
 
 import static com.shopify.sample.RxUtil.rxApolloCall;
-import static com.shopify.sample.util.Util.checkNotNull;
 import static com.shopify.sample.util.Util.firstItem;
 import static com.shopify.sample.util.Util.mapItems;
 import static com.shopify.sample.util.Util.minItem;
@@ -60,9 +59,9 @@ public final class RealCollectionRepository implements CollectionRepository {
 
     return rxApolloCall(apolloClient.newCall(query))
       .map(response -> response.data()
-        .transform(it -> it.shop)
-        .transform(it -> it.collectionConnection)
-        .transform(it -> it.edges)
+        .map(it -> it.shop)
+        .map(it -> it.collectionConnection)
+        .map(it -> it.edges)
         .or(Collections.emptyList()))
       .map(RealCollectionRepository::map)
       .subscribeOn(Schedulers.io());

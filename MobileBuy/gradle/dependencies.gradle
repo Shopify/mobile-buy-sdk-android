@@ -5,7 +5,7 @@ def versions = [
     shopifyGraphqlSupportVersion: '0.1.0',
     jodaTimeVersion             : '2.9.5.1',
     butterKnifeVersion          : '8.5.1',
-    apolloVersion               : '0.2.3-SNAPSHOT'
+    apolloVersion               : '0.3.0'
 ]
 
 ext.isCi = "true" == System.getenv('CI')

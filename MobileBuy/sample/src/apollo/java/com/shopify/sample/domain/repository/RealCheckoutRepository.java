@@ -63,7 +63,7 @@ import java.util.concurrent.TimeUnit;
 import io.reactivex.Single;
 import io.reactivex.schedulers.Schedulers;
 
-import static com.shopify.sample.RxUtil.queryResponseTransformer;
+import static com.shopify.sample.RxUtil.queryResponseDataTransformer;
 import static com.shopify.sample.RxUtil.rxApolloCall;
 import static com.shopify.sample.util.Util.checkNotBlank;
 import static com.shopify.sample.util.Util.checkNotEmpty;
@@ -87,9 +87,9 @@ public final class RealCheckoutRepository implements CheckoutRepository {
 
     return rxApolloCall(apolloClient.newCall(query).httpCacheControl(HttpCacheControl.NETWORK_ONLY))
       .map(response -> response.data()
-        .transform(it -> it.checkoutCreate.get())
-        .transform(it -> it.checkout.get())
-        .transform(it -> it.fragments.checkoutFragment.get())
+        .flatMap(it -> it.checkoutCreate)
+        .flatMap(it -> it.checkout)
+        .flatMap(it -> it.fragments.checkoutFragment)
         .get())
       .map(RealCheckoutRepository::map)
       .subscribeOn(Schedulers.io());
@@ -120,8 +120,8 @@ public final class RealCheckoutRepository implements CheckoutRepository {
     UpdateCheckoutShippingAddressQuery query = UpdateCheckoutShippingAddressQuery.builder().input(input).build();
     return rxApolloCall(apolloClient.newCall(query).httpCacheControl(HttpCacheControl.NETWORK_ONLY))
       .map(response -> response.data()
-        .transform(it -> it.checkoutShippingAddressUpdate.get())
-        .transform(it -> it.checkout.fragments.checkoutFragment.get())
+        .flatMap(it -> it.checkoutShippingAddressUpdate)
+        .flatMap(it -> it.checkout.fragments.checkoutFragment)
         .get())
       .map(RealCheckoutRepository::map)
       .subscribeOn(Schedulers.io());
@@ -132,8 +132,8 @@ public final class RealCheckoutRepository implements CheckoutRepository {
     FetchCheckoutQuery query = new FetchCheckoutQuery(checkoutId);
     return rxApolloCall(apolloClient.newCall(query).httpCacheControl(HttpCacheControl.NETWORK_ONLY))
       .map(response -> response.data()
-        .transform(it -> it.node.get())
-        .transform(it -> it.fragments.checkoutFragment)
+        .flatMap(it -> it.node)
+        .map(it -> it.fragments.checkoutFragment)
         .get())
       .map(RealCheckoutRepository::map)
       .subscribeOn(Schedulers.io());
@@ -147,10 +147,10 @@ public final class RealCheckoutRepository implements CheckoutRepository {
     return Single.fromCallable(call::clone)
       .flatMap(RxUtil::rxApolloCall)
       .map(response -> response.data()
-        .transform(it -> it.node.get())
-        .transform(it -> it.asCheckout.get())
-        .transform(it -> it.availableShippingRates.get())
-        .transform(it -> it.fragments.checkoutShippingRatesFragment)
+        .flatMap(it -> it.node)
+        .flatMap(it -> it.asCheckout)
+        .flatMap(it -> it.availableShippingRates)
+        .map(it -> it.fragments.checkoutShippingRatesFragment)
         .get())
       .map(RealCheckoutRepository::map)
       .flatMap(shippingRates ->
@@ -171,9 +171,9 @@ public final class RealCheckoutRepository implements CheckoutRepository {
     CheckoutShippingLineUpdateQuery query = new CheckoutShippingLineUpdateQuery(input);
     return rxApolloCall(apolloClient.newCall(query).httpCacheControl(HttpCacheControl.NETWORK_ONLY))
       .map(response -> response.data()
-        .transform(it -> it.checkoutShippingLineUpdate.get())
-        .transform(it -> it.checkout.get())
-        .transform(it -> it.fragments.checkoutFragment.get())
+        .flatMap(it -> it.checkoutShippingLineUpdate)
+        .flatMap(it -> it.checkout)
+        .flatMap(it -> it.fragments.checkoutFragment)
         .get())
       .map(RealCheckoutRepository::map)
       .subscribeOn(Schedulers.io());
@@ -190,11 +190,13 @@ public final class RealCheckoutRepository implements CheckoutRepository {
 
     CheckoutUpdateEmailQuery query = new CheckoutUpdateEmailQuery(input);
     return rxApolloCall(apolloClient.newCall(query).httpCacheControl(HttpCacheControl.NETWORK_ONLY))
-      .compose(queryResponseTransformer())
-      .map(it -> it.checkoutEmailUpdate.get())
-      .map(it -> it.checkout)
-      .map(it -> it.fragments)
-      .map(it -> it.checkoutFragment.get())
+      .compose(queryResponseDataTransformer())
+      .map(data -> data
+        .flatMap(it -> it.checkoutEmailUpdate)
+        .map(it -> it.checkout)
+        .map(it -> it.fragments)
+        .flatMap(it -> it.checkoutFragment)
+        .get())
       .map(RealCheckoutRepository::map)
       .subscribeOn(Schedulers.io());
   }
@@ -233,8 +235,8 @@ public final class RealCheckoutRepository implements CheckoutRepository {
 
     return updateEmail(checkoutId, email)
       .flatMap(it -> rxApolloCall(apolloClient.newCall(query).httpCacheControl(HttpCacheControl.NETWORK_ONLY)))
-      .compose(queryResponseTransformer())
-      .map(it -> it.checkoutCompleteWithTokenizedPayment.get())
+      .compose(queryResponseDataTransformer())
+      .map(data -> data.flatMap(it -> it.checkoutCompleteWithTokenizedPayment).get())
       .flatMap(it -> {
         if (it.userErrors.isEmpty()) {
           return Single.just(it);
@@ -244,8 +246,10 @@ public final class RealCheckoutRepository implements CheckoutRepository {
           return Single.error(new RuntimeException(errorMessage));
         }
       })
-      .map(it -> it.payment.get())
-      .map(it -> it.fragments.paymentFragment.get())
+      .map(data -> data.payment
+        .map(it -> it.fragments)
+        .flatMap(it -> it.paymentFragment)
+        .get())
       .map(RealCheckoutRepository::map)
       .subscribeOn(Schedulers.io());
   }

@@ -49,10 +49,10 @@ public final class RxUtil {
     });
   }
 
-  public static <T> SingleTransformer<Response<Optional<T>>, T> queryResponseTransformer() {
+  public static <T> SingleTransformer<Response<Optional<T>>, Optional<T>> queryResponseDataTransformer() {
     return upstream -> upstream.flatMap(response -> {
       if (response.errors().isEmpty()) {
-        return Single.just(response.data().get());
+        return Single.just(response.data());
       } else {
         String errorMessage = fold(new StringBuilder(), response.errors(),
           (builder, error) -> builder.append(error.message()).append("\n")).toString();
