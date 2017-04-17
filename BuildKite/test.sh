@@ -47,7 +47,7 @@ mkdir ${BUILDKITE_ARTIFACTS}
 ${ANDROID_HOME}/platform-tools/adb -s ${SERIAL} logcat -v threadtime > ${BUILDKITE_ARTIFACTS}/logcat.txt &
 
 echo "--- Running tests"
-./gradlew :buy:connectedAndroidTest -PdisablePreDex
+./gradlew clean build connectedCheck -x checkstyleTest --stacktrace -PdisablePreDex
 
 # Capture the exit status of the last command in a variable
 ORIGINAL_STATUS=$?
