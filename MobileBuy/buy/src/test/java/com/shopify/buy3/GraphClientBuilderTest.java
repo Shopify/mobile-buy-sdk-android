@@ -85,15 +85,15 @@ public class GraphClientBuilderTest {
   @SuppressWarnings("ConstantConditions") @Test public void buildFailWithPreconditions() {
     checkForNullPointerException(() -> GraphClient.builder(null));
 
-    GraphClient.Builder builder = GraphClient.builder(mockContext);
-    checkForNullPointerException(() -> builder.shopDomain(null));
-    checkForNullPointerException(() -> builder.apiKey(null));
-    checkForNullPointerException(() -> builder.httpClient(null));
+    checkForNullPointerException(() -> GraphClient.builder(mockContext).shopDomain(null));
+    checkForNullPointerException(() -> GraphClient.builder(mockContext).apiKey(null));
+    checkForNullPointerException(() -> GraphClient.builder(mockContext).httpClient(null));
 
-    checkForNullPointerException(builder::build);
-    checkIllegalArgumentException(() -> builder.shopDomain(""));
-    checkIllegalArgumentException(() -> builder.apiKey(""));
-    builder.build();
+    checkIllegalArgumentException(() -> GraphClient.builder(mockContext).shopDomain(""));
+    checkIllegalArgumentException(() -> GraphClient.builder(mockContext).apiKey(""));
+
+    checkForNullPointerException(() -> GraphClient.builder(mockContext).build());
+    checkForNullPointerException(() -> GraphClient.builder(mockContext).shopDomain(SHOP_DOMAIN).build());
   }
 
   private void checkForNullPointerException(final Runnable action) {
