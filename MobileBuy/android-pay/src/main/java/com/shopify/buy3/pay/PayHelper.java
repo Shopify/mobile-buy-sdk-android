@@ -51,9 +51,6 @@ public final class PayHelper {
   public static final int REQUEST_CODE_CHANGE_MASKED_WALLET = 501;
   public static final int REQUEST_CODE_FULL_WALLET = 502;
 
-  public static final String[] UNSUPPORTED_SHIPPING_COUNTRIES = {"MM", "SS", "GG", "IM", "KP", "SX", "SY", "IR", "BL", "BQ", "SD", "CU",
-    "CW", "AX", "MF", "JE"};
-
   public static boolean isAndroidPayEnabledInManifest(@NonNull final Context context) {
     boolean enabled = false;
     try {

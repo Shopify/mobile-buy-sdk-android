@@ -1,6 +1,7 @@
 buildscript {
   dependencies {
     classpath dep.androidPlugin
+    classpath dep.retrolambda
     classpath dep.androidMavenGradlePlugin
     classpath dep.bintrayGradlePlugin
   }
@@ -11,10 +12,16 @@ apply plugin: 'maven'
 apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
 apply plugin: 'maven-publish'
+apply plugin: 'me.tatarka.retrolambda'
 
 android {
   compileSdkVersion androidConfig.compileSdkVersion
   buildToolsVersion androidConfig.buildToolsVersion
+
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_8
+    targetCompatibility JavaVersion.VERSION_1_8
+  }
 
   defaultConfig {
     minSdkVersion androidConfig.minSdkVersion
@@ -185,4 +192,13 @@ bintray {
 dependencies {
   compile dep.playServicesWallet
   provided project(':buy')
+
+  androidTestCompile dep.mockitoCore
+  androidTestCompile dep.truth
+  androidTestCompile 'com.android.support.test:runner:0.5'
+  androidTestCompile 'com.android.support.test:rules:0.5'
+
+  testCompile dep.mockitoCore
+  testCompile dep.junit
+  testCompile dep.truth
 }

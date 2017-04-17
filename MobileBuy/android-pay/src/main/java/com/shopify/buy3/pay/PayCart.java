@@ -44,12 +44,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 
-import static com.shopify.buy3.pay.PayHelper.UNSUPPORTED_SHIPPING_COUNTRIES;
 import static com.shopify.buy3.pay.Util.checkNotEmpty;
 import static com.shopify.buy3.pay.Util.checkNotNull;
 
@@ -131,18 +128,21 @@ public final class PayCart implements Parcelable {
     return new Builder();
   }
 
-  PayCart(Builder builder) {
-    this.currencyCode = checkNotEmpty(builder.currencyCode, "currencyCode can't be empty");
-    this.merchantName = checkNotEmpty(builder.merchantName, "merchantName can't be empty");
-    this.shipsToCountries = builder.shipsToCountries;
-    this.shippingAddressRequired = builder.shippingAddressRequired;
-    this.phoneNumberRequired = builder.phoneNumberRequired;
-    this.lineItems = builder.lineItems;
-    this.taxPrice = builder.taxPrice;
-    this.shippingPrice = builder.shippingPrice;
-    this.subtotal = builder.subtotal;
-    this.totalPrice = (builder.totalPrice == null) ? builder.subtotal : builder.totalPrice;
-    this.maskedWallet = builder.maskedWallet;
+  public PayCart(@NonNull final String currencyCode, @NonNull final String merchantName, @NonNull final List<String> shipsToCountries,
+    final boolean shippingAddressRequired, final boolean phoneNumberRequired, @NonNull final List<LineItem> lineItems,
+    @NonNull final BigDecimal subtotal, @Nullable final BigDecimal taxPrice, @Nullable final BigDecimal shippingPrice,
+    @NonNull final BigDecimal totalPrice, @Nullable final MaskedWallet maskedWallet) {
+    this.currencyCode = checkNotEmpty(currencyCode, "currencyCode can't be empty");
+    this.merchantName = checkNotEmpty(merchantName, "merchantName can't be empty");
+    this.shipsToCountries = shipsToCountries;
+    this.shippingAddressRequired = shippingAddressRequired;
+    this.phoneNumberRequired = phoneNumberRequired;
+    this.lineItems = lineItems;
+    this.subtotal = subtotal;
+    this.taxPrice = taxPrice;
+    this.shippingPrice = shippingPrice;
+    this.totalPrice = totalPrice;
+    this.maskedWallet = maskedWallet;
   }
 
   public MaskedWalletRequest maskedWalletRequest(@NonNull final String androidPayPublicKey) {
@@ -161,10 +161,8 @@ public final class PayCart implements Parcelable {
       .setPaymentMethodTokenizationParameters(parameters)
       .setCart(cartBuilder().build());
 
-    if (!shipsToCountries.isEmpty()) {
-      Collection<CountrySpecification> shippingCountrySpecifications = shippingCountrySpecifications(shipsToCountries);
-      builder.addAllowedCountrySpecificationsForShipping(shippingCountrySpecifications);
-    }
+    Collection<CountrySpecification> shippingCountrySpecifications = shippingCountrySpecifications(shipsToCountries);
+    builder.addAllowedCountrySpecificationsForShipping(shippingCountrySpecifications);
 
     return builder.build();
   }
@@ -201,6 +199,8 @@ public final class PayCart implements Parcelable {
 
     if (taxPrice != null) {
       builder.addLineItem(LineItem.newBuilder()
+        .setCurrencyCode(currencyCode)
+        .setDescription("Tax")
         .setRole(LineItem.Role.TAX)
         .setTotalPrice(taxPrice.toString())
         .build());
@@ -208,6 +208,8 @@ public final class PayCart implements Parcelable {
 
     if (shippingPrice != null) {
       builder.addLineItem(LineItem.newBuilder()
+        .setCurrencyCode(currencyCode)
+        .setDescription("Shipping")
         .setRole(LineItem.Role.SHIPPING)
         .setTotalPrice(shippingPrice.toString())
         .build());
@@ -217,17 +219,12 @@ public final class PayCart implements Parcelable {
   }
 
   private static Collection<CountrySpecification> shippingCountrySpecifications(Collection<String> shipsToCountries) {
-    Set<String> countryCodes = new LinkedHashSet<>(shipsToCountries);
-
-    String wildcard = "*";
-    if (countryCodes.remove(wildcard)) {
-      List<String> wildCardCodes = new ArrayList<>(Arrays.asList(Locale.getISOCountries()));
-      wildCardCodes.removeAll(Arrays.asList(UNSUPPORTED_SHIPPING_COUNTRIES));
-      countryCodes.addAll(wildCardCodes);
+    if (shipsToCountries.contains("*")) {
+      shipsToCountries = Arrays.asList(Locale.getISOCountries());
     }
 
-    List<CountrySpecification> countrySpecifications = new ArrayList<>(countryCodes.size());
-    for (String countryCode : countryCodes) {
+    List<CountrySpecification> countrySpecifications = new ArrayList<>(shipsToCountries.size());
+    for (String countryCode : shipsToCountries) {
       countrySpecifications.add(new CountrySpecification(countryCode));
     }
 
@@ -238,7 +235,7 @@ public final class PayCart implements Parcelable {
     String currencyCode;
     String merchantName;
     boolean shippingAddressRequired;
-    List<String> shipsToCountries = Collections.emptyList();
+    List<String> shipsToCountries = Collections.singletonList("*");
     boolean phoneNumberRequired;
     List<LineItem> lineItems = new ArrayList<>();
     BigDecimal lineItemSubtotal = BigDecimal.ZERO;
@@ -267,15 +264,17 @@ public final class PayCart implements Parcelable {
     }
 
     public Builder addLineItem(@NonNull final String title, final int quantity, @NonNull final BigDecimal price) {
+      checkNotEmpty(title, "title can't be empty");
       if (quantity <= 0) {
         throw new IllegalArgumentException("quantity can't be less than 1");
       }
+      checkNotNull(price, "price == null");
 
       LineItem lineItem = LineItem.newBuilder()
         .setQuantity(Integer.toString(quantity))
         .setUnitPrice(price.toString())
         .setTotalPrice(price.multiply(BigDecimal.valueOf(quantity)).toString())
-        .setDescription(checkNotEmpty(title, "title can't be empty"))
+        .setDescription(title)
         .setCurrencyCode(currencyCode)
         .setRole(Role.REGULAR)
         .build();
@@ -295,7 +294,7 @@ public final class PayCart implements Parcelable {
     }
 
     public Builder shipsToCountries(final Collection<String> shipsToCountries) {
-      if (shipsToCountries != null) {
+      if (shipsToCountries != null && !shipsToCountries.isEmpty()) {
         this.shipsToCountries = new ArrayList<>(shipsToCountries);
       } else {
         this.shipsToCountries = Collections.singletonList("*");
@@ -310,7 +309,6 @@ public final class PayCart implements Parcelable {
 
     public Builder taxPrice(@NonNull final BigDecimal taxPrice) {
       this.taxPrice = checkNotNull(taxPrice, "taxPrice == null");
-      ;
       return this;
     }
 
@@ -330,10 +328,24 @@ public final class PayCart implements Parcelable {
     }
 
     public PayCart build() {
+      BigDecimal subtotal = this.subtotal;
       if (subtotal == null) {
         subtotal = lineItemSubtotal;
       }
-      return new PayCart(this);
+
+      BigDecimal totalPrice = this.totalPrice;
+      if (totalPrice == null) {
+        totalPrice = subtotal;
+        if (shippingPrice != null) {
+          totalPrice = totalPrice.add(shippingPrice);
+        }
+        if (taxPrice != null) {
+          totalPrice = totalPrice.add(taxPrice);
+        }
+      }
+
+      return new PayCart(currencyCode, merchantName, shipsToCountries, shippingAddressRequired, phoneNumberRequired, lineItems, subtotal,
+        taxPrice, shippingPrice, totalPrice, maskedWallet);
     }
   }
 }

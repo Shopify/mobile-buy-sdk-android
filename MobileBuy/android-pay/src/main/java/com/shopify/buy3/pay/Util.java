@@ -25,7 +25,6 @@
 package com.shopify.buy3.pay;
 
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
 
 final class Util {
   static String checkNotEmpty(final String value, @Nullable Object errorMessage) {
@@ -33,7 +32,7 @@ final class Util {
       throw new NullPointerException(String.valueOf(errorMessage));
     }
 
-    if (TextUtils.isEmpty(value.trim())) {
+    if (value.trim().length() == 0) {
       throw new IllegalArgumentException(String.valueOf(errorMessage));
     }
 

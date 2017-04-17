@@ -29,7 +29,7 @@ import static com.shopify.buy3.pay.Util.checkNotEmpty;
 @SuppressWarnings("WeakerAccess")
 public final class PaymentToken {
   public final String token;
-  public String publicKeyHash;
+  public final String publicKeyHash;
 
   public PaymentToken(final String token, final String publicKeyHash) {
     this.token = checkNotEmpty(token, "token can't be empty");
