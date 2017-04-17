@@ -54,7 +54,7 @@ public class GraphClientBuilderTest {
   }
 
   @Test public void buildSuccessWithCustomClient() {
-    Interceptor networkInterceptor = new HttpLoggingInterceptor().setLevel(BuildConfig.OKHTTP_LOG_LEVEL);
+    Interceptor networkInterceptor = new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BASIC);
     OkHttpClient httpClient = new OkHttpClient.Builder()
       .addNetworkInterceptor(networkInterceptor)
       .build();

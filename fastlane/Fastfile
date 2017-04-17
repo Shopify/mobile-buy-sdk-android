@@ -20,7 +20,7 @@ platform :android do
   lane :instrumentedTests do
     run_gradle_tests({
       android_project_path: ANDROID_PROJECT_PATH,
-      gradle_command: 'clean build connectedCheck -x checkstyleTest --stacktrace -PdisablePreDex',
+      gradle_command: 'clean build connectedCheck --stacktrace -PdisablePreDex',
       artifact_upload_paths: [ 'MobileBuy/buy/build/outputs/androidTest-results/connected/' ],
       android_package: PACKAGE
     })
