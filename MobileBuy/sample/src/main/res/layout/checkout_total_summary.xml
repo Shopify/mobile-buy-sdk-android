@@ -98,7 +98,7 @@
         android:id="@+id/total"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/default_padding_half"
+        android:layout_marginStart="@dimen/default_padding_half"
         android:layout_marginTop="@dimen/default_padding_half"
         android:ellipsize="end"
         android:gravity="end"
