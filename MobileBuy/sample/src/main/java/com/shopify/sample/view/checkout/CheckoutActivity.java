@@ -66,6 +66,7 @@ import static com.shopify.sample.util.Util.checkNotNull;
 public final class CheckoutActivity extends AppCompatActivity implements CheckoutViewPresenter.View {
   public static final String EXTRAS_CHECKOUT_ID = "checkout_id";
   public static final String EXTRAS_PAY_CART = "pay_cart";
+  public static final String EXTRAS_MASKED_WALLET = "masked_wallet";
 
   @BindView(R.id.toolbar) Toolbar toolbarView;
   @BindView(R.id.total_summary) TotalSummaryView totalSummaryView;
@@ -88,12 +89,8 @@ public final class CheckoutActivity extends AppCompatActivity implements Checkou
 
     String checkoutId = getIntent().getStringExtra(EXTRAS_CHECKOUT_ID);
     PayCart payCart = getIntent().getParcelableExtra(EXTRAS_PAY_CART);
-
-    checkNotBlank(checkoutId, "checkoutId can't be empty");
-    checkNotNull(payCart, "payCart == null");
-    checkNotNull(payCart.maskedWallet, "payCart.maskedWallet == null");
-
-    presenter = new CheckoutViewPresenter(checkoutId, payCart, new RealCheckoutRepository());
+    MaskedWallet maskedWallet = getIntent().getParcelableExtra(EXTRAS_MASKED_WALLET);
+    presenter = new CheckoutViewPresenter(checkoutId, payCart, maskedWallet, new RealCheckoutRepository());
 
     shippingMethodView.onShippingRateSelectListener(shippingRate -> presenter.applyShippingRate(shippingRate));
   }
@@ -212,7 +209,8 @@ public final class CheckoutActivity extends AppCompatActivity implements Checkou
     totalSummaryView.render(subtotal, shipping, tax, total);
   }
 
-  @Override public void renderShippingRates(final Checkout.ShippingRates shippingRates, final Checkout.ShippingRate shippingLine) {
+  @Override public void renderShippingRates(@Nullable final Checkout.ShippingRates shippingRates,
+    @Nullable final Checkout.ShippingRate shippingLine) {
     shippingMethodView.render(shippingLine, shippingRates);
   }
 

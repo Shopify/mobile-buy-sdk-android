@@ -94,6 +94,7 @@ public final class ScreenRouter {
         intent.putExtra(ScreenActionEvent.class.getName(), event);
         intent.putExtra(CheckoutActivity.EXTRAS_CHECKOUT_ID, event.checkoutId());
         intent.putExtra(CheckoutActivity.EXTRAS_PAY_CART, event.payCart());
+        intent.putExtra(CheckoutActivity.EXTRAS_MASKED_WALLET, event.maskedWallet());
         context.startActivity(intent);
       });
   }

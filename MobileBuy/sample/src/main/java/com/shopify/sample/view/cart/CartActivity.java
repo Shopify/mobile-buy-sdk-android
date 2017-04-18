@@ -52,8 +52,8 @@ public final class CartActivity extends AppCompatActivity {
     getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close);
     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-    cartHeaderView.setOnConfirmAndroidPayListener((checkoutId, payCart) ->
-      ScreenRouter.route(this, new AndroidPayConfirmationClickActionEvent(checkoutId, payCart)));
+    cartHeaderView.setOnConfirmAndroidPayListener((checkoutId, payCart, maskedWallet) ->
+      ScreenRouter.route(this, new AndroidPayConfirmationClickActionEvent(checkoutId, payCart, maskedWallet)));
   }
 
   @Override public boolean onSupportNavigateUp() {

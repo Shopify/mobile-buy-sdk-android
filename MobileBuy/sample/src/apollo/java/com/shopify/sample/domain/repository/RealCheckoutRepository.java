@@ -35,25 +35,22 @@ import com.shopify.buy3.pay.PayCart;
 import com.shopify.buy3.pay.PaymentToken;
 import com.shopify.sample.RxUtil;
 import com.shopify.sample.SampleApplication;
+import com.shopify.sample.domain.CheckoutCompleteWithAndroidPayQuery;
+import com.shopify.sample.domain.CheckoutCreateQuery;
+import com.shopify.sample.domain.CheckoutEmailUpdateQuery;
 import com.shopify.sample.domain.CheckoutShippingLineUpdateQuery;
-import com.shopify.sample.domain.CheckoutUpdateEmailQuery;
-import com.shopify.sample.domain.CompleteCheckoutQuery;
-import com.shopify.sample.domain.CreateCheckoutQuery;
+import com.shopify.sample.domain.CheckoutUpdateShippingAddressQuery;
 import com.shopify.sample.domain.FetchCheckoutQuery;
 import com.shopify.sample.domain.FetchCheckoutShippingRatesQuery;
-import com.shopify.sample.domain.UpdateCheckoutShippingAddressQuery;
 import com.shopify.sample.domain.fragment.CheckoutFragment;
 import com.shopify.sample.domain.fragment.CheckoutShippingRatesFragment;
 import com.shopify.sample.domain.fragment.PaymentFragment;
 import com.shopify.sample.domain.model.Checkout;
 import com.shopify.sample.domain.model.Payment;
-import com.shopify.sample.domain.type.CheckoutCompleteWithTokenizedPaymentInput;
 import com.shopify.sample.domain.type.CheckoutCreateInput;
-import com.shopify.sample.domain.type.CheckoutEmailUpdateInput;
-import com.shopify.sample.domain.type.CheckoutShippingAddressUpdateInput;
-import com.shopify.sample.domain.type.CheckoutShippingLineUpdateInput;
-import com.shopify.sample.domain.type.LineItemInput;
+import com.shopify.sample.domain.type.CheckoutLineItemInput;
 import com.shopify.sample.domain.type.MailingAddressInput;
+import com.shopify.sample.domain.type.TokenizedPaymentInput;
 import com.shopify.sample.util.NotReadyException;
 import com.shopify.sample.util.RxRetryHandler;
 
@@ -77,13 +74,14 @@ public final class RealCheckoutRepository implements CheckoutRepository {
 
   @Override public Single<Checkout> create(@NonNull final List<Checkout.LineItem> lineItems) {
     checkNotEmpty(lineItems, "lineItems can't be empty");
-    List<LineItemInput> lineItemInputs = mapItems(lineItems, lineItem ->
-      LineItemInput.builder()
+
+    List<CheckoutLineItemInput> lineItemInputs = mapItems(lineItems, lineItem ->
+      CheckoutLineItemInput.builder()
         .variantId(lineItem.variantId)
         .quantity(lineItem.quantity)
         .build());
     CheckoutCreateInput input = CheckoutCreateInput.builder().lineItems(lineItemInputs).build();
-    CreateCheckoutQuery query = CreateCheckoutQuery.builder().input(input).build();
+    CheckoutCreateQuery query = CheckoutCreateQuery.builder().input(input).build();
 
     return rxApolloCall(apolloClient.newCall(query).httpCacheControl(HttpCacheControl.NETWORK_ONLY))
       .map(response -> response.data()
@@ -111,13 +109,7 @@ public final class RealCheckoutRepository implements CheckoutRepository {
       .zip(payAddress.zip)
       .build();
 
-    CheckoutShippingAddressUpdateInput input = CheckoutShippingAddressUpdateInput
-      .builder()
-      .checkoutId(checkoutId)
-      .shippingAddress(mailingAddressInput)
-      .build();
-
-    UpdateCheckoutShippingAddressQuery query = UpdateCheckoutShippingAddressQuery.builder().input(input).build();
+    CheckoutUpdateShippingAddressQuery query = new CheckoutUpdateShippingAddressQuery(checkoutId, mailingAddressInput);
     return rxApolloCall(apolloClient.newCall(query).httpCacheControl(HttpCacheControl.NETWORK_ONLY))
       .map(response -> response.data()
         .flatMap(it -> it.checkoutShippingAddressUpdate)
@@ -129,6 +121,7 @@ public final class RealCheckoutRepository implements CheckoutRepository {
 
   @Override public Single<Checkout> fetch(@NonNull final String checkoutId) {
     checkNotBlank(checkoutId, "checkoutId can't be empty");
+
     FetchCheckoutQuery query = new FetchCheckoutQuery(checkoutId);
     return rxApolloCall(apolloClient.newCall(query).httpCacheControl(HttpCacheControl.NETWORK_ONLY))
       .map(response -> response.data()
@@ -141,6 +134,7 @@ public final class RealCheckoutRepository implements CheckoutRepository {
 
   @Override public Single<Checkout.ShippingRates> fetchShippingRates(@NonNull final String checkoutId) {
     checkNotBlank(checkoutId, "checkoutId can't be empty");
+
     FetchCheckoutShippingRatesQuery query = new FetchCheckoutShippingRatesQuery(checkoutId);
     ApolloCall<Optional<FetchCheckoutShippingRatesQuery.Data>> call = apolloClient.newCall(query)
       .httpCacheControl(HttpCacheControl.NETWORK_ONLY);
@@ -163,12 +157,10 @@ public final class RealCheckoutRepository implements CheckoutRepository {
   }
 
   @Override public Single<Checkout> applyShippingRate(@NonNull final String checkoutId, @NonNull final String shippingRateHandle) {
-    CheckoutShippingLineUpdateInput input = CheckoutShippingLineUpdateInput.builder()
-      .checkoutId(checkNotBlank(checkoutId, "checkoutId can't be empty"))
-      .shippingRateHandle(checkNotBlank(shippingRateHandle, "shippingRateHandle can't be empty"))
-      .build();
+    checkNotBlank(checkoutId, "checkoutId can't be empty");
+    checkNotBlank(shippingRateHandle, "shippingRateHandle can't be empty");
 
-    CheckoutShippingLineUpdateQuery query = new CheckoutShippingLineUpdateQuery(input);
+    CheckoutShippingLineUpdateQuery query = new CheckoutShippingLineUpdateQuery(checkoutId, shippingRateHandle);
     return rxApolloCall(apolloClient.newCall(query).httpCacheControl(HttpCacheControl.NETWORK_ONLY))
       .map(response -> response.data()
         .flatMap(it -> it.checkoutShippingLineUpdate)
@@ -183,12 +175,7 @@ public final class RealCheckoutRepository implements CheckoutRepository {
     checkNotBlank(checkoutId, "checkoutId can't be empty");
     checkNotBlank(email, "email can't be empty");
 
-    CheckoutEmailUpdateInput input = CheckoutEmailUpdateInput.builder()
-      .checkoutId(checkoutId)
-      .email(email)
-      .build();
-
-    CheckoutUpdateEmailQuery query = new CheckoutUpdateEmailQuery(input);
+    CheckoutEmailUpdateQuery query = new CheckoutEmailUpdateQuery(checkoutId, email);
     return rxApolloCall(apolloClient.newCall(query).httpCacheControl(HttpCacheControl.NETWORK_ONLY))
       .compose(queryResponseDataTransformer())
       .map(data -> data
@@ -221,8 +208,7 @@ public final class RealCheckoutRepository implements CheckoutRepository {
       .zip(billingAddress.zip)
       .build();
 
-    CheckoutCompleteWithTokenizedPaymentInput input = CheckoutCompleteWithTokenizedPaymentInput.builder()
-      .checkoutId(checkoutId)
+    TokenizedPaymentInput paymentInput = TokenizedPaymentInput.builder()
       .amount(payCart.totalPrice)
       .idempotencyKey(paymentToken.token)
       .type("android_pay")
@@ -231,7 +217,7 @@ public final class RealCheckoutRepository implements CheckoutRepository {
       .billingAddress(mailingAddressInput)
       .build();
 
-    CompleteCheckoutQuery query = new CompleteCheckoutQuery(input);
+    CheckoutCompleteWithAndroidPayQuery query = new CheckoutCompleteWithAndroidPayQuery(checkoutId, paymentInput);
 
     return updateEmail(checkoutId, email)
       .flatMap(it -> rxApolloCall(apolloClient.newCall(query).httpCacheControl(HttpCacheControl.NETWORK_ONLY)))

@@ -1,7 +1,0 @@
-mutation UpdateCheckoutShippingAddressQuery($input: CheckoutShippingAddressUpdateInput!) {
-  checkoutShippingAddressUpdate(input: $input) {
-    checkout {
-      ... CheckoutFragment
-    }
-  }
-}

@@ -1,5 +1,5 @@
-mutation CheckoutShippingLineUpdateQuery($input: CheckoutShippingLineUpdateInput!) {
-  checkoutShippingLineUpdate(input: $input) {
+mutation CheckoutShippingLineUpdateQuery($checkoutId: ID!, $shippingRateHandle: String!) {
+  checkoutShippingLineUpdate(checkoutId: $checkoutId, shippingRateHandle: $shippingRateHandle) {
     checkout {
       ...CheckoutFragment
     }

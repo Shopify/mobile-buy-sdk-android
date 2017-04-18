@@ -28,6 +28,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
+import com.google.android.gms.wallet.MaskedWallet;
 import com.shopify.buy3.pay.PayCart;
 import com.shopify.sample.view.ScreenActionEvent;
 
@@ -51,11 +52,14 @@ public final class AndroidPayConfirmationClickActionEvent extends ScreenActionEv
   public static final String ACTION = AndroidPayConfirmationClickActionEvent.class.getSimpleName();
   public static final String EXTRAS_CHECKOUT_ID = "checkout_id";
   public static final String EXTRAS_PAY_CART = "pay_cart";
+  public static final String EXTRAS_MASKED_WALLET = "masked_wallet";
 
-  public AndroidPayConfirmationClickActionEvent(@NonNull final String checkoutId, @NonNull final PayCart payCart) {
+  public AndroidPayConfirmationClickActionEvent(@NonNull final String checkoutId, @NonNull final PayCart payCart,
+    @NonNull final MaskedWallet maskedWallet) {
     super(ACTION);
     payload.putString(EXTRAS_CHECKOUT_ID, checkNotBlank(checkoutId, "checkoutId can't be blank"));
     payload.putParcelable(EXTRAS_PAY_CART, checkNotNull(payCart, "payCart == null"));
+    payload.putParcelable(EXTRAS_MASKED_WALLET, checkNotNull(maskedWallet, "maskedWallet == null"));
   }
 
   @SuppressWarnings("WeakerAccess") AndroidPayConfirmationClickActionEvent(Parcel in) {
@@ -78,5 +82,9 @@ public final class AndroidPayConfirmationClickActionEvent extends ScreenActionEv
 
   @SuppressWarnings("ConstantConditions") @NonNull public PayCart payCart() {
     return payload().getParcelable(EXTRAS_PAY_CART);
+  }
+
+  @SuppressWarnings("ConstantConditions") @NonNull public MaskedWallet maskedWallet() {
+    return payload().getParcelable(EXTRAS_MASKED_WALLET);
   }
 }

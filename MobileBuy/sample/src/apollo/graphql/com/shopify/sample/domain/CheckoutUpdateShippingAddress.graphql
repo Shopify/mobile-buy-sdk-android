@@ -1,0 +1,7 @@
+mutation CheckoutUpdateShippingAddressQuery($checkoutId: ID!, $shippingAddress: MailingAddressInput!) {
+  checkoutShippingAddressUpdate(checkoutId: $checkoutId, shippingAddress: $shippingAddress) {
+    checkout {
+      ...CheckoutFragment
+    }
+  }
+}

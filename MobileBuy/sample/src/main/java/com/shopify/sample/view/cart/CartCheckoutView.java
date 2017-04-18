@@ -36,6 +36,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.wallet.MaskedWallet;
 import com.shopify.buy3.pay.PayCart;
 import com.shopify.sample.R;
 import com.shopify.sample.domain.model.Checkout;
@@ -104,9 +105,10 @@ public final class CartCheckoutView extends FrameLayout implements CartCheckoutV
     getContext().startActivity(intent);
   }
 
-  @Override public void showAndroidPayConfirmation(@NonNull final String checkoutId, @NonNull final PayCart payCart) {
+  @Override public void showAndroidPayConfirmation(@NonNull final String checkoutId, @NonNull final PayCart payCart,
+    @NonNull final MaskedWallet maskedWallet) {
     if (onConfirmAndroidPayListener != null) {
-      onConfirmAndroidPayListener.onConfirmAndroidPay(checkoutId, payCart);
+      onConfirmAndroidPayListener.onConfirmAndroidPay(checkoutId, payCart, maskedWallet);
     }
   }
 
@@ -144,6 +146,6 @@ public final class CartCheckoutView extends FrameLayout implements CartCheckoutV
   }
 
   public interface OnConfirmAndroidPayListener {
-    void onConfirmAndroidPay(@NonNull String checkoutId, @NonNull PayCart payCart);
+    void onConfirmAndroidPay(@NonNull String checkoutId, @NonNull PayCart payCart, @NonNull MaskedWallet maskedWallet);
   }
 }

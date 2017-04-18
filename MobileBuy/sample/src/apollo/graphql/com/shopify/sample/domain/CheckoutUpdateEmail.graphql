@@ -1,5 +1,5 @@
-mutation CheckoutUpdateEmailQuery($input: CheckoutEmailUpdateInput!) {
-  checkoutEmailUpdate(input: $input) {
+mutation CheckoutEmailUpdateQuery($checkoutId: ID!, $email: String!) {
+  checkoutEmailUpdate(checkoutId: $checkoutId, email: $email) {
     checkout {
       ...CheckoutFragment
     }
