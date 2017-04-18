@@ -53,7 +53,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import static com.shopify.buy3.pay.PayHelper.isAndroidPayEnabledInManifest;
 import static com.shopify.sample.util.Util.checkNotBlank;
 import static com.shopify.sample.util.Util.checkNotNull;
-import static com.shopify.sample.util.Util.fold;
 import static java.util.Collections.emptyList;
 
 public final class CheckoutViewPresenter extends BaseViewPresenter<CheckoutViewPresenter.View> {
