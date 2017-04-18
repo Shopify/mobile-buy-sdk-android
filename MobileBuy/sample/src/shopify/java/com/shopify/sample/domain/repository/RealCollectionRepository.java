@@ -63,7 +63,7 @@ public final class RealCollectionRepository implements CollectionRepository {
               .cursor()
               .node(collection -> collection
                 .title()
-                .descriptionPlainSummary()
+                .description()
                 .image(Storefront.ImageQuery::src)
                 .products(perPage, productConnection -> productConnection
                   .edges(productEdge -> productEdge
@@ -97,7 +97,7 @@ public final class RealCollectionRepository implements CollectionRepository {
     return mapItems(edges, collectionEdge -> {
       Storefront.Collection collection = collectionEdge.getNode();
       String collectionImageUrl = collection.getImage() != null ? collection.getImage().getSrc() : null;
-      return new Collection(collection.getId().toString(), collection.getTitle(), collection.getDescriptionPlainSummary(),
+      return new Collection(collection.getId().toString(), collection.getTitle(), collection.getDescription(),
         collectionImageUrl, collectionEdge.getCursor(), mapItems(collection.getProducts().getEdges(), productEdge -> {
         Storefront.Product product = productEdge.getNode();
         String productImageUrl = firstItem(product.getImages() != null ? product.getImages().getEdges() : null,

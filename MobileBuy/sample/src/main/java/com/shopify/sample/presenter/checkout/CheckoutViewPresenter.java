@@ -133,7 +133,7 @@ public final class CheckoutViewPresenter extends BaseViewPresenter<CheckoutViewP
       checkoutRepository.applyShippingRate(checkoutId, shippingRate.handle)
         .observeOn(AndroidSchedulers.mainThread())
         .subscribeWith(WeakSingleObserver.<CheckoutViewPresenter, Checkout>forTarget(this)
-          .delegateOnSuccess((presenter, checkout) -> presenter.onCheckout(checkout, REQUEST_ID_APPLY_SHIPPING_RATE))
+          .delegateOnSuccess((presenter, checkout) -> presenter.onApplyShippingRate(checkout, REQUEST_ID_APPLY_SHIPPING_RATE))
           .delegateOnError((presenter, t) -> presenter.onRequestError(REQUEST_ID_FETCH_SHIPPING_RATES, t))
           .create()
         )
@@ -213,24 +213,18 @@ public final class CheckoutViewPresenter extends BaseViewPresenter<CheckoutViewP
     applyShippingRate(shippingRates.shippingRates.get(0));
   }
 
-  private void onCheckout(final Checkout checkout, final int requestId) {
+  private void onApplyShippingRate(final Checkout checkout, final int requestId) {
     hideProgress(requestId);
 
     if (isViewDetached()) {
       return;
     }
 
-    this.shippingRates = checkout.shippingRates;
-
-    PayCart.Builder payCartBuilder = payCart.toBuilder()
+    payCart = payCart.toBuilder()
       .shippingPrice(checkout.shippingLine != null ? checkout.shippingLine.price : null)
       .totalPrice(checkout.totalPrice)
       .taxPrice(checkout.taxPrice)
-      .subtotal(checkout.subtotalPrice);
-    fold(payCartBuilder, checkout.lineItems, (accumulator, lineItem) ->
-      accumulator.addLineItem(lineItem.title, lineItem.quantity, lineItem.price));
-
-    payCart = payCartBuilder.build();
+      .build();
 
     renderTotalSummary(payCart);
     renderShippingRates(shippingRates, checkout.shippingLine);

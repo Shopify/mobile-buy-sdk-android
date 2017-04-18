@@ -569,12 +569,6 @@ public class Storefront {
             return this;
         }
 
-        public CheckoutQuery discountCode() {
-            startField("discountCode");
-
-            return this;
-        }
-
         public CheckoutQuery email() {
             startField("email");
 
@@ -607,11 +601,11 @@ public class Storefront {
             void define(LineItemsArguments args);
         }
 
-        public CheckoutQuery lineItems(int first, LineItemConnectionQueryDefinition queryDef) {
+        public CheckoutQuery lineItems(int first, CheckoutLineItemConnectionQueryDefinition queryDef) {
             return lineItems(first, args -> {}, queryDef);
         }
 
-        public CheckoutQuery lineItems(int first, LineItemsArgumentsDefinition argsDef, LineItemConnectionQueryDefinition queryDef) {
+        public CheckoutQuery lineItems(int first, LineItemsArgumentsDefinition argsDef, CheckoutLineItemConnectionQueryDefinition queryDef) {
             startField("lineItems");
 
             _queryBuilder.append("(first:");
@@ -622,7 +616,7 @@ public class Storefront {
             _queryBuilder.append(')');
 
             _queryBuilder.append('{');
-            queryDef.define(new LineItemConnectionQuery(_queryBuilder));
+            queryDef.define(new CheckoutLineItemConnectionQuery(_queryBuilder));
             _queryBuilder.append('}');
 
             return this;
@@ -702,12 +696,6 @@ public class Storefront {
 
         public CheckoutQuery taxesIncluded() {
             startField("taxesIncluded");
-
-            return this;
-        }
-
-        public CheckoutQuery totalDiscounts() {
-            startField("totalDiscounts");
 
             return this;
         }
@@ -813,17 +801,6 @@ public class Storefront {
                         break;
                     }
 
-                    case "discountCode": {
-                        String optional1 = null;
-                        if (!field.getValue().isJsonNull()) {
-                            optional1 = jsonAsString(field.getValue(), key);
-                        }
-
-                        responseData.put(key, optional1);
-
-                        break;
-                    }
-
                     case "email": {
                         String optional1 = null;
                         if (!field.getValue().isJsonNull()) {
@@ -842,7 +819,7 @@ public class Storefront {
                     }
 
                     case "lineItems": {
-                        responseData.put(key, new LineItemConnection(jsonAsObject(field.getValue(), key)));
+                        responseData.put(key, new CheckoutLineItemConnection(jsonAsObject(field.getValue(), key)));
 
                         break;
                     }
@@ -934,12 +911,6 @@ public class Storefront {
 
                     case "taxesIncluded": {
                         responseData.put(key, jsonAsBoolean(field.getValue(), key));
-
-                        break;
-                    }
-
-                    case "totalDiscounts": {
-                        responseData.put(key, new BigDecimal(jsonAsString(field.getValue(), key)));
 
                         break;
                     }
@@ -1095,15 +1066,6 @@ public class Storefront {
             return this;
         }
 
-        public String getDiscountCode() {
-            return (String) get("discountCode");
-        }
-
-        public Checkout setDiscountCode(String arg) {
-            optimisticData.put("discountCode", arg);
-            return this;
-        }
-
         public String getEmail() {
             return (String) get("email");
         }
@@ -1117,11 +1079,11 @@ public class Storefront {
             return (ID) get("id");
         }
 
-        public LineItemConnection getLineItems() {
-            return (LineItemConnection) get("lineItems");
+        public CheckoutLineItemConnection getLineItems() {
+            return (CheckoutLineItemConnection) get("lineItems");
         }
 
-        public Checkout setLineItems(LineItemConnection arg) {
+        public Checkout setLineItems(CheckoutLineItemConnection arg) {
             optimisticData.put("lineItems", arg);
             return this;
         }
@@ -1225,15 +1187,6 @@ public class Storefront {
             return this;
         }
 
-        public BigDecimal getTotalDiscounts() {
-            return (BigDecimal) get("totalDiscounts");
-        }
-
-        public Checkout setTotalDiscounts(BigDecimal arg) {
-            optimisticData.put("totalDiscounts", arg);
-            return this;
-        }
-
         public BigDecimal getTotalPrice() {
             return (BigDecimal) get("totalPrice");
         }
@@ -1286,8 +1239,6 @@ public class Storefront {
 
                 case "customer": return true;
 
-                case "discountCode": return false;
-
                 case "email": return false;
 
                 case "id": return false;
@@ -1316,8 +1267,6 @@ public class Storefront {
 
                 case "taxesIncluded": return false;
 
-                case "totalDiscounts": return false;
-
                 case "totalPrice": return false;
 
                 case "totalTax": return false;
@@ -1331,223 +1280,12 @@ public class Storefront {
         }
     }
 
-    public static class CheckoutAddLineItemsInput implements Serializable {
-        private ID checkoutId;
-
-        private String clientMutationId;
-
-        private List<LineItemInput> lineItems;
-
-        public CheckoutAddLineItemsInput(ID checkoutId) {
-            this.checkoutId = checkoutId;
-        }
-
-        public ID getCheckoutId() {
-            return checkoutId;
-        }
-
-        public CheckoutAddLineItemsInput setCheckoutId(ID checkoutId) {
-            this.checkoutId = checkoutId;
-            return this;
-        }
-
-        public String getClientMutationId() {
-            return clientMutationId;
-        }
-
-        public CheckoutAddLineItemsInput setClientMutationId(String clientMutationId) {
-            this.clientMutationId = clientMutationId;
-            return this;
-        }
-
-        public List<LineItemInput> getLineItems() {
-            return lineItems;
-        }
-
-        public CheckoutAddLineItemsInput setLineItems(List<LineItemInput> lineItems) {
-            this.lineItems = lineItems;
-            return this;
-        }
-
-        public void appendTo(StringBuilder _queryBuilder) {
-            String separator = "";
-            _queryBuilder.append('{');
-
-            _queryBuilder.append(separator);
-            separator = ",";
-            _queryBuilder.append("checkoutId:");
-            Query.appendQuotedString(_queryBuilder, checkoutId.toString());
-
-            if (clientMutationId != null) {
-                _queryBuilder.append(separator);
-                separator = ",";
-                _queryBuilder.append("clientMutationId:");
-                Query.appendQuotedString(_queryBuilder, clientMutationId.toString());
-            }
-
-            if (lineItems != null) {
-                _queryBuilder.append(separator);
-                separator = ",";
-                _queryBuilder.append("lineItems:");
-                _queryBuilder.append('[');
-
-                String listSeperator1 = "";
-                for (LineItemInput item1 : lineItems) {
-                    _queryBuilder.append(listSeperator1);
-                    listSeperator1 = ",";
-                    item1.appendTo(_queryBuilder);
-                }
-                _queryBuilder.append(']');
-            }
-
-            _queryBuilder.append('}');
-        }
-    }
-
-    public interface CheckoutAddLineItemsPayloadQueryDefinition {
-        void define(CheckoutAddLineItemsPayloadQuery _queryBuilder);
-    }
-
-    public static class CheckoutAddLineItemsPayloadQuery extends Query<CheckoutAddLineItemsPayloadQuery> {
-        CheckoutAddLineItemsPayloadQuery(StringBuilder _queryBuilder) {
-            super(_queryBuilder);
-        }
-
-        public CheckoutAddLineItemsPayloadQuery checkout(CheckoutQueryDefinition queryDef) {
-            startField("checkout");
-
-            _queryBuilder.append('{');
-            queryDef.define(new CheckoutQuery(_queryBuilder));
-            _queryBuilder.append('}');
-
-            return this;
-        }
-
-        public CheckoutAddLineItemsPayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
-            startField("userErrors");
-
-            _queryBuilder.append('{');
-            queryDef.define(new UserErrorQuery(_queryBuilder));
-            _queryBuilder.append('}');
-
-            return this;
-        }
-    }
-
-    public static class CheckoutAddLineItemsPayload extends AbstractResponse<CheckoutAddLineItemsPayload> {
-        public CheckoutAddLineItemsPayload() {
-        }
-
-        public CheckoutAddLineItemsPayload(JsonObject fields) throws SchemaViolationError {
-            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
-                String key = field.getKey();
-                String fieldName = getFieldName(key);
-                switch (fieldName) {
-                    case "checkout": {
-                        Checkout optional1 = null;
-                        if (!field.getValue().isJsonNull()) {
-                            optional1 = new Checkout(jsonAsObject(field.getValue(), key));
-                        }
-
-                        responseData.put(key, optional1);
-
-                        break;
-                    }
-
-                    case "userErrors": {
-                        List<UserError> list1 = new ArrayList<>();
-                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
-                            list1.add(new UserError(jsonAsObject(element1, key)));
-                        }
-
-                        responseData.put(key, list1);
-
-                        break;
-                    }
-
-                    case "__typename": {
-                        responseData.put(key, jsonAsString(field.getValue(), key));
-                        break;
-                    }
-                    default: {
-                        throw new SchemaViolationError(this, key, field.getValue());
-                    }
-                }
-            }
-        }
-
-        public List<Node> getNodes() {
-            List<Node> children = new ArrayList<>();
-
-            if (getCheckout() != null) {
-                children.addAll(getCheckout().getNodes());
-            }
-
-            if (getUserErrors() != null) {
-                for (UserError elem: getUserErrors()) {
-                    children.addAll(elem.getNodes());
-                }
-            }
-
-            return children;
-        }
-
-        public String getGraphQlTypeName() {
-            return "CheckoutAddLineItemsPayload";
-        }
-
-        public Checkout getCheckout() {
-            return (Checkout) get("checkout");
-        }
-
-        public CheckoutAddLineItemsPayload setCheckout(Checkout arg) {
-            optimisticData.put("checkout", arg);
-            return this;
-        }
-
-        public List<UserError> getUserErrors() {
-            return (List<UserError>) get("userErrors");
-        }
-
-        public CheckoutAddLineItemsPayload setUserErrors(List<UserError> arg) {
-            optimisticData.put("userErrors", arg);
-            return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (key) {
-                case "checkout": return true;
-
-                case "userErrors": return true;
-
-                default: return false;
-            }
-        }
-    }
-
     public static class CheckoutAttributesUpdateInput implements Serializable {
-        private ID checkoutId;
-
         private Boolean allowPartialAddresses;
-
-        private String clientMutationId;
 
         private List<AttributeInput> customAttributes;
 
         private String note;
-
-        public CheckoutAttributesUpdateInput(ID checkoutId) {
-            this.checkoutId = checkoutId;
-        }
-
-        public ID getCheckoutId() {
-            return checkoutId;
-        }
-
-        public CheckoutAttributesUpdateInput setCheckoutId(ID checkoutId) {
-            this.checkoutId = checkoutId;
-            return this;
-        }
 
         public Boolean getAllowPartialAddresses() {
             return allowPartialAddresses;
@@ -1555,15 +1293,6 @@ public class Storefront {
 
         public CheckoutAttributesUpdateInput setAllowPartialAddresses(Boolean allowPartialAddresses) {
             this.allowPartialAddresses = allowPartialAddresses;
-            return this;
-        }
-
-        public String getClientMutationId() {
-            return clientMutationId;
-        }
-
-        public CheckoutAttributesUpdateInput setClientMutationId(String clientMutationId) {
-            this.clientMutationId = clientMutationId;
             return this;
         }
 
@@ -1589,23 +1318,11 @@ public class Storefront {
             String separator = "";
             _queryBuilder.append('{');
 
-            _queryBuilder.append(separator);
-            separator = ",";
-            _queryBuilder.append("checkoutId:");
-            Query.appendQuotedString(_queryBuilder, checkoutId.toString());
-
             if (allowPartialAddresses != null) {
                 _queryBuilder.append(separator);
                 separator = ",";
                 _queryBuilder.append("allowPartialAddresses:");
                 _queryBuilder.append(allowPartialAddresses);
-            }
-
-            if (clientMutationId != null) {
-                _queryBuilder.append(separator);
-                separator = ",";
-                _queryBuilder.append("clientMutationId:");
-                Query.appendQuotedString(_queryBuilder, clientMutationId.toString());
             }
 
             if (customAttributes != null) {
@@ -1750,140 +1467,124 @@ public class Storefront {
         }
     }
 
-    public static class CheckoutCompleteWithCreditCardInput implements Serializable {
-        private BigDecimal amount;
+    public interface CheckoutCompleteFreePayloadQueryDefinition {
+        void define(CheckoutCompleteFreePayloadQuery _queryBuilder);
+    }
 
-        private MailingAddressInput billingAddress;
-
-        private ID checkoutId;
-
-        private String idempotencyKey;
-
-        private String vaultId;
-
-        private String clientMutationId;
-
-        private Boolean test;
-
-        public CheckoutCompleteWithCreditCardInput(BigDecimal amount, MailingAddressInput billingAddress, ID checkoutId, String idempotencyKey, String vaultId) {
-            this.amount = amount;
-
-            this.billingAddress = billingAddress;
-
-            this.checkoutId = checkoutId;
-
-            this.idempotencyKey = idempotencyKey;
-
-            this.vaultId = vaultId;
+    public static class CheckoutCompleteFreePayloadQuery extends Query<CheckoutCompleteFreePayloadQuery> {
+        CheckoutCompleteFreePayloadQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
         }
 
-        public BigDecimal getAmount() {
-            return amount;
-        }
+        public CheckoutCompleteFreePayloadQuery checkout(CheckoutQueryDefinition queryDef) {
+            startField("checkout");
 
-        public CheckoutCompleteWithCreditCardInput setAmount(BigDecimal amount) {
-            this.amount = amount;
-            return this;
-        }
-
-        public MailingAddressInput getBillingAddress() {
-            return billingAddress;
-        }
-
-        public CheckoutCompleteWithCreditCardInput setBillingAddress(MailingAddressInput billingAddress) {
-            this.billingAddress = billingAddress;
-            return this;
-        }
-
-        public ID getCheckoutId() {
-            return checkoutId;
-        }
-
-        public CheckoutCompleteWithCreditCardInput setCheckoutId(ID checkoutId) {
-            this.checkoutId = checkoutId;
-            return this;
-        }
-
-        public String getIdempotencyKey() {
-            return idempotencyKey;
-        }
-
-        public CheckoutCompleteWithCreditCardInput setIdempotencyKey(String idempotencyKey) {
-            this.idempotencyKey = idempotencyKey;
-            return this;
-        }
-
-        public String getVaultId() {
-            return vaultId;
-        }
-
-        public CheckoutCompleteWithCreditCardInput setVaultId(String vaultId) {
-            this.vaultId = vaultId;
-            return this;
-        }
-
-        public String getClientMutationId() {
-            return clientMutationId;
-        }
-
-        public CheckoutCompleteWithCreditCardInput setClientMutationId(String clientMutationId) {
-            this.clientMutationId = clientMutationId;
-            return this;
-        }
-
-        public Boolean getTest() {
-            return test;
-        }
-
-        public CheckoutCompleteWithCreditCardInput setTest(Boolean test) {
-            this.test = test;
-            return this;
-        }
-
-        public void appendTo(StringBuilder _queryBuilder) {
-            String separator = "";
             _queryBuilder.append('{');
-
-            _queryBuilder.append(separator);
-            separator = ",";
-            _queryBuilder.append("amount:");
-            Query.appendQuotedString(_queryBuilder, amount.toString());
-
-            _queryBuilder.append(separator);
-            separator = ",";
-            _queryBuilder.append("billingAddress:");
-            billingAddress.appendTo(_queryBuilder);
-
-            _queryBuilder.append(separator);
-            separator = ",";
-            _queryBuilder.append("checkoutId:");
-            Query.appendQuotedString(_queryBuilder, checkoutId.toString());
-
-            _queryBuilder.append(separator);
-            separator = ",";
-            _queryBuilder.append("idempotencyKey:");
-            Query.appendQuotedString(_queryBuilder, idempotencyKey.toString());
-
-            _queryBuilder.append(separator);
-            separator = ",";
-            _queryBuilder.append("vaultId:");
-            Query.appendQuotedString(_queryBuilder, vaultId.toString());
-
-            if (clientMutationId != null) {
-                _queryBuilder.append(separator);
-                separator = ",";
-                _queryBuilder.append("clientMutationId:");
-                Query.appendQuotedString(_queryBuilder, clientMutationId.toString());
-            }
-
-            if (test != null) {
-                _queryBuilder.append(separator);
-                separator = ",";
-                _queryBuilder.append("test:");
-                _queryBuilder.append(test);
-            }
-
+            queryDef.define(new CheckoutQuery(_queryBuilder));
             _queryBuilder.append('}');
+
+            return this;
+        }
+
+        public CheckoutCompleteFreePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
+            startField("userErrors");
+
+            _queryBuilder.append('{');
+            queryDef.define(new UserErrorQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+    }
+
+    public static class CheckoutCompleteFreePayload extends AbstractResponse<CheckoutCompleteFreePayload> {
+        public CheckoutCompleteFreePayload() {
+        }
+
+        public CheckoutCompleteFreePayload(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "checkout": {
+                        Checkout optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new Checkout(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "userErrors": {
+                        List<UserError> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new UserError(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public List<Node> getNodes() {
+            List<Node> children = new ArrayList<>();
+
+            if (getCheckout() != null) {
+                children.addAll(getCheckout().getNodes());
+            }
+
+            if (getUserErrors() != null) {
+                for (UserError elem: getUserErrors()) {
+                    children.addAll(elem.getNodes());
+                }
+            }
+
+            return children;
+        }
+
+        public String getGraphQlTypeName() {
+            return "CheckoutCompleteFreePayload";
+        }
+
+        public Checkout getCheckout() {
+            return (Checkout) get("checkout");
+        }
+
+        public CheckoutCompleteFreePayload setCheckout(Checkout arg) {
+            optimisticData.put("checkout", arg);
+            return this;
+        }
+
+        public List<UserError> getUserErrors() {
+            return (List<UserError>) get("userErrors");
+        }
+
+        public CheckoutCompleteFreePayload setUserErrors(List<UserError> arg) {
+            optimisticData.put("userErrors", arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (key) {
+                case "checkout": return true;
+
+                case "userErrors": return true;
+
+                default: return false;
+            }
         }
     }
 
@@ -2036,179 +1737,6 @@ public class Storefront {
 
                 default: return false;
             }
-        }
-    }
-
-    public static class CheckoutCompleteWithTokenizedPaymentInput implements Serializable {
-        private BigDecimal amount;
-
-        private MailingAddressInput billingAddress;
-
-        private ID checkoutId;
-
-        private String idempotencyKey;
-
-        private String paymentData;
-
-        private String type;
-
-        private String clientMutationId;
-
-        private String identifier;
-
-        private Boolean test;
-
-        public CheckoutCompleteWithTokenizedPaymentInput(BigDecimal amount, MailingAddressInput billingAddress, ID checkoutId, String idempotencyKey, String paymentData, String type) {
-            this.amount = amount;
-
-            this.billingAddress = billingAddress;
-
-            this.checkoutId = checkoutId;
-
-            this.idempotencyKey = idempotencyKey;
-
-            this.paymentData = paymentData;
-
-            this.type = type;
-        }
-
-        public BigDecimal getAmount() {
-            return amount;
-        }
-
-        public CheckoutCompleteWithTokenizedPaymentInput setAmount(BigDecimal amount) {
-            this.amount = amount;
-            return this;
-        }
-
-        public MailingAddressInput getBillingAddress() {
-            return billingAddress;
-        }
-
-        public CheckoutCompleteWithTokenizedPaymentInput setBillingAddress(MailingAddressInput billingAddress) {
-            this.billingAddress = billingAddress;
-            return this;
-        }
-
-        public ID getCheckoutId() {
-            return checkoutId;
-        }
-
-        public CheckoutCompleteWithTokenizedPaymentInput setCheckoutId(ID checkoutId) {
-            this.checkoutId = checkoutId;
-            return this;
-        }
-
-        public String getIdempotencyKey() {
-            return idempotencyKey;
-        }
-
-        public CheckoutCompleteWithTokenizedPaymentInput setIdempotencyKey(String idempotencyKey) {
-            this.idempotencyKey = idempotencyKey;
-            return this;
-        }
-
-        public String getPaymentData() {
-            return paymentData;
-        }
-
-        public CheckoutCompleteWithTokenizedPaymentInput setPaymentData(String paymentData) {
-            this.paymentData = paymentData;
-            return this;
-        }
-
-        public String getType() {
-            return type;
-        }
-
-        public CheckoutCompleteWithTokenizedPaymentInput setType(String type) {
-            this.type = type;
-            return this;
-        }
-
-        public String getClientMutationId() {
-            return clientMutationId;
-        }
-
-        public CheckoutCompleteWithTokenizedPaymentInput setClientMutationId(String clientMutationId) {
-            this.clientMutationId = clientMutationId;
-            return this;
-        }
-
-        public String getIdentifier() {
-            return identifier;
-        }
-
-        public CheckoutCompleteWithTokenizedPaymentInput setIdentifier(String identifier) {
-            this.identifier = identifier;
-            return this;
-        }
-
-        public Boolean getTest() {
-            return test;
-        }
-
-        public CheckoutCompleteWithTokenizedPaymentInput setTest(Boolean test) {
-            this.test = test;
-            return this;
-        }
-
-        public void appendTo(StringBuilder _queryBuilder) {
-            String separator = "";
-            _queryBuilder.append('{');
-
-            _queryBuilder.append(separator);
-            separator = ",";
-            _queryBuilder.append("amount:");
-            Query.appendQuotedString(_queryBuilder, amount.toString());
-
-            _queryBuilder.append(separator);
-            separator = ",";
-            _queryBuilder.append("billingAddress:");
-            billingAddress.appendTo(_queryBuilder);
-
-            _queryBuilder.append(separator);
-            separator = ",";
-            _queryBuilder.append("checkoutId:");
-            Query.appendQuotedString(_queryBuilder, checkoutId.toString());
-
-            _queryBuilder.append(separator);
-            separator = ",";
-            _queryBuilder.append("idempotencyKey:");
-            Query.appendQuotedString(_queryBuilder, idempotencyKey.toString());
-
-            _queryBuilder.append(separator);
-            separator = ",";
-            _queryBuilder.append("paymentData:");
-            Query.appendQuotedString(_queryBuilder, paymentData.toString());
-
-            _queryBuilder.append(separator);
-            separator = ",";
-            _queryBuilder.append("type:");
-            Query.appendQuotedString(_queryBuilder, type.toString());
-
-            if (clientMutationId != null) {
-                _queryBuilder.append(separator);
-                separator = ",";
-                _queryBuilder.append("clientMutationId:");
-                Query.appendQuotedString(_queryBuilder, clientMutationId.toString());
-            }
-
-            if (identifier != null) {
-                _queryBuilder.append(separator);
-                separator = ",";
-                _queryBuilder.append("identifier:");
-                Query.appendQuotedString(_queryBuilder, identifier.toString());
-            }
-
-            if (test != null) {
-                _queryBuilder.append(separator);
-                separator = ",";
-                _queryBuilder.append("test:");
-                _queryBuilder.append(test);
-            }
-
-            _queryBuilder.append('}');
         }
     }
 
@@ -2367,13 +1895,11 @@ public class Storefront {
     public static class CheckoutCreateInput implements Serializable {
         private Boolean allowPartialAddresses;
 
-        private String clientMutationId;
-
         private List<AttributeInput> customAttributes;
 
         private String email;
 
-        private List<LineItemInput> lineItems;
+        private List<CheckoutLineItemInput> lineItems;
 
         private String note;
 
@@ -2385,15 +1911,6 @@ public class Storefront {
 
         public CheckoutCreateInput setAllowPartialAddresses(Boolean allowPartialAddresses) {
             this.allowPartialAddresses = allowPartialAddresses;
-            return this;
-        }
-
-        public String getClientMutationId() {
-            return clientMutationId;
-        }
-
-        public CheckoutCreateInput setClientMutationId(String clientMutationId) {
-            this.clientMutationId = clientMutationId;
             return this;
         }
 
@@ -2415,11 +1932,11 @@ public class Storefront {
             return this;
         }
 
-        public List<LineItemInput> getLineItems() {
+        public List<CheckoutLineItemInput> getLineItems() {
             return lineItems;
         }
 
-        public CheckoutCreateInput setLineItems(List<LineItemInput> lineItems) {
+        public CheckoutCreateInput setLineItems(List<CheckoutLineItemInput> lineItems) {
             this.lineItems = lineItems;
             return this;
         }
@@ -2453,13 +1970,6 @@ public class Storefront {
                 _queryBuilder.append(allowPartialAddresses);
             }
 
-            if (clientMutationId != null) {
-                _queryBuilder.append(separator);
-                separator = ",";
-                _queryBuilder.append("clientMutationId:");
-                Query.appendQuotedString(_queryBuilder, clientMutationId.toString());
-            }
-
             if (customAttributes != null) {
                 _queryBuilder.append(separator);
                 separator = ",";
@@ -2489,7 +1999,7 @@ public class Storefront {
                 _queryBuilder.append('[');
 
                 String listSeperator1 = "";
-                for (LineItemInput item1 : lineItems) {
+                for (CheckoutLineItemInput item1 : lineItems) {
                     _queryBuilder.append(listSeperator1);
                     listSeperator1 = ",";
                     item1.appendTo(_queryBuilder);
@@ -2636,71 +2146,6 @@ public class Storefront {
         }
     }
 
-    public static class CheckoutCustomerAssociateInput implements Serializable {
-        private ID checkoutId;
-
-        private String customerAccessToken;
-
-        private String clientMutationId;
-
-        public CheckoutCustomerAssociateInput(ID checkoutId, String customerAccessToken) {
-            this.checkoutId = checkoutId;
-
-            this.customerAccessToken = customerAccessToken;
-        }
-
-        public ID getCheckoutId() {
-            return checkoutId;
-        }
-
-        public CheckoutCustomerAssociateInput setCheckoutId(ID checkoutId) {
-            this.checkoutId = checkoutId;
-            return this;
-        }
-
-        public String getCustomerAccessToken() {
-            return customerAccessToken;
-        }
-
-        public CheckoutCustomerAssociateInput setCustomerAccessToken(String customerAccessToken) {
-            this.customerAccessToken = customerAccessToken;
-            return this;
-        }
-
-        public String getClientMutationId() {
-            return clientMutationId;
-        }
-
-        public CheckoutCustomerAssociateInput setClientMutationId(String clientMutationId) {
-            this.clientMutationId = clientMutationId;
-            return this;
-        }
-
-        public void appendTo(StringBuilder _queryBuilder) {
-            String separator = "";
-            _queryBuilder.append('{');
-
-            _queryBuilder.append(separator);
-            separator = ",";
-            _queryBuilder.append("checkoutId:");
-            Query.appendQuotedString(_queryBuilder, checkoutId.toString());
-
-            _queryBuilder.append(separator);
-            separator = ",";
-            _queryBuilder.append("customerAccessToken:");
-            Query.appendQuotedString(_queryBuilder, customerAccessToken.toString());
-
-            if (clientMutationId != null) {
-                _queryBuilder.append(separator);
-                separator = ",";
-                _queryBuilder.append("clientMutationId:");
-                Query.appendQuotedString(_queryBuilder, clientMutationId.toString());
-            }
-
-            _queryBuilder.append('}');
-        }
-    }
-
     public interface CheckoutCustomerAssociatePayloadQueryDefinition {
         void define(CheckoutCustomerAssociatePayloadQuery _queryBuilder);
     }
@@ -2814,53 +2259,6 @@ public class Storefront {
 
                 default: return false;
             }
-        }
-    }
-
-    public static class CheckoutCustomerDisassociateInput implements Serializable {
-        private ID checkoutId;
-
-        private String clientMutationId;
-
-        public CheckoutCustomerDisassociateInput(ID checkoutId) {
-            this.checkoutId = checkoutId;
-        }
-
-        public ID getCheckoutId() {
-            return checkoutId;
-        }
-
-        public CheckoutCustomerDisassociateInput setCheckoutId(ID checkoutId) {
-            this.checkoutId = checkoutId;
-            return this;
-        }
-
-        public String getClientMutationId() {
-            return clientMutationId;
-        }
-
-        public CheckoutCustomerDisassociateInput setClientMutationId(String clientMutationId) {
-            this.clientMutationId = clientMutationId;
-            return this;
-        }
-
-        public void appendTo(StringBuilder _queryBuilder) {
-            String separator = "";
-            _queryBuilder.append('{');
-
-            _queryBuilder.append(separator);
-            separator = ",";
-            _queryBuilder.append("checkoutId:");
-            Query.appendQuotedString(_queryBuilder, checkoutId.toString());
-
-            if (clientMutationId != null) {
-                _queryBuilder.append(separator);
-                separator = ",";
-                _queryBuilder.append("clientMutationId:");
-                Query.appendQuotedString(_queryBuilder, clientMutationId.toString());
-            }
-
-            _queryBuilder.append('}');
         }
     }
 
@@ -2980,71 +2378,6 @@ public class Storefront {
         }
     }
 
-    public static class CheckoutEmailUpdateInput implements Serializable {
-        private ID checkoutId;
-
-        private String email;
-
-        private String clientMutationId;
-
-        public CheckoutEmailUpdateInput(ID checkoutId, String email) {
-            this.checkoutId = checkoutId;
-
-            this.email = email;
-        }
-
-        public ID getCheckoutId() {
-            return checkoutId;
-        }
-
-        public CheckoutEmailUpdateInput setCheckoutId(ID checkoutId) {
-            this.checkoutId = checkoutId;
-            return this;
-        }
-
-        public String getEmail() {
-            return email;
-        }
-
-        public CheckoutEmailUpdateInput setEmail(String email) {
-            this.email = email;
-            return this;
-        }
-
-        public String getClientMutationId() {
-            return clientMutationId;
-        }
-
-        public CheckoutEmailUpdateInput setClientMutationId(String clientMutationId) {
-            this.clientMutationId = clientMutationId;
-            return this;
-        }
-
-        public void appendTo(StringBuilder _queryBuilder) {
-            String separator = "";
-            _queryBuilder.append('{');
-
-            _queryBuilder.append(separator);
-            separator = ",";
-            _queryBuilder.append("checkoutId:");
-            Query.appendQuotedString(_queryBuilder, checkoutId.toString());
-
-            _queryBuilder.append(separator);
-            separator = ",";
-            _queryBuilder.append("email:");
-            Query.appendQuotedString(_queryBuilder, email.toString());
-
-            if (clientMutationId != null) {
-                _queryBuilder.append(separator);
-                separator = ",";
-                _queryBuilder.append("clientMutationId:");
-                Query.appendQuotedString(_queryBuilder, clientMutationId.toString());
-            }
-
-            _queryBuilder.append('}');
-        }
-    }
-
     public interface CheckoutEmailUpdatePayloadQueryDefinition {
         void define(CheckoutEmailUpdatePayloadQuery _queryBuilder);
     }
@@ -3158,71 +2491,6 @@ public class Storefront {
 
                 default: return false;
             }
-        }
-    }
-
-    public static class CheckoutGiftCardApplyInput implements Serializable {
-        private ID checkoutId;
-
-        private String giftCardCode;
-
-        private String clientMutationId;
-
-        public CheckoutGiftCardApplyInput(ID checkoutId, String giftCardCode) {
-            this.checkoutId = checkoutId;
-
-            this.giftCardCode = giftCardCode;
-        }
-
-        public ID getCheckoutId() {
-            return checkoutId;
-        }
-
-        public CheckoutGiftCardApplyInput setCheckoutId(ID checkoutId) {
-            this.checkoutId = checkoutId;
-            return this;
-        }
-
-        public String getGiftCardCode() {
-            return giftCardCode;
-        }
-
-        public CheckoutGiftCardApplyInput setGiftCardCode(String giftCardCode) {
-            this.giftCardCode = giftCardCode;
-            return this;
-        }
-
-        public String getClientMutationId() {
-            return clientMutationId;
-        }
-
-        public CheckoutGiftCardApplyInput setClientMutationId(String clientMutationId) {
-            this.clientMutationId = clientMutationId;
-            return this;
-        }
-
-        public void appendTo(StringBuilder _queryBuilder) {
-            String separator = "";
-            _queryBuilder.append('{');
-
-            _queryBuilder.append(separator);
-            separator = ",";
-            _queryBuilder.append("checkoutId:");
-            Query.appendQuotedString(_queryBuilder, checkoutId.toString());
-
-            _queryBuilder.append(separator);
-            separator = ",";
-            _queryBuilder.append("giftCardCode:");
-            Query.appendQuotedString(_queryBuilder, giftCardCode.toString());
-
-            if (clientMutationId != null) {
-                _queryBuilder.append(separator);
-                separator = ",";
-                _queryBuilder.append("clientMutationId:");
-                Query.appendQuotedString(_queryBuilder, clientMutationId.toString());
-            }
-
-            _queryBuilder.append('}');
         }
     }
 
@@ -3342,43 +2610,564 @@ public class Storefront {
         }
     }
 
-    public static class CheckoutShippingAddressUpdateInput implements Serializable {
-        private ID checkoutId;
+    public interface CheckoutGiftCardRemovePayloadQueryDefinition {
+        void define(CheckoutGiftCardRemovePayloadQuery _queryBuilder);
+    }
 
-        private MailingAddressInput shippingAddress;
-
-        private String clientMutationId;
-
-        public CheckoutShippingAddressUpdateInput(ID checkoutId, MailingAddressInput shippingAddress) {
-            this.checkoutId = checkoutId;
-
-            this.shippingAddress = shippingAddress;
+    public static class CheckoutGiftCardRemovePayloadQuery extends Query<CheckoutGiftCardRemovePayloadQuery> {
+        CheckoutGiftCardRemovePayloadQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
         }
 
-        public ID getCheckoutId() {
-            return checkoutId;
-        }
+        public CheckoutGiftCardRemovePayloadQuery checkout(CheckoutQueryDefinition queryDef) {
+            startField("checkout");
 
-        public CheckoutShippingAddressUpdateInput setCheckoutId(ID checkoutId) {
-            this.checkoutId = checkoutId;
+            _queryBuilder.append('{');
+            queryDef.define(new CheckoutQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
             return this;
         }
 
-        public MailingAddressInput getShippingAddress() {
-            return shippingAddress;
+        public CheckoutGiftCardRemovePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
+            startField("userErrors");
+
+            _queryBuilder.append('{');
+            queryDef.define(new UserErrorQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+    }
+
+    public static class CheckoutGiftCardRemovePayload extends AbstractResponse<CheckoutGiftCardRemovePayload> {
+        public CheckoutGiftCardRemovePayload() {
         }
 
-        public CheckoutShippingAddressUpdateInput setShippingAddress(MailingAddressInput shippingAddress) {
-            this.shippingAddress = shippingAddress;
+        public CheckoutGiftCardRemovePayload(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "checkout": {
+                        responseData.put(key, new Checkout(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "userErrors": {
+                        List<UserError> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new UserError(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public List<Node> getNodes() {
+            List<Node> children = new ArrayList<>();
+
+            if (getCheckout() != null) {
+                children.addAll(getCheckout().getNodes());
+            }
+
+            if (getUserErrors() != null) {
+                for (UserError elem: getUserErrors()) {
+                    children.addAll(elem.getNodes());
+                }
+            }
+
+            return children;
+        }
+
+        public String getGraphQlTypeName() {
+            return "CheckoutGiftCardRemovePayload";
+        }
+
+        public Checkout getCheckout() {
+            return (Checkout) get("checkout");
+        }
+
+        public CheckoutGiftCardRemovePayload setCheckout(Checkout arg) {
+            optimisticData.put("checkout", arg);
             return this;
         }
 
-        public String getClientMutationId() {
-            return clientMutationId;
+        public List<UserError> getUserErrors() {
+            return (List<UserError>) get("userErrors");
         }
 
-        public CheckoutShippingAddressUpdateInput setClientMutationId(String clientMutationId) {
-            this.clientMutationId = clientMutationId;
+        public CheckoutGiftCardRemovePayload setUserErrors(List<UserError> arg) {
+            optimisticData.put("userErrors", arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (key) {
+                case "checkout": return true;
+
+                case "userErrors": return true;
+
+                default: return false;
+            }
+        }
+    }
+
+    public interface CheckoutLineItemQueryDefinition {
+        void define(CheckoutLineItemQuery _queryBuilder);
+    }
+
+    public static class CheckoutLineItemQuery extends Query<CheckoutLineItemQuery> {
+        CheckoutLineItemQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+
+            startField("id");
+        }
+
+        public CheckoutLineItemQuery customAttributes(AttributeQueryDefinition queryDef) {
+            startField("customAttributes");
+
+            _queryBuilder.append('{');
+            queryDef.define(new AttributeQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        public CheckoutLineItemQuery quantity() {
+            startField("quantity");
+
+            return this;
+        }
+
+        public CheckoutLineItemQuery title() {
+            startField("title");
+
+            return this;
+        }
+
+        public CheckoutLineItemQuery variant(ProductVariantQueryDefinition queryDef) {
+            startField("variant");
+
+            _queryBuilder.append('{');
+            queryDef.define(new ProductVariantQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+    }
+
+    public static class CheckoutLineItem extends AbstractResponse<CheckoutLineItem> implements Node {
+        public CheckoutLineItem() {
+        }
+
+        public CheckoutLineItem(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "customAttributes": {
+                        List<Attribute> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new Attribute(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "id": {
+                        responseData.put(key, new ID(jsonAsString(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "quantity": {
+                        responseData.put(key, jsonAsInteger(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "title": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "variant": {
+                        ProductVariant optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new ProductVariant(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public CheckoutLineItem(ID id) {
+            this();
+            optimisticData.put("id", id);
+        }
+
+        public List<Node> getNodes() {
+            List<Node> children = new ArrayList<>();
+
+            children.add(this);
+
+            if (getCustomAttributes() != null) {
+                for (Attribute elem: getCustomAttributes()) {
+                    children.addAll(elem.getNodes());
+                }
+            }
+
+            if (getVariant() != null) {
+                children.addAll(getVariant().getNodes());
+            }
+
+            return children;
+        }
+
+        public String getGraphQlTypeName() {
+            return "CheckoutLineItem";
+        }
+
+        public List<Attribute> getCustomAttributes() {
+            return (List<Attribute>) get("customAttributes");
+        }
+
+        public CheckoutLineItem setCustomAttributes(List<Attribute> arg) {
+            optimisticData.put("customAttributes", arg);
+            return this;
+        }
+
+        public ID getId() {
+            return (ID) get("id");
+        }
+
+        public Integer getQuantity() {
+            return (Integer) get("quantity");
+        }
+
+        public CheckoutLineItem setQuantity(Integer arg) {
+            optimisticData.put("quantity", arg);
+            return this;
+        }
+
+        public String getTitle() {
+            return (String) get("title");
+        }
+
+        public CheckoutLineItem setTitle(String arg) {
+            optimisticData.put("title", arg);
+            return this;
+        }
+
+        public ProductVariant getVariant() {
+            return (ProductVariant) get("variant");
+        }
+
+        public CheckoutLineItem setVariant(ProductVariant arg) {
+            optimisticData.put("variant", arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (key) {
+                case "customAttributes": return true;
+
+                case "id": return false;
+
+                case "quantity": return false;
+
+                case "title": return false;
+
+                case "variant": return true;
+
+                default: return false;
+            }
+        }
+    }
+
+    public interface CheckoutLineItemConnectionQueryDefinition {
+        void define(CheckoutLineItemConnectionQuery _queryBuilder);
+    }
+
+    public static class CheckoutLineItemConnectionQuery extends Query<CheckoutLineItemConnectionQuery> {
+        CheckoutLineItemConnectionQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        public CheckoutLineItemConnectionQuery edges(CheckoutLineItemEdgeQueryDefinition queryDef) {
+            startField("edges");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CheckoutLineItemEdgeQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        public CheckoutLineItemConnectionQuery pageInfo(PageInfoQueryDefinition queryDef) {
+            startField("pageInfo");
+
+            _queryBuilder.append('{');
+            queryDef.define(new PageInfoQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+    }
+
+    public static class CheckoutLineItemConnection extends AbstractResponse<CheckoutLineItemConnection> {
+        public CheckoutLineItemConnection() {
+        }
+
+        public CheckoutLineItemConnection(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "edges": {
+                        List<CheckoutLineItemEdge> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new CheckoutLineItemEdge(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "pageInfo": {
+                        responseData.put(key, new PageInfo(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public List<Node> getNodes() {
+            List<Node> children = new ArrayList<>();
+
+            if (getEdges() != null) {
+                for (CheckoutLineItemEdge elem: getEdges()) {
+                    children.addAll(elem.getNodes());
+                }
+            }
+
+            if (getPageInfo() != null) {
+                children.addAll(getPageInfo().getNodes());
+            }
+
+            return children;
+        }
+
+        public String getGraphQlTypeName() {
+            return "CheckoutLineItemConnection";
+        }
+
+        public List<CheckoutLineItemEdge> getEdges() {
+            return (List<CheckoutLineItemEdge>) get("edges");
+        }
+
+        public CheckoutLineItemConnection setEdges(List<CheckoutLineItemEdge> arg) {
+            optimisticData.put("edges", arg);
+            return this;
+        }
+
+        public PageInfo getPageInfo() {
+            return (PageInfo) get("pageInfo");
+        }
+
+        public CheckoutLineItemConnection setPageInfo(PageInfo arg) {
+            optimisticData.put("pageInfo", arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (key) {
+                case "edges": return true;
+
+                case "pageInfo": return true;
+
+                default: return false;
+            }
+        }
+    }
+
+    public interface CheckoutLineItemEdgeQueryDefinition {
+        void define(CheckoutLineItemEdgeQuery _queryBuilder);
+    }
+
+    public static class CheckoutLineItemEdgeQuery extends Query<CheckoutLineItemEdgeQuery> {
+        CheckoutLineItemEdgeQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        public CheckoutLineItemEdgeQuery cursor() {
+            startField("cursor");
+
+            return this;
+        }
+
+        public CheckoutLineItemEdgeQuery node(CheckoutLineItemQueryDefinition queryDef) {
+            startField("node");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CheckoutLineItemQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+    }
+
+    public static class CheckoutLineItemEdge extends AbstractResponse<CheckoutLineItemEdge> {
+        public CheckoutLineItemEdge() {
+        }
+
+        public CheckoutLineItemEdge(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "cursor": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "node": {
+                        responseData.put(key, new CheckoutLineItem(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public List<Node> getNodes() {
+            List<Node> children = new ArrayList<>();
+
+            if (getNode() != null) {
+                children.addAll(getNode().getNodes());
+            }
+
+            return children;
+        }
+
+        public String getGraphQlTypeName() {
+            return "CheckoutLineItemEdge";
+        }
+
+        public String getCursor() {
+            return (String) get("cursor");
+        }
+
+        public CheckoutLineItemEdge setCursor(String arg) {
+            optimisticData.put("cursor", arg);
+            return this;
+        }
+
+        public CheckoutLineItem getNode() {
+            return (CheckoutLineItem) get("node");
+        }
+
+        public CheckoutLineItemEdge setNode(CheckoutLineItem arg) {
+            optimisticData.put("node", arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (key) {
+                case "cursor": return false;
+
+                case "node": return true;
+
+                default: return false;
+            }
+        }
+    }
+
+    public static class CheckoutLineItemInput implements Serializable {
+        private int quantity;
+
+        private ID variantId;
+
+        private List<AttributeInput> customAttributes;
+
+        public CheckoutLineItemInput(int quantity, ID variantId) {
+            this.quantity = quantity;
+
+            this.variantId = variantId;
+        }
+
+        public int getQuantity() {
+            return quantity;
+        }
+
+        public CheckoutLineItemInput setQuantity(int quantity) {
+            this.quantity = quantity;
+            return this;
+        }
+
+        public ID getVariantId() {
+            return variantId;
+        }
+
+        public CheckoutLineItemInput setVariantId(ID variantId) {
+            this.variantId = variantId;
+            return this;
+        }
+
+        public List<AttributeInput> getCustomAttributes() {
+            return customAttributes;
+        }
+
+        public CheckoutLineItemInput setCustomAttributes(List<AttributeInput> customAttributes) {
+            this.customAttributes = customAttributes;
             return this;
         }
 
@@ -3388,22 +3177,482 @@ public class Storefront {
 
             _queryBuilder.append(separator);
             separator = ",";
-            _queryBuilder.append("checkoutId:");
-            Query.appendQuotedString(_queryBuilder, checkoutId.toString());
+            _queryBuilder.append("quantity:");
+            _queryBuilder.append(quantity);
 
             _queryBuilder.append(separator);
             separator = ",";
-            _queryBuilder.append("shippingAddress:");
-            shippingAddress.appendTo(_queryBuilder);
+            _queryBuilder.append("variantId:");
+            Query.appendQuotedString(_queryBuilder, variantId.toString());
 
-            if (clientMutationId != null) {
+            if (customAttributes != null) {
                 _queryBuilder.append(separator);
                 separator = ",";
-                _queryBuilder.append("clientMutationId:");
-                Query.appendQuotedString(_queryBuilder, clientMutationId.toString());
+                _queryBuilder.append("customAttributes:");
+                _queryBuilder.append('[');
+
+                String listSeperator1 = "";
+                for (AttributeInput item1 : customAttributes) {
+                    _queryBuilder.append(listSeperator1);
+                    listSeperator1 = ",";
+                    item1.appendTo(_queryBuilder);
+                }
+                _queryBuilder.append(']');
             }
 
             _queryBuilder.append('}');
+        }
+    }
+
+    public static class CheckoutLineItemUpdateInput implements Serializable {
+        private List<AttributeInput> customAttributes;
+
+        private ID id;
+
+        private Integer quantity;
+
+        private ID variantId;
+
+        public List<AttributeInput> getCustomAttributes() {
+            return customAttributes;
+        }
+
+        public CheckoutLineItemUpdateInput setCustomAttributes(List<AttributeInput> customAttributes) {
+            this.customAttributes = customAttributes;
+            return this;
+        }
+
+        public ID getId() {
+            return id;
+        }
+
+        public CheckoutLineItemUpdateInput setId(ID id) {
+            this.id = id;
+            return this;
+        }
+
+        public Integer getQuantity() {
+            return quantity;
+        }
+
+        public CheckoutLineItemUpdateInput setQuantity(Integer quantity) {
+            this.quantity = quantity;
+            return this;
+        }
+
+        public ID getVariantId() {
+            return variantId;
+        }
+
+        public CheckoutLineItemUpdateInput setVariantId(ID variantId) {
+            this.variantId = variantId;
+            return this;
+        }
+
+        public void appendTo(StringBuilder _queryBuilder) {
+            String separator = "";
+            _queryBuilder.append('{');
+
+            if (customAttributes != null) {
+                _queryBuilder.append(separator);
+                separator = ",";
+                _queryBuilder.append("customAttributes:");
+                _queryBuilder.append('[');
+
+                String listSeperator1 = "";
+                for (AttributeInput item1 : customAttributes) {
+                    _queryBuilder.append(listSeperator1);
+                    listSeperator1 = ",";
+                    item1.appendTo(_queryBuilder);
+                }
+                _queryBuilder.append(']');
+            }
+
+            if (id != null) {
+                _queryBuilder.append(separator);
+                separator = ",";
+                _queryBuilder.append("id:");
+                Query.appendQuotedString(_queryBuilder, id.toString());
+            }
+
+            if (quantity != null) {
+                _queryBuilder.append(separator);
+                separator = ",";
+                _queryBuilder.append("quantity:");
+                _queryBuilder.append(quantity);
+            }
+
+            if (variantId != null) {
+                _queryBuilder.append(separator);
+                separator = ",";
+                _queryBuilder.append("variantId:");
+                Query.appendQuotedString(_queryBuilder, variantId.toString());
+            }
+
+            _queryBuilder.append('}');
+        }
+    }
+
+    public interface CheckoutLineItemsAddPayloadQueryDefinition {
+        void define(CheckoutLineItemsAddPayloadQuery _queryBuilder);
+    }
+
+    public static class CheckoutLineItemsAddPayloadQuery extends Query<CheckoutLineItemsAddPayloadQuery> {
+        CheckoutLineItemsAddPayloadQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        public CheckoutLineItemsAddPayloadQuery checkout(CheckoutQueryDefinition queryDef) {
+            startField("checkout");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CheckoutQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        public CheckoutLineItemsAddPayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
+            startField("userErrors");
+
+            _queryBuilder.append('{');
+            queryDef.define(new UserErrorQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+    }
+
+    public static class CheckoutLineItemsAddPayload extends AbstractResponse<CheckoutLineItemsAddPayload> {
+        public CheckoutLineItemsAddPayload() {
+        }
+
+        public CheckoutLineItemsAddPayload(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "checkout": {
+                        Checkout optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new Checkout(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "userErrors": {
+                        List<UserError> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new UserError(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public List<Node> getNodes() {
+            List<Node> children = new ArrayList<>();
+
+            if (getCheckout() != null) {
+                children.addAll(getCheckout().getNodes());
+            }
+
+            if (getUserErrors() != null) {
+                for (UserError elem: getUserErrors()) {
+                    children.addAll(elem.getNodes());
+                }
+            }
+
+            return children;
+        }
+
+        public String getGraphQlTypeName() {
+            return "CheckoutLineItemsAddPayload";
+        }
+
+        public Checkout getCheckout() {
+            return (Checkout) get("checkout");
+        }
+
+        public CheckoutLineItemsAddPayload setCheckout(Checkout arg) {
+            optimisticData.put("checkout", arg);
+            return this;
+        }
+
+        public List<UserError> getUserErrors() {
+            return (List<UserError>) get("userErrors");
+        }
+
+        public CheckoutLineItemsAddPayload setUserErrors(List<UserError> arg) {
+            optimisticData.put("userErrors", arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (key) {
+                case "checkout": return true;
+
+                case "userErrors": return true;
+
+                default: return false;
+            }
+        }
+    }
+
+    public interface CheckoutLineItemsRemovePayloadQueryDefinition {
+        void define(CheckoutLineItemsRemovePayloadQuery _queryBuilder);
+    }
+
+    public static class CheckoutLineItemsRemovePayloadQuery extends Query<CheckoutLineItemsRemovePayloadQuery> {
+        CheckoutLineItemsRemovePayloadQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        public CheckoutLineItemsRemovePayloadQuery checkout(CheckoutQueryDefinition queryDef) {
+            startField("checkout");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CheckoutQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        public CheckoutLineItemsRemovePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
+            startField("userErrors");
+
+            _queryBuilder.append('{');
+            queryDef.define(new UserErrorQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+    }
+
+    public static class CheckoutLineItemsRemovePayload extends AbstractResponse<CheckoutLineItemsRemovePayload> {
+        public CheckoutLineItemsRemovePayload() {
+        }
+
+        public CheckoutLineItemsRemovePayload(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "checkout": {
+                        Checkout optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new Checkout(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "userErrors": {
+                        List<UserError> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new UserError(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public List<Node> getNodes() {
+            List<Node> children = new ArrayList<>();
+
+            if (getCheckout() != null) {
+                children.addAll(getCheckout().getNodes());
+            }
+
+            if (getUserErrors() != null) {
+                for (UserError elem: getUserErrors()) {
+                    children.addAll(elem.getNodes());
+                }
+            }
+
+            return children;
+        }
+
+        public String getGraphQlTypeName() {
+            return "CheckoutLineItemsRemovePayload";
+        }
+
+        public Checkout getCheckout() {
+            return (Checkout) get("checkout");
+        }
+
+        public CheckoutLineItemsRemovePayload setCheckout(Checkout arg) {
+            optimisticData.put("checkout", arg);
+            return this;
+        }
+
+        public List<UserError> getUserErrors() {
+            return (List<UserError>) get("userErrors");
+        }
+
+        public CheckoutLineItemsRemovePayload setUserErrors(List<UserError> arg) {
+            optimisticData.put("userErrors", arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (key) {
+                case "checkout": return true;
+
+                case "userErrors": return true;
+
+                default: return false;
+            }
+        }
+    }
+
+    public interface CheckoutLineItemsUpdatePayloadQueryDefinition {
+        void define(CheckoutLineItemsUpdatePayloadQuery _queryBuilder);
+    }
+
+    public static class CheckoutLineItemsUpdatePayloadQuery extends Query<CheckoutLineItemsUpdatePayloadQuery> {
+        CheckoutLineItemsUpdatePayloadQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        public CheckoutLineItemsUpdatePayloadQuery checkout(CheckoutQueryDefinition queryDef) {
+            startField("checkout");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CheckoutQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        public CheckoutLineItemsUpdatePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
+            startField("userErrors");
+
+            _queryBuilder.append('{');
+            queryDef.define(new UserErrorQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+    }
+
+    public static class CheckoutLineItemsUpdatePayload extends AbstractResponse<CheckoutLineItemsUpdatePayload> {
+        public CheckoutLineItemsUpdatePayload() {
+        }
+
+        public CheckoutLineItemsUpdatePayload(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "checkout": {
+                        Checkout optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new Checkout(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "userErrors": {
+                        List<UserError> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new UserError(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public List<Node> getNodes() {
+            List<Node> children = new ArrayList<>();
+
+            if (getCheckout() != null) {
+                children.addAll(getCheckout().getNodes());
+            }
+
+            if (getUserErrors() != null) {
+                for (UserError elem: getUserErrors()) {
+                    children.addAll(elem.getNodes());
+                }
+            }
+
+            return children;
+        }
+
+        public String getGraphQlTypeName() {
+            return "CheckoutLineItemsUpdatePayload";
+        }
+
+        public Checkout getCheckout() {
+            return (Checkout) get("checkout");
+        }
+
+        public CheckoutLineItemsUpdatePayload setCheckout(Checkout arg) {
+            optimisticData.put("checkout", arg);
+            return this;
+        }
+
+        public List<UserError> getUserErrors() {
+            return (List<UserError>) get("userErrors");
+        }
+
+        public CheckoutLineItemsUpdatePayload setUserErrors(List<UserError> arg) {
+            optimisticData.put("userErrors", arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (key) {
+                case "checkout": return true;
+
+                case "userErrors": return true;
+
+                default: return false;
+            }
         }
     }
 
@@ -3520,71 +3769,6 @@ public class Storefront {
 
                 default: return false;
             }
-        }
-    }
-
-    public static class CheckoutShippingLineUpdateInput implements Serializable {
-        private ID checkoutId;
-
-        private String shippingRateHandle;
-
-        private String clientMutationId;
-
-        public CheckoutShippingLineUpdateInput(ID checkoutId, String shippingRateHandle) {
-            this.checkoutId = checkoutId;
-
-            this.shippingRateHandle = shippingRateHandle;
-        }
-
-        public ID getCheckoutId() {
-            return checkoutId;
-        }
-
-        public CheckoutShippingLineUpdateInput setCheckoutId(ID checkoutId) {
-            this.checkoutId = checkoutId;
-            return this;
-        }
-
-        public String getShippingRateHandle() {
-            return shippingRateHandle;
-        }
-
-        public CheckoutShippingLineUpdateInput setShippingRateHandle(String shippingRateHandle) {
-            this.shippingRateHandle = shippingRateHandle;
-            return this;
-        }
-
-        public String getClientMutationId() {
-            return clientMutationId;
-        }
-
-        public CheckoutShippingLineUpdateInput setClientMutationId(String clientMutationId) {
-            this.clientMutationId = clientMutationId;
-            return this;
-        }
-
-        public void appendTo(StringBuilder _queryBuilder) {
-            String separator = "";
-            _queryBuilder.append('{');
-
-            _queryBuilder.append(separator);
-            separator = ",";
-            _queryBuilder.append("checkoutId:");
-            Query.appendQuotedString(_queryBuilder, checkoutId.toString());
-
-            _queryBuilder.append(separator);
-            separator = ",";
-            _queryBuilder.append("shippingRateHandle:");
-            Query.appendQuotedString(_queryBuilder, shippingRateHandle.toString());
-
-            if (clientMutationId != null) {
-                _queryBuilder.append(separator);
-                separator = ",";
-                _queryBuilder.append("clientMutationId:");
-                Query.appendQuotedString(_queryBuilder, clientMutationId.toString());
-            }
-
-            _queryBuilder.append('}');
         }
     }
 
@@ -3720,14 +3904,40 @@ public class Storefront {
             startField("id");
         }
 
-        public CollectionQuery descriptionHtml() {
-            startField("descriptionHtml");
+        public class DescriptionArguments extends Arguments {
+            DescriptionArguments(StringBuilder _queryBuilder) {
+                super(_queryBuilder, true);
+            }
+
+            public DescriptionArguments truncateAt(Integer value) {
+                if (value != null) {
+                    startArgument("truncateAt");
+                    _queryBuilder.append(value);
+                }
+                return this;
+            }
+        }
+
+        public interface DescriptionArgumentsDefinition {
+            void define(DescriptionArguments args);
+        }
+
+        public CollectionQuery description() {
+            return description(args -> {});
+        }
+
+        public CollectionQuery description(DescriptionArgumentsDefinition argsDef) {
+            startField("description");
+
+            DescriptionArguments args = new DescriptionArguments(_queryBuilder);
+            argsDef.define(args);
+            DescriptionArguments.end(args);
 
             return this;
         }
 
-        public CollectionQuery descriptionPlainSummary() {
-            startField("descriptionPlainSummary");
+        public CollectionQuery descriptionHtml() {
+            startField("descriptionHtml");
 
             return this;
         }
@@ -3867,13 +4077,13 @@ public class Storefront {
                 String key = field.getKey();
                 String fieldName = getFieldName(key);
                 switch (fieldName) {
-                    case "descriptionHtml": {
+                    case "description": {
                         responseData.put(key, jsonAsString(field.getValue(), key));
 
                         break;
                     }
 
-                    case "descriptionPlainSummary": {
+                    case "descriptionHtml": {
                         responseData.put(key, jsonAsString(field.getValue(), key));
 
                         break;
@@ -3956,21 +4166,21 @@ public class Storefront {
             return "Collection";
         }
 
+        public String getDescription() {
+            return (String) get("description");
+        }
+
+        public Collection setDescription(String arg) {
+            optimisticData.put("description", arg);
+            return this;
+        }
+
         public String getDescriptionHtml() {
             return (String) get("descriptionHtml");
         }
 
         public Collection setDescriptionHtml(String arg) {
             optimisticData.put("descriptionHtml", arg);
-            return this;
-        }
-
-        public String getDescriptionPlainSummary() {
-            return (String) get("descriptionPlainSummary");
-        }
-
-        public Collection setDescriptionPlainSummary(String arg) {
-            optimisticData.put("descriptionPlainSummary", arg);
             return this;
         }
 
@@ -4025,9 +4235,9 @@ public class Storefront {
 
         public boolean unwrapsToObject(String key) {
             switch (key) {
-                case "descriptionHtml": return false;
+                case "description": return false;
 
-                case "descriptionPlainSummary": return false;
+                case "descriptionHtml": return false;
 
                 case "handle": return false;
 
@@ -4594,6 +4804,107 @@ public class Storefront {
 
                 default: return false;
             }
+        }
+    }
+
+    public static class CreditCardPaymentInput implements Serializable {
+        private BigDecimal amount;
+
+        private MailingAddressInput billingAddress;
+
+        private String idempotencyKey;
+
+        private String vaultId;
+
+        private Boolean test;
+
+        public CreditCardPaymentInput(BigDecimal amount, MailingAddressInput billingAddress, String idempotencyKey, String vaultId) {
+            this.amount = amount;
+
+            this.billingAddress = billingAddress;
+
+            this.idempotencyKey = idempotencyKey;
+
+            this.vaultId = vaultId;
+        }
+
+        public BigDecimal getAmount() {
+            return amount;
+        }
+
+        public CreditCardPaymentInput setAmount(BigDecimal amount) {
+            this.amount = amount;
+            return this;
+        }
+
+        public MailingAddressInput getBillingAddress() {
+            return billingAddress;
+        }
+
+        public CreditCardPaymentInput setBillingAddress(MailingAddressInput billingAddress) {
+            this.billingAddress = billingAddress;
+            return this;
+        }
+
+        public String getIdempotencyKey() {
+            return idempotencyKey;
+        }
+
+        public CreditCardPaymentInput setIdempotencyKey(String idempotencyKey) {
+            this.idempotencyKey = idempotencyKey;
+            return this;
+        }
+
+        public String getVaultId() {
+            return vaultId;
+        }
+
+        public CreditCardPaymentInput setVaultId(String vaultId) {
+            this.vaultId = vaultId;
+            return this;
+        }
+
+        public Boolean getTest() {
+            return test;
+        }
+
+        public CreditCardPaymentInput setTest(Boolean test) {
+            this.test = test;
+            return this;
+        }
+
+        public void appendTo(StringBuilder _queryBuilder) {
+            String separator = "";
+            _queryBuilder.append('{');
+
+            _queryBuilder.append(separator);
+            separator = ",";
+            _queryBuilder.append("amount:");
+            Query.appendQuotedString(_queryBuilder, amount.toString());
+
+            _queryBuilder.append(separator);
+            separator = ",";
+            _queryBuilder.append("billingAddress:");
+            billingAddress.appendTo(_queryBuilder);
+
+            _queryBuilder.append(separator);
+            separator = ",";
+            _queryBuilder.append("idempotencyKey:");
+            Query.appendQuotedString(_queryBuilder, idempotencyKey.toString());
+
+            _queryBuilder.append(separator);
+            separator = ",";
+            _queryBuilder.append("vaultId:");
+            Query.appendQuotedString(_queryBuilder, vaultId.toString());
+
+            if (test != null) {
+                _queryBuilder.append(separator);
+                separator = ",";
+                _queryBuilder.append("test:");
+                _queryBuilder.append(test);
+            }
+
+            _queryBuilder.append('}');
         }
     }
 
@@ -6593,8 +6904,6 @@ public class Storefront {
 
         private String password;
 
-        private String clientMutationId;
-
         public CustomerAccessTokenCreateInput(String email, String password) {
             this.email = email;
 
@@ -6619,15 +6928,6 @@ public class Storefront {
             return this;
         }
 
-        public String getClientMutationId() {
-            return clientMutationId;
-        }
-
-        public CustomerAccessTokenCreateInput setClientMutationId(String clientMutationId) {
-            this.clientMutationId = clientMutationId;
-            return this;
-        }
-
         public void appendTo(StringBuilder _queryBuilder) {
             String separator = "";
             _queryBuilder.append('{');
@@ -6641,13 +6941,6 @@ public class Storefront {
             separator = ",";
             _queryBuilder.append("password:");
             Query.appendQuotedString(_queryBuilder, password.toString());
-
-            if (clientMutationId != null) {
-                _queryBuilder.append(separator);
-                separator = ",";
-                _queryBuilder.append("clientMutationId:");
-                Query.appendQuotedString(_queryBuilder, clientMutationId.toString());
-            }
 
             _queryBuilder.append('}');
         }
@@ -6771,53 +7064,6 @@ public class Storefront {
 
                 default: return false;
             }
-        }
-    }
-
-    public static class CustomerAccessTokenDeleteInput implements Serializable {
-        private String customerAccessToken;
-
-        private String clientMutationId;
-
-        public CustomerAccessTokenDeleteInput(String customerAccessToken) {
-            this.customerAccessToken = customerAccessToken;
-        }
-
-        public String getCustomerAccessToken() {
-            return customerAccessToken;
-        }
-
-        public CustomerAccessTokenDeleteInput setCustomerAccessToken(String customerAccessToken) {
-            this.customerAccessToken = customerAccessToken;
-            return this;
-        }
-
-        public String getClientMutationId() {
-            return clientMutationId;
-        }
-
-        public CustomerAccessTokenDeleteInput setClientMutationId(String clientMutationId) {
-            this.clientMutationId = clientMutationId;
-            return this;
-        }
-
-        public void appendTo(StringBuilder _queryBuilder) {
-            String separator = "";
-            _queryBuilder.append('{');
-
-            _queryBuilder.append(separator);
-            separator = ",";
-            _queryBuilder.append("customerAccessToken:");
-            Query.appendQuotedString(_queryBuilder, customerAccessToken.toString());
-
-            if (clientMutationId != null) {
-                _queryBuilder.append(separator);
-                separator = ",";
-                _queryBuilder.append("clientMutationId:");
-                Query.appendQuotedString(_queryBuilder, clientMutationId.toString());
-            }
-
-            _queryBuilder.append('}');
         }
     }
 
@@ -6962,53 +7208,6 @@ public class Storefront {
         }
     }
 
-    public static class CustomerAccessTokenRenewInput implements Serializable {
-        private String customerAccessToken;
-
-        private String clientMutationId;
-
-        public CustomerAccessTokenRenewInput(String customerAccessToken) {
-            this.customerAccessToken = customerAccessToken;
-        }
-
-        public String getCustomerAccessToken() {
-            return customerAccessToken;
-        }
-
-        public CustomerAccessTokenRenewInput setCustomerAccessToken(String customerAccessToken) {
-            this.customerAccessToken = customerAccessToken;
-            return this;
-        }
-
-        public String getClientMutationId() {
-            return clientMutationId;
-        }
-
-        public CustomerAccessTokenRenewInput setClientMutationId(String clientMutationId) {
-            this.clientMutationId = clientMutationId;
-            return this;
-        }
-
-        public void appendTo(StringBuilder _queryBuilder) {
-            String separator = "";
-            _queryBuilder.append('{');
-
-            _queryBuilder.append(separator);
-            separator = ",";
-            _queryBuilder.append("customerAccessToken:");
-            Query.appendQuotedString(_queryBuilder, customerAccessToken.toString());
-
-            if (clientMutationId != null) {
-                _queryBuilder.append(separator);
-                separator = ",";
-                _queryBuilder.append("clientMutationId:");
-                Query.appendQuotedString(_queryBuilder, clientMutationId.toString());
-            }
-
-            _queryBuilder.append('}');
-        }
-    }
-
     public interface CustomerAccessTokenRenewPayloadQueryDefinition {
         void define(CustomerAccessTokenRenewPayloadQuery _queryBuilder);
     }
@@ -7131,28 +7330,22 @@ public class Storefront {
     }
 
     public static class CustomerActivateInput implements Serializable {
-        private ID id;
+        private String activationToken;
 
         private String password;
 
-        private String resetToken;
-
-        private String clientMutationId;
-
-        public CustomerActivateInput(ID id, String password, String resetToken) {
-            this.id = id;
+        public CustomerActivateInput(String activationToken, String password) {
+            this.activationToken = activationToken;
 
             this.password = password;
-
-            this.resetToken = resetToken;
         }
 
-        public ID getId() {
-            return id;
+        public String getActivationToken() {
+            return activationToken;
         }
 
-        public CustomerActivateInput setId(ID id) {
-            this.id = id;
+        public CustomerActivateInput setActivationToken(String activationToken) {
+            this.activationToken = activationToken;
             return this;
         }
 
@@ -7165,49 +7358,19 @@ public class Storefront {
             return this;
         }
 
-        public String getResetToken() {
-            return resetToken;
-        }
-
-        public CustomerActivateInput setResetToken(String resetToken) {
-            this.resetToken = resetToken;
-            return this;
-        }
-
-        public String getClientMutationId() {
-            return clientMutationId;
-        }
-
-        public CustomerActivateInput setClientMutationId(String clientMutationId) {
-            this.clientMutationId = clientMutationId;
-            return this;
-        }
-
         public void appendTo(StringBuilder _queryBuilder) {
             String separator = "";
             _queryBuilder.append('{');
 
             _queryBuilder.append(separator);
             separator = ",";
-            _queryBuilder.append("id:");
-            Query.appendQuotedString(_queryBuilder, id.toString());
+            _queryBuilder.append("activationToken:");
+            Query.appendQuotedString(_queryBuilder, activationToken.toString());
 
             _queryBuilder.append(separator);
             separator = ",";
             _queryBuilder.append("password:");
             Query.appendQuotedString(_queryBuilder, password.toString());
-
-            _queryBuilder.append(separator);
-            separator = ",";
-            _queryBuilder.append("resetToken:");
-            Query.appendQuotedString(_queryBuilder, resetToken.toString());
-
-            if (clientMutationId != null) {
-                _queryBuilder.append(separator);
-                separator = ",";
-                _queryBuilder.append("clientMutationId:");
-                Query.appendQuotedString(_queryBuilder, clientMutationId.toString());
-            }
 
             _queryBuilder.append('}');
         }
@@ -7334,71 +7497,6 @@ public class Storefront {
         }
     }
 
-    public static class CustomerAddressCreateInput implements Serializable {
-        private MailingAddressInput address;
-
-        private String customerAccessToken;
-
-        private String clientMutationId;
-
-        public CustomerAddressCreateInput(MailingAddressInput address, String customerAccessToken) {
-            this.address = address;
-
-            this.customerAccessToken = customerAccessToken;
-        }
-
-        public MailingAddressInput getAddress() {
-            return address;
-        }
-
-        public CustomerAddressCreateInput setAddress(MailingAddressInput address) {
-            this.address = address;
-            return this;
-        }
-
-        public String getCustomerAccessToken() {
-            return customerAccessToken;
-        }
-
-        public CustomerAddressCreateInput setCustomerAccessToken(String customerAccessToken) {
-            this.customerAccessToken = customerAccessToken;
-            return this;
-        }
-
-        public String getClientMutationId() {
-            return clientMutationId;
-        }
-
-        public CustomerAddressCreateInput setClientMutationId(String clientMutationId) {
-            this.clientMutationId = clientMutationId;
-            return this;
-        }
-
-        public void appendTo(StringBuilder _queryBuilder) {
-            String separator = "";
-            _queryBuilder.append('{');
-
-            _queryBuilder.append(separator);
-            separator = ",";
-            _queryBuilder.append("address:");
-            address.appendTo(_queryBuilder);
-
-            _queryBuilder.append(separator);
-            separator = ",";
-            _queryBuilder.append("customerAccessToken:");
-            Query.appendQuotedString(_queryBuilder, customerAccessToken.toString());
-
-            if (clientMutationId != null) {
-                _queryBuilder.append(separator);
-                separator = ",";
-                _queryBuilder.append("clientMutationId:");
-                Query.appendQuotedString(_queryBuilder, clientMutationId.toString());
-            }
-
-            _queryBuilder.append('}');
-        }
-    }
-
     public interface CustomerAddressCreatePayloadQueryDefinition {
         void define(CustomerAddressCreatePayloadQuery _queryBuilder);
     }
@@ -7520,71 +7618,6 @@ public class Storefront {
         }
     }
 
-    public static class CustomerAddressDeleteInput implements Serializable {
-        private String customerAccessToken;
-
-        private ID id;
-
-        private String clientMutationId;
-
-        public CustomerAddressDeleteInput(String customerAccessToken, ID id) {
-            this.customerAccessToken = customerAccessToken;
-
-            this.id = id;
-        }
-
-        public String getCustomerAccessToken() {
-            return customerAccessToken;
-        }
-
-        public CustomerAddressDeleteInput setCustomerAccessToken(String customerAccessToken) {
-            this.customerAccessToken = customerAccessToken;
-            return this;
-        }
-
-        public ID getId() {
-            return id;
-        }
-
-        public CustomerAddressDeleteInput setId(ID id) {
-            this.id = id;
-            return this;
-        }
-
-        public String getClientMutationId() {
-            return clientMutationId;
-        }
-
-        public CustomerAddressDeleteInput setClientMutationId(String clientMutationId) {
-            this.clientMutationId = clientMutationId;
-            return this;
-        }
-
-        public void appendTo(StringBuilder _queryBuilder) {
-            String separator = "";
-            _queryBuilder.append('{');
-
-            _queryBuilder.append(separator);
-            separator = ",";
-            _queryBuilder.append("customerAccessToken:");
-            Query.appendQuotedString(_queryBuilder, customerAccessToken.toString());
-
-            _queryBuilder.append(separator);
-            separator = ",";
-            _queryBuilder.append("id:");
-            Query.appendQuotedString(_queryBuilder, id.toString());
-
-            if (clientMutationId != null) {
-                _queryBuilder.append(separator);
-                separator = ",";
-                _queryBuilder.append("clientMutationId:");
-                Query.appendQuotedString(_queryBuilder, clientMutationId.toString());
-            }
-
-            _queryBuilder.append('}');
-        }
-    }
-
     public interface CustomerAddressDeletePayloadQueryDefinition {
         void define(CustomerAddressDeletePayloadQuery _queryBuilder);
     }
@@ -7695,89 +7728,6 @@ public class Storefront {
 
                 default: return false;
             }
-        }
-    }
-
-    public static class CustomerAddressUpdateInput implements Serializable {
-        private MailingAddressInput address;
-
-        private String customerAccessToken;
-
-        private ID id;
-
-        private String clientMutationId;
-
-        public CustomerAddressUpdateInput(MailingAddressInput address, String customerAccessToken, ID id) {
-            this.address = address;
-
-            this.customerAccessToken = customerAccessToken;
-
-            this.id = id;
-        }
-
-        public MailingAddressInput getAddress() {
-            return address;
-        }
-
-        public CustomerAddressUpdateInput setAddress(MailingAddressInput address) {
-            this.address = address;
-            return this;
-        }
-
-        public String getCustomerAccessToken() {
-            return customerAccessToken;
-        }
-
-        public CustomerAddressUpdateInput setCustomerAccessToken(String customerAccessToken) {
-            this.customerAccessToken = customerAccessToken;
-            return this;
-        }
-
-        public ID getId() {
-            return id;
-        }
-
-        public CustomerAddressUpdateInput setId(ID id) {
-            this.id = id;
-            return this;
-        }
-
-        public String getClientMutationId() {
-            return clientMutationId;
-        }
-
-        public CustomerAddressUpdateInput setClientMutationId(String clientMutationId) {
-            this.clientMutationId = clientMutationId;
-            return this;
-        }
-
-        public void appendTo(StringBuilder _queryBuilder) {
-            String separator = "";
-            _queryBuilder.append('{');
-
-            _queryBuilder.append(separator);
-            separator = ",";
-            _queryBuilder.append("address:");
-            address.appendTo(_queryBuilder);
-
-            _queryBuilder.append(separator);
-            separator = ",";
-            _queryBuilder.append("customerAccessToken:");
-            Query.appendQuotedString(_queryBuilder, customerAccessToken.toString());
-
-            _queryBuilder.append(separator);
-            separator = ",";
-            _queryBuilder.append("id:");
-            Query.appendQuotedString(_queryBuilder, id.toString());
-
-            if (clientMutationId != null) {
-                _queryBuilder.append(separator);
-                separator = ",";
-                _queryBuilder.append("clientMutationId:");
-                Query.appendQuotedString(_queryBuilder, clientMutationId.toString());
-            }
-
-            _queryBuilder.append('}');
         }
     }
 
@@ -7909,8 +7859,6 @@ public class Storefront {
 
         private Boolean acceptsMarketing;
 
-        private String clientMutationId;
-
         private String firstName;
 
         private String lastName;
@@ -7945,15 +7893,6 @@ public class Storefront {
 
         public CustomerCreateInput setAcceptsMarketing(Boolean acceptsMarketing) {
             this.acceptsMarketing = acceptsMarketing;
-            return this;
-        }
-
-        public String getClientMutationId() {
-            return clientMutationId;
-        }
-
-        public CustomerCreateInput setClientMutationId(String clientMutationId) {
-            this.clientMutationId = clientMutationId;
             return this;
         }
 
@@ -7994,13 +7933,6 @@ public class Storefront {
                 separator = ",";
                 _queryBuilder.append("acceptsMarketing:");
                 _queryBuilder.append(acceptsMarketing);
-            }
-
-            if (clientMutationId != null) {
-                _queryBuilder.append(separator);
-                separator = ",";
-                _queryBuilder.append("clientMutationId:");
-                Query.appendQuotedString(_queryBuilder, clientMutationId.toString());
             }
 
             if (firstName != null) {
@@ -8142,53 +8074,6 @@ public class Storefront {
         }
     }
 
-    public static class CustomerRecoverInput implements Serializable {
-        private String email;
-
-        private String clientMutationId;
-
-        public CustomerRecoverInput(String email) {
-            this.email = email;
-        }
-
-        public String getEmail() {
-            return email;
-        }
-
-        public CustomerRecoverInput setEmail(String email) {
-            this.email = email;
-            return this;
-        }
-
-        public String getClientMutationId() {
-            return clientMutationId;
-        }
-
-        public CustomerRecoverInput setClientMutationId(String clientMutationId) {
-            this.clientMutationId = clientMutationId;
-            return this;
-        }
-
-        public void appendTo(StringBuilder _queryBuilder) {
-            String separator = "";
-            _queryBuilder.append('{');
-
-            _queryBuilder.append(separator);
-            separator = ",";
-            _queryBuilder.append("email:");
-            Query.appendQuotedString(_queryBuilder, email.toString());
-
-            if (clientMutationId != null) {
-                _queryBuilder.append(separator);
-                separator = ",";
-                _queryBuilder.append("clientMutationId:");
-                Query.appendQuotedString(_queryBuilder, clientMutationId.toString());
-            }
-
-            _queryBuilder.append('}');
-        }
-    }
-
     public interface CustomerRecoverPayloadQueryDefinition {
         void define(CustomerRecoverPayloadQuery _queryBuilder);
     }
@@ -8275,29 +8160,14 @@ public class Storefront {
     }
 
     public static class CustomerResetInput implements Serializable {
-        private ID id;
-
         private String password;
 
         private String resetToken;
 
-        private String clientMutationId;
-
-        public CustomerResetInput(ID id, String password, String resetToken) {
-            this.id = id;
-
+        public CustomerResetInput(String password, String resetToken) {
             this.password = password;
 
             this.resetToken = resetToken;
-        }
-
-        public ID getId() {
-            return id;
-        }
-
-        public CustomerResetInput setId(ID id) {
-            this.id = id;
-            return this;
         }
 
         public String getPassword() {
@@ -8318,23 +8188,9 @@ public class Storefront {
             return this;
         }
 
-        public String getClientMutationId() {
-            return clientMutationId;
-        }
-
-        public CustomerResetInput setClientMutationId(String clientMutationId) {
-            this.clientMutationId = clientMutationId;
-            return this;
-        }
-
         public void appendTo(StringBuilder _queryBuilder) {
             String separator = "";
             _queryBuilder.append('{');
-
-            _queryBuilder.append(separator);
-            separator = ",";
-            _queryBuilder.append("id:");
-            Query.appendQuotedString(_queryBuilder, id.toString());
 
             _queryBuilder.append(separator);
             separator = ",";
@@ -8345,13 +8201,6 @@ public class Storefront {
             separator = ",";
             _queryBuilder.append("resetToken:");
             Query.appendQuotedString(_queryBuilder, resetToken.toString());
-
-            if (clientMutationId != null) {
-                _queryBuilder.append(separator);
-                separator = ",";
-                _queryBuilder.append("clientMutationId:");
-                Query.appendQuotedString(_queryBuilder, clientMutationId.toString());
-            }
 
             _queryBuilder.append('}');
         }
@@ -8479,11 +8328,7 @@ public class Storefront {
     }
 
     public static class CustomerUpdateInput implements Serializable {
-        private String customerAccessToken;
-
         private Boolean acceptsMarketing;
-
-        private String clientMutationId;
 
         private String email;
 
@@ -8493,34 +8338,12 @@ public class Storefront {
 
         private String password;
 
-        public CustomerUpdateInput(String customerAccessToken) {
-            this.customerAccessToken = customerAccessToken;
-        }
-
-        public String getCustomerAccessToken() {
-            return customerAccessToken;
-        }
-
-        public CustomerUpdateInput setCustomerAccessToken(String customerAccessToken) {
-            this.customerAccessToken = customerAccessToken;
-            return this;
-        }
-
         public Boolean getAcceptsMarketing() {
             return acceptsMarketing;
         }
 
         public CustomerUpdateInput setAcceptsMarketing(Boolean acceptsMarketing) {
             this.acceptsMarketing = acceptsMarketing;
-            return this;
-        }
-
-        public String getClientMutationId() {
-            return clientMutationId;
-        }
-
-        public CustomerUpdateInput setClientMutationId(String clientMutationId) {
-            this.clientMutationId = clientMutationId;
             return this;
         }
 
@@ -8564,23 +8387,11 @@ public class Storefront {
             String separator = "";
             _queryBuilder.append('{');
 
-            _queryBuilder.append(separator);
-            separator = ",";
-            _queryBuilder.append("customerAccessToken:");
-            Query.appendQuotedString(_queryBuilder, customerAccessToken.toString());
-
             if (acceptsMarketing != null) {
                 _queryBuilder.append(separator);
                 separator = ",";
                 _queryBuilder.append("acceptsMarketing:");
                 _queryBuilder.append(acceptsMarketing);
-            }
-
-            if (clientMutationId != null) {
-                _queryBuilder.append(separator);
-                separator = ",";
-                _queryBuilder.append("clientMutationId:");
-                Query.appendQuotedString(_queryBuilder, clientMutationId.toString());
             }
 
             if (email != null) {
@@ -9192,463 +9003,6 @@ public class Storefront {
 
                 default: return false;
             }
-        }
-    }
-
-    public interface LineItemQueryDefinition {
-        void define(LineItemQuery _queryBuilder);
-    }
-
-    public static class LineItemQuery extends Query<LineItemQuery> {
-        LineItemQuery(StringBuilder _queryBuilder) {
-            super(_queryBuilder);
-        }
-
-        public LineItemQuery customAttributes(AttributeQueryDefinition queryDef) {
-            startField("customAttributes");
-
-            _queryBuilder.append('{');
-            queryDef.define(new AttributeQuery(_queryBuilder));
-            _queryBuilder.append('}');
-
-            return this;
-        }
-
-        public LineItemQuery quantity() {
-            startField("quantity");
-
-            return this;
-        }
-
-        public LineItemQuery title() {
-            startField("title");
-
-            return this;
-        }
-
-        public LineItemQuery variant(ProductVariantQueryDefinition queryDef) {
-            startField("variant");
-
-            _queryBuilder.append('{');
-            queryDef.define(new ProductVariantQuery(_queryBuilder));
-            _queryBuilder.append('}');
-
-            return this;
-        }
-    }
-
-    public static class LineItem extends AbstractResponse<LineItem> {
-        public LineItem() {
-        }
-
-        public LineItem(JsonObject fields) throws SchemaViolationError {
-            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
-                String key = field.getKey();
-                String fieldName = getFieldName(key);
-                switch (fieldName) {
-                    case "customAttributes": {
-                        List<Attribute> list1 = new ArrayList<>();
-                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
-                            list1.add(new Attribute(jsonAsObject(element1, key)));
-                        }
-
-                        responseData.put(key, list1);
-
-                        break;
-                    }
-
-                    case "quantity": {
-                        responseData.put(key, jsonAsInteger(field.getValue(), key));
-
-                        break;
-                    }
-
-                    case "title": {
-                        responseData.put(key, jsonAsString(field.getValue(), key));
-
-                        break;
-                    }
-
-                    case "variant": {
-                        ProductVariant optional1 = null;
-                        if (!field.getValue().isJsonNull()) {
-                            optional1 = new ProductVariant(jsonAsObject(field.getValue(), key));
-                        }
-
-                        responseData.put(key, optional1);
-
-                        break;
-                    }
-
-                    case "__typename": {
-                        responseData.put(key, jsonAsString(field.getValue(), key));
-                        break;
-                    }
-                    default: {
-                        throw new SchemaViolationError(this, key, field.getValue());
-                    }
-                }
-            }
-        }
-
-        public List<Node> getNodes() {
-            List<Node> children = new ArrayList<>();
-
-            if (getCustomAttributes() != null) {
-                for (Attribute elem: getCustomAttributes()) {
-                    children.addAll(elem.getNodes());
-                }
-            }
-
-            if (getVariant() != null) {
-                children.addAll(getVariant().getNodes());
-            }
-
-            return children;
-        }
-
-        public String getGraphQlTypeName() {
-            return "LineItem";
-        }
-
-        public List<Attribute> getCustomAttributes() {
-            return (List<Attribute>) get("customAttributes");
-        }
-
-        public LineItem setCustomAttributes(List<Attribute> arg) {
-            optimisticData.put("customAttributes", arg);
-            return this;
-        }
-
-        public Integer getQuantity() {
-            return (Integer) get("quantity");
-        }
-
-        public LineItem setQuantity(Integer arg) {
-            optimisticData.put("quantity", arg);
-            return this;
-        }
-
-        public String getTitle() {
-            return (String) get("title");
-        }
-
-        public LineItem setTitle(String arg) {
-            optimisticData.put("title", arg);
-            return this;
-        }
-
-        public ProductVariant getVariant() {
-            return (ProductVariant) get("variant");
-        }
-
-        public LineItem setVariant(ProductVariant arg) {
-            optimisticData.put("variant", arg);
-            return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (key) {
-                case "customAttributes": return true;
-
-                case "quantity": return false;
-
-                case "title": return false;
-
-                case "variant": return true;
-
-                default: return false;
-            }
-        }
-    }
-
-    public interface LineItemConnectionQueryDefinition {
-        void define(LineItemConnectionQuery _queryBuilder);
-    }
-
-    public static class LineItemConnectionQuery extends Query<LineItemConnectionQuery> {
-        LineItemConnectionQuery(StringBuilder _queryBuilder) {
-            super(_queryBuilder);
-        }
-
-        public LineItemConnectionQuery edges(LineItemEdgeQueryDefinition queryDef) {
-            startField("edges");
-
-            _queryBuilder.append('{');
-            queryDef.define(new LineItemEdgeQuery(_queryBuilder));
-            _queryBuilder.append('}');
-
-            return this;
-        }
-
-        public LineItemConnectionQuery pageInfo(PageInfoQueryDefinition queryDef) {
-            startField("pageInfo");
-
-            _queryBuilder.append('{');
-            queryDef.define(new PageInfoQuery(_queryBuilder));
-            _queryBuilder.append('}');
-
-            return this;
-        }
-    }
-
-    public static class LineItemConnection extends AbstractResponse<LineItemConnection> {
-        public LineItemConnection() {
-        }
-
-        public LineItemConnection(JsonObject fields) throws SchemaViolationError {
-            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
-                String key = field.getKey();
-                String fieldName = getFieldName(key);
-                switch (fieldName) {
-                    case "edges": {
-                        List<LineItemEdge> list1 = new ArrayList<>();
-                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
-                            list1.add(new LineItemEdge(jsonAsObject(element1, key)));
-                        }
-
-                        responseData.put(key, list1);
-
-                        break;
-                    }
-
-                    case "pageInfo": {
-                        responseData.put(key, new PageInfo(jsonAsObject(field.getValue(), key)));
-
-                        break;
-                    }
-
-                    case "__typename": {
-                        responseData.put(key, jsonAsString(field.getValue(), key));
-                        break;
-                    }
-                    default: {
-                        throw new SchemaViolationError(this, key, field.getValue());
-                    }
-                }
-            }
-        }
-
-        public List<Node> getNodes() {
-            List<Node> children = new ArrayList<>();
-
-            if (getEdges() != null) {
-                for (LineItemEdge elem: getEdges()) {
-                    children.addAll(elem.getNodes());
-                }
-            }
-
-            if (getPageInfo() != null) {
-                children.addAll(getPageInfo().getNodes());
-            }
-
-            return children;
-        }
-
-        public String getGraphQlTypeName() {
-            return "LineItemConnection";
-        }
-
-        public List<LineItemEdge> getEdges() {
-            return (List<LineItemEdge>) get("edges");
-        }
-
-        public LineItemConnection setEdges(List<LineItemEdge> arg) {
-            optimisticData.put("edges", arg);
-            return this;
-        }
-
-        public PageInfo getPageInfo() {
-            return (PageInfo) get("pageInfo");
-        }
-
-        public LineItemConnection setPageInfo(PageInfo arg) {
-            optimisticData.put("pageInfo", arg);
-            return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (key) {
-                case "edges": return true;
-
-                case "pageInfo": return true;
-
-                default: return false;
-            }
-        }
-    }
-
-    public interface LineItemEdgeQueryDefinition {
-        void define(LineItemEdgeQuery _queryBuilder);
-    }
-
-    public static class LineItemEdgeQuery extends Query<LineItemEdgeQuery> {
-        LineItemEdgeQuery(StringBuilder _queryBuilder) {
-            super(_queryBuilder);
-        }
-
-        public LineItemEdgeQuery cursor() {
-            startField("cursor");
-
-            return this;
-        }
-
-        public LineItemEdgeQuery node(LineItemQueryDefinition queryDef) {
-            startField("node");
-
-            _queryBuilder.append('{');
-            queryDef.define(new LineItemQuery(_queryBuilder));
-            _queryBuilder.append('}');
-
-            return this;
-        }
-    }
-
-    public static class LineItemEdge extends AbstractResponse<LineItemEdge> {
-        public LineItemEdge() {
-        }
-
-        public LineItemEdge(JsonObject fields) throws SchemaViolationError {
-            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
-                String key = field.getKey();
-                String fieldName = getFieldName(key);
-                switch (fieldName) {
-                    case "cursor": {
-                        responseData.put(key, jsonAsString(field.getValue(), key));
-
-                        break;
-                    }
-
-                    case "node": {
-                        responseData.put(key, new LineItem(jsonAsObject(field.getValue(), key)));
-
-                        break;
-                    }
-
-                    case "__typename": {
-                        responseData.put(key, jsonAsString(field.getValue(), key));
-                        break;
-                    }
-                    default: {
-                        throw new SchemaViolationError(this, key, field.getValue());
-                    }
-                }
-            }
-        }
-
-        public List<Node> getNodes() {
-            List<Node> children = new ArrayList<>();
-
-            if (getNode() != null) {
-                children.addAll(getNode().getNodes());
-            }
-
-            return children;
-        }
-
-        public String getGraphQlTypeName() {
-            return "LineItemEdge";
-        }
-
-        public String getCursor() {
-            return (String) get("cursor");
-        }
-
-        public LineItemEdge setCursor(String arg) {
-            optimisticData.put("cursor", arg);
-            return this;
-        }
-
-        public LineItem getNode() {
-            return (LineItem) get("node");
-        }
-
-        public LineItemEdge setNode(LineItem arg) {
-            optimisticData.put("node", arg);
-            return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (key) {
-                case "cursor": return false;
-
-                case "node": return true;
-
-                default: return false;
-            }
-        }
-    }
-
-    public static class LineItemInput implements Serializable {
-        private int quantity;
-
-        private ID variantId;
-
-        private List<AttributeInput> customAttributes;
-
-        public LineItemInput(int quantity, ID variantId) {
-            this.quantity = quantity;
-
-            this.variantId = variantId;
-        }
-
-        public int getQuantity() {
-            return quantity;
-        }
-
-        public LineItemInput setQuantity(int quantity) {
-            this.quantity = quantity;
-            return this;
-        }
-
-        public ID getVariantId() {
-            return variantId;
-        }
-
-        public LineItemInput setVariantId(ID variantId) {
-            this.variantId = variantId;
-            return this;
-        }
-
-        public List<AttributeInput> getCustomAttributes() {
-            return customAttributes;
-        }
-
-        public LineItemInput setCustomAttributes(List<AttributeInput> customAttributes) {
-            this.customAttributes = customAttributes;
-            return this;
-        }
-
-        public void appendTo(StringBuilder _queryBuilder) {
-            String separator = "";
-            _queryBuilder.append('{');
-
-            _queryBuilder.append(separator);
-            separator = ",";
-            _queryBuilder.append("quantity:");
-            _queryBuilder.append(quantity);
-
-            _queryBuilder.append(separator);
-            separator = ",";
-            _queryBuilder.append("variantId:");
-            Query.appendQuotedString(_queryBuilder, variantId.toString());
-
-            if (customAttributes != null) {
-                _queryBuilder.append(separator);
-                separator = ",";
-                _queryBuilder.append("customAttributes:");
-                _queryBuilder.append('[');
-
-                String listSeperator1 = "";
-                for (AttributeInput item1 : customAttributes) {
-                    _queryBuilder.append(listSeperator1);
-                    listSeperator1 = ",";
-                    item1.appendTo(_queryBuilder);
-                }
-                _queryBuilder.append(']');
-            }
-
-            _queryBuilder.append('}');
         }
     }
 
@@ -10617,25 +9971,13 @@ public class Storefront {
             super(_queryBuilder);
         }
 
-        public MutationQuery checkoutAddLineItems(CheckoutAddLineItemsInput input, CheckoutAddLineItemsPayloadQueryDefinition queryDef) {
-            startField("checkoutAddLineItems");
-
-            _queryBuilder.append("(input:");
-            input.appendTo(_queryBuilder);
-
-            _queryBuilder.append(')');
-
-            _queryBuilder.append('{');
-            queryDef.define(new CheckoutAddLineItemsPayloadQuery(_queryBuilder));
-            _queryBuilder.append('}');
-
-            return this;
-        }
-
-        public MutationQuery checkoutAttributesUpdate(CheckoutAttributesUpdateInput input, CheckoutAttributesUpdatePayloadQueryDefinition queryDef) {
+        public MutationQuery checkoutAttributesUpdate(ID checkoutId, CheckoutAttributesUpdateInput input, CheckoutAttributesUpdatePayloadQueryDefinition queryDef) {
             startField("checkoutAttributesUpdate");
 
-            _queryBuilder.append("(input:");
+            _queryBuilder.append("(checkoutId:");
+            Query.appendQuotedString(_queryBuilder, checkoutId.toString());
+
+            _queryBuilder.append(",input:");
             input.appendTo(_queryBuilder);
 
             _queryBuilder.append(')');
@@ -10647,11 +9989,29 @@ public class Storefront {
             return this;
         }
 
-        public MutationQuery checkoutCompleteWithCreditCard(CheckoutCompleteWithCreditCardInput input, CheckoutCompleteWithCreditCardPayloadQueryDefinition queryDef) {
+        public MutationQuery checkoutCompleteFree(ID checkoutId, CheckoutCompleteFreePayloadQueryDefinition queryDef) {
+            startField("checkoutCompleteFree");
+
+            _queryBuilder.append("(checkoutId:");
+            Query.appendQuotedString(_queryBuilder, checkoutId.toString());
+
+            _queryBuilder.append(')');
+
+            _queryBuilder.append('{');
+            queryDef.define(new CheckoutCompleteFreePayloadQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        public MutationQuery checkoutCompleteWithCreditCard(ID checkoutId, CreditCardPaymentInput payment, CheckoutCompleteWithCreditCardPayloadQueryDefinition queryDef) {
             startField("checkoutCompleteWithCreditCard");
 
-            _queryBuilder.append("(input:");
-            input.appendTo(_queryBuilder);
+            _queryBuilder.append("(checkoutId:");
+            Query.appendQuotedString(_queryBuilder, checkoutId.toString());
+
+            _queryBuilder.append(",payment:");
+            payment.appendTo(_queryBuilder);
 
             _queryBuilder.append(')');
 
@@ -10662,11 +10022,14 @@ public class Storefront {
             return this;
         }
 
-        public MutationQuery checkoutCompleteWithTokenizedPayment(CheckoutCompleteWithTokenizedPaymentInput input, CheckoutCompleteWithTokenizedPaymentPayloadQueryDefinition queryDef) {
+        public MutationQuery checkoutCompleteWithTokenizedPayment(ID checkoutId, TokenizedPaymentInput payment, CheckoutCompleteWithTokenizedPaymentPayloadQueryDefinition queryDef) {
             startField("checkoutCompleteWithTokenizedPayment");
 
-            _queryBuilder.append("(input:");
-            input.appendTo(_queryBuilder);
+            _queryBuilder.append("(checkoutId:");
+            Query.appendQuotedString(_queryBuilder, checkoutId.toString());
+
+            _queryBuilder.append(",payment:");
+            payment.appendTo(_queryBuilder);
 
             _queryBuilder.append(')');
 
@@ -10692,11 +10055,14 @@ public class Storefront {
             return this;
         }
 
-        public MutationQuery checkoutCustomerAssociate(CheckoutCustomerAssociateInput input, CheckoutCustomerAssociatePayloadQueryDefinition queryDef) {
+        public MutationQuery checkoutCustomerAssociate(ID checkoutId, String customerAccessToken, CheckoutCustomerAssociatePayloadQueryDefinition queryDef) {
             startField("checkoutCustomerAssociate");
 
-            _queryBuilder.append("(input:");
-            input.appendTo(_queryBuilder);
+            _queryBuilder.append("(checkoutId:");
+            Query.appendQuotedString(_queryBuilder, checkoutId.toString());
+
+            _queryBuilder.append(",customerAccessToken:");
+            Query.appendQuotedString(_queryBuilder, customerAccessToken.toString());
 
             _queryBuilder.append(')');
 
@@ -10707,11 +10073,11 @@ public class Storefront {
             return this;
         }
 
-        public MutationQuery checkoutCustomerDisassociate(CheckoutCustomerDisassociateInput input, CheckoutCustomerDisassociatePayloadQueryDefinition queryDef) {
+        public MutationQuery checkoutCustomerDisassociate(ID checkoutId, CheckoutCustomerDisassociatePayloadQueryDefinition queryDef) {
             startField("checkoutCustomerDisassociate");
 
-            _queryBuilder.append("(input:");
-            input.appendTo(_queryBuilder);
+            _queryBuilder.append("(checkoutId:");
+            Query.appendQuotedString(_queryBuilder, checkoutId.toString());
 
             _queryBuilder.append(')');
 
@@ -10722,11 +10088,14 @@ public class Storefront {
             return this;
         }
 
-        public MutationQuery checkoutEmailUpdate(CheckoutEmailUpdateInput input, CheckoutEmailUpdatePayloadQueryDefinition queryDef) {
+        public MutationQuery checkoutEmailUpdate(ID checkoutId, String email, CheckoutEmailUpdatePayloadQueryDefinition queryDef) {
             startField("checkoutEmailUpdate");
 
-            _queryBuilder.append("(input:");
-            input.appendTo(_queryBuilder);
+            _queryBuilder.append("(checkoutId:");
+            Query.appendQuotedString(_queryBuilder, checkoutId.toString());
+
+            _queryBuilder.append(",email:");
+            Query.appendQuotedString(_queryBuilder, email.toString());
 
             _queryBuilder.append(')');
 
@@ -10737,11 +10106,14 @@ public class Storefront {
             return this;
         }
 
-        public MutationQuery checkoutGiftCardApply(CheckoutGiftCardApplyInput input, CheckoutGiftCardApplyPayloadQueryDefinition queryDef) {
+        public MutationQuery checkoutGiftCardApply(String giftCardCode, ID checkoutId, CheckoutGiftCardApplyPayloadQueryDefinition queryDef) {
             startField("checkoutGiftCardApply");
 
-            _queryBuilder.append("(input:");
-            input.appendTo(_queryBuilder);
+            _queryBuilder.append("(giftCardCode:");
+            Query.appendQuotedString(_queryBuilder, giftCardCode.toString());
+
+            _queryBuilder.append(",checkoutId:");
+            Query.appendQuotedString(_queryBuilder, checkoutId.toString());
 
             _queryBuilder.append(')');
 
@@ -10752,11 +10124,131 @@ public class Storefront {
             return this;
         }
 
-        public MutationQuery checkoutShippingAddressUpdate(CheckoutShippingAddressUpdateInput input, CheckoutShippingAddressUpdatePayloadQueryDefinition queryDef) {
+        public MutationQuery checkoutGiftCardRemove(ID appliedGiftCardId, ID checkoutId, CheckoutGiftCardRemovePayloadQueryDefinition queryDef) {
+            startField("checkoutGiftCardRemove");
+
+            _queryBuilder.append("(appliedGiftCardId:");
+            Query.appendQuotedString(_queryBuilder, appliedGiftCardId.toString());
+
+            _queryBuilder.append(",checkoutId:");
+            Query.appendQuotedString(_queryBuilder, checkoutId.toString());
+
+            _queryBuilder.append(')');
+
+            _queryBuilder.append('{');
+            queryDef.define(new CheckoutGiftCardRemovePayloadQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        public class CheckoutLineItemsAddArguments extends Arguments {
+            CheckoutLineItemsAddArguments(StringBuilder _queryBuilder) {
+                super(_queryBuilder, false);
+            }
+
+            public CheckoutLineItemsAddArguments lineItems(List<CheckoutLineItemInput> value) {
+                if (value != null) {
+                    startArgument("lineItems");
+                    _queryBuilder.append('[');
+
+                    String listSeperator1 = "";
+                    for (CheckoutLineItemInput item1 : value) {
+                        _queryBuilder.append(listSeperator1);
+                        listSeperator1 = ",";
+                        item1.appendTo(_queryBuilder);
+                    }
+                    _queryBuilder.append(']');
+                }
+                return this;
+            }
+        }
+
+        public interface CheckoutLineItemsAddArgumentsDefinition {
+            void define(CheckoutLineItemsAddArguments args);
+        }
+
+        public MutationQuery checkoutLineItemsAdd(ID checkoutId, CheckoutLineItemsAddPayloadQueryDefinition queryDef) {
+            return checkoutLineItemsAdd(checkoutId, args -> {}, queryDef);
+        }
+
+        public MutationQuery checkoutLineItemsAdd(ID checkoutId, CheckoutLineItemsAddArgumentsDefinition argsDef, CheckoutLineItemsAddPayloadQueryDefinition queryDef) {
+            startField("checkoutLineItemsAdd");
+
+            _queryBuilder.append("(checkoutId:");
+            Query.appendQuotedString(_queryBuilder, checkoutId.toString());
+
+            argsDef.define(new CheckoutLineItemsAddArguments(_queryBuilder));
+
+            _queryBuilder.append(')');
+
+            _queryBuilder.append('{');
+            queryDef.define(new CheckoutLineItemsAddPayloadQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        public MutationQuery checkoutLineItemsRemove(ID checkoutId, List<ID> lineItemIds, CheckoutLineItemsRemovePayloadQueryDefinition queryDef) {
+            startField("checkoutLineItemsRemove");
+
+            _queryBuilder.append("(checkoutId:");
+            Query.appendQuotedString(_queryBuilder, checkoutId.toString());
+
+            _queryBuilder.append(",lineItemIds:");
+            _queryBuilder.append('[');
+
+            String listSeperator1 = "";
+            for (ID item1 : lineItemIds) {
+                _queryBuilder.append(listSeperator1);
+                listSeperator1 = ",";
+                Query.appendQuotedString(_queryBuilder, item1.toString());
+            }
+            _queryBuilder.append(']');
+
+            _queryBuilder.append(')');
+
+            _queryBuilder.append('{');
+            queryDef.define(new CheckoutLineItemsRemovePayloadQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        public MutationQuery checkoutLineItemsUpdate(ID checkoutId, List<CheckoutLineItemUpdateInput> lineItems, CheckoutLineItemsUpdatePayloadQueryDefinition queryDef) {
+            startField("checkoutLineItemsUpdate");
+
+            _queryBuilder.append("(checkoutId:");
+            Query.appendQuotedString(_queryBuilder, checkoutId.toString());
+
+            _queryBuilder.append(",lineItems:");
+            _queryBuilder.append('[');
+
+            String listSeperator1 = "";
+            for (CheckoutLineItemUpdateInput item1 : lineItems) {
+                _queryBuilder.append(listSeperator1);
+                listSeperator1 = ",";
+                item1.appendTo(_queryBuilder);
+            }
+            _queryBuilder.append(']');
+
+            _queryBuilder.append(')');
+
+            _queryBuilder.append('{');
+            queryDef.define(new CheckoutLineItemsUpdatePayloadQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        public MutationQuery checkoutShippingAddressUpdate(MailingAddressInput shippingAddress, ID checkoutId, CheckoutShippingAddressUpdatePayloadQueryDefinition queryDef) {
             startField("checkoutShippingAddressUpdate");
 
-            _queryBuilder.append("(input:");
-            input.appendTo(_queryBuilder);
+            _queryBuilder.append("(shippingAddress:");
+            shippingAddress.appendTo(_queryBuilder);
+
+            _queryBuilder.append(",checkoutId:");
+            Query.appendQuotedString(_queryBuilder, checkoutId.toString());
 
             _queryBuilder.append(')');
 
@@ -10767,11 +10259,14 @@ public class Storefront {
             return this;
         }
 
-        public MutationQuery checkoutShippingLineUpdate(CheckoutShippingLineUpdateInput input, CheckoutShippingLineUpdatePayloadQueryDefinition queryDef) {
+        public MutationQuery checkoutShippingLineUpdate(ID checkoutId, String shippingRateHandle, CheckoutShippingLineUpdatePayloadQueryDefinition queryDef) {
             startField("checkoutShippingLineUpdate");
 
-            _queryBuilder.append("(input:");
-            input.appendTo(_queryBuilder);
+            _queryBuilder.append("(checkoutId:");
+            Query.appendQuotedString(_queryBuilder, checkoutId.toString());
+
+            _queryBuilder.append(",shippingRateHandle:");
+            Query.appendQuotedString(_queryBuilder, shippingRateHandle.toString());
 
             _queryBuilder.append(')');
 
@@ -10797,11 +10292,11 @@ public class Storefront {
             return this;
         }
 
-        public MutationQuery customerAccessTokenDelete(CustomerAccessTokenDeleteInput input, CustomerAccessTokenDeletePayloadQueryDefinition queryDef) {
+        public MutationQuery customerAccessTokenDelete(String customerAccessToken, CustomerAccessTokenDeletePayloadQueryDefinition queryDef) {
             startField("customerAccessTokenDelete");
 
-            _queryBuilder.append("(input:");
-            input.appendTo(_queryBuilder);
+            _queryBuilder.append("(customerAccessToken:");
+            Query.appendQuotedString(_queryBuilder, customerAccessToken.toString());
 
             _queryBuilder.append(')');
 
@@ -10812,11 +10307,11 @@ public class Storefront {
             return this;
         }
 
-        public MutationQuery customerAccessTokenRenew(CustomerAccessTokenRenewInput input, CustomerAccessTokenRenewPayloadQueryDefinition queryDef) {
+        public MutationQuery customerAccessTokenRenew(String customerAccessToken, CustomerAccessTokenRenewPayloadQueryDefinition queryDef) {
             startField("customerAccessTokenRenew");
 
-            _queryBuilder.append("(input:");
-            input.appendTo(_queryBuilder);
+            _queryBuilder.append("(customerAccessToken:");
+            Query.appendQuotedString(_queryBuilder, customerAccessToken.toString());
 
             _queryBuilder.append(')');
 
@@ -10827,10 +10322,13 @@ public class Storefront {
             return this;
         }
 
-        public MutationQuery customerActivate(CustomerActivateInput input, CustomerActivatePayloadQueryDefinition queryDef) {
+        public MutationQuery customerActivate(ID id, CustomerActivateInput input, CustomerActivatePayloadQueryDefinition queryDef) {
             startField("customerActivate");
 
-            _queryBuilder.append("(input:");
+            _queryBuilder.append("(id:");
+            Query.appendQuotedString(_queryBuilder, id.toString());
+
+            _queryBuilder.append(",input:");
             input.appendTo(_queryBuilder);
 
             _queryBuilder.append(')');
@@ -10842,11 +10340,14 @@ public class Storefront {
             return this;
         }
 
-        public MutationQuery customerAddressCreate(CustomerAddressCreateInput input, CustomerAddressCreatePayloadQueryDefinition queryDef) {
+        public MutationQuery customerAddressCreate(String customerAccessToken, MailingAddressInput address, CustomerAddressCreatePayloadQueryDefinition queryDef) {
             startField("customerAddressCreate");
 
-            _queryBuilder.append("(input:");
-            input.appendTo(_queryBuilder);
+            _queryBuilder.append("(customerAccessToken:");
+            Query.appendQuotedString(_queryBuilder, customerAccessToken.toString());
+
+            _queryBuilder.append(",address:");
+            address.appendTo(_queryBuilder);
 
             _queryBuilder.append(')');
 
@@ -10857,11 +10358,14 @@ public class Storefront {
             return this;
         }
 
-        public MutationQuery customerAddressDelete(CustomerAddressDeleteInput input, CustomerAddressDeletePayloadQueryDefinition queryDef) {
+        public MutationQuery customerAddressDelete(ID id, String customerAccessToken, CustomerAddressDeletePayloadQueryDefinition queryDef) {
             startField("customerAddressDelete");
 
-            _queryBuilder.append("(input:");
-            input.appendTo(_queryBuilder);
+            _queryBuilder.append("(id:");
+            Query.appendQuotedString(_queryBuilder, id.toString());
+
+            _queryBuilder.append(",customerAccessToken:");
+            Query.appendQuotedString(_queryBuilder, customerAccessToken.toString());
 
             _queryBuilder.append(')');
 
@@ -10872,11 +10376,17 @@ public class Storefront {
             return this;
         }
 
-        public MutationQuery customerAddressUpdate(CustomerAddressUpdateInput input, CustomerAddressUpdatePayloadQueryDefinition queryDef) {
+        public MutationQuery customerAddressUpdate(String customerAccessToken, ID id, MailingAddressInput address, CustomerAddressUpdatePayloadQueryDefinition queryDef) {
             startField("customerAddressUpdate");
 
-            _queryBuilder.append("(input:");
-            input.appendTo(_queryBuilder);
+            _queryBuilder.append("(customerAccessToken:");
+            Query.appendQuotedString(_queryBuilder, customerAccessToken.toString());
+
+            _queryBuilder.append(",id:");
+            Query.appendQuotedString(_queryBuilder, id.toString());
+
+            _queryBuilder.append(",address:");
+            address.appendTo(_queryBuilder);
 
             _queryBuilder.append(')');
 
@@ -10902,11 +10412,11 @@ public class Storefront {
             return this;
         }
 
-        public MutationQuery customerRecover(CustomerRecoverInput input, CustomerRecoverPayloadQueryDefinition queryDef) {
+        public MutationQuery customerRecover(String email, CustomerRecoverPayloadQueryDefinition queryDef) {
             startField("customerRecover");
 
-            _queryBuilder.append("(input:");
-            input.appendTo(_queryBuilder);
+            _queryBuilder.append("(email:");
+            Query.appendQuotedString(_queryBuilder, email.toString());
 
             _queryBuilder.append(')');
 
@@ -10917,10 +10427,13 @@ public class Storefront {
             return this;
         }
 
-        public MutationQuery customerReset(CustomerResetInput input, CustomerResetPayloadQueryDefinition queryDef) {
+        public MutationQuery customerReset(ID id, CustomerResetInput input, CustomerResetPayloadQueryDefinition queryDef) {
             startField("customerReset");
 
-            _queryBuilder.append("(input:");
+            _queryBuilder.append("(id:");
+            Query.appendQuotedString(_queryBuilder, id.toString());
+
+            _queryBuilder.append(",input:");
             input.appendTo(_queryBuilder);
 
             _queryBuilder.append(')');
@@ -10932,11 +10445,14 @@ public class Storefront {
             return this;
         }
 
-        public MutationQuery customerUpdate(CustomerUpdateInput input, CustomerUpdatePayloadQueryDefinition queryDef) {
+        public MutationQuery customerUpdate(String customerAccessToken, CustomerUpdateInput customer, CustomerUpdatePayloadQueryDefinition queryDef) {
             startField("customerUpdate");
 
-            _queryBuilder.append("(input:");
-            input.appendTo(_queryBuilder);
+            _queryBuilder.append("(customerAccessToken:");
+            Query.appendQuotedString(_queryBuilder, customerAccessToken.toString());
+
+            _queryBuilder.append(",customer:");
+            customer.appendTo(_queryBuilder);
 
             _queryBuilder.append(')');
 
@@ -10961,10 +10477,10 @@ public class Storefront {
                 String key = field.getKey();
                 String fieldName = getFieldName(key);
                 switch (fieldName) {
-                    case "checkoutAddLineItems": {
-                        CheckoutAddLineItemsPayload optional1 = null;
+                    case "checkoutAttributesUpdate": {
+                        CheckoutAttributesUpdatePayload optional1 = null;
                         if (!field.getValue().isJsonNull()) {
-                            optional1 = new CheckoutAddLineItemsPayload(jsonAsObject(field.getValue(), key));
+                            optional1 = new CheckoutAttributesUpdatePayload(jsonAsObject(field.getValue(), key));
                         }
 
                         responseData.put(key, optional1);
@@ -10972,10 +10488,10 @@ public class Storefront {
                         break;
                     }
 
-                    case "checkoutAttributesUpdate": {
-                        CheckoutAttributesUpdatePayload optional1 = null;
+                    case "checkoutCompleteFree": {
+                        CheckoutCompleteFreePayload optional1 = null;
                         if (!field.getValue().isJsonNull()) {
-                            optional1 = new CheckoutAttributesUpdatePayload(jsonAsObject(field.getValue(), key));
+                            optional1 = new CheckoutCompleteFreePayload(jsonAsObject(field.getValue(), key));
                         }
 
                         responseData.put(key, optional1);
@@ -11053,6 +10569,50 @@ public class Storefront {
                         CheckoutGiftCardApplyPayload optional1 = null;
                         if (!field.getValue().isJsonNull()) {
                             optional1 = new CheckoutGiftCardApplyPayload(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "checkoutGiftCardRemove": {
+                        CheckoutGiftCardRemovePayload optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new CheckoutGiftCardRemovePayload(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "checkoutLineItemsAdd": {
+                        CheckoutLineItemsAddPayload optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new CheckoutLineItemsAddPayload(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "checkoutLineItemsRemove": {
+                        CheckoutLineItemsRemovePayload optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new CheckoutLineItemsRemovePayload(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "checkoutLineItemsUpdate": {
+                        CheckoutLineItemsUpdatePayload optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new CheckoutLineItemsUpdatePayload(jsonAsObject(field.getValue(), key));
                         }
 
                         responseData.put(key, optional1);
@@ -11217,12 +10777,12 @@ public class Storefront {
         public List<Node> getNodes() {
             List<Node> children = new ArrayList<>();
 
-            if (getCheckoutAddLineItems() != null) {
-                children.addAll(getCheckoutAddLineItems().getNodes());
-            }
-
             if (getCheckoutAttributesUpdate() != null) {
                 children.addAll(getCheckoutAttributesUpdate().getNodes());
+            }
+
+            if (getCheckoutCompleteFree() != null) {
+                children.addAll(getCheckoutCompleteFree().getNodes());
             }
 
             if (getCheckoutCompleteWithCreditCard() != null) {
@@ -11251,6 +10811,22 @@ public class Storefront {
 
             if (getCheckoutGiftCardApply() != null) {
                 children.addAll(getCheckoutGiftCardApply().getNodes());
+            }
+
+            if (getCheckoutGiftCardRemove() != null) {
+                children.addAll(getCheckoutGiftCardRemove().getNodes());
+            }
+
+            if (getCheckoutLineItemsAdd() != null) {
+                children.addAll(getCheckoutLineItemsAdd().getNodes());
+            }
+
+            if (getCheckoutLineItemsRemove() != null) {
+                children.addAll(getCheckoutLineItemsRemove().getNodes());
+            }
+
+            if (getCheckoutLineItemsUpdate() != null) {
+                children.addAll(getCheckoutLineItemsUpdate().getNodes());
             }
 
             if (getCheckoutShippingAddressUpdate() != null) {
@@ -11312,21 +10888,21 @@ public class Storefront {
             return "Mutation";
         }
 
-        public CheckoutAddLineItemsPayload getCheckoutAddLineItems() {
-            return (CheckoutAddLineItemsPayload) get("checkoutAddLineItems");
-        }
-
-        public Mutation setCheckoutAddLineItems(CheckoutAddLineItemsPayload arg) {
-            optimisticData.put("checkoutAddLineItems", arg);
-            return this;
-        }
-
         public CheckoutAttributesUpdatePayload getCheckoutAttributesUpdate() {
             return (CheckoutAttributesUpdatePayload) get("checkoutAttributesUpdate");
         }
 
         public Mutation setCheckoutAttributesUpdate(CheckoutAttributesUpdatePayload arg) {
             optimisticData.put("checkoutAttributesUpdate", arg);
+            return this;
+        }
+
+        public CheckoutCompleteFreePayload getCheckoutCompleteFree() {
+            return (CheckoutCompleteFreePayload) get("checkoutCompleteFree");
+        }
+
+        public Mutation setCheckoutCompleteFree(CheckoutCompleteFreePayload arg) {
+            optimisticData.put("checkoutCompleteFree", arg);
             return this;
         }
 
@@ -11390,6 +10966,42 @@ public class Storefront {
 
         public Mutation setCheckoutGiftCardApply(CheckoutGiftCardApplyPayload arg) {
             optimisticData.put("checkoutGiftCardApply", arg);
+            return this;
+        }
+
+        public CheckoutGiftCardRemovePayload getCheckoutGiftCardRemove() {
+            return (CheckoutGiftCardRemovePayload) get("checkoutGiftCardRemove");
+        }
+
+        public Mutation setCheckoutGiftCardRemove(CheckoutGiftCardRemovePayload arg) {
+            optimisticData.put("checkoutGiftCardRemove", arg);
+            return this;
+        }
+
+        public CheckoutLineItemsAddPayload getCheckoutLineItemsAdd() {
+            return (CheckoutLineItemsAddPayload) get("checkoutLineItemsAdd");
+        }
+
+        public Mutation setCheckoutLineItemsAdd(CheckoutLineItemsAddPayload arg) {
+            optimisticData.put("checkoutLineItemsAdd", arg);
+            return this;
+        }
+
+        public CheckoutLineItemsRemovePayload getCheckoutLineItemsRemove() {
+            return (CheckoutLineItemsRemovePayload) get("checkoutLineItemsRemove");
+        }
+
+        public Mutation setCheckoutLineItemsRemove(CheckoutLineItemsRemovePayload arg) {
+            optimisticData.put("checkoutLineItemsRemove", arg);
+            return this;
+        }
+
+        public CheckoutLineItemsUpdatePayload getCheckoutLineItemsUpdate() {
+            return (CheckoutLineItemsUpdatePayload) get("checkoutLineItemsUpdate");
+        }
+
+        public Mutation setCheckoutLineItemsUpdate(CheckoutLineItemsUpdatePayload arg) {
+            optimisticData.put("checkoutLineItemsUpdate", arg);
             return this;
         }
 
@@ -11512,9 +11124,9 @@ public class Storefront {
 
         public boolean unwrapsToObject(String key) {
             switch (key) {
-                case "checkoutAddLineItems": return true;
-
                 case "checkoutAttributesUpdate": return true;
+
+                case "checkoutCompleteFree": return true;
 
                 case "checkoutCompleteWithCreditCard": return true;
 
@@ -11529,6 +11141,14 @@ public class Storefront {
                 case "checkoutEmailUpdate": return true;
 
                 case "checkoutGiftCardApply": return true;
+
+                case "checkoutGiftCardRemove": return true;
+
+                case "checkoutLineItemsAdd": return true;
+
+                case "checkoutLineItemsRemove": return true;
+
+                case "checkoutLineItemsUpdate": return true;
 
                 case "checkoutShippingAddressUpdate": return true;
 
@@ -11588,6 +11208,13 @@ public class Storefront {
         public NodeQuery onCheckout(CheckoutQueryDefinition queryDef) {
             startInlineFragment("Checkout");
             queryDef.define(new CheckoutQuery(_queryBuilder));
+            _queryBuilder.append('}');
+            return this;
+        }
+
+        public NodeQuery onCheckoutLineItem(CheckoutLineItemQueryDefinition queryDef) {
+            startInlineFragment("CheckoutLineItem");
+            queryDef.define(new CheckoutLineItemQuery(_queryBuilder));
             _queryBuilder.append('}');
             return this;
         }
@@ -11696,6 +11323,10 @@ public class Storefront {
 
                 case "Checkout": {
                     return new Checkout(fields);
+                }
+
+                case "CheckoutLineItem": {
+                    return new CheckoutLineItem(fields);
                 }
 
                 case "Collection": {
@@ -11837,11 +11468,11 @@ public class Storefront {
             void define(LineItemsArguments args);
         }
 
-        public OrderQuery lineItems(int first, LineItemConnectionQueryDefinition queryDef) {
+        public OrderQuery lineItems(int first, OrderLineItemConnectionQueryDefinition queryDef) {
             return lineItems(first, args -> {}, queryDef);
         }
 
-        public OrderQuery lineItems(int first, LineItemsArgumentsDefinition argsDef, LineItemConnectionQueryDefinition queryDef) {
+        public OrderQuery lineItems(int first, LineItemsArgumentsDefinition argsDef, OrderLineItemConnectionQueryDefinition queryDef) {
             startField("lineItems");
 
             _queryBuilder.append("(first:");
@@ -11852,7 +11483,7 @@ public class Storefront {
             _queryBuilder.append(')');
 
             _queryBuilder.append('{');
-            queryDef.define(new LineItemConnectionQuery(_queryBuilder));
+            queryDef.define(new OrderLineItemConnectionQuery(_queryBuilder));
             _queryBuilder.append('}');
 
             return this;
@@ -11995,7 +11626,7 @@ public class Storefront {
                     }
 
                     case "lineItems": {
-                        responseData.put(key, new LineItemConnection(jsonAsObject(field.getValue(), key)));
+                        responseData.put(key, new OrderLineItemConnection(jsonAsObject(field.getValue(), key)));
 
                         break;
                     }
@@ -12172,11 +11803,11 @@ public class Storefront {
             return (ID) get("id");
         }
 
-        public LineItemConnection getLineItems() {
-            return (LineItemConnection) get("lineItems");
+        public OrderLineItemConnection getLineItems() {
+            return (OrderLineItemConnection) get("lineItems");
         }
 
-        public Order setLineItems(LineItemConnection arg) {
+        public Order setLineItems(OrderLineItemConnection arg) {
             optimisticData.put("lineItems", arg);
             return this;
         }
@@ -12756,6 +12387,390 @@ public class Storefront {
         }
 
         public OrderEdge setNode(Order arg) {
+            optimisticData.put("node", arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (key) {
+                case "cursor": return false;
+
+                case "node": return true;
+
+                default: return false;
+            }
+        }
+    }
+
+    public interface OrderLineItemQueryDefinition {
+        void define(OrderLineItemQuery _queryBuilder);
+    }
+
+    public static class OrderLineItemQuery extends Query<OrderLineItemQuery> {
+        OrderLineItemQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        public OrderLineItemQuery customAttributes(AttributeQueryDefinition queryDef) {
+            startField("customAttributes");
+
+            _queryBuilder.append('{');
+            queryDef.define(new AttributeQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        public OrderLineItemQuery quantity() {
+            startField("quantity");
+
+            return this;
+        }
+
+        public OrderLineItemQuery title() {
+            startField("title");
+
+            return this;
+        }
+
+        public OrderLineItemQuery variant(ProductVariantQueryDefinition queryDef) {
+            startField("variant");
+
+            _queryBuilder.append('{');
+            queryDef.define(new ProductVariantQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+    }
+
+    public static class OrderLineItem extends AbstractResponse<OrderLineItem> {
+        public OrderLineItem() {
+        }
+
+        public OrderLineItem(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "customAttributes": {
+                        List<Attribute> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new Attribute(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "quantity": {
+                        responseData.put(key, jsonAsInteger(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "title": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "variant": {
+                        ProductVariant optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new ProductVariant(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public List<Node> getNodes() {
+            List<Node> children = new ArrayList<>();
+
+            if (getCustomAttributes() != null) {
+                for (Attribute elem: getCustomAttributes()) {
+                    children.addAll(elem.getNodes());
+                }
+            }
+
+            if (getVariant() != null) {
+                children.addAll(getVariant().getNodes());
+            }
+
+            return children;
+        }
+
+        public String getGraphQlTypeName() {
+            return "OrderLineItem";
+        }
+
+        public List<Attribute> getCustomAttributes() {
+            return (List<Attribute>) get("customAttributes");
+        }
+
+        public OrderLineItem setCustomAttributes(List<Attribute> arg) {
+            optimisticData.put("customAttributes", arg);
+            return this;
+        }
+
+        public Integer getQuantity() {
+            return (Integer) get("quantity");
+        }
+
+        public OrderLineItem setQuantity(Integer arg) {
+            optimisticData.put("quantity", arg);
+            return this;
+        }
+
+        public String getTitle() {
+            return (String) get("title");
+        }
+
+        public OrderLineItem setTitle(String arg) {
+            optimisticData.put("title", arg);
+            return this;
+        }
+
+        public ProductVariant getVariant() {
+            return (ProductVariant) get("variant");
+        }
+
+        public OrderLineItem setVariant(ProductVariant arg) {
+            optimisticData.put("variant", arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (key) {
+                case "customAttributes": return true;
+
+                case "quantity": return false;
+
+                case "title": return false;
+
+                case "variant": return true;
+
+                default: return false;
+            }
+        }
+    }
+
+    public interface OrderLineItemConnectionQueryDefinition {
+        void define(OrderLineItemConnectionQuery _queryBuilder);
+    }
+
+    public static class OrderLineItemConnectionQuery extends Query<OrderLineItemConnectionQuery> {
+        OrderLineItemConnectionQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        public OrderLineItemConnectionQuery edges(OrderLineItemEdgeQueryDefinition queryDef) {
+            startField("edges");
+
+            _queryBuilder.append('{');
+            queryDef.define(new OrderLineItemEdgeQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        public OrderLineItemConnectionQuery pageInfo(PageInfoQueryDefinition queryDef) {
+            startField("pageInfo");
+
+            _queryBuilder.append('{');
+            queryDef.define(new PageInfoQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+    }
+
+    public static class OrderLineItemConnection extends AbstractResponse<OrderLineItemConnection> {
+        public OrderLineItemConnection() {
+        }
+
+        public OrderLineItemConnection(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "edges": {
+                        List<OrderLineItemEdge> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new OrderLineItemEdge(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "pageInfo": {
+                        responseData.put(key, new PageInfo(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public List<Node> getNodes() {
+            List<Node> children = new ArrayList<>();
+
+            if (getEdges() != null) {
+                for (OrderLineItemEdge elem: getEdges()) {
+                    children.addAll(elem.getNodes());
+                }
+            }
+
+            if (getPageInfo() != null) {
+                children.addAll(getPageInfo().getNodes());
+            }
+
+            return children;
+        }
+
+        public String getGraphQlTypeName() {
+            return "OrderLineItemConnection";
+        }
+
+        public List<OrderLineItemEdge> getEdges() {
+            return (List<OrderLineItemEdge>) get("edges");
+        }
+
+        public OrderLineItemConnection setEdges(List<OrderLineItemEdge> arg) {
+            optimisticData.put("edges", arg);
+            return this;
+        }
+
+        public PageInfo getPageInfo() {
+            return (PageInfo) get("pageInfo");
+        }
+
+        public OrderLineItemConnection setPageInfo(PageInfo arg) {
+            optimisticData.put("pageInfo", arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (key) {
+                case "edges": return true;
+
+                case "pageInfo": return true;
+
+                default: return false;
+            }
+        }
+    }
+
+    public interface OrderLineItemEdgeQueryDefinition {
+        void define(OrderLineItemEdgeQuery _queryBuilder);
+    }
+
+    public static class OrderLineItemEdgeQuery extends Query<OrderLineItemEdgeQuery> {
+        OrderLineItemEdgeQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        public OrderLineItemEdgeQuery cursor() {
+            startField("cursor");
+
+            return this;
+        }
+
+        public OrderLineItemEdgeQuery node(OrderLineItemQueryDefinition queryDef) {
+            startField("node");
+
+            _queryBuilder.append('{');
+            queryDef.define(new OrderLineItemQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+    }
+
+    public static class OrderLineItemEdge extends AbstractResponse<OrderLineItemEdge> {
+        public OrderLineItemEdge() {
+        }
+
+        public OrderLineItemEdge(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "cursor": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "node": {
+                        responseData.put(key, new OrderLineItem(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public List<Node> getNodes() {
+            List<Node> children = new ArrayList<>();
+
+            if (getNode() != null) {
+                children.addAll(getNode().getNodes());
+            }
+
+            return children;
+        }
+
+        public String getGraphQlTypeName() {
+            return "OrderLineItemEdge";
+        }
+
+        public String getCursor() {
+            return (String) get("cursor");
+        }
+
+        public OrderLineItemEdge setCursor(String arg) {
+            optimisticData.put("cursor", arg);
+            return this;
+        }
+
+        public OrderLineItem getNode() {
+            return (OrderLineItem) get("node");
+        }
+
+        public OrderLineItemEdge setNode(OrderLineItem arg) {
             optimisticData.put("node", arg);
             return this;
         }
@@ -13383,14 +13398,40 @@ public class Storefront {
             return this;
         }
 
-        public ProductQuery descriptionHtml() {
-            startField("descriptionHtml");
+        public class DescriptionArguments extends Arguments {
+            DescriptionArguments(StringBuilder _queryBuilder) {
+                super(_queryBuilder, true);
+            }
+
+            public DescriptionArguments truncateAt(Integer value) {
+                if (value != null) {
+                    startArgument("truncateAt");
+                    _queryBuilder.append(value);
+                }
+                return this;
+            }
+        }
+
+        public interface DescriptionArgumentsDefinition {
+            void define(DescriptionArguments args);
+        }
+
+        public ProductQuery description() {
+            return description(args -> {});
+        }
+
+        public ProductQuery description(DescriptionArgumentsDefinition argsDef) {
+            startField("description");
+
+            DescriptionArguments args = new DescriptionArguments(_queryBuilder);
+            argsDef.define(args);
+            DescriptionArguments.end(args);
 
             return this;
         }
 
-        public ProductQuery descriptionPlainSummary() {
-            startField("descriptionPlainSummary");
+        public ProductQuery descriptionHtml() {
+            startField("descriptionHtml");
 
             return this;
         }
@@ -13621,13 +13662,13 @@ public class Storefront {
                         break;
                     }
 
-                    case "descriptionHtml": {
+                    case "description": {
                         responseData.put(key, jsonAsString(field.getValue(), key));
 
                         break;
                     }
 
-                    case "descriptionPlainSummary": {
+                    case "descriptionHtml": {
                         responseData.put(key, jsonAsString(field.getValue(), key));
 
                         break;
@@ -13773,21 +13814,21 @@ public class Storefront {
             return this;
         }
 
+        public String getDescription() {
+            return (String) get("description");
+        }
+
+        public Product setDescription(String arg) {
+            optimisticData.put("description", arg);
+            return this;
+        }
+
         public String getDescriptionHtml() {
             return (String) get("descriptionHtml");
         }
 
         public Product setDescriptionHtml(String arg) {
             optimisticData.put("descriptionHtml", arg);
-            return this;
-        }
-
-        public String getDescriptionPlainSummary() {
-            return (String) get("descriptionPlainSummary");
-        }
-
-        public Product setDescriptionPlainSummary(String arg) {
-            optimisticData.put("descriptionPlainSummary", arg);
             return this;
         }
 
@@ -13891,9 +13932,9 @@ public class Storefront {
 
                 case "createdAt": return false;
 
-                case "descriptionHtml": return false;
+                case "description": return false;
 
-                case "descriptionPlainSummary": return false;
+                case "descriptionHtml": return false;
 
                 case "handle": return false;
 
@@ -15314,16 +15355,6 @@ public class Storefront {
             super(_queryBuilder);
         }
 
-        public ShopQuery billingAddress(MailingAddressQueryDefinition queryDef) {
-            startField("billingAddress");
-
-            _queryBuilder.append('{');
-            queryDef.define(new MailingAddressQuery(_queryBuilder));
-            _queryBuilder.append('}');
-
-            return this;
-        }
-
         public class CollectionsArguments extends Arguments {
             CollectionsArguments(StringBuilder _queryBuilder) {
                 super(_queryBuilder, false);
@@ -15524,12 +15555,6 @@ public class Storefront {
                 String key = field.getKey();
                 String fieldName = getFieldName(key);
                 switch (fieldName) {
-                    case "billingAddress": {
-                        responseData.put(key, new MailingAddress(jsonAsObject(field.getValue(), key)));
-
-                        break;
-                    }
-
                     case "collections": {
                         responseData.put(key, new CollectionConnection(jsonAsObject(field.getValue(), key)));
 
@@ -15624,10 +15649,6 @@ public class Storefront {
         public List<Node> getNodes() {
             List<Node> children = new ArrayList<>();
 
-            if (getBillingAddress() != null) {
-                children.addAll(getBillingAddress().getNodes());
-            }
-
             if (getCollections() != null) {
                 children.addAll(getCollections().getNodes());
             }
@@ -15657,15 +15678,6 @@ public class Storefront {
 
         public String getGraphQlTypeName() {
             return "Shop";
-        }
-
-        public MailingAddress getBillingAddress() {
-            return (MailingAddress) get("billingAddress");
-        }
-
-        public Shop setBillingAddress(MailingAddress arg) {
-            optimisticData.put("billingAddress", arg);
-            return this;
         }
 
         public CollectionConnection getCollections() {
@@ -15760,8 +15772,6 @@ public class Storefront {
 
         public boolean unwrapsToObject(String key) {
             switch (key) {
-                case "billingAddress": return true;
-
                 case "collections": return true;
 
                 case "currencyCode": return false;
@@ -15921,6 +15931,143 @@ public class Storefront {
 
                 default: return false;
             }
+        }
+    }
+
+    public static class TokenizedPaymentInput implements Serializable {
+        private BigDecimal amount;
+
+        private MailingAddressInput billingAddress;
+
+        private String idempotencyKey;
+
+        private String paymentData;
+
+        private String type;
+
+        private String identifier;
+
+        private Boolean test;
+
+        public TokenizedPaymentInput(BigDecimal amount, MailingAddressInput billingAddress, String idempotencyKey, String paymentData, String type) {
+            this.amount = amount;
+
+            this.billingAddress = billingAddress;
+
+            this.idempotencyKey = idempotencyKey;
+
+            this.paymentData = paymentData;
+
+            this.type = type;
+        }
+
+        public BigDecimal getAmount() {
+            return amount;
+        }
+
+        public TokenizedPaymentInput setAmount(BigDecimal amount) {
+            this.amount = amount;
+            return this;
+        }
+
+        public MailingAddressInput getBillingAddress() {
+            return billingAddress;
+        }
+
+        public TokenizedPaymentInput setBillingAddress(MailingAddressInput billingAddress) {
+            this.billingAddress = billingAddress;
+            return this;
+        }
+
+        public String getIdempotencyKey() {
+            return idempotencyKey;
+        }
+
+        public TokenizedPaymentInput setIdempotencyKey(String idempotencyKey) {
+            this.idempotencyKey = idempotencyKey;
+            return this;
+        }
+
+        public String getPaymentData() {
+            return paymentData;
+        }
+
+        public TokenizedPaymentInput setPaymentData(String paymentData) {
+            this.paymentData = paymentData;
+            return this;
+        }
+
+        public String getType() {
+            return type;
+        }
+
+        public TokenizedPaymentInput setType(String type) {
+            this.type = type;
+            return this;
+        }
+
+        public String getIdentifier() {
+            return identifier;
+        }
+
+        public TokenizedPaymentInput setIdentifier(String identifier) {
+            this.identifier = identifier;
+            return this;
+        }
+
+        public Boolean getTest() {
+            return test;
+        }
+
+        public TokenizedPaymentInput setTest(Boolean test) {
+            this.test = test;
+            return this;
+        }
+
+        public void appendTo(StringBuilder _queryBuilder) {
+            String separator = "";
+            _queryBuilder.append('{');
+
+            _queryBuilder.append(separator);
+            separator = ",";
+            _queryBuilder.append("amount:");
+            Query.appendQuotedString(_queryBuilder, amount.toString());
+
+            _queryBuilder.append(separator);
+            separator = ",";
+            _queryBuilder.append("billingAddress:");
+            billingAddress.appendTo(_queryBuilder);
+
+            _queryBuilder.append(separator);
+            separator = ",";
+            _queryBuilder.append("idempotencyKey:");
+            Query.appendQuotedString(_queryBuilder, idempotencyKey.toString());
+
+            _queryBuilder.append(separator);
+            separator = ",";
+            _queryBuilder.append("paymentData:");
+            Query.appendQuotedString(_queryBuilder, paymentData.toString());
+
+            _queryBuilder.append(separator);
+            separator = ",";
+            _queryBuilder.append("type:");
+            Query.appendQuotedString(_queryBuilder, type.toString());
+
+            if (identifier != null) {
+                _queryBuilder.append(separator);
+                separator = ",";
+                _queryBuilder.append("identifier:");
+                Query.appendQuotedString(_queryBuilder, identifier.toString());
+            }
+
+            if (test != null) {
+                _queryBuilder.append(separator);
+                separator = ",";
+                _queryBuilder.append("test:");
+                _queryBuilder.append(test);
+            }
+
+            _queryBuilder.append('}');
         }
     }
 

@@ -60,8 +60,6 @@ import static com.shopify.sample.presenter.checkout.CheckoutViewPresenter.REQUES
 import static com.shopify.sample.presenter.checkout.CheckoutViewPresenter.REQUEST_ID_COMPLETE_CHECKOUT;
 import static com.shopify.sample.presenter.checkout.CheckoutViewPresenter.REQUEST_ID_FETCH_SHIPPING_RATES;
 import static com.shopify.sample.presenter.checkout.CheckoutViewPresenter.REQUEST_ID_UPDATE_CHECKOUT_SHIPPING_ADDRESS;
-import static com.shopify.sample.util.Util.checkNotBlank;
-import static com.shopify.sample.util.Util.checkNotNull;
 
 public final class CheckoutActivity extends AppCompatActivity implements CheckoutViewPresenter.View {
   public static final String EXTRAS_CHECKOUT_ID = "checkout_id";
