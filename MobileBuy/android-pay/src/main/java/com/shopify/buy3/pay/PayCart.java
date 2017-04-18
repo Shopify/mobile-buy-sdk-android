@@ -62,15 +62,14 @@ public final class PayCart implements Parcelable {
   @Nullable public final BigDecimal taxPrice;
   @Nullable public final BigDecimal shippingPrice;
   @NonNull public final BigDecimal totalPrice;
-  @Nullable public final MaskedWallet maskedWallet;
 
   protected PayCart(Parcel in) {
     currencyCode = in.readString();
     merchantName = in.readString();
-    shipsToCountries = in.createStringArrayList();
+    shipsToCountries = Collections.unmodifiableList(in.createStringArrayList());
     shippingAddressRequired = in.readByte() != 0;
     phoneNumberRequired = in.readByte() != 0;
-    lineItems = in.createTypedArrayList(LineItem.CREATOR);
+    lineItems = Collections.unmodifiableList(in.createTypedArrayList(LineItem.CREATOR));
     subtotal = BigDecimal.valueOf(in.readDouble());
     if (in.readByte() == 1) {
       taxPrice = BigDecimal.valueOf(in.readDouble());
@@ -83,7 +82,22 @@ public final class PayCart implements Parcelable {
       shippingPrice = null;
     }
     totalPrice = BigDecimal.valueOf(in.readDouble());
-    maskedWallet = in.readParcelable(MaskedWallet.class.getClassLoader());
+  }
+
+  PayCart(@NonNull final String currencyCode, @NonNull final String merchantName, @NonNull final List<String> shipsToCountries,
+    final boolean shippingAddressRequired, final boolean phoneNumberRequired, @NonNull final List<LineItem> lineItems,
+    @NonNull final BigDecimal subtotal, @Nullable final BigDecimal taxPrice, @Nullable final BigDecimal shippingPrice,
+    @NonNull final BigDecimal totalPrice) {
+    this.currencyCode = checkNotEmpty(currencyCode, "currencyCode can't be empty");
+    this.merchantName = checkNotEmpty(merchantName, "merchantName can't be empty");
+    this.shipsToCountries = Collections.unmodifiableList(shipsToCountries);
+    this.shippingAddressRequired = shippingAddressRequired;
+    this.phoneNumberRequired = phoneNumberRequired;
+    this.lineItems = lineItems;
+    this.subtotal = subtotal;
+    this.taxPrice = taxPrice;
+    this.shippingPrice = shippingPrice;
+    this.totalPrice = totalPrice;
   }
 
   @Override
@@ -104,7 +118,6 @@ public final class PayCart implements Parcelable {
       dest.writeDouble(shippingPrice.doubleValue());
     }
     dest.writeDouble(totalPrice.doubleValue());
-    dest.writeParcelable(maskedWallet, flags);
   }
 
   @Override
@@ -126,23 +139,6 @@ public final class PayCart implements Parcelable {
 
   public static Builder builder() {
     return new Builder();
-  }
-
-  public PayCart(@NonNull final String currencyCode, @NonNull final String merchantName, @NonNull final List<String> shipsToCountries,
-    final boolean shippingAddressRequired, final boolean phoneNumberRequired, @NonNull final List<LineItem> lineItems,
-    @NonNull final BigDecimal subtotal, @Nullable final BigDecimal taxPrice, @Nullable final BigDecimal shippingPrice,
-    @NonNull final BigDecimal totalPrice, @Nullable final MaskedWallet maskedWallet) {
-    this.currencyCode = checkNotEmpty(currencyCode, "currencyCode can't be empty");
-    this.merchantName = checkNotEmpty(merchantName, "merchantName can't be empty");
-    this.shipsToCountries = shipsToCountries;
-    this.shippingAddressRequired = shippingAddressRequired;
-    this.phoneNumberRequired = phoneNumberRequired;
-    this.lineItems = lineItems;
-    this.subtotal = subtotal;
-    this.taxPrice = taxPrice;
-    this.shippingPrice = shippingPrice;
-    this.totalPrice = totalPrice;
-    this.maskedWallet = maskedWallet;
   }
 
   public MaskedWalletRequest maskedWalletRequest(@NonNull final String androidPayPublicKey) {
@@ -167,7 +163,7 @@ public final class PayCart implements Parcelable {
     return builder.build();
   }
 
-  public FullWalletRequest fullWalletRequest() {
+  public FullWalletRequest fullWalletRequest(@NonNull final MaskedWallet maskedWallet) {
     checkNotNull(maskedWallet, "maskedWallet can't be empty");
     return FullWalletRequest.newBuilder()
       .setGoogleTransactionId(maskedWallet.getGoogleTransactionId())
@@ -187,7 +183,6 @@ public final class PayCart implements Parcelable {
     builder.taxPrice = taxPrice;
     builder.shippingPrice = shippingPrice;
     builder.totalPrice = totalPrice;
-    builder.maskedWallet = maskedWallet;
     return builder;
   }
 
@@ -283,11 +278,6 @@ public final class PayCart implements Parcelable {
       return this;
     }
 
-    Builder lineItems(@NonNull final List<LineItem> lineItems) {
-      this.lineItems = checkNotNull(lineItems, "lineItems == null");
-      return this;
-    }
-
     public Builder phoneNumberRequired(final boolean phoneNumberRequired) {
       this.phoneNumberRequired = phoneNumberRequired;
       return this;
@@ -322,11 +312,6 @@ public final class PayCart implements Parcelable {
       return this;
     }
 
-    public Builder maskedWallet(@Nullable final MaskedWallet maskedWallet) {
-      this.maskedWallet = maskedWallet;
-      return this;
-    }
-
     public PayCart build() {
       BigDecimal subtotal = this.subtotal;
       if (subtotal == null) {
@@ -345,7 +330,7 @@ public final class PayCart implements Parcelable {
       }
 
       return new PayCart(currencyCode, merchantName, shipsToCountries, shippingAddressRequired, phoneNumberRequired, lineItems, subtotal,
-        taxPrice, shippingPrice, totalPrice, maskedWallet);
+        taxPrice, shippingPrice, totalPrice);
     }
   }
 }

@@ -48,7 +48,7 @@ public abstract class ScreenActionEvent implements Parcelable {
 
   protected ScreenActionEvent(Parcel in) {
     action = in.readString();
-    payload = in.readBundle();
+    payload = in.readBundle(Bundle.class.getClassLoader());
   }
 
   @Override

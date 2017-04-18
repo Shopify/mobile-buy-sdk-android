@@ -141,7 +141,7 @@ public final class CartCheckoutViewPresenter extends BaseViewPresenter<CartCheck
     }
 
     if (isViewAttached()) {
-      view().showAndroidPayConfirmation(currentCheckoutId, payCart.toBuilder().maskedWallet(maskedWallet).build());
+      view().showAndroidPayConfirmation(currentCheckoutId, payCart, maskedWallet);
     }
   }
 
@@ -229,6 +229,6 @@ public final class CartCheckoutViewPresenter extends BaseViewPresenter<CartCheck
 
     void showWebCheckout(@NonNull Checkout checkout);
 
-    void showAndroidPayConfirmation(@NonNull String checkoutId, @NonNull PayCart payCart);
+    void showAndroidPayConfirmation(@NonNull String checkoutId, @NonNull PayCart payCart, @NonNull MaskedWallet maskedWallet);
   }
 }

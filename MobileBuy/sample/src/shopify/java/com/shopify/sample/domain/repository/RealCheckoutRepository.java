@@ -62,13 +62,14 @@ public final class RealCheckoutRepository implements CheckoutRepository {
   @Override public Single<Checkout> create(@NonNull final List<Checkout.LineItem> lineItems) {
     checkNotEmpty(lineItems, "lineItems can't be empty");
 
-    List<Storefront.LineItemInput> storefrontLineItems = mapItems(lineItems, lineItem ->
-      new Storefront.LineItemInput(lineItem.quantity, new ID(lineItem.variantId)));
+    List<Storefront.CheckoutLineItemInput> storefrontLineItems = mapItems(lineItems, lineItem ->
+      new Storefront.CheckoutLineItemInput(lineItem.quantity, new ID(lineItem.variantId)));
     Storefront.CheckoutCreateInput input = new Storefront.CheckoutCreateInput().setLineItems(storefrontLineItems);
 
     GraphCall<Storefront.Mutation> call = graphClient.mutateGraph(
       Storefront.mutation(
-        root -> root.checkoutCreate(input, query -> query.checkout(new CheckoutFragment()))
+        root -> root.checkoutCreate(input, query -> query.checkout(new CheckoutFragment())
+          .userErrors(it -> it.field().message()))
       )
     );
     return rxGraphMutationCall(call)
@@ -94,12 +95,9 @@ public final class RealCheckoutRepository implements CheckoutRepository {
       .setProvince(address.province)
       .setZip(address.zip);
 
-    Storefront.CheckoutShippingAddressUpdateInput input = new Storefront.CheckoutShippingAddressUpdateInput(new ID(checkoutId),
-      mailingAddressInput);
-
     GraphCall<Storefront.Mutation> call = graphClient.mutateGraph(
       Storefront.mutation(
-        root -> root.checkoutShippingAddressUpdate(input, query -> query.checkout(new CheckoutFragment()))
+        root -> root.checkoutShippingAddressUpdate(mailingAddressInput, new ID(checkoutId), query -> query.checkout(new CheckoutFragment()))
       )
     );
 
@@ -152,14 +150,12 @@ public final class RealCheckoutRepository implements CheckoutRepository {
   }
 
   @Override public Single<Checkout> applyShippingRate(@NonNull final String checkoutId, @NonNull final String shippingRateHandle) {
-    Storefront.CheckoutShippingLineUpdateInput input = new Storefront.CheckoutShippingLineUpdateInput(
-      new ID(checkNotBlank(checkoutId, "checkoutId can't be empty")),
-      checkNotBlank(shippingRateHandle, "shippingRateHandle can't be empty")
-    );
+    checkNotBlank(checkoutId, "checkoutId can't be empty");
+    checkNotBlank(shippingRateHandle, "shippingRateHandle can't be empty");
 
     GraphCall<Storefront.Mutation> call = graphClient.mutateGraph(
       Storefront.mutation(
-        root -> root.checkoutShippingLineUpdate(input, query -> query.checkout(new CheckoutFragment()))
+        root -> root.checkoutShippingLineUpdate(new ID(checkoutId), shippingRateHandle, query -> query.checkout(new CheckoutFragment()))
       )
     );
     return rxGraphMutationCall(call)
@@ -174,10 +170,9 @@ public final class RealCheckoutRepository implements CheckoutRepository {
     checkNotBlank(checkoutId, "checkoutId can't be empty");
     checkNotBlank(email, "email can't be empty");
 
-    Storefront.CheckoutEmailUpdateInput input = new Storefront.CheckoutEmailUpdateInput(new ID(checkoutId), email);
     GraphCall<Storefront.Mutation> call = graphClient.mutateGraph(
       Storefront.mutation(
-        root -> root.checkoutEmailUpdate(input, query -> query.checkout(new CheckoutFragment()))
+        root -> root.checkoutEmailUpdate(new ID(checkoutId), email, query -> query.checkout(new CheckoutFragment()))
       )
     );
     return rxGraphMutationCall(call)
@@ -207,13 +202,13 @@ public final class RealCheckoutRepository implements CheckoutRepository {
       .setProvince(billingAddress.province)
       .setZip(billingAddress.zip);
 
-    Storefront.CheckoutCompleteWithTokenizedPaymentInput input = new Storefront.CheckoutCompleteWithTokenizedPaymentInput(
-      payCart.totalPrice, mailingAddressInput, new ID(checkoutId), paymentToken.token, paymentToken.token, "android_pay")
+    Storefront.TokenizedPaymentInput paymentInput = new Storefront.TokenizedPaymentInput(
+      payCart.totalPrice, mailingAddressInput, paymentToken.token, paymentToken.token, "android_pay")
       .setIdentifier(paymentToken.publicKeyHash);
 
     GraphCall<Storefront.Mutation> call = graphClient.mutateGraph(
       Storefront.mutation(
-        root -> root.checkoutCompleteWithTokenizedPayment(input, query ->
+        root -> root.checkoutCompleteWithTokenizedPayment(new ID(checkoutId), paymentInput, query ->
           query
             .payment(new PaymentFragment())
             .userErrors(userError -> userError.field().message())))

@@ -94,7 +94,7 @@ public final class GraphClient {
      * @return a {@link GraphClient.Builder}
      */
     public Builder shopDomain(@NonNull final String shopDomain) {
-      this.shopDomain = checkNotNull(shopDomain, "shopDomain == null");
+      this.shopDomain = checkNotBlank(shopDomain, "shopDomain == null");
       return this;
     }
 

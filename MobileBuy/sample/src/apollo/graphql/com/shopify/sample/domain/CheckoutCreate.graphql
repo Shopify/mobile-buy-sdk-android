@@ -1,4 +1,4 @@
-mutation CreateCheckoutQuery($input: CheckoutCreateInput!) {
+mutation CheckoutCreateQuery($input: CheckoutCreateInput!) {
   checkoutCreate(input:$input) {
     checkout {
       ... CheckoutFragment

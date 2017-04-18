@@ -26,13 +26,17 @@ package com.shopify.buy3.pay;
 
 import android.support.test.runner.AndroidJUnit4;
 
+import com.google.android.gms.identity.intents.model.UserAddress;
+import com.google.android.gms.wallet.FullWalletRequest;
 import com.google.android.gms.wallet.LineItem;
+import com.google.android.gms.wallet.MaskedWallet;
 import com.google.android.gms.wallet.MaskedWalletRequest;
 import com.google.android.gms.wallet.PaymentMethodTokenizationType;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.lang.reflect.Constructor;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
@@ -43,7 +47,7 @@ import static junit.framework.Assert.fail;
 @RunWith(AndroidJUnit4.class)
 public class PayCartTest {
 
-  @Test public void payCartBuilderPreconditions() throws Exception {
+  @Test public void preconditions() throws Exception {
     final PayCart.Builder builder = PayCart.builder();
     testNullPointerException(() -> builder.merchantName(null));
     testIllegalArgumentException(() -> builder.merchantName(""));
@@ -61,7 +65,7 @@ public class PayCartTest {
     testNullPointerException(() -> PayCart.builder().merchantName("merchantName").build());
   }
 
-  @Test public void payCartBuilder() throws Exception {
+  @Test public void successBuild() throws Exception {
     PayCart payCart = PayCart.builder()
       .merchantName("merchantName")
       .currencyCode("UAH")
@@ -103,7 +107,7 @@ public class PayCartTest {
     assertThat(payCart.totalPrice).isEqualTo(BigDecimal.valueOf(100.99));
   }
 
-  @Test public void payCartBuilderShipsToCountries() throws Exception {
+  @Test public void shipsToCountries() throws Exception {
     PayCart payCart = PayCart.builder()
       .merchantName("merchantName")
       .currencyCode("UAH")
@@ -131,7 +135,7 @@ public class PayCartTest {
     assertThat(payCart.shipsToCountries.get(0)).isEqualTo("*");
   }
 
-  @Test public void payCartSubtotal() throws Exception {
+  @Test public void subtotal() throws Exception {
     PayCart payCart = PayCart.builder()
       .merchantName("merchantName")
       .currencyCode("UAH")
@@ -202,6 +206,54 @@ public class PayCartTest {
     assertThat(maskedWalletRequest.getCart().getLineItems().get(3).getRole()).isEqualTo(LineItem.Role.SHIPPING);
   }
 
+  @Test public void fullWalletRequest() throws Exception {
+    PayCart payCart = PayCart.builder()
+      .merchantName("merchantName")
+      .currencyCode("UAH")
+      .shippingAddressRequired(true)
+      .addLineItem("lineItem1", 10, BigDecimal.valueOf(1.09))
+      .addLineItem("lineItem2", 20, BigDecimal.valueOf(2.99))
+      .phoneNumberRequired(true)
+      .shipsToCountries(Arrays.asList("US, CA, UA"))
+      .shippingPrice(BigDecimal.valueOf(3.01))
+      .taxPrice(BigDecimal.valueOf(2.01))
+      .subtotal(BigDecimal.valueOf(29.01))
+      .totalPrice(BigDecimal.valueOf(100.99))
+      .build();
+
+    MaskedWallet maskedWallet = createMaskedWallet(createWalletUserAddress(), createWalletUserAddress(), "test@test.com",
+      "googleTransactionId");
+    FullWalletRequest fullWalletRequest = payCart.fullWalletRequest(maskedWallet);
+
+    assertThat(fullWalletRequest.getGoogleTransactionId()).isEqualTo("googleTransactionId");
+
+    assertThat(fullWalletRequest.getCart().getCurrencyCode()).isEqualTo("UAH");
+    assertThat(fullWalletRequest.getCart().getTotalPrice()).isEqualTo("100.99");
+    assertThat(fullWalletRequest.getCart().getLineItems()).hasSize(4);
+
+    assertThat(fullWalletRequest.getCart().getLineItems().get(0).getDescription()).isEqualTo("lineItem1");
+    assertThat(fullWalletRequest.getCart().getLineItems().get(0).getQuantity()).isEqualTo("10");
+    assertThat(fullWalletRequest.getCart().getLineItems().get(0).getUnitPrice()).isEqualTo("1.09");
+    assertThat(fullWalletRequest.getCart().getLineItems().get(0).getTotalPrice()).isEqualTo("10.90");
+    assertThat(fullWalletRequest.getCart().getLineItems().get(0).getCurrencyCode()).isEqualTo("UAH");
+    assertThat(fullWalletRequest.getCart().getLineItems().get(0).getRole()).isEqualTo(LineItem.Role.REGULAR);
+
+    assertThat(fullWalletRequest.getCart().getLineItems().get(1).getDescription()).isEqualTo("lineItem2");
+    assertThat(fullWalletRequest.getCart().getLineItems().get(1).getQuantity()).isEqualTo("20");
+    assertThat(fullWalletRequest.getCart().getLineItems().get(1).getUnitPrice()).isEqualTo("2.99");
+    assertThat(fullWalletRequest.getCart().getLineItems().get(1).getTotalPrice()).isEqualTo("59.80");
+    assertThat(fullWalletRequest.getCart().getLineItems().get(1).getCurrencyCode()).isEqualTo("UAH");
+    assertThat(fullWalletRequest.getCart().getLineItems().get(1).getRole()).isEqualTo(LineItem.Role.REGULAR);
+
+    assertThat(fullWalletRequest.getCart().getLineItems().get(2).getTotalPrice()).isEqualTo("2.01");
+    assertThat(fullWalletRequest.getCart().getLineItems().get(2).getCurrencyCode()).isEqualTo("UAH");
+    assertThat(fullWalletRequest.getCart().getLineItems().get(2).getRole()).isEqualTo(LineItem.Role.TAX);
+
+    assertThat(fullWalletRequest.getCart().getLineItems().get(3).getTotalPrice()).isEqualTo("3.01");
+    assertThat(fullWalletRequest.getCart().getLineItems().get(3).getCurrencyCode()).isEqualTo("UAH");
+    assertThat(fullWalletRequest.getCart().getLineItems().get(3).getRole()).isEqualTo(LineItem.Role.SHIPPING);
+  }
+
   private static void testNullPointerException(Runnable runnable) throws Exception {
     try {
       runnable.run();
@@ -218,5 +270,33 @@ public class PayCartTest {
     } catch (IllegalArgumentException expected) {
       // expected
     }
+  }
+
+  private static MaskedWallet createMaskedWallet(final UserAddress shippingAddress, final UserAddress billingAddress, final String email,
+    final String googleTransactionId) throws Exception {
+    final Constructor<MaskedWallet> maskedWalletConstructor = MaskedWallet.class.getDeclaredConstructor();
+    maskedWalletConstructor.setAccessible(true);
+
+    final Constructor<MaskedWallet.Builder> maskedWalletBuilderConstructor =
+      (Constructor<MaskedWallet.Builder>) Class.forName("com.google.android.gms.wallet.MaskedWallet$Builder")
+        .getDeclaredConstructor(MaskedWallet.class);
+    maskedWalletBuilderConstructor.setAccessible(true);
+
+    final MaskedWallet.Builder maskedWalletBuilder = maskedWalletBuilderConstructor.newInstance(maskedWalletConstructor.newInstance());
+    maskedWalletBuilder.setBuyerShippingAddress(shippingAddress);
+    maskedWalletBuilder.setBuyerBillingAddress(billingAddress);
+    maskedWalletBuilder.setEmail(email);
+    maskedWalletBuilder.setGoogleTransactionId(googleTransactionId);
+
+    return maskedWalletBuilder.build();
+  }
+
+  private UserAddress createWalletUserAddress() throws Exception {
+    final Constructor<UserAddress> constructor = UserAddress.class.getDeclaredConstructor(int.class, String.class, String.class,
+      String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class,
+      String.class, boolean.class, String.class, String.class);
+    constructor.setAccessible(true);
+    return constructor.newInstance(1, "firstName lastName", "address1", "address2", "address3", "address4", "address5",
+      "administrativeArea", "locality", "countryCode", "postalCode", "sortingCode", "phoneNumber", false, "companyName", "emailAddress");
   }
 }

@@ -46,11 +46,11 @@ final class HttpResponseParser<T extends AbstractResponse<T>> {
   GraphResponse<T> parse(final Response response) throws GraphError {
     TopLevelResponse topLevelResponse = parseTopLevelResponse(checkResponse(response));
     try {
-      if (topLevelResponse.getErrors() != null && !topLevelResponse.getErrors().isEmpty()) {
-        return new GraphResponse<T>(null, topLevelResponse.getErrors());
-      } else {
+      if (topLevelResponse.getData() != null) {
         T data = responseDataConverter.convert(topLevelResponse);
         return new GraphResponse<T>(data, topLevelResponse.getErrors());
+      } else {
+        return new GraphResponse<T>(null, topLevelResponse.getErrors());
       }
     } catch (Exception e) {
       throw new GraphError("Failed to process GraphQL response ", e);
