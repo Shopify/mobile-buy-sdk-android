@@ -48,7 +48,6 @@ import static com.shopify.buy3.Utils.checkNotNull;
 
 final class RealGraphCall<T extends AbstractResponse<T>> implements GraphCall<T> {
   static final String ACCEPT_HEADER = "application/json";
-//  static final String CONTENT_TYPE_HEADER = "application/graphql";
   static final MediaType GRAPHQL_MEDIA_TYPE = MediaType.parse("application/graphql; charset=utf-8");
 
   private final Query query;

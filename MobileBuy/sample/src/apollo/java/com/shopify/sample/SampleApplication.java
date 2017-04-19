@@ -1,7 +1,6 @@
 package com.shopify.sample;
 
 import android.text.TextUtils;
-import android.util.Base64;
 
 import com.apollographql.apollo.ApolloClient;
 import com.apollographql.apollo.CustomTypeAdapter;
@@ -11,7 +10,6 @@ import com.apollographql.apollo.cache.http.TimeoutEvictionStrategy;
 import com.shopify.sample.domain.type.CustomType;
 
 import java.math.BigDecimal;
-import java.nio.charset.Charset;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.HttpUrl;
@@ -50,20 +48,13 @@ public class SampleApplication extends BaseApplication {
         + "app/shop.properties");
     }
 
-    String authHeader = String.format("Basic %s", Base64.encodeToString(shopifyApiKey.getBytes(Charset.forName("UTF-8")), Base64.NO_WRAP));
-
     OkHttpClient httpClient = new OkHttpClient.Builder()
       .addNetworkInterceptor(new HttpLoggingInterceptor().setLevel(BuildConfig.OKHTTP_LOG_LEVEL))
       .addInterceptor(chain -> {
         Request original = chain.request();
         Request.Builder builder = original.newBuilder().method(original.method(), original.body());
-        builder.header("Authorization", authHeader);
-        return chain.proceed(builder.build());
-      })
-      .addInterceptor(chain -> {
-        Request original = chain.request();
-        Request.Builder builder = original.newBuilder().method(original.method(), original.body());
         builder.header("User-Agent", "Android Apollo Client");
+        builder.header("X-Shopify-Storefront-Access-Token", shopifyApiKey);
         return chain.proceed(builder.build());
       })
       .build();

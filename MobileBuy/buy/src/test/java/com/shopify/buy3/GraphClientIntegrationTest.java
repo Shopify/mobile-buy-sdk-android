@@ -50,8 +50,8 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class GraphClientIntegrationTest {
   private static final String PACKAGE_NAME = "com.shopify.buy3.test";
-  private static final String AUTH_HEADER = "Basic YXBpS2V5";
   private static final String SHOP_DOMAIN = "myshop.shopify.com";
+  private static final String ACCESS_TOKEN = "access_token";
 
   @Mock public Context mockContext;
   @Rule public MockWebServer server = new MockWebServer();
@@ -61,7 +61,7 @@ public class GraphClientIntegrationTest {
   @Before public void setUp() {
     when(mockContext.getPackageName()).thenReturn(PACKAGE_NAME);
     graphClient = GraphClient.builder(mockContext)
-      .authHeader(AUTH_HEADER)
+      .accessToken(ACCESS_TOKEN)
       .serverUrl(server.url(SHOP_DOMAIN))
       .httpClient(new OkHttpClient.Builder()
         .connectTimeout(3, TimeUnit.SECONDS)
@@ -80,7 +80,9 @@ public class GraphClientIntegrationTest {
     }
 
     RecordedRequest recordedRequest = server.takeRequest();
-    assertThat(recordedRequest.getHeader("Authorization")).isEqualTo(AUTH_HEADER);
+    assertThat(recordedRequest.getHeader("X-Shopify-Storefront-Access-Token")).isEqualTo(ACCESS_TOKEN);
+    assertThat(recordedRequest.getHeader("X-SDK-Version")).isEqualTo(BuildConfig.VERSION_NAME);
+    assertThat(recordedRequest.getHeader("X-SDK-Variant")).isEqualTo("android");
     assertThat(recordedRequest.getHeader("User-Agent")).isEqualTo("Mobile Buy SDK Android/" + BuildConfig.VERSION_NAME + "/" + PACKAGE_NAME);
     assertThat(recordedRequest.getHeader("Accept")).isEqualTo(RealGraphCall.ACCEPT_HEADER);
     assertThat(recordedRequest.getHeader("Content-Type")).isEqualTo(RealGraphCall.GRAPHQL_MEDIA_TYPE.toString());

@@ -51,8 +51,6 @@ import static junit.framework.Assert.fail;
 
 @RunWith(AndroidJUnit4.class)
 public class GraphClientIntegrationTest {
-  private static final String PACKAGE_NAME = "com.shopify.buy3.test";
-  private static final String AUTH_HEADER = "Basic YXBpS2V5";
   private static final String SHOP_DOMAIN = "myshop.shopify.com";
 
   @Rule public MockWebServer server = new MockWebServer();
@@ -61,7 +59,7 @@ public class GraphClientIntegrationTest {
 
   @Before public void setUp() {
     graphClient = GraphClient.builder(InstrumentationRegistry.getContext())
-      .authHeader(AUTH_HEADER)
+      .accessToken("access_token")
       .serverUrl(server.url(SHOP_DOMAIN))
       .httpClient(new OkHttpClient.Builder()
         .connectTimeout(3, TimeUnit.SECONDS)
