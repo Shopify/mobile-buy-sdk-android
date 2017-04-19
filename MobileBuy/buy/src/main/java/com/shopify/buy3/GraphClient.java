@@ -100,9 +100,9 @@ public final class GraphClient {
     }
 
     /**
-     * Sets Shopify store api key
+     * Sets Shopify store access token
      *
-     * @param apiKey The Api Key.
+     * @param accessToken store access token
      * @return a {@link GraphClient.Builder}
      */
     public Builder accessToken(@NonNull final String accessToken) {
