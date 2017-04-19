@@ -68,7 +68,7 @@ public class SampleApplication extends BaseApplication {
 
     graphClient = GraphClient.builder(this)
       .shopDomain(BuildConfig.SHOP_DOMAIN)
-      .apiKey(BuildConfig.API_KEY)
+      .accessToken(BuildConfig.API_KEY)
       .httpClient(httpClient)
       .build();
   }

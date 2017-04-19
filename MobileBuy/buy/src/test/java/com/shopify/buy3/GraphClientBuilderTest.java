@@ -45,6 +45,7 @@ import static org.mockito.Mockito.when;
 public class GraphClientBuilderTest {
   private static final String PACKAGE_NAME = "com.shopify.buy3.test";
   private static final String SHOP_DOMAIN = "shopDomain";
+  private static final String ACCESS_TOKEN = "access_token";
   private static final HttpUrl ENDPOINT_URL = HttpUrl.parse(String.format("https://%s/api/graphql", SHOP_DOMAIN));
 
   @Mock public Context mockContext;
@@ -62,7 +63,7 @@ public class GraphClientBuilderTest {
     GraphClient graphClient = GraphClient.builder(mockContext)
       .shopDomain(SHOP_DOMAIN)
       .httpClient(httpClient)
-      .authHeader("authHeader")
+      .accessToken(ACCESS_TOKEN)
       .build();
 
     assertThat(graphClient.serverUrl).isEqualTo(ENDPOINT_URL);
@@ -74,7 +75,7 @@ public class GraphClientBuilderTest {
   @Test public void buildSuccessWithDefaultClient() {
     GraphClient graphClient = GraphClient.builder(mockContext)
       .shopDomain(SHOP_DOMAIN)
-      .authHeader("authHeader")
+      .accessToken(ACCESS_TOKEN)
       .build();
 
     assertThat(graphClient.serverUrl).isEqualTo(ENDPOINT_URL);
@@ -86,11 +87,11 @@ public class GraphClientBuilderTest {
     checkForNullPointerException(() -> GraphClient.builder(null));
 
     checkForNullPointerException(() -> GraphClient.builder(mockContext).shopDomain(null));
-    checkForNullPointerException(() -> GraphClient.builder(mockContext).apiKey(null));
+    checkForNullPointerException(() -> GraphClient.builder(mockContext).accessToken(null));
     checkForNullPointerException(() -> GraphClient.builder(mockContext).httpClient(null));
 
     checkIllegalArgumentException(() -> GraphClient.builder(mockContext).shopDomain(""));
-    checkIllegalArgumentException(() -> GraphClient.builder(mockContext).apiKey(""));
+    checkIllegalArgumentException(() -> GraphClient.builder(mockContext).accessToken(""));
 
     checkForNullPointerException(() -> GraphClient.builder(mockContext).build());
     checkForNullPointerException(() -> GraphClient.builder(mockContext).shopDomain(SHOP_DOMAIN).build());

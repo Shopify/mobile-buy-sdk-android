@@ -46,8 +46,6 @@ import static junit.framework.Assert.fail;
 
 @RunWith(MockitoJUnitRunner.class)
 public class RetryTest {
-  private static final String AUTH_HEADER = "Basic YXBpS2V5";
-
   @Mock public Context mockContext;
   @Rule public MockWebServer server = new MockWebServer();
   private GraphClient graphClient;
@@ -59,7 +57,7 @@ public class RetryTest {
 
     graphClient = GraphClient.builder(mockContext)
       .httpClient(httpClient)
-      .authHeader(AUTH_HEADER)
+      .accessToken("access_token")
       .serverUrl(server.url("/"))
       .build();
   }

@@ -33,6 +33,7 @@ import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
 import okhttp3.HttpUrl;
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 
@@ -72,16 +73,16 @@ public final class GraphClient {
   }
 
   public static final class Builder {
-    public static final long DEFAULT_HTTP_CONNECTION_TIME_OUT_MS = TimeUnit.SECONDS.toMillis(30);
-    public static final long DEFAULT_HTTP_READ_WRITE_TIME_OUT_MS = TimeUnit.SECONDS.toMillis(60);
+    private static final long DEFAULT_HTTP_CONNECTION_TIME_OUT_MS = TimeUnit.SECONDS.toMillis(10);
+    private static final long DEFAULT_HTTP_READ_WRITE_TIME_OUT_MS = TimeUnit.SECONDS.toMillis(20);
 
     private final String applicationName;
     private String shopDomain;
     private HttpUrl endpointUrl;
-    private String apiKey;
-    private String authHeader;
+    private String accessToken;
     private OkHttpClient httpClient;
     private ScheduledExecutorService dispatcher;
+    private Interceptor sdkHeaderInterceptor;
 
     private Builder(@NonNull final Context context) {
       applicationName = checkNotNull(context, "context == null").getPackageName();
@@ -104,8 +105,8 @@ public final class GraphClient {
      * @param apiKey The Api Key.
      * @return a {@link GraphClient.Builder}
      */
-    public Builder apiKey(@NonNull final String apiKey) {
-      this.apiKey = checkNotBlank(apiKey, "apiKey == null");
+    public Builder accessToken(@NonNull final String accessToken) {
+      this.accessToken = checkNotBlank(accessToken, "accessToken == null");
       return this;
     }
 
@@ -116,11 +117,6 @@ public final class GraphClient {
 
     Builder serverUrl(@NonNull HttpUrl endpointUrl) {
       this.endpointUrl = checkNotNull(endpointUrl, "endpointUrl == null");
-      return this;
-    }
-
-    Builder authHeader(@NonNull String authHeader) {
-      this.authHeader = checkNotBlank(authHeader, "authHeader == null");
       return this;
     }
 
@@ -135,14 +131,19 @@ public final class GraphClient {
         endpointUrl = HttpUrl.parse("https://" + shopDomain + "/api/graphql");
       }
 
-      if (authHeader == null) {
-        authHeader = Utils.formatBasicAuthorization(checkNotBlank(apiKey, "apiKey == null"));
+      checkNotBlank(accessToken, "apiKey == null");
+
+      if (sdkHeaderInterceptor == null) {
+        sdkHeaderInterceptor = sdkHeaderInterceptor(applicationName, accessToken);
       }
 
       if (httpClient == null) {
         httpClient = defaultOkHttpClient();
       }
-      httpClient = configureHttpClient(httpClient, authHeader, applicationName);
+
+      if (!httpClient.interceptors().contains(sdkHeaderInterceptor)) {
+        httpClient = httpClient.newBuilder().addInterceptor(sdkHeaderInterceptor).build();
+      }
 
       return new GraphClient(this);
     }
@@ -155,33 +156,16 @@ public final class GraphClient {
         .build();
     }
 
-    private OkHttpClient configureHttpClient(final OkHttpClient httpClient, final String authHeader, final String applicationName) {
-      return configureHttpClient(httpClient.newBuilder(), authHeader, applicationName).build();
-    }
-
-    private static OkHttpClient.Builder configureHttpClient(final OkHttpClient.Builder httpClientBuilder, final String authHeader,
-      final String applicationName) {
-      addAuthorizationInterceptor(httpClientBuilder, authHeader);
-      addUserAgentInterceptor(httpClientBuilder, applicationName);
-      return httpClientBuilder;
-    }
-
-    private static void addAuthorizationInterceptor(final OkHttpClient.Builder httpClientBuilder, final String authHeader) {
-      httpClientBuilder.addInterceptor(chain -> {
-        Request original = chain.request();
-        Request.Builder builder = original.newBuilder().method(original.method(), original.body());
-        builder.header("Authorization", authHeader);
-        return chain.proceed(builder.build());
-      });
-    }
-
-    private static void addUserAgentInterceptor(final OkHttpClient.Builder httpClientBuilder, final String applicationName) {
-      httpClientBuilder.addInterceptor(chain -> {
+    private static Interceptor sdkHeaderInterceptor(final String applicationName, final String accessToken) {
+      return chain -> {
         Request original = chain.request();
         Request.Builder builder = original.newBuilder().method(original.method(), original.body());
         builder.header("User-Agent", "Mobile Buy SDK Android/" + BuildConfig.VERSION_NAME + "/" + applicationName);
+        builder.header("X-SDK-Version", BuildConfig.VERSION_NAME);
+        builder.header("X-SDK-Variant", "android");
+        builder.header("X-Shopify-Storefront-Access-Token", accessToken);
         return chain.proceed(builder.build());
-      });
+      };
     }
   }
 }
