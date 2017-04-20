@@ -24,12 +24,14 @@
 
 package com.shopify.buy3.pay;
 
+import android.support.annotation.NonNull;
+
 import static com.shopify.buy3.pay.Util.checkNotEmpty;
 
 @SuppressWarnings("WeakerAccess")
 public final class PaymentToken {
-  public final String token;
-  public final String publicKeyHash;
+  @NonNull public final String token;
+  @NonNull public final String publicKeyHash;
 
   public PaymentToken(final String token, final String publicKeyHash) {
     this.token = checkNotEmpty(token, "token can't be empty");

@@ -25,16 +25,15 @@
 package com.shopify.sample.presenter.checkout;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.wallet.FullWallet;
-import com.google.android.gms.wallet.FullWalletRequest;
 import com.google.android.gms.wallet.MaskedWallet;
 import com.google.android.gms.wallet.MaskedWalletRequest;
 import com.google.android.gms.wallet.Wallet;
-import com.google.android.gms.wallet.WalletConstants;
 import com.shopify.buy3.pay.PayAddress;
 import com.shopify.buy3.pay.PayCart;
 import com.shopify.buy3.pay.PayHelper;
@@ -50,7 +49,6 @@ import java.math.BigDecimal;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 
-import static com.shopify.buy3.pay.PayHelper.isAndroidPayEnabledInManifest;
 import static com.shopify.sample.util.Util.checkNotBlank;
 import static com.shopify.sample.util.Util.checkNotNull;
 import static java.util.Collections.emptyList;
@@ -66,7 +64,6 @@ public final class CheckoutViewPresenter extends BaseViewPresenter<CheckoutViewP
   private PayCart payCart;
   private MaskedWallet maskedWallet;
   private Checkout.ShippingRates shippingRates;
-  private GoogleApiClient googleApiClient;
 
   public CheckoutViewPresenter(@NonNull final String checkoutId, @NonNull final PayCart payCart, @NonNull final MaskedWallet maskedWallet,
     @NonNull final CheckoutRepository checkoutRepository) {
@@ -78,45 +75,9 @@ public final class CheckoutViewPresenter extends BaseViewPresenter<CheckoutViewP
 
   public void attachView(final View view) {
     super.attachView(view);
-    googleApiClient = googleApiClient();
-    googleApiClient.connect();
     view.renderTotalSummary(payCart.subtotal, payCart.shippingPrice != null ? payCart.shippingPrice : BigDecimal.ZERO,
       payCart.taxPrice != null ? payCart.taxPrice : BigDecimal.ZERO, payCart.totalPrice);
     updateMaskedWallet(maskedWallet);
-  }
-
-  @Override public void detachView() {
-    super.detachView();
-    if (googleApiClient != null) {
-      googleApiClient.disconnect();
-      googleApiClient = null;
-    }
-  }
-
-  public void requestMaskedWalletUpdate() {
-    MaskedWalletRequest maskedWalletRequest = payCart.maskedWalletRequest(BuildConfig.ANDROID_PAY_PUBLIC_KEY);
-    Wallet.Payments.loadMaskedWallet(googleApiClient, maskedWalletRequest, PayHelper.REQUEST_CODE_MASKED_WALLET);
-  }
-
-  public void updateMaskedWallet(@NonNull final MaskedWallet maskedWallet) {
-    if (isViewDetached()) {
-      return;
-    }
-    this.maskedWallet = checkNotNull(maskedWallet, "maskedWallet == null");
-    invalidateShippingRates(new Checkout.ShippingRates(false, emptyList()));
-    view().updateMaskedWallet(maskedWallet);
-
-    PayAddress payAddress = PayAddress.fromUserAddress(maskedWallet.getBuyerShippingAddress());
-    showProgress(REQUEST_ID_UPDATE_CHECKOUT_SHIPPING_ADDRESS);
-    registerRequest(
-      REQUEST_ID_UPDATE_CHECKOUT_SHIPPING_ADDRESS,
-      checkoutRepository.updateShippingAddress(checkNotBlank(checkoutId, "checkoutId can't be empty"), payAddress)
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribeWith(WeakSingleObserver.<CheckoutViewPresenter, Checkout>forTarget(this)
-          .delegateOnSuccess(CheckoutViewPresenter::onUpdateCheckoutShippingAddress)
-          .delegateOnError((presenter, t) -> presenter.onRequestError(REQUEST_ID_UPDATE_CHECKOUT_SHIPPING_ADDRESS, t))
-          .create())
-    );
   }
 
   public void applyShippingRate(@NonNull final Checkout.ShippingRate shippingRate) {
@@ -139,12 +100,39 @@ public final class CheckoutViewPresenter extends BaseViewPresenter<CheckoutViewP
     );
   }
 
-  public void confirmCheckout() {
-    FullWalletRequest fullWalletRequest = payCart.fullWalletRequest(maskedWallet);
-    Wallet.Payments.loadFullWallet(googleApiClient, fullWalletRequest, PayHelper.REQUEST_CODE_FULL_WALLET);
+  public void confirmCheckout(@NonNull final GoogleApiClient googleApiClient) {
+    checkNotNull(googleApiClient, "googleApiClient == null");
+    PayHelper.requestFullWallet(googleApiClient, payCart, maskedWallet);
   }
 
-  public void completeCheckout(final FullWallet fullWallet) {
+  public void handleWalletResponse(final int requestCode, final int resultCode, @Nullable final Intent data,
+    @NonNull final GoogleApiClient googleApiClient) {
+    PayHelper.handleWalletResponse(requestCode, resultCode, data, new PayHelper.WalletResponseHandler() {
+      @Override public void onWalletError(final int requestCode, final int errorCode) {
+        showError(-1, new RuntimeException("Failed wallet request, errorCode: " + errorCode));
+      }
+
+      @Override public void onMaskedWalletRequest() {
+        requestMaskedWallet(googleApiClient);
+      }
+
+      @Override public void onMaskedWallet(final MaskedWallet maskedWallet) {
+        updateMaskedWallet(maskedWallet);
+      }
+
+      @Override public void onFullWallet(final FullWallet fullWallet) {
+        completeCheckout(fullWallet);
+      }
+    });
+  }
+
+  private void requestMaskedWallet(@NonNull final GoogleApiClient googleApiClient) {
+    checkNotNull(googleApiClient, "googleApiClient == null");
+    MaskedWalletRequest maskedWalletRequest = payCart.maskedWalletRequest(BuildConfig.ANDROID_PAY_PUBLIC_KEY);
+    Wallet.Payments.loadMaskedWallet(googleApiClient, maskedWalletRequest, PayHelper.REQUEST_CODE_MASKED_WALLET);
+  }
+
+  private void completeCheckout(final FullWallet fullWallet) {
     if (isViewDetached()) {
       return;
     }
@@ -152,6 +140,11 @@ public final class CheckoutViewPresenter extends BaseViewPresenter<CheckoutViewP
     String androidPayPublicKey = BuildConfig.ANDROID_PAY_PUBLIC_KEY;
     PaymentToken paymentToken = PayHelper.extractPaymentToken(fullWallet, androidPayPublicKey);
     PayAddress billingAddress = PayAddress.fromUserAddress(fullWallet.getBuyerBillingAddress());
+
+    if (paymentToken == null) {
+      showError(-1, new RuntimeException("Failed to extract Android payment token"));
+      return;
+    }
 
     view().showProgress(REQUEST_ID_COMPLETE_CHECKOUT);
     registerRequest(
@@ -163,6 +156,27 @@ public final class CheckoutViewPresenter extends BaseViewPresenter<CheckoutViewP
           .delegateOnError((presenter, t) -> presenter.onRequestError(REQUEST_ID_COMPLETE_CHECKOUT, t))
           .create()
         )
+    );
+  }
+
+  private void updateMaskedWallet(@NonNull final MaskedWallet maskedWallet) {
+    if (isViewDetached()) {
+      return;
+    }
+    this.maskedWallet = checkNotNull(maskedWallet, "maskedWallet == null");
+    invalidateShippingRates(new Checkout.ShippingRates(false, emptyList()));
+    view().updateMaskedWallet(maskedWallet);
+
+    PayAddress payAddress = PayAddress.fromUserAddress(maskedWallet.getBuyerShippingAddress());
+    showProgress(REQUEST_ID_UPDATE_CHECKOUT_SHIPPING_ADDRESS);
+    registerRequest(
+      REQUEST_ID_UPDATE_CHECKOUT_SHIPPING_ADDRESS,
+      checkoutRepository.updateShippingAddress(checkNotBlank(checkoutId, "checkoutId can't be empty"), payAddress)
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribeWith(WeakSingleObserver.<CheckoutViewPresenter, Checkout>forTarget(this)
+          .delegateOnSuccess(CheckoutViewPresenter::onUpdateCheckoutShippingAddress)
+          .delegateOnError((presenter, t) -> presenter.onRequestError(REQUEST_ID_UPDATE_CHECKOUT_SHIPPING_ADDRESS, t))
+          .create())
     );
   }
 
@@ -240,18 +254,6 @@ public final class CheckoutViewPresenter extends BaseViewPresenter<CheckoutViewP
     if (isViewAttached()) {
       view().renderShippingRates(shippingRates, shippingLine);
     }
-  }
-
-  private GoogleApiClient googleApiClient() {
-    if (isAndroidPayEnabledInManifest(view().context())) {
-      return new GoogleApiClient.Builder(view().context())
-        .addApi(Wallet.API, new Wallet.WalletOptions.Builder()
-          .setEnvironment(BuildConfig.ANDROID_PAY_ENVIRONMENT)
-          .setTheme(WalletConstants.THEME_LIGHT)
-          .build())
-        .build();
-    }
-    return null;
   }
 
   private void onCompleteCheckout(final Payment payment) {

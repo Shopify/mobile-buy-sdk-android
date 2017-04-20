@@ -26,9 +26,9 @@ package com.shopify.sample.mvp;
 
 public interface View {
 
-    void showProgress(int requestId);
+  void showProgress(int requestId);
 
-    void hideProgress(int requestId);
+  void hideProgress(int requestId);
 
-    void showError(long requestId, Throwable t);
+  void showError(long requestId, Throwable t);
 }

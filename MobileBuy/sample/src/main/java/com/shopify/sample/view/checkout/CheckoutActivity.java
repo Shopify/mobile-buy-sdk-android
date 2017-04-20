@@ -24,7 +24,6 @@
 
 package com.shopify.sample.view.checkout;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -33,11 +32,11 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
-import com.google.android.gms.wallet.FullWallet;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.wallet.MaskedWallet;
+import com.google.android.gms.wallet.Wallet;
 import com.google.android.gms.wallet.WalletConstants;
 import com.google.android.gms.wallet.fragment.SupportWalletFragment;
-import com.google.android.gms.wallet.fragment.WalletFragmentInitParams;
 import com.google.android.gms.wallet.fragment.WalletFragmentMode;
 import com.google.android.gms.wallet.fragment.WalletFragmentOptions;
 import com.google.android.gms.wallet.fragment.WalletFragmentStyle;
@@ -72,6 +71,7 @@ public final class CheckoutActivity extends AppCompatActivity implements Checkou
 
   private ProgressDialogHelper progressDialogHelper;
   private CheckoutViewPresenter presenter;
+  private GoogleApiClient googleApiClient;
 
   @Override protected void onCreate(@Nullable final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -84,6 +84,7 @@ public final class CheckoutActivity extends AppCompatActivity implements Checkou
     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
     progressDialogHelper = new ProgressDialogHelper(this);
+    googleApiClient = connectToGoogleApiClient();
 
     String checkoutId = getIntent().getStringExtra(EXTRAS_CHECKOUT_ID);
     PayCart payCart = getIntent().getParcelableExtra(EXTRAS_PAY_CART);
@@ -95,37 +96,7 @@ public final class CheckoutActivity extends AppCompatActivity implements Checkou
 
   @Override protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
     super.onActivityResult(requestCode, resultCode, data);
-
-    if (requestCode == PayHelper.REQUEST_CODE_CHANGE_MASKED_WALLET
-      || requestCode == PayHelper.REQUEST_CODE_MASKED_WALLET) {
-      final int errorCode = data != null ? data.getIntExtra(WalletConstants.EXTRA_ERROR_CODE, -1) : -1;
-      if (errorCode != -1 || data == null) {
-        //TODO show error
-      } else if (resultCode == Activity.RESULT_OK) {
-        final MaskedWallet maskedWallet = data.getParcelableExtra(WalletConstants.EXTRA_MASKED_WALLET);
-        presenter.updateMaskedWallet(maskedWallet);
-      }
-    } else if (requestCode == PayHelper.REQUEST_CODE_FULL_WALLET) {
-      final int errorCode = data != null ? data.getIntExtra(WalletConstants.EXTRA_ERROR_CODE, -1) : -1;
-      if (errorCode != -1 || data == null) {
-        if (errorCode == WalletConstants.ERROR_CODE_INVALID_TRANSACTION) {
-          presenter.requestMaskedWalletUpdate();
-        }
-        //TODO show error
-      } else if (resultCode == Activity.RESULT_OK) {
-        final FullWallet fullWallet = data.getParcelableExtra(WalletConstants.EXTRA_FULL_WALLET);
-        final MaskedWallet maskedWallet = data.getParcelableExtra(WalletConstants.EXTRA_MASKED_WALLET);
-        if (fullWallet != null) {
-          presenter.completeCheckout(fullWallet);
-        } else if (maskedWallet != null) {
-          // instead of full wallet response we got new version of masked wallet
-          // try to update checkout and if update is not required then try to confirm the order again
-          presenter.updateMaskedWallet(maskedWallet);
-        } else {
-          //TODO show error
-        }
-      }
-    }
+    presenter.handleWalletResponse(requestCode, resultCode, data, googleApiClient);
   }
 
   @Override public boolean onSupportNavigateUp() {
@@ -142,6 +113,14 @@ public final class CheckoutActivity extends AppCompatActivity implements Checkou
     super.onDetachedFromWindow();
     presenter.detachView();
     progressDialogHelper.dismiss();
+  }
+
+  @Override protected void onDestroy() {
+    if (googleApiClient != null) {
+      googleApiClient.disconnect();
+      googleApiClient = null;
+    }
+    super.onDestroy();
   }
 
   @Override public void showProgress(final int requestId) {
@@ -165,6 +144,7 @@ public final class CheckoutActivity extends AppCompatActivity implements Checkou
   }
 
   @Override public void showError(final long requestId, final Throwable t) {
+    //TODO log and show error message
     t.printStackTrace();
   }
 
@@ -188,13 +168,9 @@ public final class CheckoutActivity extends AppCompatActivity implements Checkou
         .setMode(WalletFragmentMode.SELECTION_DETAILS)
         .build();
 
-      final WalletFragmentInitParams startParams = WalletFragmentInitParams.newBuilder()
-        .setMaskedWallet(maskedWallet)
-        .setMaskedWalletRequestCode(PayHelper.REQUEST_CODE_CHANGE_MASKED_WALLET)
-        .build();
-
       final SupportWalletFragment newWalletFragment = SupportWalletFragment.newInstance(walletFragmentOptions);
-      newWalletFragment.initialize(startParams);
+      PayHelper.initializeWalletFragment(newWalletFragment, maskedWallet);
+
       getSupportFragmentManager()
         .beginTransaction()
         .replace(R.id.android_pay_layout, newWalletFragment)
@@ -218,6 +194,17 @@ public final class CheckoutActivity extends AppCompatActivity implements Checkou
 
   @OnClick(R.id.confirm)
   void onConfirmClick() {
-    presenter.confirmCheckout();
+    presenter.confirmCheckout(googleApiClient);
+  }
+
+  private GoogleApiClient connectToGoogleApiClient() {
+    GoogleApiClient googleApiClient = new GoogleApiClient.Builder(this)
+      .addApi(Wallet.API, new Wallet.WalletOptions.Builder()
+        .setEnvironment(BuildConfig.ANDROID_PAY_ENVIRONMENT)
+        .setTheme(WalletConstants.THEME_DARK)
+        .build())
+      .build();
+    googleApiClient.connect();
+    return googleApiClient;
   }
 }

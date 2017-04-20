@@ -63,9 +63,6 @@ public final class CartActivity extends AppCompatActivity {
 
   @Override protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
     super.onActivityResult(requestCode, resultCode, data);
-
-    if (requestCode == PayHelper.REQUEST_CODE_MASKED_WALLET) {
-      cartHeaderView.handleMaskedWalletResponse(resultCode, data != null ? data.getExtras() : null);
-    }
+    cartHeaderView.handleMaskedWalletResponse(requestCode, resultCode, data);
   }
 }

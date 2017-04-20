@@ -24,7 +24,9 @@
 
 package com.shopify.buy3.pay;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
@@ -32,15 +34,21 @@ import android.util.Base64;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.common.api.BooleanResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.wallet.FullWallet;
+import com.google.android.gms.wallet.FullWalletRequest;
+import com.google.android.gms.wallet.IsReadyToPayRequest;
+import com.google.android.gms.wallet.MaskedWallet;
+import com.google.android.gms.wallet.MaskedWalletRequest;
 import com.google.android.gms.wallet.Wallet;
+import com.google.android.gms.wallet.WalletConstants;
+import com.google.android.gms.wallet.fragment.SupportWalletFragment;
+import com.google.android.gms.wallet.fragment.WalletFragmentInitParams;
 
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
 import static com.shopify.buy3.pay.Util.checkNotEmpty;
 import static com.shopify.buy3.pay.Util.checkNotNull;
@@ -51,6 +59,63 @@ public final class PayHelper {
   public static final int REQUEST_CODE_CHANGE_MASKED_WALLET = 501;
   public static final int REQUEST_CODE_FULL_WALLET = 502;
 
+  public static void requestMaskedWallet(final GoogleApiClient googleApiClient, final PayCart payCart, final String androidPayPublicKey) {
+    MaskedWalletRequest maskedWalletRequest = payCart.maskedWalletRequest(androidPayPublicKey);
+    Wallet.Payments.loadMaskedWallet(googleApiClient, maskedWalletRequest, PayHelper.REQUEST_CODE_MASKED_WALLET);
+  }
+
+  public static void initializeWalletFragment(final SupportWalletFragment walletFragment, final MaskedWallet maskedWallet) {
+    WalletFragmentInitParams initParams = WalletFragmentInitParams.newBuilder()
+      .setMaskedWallet(maskedWallet)
+      .setMaskedWalletRequestCode(PayHelper.REQUEST_CODE_CHANGE_MASKED_WALLET)
+      .build();
+    walletFragment.initialize(initParams);
+  }
+
+  public static void requestFullWallet(final GoogleApiClient googleApiClient, final PayCart payCart, final MaskedWallet maskedWallet) {
+    FullWalletRequest fullWalletRequest = payCart.fullWalletRequest(maskedWallet);
+    Wallet.Payments.loadFullWallet(googleApiClient, fullWalletRequest, PayHelper.REQUEST_CODE_FULL_WALLET);
+  }
+
+  public static boolean handleWalletResponse(final int requestCode, final int resultCode, final Intent data,
+    final WalletResponseHandler handler) {
+    if (requestCode != REQUEST_CODE_CHANGE_MASKED_WALLET
+      && requestCode != REQUEST_CODE_MASKED_WALLET
+      && requestCode != REQUEST_CODE_FULL_WALLET) {
+      return false;
+    }
+
+    if (resultCode != Activity.RESULT_OK) {
+      handler.onWalletRequestCancel(requestCode);
+      return true;
+    }
+
+    if (data != null) {
+      int errorCode = data.getIntExtra(WalletConstants.EXTRA_ERROR_CODE, -1);
+      if (errorCode != -1) {
+        if (errorCode == WalletConstants.ERROR_CODE_INVALID_TRANSACTION) {
+          handler.onMaskedWalletRequest();
+        } else {
+          handler.onWalletError(requestCode, errorCode);
+        }
+        return true;
+      } else {
+        MaskedWallet maskedWallet = data.getParcelableExtra(WalletConstants.EXTRA_MASKED_WALLET);
+        FullWallet fullWallet = data.getParcelableExtra(WalletConstants.EXTRA_FULL_WALLET);
+        if (maskedWallet != null) {
+          handler.onMaskedWallet(maskedWallet);
+          return true;
+        } else if (fullWallet != null) {
+          handler.onFullWallet(fullWallet);
+          return true;
+        }
+      }
+    }
+
+    handler.onWalletError(requestCode, -1);
+    return true;
+  }
+
   public static boolean isAndroidPayEnabledInManifest(@NonNull final Context context) {
     boolean enabled = false;
     try {
@@ -60,43 +125,6 @@ public final class PayHelper {
       // ignore
     }
     return enabled;
-  }
-
-  /**
-   * Checks to see if Android Pay is available on device.
-   * <p>
-   * It will check that:
-   * 1) Play Services are available using {@link PayHelper#hasGooglePlayServices(Context)}
-   * 2) The Android Pay application is installed on device, and user has setup a valid card for In App Purchase
-   * using {@link PayHelper#isReadyToPay(GoogleApiClient, AndroidPayReadyCallback)}
-   *
-   * @param context   The context to use.
-   * @param apiClient The {@link GoogleApiClient}, not null
-   * @param delegate  The {@link AndroidPayReadyCallback} delegate for receiving the result
-   */
-  public static void androidPayIsAvailable(@NonNull final Context context, @NonNull final GoogleApiClient apiClient,
-    @NonNull final AndroidPayReadyCallback delegate) {
-    checkNotNull(context, "context can't be null");
-    checkNotNull(apiClient, "apiClient can't be null");
-    checkNotNull(delegate, "delegate can't be null");
-
-    // make sure that device supports SHA-256 and UTF-8 required by hashing android pay public key for payment token creation
-    try {
-      MessageDigest.getInstance("SHA-256");
-      byte[] ignore = "foo".getBytes("UTF-8");
-    } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
-      // if not then android pay feature should be disabled
-      delegate.onResult(false);
-      return;
-    }
-
-    // Check to see if Google play is up to date
-    if (!hasGooglePlayServices(context)) {
-      delegate.onResult(false);
-      return;
-    }
-
-    isReadyToPay(apiClient, delegate);
   }
 
   /**
@@ -112,27 +140,46 @@ public final class PayHelper {
     return result == ConnectionResult.SUCCESS;
   }
 
-  /**
-   * Checks to see if the Android Pay App is installed on device and has a valid card for In App Purchase
-   * using {@link com.google.android.gms.wallet.Payments#isReadyToPay(GoogleApiClient)}
-   *
-   * @param apiClient The {@link GoogleApiClient}, not null
-   * @param delegate  The {@link AndroidPayReadyCallback} delegate for receiving the result
-   */
-  public static void isReadyToPay(@NonNull final GoogleApiClient apiClient, @NonNull final AndroidPayReadyCallback delegate) {
+  public static void isReadyToPay(@NonNull final Context context, @NonNull final GoogleApiClient apiClient,
+    @NonNull final List<Integer> supportedCardNetworks, @NonNull final AndroidPayReadyCallback delegate) {
     checkNotNull(apiClient, "apiClient can't be null");
     checkNotNull(delegate, "delegate can't be null");
-    // Check that the user has installed and setup the Android Pay app on their device
-    Wallet.Payments.isReadyToPay(checkNotNull(apiClient, "apiClient can't be null"))
-      .setResultCallback(new ResultCallback<BooleanResult>() {
-        @Override
-        public void onResult(@NonNull BooleanResult booleanResult) {
-          if (booleanResult.getStatus().isSuccess()) {
-            delegate.onResult(booleanResult.getValue());
-          } else {
-            // We could not make the call so must assume it is not available
-            delegate.onResult(false);
-          }
+    checkNotNull(supportedCardNetworks, "supportedCardNetworks can't be null");
+
+    // make sure that device supports SHA-256 and UTF-8 required by hashing android pay public key for payment token creation
+    try {
+      MessageDigest.getInstance("SHA-256");
+      byte[] ignore = "foo".getBytes("UTF-8");
+    } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
+      // if not then android pay feature should be disabled
+      delegate.onResult(false);
+      return;
+    }
+
+    if (!hasGooglePlayServices(context)) {
+      delegate.onResult(false);
+      return;
+    }
+
+    IsReadyToPayRequest.Builder payRequestBuilder = IsReadyToPayRequest.newBuilder();
+    if (supportedCardNetworks.isEmpty()) {
+      payRequestBuilder.addAllowedCardNetwork(WalletConstants.CardNetwork.AMEX)
+        .addAllowedCardNetwork(WalletConstants.CardNetwork.DISCOVER)
+        .addAllowedCardNetwork(WalletConstants.CardNetwork.JCB)
+        .addAllowedCardNetwork(WalletConstants.CardNetwork.MASTERCARD)
+        .addAllowedCardNetwork(WalletConstants.CardNetwork.VISA);
+    } else {
+      for (Integer supportedCardNetwork : supportedCardNetworks) {
+        payRequestBuilder.addAllowedCardNetwork(supportedCardNetwork);
+      }
+    }
+
+    Wallet.Payments.isReadyToPay(apiClient, payRequestBuilder.build())
+      .setResultCallback(booleanResult -> {
+        if (booleanResult.getStatus().isSuccess()) {
+          delegate.onResult(booleanResult.getValue());
+        } else {
+          delegate.onResult(false);
         }
       });
   }
@@ -155,6 +202,23 @@ public final class PayHelper {
    */
   public interface AndroidPayReadyCallback {
     void onResult(boolean result);
+  }
+
+  public static abstract class WalletResponseHandler {
+    public abstract void onWalletError(int requestCode, int errorCode);
+
+    public void onMaskedWalletRequest() {
+    }
+
+    public void onMaskedWallet(MaskedWallet maskedWallet) {
+    }
+
+    public void onFullWallet(FullWallet fullWallet) {
+    }
+
+    public void onWalletRequestCancel(int requestCode) {
+
+    }
   }
 
   private PayHelper() {
