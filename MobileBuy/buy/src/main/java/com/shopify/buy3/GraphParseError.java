@@ -24,6 +24,9 @@
 
 package com.shopify.buy3;
 
+/**
+ * Thrown whe GraphQL response can't be parsed.
+ */
 public final class GraphParseError extends GraphError {
   public GraphParseError() {
   }

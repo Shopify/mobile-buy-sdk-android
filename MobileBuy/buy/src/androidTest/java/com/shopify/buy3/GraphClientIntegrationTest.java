@@ -142,7 +142,7 @@ public class GraphClientIntegrationTest {
     server.enqueue(new MockResponse().setResponseCode(401).setBody("Unauthorized request!"));
     AtomicBoolean executedInCallbackHandler = new AtomicBoolean();
     NamedCountDownLatch countDownLatch = new NamedCountDownLatch("invalidResponseErrorAsync", 1);
-    AtomicReference<GraphInvalidResponseError> errorRef = new AtomicReference<>();
+    AtomicReference<GraphHttpError> errorRef = new AtomicReference<>();
     graphClient.queryGraph(shopNameQuery).enqueue(new GraphCall.Callback<Storefront.QueryRoot>() {
       @Override public void onResponse(@NonNull final GraphResponse<Storefront.QueryRoot> response) {
         fail("expected GraphInvalidResponseError");
@@ -152,14 +152,14 @@ public class GraphClientIntegrationTest {
         fail("expected GraphInvalidResponseError");
       }
 
-      @Override public void onInvalidResponseError(@NonNull final GraphInvalidResponseError error) {
+      @Override public void onHttpError(@NonNull final GraphHttpError error) {
         errorRef.set(error);
         countDownLatch.countDown();
       }
     }, mockCallbackHandler(executedInCallbackHandler));
     countDownLatch.await(2, TimeUnit.SECONDS);
     assertThat(executedInCallbackHandler.get()).isTrue();
-    GraphInvalidResponseError error = errorRef.get();
+    GraphHttpError error = errorRef.get();
     assertThat(error.code()).isEqualTo(401);
     assertThat(error.message()).isEqualTo("Client Error");
     assertThat(error.rawResponse().body().string()).isEqualTo("Unauthorized request!");

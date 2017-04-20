@@ -59,7 +59,7 @@ final class HttpResponseParser<T extends AbstractResponse<T>> {
 
   private Response checkResponse(final Response httpResponse) throws GraphError {
     if (!httpResponse.isSuccessful()) {
-      throw new GraphInvalidResponseError(httpResponse);
+      throw new GraphHttpError(httpResponse);
     }
     return httpResponse;
   }

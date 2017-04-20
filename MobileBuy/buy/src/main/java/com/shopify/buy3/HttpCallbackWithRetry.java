@@ -125,8 +125,8 @@ final class HttpCallbackWithRetry<T extends AbstractResponse<T>> implements okht
     Runnable action = () -> {
       if (error instanceof GraphNetworkError) {
         graphCallback.onNetworkError((GraphNetworkError) error);
-      } else if (error instanceof GraphInvalidResponseError) {
-        graphCallback.onInvalidResponseError((GraphInvalidResponseError) error);
+      } else if (error instanceof GraphHttpError) {
+        graphCallback.onHttpError((GraphHttpError) error);
       } else if (error instanceof GraphParseError) {
         graphCallback.onParseError((GraphParseError) error);
       } else {

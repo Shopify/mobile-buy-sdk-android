@@ -122,8 +122,8 @@ final class RealGraphCall<T extends AbstractResponse<T>> implements GraphCall<T>
     return enqueue(callback, null, RetryHandler.NO_RETRY);
   }
 
-  @NonNull @Override public GraphCall<T> enqueue(@NonNull final Callback<T> callback, @Nullable final Handler handler) {
-    return enqueue(callback, handler, RetryHandler.NO_RETRY);
+  @NonNull @Override public GraphCall<T> enqueue(@NonNull final Callback<T> callback, @Nullable final Handler callbackHandler) {
+    return enqueue(callback, callbackHandler, RetryHandler.NO_RETRY);
   }
 
   @NonNull @Override public GraphCall<T> enqueue(@NonNull final Callback<T> callback, @Nullable final Handler handler,

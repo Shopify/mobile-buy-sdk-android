@@ -147,7 +147,7 @@ public class GraphClientIntegrationTest {
     try {
       graphClient.queryGraph(shopNameQuery).execute();
       fail("expected GraphInvalidResponseError");
-    } catch (GraphInvalidResponseError e) {
+    } catch (GraphHttpError e) {
       assertThat(e.code()).isEqualTo(401);
       assertThat(e.message()).isEqualTo("Client Error");
       assertThat(e.rawResponse().body().string()).isEqualTo("Unauthorized request!");
