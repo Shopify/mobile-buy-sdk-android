@@ -33,7 +33,6 @@ import com.shopify.graphql.support.AbstractResponse;
 /**
  * <p> {@code GraphCall} is an abstraction for a {@code GraphQL} request that has been prepared for execution. As this class represents a
  * single request/response pair, it can't be executed twice. A call can be canceled.</p>
- * <p>
  * <p>In order to execute the request again, use {@link GraphCall#clone()} method which creates a new identical call object.</p>
  *
  * @param <T> type of the {@link AbstractResponse} response this call returns
@@ -64,7 +63,8 @@ public interface GraphCall<T extends AbstractResponse<T>> {
    *
    * @return {@code GraphQL} response
    * @throws IllegalStateException when the call has already been executed
-   * @throws GraphError            if the request could not be executed due to a cancellation, a timeout, network failure, parsing error etc.
+   * @throws GraphError            if the request could not be executed due to a cancellation, a timeout, network failure, parsing error
+   *                               etc.
    * @see GraphError
    */
   @NonNull GraphResponse<T> execute() throws GraphError;
