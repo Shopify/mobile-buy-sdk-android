@@ -24,7 +24,6 @@
 
 package com.shopify.buy3;
 
-import android.os.Handler;
 import android.support.annotation.NonNull;
 
 import com.shopify.graphql.support.AbstractResponse;
@@ -37,7 +36,7 @@ import static com.shopify.buy3.Utils.checkNotNull;
 /**
  * Handler that determines if {@code GraphQL} call should be retried.
  *
- * @see GraphCall#enqueue(GraphCall.Callback, Handler, RetryHandler)
+ * @see GraphCall#enqueue(GraphCall.Callback, android.os.Handler, RetryHandler)
  */
 @SuppressWarnings("unchecked")
 public final class RetryHandler {
