@@ -63,9 +63,11 @@ public interface GraphCall<T extends AbstractResponse<T>> {
    *
    * @return {@code GraphQL} response
    * @throws IllegalStateException when the call has already been executed
-   * @throws GraphError            if the request could not be executed due to a cancellation, a timeout, network failure, parsing error
-   *                               etc.
-   * @see GraphError
+   * @throws GraphError            if the request could not be executed due to cancellation, timeouts, network failure, parsing error etc.
+   * @see GraphCallCanceledError
+   * @see GraphNetworkError
+   * @see GraphHttpError
+   * @see GraphParseError
    */
   @NonNull GraphResponse<T> execute() throws GraphError;
 
@@ -104,57 +106,28 @@ public interface GraphCall<T extends AbstractResponse<T>> {
   @NonNull GraphCall<T> enqueue(@NonNull Callback<T> callback, @Nullable Handler handler, @NonNull RetryHandler retryHandler);
 
   /**
-   * Callback used for notifying response of GraphQL call that has been scheduled for execution.
+   * Callback used for notifying response of {@code GraphQL} call that has been scheduled for execution.
    *
    * @param <T> type of the {@link AbstractResponse} response this call back serves
    */
-  abstract class Callback<T extends AbstractResponse<T>> {
+  interface Callback<T extends AbstractResponse<T>> {
 
     /**
-     * Called when GraphQL response is received and parsed successfully.
+     * Called when {@code GraphQL} response is received and parsed successfully.
      *
-     * @param response parsed GraphQL response
+     * @param response parsed {@code GraphQL} response
      */
-    public abstract void onResponse(@NonNull GraphResponse<T> response);
+    void onResponse(@NonNull GraphResponse<T> response);
 
     /**
-     * Called when GraphQL call can't be executed due to cancellation, a connectivity problem, timeouts, parsing errors etc.
+     * Called when {@code GraphQL} call could not be executed due to cancellation, timeouts, network failure, parsing error etc.
      *
      * @param error {@link GraphError} that has been thrown during call execution
+     * @see GraphCallCanceledError
+     * @see GraphNetworkError
+     * @see GraphHttpError
+     * @see GraphParseError
      */
-    public abstract void onFailure(@NonNull GraphError error);
-
-    /**
-     * Called when GraphQL call can't be executed due to any network errors (connectivity problem, timeouts etc.)
-     *
-     * @param error {@link GraphNetworkError} that has been thrown during call execution
-     */
-    public void onNetworkError(@NonNull final GraphNetworkError error) {
-      onFailure(error);
-    }
-
-    /**
-     * Called when GraphQL call executed but HTTP response status code is not from {@code 200} series.
-     * <p><b>Due to the fact that {@link GraphHttpError#rawResponse} referenced to {@link okhttp3.Response}
-     * it's important to call {@link GraphHttpError#dispose()} to avoid leaking resources.</b></p>
-     *
-     * @param error {@link GraphHttpError} that has been thrown during call execution
-     */
-    public void onHttpError(@NonNull final GraphHttpError error) {
-      try {
-        onFailure(error);
-      } finally {
-        error.dispose();
-      }
-    }
-
-    /**
-     * Called whe GraphQL response can't be parsed.
-     *
-     * @param error {@link GraphParseError} that has been thrown during call execution
-     */
-    public void onParseError(@NonNull final GraphParseError error) {
-      onFailure(error);
-    }
+    void onFailure(@NonNull GraphError error);
   }
 }

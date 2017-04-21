@@ -150,16 +150,14 @@ public class GraphClientIntegrationTest {
     } catch (GraphHttpError e) {
       assertThat(e.code()).isEqualTo(401);
       assertThat(e.message()).isEqualTo("Client Error");
-      assertThat(e.rawResponse().body().string()).isEqualTo("Unauthorized request!");
       assertThat(e.getMessage()).isEqualTo("HTTP 401 Client Error");
-      e.dispose();
     }
   }
 
   @Test public void networkError() throws Exception {
     try {
       graphClient.queryGraph(shopNameQuery).execute();
-      fail("expected ApolloNetworkException");
+      fail("expected GraphNetworkError");
     } catch (GraphNetworkError e) {
       assertThat(e.getMessage()).isEqualTo("Failed to execute GraphQL http request");
       assertThat(e.getCause().getClass()).isEqualTo(SocketTimeoutException.class);
@@ -170,9 +168,43 @@ public class GraphClientIntegrationTest {
     server.enqueue(new MockResponse().setBody("Noise"));
     try {
       graphClient.queryGraph(shopNameQuery).execute();
-      fail("Expected ApolloParseException");
+      fail("Expected GraphParseError");
     } catch (GraphParseError e) {
       assertThat(e.getMessage()).isEqualTo("Failed to parse GraphQL http response");
     }
+  }
+
+  @Test public void canceledErrorBeforeExecute() throws Exception {
+    GraphCall call = graphClient.queryGraph(shopNameQuery);
+    call.cancel();
+    try {
+      call.execute();
+      fail("Expected GraphCallCanceledError");
+    } catch (GraphCallCanceledError expected) {
+      // expected
+    }
+  }
+
+  @Test public void canceledErrorDuringExecute() throws Exception {
+    final NamedCountDownLatch countDownLatch = new NamedCountDownLatch("canceledErrorDuringExecute", 1);
+    final GraphCall call = graphClient.queryGraph(shopNameQuery);
+
+    new Thread(() -> {
+      try {
+        Thread.sleep(TimeUnit.SECONDS.toMillis(1));
+      } catch (InterruptedException ignore) {
+        // ignore
+      }
+      call.cancel();
+      countDownLatch.countDown();
+    }).start();
+
+    try {
+      call.execute();
+      fail("Expected GraphCallCanceledError");
+    } catch (GraphCallCanceledError expected) {
+      // expected
+    }
+    countDownLatch.await(3, TimeUnit.SECONDS);
   }
 }

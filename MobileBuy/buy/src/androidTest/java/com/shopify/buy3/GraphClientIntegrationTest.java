@@ -149,12 +149,12 @@ public class GraphClientIntegrationTest {
       }
 
       @Override public void onFailure(@NonNull final GraphError error) {
-        fail("expected GraphInvalidResponseError");
-      }
-
-      @Override public void onHttpError(@NonNull final GraphHttpError error) {
-        errorRef.set(error);
-        countDownLatch.countDown();
+        if (error instanceof GraphHttpError) {
+          errorRef.set((GraphHttpError) error);
+          countDownLatch.countDown();
+        } else {
+          fail("expected GraphInvalidResponseError");
+        }
       }
     }, mockCallbackHandler(executedInCallbackHandler));
     countDownLatch.await(2, TimeUnit.SECONDS);
@@ -162,9 +162,7 @@ public class GraphClientIntegrationTest {
     GraphHttpError error = errorRef.get();
     assertThat(error.code()).isEqualTo(401);
     assertThat(error.message()).isEqualTo("Client Error");
-    assertThat(error.rawResponse().body().string()).isEqualTo("Unauthorized request!");
     assertThat(error.getMessage()).isEqualTo("HTTP 401 Client Error");
-    error.dispose();
   }
 
   @Test public void networkError() throws Exception {
@@ -173,16 +171,16 @@ public class GraphClientIntegrationTest {
     AtomicReference<GraphNetworkError> errorRef = new AtomicReference<>();
     graphClient.queryGraph(shopNameQuery).enqueue(new GraphCall.Callback<Storefront.QueryRoot>() {
       @Override public void onResponse(@NonNull final GraphResponse<Storefront.QueryRoot> response) {
-        fail("expected ApolloNetworkException");
+        fail("expected GraphNetworkError");
       }
 
       @Override public void onFailure(@NonNull final GraphError error) {
-        fail("expected ApolloNetworkException");
-      }
-
-      @Override public void onNetworkError(@NonNull final GraphNetworkError error) {
-        errorRef.set(error);
-        countDownLatch.countDown();
+        if (error instanceof GraphNetworkError) {
+          errorRef.set((GraphNetworkError) error);
+          countDownLatch.countDown();
+        } else {
+          fail("expected GraphNetworkError");
+        }
       }
     }, mockCallbackHandler(executedInCallbackHandler));
     countDownLatch.await(4, TimeUnit.SECONDS);
@@ -199,16 +197,16 @@ public class GraphClientIntegrationTest {
     AtomicReference<GraphParseError> errorRef = new AtomicReference<>();
     graphClient.queryGraph(shopNameQuery).enqueue(new GraphCall.Callback<Storefront.QueryRoot>() {
       @Override public void onResponse(@NonNull final GraphResponse<Storefront.QueryRoot> response) {
-        fail("expected ApolloNetworkException");
+        fail("expected GraphParseError");
       }
 
       @Override public void onFailure(@NonNull final GraphError error) {
-        fail("expected ApolloNetworkException");
-      }
-
-      @Override public void onParseError(@NonNull final GraphParseError error) {
-        errorRef.set(error);
-        countDownLatch.countDown();
+        if (error instanceof GraphParseError) {
+          errorRef.set((GraphParseError) error);
+          countDownLatch.countDown();
+        } else {
+          fail("expected GraphParseError");
+        }
       }
     }, mockCallbackHandler(executedInCallbackHandler));
     countDownLatch.await(1, TimeUnit.SECONDS);
@@ -217,7 +215,32 @@ public class GraphClientIntegrationTest {
     assertThat(error.getMessage()).isEqualTo("Failed to parse GraphQL http response");
   }
 
-  @Test public void cancel() throws Exception {
+  @Test public void canceledErrorBeforeExecute() throws Exception {
+    AtomicBoolean executedInCallbackHandler = new AtomicBoolean();
+    CountDownLatch countDownLatch = new CountDownLatch(1);
+    GraphCall<Storefront.QueryRoot> call = graphClient.queryGraph(shopNameQuery);
+    call.cancel();
+
+    call.enqueue(new GraphCall.Callback<Storefront.QueryRoot>() {
+      @Override public void onResponse(@NonNull final GraphResponse<Storefront.QueryRoot> response) {
+        fail("expected GraphCallCanceledError");
+      }
+
+      @Override public void onFailure(@NonNull final GraphError error) {
+        if (error instanceof GraphCallCanceledError) {
+          countDownLatch.countDown();
+        } else {
+          fail("expected GraphCallCanceledError");
+        }
+      }
+    }, mockCallbackHandler(executedInCallbackHandler));
+
+    countDownLatch.await(5, TimeUnit.SECONDS);
+    assertThat(call.isCanceled()).isTrue();
+    assertThat(executedInCallbackHandler.get()).isFalse();
+  }
+
+  @Test public void canceledErrorDuringExecute() throws Exception {
     server.enqueue(new MockResponse().setResponseCode(200).setBody("{"
       + "  \"data\": {"
       + "    \"shop\": {"
@@ -227,26 +250,26 @@ public class GraphClientIntegrationTest {
       + "}").setBodyDelay(3, TimeUnit.SECONDS));
     AtomicBoolean executedInCallbackHandler = new AtomicBoolean();
     CountDownLatch countDownLatch = new CountDownLatch(1);
-    AtomicBoolean callbackIssued = new AtomicBoolean();
     GraphCall<Storefront.QueryRoot> call = graphClient.queryGraph(shopNameQuery).enqueue(new GraphCall.Callback<Storefront.QueryRoot>() {
       @Override public void onResponse(@NonNull final GraphResponse<Storefront.QueryRoot> response) {
-        callbackIssued.set(true);
-        countDownLatch.countDown();
+        fail("expected GraphCallCanceledError");
       }
 
       @Override public void onFailure(@NonNull final GraphError error) {
-        callbackIssued.set(true);
-        countDownLatch.countDown();
+        if (error instanceof GraphCallCanceledError) {
+          countDownLatch.countDown();
+        } else {
+          fail("expected GraphCallCanceledError");
+        }
       }
     }, mockCallbackHandler(executedInCallbackHandler));
-    countDownLatch.await(2, TimeUnit.SECONDS);
+
+    countDownLatch.await(1, TimeUnit.SECONDS);
     call.cancel();
-    countDownLatch.await(5, TimeUnit.SECONDS);
-    if (callbackIssued.get()) {
-      fail("expected canceled");
-    }
+
+    countDownLatch.await(3, TimeUnit.SECONDS);
     assertThat(call.isCanceled()).isTrue();
-    assertThat(executedInCallbackHandler.get()).isFalse();
+    assertThat(executedInCallbackHandler.get()).isTrue();
   }
 
   private static Looper createBackgroundLooper() throws Exception {
