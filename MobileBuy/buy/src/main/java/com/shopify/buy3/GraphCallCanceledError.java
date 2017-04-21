@@ -24,42 +24,18 @@
 
 package com.shopify.buy3;
 
-import android.support.annotation.NonNull;
-
-import okhttp3.Response;
-
 /**
- * Thrown when GraphQL call executed but HTTP response status code is not from {@code 200} series
+ * Thrown when GraphQL call has been canceled
  */
-public class GraphHttpError extends GraphError {
-  private final int code;
-  private final String message;
-
-  GraphHttpError(@NonNull final Response rawResponse) {
-    super(formatMessage(rawResponse));
-    this.code = rawResponse.code();
-    this.message = rawResponse.message();
+public class GraphCallCanceledError extends GraphError {
+  public GraphCallCanceledError() {
   }
 
-  /**
-   * Return HTTP status code.
-   *
-   * @return http status code
-   */
-  public int code() {
-    return code;
+  public GraphCallCanceledError(final String message) {
+    super(message);
   }
 
-  /**
-   * Return HTTP status message.
-   *
-   * @return http status message
-   */
-  public String message() {
-    return message;
-  }
-
-  private static String formatMessage(Response response) {
-    return "HTTP " + response.code() + " " + response.message();
+  public GraphCallCanceledError(final String message, final Throwable cause) {
+    super(message, cause);
   }
 }

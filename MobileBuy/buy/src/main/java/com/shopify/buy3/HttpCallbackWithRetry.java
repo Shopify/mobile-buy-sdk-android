@@ -105,10 +105,6 @@ final class HttpCallbackWithRetry<T extends AbstractResponse<T>> implements okht
   }
 
   private void notifyResponse(final GraphResponse<T> response) {
-    if (httpCall.isCanceled()) {
-      return;
-    }
-
     Runnable action = () -> graphCallback.onResponse(response);
     if (handler != null) {
       handler.post(action);
@@ -118,21 +114,7 @@ final class HttpCallbackWithRetry<T extends AbstractResponse<T>> implements okht
   }
 
   private void notifyError(final GraphError error) {
-    if (httpCall.isCanceled()) {
-      return;
-    }
-
-    Runnable action = () -> {
-      if (error instanceof GraphNetworkError) {
-        graphCallback.onNetworkError((GraphNetworkError) error);
-      } else if (error instanceof GraphHttpError) {
-        graphCallback.onHttpError((GraphHttpError) error);
-      } else if (error instanceof GraphParseError) {
-        graphCallback.onParseError((GraphParseError) error);
-      } else {
-        graphCallback.onFailure(error);
-      }
-    };
+    Runnable action = () -> graphCallback.onFailure(error);
     if (handler != null) {
       handler.post(action);
     } else {
