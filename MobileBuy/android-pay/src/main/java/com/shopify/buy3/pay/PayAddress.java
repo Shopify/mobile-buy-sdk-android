@@ -32,6 +32,9 @@ import com.google.android.gms.identity.intents.model.UserAddress;
 
 import static com.shopify.buy3.pay.Util.checkNotNull;
 
+/**
+ * Convenient class that represents Shopify compliant address.
+ */
 public final class PayAddress {
   private static final int FIRST_NAME_PART = 0;
   private static final int LAST_NAME_PART = 1;
@@ -46,6 +49,12 @@ public final class PayAddress {
   @Nullable public final String province;
   @Nullable public final String zip;
 
+  /**
+   * Convert Android Pay {@link UserAddress} to Shopify address format.
+   *
+   * @param userAddress android pay user address
+   * @return Shopify compliant address
+   */
   public static PayAddress fromUserAddress(@NonNull final UserAddress userAddress) {
     checkNotNull(userAddress, "userAddress == null");
 

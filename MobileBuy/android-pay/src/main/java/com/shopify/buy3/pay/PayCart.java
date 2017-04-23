@@ -50,6 +50,9 @@ import java.util.Locale;
 import static com.shopify.buy3.pay.Util.checkNotEmpty;
 import static com.shopify.buy3.pay.Util.checkNotNull;
 
+/**
+ * Abstraction that represents Android Pay user cart with all required attributes for making checkout.
+ */
 @SuppressWarnings({"WeakerAccess", "unused"})
 public final class PayCart implements Parcelable {
   @NonNull public final String currencyCode;
@@ -141,6 +144,12 @@ public final class PayCart implements Parcelable {
     return new Builder();
   }
 
+  /**
+   * Constructs {@link MaskedWalletRequest} from this {@link PayCart}.
+   *
+   * @param androidPayPublicKey android pay public key
+   * @return {@link MaskedWalletRequest}
+   */
   public MaskedWalletRequest maskedWalletRequest(@NonNull final String androidPayPublicKey) {
     PaymentMethodTokenizationParameters parameters =
       PaymentMethodTokenizationParameters.newBuilder()
@@ -163,6 +172,13 @@ public final class PayCart implements Parcelable {
     return builder.build();
   }
 
+  /**
+   * Constructs {@link MaskedWallet} from this {@link PayCart}.
+   *
+   * @param maskedWallet masked wallet associated with this {@link PayCart} that was requested
+   *                     via {@link PayCart#maskedWalletRequest(String)}
+   * @return {@link MaskedWallet}
+   */
   public FullWalletRequest fullWalletRequest(@NonNull final MaskedWallet maskedWallet) {
     checkNotNull(maskedWallet, "maskedWallet can't be empty");
     return FullWalletRequest.newBuilder()

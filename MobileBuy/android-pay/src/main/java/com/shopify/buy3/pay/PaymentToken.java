@@ -28,6 +28,9 @@ import android.support.annotation.NonNull;
 
 import static com.shopify.buy3.pay.Util.checkNotEmpty;
 
+/**
+ * Abstraction that represents Android Pay Payment Token ready to use for the checkout.
+ */
 @SuppressWarnings("WeakerAccess")
 public final class PaymentToken {
   @NonNull public final String token;
