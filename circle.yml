@@ -1,10 +1,7 @@
 dependencies:
   pre:
     - mkdir -p ${ANDROID_HOME}/licenses
-    - echo $ANDROID_SDK_LICENSE > ${ANDROID_HOME}/licenses/android-sdk-license
-    - bash ./misc/download_keystore.sh
-  override:
-    - ./gradlew dependencies || true
+    - cp -rf licenses/ ${ANDROID_HOME}/licenses
 
 general:
   build_dir: MobileBuy
