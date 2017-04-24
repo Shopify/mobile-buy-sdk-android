@@ -30,7 +30,6 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
-import com.shopify.buy3.pay.PayHelper;
 import com.shopify.sample.R;
 import com.shopify.sample.view.ScreenRouter;
 

@@ -198,13 +198,13 @@ public final class PayHelper {
   }
 
   /**
-   * Interface for receiving results from {@link PayHelper#androidPayIsAvailable(Context, GoogleApiClient, AndroidPayReadyCallback)}
+   * Interface for receiving results from {@link PayHelper#isReadyToPay(Context, GoogleApiClient, List, AndroidPayReadyCallback)}
    */
   public interface AndroidPayReadyCallback {
     void onResult(boolean result);
   }
 
-  public static abstract class WalletResponseHandler {
+  public abstract static class WalletResponseHandler {
     public abstract void onWalletError(int requestCode, int errorCode);
 
     public void onMaskedWalletRequest() {
