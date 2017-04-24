@@ -1,7 +1,8 @@
 dependencies:
   pre:
-    - echo y | android update sdk --no-ui --all --filter "build-tools-25.0.2"
-    - echo y | sdkmanager "extras;m2repository;com;android;support;constraint;constraint-layout;1.0.2" 
+    - echo y | $ANDROID_HOME/tools/bin/sdkmanager "build-tools;25.0.2"
+    - echo y | $ANDROID_HOME/tools/bin/sdkmanager "extras;m2repository;com;android;support;constraint;constraint-layout;1.0.2" 
+    - echo y | $ANDROID_HOME/tools/bin/sdkmanager "extras;m2repository;com;android;support;constraint;constraint-layout-solver;1.0.2"
 
 general:
   build_dir: MobileBuy
