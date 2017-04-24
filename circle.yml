@@ -1,7 +1,7 @@
 dependencies:
   pre:
     - mkdir -p ${ANDROID_HOME}/licenses
-    - cp -rf licenses/ ${ANDROID_HOME}/licenses
+    - cp -rf ../licenses/ ${ANDROID_HOME}/licenses
 
 general:
   build_dir: MobileBuy
