@@ -243,7 +243,7 @@ public final class PayHelper {
   /**
    * Callback for handling wallet activity results from {@link PayHelper#handleWalletResponse(int, int, Intent, WalletResponseHandler)}
    */
-  public static abstract class WalletResponseHandler {
+  public abstract static class WalletResponseHandler {
 
     /**
      * Called when wallet request has failed.
