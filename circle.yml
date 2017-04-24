@@ -1,0 +1,16 @@
+general:
+  build_dir: MobileBuy
+
+machine:
+  environment:
+    QEMU_AUDIO_DRV: none
+
+test:
+  pre:
+    - emulator -avd circleci-android24 -no-window:
+        background: true
+        parallel: true
+    - circle-android wait-for-boot
+
+  override:
+    - ./gradlew clean build connectedCheck -PdisablePreDex --console=plain
