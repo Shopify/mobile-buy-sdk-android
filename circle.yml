@@ -1,9 +1,10 @@
 dependencies:
   pre:
-    - if [ ! -d "/usr/local/android-sdk-linux/build-tools/25.0.2" ]; then echo y | android update sdk --no-ui --all --filter "build-tools-25.0.2"; fi
-
-  cache_directories:
-    - /usr/local/android-sdk-linux/build-tools/25.0.2
+    - mkdir -p ${ANDROID_HOME}/licenses
+    - echo $ANDROID_SDK_LICENSE > ${ANDROID_HOME}/licenses/android-sdk-license
+    - bash ./misc/download_keystore.sh
+  override:
+    - ./gradlew dependencies || true
 
 general:
   build_dir: MobileBuy
