@@ -2,6 +2,10 @@ dependencies:
   pre:
     - mkdir -p ${ANDROID_HOME}/licenses
     - cp -rf ../licenses/ ${ANDROID_HOME}/licenses
+    - if [ ! -d "/usr/local/android-sdk-linux/build-tools/25.0.2" ]; then echo y | android update sdk --no-ui --all --filter "build-tools-25.0.2"; fi
+
+  cache_directories:
+      - /usr/local/android-sdk-linux/build-tools/25.0.2
 
 general:
   build_dir: MobileBuy
