@@ -19,4 +19,4 @@ test:
   #   - circle-android wait-for-boot
 
   override:
-    - ./gradlew clean build check -PdisablePreDex --console=plain
+    - ./gradlew clean build check -PdisablePreDex --console=plain -Dorg.gradle.daemon=false
