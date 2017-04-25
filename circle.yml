@@ -9,6 +9,7 @@ general:
 
 machine:
   environment:
+    _JAVA_OPTIONS: "-Xms512m -Xmx1024m"
     QEMU_AUDIO_DRV: none
     GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xmx2048m -XX:+HeapDumpOnOutOfMemoryError" -Dorg.gradle.daemon=false'
 
