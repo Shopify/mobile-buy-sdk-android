@@ -13,11 +13,11 @@ machine:
     GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xmx2048m -XX:+HeapDumpOnOutOfMemoryError" -Dorg.gradle.daemon=false'
 
 test:
-  # pre:
-  #   - emulator -avd circleci-android24 -no-window:
-  #       background: true
-  #       parallel: true
-  #   - circle-android wait-for-boot
+  pre:
+    - emulator -avd circleci-android24 -no-window:
+        background: true
+        parallel: true
+    - circle-android wait-for-boot
 
   override:
-    - ./gradlew clean build check -PdisablePreDex --console=plain
+    - ./gradlew clean build connectedCheck -PdisablePreDex --console=plain
