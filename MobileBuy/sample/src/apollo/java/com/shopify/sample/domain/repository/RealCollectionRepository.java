@@ -53,7 +53,7 @@ public final class RealCollectionRepository implements CollectionRepository {
   @NonNull @Override public Single<List<Collection>> fetchNextPage(@Nullable final String cursor, final int perPage) {
     CollectionsWithProducts query = CollectionsWithProducts.builder()
       .perPage(perPage)
-      .nextPageCursor(TextUtils.isEmpty(cursor) ? "" : cursor)
+      .nextPageCursor(TextUtils.isEmpty(cursor) ? null : cursor)
       .collectionSortKey(CollectionSortKeys.TITLE)
       .build();
 
