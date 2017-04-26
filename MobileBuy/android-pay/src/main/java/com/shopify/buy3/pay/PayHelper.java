@@ -53,17 +53,33 @@ import java.util.List;
 import static com.shopify.buy3.pay.Util.checkNotEmpty;
 import static com.shopify.buy3.pay.Util.checkNotNull;
 
+/**
+ * Helper class provides  utility functions to simplify Android Pay checkout flow.
+ */
 @SuppressWarnings({"WeakerAccess", "unused"})
 public final class PayHelper {
   public static final int REQUEST_CODE_MASKED_WALLET = 500;
   public static final int REQUEST_CODE_CHANGE_MASKED_WALLET = 501;
   public static final int REQUEST_CODE_FULL_WALLET = 502;
 
+  /**
+   * Request masked wallet for specified {@link PayCart}.
+   *
+   * @param googleApiClient     {@link GoogleApiClient}
+   * @param payCart             {@link PayCart}
+   * @param androidPayPublicKey Android Pay public key
+   */
   public static void requestMaskedWallet(final GoogleApiClient googleApiClient, final PayCart payCart, final String androidPayPublicKey) {
     MaskedWalletRequest maskedWalletRequest = payCart.maskedWalletRequest(androidPayPublicKey);
     Wallet.Payments.loadMaskedWallet(googleApiClient, maskedWalletRequest, PayHelper.REQUEST_CODE_MASKED_WALLET);
   }
 
+  /**
+   * Initialize Android Pay wallet fragment with specified masked wallet.
+   *
+   * @param walletFragment {@link SupportWalletFragment}
+   * @param maskedWallet   {@link MaskedWallet}
+   */
   public static void initializeWalletFragment(final SupportWalletFragment walletFragment, final MaskedWallet maskedWallet) {
     WalletFragmentInitParams initParams = WalletFragmentInitParams.newBuilder()
       .setMaskedWallet(maskedWallet)
@@ -72,11 +88,28 @@ public final class PayHelper {
     walletFragment.initialize(initParams);
   }
 
+  /**
+   * Request full wallet for specified {@link PayCart}.
+   *
+   * @param googleApiClient {@link GoogleApiClient}
+   * @param payCart         {@link PayCart}
+   * @param maskedWallet    {@link MaskedWallet}
+   */
   public static void requestFullWallet(final GoogleApiClient googleApiClient, final PayCart payCart, final MaskedWallet maskedWallet) {
     FullWalletRequest fullWalletRequest = payCart.fullWalletRequest(maskedWallet);
     Wallet.Payments.loadFullWallet(googleApiClient, fullWalletRequest, PayHelper.REQUEST_CODE_FULL_WALLET);
   }
 
+  /**
+   * Handle activity results for masked wallet and full wallet requests and delegates response to specified call back handler.
+   *
+   * @param requestCode Android Pay activity request code
+   * @param resultCode  Android Pay activity result code
+   * @param data        Android Pay response data
+   * @param handler     delegate call back handler
+   * @return {@code true} if activity result can be handled, {@code false} otherwise
+   * @see WalletResponseHandler
+   */
   public static boolean handleWalletResponse(final int requestCode, final int resultCode, final Intent data,
     final WalletResponseHandler handler) {
     if (requestCode != REQUEST_CODE_CHANGE_MASKED_WALLET
@@ -128,18 +161,13 @@ public final class PayHelper {
   }
 
   /**
-   * Checks to see if Play Services are available on device
+   * Check if Android Pay is enabled and ready for checkout.
    *
-   * @param context The context to use.
-   * @return true if Play Services are available
+   * @param context               {@link Context}
+   * @param apiClient             {@link GoogleApiClient}
+   * @param supportedCardNetworks list of supported credit card networks for current checkout
+   * @param delegate              callback result will be delegated to
    */
-  public static boolean hasGooglePlayServices(@NonNull final Context context) {
-    checkNotNull(context, "context can't be null");
-    GoogleApiAvailability googleAPI = GoogleApiAvailability.getInstance();
-    int result = googleAPI.isGooglePlayServicesAvailable(context);
-    return result == ConnectionResult.SUCCESS;
-  }
-
   public static void isReadyToPay(@NonNull final Context context, @NonNull final GoogleApiClient apiClient,
     @NonNull final List<Integer> supportedCardNetworks, @NonNull final AndroidPayReadyCallback delegate) {
     checkNotNull(apiClient, "apiClient can't be null");
@@ -156,7 +184,8 @@ public final class PayHelper {
       return;
     }
 
-    if (!hasGooglePlayServices(context)) {
+    GoogleApiAvailability googleAPI = GoogleApiAvailability.getInstance();
+    if (googleAPI.isGooglePlayServicesAvailable(context) != ConnectionResult.SUCCESS) {
       delegate.onResult(false);
       return;
     }
@@ -184,6 +213,13 @@ public final class PayHelper {
       });
   }
 
+  /**
+   * Extract payment token from {@link FullWallet} that will required to finish checkout.
+   *
+   * @param fullWallet          {@link FullWallet}
+   * @param androidPayPublicKey Android Pay public key
+   * @return payment token
+   */
   public static PaymentToken extractPaymentToken(@NonNull final FullWallet fullWallet, @NonNull final String androidPayPublicKey) {
     checkNotNull(fullWallet, "fullWallet can't be null");
     checkNotEmpty(androidPayPublicKey, "androidPayPublicKey can't be empty");
@@ -204,20 +240,50 @@ public final class PayHelper {
     void onResult(boolean result);
   }
 
+  /**
+   * Callback for handling wallet activity results from {@link PayHelper#handleWalletResponse(int, int, Intent, WalletResponseHandler)}
+   */
   public abstract static class WalletResponseHandler {
+
+    /**
+     * Called when wallet request has failed.
+     *
+     * @param requestCode wallet request code. One of {@link PayHelper#REQUEST_CODE_MASKED_WALLET},
+     *                    {@link PayHelper#REQUEST_CODE_CHANGE_MASKED_WALLET}, {@link PayHelper#REQUEST_CODE_FULL_WALLET}
+     * @param errorCode   error code
+     */
     public abstract void onWalletError(int requestCode, int errorCode);
 
+    /**
+     * Called when new masked wallet required. Usually {@link PayHelper#requestMaskedWallet(GoogleApiClient, PayCart, String)} should be
+     * called again.
+     */
     public void onMaskedWalletRequest() {
     }
 
+    /**
+     * Called when new masked wallet is returned.
+     *
+     * @param maskedWallet {@link MaskedWallet}
+     */
     public void onMaskedWallet(MaskedWallet maskedWallet) {
     }
 
+    /**
+     * Called when new full wallet is returned.
+     *
+     * @param fullWallet {@link FullWallet}
+     */
     public void onFullWallet(FullWallet fullWallet) {
     }
 
+    /**
+     * Called when wallet request has been canceled by user.
+     *
+     * @param requestCode one of {@link PayHelper#REQUEST_CODE_MASKED_WALLET},
+     *                    {@link PayHelper#REQUEST_CODE_CHANGE_MASKED_WALLET}, {@link PayHelper#REQUEST_CODE_FULL_WALLET}
+     */
     public void onWalletRequestCancel(int requestCode) {
-
     }
   }
 
