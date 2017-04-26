@@ -24,33 +24,18 @@
 
 package com.shopify.buy3;
 
-import android.support.annotation.Nullable;
-
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
-
-final class Utils {
-  private static final String DATE_TIME_PATTERN = "yyyy-MM-dd'T'HH:mm:ssZ";
-  private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormat.forPattern(DATE_TIME_PATTERN);
-
-  static DateTime parseDateTime(String dateTime) {
-    return DateTime.parse(dateTime, DATE_TIME_FORMATTER);
+/**
+ * Thrown when GraphQL call has been canceled
+ */
+public class GraphCallCanceledError extends GraphError {
+  public GraphCallCanceledError() {
   }
 
-  static <T> T checkNotNull(T reference, @Nullable Object errorMessage) {
-    if (reference == null) {
-      throw new NullPointerException(String.valueOf(errorMessage));
-    }
-    return reference;
+  public GraphCallCanceledError(final String message) {
+    super(message);
   }
 
-  public static String checkNotBlank(String reference, @Nullable Object errorMessage) {
-    if (reference == null) throw new NullPointerException(String.valueOf(errorMessage));
-    if (reference.isEmpty()) throw new IllegalArgumentException(String.valueOf(errorMessage));
-    return reference;
-  }
-
-  private Utils() {
+  public GraphCallCanceledError(final String message, final Throwable cause) {
+    super(message, cause);
   }
 }

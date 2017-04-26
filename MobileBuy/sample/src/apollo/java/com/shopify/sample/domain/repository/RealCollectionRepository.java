@@ -73,7 +73,7 @@ public final class RealCollectionRepository implements CollectionRepository {
     return mapItems(collectionEdges, collectionEdge -> {
         String collectionImageUrl = collectionEdge.collection.image.transform(it -> it.src).or("");
         return new Collection(collectionEdge.collection.id, collectionEdge.collection.title,
-          collectionEdge.collection.descriptionPlainSummary, collectionImageUrl, collectionEdge.cursor,
+          collectionEdge.collection.descriptionHtml, collectionImageUrl, collectionEdge.cursor,
           mapItems(collectionEdge.collection.productConnection.edges, productEdge -> {
             String productImageUrl = firstItem(productEdge.product.imageConnection.edges,
               imageEdge -> imageEdge != null ? imageEdge.image.src : null);

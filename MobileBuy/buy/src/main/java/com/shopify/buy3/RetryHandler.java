@@ -33,20 +33,40 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.shopify.buy3.Utils.checkNotNull;
 
+/**
+ * Handler that determines if {@code GraphQL} call should be retried.
+ *
+ * @see GraphCall#enqueue(GraphCall.Callback, android.os.Handler, RetryHandler)
+ */
 @SuppressWarnings("unchecked")
 public final class RetryHandler {
-  public static final RetryHandler NO_RETRY = noRetry();
 
+  /**
+   * Handler with no retries.
+   */
+  public static final RetryHandler NO_RETRY = delay(0, TimeUnit.MILLISECONDS).maxCount(0).build();
+
+  /**
+   * Prepare handler with periodic retries strategy.
+   *
+   * @param delay    between attempts
+   * @param timeUnit delay time unit
+   * @return prepared {@link Builder}
+   */
   public static Builder delay(final long delay, @NonNull final TimeUnit timeUnit) {
     return new Builder().delay(delay, timeUnit);
   }
 
+  /**
+   * Prepare handler with exponential backoff multiplier strategy.
+   *
+   * @param delay      minimum delay between attempts
+   * @param timeUnit   delay time unit
+   * @param multiplier exponential backoff multiplier
+   * @return prepared {@link Builder}
+   */
   public static Builder exponentialBackoff(final long delay, @NonNull final TimeUnit timeUnit, final float multiplier) {
     return new Builder().exponentialBackoff(delay, timeUnit, multiplier);
-  }
-
-  private static <T extends AbstractResponse> RetryHandler noRetry() {
-    return delay(0, TimeUnit.MILLISECONDS).maxCount(0).build();
   }
 
   private final int maxCount;
@@ -64,10 +84,22 @@ public final class RetryHandler {
     this.errorRetryCondition = builder.errorRetryCondition;
   }
 
+  /**
+   * Checks if {@code GraphQL} call should be retried for specified {@code response} and max attempt count hasn't been reached.
+   *
+   * @param response to check if retry is required for
+   * @return {@code true} if {@code GraphQL} call should be retried, {@code false} otherwise
+   */
   public boolean retry(final GraphResponse response) {
     return responseRetryCondition.check(response) && retry();
   }
 
+  /**
+   * Checks if {@code GraphQL} call should be retried for specified {@code error} and max attempt count hasn't been reached.
+   *
+   * @param error to check if retry is required for
+   * @return {@code true} if {@code GraphQL} call should be retried, {@code false} otherwise
+   */
   public boolean retry(final GraphError error) {
     return errorRetryCondition.check(error) && retry();
   }
@@ -84,10 +116,9 @@ public final class RetryHandler {
     return Math.max((long) (delayBetweenRetriesMs * Math.pow(backoffMultiplier, retryAttempt.get())), delayBetweenRetriesMs);
   }
 
-  public interface Condition<T> {
-    boolean check(T t);
-  }
-
+  /**
+   * Builds new {@code RetryHandler} instance
+   */
   public static final class Builder {
     int maxCount = -1;
     long delayBetweenRetriesMs;
@@ -109,22 +140,46 @@ public final class RetryHandler {
       return this;
     }
 
+    /**
+     * Set maximum retry attempt count.
+     *
+     * @param maxCount maximum retry attempt count
+     * @return {@link Builder} to be used for chaining method calls
+     */
     public Builder maxCount(final int maxCount) {
       this.maxCount = maxCount;
       return this;
     }
 
+    /**
+     * Set condition on {@link GraphResponse} to check before next retry attempt.
+     *
+     * @param retryCondition condition to be checked
+     * @param <T>            type of the {@link AbstractResponse} response
+     * @return {@link Builder} to be used for chaining method calls
+     */
     public <T extends AbstractResponse<T>> Builder whenResponse(@NonNull final Condition<GraphResponse<T>> retryCondition) {
       checkNotNull(retryCondition, "retryCondition == null");
       this.responseRetryCondition = (Condition) retryCondition;
       return this;
     }
 
+    /**
+     * Set condition on {@link GraphError} to check before next retry attempt.
+     *
+     * @param retryCondition condition to be checked
+     * @return to be used for chaining method calls
+     */
     public Builder whenError(@NonNull final Condition<GraphError> retryCondition) {
       this.errorRetryCondition = checkNotNull(retryCondition, "retryCondition == null");
       return this;
     }
 
+    /**
+     * Builds the {@code RetryHandler} instance with specified configuration options.
+     *
+     * @return configured {@link RetryHandler}
+     */
     public RetryHandler build() {
       return new RetryHandler(this);
     }

@@ -33,6 +33,11 @@ import com.shopify.graphql.support.Error;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Represents parsed response returned by the {@code GraphQL} server.
+ *
+ * @param <T> type of parsed {@code GraphQL} response data
+ */
 public final class GraphResponse<T extends AbstractResponse<T>> {
   private final T data;
   private final List<Error> errors;
@@ -42,18 +47,38 @@ public final class GraphResponse<T extends AbstractResponse<T>> {
     this.errors = errors != null ? errors : Collections.emptyList();
   }
 
+  /**
+   * Return parsed {@code GraphQL} response data.
+   *
+   * @return parsed {@code GraphQL} response data
+   */
   @Nullable public T data() {
     return data;
   }
 
+  /**
+   * Return parsed {@code GraphQL} response errors.
+   *
+   * @return parsed {@code GraphQL} response errors
+   */
   @NonNull public List<Error> errors() {
     return errors;
   }
 
+  /**
+   * Check if returned response had any errors
+   *
+   * @return {@code true} if response has errors, {@code false} otherwise
+   */
   public boolean hasErrors() {
     return !errors.isEmpty();
   }
 
+  /**
+   * Return formatted {@code GraphQL} error message
+   *
+   * @return formatted {@code GraphQL} error message
+   */
   @NonNull public String formatErrorMessage() {
     StringBuilder message = new StringBuilder();
     boolean first = true;

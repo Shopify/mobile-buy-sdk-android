@@ -24,17 +24,12 @@
 
 package com.shopify.sample.presenter.cart;
 
-import android.app.Activity;
-import android.content.Context;
-import android.os.Bundle;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.wallet.MaskedWallet;
-import com.google.android.gms.wallet.MaskedWalletRequest;
-import com.google.android.gms.wallet.Wallet;
-import com.google.android.gms.wallet.WalletConstants;
 import com.shopify.buy3.pay.PayCart;
 import com.shopify.buy3.pay.PayHelper;
 import com.shopify.sample.BuildConfig;
@@ -50,15 +45,12 @@ import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 
-import static com.shopify.buy3.pay.PayHelper.androidPayIsAvailable;
-import static com.shopify.buy3.pay.PayHelper.isAndroidPayEnabledInManifest;
 import static com.shopify.sample.util.Util.checkNotNull;
 import static com.shopify.sample.util.Util.fold;
 import static com.shopify.sample.util.Util.mapItems;
 
 @SuppressWarnings("WeakerAccess")
-public final class CartCheckoutViewPresenter extends BaseViewPresenter<CartCheckoutViewPresenter.View>
-  implements GoogleApiClient.ConnectionCallbacks {
+public final class CartCheckoutViewPresenter extends BaseViewPresenter<CartCheckoutViewPresenter.View> {
   public static final int REQUEST_ID_UPDATE_CART = 1;
   public static final int REQUEST_ID_CREATE_ANDROID_PAY_CHECKOUT = 2;
   public static final int REQUEST_ID_CREATE_WEB_CHECKOUT = 3;
@@ -67,7 +59,6 @@ public final class CartCheckoutViewPresenter extends BaseViewPresenter<CartCheck
 
   private final CheckoutRepository checkoutRepository;
   private final CartRepository cartRepository;
-  private GoogleApiClient googleApiClient;
   private String currentCheckoutId;
   private PayCart payCart;
 
@@ -87,65 +78,31 @@ public final class CartCheckoutViewPresenter extends BaseViewPresenter<CartCheck
           .delegateOnNext(CartCheckoutViewPresenter::onTotalPriceUpdated)
           .create())
     );
-    connectAndroidPayGoogleApiClient();
-  }
-
-  @Override public void detachView() {
-    super.detachView();
-    if (googleApiClient != null) {
-      googleApiClient.disconnect();
-      googleApiClient = null;
-    }
-  }
-
-  @Override
-  public void onConnected(@Nullable final Bundle bundle) {
-    if (isViewAttached()) {
-      androidPayIsAvailable(view().context(), googleApiClient, result -> {
-          if (isViewAttached()) {
-            view().showAndroidPayCheckout();
-          }
-        }
-      );
-    }
-  }
-
-  @Override
-  public void onConnectionSuspended(final int i) {
-    // nothing
   }
 
   public void createWebCheckout() {
-    createCheckout(REQUEST_ID_CREATE_WEB_CHECKOUT);
+    createCheckout(REQUEST_ID_CREATE_WEB_CHECKOUT, null);
   }
 
-  public void createAndroidPayCheckout() {
-    createCheckout(REQUEST_ID_CREATE_ANDROID_PAY_CHECKOUT);
+  public void createAndroidPayCheckout(@NonNull final GoogleApiClient googleApiClient) {
+    createCheckout(REQUEST_ID_CREATE_ANDROID_PAY_CHECKOUT, checkNotNull(googleApiClient, "googleApiClient == null"));
   }
 
-  public void handleMaskedWalletResponse(final int resultCode, @Nullable final Bundle data) {
-    int errorCode = data != null ? data.getInt(WalletConstants.EXTRA_ERROR_CODE, -1) : -1;
-    if (errorCode != -1 || data == null) {
-      showError(REQUEST_ID_PREPARE_ANDROID_PAY, new RuntimeException("Failed to fetch masked wallet, errorCode: " + errorCode));
-      return;
-    }
+  public boolean handleMaskedWalletResponse(final int requestCode, final int resultCode, @Nullable final Intent data) {
+    return PayHelper.handleWalletResponse(requestCode, resultCode, data, new PayHelper.WalletResponseHandler() {
+      @Override public void onWalletError(final int requestCode, final int errorCode) {
+        showError(REQUEST_ID_PREPARE_ANDROID_PAY, new RuntimeException("Failed to fetch masked wallet, errorCode: " + errorCode));
+      }
 
-    if (resultCode != Activity.RESULT_OK) {
-      return;
-    }
-
-    MaskedWallet maskedWallet = data.getParcelable(WalletConstants.EXTRA_MASKED_WALLET);
-    if (maskedWallet == null) {
-      showError(REQUEST_ID_PREPARE_ANDROID_PAY, new RuntimeException("Failed to extract masked wallet, empty"));
-      return;
-    }
-
-    if (isViewAttached()) {
-      view().showAndroidPayConfirmation(currentCheckoutId, payCart, maskedWallet);
-    }
+      @Override public void onMaskedWallet(final MaskedWallet maskedWallet) {
+        if (isViewAttached()) {
+          view().showAndroidPayConfirmation(currentCheckoutId, payCart, maskedWallet);
+        }
+      }
+    });
   }
 
-  private void createCheckout(final int requestId) {
+  private void createCheckout(final int requestId, final GoogleApiClient googleApiClient) {
     cancelRequest(REQUEST_ID_CREATE_WEB_CHECKOUT);
     cancelRequest(REQUEST_ID_CREATE_ANDROID_PAY_CHECKOUT);
 
@@ -158,7 +115,7 @@ public final class CartCheckoutViewPresenter extends BaseViewPresenter<CartCheck
         .toObservable()
         .observeOn(AndroidSchedulers.mainThread())
         .subscribeWith(WeakObserver.<CartCheckoutViewPresenter, Checkout>forTarget(this)
-          .delegateOnNext((presenter, checkout) -> presenter.onCreateCheckout(requestId, checkout))
+          .delegateOnNext((presenter, checkout) -> presenter.onCreateCheckout(requestId, checkout, googleApiClient))
           .delegateOnError((presenter, t) -> presenter.onCreateCheckoutError(requestId, t))
           .create())
     );
@@ -170,14 +127,14 @@ public final class CartCheckoutViewPresenter extends BaseViewPresenter<CartCheck
     }
   }
 
-  private void onCreateCheckout(final int requestId, final Checkout checkout) {
+  private void onCreateCheckout(final int requestId, @NonNull final Checkout checkout, final GoogleApiClient googleApiClient) {
     if (isViewAttached()) {
       view().hideProgress(requestId);
       this.currentCheckoutId = checkout.id;
       if (requestId == REQUEST_ID_CREATE_WEB_CHECKOUT) {
         view().showWebCheckout(checkout);
       } else if (requestId == REQUEST_ID_CREATE_ANDROID_PAY_CHECKOUT) {
-        prepareForAndroidPayCheckout(checkout);
+        prepareForAndroidPayCheckout(checkout, googleApiClient);
       }
     }
   }
@@ -189,22 +146,7 @@ public final class CartCheckoutViewPresenter extends BaseViewPresenter<CartCheck
     }
   }
 
-  private void connectAndroidPayGoogleApiClient() {
-    if (isAndroidPayEnabledInManifest(view().context())) {
-      googleApiClient = new GoogleApiClient.Builder(view().context())
-        .addApi(
-          Wallet.API,
-          new Wallet.WalletOptions.Builder()
-            .setEnvironment(BuildConfig.ANDROID_PAY_ENVIRONMENT)
-            .setTheme(WalletConstants.THEME_LIGHT)
-            .build())
-        .addConnectionCallbacks(this)
-        .build();
-      googleApiClient.connect();
-    }
-  }
-
-  private void prepareForAndroidPayCheckout(final Checkout checkout) {
+  private void prepareForAndroidPayCheckout(final Checkout checkout, final GoogleApiClient googleApiClient) {
     PayCart.Builder payCartBuilder = PayCart.builder()
       .merchantName("SampleApp")
       .currencyCode(checkout.currency)
@@ -215,17 +157,12 @@ public final class CartCheckoutViewPresenter extends BaseViewPresenter<CartCheck
       accumulator.addLineItem(lineItem.title, lineItem.quantity, lineItem.price));
 
     payCart = payCartBuilder.build();
-    MaskedWalletRequest maskedWalletRequest = payCart.maskedWalletRequest(BuildConfig.ANDROID_PAY_PUBLIC_KEY);
-    Wallet.Payments.loadMaskedWallet(googleApiClient, maskedWalletRequest, PayHelper.REQUEST_CODE_MASKED_WALLET);
+    PayHelper.requestMaskedWallet(googleApiClient, payCart, BuildConfig.ANDROID_PAY_PUBLIC_KEY);
   }
 
   public interface View extends com.shopify.sample.mvp.View {
 
-    Context context();
-
     void renderTotal(@NonNull String total);
-
-    void showAndroidPayCheckout();
 
     void showWebCheckout(@NonNull Checkout checkout);
 

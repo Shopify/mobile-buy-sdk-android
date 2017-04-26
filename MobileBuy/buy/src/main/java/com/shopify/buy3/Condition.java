@@ -24,39 +24,17 @@
 
 package com.shopify.buy3;
 
-import android.support.annotation.NonNull;
-
-import okhttp3.Response;
-
-public class GraphInvalidResponseError extends GraphError {
-  private final int code;
-  private final String message;
-  private final transient Response rawResponse;
-
-  public GraphInvalidResponseError(@NonNull final Response rawResponse) {
-    super(formatMessage(rawResponse));
-    this.code = rawResponse.code();
-    this.message = rawResponse.message();
-    this.rawResponse = rawResponse;
-  }
-
-  public int code() {
-    return code;
-  }
-
-  public String message() {
-    return message;
-  }
-
-  @NonNull public Response rawResponse() {
-    return rawResponse;
-  }
-
-  public void dispose() {
-    rawResponse.close();
-  }
-
-  private static String formatMessage(Response response) {
-    return "HTTP " + response.code() + " " + response.message();
-  }
+/**
+ * Represents boolean condition to be checked on specified object.
+ *
+ * @param <T> type of object to be checked on
+ */
+public interface Condition<T> {
+  /**
+   * Check condition on specified object.
+   *
+   * @param t object to be checked
+   * @return {@code true} if condition success or {@code false} otherwise
+   */
+  boolean check(T t);
 }

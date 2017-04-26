@@ -40,7 +40,20 @@ import okhttp3.Request;
 import static com.shopify.buy3.Utils.checkNotBlank;
 import static com.shopify.buy3.Utils.checkNotNull;
 
+/**
+ * Class represents {@code GraphQL} client that is responsible for creating and preparing {@link GraphCall} calls.
+ * <p>This client should be shared between calls to the same shop domain.</p>
+ * <p>Internally {@code GraphQL} based on {@link OkHttpClient} that means it holds its own connection pool and thread pool, it is
+ * recommended to only create a single instance use that for execution of all the {@code GraphQL} calls, as this would reduce latency and
+ * would also save memory.</p>
+ */
 public final class GraphClient {
+  /**
+   * Creates builder to construct new {@code GraphClient} instance
+   *
+   * @param context android context
+   * @return {@link GraphClient.Builder}
+   */
   public static Builder builder(final Context context) {
     return new Builder(context);
   }
@@ -64,14 +77,31 @@ public final class GraphClient {
     }
   }
 
+  /**
+   * Creates and prepares {@link GraphCall} call to perform {@link Storefront.QueryRootQuery} execution.
+   *
+   * @param query {@code GraphQL} query to be executed
+   * @return prepared {@link GraphCall} call for execution
+   * @see GraphCall
+   */
   public GraphCall<Storefront.QueryRoot> queryGraph(final Storefront.QueryRootQuery query) {
     return new RealGraphCall<>(query, serverUrl, httpCallFactory, response -> new Storefront.QueryRoot(response.getData()), dispatcher);
   }
 
+  /**
+   * Creates and prepares {@link GraphCall} call to perform {@link Storefront.MutationQuery} execution.
+   *
+   * @param query {@code GraphQL} query to be executed
+   * @return prepared {@link GraphCall} call for execution
+   * @see GraphCall
+   */
   public GraphCall<Storefront.Mutation> mutateGraph(final Storefront.MutationQuery query) {
     return new RealGraphCall<>(query, serverUrl, httpCallFactory, response -> new Storefront.Mutation(response.getData()), dispatcher);
   }
 
+  /**
+   * Builds new {@code GraphClient} instance
+   */
   public static final class Builder {
     private static final long DEFAULT_HTTP_CONNECTION_TIME_OUT_MS = TimeUnit.SECONDS.toMillis(10);
     private static final long DEFAULT_HTTP_READ_WRITE_TIME_OUT_MS = TimeUnit.SECONDS.toMillis(20);
@@ -89,10 +119,12 @@ public final class GraphClient {
     }
 
     /**
-     * Sets store domain url (usually {store name}.myshopify.com
+     * Set Shopify store domain url (usually {@code {store name}.myshopify.com}).
      *
-     * @param shopDomain The domain for the shop.
-     * @return a {@link GraphClient.Builder}
+     * @param shopDomain domain for the shop
+     * @return {@link GraphClient.Builder} to be used for chaining method calls
+     * @throws NullPointerException     when {@code shopDomain} is null
+     * @throws IllegalArgumentException when {@code shopDomain} is empty
      */
     public Builder shopDomain(@NonNull final String shopDomain) {
       this.shopDomain = checkNotBlank(shopDomain, "shopDomain == null");
@@ -100,16 +132,25 @@ public final class GraphClient {
     }
 
     /**
-     * Sets Shopify store access token
+     * Set Shopify store access token
      *
      * @param accessToken store access token
-     * @return a {@link GraphClient.Builder}
+     * @return {@link GraphClient.Builder} to be used for chaining method calls
+     * @throws NullPointerException     when {@code accessToken} is null
+     * @throws IllegalArgumentException when {@code accessToken} is empty
      */
     public Builder accessToken(@NonNull final String accessToken) {
       this.accessToken = checkNotBlank(accessToken, "accessToken == null");
       return this;
     }
 
+    /**
+     * Set the {@link OkHttpClient} to use for making network requests.
+     *
+     * @param httpClient client to be used
+     * @return {@link GraphClient.Builder} to be used for chaining method calls
+     * @throws NullPointerException when {@code httpClient} is null
+     */
     public Builder httpClient(@NonNull OkHttpClient httpClient) {
       this.httpClient = checkNotNull(httpClient, "httpClient == null");
       return this;
@@ -120,11 +161,11 @@ public final class GraphClient {
       return this;
     }
 
-    Builder dispatcher(@NonNull final ScheduledExecutorService dispatcher) {
-      this.dispatcher = checkNotNull(dispatcher, "dispatcher == null");
-      return this;
-    }
-
+    /**
+     * Builds the {@code GraphClient} instance with specified configuration options.
+     *
+     * @return configured {@link GraphClient}
+     */
     public GraphClient build() {
       if (endpointUrl == null) {
         checkNotBlank(shopDomain, "shopDomain == null");

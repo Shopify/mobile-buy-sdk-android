@@ -105,25 +105,28 @@ final class RealGraphCall<T extends AbstractResponse<T>> implements GraphCall<T>
     if (!executed.compareAndSet(false, true)) {
       throw new IllegalStateException("Already Executed");
     }
-
-    httpCall = httpCall();
+    checkIfCanceled();
 
     Response response;
     try {
+      httpCall = httpCall();
       response = httpCall.execute();
     } catch (IOException e) {
+      checkIfCanceled();
       throw new GraphNetworkError("Failed to execute GraphQL http request", e);
     }
 
-    return httpResponseParser.parse(response);
+    GraphResponse<T> graphResponse = httpResponseParser.parse(response);
+    checkIfCanceled();
+    return graphResponse;
   }
 
   @NonNull @Override public GraphCall<T> enqueue(@NonNull final Callback<T> callback) {
     return enqueue(callback, null, RetryHandler.NO_RETRY);
   }
 
-  @NonNull @Override public GraphCall<T> enqueue(@NonNull final Callback<T> callback, @Nullable final Handler handler) {
-    return enqueue(callback, handler, RetryHandler.NO_RETRY);
+  @NonNull @Override public GraphCall<T> enqueue(@NonNull final Callback<T> callback, @Nullable final Handler callbackHandler) {
+    return enqueue(callback, callbackHandler, RetryHandler.NO_RETRY);
   }
 
   @NonNull @Override public GraphCall<T> enqueue(@NonNull final Callback<T> callback, @Nullable final Handler handler,
@@ -134,11 +137,35 @@ final class RealGraphCall<T extends AbstractResponse<T>> implements GraphCall<T>
 
     checkNotNull(retryHandler, "retryHandler == null");
 
+    if (canceled) {
+      callback.onFailure(new GraphCallCanceledError());
+      return this;
+    }
+
+    final Callback<T> proxyCallBack = new Callback<T>() {
+      @Override public void onResponse(@NonNull final GraphResponse<T> response) {
+        if (canceled) {
+          callback.onFailure(new GraphCallCanceledError());
+        } else {
+          callback.onResponse(response);
+        }
+      }
+
+      @Override public void onFailure(@NonNull final GraphError error) {
+        if (canceled) {
+          callback.onFailure(new GraphCallCanceledError());
+        } else {
+          callback.onFailure(error);
+        }
+      }
+    };
+
     dispatcher.execute(() -> {
       httpCall = httpCall();
-      httpCallbackWithRetry = new HttpCallbackWithRetry<>(httpCall, httpResponseParser, retryHandler, callback, dispatcher, handler);
+      httpCallbackWithRetry = new HttpCallbackWithRetry<>(httpCall, httpResponseParser, retryHandler, proxyCallBack, dispatcher, handler);
       httpCall.enqueue(httpCallbackWithRetry);
     });
+
     return this;
   }
 
@@ -150,6 +177,12 @@ final class RealGraphCall<T extends AbstractResponse<T>> implements GraphCall<T>
       .header("Accept", ACCEPT_HEADER)
       .build();
     return httpCallFactory.newCall(request);
+  }
+
+  private void checkIfCanceled() throws GraphCallCanceledError {
+    if (canceled) {
+      throw new GraphCallCanceledError();
+    }
   }
 
   interface ResponseDataConverter<R extends AbstractResponse<R>> {

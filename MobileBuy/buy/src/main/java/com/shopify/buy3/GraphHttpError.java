@@ -24,33 +24,42 @@
 
 package com.shopify.buy3;
 
-import android.support.annotation.Nullable;
+import android.support.annotation.NonNull;
 
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
+import okhttp3.Response;
 
-final class Utils {
-  private static final String DATE_TIME_PATTERN = "yyyy-MM-dd'T'HH:mm:ssZ";
-  private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormat.forPattern(DATE_TIME_PATTERN);
+/**
+ * Thrown when GraphQL call executed but HTTP response status code is not from {@code 200} series
+ */
+public class GraphHttpError extends GraphError {
+  private final int code;
+  private final String message;
 
-  static DateTime parseDateTime(String dateTime) {
-    return DateTime.parse(dateTime, DATE_TIME_FORMATTER);
+  GraphHttpError(@NonNull final Response rawResponse) {
+    super(formatMessage(rawResponse));
+    this.code = rawResponse.code();
+    this.message = rawResponse.message();
   }
 
-  static <T> T checkNotNull(T reference, @Nullable Object errorMessage) {
-    if (reference == null) {
-      throw new NullPointerException(String.valueOf(errorMessage));
-    }
-    return reference;
+  /**
+   * Return HTTP status code.
+   *
+   * @return http status code
+   */
+  public int code() {
+    return code;
   }
 
-  public static String checkNotBlank(String reference, @Nullable Object errorMessage) {
-    if (reference == null) throw new NullPointerException(String.valueOf(errorMessage));
-    if (reference.isEmpty()) throw new IllegalArgumentException(String.valueOf(errorMessage));
-    return reference;
+  /**
+   * Return HTTP status message.
+   *
+   * @return http status message
+   */
+  public String message() {
+    return message;
   }
 
-  private Utils() {
+  private static String formatMessage(Response response) {
+    return "HTTP " + response.code() + " " + response.message();
   }
 }

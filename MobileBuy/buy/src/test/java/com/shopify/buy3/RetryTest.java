@@ -92,7 +92,7 @@ public class RetryTest {
     }
 
     assertThat(server.getRequestCount()).isEqualTo(4);
-    assertThat(error).isInstanceOf(GraphInvalidResponseError.class);
+    assertThat(error).isInstanceOf(GraphHttpError.class);
   }
 
   @Test public void retryWihConditionNetworkError() throws Exception {
@@ -115,7 +115,7 @@ public class RetryTest {
       }
     }, null, RetryHandler.delay(100, TimeUnit.MILLISECONDS)
       .maxCount(4)
-      .whenError(error -> error instanceof GraphInvalidResponseError)
+      .whenError(error -> error instanceof GraphHttpError)
       .build());
 
     latch.awaitOrThrowWithTimeout(10, TimeUnit.SECONDS);

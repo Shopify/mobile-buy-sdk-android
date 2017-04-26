@@ -86,6 +86,8 @@ public final class CollectionListView extends FrameLayout implements PageListVie
   }
 
   @Override public void showError(final long requestId, final Throwable t) {
+    //TODO log error
+    t.printStackTrace();
     Snackbar.make(swipeRefreshLayoutView, R.string.default_error, Snackbar.LENGTH_LONG).show();
   }
 
