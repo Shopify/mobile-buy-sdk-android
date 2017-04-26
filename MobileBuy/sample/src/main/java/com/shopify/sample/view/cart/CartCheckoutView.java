@@ -36,8 +36,13 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.wallet.MaskedWallet;
+import com.google.android.gms.wallet.Wallet;
+import com.google.android.gms.wallet.WalletConstants;
 import com.shopify.buy3.pay.PayCart;
+import com.shopify.buy3.pay.PayHelper;
+import com.shopify.sample.BuildConfig;
 import com.shopify.sample.R;
 import com.shopify.sample.domain.model.Checkout;
 import com.shopify.sample.domain.repository.RealCartRepository;
@@ -45,29 +50,45 @@ import com.shopify.sample.domain.repository.RealCheckoutRepository;
 import com.shopify.sample.presenter.cart.CartCheckoutViewPresenter;
 import com.shopify.sample.view.ProgressDialogHelper;
 
+import java.util.Collections;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import static com.shopify.sample.util.Util.checkNotNull;
 
-public final class CartCheckoutView extends FrameLayout implements CartCheckoutViewPresenter.View {
+public final class CartCheckoutView extends FrameLayout implements CartCheckoutViewPresenter.View, GoogleApiClient.ConnectionCallbacks {
   @BindView(R.id.android_pay_checkout) View androidPayCheckoutView;
   @BindView(R.id.subtotal) TextView subtotalView;
+
   private final CartCheckoutViewPresenter presenter = new CartCheckoutViewPresenter(new RealCheckoutRepository(), new RealCartRepository());
   private ProgressDialogHelper progressDialogHelper;
   private OnConfirmAndroidPayListener onConfirmAndroidPayListener;
+  private GoogleApiClient googleApiClient;
 
   public CartCheckoutView(@NonNull final Context context) {
     super(context);
+    init();
   }
 
   public CartCheckoutView(@NonNull final Context context, @Nullable final AttributeSet attrs) {
     super(context, attrs);
+    init();
   }
 
   public CartCheckoutView(@NonNull final Context context, @Nullable final AttributeSet attrs, @AttrRes final int defStyleAttr) {
     super(context, attrs, defStyleAttr);
+    init();
+  }
+
+  @Override public void onConnected(@Nullable final Bundle bundle) {
+    PayHelper.isReadyToPay(getContext(), googleApiClient, Collections.emptyList(),
+      result -> androidPayCheckoutView.setVisibility(result ? VISIBLE : GONE));
+  }
+
+  @Override public void onConnectionSuspended(final int i) {
+    androidPayCheckoutView.setVisibility(GONE);
   }
 
   @Override public void showProgress(final int requestId) {
@@ -84,19 +105,12 @@ public final class CartCheckoutView extends FrameLayout implements CartCheckoutV
   }
 
   @Override public void showError(final long requestId, final Throwable t) {
-    //TODO show error message
+    //TODO log and show error message
+    t.printStackTrace();
   }
 
   @Override public void renderTotal(@NonNull final String total) {
     subtotalView.setText(checkNotNull(total, "total == null"));
-  }
-
-  @Override public Context context() {
-    return getContext();
-  }
-
-  @Override public void showAndroidPayCheckout() {
-    androidPayCheckoutView.setVisibility(VISIBLE);
   }
 
   @Override public void showWebCheckout(@NonNull final Checkout checkout) {
@@ -112,8 +126,8 @@ public final class CartCheckoutView extends FrameLayout implements CartCheckoutV
     }
   }
 
-  public void handleMaskedWalletResponse(final int resultCode, @Nullable final Bundle data) {
-    presenter.handleMaskedWalletResponse(resultCode, data);
+  public boolean handleMaskedWalletResponse(final int requestCode, final int resultCode, @Nullable final Intent data) {
+    return presenter.handleMaskedWalletResponse(requestCode, resultCode, data);
   }
 
   public void setOnConfirmAndroidPayListener(final OnConfirmAndroidPayListener onConfirmAndroidPayListener) {
@@ -127,14 +141,26 @@ public final class CartCheckoutView extends FrameLayout implements CartCheckoutV
 
   @Override protected void onAttachedToWindow() {
     super.onAttachedToWindow();
+    if (googleApiClient != null) {
+      googleApiClient.connect();
+    }
     progressDialogHelper = new ProgressDialogHelper(getContext());
+
     presenter.attachView(this);
   }
 
   @Override protected void onDetachedFromWindow() {
     super.onDetachedFromWindow();
-    progressDialogHelper.dismiss();
     presenter.detachView();
+
+    if (progressDialogHelper != null) {
+      progressDialogHelper.dismiss();
+      progressDialogHelper = null;
+    }
+
+    if (googleApiClient != null) {
+      googleApiClient.disconnect();
+    }
   }
 
   @OnClick(R.id.web_checkout) void onWebCheckoutClick() {
@@ -142,10 +168,24 @@ public final class CartCheckoutView extends FrameLayout implements CartCheckoutV
   }
 
   @OnClick(R.id.android_pay_checkout) void onAndroidPayCheckoutClick() {
-    presenter.createAndroidPayCheckout();
+    if (googleApiClient != null) {
+      presenter.createAndroidPayCheckout(googleApiClient);
+    }
   }
 
   public interface OnConfirmAndroidPayListener {
     void onConfirmAndroidPay(@NonNull String checkoutId, @NonNull PayCart payCart, @NonNull MaskedWallet maskedWallet);
+  }
+
+  private void init() {
+    if (PayHelper.isAndroidPayEnabledInManifest(getContext())) {
+      googleApiClient = new GoogleApiClient.Builder(getContext())
+        .addApi(Wallet.API, new Wallet.WalletOptions.Builder()
+          .setEnvironment(BuildConfig.ANDROID_PAY_ENVIRONMENT)
+          .setTheme(WalletConstants.THEME_DARK)
+          .build())
+        .addConnectionCallbacks(this)
+        .build();
+    }
   }
 }
