@@ -37,7 +37,7 @@ before_script:
   - adb shell input keyevent 82
 
 script:
-  - ./gradlew clean build connectedCheck -x checkstyleTest -PdisablePreDex --console=plain
+  - ./gradlew clean build connectedCheck -PdisablePreDex --console=plain
 
 before_cache:
     - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
