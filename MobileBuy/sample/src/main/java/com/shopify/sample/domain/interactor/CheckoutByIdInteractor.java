@@ -22,30 +22,14 @@
  *   THE SOFTWARE.
  */
 
-package com.shopify.sample.domain.repository;
+package com.shopify.sample.domain.interactor;
 
-import com.shopify.buy3.Storefront;
+import android.support.annotation.NonNull;
 
-final class CheckoutFragment implements Storefront.CheckoutQueryDefinition {
-  @Override public void define(final Storefront.CheckoutQuery query) {
-    query
-      .webUrl()
-      .requiresShipping()
-      .currencyCode()
-      .lineItems(250,
-        lineItemConnection -> lineItemConnection.edges(
-          lineItemEdge -> lineItemEdge.node(
-            lineItemNode -> lineItemNode
-              .variant(variant -> variant.price())
-              .quantity()
-              .title()
-          )
-        )
-      )
-      .totalPrice()
-      .totalTax()
-      .subtotalPrice()
-      .availableShippingRates(new CheckoutShippingRatesFragment())
-      .shippingLine(new CheckoutShippingRateFragment());
-  }
+import com.shopify.sample.domain.model.Checkout;
+
+import io.reactivex.Single;
+
+public interface CheckoutByIdInteractor {
+  Single<Checkout> execute(@NonNull String checkoutId);
 }

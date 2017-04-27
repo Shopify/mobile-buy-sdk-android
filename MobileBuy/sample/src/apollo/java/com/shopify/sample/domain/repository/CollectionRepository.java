@@ -22,31 +22,39 @@
  *   THE SOFTWARE.
  */
 
-package com.shopify.sample.presenter.collections;
+package com.shopify.sample.domain.repository;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
-import com.shopify.sample.domain.interactor.CollectionNextPageInteractor;
-import com.shopify.sample.domain.model.Collection;
-import com.shopify.sample.mvp.BasePageListViewPresenter;
-import com.shopify.sample.mvp.PageListViewPresenter;
+import com.apollographql.apollo.ApolloClient;
+import com.shopify.sample.domain.CollectionPageWithProductsQuery;
 
+import java.util.Collections;
 import java.util.List;
 
-import io.reactivex.ObservableTransformer;
+import io.reactivex.Single;
+import io.reactivex.schedulers.Schedulers;
 
+import static com.shopify.sample.RxUtil.rxApolloCall;
 import static com.shopify.sample.util.Util.checkNotNull;
 
-public final class CollectionListViewPresenter extends BasePageListViewPresenter<Collection, PageListViewPresenter.View<Collection>> {
-  private final CollectionNextPageInteractor collectionNextPageInteractor;
+public final class CollectionRepository {
+  private final ApolloClient apolloClient;
 
-  public CollectionListViewPresenter(@NonNull final CollectionNextPageInteractor collectionNextPageInteractor) {
-    this.collectionNextPageInteractor = checkNotNull(collectionNextPageInteractor, "collectionNextPageInteractor == null");
+  public CollectionRepository(@NonNull final ApolloClient apolloClient) {
+    this.apolloClient = checkNotNull(apolloClient, "apolloClient == null");
   }
 
-  @Override protected ObservableTransformer<String, List<Collection>> nextPageRequestComposer() {
-    return upstream -> upstream.flatMapSingle(
-      cursor -> collectionNextPageInteractor.execute(cursor, PER_PAGE)
-    );
+  @NonNull public Single<List<CollectionPageWithProductsQuery.Data.Edge>> nextPage(
+    @Nullable final CollectionPageWithProductsQuery query) {
+    checkNotNull(query, "query == null");
+    return rxApolloCall(apolloClient.newCall(query))
+      .map(response -> response.data()
+        .map(it -> it.shop)
+        .map(it -> it.collectionConnection)
+        .map(it -> it.edges)
+        .or(Collections.emptyList()))
+      .subscribeOn(Schedulers.io());
   }
 }

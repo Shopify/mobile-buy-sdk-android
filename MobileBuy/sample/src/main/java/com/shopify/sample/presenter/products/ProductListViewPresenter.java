@@ -24,30 +24,31 @@
 
 package com.shopify.sample.presenter.products;
 
+import android.support.annotation.NonNull;
+
+import com.shopify.sample.domain.interactor.CollectionProductNextPageInteractor;
 import com.shopify.sample.domain.model.Product;
-import com.shopify.sample.domain.repository.ProductRepository;
 import com.shopify.sample.mvp.BasePageListViewPresenter;
 import com.shopify.sample.mvp.PageListViewPresenter;
 
 import java.util.List;
 
 import io.reactivex.ObservableTransformer;
-import io.reactivex.schedulers.Schedulers;
 
 import static com.shopify.sample.util.Util.checkNotNull;
 
 public final class ProductListViewPresenter extends BasePageListViewPresenter<Product, PageListViewPresenter.View<Product>> {
   private final String collectionId;
-  private final ProductRepository productRepository;
+  private final CollectionProductNextPageInteractor collectionProductNextPageInteractor;
 
-  public ProductListViewPresenter(final String collectionId, final ProductRepository productRepository) {
+  public ProductListViewPresenter(@NonNull final String collectionId, @NonNull final CollectionProductNextPageInteractor collectionProductNextPageInteractor) {
     this.collectionId = checkNotNull(collectionId, "collectionId == null");
-    this.productRepository = checkNotNull(productRepository, "productRepository == null");
+    this.collectionProductNextPageInteractor = checkNotNull(collectionProductNextPageInteractor, "productNextPageInteractor == null");
   }
 
   @Override protected ObservableTransformer<String, List<Product>> nextPageRequestComposer() {
     return upstream -> upstream.flatMapSingle(
-      cursor -> productRepository.fetchNextPage(collectionId, cursor, PER_PAGE * 2)
-        .subscribeOn(Schedulers.io()));
+      cursor -> collectionProductNextPageInteractor.execute(collectionId, cursor, PER_PAGE * 2)
+    );
   }
 }

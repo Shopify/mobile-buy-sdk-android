@@ -22,35 +22,39 @@
  *   THE SOFTWARE.
  */
 
-package com.shopify.sample.domain.repository;
+package com.shopify.sample.domain.interactor;
 
 import android.support.annotation.NonNull;
 
-import com.shopify.buy3.pay.PayAddress;
-import com.shopify.buy3.pay.PayCart;
-import com.shopify.buy3.pay.PaymentToken;
+import com.shopify.buy3.Storefront;
+import com.shopify.graphql.support.ID;
+import com.shopify.sample.SampleApplication;
 import com.shopify.sample.domain.model.Checkout;
-import com.shopify.sample.domain.model.Payment;
+import com.shopify.sample.domain.repository.CheckoutRepository;
 
 import java.util.List;
 
 import io.reactivex.Single;
 
-public interface CheckoutRepository {
+import static com.shopify.sample.util.Util.checkNotEmpty;
+import static com.shopify.sample.util.Util.mapItems;
 
-  Single<Checkout> create(@NonNull List<Checkout.LineItem> lineItems);
+public final class RealCheckoutCreateInteractor implements CheckoutCreateInteractor {
+  private final CheckoutRepository repository;
 
-  Single<Checkout> updateShippingAddress(@NonNull String checkoutId, @NonNull PayAddress payAddress);
+  public RealCheckoutCreateInteractor() {
+    repository = new CheckoutRepository(SampleApplication.graphClient());
+  }
 
-  Single<Checkout> fetch(@NonNull String checkoutId);
+  @Override public Single<Checkout> execute(@NonNull final List<Checkout.LineItem> lineItems) {
+    checkNotEmpty(lineItems, "lineItems can't be empty");
 
-  Single<Checkout.ShippingRates> fetchShippingRates(@NonNull String checkoutId);
+    List<Storefront.CheckoutLineItemInput> storefrontLineItems = mapItems(lineItems, lineItem ->
+      new Storefront.CheckoutLineItemInput(lineItem.quantity, new ID(lineItem.variantId)));
+    Storefront.CheckoutCreateInput input = new Storefront.CheckoutCreateInput().setLineItems(storefrontLineItems);
 
-  Single<Checkout> applyShippingRate(@NonNull String checkoutId, @NonNull String shippingRateHandle);
-
-  Single<Checkout> updateEmail(@NonNull String checkoutId, @NonNull String email);
-
-  Single<Payment> completeCheckout(@NonNull String checkoutId, @NonNull PayCart payCart, @NonNull PaymentToken paymentToken,
-    @NonNull String email, @NonNull PayAddress billingAddress);
-
+    Storefront.CheckoutCreatePayloadQueryDefinition query =
+      it -> it.checkout(new CheckoutFragment()).userErrors(userError -> userError.field().message());
+    return repository.create(input, query).map(Converters::convertToCheckout);
+  }
 }

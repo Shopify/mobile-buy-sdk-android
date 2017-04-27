@@ -1,4 +1,4 @@
-query CollectionProducts($perPage: Int!, $nextPageCursor: String, $collectionId: ID!) {
+query CollectionProductPageQuery($perPage: Int!, $nextPageCursor: String, $collectionId: ID!) {
   collection: node(id: $collectionId) {
     ... on Collection {
       productConnection: products(first: $perPage, after: $nextPageCursor) {

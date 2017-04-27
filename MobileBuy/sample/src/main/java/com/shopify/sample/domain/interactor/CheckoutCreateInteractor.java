@@ -22,14 +22,16 @@
  *   THE SOFTWARE.
  */
 
-package com.shopify.sample.domain.repository;
+package com.shopify.sample.domain.interactor;
 
-import com.shopify.buy3.Storefront;
+import android.support.annotation.NonNull;
 
-final class CheckoutShippingRatesFragment implements Storefront.AvailableShippingRatesQueryDefinition {
-  @Override public void define(final Storefront.AvailableShippingRatesQuery query) {
-    query
-      .ready()
-      .shippingRates(new CheckoutShippingRateFragment());
-  }
+import com.shopify.sample.domain.model.Checkout;
+
+import java.util.List;
+
+import io.reactivex.Single;
+
+public interface CheckoutCreateInteractor {
+  Single<Checkout> execute(@NonNull List<Checkout.LineItem> lineItems);
 }

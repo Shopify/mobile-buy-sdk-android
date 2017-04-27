@@ -26,10 +26,10 @@ package com.shopify.sample.presenter.product;
 
 import android.support.annotation.NonNull;
 
+import com.shopify.sample.domain.interactor.ProductByIdInteractor;
 import com.shopify.sample.domain.model.CartItem;
 import com.shopify.sample.domain.model.ProductDetails;
 import com.shopify.sample.domain.repository.CartRepository;
-import com.shopify.sample.domain.repository.ProductRepository;
 import com.shopify.sample.mvp.BaseViewPresenter;
 import com.shopify.sample.util.WeakObserver;
 
@@ -42,14 +42,14 @@ import static com.shopify.sample.util.Util.mapItems;
 public final class ProductDetailsViewPresenter extends BaseViewPresenter<ProductDetailsViewPresenter.View> {
   public static final int REQUEST_ID_PRODUCT_DETAILS = 1;
   private final String productId;
-  private final ProductRepository productRepository;
+  private final ProductByIdInteractor productByIdInteractor;
   private final CartRepository cartRepository;
   private ProductDetails product;
 
-  public ProductDetailsViewPresenter(@NonNull final String productId, @NonNull final ProductRepository productRepository,
+  public ProductDetailsViewPresenter(@NonNull final String productId, @NonNull final ProductByIdInteractor productByIdInteractor,
     @NonNull final CartRepository cartRepository) {
     this.productId = checkNotNull(productId, "productId == null");
-    this.productRepository = checkNotNull(productRepository, "productRepository == null");
+    this.productByIdInteractor = checkNotNull(productByIdInteractor, "productDetailsInteractor == null");
     this.cartRepository = checkNotNull(cartRepository, "cartRepository == null");
   }
 
@@ -58,7 +58,7 @@ public final class ProductDetailsViewPresenter extends BaseViewPresenter<Product
       view().showProgress(REQUEST_ID_PRODUCT_DETAILS);
       registerRequest(
         REQUEST_ID_PRODUCT_DETAILS,
-        productRepository.fetchDetails(productId)
+        productByIdInteractor.execute(productId)
           .toObservable()
           .observeOn(AndroidSchedulers.mainThread())
           .subscribeWith(

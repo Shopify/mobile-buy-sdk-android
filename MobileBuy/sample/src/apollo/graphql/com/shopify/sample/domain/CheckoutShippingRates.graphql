@@ -1,4 +1,4 @@
-query FetchCheckoutShippingRatesQuery($checkoutId: ID!) {
+query CheckoutShippingRatesQuery($checkoutId: ID!) {
   node(id: $checkoutId) {
     ... on Checkout {
       availableShippingRates {

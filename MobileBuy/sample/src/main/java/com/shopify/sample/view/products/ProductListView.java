@@ -37,8 +37,10 @@ import android.view.View;
 
 import com.jakewharton.rxbinding2.support.v7.widget.RxRecyclerView;
 import com.shopify.sample.R;
+import com.shopify.sample.domain.interactor.CollectionProductNextPageInteractor;
+import com.shopify.sample.domain.interactor.RealCollectionNextPageInteractor;
+import com.shopify.sample.domain.interactor.RealCollectionProductNextPageInteractor;
 import com.shopify.sample.domain.model.Product;
-import com.shopify.sample.domain.repository.RealProductRepository;
 import com.shopify.sample.mvp.BasePageListViewPresenter;
 import com.shopify.sample.mvp.PageListViewPresenter;
 import com.shopify.sample.presenter.products.ProductListViewPresenter;
@@ -75,7 +77,7 @@ public final class ProductListView extends SwipeRefreshLayout implements PageLis
     if (presenter != null) {
       presenter.detachView();
     }
-    presenter = new ProductListViewPresenter(collectionId, new RealProductRepository());
+    presenter = new ProductListViewPresenter(collectionId, new RealCollectionProductNextPageInteractor());
     if (isAttachedToWindow()) {
       presenter.attachView(this);
       refresh();

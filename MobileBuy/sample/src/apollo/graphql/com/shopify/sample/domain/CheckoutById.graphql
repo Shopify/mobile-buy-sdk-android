@@ -1,4 +1,4 @@
-query FetchCheckoutQuery($checkoutId: ID!) {
+query CheckoutByIdQuery($checkoutId: ID!) {
   node(id: $checkoutId) {
     ...CheckoutFragment
   }

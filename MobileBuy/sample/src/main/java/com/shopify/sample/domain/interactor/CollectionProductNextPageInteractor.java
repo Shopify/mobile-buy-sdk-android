@@ -22,15 +22,17 @@
  *   THE SOFTWARE.
  */
 
-package com.shopify.sample.domain.repository;
+package com.shopify.sample.domain.interactor;
 
-import com.shopify.buy3.Storefront;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
-public final class PaymentFragment implements Storefront.PaymentQueryDefinition {
-  @Override public void define(final Storefront.PaymentQuery query) {
-    query
-      .ready()
-      .errorMessage()
-      .transaction(Storefront.TransactionQuery::status);
-  }
+import com.shopify.sample.domain.model.Product;
+
+import java.util.List;
+
+import io.reactivex.Single;
+
+public interface CollectionProductNextPageInteractor {
+  @NonNull Single<List<Product>> execute(@NonNull String collectionId, @Nullable String cursor, int perPage);
 }

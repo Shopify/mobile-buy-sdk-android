@@ -22,18 +22,31 @@
  *   THE SOFTWARE.
  */
 
-package com.shopify.sample.domain.repository;
+package com.shopify.sample.domain.interactor;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
-import com.shopify.sample.domain.model.Collection;
-
-import java.util.List;
+import com.shopify.buy3.Storefront;
+import com.shopify.sample.SampleApplication;
+import com.shopify.sample.domain.model.Checkout;
+import com.shopify.sample.domain.repository.CheckoutRepository;
 
 import io.reactivex.Single;
 
-public interface CollectionRepository {
+import static com.shopify.sample.util.Util.checkNotBlank;
 
-  @NonNull Single<List<Collection>> fetchNextPage(@Nullable String cursor, int perPage);
+public final class RealCheckoutShippingLineUpdateInteractor implements CheckoutShippingLineUpdateInteractor {
+  private final CheckoutRepository repository;
+
+  public RealCheckoutShippingLineUpdateInteractor() {
+    repository = new CheckoutRepository(SampleApplication.graphClient());
+  }
+
+  @Override public Single<Checkout> execute(@NonNull final String checkoutId, @NonNull final String shippingRateHandle) {
+    checkNotBlank(checkoutId, "checkoutId can't be empty");
+    checkNotBlank(shippingRateHandle, "shippingRateHandle can't be empty");
+
+    Storefront.CheckoutShippingLineUpdatePayloadQueryDefinition query = it -> it.checkout(new CheckoutFragment());
+    return repository.updateShippingLine(checkoutId, shippingRateHandle, query).map(Converters::convertToCheckout);
+  }
 }

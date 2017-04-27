@@ -22,31 +22,38 @@
  *   THE SOFTWARE.
  */
 
-package com.shopify.sample.presenter.collections;
+package com.shopify.sample.domain.interactor;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.text.TextUtils;
 
-import com.shopify.sample.domain.interactor.CollectionNextPageInteractor;
-import com.shopify.sample.domain.model.Collection;
-import com.shopify.sample.mvp.BasePageListViewPresenter;
-import com.shopify.sample.mvp.PageListViewPresenter;
+import com.shopify.sample.SampleApplication;
+import com.shopify.sample.domain.CollectionProductPageQuery;
+import com.shopify.sample.domain.model.Product;
+import com.shopify.sample.domain.repository.ProductRepository;
 
 import java.util.List;
 
-import io.reactivex.ObservableTransformer;
+import io.reactivex.Single;
 
-import static com.shopify.sample.util.Util.checkNotNull;
+import static com.shopify.sample.util.Util.checkNotBlank;
 
-public final class CollectionListViewPresenter extends BasePageListViewPresenter<Collection, PageListViewPresenter.View<Collection>> {
-  private final CollectionNextPageInteractor collectionNextPageInteractor;
+public class RealCollectionProductNextPageInteractor implements CollectionProductNextPageInteractor {
+  private final ProductRepository repository;
 
-  public CollectionListViewPresenter(@NonNull final CollectionNextPageInteractor collectionNextPageInteractor) {
-    this.collectionNextPageInteractor = checkNotNull(collectionNextPageInteractor, "collectionNextPageInteractor == null");
+  public RealCollectionProductNextPageInteractor() {
+    repository = new ProductRepository(SampleApplication.apolloClient());
   }
 
-  @Override protected ObservableTransformer<String, List<Collection>> nextPageRequestComposer() {
-    return upstream -> upstream.flatMapSingle(
-      cursor -> collectionNextPageInteractor.execute(cursor, PER_PAGE)
-    );
+  @NonNull @Override public Single<List<Product>> execute(@NonNull final String collectionId, @Nullable final String cursor,
+    final int perPage) {
+    checkNotBlank(collectionId, "collectionId can't be empty");
+    CollectionProductPageQuery query = CollectionProductPageQuery.builder()
+      .perPage(perPage)
+      .nextPageCursor(TextUtils.isEmpty(cursor) ? null : cursor)
+      .collectionId(collectionId)
+      .build();
+    return repository.nextPage(query).map(Converters::convertToProducts);
   }
 }
