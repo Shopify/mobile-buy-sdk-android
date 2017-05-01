@@ -39,7 +39,6 @@ import com.jakewharton.rxbinding2.support.v7.widget.RxRecyclerView;
 import com.shopify.sample.R;
 import com.shopify.sample.domain.interactor.RealCollectionNextPageInteractor;
 import com.shopify.sample.domain.model.Collection;
-import com.shopify.sample.domain.repository.CollectionRepository;
 import com.shopify.sample.mvp.BasePageListViewPresenter;
 import com.shopify.sample.mvp.PageListViewPresenter;
 import com.shopify.sample.presenter.collections.CollectionListViewPresenter;

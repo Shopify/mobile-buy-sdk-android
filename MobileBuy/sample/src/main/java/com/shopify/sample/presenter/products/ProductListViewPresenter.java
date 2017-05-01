@@ -41,7 +41,8 @@ public final class ProductListViewPresenter extends BasePageListViewPresenter<Pr
   private final String collectionId;
   private final CollectionProductNextPageInteractor collectionProductNextPageInteractor;
 
-  public ProductListViewPresenter(@NonNull final String collectionId, @NonNull final CollectionProductNextPageInteractor collectionProductNextPageInteractor) {
+  public ProductListViewPresenter(@NonNull final String collectionId,
+    @NonNull final CollectionProductNextPageInteractor collectionProductNextPageInteractor) {
     this.collectionId = checkNotNull(collectionId, "collectionId == null");
     this.collectionProductNextPageInteractor = checkNotNull(collectionProductNextPageInteractor, "productNextPageInteractor == null");
   }

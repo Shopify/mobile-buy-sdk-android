@@ -62,7 +62,8 @@ public final class CartCheckoutViewPresenter extends BaseViewPresenter<CartCheck
   private String currentCheckoutId;
   private PayCart payCart;
 
-  public CartCheckoutViewPresenter(@NonNull final CheckoutCreateInteractor checkoutCreateInteractor, @NonNull final CartRepository cartRepository) {
+  public CartCheckoutViewPresenter(@NonNull final CheckoutCreateInteractor checkoutCreateInteractor,
+    @NonNull final CartRepository cartRepository) {
     this.checkoutCreateInteractor = checkNotNull(checkoutCreateInteractor, "checkoutCreateInteractor == null");
     this.cartRepository = checkNotNull(cartRepository, "cartRepository == null");
   }
