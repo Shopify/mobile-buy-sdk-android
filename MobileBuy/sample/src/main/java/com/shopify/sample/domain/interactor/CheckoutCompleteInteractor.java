@@ -22,31 +22,19 @@
  *   THE SOFTWARE.
  */
 
-package com.shopify.sample.presenter.collections;
+package com.shopify.sample.domain.interactor;
 
 import android.support.annotation.NonNull;
 
-import com.shopify.sample.domain.interactor.CollectionNextPageInteractor;
-import com.shopify.sample.domain.model.Collection;
-import com.shopify.sample.mvp.BasePageListViewPresenter;
-import com.shopify.sample.mvp.PageListViewPresenter;
+import com.shopify.buy3.pay.PayAddress;
+import com.shopify.buy3.pay.PayCart;
+import com.shopify.buy3.pay.PaymentToken;
+import com.shopify.sample.domain.model.Payment;
 
-import java.util.List;
+import io.reactivex.Single;
 
-import io.reactivex.ObservableTransformer;
+public interface CheckoutCompleteInteractor {
+  Single<Payment> execute(@NonNull String checkoutId, @NonNull PayCart payCart, @NonNull PaymentToken paymentToken,
+    @NonNull String email, @NonNull PayAddress billingAddress);
 
-import static com.shopify.sample.util.Util.checkNotNull;
-
-public final class CollectionListViewPresenter extends BasePageListViewPresenter<Collection, PageListViewPresenter.View<Collection>> {
-  private final CollectionNextPageInteractor collectionNextPageInteractor;
-
-  public CollectionListViewPresenter(@NonNull final CollectionNextPageInteractor collectionNextPageInteractor) {
-    this.collectionNextPageInteractor = checkNotNull(collectionNextPageInteractor, "collectionNextPageInteractor == null");
-  }
-
-  @Override protected ObservableTransformer<String, List<Collection>> nextPageRequestComposer() {
-    return upstream -> upstream.flatMapSingle(
-      cursor -> collectionNextPageInteractor.execute(cursor, PER_PAGE)
-    );
-  }
 }

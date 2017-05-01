@@ -44,8 +44,11 @@ import com.shopify.buy3.pay.PayCart;
 import com.shopify.buy3.pay.PayHelper;
 import com.shopify.sample.BuildConfig;
 import com.shopify.sample.R;
+import com.shopify.sample.domain.interactor.RealCheckoutCompleteInteractor;
+import com.shopify.sample.domain.interactor.RealCheckoutShippingAddressUpdateInteractor;
+import com.shopify.sample.domain.interactor.RealCheckoutShippingLineUpdateInteractor;
+import com.shopify.sample.domain.interactor.RealCheckoutShippingRatesInteractor;
 import com.shopify.sample.domain.model.Checkout;
-import com.shopify.sample.domain.repository.RealCheckoutRepository;
 import com.shopify.sample.presenter.checkout.CheckoutViewPresenter;
 import com.shopify.sample.view.ProgressDialogHelper;
 
@@ -89,7 +92,8 @@ public final class CheckoutActivity extends AppCompatActivity implements Checkou
     String checkoutId = getIntent().getStringExtra(EXTRAS_CHECKOUT_ID);
     PayCart payCart = getIntent().getParcelableExtra(EXTRAS_PAY_CART);
     MaskedWallet maskedWallet = getIntent().getParcelableExtra(EXTRAS_MASKED_WALLET);
-    presenter = new CheckoutViewPresenter(checkoutId, payCart, maskedWallet, new RealCheckoutRepository());
+    presenter = new CheckoutViewPresenter(checkoutId, payCart, maskedWallet, new RealCheckoutShippingLineUpdateInteractor(),
+      new RealCheckoutCompleteInteractor(), new RealCheckoutShippingAddressUpdateInteractor(), new RealCheckoutShippingRatesInteractor());
 
     shippingMethodView.onShippingRateSelectListener(shippingRate -> presenter.applyShippingRate(shippingRate));
   }

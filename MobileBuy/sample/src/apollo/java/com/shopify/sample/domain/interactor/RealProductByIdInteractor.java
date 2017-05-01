@@ -22,31 +22,29 @@
  *   THE SOFTWARE.
  */
 
-package com.shopify.sample.presenter.collections;
+package com.shopify.sample.domain.interactor;
 
 import android.support.annotation.NonNull;
 
-import com.shopify.sample.domain.interactor.CollectionNextPageInteractor;
-import com.shopify.sample.domain.model.Collection;
-import com.shopify.sample.mvp.BasePageListViewPresenter;
-import com.shopify.sample.mvp.PageListViewPresenter;
+import com.shopify.sample.SampleApplication;
+import com.shopify.sample.domain.ProductByIdQuery;
+import com.shopify.sample.domain.model.ProductDetails;
+import com.shopify.sample.domain.repository.ProductRepository;
 
-import java.util.List;
+import io.reactivex.Single;
 
-import io.reactivex.ObservableTransformer;
+import static com.shopify.sample.util.Util.checkNotBlank;
 
-import static com.shopify.sample.util.Util.checkNotNull;
+public final class RealProductByIdInteractor implements ProductByIdInteractor {
+  private final ProductRepository repository;
 
-public final class CollectionListViewPresenter extends BasePageListViewPresenter<Collection, PageListViewPresenter.View<Collection>> {
-  private final CollectionNextPageInteractor collectionNextPageInteractor;
-
-  public CollectionListViewPresenter(@NonNull final CollectionNextPageInteractor collectionNextPageInteractor) {
-    this.collectionNextPageInteractor = checkNotNull(collectionNextPageInteractor, "collectionNextPageInteractor == null");
+  public RealProductByIdInteractor() {
+    repository = new ProductRepository(SampleApplication.apolloClient());
   }
 
-  @Override protected ObservableTransformer<String, List<Collection>> nextPageRequestComposer() {
-    return upstream -> upstream.flatMapSingle(
-      cursor -> collectionNextPageInteractor.execute(cursor, PER_PAGE)
-    );
+  @NonNull @Override public Single<ProductDetails> execute(@NonNull final String productId) {
+    checkNotBlank(productId, "productId can't be empty");
+    ProductByIdQuery query = new ProductByIdQuery(productId);
+    return repository.product(query).map(Converters::convertToProductDetails);
   }
 }

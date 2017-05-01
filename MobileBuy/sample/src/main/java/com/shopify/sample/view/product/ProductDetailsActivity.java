@@ -40,9 +40,9 @@ import android.view.MenuInflater;
 import android.view.View;
 
 import com.shopify.sample.R;
+import com.shopify.sample.domain.interactor.RealProductByIdInteractor;
 import com.shopify.sample.domain.model.ProductDetails;
 import com.shopify.sample.domain.repository.RealCartRepository;
-import com.shopify.sample.domain.repository.RealProductRepository;
 import com.shopify.sample.presenter.product.ProductDetailsViewPresenter;
 import com.shopify.sample.view.ScreenRouter;
 import com.shopify.sample.view.cart.CartClickActionEvent;
@@ -82,7 +82,7 @@ public final class ProductDetailsActivity extends AppCompatActivity implements P
     checkNotNull(productId, "productId == null");
     checkNotNull(productTitle, "productTitle == null");
 
-    presenter = new ProductDetailsViewPresenter(productId, new RealProductRepository(), new RealCartRepository());
+    presenter = new ProductDetailsViewPresenter(productId, new RealProductByIdInteractor(), new RealCartRepository());
 
     setSupportActionBar(toolbarView);
     getSupportActionBar().setTitle(productTitle);

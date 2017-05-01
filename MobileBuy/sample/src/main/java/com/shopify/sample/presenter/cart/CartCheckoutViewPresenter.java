@@ -33,10 +33,10 @@ import com.google.android.gms.wallet.MaskedWallet;
 import com.shopify.buy3.pay.PayCart;
 import com.shopify.buy3.pay.PayHelper;
 import com.shopify.sample.BuildConfig;
+import com.shopify.sample.domain.interactor.CheckoutCreateInteractor;
 import com.shopify.sample.domain.model.Cart;
 import com.shopify.sample.domain.model.Checkout;
 import com.shopify.sample.domain.repository.CartRepository;
-import com.shopify.sample.domain.repository.CheckoutRepository;
 import com.shopify.sample.mvp.BaseViewPresenter;
 import com.shopify.sample.util.WeakObserver;
 
@@ -57,13 +57,14 @@ public final class CartCheckoutViewPresenter extends BaseViewPresenter<CartCheck
   public static final int REQUEST_ID_PREPARE_ANDROID_PAY = 4;
   private static final NumberFormat CURRENCY_FORMAT = NumberFormat.getCurrencyInstance();
 
-  private final CheckoutRepository checkoutRepository;
+  private final CheckoutCreateInteractor checkoutCreateInteractor;
   private final CartRepository cartRepository;
   private String currentCheckoutId;
   private PayCart payCart;
 
-  public CartCheckoutViewPresenter(@NonNull final CheckoutRepository checkoutRepository, @NonNull final CartRepository cartRepository) {
-    this.checkoutRepository = checkNotNull(checkoutRepository, "createCheckout == null");
+  public CartCheckoutViewPresenter(@NonNull final CheckoutCreateInteractor checkoutCreateInteractor,
+    @NonNull final CartRepository cartRepository) {
+    this.checkoutCreateInteractor = checkNotNull(checkoutCreateInteractor, "checkoutCreateInteractor == null");
     this.cartRepository = checkNotNull(cartRepository, "cartRepository == null");
   }
 
@@ -111,7 +112,7 @@ public final class CartCheckoutViewPresenter extends BaseViewPresenter<CartCheck
       cartItem -> new Checkout.LineItem(cartItem.productVariantId, cartItem.variantTitle, cartItem.quantity, cartItem.price));
     registerRequest(
       requestId,
-      checkoutRepository.create(lineItems)
+      checkoutCreateInteractor.execute(lineItems)
         .toObservable()
         .observeOn(AndroidSchedulers.mainThread())
         .subscribeWith(WeakObserver.<CartCheckoutViewPresenter, Checkout>forTarget(this)

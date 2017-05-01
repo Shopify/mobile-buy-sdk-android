@@ -44,9 +44,9 @@ import com.shopify.buy3.pay.PayCart;
 import com.shopify.buy3.pay.PayHelper;
 import com.shopify.sample.BuildConfig;
 import com.shopify.sample.R;
+import com.shopify.sample.domain.interactor.RealCheckoutCreateInteractor;
 import com.shopify.sample.domain.model.Checkout;
 import com.shopify.sample.domain.repository.RealCartRepository;
-import com.shopify.sample.domain.repository.RealCheckoutRepository;
 import com.shopify.sample.presenter.cart.CartCheckoutViewPresenter;
 import com.shopify.sample.view.ProgressDialogHelper;
 
@@ -62,7 +62,8 @@ public final class CartCheckoutView extends FrameLayout implements CartCheckoutV
   @BindView(R.id.android_pay_checkout) View androidPayCheckoutView;
   @BindView(R.id.subtotal) TextView subtotalView;
 
-  private final CartCheckoutViewPresenter presenter = new CartCheckoutViewPresenter(new RealCheckoutRepository(), new RealCartRepository());
+  private final CartCheckoutViewPresenter presenter = new CartCheckoutViewPresenter(new RealCheckoutCreateInteractor(),
+    new RealCartRepository());
   private ProgressDialogHelper progressDialogHelper;
   private OnConfirmAndroidPayListener onConfirmAndroidPayListener;
   private GoogleApiClient googleApiClient;

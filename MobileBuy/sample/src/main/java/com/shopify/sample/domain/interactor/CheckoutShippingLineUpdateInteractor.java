@@ -22,31 +22,14 @@
  *   THE SOFTWARE.
  */
 
-package com.shopify.sample.presenter.collections;
+package com.shopify.sample.domain.interactor;
 
 import android.support.annotation.NonNull;
 
-import com.shopify.sample.domain.interactor.CollectionNextPageInteractor;
-import com.shopify.sample.domain.model.Collection;
-import com.shopify.sample.mvp.BasePageListViewPresenter;
-import com.shopify.sample.mvp.PageListViewPresenter;
+import com.shopify.sample.domain.model.Checkout;
 
-import java.util.List;
+import io.reactivex.Single;
 
-import io.reactivex.ObservableTransformer;
-
-import static com.shopify.sample.util.Util.checkNotNull;
-
-public final class CollectionListViewPresenter extends BasePageListViewPresenter<Collection, PageListViewPresenter.View<Collection>> {
-  private final CollectionNextPageInteractor collectionNextPageInteractor;
-
-  public CollectionListViewPresenter(@NonNull final CollectionNextPageInteractor collectionNextPageInteractor) {
-    this.collectionNextPageInteractor = checkNotNull(collectionNextPageInteractor, "collectionNextPageInteractor == null");
-  }
-
-  @Override protected ObservableTransformer<String, List<Collection>> nextPageRequestComposer() {
-    return upstream -> upstream.flatMapSingle(
-      cursor -> collectionNextPageInteractor.execute(cursor, PER_PAGE)
-    );
-  }
+public interface CheckoutShippingLineUpdateInteractor {
+  Single<Checkout> execute(@NonNull String checkoutId, @NonNull String shippingRateHandle);
 }

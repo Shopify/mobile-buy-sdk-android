@@ -22,31 +22,30 @@
  *   THE SOFTWARE.
  */
 
-package com.shopify.sample.presenter.collections;
+package com.shopify.sample.domain.interactor;
 
 import android.support.annotation.NonNull;
 
-import com.shopify.sample.domain.interactor.CollectionNextPageInteractor;
-import com.shopify.sample.domain.model.Collection;
-import com.shopify.sample.mvp.BasePageListViewPresenter;
-import com.shopify.sample.mvp.PageListViewPresenter;
+import com.shopify.sample.SampleApplication;
+import com.shopify.sample.domain.CheckoutByIdQuery;
+import com.shopify.sample.domain.model.Checkout;
+import com.shopify.sample.domain.repository.CheckoutRepository;
 
-import java.util.List;
+import io.reactivex.Single;
 
-import io.reactivex.ObservableTransformer;
+import static com.shopify.sample.util.Util.checkNotBlank;
 
-import static com.shopify.sample.util.Util.checkNotNull;
+public final class RealCheckoutDetailsInteractor implements CheckoutByIdInteractor {
+  private final CheckoutRepository repository;
 
-public final class CollectionListViewPresenter extends BasePageListViewPresenter<Collection, PageListViewPresenter.View<Collection>> {
-  private final CollectionNextPageInteractor collectionNextPageInteractor;
-
-  public CollectionListViewPresenter(@NonNull final CollectionNextPageInteractor collectionNextPageInteractor) {
-    this.collectionNextPageInteractor = checkNotNull(collectionNextPageInteractor, "collectionNextPageInteractor == null");
+  public RealCheckoutDetailsInteractor() {
+    this.repository = new CheckoutRepository(SampleApplication.apolloClient());
   }
 
-  @Override protected ObservableTransformer<String, List<Collection>> nextPageRequestComposer() {
-    return upstream -> upstream.flatMapSingle(
-      cursor -> collectionNextPageInteractor.execute(cursor, PER_PAGE)
-    );
+  @Override public Single<Checkout> execute(@NonNull final String checkoutId) {
+    checkNotBlank(checkoutId, "checkoutId can't be empty");
+
+    CheckoutByIdQuery query = new CheckoutByIdQuery(checkoutId);
+    return repository.checkout(query).map(Converters::convertToCheckout);
   }
 }

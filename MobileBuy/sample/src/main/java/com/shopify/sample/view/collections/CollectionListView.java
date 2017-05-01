@@ -37,8 +37,8 @@ import android.widget.FrameLayout;
 
 import com.jakewharton.rxbinding2.support.v7.widget.RxRecyclerView;
 import com.shopify.sample.R;
+import com.shopify.sample.domain.interactor.RealCollectionNextPageInteractor;
 import com.shopify.sample.domain.model.Collection;
-import com.shopify.sample.domain.repository.RealCollectionRepository;
 import com.shopify.sample.mvp.BasePageListViewPresenter;
 import com.shopify.sample.mvp.PageListViewPresenter;
 import com.shopify.sample.presenter.collections.CollectionListViewPresenter;
@@ -62,7 +62,7 @@ public final class CollectionListView extends FrameLayout implements PageListVie
 
   private final RecyclerViewAdapter listViewAdapter = new RecyclerViewAdapter(this);
   private final BasePageListViewPresenter<Collection, PageListViewPresenter.View<Collection>> presenter =
-    new CollectionListViewPresenter(new RealCollectionRepository());
+    new CollectionListViewPresenter(new RealCollectionNextPageInteractor());
   private final PublishSubject<String> refreshSubject = PublishSubject.create();
 
   public CollectionListView(@NonNull final Context context) {

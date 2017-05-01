@@ -1,4 +1,4 @@
-query ProductDetailsQuery($id: ID!) {
+query ProductByIdQuery($id: ID!) {
   node(id: $id) {
     ... on Product {
       id

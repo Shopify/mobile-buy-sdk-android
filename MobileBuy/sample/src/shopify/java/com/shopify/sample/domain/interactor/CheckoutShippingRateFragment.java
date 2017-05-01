@@ -22,20 +22,15 @@
  *   THE SOFTWARE.
  */
 
-package com.shopify.sample.domain.repository;
+package com.shopify.sample.domain.interactor;
 
-import android.support.annotation.NonNull;
+import com.shopify.buy3.Storefront;
 
-import com.shopify.sample.domain.model.Product;
-import com.shopify.sample.domain.model.ProductDetails;
-
-import java.util.List;
-
-import io.reactivex.Single;
-
-public interface ProductRepository {
-
-  @NonNull Single<List<Product>> fetchNextPage(String collectionId, String cursor, int perPage);
-
-  @NonNull Single<ProductDetails> fetchDetails(String productId);
+final class CheckoutShippingRateFragment implements Storefront.ShippingRateQueryDefinition {
+  @Override public void define(final Storefront.ShippingRateQuery query) {
+    query
+      .title()
+      .handle()
+      .price();
+  }
 }

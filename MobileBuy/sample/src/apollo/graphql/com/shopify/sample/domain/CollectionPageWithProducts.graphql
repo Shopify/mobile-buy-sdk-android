@@ -1,4 +1,4 @@
-query CollectionsWithProducts($perPage: Int!, $nextPageCursor: String, $collectionSortKey: CollectionSortKeys!) {
+query CollectionPageWithProductsQuery($perPage: Int!, $nextPageCursor: String, $collectionSortKey: CollectionSortKeys!) {
   shop {
     collectionConnection: collections(first: $perPage, after: $nextPageCursor, sortKey: $collectionSortKey) {
       edges {

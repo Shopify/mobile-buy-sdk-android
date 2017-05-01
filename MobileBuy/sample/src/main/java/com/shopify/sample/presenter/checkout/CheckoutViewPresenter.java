@@ -39,9 +39,12 @@ import com.shopify.buy3.pay.PayCart;
 import com.shopify.buy3.pay.PayHelper;
 import com.shopify.buy3.pay.PaymentToken;
 import com.shopify.sample.BuildConfig;
+import com.shopify.sample.domain.interactor.CheckoutCompleteInteractor;
+import com.shopify.sample.domain.interactor.CheckoutShippingAddressUpdateInteractor;
+import com.shopify.sample.domain.interactor.CheckoutShippingLineUpdateInteractor;
+import com.shopify.sample.domain.interactor.CheckoutShippingRatesInteractor;
 import com.shopify.sample.domain.model.Checkout;
 import com.shopify.sample.domain.model.Payment;
-import com.shopify.sample.domain.repository.CheckoutRepository;
 import com.shopify.sample.mvp.BaseViewPresenter;
 import com.shopify.sample.util.WeakSingleObserver;
 
@@ -59,18 +62,29 @@ public final class CheckoutViewPresenter extends BaseViewPresenter<CheckoutViewP
   public static final int REQUEST_ID_APPLY_SHIPPING_RATE = 3;
   public static final int REQUEST_ID_COMPLETE_CHECKOUT = 4;
 
-  private final CheckoutRepository checkoutRepository;
+  private final CheckoutShippingLineUpdateInteractor checkoutShippingLineUpdateInteractor;
+  private final CheckoutCompleteInteractor checkoutCompleteInteractor;
+  private final CheckoutShippingAddressUpdateInteractor checkoutShippingAddressUpdateInteractor;
+  private final CheckoutShippingRatesInteractor checkoutShippingRatesInteractor;
   private final String checkoutId;
   private PayCart payCart;
   private MaskedWallet maskedWallet;
   private Checkout.ShippingRates shippingRates;
 
   public CheckoutViewPresenter(@NonNull final String checkoutId, @NonNull final PayCart payCart, @NonNull final MaskedWallet maskedWallet,
-    @NonNull final CheckoutRepository checkoutRepository) {
+    @NonNull final CheckoutShippingLineUpdateInteractor checkoutShippingLineUpdateInteractor,
+    @NonNull final CheckoutCompleteInteractor checkoutCompleteInteractor,
+    @NonNull final CheckoutShippingAddressUpdateInteractor checkoutShippingAddressUpdateInteractor,
+    @NonNull final CheckoutShippingRatesInteractor checkoutShippingRatesInteractor) {
     this.checkoutId = checkNotBlank(checkoutId, "checkoutId can't be empty");
     this.payCart = checkNotNull(payCart, "payCart == null");
     this.maskedWallet = checkNotNull(maskedWallet, "maskedWallet == null");
-    this.checkoutRepository = checkNotNull(checkoutRepository, "checkoutRepository == null");
+    this.checkoutShippingLineUpdateInteractor = checkNotNull(checkoutShippingLineUpdateInteractor,
+      "checkoutShippingLineUpdateInteractor == null");
+    this.checkoutCompleteInteractor = checkNotNull(checkoutCompleteInteractor, "checkoutCompleteInteractor == null");
+    this.checkoutShippingAddressUpdateInteractor = checkNotNull(checkoutShippingAddressUpdateInteractor,
+      "checkoutShippingAddressUpdateInteractor == null");
+    this.checkoutShippingRatesInteractor = checkNotNull(checkoutShippingRatesInteractor, "checkoutShippingRatesInteractor == null");
   }
 
   public void attachView(final View view) {
@@ -90,7 +104,7 @@ public final class CheckoutViewPresenter extends BaseViewPresenter<CheckoutViewP
     view().showProgress(REQUEST_ID_APPLY_SHIPPING_RATE);
     registerRequest(
       REQUEST_ID_APPLY_SHIPPING_RATE,
-      checkoutRepository.applyShippingRate(checkoutId, shippingRate.handle)
+      checkoutShippingLineUpdateInteractor.execute(checkoutId, shippingRate.handle)
         .observeOn(AndroidSchedulers.mainThread())
         .subscribeWith(WeakSingleObserver.<CheckoutViewPresenter, Checkout>forTarget(this)
           .delegateOnSuccess((presenter, checkout) -> presenter.onApplyShippingRate(checkout, REQUEST_ID_APPLY_SHIPPING_RATE))
@@ -149,7 +163,7 @@ public final class CheckoutViewPresenter extends BaseViewPresenter<CheckoutViewP
     view().showProgress(REQUEST_ID_COMPLETE_CHECKOUT);
     registerRequest(
       REQUEST_ID_COMPLETE_CHECKOUT,
-      checkoutRepository.completeCheckout(checkoutId, payCart, paymentToken, fullWallet.getEmail(), billingAddress)
+      checkoutCompleteInteractor.execute(checkoutId, payCart, paymentToken, fullWallet.getEmail(), billingAddress)
         .observeOn(AndroidSchedulers.mainThread())
         .subscribeWith(WeakSingleObserver.<CheckoutViewPresenter, Payment>forTarget(this)
           .delegateOnSuccess(CheckoutViewPresenter::onCompleteCheckout)
@@ -171,7 +185,7 @@ public final class CheckoutViewPresenter extends BaseViewPresenter<CheckoutViewP
     showProgress(REQUEST_ID_UPDATE_CHECKOUT_SHIPPING_ADDRESS);
     registerRequest(
       REQUEST_ID_UPDATE_CHECKOUT_SHIPPING_ADDRESS,
-      checkoutRepository.updateShippingAddress(checkNotBlank(checkoutId, "checkoutId can't be empty"), payAddress)
+      checkoutShippingAddressUpdateInteractor.execute(checkNotBlank(checkoutId, "checkoutId can't be empty"), payAddress)
         .observeOn(AndroidSchedulers.mainThread())
         .subscribeWith(WeakSingleObserver.<CheckoutViewPresenter, Checkout>forTarget(this)
           .delegateOnSuccess(CheckoutViewPresenter::onUpdateCheckoutShippingAddress)
@@ -202,7 +216,7 @@ public final class CheckoutViewPresenter extends BaseViewPresenter<CheckoutViewP
     view().showProgress(REQUEST_ID_FETCH_SHIPPING_RATES);
     registerRequest(
       REQUEST_ID_FETCH_SHIPPING_RATES,
-      checkoutRepository.fetchShippingRates(checkoutId)
+      checkoutShippingRatesInteractor.execute(checkoutId)
         .observeOn(AndroidSchedulers.mainThread())
         .subscribeWith(WeakSingleObserver.<CheckoutViewPresenter, Checkout.ShippingRates>forTarget(this)
           .delegateOnSuccess(CheckoutViewPresenter::invalidateShippingRates)

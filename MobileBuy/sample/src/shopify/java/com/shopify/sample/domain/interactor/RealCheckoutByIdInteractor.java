@@ -22,15 +22,29 @@
  *   THE SOFTWARE.
  */
 
-package com.shopify.sample.domain.repository;
+package com.shopify.sample.domain.interactor;
+
+import android.support.annotation.NonNull;
 
 import com.shopify.buy3.Storefront;
+import com.shopify.sample.SampleApplication;
+import com.shopify.sample.domain.model.Checkout;
+import com.shopify.sample.domain.repository.CheckoutRepository;
 
-final class CheckoutShippingRateFragment implements Storefront.ShippingRateQueryDefinition {
-  @Override public void define(final Storefront.ShippingRateQuery query) {
-    query
-      .title()
-      .handle()
-      .price();
+import io.reactivex.Single;
+
+import static com.shopify.sample.util.Util.checkNotBlank;
+
+public final class RealCheckoutByIdInteractor implements CheckoutByIdInteractor {
+  private final CheckoutRepository repository;
+
+  public RealCheckoutByIdInteractor() {
+    repository = new CheckoutRepository(SampleApplication.graphClient());
+  }
+
+  @Override public Single<Checkout> execute(@NonNull final String checkoutId) {
+    checkNotBlank(checkoutId, "checkoutId can't be empty");
+    Storefront.NodeQueryDefinition query = it -> it.onCheckout(new CheckoutFragment());
+    return repository.checkout(checkoutId, query).map(Converters::convertToCheckout);
   }
 }
