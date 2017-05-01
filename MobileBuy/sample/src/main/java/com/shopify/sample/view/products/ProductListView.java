@@ -37,8 +37,6 @@ import android.view.View;
 
 import com.jakewharton.rxbinding2.support.v7.widget.RxRecyclerView;
 import com.shopify.sample.R;
-import com.shopify.sample.domain.interactor.CollectionProductNextPageInteractor;
-import com.shopify.sample.domain.interactor.RealCollectionNextPageInteractor;
 import com.shopify.sample.domain.interactor.RealCollectionProductNextPageInteractor;
 import com.shopify.sample.domain.model.Product;
 import com.shopify.sample.mvp.BasePageListViewPresenter;
