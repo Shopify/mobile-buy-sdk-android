@@ -718,6 +718,12 @@ public class Storefront {
             return this;
         }
 
+        public CheckoutQuery vaultUrl() {
+            startField("vaultUrl");
+
+            return this;
+        }
+
         public CheckoutQuery webUrl() {
             startField("webUrl");
 
@@ -929,6 +935,12 @@ public class Storefront {
 
                     case "updatedAt": {
                         responseData.put(key, Utils.parseDateTime(jsonAsString(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "vaultUrl": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
 
                         break;
                     }
@@ -1214,6 +1226,15 @@ public class Storefront {
             return this;
         }
 
+        public String getVaultUrl() {
+            return (String) get("vaultUrl");
+        }
+
+        public Checkout setVaultUrl(String arg) {
+            optimisticData.put("vaultUrl", arg);
+            return this;
+        }
+
         public String getWebUrl() {
             return (String) get("webUrl");
         }
@@ -1272,6 +1293,8 @@ public class Storefront {
                 case "totalTax": return false;
 
                 case "updatedAt": return false;
+
+                case "vaultUrl": return false;
 
                 case "webUrl": return false;
 
@@ -5194,6 +5217,8 @@ public class Storefront {
 
         SCR,
 
+        SDG,
+
         SEK,
 
         SGD,
@@ -5680,6 +5705,10 @@ public class Storefront {
 
                 case "SCR": {
                     return SCR;
+                }
+
+                case "SDG": {
+                    return SDG;
                 }
 
                 case "SEK": {
@@ -6223,6 +6252,10 @@ public class Storefront {
 
                 case SCR: {
                     return "SCR";
+                }
+
+                case SDG: {
+                    return "SDG";
                 }
 
                 case SEK: {
@@ -11442,6 +11475,12 @@ public class Storefront {
             return this;
         }
 
+        public OrderQuery email() {
+            startField("email");
+
+            return this;
+        }
+
         public class LineItemsArguments extends Arguments {
             LineItemsArguments(StringBuilder _queryBuilder) {
                 super(_queryBuilder, false);
@@ -11491,6 +11530,12 @@ public class Storefront {
 
         public OrderQuery orderNumber() {
             startField("orderNumber");
+
+            return this;
+        }
+
+        public OrderQuery phone() {
+            startField("phone");
 
             return this;
         }
@@ -11619,6 +11664,17 @@ public class Storefront {
                         break;
                     }
 
+                    case "email": {
+                        String optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = jsonAsString(field.getValue(), key);
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
                     case "id": {
                         responseData.put(key, new ID(jsonAsString(field.getValue(), key)));
 
@@ -11633,6 +11689,17 @@ public class Storefront {
 
                     case "orderNumber": {
                         responseData.put(key, jsonAsInteger(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "phone": {
+                        String optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = jsonAsString(field.getValue(), key);
+                        }
+
+                        responseData.put(key, optional1);
 
                         break;
                     }
@@ -11799,6 +11866,15 @@ public class Storefront {
             return this;
         }
 
+        public String getEmail() {
+            return (String) get("email");
+        }
+
+        public Order setEmail(String arg) {
+            optimisticData.put("email", arg);
+            return this;
+        }
+
         public ID getId() {
             return (ID) get("id");
         }
@@ -11818,6 +11894,15 @@ public class Storefront {
 
         public Order setOrderNumber(Integer arg) {
             optimisticData.put("orderNumber", arg);
+            return this;
+        }
+
+        public String getPhone() {
+            return (String) get("phone");
+        }
+
+        public Order setPhone(String arg) {
+            optimisticData.put("phone", arg);
             return this;
         }
 
@@ -11909,11 +11994,15 @@ public class Storefront {
 
                 case "displayFulfillmentStatus": return false;
 
+                case "email": return false;
+
                 case "id": return false;
 
                 case "lineItems": return true;
 
                 case "orderNumber": return false;
+
+                case "phone": return false;
 
                 case "processedAt": return false;
 
@@ -13587,6 +13676,29 @@ public class Storefront {
             return this;
         }
 
+        public ProductQuery variantBySelectedOptions(List<SelectedOptionInput> selectedOptions, ProductVariantQueryDefinition queryDef) {
+            startField("variantBySelectedOptions");
+
+            _queryBuilder.append("(selectedOptions:");
+            _queryBuilder.append('[');
+
+            String listSeperator1 = "";
+            for (SelectedOptionInput item1 : selectedOptions) {
+                _queryBuilder.append(listSeperator1);
+                listSeperator1 = ",";
+                item1.appendTo(_queryBuilder);
+            }
+            _queryBuilder.append(']');
+
+            _queryBuilder.append(')');
+
+            _queryBuilder.append('{');
+            queryDef.define(new ProductVariantQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
         public class VariantsArguments extends Arguments {
             VariantsArguments(StringBuilder _queryBuilder) {
                 super(_queryBuilder, false);
@@ -13738,6 +13850,17 @@ public class Storefront {
                         break;
                     }
 
+                    case "variantBySelectedOptions": {
+                        ProductVariant optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new ProductVariant(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
                     case "variants": {
                         responseData.put(key, new ProductVariantConnection(jsonAsObject(field.getValue(), key)));
 
@@ -13783,6 +13906,10 @@ public class Storefront {
                 for (ProductOption elem: getOptions()) {
                     children.addAll(elem.getNodes());
                 }
+            }
+
+            if (getVariantBySelectedOptions() != null) {
+                children.addAll(getVariantBySelectedOptions().getNodes());
             }
 
             if (getVariants() != null) {
@@ -13908,6 +14035,15 @@ public class Storefront {
             return this;
         }
 
+        public ProductVariant getVariantBySelectedOptions() {
+            return (ProductVariant) get("variantBySelectedOptions");
+        }
+
+        public Product setVariantBySelectedOptions(ProductVariant arg) {
+            optimisticData.put("variantBySelectedOptions", arg);
+            return this;
+        }
+
         public ProductVariantConnection getVariants() {
             return (ProductVariantConnection) get("variants");
         }
@@ -13953,6 +14089,8 @@ public class Storefront {
                 case "title": return false;
 
                 case "updatedAt": return false;
+
+                case "variantBySelectedOptions": return true;
 
                 case "variants": return true;
 
@@ -15016,6 +15154,29 @@ public class Storefront {
             return this;
         }
 
+        public QueryRootQuery nodes(List<ID> ids, NodeQueryDefinition queryDef) {
+            startField("nodes");
+
+            _queryBuilder.append("(ids:");
+            _queryBuilder.append('[');
+
+            String listSeperator1 = "";
+            for (ID item1 : ids) {
+                _queryBuilder.append(listSeperator1);
+                listSeperator1 = ",";
+                Query.appendQuotedString(_queryBuilder, item1.toString());
+            }
+            _queryBuilder.append(']');
+
+            _queryBuilder.append(')');
+
+            _queryBuilder.append('{');
+            queryDef.define(new NodeQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
         public QueryRootQuery shop(ShopQueryDefinition queryDef) {
             startField("shop");
 
@@ -15062,6 +15223,22 @@ public class Storefront {
                         break;
                     }
 
+                    case "nodes": {
+                        List<Node> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            Node optional2 = null;
+                            if (!element1.isJsonNull()) {
+                                optional2 = UnknownNode.create(jsonAsObject(element1, key));
+                            }
+
+                            list1.add(optional2);
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
                     case "shop": {
                         responseData.put(key, new Shop(jsonAsObject(field.getValue(), key)));
 
@@ -15077,20 +15254,6 @@ public class Storefront {
                     }
                 }
             }
-        }
-
-        public List<Node> getNodes() {
-            List<Node> children = new ArrayList<>();
-
-            if (getCustomer() != null) {
-                children.addAll(getCustomer().getNodes());
-            }
-
-            if (getShop() != null) {
-                children.addAll(getShop().getNodes());
-            }
-
-            return children;
         }
 
         public String getGraphQlTypeName() {
@@ -15115,6 +15278,15 @@ public class Storefront {
             return this;
         }
 
+        public List<Node> getNodes() {
+            return (List<Node>) get("nodes");
+        }
+
+        public QueryRoot setNodes(List<Node> arg) {
+            optimisticData.put("nodes", arg);
+            return this;
+        }
+
         public Shop getShop() {
             return (Shop) get("shop");
         }
@@ -15129,6 +15301,8 @@ public class Storefront {
                 case "customer": return true;
 
                 case "node": return false;
+
+                case "nodes": return false;
 
                 case "shop": return true;
 
@@ -15227,6 +15401,53 @@ public class Storefront {
 
                 default: return false;
             }
+        }
+    }
+
+    public static class SelectedOptionInput implements Serializable {
+        private String name;
+
+        private String value;
+
+        public SelectedOptionInput(String name, String value) {
+            this.name = name;
+
+            this.value = value;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public SelectedOptionInput setName(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public String getValue() {
+            return value;
+        }
+
+        public SelectedOptionInput setValue(String value) {
+            this.value = value;
+            return this;
+        }
+
+        public void appendTo(StringBuilder _queryBuilder) {
+            String separator = "";
+            _queryBuilder.append('{');
+
+            _queryBuilder.append(separator);
+            separator = ",";
+            _queryBuilder.append("name:");
+            Query.appendQuotedString(_queryBuilder, name.toString());
+
+            _queryBuilder.append(separator);
+            separator = ",";
+            _queryBuilder.append("value:");
+            Query.appendQuotedString(_queryBuilder, value.toString());
+
+            _queryBuilder.append('}');
         }
     }
 
@@ -15535,6 +15756,12 @@ public class Storefront {
             return this;
         }
 
+        public ShopQuery shopifyPaymentsAccountId() {
+            startField("shopifyPaymentsAccountId");
+
+            return this;
+        }
+
         public ShopQuery termsOfService(ShopPolicyQueryDefinition queryDef) {
             startField("termsOfService");
 
@@ -15617,6 +15844,17 @@ public class Storefront {
                         ShopPolicy optional1 = null;
                         if (!field.getValue().isJsonNull()) {
                             optional1 = new ShopPolicy(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "shopifyPaymentsAccountId": {
+                        String optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = jsonAsString(field.getValue(), key);
                         }
 
                         responseData.put(key, optional1);
@@ -15761,6 +15999,15 @@ public class Storefront {
             return this;
         }
 
+        public String getShopifyPaymentsAccountId() {
+            return (String) get("shopifyPaymentsAccountId");
+        }
+
+        public Shop setShopifyPaymentsAccountId(String arg) {
+            optimisticData.put("shopifyPaymentsAccountId", arg);
+            return this;
+        }
+
         public ShopPolicy getTermsOfService() {
             return (ShopPolicy) get("termsOfService");
         }
@@ -15789,6 +16036,8 @@ public class Storefront {
                 case "products": return true;
 
                 case "refundPolicy": return true;
+
+                case "shopifyPaymentsAccountId": return false;
 
                 case "termsOfService": return true;
 

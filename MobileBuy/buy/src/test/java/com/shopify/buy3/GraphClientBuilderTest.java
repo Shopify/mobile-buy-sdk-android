@@ -38,6 +38,8 @@ import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 
 import static com.google.common.truth.Truth.assertThat;
+import static com.shopify.buy3.TestUtils.checkForNullPointerException;
+import static com.shopify.buy3.TestUtils.checkIllegalArgumentException;
 import static junit.framework.Assert.fail;
 import static org.mockito.Mockito.when;
 
@@ -97,19 +99,5 @@ public class GraphClientBuilderTest {
     checkForNullPointerException(() -> GraphClient.builder(mockContext).shopDomain(SHOP_DOMAIN).build());
   }
 
-  private void checkForNullPointerException(final Runnable action) {
-    try {
-      action.run();
-      fail("expected NullPointerException");
-    } catch (NullPointerException expected) {
-    }
-  }
 
-  private void checkIllegalArgumentException(final Runnable action) {
-    try {
-      action.run();
-      fail("expected IllegalArgumentException");
-    } catch (IllegalArgumentException expected) {
-    }
-  }
 }
