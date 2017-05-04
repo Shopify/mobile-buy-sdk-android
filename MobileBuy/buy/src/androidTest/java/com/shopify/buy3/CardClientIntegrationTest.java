@@ -81,7 +81,7 @@ public class CardClientIntegrationTest {
     assertThat(recordedRequest.getHeader("Accept")).isEqualTo(RealCreditCardVaultCall.ACCEPT_HEADER);
     assertThat(recordedRequest.getHeader("Content-Type")).isEqualTo(RealCreditCardVaultCall.CONTENT_MEDIA_TYPE.toString());
     assertThat(recordedRequest.getBody().readUtf8()).isEqualTo("{\"credit_card\":{\"number\":\"1\",\"first_name\":\"John\","
-      + "\"last_name\":\"Smith\",\"month\":\"06\",\"year\":\"2016\",\"verification_value\":\"111\"}}");
+      + "\"last_name\":\"Smith\",\"month\":\"06\",\"year\":\"2017\",\"verification_value\":\"111\"}}");
     assertThat(token).isEqualTo("83hru3obno3hu434b3u");
   }
 
