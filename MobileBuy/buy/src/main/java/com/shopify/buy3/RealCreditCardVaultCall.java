@@ -54,7 +54,8 @@ final class RealCreditCardVaultCall implements CreditCardVaultCall {
   private volatile Call httpCall;
   private volatile boolean canceled;
 
-  RealCreditCardVaultCall(@NonNull final CreditCard creditCard, @NonNull final HttpUrl endpointUrl, @NonNull final Call.Factory httpCallFactory) {
+  RealCreditCardVaultCall(@NonNull final CreditCard creditCard, @NonNull final HttpUrl endpointUrl,
+    @NonNull final Call.Factory httpCallFactory) {
     this.creditCard = checkNotNull(creditCard, "creditCard == null");
     this.endpointUrl = checkNotNull(endpointUrl, "endpointUrl == null");
     this.httpCallFactory = checkNotNull(httpCallFactory, "httpCallFactory == null");
