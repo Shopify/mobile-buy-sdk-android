@@ -46,7 +46,7 @@ import okhttp3.Response;
 
 import static com.shopify.buy3.Utils.checkNotNull;
 
-final class RealGraphCall<T extends AbstractResponse<T>> implements GraphCall<T> {
+abstract class RealGraphCall<T extends AbstractResponse<T>> implements GraphCall<T>, Cloneable {
   static final String ACCEPT_HEADER = "application/json";
   static final MediaType GRAPHQL_MEDIA_TYPE = MediaType.parse("application/graphql; charset=utf-8");
 
@@ -59,23 +59,26 @@ final class RealGraphCall<T extends AbstractResponse<T>> implements GraphCall<T>
   private volatile Call httpCall;
   private volatile HttpCallbackWithRetry httpCallbackWithRetry;
   private volatile boolean canceled;
+  CachePolicy cachePolicy;
 
   RealGraphCall(final Query query, final HttpUrl serverUrl, final Call.Factory httpCallFactory,
-    final ResponseDataConverter<T> responseDataConverter, final ScheduledExecutorService dispatcher) {
+    final ResponseDataConverter<T> responseDataConverter, final ScheduledExecutorService dispatcher,
+    final CachePolicy cachePolicy) {
     this.query = query;
     this.serverUrl = serverUrl;
     this.httpCallFactory = httpCallFactory;
     this.httpResponseParser = new HttpResponseParser<>(responseDataConverter);
     this.dispatcher = dispatcher;
+    this.cachePolicy = cachePolicy;
   }
 
-  private RealGraphCall(final Query query, final HttpUrl serverUrl, final Call.Factory httpCallFactory,
-    final HttpResponseParser<T> httpResponseParser, final ScheduledExecutorService dispatcher) {
-    this.query = query;
-    this.serverUrl = serverUrl;
-    this.httpCallFactory = httpCallFactory;
-    this.httpResponseParser = httpResponseParser;
-    this.dispatcher = dispatcher;
+  RealGraphCall(final RealGraphCall<T> other) {
+    this.query = other.query;
+    this.serverUrl = other.serverUrl;
+    this.httpCallFactory = other.httpCallFactory;
+    this.httpResponseParser = other.httpResponseParser;
+    this.dispatcher = other.dispatcher;
+    this.cachePolicy = other.cachePolicy;
   }
 
   @Override public void cancel() {
@@ -94,11 +97,6 @@ final class RealGraphCall<T extends AbstractResponse<T>> implements GraphCall<T>
 
   @Override public boolean isCanceled() {
     return canceled;
-  }
-
-  @SuppressWarnings("CloneDoesntCallSuperClone")
-  @NonNull @Override public GraphCall<T> clone() {
-    return new RealGraphCall<>(query, serverUrl, httpCallFactory, httpResponseParser, dispatcher);
   }
 
   @NonNull @Override public GraphResponse<T> execute() throws GraphError {
@@ -167,6 +165,13 @@ final class RealGraphCall<T extends AbstractResponse<T>> implements GraphCall<T>
     });
 
     return this;
+  }
+
+  @NonNull @Override public abstract GraphCall<T> clone();
+
+  void cachePolicyInternal(@NonNull final CachePolicy cachePolicy) {
+    if (executed.get()) throw new IllegalStateException("Already Executed");
+    this.cachePolicy = cachePolicy;
   }
 
   private Call httpCall() {

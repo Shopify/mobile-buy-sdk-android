@@ -60,43 +60,41 @@ public final class GraphClient {
 
   final HttpUrl serverUrl;
   final Call.Factory httpCallFactory;
+  final CachePolicy defaultCachePolicy;
   final ScheduledExecutorService dispatcher;
 
   private GraphClient(final Builder builder) {
     this.serverUrl = builder.endpointUrl;
     this.httpCallFactory = builder.httpClient;
+    this.defaultCachePolicy = builder.defaultCachePolicy;
 
-    if (builder.dispatcher == null) {
-      ScheduledThreadPoolExecutor threadPoolExecutor = new ScheduledThreadPoolExecutor(2,
-        runnable -> new Thread(runnable, "GraphClient Dispatcher"));
-      threadPoolExecutor.setKeepAliveTime(1, TimeUnit.SECONDS);
-      threadPoolExecutor.allowCoreThreadTimeOut(true);
-      this.dispatcher = threadPoolExecutor;
-    } else {
-      this.dispatcher = builder.dispatcher;
-    }
+    ScheduledThreadPoolExecutor threadPoolExecutor = new ScheduledThreadPoolExecutor(2,
+      runnable -> new Thread(runnable, "GraphClient Dispatcher"));
+    threadPoolExecutor.setKeepAliveTime(1, TimeUnit.SECONDS);
+    threadPoolExecutor.allowCoreThreadTimeOut(true);
+    this.dispatcher = threadPoolExecutor;
   }
 
   /**
    * Creates and prepares {@link GraphCall} call to perform {@link Storefront.QueryRootQuery} execution.
    *
    * @param query {@code GraphQL} query to be executed
-   * @return prepared {@link GraphCall} call for execution
-   * @see GraphCall
+   * @return prepared {@link QueryGraphCall} call for execution
+   * @see QueryGraphCall
    */
-  public GraphCall<Storefront.QueryRoot> queryGraph(final Storefront.QueryRootQuery query) {
-    return new RealGraphCall<>(query, serverUrl, httpCallFactory, response -> new Storefront.QueryRoot(response.getData()), dispatcher);
+  public QueryGraphCall queryGraph(final Storefront.QueryRootQuery query) {
+    return new RealQueryGraphCall(query, serverUrl, httpCallFactory, dispatcher, defaultCachePolicy);
   }
 
   /**
    * Creates and prepares {@link GraphCall} call to perform {@link Storefront.MutationQuery} execution.
    *
    * @param query {@code GraphQL} query to be executed
-   * @return prepared {@link GraphCall} call for execution
-   * @see GraphCall
+   * @return prepared {@link MutationGraphCall} call for execution
+   * @see MutationGraphCall
    */
-  public GraphCall<Storefront.Mutation> mutateGraph(final Storefront.MutationQuery query) {
-    return new RealGraphCall<>(query, serverUrl, httpCallFactory, response -> new Storefront.Mutation(response.getData()), dispatcher);
+  public MutationGraphCall mutateGraph(final Storefront.MutationQuery query) {
+    return new RealMutationGraphCall(query, serverUrl, httpCallFactory, dispatcher, CachePolicy.NETWORK_ONLY.obtain());
   }
 
   /**
@@ -111,8 +109,8 @@ public final class GraphClient {
     private HttpUrl endpointUrl;
     private String accessToken;
     private OkHttpClient httpClient;
-    private ScheduledExecutorService dispatcher;
     private Interceptor sdkHeaderInterceptor;
+    private CachePolicy defaultCachePolicy = CachePolicy.NETWORK_ONLY.obtain();
 
     private Builder(@NonNull final Context context) {
       applicationName = checkNotNull(context, "context == null").getPackageName();
@@ -153,6 +151,17 @@ public final class GraphClient {
      */
     public Builder httpClient(@NonNull OkHttpClient httpClient) {
       this.httpClient = checkNotNull(httpClient, "httpClient == null");
+      return this;
+    }
+
+    /**
+     * Set the default {@link CachePolicy} to be used for {@link QueryGraphCall}.
+     *
+     * @param cachePolicy default {@link CachePolicy}
+     * @return {@link GraphClient.Builder} to be used for chaining method calls
+     */
+    public Builder defaultCachePolicy(@NonNull CachePolicy cachePolicy) {
+      this.defaultCachePolicy = checkNotNull(cachePolicy, "cachePolicy == null");
       return this;
     }
 
