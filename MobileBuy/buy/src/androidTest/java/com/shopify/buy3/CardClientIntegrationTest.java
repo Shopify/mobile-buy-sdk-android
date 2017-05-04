@@ -30,6 +30,7 @@ import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.test.runner.AndroidJUnit4;
 
+import org.json.JSONObject;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -80,8 +81,15 @@ public class CardClientIntegrationTest {
     RecordedRequest recordedRequest = server.takeRequest();
     assertThat(recordedRequest.getHeader("Accept")).isEqualTo(RealCreditCardVaultCall.ACCEPT_HEADER);
     assertThat(recordedRequest.getHeader("Content-Type")).isEqualTo(RealCreditCardVaultCall.CONTENT_MEDIA_TYPE.toString());
-    assertThat(recordedRequest.getBody().readUtf8()).isEqualTo("{\"credit_card\":{\"number\":\"1\",\"first_name\":\"John\","
-      + "\"last_name\":\"Smith\",\"month\":\"06\",\"year\":\"2017\",\"verification_value\":\"111\"}}");
+
+    JSONObject jsonObject = new JSONObject(recordedRequest.getBody().readUtf8());
+    assertThat(jsonObject.getJSONObject("credit_card")).isNotNull();
+    assertThat(jsonObject.getJSONObject("credit_card").getString("first_name")).isEqualTo("John");
+    assertThat(jsonObject.getJSONObject("credit_card").getString("last_name")).isEqualTo("Smith");
+    assertThat(jsonObject.getJSONObject("credit_card").getString("number")).isEqualTo("1");
+    assertThat(jsonObject.getJSONObject("credit_card").getString("month")).isEqualTo("06");
+    assertThat(jsonObject.getJSONObject("credit_card").getString("year")).isEqualTo("2017");
+    assertThat(jsonObject.getJSONObject("credit_card").getString("verification_value")).isEqualTo("111");
     assertThat(token).isEqualTo("83hru3obno3hu434b3u");
   }
 
