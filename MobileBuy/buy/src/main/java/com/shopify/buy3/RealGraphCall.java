@@ -28,6 +28,7 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.shopify.buy3.cache.HttpCache;
 import com.shopify.graphql.support.AbstractResponse;
 import com.shopify.graphql.support.Query;
 import com.shopify.graphql.support.SchemaViolationError;
@@ -176,10 +177,14 @@ abstract class RealGraphCall<T extends AbstractResponse<T>> implements GraphCall
 
   private Call httpCall() {
     RequestBody body = RequestBody.create(GRAPHQL_MEDIA_TYPE, query.toString());
+    String cacheKey = cachePolicy.fetchStrategy == CachePolicy.FetchStrategy.NETWORK_ONLY ? "" : HttpCache.cacheKey(body);
     Request request = new Request.Builder()
       .url(serverUrl)
       .post(body)
       .header("Accept", ACCEPT_HEADER)
+      .header(HttpCache.CACHE_KEY_HEADER, cacheKey)
+      .header(HttpCache.CACHE_FETCH_STRATEGY_HEADER, cachePolicy.fetchStrategy.name())
+      .header(HttpCache.CACHE_EXPIRE_TIMEOUT_HEADER, String.valueOf(cachePolicy.expireTimeoutMs()))
       .build();
     return httpCallFactory.newCall(request);
   }

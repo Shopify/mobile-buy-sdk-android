@@ -73,6 +73,10 @@ public final class CachePolicy {
     this.expireTimeUnit = expireTimeUnit;
   }
 
+  long expireTimeoutMs() {
+    return expireTimeUnit.toMillis(expireTimeout);
+  }
+
   public interface NeverExpireFactory {
     /**
      * Obtain cache policy without expiration timeout
@@ -93,10 +97,10 @@ public final class CachePolicy {
     @NonNull CachePolicy obtain(long expireTimeout, @NonNull TimeUnit expireTimeUnit);
   }
 
-  enum FetchStrategy {
+  public enum FetchStrategy {
     CACHE_ONLY,
     NETWORK_ONLY,
     CACHE_FIRST,
-    NETWORK_FIRST,
+    NETWORK_FIRST
   }
 }

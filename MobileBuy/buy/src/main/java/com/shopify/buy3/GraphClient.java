@@ -26,7 +26,11 @@ package com.shopify.buy3;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
+import com.shopify.buy3.cache.HttpCache;
+
+import java.io.File;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -61,12 +65,15 @@ public final class GraphClient {
   final HttpUrl serverUrl;
   final Call.Factory httpCallFactory;
   final CachePolicy defaultCachePolicy;
+  final HttpCache httpCache;
   final ScheduledExecutorService dispatcher;
 
-  private GraphClient(final Builder builder) {
-    this.serverUrl = builder.endpointUrl;
-    this.httpCallFactory = builder.httpClient;
-    this.defaultCachePolicy = builder.defaultCachePolicy;
+  private GraphClient(@NonNull final HttpUrl serverUrl, @NonNull final Call.Factory httpCallFactory,
+    @NonNull final CachePolicy defaultCachePolicy, @Nullable final HttpCache httpCache) {
+    this.serverUrl = checkNotNull(serverUrl, "serverUrl == null");
+    this.httpCallFactory = checkNotNull(httpCallFactory, "httpCallFactory == null");
+    this.defaultCachePolicy = checkNotNull(defaultCachePolicy, "defaultCachePolicy == null");
+    this.httpCache = httpCache;
 
     ScheduledThreadPoolExecutor threadPoolExecutor = new ScheduledThreadPoolExecutor(2,
       runnable -> new Thread(runnable, "GraphClient Dispatcher"));
@@ -98,7 +105,14 @@ public final class GraphClient {
   }
 
   /**
-   * Builds new {@code GraphClient} instance
+   * @return {@link HttpCache}
+   */
+  public HttpCache httpCache() {
+    return httpCache;
+  }
+
+  /**
+   * Builds new {@code GraphClient} instance.
    */
   public static final class Builder {
     private static final long DEFAULT_HTTP_CONNECTION_TIME_OUT_MS = TimeUnit.SECONDS.toMillis(10);
@@ -109,8 +123,8 @@ public final class GraphClient {
     private HttpUrl endpointUrl;
     private String accessToken;
     private OkHttpClient httpClient;
-    private Interceptor sdkHeaderInterceptor;
     private CachePolicy defaultCachePolicy = CachePolicy.NETWORK_ONLY.obtain();
+    private HttpCache httpCache;
 
     private Builder(@NonNull final Context context) {
       applicationName = checkNotNull(context, "context == null").getPackageName();
@@ -165,6 +179,24 @@ public final class GraphClient {
       return this;
     }
 
+    /**
+     * Enable http cache by setting cache folder and maximum cache size in bytes.
+     * By default http cache based on {@link okhttp3.internal.cache.DiskLruCache}.
+     *
+     * @param directory cache folder
+     * @param maxSize   max available size for http cache in bytes
+     * @return {@link GraphClient.Builder} to be used for chaining method calls
+     */
+    public Builder httpCache(@NonNull final File directory, long maxSize) {
+      this.httpCache = new HttpCache(checkNotNull(directory, "directory == null"), maxSize);
+      return this;
+    }
+
+    Builder httpCache(@NonNull final HttpCache httpCache) {
+      this.httpCache = checkNotNull(httpCache, "httpCache == null");
+      return this;
+    }
+
     Builder serverUrl(@NonNull HttpUrl endpointUrl) {
       this.endpointUrl = checkNotNull(endpointUrl, "endpointUrl == null");
       return this;
@@ -183,19 +215,16 @@ public final class GraphClient {
 
       checkNotBlank(accessToken, "apiKey == null");
 
-      if (sdkHeaderInterceptor == null) {
-        sdkHeaderInterceptor = sdkHeaderInterceptor(applicationName, accessToken);
-      }
-
+      OkHttpClient httpClient = this.httpClient;
       if (httpClient == null) {
         httpClient = defaultOkHttpClient();
       }
-
-      if (!httpClient.interceptors().contains(sdkHeaderInterceptor)) {
-        httpClient = httpClient.newBuilder().addInterceptor(sdkHeaderInterceptor).build();
+      httpClient = httpClient.newBuilder().addInterceptor(sdkHeaderInterceptor(applicationName, accessToken)).build();
+      if (httpCache != null) {
+        httpClient = httpClient.newBuilder().addInterceptor(httpCache.httpInterceptor()).build();
       }
 
-      return new GraphClient(this);
+      return new GraphClient(endpointUrl, httpClient, defaultCachePolicy, httpCache);
     }
 
     OkHttpClient defaultOkHttpClient() {

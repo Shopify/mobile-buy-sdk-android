@@ -26,7 +26,6 @@ package com.shopify.buy3;
 
 import android.content.Context;
 
-import com.google.common.truth.Truth;
 import com.shopify.graphql.support.ID;
 
 import org.junit.Before;
