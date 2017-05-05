@@ -31,6 +31,7 @@ import android.support.annotation.Nullable;
 import com.shopify.buy3.cache.HttpCache;
 
 import java.io.File;
+import java.nio.charset.Charset;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -40,6 +41,7 @@ import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okio.ByteString;
 
 import static com.shopify.buy3.Utils.checkNotBlank;
 import static com.shopify.buy3.Utils.checkNotNull;
@@ -124,6 +126,8 @@ public final class GraphClient {
     private String accessToken;
     private OkHttpClient httpClient;
     private CachePolicy defaultCachePolicy = CachePolicy.NETWORK_ONLY.obtain();
+    private File httpCacheFolder;
+    private long httpCacheMaxSize;
     private HttpCache httpCache;
 
     private Builder(@NonNull final Context context) {
@@ -181,14 +185,15 @@ public final class GraphClient {
 
     /**
      * Enable http cache by setting cache folder and maximum cache size in bytes.
-     * By default http cache based on {@link okhttp3.internal.cache.DiskLruCache}.
      *
-     * @param directory cache folder
-     * @param maxSize   max available size for http cache in bytes
+     * @param folder  cache folder
+     * @param maxSize max available size for http cache in bytes
      * @return {@link GraphClient.Builder} to be used for chaining method calls
+     * @see HttpCache
      */
-    public Builder httpCache(@NonNull final File directory, long maxSize) {
-      this.httpCache = new HttpCache(checkNotNull(directory, "directory == null"), maxSize);
+    public Builder httpCache(@NonNull final File folder, long maxSize) {
+      this.httpCacheFolder = checkNotNull(folder, "folder == null");
+      this.httpCacheMaxSize = maxSize;
       return this;
     }
 
@@ -214,6 +219,13 @@ public final class GraphClient {
       }
 
       checkNotBlank(accessToken, "apiKey == null");
+
+      HttpCache httpCache = this.httpCache;
+      if (httpCache == null && httpCacheFolder != null) {
+        byte[] tmp = (endpointUrl.toString() + "/" + accessToken).getBytes(Charset.forName("UTF-8"));
+        File cacheFolder = new File(httpCacheFolder, ByteString.of(tmp).md5().hex());
+        httpCache = new HttpCache(cacheFolder, httpCacheMaxSize);
+      }
 
       OkHttpClient httpClient = this.httpClient;
       if (httpClient == null) {

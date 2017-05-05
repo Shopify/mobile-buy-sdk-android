@@ -20,7 +20,7 @@ import static com.shopify.buy3.cache.Utils.isStale;
 
 /**
  * <p>Represents http request / response cache.</p>
- * Caches http responses on the disk based on LRU strategy.
+ * Caches http responses on the disk using DiskLRU model.
  */
 @SuppressWarnings("WeakerAccess")
 public final class HttpCache {
@@ -40,7 +40,7 @@ public final class HttpCache {
   }
 
   /**
-   * Clear all cached http responses from the disk.
+   * Clear all cached http responses.
    */
   public void clear() {
     try {
