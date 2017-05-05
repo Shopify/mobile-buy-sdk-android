@@ -90,7 +90,7 @@ public final class GraphClient {
    * @see QueryGraphCall
    */
   public QueryGraphCall queryGraph(final Storefront.QueryRootQuery query) {
-    return new RealQueryGraphCall(query, serverUrl, httpCallFactory, dispatcher, defaultCachePolicy);
+    return new RealQueryGraphCall(query, serverUrl, httpCallFactory, dispatcher, defaultCachePolicy, httpCache);
   }
 
   /**
@@ -101,7 +101,7 @@ public final class GraphClient {
    * @see MutationGraphCall
    */
   public MutationGraphCall mutateGraph(final Storefront.MutationQuery query) {
-    return new RealMutationGraphCall(query, serverUrl, httpCallFactory, dispatcher, CachePolicy.NETWORK_ONLY.obtain());
+    return new RealMutationGraphCall(query, serverUrl, httpCallFactory, dispatcher, CachePolicy.NETWORK_ONLY.obtain(), httpCache);
   }
 
   /**

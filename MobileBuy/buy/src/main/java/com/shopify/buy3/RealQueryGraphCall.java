@@ -26,6 +26,8 @@ package com.shopify.buy3;
 
 import android.support.annotation.NonNull;
 
+import com.shopify.buy3.cache.HttpCache;
+
 import java.util.concurrent.ScheduledExecutorService;
 
 import okhttp3.Call;
@@ -34,8 +36,8 @@ import okhttp3.HttpUrl;
 final class RealQueryGraphCall extends RealGraphCall<Storefront.QueryRoot> implements QueryGraphCall {
 
   RealQueryGraphCall(final Storefront.QueryRootQuery query, final HttpUrl serverUrl, final Call.Factory httpCallFactory,
-    final ScheduledExecutorService dispatcher, final CachePolicy cachePolicy) {
-    super(query, serverUrl, httpCallFactory, response -> new Storefront.QueryRoot(response.getData()), dispatcher, cachePolicy);
+    final ScheduledExecutorService dispatcher, final CachePolicy cachePolicy, final HttpCache httpCache) {
+    super(query, serverUrl, httpCallFactory, response -> new Storefront.QueryRoot(response.getData()), dispatcher, cachePolicy, httpCache);
   }
 
   private RealQueryGraphCall(final RealGraphCall<Storefront.QueryRoot> other) {

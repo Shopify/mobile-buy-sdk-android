@@ -51,6 +51,20 @@ public final class HttpCache {
     }
   }
 
+  /**
+   * Remove cached response by cache key.
+   *
+   * @param cacheKey cache key
+   */
+  public void removeQuietly(@NonNull final String cacheKey) {
+    try {
+      cacheStore.remove(cacheKey);
+    } catch (IOException e) {
+      //TODO log me
+      //logger.e(e, "Failed to clear http cache");
+    }
+  }
+
   @Nullable Response read(@NonNull final String cacheKey) {
     ResponseCacheRecord responseCacheRecord = null;
     try {

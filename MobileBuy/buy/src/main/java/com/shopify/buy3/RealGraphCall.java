@@ -61,16 +61,18 @@ abstract class RealGraphCall<T extends AbstractResponse<T>> implements GraphCall
   private volatile HttpCallbackWithRetry httpCallbackWithRetry;
   private volatile boolean canceled;
   CachePolicy cachePolicy;
+  private final HttpCache httpCache;
 
   RealGraphCall(final Query query, final HttpUrl serverUrl, final Call.Factory httpCallFactory,
     final ResponseDataConverter<T> responseDataConverter, final ScheduledExecutorService dispatcher,
-    final CachePolicy cachePolicy) {
+    final CachePolicy cachePolicy, final HttpCache httpCache) {
     this.query = query;
     this.serverUrl = serverUrl;
     this.httpCallFactory = httpCallFactory;
     this.httpResponseParser = new HttpResponseParser<>(responseDataConverter);
     this.dispatcher = dispatcher;
     this.cachePolicy = cachePolicy;
+    this.httpCache = httpCache;
   }
 
   RealGraphCall(final RealGraphCall<T> other) {
@@ -80,6 +82,7 @@ abstract class RealGraphCall<T extends AbstractResponse<T>> implements GraphCall
     this.httpResponseParser = other.httpResponseParser;
     this.dispatcher = other.dispatcher;
     this.cachePolicy = other.cachePolicy;
+    this.httpCache = other.httpCache;
   }
 
   @Override public void cancel() {
@@ -115,7 +118,19 @@ abstract class RealGraphCall<T extends AbstractResponse<T>> implements GraphCall
       throw new GraphNetworkError("Failed to execute GraphQL http request", e);
     }
 
-    GraphResponse<T> graphResponse = httpResponseParser.parse(response);
+    GraphResponse<T> graphResponse;
+    try {
+      graphResponse = httpResponseParser.parse(response);
+      if (graphResponse.hasErrors()) {
+        removeCachedResponse(httpCall.request());
+      }
+    } catch (Exception rethrow) {
+      if (rethrow instanceof GraphParseError) {
+        removeCachedResponse(httpCall.request());
+      }
+      throw rethrow;
+    }
+
     checkIfCanceled();
     return graphResponse;
   }
@@ -146,11 +161,18 @@ abstract class RealGraphCall<T extends AbstractResponse<T>> implements GraphCall
         if (canceled) {
           callback.onFailure(new GraphCallCanceledError());
         } else {
+          if (response.hasErrors()) {
+            removeCachedResponse(httpCall.request());
+          }
           callback.onResponse(response);
         }
       }
 
       @Override public void onFailure(@NonNull final GraphError error) {
+        if (error instanceof GraphParseError) {
+          removeCachedResponse(httpCall.request());
+        }
+
         if (canceled) {
           callback.onFailure(new GraphCallCanceledError());
         } else {
@@ -193,6 +215,15 @@ abstract class RealGraphCall<T extends AbstractResponse<T>> implements GraphCall
     if (canceled) {
       throw new GraphCallCanceledError();
     }
+  }
+
+  private void removeCachedResponse(@NonNull final Request request) {
+    String cacheKey = httpCall.request().header(HttpCache.CACHE_KEY_HEADER);
+    if (httpCache == null || cacheKey == null) {
+      return;
+    }
+
+    httpCache.removeQuietly(cacheKey);
   }
 
   interface ResponseDataConverter<R extends AbstractResponse<R>> {
