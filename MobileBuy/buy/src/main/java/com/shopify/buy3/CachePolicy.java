@@ -74,6 +74,9 @@ public final class CachePolicy {
   }
 
   long expireTimeoutMs() {
+    if (expireTimeUnit == null) {
+      return 0;
+    }
     return expireTimeUnit.toMillis(expireTimeout);
   }
 

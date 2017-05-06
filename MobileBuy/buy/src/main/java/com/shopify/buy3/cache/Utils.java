@@ -33,21 +33,20 @@ final class Utils {
   }
 
   static boolean shouldSkipCache(@NonNull final Request request) {
-    CachePolicy.FetchStrategy fetchStrategy = extractFetchStrategy(request);
+    CachePolicy.FetchStrategy fetchStrategy = fetchStrategy(request);
     String cacheKey = request.header(CACHE_KEY_HEADER);
     return fetchStrategy == null
-      || fetchStrategy == CachePolicy.FetchStrategy.NETWORK_ONLY
       || cacheKey == null
       || cacheKey.isEmpty();
   }
 
   static boolean shouldSkipNetwork(@NonNull final Request request) {
-    CachePolicy.FetchStrategy fetchStrategy = extractFetchStrategy(request);
+    CachePolicy.FetchStrategy fetchStrategy = fetchStrategy(request);
     return fetchStrategy == CachePolicy.FetchStrategy.CACHE_ONLY;
   }
 
   static boolean isNetworkFirst(@NonNull final Request request) {
-    CachePolicy.FetchStrategy fetchStrategy = extractFetchStrategy(request);
+    CachePolicy.FetchStrategy fetchStrategy = fetchStrategy(request);
     return fetchStrategy == CachePolicy.FetchStrategy.NETWORK_ONLY
       || fetchStrategy == CachePolicy.FetchStrategy.NETWORK_FIRST;
   }
@@ -64,8 +63,12 @@ final class Utils {
       .build();
   }
 
-  static boolean isStale(@NonNull final Response response) {
-    String timeoutStr = response.header(CACHE_EXPIRE_TIMEOUT_HEADER);
+  static boolean isStale(@NonNull final Request request, @NonNull final Response response) {
+    if (fetchStrategy(request) == CachePolicy.FetchStrategy.CACHE_ONLY) {
+      return false;
+    }
+
+    String timeoutStr = request.header(CACHE_EXPIRE_TIMEOUT_HEADER);
     String servedDateStr = response.header(CACHE_SERVED_DATE_HEADER);
     if (servedDateStr == null || timeoutStr == null) {
       return true;
@@ -115,7 +118,7 @@ final class Utils {
     return reference;
   }
 
-  private static CachePolicy.FetchStrategy extractFetchStrategy(@NonNull final Request request) {
+  private static CachePolicy.FetchStrategy fetchStrategy(@NonNull final Request request) {
     String fetchStrategyHeader = request.header(CACHE_FETCH_STRATEGY_HEADER);
     if (fetchStrategyHeader == null || fetchStrategyHeader.isEmpty()) {
       return null;

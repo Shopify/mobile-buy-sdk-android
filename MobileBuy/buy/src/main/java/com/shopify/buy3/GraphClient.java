@@ -109,7 +109,7 @@ public final class GraphClient {
   /**
    * @return {@link HttpCache}
    */
-  public HttpCache httpCache() {
+  @Nullable public HttpCache httpCache() {
     return httpCache;
   }
 
@@ -197,8 +197,8 @@ public final class GraphClient {
       return this;
     }
 
-    Builder httpCache(@NonNull final HttpCache httpCache) {
-      this.httpCache = checkNotNull(httpCache, "httpCache == null");
+    Builder httpCache(@Nullable final HttpCache httpCache) {
+      this.httpCache = httpCache;
       return this;
     }
 

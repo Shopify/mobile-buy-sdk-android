@@ -9,7 +9,9 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 import static com.shopify.buy3.cache.HttpCache.CACHE_KEY_HEADER;
+import static com.shopify.buy3.cache.Utils.closeQuietly;
 import static com.shopify.buy3.cache.Utils.isNetworkFirst;
+import static com.shopify.buy3.cache.Utils.isStale;
 import static com.shopify.buy3.cache.Utils.shouldSkipCache;
 import static com.shopify.buy3.cache.Utils.shouldSkipNetwork;
 import static com.shopify.buy3.cache.Utils.strip;
@@ -37,33 +39,33 @@ final class HttpCacheInterceptor implements Interceptor {
       return cacheOnlyResponse(request);
     }
 
-    String cacheKey = request.header(CACHE_KEY_HEADER);
     if (isNetworkFirst(request)) {
       //TODO log me
       //logger.d("Network first for request: %s", request);
-      return networkFirst(request, chain, cacheKey);
+      return networkFirst(request, chain);
     } else {
       //TODO log me
       //logger.d("Cache first for request: %s", request);
-      return cacheFirst(request, chain, cacheKey);
+      return cacheFirst(request, chain);
     }
   }
 
   private Response cacheOnlyResponse(@NonNull final Request request) throws IOException {
-    String cacheKey = request.header(CACHE_KEY_HEADER);
-    Response cacheResponse = cache.read(cacheKey);
+    Response cacheResponse = cachedResponse(request);
     if (cacheResponse != null) {
-      logCacheHit(request, cacheKey);
+      logCacheHit(request);
       return cacheResponse.newBuilder()
         .cacheResponse(strip(cacheResponse))
         .build();
     }
-    logCacheMiss(request, cacheKey);
+    logCacheMiss(request);
     return unsatisfiableCacheRequest(request);
   }
 
-  private Response networkFirst(@NonNull final Request request, @NonNull final Chain chain, @NonNull final String cacheKey)
+  private Response networkFirst(@NonNull final Request request, @NonNull final Chain chain)
     throws IOException {
+    String cacheKey = request.header(CACHE_KEY_HEADER);
+
     Response networkResponse = withServedDateHeader(chain.proceed(request));
     if (networkResponse.isSuccessful()) {
       //TODO log me
@@ -71,12 +73,12 @@ final class HttpCacheInterceptor implements Interceptor {
       return cache.proxyResponse(networkResponse, cacheKey);
     }
 
-    Response cacheResponse = cache.read(cacheKey);
+    Response cacheResponse = cachedResponse(request);
     if (cacheResponse == null) {
-      logCacheMiss(request, cacheKey);
+      logCacheMiss(request);
       return networkResponse;
     } else {
-      logCacheHit(request, cacheKey);
+      logCacheHit(request);
       return cacheResponse.newBuilder()
         .cacheResponse(strip(cacheResponse))
         .networkResponse(strip(networkResponse))
@@ -85,18 +87,19 @@ final class HttpCacheInterceptor implements Interceptor {
     }
   }
 
-  private Response cacheFirst(@NonNull final Request request, @NonNull final Chain chain, @NonNull final String cacheKey)
+  private Response cacheFirst(@NonNull final Request request, @NonNull final Chain chain)
     throws IOException {
-    Response cacheResponse = cache.read(cacheKey);
+    Response cacheResponse = cachedResponse(request);
     if (cacheResponse == null) {
-      logCacheMiss(request, cacheKey);
+      logCacheMiss(request);
       Response networkResponse = withServedDateHeader(chain.proceed(request));
       if (networkResponse.isSuccessful()) {
+        String cacheKey = request.header(CACHE_KEY_HEADER);
         return cache.proxyResponse(networkResponse, cacheKey);
       }
       return networkResponse;
     } else {
-      logCacheHit(request, cacheKey);
+      logCacheHit(request);
       return cacheResponse.newBuilder()
         .cacheResponse(strip(cacheResponse))
         .request(request)
@@ -104,12 +107,31 @@ final class HttpCacheInterceptor implements Interceptor {
     }
   }
 
-  private void logCacheHit(@NonNull final Request request, @NonNull final String cacheKey) {
+  private Response cachedResponse(@NonNull final Request request) {
+    String cacheKey = request.header(CACHE_KEY_HEADER);
+    if (cacheKey == null || cacheKey.isEmpty()) {
+      return null;
+    }
+
+    Response cachedResponse = cache.read(cacheKey);
+    if (cachedResponse == null) {
+      return null;
+    }
+
+    if (isStale(request, cachedResponse)) {
+      closeQuietly(cachedResponse);
+      return null;
+    }
+
+    return cachedResponse;
+  }
+
+  private void logCacheHit(@NonNull final Request request) {
     //TODO log me
     //logger.d("Cache HIT for request: %s, with cache key: %s", request, cacheKey);
   }
 
-  private void logCacheMiss(@NonNull final Request request, @NonNull final String cacheKey) {
+  private void logCacheMiss(@NonNull final Request request) {
     //TODO log me
     //logger.d("Cache MISS for request: %s, with cache key: %s", request, cacheKey);
   }

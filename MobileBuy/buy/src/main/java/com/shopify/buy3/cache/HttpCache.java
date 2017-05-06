@@ -16,7 +16,6 @@ import okio.Source;
 import static com.shopify.buy3.cache.Utils.abortQuietly;
 import static com.shopify.buy3.cache.Utils.checkNotNull;
 import static com.shopify.buy3.cache.Utils.closeQuietly;
-import static com.shopify.buy3.cache.Utils.isStale;
 
 /**
  * <p>Represents http request / response cache.</p>
@@ -84,11 +83,6 @@ public final class HttpCache {
       Response response = new ResponseHeaderRecord(responseCacheRecord.headerSource()).response();
       String contentType = response.header("Content-Type");
       String contentLength = response.header("Content-Length");
-
-      if (isStale(response)) {
-        closeQuietly(response);
-        return null;
-      }
 
       return response.newBuilder()
         .body(new CacheResponseBody(cacheResponseSource, contentType, contentLength))

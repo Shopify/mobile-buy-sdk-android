@@ -129,6 +129,8 @@ abstract class RealGraphCall<T extends AbstractResponse<T>> implements GraphCall
         removeCachedResponse(httpCall.request());
       }
       throw rethrow;
+    } finally {
+      response.close();
     }
 
     checkIfCanceled();
@@ -199,7 +201,7 @@ abstract class RealGraphCall<T extends AbstractResponse<T>> implements GraphCall
 
   private Call httpCall() {
     RequestBody body = RequestBody.create(GRAPHQL_MEDIA_TYPE, query.toString());
-    String cacheKey = cachePolicy.fetchStrategy == CachePolicy.FetchStrategy.NETWORK_ONLY ? "" : HttpCache.cacheKey(body);
+    String cacheKey = httpCache != null ? HttpCache.cacheKey(body) : "";
     Request request = new Request.Builder()
       .url(serverUrl)
       .post(body)
@@ -218,8 +220,8 @@ abstract class RealGraphCall<T extends AbstractResponse<T>> implements GraphCall
   }
 
   private void removeCachedResponse(@NonNull final Request request) {
-    String cacheKey = httpCall.request().header(HttpCache.CACHE_KEY_HEADER);
-    if (httpCache == null || cacheKey == null) {
+    String cacheKey = request.header(HttpCache.CACHE_KEY_HEADER);
+    if (httpCache == null || cacheKey == null || cacheKey.isEmpty()) {
       return;
     }
 
