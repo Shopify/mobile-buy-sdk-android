@@ -25,6 +25,7 @@ ext.dep = [
     androidSupportV7         : "com.android.support:appcompat-v7:$versions.androidSupportVersion",
     okhttp                   : "com.squareup.okhttp3:logging-interceptor:$versions.okHttpVersion",
     okhttpLogging            : "com.squareup.okhttp3:logging-interceptor:$versions.okHttpVersion",
+    okhttpTestSupport        : "com.squareup.okhttp3:okhttp-testing-support:$versions.okHttpVersion",
     playServicesWallet       : "com.google.android.gms:play-services-wallet:$versions.playServicesVersion",
     shopifyGraphqlSupport    : "com.shopify.graphql.support:support:$versions.shopifyGraphqlSupportVersion",
     jodaTime                 : "net.danlew:android.joda:$versions.jodaTimeVersion",
