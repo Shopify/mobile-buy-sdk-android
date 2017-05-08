@@ -1304,18 +1304,18 @@ public class Storefront {
     }
 
     public static class CheckoutAttributesUpdateInput implements Serializable {
-        private Boolean allowPartialAddresses;
+        private String note;
 
         private List<AttributeInput> customAttributes;
 
-        private String note;
+        private Boolean allowPartialAddresses;
 
-        public Boolean getAllowPartialAddresses() {
-            return allowPartialAddresses;
+        public String getNote() {
+            return note;
         }
 
-        public CheckoutAttributesUpdateInput setAllowPartialAddresses(Boolean allowPartialAddresses) {
-            this.allowPartialAddresses = allowPartialAddresses;
+        public CheckoutAttributesUpdateInput setNote(String note) {
+            this.note = note;
             return this;
         }
 
@@ -1328,12 +1328,12 @@ public class Storefront {
             return this;
         }
 
-        public String getNote() {
-            return note;
+        public Boolean getAllowPartialAddresses() {
+            return allowPartialAddresses;
         }
 
-        public CheckoutAttributesUpdateInput setNote(String note) {
-            this.note = note;
+        public CheckoutAttributesUpdateInput setAllowPartialAddresses(Boolean allowPartialAddresses) {
+            this.allowPartialAddresses = allowPartialAddresses;
             return this;
         }
 
@@ -1341,11 +1341,11 @@ public class Storefront {
             String separator = "";
             _queryBuilder.append('{');
 
-            if (allowPartialAddresses != null) {
+            if (note != null) {
                 _queryBuilder.append(separator);
                 separator = ",";
-                _queryBuilder.append("allowPartialAddresses:");
-                _queryBuilder.append(allowPartialAddresses);
+                _queryBuilder.append("note:");
+                Query.appendQuotedString(_queryBuilder, note.toString());
             }
 
             if (customAttributes != null) {
@@ -1363,11 +1363,11 @@ public class Storefront {
                 _queryBuilder.append(']');
             }
 
-            if (note != null) {
+            if (allowPartialAddresses != null) {
                 _queryBuilder.append(separator);
                 separator = ",";
-                _queryBuilder.append("note:");
-                Query.appendQuotedString(_queryBuilder, note.toString());
+                _queryBuilder.append("allowPartialAddresses:");
+                _queryBuilder.append(allowPartialAddresses);
             }
 
             _queryBuilder.append('}');
@@ -1916,35 +1916,17 @@ public class Storefront {
     }
 
     public static class CheckoutCreateInput implements Serializable {
-        private Boolean allowPartialAddresses;
-
-        private List<AttributeInput> customAttributes;
-
         private String email;
 
         private List<CheckoutLineItemInput> lineItems;
 
-        private String note;
-
         private MailingAddressInput shippingAddress;
 
-        public Boolean getAllowPartialAddresses() {
-            return allowPartialAddresses;
-        }
+        private String note;
 
-        public CheckoutCreateInput setAllowPartialAddresses(Boolean allowPartialAddresses) {
-            this.allowPartialAddresses = allowPartialAddresses;
-            return this;
-        }
+        private List<AttributeInput> customAttributes;
 
-        public List<AttributeInput> getCustomAttributes() {
-            return customAttributes;
-        }
-
-        public CheckoutCreateInput setCustomAttributes(List<AttributeInput> customAttributes) {
-            this.customAttributes = customAttributes;
-            return this;
-        }
+        private Boolean allowPartialAddresses;
 
         public String getEmail() {
             return email;
@@ -1964,15 +1946,6 @@ public class Storefront {
             return this;
         }
 
-        public String getNote() {
-            return note;
-        }
-
-        public CheckoutCreateInput setNote(String note) {
-            this.note = note;
-            return this;
-        }
-
         public MailingAddressInput getShippingAddress() {
             return shippingAddress;
         }
@@ -1982,31 +1955,36 @@ public class Storefront {
             return this;
         }
 
+        public String getNote() {
+            return note;
+        }
+
+        public CheckoutCreateInput setNote(String note) {
+            this.note = note;
+            return this;
+        }
+
+        public List<AttributeInput> getCustomAttributes() {
+            return customAttributes;
+        }
+
+        public CheckoutCreateInput setCustomAttributes(List<AttributeInput> customAttributes) {
+            this.customAttributes = customAttributes;
+            return this;
+        }
+
+        public Boolean getAllowPartialAddresses() {
+            return allowPartialAddresses;
+        }
+
+        public CheckoutCreateInput setAllowPartialAddresses(Boolean allowPartialAddresses) {
+            this.allowPartialAddresses = allowPartialAddresses;
+            return this;
+        }
+
         public void appendTo(StringBuilder _queryBuilder) {
             String separator = "";
             _queryBuilder.append('{');
-
-            if (allowPartialAddresses != null) {
-                _queryBuilder.append(separator);
-                separator = ",";
-                _queryBuilder.append("allowPartialAddresses:");
-                _queryBuilder.append(allowPartialAddresses);
-            }
-
-            if (customAttributes != null) {
-                _queryBuilder.append(separator);
-                separator = ",";
-                _queryBuilder.append("customAttributes:");
-                _queryBuilder.append('[');
-
-                String listSeperator1 = "";
-                for (AttributeInput item1 : customAttributes) {
-                    _queryBuilder.append(listSeperator1);
-                    listSeperator1 = ",";
-                    item1.appendTo(_queryBuilder);
-                }
-                _queryBuilder.append(']');
-            }
 
             if (email != null) {
                 _queryBuilder.append(separator);
@@ -2030,6 +2008,13 @@ public class Storefront {
                 _queryBuilder.append(']');
             }
 
+            if (shippingAddress != null) {
+                _queryBuilder.append(separator);
+                separator = ",";
+                _queryBuilder.append("shippingAddress:");
+                shippingAddress.appendTo(_queryBuilder);
+            }
+
             if (note != null) {
                 _queryBuilder.append(separator);
                 separator = ",";
@@ -2037,11 +2022,26 @@ public class Storefront {
                 Query.appendQuotedString(_queryBuilder, note.toString());
             }
 
-            if (shippingAddress != null) {
+            if (customAttributes != null) {
                 _queryBuilder.append(separator);
                 separator = ",";
-                _queryBuilder.append("shippingAddress:");
-                shippingAddress.appendTo(_queryBuilder);
+                _queryBuilder.append("customAttributes:");
+                _queryBuilder.append('[');
+
+                String listSeperator1 = "";
+                for (AttributeInput item1 : customAttributes) {
+                    _queryBuilder.append(listSeperator1);
+                    listSeperator1 = ",";
+                    item1.appendTo(_queryBuilder);
+                }
+                _queryBuilder.append(']');
+            }
+
+            if (allowPartialAddresses != null) {
+                _queryBuilder.append(separator);
+                separator = ",";
+                _queryBuilder.append("allowPartialAddresses:");
+                _queryBuilder.append(allowPartialAddresses);
             }
 
             _queryBuilder.append('}');
@@ -3155,25 +3155,16 @@ public class Storefront {
     }
 
     public static class CheckoutLineItemInput implements Serializable {
-        private int quantity;
-
         private ID variantId;
+
+        private int quantity;
 
         private List<AttributeInput> customAttributes;
 
-        public CheckoutLineItemInput(int quantity, ID variantId) {
-            this.quantity = quantity;
-
+        public CheckoutLineItemInput(ID variantId, int quantity) {
             this.variantId = variantId;
-        }
 
-        public int getQuantity() {
-            return quantity;
-        }
-
-        public CheckoutLineItemInput setQuantity(int quantity) {
             this.quantity = quantity;
-            return this;
         }
 
         public ID getVariantId() {
@@ -3182,6 +3173,15 @@ public class Storefront {
 
         public CheckoutLineItemInput setVariantId(ID variantId) {
             this.variantId = variantId;
+            return this;
+        }
+
+        public int getQuantity() {
+            return quantity;
+        }
+
+        public CheckoutLineItemInput setQuantity(int quantity) {
+            this.quantity = quantity;
             return this;
         }
 
@@ -3200,13 +3200,13 @@ public class Storefront {
 
             _queryBuilder.append(separator);
             separator = ",";
-            _queryBuilder.append("quantity:");
-            _queryBuilder.append(quantity);
+            _queryBuilder.append("variantId:");
+            Query.appendQuotedString(_queryBuilder, variantId.toString());
 
             _queryBuilder.append(separator);
             separator = ",";
-            _queryBuilder.append("variantId:");
-            Query.appendQuotedString(_queryBuilder, variantId.toString());
+            _queryBuilder.append("quantity:");
+            _queryBuilder.append(quantity);
 
             if (customAttributes != null) {
                 _queryBuilder.append(separator);
@@ -3228,22 +3228,13 @@ public class Storefront {
     }
 
     public static class CheckoutLineItemUpdateInput implements Serializable {
-        private List<AttributeInput> customAttributes;
-
         private ID id;
-
-        private Integer quantity;
 
         private ID variantId;
 
-        public List<AttributeInput> getCustomAttributes() {
-            return customAttributes;
-        }
+        private Integer quantity;
 
-        public CheckoutLineItemUpdateInput setCustomAttributes(List<AttributeInput> customAttributes) {
-            this.customAttributes = customAttributes;
-            return this;
-        }
+        private List<AttributeInput> customAttributes;
 
         public ID getId() {
             return id;
@@ -3251,15 +3242,6 @@ public class Storefront {
 
         public CheckoutLineItemUpdateInput setId(ID id) {
             this.id = id;
-            return this;
-        }
-
-        public Integer getQuantity() {
-            return quantity;
-        }
-
-        public CheckoutLineItemUpdateInput setQuantity(Integer quantity) {
-            this.quantity = quantity;
             return this;
         }
 
@@ -3272,9 +3254,48 @@ public class Storefront {
             return this;
         }
 
+        public Integer getQuantity() {
+            return quantity;
+        }
+
+        public CheckoutLineItemUpdateInput setQuantity(Integer quantity) {
+            this.quantity = quantity;
+            return this;
+        }
+
+        public List<AttributeInput> getCustomAttributes() {
+            return customAttributes;
+        }
+
+        public CheckoutLineItemUpdateInput setCustomAttributes(List<AttributeInput> customAttributes) {
+            this.customAttributes = customAttributes;
+            return this;
+        }
+
         public void appendTo(StringBuilder _queryBuilder) {
             String separator = "";
             _queryBuilder.append('{');
+
+            if (id != null) {
+                _queryBuilder.append(separator);
+                separator = ",";
+                _queryBuilder.append("id:");
+                Query.appendQuotedString(_queryBuilder, id.toString());
+            }
+
+            if (variantId != null) {
+                _queryBuilder.append(separator);
+                separator = ",";
+                _queryBuilder.append("variantId:");
+                Query.appendQuotedString(_queryBuilder, variantId.toString());
+            }
+
+            if (quantity != null) {
+                _queryBuilder.append(separator);
+                separator = ",";
+                _queryBuilder.append("quantity:");
+                _queryBuilder.append(quantity);
+            }
 
             if (customAttributes != null) {
                 _queryBuilder.append(separator);
@@ -3289,27 +3310,6 @@ public class Storefront {
                     item1.appendTo(_queryBuilder);
                 }
                 _queryBuilder.append(']');
-            }
-
-            if (id != null) {
-                _queryBuilder.append(separator);
-                separator = ",";
-                _queryBuilder.append("id:");
-                Query.appendQuotedString(_queryBuilder, id.toString());
-            }
-
-            if (quantity != null) {
-                _queryBuilder.append(separator);
-                separator = ",";
-                _queryBuilder.append("quantity:");
-                _queryBuilder.append(quantity);
-            }
-
-            if (variantId != null) {
-                _queryBuilder.append(separator);
-                separator = ",";
-                _queryBuilder.append("variantId:");
-                Query.appendQuotedString(_queryBuilder, variantId.toString());
             }
 
             _queryBuilder.append('}');
@@ -4833,20 +4833,20 @@ public class Storefront {
     public static class CreditCardPaymentInput implements Serializable {
         private BigDecimal amount;
 
-        private MailingAddressInput billingAddress;
-
         private String idempotencyKey;
+
+        private MailingAddressInput billingAddress;
 
         private String vaultId;
 
         private Boolean test;
 
-        public CreditCardPaymentInput(BigDecimal amount, MailingAddressInput billingAddress, String idempotencyKey, String vaultId) {
+        public CreditCardPaymentInput(BigDecimal amount, String idempotencyKey, MailingAddressInput billingAddress, String vaultId) {
             this.amount = amount;
 
-            this.billingAddress = billingAddress;
-
             this.idempotencyKey = idempotencyKey;
+
+            this.billingAddress = billingAddress;
 
             this.vaultId = vaultId;
         }
@@ -4860,21 +4860,21 @@ public class Storefront {
             return this;
         }
 
-        public MailingAddressInput getBillingAddress() {
-            return billingAddress;
-        }
-
-        public CreditCardPaymentInput setBillingAddress(MailingAddressInput billingAddress) {
-            this.billingAddress = billingAddress;
-            return this;
-        }
-
         public String getIdempotencyKey() {
             return idempotencyKey;
         }
 
         public CreditCardPaymentInput setIdempotencyKey(String idempotencyKey) {
             this.idempotencyKey = idempotencyKey;
+            return this;
+        }
+
+        public MailingAddressInput getBillingAddress() {
+            return billingAddress;
+        }
+
+        public CreditCardPaymentInput setBillingAddress(MailingAddressInput billingAddress) {
+            this.billingAddress = billingAddress;
             return this;
         }
 
@@ -4907,13 +4907,13 @@ public class Storefront {
 
             _queryBuilder.append(separator);
             separator = ",";
-            _queryBuilder.append("billingAddress:");
-            billingAddress.appendTo(_queryBuilder);
+            _queryBuilder.append("idempotencyKey:");
+            Query.appendQuotedString(_queryBuilder, idempotencyKey.toString());
 
             _queryBuilder.append(separator);
             separator = ",";
-            _queryBuilder.append("idempotencyKey:");
-            Query.appendQuotedString(_queryBuilder, idempotencyKey.toString());
+            _queryBuilder.append("billingAddress:");
+            billingAddress.appendTo(_queryBuilder);
 
             _queryBuilder.append(separator);
             separator = ",";
@@ -7890,11 +7890,11 @@ public class Storefront {
 
         private String password;
 
-        private Boolean acceptsMarketing;
-
         private String firstName;
 
         private String lastName;
+
+        private Boolean acceptsMarketing;
 
         public CustomerCreateInput(String email, String password) {
             this.email = email;
@@ -7920,15 +7920,6 @@ public class Storefront {
             return this;
         }
 
-        public Boolean getAcceptsMarketing() {
-            return acceptsMarketing;
-        }
-
-        public CustomerCreateInput setAcceptsMarketing(Boolean acceptsMarketing) {
-            this.acceptsMarketing = acceptsMarketing;
-            return this;
-        }
-
         public String getFirstName() {
             return firstName;
         }
@@ -7947,6 +7938,15 @@ public class Storefront {
             return this;
         }
 
+        public Boolean getAcceptsMarketing() {
+            return acceptsMarketing;
+        }
+
+        public CustomerCreateInput setAcceptsMarketing(Boolean acceptsMarketing) {
+            this.acceptsMarketing = acceptsMarketing;
+            return this;
+        }
+
         public void appendTo(StringBuilder _queryBuilder) {
             String separator = "";
             _queryBuilder.append('{');
@@ -7961,13 +7961,6 @@ public class Storefront {
             _queryBuilder.append("password:");
             Query.appendQuotedString(_queryBuilder, password.toString());
 
-            if (acceptsMarketing != null) {
-                _queryBuilder.append(separator);
-                separator = ",";
-                _queryBuilder.append("acceptsMarketing:");
-                _queryBuilder.append(acceptsMarketing);
-            }
-
             if (firstName != null) {
                 _queryBuilder.append(separator);
                 separator = ",";
@@ -7980,6 +7973,13 @@ public class Storefront {
                 separator = ",";
                 _queryBuilder.append("lastName:");
                 Query.appendQuotedString(_queryBuilder, lastName.toString());
+            }
+
+            if (acceptsMarketing != null) {
+                _queryBuilder.append(separator);
+                separator = ",";
+                _queryBuilder.append("acceptsMarketing:");
+                _queryBuilder.append(acceptsMarketing);
             }
 
             _queryBuilder.append('}');
@@ -8193,23 +8193,14 @@ public class Storefront {
     }
 
     public static class CustomerResetInput implements Serializable {
-        private String password;
-
         private String resetToken;
 
-        public CustomerResetInput(String password, String resetToken) {
-            this.password = password;
+        private String password;
 
+        public CustomerResetInput(String resetToken, String password) {
             this.resetToken = resetToken;
-        }
 
-        public String getPassword() {
-            return password;
-        }
-
-        public CustomerResetInput setPassword(String password) {
             this.password = password;
-            return this;
         }
 
         public String getResetToken() {
@@ -8221,19 +8212,28 @@ public class Storefront {
             return this;
         }
 
+        public String getPassword() {
+            return password;
+        }
+
+        public CustomerResetInput setPassword(String password) {
+            this.password = password;
+            return this;
+        }
+
         public void appendTo(StringBuilder _queryBuilder) {
             String separator = "";
             _queryBuilder.append('{');
 
             _queryBuilder.append(separator);
             separator = ",";
-            _queryBuilder.append("password:");
-            Query.appendQuotedString(_queryBuilder, password.toString());
+            _queryBuilder.append("resetToken:");
+            Query.appendQuotedString(_queryBuilder, resetToken.toString());
 
             _queryBuilder.append(separator);
             separator = ",";
-            _queryBuilder.append("resetToken:");
-            Query.appendQuotedString(_queryBuilder, resetToken.toString());
+            _queryBuilder.append("password:");
+            Query.appendQuotedString(_queryBuilder, password.toString());
 
             _queryBuilder.append('}');
         }
@@ -8361,33 +8361,15 @@ public class Storefront {
     }
 
     public static class CustomerUpdateInput implements Serializable {
-        private Boolean acceptsMarketing;
-
-        private String email;
-
         private String firstName;
 
         private String lastName;
 
+        private String email;
+
         private String password;
 
-        public Boolean getAcceptsMarketing() {
-            return acceptsMarketing;
-        }
-
-        public CustomerUpdateInput setAcceptsMarketing(Boolean acceptsMarketing) {
-            this.acceptsMarketing = acceptsMarketing;
-            return this;
-        }
-
-        public String getEmail() {
-            return email;
-        }
-
-        public CustomerUpdateInput setEmail(String email) {
-            this.email = email;
-            return this;
-        }
+        private Boolean acceptsMarketing;
 
         public String getFirstName() {
             return firstName;
@@ -8407,6 +8389,15 @@ public class Storefront {
             return this;
         }
 
+        public String getEmail() {
+            return email;
+        }
+
+        public CustomerUpdateInput setEmail(String email) {
+            this.email = email;
+            return this;
+        }
+
         public String getPassword() {
             return password;
         }
@@ -8416,23 +8407,18 @@ public class Storefront {
             return this;
         }
 
+        public Boolean getAcceptsMarketing() {
+            return acceptsMarketing;
+        }
+
+        public CustomerUpdateInput setAcceptsMarketing(Boolean acceptsMarketing) {
+            this.acceptsMarketing = acceptsMarketing;
+            return this;
+        }
+
         public void appendTo(StringBuilder _queryBuilder) {
             String separator = "";
             _queryBuilder.append('{');
-
-            if (acceptsMarketing != null) {
-                _queryBuilder.append(separator);
-                separator = ",";
-                _queryBuilder.append("acceptsMarketing:");
-                _queryBuilder.append(acceptsMarketing);
-            }
-
-            if (email != null) {
-                _queryBuilder.append(separator);
-                separator = ",";
-                _queryBuilder.append("email:");
-                Query.appendQuotedString(_queryBuilder, email.toString());
-            }
 
             if (firstName != null) {
                 _queryBuilder.append(separator);
@@ -8448,11 +8434,25 @@ public class Storefront {
                 Query.appendQuotedString(_queryBuilder, lastName.toString());
             }
 
+            if (email != null) {
+                _queryBuilder.append(separator);
+                separator = ",";
+                _queryBuilder.append("email:");
+                Query.appendQuotedString(_queryBuilder, email.toString());
+            }
+
             if (password != null) {
                 _queryBuilder.append(separator);
                 separator = ",";
                 _queryBuilder.append("password:");
                 Query.appendQuotedString(_queryBuilder, password.toString());
+            }
+
+            if (acceptsMarketing != null) {
+                _queryBuilder.append(separator);
+                separator = ",";
+                _queryBuilder.append("acceptsMarketing:");
+                _queryBuilder.append(acceptsMarketing);
             }
 
             _queryBuilder.append('}');
@@ -16186,28 +16186,28 @@ public class Storefront {
     public static class TokenizedPaymentInput implements Serializable {
         private BigDecimal amount;
 
-        private MailingAddressInput billingAddress;
-
         private String idempotencyKey;
 
-        private String paymentData;
+        private MailingAddressInput billingAddress;
 
         private String type;
 
-        private String identifier;
+        private String paymentData;
 
         private Boolean test;
 
-        public TokenizedPaymentInput(BigDecimal amount, MailingAddressInput billingAddress, String idempotencyKey, String paymentData, String type) {
-            this.amount = amount;
+        private String identifier;
 
-            this.billingAddress = billingAddress;
+        public TokenizedPaymentInput(BigDecimal amount, String idempotencyKey, MailingAddressInput billingAddress, String type, String paymentData) {
+            this.amount = amount;
 
             this.idempotencyKey = idempotencyKey;
 
-            this.paymentData = paymentData;
+            this.billingAddress = billingAddress;
 
             this.type = type;
+
+            this.paymentData = paymentData;
         }
 
         public BigDecimal getAmount() {
@@ -16216,15 +16216,6 @@ public class Storefront {
 
         public TokenizedPaymentInput setAmount(BigDecimal amount) {
             this.amount = amount;
-            return this;
-        }
-
-        public MailingAddressInput getBillingAddress() {
-            return billingAddress;
-        }
-
-        public TokenizedPaymentInput setBillingAddress(MailingAddressInput billingAddress) {
-            this.billingAddress = billingAddress;
             return this;
         }
 
@@ -16237,12 +16228,12 @@ public class Storefront {
             return this;
         }
 
-        public String getPaymentData() {
-            return paymentData;
+        public MailingAddressInput getBillingAddress() {
+            return billingAddress;
         }
 
-        public TokenizedPaymentInput setPaymentData(String paymentData) {
-            this.paymentData = paymentData;
+        public TokenizedPaymentInput setBillingAddress(MailingAddressInput billingAddress) {
+            this.billingAddress = billingAddress;
             return this;
         }
 
@@ -16255,12 +16246,12 @@ public class Storefront {
             return this;
         }
 
-        public String getIdentifier() {
-            return identifier;
+        public String getPaymentData() {
+            return paymentData;
         }
 
-        public TokenizedPaymentInput setIdentifier(String identifier) {
-            this.identifier = identifier;
+        public TokenizedPaymentInput setPaymentData(String paymentData) {
+            this.paymentData = paymentData;
             return this;
         }
 
@@ -16270,6 +16261,15 @@ public class Storefront {
 
         public TokenizedPaymentInput setTest(Boolean test) {
             this.test = test;
+            return this;
+        }
+
+        public String getIdentifier() {
+            return identifier;
+        }
+
+        public TokenizedPaymentInput setIdentifier(String identifier) {
+            this.identifier = identifier;
             return this;
         }
 
@@ -16284,36 +16284,36 @@ public class Storefront {
 
             _queryBuilder.append(separator);
             separator = ",";
-            _queryBuilder.append("billingAddress:");
-            billingAddress.appendTo(_queryBuilder);
-
-            _queryBuilder.append(separator);
-            separator = ",";
             _queryBuilder.append("idempotencyKey:");
             Query.appendQuotedString(_queryBuilder, idempotencyKey.toString());
 
             _queryBuilder.append(separator);
             separator = ",";
-            _queryBuilder.append("paymentData:");
-            Query.appendQuotedString(_queryBuilder, paymentData.toString());
+            _queryBuilder.append("billingAddress:");
+            billingAddress.appendTo(_queryBuilder);
 
             _queryBuilder.append(separator);
             separator = ",";
             _queryBuilder.append("type:");
             Query.appendQuotedString(_queryBuilder, type.toString());
 
-            if (identifier != null) {
-                _queryBuilder.append(separator);
-                separator = ",";
-                _queryBuilder.append("identifier:");
-                Query.appendQuotedString(_queryBuilder, identifier.toString());
-            }
+            _queryBuilder.append(separator);
+            separator = ",";
+            _queryBuilder.append("paymentData:");
+            Query.appendQuotedString(_queryBuilder, paymentData.toString());
 
             if (test != null) {
                 _queryBuilder.append(separator);
                 separator = ",";
                 _queryBuilder.append("test:");
                 _queryBuilder.append(test);
+            }
+
+            if (identifier != null) {
+                _queryBuilder.append(separator);
+                separator = ",";
+                _queryBuilder.append("identifier:");
+                Query.appendQuotedString(_queryBuilder, identifier.toString());
             }
 
             _queryBuilder.append('}');
