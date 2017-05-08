@@ -52,24 +52,23 @@ final class HttpCacheInterceptor implements Interceptor {
 
   private Response cacheOnlyResponse(@NonNull final Request request) throws IOException {
     Response cacheResponse = cachedResponse(request);
-    if (cacheResponse != null) {
-      logCacheHit(request);
-      return cacheResponse.newBuilder()
-        .cacheResponse(strip(cacheResponse))
-        .build();
+    if (cacheResponse == null) {
+      logCacheMiss(request);
+      return unsatisfiableCacheRequest(request);
     }
-    logCacheMiss(request);
-    return unsatisfiableCacheRequest(request);
+
+    logCacheHit(request);
+    return cacheResponse.newBuilder()
+      .cacheResponse(strip(cacheResponse))
+      .build();
   }
 
-  private Response networkFirst(@NonNull final Request request, @NonNull final Chain chain)
-    throws IOException {
-    String cacheKey = request.header(CACHE_KEY_HEADER);
-
+  private Response networkFirst(@NonNull final Request request, @NonNull final Chain chain) throws IOException {
     Response networkResponse = withServedDateHeader(chain.proceed(request));
     if (networkResponse.isSuccessful()) {
       //TODO log me
       //logger.d("Network success, skip cache for request: %s, with cache key: %s", request, cacheKey);
+      String cacheKey = request.header(CACHE_KEY_HEADER);
       return cache.proxyResponse(networkResponse, cacheKey);
     }
 
@@ -77,18 +76,17 @@ final class HttpCacheInterceptor implements Interceptor {
     if (cacheResponse == null) {
       logCacheMiss(request);
       return networkResponse;
-    } else {
-      logCacheHit(request);
-      return cacheResponse.newBuilder()
-        .cacheResponse(strip(cacheResponse))
-        .networkResponse(strip(networkResponse))
-        .request(request)
-        .build();
     }
+
+    logCacheHit(request);
+    return cacheResponse.newBuilder()
+      .cacheResponse(strip(cacheResponse))
+      .networkResponse(strip(networkResponse))
+      .request(request)
+      .build();
   }
 
-  private Response cacheFirst(@NonNull final Request request, @NonNull final Chain chain)
-    throws IOException {
+  private Response cacheFirst(@NonNull final Request request, @NonNull final Chain chain) throws IOException {
     Response cacheResponse = cachedResponse(request);
     if (cacheResponse == null) {
       logCacheMiss(request);
@@ -98,13 +96,13 @@ final class HttpCacheInterceptor implements Interceptor {
         return cache.proxyResponse(networkResponse, cacheKey);
       }
       return networkResponse;
-    } else {
-      logCacheHit(request);
-      return cacheResponse.newBuilder()
-        .cacheResponse(strip(cacheResponse))
-        .request(request)
-        .build();
     }
+
+    logCacheHit(request);
+    return cacheResponse.newBuilder()
+      .cacheResponse(strip(cacheResponse))
+      .request(request)
+      .build();
   }
 
   private Response cachedResponse(@NonNull final Request request) {

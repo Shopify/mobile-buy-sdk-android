@@ -51,17 +51,17 @@ abstract class RealGraphCall<T extends AbstractResponse<T>> implements GraphCall
   static final String ACCEPT_HEADER = "application/json";
   static final MediaType GRAPHQL_MEDIA_TYPE = MediaType.parse("application/graphql; charset=utf-8");
 
-  private final Query query;
-  private final HttpUrl serverUrl;
-  private final Call.Factory httpCallFactory;
-  private final HttpResponseParser<T> httpResponseParser;
-  private final ScheduledExecutorService dispatcher;
-  private final AtomicBoolean executed = new AtomicBoolean();
+  protected final Query query;
+  protected final HttpUrl serverUrl;
+  protected final Call.Factory httpCallFactory;
+  protected final HttpResponseParser<T> httpResponseParser;
+  protected final ScheduledExecutorService dispatcher;
+  protected CachePolicy cachePolicy;
+  protected final HttpCache httpCache;
+  protected final AtomicBoolean executed = new AtomicBoolean();
   private volatile Call httpCall;
   private volatile HttpCallbackWithRetry httpCallbackWithRetry;
   private volatile boolean canceled;
-  CachePolicy cachePolicy;
-  private final HttpCache httpCache;
 
   RealGraphCall(final Query query, final HttpUrl serverUrl, final Call.Factory httpCallFactory,
     final ResponseDataConverter<T> responseDataConverter, final ScheduledExecutorService dispatcher,
@@ -193,11 +193,6 @@ abstract class RealGraphCall<T extends AbstractResponse<T>> implements GraphCall
   }
 
   @NonNull @Override public abstract GraphCall<T> clone();
-
-  void cachePolicyInternal(@NonNull final CachePolicy cachePolicy) {
-    if (executed.get()) throw new IllegalStateException("Already Executed");
-    this.cachePolicy = cachePolicy;
-  }
 
   private Call httpCall() {
     RequestBody body = RequestBody.create(GRAPHQL_MEDIA_TYPE, query.toString());

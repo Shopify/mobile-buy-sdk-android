@@ -33,6 +33,8 @@ import java.util.concurrent.ScheduledExecutorService;
 import okhttp3.Call;
 import okhttp3.HttpUrl;
 
+import static com.shopify.buy3.Utils.checkNotNull;
+
 final class RealQueryGraphCall extends RealGraphCall<Storefront.QueryRoot> implements QueryGraphCall {
 
   RealQueryGraphCall(final Storefront.QueryRootQuery query, final HttpUrl serverUrl, final Call.Factory httpCallFactory,
@@ -45,8 +47,9 @@ final class RealQueryGraphCall extends RealGraphCall<Storefront.QueryRoot> imple
   }
 
   @NonNull @Override public QueryGraphCall cachePolicy(@NonNull final CachePolicy cachePolicy) {
-    cachePolicyInternal(cachePolicy);
-    return this;
+    if (executed.get()) throw new IllegalStateException("Already Executed");
+    return new RealQueryGraphCall((Storefront.QueryRootQuery) query, serverUrl, httpCallFactory, dispatcher,
+      checkNotNull(cachePolicy, "cachePolicy == null"), httpCache);
   }
 
   @SuppressWarnings("CloneDoesntCallSuperClone")
