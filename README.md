@@ -57,19 +57,19 @@ Shopify’s Mobile Buy SDK makes it easy to create custom storefronts in your mo
 
 ## Installation [⤴](#table-of-contents)
 
-######Download the latest JARs:
+###### Download the latest JARs:
 [Mobile Buy SDK - link TBD](https://bintray.com/shopify/shopify-android/mobile-buy-sdk/_latestVersion)
 
 [Android Pay Support - link TBD](https://bintray.com/shopify/shopify-android/mobile-buy-sdk/_latestVersion)
 
-######or Gradle:
+###### or Gradle:
 
 ```
 compile 'com.shopify.mobilebuysdk:buy3:3.0.0'
 compile 'com.shopify.mobilebuysdk:pay:1.0.0'
 ```
 
-######or Maven:
+###### or Maven:
 
 ```
 <dependency>
@@ -124,9 +124,9 @@ Request models are been generated in such way where lmbda expression can come in
 
 ```java
 QueryRootQuery query = Storefront.query(rootQueryBuilder -> rootQueryBuilder
-	.shop(shopQueryBuilder -> shopQueryBuilder
-		.name()
-	)
+  .shop(shopQueryBuilder -> shopQueryBuilder
+    .name()
+  )
 )
 ```
 
@@ -147,7 +147,7 @@ All generated response models are derived from the `AbstractResponse` type. This
 ```java
 // The right way
 
-Storefront.QueryRoot response = ...
+Storefront.QueryRoot response = ...;
 
 String name = response.getShop().getName();
 ```
@@ -157,7 +157,7 @@ Never use the abstract class directly:
 ```java
 // Wrong way, never do this
 
-AbstractResponse response = ...
+AbstractResponse response = ...;
 
 AbstractResponse shop = (AbstractResponse) response.get("shop");
 String name = (String) shop.get("name");
@@ -172,18 +172,18 @@ GraphQL shema defines a `Node` interface that declares an `id` field on any conf
 ```java
 ID id = new ID("NkZmFzZGZhc");
 Storefront.query(rootQueryBuilder -> rootQueryBuilder
-	.node(id, nodeQuery -> nodeQuery
-		.onProduct(productQuery -> productQuery
-			.title()
-			...
-        )
+  .node(id, nodeQuery -> nodeQuery
+    .onProduct(productQuery -> productQuery
+      .title()
+      ...
     )
+  )
 );
 ```
 accessing the `Storefront.Order` requires a cast:
 
 ```java
-Storefront.QueryRoot response = ...
+Storefront.QueryRoot response = ...;
 
 String title = ((Storefront.Product)response.getNode()).getTitle();
 ```
@@ -194,32 +194,32 @@ Aliases are useful when a single query requests multiple fields with the same na
 
 ```java
 Storefront.query(rootQueryBuilder -> rootQueryBuilder
-    .node(new ID("NkZmFzZGZhc"), nodeQuery -> nodeQuery
-    	.onCollection(collectionQuery -> collectionQuery
-       	.withAlias("collection")
-       	.title()
-       	.description()
-       	...
-		)
+  .node(new ID("NkZmFzZGZhc"), nodeQuery -> nodeQuery
+    .onCollection(collectionQuery -> collectionQuery
+      .withAlias("collection")
+      .title()
+      .description()
+      ...
     )
-    .node(new ID("GZhc2Rm"), nodeQuery -> nodeQuery
-    	.onProduct(productQuery -> productQuery
-       	.withAlias("product")
-       	.title()
-       	.description()
-   		...
-      	)
-	)
+  )
+  .node(new ID("GZhc2Rm"), nodeQuery -> nodeQuery
+    .onProduct(productQuery -> productQuery
+      .withAlias("product")
+      .title()
+      .description()
+   	   ...
+    )
+  )
 );
 ```
 
 Accessing the aliased nodes is similar to a plain node:
 
-```swift
-// response: Storefront.QueryRoot
+```java
+Storefront.QueryRoot response = ...;
 
-let collection = response.aliasedNode(aliasSuffix: "collection") as! Storefront.Collection
-let product    = response.aliasedNode(aliasSuffix: "product")    as! Storefront.Product
+Storefront.Collection collection = (Storefront.Collection) response.withAlias("collection").getNode();
+Storefront.Product product = (Storefront.Product) response.withAlias("product").getNode();    
 ```
 Learn more about [GraphQL aliases](http://graphql.org/learn/queries/#aliases).
 
