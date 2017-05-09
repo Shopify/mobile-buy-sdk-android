@@ -234,7 +234,7 @@ Storefront.Product product = (Storefront.Product) response.withAlias("product").
 Learn more about [GraphQL aliases](http://graphql.org/learn/queries/#aliases).
 
 ## Graph.Client [⤴](#table-of-contents)
-The `GraphClient` is a network layer built on top of `OkHttp` from Square that executes `query` and `mutation` requests. It also provides conveniences for polling and retrying requests. To get started with `GraphClient ` you need the following:
+The `GraphClient` is a network layer built on top of `OkHttp` from Square that prepares `GraphCall` to execute `query` and `mutation` requests. It also provides conveniences for polling and retrying requests. To get started with `GraphClient ` you need the following:
 
 - Your shop's `.myshopify.com` domain.
 - Your API key, which can be obtained in your shop's admin page.
@@ -346,17 +346,29 @@ Learn more about [GraphQL mutations](http://graphql.org/learn/queries/#mutations
 
 ### Retry [⤴](#table-of-contents)
 
-Both `queryGraphWith` and `mutateGraphWith` accept an optional `RetryHandler<R: GraphQL.AbstractResponse>`. This object encapsulates the retry state and customization parameters for how the `Client` will retry subsequent requests (such as a delay, or a set number of retries). By default, the `retryHandler` is nil and no retry behavior will be provided. To enable retry or polling simply create a handler with a condition. If the `handler.condition` and `handler.canRetry` evaluates to `true`, the `Client` will continue executing the request:
+Both `QueryGraphCall` and `MutationGraphCall` have `enqueue` function that accepts `RetryHandler`. This object encapsulates the retry state and customization parameters for how the `GraphCall` will retry subsequent requests (such as a delay, or a set number of retries). To enable retry or polling simply create a handler with a condition from one of two factory methods: `RetryHandler.delay(long delay, TimeUnit timeUnit)` or `RetryHandler.exponentialBackoff(long delay, TimeUnit timeUnit, float multiplier)` and provide optional retry condition for response `whenResponse(Condition<GraphResponse<T>> retryCondition)` or for error `whenError(Condition<GraphError> retryCondition)`. If the `retryCondition` evaluates to `true`, the `GraphCall` will continue executing the request:
 
-```swift
-let handler = Graph.RetryHandler<Storefront.QueryRoot>() { (query, error) -> Bool in
-    if myCondition {
-        return true // will retry
-    }
-    return false // will complete the request, either succeed or fail
+```java
+GraphClient graphClient = ...;
+Storefront.QueryRootQuery shopNameQuery = ...;
+
+QueryGraphCall call = graphClient.queryGraph(shopNameQuery);
+
+call.enqueue(new GraphCall.Callback<Storefront.QueryRoot>() {
+  @Override public void onResponse(GraphResponse<Storefront.QueryRoot> response) {
+    ...
+  }
+
+  @Override public void onFailure(GraphError error) {
+    ...
+  }
+}, null, RetryHandler.delay(100, TimeUnit.MILLISECONDS)
+  .maxCount(3)
+  .<Storefront.QueryRoot>whenResponse(response -> response.data().getShop().getName().equals("Empty"))
+      .build());
 }
 ```
-The retry handler is generic and can handle both `query` and `mutation` requests equally well.
+The retry handler is generic and can handle both `QueryGraphCall` and `MutationGraphCall` calls equally well.
 
 ### Errors [⤴](#table-of-contents)
 
