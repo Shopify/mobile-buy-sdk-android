@@ -57,19 +57,19 @@ Shopify’s Mobile Buy SDK makes it easy to create custom storefronts in your mo
 
 ## Installation [⤴](#table-of-contents)
 
-###### Download the latest JARs:
+##### Download the latest JARs:
 [Mobile Buy SDK - link TBD](https://bintray.com/shopify/shopify-android/mobile-buy-sdk/_latestVersion)
 
 [Android Pay Support - link TBD](https://bintray.com/shopify/shopify-android/mobile-buy-sdk/_latestVersion)
 
-###### or Gradle:
+##### or Gradle:
 
 ```
 compile 'com.shopify.mobilebuysdk:buy3:3.0.0'
 compile 'com.shopify.mobilebuysdk:pay:1.0.0'
 ```
 
-###### or Maven:
+##### or Maven:
 
 ```
 <dependency>
@@ -123,10 +123,12 @@ Where:
 Request models are been generated in such way where lmbda expression can come in handy, we can re-write the initial query with lamda support in more concise way:
 
 ```java
-QueryRootQuery query = Storefront.query(rootQueryBuilder -> rootQueryBuilder
-  .shop(shopQueryBuilder -> shopQueryBuilder
-    .name()
-  )
+QueryRootQuery query = Storefront.query(rootQueryBuilder -> 
+  rootQueryBuilder
+    .shop(shopQueryBuilder -> 
+      shopQueryBuilder
+        .name()
+    )
 )
 ```
 
@@ -171,13 +173,16 @@ GraphQL shema defines a `Node` interface that declares an `id` field on any conf
 
 ```java
 ID id = new ID("NkZmFzZGZhc");
-Storefront.query(rootQueryBuilder -> rootQueryBuilder
-  .node(id, nodeQuery -> nodeQuery
-    .onProduct(productQuery -> productQuery
-      .title()
-      ...
+Storefront.query(rootQueryBuilder -> 
+  rootQueryBuilder
+    .node(id, nodeQuery -> 
+      nodeQuery
+        .onProduct(productQuery -> 
+          productQuery
+            .title()
+            ...
+        )
     )
-  )
 );
 ```
 accessing the `Storefront.Order` requires a cast:
@@ -193,23 +198,28 @@ String title = ((Storefront.Product)response.getNode()).getTitle();
 Aliases are useful when a single query requests multiple fields with the same names at the same nesting level as GraphQL allows only unique field names. Multiple nodes can be queried by using a unique alias for each one:
 
 ```java
-Storefront.query(rootQueryBuilder -> rootQueryBuilder
-  .node(new ID("NkZmFzZGZhc"), nodeQuery -> nodeQuery
-    .onCollection(collectionQuery -> collectionQuery
-      .withAlias("collection")
-      .title()
-      .description()
-      ...
+Storefront.query(rootQueryBuilder -> 
+  rootQueryBuilder
+    .node(new ID("NkZmFzZGZhc"), nodeQuery -> 
+      nodeQuery
+      .onCollection(collectionQuery -> 
+        collectionQuery
+          .withAlias("collection")
+          .title()
+          .description()
+          ...
+      )
     )
-  )
-  .node(new ID("GZhc2Rm"), nodeQuery -> nodeQuery
-    .onProduct(productQuery -> productQuery
-      .withAlias("product")
-      .title()
-      .description()
-   	   ...
+    .node(new ID("GZhc2Rm"), nodeQuery -> 
+      nodeQuery
+        .onProduct(productQuery -> 
+          productQuery
+            .withAlias("product")
+            .title()
+            .description()
+            ...
+        )
     )
-  )
 );
 ```
 
@@ -224,89 +234,111 @@ Storefront.Product product = (Storefront.Product) response.withAlias("product").
 Learn more about [GraphQL aliases](http://graphql.org/learn/queries/#aliases).
 
 ## Graph.Client [⤴](#table-of-contents)
-The `Graph.Client` is a network layer built on top of `URLSession` that executes `query` and `mutation` requests. It also provides conveniences for polling and retrying requests. To get started with `Graph.Client` you need the following:
+The `GraphClient` is a network layer built on top of `OkHttp` from Square that executes `query` and `mutation` requests. It also provides conveniences for polling and retrying requests. To get started with `GraphClient ` you need the following:
 
-- Your shop's `.myshopify.com` domain
-- Your API key, which can be obtained in your shop's admin page
-- A `URLSession` (optional), if you want to customize the configuration used for network requests or share your existing `URLSession` with the `Graph.Client`
+- Your shop's `.myshopify.com` domain.
+- Your API key, which can be obtained in your shop's admin page.
+- Optional `OkHttpClient` if you want to customize the configuration used for network requests or share your existing `OkHttpClient` with the `GraphClient`.
+- Optional settings for http cache, like path to the cache folder and maximum allowed size in bytes.
+- Optional http cache policy to be used by default for all GraphQL queries (will be ignored for mutation operations as cache not supported for them). By default http cache policy is set to `NETWORK_ONLY`.
 
-```swift
-let client = Graph.Client(
-	shopDomain: "shoes.myshopify.com",
-	apiKey:     "dGhpcyBpcyBhIHByaXZhdGUgYXBpIGtleQ"
-)
+```java
+GraphClient.builder(this)
+  .shopDomain(BuildConfig.SHOP_DOMAIN)
+  .accessToken(BuildConfig.API_KEY)
+  .httpClient(httpClient) // optional
+  .httpCache(new File(getApplicationContext().getCacheDir(), "/http"), 10 * 1024 * 1024) // 10mb for http cache
+  .defaultHttpCachePolicy(HttpCachePolicy.CACHE_FIRST.obtain(5, TimeUnit.MINUTES)) // cached response valid by default for 5 minutes
+  .build()
 ```
-GraphQL specifies two types of operations - queries and mutations. The `Client` exposes these as two type-safe operations, while also offering some conveniences for retrying and polling in each.
+GraphQL specifies two types of operations - queries and mutations. The `GraphClient` exposes these as two type-safe operations, while also offering some conveniences for retrying and polling in each.
 
 ### Queries [⤴](#table-of-contents)
-Semantically a GraphQL `query` operation is equivalent to a `GET` RESTful call and guarantees that no resources will be mutated on the server. With `Graph.Client` you can perform a query operation using:
+Semantically a GraphQL `query` operation is equivalent to a `GET` RESTful call and guarantees that no resources will be mutated on the server. With `GraphClient` you can perform a query operation using:
 
-```swift
-public func queryGraphWith(_ query: Storefront.QueryRootQuery, retryHandler: RetryHandler<Storefront.QueryRoot>? = default, completionHandler: QueryCompletion) -> Task
+```java
+GraphClient graphClient = ...;
+Storefront.QueryRootQuery query = ...;
+
+QueryGraphCall call = graphClient.queryGraph(query);
 ```
 For example, let's take a look at how we can query for a shop's name:
 
-```swift
-let query = Storefront.buildQuery { $0
-    .shop {
-        .name()
-    }
-}
+```java
+GraphClient graphClient = ...;
 
-client.queryGraphWith(query) { response, error in
-    if let response = response {
-        let name = response.shop.name
-    } else {
-        print("Query failed: \(error)")
-    }
-}
+Storefront.QueryRootQuery query = Storefront.query(rootQuery -> 
+  rootQuery
+    .shop(shopQuery -> 
+      shopQuery
+        .name()
+    )
+);
+    
+QueryGraphCall call = graphClient.queryGraph(query);
+    
+call.enqueue(new GraphCall.Callback<Storefront.QueryRoot>() {
+  @Override public void onResponse(@NonNull GraphResponse<Storefront.QueryRoot> response) {
+    String name = response.data().getShop().getName();
+  }
+
+  @Override public void onFailure(@NonNull GraphError error) {
+    Log.e("TAG", "Failed to execute query", error);
+  }
+});
 ```
 Learn more about [GraphQL queries](http://graphql.org/learn/queries/).
 
 ### Mutations [⤴](#table-of-contents)
-Semantically a GraphQL `mutation` operation is equivalent to a `PUT`, `POST` or `DELETE` RESTful call. A mutation is almost always accompanied by an input that represents values to be updated and a query to fetch fields of the updated resource. You can think of a `mutation` as a two-step operation where the resource is first modified, and then queried using the provided `query`. The second half of the operation is identical to a regular `query` request. With `Graph.Client` you can perform a mutation operation using:
+Semantically a GraphQL `mutation` operation is equivalent to a `PUT`, `POST` or `DELETE` RESTful call. A mutation is almost always accompanied by an input that represents values to be updated and a query to fetch fields of the updated resource. You can think of a `mutation` as a two-step operation where the resource is first modified, and then queried using the provided `query`. The second half of the operation is identical to a regular `query` request. With `GraphClient` you can perform a mutation operation using:
 
-```swift
-public func mutateGraphWith(_ mutation: Storefront.MutationQuery, retryHandler: RetryHandler<Storefront.Mutation>? = default, completionHandler: MutationCompletion) -> Task
+```java
+GraphClient graphClient = ...;
+Storefront.MutationQuery query = ...;
+
+MutationGraphCall call = graphClient.mutateGraph(query);
 ```
+
 For example, let's take a look at how we can reset a customer's password using a recovery token:
 
-```swift
-let customerID = GraphQL.ID(rawValue: "YSBjdXN0b21lciBpZA")
-let input      = Storefront.CustomerResetInput(resetToken: "c29tZSB0b2tlbiB2YWx1ZQ", password: "abc123")
-let mutation   = Storefront.buildMutation { $0
-    .customerReset(id: customerID, input: input) { $0
-        .customer { $0
-            .id()
+```java
+GraphClient graphClient = ...;
+
+Storefront.CustomerResetInput input = new Storefront.CustomerResetInput("c29tZSB0b2tlbiB2YWx1ZQ", "abc123");
+
+Storefront.MutationQuery query = Storefront.mutation(rootQuery ->
+  rootQuery
+    .customerReset(new ID("YSBjdXN0b21lciBpZA"), input, payloadQuery ->
+      payloadQuery
+        .customer(customerQuery ->
+          customerQuery
             .firstName()
             .lastName()
-        }
-        .userErrors { $0
+        )
+        .userErrors(userErrorQuery ->
+          userErrorQuery
             .field()
             .message()
-        }
-    }
-}
+        )
+    )
+);
 
-client.mutateGraphWith(mutation) { response, error in
-    if let mutation = response?.customerReset {
+MutationGraphCall call = graphClient.mutateGraph(query);
 
-        if let customer = mutation.customer, !mutation.userErrors.isEmpty {
-            let firstName = customer.firstName
-            let lastName = customer.lastName
-        } else {
-
-            print("Failed to reset password. Encountered invalid fields:")
-            mutation.userErrors.forEach {
-                let fieldPath = $0.field?.joined() ?? ""
-                print("  \(fieldPath): \($0.message)")
-            }
-        }
-
+call.enqueue(new GraphCall.Callback<Storefront.Mutation>() {
+  @Override public void onResponse(@NonNull final GraphResponse<Storefront.Mutation> response) {
+    if (response.data().getCustomerReset().getUserErrors().isEmpty()) {
+      String firstName = response.data().getCustomerReset().getCustomer().getFirstName();
+      String lastName = response.data().getCustomerReset().getCustomer().getLastName();
     } else {
-        print("Failed to reset password: \(error)")
+      Log.e("TAG", "Failed to reset customer");
     }
-}
+  }
+
+  @Override public void onFailure(@NonNull final GraphError error) {
+    Log.e("TAG", "Failed to execute query", error);
+  }
+});
 ```
 More often than not, a mutation will rely on some kind of user input. While you should always validate user input before posting a mutation, there are never guarantees when it comes to dynamic data. For this reason, you should always request the `userErrors` field on mutations (where available) to provide useful feedback in your UI regarding any issues that were encountered in the mutation query. These errors can include anything from `invalid email address` to `password is too short`.
 
