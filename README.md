@@ -27,13 +27,10 @@ Shopify’s Mobile Buy SDK makes it easy to create custom storefronts in your mo
 - [Card vaulting](#card-vaulting-)
   - [Card client](#card-client-)
 
-- [Android Pay](#apple-pay-)
-  - [Pay Session](#pay-session-)
-      - [Did update shipping address](#did-update-shipping-address-)
-      - [Did select shipping rate](#did-select-shipping-rate-)
-      - [Did authorize payment](#did-authorize-payment-)
-      - [Did finish payment](#did-finish-payment-)
-
+- [Android Pay](#android-pay-)
+  - [PayCart](#paycart-)
+  - [PayHelper](#payhelper-)
+  
 - [Case studies](#case-studies-)
   - [Fetch shop](#fetch-shop-)
   - [Fetch collections and products](#fetch-collections-and-products-)
