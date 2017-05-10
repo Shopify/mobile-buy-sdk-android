@@ -27,7 +27,7 @@ Shopify’s Mobile Buy SDK makes it easy to create custom storefronts in your mo
 - [Card vaulting](#card-vaulting-)
   - [Card client](#card-client-)
 
-- [ Pay](#apple-pay-)
+- [Android Pay](#apple-pay-)
   - [Pay Session](#pay-session-)
       - [Did update shipping address](#did-update-shipping-address-)
       - [Did select shipping rate](#did-select-shipping-rate-)
@@ -278,12 +278,13 @@ Storefront.QueryRootQuery query = Storefront.query(rootQuery ->
 QueryGraphCall call = graphClient.queryGraph(query);
     
 call.enqueue(new GraphCall.Callback<Storefront.QueryRoot>() {
+  
   @Override public void onResponse(@NonNull GraphResponse<Storefront.QueryRoot> response) {
     String name = response.data().getShop().getName();
   }
 
   @Override public void onFailure(@NonNull GraphError error) {
-    Log.e("TAG", "Failed to execute query", error);
+    Log.e(TAG, "Failed to execute query", error);
   }
 });
 ```
@@ -326,17 +327,18 @@ Storefront.MutationQuery query = Storefront.mutation(rootQuery ->
 MutationGraphCall call = graphClient.mutateGraph(query);
 
 call.enqueue(new GraphCall.Callback<Storefront.Mutation>() {
+  
   @Override public void onResponse(@NonNull final GraphResponse<Storefront.Mutation> response) {
     if (response.data().getCustomerReset().getUserErrors().isEmpty()) {
       String firstName = response.data().getCustomerReset().getCustomer().getFirstName();
       String lastName = response.data().getCustomerReset().getCustomer().getLastName();
     } else {
-      Log.e("TAG", "Failed to reset customer");
+      Log.e(TAG, "Failed to reset customer");
     }
   }
 
   @Override public void onFailure(@NonNull final GraphError error) {
-    Log.e("TAG", "Failed to execute query", error);
+    Log.e(TAG, "Failed to execute query", error);
   }
 });
 ```
@@ -355,6 +357,7 @@ Storefront.QueryRootQuery shopNameQuery = ...;
 QueryGraphCall call = graphClient.queryGraph(shopNameQuery);
 
 call.enqueue(new GraphCall.Callback<Storefront.QueryRoot>() {
+  
   @Override public void onResponse(GraphResponse<Storefront.QueryRoot> response) {
     ...
   }
@@ -362,8 +365,8 @@ call.enqueue(new GraphCall.Callback<Storefront.QueryRoot>() {
   @Override public void onFailure(GraphError error) {
     ...
   }
-}, null, RetryHandler.delay(100, TimeUnit.MILLISECONDS)
-  .maxCount(3)
+}, null, RetryHandler.delay(1, TimeUnit.SECONDS)
+  .maxCount(5)
   .<Storefront.QueryRoot>whenResponse(response -> response.data().getShop().getName().equals("Empty"))
       .build());
 }
@@ -372,21 +375,35 @@ The retry handler is generic and can handle both `QueryGraphCall` and `MutationG
 
 ### Errors [⤴](#table-of-contents)
 
-The completion for either a `query` or `mutation` request will always contain an optional `Graph.QueryError` that represents the current error state of the request. **It's important to note that `error` and `response` are NOT mutually exclusively.** That is to say that it's perfectly valid to have a non-nil error and response. The presence of error can represent both a network error (such as a network error, or invalid JSON) or a GraphQL error (such as invalid query syntax, or a missing parameter). The `Graph.QueryError` is an `enum` so checking the type of error is trivial:
+The response `GraphResponse` for either a `QueryGraphCall` or `MutationGraphCall` request may contain an optional list of `Error` that represents the current error state of the GraphQL query. **It's important to note that `errors` and `data` are NOT mutually exclusively.** That is to say that it's perfectly valid to have a non-null error and data. `Error` will provide more in-depth information about the query error. Keep in mind that these errors are not meant to be displayed to the end-user. **They are for debug purposes only**.
 
-```swift
-client.queryGraphWith(query) { response, error in
-    if let response = response {
-        // Do something
-    } else {
 
-        if let error = error, case .http(let statusCode) = error {
-            print("Query failed. HTTP error code: \(statusCode)")
-        }
-    }
-}
+```java
+GraphClient graphClient = ...;
+
+QueryRootQuery query = Storefront.query(rootQueryBuilder -> 
+  rootQueryBuilder
+    .shop(shopQueryBuilder -> 
+      shopQueryBuilder
+        .name()
+    )
+);
+
+QueryGraphCall call = graphClient.queryGraph(query);
+call.enqueue(new GraphCall.Callback<Storefront.QueryRoot>() {
+  
+  @Override public void onResponse(GraphResponse<Storefront.QueryRoot> response) {
+  	if (response.hasErrors()) {
+     String errorMessage = response.formatErrorMessage();
+  	}
+  }
+
+  @Override public void onFailure(GraphError error) {
+   
+  }
+});
+
 ```
-If the error is of type `.invalidQuery`, an array of `Reason` objects. These will provide more in-depth information about the query error. Keep in mind that these errors are not meant to be displayed to the end-user. **They are for debug purposes only**.
 
 Example of GraphQL error reponse:
 
@@ -402,7 +419,6 @@ Example of GraphQL error reponse:
         }
       ],
       "fields": [
-        "query CollectionsWithProducts",
         "Shop"
       ]
     }
@@ -410,6 +426,43 @@ Example of GraphQL error reponse:
 }
 ```
 Learn more about [GraphQL errors](http://graphql.org/learn/validation/)
+
+Second type of errors for either a `QueryGraphCall` or `MutationGraphCall` requests is defined by `GraphError` abstraction that represents more critical kind of error for query execution. You should expect next list of possible types of such errors:
+
+- `GraphError` generic error when `GraphCall` can't be executed due to uknown reason
+- `GraphCallCanceledError` error when `GraphCall` has been canceled
+- `GraphHttpError` error when `GraphCall` executed but http response status code is not from 200 series
+- `GraphNetworkError` error when `GraphCall` can't be executed due to network issues like timeouts, network not available at the moment, etc.
+- `GraphParseError` error when `GraphCall` executed but parsing JSON response has failed.
+
+```java
+GraphClient graphClient = ...;
+QueryRootQuery query = ...;
+
+QueryGraphCall call = graphClient.queryGraph(query);
+call.enqueue(new GraphCall.Callback<Storefront.QueryRoot>() {
+  
+  @Override public void onResponse(GraphResponse<Storefront.QueryRoot> response) {
+  	...
+  }
+
+  @Override public void onFailure(GraphError error) {
+    if (error instanceof GraphCallCanceledError) {
+      Log.e(TAG, "Call has been canceled", error);
+    } else if (error instanceof GraphHttpError) {
+      Log.e(TAG, "Http request failed: " + ((GraphHttpError) error).formatMessage(), error);
+    } else if (error instanceof GraphNetworkError) {
+      Log.e(TAG, "Network is not available", error);
+    } else if (error instanceof GraphParseError) {
+      // in most cases should never happen
+      Log.e(TAG, "Failed to parse GraphQL response", error);
+    } else {
+      Log.e(TAG, "Failed to execute GraphQL request", error);
+    }
+  }
+});
+
+```
 
 ## Card Vaulting [⤴](#table-of-contents)
 
@@ -444,131 +497,153 @@ task.resume()
 ```
 **IMPORTANT:** Keep in mind that the credit card vaulting service does **not** provide any validation for submitted credit cards. As a result, submitting invalid credit card numbers or even missing fields will always yield a vault `token`. Any errors related to invalid credit card information will be surfaced only when the provided `token` is used to complete a checkout.
 
-## Apple Pay [⤴](#table-of-contents)
+## Android Pay [⤴](#table-of-contents)
 
-Support for  Pay is provided by the `Pay` framework. It is compiled and tested separately from the `Buy` SDK and offers a simpler interface for supporting  Pay in your application. It is designed to take the guess work out of using partial GraphQL models with `PKPaymentAuthorizationController`.
+Support for Android Pay is provided by the `com.shopify.mobilebuysdk:pay` extension library. It is separate module from the Buy SDK that offers helper classes for supporting Android Pay in your application. It is designed to take the guess work out of using partial GraphQL models with Android Pay.
 
-### Pay Session [⤴](#table-of-contents)
+### PayCart [⤴](#table-of-contents)
 
-When the customer is ready to pay for products in your application with  Pay, the `PaySession` encapsulates all the state necessary to complete the checkout process:
+Abstraction that represents virtual user Android Pay cart model that incapsulates all the state necessary to complete the checkout process:
 
-- your shop's currency
-- your  Pay `merchantID`
-- available shipping rates
+- shop's currency
+- merchant's name
 - selected shipping rate
 - billing & shipping address
-- checkout state
+- taxes
+- selected product line items
 
-To present the  Pay modal and begin the checkout process, you need:
+### PayHelper [⤴](#table-of-contents)
 
-- a created `Storefront.Checkout`
-- currency information that can be obtained with a `query` on `Storefront.Shop`
--  Pay `merchantID`
+PayHelper class id designed to simplify work flow with Android Pay. It helps with:
 
-After all the prerequisites have been met, you can initialize a `PaySession` and start the payment authorization process:
+- check if Android Pay is enabled on the user device, see `PayHelper#isAndroidPayEnabledInManifest`
 
-```swift
-self.paySession = PaySession(
-	checkout:   payCheckout,
-	currency:   payCurrency,
-	merchantID: "com.merchant.identifier"
-)
+- check if Android Pay is ready for the checkout, see `PayHelper#isReadyToPay`
 
-self.paySession.delegate = self     
-self.paySession.authorize()
+- retrieve the Masked Wallet information (such as billing address, shipping address, payment method etc.) from the Android Pay, see `PayHelper#requestMaskedWallet`
+
+- initialize and prepare wallet fragment for full wallet request, see `PayHelper#initializeWalletFragment`
+
+- finish Android Pay flow, see `PayHelper#requestFullWallet`
+
+- handle Andorid Pay wallet response, see `PayHelper#handleWalletResponse` and `PayHelper.WalletResponseHandler`
+
+- and finally extract `PaymentToken` to complete the checkout, see `PayHelper#extractPaymentToken`
+
+To request Masked Wallet information and begin the checkout flow, you need:
+
+- connected `GoogleApiClient` with `Wallet.API` enabled
+- Android Pay public key
+- a created `PayCart` with all mandatory fields like: currency code obtained from `Storefront.Shop`, Android Pay merchant name, line items (title, price, quantity)
+
+After all the prerequisites have been met, you can start payment flow by requesting Masked Wallet inforamtion:
+
+```java
+if (PayHelper.isAndroidPayEnabledInManifest(context)) {
+  googleApiClient = new GoogleApiClient.Builder(context)
+    .addApi(Wallet.API, new Wallet.WalletOptions.Builder()
+      .setEnvironment(ANDROID_PAY_ENVIRONMENT)
+      .setTheme(WalletConstants.THEME_DARK)
+      .build())
+    .addConnectionCallbacks(callback)
+    .build();
+}
+
+...
+	
+PayCart payCart = PayCart.builder()
+  .merchantName(MERCHANT_NAME)
+  .currencyCode(shop.currency)
+  .shippingAddressRequired(checkout.requiresShipping)
+  .addLineItem("Product1", 1, BigDecimal.valueOf(1.99))
+  .addLineItem("Product2", 10, BigDecimal.valueOf(3.99))
+  .subtotal(checkout.subtotalPrice)
+  .totalPrice(checkout.totalPrice)
+  .build();
+  
+...
+
+PayHelper.requestMaskedWallet(googleApiClient, payCart, ANDROID_PAY_PUBLIC_KEY);
+
 ```
-After calling `authorize()`, the session will create a `PKPaymentAuthorizationController` on your behalf and present it to the customer. By providing a `delegate` you'll be notified when the customer changes shipping address, selects a shipping rate and authorizes the payment using TouchID or passcode. It is **critical** to correctly handle each one of these events by updating the `Storefront.Checkout` with appropriate mutations to keep the checkout state on the server up-to-date. Let's take a look at each one:
 
-#### Did update shipping address [⤴](#table-of-contents)
-```swift
-func paySession(_ paySession: PaySession, didRequestShippingRatesFor address: PayPostalAddress, checkout: PayCheckout, provide: @escaping  (PayCheckout?, [PayShippingRate]) -> Void) {
+After user authorizes to use their payment information on Android Pay chooser screen, `onActivityResult` will be called with returned Masked Wallet information along with Google Transaction ID and all subsequent change Masked Wallet and Full Wallet requests pertaining to this transaction. Helper function `PayHelper#handleWalletResponse` is designed to help with handling states of the response for Masked Wallet request:
 
-    self.updateCheckoutShippingAddress(id: checkout.id, with: address) { updatedCheckout in
-        if let updatedCheckout = updatedCheckout {
-
-            self.fetchShippingRates(for: address) { shippingRates in
-                if let shippingRates = shippingRates {
-
-                    /* Be sure to provide an up-to-date checkout that contains the
-                     * shipping address that was used to fetch the shipping rates.
-                     */
-                    provide(updatedCheckout, shippingRates)
-
-                } else {
-
-                    /* By providing a nil checkout we inform the PaySession that
-                     * we failed to obtain shipping rates with the provided address. An
-                     * "invalid shipping address" error will be displayed to the customer.
-                     */
-                    provide(nil, [])
-                }
-            }
-
-        } else {
-
-            /* By providing a nil checkout we inform the PaySession that
-             * we failed to obtain shipping rates with the provided address. An
-             * "invalid shipping address" error will be displayed to the customer.
-             */
-            provide(nil, [])
-        }
+```java
+@Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+  PayHelper.handleWalletResponse(requestCode, resultCode, data, new PayHelper.WalletResponseHandler() {
+  
+    @Override public void onWalletError(int requestCode, int errorCode) {
+      // show error, errorCode is one of defined in com.google.android.gms.wallet.WalletConstants
     }
-}
-```
-Invoked when the customer has selected a shipping contact in the  Pay modal. The provided `PayPostalAddress` is a partial address that excludes the street address for added security. This is actually enforced by `PassKit` and not the `Pay` framework. Nevertheless, information contained in `PayPostalAddress` is sufficient to obtain an array of available shipping rates from `Storefront.Checkout`.
 
-#### Did select shipping rate [⤴](#table-of-contents)
-```swift
-func paySession(_ paySession: PaySession, didSelectShippingRate shippingRate: PayShippingRate, checkout: PayCheckout, provide: @escaping  (PayCheckout?) -> Void) {
-
-    self.updateCheckoutWithSelectedShippingRate(id: checkout.id, shippingRate: shippingRate) { updatedCheckout in
-        if let updatedCheckout = updatedCheckout {
-
-            /* Be sure to provide the update checkout that include the shipping
-             * line selected by the customer.
-             */
-            provide(updatedCheckout)
-
-        } else {
-
-            /* By providing a nil checkout we inform the PaySession that we failed
-             * to select the shipping rate for this checkout. The PaySession will
-             * fail the current payment authorization process and a generic error
-             * will be shown to the customer.
-             */
-            provide(nil)
-        }
+    @Override public void onMaskedWallet(final MaskedWallet maskedWallet) {
+      // show order confirmation screen to complete checkout
+      // update checkout with shipping address from Masked Wallet
+      // fetch shipping rates
     }
+  });
 }
 ```
-Invoked every time the customer selects a different shipping **and** the first time shipping rates are updated as a result of the previous `delegate` callback.
 
-#### Did authorize payment [⤴](#table-of-contents)
-```swift
-func paySession(_ paySession: PaySession, didAuthorizePayment authorization: PayAuthorization, checkout: PayCheckout, completeTransaction: @escaping (PaySession.TransactionStatus) -> Void) {
+Masked Wallet information has the shipping address and billing address, to be used for calculating the exact total purchase price. After the app obtains the Masked Wallet, it should present a confirmation page showing the total cost (`Storefront.Checkout#getTotalPrice`) of the items purchased in the transaction, total taxes (`Storefront.Checkout#getTotalTax`) and option to select shipping method if checkout requires shipping (`StoreFront.Checkout#getRequiresShipping`). 
 
-    /* 1. Update checkout with complete shipping address. Example:
-     * self.updateCheckoutShippingAddress(id: checkout.id, shippingAddress: authorization.shippingAddress) { ... }
-     *
-     * 2. Update checkout with the customer's email. Example:
-     * self.updateCheckoutEmail(id: checkout.id, email: authorization.shippingAddress.email) { ... }
-     *
-     * 3. Complete checkout with billing address and payment data
-     */
-     self.completeCheckout(id: checkout.id, billingAddress: billingAddress, token: authorization.token) { success in
-         completeTransaction(success ? .success : .failure)
-     }
+When the user confirms the order Full Wallet information should be requested (`PayHelper#requestFullWallet`) to obtain payment token required to complete checkout. To request Full Wallet information you must provide updated cart with the exact total purchase price and user authorized Masked Wallet:
+
+```java
+PayHelper.requestFullWallet(googleApiClient, payCart, maskedWallet);
+```
+
+After you retrieve the Full Wallet in the `onActivityResult`, you have enough information to proceed to payment processing for this transaction:
+
+```java
+@Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+  PayHelper.handleWalletResponse(requestCode, resultCode, data, new PayHelper.WalletResponseHandler() {
+    
+    @Override public void onWalletError(int requestCode, int errorCode) {
+      // show error, errorCode is one of defined in com.google.android.gms.wallet.WalletConstants
+    }
+
+    @Override public void onFullWallet(FullWallet fullWallet) {
+      PaymentToken paymentToken = PayHelper.extractPaymentToken(fullWallet, ANDROID_PAY_PUBLIC_KEY);
+      completeCheckout(paymentToken);
+    }
+  });
 }
 ```
-Once the customer authorizes the payment, the `delegate` will receive the encrypted `token` and other associated information you'll need for the final `completeCheckout` mutation to complete the purchase. Keep in mind that the state of the checkout on the server **must** be up-to-date before invoking the final checkout completion mutation. Ensure that all in-flight update mutations are finished before completing checkout.
 
-#### Did finish payment [⤴](#table-of-contents)
-```swift
-func paySessionDidFinish(_ paySession: PaySession) {
-    // Do something after the  Pay modal is dismissed   
-}
+In most cases on order confirmation page you will embed confirmation fragment `SupportWalletFragment` provided by Android Pay which displays "change" buttons to let users optionally modify the masked wallet information (such as payment method, shipping address, etc.). To proper initialize this fragment and be able use `PayHelper` for handling responses you should use `PayHelper#initializeWalletFragment`. 
+
+Confirmation fragment will notify in `onActivityResult` about any changes made by user to Masked Wallet information (like shipping address change), to help you to handle response with these changes you can use `PayHelper.handleWalletResponse`:
+
+```java
+@Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+  PayHelper.handleWalletResponse(requestCode, resultCode, data, new PayHelper.WalletResponseHandler() {
+        
+    @Override public void onMaskedWallet(MaskedWallet maskedWallet) {
+      // called when user made changes to Masked Wallet inforamtion 
+      // like shipping address that requires to update checkout to request new shipping rates
+      
+      updateMaskedWallet(maskedWallet);
+    }
+});
 ```
-Invoked when the  Pay modal is dismissed, regardless of whether the payment authorization was successful or not.
+
+There can be a case when checkout can't be comlpeted with payment token due to some issue related to payment gateway or token can be proccessed at the moment and you want to re-try to complete checkout again by requesting Full Wallet information, you can get `WalletConstants.ERROR_CODE_INVALID_TRANSACTION` that means current Google Transaction Id is not valid any more. You will need to start a new transaction by requesting new Masked Wallet information:
+
+```java
+@Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+  PayHelper.handleWalletResponse(requestCode, resultCode, data, new PayHelper.WalletResponseHandler() {
+        
+    @Override public void onMaskedWalletRequest() {
+      PayHelper.requestMaskedWallet(googleApiClient, payCart, ANDROID_PAY_PUBLIC_KEY);
+    }
+    
+    @Override public void onMaskedWallet(MaskedWallet maskedWallet) {
+      updateMaskedWallet(maskedWallet);
+    }
+});
+``` 
 
 ## Case studies [⤴](#table-of-contents)
 
