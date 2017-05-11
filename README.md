@@ -696,39 +696,46 @@ PayHelper.newMaskedWallet(googleApiClient, maskedWallet);
       updateMaskedWallet(maskedWallet);
     }
 });
-``` 
+```
+
+Learn more about [Android Pay](https://developers.google.com/android-pay/get-started)
 
 ## Case studies [⤴](#table-of-contents)
 
-Getting started with any SDK can be confusing. The purpose of this section is to explore all areas of the Buy SDK that may be necessary to build a custom storefront on iOS and provide a solid starting point. Let's dive right in.
+Getting started with any SDK can be confusing. The purpose of this section is to explore all areas of the Buy SDK that may be necessary to build a custom storefront on Android and provide a solid starting point. Let's dive right in.
 
-In this section we're going to assume that you've [setup a client](#graph-client-) somewhere in your source code. While it's possible to have multiple instance of `Graph.Client`, reusing a single instance offers many behind-the-scenes performance improvements:
-
-```swift
-let client: Graph.Client
-```
+In this section we're going to assume that you've [setup a client](#graph-client-) somewhere in your source code. While it's possible to have multiple instance of `GraphClient`, reusing a single instance offers many behind-the-scenes performance improvements.
 
 ### Fetch shop [⤴](#table-of-contents)
 
 Before displaying any products to the user it's often necessary to obtain various metadata about your shop. This can be anything from a currency code to your shop's name:
 
-```swift
-let query = Storefront.buildQuery { $0
-    .shop { $0
-        .name()
-        .currencyCode()
-        .refundPolicy { $0
-            .title()
-            .url()
-        }
-    }
-}
+```java
+GraphClient client = ...;
 
-client.queryGraphWith(query) { response, error in
-    let name         = response?.shop.name
-    let currencyCode = response?.shop.currencyCode
-    let moneyFormat  = response?.shop.moneyFormat
-}
+...
+
+Storefront.QueryRootQuery query = Storefront.query(rootQuery -> rootQuery
+  .shop(shopQuery -> shopQuery
+    .name()
+    .currencyCode()
+    .refundPolicy(refundPolicyQuery -> refundPolicyQuery
+      .title()
+      .url()
+    )
+  )
+);
+
+client.queryGraph(query).enqueue(new GraphCall.Callback<Storefront.QueryRoot>() {
+
+  @Override public void onResponse(@NonNull GraphResponse<Storefront.QueryRoot> response) {
+    String name = response.data().getShop().getName();
+    String currencyCode = response.data().getShop().getCurrencyCode().toString();
+    String refundPolicyUrl = response.data().getShop().getRefundPolicy().getUrl();
+  }
+
+  ...
+});
 ```
 The corresponding GraphQL query would look like this:
 
@@ -751,41 +758,53 @@ In our custom storefront we want to display collection with a preview of several
 
 The Buy SDK is built on GraphQL, which solves the `n + 1` request problem.
 
-```swift
-let query = Storefront.buildQuery { $0
-    .shop { $0
-        .collections(first: 10) { $0
-            .edges { $0
-                .node { $0
-                    .id()
-                    .title()
-                    .products(first: 10) { $0
-                        .edges { $0
-                            .node { $0
-                                .id()
-                                .title()
-                                .productType()
-                                .description()
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
+```java
+GraphClient client = ...;
 
-client.queryGraphWith(query) { response, error in
-    let collections  = response?.shop.collections.edges.map { $0.node }
-    collections?.forEach { collection in
+...
 
-        let products = collection.products.edges.map { $0.node }
+Storefront.QueryRootQuery query = Storefront.query(rootQuery -> rootQuery
+  .shop(shopQuery -> shopQuery
+    .collections(10, collectionConnectionQuery -> collectionConnectionQuery
+      .edges(collectionEdgeQuery -> collectionEdgeQuery
+        .node(collectionQuery -> collectionQuery
+          .title()
+          .products(10, productConnectionQuery -> productConnectionQuery
+            .edges(productEdgeQuery -> productEdgeQuery
+              .node(productQuery -> productQuery
+                .title()
+                .productType()
+                .description()
+              )
+            )
+          )
+        )
+      )
+    )
+  )
+);
+    
+client.queryGraph(query).enqueue(new GraphCall.Callback<Storefront.QueryRoot>() {
+
+  @Override public void onResponse(@NonNull GraphResponse<Storefront.QueryRoot> response) {
+    List<Storefront.Collection> collections = new ArrayList<>();
+    for (Storefront.CollectionEdge collectionEdge : response.data().getShop().getCollections().getEdges()) {
+      collections.add(collectionEdge.getNode());
+
+      List<Storefront.Product> products = new ArrayList<>();
+      for (Storefront.ProductEdge productEdge : collectionEdge.getNode().getProducts().getEdges()) {
+        products.add(productEdge.getNode());
+      }
     }
-}
+  }
+
+  ...
+});
 ```
+
 The corresponding GraphQL query would look like this:
 
-```swift
+```graphql
 {
   shop {
     collections(first: 10) {
@@ -822,32 +841,45 @@ Learn more about [pagination in GraphQL](http://graphql.org/learn/pagination/).
 
 Let's take a look at how we can paginate throught products in a collection.
 
-```swift
-let query = Storefront.buildQuery { $0
-    .node(id: collectionID) { $0
-        .onCollection { $0
-            .products(first: 10, after: productsCursor) { $0
-                .pageInfo { $0
-                    .hasNextPage()
-                }
-                .edges { $0
-                    .cursor()
-                    .node { $0
-                        .id()
-                        .title()
-                        .productType()
-                        .description()
-                    }
-                }
-            }
-        }
-    }
-}
+```java
+GraphClient client = ...;
 
-client.queryGraphWith(query) { response, error in
-    let collection    = response?.node as? Storefront.Collection
-    let productCursor = collection?.products.edges.last?.cursor
-}
+...
+
+Storefront.QueryRootQuery query = Storefront.query(rootQuery -> rootQuery
+  .node(new ID("IjoxNDg4MTc3MzEsImxhc3R"), nodeQuery -> nodeQuery
+    .onCollection(collectionQuery -> collectionQuery
+      .products(10, args -> args.after(productPageCursor), productConnectionQuery -> productConnectionQuery
+        .pageInfo(pageInfoQuery -> pageInfoQuery
+          .hasNextPage()
+        )
+        .edges(productEdgeQuery -> productEdgeQuery
+          .cursor()
+          .node(productQuery -> productQuery
+            .title()
+            .productType()
+            .description()
+          )
+        )
+      )
+    )
+  )
+);
+    
+client.queryGraph(query).enqueue(new GraphCall.Callback<Storefront.QueryRoot>() {
+
+  @Override public void onResponse(@NonNull GraphResponse<Storefront.QueryRoot> response) {
+    Storefront.Collection collection = (Storefront.Collection) response.data().getNode();
+    boolean hasNextProductPage = collection.getProducts().getPageInfo().getHasNextPage();
+    List<Storefront.Product> products = new ArrayList<>();
+    for (Storefront.ProductEdge productEdge : collection.getProducts().getEdges()) {
+      String productPageCursor = productEdge.getCursor();
+      products.add(productEdge.getNode());
+    }
+  }
+
+  ...
+});
 ```
 The corresponding GraphQL query would look like this:
 
@@ -880,40 +912,50 @@ Since we know exactly what collection we want to fetch products for, we'll use t
 
 In our app we likely want to have a detailed product page with images, variants and descriptions. Conventionally, we'd need multiple `REST` calls to fetch all the required information but with Buy SDK, we can do it with a single query.
 
-```swift
-let query = Storefront.buildQuery { $0
-    .node(id: productID) { $0
-        .onProduct { $0
-            .id()
-            .title()
-            .description()
-            .images(first: 10) { $0
-                .edges { $0
-                    .node { $0
-                        .id()
-                        .src()
-                    }
-                }
-            }
-            .variants(first: 10) { $0
-                .edges { $0
-                    .node { $0
-                        .id()
-                        .price()
-                        .title()
-                        .available()
-                    }
-                }
-            }
-        }
-    }
-}
+```java
+GraphClient client = ...;
 
-client.queryGraphWith(query) { response, error in
-    let product  = response?.node as? Storefront.Product
-    let images   = product?.images.edges.map { $0.node }
-    let variants = product?.variants.edges.map { $0.node }
-}
+Storefront.QueryRootQuery query = Storefront.query(rootQuery -> rootQuery
+  .node(new ID("9Qcm9kdWN0LzMzMj"), nodeQuery -> nodeQuery
+    .onProduct(productQuery -> productQuery
+      .title()
+      .description()
+      .images(10, imageConnectionQuery -> imageConnectionQuery
+        .edges(imageEdgeQuery -> imageEdgeQuery
+          .node(imageQuery -> imageQuery
+            .src()
+          )
+        )
+      )
+      .variants(10, variantConnectionQuery -> variantConnectionQuery
+        .edges(variantEdgeQuery -> variantEdgeQuery
+          .node(productVariantQuery -> productVariantQuery
+            .price()
+            .title()
+            .available()
+          )
+        )
+      )
+    )
+  )
+);
+
+client.queryGraph(query).enqueue(new GraphCall.Callback<Storefront.QueryRoot>() {
+
+  @Override public void onResponse(@NonNull GraphResponse<Storefront.QueryRoot> response) {
+    Storefront.Product product = (Storefront.Product) response.data().getNode();
+    List<Storefront.Image> productImages = new ArrayList<>();
+    for (final Storefront.ImageEdge imageEdge : product.getImages().getEdges()) {
+      productImages.add(imageEdge.getNode());
+    }
+    List<Storefront.ProductVariant> productVariants = new ArrayList<>();
+    for (final Storefront.ProductVariantEdge productVariantEdge : product.getVariants().getEdges()) {
+      productVariants.add(productVariantEdge.getNode());
+    }
+  }
+
+  ...
+});
 ```
 The corresponding GraphQL query would look like this:
 
@@ -953,41 +995,43 @@ After browsing products and collections, a customer may eventually want to purch
 
 Almost every `mutation` query requires an input object. This is the object that dictates what fields will be mutated for a particular resource. In this case, we'll need to create a `Storefront.CheckoutCreateInput`:
 
-```swift
-let input = Storefront.CheckoutCreateInput(
-    lineItems: [
-        Storefront.CheckoutLineItemInput(variantId: GraphQL.ID(rawValue: "mFyaWFu"), quantity: 5),
-        Storefront.CheckoutLineItemInput(variantId: GraphQL.ID(rawValue: "8vc2hGl"), quantity: 3),
-    ]
-)
+```java
+Storefront.CheckoutCreateInput input = new Storefront.CheckoutCreateInput()
+  .setLineItems(Arrays.asList(
+    new Storefront.CheckoutLineItemInput(new ID("mFyaWFu"), 5),
+    new Storefront.CheckoutLineItemInput(new ID("8vc2hGl"), 3)
+  ));
 ```
+      
 The checkout input object accepts other arguments like `email` and `shippingAddress` but in our example, we don't have access to that information from the customer until a later time so we won't include them in this mutation. Given the checkout input, we can execute the `checkoutCreate` mutation:
 
-```swift
-let mutation = Storefront.buildMutation { $0
-    .checkoutCreate(input: checkout) { $0
-        .checkout { $0
-            .id()
-        }
-        .userErrors { $0
-            .field()
-            .message()
-        }
-    }
-}
+```java
+Storefront.MutationQuery query = Storefront.mutation(mutationQuery -> mutationQuery
+  .checkoutCreate(input, createPayloadQuery -> createPayloadQuery
+    .checkout(checkoutQuery -> checkoutQuery
+      .webUrl()
+    )
+    .userErrors(userErrorQuery -> userErrorQuery
+      .field()
+      .message()
+    )
+  )
+);
 
-client.mutateGraphWith(mutation) { result, error in
-    guard error == nil else {
-        // handle request error
+client.mutateGraph(query).enqueue(new GraphCall.Callback<Storefront.Mutation>() {
+  @Override public void onResponse(@NonNull GraphResponse<Storefront.Mutation> response) {
+    if (!response.data().getCheckoutCreate().getUserErrors().isEmpty()) {
+      // handle user friendly errors
+    } else {
+      String checkoutId = response.data().getCheckoutCreate().getCheckout().getId().toString();
+      String checkoutWebUrl = response.data().getCheckoutCreate().getCheckout().getWebUrl();
     }
+  }
 
-    guard let userError = result?.checkoutCreate?.userErrors else {
-        // handle any user error
-        return
-    }
-
-    let checkoutID = result?.checkoutCreate?.checkout?.id
-}
+  @Override public void onFailure(@NonNull GraphError error) {
+    // handle errors
+  }
+});
 ```
 **It is best practice to always include `userErrors` fields in your mutation payload query, where possible.** You should always validate user input before making mutation requests but it's possible that there might be a mismatch between the client and server. In this case, `userErrors` will contain an error with a `field` and `message` for any invalid or missing fields.
 
@@ -997,86 +1041,116 @@ Since we'll need to update the checkout with additional information later, all w
 
 A customer's information may not be available when a checkout is created. The Buy SDK provides mutations for updating specific checkout fields that are required for completion. Namely the `email` and `shippingAddress` fields:
 
-###### Updating email [⤴](#table-of-contents)
+###### Updating email
 
-```swift
-let mutation = Storefront.buildMutation { $0
-    .checkoutEmailUpdate(checkoutId: id, email: "john.smith@gmail.com") { $0
-        .checkout { $0
-            .id()
-        }
-        .userErrors { $0
-            .field()
-            .message()
-        }
-    }
-}
+```java
+ID checkoutId = ...;
+
+Storefront.MutationQuery query = Storefront.mutation(mutationQuery -> mutationQuery
+  .checkoutEmailUpdate(checkoutId, "john.smith@gmail.com", emailUpdatePayloadQuery -> emailUpdatePayloadQuery
+    .checkout(checkoutQuery -> checkoutQuery
+      .webUrl()
+    )
+    .userErrors(userErrorQuery -> userErrorQuery
+      .field()
+      .message()
+    )
+  )
+);
 ```
 
-###### Updating shipping address [⤴](#table-of-contents)
+###### Updating shipping address
 
-```swift
-let shippingAddress: Storefront.MailingAddressInput
-let mutation = Storefront.buildMutation { $0
-    .checkoutShippingAddressUpdate(shippingAddress: shippingAddress, checkoutId: id) {
-        .checkout { $0
-            .id()
-        }
-        .userErrors { $0
-            .field()
-            .message()
-        }
-    }
-}
+```java
+PayAddress address = ...;
+
+Storefront.MailingAddressInput input = new Storefront.MailingAddressInput()
+  .setAddress1(address.address1)
+  .setAddress2(address.address2)
+  .setCity(address.city)
+  .setCountry(address.country)
+  .setFirstName(address.firstName)
+  .setLastName(address.lastName)
+  .setPhone(address.phone)
+  .setProvince(address.province)
+  .setZip(address.zip);
+      
+Storefront.Mutation query = Storefront.mutation((mutationQuery -> mutationQuery
+    .checkoutShippingAddressUpdate(input, checkoutId, shippingAddressUpdatePayloadQuery -> shippingAddressUpdatePayloadQuery
+      .checkout(checkoutQuery -> checkoutQuery
+        .webUrl()
+      )
+      .userErrors(userErrorQuery -> userErrorQuery
+        .field()
+        .message()
+      )
+    )
+  )
+);
 ```
 
 #### Polling for shipping rates [⤴](#table-of-contents)
 
-Available shipping rates are specific to a checkout since the cost to ship items depends on the quantity, weight and other attributes of the items in the checkout. Shipping rates also require a checkout to have a valid `shippingAddress`, which can be updated using steps found in [updating a checkout](#updating-a-checkout). Available shipping rates are a field on `Storefront.Checkout` so given a `checkoutID` (that we kept a reference to earlier) we can query for shipping rates:
+Available shipping rates are specific to a checkout since the cost to ship items depends on the quantity, weight and other attributes of the items in the checkout. Shipping rates also require a checkout to have a valid `shippingAddress`, which can be updated using steps found in [updating a checkout](#updating-a-checkout). Available shipping rates are a field on `Storefront.Checkout` so given a `checkoutId` (that we kept a reference to earlier) we can query for shipping rates:
 
-```swift
-let query = Storefront.buildQuery { $0
-    .node(id: checkoutID) { $0
-        .onCheckout { $0
-            .id()
-            .availableShippingRates { $0
-                .ready()
-                .shippingRates { $0
-                    .handle()
-                    .price()
-                    .title()
-                }
-            }
-        }
-    }
-}
+```java
+ID checkoutId = ...;
+
+Storefront.QueryRootQuery query = Storefront.query(rootQuery -> rootQuery
+  .node(checkoutId, nodeQuery -> nodeQuery
+    .onCheckout(checkoutQuery -> checkoutQuery
+      .availableShippingRates(availableShippingRatesQuery -> availableShippingRatesQuery
+        .ready()
+        .shippingRates(shippingRateQuery -> shippingRateQuery
+          .handle()
+          .price()
+          .title()
+        )
+      )
+    )
+  )
+);
 ```
 
 The query above will kick off an asynchoronous task on the server to fetch shipping rates from multiple shipping providers. While the request may return immedietly (network latency aside), it does not mean that the list of shipping rates is complete. This is indicated by the `ready` field in the query above. It is your application's responsibility to continue retrying this query until `ready == true`. The Buy SDK has [built-in support for retrying requests](#retry), so we'll create a retry handler and perform the query:
 
-```swift
-let retry = Graph.RetryHandler<Storefront.QueryRoot>(endurance: .finite(10)) { (response, error) -> Bool in
-    return (response?.node as? Storefront.Checkout)?.availableShippingRates?.ready ?? false == false
-}
+```java
+GraphClient client = ...;
+Storefront.QueryRootQuery query = ...;
+...
 
-let task = self.client.queryGraphWith(query, retryHandler: retry) { response, error in
-    let checkout      = (response?.node as? Storefront.Checkout)
-    let shippingRates = checkout.availableShippingRates?.shippingRates
-}
+client.queryGraph(query).enqueue(
+      new GraphCall.Callback<Storefront.QueryRoot>() {
+        @Override public void onResponse(@NonNull final GraphResponse<Storefront.QueryRoot> response) {
+          Storefront.Checkout checkout = (Storefront.Checkout) response.data().getNode();
+          List<Storefront.ShippingRate> shippingRates = checkout.getAvailableShippingRates().getShippingRates();
+        }
+
+        @Override public void onFailure(@NonNull final GraphError error) {
+        }
+      },
+      null,
+      RetryHandler.exponentialBackoff(1, TimeUnit.MILLISECONDS, 1.2f)
+        .whenResponse(
+          response -> ((Storefront.Checkout) response.data().getNode()).getAvailableShippingRates().getReady() == false
+        )
+        .maxCount(10)
+        .build()
+    );
 ```
-The completion will be called only if `availableShippingRates.ready == true` or the retry count reaches 10. While you can specify `.infinite` for the retry handler's `endurance` property, we highly recommend you set a finite limit.
+The callback `onResponse` will be called only if `availableShippingRates.ready == true` or the retry count reaches 10.
 
 #### Completing a checkout [⤴](#table-of-contents)
 
 After all required fields have been filled and the customer is ready to pay, you have 3 ways to complete the checkout and process the payment.
 
-###### Web checkout [⤴](#table-of-contents)
+##### Web checkout
 
-The simplest way to complete a checkout is by redirecting the customer to a web view where they will be presented with the same flow that they're familiar with on the web. The `Storefront.Checkout` resource provides a `webUrl` that you can use to present a web view. We highly recommend using `SFSafariViewController` instead of `WKWebView` or other alternatives.
+The simplest way to complete a checkout is by redirecting the customer to a web view where they will be presented with the same flow that they're familiar with on the web. The `Storefront.Checkout` resource provides a `webUrl` that you can use to present a web view.
 
 **NOTE**: While using web checkout is the simplest out of the 3 approaches, it presents some difficulty when it comes to observing the checkout state. Since the web view doesn't provide any callbacks for various checkout states, you still need to [poll for checkout completion](#poll-for-checkout-completion-).
 
-###### Credit card checkout [⤴](#table-of-contents)
+##### Credit card checkout
 
 The native credit card checkout offers the most conventional UX out of the 3 alternatives but is also requires the most effort to implement. You'll be required to implement UI for gathering your customers' name, email, address, payment information and other fields required to complete checkout.
 
@@ -1084,131 +1158,145 @@ Assuming your custom storefront has all the infomation it needs, the first step 
 
 After obtaining a credit card vault token, we can proceed to complete the checkout by creating a `CreditCardPaymentInput` and executing the mutation query:
 
-```swift
-// let paySession: PaySession
-// let payCheckout: PayCheckout
-// let payAuthorization: PayAuthorization
+```java
+GraphClient client = ...;
+ID checkoutId = ...;
+BigDecimal amount = ...;
+String idempotencyKey = ...;
+Storefront.MailingAddressInput billingAddress = ...;
+String creditCardVaultToken = ...;
 
-let payment = Storefront.CreditCardPaymentInput(
-    amount:         payCheckout.paymentDue,
-    idempotencyKey: paySession.identifier,
-    billingAddress: self.mailingAddressInputFrom(payAuthorization.billingAddress,
-    vaultId:        token
-)
+Storefront.CreditCardPaymentInput input = new Storefront.CreditCardPaymentInput(amount, idempotencyKey, billingAddress,
+      creditCardVaultToken);
 
-let mutation = Storefront.buildMutation { $0
-    .checkoutCompleteWithCreditCard(checkoutId: checkoutID, payment: payment) { $0
-        .payment { $0
-            .id()
-            .ready()
-        }
-        .checkout { $0
-            .id()
-            .ready()
-        }
-        .userErrors { $0
-            .field()
-            .message()
-        }
+Storefront.MutationQuery query = Storefront.mutation(mutationQuery -> mutationQuery
+  .checkoutCompleteWithCreditCard(checkoutId, input, payloadQuery -> payloadQuery
+    .payment(paymentQuery -> paymentQuery
+      .ready()
+      .errorMessage()
+    )
+    .checkout(checkoutQuery -> checkoutQuery
+      .ready()
+    )
+    .userErrors(userErrorQuery -> userErrorQuery
+      .field()
+      .message()
+    )
+  )
+);
+
+client.mutateGraph(query).enqueue(new GraphCall.Callback<Storefront.Mutation>() {
+  @Override public void onResponse(@NonNull final GraphResponse<Storefront.Mutation> response) {
+    if (!response.data().getCheckoutCompleteWithCreditCard().getUserErrors().isEmpty()) {
+      // handle user friendly errors
+    } else {
+      boolean checkoutReady = response.data().getCheckoutCompleteWithCreditCard().getCheckout().getReady();
+      boolean paymentReady = response.data().getCheckoutCompleteWithCreditCard().getPayment().getReady();
     }
-}
+  }
 
-client.mutateGraphWith(mutation) { result, error in
-    guard error == nil else {
-        // handle request error
-    }
-
-    guard let userError = result?.checkoutCompleteWithCreditCard?.userErrors else {
-        // handle any user error
-        return
-    }
-
-    let checkoutReady = result?.checkoutCompleteWithCreditCard?.checkout.ready ?? false
-    let paymentReady  = result?.checkoutCompleteWithCreditCard?.payment?.ready ?? false
-
-    // checkoutReady == false
-    // paymentReady == false
-}
+  @Override public void onFailure(@NonNull final GraphError error) {
+    // handle errors
+  }
+});
 ```
 
-###### Apple Pay checkout [⤴](#table-of-contents)
+##### Android Pay checkout
 
-The Buy SDK makes  Pay integration easy with the provided `Pay.framework`. Please refer to the [ Pay](#apple-pay-) section on how to setup and use `PaySession` to obtain a payment token. With token in-hand, we can complete the checkout:
+The Buy SDK makes Android Pay integration easy with the provided `android-pay` module. Please refer to the [Android Pay](#android-pay-) section on how to helper classes and obtain a payment token. With token in-hand, we can complete the checkout:
 
-```swift
-// let paySession: PaySession
-// let payCheckout: PayCheckout
-// let payAuthorization: PayAuthorization
+```java
+GraphClient client = ...;
+ID checkoutId = ...;
+PaymentToken paymentToken = ...;
+PayAddress billingAddress = ...;
+PayCart payCart = ...;
+String idempotencyKey = ...;
 
-let payment = Storefront.TokenizedPaymentInput(
-    amount:         payCheckout.paymentDue,
-    idempotencyKey: paySession.identifier,
-    billingAddress: self.mailingAddressInputFrom(payAuthorization.billingAddress), // <- perform the conversion
-    type:           "apple_pay",
-    paymentData:    payAuthorization.token
-)
+Storefront.MailingAddressInput mailingAddressInput = new Storefront.MailingAddressInput()
+  .setAddress1(billingAddress.address1)
+  .setAddress2(billingAddress.address2)
+  .setCity(billingAddress.city)
+  .setCountry(billingAddress.country)
+  .setFirstName(billingAddress.firstName)
+  .setLastName(billingAddress.lastName)
+  .setPhone(billingAddress.phone)
+  .setProvince(billingAddress.province)
+  .setZip(billingAddress.zip);
 
-let mutation = Storefront.buildMutation { $0
-    .checkoutCompleteWithTokenizedPayment(checkoutId: checkoutID, payment: payment) { $0
-        .payment { $0
-            .id()
-            .ready()
-        }
-        .checkout { $0
-            .id()
-            .ready()
-        }
-        .userErrors { $0
-            .field()
-            .message()
-        }
+Storefront.TokenizedPaymentInput input = new Storefront.TokenizedPaymentInput(payCart.totalPrice, idempotencyKey,
+  mailingAddressInput, paymentToken.token, "android_pay").setIdentifier(paymentToken.publicKeyHash);
+
+Storefront.MutationQuery query = Storefront.mutation(mutationQuery -> mutationQuery
+  .checkoutCompleteWithTokenizedPayment(checkoutId, input, payloadQuery -> payloadQuery
+    .payment(paymentQuery -> paymentQuery
+      .ready()
+      .errorMessage()
+    )
+    .checkout(checkoutQuery -> checkoutQuery
+      .ready()
+    )
+    .userErrors(userErrorQuery -> userErrorQuery
+      .field()
+      .message()
+    )
+  )
+);
+
+client.mutateGraph(query).enqueue(new GraphCall.Callback<Storefront.Mutation>() {
+  @Override public void onResponse(@NonNull final GraphResponse<Storefront.Mutation> response) {
+    if (!response.data().getCheckoutCompleteWithCreditCard().getUserErrors().isEmpty()) {
+      // handle user friendly errors
+    } else {
+      boolean checkoutReady = response.data().getCheckoutCompleteWithCreditCard().getCheckout().getReady();
+      boolean paymentReady = response.data().getCheckoutCompleteWithCreditCard().getPayment().getReady();
     }
-}
+  }
 
-client.mutateGraphWith(mutation) { result, error in
-    guard error == nil else {
-        // handle request error
-    }
-
-    guard let userError = result?.checkoutCompleteWithTokenizedPayment?.userErrors else {
-        // handle any user error
-        return
-    }
-
-    let checkoutReady = result?.checkoutCompleteWithTokenizedPayment?.checkout.ready ?? false
-    let paymentReady  = result?.checkoutCompleteWithTokenizedPayment?.payment?.ready ?? false
-
-    // checkoutReady == false
-    // paymentReady == false
-}
+  @Override public void onFailure(@NonNull final GraphError error) {
+    // handle errors
+  }
+});
 ```
 
 #### Polling for checkout completion [⤴](#table-of-contents)
 
 After a successful `checkoutCompleteWith...` mutation, the checkout process has started. This process is usually short but not immediate so polling is required to obtain an updated checkout in a `ready` state - with a `Storefront.Order`.
 
-```swift
-let retry = Graph.RetryHandler<Storefront.QueryRoot>(endurance: .finite(30)) { (response, error) -> Bool in
-    return (response?.node as? Storefront.Checkout)?.order == nil
-}
+```java
+GraphClient client = ...;
+ID checkoutId = ...;
 
-let query = Storefront.buildQuery { $0
-    .node(id: checkoutID) { $0
-        .onCheckout { $0
-            .order { $0
-                .id()
-                .createdAt()
-                .orderNumber()
-                .totalPrice()
-            }
-        }
+Storefront.QueryRootQuery query = Storefront.query(rootQuery -> rootQuery
+  .node(checkoutId, nodeQuery -> nodeQuery
+    .onCheckout(checkoutQuery -> checkoutQuery
+      .order(orderQuery -> orderQuery
+        .createdAt()
+        .orderNumber()
+        .totalPrice()
+      )
+    )
+  )
+);
+
+client.queryGraph(query).enqueue(
+  new GraphCall.Callback<Storefront.QueryRoot>() {
+	@Override public void onResponse(@NonNull GraphResponse<Storefront.QueryRoot> response) {
+      Storefront.Checkout checkout = (Storefront.Checkout) response.data().getNode();
+      String orderId = checkout.getOrder().getId().toString();
     }
-}
 
-let task  = self.client.queryGraphWith(query, retryHandler: retry) { response, error in
-    let checkout = (response?.node as? Storefront.Checkout)
-    let orderID  = checkout?.order?.id
-}
+    @Override public void onFailure(@NonNull GraphError error) {
+    }
+  },
+  null,
+  RetryHandler.exponentialBackoff(1, TimeUnit.MILLISECONDS, 1.2f)
+    .whenResponse(
+      response -> ((Storefront.Checkout) response.data().getNode()).getOrder() == null
+    )
+    .maxCount(10)
+    .build()
+);
 ```
 Again, just like when [polling for available shipping rates](#polling-for-shipping-rates-), we need to create a `RetryHandler` to provide a condition upon which to retry the request. In this case, we're asserting that the `Storefront.Order` is `nil` an continue retrying the request if it is.
 
