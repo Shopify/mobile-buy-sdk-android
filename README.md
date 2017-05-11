@@ -45,9 +45,9 @@ Shopify’s Mobile Buy SDK makes it easy to create custom storefronts in your mo
       - [Updating a checkout](#updating-a-checkout-)
       - [Polling for shipping rates](#polling-for-shipping-rates-)
       - [Completing a checkout](#completing-a-checkout-)
-          - [Web](#web-checkout-)
-          - [Credit card](#credit-card-checkout-)
-          - [Android Pay](#android-pay-checkout-)
+          - [Web](#web-checkout)
+          - [Credit card](#credit-card-checkout)
+          - [Android Pay](#android-pay-checkout)
       - [Polling for checkout completion](#polling-for-checkout-completion-)
   - [Handling Errors](#handling-errors-)
 
