@@ -30,6 +30,10 @@ Shopify’s Mobile Buy SDK makes it easy to create custom storefronts in your mo
 - [Android Pay](#android-pay-)
   - [PayCart](#paycart-)
   - [PayHelper](#payhelper-)
+		- [Masked Wallet](#masked-wallet-)
+		- [Full Wallet](#full-wallet-)
+		- [SupportWalletFragment](#supportwalletfragment-)
+		- [Retry Purchase](#retry-purchase-)
   
 - [Case studies](#case-studies-)
   - [Fetch shop](#fetch-shop-)
@@ -496,75 +500,113 @@ task.resume()
 
 ## Android Pay [⤴](#table-of-contents)
 
-Support for Android Pay is provided by the `com.shopify.mobilebuysdk:pay` extension library. It is separate module from the Buy SDK that offers helper classes for supporting Android Pay in your application. It is designed to take the guess work out of using partial GraphQL models with Android Pay.
+Support for Android Pay is provided by the `com.shopify.mobilebuysdk:pay` extension library. It is separate module from the Buy SDK that offers helper classes for supporting Android Pay in your application. It is designed to help you with Android Pay work flow by providing convinence helper functions and structures.
 
 ### PayCart [⤴](#table-of-contents)
 
-Abstraction that represents virtual user Android Pay cart model that incapsulates all the state necessary to complete the checkout process:
+Structure that represents virtual user Android Pay shopping cart by incapsulating all the state necessary for the checkout:
 
 - shop's currency
 - merchant's name
-- selected shipping rate
-- billing & shipping address
-- taxes
 - selected product line items
-
-### PayHelper [⤴](#table-of-contents)
-
-PayHelper class id designed to simplify work flow with Android Pay. It helps with:
-
-- check if Android Pay is enabled on the user device, see `PayHelper#isAndroidPayEnabledInManifest`
-
-- check if Android Pay is ready for the checkout, see `PayHelper#isReadyToPay`
-
-- retrieve the Masked Wallet information (such as billing address, shipping address, payment method etc.) from the Android Pay, see `PayHelper#requestMaskedWallet`
-
-- initialize and prepare wallet fragment for full wallet request, see `PayHelper#initializeWalletFragment`
-
-- finish Android Pay flow, see `PayHelper#requestFullWallet`
-
-- handle Andorid Pay wallet response, see `PayHelper#handleWalletResponse` and `PayHelper.WalletResponseHandler`
-
-- and finally extract `PaymentToken` to complete the checkout, see `PayHelper#extractPaymentToken`
-
-To request Masked Wallet information and begin the checkout flow, you need:
-
-- connected `GoogleApiClient` with `Wallet.API` enabled
-- Android Pay public key
-- a created `PayCart` with all mandatory fields like: currency code obtained from `Storefront.Shop`, Android Pay merchant name, line items (title, price, quantity)
-
-After all the prerequisites have been met, you can start payment flow by requesting Masked Wallet inforamtion:
+- selected shipping rate
+- tax
 
 ```java
-if (PayHelper.isAndroidPayEnabledInManifest(context)) {
-  googleApiClient = new GoogleApiClient.Builder(context)
-    .addApi(Wallet.API, new Wallet.WalletOptions.Builder()
-      .setEnvironment(ANDROID_PAY_ENVIRONMENT)
-      .setTheme(WalletConstants.THEME_DARK)
-      .build())
-    .addConnectionCallbacks(callback)
-    .build();
-}
-
-...
-	
 PayCart payCart = PayCart.builder()
   .merchantName(MERCHANT_NAME)
   .currencyCode(shop.currency)
   .shippingAddressRequired(checkout.requiresShipping)
+  .phoneNumberRequired(true)
+  .shipsToCountries(Arrays.asList("US", "CA"))
   .addLineItem("Product1", 1, BigDecimal.valueOf(1.99))
   .addLineItem("Product2", 10, BigDecimal.valueOf(3.99))
   .subtotal(checkout.subtotalPrice)
   .totalPrice(checkout.totalPrice)
+  .taxPrice(checkout.taxPrice)
   .build();
-  
-...
-
-PayHelper.requestMaskedWallet(googleApiClient, payCart, ANDROID_PAY_PUBLIC_KEY);
-
 ```
 
-After user authorizes to use their payment information on Android Pay chooser screen, `onActivityResult` will be called with returned Masked Wallet information along with Google Transaction ID and all subsequent change Masked Wallet and Full Wallet requests pertaining to this transaction. Helper function `PayHelper#handleWalletResponse` is designed to help with handling states of the response for Masked Wallet request:
+Additionally `PayCart` provides two functions to create and prepare 
+
+request for Masked Wallet information:
+
+```java
+MaskedWalletRequest maskedWalletRequest = payCart.maskedWalletRequest(ANDROID_PAY_PUBLIC_KEY);
+```
+
+request for Full Wallet inforamtion:
+
+```java
+FullWalletRequest fullWalletRequest = payCart.fullWalletRequest(maskedWallet);
+```
+ 
+ 
+### PayHelper [⤴](#table-of-contents)
+
+Helper class that designed to simplify interaction with Android Pay. It provides next helper functions:
+
+- `isAndroidPayEnabledInManifest` checks if Android Pay is enabled
+- `isReadyToPay` checks if Android Pay is ready to start purchase flow
+- `requestMaskedWallet` requests Masked Wallet information (such as billing address, shipping address, payment method etc.) from the Android Pay
+- `initializeWalletFragment` initializes and prepares wallet confirmation fragment
+- `requestFullWallet` requests Full Wallet information to get payment token and complete checkout
+- `newMaskedWallet` requests Masked Wallet information from existing one with new Google Transaction Id. Usufull when user wants to retry failed purchase and current Google Transaction Id is not valid any more
+- `handleWalletResponse` helps to handle Andorid Pay wallet response by delegation callbacks via `WalletResponseHandler`
+- and finally extract `PaymentToken` to complete the checkout, see `PayHelper#extractPaymentToken`
+
+#### Masked Wallet [⤴](#table-of-contents)
+
+To request Masked Wallet information and begin the checkout flow, you need:
+
+- check if Android Pay is enabled:
+
+```java
+if (PayHelper.isAndroidPayEnabledInManifest(context)) {
+  // show Android Pay button
+}
+```
+
+- build `GoogleApiClient` with `Wallet.API` enabled and connect it
+
+```java
+googleApiClient = new GoogleApiClient.Builder(context)
+  .addApi(Wallet.API, new Wallet.WalletOptions.Builder()
+    .setEnvironment(ANDROID_PAY_ENVIRONMENT)
+    .setTheme(WalletConstants.THEME_DARK)
+    .build())
+.addConnectionCallbacks(callback)
+.build();
+
+... 
+
+googleApiClient.connect();
+```
+
+- create `PayCart` with all mandatory fields like: currency code obtained from `Storefront.Shop`, Android Pay merchant name, line items (title, price, quantity)
+
+```java
+PayCart payCart = PayCart.builder()
+  .merchantName(MERCHANT_NAME)
+  .currencyCode(shop.currency)
+  .shippingAddressRequired(checkout.requiresShipping)
+  .phoneNumberRequired(true)
+  .shipsToCountries(Arrays.asList("US", "CA"))
+  .addLineItem("Product1", 1, BigDecimal.valueOf(1.99))
+  .addLineItem("Product2", 10, BigDecimal.valueOf(3.99))
+  .subtotal(checkout.subtotalPrice)
+  .totalPrice(checkout.totalPrice)
+  .taxPrice(checkout.taxPrice)
+  .build();
+```
+
+- start payment flow by requesting Masked Wallet inforamtion
+
+```java
+PayHelper.requestMaskedWallet(googleApiClient, payCart, ANDROID_PAY_PUBLIC_KEY);
+```
+
+After user authorizes to use their payment information on Android Pay chooser screen, `onActivityResult` will be called with returned Masked Wallet information along with Google Transaction ID and all subsequent change Masked Wallet and Full Wallet requests pertaining to this transaction. Helper function `handleWalletResponse` is designed to help you with response handling for Masked Wallet request:
 
 ```java
 @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -583,9 +625,11 @@ After user authorizes to use their payment information on Android Pay chooser sc
 }
 ```
 
+#### Full Wallet [⤴](#table-of-contents)
+
 Masked Wallet information has the shipping address and billing address, to be used for calculating the exact total purchase price. After the app obtains the Masked Wallet, it should present a confirmation page showing the total cost (`Storefront.Checkout#getTotalPrice`) of the items purchased in the transaction, total taxes (`Storefront.Checkout#getTotalTax`) and option to select shipping method if checkout requires shipping (`StoreFront.Checkout#getRequiresShipping`). 
 
-When the user confirms the order Full Wallet information should be requested (`PayHelper#requestFullWallet`) to obtain payment token required to complete checkout. To request Full Wallet information you must provide updated cart with the exact total purchase price and user authorized Masked Wallet:
+When the user confirms the order Full Wallet information should be requested (`PayHelper#requestFullWallet`) to obtain payment token required to complete checkout. To request Full Wallet information you must provide updated cart with the exact total purchase price and authorized Masked Wallet by user:
 
 ```java
 PayHelper.requestFullWallet(googleApiClient, payCart, maskedWallet);
@@ -609,9 +653,11 @@ After you retrieve the Full Wallet in the `onActivityResult`, you have enough in
 }
 ```
 
+#### SupportWalletFragment [⤴](#table-of-contents)
+
 In most cases on order confirmation page you will embed confirmation fragment `SupportWalletFragment` provided by Android Pay which displays "change" buttons to let users optionally modify the masked wallet information (such as payment method, shipping address, etc.). To proper initialize this fragment and be able use `PayHelper` for handling responses you should use `PayHelper#initializeWalletFragment`. 
 
-Confirmation fragment will notify in `onActivityResult` about any changes made by user to Masked Wallet information (like shipping address change), to help you to handle response with these changes you can use `PayHelper.handleWalletResponse`:
+Confirmation fragment will notify in `onActivityResult` about any changes made by user to Masked Wallet information (like shipping address change), to help you to handle response with these changes you can use the same helper function `PayHelper.handleWalletResponse`:
 
 ```java
 @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -626,7 +672,17 @@ Confirmation fragment will notify in `onActivityResult` about any changes made b
 });
 ```
 
-There can be a case when checkout can't be comlpeted with payment token due to some issue related to payment gateway or token can be proccessed at the moment and you want to re-try to complete checkout again by requesting Full Wallet information, you can get `WalletConstants.ERROR_CODE_INVALID_TRANSACTION` that means current Google Transaction Id is not valid any more. You will need to start a new transaction by requesting new Masked Wallet information:
+#### Retry Purchase [⤴](#table-of-contents)
+
+There can be a case when checkout can't be comlpeted with payment token obtained from Full Wallet information and you want user to retry it again. As soon as you get Full Wallet information for specified Masked Wallet, transaction associated with it considered as completed and can't be used again for requesting Full Wallet information. You should start a new transaction by obtaining Masked Wallet with a new Google Transaction Id. Otherwise if you try to use it again you will get `WalletConstants.ERROR_CODE_INVALID_TRANSACTION`. 
+
+To request a new Masked Wallet inforamtion with new Google Transaction Id associated with it:
+
+```java
+PayHelper.newMaskedWallet(googleApiClient, maskedWallet);
+```
+
+ due to some issue related to payment gateway or token can be proccessed at the moment and you want to re-try to complete checkout again by requesting Full Wallet information, you can get `WalletConstants.ERROR_CODE_INVALID_TRANSACTION` that means current Google Transaction Id is not valid any more. You will need to start a new transaction by requesting new Masked Wallet information:
 
 ```java
 @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
