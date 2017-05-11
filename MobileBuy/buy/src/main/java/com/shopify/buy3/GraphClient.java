@@ -66,15 +66,15 @@ public final class GraphClient {
 
   final HttpUrl serverUrl;
   final Call.Factory httpCallFactory;
-  final CachePolicy defaultCachePolicy;
+  final HttpCachePolicy defaultHttpCachePolicy;
   final HttpCache httpCache;
   final ScheduledExecutorService dispatcher;
 
   private GraphClient(@NonNull final HttpUrl serverUrl, @NonNull final Call.Factory httpCallFactory,
-    @NonNull final CachePolicy defaultCachePolicy, @Nullable final HttpCache httpCache) {
+    @NonNull final HttpCachePolicy defaultHttpCachePolicy, @Nullable final HttpCache httpCache) {
     this.serverUrl = checkNotNull(serverUrl, "serverUrl == null");
     this.httpCallFactory = checkNotNull(httpCallFactory, "httpCallFactory == null");
-    this.defaultCachePolicy = checkNotNull(defaultCachePolicy, "defaultCachePolicy == null");
+    this.defaultHttpCachePolicy = checkNotNull(defaultHttpCachePolicy, "defaultCachePolicy == null");
     this.httpCache = httpCache;
 
     ScheduledThreadPoolExecutor threadPoolExecutor = new ScheduledThreadPoolExecutor(2,
@@ -92,7 +92,7 @@ public final class GraphClient {
    * @see QueryGraphCall
    */
   public QueryGraphCall queryGraph(final Storefront.QueryRootQuery query) {
-    return new RealQueryGraphCall(query, serverUrl, httpCallFactory, dispatcher, defaultCachePolicy, httpCache);
+    return new RealQueryGraphCall(query, serverUrl, httpCallFactory, dispatcher, defaultHttpCachePolicy, httpCache);
   }
 
   /**
@@ -103,7 +103,7 @@ public final class GraphClient {
    * @see MutationGraphCall
    */
   public MutationGraphCall mutateGraph(final Storefront.MutationQuery query) {
-    return new RealMutationGraphCall(query, serverUrl, httpCallFactory, dispatcher, CachePolicy.NETWORK_ONLY.obtain(), httpCache);
+    return new RealMutationGraphCall(query, serverUrl, httpCallFactory, dispatcher, HttpCachePolicy.NETWORK_ONLY.obtain(), httpCache);
   }
 
   /**
@@ -125,7 +125,7 @@ public final class GraphClient {
     private HttpUrl endpointUrl;
     private String accessToken;
     private OkHttpClient httpClient;
-    private CachePolicy defaultCachePolicy = CachePolicy.NETWORK_ONLY.obtain();
+    private HttpCachePolicy defaultHttpCachePolicy = HttpCachePolicy.NETWORK_ONLY.obtain();
     private File httpCacheFolder;
     private long httpCacheMaxSize;
     private HttpCache httpCache;
@@ -173,13 +173,13 @@ public final class GraphClient {
     }
 
     /**
-     * Set the default {@link CachePolicy} to be used for {@link QueryGraphCall}.
+     * Set the default {@link HttpCachePolicy} to be used for {@link QueryGraphCall}.
      *
-     * @param cachePolicy default {@link CachePolicy}
+     * @param httpCachePolicy default {@link HttpCachePolicy}
      * @return {@link GraphClient.Builder} to be used for chaining method calls
      */
-    public Builder defaultCachePolicy(@NonNull CachePolicy cachePolicy) {
-      this.defaultCachePolicy = checkNotNull(cachePolicy, "cachePolicy == null");
+    public Builder defaultHttpCachePolicy(@NonNull HttpCachePolicy httpCachePolicy) {
+      this.defaultHttpCachePolicy = checkNotNull(httpCachePolicy, "cachePolicy == null");
       return this;
     }
 
@@ -236,7 +236,7 @@ public final class GraphClient {
         httpClient = httpClient.newBuilder().addInterceptor(httpCache.httpInterceptor()).build();
       }
 
-      return new GraphClient(endpointUrl, httpClient, defaultCachePolicy, httpCache);
+      return new GraphClient(endpointUrl, httpClient, defaultHttpCachePolicy, httpCache);
     }
 
     OkHttpClient defaultOkHttpClient() {

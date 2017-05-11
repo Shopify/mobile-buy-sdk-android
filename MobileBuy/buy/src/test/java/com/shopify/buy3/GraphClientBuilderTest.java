@@ -98,6 +98,6 @@ public class GraphClientBuilderTest {
     checkForNullPointerException(() -> GraphClient.builder(mockContext).build());
     checkForNullPointerException(() -> GraphClient.builder(mockContext).shopDomain(SHOP_DOMAIN).build());
 
-    checkForNullPointerException(() -> GraphClient.builder(mockContext).defaultCachePolicy(null));
+    checkForNullPointerException(() -> GraphClient.builder(mockContext).defaultHttpCachePolicy(null));
   }
 }

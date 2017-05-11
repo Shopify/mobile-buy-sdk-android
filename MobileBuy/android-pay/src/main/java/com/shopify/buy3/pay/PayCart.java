@@ -40,6 +40,7 @@ import com.google.android.gms.wallet.PaymentMethodTokenizationParameters;
 import com.google.android.gms.wallet.PaymentMethodTokenizationType;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -73,18 +74,18 @@ public final class PayCart implements Parcelable {
     shippingAddressRequired = in.readByte() != 0;
     phoneNumberRequired = in.readByte() != 0;
     lineItems = Collections.unmodifiableList(in.createTypedArrayList(LineItem.CREATOR));
-    subtotal = BigDecimal.valueOf(in.readDouble());
+    subtotal = BigDecimal.valueOf(in.readDouble()).setScale(2, RoundingMode.HALF_EVEN);
     if (in.readByte() == 1) {
-      taxPrice = BigDecimal.valueOf(in.readDouble());
+      taxPrice = BigDecimal.valueOf(in.readDouble()).setScale(2, RoundingMode.HALF_EVEN);
     } else {
       taxPrice = null;
     }
     if (in.readByte() == 1) {
-      shippingPrice = BigDecimal.valueOf(in.readDouble());
+      shippingPrice = BigDecimal.valueOf(in.readDouble()).setScale(2, RoundingMode.HALF_EVEN);
     } else {
       shippingPrice = null;
     }
-    totalPrice = BigDecimal.valueOf(in.readDouble());
+    totalPrice = BigDecimal.valueOf(in.readDouble()).setScale(2, RoundingMode.HALF_EVEN);
   }
 
   PayCart(@NonNull final String currencyCode, @NonNull final String merchantName, @NonNull final List<String> shipsToCountries,
@@ -97,10 +98,10 @@ public final class PayCart implements Parcelable {
     this.shippingAddressRequired = shippingAddressRequired;
     this.phoneNumberRequired = phoneNumberRequired;
     this.lineItems = lineItems;
-    this.subtotal = subtotal;
-    this.taxPrice = taxPrice;
-    this.shippingPrice = shippingPrice;
-    this.totalPrice = totalPrice;
+    this.subtotal = subtotal.setScale(2, RoundingMode.HALF_EVEN);
+    this.taxPrice = taxPrice != null ? taxPrice.setScale(2, RoundingMode.HALF_EVEN) : null;
+    this.shippingPrice = shippingPrice != null ? shippingPrice.setScale(2, RoundingMode.HALF_EVEN) : null;
+    this.totalPrice = totalPrice.setScale(2, RoundingMode.HALF_EVEN);;
   }
 
   @Override

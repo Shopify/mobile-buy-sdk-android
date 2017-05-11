@@ -74,6 +74,10 @@ public final class PayHelper {
     Wallet.Payments.loadMaskedWallet(googleApiClient, maskedWalletRequest, PayHelper.REQUEST_CODE_MASKED_WALLET);
   }
 
+  public static void newMaskedWallet(final GoogleApiClient googleApiClient, final MaskedWallet maskedWallet) {
+    Wallet.Payments.changeMaskedWallet(googleApiClient, maskedWallet.getGoogleTransactionId(), null, PayHelper.REQUEST_CODE_MASKED_WALLET);
+  }
+
   /**
    * Initialize Android Pay wallet fragment with specified masked wallet.
    *
@@ -123,30 +127,28 @@ public final class PayHelper {
       return true;
     }
 
-    if (data != null) {
-      int errorCode = data.getIntExtra(WalletConstants.EXTRA_ERROR_CODE, -1);
-      if (errorCode != -1) {
-        if (errorCode == WalletConstants.ERROR_CODE_INVALID_TRANSACTION) {
-          handler.onMaskedWalletRequest();
-        } else {
-          handler.onWalletError(requestCode, errorCode);
-        }
-        return true;
-      } else {
-        MaskedWallet maskedWallet = data.getParcelableExtra(WalletConstants.EXTRA_MASKED_WALLET);
-        FullWallet fullWallet = data.getParcelableExtra(WalletConstants.EXTRA_FULL_WALLET);
-        if (maskedWallet != null) {
-          handler.onMaskedWallet(maskedWallet);
-          return true;
-        } else if (fullWallet != null) {
-          handler.onFullWallet(fullWallet);
-          return true;
-        }
-      }
+    if (data == null) {
+      handler.onWalletError(requestCode, -1);
+      return true;
     }
 
-    handler.onWalletError(requestCode, -1);
-    return true;
+    int errorCode = data.getIntExtra(WalletConstants.EXTRA_ERROR_CODE, -1);
+    if (errorCode != -1) {
+      handler.onWalletError(requestCode, errorCode);
+      return true;
+    }
+
+    MaskedWallet maskedWallet = data.getParcelableExtra(WalletConstants.EXTRA_MASKED_WALLET);
+    FullWallet fullWallet = data.getParcelableExtra(WalletConstants.EXTRA_FULL_WALLET);
+    if (maskedWallet != null) {
+      handler.onMaskedWallet(maskedWallet);
+      return true;
+    } else if (fullWallet != null) {
+      handler.onFullWallet(fullWallet);
+      return true;
+    }
+
+    return false;
   }
 
   public static boolean isAndroidPayEnabledInManifest(@NonNull final Context context) {
@@ -253,13 +255,6 @@ public final class PayHelper {
      * @param errorCode   error code
      */
     public abstract void onWalletError(int requestCode, int errorCode);
-
-    /**
-     * Called when new masked wallet required. Usually {@link PayHelper#requestMaskedWallet(GoogleApiClient, PayCart, String)} should be
-     * called again.
-     */
-    public void onMaskedWalletRequest() {
-    }
 
     /**
      * Called when new masked wallet is returned.

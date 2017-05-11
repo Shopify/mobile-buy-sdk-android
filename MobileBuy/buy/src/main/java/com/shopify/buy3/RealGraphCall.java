@@ -56,7 +56,7 @@ abstract class RealGraphCall<T extends AbstractResponse<T>> implements GraphCall
   protected final Call.Factory httpCallFactory;
   protected final HttpResponseParser<T> httpResponseParser;
   protected final ScheduledExecutorService dispatcher;
-  protected CachePolicy cachePolicy;
+  protected HttpCachePolicy httpCachePolicy;
   protected final HttpCache httpCache;
   protected final AtomicBoolean executed = new AtomicBoolean();
   private volatile Call httpCall;
@@ -65,13 +65,13 @@ abstract class RealGraphCall<T extends AbstractResponse<T>> implements GraphCall
 
   RealGraphCall(final Query query, final HttpUrl serverUrl, final Call.Factory httpCallFactory,
     final ResponseDataConverter<T> responseDataConverter, final ScheduledExecutorService dispatcher,
-    final CachePolicy cachePolicy, final HttpCache httpCache) {
+    final HttpCachePolicy httpCachePolicy, final HttpCache httpCache) {
     this.query = query;
     this.serverUrl = serverUrl;
     this.httpCallFactory = httpCallFactory;
     this.httpResponseParser = new HttpResponseParser<>(responseDataConverter);
     this.dispatcher = dispatcher;
-    this.cachePolicy = cachePolicy;
+    this.httpCachePolicy = httpCachePolicy;
     this.httpCache = httpCache;
   }
 
@@ -81,7 +81,7 @@ abstract class RealGraphCall<T extends AbstractResponse<T>> implements GraphCall
     this.httpCallFactory = other.httpCallFactory;
     this.httpResponseParser = other.httpResponseParser;
     this.dispatcher = other.dispatcher;
-    this.cachePolicy = other.cachePolicy;
+    this.httpCachePolicy = other.httpCachePolicy;
     this.httpCache = other.httpCache;
   }
 
@@ -202,8 +202,8 @@ abstract class RealGraphCall<T extends AbstractResponse<T>> implements GraphCall
       .post(body)
       .header("Accept", ACCEPT_HEADER)
       .header(HttpCache.CACHE_KEY_HEADER, cacheKey)
-      .header(HttpCache.CACHE_FETCH_STRATEGY_HEADER, cachePolicy.fetchStrategy.name())
-      .header(HttpCache.CACHE_EXPIRE_TIMEOUT_HEADER, String.valueOf(cachePolicy.expireTimeoutMs()))
+      .header(HttpCache.CACHE_FETCH_STRATEGY_HEADER, httpCachePolicy.fetchStrategy.name())
+      .header(HttpCache.CACHE_EXPIRE_TIMEOUT_HEADER, String.valueOf(httpCachePolicy.expireTimeoutMs()))
       .build();
     return httpCallFactory.newCall(request);
   }

@@ -35,39 +35,39 @@ import static com.shopify.buy3.Utils.checkNotNull;
  * Some policies require an {@code expireTimeout} parameter that determines the time until the cache is invalidated and is considered to
  * be stale.
  *
- * @see CachePolicy#CACHE_ONLY
- * @see CachePolicy#NETWORK_ONLY
- * @see CachePolicy#CACHE_FIRST
- * @see CachePolicy#NETWORK_FIRST
+ * @see HttpCachePolicy#CACHE_ONLY
+ * @see HttpCachePolicy#NETWORK_ONLY
+ * @see HttpCachePolicy#CACHE_FIRST
+ * @see HttpCachePolicy#NETWORK_FIRST
  */
-public final class CachePolicy {
+public final class HttpCachePolicy {
   /**
    * Load from cache without loading from network
    */
-  public static final NeverExpireFactory CACHE_ONLY = () -> new CachePolicy(FetchStrategy.CACHE_ONLY, 0, null);
+  public static final NeverExpireFactory CACHE_ONLY = () -> new HttpCachePolicy(FetchStrategy.CACHE_ONLY, 0, null);
 
   /**
    * Load from network without loading from cache
    */
-  public static final NeverExpireFactory NETWORK_ONLY = () -> new CachePolicy(FetchStrategy.NETWORK_ONLY, 0, null);
+  public static final NeverExpireFactory NETWORK_ONLY = () -> new HttpCachePolicy(FetchStrategy.NETWORK_ONLY, 0, null);
 
   /**
    * Load from cache if staleness interval is not exceeded, otherwise load from network
    */
   public static final ExpireTimeoutFactory CACHE_FIRST = (expireTimeout, expireTimeUnit) ->
-    new CachePolicy(FetchStrategy.CACHE_FIRST, expireTimeout, checkNotNull(expireTimeUnit, "expireTimeUnit == null"));
+    new HttpCachePolicy(FetchStrategy.CACHE_FIRST, expireTimeout, checkNotNull(expireTimeUnit, "expireTimeUnit == null"));
 
   /**
    * Load from network but fallback to cached data if the request fails
    */
   public static final ExpireTimeoutFactory NETWORK_FIRST = (expireTimeout, expireTimeUnit) ->
-    new CachePolicy(FetchStrategy.NETWORK_FIRST, expireTimeout, checkNotNull(expireTimeUnit, "expireTimeUnit == null"));
+    new HttpCachePolicy(FetchStrategy.NETWORK_FIRST, expireTimeout, checkNotNull(expireTimeUnit, "expireTimeUnit == null"));
 
   final FetchStrategy fetchStrategy;
   final long expireTimeout;
   final TimeUnit expireTimeUnit;
 
-  private CachePolicy(final FetchStrategy fetchStrategy, final long expireTimeout, final TimeUnit expireTimeUnit) {
+  private HttpCachePolicy(final FetchStrategy fetchStrategy, final long expireTimeout, final TimeUnit expireTimeUnit) {
     this.fetchStrategy = fetchStrategy;
     this.expireTimeout = expireTimeout;
     this.expireTimeUnit = expireTimeUnit;
@@ -84,9 +84,9 @@ public final class CachePolicy {
     /**
      * Obtain cache policy without expiration timeout
      *
-     * @return {@link CachePolicy}
+     * @return {@link HttpCachePolicy}
      */
-    @NonNull CachePolicy obtain();
+    @NonNull HttpCachePolicy obtain();
   }
 
   public interface ExpireTimeoutFactory {
@@ -95,9 +95,9 @@ public final class CachePolicy {
      *
      * @param expireTimeout  expire timeout
      * @param expireTimeUnit {@link TimeUnit} expire timeout unit
-     * @return {@link CachePolicy}
+     * @return {@link HttpCachePolicy}
      */
-    @NonNull CachePolicy obtain(long expireTimeout, @NonNull TimeUnit expireTimeUnit);
+    @NonNull HttpCachePolicy obtain(long expireTimeout, @NonNull TimeUnit expireTimeUnit);
   }
 
   public enum FetchStrategy {

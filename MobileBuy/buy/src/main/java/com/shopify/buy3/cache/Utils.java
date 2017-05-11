@@ -3,7 +3,7 @@ package com.shopify.buy3.cache;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.shopify.buy3.CachePolicy;
+import com.shopify.buy3.HttpCachePolicy;
 
 import java.io.IOException;
 import java.util.Date;
@@ -33,7 +33,7 @@ final class Utils {
   }
 
   static boolean shouldSkipCache(@NonNull final Request request) {
-    CachePolicy.FetchStrategy fetchStrategy = fetchStrategy(request);
+    HttpCachePolicy.FetchStrategy fetchStrategy = fetchStrategy(request);
     String cacheKey = request.header(CACHE_KEY_HEADER);
     return fetchStrategy == null
       || cacheKey == null
@@ -41,14 +41,14 @@ final class Utils {
   }
 
   static boolean shouldSkipNetwork(@NonNull final Request request) {
-    CachePolicy.FetchStrategy fetchStrategy = fetchStrategy(request);
-    return fetchStrategy == CachePolicy.FetchStrategy.CACHE_ONLY;
+    HttpCachePolicy.FetchStrategy fetchStrategy = fetchStrategy(request);
+    return fetchStrategy == HttpCachePolicy.FetchStrategy.CACHE_ONLY;
   }
 
   static boolean isNetworkFirst(@NonNull final Request request) {
-    CachePolicy.FetchStrategy fetchStrategy = fetchStrategy(request);
-    return fetchStrategy == CachePolicy.FetchStrategy.NETWORK_ONLY
-      || fetchStrategy == CachePolicy.FetchStrategy.NETWORK_FIRST;
+    HttpCachePolicy.FetchStrategy fetchStrategy = fetchStrategy(request);
+    return fetchStrategy == HttpCachePolicy.FetchStrategy.NETWORK_ONLY
+      || fetchStrategy == HttpCachePolicy.FetchStrategy.NETWORK_FIRST;
   }
 
   @NonNull static Response unsatisfiableCacheRequest(@NonNull final Request request) {
@@ -64,7 +64,7 @@ final class Utils {
   }
 
   static boolean isStale(@NonNull final Request request, @NonNull final Response response) {
-    if (fetchStrategy(request) == CachePolicy.FetchStrategy.CACHE_ONLY) {
+    if (fetchStrategy(request) == HttpCachePolicy.FetchStrategy.CACHE_ONLY) {
       return false;
     }
 
@@ -118,13 +118,13 @@ final class Utils {
     return reference;
   }
 
-  private static CachePolicy.FetchStrategy fetchStrategy(@NonNull final Request request) {
+  private static HttpCachePolicy.FetchStrategy fetchStrategy(@NonNull final Request request) {
     String fetchStrategyHeader = request.header(CACHE_FETCH_STRATEGY_HEADER);
     if (fetchStrategyHeader == null || fetchStrategyHeader.isEmpty()) {
       return null;
     }
 
-    for (CachePolicy.FetchStrategy fetchStrategy : CachePolicy.FetchStrategy.values()) {
+    for (HttpCachePolicy.FetchStrategy fetchStrategy : HttpCachePolicy.FetchStrategy.values()) {
       if (fetchStrategy.name().equals(fetchStrategyHeader)) {
         return fetchStrategy;
       }
