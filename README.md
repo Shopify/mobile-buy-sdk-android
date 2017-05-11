@@ -18,11 +18,13 @@ Shopify’s Mobile Buy SDK makes it easy to create custom storefronts in your mo
   - [The `Node` protocol](#the-node-protocol-)
   - [Aliases](#aliases-)
 
-- [Graph client](#graph-client-)
+- [GraphClient](#graphclient-)
   - [Queries](#queries-)
   - [Mutations](#mutations-)
   - [Retry & polling](#retry-)
   - [Errors](#errors-)
+      - [GraphQL Error](#graphql-error)
+      - [GraphError](#grapherror)
 
 - [Card vaulting](#card-vaulting-)
   - [Card client](#card-client-)
@@ -49,7 +51,6 @@ Shopify’s Mobile Buy SDK makes it easy to create custom storefronts in your mo
           - [Credit card](#credit-card-checkout)
           - [Android Pay](#android-pay-checkout)
       - [Polling for checkout completion](#polling-for-checkout-completion-)
-  - [Handling Errors](#handling-errors-)
 
 - [Sample application](#sample-application-)
 - [Contributions](#contributions-)
@@ -234,7 +235,7 @@ Storefront.Product product = (Storefront.Product) response.withAlias("product").
 ```
 Learn more about [GraphQL aliases](http://graphql.org/learn/queries/#aliases).
 
-## Graph.Client [⤴](#table-of-contents)
+## GraphClient [⤴](#table-of-contents)
 The `GraphClient` is a network layer built on top of `OkHttp` from Square that prepares `GraphCall` to execute `query` and `mutation` requests. It also provides conveniences for polling and retrying requests. To get started with `GraphClient ` you need the following:
 
 - Your shop's `.myshopify.com` domain.
@@ -376,7 +377,9 @@ The retry handler is generic and can handle both `QueryGraphCall` and `MutationG
 
 ### Errors [⤴](#table-of-contents)
 
-The response `GraphResponse` for either a `QueryGraphCall` or `MutationGraphCall` request may contain an optional list of `Error` that represents the current error state of the GraphQL query. **It's important to note that `errors` and `data` are NOT mutually exclusively.** That is to say that it's perfectly valid to have a non-null error and data. `Error` will provide more in-depth information about the query error. Keep in mind that these errors are not meant to be displayed to the end-user. **They are for debug purposes only**.
+#### GraphQL Error
+
+The `GraphResponse` class that represents GraphQL response for either a `QueryGraphCall` or `MutationGraphCall` request may contain an optional list of `Error` that represents the current error state of the GraphQL query. **It's important to note that `errors` and `data` are NOT mutually exclusively.** That is to say that it's perfectly valid to have a non-null error and data. `Error` will provide more in-depth information about the query error. Keep in mind that these errors are not meant to be displayed to the end-user. **They are for debug purposes only**.
 
 
 ```java
@@ -428,13 +431,17 @@ Example of GraphQL error reponse:
 ```
 Learn more about [GraphQL errors](http://graphql.org/learn/validation/)
 
-Second type of errors for either a `QueryGraphCall` or `MutationGraphCall` requests is defined by `GraphError` abstraction that represents more critical kind of error for query execution. You should expect next list of possible types of such errors:
+#### GraphError
+
+Second type of errors for either a `QueryGraphCall` or `MutationGraphCall` requests is defined by hierarchy of `GraphError` abstraction that represents more critical kind of error for query execution. This kind of errors will be notified in `GraphCall.Callback#onFailure` callback call. You should expect next types of such errors:
 
 - `GraphError` generic error when `GraphCall` can't be executed due to uknown reason
 - `GraphCallCanceledError` error when `GraphCall` has been canceled
 - `GraphHttpError` error when `GraphCall` executed but http response status code is not from 200 series
-- `GraphNetworkError` error when `GraphCall` can't be executed due to network issues like timeouts, network not available at the moment, etc.
-- `GraphParseError` error when `GraphCall` executed but parsing JSON response has failed.
+- `GraphNetworkError` error when `GraphCall` can't be executed due to network issues like timeouts, network is offline, etc.
+- `GraphParseError` error when `GraphCall` executed but parsing JSON response has failed
+
+To handle this type of erros:
 
 ```java
 GraphClient graphClient = ...;
@@ -1298,29 +1305,7 @@ client.queryGraph(query).enqueue(
     .build()
 );
 ```
-Again, just like when [polling for available shipping rates](#polling-for-shipping-rates-), we need to create a `RetryHandler` to provide a condition upon which to retry the request. In this case, we're asserting that the `Storefront.Order` is `nil` an continue retrying the request if it is.
-
-#### Handling errors [⤴](#table-of-contents)
-
-The `Graph.Client` can return a non-nil `Graph.QueryError`. **The error and the result are not mutually exclusive.** It is valid to have both an error and a result, however, the error `case`, in this instance, is **always** `.invalidQuery(let reasons)`. You should always evaluate the `error` and ensure that you don't have an invalid query, then evaluate the result:
-
-```swift
-let task = self.client.queryGraphWith(query) { result, error in
-
-    if let error = error, case .invalidQuery(let reasons) = error {
-        reasons.forEach {
-            print("Error on \($0.line):\($0.column) - \($0.message)")
-        }
-    }
-
-    if let result = result {
-        // Do something with the result
-    } else {
-        // Handle any other errors
-    }
-}
-```
-**IMPORTANT:** `Graph.QueryError` does not contain user-friendly information. Often, it's a technical reason for failure and should never be shown to the end-user. Handling errors is most useful for debugging and is considered best practice.
+Again, just like when [polling for available shipping rates](#polling-for-shipping-rates-), we need to create a `RetryHandler` to provide a condition upon which to retry the request. In this case, we're asserting that the `Storefront.Order` is `null` an continue retrying the request if it is.
 
 ## Sample application [⤴](#table-of-contents)
 The Buy SDK includes a comprehensive sample application that covers the most common use cases of the SDK. It's built on best practices and our recommended `ViewModel` architecture. You can use it as a template, a starting point, or a place to cherrypick components as needed. Check out the [Storefront readme](/Sample%20Apps/Storefront/) for more details.
