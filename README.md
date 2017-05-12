@@ -377,7 +377,9 @@ The retry handler is generic and can handle both `QueryGraphCall` and `MutationG
 
 ### Errors [⤴](#table-of-contents)
 
-#### GraphQL Error
+There are two type of errors that you need to handle in the response callback. List of `Error` returned inside `GraphResponse` that represents errors related to GraphQL query itself, and should be used for debug purpose only. Second type is `GraphError` represents more critical errors related to the GraphQL query execution and processing response.
+
+#### GraphQL Error [⤴](#table-of-contents)
 
 The `GraphResponse` class that represents GraphQL response for either a `QueryGraphCall` or `MutationGraphCall` request may contain an optional list of `Error` that represents the current error state of the GraphQL query. **It's important to note that `errors` and `data` are NOT mutually exclusively.** That is to say that it's perfectly valid to have a non-null error and data. `Error` will provide more in-depth information about the query error. Keep in mind that these errors are not meant to be displayed to the end-user. **They are for debug purposes only**.
 
@@ -431,7 +433,7 @@ Example of GraphQL error reponse:
 ```
 Learn more about [GraphQL errors](http://graphql.org/learn/validation/)
 
-#### GraphError
+#### GraphError [⤴](#table-of-contents)
 
 Second type of errors for either a `QueryGraphCall` or `MutationGraphCall` requests is defined by hierarchy of `GraphError` abstraction that represents more critical kind of error for query execution. This kind of errors will be notified in `GraphCall.Callback#onFailure` callback call. You should expect next types of such errors:
 
@@ -474,34 +476,34 @@ call.enqueue(new GraphCall.Callback<Storefront.QueryRoot>() {
 
 ## Card Vaulting [⤴](#table-of-contents)
 
-The Buy SDK offers support for native checkout via GraphQL, which lets you complete a checkout with a credit card. However, it doesn't accept credit card numbers directly. Instead, you need to vault the credit cards via the standalone, PCI-compliant web service. The Buy SDK makes it easy with `Card.Client`.
+The Buy SDK offers support for native checkout via GraphQL, which lets you complete a checkout with a credit card. However, it doesn't accept credit card numbers directly. Instead, you need to vault the credit cards via the standalone, PCI-compliant web service. The Buy SDK makes it easy with `CardClient`.
 
 ### Card Client [⤴](#table-of-contents)
 
-Like `Graph.Client`, the `Card.Client` manages your interactions with the card server that provides opaque credit card tokens. The tokens are used to complete checkouts. After collecting the user's credit card information in a secure manner, create a credit card representation and submit a vault request:
+Like `GraphClient`, the `CardClient` manages your interactions with the card server that provides opaque credit card tokens. The tokens are used to complete checkouts. After collecting the user's credit card information in a secure manner, create a credit card representation and submit a vault request:
 
-```swift
-// let checkout: Storefront.Checkout
-// let cardClient: Card.Client
+```java
+StoreFront.Checkout checkout = ...;
+CardClient cardClient = ...;
 
-let creditCard = Card.CreditCard(
-	firstName:        "John",
-	middleName:       "Singleton",
-	lastName:         "Smith",
-	number:           "1234567812345678",
-	expiryMonth:      "07",
-	expiryYear:       "19",
-	verificationCode: "1234"
-)
+CreditCard creditCard = CreditCard.builder()
+  .firstName("John")
+  .lastName("Smith")
+  .number("1")
+  .expireMonth("06")
+  .expireYear("2017")
+  .verificationCode("111")
+  .build();
 
-let task = cardClient.vault(creditCard, to: checkout.vaultUrl) { token, error in
-    if let token = token {
-        // proceed to complete checkout with `token`
-    } else {
+cardClient.vault(creditCard, checkout.getVaultUrl()).enqueue(new CreditCardVaultCall.Callback() {
+  @Override public void onResponse(@NonNull String token) {
+    // proceed to complete checkout with token
+  }
+
+  @Override public void onFailure(@NonNull IOException error) {
         // handle error
-    }
-}
-task.resume()
+  }
+});
 ```
 **IMPORTANT:** Keep in mind that the credit card vaulting service does **not** provide any validation for submitted credit cards. As a result, submitting invalid credit card numbers or even missing fields will always yield a vault `token`. Any errors related to invalid credit card information will be surfaced only when the provided `token` is used to complete a checkout.
 
@@ -1048,7 +1050,7 @@ Since we'll need to update the checkout with additional information later, all w
 
 A customer's information may not be available when a checkout is created. The Buy SDK provides mutations for updating specific checkout fields that are required for completion. Namely the `email` and `shippingAddress` fields:
 
-###### Updating email
+###### Updating email [⤴](#table-of-contents)
 
 ```java
 ID checkoutId = ...;
@@ -1066,7 +1068,7 @@ Storefront.MutationQuery query = Storefront.mutation(mutationQuery -> mutationQu
 );
 ```
 
-###### Updating shipping address
+###### Updating shipping address [⤴](#table-of-contents)
 
 ```java
 PayAddress address = ...;
@@ -1151,13 +1153,13 @@ The callback `onResponse` will be called only if `availableShippingRates.ready =
 
 After all required fields have been filled and the customer is ready to pay, you have 3 ways to complete the checkout and process the payment.
 
-##### Web checkout
+##### Web checkout [⤴](#table-of-contents)
 
 The simplest way to complete a checkout is by redirecting the customer to a web view where they will be presented with the same flow that they're familiar with on the web. The `Storefront.Checkout` resource provides a `webUrl` that you can use to present a web view.
 
 **NOTE**: While using web checkout is the simplest out of the 3 approaches, it presents some difficulty when it comes to observing the checkout state. Since the web view doesn't provide any callbacks for various checkout states, you still need to [poll for checkout completion](#poll-for-checkout-completion-).
 
-##### Credit card checkout
+##### Credit card checkout [⤴](#table-of-contents)
 
 The native credit card checkout offers the most conventional UX out of the 3 alternatives but is also requires the most effort to implement. You'll be required to implement UI for gathering your customers' name, email, address, payment information and other fields required to complete checkout.
 
@@ -1208,7 +1210,7 @@ client.mutateGraph(query).enqueue(new GraphCall.Callback<Storefront.Mutation>() 
 });
 ```
 
-##### Android Pay checkout
+##### Android Pay checkout [⤴](#table-of-contents)
 
 The Buy SDK makes Android Pay integration easy with the provided `android-pay` module. Please refer to the [Android Pay](#android-pay-) section on how to helper classes and obtain a payment token. With token in-hand, we can complete the checkout:
 
