@@ -713,7 +713,7 @@ Learn more about [Android Pay](https://developers.google.com/android-pay/get-sta
 
 Getting started with any SDK can be confusing. The purpose of this section is to explore all areas of the Buy SDK that may be necessary to build a custom storefront on Android and provide a solid starting point. Let's dive right in.
 
-In this section we're going to assume that you've [setup a client](#graph-client-) somewhere in your source code. While it's possible to have multiple instance of `GraphClient`, reusing a single instance offers many behind-the-scenes performance improvements.
+In this section we're going to assume that you've [setup a client](#graphclient-) somewhere in your source code. While it's possible to have multiple instance of `GraphClient`, reusing a single instance offers many behind-the-scenes performance improvements.
 
 ### Fetch shop [⤴](#table-of-contents)
 
@@ -902,7 +902,7 @@ query {
         }
         edges {
           cursor
-        	node {
+          node {
             id
             title
             productType
@@ -915,7 +915,7 @@ query {
 }
 ```
 
-Since we know exactly what collection we want to fetch products for, we'll use the [`node` interface](#the-node-protocol) to query the collection by `id`. You may have also noticed that we're fetching a couple of additional fields and objects: `pageInfo` and `cursor`. We can then use a `cursor` of any product edge to fetch more products `before` it or `after` it. Likewise, the `pageInfo` object provides additional metadata about whether the next page (and potentially previous page) is available or not.
+Since we know exactly what collection we want to fetch products for, we'll use the [`node` interface](#the-node-protocol-) to query the collection by `id`. You may have also noticed that we're fetching a couple of additional fields and objects: `pageInfo` and `cursor`. We can then use a `cursor` of any product edge to fetch more products `before` it or `after` it. Likewise, the `pageInfo` object provides additional metadata about whether the next page (and potentially previous page) is available or not.
 
 ### Fetch product details [⤴](#table-of-contents)
 
@@ -1100,7 +1100,7 @@ Storefront.Mutation query = Storefront.mutation((mutationQuery -> mutationQuery
 
 #### Polling for shipping rates [⤴](#table-of-contents)
 
-Available shipping rates are specific to a checkout since the cost to ship items depends on the quantity, weight and other attributes of the items in the checkout. Shipping rates also require a checkout to have a valid `shippingAddress`, which can be updated using steps found in [updating a checkout](#updating-a-checkout). Available shipping rates are a field on `Storefront.Checkout` so given a `checkoutId` (that we kept a reference to earlier) we can query for shipping rates:
+Available shipping rates are specific to a checkout since the cost to ship items depends on the quantity, weight and other attributes of the items in the checkout. Shipping rates also require a checkout to have a valid `shippingAddress`, which can be updated using steps found in [updating a checkout](#updating-a-checkout-). Available shipping rates are a field on `Storefront.Checkout` so given a `checkoutId` (that we kept a reference to earlier) we can query for shipping rates:
 
 ```java
 ID checkoutId = ...;
@@ -1121,7 +1121,7 @@ Storefront.QueryRootQuery query = Storefront.query(rootQuery -> rootQuery
 );
 ```
 
-The query above will kick off an asynchoronous task on the server to fetch shipping rates from multiple shipping providers. While the request may return immedietly (network latency aside), it does not mean that the list of shipping rates is complete. This is indicated by the `ready` field in the query above. It is your application's responsibility to continue retrying this query until `ready == true`. The Buy SDK has [built-in support for retrying requests](#retry), so we'll create a retry handler and perform the query:
+The query above will kick off an asynchoronous task on the server to fetch shipping rates from multiple shipping providers. While the request may return immedietly (network latency aside), it does not mean that the list of shipping rates is complete. This is indicated by the `ready` field in the query above. It is your application's responsibility to continue retrying this query until `ready == true`. The Buy SDK has [built-in support for retrying requests](#retry-), so we'll create a retry handler and perform the query:
 
 ```java
 GraphClient client = ...;
