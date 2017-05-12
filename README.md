@@ -59,16 +59,18 @@ The Mobile Buy SDK makes it easy to create custom storefronts in your mobile app
 
 ## Installation [⤴](#table-of-contents)
 
+Mobile Buy SDK for Android is represented by runtime module that provides support to build and execute GraphQL queries and optional library to help with Android Pay purchase flow.
+
 ##### Download the latest JARs:
 [Mobile Buy SDK - link TBD](https://bintray.com/shopify/shopify-android/mobile-buy-sdk/_latestVersion)
 
-[Android Pay Support - link TBD](https://bintray.com/shopify/shopify-android/mobile-buy-sdk/_latestVersion)
+[Optional Android Pay Helper - link TBD](https://bintray.com/shopify/shopify-android/mobile-buy-sdk/_latestVersion)
 
 ##### or Gradle:
 
-```
+```gradle
 compile 'com.shopify.mobilebuysdk:buy3:3.0.0'
-compile 'com.shopify.mobilebuysdk:pay:1.0.0'
+compile 'com.shopify.mobilebuysdk:android-pay:1.0.0' // optional library to help with Android Pay purchase flow
 ```
 
 ##### or Maven:
@@ -82,7 +84,7 @@ compile 'com.shopify.mobilebuysdk:pay:1.0.0'
 
 <dependency>
   <groupId>com.shopify.mobilebuysdk</groupId>
-  <artifactId>pay</artifactId>
+  <artifactId>android-pay</artifactId>
   <version>1.0.0</version>
 </dependency>
 ```
@@ -246,7 +248,7 @@ The `GraphClient` is a network layer built on top of `OkHttp` from Square that p
 - Your API key, which can be obtained in your shop's admin page.
 - Optional `OkHttpClient` if you want to customize the configuration used for network requests or share your existing `OkHttpClient` with the `GraphClient`.
 - Optional settings for http cache, like path to the cache folder and maximum allowed size in bytes.
-- Optional http cache policy to be used by default for all GraphQL queries (will be ignored for mutation operations as cache not supported for them). By default http cache policy is set to `NETWORK_ONLY`.
+- Optional http cache policy to be used as default for all GraphQL **query** operations (will be ignored for mutation operations as http cache is not supported for them). By default http cache policy is set to `NETWORK_ONLY`.
 
 ```java
 GraphClient.builder(this)
@@ -254,7 +256,7 @@ GraphClient.builder(this)
   .accessToken(BuildConfig.API_KEY)
   .httpClient(httpClient) // optional
   .httpCache(new File(getApplicationContext().getCacheDir(), "/http"), 10 * 1024 * 1024) // 10mb for http cache
-  .defaultHttpCachePolicy(HttpCachePolicy.CACHE_FIRST.obtain(5, TimeUnit.MINUTES)) // cached response valid by default for 5 minutes
+  .defaultHttpCachePolicy(HttpCachePolicy.CACHE_FIRST.expireAfter(5, TimeUnit.MINUTES)) // cached response valid by default for 5 minutes
   .build()
 ```
 GraphQL specifies two types of operations - queries and mutations. The `GraphClient` exposes these as two type-safe operations, while also offering some conveniences for retrying and polling in each.
@@ -515,9 +517,11 @@ cardClient.vault(creditCard, checkout.getVaultUrl()).enqueue(new CreditCardVault
 
 Support for Android Pay is provided by the `com.shopify.mobilebuysdk:pay` extension library. It is separate module from the Buy SDK that offers helper classes for supporting Android Pay in your application. It is designed to help you with Android Pay work flow by providing convinence helper functions and structures.
 
+Learn more about [Android Pay](https://developers.google.com/android-pay/get-started)
+
 ### PayCart [⤴](#table-of-contents)
 
-Structure that represents virtual user Android Pay shopping cart by incapsulating all the state necessary for the checkout:
+Structure that represents virtual user Android Pay shopping cart by incapsulating all the states necessary for the purchase:
 
 - shop's currency
 - merchant's name
@@ -562,7 +566,7 @@ Helper class that designed to simplify interaction with Android Pay. It provides
 - `isAndroidPayEnabledInManifest` checks if Android Pay is enabled
 - `isReadyToPay` checks if Android Pay is ready to start purchase flow
 - `requestMaskedWallet` requests Masked Wallet information (such as billing address, shipping address, payment method etc.) from the Android Pay
-- `initializeWalletFragment` initializes and prepares wallet confirmation fragment
+- `initializeWalletFragment` initializes wallet confirmation `SupportWalletFragment` fragment with obtained Masked Wallet information
 - `requestFullWallet` requests Full Wallet information to get payment token and complete checkout
 - `newMaskedWallet` requests Masked Wallet information from existing one with new Google Transaction Id. Usufull when user wants to retry failed purchase and current Google Transaction Id is not valid any more
 - `handleWalletResponse` helps to handle Andorid Pay wallet response by delegation callbacks via `WalletResponseHandler`
