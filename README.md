@@ -4,9 +4,9 @@
 [![GitHub license](https://img.shields.io/badge/license-MIT-lightgrey.svg)](https://github.com/Shopify/mobile-buy-sdk-ios/blob/master/LICENSE)
 [![GitHub release](https://img.shields.io/github/release/shopify/mobile-buy-sdk-android.svg)](https://github.com/Shopify/mobile-buy-sdk-android/releases)
 
-# Buy SDK
+# Mobile Buy SDK
 
-Shopify’s Mobile Buy SDK makes it easy to create custom storefronts in your mobile app. With the power and flexibility of GraphQL you can build native storefront experiences using the Shopify platform. The Buy SDK lets you connect your app with the Shopify platform, where your users can buy your products using Android Pay or their credit card.
+The Mobile Buy SDK makes it easy to create custom storefronts in your mobile app, where users can buy products using Apple Pay or their credit card. The SDK connects to the Shopify platform using GraphQL, and supports a wide range of native storefront experiences.
 
 ## Table of contents
 
@@ -21,7 +21,7 @@ Shopify’s Mobile Buy SDK makes it easy to create custom storefronts in your mo
 - [GraphClient](#graphclient-)
   - [Queries](#queries-)
   - [Mutations](#mutations-)
-  - [Retry & polling](#retry-)
+  - [Retry and polling](#retry-)
   - [Errors](#errors-)
       - [GraphQL Error](#graphql-error)
       - [GraphError](#grapherror)
@@ -90,10 +90,12 @@ compile 'com.shopify.mobilebuysdk:pay:1.0.0'
 
 ## Getting started [⤴](#table-of-contents)
 
-The Buy SDK is built entirely on [GraphQL](http://graphql.org/). While some knowledge of GraphQL is good to have, you don't need to be an expert to start using it with the Buy SDK. Instead of writing stringed queries and parsing JSON responses, the SDK handles all the query generation and response parsing, exposing only typed models and compile-time checked query structures. The section below will give a brief introduction to this system and provide some examples of how it makes building custom storefronts safe and easy.
+The Buy SDK is built on [GraphQL](http://graphql.org/). The SDK handles all the query generation and response parsing, exposing only typed models and compile-time checked query structures. It doesn't require you to write stringed queries, or parse JSON responses.
+You don't need to be an expert in GraphQL to start using it with the Buy SDK (but it helps if you've used it before). The sections below provide a brief introduction to this system, and some examples of how you can use it to build secure custom storefronts.
 
 ## Migration from SDK v2.0 [⤴](#table-of-contents)
-Previous version of Mobile SDK v2.0 is based on REST API. With newer version 3.0 Shopify is migrating from REST to GraphQL. Unfortunately, specifics of generation GraphQL models makes almost impossible to create the migration path from v2.0 to v3.0, as domains models are not backward compatible. However, the concepts remain the same, such as collections, products, checkouts, and orders.
+Previous version of Mobile SDK v2.0 is based on REST API. With newer version 3.0 Shopify is migrating from REST to GraphQL. 
+Unfortunately, specifics of generation GraphQL models makes almost impossible to create the migration path from v2.0 to v3.0, as domains models are not backward compatible. However, the concepts remain the same, such as collections, products, checkouts, and orders.
 
 ## Code Generation [⤴](#table-of-contents)
 
@@ -102,7 +104,9 @@ The Buy SDK is built on a hierarchy of generated classes that construct and pars
 
 ### Request Models [⤴](#table-of-contents)
 
-All generated request models are represeted by interfaces with one method `define` that takes single argument, generated query builder. Every query starts with generated `Storefront.QueryRootQueryDefinition` interface that defines the root of your query. Let's take a look at an example query for a shop's name:
+All generated request models are represeted by interfaces with one method `define` that takes single argument, generated query builder. Every query starts with generated `Storefront.QueryRootQueryDefinition` interface that defines the root of your query. 
+
+Let's take a look at an example query for a shop's name:
 
 ```java
 QueryRootQuery query = Storefront.query(new Storefront.QueryRootQueryDefinition() {
