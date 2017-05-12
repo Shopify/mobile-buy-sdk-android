@@ -42,62 +42,82 @@ import static com.shopify.buy3.Utils.checkNotNull;
  */
 public final class HttpCachePolicy {
   /**
-   * Load from cache without loading from network
+   * Fetch response from cache only without loading from network
    */
-  public static final NeverExpireFactory CACHE_ONLY = () -> new HttpCachePolicy(FetchStrategy.CACHE_ONLY, 0, null);
+  public static final ExpirePolicy CACHE_ONLY = new ExpirePolicy(FetchStrategy.CACHE_ONLY);
 
   /**
-   * Load from network without loading from cache
+   * Fetch response from network without loading from cache
    */
-  public static final NeverExpireFactory NETWORK_ONLY = () -> new HttpCachePolicy(FetchStrategy.NETWORK_ONLY, 0, null);
+  public static final Policy NETWORK_ONLY = new Policy(FetchStrategy.NETWORK_ONLY, 0, null);
 
   /**
-   * Load from cache if staleness interval is not exceeded, otherwise load from network
+   * Fetch response from cache first, if response is missing load from network
    */
-  public static final ExpireTimeoutFactory CACHE_FIRST = (expireTimeout, expireTimeUnit) ->
-    new HttpCachePolicy(FetchStrategy.CACHE_FIRST, expireTimeout, checkNotNull(expireTimeUnit, "expireTimeUnit == null"));
+  public static final ExpirePolicy CACHE_FIRST = new ExpirePolicy(FetchStrategy.CACHE_FIRST);
 
   /**
-   * Load from network but fallback to cached data if the request fails
+   * Fetch response from network first but fallback to cached data if the request fails
    */
-  public static final ExpireTimeoutFactory NETWORK_FIRST = (expireTimeout, expireTimeUnit) ->
-    new HttpCachePolicy(FetchStrategy.NETWORK_FIRST, expireTimeout, checkNotNull(expireTimeUnit, "expireTimeUnit == null"));
+  public static final ExpirePolicy NETWORK_FIRST = new ExpirePolicy(FetchStrategy.NETWORK_FIRST);
 
-  final FetchStrategy fetchStrategy;
-  final long expireTimeout;
-  final TimeUnit expireTimeUnit;
-
-  private HttpCachePolicy(final FetchStrategy fetchStrategy, final long expireTimeout, final TimeUnit expireTimeUnit) {
-    this.fetchStrategy = fetchStrategy;
-    this.expireTimeout = expireTimeout;
-    this.expireTimeUnit = expireTimeUnit;
+  private HttpCachePolicy() {
   }
 
-  long expireTimeoutMs() {
-    if (expireTimeUnit == null) {
-      return 0;
+  /**
+   * Abstraction for http cache policy configurations
+   */
+  public static class Policy {
+    public final FetchStrategy fetchStrategy;
+    public final long expireTimeout;
+    public final TimeUnit expireTimeUnit;
+
+    Policy(FetchStrategy fetchStrategy, long expireTimeout, TimeUnit expireTimeUnit) {
+      this.fetchStrategy = fetchStrategy;
+      this.expireTimeout = expireTimeout;
+      this.expireTimeUnit = expireTimeUnit;
     }
-    return expireTimeUnit.toMillis(expireTimeout);
+
+    public long expireTimeoutMs() {
+      if (expireTimeUnit == null) {
+        return 0;
+      }
+      return expireTimeUnit.toMillis(expireTimeout);
+    }
   }
 
-  public interface NeverExpireFactory {
-    /**
-     * Obtain cache policy without expiration timeout
-     *
-     * @return {@link HttpCachePolicy}
-     */
-    @NonNull HttpCachePolicy obtain();
-  }
 
-  public interface ExpireTimeoutFactory {
+  /**
+   * Cache policy with provided expiration configuration
+   */
+  public static final class ExpirePolicy extends Policy {
+    ExpirePolicy(FetchStrategy fetchStrategy) {
+      super(fetchStrategy, 0, null);
+    }
+
+    private ExpirePolicy(FetchStrategy fetchStrategy, long expireTimeout, TimeUnit expireTimeUnit) {
+      super(fetchStrategy, expireTimeout, expireTimeUnit);
+    }
+
     /**
-     * Obtain cache policy with expiration timeout
+     * Create new cache policy with expire after timeout configuration. Cached response is treated as expired if it's
+     * served date exceeds.
      *
-     * @param expireTimeout  expire timeout
-     * @param expireTimeUnit {@link TimeUnit} expire timeout unit
-     * @return {@link HttpCachePolicy}
+     * @param expireTimeout  expire timeout after which cached response is treated as expired
+     * @param expireTimeUnit time unit
+     * @return new cache policy
      */
-    @NonNull HttpCachePolicy obtain(long expireTimeout, @NonNull TimeUnit expireTimeUnit);
+    public ExpirePolicy expireAfter(long expireTimeout, @NonNull TimeUnit expireTimeUnit) {
+      return new ExpirePolicy(fetchStrategy, expireTimeout, checkNotNull(expireTimeUnit, "expireTimeUnit == null"));
+    }
+
+    /**
+     * Create new cache policy with expire after read configuration. Cached response will be evicted from the cache
+     * after it's been read.
+     */
+    public ExpirePolicy expireAfterRead() {
+      return new ExpirePolicy(fetchStrategy, expireTimeout, expireTimeUnit);
+    }
   }
 
   public enum FetchStrategy {

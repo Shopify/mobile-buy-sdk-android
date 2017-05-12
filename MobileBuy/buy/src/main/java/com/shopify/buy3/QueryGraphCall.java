@@ -38,5 +38,5 @@ public interface QueryGraphCall extends GraphCall<Storefront.QueryRoot> {
    * @return call with updated cache policy
    * @see HttpCachePolicy
    */
-  @NonNull QueryGraphCall cachePolicy(@NonNull HttpCachePolicy httpCachePolicy);
+  @NonNull QueryGraphCall cachePolicy(@NonNull HttpCachePolicy.Policy httpCachePolicy);
 }

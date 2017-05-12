@@ -65,7 +65,7 @@ public class CacheTest {
         .connectTimeout(3, TimeUnit.SECONDS)
         .readTimeout(3, TimeUnit.SECONDS)
         .build())
-      .defaultHttpCachePolicy(HttpCachePolicy.NETWORK_FIRST.obtain(10, TimeUnit.MINUTES))
+      .defaultHttpCachePolicy(HttpCachePolicy.NETWORK_FIRST)
       .build();
   }
 
@@ -76,7 +76,7 @@ public class CacheTest {
     assertThat(realGraphCall.httpCachePolicy.expireTimeout).isEqualTo(10);
     assertThat(realGraphCall.httpCachePolicy.expireTimeUnit).isEqualTo(TimeUnit.MINUTES);
 
-    realGraphCall = (RealGraphCall) queryGraphCall.cachePolicy(HttpCachePolicy.CACHE_FIRST.obtain(60, TimeUnit.SECONDS));
+    realGraphCall = (RealGraphCall) queryGraphCall.cachePolicy(HttpCachePolicy.CACHE_FIRST.expireAfter(60, TimeUnit.SECONDS));
     assertThat(realGraphCall.httpCachePolicy.fetchStrategy).isEqualTo(HttpCachePolicy.FetchStrategy.CACHE_FIRST);
     assertThat(realGraphCall.httpCachePolicy.expireTimeout).isEqualTo(60);
     assertThat(realGraphCall.httpCachePolicy.expireTimeUnit).isEqualTo(TimeUnit.SECONDS);

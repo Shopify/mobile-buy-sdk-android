@@ -38,7 +38,7 @@ import static com.shopify.buy3.Utils.checkNotNull;
 final class RealQueryGraphCall extends RealGraphCall<Storefront.QueryRoot> implements QueryGraphCall {
 
   RealQueryGraphCall(final Storefront.QueryRootQuery query, final HttpUrl serverUrl, final Call.Factory httpCallFactory,
-    final ScheduledExecutorService dispatcher, final HttpCachePolicy httpCachePolicy, final HttpCache httpCache) {
+    final ScheduledExecutorService dispatcher, final HttpCachePolicy.Policy httpCachePolicy, final HttpCache httpCache) {
     super(query, serverUrl, httpCallFactory, response -> new Storefront.QueryRoot(response.getData()), dispatcher, httpCachePolicy, httpCache);
   }
 
@@ -46,7 +46,7 @@ final class RealQueryGraphCall extends RealGraphCall<Storefront.QueryRoot> imple
     super(other);
   }
 
-  @NonNull @Override public QueryGraphCall cachePolicy(@NonNull final HttpCachePolicy httpCachePolicy) {
+  @NonNull @Override public QueryGraphCall cachePolicy(@NonNull final HttpCachePolicy.Policy httpCachePolicy) {
     if (executed.get()) throw new IllegalStateException("Already Executed");
     return new RealQueryGraphCall((Storefront.QueryRootQuery) query, serverUrl, httpCallFactory, dispatcher,
       checkNotNull(httpCachePolicy, "cachePolicy == null"), httpCache);

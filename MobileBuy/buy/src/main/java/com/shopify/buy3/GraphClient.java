@@ -66,12 +66,12 @@ public final class GraphClient {
 
   final HttpUrl serverUrl;
   final Call.Factory httpCallFactory;
-  final HttpCachePolicy defaultHttpCachePolicy;
+  final HttpCachePolicy.Policy defaultHttpCachePolicy;
   final HttpCache httpCache;
   final ScheduledExecutorService dispatcher;
 
   private GraphClient(@NonNull final HttpUrl serverUrl, @NonNull final Call.Factory httpCallFactory,
-    @NonNull final HttpCachePolicy defaultHttpCachePolicy, @Nullable final HttpCache httpCache) {
+    @NonNull final HttpCachePolicy.Policy defaultHttpCachePolicy, @Nullable final HttpCache httpCache) {
     this.serverUrl = checkNotNull(serverUrl, "serverUrl == null");
     this.httpCallFactory = checkNotNull(httpCallFactory, "httpCallFactory == null");
     this.defaultHttpCachePolicy = checkNotNull(defaultHttpCachePolicy, "defaultCachePolicy == null");
@@ -103,7 +103,7 @@ public final class GraphClient {
    * @see MutationGraphCall
    */
   public MutationGraphCall mutateGraph(final Storefront.MutationQuery query) {
-    return new RealMutationGraphCall(query, serverUrl, httpCallFactory, dispatcher, HttpCachePolicy.NETWORK_ONLY.obtain(), httpCache);
+    return new RealMutationGraphCall(query, serverUrl, httpCallFactory, dispatcher, HttpCachePolicy.NETWORK_ONLY, httpCache);
   }
 
   /**
@@ -125,7 +125,7 @@ public final class GraphClient {
     private HttpUrl endpointUrl;
     private String accessToken;
     private OkHttpClient httpClient;
-    private HttpCachePolicy defaultHttpCachePolicy = HttpCachePolicy.NETWORK_ONLY.obtain();
+    private HttpCachePolicy.Policy defaultHttpCachePolicy = HttpCachePolicy.NETWORK_ONLY;
     private File httpCacheFolder;
     private long httpCacheMaxSize;
     private HttpCache httpCache;
@@ -178,7 +178,7 @@ public final class GraphClient {
      * @param httpCachePolicy default {@link HttpCachePolicy}
      * @return {@link GraphClient.Builder} to be used for chaining method calls
      */
-    public Builder defaultHttpCachePolicy(@NonNull HttpCachePolicy httpCachePolicy) {
+    public Builder defaultHttpCachePolicy(@NonNull final HttpCachePolicy.Policy httpCachePolicy) {
       this.defaultHttpCachePolicy = checkNotNull(httpCachePolicy, "cachePolicy == null");
       return this;
     }

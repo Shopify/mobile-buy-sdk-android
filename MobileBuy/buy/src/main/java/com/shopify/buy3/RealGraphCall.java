@@ -56,7 +56,7 @@ abstract class RealGraphCall<T extends AbstractResponse<T>> implements GraphCall
   protected final Call.Factory httpCallFactory;
   protected final HttpResponseParser<T> httpResponseParser;
   protected final ScheduledExecutorService dispatcher;
-  protected HttpCachePolicy httpCachePolicy;
+  protected HttpCachePolicy.Policy httpCachePolicy;
   protected final HttpCache httpCache;
   protected final AtomicBoolean executed = new AtomicBoolean();
   private volatile Call httpCall;
@@ -65,7 +65,7 @@ abstract class RealGraphCall<T extends AbstractResponse<T>> implements GraphCall
 
   RealGraphCall(final Query query, final HttpUrl serverUrl, final Call.Factory httpCallFactory,
     final ResponseDataConverter<T> responseDataConverter, final ScheduledExecutorService dispatcher,
-    final HttpCachePolicy httpCachePolicy, final HttpCache httpCache) {
+    final HttpCachePolicy.Policy httpCachePolicy, final HttpCache httpCache) {
     this.query = query;
     this.serverUrl = serverUrl;
     this.httpCallFactory = httpCallFactory;

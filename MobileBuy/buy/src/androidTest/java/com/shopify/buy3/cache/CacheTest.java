@@ -26,12 +26,12 @@ package com.shopify.buy3.cache;
 
 import android.support.test.runner.AndroidJUnit4;
 
-import com.shopify.buy3.HttpCachePolicy;
 import com.shopify.buy3.GraphClient;
 import com.shopify.buy3.GraphError;
 import com.shopify.buy3.GraphHttpError;
 import com.shopify.buy3.GraphParseError;
 import com.shopify.buy3.GraphResponse;
+import com.shopify.buy3.HttpCachePolicy;
 import com.shopify.buy3.Storefront;
 import com.shopify.buy3.TestUtils;
 
@@ -111,7 +111,7 @@ public class CacheTest {
 
     try {
       graphClient.queryGraph(Storefront.query(new ShopWithCollectionsQuery()))
-        .cachePolicy(HttpCachePolicy.NETWORK_ONLY.obtain())
+        .cachePolicy(HttpCachePolicy.NETWORK_ONLY)
         .execute();
       fail("Expected GraphError");
     } catch (GraphError expected) {
@@ -136,7 +136,7 @@ public class CacheTest {
     enqueueResponse("/ShopWithCollections.json");
 
     graphClient.queryGraph(Storefront.query(new ShopWithCollectionsQuery()))
-      .cachePolicy(HttpCachePolicy.NETWORK_ONLY.obtain())
+      .cachePolicy(HttpCachePolicy.NETWORK_ONLY)
       .execute();
 
     assertThat(server.getRequestCount()).isEqualTo(1);
@@ -149,13 +149,13 @@ public class CacheTest {
     enqueueResponse("/ShopWithCollections.json");
 
     graphClient.queryGraph(Storefront.query(new ShopWithCollectionsQuery()))
-      .cachePolicy(HttpCachePolicy.NETWORK_FIRST.obtain(10, TimeUnit.SECONDS))
+      .cachePolicy(HttpCachePolicy.NETWORK_FIRST.expireAfter(10, TimeUnit.SECONDS))
       .execute();
     assertThat(server.getRequestCount()).isEqualTo(1);
 
     enqueueResponse("/ShopWithCollections.json");
     graphClient.queryGraph(Storefront.query(new ShopWithCollectionsQuery()))
-      .cachePolicy(HttpCachePolicy.CACHE_ONLY.obtain())
+      .cachePolicy(HttpCachePolicy.CACHE_ONLY)
       .execute();
 
     assertThat(server.getRequestCount()).isEqualTo(1);
@@ -167,20 +167,20 @@ public class CacheTest {
   @Test(expected = GraphHttpError.class) public void cacheOnlyMiss() throws Exception {
     enqueueResponse("/ShopWithCollections.json");
     graphClient.queryGraph(Storefront.query(new ShopWithCollectionsQuery()))
-      .cachePolicy(HttpCachePolicy.CACHE_ONLY.obtain())
+      .cachePolicy(HttpCachePolicy.CACHE_ONLY)
       .execute();
   }
 
   @Test public void cacheNonStale() throws Exception {
     enqueueResponse("/ShopWithCollections.json");
     graphClient.queryGraph(Storefront.query(new ShopWithCollectionsQuery()))
-      .cachePolicy(HttpCachePolicy.NETWORK_FIRST.obtain(10, TimeUnit.SECONDS))
+      .cachePolicy(HttpCachePolicy.NETWORK_FIRST.expireAfter(10, TimeUnit.SECONDS))
       .execute();
     assertThat(server.getRequestCount()).isEqualTo(1);
 
     enqueueResponse("/ShopWithCollections.json");
     graphClient.queryGraph(Storefront.query(new ShopWithCollectionsQuery()))
-      .cachePolicy(HttpCachePolicy.CACHE_FIRST.obtain(10, TimeUnit.SECONDS))
+      .cachePolicy(HttpCachePolicy.CACHE_FIRST.expireAfter(10, TimeUnit.SECONDS))
       .execute();
     assertThat(server.getRequestCount()).isEqualTo(1);
     assertThat(lastHttResponse.networkResponse()).isNull();
@@ -191,7 +191,7 @@ public class CacheTest {
   @Test public void cacheFirstStale() throws Exception {
     enqueueResponse("/ShopWithCollections.json");
     graphClient.queryGraph(Storefront.query(new ShopWithCollectionsQuery()))
-      .cachePolicy(HttpCachePolicy.NETWORK_FIRST.obtain(10, TimeUnit.SECONDS))
+      .cachePolicy(HttpCachePolicy.NETWORK_FIRST.expireAfter(10, TimeUnit.SECONDS))
       .execute();
     assertThat(server.getRequestCount()).isEqualTo(1);
 
@@ -199,7 +199,7 @@ public class CacheTest {
 
     enqueueResponse("/ShopWithCollectionsUpdate.json");
     graphClient.queryGraph(Storefront.query(new ShopWithCollectionsQuery()))
-      .cachePolicy(HttpCachePolicy.CACHE_FIRST.obtain(2, TimeUnit.SECONDS))
+      .cachePolicy(HttpCachePolicy.CACHE_FIRST.expireAfter(2, TimeUnit.SECONDS))
       .execute();
 
     assertThat(server.getRequestCount()).isEqualTo(2);
@@ -211,18 +211,18 @@ public class CacheTest {
   @Test public void cacheFirstUpdate() throws Exception {
     enqueueResponse("/ShopWithCollections.json");
     graphClient.queryGraph(Storefront.query(new ShopWithCollectionsQuery()))
-      .cachePolicy(HttpCachePolicy.NETWORK_FIRST.obtain(10, TimeUnit.SECONDS))
+      .cachePolicy(HttpCachePolicy.NETWORK_FIRST.expireAfter(10, TimeUnit.SECONDS))
       .execute();
 
     enqueueResponse("/ShopWithCollectionsUpdate.json");
     graphClient.queryGraph(Storefront.query(new ShopWithCollectionsQuery()))
-      .cachePolicy(HttpCachePolicy.NETWORK_FIRST.obtain(10, TimeUnit.SECONDS))
+      .cachePolicy(HttpCachePolicy.NETWORK_FIRST.expireAfter(10, TimeUnit.SECONDS))
       .execute();
 
     assertThat(server.getRequestCount()).isEqualTo(2);
 
     graphClient.queryGraph(Storefront.query(new ShopWithCollectionsQuery()))
-      .cachePolicy(HttpCachePolicy.CACHE_FIRST.obtain(10, TimeUnit.SECONDS))
+      .cachePolicy(HttpCachePolicy.CACHE_FIRST.expireAfter(10, TimeUnit.SECONDS))
       .execute();
     assertThat(lastHttResponse.networkResponse()).isNull();
     assertThat(lastHttResponse.cacheResponse()).isNotNull();
@@ -232,13 +232,13 @@ public class CacheTest {
   @Test public void networkFirstHttpError() throws Exception {
     enqueueResponse("/ShopWithCollections.json");
     graphClient.queryGraph(Storefront.query(new ShopWithCollectionsQuery()))
-      .cachePolicy(HttpCachePolicy.NETWORK_FIRST.obtain(10, TimeUnit.SECONDS))
+      .cachePolicy(HttpCachePolicy.NETWORK_FIRST.expireAfter(10, TimeUnit.SECONDS))
       .execute();
 
     server.enqueue(new MockResponse().setResponseCode(504).setBody(""));
 
     graphClient.queryGraph(Storefront.query(new ShopWithCollectionsQuery()))
-      .cachePolicy(HttpCachePolicy.NETWORK_FIRST.obtain(10, TimeUnit.SECONDS))
+      .cachePolicy(HttpCachePolicy.NETWORK_FIRST.expireAfter(10, TimeUnit.SECONDS))
       .execute();
 
     assertThat(server.getRequestCount()).isEqualTo(2);
@@ -251,7 +251,7 @@ public class CacheTest {
     server.enqueue(new MockResponse().setResponseCode(200).setBody("{\"data\": { \"shop\": {"));
     try {
       graphClient.queryGraph(Storefront.query(new ShopWithCollectionsQuery()))
-        .cachePolicy(HttpCachePolicy.NETWORK_FIRST.obtain(10, TimeUnit.SECONDS))
+        .cachePolicy(HttpCachePolicy.NETWORK_FIRST.expireAfter(10, TimeUnit.SECONDS))
         .execute();
       fail("Expected GraphParseError");
     } catch (GraphParseError expected) {
@@ -270,7 +270,7 @@ public class CacheTest {
     graphClient = TestUtils.createGraphClient(server.url("/"), okHttpClient, null);
 
     graphClient.queryGraph(Storefront.query(new ShopWithCollectionsQuery()))
-      .cachePolicy(HttpCachePolicy.NETWORK_FIRST.obtain(10, TimeUnit.SECONDS))
+      .cachePolicy(HttpCachePolicy.NETWORK_FIRST.expireAfter(10, TimeUnit.SECONDS))
       .execute();
     assertThat(server.getRequestCount()).isEqualTo(1);
     assertThat(lastHttResponse.cacheResponse()).isNull();
@@ -281,7 +281,7 @@ public class CacheTest {
 
     cacheStore.delegate = new DiskLruCacheStore(new NoFileSystem(), new File("/cache/"), Integer.MAX_VALUE);
     GraphResponse response = graphClient.queryGraph(Storefront.query(new ShopWithCollectionsQuery()))
-      .cachePolicy(HttpCachePolicy.NETWORK_FIRST.obtain(10, TimeUnit.SECONDS))
+      .cachePolicy(HttpCachePolicy.NETWORK_FIRST.expireAfter(10, TimeUnit.SECONDS))
       .execute();
     assertThat(response.hasErrors()).isFalse();
     assertThat(response.data()).isNotNull();
@@ -297,7 +297,7 @@ public class CacheTest {
 
     faultyCacheStore.failStrategy(FaultyCacheStore.FailStrategy.FAIL_HEADER_WRITE);
     GraphResponse response = graphClient.queryGraph(Storefront.query(new ShopWithCollectionsQuery()))
-      .cachePolicy(HttpCachePolicy.NETWORK_FIRST.obtain(10, TimeUnit.SECONDS))
+      .cachePolicy(HttpCachePolicy.NETWORK_FIRST.expireAfter(10, TimeUnit.SECONDS))
       .execute();
     assertThat(server.getRequestCount()).isEqualTo(1);
     assertThat(lastHttResponse.cacheResponse()).isNull();
@@ -308,7 +308,7 @@ public class CacheTest {
     enqueueResponse("/ShopWithCollections.json");
     faultyCacheStore.failStrategy(FaultyCacheStore.FailStrategy.FAIL_BODY_WRITE);
     response = graphClient.queryGraph(Storefront.query(new ShopWithCollectionsQuery()))
-      .cachePolicy(HttpCachePolicy.NETWORK_FIRST.obtain(10, TimeUnit.SECONDS))
+      .cachePolicy(HttpCachePolicy.NETWORK_FIRST.expireAfter(10, TimeUnit.SECONDS))
       .execute();
     assertThat(server.getRequestCount()).isEqualTo(2);
     assertThat(lastHttResponse.cacheResponse()).isNull();
@@ -323,7 +323,7 @@ public class CacheTest {
 
     enqueueResponse("/ShopWithCollections.json");
     GraphResponse response = graphClient.queryGraph(Storefront.query(new ShopWithCollectionsQuery()))
-      .cachePolicy(HttpCachePolicy.NETWORK_ONLY.obtain())
+      .cachePolicy(HttpCachePolicy.NETWORK_ONLY)
       .execute();
     assertThat(server.getRequestCount()).isEqualTo(1);
     assertThat(lastHttResponse.cacheResponse()).isNull();
@@ -334,7 +334,7 @@ public class CacheTest {
     enqueueResponse("/ShopWithCollections.json");
     faultyCacheStore.failStrategy(FaultyCacheStore.FailStrategy.FAIL_HEADER_READ);
     response = graphClient.queryGraph(Storefront.query(new ShopWithCollectionsQuery()))
-      .cachePolicy(HttpCachePolicy.CACHE_FIRST.obtain(10, TimeUnit.SECONDS))
+      .cachePolicy(HttpCachePolicy.CACHE_FIRST.expireAfter(10, TimeUnit.SECONDS))
       .execute();
     assertThat(server.getRequestCount()).isEqualTo(2);
     assertThat(lastHttResponse.cacheResponse()).isNull();
@@ -344,7 +344,7 @@ public class CacheTest {
     faultyCacheStore.failStrategy(FaultyCacheStore.FailStrategy.FAIL_BODY_READ);
     try {
       graphClient.queryGraph(Storefront.query(new ShopWithCollectionsQuery()))
-        .cachePolicy(HttpCachePolicy.CACHE_ONLY.obtain())
+        .cachePolicy(HttpCachePolicy.CACHE_ONLY)
         .execute();
       fail("Expected GraphParseError");
     } catch (GraphParseError expected) {
