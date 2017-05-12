@@ -29,9 +29,12 @@ import android.support.annotation.NonNull;
 import com.shopify.buy3.GraphCall;
 import com.shopify.buy3.GraphClient;
 import com.shopify.buy3.GraphResponse;
+import com.shopify.buy3.HttpCachePolicy;
 import com.shopify.buy3.Storefront;
 import com.shopify.graphql.support.ID;
 import com.shopify.sample.RxUtil;
+
+import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Single;
 import io.reactivex.schedulers.Schedulers;
@@ -81,9 +84,11 @@ public final class CheckoutRepository {
   public Single<Storefront.Checkout> checkout(@NonNull final String checkoutId, @NonNull final Storefront.NodeQueryDefinition nodeQuery) {
     checkNotBlank(checkoutId, "checkoutId can't be empty");
     checkNotNull(nodeQuery, "query == null");
-    GraphCall<Storefront.QueryRoot> call = graphClient.queryGraph(Storefront.query(
-      root -> root.node(new ID(checkoutId), nodeQuery)
-    ));
+    GraphCall<Storefront.QueryRoot> call = graphClient
+      .queryGraph(Storefront.query(
+        root -> root.node(new ID(checkoutId), nodeQuery)
+      ))
+      .cachePolicy(HttpCachePolicy.NETWORK_FIRST.expireAfter(5, TimeUnit.MINUTES));
     return rxGraphQueryCall(call)
       .map(GraphResponse::data)
       .map(it -> (Storefront.Checkout) it.getNode())
@@ -94,9 +99,11 @@ public final class CheckoutRepository {
     @NonNull final Storefront.CheckoutQueryDefinition query) {
     checkNotBlank(checkoutId, "checkoutId can't be empty");
     checkNotNull(query, "query == null");
-    GraphCall<Storefront.QueryRoot> call = graphClient.queryGraph(Storefront.query(
-      root -> root.node(new ID(checkoutId), q -> q.onCheckout(query))
-    ));
+    GraphCall<Storefront.QueryRoot> call = graphClient
+      .queryGraph(Storefront.query(
+        root -> root.node(new ID(checkoutId), q -> q.onCheckout(query))
+      ))
+      .cachePolicy(HttpCachePolicy.NETWORK_ONLY);
     return Single.fromCallable(call::clone)
       .flatMap(RxUtil::rxGraphQueryCall)
       .map(GraphResponse::data)

@@ -101,7 +101,7 @@ public final class PayCart implements Parcelable {
     this.subtotal = subtotal.setScale(2, RoundingMode.HALF_EVEN);
     this.taxPrice = taxPrice != null ? taxPrice.setScale(2, RoundingMode.HALF_EVEN) : null;
     this.shippingPrice = shippingPrice != null ? shippingPrice.setScale(2, RoundingMode.HALF_EVEN) : null;
-    this.totalPrice = totalPrice.setScale(2, RoundingMode.HALF_EVEN);;
+    this.totalPrice = totalPrice.setScale(2, RoundingMode.HALF_EVEN);
   }
 
   @Override
