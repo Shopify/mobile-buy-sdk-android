@@ -26,7 +26,7 @@ package com.shopify.buy3;
 
 
 /**
- * Thrown when GraphQL call can't be executed due to cancellation, a connectivity problem, timeouts, parsing errors etc.
+ * Error to be thrown when {@link GraphCall} call failed to execute due to unknown reasons.
  */
 public class GraphError extends Exception {
   public GraphError() {

@@ -39,7 +39,8 @@ final class RealQueryGraphCall extends RealGraphCall<Storefront.QueryRoot> imple
 
   RealQueryGraphCall(final Storefront.QueryRootQuery query, final HttpUrl serverUrl, final Call.Factory httpCallFactory,
     final ScheduledExecutorService dispatcher, final HttpCachePolicy.Policy httpCachePolicy, final HttpCache httpCache) {
-    super(query, serverUrl, httpCallFactory, response -> new Storefront.QueryRoot(response.getData()), dispatcher, httpCachePolicy, httpCache);
+    super(query, serverUrl, httpCallFactory, response -> new Storefront.QueryRoot(response.getData()), dispatcher, httpCachePolicy,
+      httpCache);
   }
 
   private RealQueryGraphCall(final RealGraphCall<Storefront.QueryRoot> other) {

@@ -29,7 +29,7 @@ import android.support.annotation.NonNull;
 import static com.shopify.buy3.pay.Util.checkNotEmpty;
 
 /**
- * Abstraction that represents Android Pay Payment Token ready to use for the checkout.
+ * Purchase token obtained from Android Pay and ready to use for the checkout completion.
  */
 @SuppressWarnings("WeakerAccess")
 public final class PaymentToken {

@@ -54,7 +54,7 @@ import static com.shopify.buy3.pay.Util.checkNotEmpty;
 import static com.shopify.buy3.pay.Util.checkNotNull;
 
 /**
- * Helper class provides  utility functions to simplify Android Pay checkout flow.
+ * Helper functions functions to simplify Android Pay purchase flow.
  */
 @SuppressWarnings({"WeakerAccess", "unused"})
 public final class PayHelper {
@@ -63,7 +63,7 @@ public final class PayHelper {
   public static final int REQUEST_CODE_FULL_WALLET = 502;
 
   /**
-   * Request masked wallet for specified {@link PayCart}.
+   * Requests Masked Wallet for provided {@link PayCart}.
    *
    * @param googleApiClient     {@link GoogleApiClient}
    * @param payCart             {@link PayCart}
@@ -74,12 +74,18 @@ public final class PayHelper {
     Wallet.Payments.loadMaskedWallet(googleApiClient, maskedWalletRequest, PayHelper.REQUEST_CODE_MASKED_WALLET);
   }
 
+  /**
+   * Creates Masked Wallet with new Google Transaction Id from existing one.
+   *
+   * @param googleApiClient {@link GoogleApiClient}
+   * @param maskedWallet    {@link MaskedWallet} previous Masked Wallet
+   */
   public static void newMaskedWallet(final GoogleApiClient googleApiClient, final MaskedWallet maskedWallet) {
     Wallet.Payments.changeMaskedWallet(googleApiClient, maskedWallet.getGoogleTransactionId(), null, PayHelper.REQUEST_CODE_MASKED_WALLET);
   }
 
   /**
-   * Initialize Android Pay wallet fragment with specified masked wallet.
+   * Initializes Android Pay wallet fragment with provided masked wallet.
    *
    * @param walletFragment {@link SupportWalletFragment}
    * @param maskedWallet   {@link MaskedWallet}
@@ -93,7 +99,7 @@ public final class PayHelper {
   }
 
   /**
-   * Request full wallet for specified {@link PayCart}.
+   * Requests full wallet for provided {@link PayCart} and {@link MaskedWallet}.
    *
    * @param googleApiClient {@link GoogleApiClient}
    * @param payCart         {@link PayCart}
@@ -105,11 +111,11 @@ public final class PayHelper {
   }
 
   /**
-   * Handle activity results for masked wallet and full wallet requests and delegates response to specified call back handler.
+   * Handles activity results for any wallet requests and delegates response to provided call back handler.
    *
-   * @param requestCode Android Pay activity request code
-   * @param resultCode  Android Pay activity result code
-   * @param data        Android Pay response data
+   * @param requestCode Android Pay Wallet activity request code
+   * @param resultCode  Android Pay Wallet activity result code
+   * @param data        Android Pay Wallet response data
    * @param handler     delegate call back handler
    * @return {@code true} if activity result can be handled, {@code false} otherwise
    * @see WalletResponseHandler
@@ -151,6 +157,12 @@ public final class PayHelper {
     return false;
   }
 
+  /**
+   * Checks if Android Pay is enabled in the android manifest file.
+   *
+   * @param context android context
+   * @return {@code true} if Android Pay enabled, {@code false} otherwise
+   */
   public static boolean isAndroidPayEnabledInManifest(@NonNull final Context context) {
     boolean enabled = false;
     try {
@@ -163,7 +175,7 @@ public final class PayHelper {
   }
 
   /**
-   * Check if Android Pay is enabled and ready for checkout.
+   * Checks if Android Pay is enabled and ready to use.
    *
    * @param context               {@link Context}
    * @param apiClient             {@link GoogleApiClient}
@@ -216,7 +228,7 @@ public final class PayHelper {
   }
 
   /**
-   * Extract payment token from {@link FullWallet} that will required to finish checkout.
+   * Extracts payment token from {@link FullWallet} information that will be required to complete checkout.
    *
    * @param fullWallet          {@link FullWallet}
    * @param androidPayPublicKey Android Pay public key
@@ -243,7 +255,7 @@ public final class PayHelper {
   }
 
   /**
-   * Callback for handling wallet activity results from {@link PayHelper#handleWalletResponse(int, int, Intent, WalletResponseHandler)}
+   * Callback to handle Wallet Request results.
    */
   public abstract static class WalletResponseHandler {
 
