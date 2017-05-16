@@ -114,8 +114,8 @@ dependencies {
   compile dep.okhttp
   compile dep.okhttpLogging
   compile dep.androidSupportAnnotations
-  compile dep.shopifyGraphqlSupport
   compile dep.jodaTime
+  compile project(':graphql-java-support')
 
   androidTestCompile dep.mockitoCore
   androidTestCompile dep.mockWebServer
