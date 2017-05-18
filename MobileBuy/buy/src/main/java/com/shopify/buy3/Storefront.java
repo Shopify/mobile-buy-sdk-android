@@ -433,8 +433,9 @@ public class Storefront {
         }
 
         /**
-        * Whether or not the shipping rates are ready. The `shippingRates` field is `null` when this value is
-        * `false`. This field should be polled until its value becomes `true`. 
+        * Whether or not the shipping rates are ready.
+        * The `shippingRates` field is `null` when this value is `false`.
+        * This field should be polled until its value becomes `true`.
         */
         public AvailableShippingRatesQuery ready() {
             startField("ready");
@@ -506,8 +507,9 @@ public class Storefront {
         }
 
         /**
-        * Whether or not the shipping rates are ready. The `shippingRates` field is `null` when this value is
-        * `false`. This field should be polled until its value becomes `true`. 
+        * Whether or not the shipping rates are ready.
+        * The `shippingRates` field is `null` when this value is `false`.
+        * This field should be polled until its value becomes `true`.
         */
 
         public Boolean getReady() {
@@ -568,8 +570,9 @@ public class Storefront {
         }
 
         /**
-        * The available shipping rates for this Checkout. Should only be used when checkout `requiresShipping`
-        * is `true` and the shipping address is valid. 
+        * The available shipping rates for this Checkout.
+        * Should only be used when checkout `requiresShipping` is `true` and
+        * the shipping address is valid.
         */
         public CheckoutQuery availableShippingRates(AvailableShippingRatesQueryDefinition queryDef) {
             startField("availableShippingRates");
@@ -1091,8 +1094,9 @@ public class Storefront {
         }
 
         /**
-        * The available shipping rates for this Checkout. Should only be used when checkout `requiresShipping`
-        * is `true` and the shipping address is valid. 
+        * The available shipping rates for this Checkout.
+        * Should only be used when checkout `requiresShipping` is `true` and
+        * the shipping address is valid.
         */
 
         public AvailableShippingRates getAvailableShippingRates() {
@@ -4102,8 +4106,8 @@ public class Storefront {
         }
 
         /**
-        * A human-friendly unique string for the collection automatically generated from its title. Limit of
-        * 255 characters. 
+        * A human-friendly unique string for the collection automatically generated from its title.
+        * Limit of 255 characters.
         */
         public CollectionQuery handle() {
             startField("handle");
@@ -4374,8 +4378,8 @@ public class Storefront {
         }
 
         /**
-        * A human-friendly unique string for the collection automatically generated from its title. Limit of
-        * 255 characters. 
+        * A human-friendly unique string for the collection automatically generated from its title.
+        * Limit of 255 characters.
         */
 
         public String getHandle() {
@@ -6740,29 +6744,26 @@ public class Storefront {
             }
 
             /**
-            * Supported filter parameters: 
-            * <ul>
-            * <li>status</li>
-            * <li>financial_status</li>
-            * <li>fulfillment_status</li>
-            * <li>source_name</li>
-            * <li>chargeback_status</li>
-            * <li>risk_level</li>
-            * <li>customer_id</li>
-            * <li>email</li>
-            * <li>credit_card_last4</li>
-            * <li>processed_at</li>
-            * <li>checkout_token</li>
-            * <li>cart_token</li>
-            * <li>location_id</li>
-            * <li>channel_id</li>
-            * <li>discount_code</li>
-            * <li>tag</li>
-            * <li>since_id</li>
-            * <li>updated_at</li>
-            * <li>created_at</li>
-            * 
-            * </ul>
+            * Supported filter parameters:
+            * - `status`
+            * - `financial_status`
+            * - `fulfillment_status`
+            * - `source_name`
+            * - `chargeback_status`
+            * - `risk_level`
+            * - `customer_id`
+            * - `email`
+            * - `credit_card_last4`
+            * - `processed_at`
+            * - `checkout_token`
+            * - `cart_token`
+            * - `location_id`
+            * - `channel_id`
+            * - `discount_code`
+            * - `tag`
+            * - `since_id`
+            * - `updated_at`
+            * - `created_at`
             */
             public OrdersArguments query(String value) {
                 if (value != null) {
@@ -8895,10 +8896,7 @@ public class Storefront {
         }
 
         /**
-        * The host name of the domain (eg: 
-        * <ul>
-        *  `example.com`).
-        * </ul>
+        * The host name of the domain (eg: `example.com`).
         */
         public DomainQuery host() {
             startField("host");
@@ -8916,10 +8914,7 @@ public class Storefront {
         }
 
         /**
-        * The URL of the domain (eg: 
-        * <ul>
-        * //example.com`).
-        * </ul>
+        * The URL of the domain (eg: `https://example.com`).
         */
         public DomainQuery url() {
             startField("url");
@@ -8974,10 +8969,7 @@ public class Storefront {
         }
 
         /**
-        * The host name of the domain (eg: 
-        * <ul>
-        *  `example.com`).
-        * </ul>
+        * The host name of the domain (eg: `example.com`).
         */
 
         public String getHost() {
@@ -9003,10 +8995,7 @@ public class Storefront {
         }
 
         /**
-        * The URL of the domain (eg: 
-        * <ul>
-        * //example.com`).
-        * </ul>
+        * The URL of the domain (eg: `https://example.com`).
         */
 
         public String getUrl() {
@@ -10666,8 +10655,8 @@ public class Storefront {
         }
 
         /**
-        * Creates a customer access token. The customer access token is required to modify the customer object
-        * in any way. 
+        * Creates a customer access token.
+        * The customer access token is required to modify the customer object in any way.
         */
         public MutationQuery customerAccessTokenCreate(CustomerAccessTokenCreateInput input, CustomerAccessTokenCreatePayloadQueryDefinition queryDef) {
             startField("customerAccessTokenCreate");
@@ -11396,8 +11385,8 @@ public class Storefront {
         }
 
         /**
-        * Creates a customer access token. The customer access token is required to modify the customer object
-        * in any way. 
+        * Creates a customer access token.
+        * The customer access token is required to modify the customer object in any way.
         */
 
         public CustomerAccessTokenCreatePayload getCustomerAccessTokenCreate() {
@@ -11830,7 +11819,8 @@ public class Storefront {
         }
 
         /**
-        * The reason why the order was cancelled. If the order was not cancelled, this value is `null`. 
+        * The reason why the order was cancelled.
+        * If the order was not cancelled, this value is `null`.
         */
         public OrderQuery cancelReason() {
             startField("cancelReason");
@@ -11839,8 +11829,8 @@ public class Storefront {
         }
 
         /**
-        * The date and time when the order was cancelled. If the order was not cancelled, this value is
-        * `null.` 
+        * The date and time when the order was cancelled.
+        * If the order was not cancelled, this value is `null.`
         */
         public OrderQuery cancelledAt() {
             startField("cancelledAt");
@@ -11974,9 +11964,9 @@ public class Storefront {
         }
 
         /**
-        * The date and time when the order was imported. This value can be set to dates in the past when
-        * importing from other systems. If no value is provided, it will be auto-generated based on current
-        * date and time. 
+        * The date and time when the order was imported.
+        * This value can be set to dates in the past when importing from other systems.
+        * If no value is provided, it will be auto-generated based on current date and time.
         */
         public OrderQuery processedAt() {
             startField("processedAt");
@@ -12253,7 +12243,8 @@ public class Storefront {
         }
 
         /**
-        * The reason why the order was cancelled. If the order was not cancelled, this value is `null`. 
+        * The reason why the order was cancelled.
+        * If the order was not cancelled, this value is `null`.
         */
 
         public OrderCancelReason getCancelReason() {
@@ -12266,8 +12257,8 @@ public class Storefront {
         }
 
         /**
-        * The date and time when the order was cancelled. If the order was not cancelled, this value is
-        * `null.` 
+        * The date and time when the order was cancelled.
+        * If the order was not cancelled, this value is `null.`
         */
 
         public DateTime getCancelledAt() {
@@ -12401,9 +12392,9 @@ public class Storefront {
         }
 
         /**
-        * The date and time when the order was imported. This value can be set to dates in the past when
-        * importing from other systems. If no value is provided, it will be auto-generated based on current
-        * date and time. 
+        * The date and time when the order was imported.
+        * This value can be set to dates in the past when importing from other systems.
+        * If no value is provided, it will be auto-generated based on current date and time.
         */
 
         public DateTime getProcessedAt() {
@@ -14014,9 +14005,10 @@ public class Storefront {
 
     /**
     * A product represents an individual item for sale in a Shopify store. Products are often physical,
-    * but they don't have to be. For example, a digital download (such as a movie, music or ebook file)
-    * also qualifies as a product, as do services (such as equipment rental, work for hire, customization
-    * of another product or an extended warranty).
+    * but they don't have to be. 
+    * For example, a digital download (such as a movie, music or ebook file) also qualifies as a product,
+    * as do services (such as equipment rental, work for hire, customization of another product or an
+    * extended warranty).
     */
     public static class ProductQuery extends Query<ProductQuery> {
         ProductQuery(StringBuilder _queryBuilder) {
@@ -14138,8 +14130,8 @@ public class Storefront {
         }
 
         /**
-        * A human-friendly unique string for the Product automatically generated from its title. They are used
-        * by the Liquid templating language to refer to objects. 
+        * A human-friendly unique string for the Product automatically generated from its title.
+        * They are used by the Liquid templating language to refer to objects.
         */
         public ProductQuery handle() {
             startField("handle");
@@ -14299,8 +14291,8 @@ public class Storefront {
         }
 
         /**
-        * The date and time when the product was published to the Online Store channel. A value of `null`
-        * indicates that the product is not published to Online Store. 
+        * The date and time when the product was published to the Online Store channel.
+        * A value of `null` indicates that the product is not published to Online Store.
         */
         public ProductQuery publishedAt() {
             startField("publishedAt");
@@ -14309,8 +14301,8 @@ public class Storefront {
         }
 
         /**
-        * A categorization that a product can be tagged with, commonly used for filtering and searching. Each
-        * comma-separated tag has a character limit of 255. 
+        * A categorization that a product can be tagged with, commonly used for filtering and searching.
+        * Each comma-separated tag has a character limit of 255.
         */
         public ProductQuery tags() {
             startField("tags");
@@ -14337,9 +14329,9 @@ public class Storefront {
         }
 
         /**
-        * Find a product’s variant based on its selected options. This is useful for converting a user’s
-        * selection of product options into a single matching variant. If there is not a variant for the
-        * selected options, `null` will be returned. 
+        * Find a product’s variant based on its selected options.
+        * This is useful for converting a user’s selection of product options into a single matching variant.
+        * If there is not a variant for the selected options, `null` will be returned.
         */
         public ProductQuery variantBySelectedOptions(List<SelectedOptionInput> selectedOptions, ProductVariantQueryDefinition queryDef) {
             startField("variantBySelectedOptions");
@@ -14429,9 +14421,10 @@ public class Storefront {
 
     /**
     * A product represents an individual item for sale in a Shopify store. Products are often physical,
-    * but they don't have to be. For example, a digital download (such as a movie, music or ebook file)
-    * also qualifies as a product, as do services (such as equipment rental, work for hire, customization
-    * of another product or an extended warranty).
+    * but they don't have to be. 
+    * For example, a digital download (such as a movie, music or ebook file) also qualifies as a product,
+    * as do services (such as equipment rental, work for hire, customization of another product or an
+    * extended warranty).
     */
     public static class Product extends AbstractResponse<Product> implements Node {
         public Product() {
@@ -14626,8 +14619,8 @@ public class Storefront {
         }
 
         /**
-        * A human-friendly unique string for the Product automatically generated from its title. They are used
-        * by the Liquid templating language to refer to objects. 
+        * A human-friendly unique string for the Product automatically generated from its title.
+        * They are used by the Liquid templating language to refer to objects.
         */
 
         public String getHandle() {
@@ -14683,8 +14676,8 @@ public class Storefront {
         }
 
         /**
-        * The date and time when the product was published to the Online Store channel. A value of `null`
-        * indicates that the product is not published to Online Store. 
+        * The date and time when the product was published to the Online Store channel.
+        * A value of `null` indicates that the product is not published to Online Store.
         */
 
         public DateTime getPublishedAt() {
@@ -14697,8 +14690,8 @@ public class Storefront {
         }
 
         /**
-        * A categorization that a product can be tagged with, commonly used for filtering and searching. Each
-        * comma-separated tag has a character limit of 255. 
+        * A categorization that a product can be tagged with, commonly used for filtering and searching.
+        * Each comma-separated tag has a character limit of 255.
         */
 
         public List<String> getTags() {
@@ -14737,9 +14730,9 @@ public class Storefront {
         }
 
         /**
-        * Find a product’s variant based on its selected options. This is useful for converting a user’s
-        * selection of product options into a single matching variant. If there is not a variant for the
-        * selected options, `null` will be returned. 
+        * Find a product’s variant based on its selected options.
+        * This is useful for converting a user’s selection of product options into a single matching variant.
+        * If there is not a variant for the selected options, `null` will be returned.
         */
 
         public ProductVariant getVariantBySelectedOptions() {
@@ -15026,8 +15019,10 @@ public class Storefront {
     }
 
     /**
-    * Custom product property names like "Size", "Color", and "Material". Products are based on
-    * permutations of these options. A product may have a maximum of 3 options. 255 characters limit each.
+    * Custom product property names like "Size", "Color", and "Material".
+    * Products are based on permutations of these options.
+    * A product may have a maximum of 3 options.
+    * 255 characters limit each.
     */
     public static class ProductOptionQuery extends Query<ProductOptionQuery> {
         ProductOptionQuery(StringBuilder _queryBuilder) {
@@ -15056,8 +15051,10 @@ public class Storefront {
     }
 
     /**
-    * Custom product property names like "Size", "Color", and "Material". Products are based on
-    * permutations of these options. A product may have a maximum of 3 options. 255 characters limit each.
+    * Custom product property names like "Size", "Color", and "Material".
+    * Products are based on permutations of these options.
+    * A product may have a maximum of 3 options.
+    * 255 characters limit each.
     */
     public static class ProductOption extends AbstractResponse<ProductOption> implements Node {
         public ProductOption() {
@@ -16031,6 +16028,10 @@ public class Storefront {
             return this;
         }
 
+        public List<Node> getNodes() {
+            return (List<Node>) get("nodes");
+        }
+
         public QueryRoot setNodes(List<Node> arg) {
             optimisticData.put(getKey("nodes"), arg);
             return this;
@@ -16065,11 +16066,8 @@ public class Storefront {
     }
 
     /**
-    * Custom properties that a shop owner can use to define product variants. Multiple options can exist.
-    * Options are represented as: 
-    * <ul>
-    *  option1, option2, option3, etc. 
-    * </ul>
+    * Custom properties that a shop owner can use to define product variants.
+    * Multiple options can exist. Options are represented as: option1, option2, option3, etc.
     */
     public static class SelectedOptionQuery extends Query<SelectedOptionQuery> {
         SelectedOptionQuery(StringBuilder _queryBuilder) {
@@ -16096,11 +16094,8 @@ public class Storefront {
     }
 
     /**
-    * Custom properties that a shop owner can use to define product variants. Multiple options can exist.
-    * Options are represented as: 
-    * <ul>
-    *  option1, option2, option3, etc. 
-    * </ul>
+    * Custom properties that a shop owner can use to define product variants.
+    * Multiple options can exist. Options are represented as: option1, option2, option3, etc.
     */
     public static class SelectedOption extends AbstractResponse<SelectedOption> {
         public SelectedOption() {
@@ -16410,14 +16405,11 @@ public class Storefront {
             }
 
             /**
-            * Supported filter parameters: 
-            * <ul>
-            * <li>title</li>
-            * <li>collection_type</li>
-            * <li>updated_at</li>
-            * <li>published_status</li>
-            * 
-            * </ul>
+            * Supported filter parameters:
+            * - `title`
+            * - `collection_type`
+            * - `updated_at`
+            * - `published_status`
             */
             public CollectionsArguments query(String value) {
                 if (value != null) {
@@ -16551,16 +16543,13 @@ public class Storefront {
             }
 
             /**
-            * Supported filter parameters: 
-            * <ul>
-            * <li>title</li>
-            * <li>product_type</li>
-            * <li>vendor</li>
-            * <li>created_at</li>
-            * <li>updated_at</li>
-            * <li>tag</li>
-            * 
-            * </ul>
+            * Supported filter parameters:
+            * - `title`
+            * - `product_type`
+            * - `vendor`
+            * - `created_at`
+            * - `updated_at`
+            * - `tag`
             */
             public ProductsArguments query(String value) {
                 if (value != null) {
