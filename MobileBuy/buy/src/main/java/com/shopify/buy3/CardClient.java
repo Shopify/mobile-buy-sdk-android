@@ -67,7 +67,7 @@ public final class CardClient {
    * This token should be used for completion checkout with credit card.
    *
    * @param creditCard     {@link CreditCard} credit card info
-   * @param vaultServerUrl endpoint of card vault returned in {@link Storefront.Shop#getVaultUrl()}
+   * @param vaultServerUrl endpoint of card vault returned in {@link Storefront.Shop#getCardVaultUrl()}
    * @return {@link CreditCardVaultCall}
    */
   public CreditCardVaultCall vault(@NonNull final CreditCard creditCard, @NonNull final String vaultServerUrl) {
