@@ -1,15 +1,19 @@
-GEM
-  remote: https://rubygems.org/
+PATH
+  remote: /Users/ivansavytskyi/Projects/shopify/mobile-buy-sdk-android/MobileBuy/libs/graphql_java_gen
   specs:
     graphql_java_gen (0.1.0)
       graphql_schema (~> 0.1.1)
-    graphql_schema (0.1.3)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    graphql_schema (0.1.5)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
-  graphql_java_gen
+  graphql_java_gen!
 
 BUNDLED WITH
    1.14.3

@@ -47,7 +47,7 @@ import static com.shopify.buy3.Utils.checkNotBlank;
 import static com.shopify.buy3.Utils.checkNotNull;
 
 /**
- * <p>Client for {@code GraphQL} server.<p/>
+ * <p>Client for {@code GraphQL} server.</p>
  * Creates and prepares {@link GraphCall} calls, which can be used to send {@code GraphQL} operation http requests.
  * Should be shared and reused for all calls to the  {@code GraphQL} server.
  * <p>Based internally on {@link OkHttpClient} network layer that holds its own connection pool and thread pool, it is
