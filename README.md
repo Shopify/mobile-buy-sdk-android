@@ -22,6 +22,7 @@ The Mobile Buy SDK makes it easy to create custom storefronts in your mobile app
   - [Queries](#queries-)
   - [Mutations](#mutations-)
   - [Retry and polling](#retry-)
+  - [Http cache](#http-cache-)
   - [Errors](#errors-)
       - [GraphQL Error](#graphql-error)
       - [GraphError](#grapherror)
@@ -380,6 +381,43 @@ call.enqueue(new GraphCall.Callback<Storefront.QueryRoot>() {
 }
 ```
 The retry handler is generic and can handle both `QueryGraphCall` and `MutationGraphCall` calls equally well.
+
+### Http Cache [⤴](#table-of-contents)
+
+Fetching something over the network is both slow and expensive. Large responses require many roundtrips between the client and server, which delays when they are available and when the browser can process them. As a result, the ability to cache and reuse previously fetched resources is a critical aspect of optimizing for performance. Due to the nature of GraphQL query request to be sent in Http body of the POST request, makes imposible to utilize http caching supported by `OkHttp` client library because of the fact http cache is not supported for the POST requests. As well the flexibility of different cache policies provided by `OkHttp` is not enough to support different use cases like try network first and if it fails fall back to the cache data.
+
+`GraphClient` offers Http request / response cache support with next policies:
+
+- `CACHE_ONLY` fetch response from cache only without loading from network
+- `NETWORK_ONLY` fetch response from network without loading from cache
+- `CACHE_FIRST` fetch response from cache first, if response is missing load from network
+- `NETWORK_FIRST` fetch response from network first but fallback to cached data if the request fails
+
+As well for `CACHE_ONLY`, `CACHE_FIRST` and `NETWORK_FIRST` you can specify the expiration timeout for how long cached data treated as up to date. If time expiration is ommited cached response treated as never stale.
+
+By design http request / response cache is supported for GraphQL queries only and not supported for mutations.
+
+To enable Http cache in `GraphClient` you need to provide the folder where to store responses and the maximum number of bytes this cache should use to store:
+
+```java
+GraphClient.builder(this)
+  ...
+  .httpCache(getCacheDir(), 1024 * 1024 * 10)
+  .defaultHttpCachePolicy(HttpCachePolicy.CACHE_FIRST.expireAfter(5, TimeUnit.MINUTES))
+  ...
+  .build();
+```
+
+`GraphClient` provides global configuration to set up default http cache policy to be used across all GraphQL queries. By default http cache policy is set to `NETWORK_ONLY`.
+
+But some queries require different http cache policy than default one, to set specific policy for specific GraphQL query:
+
+```java
+QueryGraphCall call = ...;
+
+// use NETWORK_FIRST instead default CACHE_FIRST
+call.cachePolicy(HttpCachePolicy.NETWORK_FIRST)
+```
 
 ### Errors [⤴](#table-of-contents)
 
