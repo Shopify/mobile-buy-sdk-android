@@ -16031,10 +16031,6 @@ public class Storefront {
             return this;
         }
 
-        public List<Node> getNodes() {
-            return (List<Node>) get("nodes");
-        }
-
         public QueryRoot setNodes(List<Node> arg) {
             optimisticData.put(getKey("nodes"), arg);
             return this;
