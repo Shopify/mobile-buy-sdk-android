@@ -43,8 +43,8 @@
                 tools:layout_height="200dp" />
 
             <include
-                android:id="@+id/shipping_method"
-                layout="@layout/checkout_shipping_method"
+                android:id="@+id/shipping_rates"
+                layout="@layout/checkout_shipping_rates"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
         </LinearLayout>

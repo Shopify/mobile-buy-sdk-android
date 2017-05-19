@@ -24,7 +24,6 @@
 
 package com.shopify.sample.presenter.checkout;
 
-import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -41,7 +40,6 @@ import com.shopify.sample.BuildConfig;
 import com.shopify.sample.domain.interactor.CheckoutCompleteInteractor;
 import com.shopify.sample.domain.interactor.CheckoutShippingAddressUpdateInteractor;
 import com.shopify.sample.domain.interactor.CheckoutShippingLineUpdateInteractor;
-import com.shopify.sample.domain.interactor.CheckoutShippingRatesInteractor;
 import com.shopify.sample.domain.model.Checkout;
 import com.shopify.sample.domain.model.Payment;
 import com.shopify.sample.mvp.BaseViewPresenter;
@@ -53,38 +51,32 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 
 import static com.shopify.sample.util.Util.checkNotBlank;
 import static com.shopify.sample.util.Util.checkNotNull;
-import static java.util.Collections.emptyList;
 
 public final class CheckoutViewPresenter extends BaseViewPresenter<CheckoutViewPresenter.View> {
   public static final int REQUEST_ID_UPDATE_CHECKOUT_SHIPPING_ADDRESS = 1;
-  public static final int REQUEST_ID_FETCH_SHIPPING_RATES = 2;
-  public static final int REQUEST_ID_APPLY_SHIPPING_RATE = 3;
-  public static final int REQUEST_ID_COMPLETE_CHECKOUT = 4;
+  public static final int REQUEST_ID_APPLY_SHIPPING_RATE = 2;
+  public static final int REQUEST_ID_COMPLETE_CHECKOUT = 3;
 
+  private final CheckoutShippingAddressUpdateInteractor checkoutShippingAddressUpdateInteractor;
   private final CheckoutShippingLineUpdateInteractor checkoutShippingLineUpdateInteractor;
   private final CheckoutCompleteInteractor checkoutCompleteInteractor;
-  private final CheckoutShippingAddressUpdateInteractor checkoutShippingAddressUpdateInteractor;
-  private final CheckoutShippingRatesInteractor checkoutShippingRatesInteractor;
   private final String checkoutId;
   private PayCart payCart;
   private MaskedWallet maskedWallet;
-  private Checkout.ShippingRates shippingRates;
   private boolean newMaskedWalletRequired;
 
   public CheckoutViewPresenter(@NonNull final String checkoutId, @NonNull final PayCart payCart, @NonNull final MaskedWallet maskedWallet,
-    @NonNull final CheckoutShippingLineUpdateInteractor checkoutShippingLineUpdateInteractor,
-    @NonNull final CheckoutCompleteInteractor checkoutCompleteInteractor,
     @NonNull final CheckoutShippingAddressUpdateInteractor checkoutShippingAddressUpdateInteractor,
-    @NonNull final CheckoutShippingRatesInteractor checkoutShippingRatesInteractor) {
+    @NonNull final CheckoutShippingLineUpdateInteractor checkoutShippingLineUpdateInteractor,
+    @NonNull final CheckoutCompleteInteractor checkoutCompleteInteractor) {
     this.checkoutId = checkNotBlank(checkoutId, "checkoutId can't be empty");
     this.payCart = checkNotNull(payCart, "payCart == null");
     this.maskedWallet = checkNotNull(maskedWallet, "maskedWallet == null");
+    this.checkoutShippingAddressUpdateInteractor = checkNotNull(checkoutShippingAddressUpdateInteractor,
+      "checkoutShippingAddressUpdateInteractor == null");
     this.checkoutShippingLineUpdateInteractor = checkNotNull(checkoutShippingLineUpdateInteractor,
       "checkoutShippingLineUpdateInteractor == null");
     this.checkoutCompleteInteractor = checkNotNull(checkoutCompleteInteractor, "checkoutCompleteInteractor == null");
-    this.checkoutShippingAddressUpdateInteractor = checkNotNull(checkoutShippingAddressUpdateInteractor,
-      "checkoutShippingAddressUpdateInteractor == null");
-    this.checkoutShippingRatesInteractor = checkNotNull(checkoutShippingRatesInteractor, "checkoutShippingRatesInteractor == null");
   }
 
   public void attachView(final View view) {
@@ -108,7 +100,7 @@ public final class CheckoutViewPresenter extends BaseViewPresenter<CheckoutViewP
         .observeOn(AndroidSchedulers.mainThread())
         .subscribeWith(WeakSingleObserver.<CheckoutViewPresenter, Checkout>forTarget(this)
           .delegateOnSuccess((presenter, checkout) -> presenter.onApplyShippingRate(checkout, REQUEST_ID_APPLY_SHIPPING_RATE))
-          .delegateOnError((presenter, t) -> presenter.onRequestError(REQUEST_ID_FETCH_SHIPPING_RATES, t))
+          .delegateOnError((presenter, t) -> presenter.onRequestError(REQUEST_ID_APPLY_SHIPPING_RATE, t))
           .create()
         )
     );
@@ -182,7 +174,6 @@ public final class CheckoutViewPresenter extends BaseViewPresenter<CheckoutViewP
       return;
     }
     this.maskedWallet = checkNotNull(maskedWallet, "maskedWallet == null");
-    invalidateShippingRates(new Checkout.ShippingRates(false, emptyList()));
     view().updateMaskedWallet(maskedWallet);
 
     PayAddress payAddress = PayAddress.fromUserAddress(maskedWallet.getBuyerShippingAddress());
@@ -205,43 +196,12 @@ public final class CheckoutViewPresenter extends BaseViewPresenter<CheckoutViewP
       .taxPrice(checkout.taxPrice)
       .subtotal(checkout.subtotalPrice)
       .build();
+
     renderTotalSummary(payCart);
 
-    requestShippingRates();
-  }
-
-  private void requestShippingRates() {
-    if (isViewDetached()) {
-      return;
+    if (isViewAttached()) {
+      view().invalidateShippingRates();
     }
-    this.shippingRates = new Checkout.ShippingRates(false, emptyList());
-    renderShippingRates(shippingRates, null);
-
-    view().showProgress(REQUEST_ID_FETCH_SHIPPING_RATES);
-    registerRequest(
-      REQUEST_ID_FETCH_SHIPPING_RATES,
-      checkoutShippingRatesInteractor.execute(checkoutId)
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribeWith(WeakSingleObserver.<CheckoutViewPresenter, Checkout.ShippingRates>forTarget(this)
-          .delegateOnSuccess(CheckoutViewPresenter::invalidateShippingRates)
-          .delegateOnError((presenter, t) -> presenter.onRequestError(REQUEST_ID_FETCH_SHIPPING_RATES, t))
-          .create()
-        )
-    );
-  }
-
-  private void invalidateShippingRates(final Checkout.ShippingRates shippingRates) {
-    if (isViewDetached()) {
-      return;
-    }
-
-    this.shippingRates = shippingRates;
-    if (!shippingRates.ready || shippingRates.shippingRates.isEmpty()) {
-      hideProgress(REQUEST_ID_FETCH_SHIPPING_RATES);
-      return;
-    }
-
-    applyShippingRate(shippingRates.shippingRates.get(0));
   }
 
   private void onApplyShippingRate(final Checkout checkout, final int requestId) {
@@ -258,19 +218,12 @@ public final class CheckoutViewPresenter extends BaseViewPresenter<CheckoutViewP
       .build();
 
     renderTotalSummary(payCart);
-    renderShippingRates(shippingRates, checkout.shippingLine);
   }
 
   private void renderTotalSummary(final PayCart payCart) {
     if (isViewAttached()) {
       view().renderTotalSummary(payCart.subtotal, payCart.shippingPrice != null ? payCart.shippingPrice : BigDecimal.ZERO,
         payCart.taxPrice != null ? payCart.taxPrice : BigDecimal.ZERO, payCart.totalPrice);
-    }
-  }
-
-  private void renderShippingRates(final Checkout.ShippingRates shippingRates, final Checkout.ShippingRate shippingLine) {
-    if (isViewAttached()) {
-      view().renderShippingRates(shippingRates, shippingLine);
     }
   }
 
@@ -287,12 +240,10 @@ public final class CheckoutViewPresenter extends BaseViewPresenter<CheckoutViewP
   }
 
   public interface View extends com.shopify.sample.mvp.View {
-    Context context();
-
     void updateMaskedWallet(@NonNull MaskedWallet maskedWallet);
 
     void renderTotalSummary(@NonNull BigDecimal subtotal, @NonNull BigDecimal shipping, @NonNull BigDecimal tax, @NonNull BigDecimal total);
 
-    void renderShippingRates(@Nullable Checkout.ShippingRates shippingRates, @Nullable Checkout.ShippingRate shippingLine);
+    void invalidateShippingRates();
   }
 }
