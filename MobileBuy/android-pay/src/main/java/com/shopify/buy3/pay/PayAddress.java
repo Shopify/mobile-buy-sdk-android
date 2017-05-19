@@ -49,7 +49,7 @@ public final class PayAddress {
   @Nullable public final String zip;
 
   /**
-   * Convert Android Pay {@link UserAddress} to Shopify address format.
+   * Converts Android Pay {@link UserAddress} to Shopify address format.
    *
    * @param userAddress android pay user address
    * @return Shopify compliant address

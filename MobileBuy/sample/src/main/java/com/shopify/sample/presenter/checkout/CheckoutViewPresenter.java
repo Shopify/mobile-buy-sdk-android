@@ -32,8 +32,7 @@ import android.support.annotation.Nullable;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.wallet.FullWallet;
 import com.google.android.gms.wallet.MaskedWallet;
-import com.google.android.gms.wallet.MaskedWalletRequest;
-import com.google.android.gms.wallet.Wallet;
+import com.google.android.gms.wallet.WalletConstants;
 import com.shopify.buy3.pay.PayAddress;
 import com.shopify.buy3.pay.PayCart;
 import com.shopify.buy3.pay.PayHelper;
@@ -70,6 +69,7 @@ public final class CheckoutViewPresenter extends BaseViewPresenter<CheckoutViewP
   private PayCart payCart;
   private MaskedWallet maskedWallet;
   private Checkout.ShippingRates shippingRates;
+  private boolean newMaskedWalletRequired;
 
   public CheckoutViewPresenter(@NonNull final String checkoutId, @NonNull final PayCart payCart, @NonNull final MaskedWallet maskedWallet,
     @NonNull final CheckoutShippingLineUpdateInteractor checkoutShippingLineUpdateInteractor,
@@ -116,18 +116,23 @@ public final class CheckoutViewPresenter extends BaseViewPresenter<CheckoutViewP
 
   public void confirmCheckout(@NonNull final GoogleApiClient googleApiClient) {
     checkNotNull(googleApiClient, "googleApiClient == null");
-    PayHelper.requestFullWallet(googleApiClient, payCart, maskedWallet);
+    if (newMaskedWalletRequired) {
+      newMaskedWalletRequired = false;
+      PayHelper.newMaskedWallet(googleApiClient, maskedWallet);
+    } else {
+      PayHelper.requestFullWallet(googleApiClient, payCart, maskedWallet);
+    }
   }
 
   public void handleWalletResponse(final int requestCode, final int resultCode, @Nullable final Intent data,
     @NonNull final GoogleApiClient googleApiClient) {
     PayHelper.handleWalletResponse(requestCode, resultCode, data, new PayHelper.WalletResponseHandler() {
       @Override public void onWalletError(final int requestCode, final int errorCode) {
-        showError(-1, new RuntimeException("Failed wallet request, errorCode: " + errorCode));
-      }
-
-      @Override public void onMaskedWalletRequest() {
-        requestMaskedWallet(googleApiClient);
+        if (errorCode == WalletConstants.ERROR_CODE_INVALID_TRANSACTION) {
+          requestMaskedWallet(googleApiClient);
+        } else {
+          showError(-1, new RuntimeException("Failed wallet request, errorCode: " + errorCode));
+        }
       }
 
       @Override public void onMaskedWallet(final MaskedWallet maskedWallet) {
@@ -142,8 +147,7 @@ public final class CheckoutViewPresenter extends BaseViewPresenter<CheckoutViewP
 
   private void requestMaskedWallet(@NonNull final GoogleApiClient googleApiClient) {
     checkNotNull(googleApiClient, "googleApiClient == null");
-    MaskedWalletRequest maskedWalletRequest = payCart.maskedWalletRequest(BuildConfig.ANDROID_PAY_PUBLIC_KEY);
-    Wallet.Payments.loadMaskedWallet(googleApiClient, maskedWalletRequest, PayHelper.REQUEST_CODE_MASKED_WALLET);
+    PayHelper.requestMaskedWallet(googleApiClient, payCart, BuildConfig.ANDROID_PAY_PUBLIC_KEY);
   }
 
   private void completeCheckout(final FullWallet fullWallet) {
@@ -167,7 +171,7 @@ public final class CheckoutViewPresenter extends BaseViewPresenter<CheckoutViewP
         .observeOn(AndroidSchedulers.mainThread())
         .subscribeWith(WeakSingleObserver.<CheckoutViewPresenter, Payment>forTarget(this)
           .delegateOnSuccess(CheckoutViewPresenter::onCompleteCheckout)
-          .delegateOnError((presenter, t) -> presenter.onRequestError(REQUEST_ID_COMPLETE_CHECKOUT, t))
+          .delegateOnError(CheckoutViewPresenter::onCompleteCheckoutError)
           .create()
         )
     );
@@ -275,6 +279,11 @@ public final class CheckoutViewPresenter extends BaseViewPresenter<CheckoutViewP
     if (isViewDetached()) {
       return;
     }
+  }
+
+  private void onCompleteCheckoutError(Throwable t) {
+    newMaskedWalletRequired = true;
+    onRequestError(REQUEST_ID_COMPLETE_CHECKOUT, t);
   }
 
   public interface View extends com.shopify.sample.mvp.View {

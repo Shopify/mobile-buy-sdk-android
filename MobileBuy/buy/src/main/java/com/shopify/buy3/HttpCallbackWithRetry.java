@@ -72,6 +72,8 @@ final class HttpCallbackWithRetry<T extends AbstractResponse<T>> implements okht
     } catch (GraphError e) {
       handleError(e);
       return;
+    } finally {
+      response.close();
     }
 
     try {

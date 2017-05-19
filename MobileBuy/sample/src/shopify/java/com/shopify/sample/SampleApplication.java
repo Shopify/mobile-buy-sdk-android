@@ -27,6 +27,9 @@ package com.shopify.sample;
 import android.text.TextUtils;
 
 import com.shopify.buy3.GraphClient;
+import com.shopify.buy3.HttpCachePolicy;
+
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -70,6 +73,8 @@ public class SampleApplication extends BaseApplication {
       .shopDomain(BuildConfig.SHOP_DOMAIN)
       .accessToken(BuildConfig.API_KEY)
       .httpClient(httpClient)
+      .httpCache(getCacheDir(), 1024 * 1024 * 10)
+      .defaultHttpCachePolicy(HttpCachePolicy.CACHE_FIRST.expireAfter(5, TimeUnit.MINUTES))
       .build();
   }
 }

@@ -26,7 +26,12 @@ package com.shopify.buy3;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
+import com.shopify.buy3.cache.HttpCache;
+
+import java.io.File;
+import java.nio.charset.Charset;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -36,20 +41,22 @@ import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okio.ByteString;
 
 import static com.shopify.buy3.Utils.checkNotBlank;
 import static com.shopify.buy3.Utils.checkNotNull;
 
 /**
- * Class represents {@code GraphQL} client that is responsible for creating and preparing {@link GraphCall} calls.
- * <p>This client should be shared between calls to the same shop domain.</p>
- * <p>Internally {@code GraphQL} based on {@link OkHttpClient} that means it holds its own connection pool and thread pool, it is
- * recommended to only create a single instance use that for execution of all the {@code GraphQL} calls, as this would reduce latency and
+ * <p>Client for {@code GraphQL} server.</p>
+ * Creates and prepares {@link GraphCall} calls, which can be used to send {@code GraphQL} operation http requests.
+ * Should be shared and reused for all calls to the  {@code GraphQL} server.
+ * <p>Based internally on {@link OkHttpClient} network layer that holds its own connection pool and thread pool, it is
+ * recommended to only create a single instance use that for execution of all the {@link GraphCall} calls, as this would reduce latency and
  * would also save memory.</p>
  */
 public final class GraphClient {
   /**
-   * Creates builder to construct new {@code GraphClient} instance
+   * Instantiates new builder to construct new {@link GraphClient} instance
    *
    * @param context android context
    * @return {@link GraphClient.Builder}
@@ -60,47 +67,58 @@ public final class GraphClient {
 
   final HttpUrl serverUrl;
   final Call.Factory httpCallFactory;
+  final HttpCachePolicy.Policy defaultHttpCachePolicy;
+  final HttpCache httpCache;
   final ScheduledExecutorService dispatcher;
 
-  private GraphClient(final Builder builder) {
-    this.serverUrl = builder.endpointUrl;
-    this.httpCallFactory = builder.httpClient;
+  private GraphClient(@NonNull final HttpUrl serverUrl, @NonNull final Call.Factory httpCallFactory,
+    @NonNull final HttpCachePolicy.Policy defaultHttpCachePolicy, @Nullable final HttpCache httpCache) {
+    this.serverUrl = checkNotNull(serverUrl, "serverUrl == null");
+    this.httpCallFactory = checkNotNull(httpCallFactory, "httpCallFactory == null");
+    this.defaultHttpCachePolicy = checkNotNull(defaultHttpCachePolicy, "defaultCachePolicy == null");
+    this.httpCache = httpCache;
 
-    if (builder.dispatcher == null) {
-      ScheduledThreadPoolExecutor threadPoolExecutor = new ScheduledThreadPoolExecutor(2,
-        runnable -> new Thread(runnable, "GraphClient Dispatcher"));
-      threadPoolExecutor.setKeepAliveTime(1, TimeUnit.SECONDS);
-      threadPoolExecutor.allowCoreThreadTimeOut(true);
-      this.dispatcher = threadPoolExecutor;
-    } else {
-      this.dispatcher = builder.dispatcher;
-    }
+    ScheduledThreadPoolExecutor threadPoolExecutor = new ScheduledThreadPoolExecutor(2,
+      runnable -> new Thread(runnable, "GraphClient Dispatcher"));
+    threadPoolExecutor.setKeepAliveTime(1, TimeUnit.SECONDS);
+    threadPoolExecutor.allowCoreThreadTimeOut(true);
+    this.dispatcher = threadPoolExecutor;
   }
 
   /**
-   * Creates and prepares {@link GraphCall} call to perform {@link Storefront.QueryRootQuery} execution.
+   * <p>Creates call to execute {@code GraphQL} query operation.</p>
+   * Creates and prepares {@link QueryGraphCall} that represents {@code GraphQL} query operation to be executed at some point in the future.
    *
-   * @param query {@code GraphQL} query to be executed
-   * @return prepared {@link GraphCall} call for execution
-   * @see GraphCall
+   * @param query {@link Storefront.QueryRootQuery} to be executed
+   * @return prepared {@link QueryGraphCall} call for later execution
    */
-  public GraphCall<Storefront.QueryRoot> queryGraph(final Storefront.QueryRootQuery query) {
-    return new RealGraphCall<>(query, serverUrl, httpCallFactory, response -> new Storefront.QueryRoot(response.getData()), dispatcher);
+  public QueryGraphCall queryGraph(final Storefront.QueryRootQuery query) {
+    return new RealQueryGraphCall(query, serverUrl, httpCallFactory, dispatcher, defaultHttpCachePolicy, httpCache);
   }
 
   /**
-   * Creates and prepares {@link GraphCall} call to perform {@link Storefront.MutationQuery} execution.
+   * <p>Creates call to execute {@code GraphQL} mutation operation.</p>
+   * Creates and prepares {@link MutationGraphCall} that represents {@code GraphQL} mutation operation to be executed at some point in the
+   * future.
    *
-   * @param query {@code GraphQL} query to be executed
-   * @return prepared {@link GraphCall} call for execution
-   * @see GraphCall
+   * @param query {@link Storefront.MutationQuery} to be executed
+   * @return prepared {@link MutationGraphCall} call for later execution
    */
-  public GraphCall<Storefront.Mutation> mutateGraph(final Storefront.MutationQuery query) {
-    return new RealGraphCall<>(query, serverUrl, httpCallFactory, response -> new Storefront.Mutation(response.getData()), dispatcher);
+  public MutationGraphCall mutateGraph(final Storefront.MutationQuery query) {
+    return new RealMutationGraphCall(query, serverUrl, httpCallFactory, dispatcher, HttpCachePolicy.NETWORK_ONLY, httpCache);
   }
 
   /**
-   * Builds new {@code GraphClient} instance
+   * Returns reference to the {@link HttpCache} used by this client.
+   *
+   * @return {@link HttpCache}
+   */
+  @Nullable public HttpCache httpCache() {
+    return httpCache;
+  }
+
+  /**
+   * Builds new {@code GraphClient} instance.
    */
   public static final class Builder {
     private static final long DEFAULT_HTTP_CONNECTION_TIME_OUT_MS = TimeUnit.SECONDS.toMillis(10);
@@ -111,15 +129,17 @@ public final class GraphClient {
     private HttpUrl endpointUrl;
     private String accessToken;
     private OkHttpClient httpClient;
-    private ScheduledExecutorService dispatcher;
-    private Interceptor sdkHeaderInterceptor;
+    private HttpCachePolicy.Policy defaultHttpCachePolicy = HttpCachePolicy.NETWORK_ONLY;
+    private File httpCacheFolder;
+    private long httpCacheMaxSize;
+    private HttpCache httpCache;
 
     private Builder(@NonNull final Context context) {
       applicationName = checkNotNull(context, "context == null").getPackageName();
     }
 
     /**
-     * Set Shopify store domain url (usually {@code {store name}.myshopify.com}).
+     * Sets Shopify store domain url (usually {@code {store name}.myshopify.com}).
      *
      * @param shopDomain domain for the shop
      * @return {@link GraphClient.Builder} to be used for chaining method calls
@@ -132,7 +152,7 @@ public final class GraphClient {
     }
 
     /**
-     * Set Shopify store access token
+     * Sets Shopify store access obtained on your shop's admin page.
      *
      * @param accessToken store access token
      * @return {@link GraphClient.Builder} to be used for chaining method calls
@@ -145,14 +165,44 @@ public final class GraphClient {
     }
 
     /**
-     * Set the {@link OkHttpClient} to use for making network requests.
+     * Sets the {@link OkHttpClient} to be used as network layer for making http requests.
      *
-     * @param httpClient client to be used
+     * @param httpClient {@link OkHttpClient} client to be used
      * @return {@link GraphClient.Builder} to be used for chaining method calls
      * @throws NullPointerException when {@code httpClient} is null
      */
     public Builder httpClient(@NonNull OkHttpClient httpClient) {
       this.httpClient = checkNotNull(httpClient, "httpClient == null");
+      return this;
+    }
+
+    /**
+     * Sets the {@link HttpCachePolicy.Policy} to be used as default for all {@link QueryGraphCall} calls.
+     *
+     * @param httpCachePolicy default {@link HttpCachePolicy.Policy}
+     * @return {@link GraphClient.Builder} to be used for chaining method calls
+     */
+    public Builder defaultHttpCachePolicy(@NonNull final HttpCachePolicy.Policy httpCachePolicy) {
+      this.defaultHttpCachePolicy = checkNotNull(httpCachePolicy, "cachePolicy == null");
+      return this;
+    }
+
+    /**
+     * Enables http cache with provided storage settings.
+     *
+     * @param folder  a writable cache directory
+     * @param maxSize the maximum number of bytes this cache should use to store
+     * @return {@link GraphClient.Builder} to be used for chaining method calls
+     * @see HttpCache
+     */
+    public Builder httpCache(@NonNull final File folder, long maxSize) {
+      this.httpCacheFolder = checkNotNull(folder, "folder == null");
+      this.httpCacheMaxSize = maxSize;
+      return this;
+    }
+
+    Builder httpCache(@Nullable final HttpCache httpCache) {
+      this.httpCache = httpCache;
       return this;
     }
 
@@ -162,7 +212,7 @@ public final class GraphClient {
     }
 
     /**
-     * Builds the {@code GraphClient} instance with specified configuration options.
+     * Builds the {@link GraphClient} instance with provided configuration options.
      *
      * @return configured {@link GraphClient}
      */
@@ -174,19 +224,23 @@ public final class GraphClient {
 
       checkNotBlank(accessToken, "apiKey == null");
 
-      if (sdkHeaderInterceptor == null) {
-        sdkHeaderInterceptor = sdkHeaderInterceptor(applicationName, accessToken);
+      HttpCache httpCache = this.httpCache;
+      if (httpCache == null && httpCacheFolder != null) {
+        byte[] tmp = (endpointUrl.toString() + "/" + accessToken).getBytes(Charset.forName("UTF-8"));
+        File cacheFolder = new File(httpCacheFolder, ByteString.of(tmp).md5().hex());
+        httpCache = new HttpCache(cacheFolder, httpCacheMaxSize);
       }
 
+      OkHttpClient httpClient = this.httpClient;
       if (httpClient == null) {
         httpClient = defaultOkHttpClient();
       }
-
-      if (!httpClient.interceptors().contains(sdkHeaderInterceptor)) {
-        httpClient = httpClient.newBuilder().addInterceptor(sdkHeaderInterceptor).build();
+      httpClient = httpClient.newBuilder().addInterceptor(sdkHeaderInterceptor(applicationName, accessToken)).build();
+      if (httpCache != null) {
+        httpClient = httpClient.newBuilder().addInterceptor(httpCache.httpInterceptor()).build();
       }
 
-      return new GraphClient(this);
+      return new GraphClient(endpointUrl, httpClient, defaultHttpCachePolicy, httpCache);
     }
 
     OkHttpClient defaultOkHttpClient() {
