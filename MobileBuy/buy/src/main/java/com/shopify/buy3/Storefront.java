@@ -109,6 +109,9 @@ public class Storefront {
         void define(AppliedGiftCardQuery _queryBuilder);
     }
 
+    /**
+    * Details about the gift card used on the checkout.
+    */
     public static class AppliedGiftCardQuery extends Query<AppliedGiftCardQuery> {
         AppliedGiftCardQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
@@ -116,18 +119,27 @@ public class Storefront {
             startField("id");
         }
 
+        /**
+        * The amount that was used taken from the Gift Card by applying it.
+        */
         public AppliedGiftCardQuery amountUsed() {
             startField("amountUsed");
 
             return this;
         }
 
+        /**
+        * The amount left on the Gift Card.
+        */
         public AppliedGiftCardQuery balance() {
             startField("balance");
 
             return this;
         }
 
+        /**
+        * The last characters of the Gift Card code
+        */
         public AppliedGiftCardQuery lastCharacters() {
             startField("lastCharacters");
 
@@ -135,6 +147,9 @@ public class Storefront {
         }
     }
 
+    /**
+    * Details about the gift card used on the checkout.
+    */
     public static class AppliedGiftCard extends AbstractResponse<AppliedGiftCard> implements Node {
         public AppliedGiftCard() {
         }
@@ -184,33 +199,33 @@ public class Storefront {
             optimisticData.put("id", id);
         }
 
-        public List<Node> getNodes() {
-            List<Node> children = new ArrayList<>();
-
-            children.add(this);
-
-            return children;
-        }
-
         public String getGraphQlTypeName() {
             return "AppliedGiftCard";
         }
+
+        /**
+        * The amount that was used taken from the Gift Card by applying it.
+        */
 
         public BigDecimal getAmountUsed() {
             return (BigDecimal) get("amountUsed");
         }
 
         public AppliedGiftCard setAmountUsed(BigDecimal arg) {
-            optimisticData.put("amountUsed", arg);
+            optimisticData.put(getKey("amountUsed"), arg);
             return this;
         }
+
+        /**
+        * The amount left on the Gift Card.
+        */
 
         public BigDecimal getBalance() {
             return (BigDecimal) get("balance");
         }
 
         public AppliedGiftCard setBalance(BigDecimal arg) {
-            optimisticData.put("balance", arg);
+            optimisticData.put(getKey("balance"), arg);
             return this;
         }
 
@@ -218,17 +233,21 @@ public class Storefront {
             return (ID) get("id");
         }
 
+        /**
+        * The last characters of the Gift Card code
+        */
+
         public String getLastCharacters() {
             return (String) get("lastCharacters");
         }
 
         public AppliedGiftCard setLastCharacters(String arg) {
-            optimisticData.put("lastCharacters", arg);
+            optimisticData.put(getKey("lastCharacters"), arg);
             return this;
         }
 
         public boolean unwrapsToObject(String key) {
-            switch (key) {
+            switch (getFieldName(key)) {
                 case "amountUsed": return false;
 
                 case "balance": return false;
@@ -246,17 +265,26 @@ public class Storefront {
         void define(AttributeQuery _queryBuilder);
     }
 
+    /**
+    * Represents a generic custom attribute.
+    */
     public static class AttributeQuery extends Query<AttributeQuery> {
         AttributeQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
         }
 
+        /**
+        * Key or name of the attribute.
+        */
         public AttributeQuery key() {
             startField("key");
 
             return this;
         }
 
+        /**
+        * Value of the attribute.
+        */
         public AttributeQuery value() {
             startField("value");
 
@@ -264,6 +292,9 @@ public class Storefront {
         }
     }
 
+    /**
+    * Represents a generic custom attribute.
+    */
     public static class Attribute extends AbstractResponse<Attribute> {
         public Attribute() {
         }
@@ -301,36 +332,38 @@ public class Storefront {
             }
         }
 
-        public List<Node> getNodes() {
-            List<Node> children = new ArrayList<>();
-
-            return children;
-        }
-
         public String getGraphQlTypeName() {
             return "Attribute";
         }
+
+        /**
+        * Key or name of the attribute.
+        */
 
         public String getKey() {
             return (String) get("key");
         }
 
         public Attribute setKey(String arg) {
-            optimisticData.put("key", arg);
+            optimisticData.put(getKey("key"), arg);
             return this;
         }
+
+        /**
+        * Value of the attribute.
+        */
 
         public String getValue() {
             return (String) get("value");
         }
 
         public Attribute setValue(String arg) {
-            optimisticData.put("value", arg);
+            optimisticData.put(getKey("value"), arg);
             return this;
         }
 
         public boolean unwrapsToObject(String key) {
-            switch (key) {
+            switch (getFieldName(key)) {
                 case "key": return false;
 
                 case "value": return false;
@@ -391,17 +424,28 @@ public class Storefront {
         void define(AvailableShippingRatesQuery _queryBuilder);
     }
 
+    /**
+    * A collection of available shipping rates for a checkout.
+    */
     public static class AvailableShippingRatesQuery extends Query<AvailableShippingRatesQuery> {
         AvailableShippingRatesQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
         }
 
+        /**
+        * Whether or not the shipping rates are ready.
+        * The `shippingRates` field is `null` when this value is `false`.
+        * This field should be polled until its value becomes `true`.
+        */
         public AvailableShippingRatesQuery ready() {
             startField("ready");
 
             return this;
         }
 
+        /**
+        * The fetched shipping rates. `null` until the `ready` field is `true`.
+        */
         public AvailableShippingRatesQuery shippingRates(ShippingRateQueryDefinition queryDef) {
             startField("shippingRates");
 
@@ -413,6 +457,9 @@ public class Storefront {
         }
     }
 
+    /**
+    * A collection of available shipping rates for a checkout.
+    */
     public static class AvailableShippingRates extends AbstractResponse<AvailableShippingRates> {
         public AvailableShippingRates() {
         }
@@ -455,42 +502,40 @@ public class Storefront {
             }
         }
 
-        public List<Node> getNodes() {
-            List<Node> children = new ArrayList<>();
-
-            if (getShippingRates() != null) {
-                for (ShippingRate elem: getShippingRates()) {
-                    children.addAll(elem.getNodes());
-                }
-            }
-
-            return children;
-        }
-
         public String getGraphQlTypeName() {
             return "AvailableShippingRates";
         }
+
+        /**
+        * Whether or not the shipping rates are ready.
+        * The `shippingRates` field is `null` when this value is `false`.
+        * This field should be polled until its value becomes `true`.
+        */
 
         public Boolean getReady() {
             return (Boolean) get("ready");
         }
 
         public AvailableShippingRates setReady(Boolean arg) {
-            optimisticData.put("ready", arg);
+            optimisticData.put(getKey("ready"), arg);
             return this;
         }
+
+        /**
+        * The fetched shipping rates. `null` until the `ready` field is `true`.
+        */
 
         public List<ShippingRate> getShippingRates() {
             return (List<ShippingRate>) get("shippingRates");
         }
 
         public AvailableShippingRates setShippingRates(List<ShippingRate> arg) {
-            optimisticData.put("shippingRates", arg);
+            optimisticData.put(getKey("shippingRates"), arg);
             return this;
         }
 
         public boolean unwrapsToObject(String key) {
-            switch (key) {
+            switch (getFieldName(key)) {
                 case "ready": return false;
 
                 case "shippingRates": return true;
@@ -504,6 +549,9 @@ public class Storefront {
         void define(CheckoutQuery _queryBuilder);
     }
 
+    /**
+    * A container for all the information required to checkout items and pay.
+    */
     public static class CheckoutQuery extends Query<CheckoutQuery> {
         CheckoutQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
@@ -521,6 +569,11 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * The available shipping rates for this Checkout.
+        * Should only be used when checkout `requiresShipping` is `true` and
+        * the shipping address is valid.
+        */
         public CheckoutQuery availableShippingRates(AvailableShippingRatesQueryDefinition queryDef) {
             startField("availableShippingRates");
 
@@ -531,24 +584,36 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * The date and time when the checkout was completed.
+        */
         public CheckoutQuery completedAt() {
             startField("completedAt");
 
             return this;
         }
 
+        /**
+        * The date and time when the checkout was created.
+        */
         public CheckoutQuery createdAt() {
             startField("createdAt");
 
             return this;
         }
 
+        /**
+        * The currency code for the Checkout.
+        */
         public CheckoutQuery currencyCode() {
             startField("currencyCode");
 
             return this;
         }
 
+        /**
+        * A list of extra information that is added to the checkout.
+        */
         public CheckoutQuery customAttributes(AttributeQueryDefinition queryDef) {
             startField("customAttributes");
 
@@ -559,6 +624,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * The customer associated with the checkout.
+        */
         public CheckoutQuery customer(CustomerQueryDefinition queryDef) {
             startField("customer");
 
@@ -569,6 +637,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * The email attached to this checkout.
+        */
         public CheckoutQuery email() {
             startField("email");
 
@@ -601,10 +672,16 @@ public class Storefront {
             void define(LineItemsArguments args);
         }
 
+        /**
+        * A list of line item objects, each one containing information about an item in the checkout.
+        */
         public CheckoutQuery lineItems(int first, CheckoutLineItemConnectionQueryDefinition queryDef) {
             return lineItems(first, args -> {}, queryDef);
         }
 
+        /**
+        * A list of line item objects, each one containing information about an item in the checkout.
+        */
         public CheckoutQuery lineItems(int first, LineItemsArgumentsDefinition argsDef, CheckoutLineItemConnectionQueryDefinition queryDef) {
             startField("lineItems");
 
@@ -628,6 +705,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * The resulting order from a paid checkout.
+        */
         public CheckoutQuery order(OrderQueryDefinition queryDef) {
             startField("order");
 
@@ -638,30 +718,48 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * The Order Status Page for this Checkout, null when checkout is not completed.
+        */
         public CheckoutQuery orderStatusUrl() {
             startField("orderStatusUrl");
 
             return this;
         }
 
+        /**
+        * The amount left to be paid. This is equal to the cost of the line items, taxes and shipping minus
+        * discounts and gift cards.
+        */
         public CheckoutQuery paymentDue() {
             startField("paymentDue");
 
             return this;
         }
 
+        /**
+        * Whether or not the Checkout is ready and can be completed. Checkouts may have asynchronous
+        * operations that can take time to finish. If you want to complete a checkout or ensure all the fields
+        * are populated and up to date, polling is required until the value is true. 
+        */
         public CheckoutQuery ready() {
             startField("ready");
 
             return this;
         }
 
+        /**
+        * States whether or not the fulfillment requires shipping.
+        */
         public CheckoutQuery requiresShipping() {
             startField("requiresShipping");
 
             return this;
         }
 
+        /**
+        * The shipping address to where the line items will be shipped.
+        */
         public CheckoutQuery shippingAddress(MailingAddressQueryDefinition queryDef) {
             startField("shippingAddress");
 
@@ -672,6 +770,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * Once a shipping rate is selected by the customer it is transitioned to a `shipping_line` object.
+        */
         public CheckoutQuery shippingLine(ShippingRateQueryDefinition queryDef) {
             startField("shippingLine");
 
@@ -682,48 +783,63 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * Price of the checkout before shipping, taxes, and discounts.
+        */
         public CheckoutQuery subtotalPrice() {
             startField("subtotalPrice");
 
             return this;
         }
 
+        /**
+        * Specifies if the Checkout is tax exempt.
+        */
         public CheckoutQuery taxExempt() {
             startField("taxExempt");
 
             return this;
         }
 
+        /**
+        * Specifies if taxes are included in the line item and shipping line prices.
+        */
         public CheckoutQuery taxesIncluded() {
             startField("taxesIncluded");
 
             return this;
         }
 
+        /**
+        * The sum of all the prices of all the items in the checkout, taxes and discounts included.
+        */
         public CheckoutQuery totalPrice() {
             startField("totalPrice");
 
             return this;
         }
 
+        /**
+        * The sum of all the taxes applied to the line items and shipping lines in the checkout.
+        */
         public CheckoutQuery totalTax() {
             startField("totalTax");
 
             return this;
         }
 
+        /**
+        * The date and time when the checkout was last updated.
+        */
         public CheckoutQuery updatedAt() {
             startField("updatedAt");
 
             return this;
         }
 
-        public CheckoutQuery vaultUrl() {
-            startField("vaultUrl");
-
-            return this;
-        }
-
+        /**
+        * The url pointing to the checkout accessible from the web.
+        */
         public CheckoutQuery webUrl() {
             startField("webUrl");
 
@@ -731,6 +847,9 @@ public class Storefront {
         }
     }
 
+    /**
+    * A container for all the information required to checkout items and pay.
+    */
     public static class Checkout extends AbstractResponse<Checkout> implements Node {
         public Checkout() {
         }
@@ -939,12 +1058,6 @@ public class Storefront {
                         break;
                     }
 
-                    case "vaultUrl": {
-                        responseData.put(key, jsonAsString(field.getValue(), key));
-
-                        break;
-                    }
-
                     case "webUrl": {
                         responseData.put(key, jsonAsString(field.getValue(), key));
 
@@ -967,50 +1080,6 @@ public class Storefront {
             optimisticData.put("id", id);
         }
 
-        public List<Node> getNodes() {
-            List<Node> children = new ArrayList<>();
-
-            children.add(this);
-
-            if (getAppliedGiftCards() != null) {
-                for (AppliedGiftCard elem: getAppliedGiftCards()) {
-                    children.addAll(elem.getNodes());
-                }
-            }
-
-            if (getAvailableShippingRates() != null) {
-                children.addAll(getAvailableShippingRates().getNodes());
-            }
-
-            if (getCustomAttributes() != null) {
-                for (Attribute elem: getCustomAttributes()) {
-                    children.addAll(elem.getNodes());
-                }
-            }
-
-            if (getCustomer() != null) {
-                children.addAll(getCustomer().getNodes());
-            }
-
-            if (getLineItems() != null) {
-                children.addAll(getLineItems().getNodes());
-            }
-
-            if (getOrder() != null) {
-                children.addAll(getOrder().getNodes());
-            }
-
-            if (getShippingAddress() != null) {
-                children.addAll(getShippingAddress().getNodes());
-            }
-
-            if (getShippingLine() != null) {
-                children.addAll(getShippingLine().getNodes());
-            }
-
-            return children;
-        }
-
         public String getGraphQlTypeName() {
             return "Checkout";
         }
@@ -1020,70 +1089,100 @@ public class Storefront {
         }
 
         public Checkout setAppliedGiftCards(List<AppliedGiftCard> arg) {
-            optimisticData.put("appliedGiftCards", arg);
+            optimisticData.put(getKey("appliedGiftCards"), arg);
             return this;
         }
+
+        /**
+        * The available shipping rates for this Checkout.
+        * Should only be used when checkout `requiresShipping` is `true` and
+        * the shipping address is valid.
+        */
 
         public AvailableShippingRates getAvailableShippingRates() {
             return (AvailableShippingRates) get("availableShippingRates");
         }
 
         public Checkout setAvailableShippingRates(AvailableShippingRates arg) {
-            optimisticData.put("availableShippingRates", arg);
+            optimisticData.put(getKey("availableShippingRates"), arg);
             return this;
         }
+
+        /**
+        * The date and time when the checkout was completed.
+        */
 
         public DateTime getCompletedAt() {
             return (DateTime) get("completedAt");
         }
 
         public Checkout setCompletedAt(DateTime arg) {
-            optimisticData.put("completedAt", arg);
+            optimisticData.put(getKey("completedAt"), arg);
             return this;
         }
+
+        /**
+        * The date and time when the checkout was created.
+        */
 
         public DateTime getCreatedAt() {
             return (DateTime) get("createdAt");
         }
 
         public Checkout setCreatedAt(DateTime arg) {
-            optimisticData.put("createdAt", arg);
+            optimisticData.put(getKey("createdAt"), arg);
             return this;
         }
+
+        /**
+        * The currency code for the Checkout.
+        */
 
         public CurrencyCode getCurrencyCode() {
             return (CurrencyCode) get("currencyCode");
         }
 
         public Checkout setCurrencyCode(CurrencyCode arg) {
-            optimisticData.put("currencyCode", arg);
+            optimisticData.put(getKey("currencyCode"), arg);
             return this;
         }
+
+        /**
+        * A list of extra information that is added to the checkout.
+        */
 
         public List<Attribute> getCustomAttributes() {
             return (List<Attribute>) get("customAttributes");
         }
 
         public Checkout setCustomAttributes(List<Attribute> arg) {
-            optimisticData.put("customAttributes", arg);
+            optimisticData.put(getKey("customAttributes"), arg);
             return this;
         }
+
+        /**
+        * The customer associated with the checkout.
+        */
 
         public Customer getCustomer() {
             return (Customer) get("customer");
         }
 
         public Checkout setCustomer(Customer arg) {
-            optimisticData.put("customer", arg);
+            optimisticData.put(getKey("customer"), arg);
             return this;
         }
+
+        /**
+        * The email attached to this checkout.
+        */
 
         public String getEmail() {
             return (String) get("email");
         }
 
         public Checkout setEmail(String arg) {
-            optimisticData.put("email", arg);
+            optimisticData.put(getKey("email"), arg);
             return this;
         }
 
@@ -1091,12 +1190,16 @@ public class Storefront {
             return (ID) get("id");
         }
 
+        /**
+        * A list of line item objects, each one containing information about an item in the checkout.
+        */
+
         public CheckoutLineItemConnection getLineItems() {
             return (CheckoutLineItemConnection) get("lineItems");
         }
 
         public Checkout setLineItems(CheckoutLineItemConnection arg) {
-            optimisticData.put("lineItems", arg);
+            optimisticData.put(getKey("lineItems"), arg);
             return this;
         }
 
@@ -1105,147 +1208,197 @@ public class Storefront {
         }
 
         public Checkout setNote(String arg) {
-            optimisticData.put("note", arg);
+            optimisticData.put(getKey("note"), arg);
             return this;
         }
+
+        /**
+        * The resulting order from a paid checkout.
+        */
 
         public Order getOrder() {
             return (Order) get("order");
         }
 
         public Checkout setOrder(Order arg) {
-            optimisticData.put("order", arg);
+            optimisticData.put(getKey("order"), arg);
             return this;
         }
+
+        /**
+        * The Order Status Page for this Checkout, null when checkout is not completed.
+        */
 
         public String getOrderStatusUrl() {
             return (String) get("orderStatusUrl");
         }
 
         public Checkout setOrderStatusUrl(String arg) {
-            optimisticData.put("orderStatusUrl", arg);
+            optimisticData.put(getKey("orderStatusUrl"), arg);
             return this;
         }
+
+        /**
+        * The amount left to be paid. This is equal to the cost of the line items, taxes and shipping minus
+        * discounts and gift cards.
+        */
 
         public BigDecimal getPaymentDue() {
             return (BigDecimal) get("paymentDue");
         }
 
         public Checkout setPaymentDue(BigDecimal arg) {
-            optimisticData.put("paymentDue", arg);
+            optimisticData.put(getKey("paymentDue"), arg);
             return this;
         }
+
+        /**
+        * Whether or not the Checkout is ready and can be completed. Checkouts may have asynchronous
+        * operations that can take time to finish. If you want to complete a checkout or ensure all the fields
+        * are populated and up to date, polling is required until the value is true. 
+        */
 
         public Boolean getReady() {
             return (Boolean) get("ready");
         }
 
         public Checkout setReady(Boolean arg) {
-            optimisticData.put("ready", arg);
+            optimisticData.put(getKey("ready"), arg);
             return this;
         }
+
+        /**
+        * States whether or not the fulfillment requires shipping.
+        */
 
         public Boolean getRequiresShipping() {
             return (Boolean) get("requiresShipping");
         }
 
         public Checkout setRequiresShipping(Boolean arg) {
-            optimisticData.put("requiresShipping", arg);
+            optimisticData.put(getKey("requiresShipping"), arg);
             return this;
         }
+
+        /**
+        * The shipping address to where the line items will be shipped.
+        */
 
         public MailingAddress getShippingAddress() {
             return (MailingAddress) get("shippingAddress");
         }
 
         public Checkout setShippingAddress(MailingAddress arg) {
-            optimisticData.put("shippingAddress", arg);
+            optimisticData.put(getKey("shippingAddress"), arg);
             return this;
         }
+
+        /**
+        * Once a shipping rate is selected by the customer it is transitioned to a `shipping_line` object.
+        */
 
         public ShippingRate getShippingLine() {
             return (ShippingRate) get("shippingLine");
         }
 
         public Checkout setShippingLine(ShippingRate arg) {
-            optimisticData.put("shippingLine", arg);
+            optimisticData.put(getKey("shippingLine"), arg);
             return this;
         }
+
+        /**
+        * Price of the checkout before shipping, taxes, and discounts.
+        */
 
         public BigDecimal getSubtotalPrice() {
             return (BigDecimal) get("subtotalPrice");
         }
 
         public Checkout setSubtotalPrice(BigDecimal arg) {
-            optimisticData.put("subtotalPrice", arg);
+            optimisticData.put(getKey("subtotalPrice"), arg);
             return this;
         }
+
+        /**
+        * Specifies if the Checkout is tax exempt.
+        */
 
         public Boolean getTaxExempt() {
             return (Boolean) get("taxExempt");
         }
 
         public Checkout setTaxExempt(Boolean arg) {
-            optimisticData.put("taxExempt", arg);
+            optimisticData.put(getKey("taxExempt"), arg);
             return this;
         }
+
+        /**
+        * Specifies if taxes are included in the line item and shipping line prices.
+        */
 
         public Boolean getTaxesIncluded() {
             return (Boolean) get("taxesIncluded");
         }
 
         public Checkout setTaxesIncluded(Boolean arg) {
-            optimisticData.put("taxesIncluded", arg);
+            optimisticData.put(getKey("taxesIncluded"), arg);
             return this;
         }
+
+        /**
+        * The sum of all the prices of all the items in the checkout, taxes and discounts included.
+        */
 
         public BigDecimal getTotalPrice() {
             return (BigDecimal) get("totalPrice");
         }
 
         public Checkout setTotalPrice(BigDecimal arg) {
-            optimisticData.put("totalPrice", arg);
+            optimisticData.put(getKey("totalPrice"), arg);
             return this;
         }
+
+        /**
+        * The sum of all the taxes applied to the line items and shipping lines in the checkout.
+        */
 
         public BigDecimal getTotalTax() {
             return (BigDecimal) get("totalTax");
         }
 
         public Checkout setTotalTax(BigDecimal arg) {
-            optimisticData.put("totalTax", arg);
+            optimisticData.put(getKey("totalTax"), arg);
             return this;
         }
+
+        /**
+        * The date and time when the checkout was last updated.
+        */
 
         public DateTime getUpdatedAt() {
             return (DateTime) get("updatedAt");
         }
 
         public Checkout setUpdatedAt(DateTime arg) {
-            optimisticData.put("updatedAt", arg);
+            optimisticData.put(getKey("updatedAt"), arg);
             return this;
         }
 
-        public String getVaultUrl() {
-            return (String) get("vaultUrl");
-        }
-
-        public Checkout setVaultUrl(String arg) {
-            optimisticData.put("vaultUrl", arg);
-            return this;
-        }
+        /**
+        * The url pointing to the checkout accessible from the web.
+        */
 
         public String getWebUrl() {
             return (String) get("webUrl");
         }
 
         public Checkout setWebUrl(String arg) {
-            optimisticData.put("webUrl", arg);
+            optimisticData.put(getKey("webUrl"), arg);
             return this;
         }
 
         public boolean unwrapsToObject(String key) {
-            switch (key) {
+            switch (getFieldName(key)) {
                 case "appliedGiftCards": return true;
 
                 case "availableShippingRates": return true;
@@ -1294,8 +1447,6 @@ public class Storefront {
 
                 case "updatedAt": return false;
 
-                case "vaultUrl": return false;
-
                 case "webUrl": return false;
 
                 default: return false;
@@ -1304,18 +1455,18 @@ public class Storefront {
     }
 
     public static class CheckoutAttributesUpdateInput implements Serializable {
-        private Boolean allowPartialAddresses;
+        private String note;
 
         private List<AttributeInput> customAttributes;
 
-        private String note;
+        private Boolean allowPartialAddresses;
 
-        public Boolean getAllowPartialAddresses() {
-            return allowPartialAddresses;
+        public String getNote() {
+            return note;
         }
 
-        public CheckoutAttributesUpdateInput setAllowPartialAddresses(Boolean allowPartialAddresses) {
-            this.allowPartialAddresses = allowPartialAddresses;
+        public CheckoutAttributesUpdateInput setNote(String note) {
+            this.note = note;
             return this;
         }
 
@@ -1328,12 +1479,12 @@ public class Storefront {
             return this;
         }
 
-        public String getNote() {
-            return note;
+        public Boolean getAllowPartialAddresses() {
+            return allowPartialAddresses;
         }
 
-        public CheckoutAttributesUpdateInput setNote(String note) {
-            this.note = note;
+        public CheckoutAttributesUpdateInput setAllowPartialAddresses(Boolean allowPartialAddresses) {
+            this.allowPartialAddresses = allowPartialAddresses;
             return this;
         }
 
@@ -1341,11 +1492,11 @@ public class Storefront {
             String separator = "";
             _queryBuilder.append('{');
 
-            if (allowPartialAddresses != null) {
+            if (note != null) {
                 _queryBuilder.append(separator);
                 separator = ",";
-                _queryBuilder.append("allowPartialAddresses:");
-                _queryBuilder.append(allowPartialAddresses);
+                _queryBuilder.append("note:");
+                Query.appendQuotedString(_queryBuilder, note.toString());
             }
 
             if (customAttributes != null) {
@@ -1363,11 +1514,11 @@ public class Storefront {
                 _queryBuilder.append(']');
             }
 
-            if (note != null) {
+            if (allowPartialAddresses != null) {
                 _queryBuilder.append(separator);
                 separator = ",";
-                _queryBuilder.append("note:");
-                Query.appendQuotedString(_queryBuilder, note.toString());
+                _queryBuilder.append("allowPartialAddresses:");
+                _queryBuilder.append(allowPartialAddresses);
             }
 
             _queryBuilder.append('}');
@@ -1383,6 +1534,9 @@ public class Storefront {
             super(_queryBuilder);
         }
 
+        /**
+        * The updated checkout object.
+        */
         public CheckoutAttributesUpdatePayloadQuery checkout(CheckoutQueryDefinition queryDef) {
             startField("checkout");
 
@@ -1393,6 +1547,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * List of errors that occurred executing the mutation.
+        */
         public CheckoutAttributesUpdatePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
 
@@ -1441,46 +1598,38 @@ public class Storefront {
             }
         }
 
-        public List<Node> getNodes() {
-            List<Node> children = new ArrayList<>();
-
-            if (getCheckout() != null) {
-                children.addAll(getCheckout().getNodes());
-            }
-
-            if (getUserErrors() != null) {
-                for (UserError elem: getUserErrors()) {
-                    children.addAll(elem.getNodes());
-                }
-            }
-
-            return children;
-        }
-
         public String getGraphQlTypeName() {
             return "CheckoutAttributesUpdatePayload";
         }
+
+        /**
+        * The updated checkout object.
+        */
 
         public Checkout getCheckout() {
             return (Checkout) get("checkout");
         }
 
         public CheckoutAttributesUpdatePayload setCheckout(Checkout arg) {
-            optimisticData.put("checkout", arg);
+            optimisticData.put(getKey("checkout"), arg);
             return this;
         }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        */
 
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
 
         public CheckoutAttributesUpdatePayload setUserErrors(List<UserError> arg) {
-            optimisticData.put("userErrors", arg);
+            optimisticData.put(getKey("userErrors"), arg);
             return this;
         }
 
         public boolean unwrapsToObject(String key) {
-            switch (key) {
+            switch (getFieldName(key)) {
                 case "checkout": return true;
 
                 case "userErrors": return true;
@@ -1499,6 +1648,9 @@ public class Storefront {
             super(_queryBuilder);
         }
 
+        /**
+        * The updated checkout object.
+        */
         public CheckoutCompleteFreePayloadQuery checkout(CheckoutQueryDefinition queryDef) {
             startField("checkout");
 
@@ -1509,6 +1661,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * List of errors that occurred executing the mutation.
+        */
         public CheckoutCompleteFreePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
 
@@ -1562,46 +1717,38 @@ public class Storefront {
             }
         }
 
-        public List<Node> getNodes() {
-            List<Node> children = new ArrayList<>();
-
-            if (getCheckout() != null) {
-                children.addAll(getCheckout().getNodes());
-            }
-
-            if (getUserErrors() != null) {
-                for (UserError elem: getUserErrors()) {
-                    children.addAll(elem.getNodes());
-                }
-            }
-
-            return children;
-        }
-
         public String getGraphQlTypeName() {
             return "CheckoutCompleteFreePayload";
         }
+
+        /**
+        * The updated checkout object.
+        */
 
         public Checkout getCheckout() {
             return (Checkout) get("checkout");
         }
 
         public CheckoutCompleteFreePayload setCheckout(Checkout arg) {
-            optimisticData.put("checkout", arg);
+            optimisticData.put(getKey("checkout"), arg);
             return this;
         }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        */
 
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
 
         public CheckoutCompleteFreePayload setUserErrors(List<UserError> arg) {
-            optimisticData.put("userErrors", arg);
+            optimisticData.put(getKey("userErrors"), arg);
             return this;
         }
 
         public boolean unwrapsToObject(String key) {
-            switch (key) {
+            switch (getFieldName(key)) {
                 case "checkout": return true;
 
                 case "userErrors": return true;
@@ -1620,6 +1767,9 @@ public class Storefront {
             super(_queryBuilder);
         }
 
+        /**
+        * The checkout on which the payment was applied.
+        */
         public CheckoutCompleteWithCreditCardPayloadQuery checkout(CheckoutQueryDefinition queryDef) {
             startField("checkout");
 
@@ -1630,6 +1780,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * A representation of the attempted payment.
+        */
         public CheckoutCompleteWithCreditCardPayloadQuery payment(PaymentQueryDefinition queryDef) {
             startField("payment");
 
@@ -1640,6 +1793,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * List of errors that occurred executing the mutation.
+        */
         public CheckoutCompleteWithCreditCardPayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
 
@@ -1699,59 +1855,51 @@ public class Storefront {
             }
         }
 
-        public List<Node> getNodes() {
-            List<Node> children = new ArrayList<>();
-
-            if (getCheckout() != null) {
-                children.addAll(getCheckout().getNodes());
-            }
-
-            if (getPayment() != null) {
-                children.addAll(getPayment().getNodes());
-            }
-
-            if (getUserErrors() != null) {
-                for (UserError elem: getUserErrors()) {
-                    children.addAll(elem.getNodes());
-                }
-            }
-
-            return children;
-        }
-
         public String getGraphQlTypeName() {
             return "CheckoutCompleteWithCreditCardPayload";
         }
+
+        /**
+        * The checkout on which the payment was applied.
+        */
 
         public Checkout getCheckout() {
             return (Checkout) get("checkout");
         }
 
         public CheckoutCompleteWithCreditCardPayload setCheckout(Checkout arg) {
-            optimisticData.put("checkout", arg);
+            optimisticData.put(getKey("checkout"), arg);
             return this;
         }
+
+        /**
+        * A representation of the attempted payment.
+        */
 
         public Payment getPayment() {
             return (Payment) get("payment");
         }
 
         public CheckoutCompleteWithCreditCardPayload setPayment(Payment arg) {
-            optimisticData.put("payment", arg);
+            optimisticData.put(getKey("payment"), arg);
             return this;
         }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        */
 
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
 
         public CheckoutCompleteWithCreditCardPayload setUserErrors(List<UserError> arg) {
-            optimisticData.put("userErrors", arg);
+            optimisticData.put(getKey("userErrors"), arg);
             return this;
         }
 
         public boolean unwrapsToObject(String key) {
-            switch (key) {
+            switch (getFieldName(key)) {
                 case "checkout": return true;
 
                 case "payment": return true;
@@ -1772,6 +1920,9 @@ public class Storefront {
             super(_queryBuilder);
         }
 
+        /**
+        * The checkout on which the payment was applied.
+        */
         public CheckoutCompleteWithTokenizedPaymentPayloadQuery checkout(CheckoutQueryDefinition queryDef) {
             startField("checkout");
 
@@ -1782,6 +1933,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * A representation of the attempted payment.
+        */
         public CheckoutCompleteWithTokenizedPaymentPayloadQuery payment(PaymentQueryDefinition queryDef) {
             startField("payment");
 
@@ -1792,6 +1946,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * List of errors that occurred executing the mutation.
+        */
         public CheckoutCompleteWithTokenizedPaymentPayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
 
@@ -1851,59 +2008,51 @@ public class Storefront {
             }
         }
 
-        public List<Node> getNodes() {
-            List<Node> children = new ArrayList<>();
-
-            if (getCheckout() != null) {
-                children.addAll(getCheckout().getNodes());
-            }
-
-            if (getPayment() != null) {
-                children.addAll(getPayment().getNodes());
-            }
-
-            if (getUserErrors() != null) {
-                for (UserError elem: getUserErrors()) {
-                    children.addAll(elem.getNodes());
-                }
-            }
-
-            return children;
-        }
-
         public String getGraphQlTypeName() {
             return "CheckoutCompleteWithTokenizedPaymentPayload";
         }
+
+        /**
+        * The checkout on which the payment was applied.
+        */
 
         public Checkout getCheckout() {
             return (Checkout) get("checkout");
         }
 
         public CheckoutCompleteWithTokenizedPaymentPayload setCheckout(Checkout arg) {
-            optimisticData.put("checkout", arg);
+            optimisticData.put(getKey("checkout"), arg);
             return this;
         }
+
+        /**
+        * A representation of the attempted payment.
+        */
 
         public Payment getPayment() {
             return (Payment) get("payment");
         }
 
         public CheckoutCompleteWithTokenizedPaymentPayload setPayment(Payment arg) {
-            optimisticData.put("payment", arg);
+            optimisticData.put(getKey("payment"), arg);
             return this;
         }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        */
 
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
 
         public CheckoutCompleteWithTokenizedPaymentPayload setUserErrors(List<UserError> arg) {
-            optimisticData.put("userErrors", arg);
+            optimisticData.put(getKey("userErrors"), arg);
             return this;
         }
 
         public boolean unwrapsToObject(String key) {
-            switch (key) {
+            switch (getFieldName(key)) {
                 case "checkout": return true;
 
                 case "payment": return true;
@@ -1916,35 +2065,17 @@ public class Storefront {
     }
 
     public static class CheckoutCreateInput implements Serializable {
-        private Boolean allowPartialAddresses;
-
-        private List<AttributeInput> customAttributes;
-
         private String email;
 
         private List<CheckoutLineItemInput> lineItems;
 
-        private String note;
-
         private MailingAddressInput shippingAddress;
 
-        public Boolean getAllowPartialAddresses() {
-            return allowPartialAddresses;
-        }
+        private String note;
 
-        public CheckoutCreateInput setAllowPartialAddresses(Boolean allowPartialAddresses) {
-            this.allowPartialAddresses = allowPartialAddresses;
-            return this;
-        }
+        private List<AttributeInput> customAttributes;
 
-        public List<AttributeInput> getCustomAttributes() {
-            return customAttributes;
-        }
-
-        public CheckoutCreateInput setCustomAttributes(List<AttributeInput> customAttributes) {
-            this.customAttributes = customAttributes;
-            return this;
-        }
+        private Boolean allowPartialAddresses;
 
         public String getEmail() {
             return email;
@@ -1964,15 +2095,6 @@ public class Storefront {
             return this;
         }
 
-        public String getNote() {
-            return note;
-        }
-
-        public CheckoutCreateInput setNote(String note) {
-            this.note = note;
-            return this;
-        }
-
         public MailingAddressInput getShippingAddress() {
             return shippingAddress;
         }
@@ -1982,31 +2104,36 @@ public class Storefront {
             return this;
         }
 
+        public String getNote() {
+            return note;
+        }
+
+        public CheckoutCreateInput setNote(String note) {
+            this.note = note;
+            return this;
+        }
+
+        public List<AttributeInput> getCustomAttributes() {
+            return customAttributes;
+        }
+
+        public CheckoutCreateInput setCustomAttributes(List<AttributeInput> customAttributes) {
+            this.customAttributes = customAttributes;
+            return this;
+        }
+
+        public Boolean getAllowPartialAddresses() {
+            return allowPartialAddresses;
+        }
+
+        public CheckoutCreateInput setAllowPartialAddresses(Boolean allowPartialAddresses) {
+            this.allowPartialAddresses = allowPartialAddresses;
+            return this;
+        }
+
         public void appendTo(StringBuilder _queryBuilder) {
             String separator = "";
             _queryBuilder.append('{');
-
-            if (allowPartialAddresses != null) {
-                _queryBuilder.append(separator);
-                separator = ",";
-                _queryBuilder.append("allowPartialAddresses:");
-                _queryBuilder.append(allowPartialAddresses);
-            }
-
-            if (customAttributes != null) {
-                _queryBuilder.append(separator);
-                separator = ",";
-                _queryBuilder.append("customAttributes:");
-                _queryBuilder.append('[');
-
-                String listSeperator1 = "";
-                for (AttributeInput item1 : customAttributes) {
-                    _queryBuilder.append(listSeperator1);
-                    listSeperator1 = ",";
-                    item1.appendTo(_queryBuilder);
-                }
-                _queryBuilder.append(']');
-            }
 
             if (email != null) {
                 _queryBuilder.append(separator);
@@ -2030,6 +2157,13 @@ public class Storefront {
                 _queryBuilder.append(']');
             }
 
+            if (shippingAddress != null) {
+                _queryBuilder.append(separator);
+                separator = ",";
+                _queryBuilder.append("shippingAddress:");
+                shippingAddress.appendTo(_queryBuilder);
+            }
+
             if (note != null) {
                 _queryBuilder.append(separator);
                 separator = ",";
@@ -2037,11 +2171,26 @@ public class Storefront {
                 Query.appendQuotedString(_queryBuilder, note.toString());
             }
 
-            if (shippingAddress != null) {
+            if (customAttributes != null) {
                 _queryBuilder.append(separator);
                 separator = ",";
-                _queryBuilder.append("shippingAddress:");
-                shippingAddress.appendTo(_queryBuilder);
+                _queryBuilder.append("customAttributes:");
+                _queryBuilder.append('[');
+
+                String listSeperator1 = "";
+                for (AttributeInput item1 : customAttributes) {
+                    _queryBuilder.append(listSeperator1);
+                    listSeperator1 = ",";
+                    item1.appendTo(_queryBuilder);
+                }
+                _queryBuilder.append(']');
+            }
+
+            if (allowPartialAddresses != null) {
+                _queryBuilder.append(separator);
+                separator = ",";
+                _queryBuilder.append("allowPartialAddresses:");
+                _queryBuilder.append(allowPartialAddresses);
             }
 
             _queryBuilder.append('}');
@@ -2057,6 +2206,9 @@ public class Storefront {
             super(_queryBuilder);
         }
 
+        /**
+        * The new checkout object.
+        */
         public CheckoutCreatePayloadQuery checkout(CheckoutQueryDefinition queryDef) {
             startField("checkout");
 
@@ -2067,6 +2219,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * List of errors that occurred executing the mutation.
+        */
         public CheckoutCreatePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
 
@@ -2120,46 +2275,38 @@ public class Storefront {
             }
         }
 
-        public List<Node> getNodes() {
-            List<Node> children = new ArrayList<>();
-
-            if (getCheckout() != null) {
-                children.addAll(getCheckout().getNodes());
-            }
-
-            if (getUserErrors() != null) {
-                for (UserError elem: getUserErrors()) {
-                    children.addAll(elem.getNodes());
-                }
-            }
-
-            return children;
-        }
-
         public String getGraphQlTypeName() {
             return "CheckoutCreatePayload";
         }
+
+        /**
+        * The new checkout object.
+        */
 
         public Checkout getCheckout() {
             return (Checkout) get("checkout");
         }
 
         public CheckoutCreatePayload setCheckout(Checkout arg) {
-            optimisticData.put("checkout", arg);
+            optimisticData.put(getKey("checkout"), arg);
             return this;
         }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        */
 
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
 
         public CheckoutCreatePayload setUserErrors(List<UserError> arg) {
-            optimisticData.put("userErrors", arg);
+            optimisticData.put(getKey("userErrors"), arg);
             return this;
         }
 
         public boolean unwrapsToObject(String key) {
-            switch (key) {
+            switch (getFieldName(key)) {
                 case "checkout": return true;
 
                 case "userErrors": return true;
@@ -2178,6 +2325,9 @@ public class Storefront {
             super(_queryBuilder);
         }
 
+        /**
+        * The updated checkout object.
+        */
         public CheckoutCustomerAssociatePayloadQuery checkout(CheckoutQueryDefinition queryDef) {
             startField("checkout");
 
@@ -2188,6 +2338,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * List of errors that occurred executing the mutation.
+        */
         public CheckoutCustomerAssociatePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
 
@@ -2236,46 +2389,38 @@ public class Storefront {
             }
         }
 
-        public List<Node> getNodes() {
-            List<Node> children = new ArrayList<>();
-
-            if (getCheckout() != null) {
-                children.addAll(getCheckout().getNodes());
-            }
-
-            if (getUserErrors() != null) {
-                for (UserError elem: getUserErrors()) {
-                    children.addAll(elem.getNodes());
-                }
-            }
-
-            return children;
-        }
-
         public String getGraphQlTypeName() {
             return "CheckoutCustomerAssociatePayload";
         }
+
+        /**
+        * The updated checkout object.
+        */
 
         public Checkout getCheckout() {
             return (Checkout) get("checkout");
         }
 
         public CheckoutCustomerAssociatePayload setCheckout(Checkout arg) {
-            optimisticData.put("checkout", arg);
+            optimisticData.put(getKey("checkout"), arg);
             return this;
         }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        */
 
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
 
         public CheckoutCustomerAssociatePayload setUserErrors(List<UserError> arg) {
-            optimisticData.put("userErrors", arg);
+            optimisticData.put(getKey("userErrors"), arg);
             return this;
         }
 
         public boolean unwrapsToObject(String key) {
-            switch (key) {
+            switch (getFieldName(key)) {
                 case "checkout": return true;
 
                 case "userErrors": return true;
@@ -2294,6 +2439,9 @@ public class Storefront {
             super(_queryBuilder);
         }
 
+        /**
+        * The updated checkout object.
+        */
         public CheckoutCustomerDisassociatePayloadQuery checkout(CheckoutQueryDefinition queryDef) {
             startField("checkout");
 
@@ -2304,6 +2452,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * List of errors that occurred executing the mutation.
+        */
         public CheckoutCustomerDisassociatePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
 
@@ -2352,46 +2503,38 @@ public class Storefront {
             }
         }
 
-        public List<Node> getNodes() {
-            List<Node> children = new ArrayList<>();
-
-            if (getCheckout() != null) {
-                children.addAll(getCheckout().getNodes());
-            }
-
-            if (getUserErrors() != null) {
-                for (UserError elem: getUserErrors()) {
-                    children.addAll(elem.getNodes());
-                }
-            }
-
-            return children;
-        }
-
         public String getGraphQlTypeName() {
             return "CheckoutCustomerDisassociatePayload";
         }
+
+        /**
+        * The updated checkout object.
+        */
 
         public Checkout getCheckout() {
             return (Checkout) get("checkout");
         }
 
         public CheckoutCustomerDisassociatePayload setCheckout(Checkout arg) {
-            optimisticData.put("checkout", arg);
+            optimisticData.put(getKey("checkout"), arg);
             return this;
         }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        */
 
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
 
         public CheckoutCustomerDisassociatePayload setUserErrors(List<UserError> arg) {
-            optimisticData.put("userErrors", arg);
+            optimisticData.put(getKey("userErrors"), arg);
             return this;
         }
 
         public boolean unwrapsToObject(String key) {
-            switch (key) {
+            switch (getFieldName(key)) {
                 case "checkout": return true;
 
                 case "userErrors": return true;
@@ -2410,6 +2553,9 @@ public class Storefront {
             super(_queryBuilder);
         }
 
+        /**
+        * The checkout object with the updated email.
+        */
         public CheckoutEmailUpdatePayloadQuery checkout(CheckoutQueryDefinition queryDef) {
             startField("checkout");
 
@@ -2420,6 +2566,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * List of errors that occurred executing the mutation.
+        */
         public CheckoutEmailUpdatePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
 
@@ -2468,46 +2617,38 @@ public class Storefront {
             }
         }
 
-        public List<Node> getNodes() {
-            List<Node> children = new ArrayList<>();
-
-            if (getCheckout() != null) {
-                children.addAll(getCheckout().getNodes());
-            }
-
-            if (getUserErrors() != null) {
-                for (UserError elem: getUserErrors()) {
-                    children.addAll(elem.getNodes());
-                }
-            }
-
-            return children;
-        }
-
         public String getGraphQlTypeName() {
             return "CheckoutEmailUpdatePayload";
         }
+
+        /**
+        * The checkout object with the updated email.
+        */
 
         public Checkout getCheckout() {
             return (Checkout) get("checkout");
         }
 
         public CheckoutEmailUpdatePayload setCheckout(Checkout arg) {
-            optimisticData.put("checkout", arg);
+            optimisticData.put(getKey("checkout"), arg);
             return this;
         }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        */
 
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
 
         public CheckoutEmailUpdatePayload setUserErrors(List<UserError> arg) {
-            optimisticData.put("userErrors", arg);
+            optimisticData.put(getKey("userErrors"), arg);
             return this;
         }
 
         public boolean unwrapsToObject(String key) {
-            switch (key) {
+            switch (getFieldName(key)) {
                 case "checkout": return true;
 
                 case "userErrors": return true;
@@ -2526,6 +2667,9 @@ public class Storefront {
             super(_queryBuilder);
         }
 
+        /**
+        * The updated checkout object.
+        */
         public CheckoutGiftCardApplyPayloadQuery checkout(CheckoutQueryDefinition queryDef) {
             startField("checkout");
 
@@ -2536,6 +2680,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * List of errors that occurred executing the mutation.
+        */
         public CheckoutGiftCardApplyPayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
 
@@ -2584,46 +2731,38 @@ public class Storefront {
             }
         }
 
-        public List<Node> getNodes() {
-            List<Node> children = new ArrayList<>();
-
-            if (getCheckout() != null) {
-                children.addAll(getCheckout().getNodes());
-            }
-
-            if (getUserErrors() != null) {
-                for (UserError elem: getUserErrors()) {
-                    children.addAll(elem.getNodes());
-                }
-            }
-
-            return children;
-        }
-
         public String getGraphQlTypeName() {
             return "CheckoutGiftCardApplyPayload";
         }
+
+        /**
+        * The updated checkout object.
+        */
 
         public Checkout getCheckout() {
             return (Checkout) get("checkout");
         }
 
         public CheckoutGiftCardApplyPayload setCheckout(Checkout arg) {
-            optimisticData.put("checkout", arg);
+            optimisticData.put(getKey("checkout"), arg);
             return this;
         }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        */
 
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
 
         public CheckoutGiftCardApplyPayload setUserErrors(List<UserError> arg) {
-            optimisticData.put("userErrors", arg);
+            optimisticData.put(getKey("userErrors"), arg);
             return this;
         }
 
         public boolean unwrapsToObject(String key) {
-            switch (key) {
+            switch (getFieldName(key)) {
                 case "checkout": return true;
 
                 case "userErrors": return true;
@@ -2642,6 +2781,9 @@ public class Storefront {
             super(_queryBuilder);
         }
 
+        /**
+        * The updated checkout object.
+        */
         public CheckoutGiftCardRemovePayloadQuery checkout(CheckoutQueryDefinition queryDef) {
             startField("checkout");
 
@@ -2652,6 +2794,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * List of errors that occurred executing the mutation.
+        */
         public CheckoutGiftCardRemovePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
 
@@ -2700,46 +2845,38 @@ public class Storefront {
             }
         }
 
-        public List<Node> getNodes() {
-            List<Node> children = new ArrayList<>();
-
-            if (getCheckout() != null) {
-                children.addAll(getCheckout().getNodes());
-            }
-
-            if (getUserErrors() != null) {
-                for (UserError elem: getUserErrors()) {
-                    children.addAll(elem.getNodes());
-                }
-            }
-
-            return children;
-        }
-
         public String getGraphQlTypeName() {
             return "CheckoutGiftCardRemovePayload";
         }
+
+        /**
+        * The updated checkout object.
+        */
 
         public Checkout getCheckout() {
             return (Checkout) get("checkout");
         }
 
         public CheckoutGiftCardRemovePayload setCheckout(Checkout arg) {
-            optimisticData.put("checkout", arg);
+            optimisticData.put(getKey("checkout"), arg);
             return this;
         }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        */
 
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
 
         public CheckoutGiftCardRemovePayload setUserErrors(List<UserError> arg) {
-            optimisticData.put("userErrors", arg);
+            optimisticData.put(getKey("userErrors"), arg);
             return this;
         }
 
         public boolean unwrapsToObject(String key) {
-            switch (key) {
+            switch (getFieldName(key)) {
                 case "checkout": return true;
 
                 case "userErrors": return true;
@@ -2753,6 +2890,9 @@ public class Storefront {
         void define(CheckoutLineItemQuery _queryBuilder);
     }
 
+    /**
+    * A single line item in the checkout, grouped by variant and attributes.
+    */
     public static class CheckoutLineItemQuery extends Query<CheckoutLineItemQuery> {
         CheckoutLineItemQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
@@ -2760,6 +2900,9 @@ public class Storefront {
             startField("id");
         }
 
+        /**
+        * Extra information in the form of an array of Key-Value pairs about the line item.
+        */
         public CheckoutLineItemQuery customAttributes(AttributeQueryDefinition queryDef) {
             startField("customAttributes");
 
@@ -2770,18 +2913,27 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * The quantity of the line item.
+        */
         public CheckoutLineItemQuery quantity() {
             startField("quantity");
 
             return this;
         }
 
+        /**
+        * Title of the line item. Defaults to the product's title.
+        */
         public CheckoutLineItemQuery title() {
             startField("title");
 
             return this;
         }
 
+        /**
+        * Product variant of the line item.
+        */
         public CheckoutLineItemQuery variant(ProductVariantQueryDefinition queryDef) {
             startField("variant");
 
@@ -2793,6 +2945,9 @@ public class Storefront {
         }
     }
 
+    /**
+    * A single line item in the checkout, grouped by variant and attributes.
+    */
     public static class CheckoutLineItem extends AbstractResponse<CheckoutLineItem> implements Node {
         public CheckoutLineItem() {
         }
@@ -2858,34 +3013,20 @@ public class Storefront {
             optimisticData.put("id", id);
         }
 
-        public List<Node> getNodes() {
-            List<Node> children = new ArrayList<>();
-
-            children.add(this);
-
-            if (getCustomAttributes() != null) {
-                for (Attribute elem: getCustomAttributes()) {
-                    children.addAll(elem.getNodes());
-                }
-            }
-
-            if (getVariant() != null) {
-                children.addAll(getVariant().getNodes());
-            }
-
-            return children;
-        }
-
         public String getGraphQlTypeName() {
             return "CheckoutLineItem";
         }
+
+        /**
+        * Extra information in the form of an array of Key-Value pairs about the line item.
+        */
 
         public List<Attribute> getCustomAttributes() {
             return (List<Attribute>) get("customAttributes");
         }
 
         public CheckoutLineItem setCustomAttributes(List<Attribute> arg) {
-            optimisticData.put("customAttributes", arg);
+            optimisticData.put(getKey("customAttributes"), arg);
             return this;
         }
 
@@ -2893,35 +3034,47 @@ public class Storefront {
             return (ID) get("id");
         }
 
+        /**
+        * The quantity of the line item.
+        */
+
         public Integer getQuantity() {
             return (Integer) get("quantity");
         }
 
         public CheckoutLineItem setQuantity(Integer arg) {
-            optimisticData.put("quantity", arg);
+            optimisticData.put(getKey("quantity"), arg);
             return this;
         }
+
+        /**
+        * Title of the line item. Defaults to the product's title.
+        */
 
         public String getTitle() {
             return (String) get("title");
         }
 
         public CheckoutLineItem setTitle(String arg) {
-            optimisticData.put("title", arg);
+            optimisticData.put(getKey("title"), arg);
             return this;
         }
+
+        /**
+        * Product variant of the line item.
+        */
 
         public ProductVariant getVariant() {
             return (ProductVariant) get("variant");
         }
 
         public CheckoutLineItem setVariant(ProductVariant arg) {
-            optimisticData.put("variant", arg);
+            optimisticData.put(getKey("variant"), arg);
             return this;
         }
 
         public boolean unwrapsToObject(String key) {
-            switch (key) {
+            switch (getFieldName(key)) {
                 case "customAttributes": return true;
 
                 case "id": return false;
@@ -2946,6 +3099,9 @@ public class Storefront {
             super(_queryBuilder);
         }
 
+        /**
+        * A list of edges.
+        */
         public CheckoutLineItemConnectionQuery edges(CheckoutLineItemEdgeQueryDefinition queryDef) {
             startField("edges");
 
@@ -2956,6 +3112,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * Information to aid in pagination.
+        */
         public CheckoutLineItemConnectionQuery pageInfo(PageInfoQueryDefinition queryDef) {
             startField("pageInfo");
 
@@ -3004,46 +3163,38 @@ public class Storefront {
             }
         }
 
-        public List<Node> getNodes() {
-            List<Node> children = new ArrayList<>();
-
-            if (getEdges() != null) {
-                for (CheckoutLineItemEdge elem: getEdges()) {
-                    children.addAll(elem.getNodes());
-                }
-            }
-
-            if (getPageInfo() != null) {
-                children.addAll(getPageInfo().getNodes());
-            }
-
-            return children;
-        }
-
         public String getGraphQlTypeName() {
             return "CheckoutLineItemConnection";
         }
+
+        /**
+        * A list of edges.
+        */
 
         public List<CheckoutLineItemEdge> getEdges() {
             return (List<CheckoutLineItemEdge>) get("edges");
         }
 
         public CheckoutLineItemConnection setEdges(List<CheckoutLineItemEdge> arg) {
-            optimisticData.put("edges", arg);
+            optimisticData.put(getKey("edges"), arg);
             return this;
         }
+
+        /**
+        * Information to aid in pagination.
+        */
 
         public PageInfo getPageInfo() {
             return (PageInfo) get("pageInfo");
         }
 
         public CheckoutLineItemConnection setPageInfo(PageInfo arg) {
-            optimisticData.put("pageInfo", arg);
+            optimisticData.put(getKey("pageInfo"), arg);
             return this;
         }
 
         public boolean unwrapsToObject(String key) {
-            switch (key) {
+            switch (getFieldName(key)) {
                 case "edges": return true;
 
                 case "pageInfo": return true;
@@ -3111,16 +3262,6 @@ public class Storefront {
             }
         }
 
-        public List<Node> getNodes() {
-            List<Node> children = new ArrayList<>();
-
-            if (getNode() != null) {
-                children.addAll(getNode().getNodes());
-            }
-
-            return children;
-        }
-
         public String getGraphQlTypeName() {
             return "CheckoutLineItemEdge";
         }
@@ -3130,7 +3271,7 @@ public class Storefront {
         }
 
         public CheckoutLineItemEdge setCursor(String arg) {
-            optimisticData.put("cursor", arg);
+            optimisticData.put(getKey("cursor"), arg);
             return this;
         }
 
@@ -3139,12 +3280,12 @@ public class Storefront {
         }
 
         public CheckoutLineItemEdge setNode(CheckoutLineItem arg) {
-            optimisticData.put("node", arg);
+            optimisticData.put(getKey("node"), arg);
             return this;
         }
 
         public boolean unwrapsToObject(String key) {
-            switch (key) {
+            switch (getFieldName(key)) {
                 case "cursor": return false;
 
                 case "node": return true;
@@ -3155,25 +3296,16 @@ public class Storefront {
     }
 
     public static class CheckoutLineItemInput implements Serializable {
-        private int quantity;
-
         private ID variantId;
+
+        private int quantity;
 
         private List<AttributeInput> customAttributes;
 
-        public CheckoutLineItemInput(int quantity, ID variantId) {
-            this.quantity = quantity;
-
+        public CheckoutLineItemInput(ID variantId, int quantity) {
             this.variantId = variantId;
-        }
 
-        public int getQuantity() {
-            return quantity;
-        }
-
-        public CheckoutLineItemInput setQuantity(int quantity) {
             this.quantity = quantity;
-            return this;
         }
 
         public ID getVariantId() {
@@ -3182,6 +3314,15 @@ public class Storefront {
 
         public CheckoutLineItemInput setVariantId(ID variantId) {
             this.variantId = variantId;
+            return this;
+        }
+
+        public int getQuantity() {
+            return quantity;
+        }
+
+        public CheckoutLineItemInput setQuantity(int quantity) {
+            this.quantity = quantity;
             return this;
         }
 
@@ -3200,13 +3341,13 @@ public class Storefront {
 
             _queryBuilder.append(separator);
             separator = ",";
-            _queryBuilder.append("quantity:");
-            _queryBuilder.append(quantity);
+            _queryBuilder.append("variantId:");
+            Query.appendQuotedString(_queryBuilder, variantId.toString());
 
             _queryBuilder.append(separator);
             separator = ",";
-            _queryBuilder.append("variantId:");
-            Query.appendQuotedString(_queryBuilder, variantId.toString());
+            _queryBuilder.append("quantity:");
+            _queryBuilder.append(quantity);
 
             if (customAttributes != null) {
                 _queryBuilder.append(separator);
@@ -3228,22 +3369,13 @@ public class Storefront {
     }
 
     public static class CheckoutLineItemUpdateInput implements Serializable {
-        private List<AttributeInput> customAttributes;
-
         private ID id;
-
-        private Integer quantity;
 
         private ID variantId;
 
-        public List<AttributeInput> getCustomAttributes() {
-            return customAttributes;
-        }
+        private Integer quantity;
 
-        public CheckoutLineItemUpdateInput setCustomAttributes(List<AttributeInput> customAttributes) {
-            this.customAttributes = customAttributes;
-            return this;
-        }
+        private List<AttributeInput> customAttributes;
 
         public ID getId() {
             return id;
@@ -3251,15 +3383,6 @@ public class Storefront {
 
         public CheckoutLineItemUpdateInput setId(ID id) {
             this.id = id;
-            return this;
-        }
-
-        public Integer getQuantity() {
-            return quantity;
-        }
-
-        public CheckoutLineItemUpdateInput setQuantity(Integer quantity) {
-            this.quantity = quantity;
             return this;
         }
 
@@ -3272,9 +3395,48 @@ public class Storefront {
             return this;
         }
 
+        public Integer getQuantity() {
+            return quantity;
+        }
+
+        public CheckoutLineItemUpdateInput setQuantity(Integer quantity) {
+            this.quantity = quantity;
+            return this;
+        }
+
+        public List<AttributeInput> getCustomAttributes() {
+            return customAttributes;
+        }
+
+        public CheckoutLineItemUpdateInput setCustomAttributes(List<AttributeInput> customAttributes) {
+            this.customAttributes = customAttributes;
+            return this;
+        }
+
         public void appendTo(StringBuilder _queryBuilder) {
             String separator = "";
             _queryBuilder.append('{');
+
+            if (id != null) {
+                _queryBuilder.append(separator);
+                separator = ",";
+                _queryBuilder.append("id:");
+                Query.appendQuotedString(_queryBuilder, id.toString());
+            }
+
+            if (variantId != null) {
+                _queryBuilder.append(separator);
+                separator = ",";
+                _queryBuilder.append("variantId:");
+                Query.appendQuotedString(_queryBuilder, variantId.toString());
+            }
+
+            if (quantity != null) {
+                _queryBuilder.append(separator);
+                separator = ",";
+                _queryBuilder.append("quantity:");
+                _queryBuilder.append(quantity);
+            }
 
             if (customAttributes != null) {
                 _queryBuilder.append(separator);
@@ -3291,27 +3453,6 @@ public class Storefront {
                 _queryBuilder.append(']');
             }
 
-            if (id != null) {
-                _queryBuilder.append(separator);
-                separator = ",";
-                _queryBuilder.append("id:");
-                Query.appendQuotedString(_queryBuilder, id.toString());
-            }
-
-            if (quantity != null) {
-                _queryBuilder.append(separator);
-                separator = ",";
-                _queryBuilder.append("quantity:");
-                _queryBuilder.append(quantity);
-            }
-
-            if (variantId != null) {
-                _queryBuilder.append(separator);
-                separator = ",";
-                _queryBuilder.append("variantId:");
-                Query.appendQuotedString(_queryBuilder, variantId.toString());
-            }
-
             _queryBuilder.append('}');
         }
     }
@@ -3325,6 +3466,9 @@ public class Storefront {
             super(_queryBuilder);
         }
 
+        /**
+        * The updated checkout object.
+        */
         public CheckoutLineItemsAddPayloadQuery checkout(CheckoutQueryDefinition queryDef) {
             startField("checkout");
 
@@ -3335,6 +3479,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * List of errors that occurred executing the mutation.
+        */
         public CheckoutLineItemsAddPayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
 
@@ -3388,46 +3535,38 @@ public class Storefront {
             }
         }
 
-        public List<Node> getNodes() {
-            List<Node> children = new ArrayList<>();
-
-            if (getCheckout() != null) {
-                children.addAll(getCheckout().getNodes());
-            }
-
-            if (getUserErrors() != null) {
-                for (UserError elem: getUserErrors()) {
-                    children.addAll(elem.getNodes());
-                }
-            }
-
-            return children;
-        }
-
         public String getGraphQlTypeName() {
             return "CheckoutLineItemsAddPayload";
         }
+
+        /**
+        * The updated checkout object.
+        */
 
         public Checkout getCheckout() {
             return (Checkout) get("checkout");
         }
 
         public CheckoutLineItemsAddPayload setCheckout(Checkout arg) {
-            optimisticData.put("checkout", arg);
+            optimisticData.put(getKey("checkout"), arg);
             return this;
         }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        */
 
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
 
         public CheckoutLineItemsAddPayload setUserErrors(List<UserError> arg) {
-            optimisticData.put("userErrors", arg);
+            optimisticData.put(getKey("userErrors"), arg);
             return this;
         }
 
         public boolean unwrapsToObject(String key) {
-            switch (key) {
+            switch (getFieldName(key)) {
                 case "checkout": return true;
 
                 case "userErrors": return true;
@@ -3456,6 +3595,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * List of errors that occurred executing the mutation.
+        */
         public CheckoutLineItemsRemovePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
 
@@ -3509,22 +3651,6 @@ public class Storefront {
             }
         }
 
-        public List<Node> getNodes() {
-            List<Node> children = new ArrayList<>();
-
-            if (getCheckout() != null) {
-                children.addAll(getCheckout().getNodes());
-            }
-
-            if (getUserErrors() != null) {
-                for (UserError elem: getUserErrors()) {
-                    children.addAll(elem.getNodes());
-                }
-            }
-
-            return children;
-        }
-
         public String getGraphQlTypeName() {
             return "CheckoutLineItemsRemovePayload";
         }
@@ -3534,21 +3660,25 @@ public class Storefront {
         }
 
         public CheckoutLineItemsRemovePayload setCheckout(Checkout arg) {
-            optimisticData.put("checkout", arg);
+            optimisticData.put(getKey("checkout"), arg);
             return this;
         }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        */
 
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
 
         public CheckoutLineItemsRemovePayload setUserErrors(List<UserError> arg) {
-            optimisticData.put("userErrors", arg);
+            optimisticData.put(getKey("userErrors"), arg);
             return this;
         }
 
         public boolean unwrapsToObject(String key) {
-            switch (key) {
+            switch (getFieldName(key)) {
                 case "checkout": return true;
 
                 case "userErrors": return true;
@@ -3567,6 +3697,9 @@ public class Storefront {
             super(_queryBuilder);
         }
 
+        /**
+        * The updated checkout object.
+        */
         public CheckoutLineItemsUpdatePayloadQuery checkout(CheckoutQueryDefinition queryDef) {
             startField("checkout");
 
@@ -3577,6 +3710,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * List of errors that occurred executing the mutation.
+        */
         public CheckoutLineItemsUpdatePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
 
@@ -3630,46 +3766,38 @@ public class Storefront {
             }
         }
 
-        public List<Node> getNodes() {
-            List<Node> children = new ArrayList<>();
-
-            if (getCheckout() != null) {
-                children.addAll(getCheckout().getNodes());
-            }
-
-            if (getUserErrors() != null) {
-                for (UserError elem: getUserErrors()) {
-                    children.addAll(elem.getNodes());
-                }
-            }
-
-            return children;
-        }
-
         public String getGraphQlTypeName() {
             return "CheckoutLineItemsUpdatePayload";
         }
+
+        /**
+        * The updated checkout object.
+        */
 
         public Checkout getCheckout() {
             return (Checkout) get("checkout");
         }
 
         public CheckoutLineItemsUpdatePayload setCheckout(Checkout arg) {
-            optimisticData.put("checkout", arg);
+            optimisticData.put(getKey("checkout"), arg);
             return this;
         }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        */
 
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
 
         public CheckoutLineItemsUpdatePayload setUserErrors(List<UserError> arg) {
-            optimisticData.put("userErrors", arg);
+            optimisticData.put(getKey("userErrors"), arg);
             return this;
         }
 
         public boolean unwrapsToObject(String key) {
-            switch (key) {
+            switch (getFieldName(key)) {
                 case "checkout": return true;
 
                 case "userErrors": return true;
@@ -3688,6 +3816,9 @@ public class Storefront {
             super(_queryBuilder);
         }
 
+        /**
+        * The updated checkout object.
+        */
         public CheckoutShippingAddressUpdatePayloadQuery checkout(CheckoutQueryDefinition queryDef) {
             startField("checkout");
 
@@ -3698,6 +3829,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * List of errors that occurred executing the mutation.
+        */
         public CheckoutShippingAddressUpdatePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
 
@@ -3746,46 +3880,38 @@ public class Storefront {
             }
         }
 
-        public List<Node> getNodes() {
-            List<Node> children = new ArrayList<>();
-
-            if (getCheckout() != null) {
-                children.addAll(getCheckout().getNodes());
-            }
-
-            if (getUserErrors() != null) {
-                for (UserError elem: getUserErrors()) {
-                    children.addAll(elem.getNodes());
-                }
-            }
-
-            return children;
-        }
-
         public String getGraphQlTypeName() {
             return "CheckoutShippingAddressUpdatePayload";
         }
+
+        /**
+        * The updated checkout object.
+        */
 
         public Checkout getCheckout() {
             return (Checkout) get("checkout");
         }
 
         public CheckoutShippingAddressUpdatePayload setCheckout(Checkout arg) {
-            optimisticData.put("checkout", arg);
+            optimisticData.put(getKey("checkout"), arg);
             return this;
         }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        */
 
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
 
         public CheckoutShippingAddressUpdatePayload setUserErrors(List<UserError> arg) {
-            optimisticData.put("userErrors", arg);
+            optimisticData.put(getKey("userErrors"), arg);
             return this;
         }
 
         public boolean unwrapsToObject(String key) {
-            switch (key) {
+            switch (getFieldName(key)) {
                 case "checkout": return true;
 
                 case "userErrors": return true;
@@ -3804,6 +3930,9 @@ public class Storefront {
             super(_queryBuilder);
         }
 
+        /**
+        * The updated checkout object.
+        */
         public CheckoutShippingLineUpdatePayloadQuery checkout(CheckoutQueryDefinition queryDef) {
             startField("checkout");
 
@@ -3814,6 +3943,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * List of errors that occurred executing the mutation.
+        */
         public CheckoutShippingLineUpdatePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
 
@@ -3867,46 +3999,38 @@ public class Storefront {
             }
         }
 
-        public List<Node> getNodes() {
-            List<Node> children = new ArrayList<>();
-
-            if (getCheckout() != null) {
-                children.addAll(getCheckout().getNodes());
-            }
-
-            if (getUserErrors() != null) {
-                for (UserError elem: getUserErrors()) {
-                    children.addAll(elem.getNodes());
-                }
-            }
-
-            return children;
-        }
-
         public String getGraphQlTypeName() {
             return "CheckoutShippingLineUpdatePayload";
         }
+
+        /**
+        * The updated checkout object.
+        */
 
         public Checkout getCheckout() {
             return (Checkout) get("checkout");
         }
 
         public CheckoutShippingLineUpdatePayload setCheckout(Checkout arg) {
-            optimisticData.put("checkout", arg);
+            optimisticData.put(getKey("checkout"), arg);
             return this;
         }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        */
 
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
 
         public CheckoutShippingLineUpdatePayload setUserErrors(List<UserError> arg) {
-            optimisticData.put("userErrors", arg);
+            optimisticData.put(getKey("userErrors"), arg);
             return this;
         }
 
         public boolean unwrapsToObject(String key) {
-            switch (key) {
+            switch (getFieldName(key)) {
                 case "checkout": return true;
 
                 case "userErrors": return true;
@@ -3920,6 +4044,10 @@ public class Storefront {
         void define(CollectionQuery _queryBuilder);
     }
 
+    /**
+    * A collection represents a grouping of products that a shop owner can create to organize them or make
+    * their shops easier to browse.
+    */
     public static class CollectionQuery extends Query<CollectionQuery> {
         CollectionQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
@@ -3932,6 +4060,9 @@ public class Storefront {
                 super(_queryBuilder, true);
             }
 
+            /**
+            * Truncates string after the given length.
+            */
             public DescriptionArguments truncateAt(Integer value) {
                 if (value != null) {
                     startArgument("truncateAt");
@@ -3945,10 +4076,16 @@ public class Storefront {
             void define(DescriptionArguments args);
         }
 
+        /**
+        * Stripped description of the collection, single line with HTML tags removed.
+        */
         public CollectionQuery description() {
             return description(args -> {});
         }
 
+        /**
+        * Stripped description of the collection, single line with HTML tags removed.
+        */
         public CollectionQuery description(DescriptionArgumentsDefinition argsDef) {
             startField("description");
 
@@ -3959,12 +4096,19 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * The description of the collection, complete with HTML formatting.
+        */
         public CollectionQuery descriptionHtml() {
             startField("descriptionHtml");
 
             return this;
         }
 
+        /**
+        * A human-friendly unique string for the collection automatically generated from its title.
+        * Limit of 255 characters.
+        */
         public CollectionQuery handle() {
             startField("handle");
 
@@ -3976,6 +4120,9 @@ public class Storefront {
                 super(_queryBuilder, true);
             }
 
+            /**
+            * Image width in pixels between 1 and 2048
+            */
             public ImageArguments maxWidth(Integer value) {
                 if (value != null) {
                     startArgument("maxWidth");
@@ -3984,6 +4131,9 @@ public class Storefront {
                 return this;
             }
 
+            /**
+            * Image height in pixels between 1 and 2048
+            */
             public ImageArguments maxHeight(Integer value) {
                 if (value != null) {
                     startArgument("maxHeight");
@@ -3992,6 +4142,9 @@ public class Storefront {
                 return this;
             }
 
+            /**
+            * If specified, crop the image keeping the specified region
+            */
             public ImageArguments crop(CropRegion value) {
                 if (value != null) {
                     startArgument("crop");
@@ -4000,6 +4153,9 @@ public class Storefront {
                 return this;
             }
 
+            /**
+            * Image size multiplier retina displays. Must be between 1 and 3
+            */
             public ImageArguments scale(Integer value) {
                 if (value != null) {
                     startArgument("scale");
@@ -4013,10 +4169,16 @@ public class Storefront {
             void define(ImageArguments args);
         }
 
+        /**
+        * Image associated with the collection.
+        */
         public CollectionQuery image(ImageQueryDefinition queryDef) {
             return image(args -> {}, queryDef);
         }
 
+        /**
+        * Image associated with the collection.
+        */
         public CollectionQuery image(ImageArgumentsDefinition argsDef, ImageQueryDefinition queryDef) {
             startField("image");
 
@@ -4057,10 +4219,16 @@ public class Storefront {
             void define(ProductsArguments args);
         }
 
+        /**
+        * List of products in the collection.
+        */
         public CollectionQuery products(int first, ProductConnectionQueryDefinition queryDef) {
             return products(first, args -> {}, queryDef);
         }
 
+        /**
+        * List of products in the collection.
+        */
         public CollectionQuery products(int first, ProductsArgumentsDefinition argsDef, ProductConnectionQueryDefinition queryDef) {
             startField("products");
 
@@ -4078,12 +4246,18 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * The collection’s name. Limit of 255 characters.
+        */
         public CollectionQuery title() {
             startField("title");
 
             return this;
         }
 
+        /**
+        * The date and time when the collection was last modified.
+        */
         public CollectionQuery updatedAt() {
             startField("updatedAt");
 
@@ -4091,6 +4265,10 @@ public class Storefront {
         }
     }
 
+    /**
+    * A collection represents a grouping of products that a shop owner can create to organize them or make
+    * their shops easier to browse.
+    */
     public static class Collection extends AbstractResponse<Collection> implements Node {
         public Collection() {
         }
@@ -4169,50 +4347,47 @@ public class Storefront {
             optimisticData.put("id", id);
         }
 
-        public List<Node> getNodes() {
-            List<Node> children = new ArrayList<>();
-
-            children.add(this);
-
-            if (getImage() != null) {
-                children.addAll(getImage().getNodes());
-            }
-
-            if (getProducts() != null) {
-                children.addAll(getProducts().getNodes());
-            }
-
-            return children;
-        }
-
         public String getGraphQlTypeName() {
             return "Collection";
         }
+
+        /**
+        * Stripped description of the collection, single line with HTML tags removed.
+        */
 
         public String getDescription() {
             return (String) get("description");
         }
 
         public Collection setDescription(String arg) {
-            optimisticData.put("description", arg);
+            optimisticData.put(getKey("description"), arg);
             return this;
         }
+
+        /**
+        * The description of the collection, complete with HTML formatting.
+        */
 
         public String getDescriptionHtml() {
             return (String) get("descriptionHtml");
         }
 
         public Collection setDescriptionHtml(String arg) {
-            optimisticData.put("descriptionHtml", arg);
+            optimisticData.put(getKey("descriptionHtml"), arg);
             return this;
         }
+
+        /**
+        * A human-friendly unique string for the collection automatically generated from its title.
+        * Limit of 255 characters.
+        */
 
         public String getHandle() {
             return (String) get("handle");
         }
 
         public Collection setHandle(String arg) {
-            optimisticData.put("handle", arg);
+            optimisticData.put(getKey("handle"), arg);
             return this;
         }
 
@@ -4220,44 +4395,60 @@ public class Storefront {
             return (ID) get("id");
         }
 
+        /**
+        * Image associated with the collection.
+        */
+
         public Image getImage() {
             return (Image) get("image");
         }
 
         public Collection setImage(Image arg) {
-            optimisticData.put("image", arg);
+            optimisticData.put(getKey("image"), arg);
             return this;
         }
+
+        /**
+        * List of products in the collection.
+        */
 
         public ProductConnection getProducts() {
             return (ProductConnection) get("products");
         }
 
         public Collection setProducts(ProductConnection arg) {
-            optimisticData.put("products", arg);
+            optimisticData.put(getKey("products"), arg);
             return this;
         }
+
+        /**
+        * The collection’s name. Limit of 255 characters.
+        */
 
         public String getTitle() {
             return (String) get("title");
         }
 
         public Collection setTitle(String arg) {
-            optimisticData.put("title", arg);
+            optimisticData.put(getKey("title"), arg);
             return this;
         }
+
+        /**
+        * The date and time when the collection was last modified.
+        */
 
         public DateTime getUpdatedAt() {
             return (DateTime) get("updatedAt");
         }
 
         public Collection setUpdatedAt(DateTime arg) {
-            optimisticData.put("updatedAt", arg);
+            optimisticData.put(getKey("updatedAt"), arg);
             return this;
         }
 
         public boolean unwrapsToObject(String key) {
-            switch (key) {
+            switch (getFieldName(key)) {
                 case "description": return false;
 
                 case "descriptionHtml": return false;
@@ -4288,6 +4479,9 @@ public class Storefront {
             super(_queryBuilder);
         }
 
+        /**
+        * A list of edges.
+        */
         public CollectionConnectionQuery edges(CollectionEdgeQueryDefinition queryDef) {
             startField("edges");
 
@@ -4298,6 +4492,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * Information to aid in pagination.
+        */
         public CollectionConnectionQuery pageInfo(PageInfoQueryDefinition queryDef) {
             startField("pageInfo");
 
@@ -4346,46 +4543,38 @@ public class Storefront {
             }
         }
 
-        public List<Node> getNodes() {
-            List<Node> children = new ArrayList<>();
-
-            if (getEdges() != null) {
-                for (CollectionEdge elem: getEdges()) {
-                    children.addAll(elem.getNodes());
-                }
-            }
-
-            if (getPageInfo() != null) {
-                children.addAll(getPageInfo().getNodes());
-            }
-
-            return children;
-        }
-
         public String getGraphQlTypeName() {
             return "CollectionConnection";
         }
+
+        /**
+        * A list of edges.
+        */
 
         public List<CollectionEdge> getEdges() {
             return (List<CollectionEdge>) get("edges");
         }
 
         public CollectionConnection setEdges(List<CollectionEdge> arg) {
-            optimisticData.put("edges", arg);
+            optimisticData.put(getKey("edges"), arg);
             return this;
         }
+
+        /**
+        * Information to aid in pagination.
+        */
 
         public PageInfo getPageInfo() {
             return (PageInfo) get("pageInfo");
         }
 
         public CollectionConnection setPageInfo(PageInfo arg) {
-            optimisticData.put("pageInfo", arg);
+            optimisticData.put(getKey("pageInfo"), arg);
             return this;
         }
 
         public boolean unwrapsToObject(String key) {
-            switch (key) {
+            switch (getFieldName(key)) {
                 case "edges": return true;
 
                 case "pageInfo": return true;
@@ -4453,16 +4642,6 @@ public class Storefront {
             }
         }
 
-        public List<Node> getNodes() {
-            List<Node> children = new ArrayList<>();
-
-            if (getNode() != null) {
-                children.addAll(getNode().getNodes());
-            }
-
-            return children;
-        }
-
         public String getGraphQlTypeName() {
             return "CollectionEdge";
         }
@@ -4472,7 +4651,7 @@ public class Storefront {
         }
 
         public CollectionEdge setCursor(String arg) {
-            optimisticData.put("cursor", arg);
+            optimisticData.put(getKey("cursor"), arg);
             return this;
         }
 
@@ -4481,12 +4660,12 @@ public class Storefront {
         }
 
         public CollectionEdge setNode(Collection arg) {
-            optimisticData.put("node", arg);
+            optimisticData.put(getKey("node"), arg);
             return this;
         }
 
         public boolean unwrapsToObject(String key) {
-            switch (key) {
+            switch (getFieldName(key)) {
                 case "cursor": return false;
 
                 case "node": return true;
@@ -4496,6 +4675,9 @@ public class Storefront {
         }
     }
 
+    /**
+    * The set of valid sort keys for the collections query.
+    */
     public enum CollectionSortKeys {
         ID,
 
@@ -4563,6 +4745,9 @@ public class Storefront {
         void define(CreditCardQuery _queryBuilder);
     }
 
+    /**
+    * Credit card information used for a payment.
+    */
     public static class CreditCardQuery extends Query<CreditCardQuery> {
         CreditCardQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
@@ -4610,6 +4795,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * Masked credit card number with only the last 4 digits displayed
+        */
         public CreditCardQuery maskedNumber() {
             startField("maskedNumber");
 
@@ -4617,6 +4805,9 @@ public class Storefront {
         }
     }
 
+    /**
+    * Credit card information used for a payment.
+    */
     public static class CreditCard extends AbstractResponse<CreditCard> {
         public CreditCard() {
         }
@@ -4725,12 +4916,6 @@ public class Storefront {
             }
         }
 
-        public List<Node> getNodes() {
-            List<Node> children = new ArrayList<>();
-
-            return children;
-        }
-
         public String getGraphQlTypeName() {
             return "CreditCard";
         }
@@ -4740,7 +4925,7 @@ public class Storefront {
         }
 
         public CreditCard setBrand(String arg) {
-            optimisticData.put("brand", arg);
+            optimisticData.put(getKey("brand"), arg);
             return this;
         }
 
@@ -4749,7 +4934,7 @@ public class Storefront {
         }
 
         public CreditCard setExpiryMonth(Integer arg) {
-            optimisticData.put("expiryMonth", arg);
+            optimisticData.put(getKey("expiryMonth"), arg);
             return this;
         }
 
@@ -4758,7 +4943,7 @@ public class Storefront {
         }
 
         public CreditCard setExpiryYear(Integer arg) {
-            optimisticData.put("expiryYear", arg);
+            optimisticData.put(getKey("expiryYear"), arg);
             return this;
         }
 
@@ -4767,7 +4952,7 @@ public class Storefront {
         }
 
         public CreditCard setFirstDigits(String arg) {
-            optimisticData.put("firstDigits", arg);
+            optimisticData.put(getKey("firstDigits"), arg);
             return this;
         }
 
@@ -4776,7 +4961,7 @@ public class Storefront {
         }
 
         public CreditCard setFirstName(String arg) {
-            optimisticData.put("firstName", arg);
+            optimisticData.put(getKey("firstName"), arg);
             return this;
         }
 
@@ -4785,7 +4970,7 @@ public class Storefront {
         }
 
         public CreditCard setLastDigits(String arg) {
-            optimisticData.put("lastDigits", arg);
+            optimisticData.put(getKey("lastDigits"), arg);
             return this;
         }
 
@@ -4794,21 +4979,25 @@ public class Storefront {
         }
 
         public CreditCard setLastName(String arg) {
-            optimisticData.put("lastName", arg);
+            optimisticData.put(getKey("lastName"), arg);
             return this;
         }
+
+        /**
+        * Masked credit card number with only the last 4 digits displayed
+        */
 
         public String getMaskedNumber() {
             return (String) get("maskedNumber");
         }
 
         public CreditCard setMaskedNumber(String arg) {
-            optimisticData.put("maskedNumber", arg);
+            optimisticData.put(getKey("maskedNumber"), arg);
             return this;
         }
 
         public boolean unwrapsToObject(String key) {
-            switch (key) {
+            switch (getFieldName(key)) {
                 case "brand": return false;
 
                 case "expiryMonth": return false;
@@ -4833,20 +5022,20 @@ public class Storefront {
     public static class CreditCardPaymentInput implements Serializable {
         private BigDecimal amount;
 
-        private MailingAddressInput billingAddress;
-
         private String idempotencyKey;
+
+        private MailingAddressInput billingAddress;
 
         private String vaultId;
 
         private Boolean test;
 
-        public CreditCardPaymentInput(BigDecimal amount, MailingAddressInput billingAddress, String idempotencyKey, String vaultId) {
+        public CreditCardPaymentInput(BigDecimal amount, String idempotencyKey, MailingAddressInput billingAddress, String vaultId) {
             this.amount = amount;
 
-            this.billingAddress = billingAddress;
-
             this.idempotencyKey = idempotencyKey;
+
+            this.billingAddress = billingAddress;
 
             this.vaultId = vaultId;
         }
@@ -4860,21 +5049,21 @@ public class Storefront {
             return this;
         }
 
-        public MailingAddressInput getBillingAddress() {
-            return billingAddress;
-        }
-
-        public CreditCardPaymentInput setBillingAddress(MailingAddressInput billingAddress) {
-            this.billingAddress = billingAddress;
-            return this;
-        }
-
         public String getIdempotencyKey() {
             return idempotencyKey;
         }
 
         public CreditCardPaymentInput setIdempotencyKey(String idempotencyKey) {
             this.idempotencyKey = idempotencyKey;
+            return this;
+        }
+
+        public MailingAddressInput getBillingAddress() {
+            return billingAddress;
+        }
+
+        public CreditCardPaymentInput setBillingAddress(MailingAddressInput billingAddress) {
+            this.billingAddress = billingAddress;
             return this;
         }
 
@@ -4907,13 +5096,13 @@ public class Storefront {
 
             _queryBuilder.append(separator);
             separator = ",";
-            _queryBuilder.append("billingAddress:");
-            billingAddress.appendTo(_queryBuilder);
+            _queryBuilder.append("idempotencyKey:");
+            Query.appendQuotedString(_queryBuilder, idempotencyKey.toString());
 
             _queryBuilder.append(separator);
             separator = ",";
-            _queryBuilder.append("idempotencyKey:");
-            Query.appendQuotedString(_queryBuilder, idempotencyKey.toString());
+            _queryBuilder.append("billingAddress:");
+            billingAddress.appendTo(_queryBuilder);
 
             _queryBuilder.append(separator);
             separator = ",";
@@ -4931,6 +5120,9 @@ public class Storefront {
         }
     }
 
+    /**
+    * The part of the image that should remain after cropping.
+    */
     public enum CropRegion {
         BOTTOM,
 
@@ -5004,6 +5196,9 @@ public class Storefront {
         }
     }
 
+    /**
+    * Currency codes
+    */
     public enum CurrencyCode {
         AED,
 
@@ -6381,11 +6576,18 @@ public class Storefront {
         void define(CustomerQuery _queryBuilder);
     }
 
+    /**
+    * A customer represents a customer account with the shop. Customer accounts store contact information
+    * for the customer, saving logged-in customers the trouble of having to provide it at every checkout.
+    */
     public static class CustomerQuery extends Query<CustomerQuery> {
         CustomerQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
         }
 
+        /**
+        * Indicates whether the customer has consented to be sent marketing material via email.
+        */
         public CustomerQuery acceptsMarketing() {
             startField("acceptsMarketing");
 
@@ -6418,10 +6620,16 @@ public class Storefront {
             void define(AddressesArguments args);
         }
 
+        /**
+        * A list of addresses for the customer.
+        */
         public CustomerQuery addresses(int first, MailingAddressConnectionQueryDefinition queryDef) {
             return addresses(first, args -> {}, queryDef);
         }
 
+        /**
+        * A list of addresses for the customer.
+        */
         public CustomerQuery addresses(int first, AddressesArgumentsDefinition argsDef, MailingAddressConnectionQueryDefinition queryDef) {
             startField("addresses");
 
@@ -6439,12 +6647,18 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * The date and time when the customer was created.
+        */
         public CustomerQuery createdAt() {
             startField("createdAt");
 
             return this;
         }
 
+        /**
+        * The customer’s default address.
+        */
         public CustomerQuery defaultAddress(MailingAddressQueryDefinition queryDef) {
             startField("defaultAddress");
 
@@ -6455,30 +6669,45 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * The customer’s name, email or phone number.
+        */
         public CustomerQuery displayName() {
             startField("displayName");
 
             return this;
         }
 
+        /**
+        * The customer’s email address.
+        */
         public CustomerQuery email() {
             startField("email");
 
             return this;
         }
 
+        /**
+        * The customer’s first name.
+        */
         public CustomerQuery firstName() {
             startField("firstName");
 
             return this;
         }
 
+        /**
+        * A unique identifier for the customer.
+        */
         public CustomerQuery id() {
             startField("id");
 
             return this;
         }
 
+        /**
+        * The customer’s last name.
+        */
         public CustomerQuery lastName() {
             startField("lastName");
 
@@ -6514,6 +6743,28 @@ public class Storefront {
                 return this;
             }
 
+            /**
+            * Supported filter parameters:
+            * - `status`
+            * - `financial_status`
+            * - `fulfillment_status`
+            * - `source_name`
+            * - `chargeback_status`
+            * - `risk_level`
+            * - `customer_id`
+            * - `email`
+            * - `credit_card_last4`
+            * - `processed_at`
+            * - `checkout_token`
+            * - `cart_token`
+            * - `location_id`
+            * - `channel_id`
+            * - `discount_code`
+            * - `tag`
+            * - `since_id`
+            * - `updated_at`
+            * - `created_at`
+            */
             public OrdersArguments query(String value) {
                 if (value != null) {
                     startArgument("query");
@@ -6527,10 +6778,16 @@ public class Storefront {
             void define(OrdersArguments args);
         }
 
+        /**
+        * The orders associated with the customer.
+        */
         public CustomerQuery orders(int first, OrderConnectionQueryDefinition queryDef) {
             return orders(first, args -> {}, queryDef);
         }
 
+        /**
+        * The orders associated with the customer.
+        */
         public CustomerQuery orders(int first, OrdersArgumentsDefinition argsDef, OrderConnectionQueryDefinition queryDef) {
             startField("orders");
 
@@ -6548,12 +6805,18 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * The customer’s phone number.
+        */
         public CustomerQuery phone() {
             startField("phone");
 
             return this;
         }
 
+        /**
+        * The date and time when the customer information was updated.
+        */
         public CustomerQuery updatedAt() {
             startField("updatedAt");
 
@@ -6561,6 +6824,10 @@ public class Storefront {
         }
     }
 
+    /**
+    * A customer represents a customer account with the shop. Customer accounts store contact information
+    * for the customer, saving logged-in customers the trouble of having to provide it at every checkout.
+    */
     public static class Customer extends AbstractResponse<Customer> {
         public Customer() {
         }
@@ -6678,138 +6945,168 @@ public class Storefront {
             }
         }
 
-        public List<Node> getNodes() {
-            List<Node> children = new ArrayList<>();
-
-            if (getAddresses() != null) {
-                children.addAll(getAddresses().getNodes());
-            }
-
-            if (getDefaultAddress() != null) {
-                children.addAll(getDefaultAddress().getNodes());
-            }
-
-            if (getOrders() != null) {
-                children.addAll(getOrders().getNodes());
-            }
-
-            return children;
-        }
-
         public String getGraphQlTypeName() {
             return "Customer";
         }
+
+        /**
+        * Indicates whether the customer has consented to be sent marketing material via email.
+        */
 
         public Boolean getAcceptsMarketing() {
             return (Boolean) get("acceptsMarketing");
         }
 
         public Customer setAcceptsMarketing(Boolean arg) {
-            optimisticData.put("acceptsMarketing", arg);
+            optimisticData.put(getKey("acceptsMarketing"), arg);
             return this;
         }
+
+        /**
+        * A list of addresses for the customer.
+        */
 
         public MailingAddressConnection getAddresses() {
             return (MailingAddressConnection) get("addresses");
         }
 
         public Customer setAddresses(MailingAddressConnection arg) {
-            optimisticData.put("addresses", arg);
+            optimisticData.put(getKey("addresses"), arg);
             return this;
         }
+
+        /**
+        * The date and time when the customer was created.
+        */
 
         public DateTime getCreatedAt() {
             return (DateTime) get("createdAt");
         }
 
         public Customer setCreatedAt(DateTime arg) {
-            optimisticData.put("createdAt", arg);
+            optimisticData.put(getKey("createdAt"), arg);
             return this;
         }
+
+        /**
+        * The customer’s default address.
+        */
 
         public MailingAddress getDefaultAddress() {
             return (MailingAddress) get("defaultAddress");
         }
 
         public Customer setDefaultAddress(MailingAddress arg) {
-            optimisticData.put("defaultAddress", arg);
+            optimisticData.put(getKey("defaultAddress"), arg);
             return this;
         }
+
+        /**
+        * The customer’s name, email or phone number.
+        */
 
         public String getDisplayName() {
             return (String) get("displayName");
         }
 
         public Customer setDisplayName(String arg) {
-            optimisticData.put("displayName", arg);
+            optimisticData.put(getKey("displayName"), arg);
             return this;
         }
+
+        /**
+        * The customer’s email address.
+        */
 
         public String getEmail() {
             return (String) get("email");
         }
 
         public Customer setEmail(String arg) {
-            optimisticData.put("email", arg);
+            optimisticData.put(getKey("email"), arg);
             return this;
         }
+
+        /**
+        * The customer’s first name.
+        */
 
         public String getFirstName() {
             return (String) get("firstName");
         }
 
         public Customer setFirstName(String arg) {
-            optimisticData.put("firstName", arg);
+            optimisticData.put(getKey("firstName"), arg);
             return this;
         }
+
+        /**
+        * A unique identifier for the customer.
+        */
 
         public ID getId() {
             return (ID) get("id");
         }
 
         public Customer setId(ID arg) {
-            optimisticData.put("id", arg);
+            optimisticData.put(getKey("id"), arg);
             return this;
         }
+
+        /**
+        * The customer’s last name.
+        */
 
         public String getLastName() {
             return (String) get("lastName");
         }
 
         public Customer setLastName(String arg) {
-            optimisticData.put("lastName", arg);
+            optimisticData.put(getKey("lastName"), arg);
             return this;
         }
+
+        /**
+        * The orders associated with the customer.
+        */
 
         public OrderConnection getOrders() {
             return (OrderConnection) get("orders");
         }
 
         public Customer setOrders(OrderConnection arg) {
-            optimisticData.put("orders", arg);
+            optimisticData.put(getKey("orders"), arg);
             return this;
         }
+
+        /**
+        * The customer’s phone number.
+        */
 
         public String getPhone() {
             return (String) get("phone");
         }
 
         public Customer setPhone(String arg) {
-            optimisticData.put("phone", arg);
+            optimisticData.put(getKey("phone"), arg);
             return this;
         }
+
+        /**
+        * The date and time when the customer information was updated.
+        */
 
         public DateTime getUpdatedAt() {
             return (DateTime) get("updatedAt");
         }
 
         public Customer setUpdatedAt(DateTime arg) {
-            optimisticData.put("updatedAt", arg);
+            optimisticData.put(getKey("updatedAt"), arg);
             return this;
         }
 
         public boolean unwrapsToObject(String key) {
-            switch (key) {
+            switch (getFieldName(key)) {
                 case "acceptsMarketing": return false;
 
                 case "addresses": return true;
@@ -6843,17 +7140,27 @@ public class Storefront {
         void define(CustomerAccessTokenQuery _queryBuilder);
     }
 
+    /**
+    * A CustomerAccessToken represents the unique token required to make modifications to the customer
+    * object.
+    */
     public static class CustomerAccessTokenQuery extends Query<CustomerAccessTokenQuery> {
         CustomerAccessTokenQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
         }
 
+        /**
+        * The customer’s access token.
+        */
         public CustomerAccessTokenQuery accessToken() {
             startField("accessToken");
 
             return this;
         }
 
+        /**
+        * The date and time when the customer access token expires.
+        */
         public CustomerAccessTokenQuery expiresAt() {
             startField("expiresAt");
 
@@ -6861,6 +7168,10 @@ public class Storefront {
         }
     }
 
+    /**
+    * A CustomerAccessToken represents the unique token required to make modifications to the customer
+    * object.
+    */
     public static class CustomerAccessToken extends AbstractResponse<CustomerAccessToken> {
         public CustomerAccessToken() {
         }
@@ -6893,36 +7204,38 @@ public class Storefront {
             }
         }
 
-        public List<Node> getNodes() {
-            List<Node> children = new ArrayList<>();
-
-            return children;
-        }
-
         public String getGraphQlTypeName() {
             return "CustomerAccessToken";
         }
+
+        /**
+        * The customer’s access token.
+        */
 
         public String getAccessToken() {
             return (String) get("accessToken");
         }
 
         public CustomerAccessToken setAccessToken(String arg) {
-            optimisticData.put("accessToken", arg);
+            optimisticData.put(getKey("accessToken"), arg);
             return this;
         }
+
+        /**
+        * The date and time when the customer access token expires.
+        */
 
         public DateTime getExpiresAt() {
             return (DateTime) get("expiresAt");
         }
 
         public CustomerAccessToken setExpiresAt(DateTime arg) {
-            optimisticData.put("expiresAt", arg);
+            optimisticData.put(getKey("expiresAt"), arg);
             return this;
         }
 
         public boolean unwrapsToObject(String key) {
-            switch (key) {
+            switch (getFieldName(key)) {
                 case "accessToken": return false;
 
                 case "expiresAt": return false;
@@ -6988,6 +7301,9 @@ public class Storefront {
             super(_queryBuilder);
         }
 
+        /**
+        * The newly created customer access token object.
+        */
         public CustomerAccessTokenCreatePayloadQuery customerAccessToken(CustomerAccessTokenQueryDefinition queryDef) {
             startField("customerAccessToken");
 
@@ -6998,6 +7314,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * List of errors that occurred executing the mutation.
+        */
         public CustomerAccessTokenCreatePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
 
@@ -7051,46 +7370,38 @@ public class Storefront {
             }
         }
 
-        public List<Node> getNodes() {
-            List<Node> children = new ArrayList<>();
-
-            if (getCustomerAccessToken() != null) {
-                children.addAll(getCustomerAccessToken().getNodes());
-            }
-
-            if (getUserErrors() != null) {
-                for (UserError elem: getUserErrors()) {
-                    children.addAll(elem.getNodes());
-                }
-            }
-
-            return children;
-        }
-
         public String getGraphQlTypeName() {
             return "CustomerAccessTokenCreatePayload";
         }
+
+        /**
+        * The newly created customer access token object.
+        */
 
         public CustomerAccessToken getCustomerAccessToken() {
             return (CustomerAccessToken) get("customerAccessToken");
         }
 
         public CustomerAccessTokenCreatePayload setCustomerAccessToken(CustomerAccessToken arg) {
-            optimisticData.put("customerAccessToken", arg);
+            optimisticData.put(getKey("customerAccessToken"), arg);
             return this;
         }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        */
 
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
 
         public CustomerAccessTokenCreatePayload setUserErrors(List<UserError> arg) {
-            optimisticData.put("userErrors", arg);
+            optimisticData.put(getKey("userErrors"), arg);
             return this;
         }
 
         public boolean unwrapsToObject(String key) {
-            switch (key) {
+            switch (getFieldName(key)) {
                 case "customerAccessToken": return true;
 
                 case "userErrors": return true;
@@ -7109,18 +7420,27 @@ public class Storefront {
             super(_queryBuilder);
         }
 
+        /**
+        * The destroyed access token.
+        */
         public CustomerAccessTokenDeletePayloadQuery deletedAccessToken() {
             startField("deletedAccessToken");
 
             return this;
         }
 
+        /**
+        * ID of the destroyed customer access token.
+        */
         public CustomerAccessTokenDeletePayloadQuery deletedCustomerAccessTokenId() {
             startField("deletedCustomerAccessTokenId");
 
             return this;
         }
 
+        /**
+        * List of errors that occurred executing the mutation.
+        */
         public CustomerAccessTokenDeletePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
 
@@ -7185,51 +7505,51 @@ public class Storefront {
             }
         }
 
-        public List<Node> getNodes() {
-            List<Node> children = new ArrayList<>();
-
-            if (getUserErrors() != null) {
-                for (UserError elem: getUserErrors()) {
-                    children.addAll(elem.getNodes());
-                }
-            }
-
-            return children;
-        }
-
         public String getGraphQlTypeName() {
             return "CustomerAccessTokenDeletePayload";
         }
+
+        /**
+        * The destroyed access token.
+        */
 
         public String getDeletedAccessToken() {
             return (String) get("deletedAccessToken");
         }
 
         public CustomerAccessTokenDeletePayload setDeletedAccessToken(String arg) {
-            optimisticData.put("deletedAccessToken", arg);
+            optimisticData.put(getKey("deletedAccessToken"), arg);
             return this;
         }
+
+        /**
+        * ID of the destroyed customer access token.
+        */
 
         public String getDeletedCustomerAccessTokenId() {
             return (String) get("deletedCustomerAccessTokenId");
         }
 
         public CustomerAccessTokenDeletePayload setDeletedCustomerAccessTokenId(String arg) {
-            optimisticData.put("deletedCustomerAccessTokenId", arg);
+            optimisticData.put(getKey("deletedCustomerAccessTokenId"), arg);
             return this;
         }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        */
 
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
 
         public CustomerAccessTokenDeletePayload setUserErrors(List<UserError> arg) {
-            optimisticData.put("userErrors", arg);
+            optimisticData.put(getKey("userErrors"), arg);
             return this;
         }
 
         public boolean unwrapsToObject(String key) {
-            switch (key) {
+            switch (getFieldName(key)) {
                 case "deletedAccessToken": return false;
 
                 case "deletedCustomerAccessTokenId": return false;
@@ -7250,6 +7570,9 @@ public class Storefront {
             super(_queryBuilder);
         }
 
+        /**
+        * The renewed customer access token object.
+        */
         public CustomerAccessTokenRenewPayloadQuery customerAccessToken(CustomerAccessTokenQueryDefinition queryDef) {
             startField("customerAccessToken");
 
@@ -7260,6 +7583,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * List of errors that occurred executing the mutation.
+        */
         public CustomerAccessTokenRenewPayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
 
@@ -7313,46 +7639,38 @@ public class Storefront {
             }
         }
 
-        public List<Node> getNodes() {
-            List<Node> children = new ArrayList<>();
-
-            if (getCustomerAccessToken() != null) {
-                children.addAll(getCustomerAccessToken().getNodes());
-            }
-
-            if (getUserErrors() != null) {
-                for (UserError elem: getUserErrors()) {
-                    children.addAll(elem.getNodes());
-                }
-            }
-
-            return children;
-        }
-
         public String getGraphQlTypeName() {
             return "CustomerAccessTokenRenewPayload";
         }
+
+        /**
+        * The renewed customer access token object.
+        */
 
         public CustomerAccessToken getCustomerAccessToken() {
             return (CustomerAccessToken) get("customerAccessToken");
         }
 
         public CustomerAccessTokenRenewPayload setCustomerAccessToken(CustomerAccessToken arg) {
-            optimisticData.put("customerAccessToken", arg);
+            optimisticData.put(getKey("customerAccessToken"), arg);
             return this;
         }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        */
 
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
 
         public CustomerAccessTokenRenewPayload setUserErrors(List<UserError> arg) {
-            optimisticData.put("userErrors", arg);
+            optimisticData.put(getKey("userErrors"), arg);
             return this;
         }
 
         public boolean unwrapsToObject(String key) {
-            switch (key) {
+            switch (getFieldName(key)) {
                 case "customerAccessToken": return true;
 
                 case "userErrors": return true;
@@ -7418,6 +7736,9 @@ public class Storefront {
             super(_queryBuilder);
         }
 
+        /**
+        * The customer object.
+        */
         public CustomerActivatePayloadQuery customer(CustomerQueryDefinition queryDef) {
             startField("customer");
 
@@ -7428,6 +7749,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * List of errors that occurred executing the mutation.
+        */
         public CustomerActivatePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
 
@@ -7481,46 +7805,38 @@ public class Storefront {
             }
         }
 
-        public List<Node> getNodes() {
-            List<Node> children = new ArrayList<>();
-
-            if (getCustomer() != null) {
-                children.addAll(getCustomer().getNodes());
-            }
-
-            if (getUserErrors() != null) {
-                for (UserError elem: getUserErrors()) {
-                    children.addAll(elem.getNodes());
-                }
-            }
-
-            return children;
-        }
-
         public String getGraphQlTypeName() {
             return "CustomerActivatePayload";
         }
+
+        /**
+        * The customer object.
+        */
 
         public Customer getCustomer() {
             return (Customer) get("customer");
         }
 
         public CustomerActivatePayload setCustomer(Customer arg) {
-            optimisticData.put("customer", arg);
+            optimisticData.put(getKey("customer"), arg);
             return this;
         }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        */
 
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
 
         public CustomerActivatePayload setUserErrors(List<UserError> arg) {
-            optimisticData.put("userErrors", arg);
+            optimisticData.put(getKey("userErrors"), arg);
             return this;
         }
 
         public boolean unwrapsToObject(String key) {
-            switch (key) {
+            switch (getFieldName(key)) {
                 case "customer": return true;
 
                 case "userErrors": return true;
@@ -7539,6 +7855,9 @@ public class Storefront {
             super(_queryBuilder);
         }
 
+        /**
+        * The new customer address object.
+        */
         public CustomerAddressCreatePayloadQuery customerAddress(MailingAddressQueryDefinition queryDef) {
             startField("customerAddress");
 
@@ -7549,6 +7868,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * List of errors that occurred executing the mutation.
+        */
         public CustomerAddressCreatePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
 
@@ -7602,46 +7924,38 @@ public class Storefront {
             }
         }
 
-        public List<Node> getNodes() {
-            List<Node> children = new ArrayList<>();
-
-            if (getCustomerAddress() != null) {
-                children.addAll(getCustomerAddress().getNodes());
-            }
-
-            if (getUserErrors() != null) {
-                for (UserError elem: getUserErrors()) {
-                    children.addAll(elem.getNodes());
-                }
-            }
-
-            return children;
-        }
-
         public String getGraphQlTypeName() {
             return "CustomerAddressCreatePayload";
         }
+
+        /**
+        * The new customer address object.
+        */
 
         public MailingAddress getCustomerAddress() {
             return (MailingAddress) get("customerAddress");
         }
 
         public CustomerAddressCreatePayload setCustomerAddress(MailingAddress arg) {
-            optimisticData.put("customerAddress", arg);
+            optimisticData.put(getKey("customerAddress"), arg);
             return this;
         }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        */
 
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
 
         public CustomerAddressCreatePayload setUserErrors(List<UserError> arg) {
-            optimisticData.put("userErrors", arg);
+            optimisticData.put(getKey("userErrors"), arg);
             return this;
         }
 
         public boolean unwrapsToObject(String key) {
-            switch (key) {
+            switch (getFieldName(key)) {
                 case "customerAddress": return true;
 
                 case "userErrors": return true;
@@ -7660,12 +7974,18 @@ public class Storefront {
             super(_queryBuilder);
         }
 
+        /**
+        * ID of the deleted customer address.
+        */
         public CustomerAddressDeletePayloadQuery deletedCustomerAddressId() {
             startField("deletedCustomerAddressId");
 
             return this;
         }
 
+        /**
+        * List of errors that occurred executing the mutation.
+        */
         public CustomerAddressDeletePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
 
@@ -7719,42 +8039,38 @@ public class Storefront {
             }
         }
 
-        public List<Node> getNodes() {
-            List<Node> children = new ArrayList<>();
-
-            if (getUserErrors() != null) {
-                for (UserError elem: getUserErrors()) {
-                    children.addAll(elem.getNodes());
-                }
-            }
-
-            return children;
-        }
-
         public String getGraphQlTypeName() {
             return "CustomerAddressDeletePayload";
         }
+
+        /**
+        * ID of the deleted customer address.
+        */
 
         public String getDeletedCustomerAddressId() {
             return (String) get("deletedCustomerAddressId");
         }
 
         public CustomerAddressDeletePayload setDeletedCustomerAddressId(String arg) {
-            optimisticData.put("deletedCustomerAddressId", arg);
+            optimisticData.put(getKey("deletedCustomerAddressId"), arg);
             return this;
         }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        */
 
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
 
         public CustomerAddressDeletePayload setUserErrors(List<UserError> arg) {
-            optimisticData.put("userErrors", arg);
+            optimisticData.put(getKey("userErrors"), arg);
             return this;
         }
 
         public boolean unwrapsToObject(String key) {
-            switch (key) {
+            switch (getFieldName(key)) {
                 case "deletedCustomerAddressId": return false;
 
                 case "userErrors": return true;
@@ -7773,6 +8089,9 @@ public class Storefront {
             super(_queryBuilder);
         }
 
+        /**
+        * The customer’s updated mailing address.
+        */
         public CustomerAddressUpdatePayloadQuery customerAddress(MailingAddressQueryDefinition queryDef) {
             startField("customerAddress");
 
@@ -7783,6 +8102,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * List of errors that occurred executing the mutation.
+        */
         public CustomerAddressUpdatePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
 
@@ -7836,46 +8158,38 @@ public class Storefront {
             }
         }
 
-        public List<Node> getNodes() {
-            List<Node> children = new ArrayList<>();
-
-            if (getCustomerAddress() != null) {
-                children.addAll(getCustomerAddress().getNodes());
-            }
-
-            if (getUserErrors() != null) {
-                for (UserError elem: getUserErrors()) {
-                    children.addAll(elem.getNodes());
-                }
-            }
-
-            return children;
-        }
-
         public String getGraphQlTypeName() {
             return "CustomerAddressUpdatePayload";
         }
+
+        /**
+        * The customer’s updated mailing address.
+        */
 
         public MailingAddress getCustomerAddress() {
             return (MailingAddress) get("customerAddress");
         }
 
         public CustomerAddressUpdatePayload setCustomerAddress(MailingAddress arg) {
-            optimisticData.put("customerAddress", arg);
+            optimisticData.put(getKey("customerAddress"), arg);
             return this;
         }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        */
 
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
 
         public CustomerAddressUpdatePayload setUserErrors(List<UserError> arg) {
-            optimisticData.put("userErrors", arg);
+            optimisticData.put(getKey("userErrors"), arg);
             return this;
         }
 
         public boolean unwrapsToObject(String key) {
-            switch (key) {
+            switch (getFieldName(key)) {
                 case "customerAddress": return true;
 
                 case "userErrors": return true;
@@ -7890,11 +8204,11 @@ public class Storefront {
 
         private String password;
 
-        private Boolean acceptsMarketing;
-
         private String firstName;
 
         private String lastName;
+
+        private Boolean acceptsMarketing;
 
         public CustomerCreateInput(String email, String password) {
             this.email = email;
@@ -7920,15 +8234,6 @@ public class Storefront {
             return this;
         }
 
-        public Boolean getAcceptsMarketing() {
-            return acceptsMarketing;
-        }
-
-        public CustomerCreateInput setAcceptsMarketing(Boolean acceptsMarketing) {
-            this.acceptsMarketing = acceptsMarketing;
-            return this;
-        }
-
         public String getFirstName() {
             return firstName;
         }
@@ -7947,6 +8252,15 @@ public class Storefront {
             return this;
         }
 
+        public Boolean getAcceptsMarketing() {
+            return acceptsMarketing;
+        }
+
+        public CustomerCreateInput setAcceptsMarketing(Boolean acceptsMarketing) {
+            this.acceptsMarketing = acceptsMarketing;
+            return this;
+        }
+
         public void appendTo(StringBuilder _queryBuilder) {
             String separator = "";
             _queryBuilder.append('{');
@@ -7960,13 +8274,6 @@ public class Storefront {
             separator = ",";
             _queryBuilder.append("password:");
             Query.appendQuotedString(_queryBuilder, password.toString());
-
-            if (acceptsMarketing != null) {
-                _queryBuilder.append(separator);
-                separator = ",";
-                _queryBuilder.append("acceptsMarketing:");
-                _queryBuilder.append(acceptsMarketing);
-            }
 
             if (firstName != null) {
                 _queryBuilder.append(separator);
@@ -7982,6 +8289,13 @@ public class Storefront {
                 Query.appendQuotedString(_queryBuilder, lastName.toString());
             }
 
+            if (acceptsMarketing != null) {
+                _queryBuilder.append(separator);
+                separator = ",";
+                _queryBuilder.append("acceptsMarketing:");
+                _queryBuilder.append(acceptsMarketing);
+            }
+
             _queryBuilder.append('}');
         }
     }
@@ -7995,6 +8309,9 @@ public class Storefront {
             super(_queryBuilder);
         }
 
+        /**
+        * The created customer object.
+        */
         public CustomerCreatePayloadQuery customer(CustomerQueryDefinition queryDef) {
             startField("customer");
 
@@ -8005,6 +8322,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * List of errors that occurred executing the mutation.
+        */
         public CustomerCreatePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
 
@@ -8058,46 +8378,38 @@ public class Storefront {
             }
         }
 
-        public List<Node> getNodes() {
-            List<Node> children = new ArrayList<>();
-
-            if (getCustomer() != null) {
-                children.addAll(getCustomer().getNodes());
-            }
-
-            if (getUserErrors() != null) {
-                for (UserError elem: getUserErrors()) {
-                    children.addAll(elem.getNodes());
-                }
-            }
-
-            return children;
-        }
-
         public String getGraphQlTypeName() {
             return "CustomerCreatePayload";
         }
+
+        /**
+        * The created customer object.
+        */
 
         public Customer getCustomer() {
             return (Customer) get("customer");
         }
 
         public CustomerCreatePayload setCustomer(Customer arg) {
-            optimisticData.put("customer", arg);
+            optimisticData.put(getKey("customer"), arg);
             return this;
         }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        */
 
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
 
         public CustomerCreatePayload setUserErrors(List<UserError> arg) {
-            optimisticData.put("userErrors", arg);
+            optimisticData.put(getKey("userErrors"), arg);
             return this;
         }
 
         public boolean unwrapsToObject(String key) {
-            switch (key) {
+            switch (getFieldName(key)) {
                 case "customer": return true;
 
                 case "userErrors": return true;
@@ -8116,6 +8428,9 @@ public class Storefront {
             super(_queryBuilder);
         }
 
+        /**
+        * List of errors that occurred executing the mutation.
+        */
         public CustomerRecoverPayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
 
@@ -8158,33 +8473,25 @@ public class Storefront {
             }
         }
 
-        public List<Node> getNodes() {
-            List<Node> children = new ArrayList<>();
-
-            if (getUserErrors() != null) {
-                for (UserError elem: getUserErrors()) {
-                    children.addAll(elem.getNodes());
-                }
-            }
-
-            return children;
-        }
-
         public String getGraphQlTypeName() {
             return "CustomerRecoverPayload";
         }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        */
 
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
 
         public CustomerRecoverPayload setUserErrors(List<UserError> arg) {
-            optimisticData.put("userErrors", arg);
+            optimisticData.put(getKey("userErrors"), arg);
             return this;
         }
 
         public boolean unwrapsToObject(String key) {
-            switch (key) {
+            switch (getFieldName(key)) {
                 case "userErrors": return true;
 
                 default: return false;
@@ -8193,23 +8500,14 @@ public class Storefront {
     }
 
     public static class CustomerResetInput implements Serializable {
-        private String password;
-
         private String resetToken;
 
-        public CustomerResetInput(String password, String resetToken) {
-            this.password = password;
+        private String password;
 
+        public CustomerResetInput(String resetToken, String password) {
             this.resetToken = resetToken;
-        }
 
-        public String getPassword() {
-            return password;
-        }
-
-        public CustomerResetInput setPassword(String password) {
             this.password = password;
-            return this;
         }
 
         public String getResetToken() {
@@ -8221,19 +8519,28 @@ public class Storefront {
             return this;
         }
 
+        public String getPassword() {
+            return password;
+        }
+
+        public CustomerResetInput setPassword(String password) {
+            this.password = password;
+            return this;
+        }
+
         public void appendTo(StringBuilder _queryBuilder) {
             String separator = "";
             _queryBuilder.append('{');
 
             _queryBuilder.append(separator);
             separator = ",";
-            _queryBuilder.append("password:");
-            Query.appendQuotedString(_queryBuilder, password.toString());
+            _queryBuilder.append("resetToken:");
+            Query.appendQuotedString(_queryBuilder, resetToken.toString());
 
             _queryBuilder.append(separator);
             separator = ",";
-            _queryBuilder.append("resetToken:");
-            Query.appendQuotedString(_queryBuilder, resetToken.toString());
+            _queryBuilder.append("password:");
+            Query.appendQuotedString(_queryBuilder, password.toString());
 
             _queryBuilder.append('}');
         }
@@ -8248,6 +8555,9 @@ public class Storefront {
             super(_queryBuilder);
         }
 
+        /**
+        * The customer object which was reset.
+        */
         public CustomerResetPayloadQuery customer(CustomerQueryDefinition queryDef) {
             startField("customer");
 
@@ -8258,6 +8568,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * List of errors that occurred executing the mutation.
+        */
         public CustomerResetPayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
 
@@ -8311,46 +8624,38 @@ public class Storefront {
             }
         }
 
-        public List<Node> getNodes() {
-            List<Node> children = new ArrayList<>();
-
-            if (getCustomer() != null) {
-                children.addAll(getCustomer().getNodes());
-            }
-
-            if (getUserErrors() != null) {
-                for (UserError elem: getUserErrors()) {
-                    children.addAll(elem.getNodes());
-                }
-            }
-
-            return children;
-        }
-
         public String getGraphQlTypeName() {
             return "CustomerResetPayload";
         }
+
+        /**
+        * The customer object which was reset.
+        */
 
         public Customer getCustomer() {
             return (Customer) get("customer");
         }
 
         public CustomerResetPayload setCustomer(Customer arg) {
-            optimisticData.put("customer", arg);
+            optimisticData.put(getKey("customer"), arg);
             return this;
         }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        */
 
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
 
         public CustomerResetPayload setUserErrors(List<UserError> arg) {
-            optimisticData.put("userErrors", arg);
+            optimisticData.put(getKey("userErrors"), arg);
             return this;
         }
 
         public boolean unwrapsToObject(String key) {
-            switch (key) {
+            switch (getFieldName(key)) {
                 case "customer": return true;
 
                 case "userErrors": return true;
@@ -8361,33 +8666,15 @@ public class Storefront {
     }
 
     public static class CustomerUpdateInput implements Serializable {
-        private Boolean acceptsMarketing;
-
-        private String email;
-
         private String firstName;
 
         private String lastName;
 
+        private String email;
+
         private String password;
 
-        public Boolean getAcceptsMarketing() {
-            return acceptsMarketing;
-        }
-
-        public CustomerUpdateInput setAcceptsMarketing(Boolean acceptsMarketing) {
-            this.acceptsMarketing = acceptsMarketing;
-            return this;
-        }
-
-        public String getEmail() {
-            return email;
-        }
-
-        public CustomerUpdateInput setEmail(String email) {
-            this.email = email;
-            return this;
-        }
+        private Boolean acceptsMarketing;
 
         public String getFirstName() {
             return firstName;
@@ -8407,6 +8694,15 @@ public class Storefront {
             return this;
         }
 
+        public String getEmail() {
+            return email;
+        }
+
+        public CustomerUpdateInput setEmail(String email) {
+            this.email = email;
+            return this;
+        }
+
         public String getPassword() {
             return password;
         }
@@ -8416,23 +8712,18 @@ public class Storefront {
             return this;
         }
 
+        public Boolean getAcceptsMarketing() {
+            return acceptsMarketing;
+        }
+
+        public CustomerUpdateInput setAcceptsMarketing(Boolean acceptsMarketing) {
+            this.acceptsMarketing = acceptsMarketing;
+            return this;
+        }
+
         public void appendTo(StringBuilder _queryBuilder) {
             String separator = "";
             _queryBuilder.append('{');
-
-            if (acceptsMarketing != null) {
-                _queryBuilder.append(separator);
-                separator = ",";
-                _queryBuilder.append("acceptsMarketing:");
-                _queryBuilder.append(acceptsMarketing);
-            }
-
-            if (email != null) {
-                _queryBuilder.append(separator);
-                separator = ",";
-                _queryBuilder.append("email:");
-                Query.appendQuotedString(_queryBuilder, email.toString());
-            }
 
             if (firstName != null) {
                 _queryBuilder.append(separator);
@@ -8448,11 +8739,25 @@ public class Storefront {
                 Query.appendQuotedString(_queryBuilder, lastName.toString());
             }
 
+            if (email != null) {
+                _queryBuilder.append(separator);
+                separator = ",";
+                _queryBuilder.append("email:");
+                Query.appendQuotedString(_queryBuilder, email.toString());
+            }
+
             if (password != null) {
                 _queryBuilder.append(separator);
                 separator = ",";
                 _queryBuilder.append("password:");
                 Query.appendQuotedString(_queryBuilder, password.toString());
+            }
+
+            if (acceptsMarketing != null) {
+                _queryBuilder.append(separator);
+                separator = ",";
+                _queryBuilder.append("acceptsMarketing:");
+                _queryBuilder.append(acceptsMarketing);
             }
 
             _queryBuilder.append('}');
@@ -8468,6 +8773,9 @@ public class Storefront {
             super(_queryBuilder);
         }
 
+        /**
+        * The updated customer object.
+        */
         public CustomerUpdatePayloadQuery customer(CustomerQueryDefinition queryDef) {
             startField("customer");
 
@@ -8478,6 +8786,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * List of errors that occurred executing the mutation.
+        */
         public CustomerUpdatePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
 
@@ -8531,46 +8842,38 @@ public class Storefront {
             }
         }
 
-        public List<Node> getNodes() {
-            List<Node> children = new ArrayList<>();
-
-            if (getCustomer() != null) {
-                children.addAll(getCustomer().getNodes());
-            }
-
-            if (getUserErrors() != null) {
-                for (UserError elem: getUserErrors()) {
-                    children.addAll(elem.getNodes());
-                }
-            }
-
-            return children;
-        }
-
         public String getGraphQlTypeName() {
             return "CustomerUpdatePayload";
         }
+
+        /**
+        * The updated customer object.
+        */
 
         public Customer getCustomer() {
             return (Customer) get("customer");
         }
 
         public CustomerUpdatePayload setCustomer(Customer arg) {
-            optimisticData.put("customer", arg);
+            optimisticData.put(getKey("customer"), arg);
             return this;
         }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        */
 
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
 
         public CustomerUpdatePayload setUserErrors(List<UserError> arg) {
-            optimisticData.put("userErrors", arg);
+            optimisticData.put(getKey("userErrors"), arg);
             return this;
         }
 
         public boolean unwrapsToObject(String key) {
-            switch (key) {
+            switch (getFieldName(key)) {
                 case "customer": return true;
 
                 case "userErrors": return true;
@@ -8584,23 +8887,35 @@ public class Storefront {
         void define(DomainQuery _queryBuilder);
     }
 
+    /**
+    * Represents a web address.
+    */
     public static class DomainQuery extends Query<DomainQuery> {
         DomainQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
         }
 
+        /**
+        * The host name of the domain (eg: `example.com`).
+        */
         public DomainQuery host() {
             startField("host");
 
             return this;
         }
 
+        /**
+        * Whether SSL is enabled or not.
+        */
         public DomainQuery sslEnabled() {
             startField("sslEnabled");
 
             return this;
         }
 
+        /**
+        * The URL of the domain (eg: `https://example.com`).
+        */
         public DomainQuery url() {
             startField("url");
 
@@ -8608,6 +8923,9 @@ public class Storefront {
         }
     }
 
+    /**
+    * Represents a web address.
+    */
     public static class Domain extends AbstractResponse<Domain> {
         public Domain() {
         }
@@ -8646,45 +8964,51 @@ public class Storefront {
             }
         }
 
-        public List<Node> getNodes() {
-            List<Node> children = new ArrayList<>();
-
-            return children;
-        }
-
         public String getGraphQlTypeName() {
             return "Domain";
         }
+
+        /**
+        * The host name of the domain (eg: `example.com`).
+        */
 
         public String getHost() {
             return (String) get("host");
         }
 
         public Domain setHost(String arg) {
-            optimisticData.put("host", arg);
+            optimisticData.put(getKey("host"), arg);
             return this;
         }
+
+        /**
+        * Whether SSL is enabled or not.
+        */
 
         public Boolean getSslEnabled() {
             return (Boolean) get("sslEnabled");
         }
 
         public Domain setSslEnabled(Boolean arg) {
-            optimisticData.put("sslEnabled", arg);
+            optimisticData.put(getKey("sslEnabled"), arg);
             return this;
         }
+
+        /**
+        * The URL of the domain (eg: `https://example.com`).
+        */
 
         public String getUrl() {
             return (String) get("url");
         }
 
         public Domain setUrl(String arg) {
-            optimisticData.put("url", arg);
+            optimisticData.put(getKey("url"), arg);
             return this;
         }
 
         public boolean unwrapsToObject(String key) {
-            switch (key) {
+            switch (getFieldName(key)) {
                 case "host": return false;
 
                 case "sslEnabled": return false;
@@ -8700,23 +9024,35 @@ public class Storefront {
         void define(ImageQuery _queryBuilder);
     }
 
+    /**
+    * Represents an image resource.
+    */
     public static class ImageQuery extends Query<ImageQuery> {
         ImageQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
         }
 
+        /**
+        * A word or phrase to share the nature or contents of an image.
+        */
         public ImageQuery altText() {
             startField("altText");
 
             return this;
         }
 
+        /**
+        * A unique identifier for the image.
+        */
         public ImageQuery id() {
             startField("id");
 
             return this;
         }
 
+        /**
+        * The location of the image as a URL.
+        */
         public ImageQuery src() {
             startField("src");
 
@@ -8724,6 +9060,9 @@ public class Storefront {
         }
     }
 
+    /**
+    * Represents an image resource.
+    */
     public static class Image extends AbstractResponse<Image> {
         public Image() {
         }
@@ -8772,45 +9111,51 @@ public class Storefront {
             }
         }
 
-        public List<Node> getNodes() {
-            List<Node> children = new ArrayList<>();
-
-            return children;
-        }
-
         public String getGraphQlTypeName() {
             return "Image";
         }
+
+        /**
+        * A word or phrase to share the nature or contents of an image.
+        */
 
         public String getAltText() {
             return (String) get("altText");
         }
 
         public Image setAltText(String arg) {
-            optimisticData.put("altText", arg);
+            optimisticData.put(getKey("altText"), arg);
             return this;
         }
+
+        /**
+        * A unique identifier for the image.
+        */
 
         public ID getId() {
             return (ID) get("id");
         }
 
         public Image setId(ID arg) {
-            optimisticData.put("id", arg);
+            optimisticData.put(getKey("id"), arg);
             return this;
         }
+
+        /**
+        * The location of the image as a URL.
+        */
 
         public String getSrc() {
             return (String) get("src");
         }
 
         public Image setSrc(String arg) {
-            optimisticData.put("src", arg);
+            optimisticData.put(getKey("src"), arg);
             return this;
         }
 
         public boolean unwrapsToObject(String key) {
-            switch (key) {
+            switch (getFieldName(key)) {
                 case "altText": return false;
 
                 case "id": return false;
@@ -8831,6 +9176,9 @@ public class Storefront {
             super(_queryBuilder);
         }
 
+        /**
+        * A list of edges.
+        */
         public ImageConnectionQuery edges(ImageEdgeQueryDefinition queryDef) {
             startField("edges");
 
@@ -8841,6 +9189,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * Information to aid in pagination.
+        */
         public ImageConnectionQuery pageInfo(PageInfoQueryDefinition queryDef) {
             startField("pageInfo");
 
@@ -8889,46 +9240,38 @@ public class Storefront {
             }
         }
 
-        public List<Node> getNodes() {
-            List<Node> children = new ArrayList<>();
-
-            if (getEdges() != null) {
-                for (ImageEdge elem: getEdges()) {
-                    children.addAll(elem.getNodes());
-                }
-            }
-
-            if (getPageInfo() != null) {
-                children.addAll(getPageInfo().getNodes());
-            }
-
-            return children;
-        }
-
         public String getGraphQlTypeName() {
             return "ImageConnection";
         }
+
+        /**
+        * A list of edges.
+        */
 
         public List<ImageEdge> getEdges() {
             return (List<ImageEdge>) get("edges");
         }
 
         public ImageConnection setEdges(List<ImageEdge> arg) {
-            optimisticData.put("edges", arg);
+            optimisticData.put(getKey("edges"), arg);
             return this;
         }
+
+        /**
+        * Information to aid in pagination.
+        */
 
         public PageInfo getPageInfo() {
             return (PageInfo) get("pageInfo");
         }
 
         public ImageConnection setPageInfo(PageInfo arg) {
-            optimisticData.put("pageInfo", arg);
+            optimisticData.put(getKey("pageInfo"), arg);
             return this;
         }
 
         public boolean unwrapsToObject(String key) {
-            switch (key) {
+            switch (getFieldName(key)) {
                 case "edges": return true;
 
                 case "pageInfo": return true;
@@ -8996,16 +9339,6 @@ public class Storefront {
             }
         }
 
-        public List<Node> getNodes() {
-            List<Node> children = new ArrayList<>();
-
-            if (getNode() != null) {
-                children.addAll(getNode().getNodes());
-            }
-
-            return children;
-        }
-
         public String getGraphQlTypeName() {
             return "ImageEdge";
         }
@@ -9015,7 +9348,7 @@ public class Storefront {
         }
 
         public ImageEdge setCursor(String arg) {
-            optimisticData.put("cursor", arg);
+            optimisticData.put(getKey("cursor"), arg);
             return this;
         }
 
@@ -9024,12 +9357,12 @@ public class Storefront {
         }
 
         public ImageEdge setNode(Image arg) {
-            optimisticData.put("node", arg);
+            optimisticData.put(getKey("node"), arg);
             return this;
         }
 
         public boolean unwrapsToObject(String key) {
-            switch (key) {
+            switch (getFieldName(key)) {
                 case "cursor": return false;
 
                 case "node": return true;
@@ -9043,6 +9376,9 @@ public class Storefront {
         void define(MailingAddressQuery _queryBuilder);
     }
 
+    /**
+    * Represents a mailing address for customers and shipping.
+    */
     public static class MailingAddressQuery extends Query<MailingAddressQuery> {
         MailingAddressQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
@@ -9181,6 +9517,9 @@ public class Storefront {
         }
     }
 
+    /**
+    * Represents a mailing address for customers and shipping.
+    */
     public static class MailingAddress extends AbstractResponse<MailingAddress> implements Node {
         public MailingAddress() {
         }
@@ -9388,14 +9727,6 @@ public class Storefront {
             optimisticData.put("id", id);
         }
 
-        public List<Node> getNodes() {
-            List<Node> children = new ArrayList<>();
-
-            children.add(this);
-
-            return children;
-        }
-
         public String getGraphQlTypeName() {
             return "MailingAddress";
         }
@@ -9405,7 +9736,7 @@ public class Storefront {
         }
 
         public MailingAddress setAddress1(String arg) {
-            optimisticData.put("address1", arg);
+            optimisticData.put(getKey("address1"), arg);
             return this;
         }
 
@@ -9414,7 +9745,7 @@ public class Storefront {
         }
 
         public MailingAddress setAddress2(String arg) {
-            optimisticData.put("address2", arg);
+            optimisticData.put(getKey("address2"), arg);
             return this;
         }
 
@@ -9423,7 +9754,7 @@ public class Storefront {
         }
 
         public MailingAddress setCity(String arg) {
-            optimisticData.put("city", arg);
+            optimisticData.put(getKey("city"), arg);
             return this;
         }
 
@@ -9432,7 +9763,7 @@ public class Storefront {
         }
 
         public MailingAddress setCompany(String arg) {
-            optimisticData.put("company", arg);
+            optimisticData.put(getKey("company"), arg);
             return this;
         }
 
@@ -9441,7 +9772,7 @@ public class Storefront {
         }
 
         public MailingAddress setCountry(String arg) {
-            optimisticData.put("country", arg);
+            optimisticData.put(getKey("country"), arg);
             return this;
         }
 
@@ -9450,7 +9781,7 @@ public class Storefront {
         }
 
         public MailingAddress setCountryCode(String arg) {
-            optimisticData.put("countryCode", arg);
+            optimisticData.put(getKey("countryCode"), arg);
             return this;
         }
 
@@ -9459,7 +9790,7 @@ public class Storefront {
         }
 
         public MailingAddress setFirstName(String arg) {
-            optimisticData.put("firstName", arg);
+            optimisticData.put(getKey("firstName"), arg);
             return this;
         }
 
@@ -9468,7 +9799,7 @@ public class Storefront {
         }
 
         public MailingAddress setFormatted(List<String> arg) {
-            optimisticData.put("formatted", arg);
+            optimisticData.put(getKey("formatted"), arg);
             return this;
         }
 
@@ -9481,7 +9812,7 @@ public class Storefront {
         }
 
         public MailingAddress setLastName(String arg) {
-            optimisticData.put("lastName", arg);
+            optimisticData.put(getKey("lastName"), arg);
             return this;
         }
 
@@ -9490,7 +9821,7 @@ public class Storefront {
         }
 
         public MailingAddress setLatitude(Double arg) {
-            optimisticData.put("latitude", arg);
+            optimisticData.put(getKey("latitude"), arg);
             return this;
         }
 
@@ -9499,7 +9830,7 @@ public class Storefront {
         }
 
         public MailingAddress setLongitude(Double arg) {
-            optimisticData.put("longitude", arg);
+            optimisticData.put(getKey("longitude"), arg);
             return this;
         }
 
@@ -9508,7 +9839,7 @@ public class Storefront {
         }
 
         public MailingAddress setName(String arg) {
-            optimisticData.put("name", arg);
+            optimisticData.put(getKey("name"), arg);
             return this;
         }
 
@@ -9517,7 +9848,7 @@ public class Storefront {
         }
 
         public MailingAddress setPhone(String arg) {
-            optimisticData.put("phone", arg);
+            optimisticData.put(getKey("phone"), arg);
             return this;
         }
 
@@ -9526,7 +9857,7 @@ public class Storefront {
         }
 
         public MailingAddress setProvince(String arg) {
-            optimisticData.put("province", arg);
+            optimisticData.put(getKey("province"), arg);
             return this;
         }
 
@@ -9535,7 +9866,7 @@ public class Storefront {
         }
 
         public MailingAddress setProvinceCode(String arg) {
-            optimisticData.put("provinceCode", arg);
+            optimisticData.put(getKey("provinceCode"), arg);
             return this;
         }
 
@@ -9544,12 +9875,12 @@ public class Storefront {
         }
 
         public MailingAddress setZip(String arg) {
-            optimisticData.put("zip", arg);
+            optimisticData.put(getKey("zip"), arg);
             return this;
         }
 
         public boolean unwrapsToObject(String key) {
-            switch (key) {
+            switch (getFieldName(key)) {
                 case "address1": return false;
 
                 case "address2": return false;
@@ -9598,6 +9929,9 @@ public class Storefront {
             super(_queryBuilder);
         }
 
+        /**
+        * A list of edges.
+        */
         public MailingAddressConnectionQuery edges(MailingAddressEdgeQueryDefinition queryDef) {
             startField("edges");
 
@@ -9608,6 +9942,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * Information to aid in pagination.
+        */
         public MailingAddressConnectionQuery pageInfo(PageInfoQueryDefinition queryDef) {
             startField("pageInfo");
 
@@ -9656,46 +9993,38 @@ public class Storefront {
             }
         }
 
-        public List<Node> getNodes() {
-            List<Node> children = new ArrayList<>();
-
-            if (getEdges() != null) {
-                for (MailingAddressEdge elem: getEdges()) {
-                    children.addAll(elem.getNodes());
-                }
-            }
-
-            if (getPageInfo() != null) {
-                children.addAll(getPageInfo().getNodes());
-            }
-
-            return children;
-        }
-
         public String getGraphQlTypeName() {
             return "MailingAddressConnection";
         }
+
+        /**
+        * A list of edges.
+        */
 
         public List<MailingAddressEdge> getEdges() {
             return (List<MailingAddressEdge>) get("edges");
         }
 
         public MailingAddressConnection setEdges(List<MailingAddressEdge> arg) {
-            optimisticData.put("edges", arg);
+            optimisticData.put(getKey("edges"), arg);
             return this;
         }
+
+        /**
+        * Information to aid in pagination.
+        */
 
         public PageInfo getPageInfo() {
             return (PageInfo) get("pageInfo");
         }
 
         public MailingAddressConnection setPageInfo(PageInfo arg) {
-            optimisticData.put("pageInfo", arg);
+            optimisticData.put(getKey("pageInfo"), arg);
             return this;
         }
 
         public boolean unwrapsToObject(String key) {
-            switch (key) {
+            switch (getFieldName(key)) {
                 case "edges": return true;
 
                 case "pageInfo": return true;
@@ -9763,16 +10092,6 @@ public class Storefront {
             }
         }
 
-        public List<Node> getNodes() {
-            List<Node> children = new ArrayList<>();
-
-            if (getNode() != null) {
-                children.addAll(getNode().getNodes());
-            }
-
-            return children;
-        }
-
         public String getGraphQlTypeName() {
             return "MailingAddressEdge";
         }
@@ -9782,7 +10101,7 @@ public class Storefront {
         }
 
         public MailingAddressEdge setCursor(String arg) {
-            optimisticData.put("cursor", arg);
+            optimisticData.put(getKey("cursor"), arg);
             return this;
         }
 
@@ -9791,12 +10110,12 @@ public class Storefront {
         }
 
         public MailingAddressEdge setNode(MailingAddress arg) {
-            optimisticData.put("node", arg);
+            optimisticData.put(getKey("node"), arg);
             return this;
         }
 
         public boolean unwrapsToObject(String key) {
-            switch (key) {
+            switch (getFieldName(key)) {
                 case "cursor": return false;
 
                 case "node": return true;
@@ -9999,11 +10318,18 @@ public class Storefront {
         void define(MutationQuery _queryBuilder);
     }
 
+    /**
+    * The schema’s entry-point for mutations. This acts as the public, top-level API from which all
+    * mutation queries must start.
+    */
     public static class MutationQuery extends Query<MutationQuery> {
         MutationQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
         }
 
+        /**
+        * Updates the attributes of a checkout.
+        */
         public MutationQuery checkoutAttributesUpdate(ID checkoutId, CheckoutAttributesUpdateInput input, CheckoutAttributesUpdatePayloadQueryDefinition queryDef) {
             startField("checkoutAttributesUpdate");
 
@@ -10037,6 +10363,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * Completes a checkout using a credit card token from Shopify's Vault.
+        */
         public MutationQuery checkoutCompleteWithCreditCard(ID checkoutId, CreditCardPaymentInput payment, CheckoutCompleteWithCreditCardPayloadQueryDefinition queryDef) {
             startField("checkoutCompleteWithCreditCard");
 
@@ -10055,6 +10384,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * Completes a checkout with a tokenized payment.
+        */
         public MutationQuery checkoutCompleteWithTokenizedPayment(ID checkoutId, TokenizedPaymentInput payment, CheckoutCompleteWithTokenizedPaymentPayloadQueryDefinition queryDef) {
             startField("checkoutCompleteWithTokenizedPayment");
 
@@ -10073,6 +10405,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * Creates a new checkout.
+        */
         public MutationQuery checkoutCreate(CheckoutCreateInput input, CheckoutCreatePayloadQueryDefinition queryDef) {
             startField("checkoutCreate");
 
@@ -10088,6 +10423,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * Associates a customer to the checkout.
+        */
         public MutationQuery checkoutCustomerAssociate(ID checkoutId, String customerAccessToken, CheckoutCustomerAssociatePayloadQueryDefinition queryDef) {
             startField("checkoutCustomerAssociate");
 
@@ -10106,6 +10444,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * Disassociates the current checkout customer from the checkout.
+        */
         public MutationQuery checkoutCustomerDisassociate(ID checkoutId, CheckoutCustomerDisassociatePayloadQueryDefinition queryDef) {
             startField("checkoutCustomerDisassociate");
 
@@ -10121,6 +10462,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * Updates the email on an existing checkout.
+        */
         public MutationQuery checkoutEmailUpdate(ID checkoutId, String email, CheckoutEmailUpdatePayloadQueryDefinition queryDef) {
             startField("checkoutEmailUpdate");
 
@@ -10139,6 +10483,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * Applies a gift card to an existing checkout using a gift card code.
+        */
         public MutationQuery checkoutGiftCardApply(String giftCardCode, ID checkoutId, CheckoutGiftCardApplyPayloadQueryDefinition queryDef) {
             startField("checkoutGiftCardApply");
 
@@ -10157,6 +10504,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * Removes an applied gift card from the checkout.
+        */
         public MutationQuery checkoutGiftCardRemove(ID appliedGiftCardId, ID checkoutId, CheckoutGiftCardRemovePayloadQueryDefinition queryDef) {
             startField("checkoutGiftCardRemove");
 
@@ -10175,43 +10525,25 @@ public class Storefront {
             return this;
         }
 
-        public class CheckoutLineItemsAddArguments extends Arguments {
-            CheckoutLineItemsAddArguments(StringBuilder _queryBuilder) {
-                super(_queryBuilder, false);
-            }
-
-            public CheckoutLineItemsAddArguments lineItems(List<CheckoutLineItemInput> value) {
-                if (value != null) {
-                    startArgument("lineItems");
-                    _queryBuilder.append('[');
-
-                    String listSeperator1 = "";
-                    for (CheckoutLineItemInput item1 : value) {
-                        _queryBuilder.append(listSeperator1);
-                        listSeperator1 = ",";
-                        item1.appendTo(_queryBuilder);
-                    }
-                    _queryBuilder.append(']');
-                }
-                return this;
-            }
-        }
-
-        public interface CheckoutLineItemsAddArgumentsDefinition {
-            void define(CheckoutLineItemsAddArguments args);
-        }
-
-        public MutationQuery checkoutLineItemsAdd(ID checkoutId, CheckoutLineItemsAddPayloadQueryDefinition queryDef) {
-            return checkoutLineItemsAdd(checkoutId, args -> {}, queryDef);
-        }
-
-        public MutationQuery checkoutLineItemsAdd(ID checkoutId, CheckoutLineItemsAddArgumentsDefinition argsDef, CheckoutLineItemsAddPayloadQueryDefinition queryDef) {
+        /**
+        * Adds a list of line items to a checkout.
+        */
+        public MutationQuery checkoutLineItemsAdd(List<CheckoutLineItemInput> lineItems, ID checkoutId, CheckoutLineItemsAddPayloadQueryDefinition queryDef) {
             startField("checkoutLineItemsAdd");
 
-            _queryBuilder.append("(checkoutId:");
-            Query.appendQuotedString(_queryBuilder, checkoutId.toString());
+            _queryBuilder.append("(lineItems:");
+            _queryBuilder.append('[');
 
-            argsDef.define(new CheckoutLineItemsAddArguments(_queryBuilder));
+            String listSeperator1 = "";
+            for (CheckoutLineItemInput item1 : lineItems) {
+                _queryBuilder.append(listSeperator1);
+                listSeperator1 = ",";
+                item1.appendTo(_queryBuilder);
+            }
+            _queryBuilder.append(']');
+
+            _queryBuilder.append(",checkoutId:");
+            Query.appendQuotedString(_queryBuilder, checkoutId.toString());
 
             _queryBuilder.append(')');
 
@@ -10222,6 +10554,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * Removes line items from an existing checkout
+        */
         public MutationQuery checkoutLineItemsRemove(ID checkoutId, List<ID> lineItemIds, CheckoutLineItemsRemovePayloadQueryDefinition queryDef) {
             startField("checkoutLineItemsRemove");
 
@@ -10248,6 +10583,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * Updates line items on a checkout.
+        */
         public MutationQuery checkoutLineItemsUpdate(ID checkoutId, List<CheckoutLineItemUpdateInput> lineItems, CheckoutLineItemsUpdatePayloadQueryDefinition queryDef) {
             startField("checkoutLineItemsUpdate");
 
@@ -10274,6 +10612,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * Updates the shipping address of an existing checkout.
+        */
         public MutationQuery checkoutShippingAddressUpdate(MailingAddressInput shippingAddress, ID checkoutId, CheckoutShippingAddressUpdatePayloadQueryDefinition queryDef) {
             startField("checkoutShippingAddressUpdate");
 
@@ -10292,6 +10633,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * Updates the shipping lines on an existing checkout.
+        */
         public MutationQuery checkoutShippingLineUpdate(ID checkoutId, String shippingRateHandle, CheckoutShippingLineUpdatePayloadQueryDefinition queryDef) {
             startField("checkoutShippingLineUpdate");
 
@@ -10310,6 +10654,10 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * Creates a customer access token.
+        * The customer access token is required to modify the customer object in any way.
+        */
         public MutationQuery customerAccessTokenCreate(CustomerAccessTokenCreateInput input, CustomerAccessTokenCreatePayloadQueryDefinition queryDef) {
             startField("customerAccessTokenCreate");
 
@@ -10325,6 +10673,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * Permanently destroys a customer access token.
+        */
         public MutationQuery customerAccessTokenDelete(String customerAccessToken, CustomerAccessTokenDeletePayloadQueryDefinition queryDef) {
             startField("customerAccessTokenDelete");
 
@@ -10340,6 +10691,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * Renews a customer access token.
+        */
         public MutationQuery customerAccessTokenRenew(String customerAccessToken, CustomerAccessTokenRenewPayloadQueryDefinition queryDef) {
             startField("customerAccessTokenRenew");
 
@@ -10355,6 +10709,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * Activates a customer.
+        */
         public MutationQuery customerActivate(ID id, CustomerActivateInput input, CustomerActivatePayloadQueryDefinition queryDef) {
             startField("customerActivate");
 
@@ -10373,6 +10730,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * Creates a new address for a customer.
+        */
         public MutationQuery customerAddressCreate(String customerAccessToken, MailingAddressInput address, CustomerAddressCreatePayloadQueryDefinition queryDef) {
             startField("customerAddressCreate");
 
@@ -10391,6 +10751,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * Permanently deletes the address of an existing customer.
+        */
         public MutationQuery customerAddressDelete(ID id, String customerAccessToken, CustomerAddressDeletePayloadQueryDefinition queryDef) {
             startField("customerAddressDelete");
 
@@ -10409,6 +10772,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * Updates the address of an existing customer.
+        */
         public MutationQuery customerAddressUpdate(String customerAccessToken, ID id, MailingAddressInput address, CustomerAddressUpdatePayloadQueryDefinition queryDef) {
             startField("customerAddressUpdate");
 
@@ -10430,6 +10796,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * Creates a new customer.
+        */
         public MutationQuery customerCreate(CustomerCreateInput input, CustomerCreatePayloadQueryDefinition queryDef) {
             startField("customerCreate");
 
@@ -10445,6 +10814,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * Sends a reset password email to the customer, as the first step in the reset password process.
+        */
         public MutationQuery customerRecover(String email, CustomerRecoverPayloadQueryDefinition queryDef) {
             startField("customerRecover");
 
@@ -10460,6 +10832,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * Resets a customer’s password with a token received from `CustomerRecover`.
+        */
         public MutationQuery customerReset(ID id, CustomerResetInput input, CustomerResetPayloadQueryDefinition queryDef) {
             startField("customerReset");
 
@@ -10478,6 +10853,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * Updates an existing customer.
+        */
         public MutationQuery customerUpdate(String customerAccessToken, CustomerUpdateInput customer, CustomerUpdatePayloadQueryDefinition queryDef) {
             startField("customerUpdate");
 
@@ -10501,6 +10879,10 @@ public class Storefront {
         }
     }
 
+    /**
+    * The schema’s entry-point for mutations. This acts as the public, top-level API from which all
+    * mutation queries must start.
+    */
     public static class Mutation extends AbstractResponse<Mutation> {
         public Mutation() {
         }
@@ -10807,126 +11189,20 @@ public class Storefront {
             }
         }
 
-        public List<Node> getNodes() {
-            List<Node> children = new ArrayList<>();
-
-            if (getCheckoutAttributesUpdate() != null) {
-                children.addAll(getCheckoutAttributesUpdate().getNodes());
-            }
-
-            if (getCheckoutCompleteFree() != null) {
-                children.addAll(getCheckoutCompleteFree().getNodes());
-            }
-
-            if (getCheckoutCompleteWithCreditCard() != null) {
-                children.addAll(getCheckoutCompleteWithCreditCard().getNodes());
-            }
-
-            if (getCheckoutCompleteWithTokenizedPayment() != null) {
-                children.addAll(getCheckoutCompleteWithTokenizedPayment().getNodes());
-            }
-
-            if (getCheckoutCreate() != null) {
-                children.addAll(getCheckoutCreate().getNodes());
-            }
-
-            if (getCheckoutCustomerAssociate() != null) {
-                children.addAll(getCheckoutCustomerAssociate().getNodes());
-            }
-
-            if (getCheckoutCustomerDisassociate() != null) {
-                children.addAll(getCheckoutCustomerDisassociate().getNodes());
-            }
-
-            if (getCheckoutEmailUpdate() != null) {
-                children.addAll(getCheckoutEmailUpdate().getNodes());
-            }
-
-            if (getCheckoutGiftCardApply() != null) {
-                children.addAll(getCheckoutGiftCardApply().getNodes());
-            }
-
-            if (getCheckoutGiftCardRemove() != null) {
-                children.addAll(getCheckoutGiftCardRemove().getNodes());
-            }
-
-            if (getCheckoutLineItemsAdd() != null) {
-                children.addAll(getCheckoutLineItemsAdd().getNodes());
-            }
-
-            if (getCheckoutLineItemsRemove() != null) {
-                children.addAll(getCheckoutLineItemsRemove().getNodes());
-            }
-
-            if (getCheckoutLineItemsUpdate() != null) {
-                children.addAll(getCheckoutLineItemsUpdate().getNodes());
-            }
-
-            if (getCheckoutShippingAddressUpdate() != null) {
-                children.addAll(getCheckoutShippingAddressUpdate().getNodes());
-            }
-
-            if (getCheckoutShippingLineUpdate() != null) {
-                children.addAll(getCheckoutShippingLineUpdate().getNodes());
-            }
-
-            if (getCustomerAccessTokenCreate() != null) {
-                children.addAll(getCustomerAccessTokenCreate().getNodes());
-            }
-
-            if (getCustomerAccessTokenDelete() != null) {
-                children.addAll(getCustomerAccessTokenDelete().getNodes());
-            }
-
-            if (getCustomerAccessTokenRenew() != null) {
-                children.addAll(getCustomerAccessTokenRenew().getNodes());
-            }
-
-            if (getCustomerActivate() != null) {
-                children.addAll(getCustomerActivate().getNodes());
-            }
-
-            if (getCustomerAddressCreate() != null) {
-                children.addAll(getCustomerAddressCreate().getNodes());
-            }
-
-            if (getCustomerAddressDelete() != null) {
-                children.addAll(getCustomerAddressDelete().getNodes());
-            }
-
-            if (getCustomerAddressUpdate() != null) {
-                children.addAll(getCustomerAddressUpdate().getNodes());
-            }
-
-            if (getCustomerCreate() != null) {
-                children.addAll(getCustomerCreate().getNodes());
-            }
-
-            if (getCustomerRecover() != null) {
-                children.addAll(getCustomerRecover().getNodes());
-            }
-
-            if (getCustomerReset() != null) {
-                children.addAll(getCustomerReset().getNodes());
-            }
-
-            if (getCustomerUpdate() != null) {
-                children.addAll(getCustomerUpdate().getNodes());
-            }
-
-            return children;
-        }
-
         public String getGraphQlTypeName() {
             return "Mutation";
         }
+
+        /**
+        * Updates the attributes of a checkout.
+        */
 
         public CheckoutAttributesUpdatePayload getCheckoutAttributesUpdate() {
             return (CheckoutAttributesUpdatePayload) get("checkoutAttributesUpdate");
         }
 
         public Mutation setCheckoutAttributesUpdate(CheckoutAttributesUpdatePayload arg) {
-            optimisticData.put("checkoutAttributesUpdate", arg);
+            optimisticData.put(getKey("checkoutAttributesUpdate"), arg);
             return this;
         }
 
@@ -10935,228 +11211,325 @@ public class Storefront {
         }
 
         public Mutation setCheckoutCompleteFree(CheckoutCompleteFreePayload arg) {
-            optimisticData.put("checkoutCompleteFree", arg);
+            optimisticData.put(getKey("checkoutCompleteFree"), arg);
             return this;
         }
+
+        /**
+        * Completes a checkout using a credit card token from Shopify's Vault.
+        */
 
         public CheckoutCompleteWithCreditCardPayload getCheckoutCompleteWithCreditCard() {
             return (CheckoutCompleteWithCreditCardPayload) get("checkoutCompleteWithCreditCard");
         }
 
         public Mutation setCheckoutCompleteWithCreditCard(CheckoutCompleteWithCreditCardPayload arg) {
-            optimisticData.put("checkoutCompleteWithCreditCard", arg);
+            optimisticData.put(getKey("checkoutCompleteWithCreditCard"), arg);
             return this;
         }
+
+        /**
+        * Completes a checkout with a tokenized payment.
+        */
 
         public CheckoutCompleteWithTokenizedPaymentPayload getCheckoutCompleteWithTokenizedPayment() {
             return (CheckoutCompleteWithTokenizedPaymentPayload) get("checkoutCompleteWithTokenizedPayment");
         }
 
         public Mutation setCheckoutCompleteWithTokenizedPayment(CheckoutCompleteWithTokenizedPaymentPayload arg) {
-            optimisticData.put("checkoutCompleteWithTokenizedPayment", arg);
+            optimisticData.put(getKey("checkoutCompleteWithTokenizedPayment"), arg);
             return this;
         }
+
+        /**
+        * Creates a new checkout.
+        */
 
         public CheckoutCreatePayload getCheckoutCreate() {
             return (CheckoutCreatePayload) get("checkoutCreate");
         }
 
         public Mutation setCheckoutCreate(CheckoutCreatePayload arg) {
-            optimisticData.put("checkoutCreate", arg);
+            optimisticData.put(getKey("checkoutCreate"), arg);
             return this;
         }
+
+        /**
+        * Associates a customer to the checkout.
+        */
 
         public CheckoutCustomerAssociatePayload getCheckoutCustomerAssociate() {
             return (CheckoutCustomerAssociatePayload) get("checkoutCustomerAssociate");
         }
 
         public Mutation setCheckoutCustomerAssociate(CheckoutCustomerAssociatePayload arg) {
-            optimisticData.put("checkoutCustomerAssociate", arg);
+            optimisticData.put(getKey("checkoutCustomerAssociate"), arg);
             return this;
         }
+
+        /**
+        * Disassociates the current checkout customer from the checkout.
+        */
 
         public CheckoutCustomerDisassociatePayload getCheckoutCustomerDisassociate() {
             return (CheckoutCustomerDisassociatePayload) get("checkoutCustomerDisassociate");
         }
 
         public Mutation setCheckoutCustomerDisassociate(CheckoutCustomerDisassociatePayload arg) {
-            optimisticData.put("checkoutCustomerDisassociate", arg);
+            optimisticData.put(getKey("checkoutCustomerDisassociate"), arg);
             return this;
         }
+
+        /**
+        * Updates the email on an existing checkout.
+        */
 
         public CheckoutEmailUpdatePayload getCheckoutEmailUpdate() {
             return (CheckoutEmailUpdatePayload) get("checkoutEmailUpdate");
         }
 
         public Mutation setCheckoutEmailUpdate(CheckoutEmailUpdatePayload arg) {
-            optimisticData.put("checkoutEmailUpdate", arg);
+            optimisticData.put(getKey("checkoutEmailUpdate"), arg);
             return this;
         }
+
+        /**
+        * Applies a gift card to an existing checkout using a gift card code.
+        */
 
         public CheckoutGiftCardApplyPayload getCheckoutGiftCardApply() {
             return (CheckoutGiftCardApplyPayload) get("checkoutGiftCardApply");
         }
 
         public Mutation setCheckoutGiftCardApply(CheckoutGiftCardApplyPayload arg) {
-            optimisticData.put("checkoutGiftCardApply", arg);
+            optimisticData.put(getKey("checkoutGiftCardApply"), arg);
             return this;
         }
+
+        /**
+        * Removes an applied gift card from the checkout.
+        */
 
         public CheckoutGiftCardRemovePayload getCheckoutGiftCardRemove() {
             return (CheckoutGiftCardRemovePayload) get("checkoutGiftCardRemove");
         }
 
         public Mutation setCheckoutGiftCardRemove(CheckoutGiftCardRemovePayload arg) {
-            optimisticData.put("checkoutGiftCardRemove", arg);
+            optimisticData.put(getKey("checkoutGiftCardRemove"), arg);
             return this;
         }
+
+        /**
+        * Adds a list of line items to a checkout.
+        */
 
         public CheckoutLineItemsAddPayload getCheckoutLineItemsAdd() {
             return (CheckoutLineItemsAddPayload) get("checkoutLineItemsAdd");
         }
 
         public Mutation setCheckoutLineItemsAdd(CheckoutLineItemsAddPayload arg) {
-            optimisticData.put("checkoutLineItemsAdd", arg);
+            optimisticData.put(getKey("checkoutLineItemsAdd"), arg);
             return this;
         }
+
+        /**
+        * Removes line items from an existing checkout
+        */
 
         public CheckoutLineItemsRemovePayload getCheckoutLineItemsRemove() {
             return (CheckoutLineItemsRemovePayload) get("checkoutLineItemsRemove");
         }
 
         public Mutation setCheckoutLineItemsRemove(CheckoutLineItemsRemovePayload arg) {
-            optimisticData.put("checkoutLineItemsRemove", arg);
+            optimisticData.put(getKey("checkoutLineItemsRemove"), arg);
             return this;
         }
+
+        /**
+        * Updates line items on a checkout.
+        */
 
         public CheckoutLineItemsUpdatePayload getCheckoutLineItemsUpdate() {
             return (CheckoutLineItemsUpdatePayload) get("checkoutLineItemsUpdate");
         }
 
         public Mutation setCheckoutLineItemsUpdate(CheckoutLineItemsUpdatePayload arg) {
-            optimisticData.put("checkoutLineItemsUpdate", arg);
+            optimisticData.put(getKey("checkoutLineItemsUpdate"), arg);
             return this;
         }
+
+        /**
+        * Updates the shipping address of an existing checkout.
+        */
 
         public CheckoutShippingAddressUpdatePayload getCheckoutShippingAddressUpdate() {
             return (CheckoutShippingAddressUpdatePayload) get("checkoutShippingAddressUpdate");
         }
 
         public Mutation setCheckoutShippingAddressUpdate(CheckoutShippingAddressUpdatePayload arg) {
-            optimisticData.put("checkoutShippingAddressUpdate", arg);
+            optimisticData.put(getKey("checkoutShippingAddressUpdate"), arg);
             return this;
         }
+
+        /**
+        * Updates the shipping lines on an existing checkout.
+        */
 
         public CheckoutShippingLineUpdatePayload getCheckoutShippingLineUpdate() {
             return (CheckoutShippingLineUpdatePayload) get("checkoutShippingLineUpdate");
         }
 
         public Mutation setCheckoutShippingLineUpdate(CheckoutShippingLineUpdatePayload arg) {
-            optimisticData.put("checkoutShippingLineUpdate", arg);
+            optimisticData.put(getKey("checkoutShippingLineUpdate"), arg);
             return this;
         }
+
+        /**
+        * Creates a customer access token.
+        * The customer access token is required to modify the customer object in any way.
+        */
 
         public CustomerAccessTokenCreatePayload getCustomerAccessTokenCreate() {
             return (CustomerAccessTokenCreatePayload) get("customerAccessTokenCreate");
         }
 
         public Mutation setCustomerAccessTokenCreate(CustomerAccessTokenCreatePayload arg) {
-            optimisticData.put("customerAccessTokenCreate", arg);
+            optimisticData.put(getKey("customerAccessTokenCreate"), arg);
             return this;
         }
+
+        /**
+        * Permanently destroys a customer access token.
+        */
 
         public CustomerAccessTokenDeletePayload getCustomerAccessTokenDelete() {
             return (CustomerAccessTokenDeletePayload) get("customerAccessTokenDelete");
         }
 
         public Mutation setCustomerAccessTokenDelete(CustomerAccessTokenDeletePayload arg) {
-            optimisticData.put("customerAccessTokenDelete", arg);
+            optimisticData.put(getKey("customerAccessTokenDelete"), arg);
             return this;
         }
+
+        /**
+        * Renews a customer access token.
+        */
 
         public CustomerAccessTokenRenewPayload getCustomerAccessTokenRenew() {
             return (CustomerAccessTokenRenewPayload) get("customerAccessTokenRenew");
         }
 
         public Mutation setCustomerAccessTokenRenew(CustomerAccessTokenRenewPayload arg) {
-            optimisticData.put("customerAccessTokenRenew", arg);
+            optimisticData.put(getKey("customerAccessTokenRenew"), arg);
             return this;
         }
+
+        /**
+        * Activates a customer.
+        */
 
         public CustomerActivatePayload getCustomerActivate() {
             return (CustomerActivatePayload) get("customerActivate");
         }
 
         public Mutation setCustomerActivate(CustomerActivatePayload arg) {
-            optimisticData.put("customerActivate", arg);
+            optimisticData.put(getKey("customerActivate"), arg);
             return this;
         }
+
+        /**
+        * Creates a new address for a customer.
+        */
 
         public CustomerAddressCreatePayload getCustomerAddressCreate() {
             return (CustomerAddressCreatePayload) get("customerAddressCreate");
         }
 
         public Mutation setCustomerAddressCreate(CustomerAddressCreatePayload arg) {
-            optimisticData.put("customerAddressCreate", arg);
+            optimisticData.put(getKey("customerAddressCreate"), arg);
             return this;
         }
+
+        /**
+        * Permanently deletes the address of an existing customer.
+        */
 
         public CustomerAddressDeletePayload getCustomerAddressDelete() {
             return (CustomerAddressDeletePayload) get("customerAddressDelete");
         }
 
         public Mutation setCustomerAddressDelete(CustomerAddressDeletePayload arg) {
-            optimisticData.put("customerAddressDelete", arg);
+            optimisticData.put(getKey("customerAddressDelete"), arg);
             return this;
         }
+
+        /**
+        * Updates the address of an existing customer.
+        */
 
         public CustomerAddressUpdatePayload getCustomerAddressUpdate() {
             return (CustomerAddressUpdatePayload) get("customerAddressUpdate");
         }
 
         public Mutation setCustomerAddressUpdate(CustomerAddressUpdatePayload arg) {
-            optimisticData.put("customerAddressUpdate", arg);
+            optimisticData.put(getKey("customerAddressUpdate"), arg);
             return this;
         }
+
+        /**
+        * Creates a new customer.
+        */
 
         public CustomerCreatePayload getCustomerCreate() {
             return (CustomerCreatePayload) get("customerCreate");
         }
 
         public Mutation setCustomerCreate(CustomerCreatePayload arg) {
-            optimisticData.put("customerCreate", arg);
+            optimisticData.put(getKey("customerCreate"), arg);
             return this;
         }
+
+        /**
+        * Sends a reset password email to the customer, as the first step in the reset password process.
+        */
 
         public CustomerRecoverPayload getCustomerRecover() {
             return (CustomerRecoverPayload) get("customerRecover");
         }
 
         public Mutation setCustomerRecover(CustomerRecoverPayload arg) {
-            optimisticData.put("customerRecover", arg);
+            optimisticData.put(getKey("customerRecover"), arg);
             return this;
         }
+
+        /**
+        * Resets a customer’s password with a token received from `CustomerRecover`.
+        */
 
         public CustomerResetPayload getCustomerReset() {
             return (CustomerResetPayload) get("customerReset");
         }
 
         public Mutation setCustomerReset(CustomerResetPayload arg) {
-            optimisticData.put("customerReset", arg);
+            optimisticData.put(getKey("customerReset"), arg);
             return this;
         }
+
+        /**
+        * Updates an existing customer.
+        */
 
         public CustomerUpdatePayload getCustomerUpdate() {
             return (CustomerUpdatePayload) get("customerUpdate");
         }
 
         public Mutation setCustomerUpdate(CustomerUpdatePayload arg) {
-            optimisticData.put("customerUpdate", arg);
+            optimisticData.put(getKey("customerUpdate"), arg);
             return this;
         }
 
         public boolean unwrapsToObject(String key) {
-            switch (key) {
+            switch (getFieldName(key)) {
                 case "checkoutAttributesUpdate": return true;
 
                 case "checkoutCompleteFree": return true;
@@ -11218,6 +11591,9 @@ public class Storefront {
         void define(NodeQuery _queryBuilder);
     }
 
+    /**
+    * An object with an ID to support global identification.
+    */
     public static class NodeQuery extends Query<NodeQuery> {
         NodeQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
@@ -11225,6 +11601,9 @@ public class Storefront {
             startField("__typename");
         }
 
+        /**
+        * Globally unique identifier.
+        */
         public NodeQuery id() {
             startField("id");
 
@@ -11309,12 +11688,15 @@ public class Storefront {
         }
     }
 
-    public interface Node {
+    public interface Node extends com.shopify.graphql.support.Node {
         String getGraphQlTypeName();
 
         ID getId();
     }
 
+    /**
+    * An object with an ID to support global identification.
+    */
     public static class UnknownNode extends AbstractResponse<UnknownNode> implements Node {
         public UnknownNode() {
         }
@@ -11339,12 +11721,6 @@ public class Storefront {
                     }
                 }
             }
-        }
-
-        public List<Node> getNodes() {
-            List<Node> children = new ArrayList<>();
-
-            return children;
         }
 
         public static Node create(JsonObject fields) throws SchemaViolationError {
@@ -11404,17 +11780,21 @@ public class Storefront {
             return (String) get("__typename");
         }
 
+        /**
+        * Globally unique identifier.
+        */
+
         public ID getId() {
             return (ID) get("id");
         }
 
         public UnknownNode setId(ID arg) {
-            optimisticData.put("id", arg);
+            optimisticData.put(getKey("id"), arg);
             return this;
         }
 
         public boolean unwrapsToObject(String key) {
-            switch (key) {
+            switch (getFieldName(key)) {
                 case "id": return false;
 
                 default: return false;
@@ -11426,6 +11806,11 @@ public class Storefront {
         void define(OrderQuery _queryBuilder);
     }
 
+    /**
+    * An order is a customer’s completed request to purchase one or more products from a shop. An order is
+    * created when a customer completes the checkout process, during which time they provides an email
+    * address, billing address and payment information.
+    */
     public static class OrderQuery extends Query<OrderQuery> {
         OrderQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
@@ -11433,48 +11818,74 @@ public class Storefront {
             startField("id");
         }
 
+        /**
+        * The reason why the order was cancelled.
+        * If the order was not cancelled, this value is `null`.
+        */
         public OrderQuery cancelReason() {
             startField("cancelReason");
 
             return this;
         }
 
+        /**
+        * The date and time when the order was cancelled.
+        * If the order was not cancelled, this value is `null.`
+        */
         public OrderQuery cancelledAt() {
             startField("cancelledAt");
 
             return this;
         }
 
+        /**
+        * The date and time when the order was created.
+        */
         public OrderQuery createdAt() {
             startField("createdAt");
 
             return this;
         }
 
+        /**
+        * The code of the currency used for the payment.
+        */
         public OrderQuery currencyCode() {
             startField("currencyCode");
 
             return this;
         }
 
+        /**
+        * The order’s URL for a customer.
+        */
         public OrderQuery customerUrl() {
             startField("customerUrl");
 
             return this;
         }
 
+        /**
+        * Displays financial status of order payment processing.
+        */
         public OrderQuery displayFinancialStatus() {
             startField("displayFinancialStatus");
 
             return this;
         }
 
+        /**
+        * Displays fulfillment status of the order.
+        */
         public OrderQuery displayFulfillmentStatus() {
             startField("displayFulfillmentStatus");
 
             return this;
         }
 
+        /**
+        * The customer's email address.
+        */
         public OrderQuery email() {
             startField("email");
 
@@ -11507,10 +11918,16 @@ public class Storefront {
             void define(LineItemsArguments args);
         }
 
+        /**
+        * List of the order’s line items.
+        */
         public OrderQuery lineItems(int first, OrderLineItemConnectionQueryDefinition queryDef) {
             return lineItems(first, args -> {}, queryDef);
         }
 
+        /**
+        * List of the order’s line items.
+        */
         public OrderQuery lineItems(int first, LineItemsArgumentsDefinition argsDef, OrderLineItemConnectionQueryDefinition queryDef) {
             startField("lineItems");
 
@@ -11528,24 +11945,38 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * A unique numeric identifier for the order for use by shop owner and customer.
+        */
         public OrderQuery orderNumber() {
             startField("orderNumber");
 
             return this;
         }
 
+        /**
+        * The customer's phone number.
+        */
         public OrderQuery phone() {
             startField("phone");
 
             return this;
         }
 
+        /**
+        * The date and time when the order was imported.
+        * This value can be set to dates in the past when importing from other systems.
+        * If no value is provided, it will be auto-generated based on current date and time.
+        */
         public OrderQuery processedAt() {
             startField("processedAt");
 
             return this;
         }
 
+        /**
+        * The address to where the order will be shipped.
+        */
         public OrderQuery shippingAddress(MailingAddressQueryDefinition queryDef) {
             startField("shippingAddress");
 
@@ -11556,36 +11987,55 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * Price of the order before shipping and taxes.
+        */
         public OrderQuery subtotalPrice() {
             startField("subtotalPrice");
 
             return this;
         }
 
+        /**
+        * The sum of all the prices of all the items in the order, taxes and discounts included (must be
+        * positive).
+        */
         public OrderQuery totalPrice() {
             startField("totalPrice");
 
             return this;
         }
 
+        /**
+        * The total amount that has been refunded.
+        */
         public OrderQuery totalRefunded() {
             startField("totalRefunded");
 
             return this;
         }
 
+        /**
+        * The total cost of shipping.
+        */
         public OrderQuery totalShippingPrice() {
             startField("totalShippingPrice");
 
             return this;
         }
 
+        /**
+        * The total cost of taxes.
+        */
         public OrderQuery totalTax() {
             startField("totalTax");
 
             return this;
         }
 
+        /**
+        * The date and time when the order was last modified.
+        */
         public OrderQuery updatedAt() {
             startField("updatedAt");
 
@@ -11593,6 +12043,11 @@ public class Storefront {
         }
     }
 
+    /**
+    * An order is a customer’s completed request to purchase one or more products from a shop. An order is
+    * created when a customer completes the checkout process, during which time they provides an email
+    * address, billing address and payment information.
+    */
     public static class Order extends AbstractResponse<Order> implements Node {
         public Order() {
         }
@@ -11783,95 +12238,113 @@ public class Storefront {
             optimisticData.put("id", id);
         }
 
-        public List<Node> getNodes() {
-            List<Node> children = new ArrayList<>();
-
-            children.add(this);
-
-            if (getLineItems() != null) {
-                children.addAll(getLineItems().getNodes());
-            }
-
-            if (getShippingAddress() != null) {
-                children.addAll(getShippingAddress().getNodes());
-            }
-
-            return children;
-        }
-
         public String getGraphQlTypeName() {
             return "Order";
         }
+
+        /**
+        * The reason why the order was cancelled.
+        * If the order was not cancelled, this value is `null`.
+        */
 
         public OrderCancelReason getCancelReason() {
             return (OrderCancelReason) get("cancelReason");
         }
 
         public Order setCancelReason(OrderCancelReason arg) {
-            optimisticData.put("cancelReason", arg);
+            optimisticData.put(getKey("cancelReason"), arg);
             return this;
         }
+
+        /**
+        * The date and time when the order was cancelled.
+        * If the order was not cancelled, this value is `null.`
+        */
 
         public DateTime getCancelledAt() {
             return (DateTime) get("cancelledAt");
         }
 
         public Order setCancelledAt(DateTime arg) {
-            optimisticData.put("cancelledAt", arg);
+            optimisticData.put(getKey("cancelledAt"), arg);
             return this;
         }
+
+        /**
+        * The date and time when the order was created.
+        */
 
         public DateTime getCreatedAt() {
             return (DateTime) get("createdAt");
         }
 
         public Order setCreatedAt(DateTime arg) {
-            optimisticData.put("createdAt", arg);
+            optimisticData.put(getKey("createdAt"), arg);
             return this;
         }
+
+        /**
+        * The code of the currency used for the payment.
+        */
 
         public CurrencyCode getCurrencyCode() {
             return (CurrencyCode) get("currencyCode");
         }
 
         public Order setCurrencyCode(CurrencyCode arg) {
-            optimisticData.put("currencyCode", arg);
+            optimisticData.put(getKey("currencyCode"), arg);
             return this;
         }
+
+        /**
+        * The order’s URL for a customer.
+        */
 
         public String getCustomerUrl() {
             return (String) get("customerUrl");
         }
 
         public Order setCustomerUrl(String arg) {
-            optimisticData.put("customerUrl", arg);
+            optimisticData.put(getKey("customerUrl"), arg);
             return this;
         }
+
+        /**
+        * Displays financial status of order payment processing.
+        */
 
         public OrderDisplayFinancialStatus getDisplayFinancialStatus() {
             return (OrderDisplayFinancialStatus) get("displayFinancialStatus");
         }
 
         public Order setDisplayFinancialStatus(OrderDisplayFinancialStatus arg) {
-            optimisticData.put("displayFinancialStatus", arg);
+            optimisticData.put(getKey("displayFinancialStatus"), arg);
             return this;
         }
+
+        /**
+        * Displays fulfillment status of the order.
+        */
 
         public OrderDisplayFulfillmentStatus getDisplayFulfillmentStatus() {
             return (OrderDisplayFulfillmentStatus) get("displayFulfillmentStatus");
         }
 
         public Order setDisplayFulfillmentStatus(OrderDisplayFulfillmentStatus arg) {
-            optimisticData.put("displayFulfillmentStatus", arg);
+            optimisticData.put(getKey("displayFulfillmentStatus"), arg);
             return this;
         }
+
+        /**
+        * The customer's email address.
+        */
 
         public String getEmail() {
             return (String) get("email");
         }
 
         public Order setEmail(String arg) {
-            optimisticData.put("email", arg);
+            optimisticData.put(getKey("email"), arg);
             return this;
         }
 
@@ -11879,107 +12352,154 @@ public class Storefront {
             return (ID) get("id");
         }
 
+        /**
+        * List of the order’s line items.
+        */
+
         public OrderLineItemConnection getLineItems() {
             return (OrderLineItemConnection) get("lineItems");
         }
 
         public Order setLineItems(OrderLineItemConnection arg) {
-            optimisticData.put("lineItems", arg);
+            optimisticData.put(getKey("lineItems"), arg);
             return this;
         }
+
+        /**
+        * A unique numeric identifier for the order for use by shop owner and customer.
+        */
 
         public Integer getOrderNumber() {
             return (Integer) get("orderNumber");
         }
 
         public Order setOrderNumber(Integer arg) {
-            optimisticData.put("orderNumber", arg);
+            optimisticData.put(getKey("orderNumber"), arg);
             return this;
         }
+
+        /**
+        * The customer's phone number.
+        */
 
         public String getPhone() {
             return (String) get("phone");
         }
 
         public Order setPhone(String arg) {
-            optimisticData.put("phone", arg);
+            optimisticData.put(getKey("phone"), arg);
             return this;
         }
+
+        /**
+        * The date and time when the order was imported.
+        * This value can be set to dates in the past when importing from other systems.
+        * If no value is provided, it will be auto-generated based on current date and time.
+        */
 
         public DateTime getProcessedAt() {
             return (DateTime) get("processedAt");
         }
 
         public Order setProcessedAt(DateTime arg) {
-            optimisticData.put("processedAt", arg);
+            optimisticData.put(getKey("processedAt"), arg);
             return this;
         }
+
+        /**
+        * The address to where the order will be shipped.
+        */
 
         public MailingAddress getShippingAddress() {
             return (MailingAddress) get("shippingAddress");
         }
 
         public Order setShippingAddress(MailingAddress arg) {
-            optimisticData.put("shippingAddress", arg);
+            optimisticData.put(getKey("shippingAddress"), arg);
             return this;
         }
+
+        /**
+        * Price of the order before shipping and taxes.
+        */
 
         public BigDecimal getSubtotalPrice() {
             return (BigDecimal) get("subtotalPrice");
         }
 
         public Order setSubtotalPrice(BigDecimal arg) {
-            optimisticData.put("subtotalPrice", arg);
+            optimisticData.put(getKey("subtotalPrice"), arg);
             return this;
         }
+
+        /**
+        * The sum of all the prices of all the items in the order, taxes and discounts included (must be
+        * positive).
+        */
 
         public BigDecimal getTotalPrice() {
             return (BigDecimal) get("totalPrice");
         }
 
         public Order setTotalPrice(BigDecimal arg) {
-            optimisticData.put("totalPrice", arg);
+            optimisticData.put(getKey("totalPrice"), arg);
             return this;
         }
+
+        /**
+        * The total amount that has been refunded.
+        */
 
         public BigDecimal getTotalRefunded() {
             return (BigDecimal) get("totalRefunded");
         }
 
         public Order setTotalRefunded(BigDecimal arg) {
-            optimisticData.put("totalRefunded", arg);
+            optimisticData.put(getKey("totalRefunded"), arg);
             return this;
         }
+
+        /**
+        * The total cost of shipping.
+        */
 
         public BigDecimal getTotalShippingPrice() {
             return (BigDecimal) get("totalShippingPrice");
         }
 
         public Order setTotalShippingPrice(BigDecimal arg) {
-            optimisticData.put("totalShippingPrice", arg);
+            optimisticData.put(getKey("totalShippingPrice"), arg);
             return this;
         }
+
+        /**
+        * The total cost of taxes.
+        */
 
         public BigDecimal getTotalTax() {
             return (BigDecimal) get("totalTax");
         }
 
         public Order setTotalTax(BigDecimal arg) {
-            optimisticData.put("totalTax", arg);
+            optimisticData.put(getKey("totalTax"), arg);
             return this;
         }
+
+        /**
+        * The date and time when the order was last modified.
+        */
 
         public DateTime getUpdatedAt() {
             return (DateTime) get("updatedAt");
         }
 
         public Order setUpdatedAt(DateTime arg) {
-            optimisticData.put("updatedAt", arg);
+            optimisticData.put(getKey("updatedAt"), arg);
             return this;
         }
 
         public boolean unwrapsToObject(String key) {
-            switch (key) {
+            switch (getFieldName(key)) {
                 case "cancelReason": return false;
 
                 case "cancelledAt": return false;
@@ -12107,6 +12627,9 @@ public class Storefront {
             super(_queryBuilder);
         }
 
+        /**
+        * A list of edges.
+        */
         public OrderConnectionQuery edges(OrderEdgeQueryDefinition queryDef) {
             startField("edges");
 
@@ -12117,6 +12640,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * Information to aid in pagination.
+        */
         public OrderConnectionQuery pageInfo(PageInfoQueryDefinition queryDef) {
             startField("pageInfo");
 
@@ -12165,46 +12691,38 @@ public class Storefront {
             }
         }
 
-        public List<Node> getNodes() {
-            List<Node> children = new ArrayList<>();
-
-            if (getEdges() != null) {
-                for (OrderEdge elem: getEdges()) {
-                    children.addAll(elem.getNodes());
-                }
-            }
-
-            if (getPageInfo() != null) {
-                children.addAll(getPageInfo().getNodes());
-            }
-
-            return children;
-        }
-
         public String getGraphQlTypeName() {
             return "OrderConnection";
         }
+
+        /**
+        * A list of edges.
+        */
 
         public List<OrderEdge> getEdges() {
             return (List<OrderEdge>) get("edges");
         }
 
         public OrderConnection setEdges(List<OrderEdge> arg) {
-            optimisticData.put("edges", arg);
+            optimisticData.put(getKey("edges"), arg);
             return this;
         }
+
+        /**
+        * Information to aid in pagination.
+        */
 
         public PageInfo getPageInfo() {
             return (PageInfo) get("pageInfo");
         }
 
         public OrderConnection setPageInfo(PageInfo arg) {
-            optimisticData.put("pageInfo", arg);
+            optimisticData.put(getKey("pageInfo"), arg);
             return this;
         }
 
         public boolean unwrapsToObject(String key) {
-            switch (key) {
+            switch (getFieldName(key)) {
                 case "edges": return true;
 
                 case "pageInfo": return true;
@@ -12448,16 +12966,6 @@ public class Storefront {
             }
         }
 
-        public List<Node> getNodes() {
-            List<Node> children = new ArrayList<>();
-
-            if (getNode() != null) {
-                children.addAll(getNode().getNodes());
-            }
-
-            return children;
-        }
-
         public String getGraphQlTypeName() {
             return "OrderEdge";
         }
@@ -12467,7 +12975,7 @@ public class Storefront {
         }
 
         public OrderEdge setCursor(String arg) {
-            optimisticData.put("cursor", arg);
+            optimisticData.put(getKey("cursor"), arg);
             return this;
         }
 
@@ -12476,12 +12984,12 @@ public class Storefront {
         }
 
         public OrderEdge setNode(Order arg) {
-            optimisticData.put("node", arg);
+            optimisticData.put(getKey("node"), arg);
             return this;
         }
 
         public boolean unwrapsToObject(String key) {
-            switch (key) {
+            switch (getFieldName(key)) {
                 case "cursor": return false;
 
                 case "node": return true;
@@ -12495,11 +13003,17 @@ public class Storefront {
         void define(OrderLineItemQuery _queryBuilder);
     }
 
+    /**
+    * Represents a single line in an order. There is one line item for each distinct product variant.
+    */
     public static class OrderLineItemQuery extends Query<OrderLineItemQuery> {
         OrderLineItemQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
         }
 
+        /**
+        * List of custom attributes associated to the line item.
+        */
         public OrderLineItemQuery customAttributes(AttributeQueryDefinition queryDef) {
             startField("customAttributes");
 
@@ -12510,18 +13024,27 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * The number of products variants associated to the line item.
+        */
         public OrderLineItemQuery quantity() {
             startField("quantity");
 
             return this;
         }
 
+        /**
+        * The title of the product combined with title of the variant.
+        */
         public OrderLineItemQuery title() {
             startField("title");
 
             return this;
         }
 
+        /**
+        * The product variant object associated to the line item.
+        */
         public OrderLineItemQuery variant(ProductVariantQueryDefinition queryDef) {
             startField("variant");
 
@@ -12533,6 +13056,9 @@ public class Storefront {
         }
     }
 
+    /**
+    * Represents a single line in an order. There is one line item for each distinct product variant.
+    */
     public static class OrderLineItem extends AbstractResponse<OrderLineItem> {
         public OrderLineItem() {
         }
@@ -12587,64 +13113,64 @@ public class Storefront {
             }
         }
 
-        public List<Node> getNodes() {
-            List<Node> children = new ArrayList<>();
-
-            if (getCustomAttributes() != null) {
-                for (Attribute elem: getCustomAttributes()) {
-                    children.addAll(elem.getNodes());
-                }
-            }
-
-            if (getVariant() != null) {
-                children.addAll(getVariant().getNodes());
-            }
-
-            return children;
-        }
-
         public String getGraphQlTypeName() {
             return "OrderLineItem";
         }
+
+        /**
+        * List of custom attributes associated to the line item.
+        */
 
         public List<Attribute> getCustomAttributes() {
             return (List<Attribute>) get("customAttributes");
         }
 
         public OrderLineItem setCustomAttributes(List<Attribute> arg) {
-            optimisticData.put("customAttributes", arg);
+            optimisticData.put(getKey("customAttributes"), arg);
             return this;
         }
+
+        /**
+        * The number of products variants associated to the line item.
+        */
 
         public Integer getQuantity() {
             return (Integer) get("quantity");
         }
 
         public OrderLineItem setQuantity(Integer arg) {
-            optimisticData.put("quantity", arg);
+            optimisticData.put(getKey("quantity"), arg);
             return this;
         }
+
+        /**
+        * The title of the product combined with title of the variant.
+        */
 
         public String getTitle() {
             return (String) get("title");
         }
 
         public OrderLineItem setTitle(String arg) {
-            optimisticData.put("title", arg);
+            optimisticData.put(getKey("title"), arg);
             return this;
         }
+
+        /**
+        * The product variant object associated to the line item.
+        */
 
         public ProductVariant getVariant() {
             return (ProductVariant) get("variant");
         }
 
         public OrderLineItem setVariant(ProductVariant arg) {
-            optimisticData.put("variant", arg);
+            optimisticData.put(getKey("variant"), arg);
             return this;
         }
 
         public boolean unwrapsToObject(String key) {
-            switch (key) {
+            switch (getFieldName(key)) {
                 case "customAttributes": return true;
 
                 case "quantity": return false;
@@ -12667,6 +13193,9 @@ public class Storefront {
             super(_queryBuilder);
         }
 
+        /**
+        * A list of edges.
+        */
         public OrderLineItemConnectionQuery edges(OrderLineItemEdgeQueryDefinition queryDef) {
             startField("edges");
 
@@ -12677,6 +13206,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * Information to aid in pagination.
+        */
         public OrderLineItemConnectionQuery pageInfo(PageInfoQueryDefinition queryDef) {
             startField("pageInfo");
 
@@ -12725,46 +13257,38 @@ public class Storefront {
             }
         }
 
-        public List<Node> getNodes() {
-            List<Node> children = new ArrayList<>();
-
-            if (getEdges() != null) {
-                for (OrderLineItemEdge elem: getEdges()) {
-                    children.addAll(elem.getNodes());
-                }
-            }
-
-            if (getPageInfo() != null) {
-                children.addAll(getPageInfo().getNodes());
-            }
-
-            return children;
-        }
-
         public String getGraphQlTypeName() {
             return "OrderLineItemConnection";
         }
+
+        /**
+        * A list of edges.
+        */
 
         public List<OrderLineItemEdge> getEdges() {
             return (List<OrderLineItemEdge>) get("edges");
         }
 
         public OrderLineItemConnection setEdges(List<OrderLineItemEdge> arg) {
-            optimisticData.put("edges", arg);
+            optimisticData.put(getKey("edges"), arg);
             return this;
         }
+
+        /**
+        * Information to aid in pagination.
+        */
 
         public PageInfo getPageInfo() {
             return (PageInfo) get("pageInfo");
         }
 
         public OrderLineItemConnection setPageInfo(PageInfo arg) {
-            optimisticData.put("pageInfo", arg);
+            optimisticData.put(getKey("pageInfo"), arg);
             return this;
         }
 
         public boolean unwrapsToObject(String key) {
-            switch (key) {
+            switch (getFieldName(key)) {
                 case "edges": return true;
 
                 case "pageInfo": return true;
@@ -12832,16 +13356,6 @@ public class Storefront {
             }
         }
 
-        public List<Node> getNodes() {
-            List<Node> children = new ArrayList<>();
-
-            if (getNode() != null) {
-                children.addAll(getNode().getNodes());
-            }
-
-            return children;
-        }
-
         public String getGraphQlTypeName() {
             return "OrderLineItemEdge";
         }
@@ -12851,7 +13365,7 @@ public class Storefront {
         }
 
         public OrderLineItemEdge setCursor(String arg) {
-            optimisticData.put("cursor", arg);
+            optimisticData.put(getKey("cursor"), arg);
             return this;
         }
 
@@ -12860,12 +13374,12 @@ public class Storefront {
         }
 
         public OrderLineItemEdge setNode(OrderLineItem arg) {
-            optimisticData.put("node", arg);
+            optimisticData.put(getKey("node"), arg);
             return this;
         }
 
         public boolean unwrapsToObject(String key) {
-            switch (key) {
+            switch (getFieldName(key)) {
                 case "cursor": return false;
 
                 case "node": return true;
@@ -12875,6 +13389,9 @@ public class Storefront {
         }
     }
 
+    /**
+    * The set of valid sort keys for the orders query.
+    */
     public enum OrderSortKeys {
         CREATED_AT,
 
@@ -13002,17 +13519,26 @@ public class Storefront {
         void define(PageInfoQuery _queryBuilder);
     }
 
+    /**
+    * Information about pagination in a connection.
+    */
     public static class PageInfoQuery extends Query<PageInfoQuery> {
         PageInfoQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
         }
 
+        /**
+        * Indicates if there are more pages to fetch.
+        */
         public PageInfoQuery hasNextPage() {
             startField("hasNextPage");
 
             return this;
         }
 
+        /**
+        * Indicates if there are any pages prior to the current page.
+        */
         public PageInfoQuery hasPreviousPage() {
             startField("hasPreviousPage");
 
@@ -13020,6 +13546,9 @@ public class Storefront {
         }
     }
 
+    /**
+    * Information about pagination in a connection.
+    */
     public static class PageInfo extends AbstractResponse<PageInfo> {
         public PageInfo() {
         }
@@ -13052,36 +13581,38 @@ public class Storefront {
             }
         }
 
-        public List<Node> getNodes() {
-            List<Node> children = new ArrayList<>();
-
-            return children;
-        }
-
         public String getGraphQlTypeName() {
             return "PageInfo";
         }
+
+        /**
+        * Indicates if there are more pages to fetch.
+        */
 
         public Boolean getHasNextPage() {
             return (Boolean) get("hasNextPage");
         }
 
         public PageInfo setHasNextPage(Boolean arg) {
-            optimisticData.put("hasNextPage", arg);
+            optimisticData.put(getKey("hasNextPage"), arg);
             return this;
         }
+
+        /**
+        * Indicates if there are any pages prior to the current page.
+        */
 
         public Boolean getHasPreviousPage() {
             return (Boolean) get("hasPreviousPage");
         }
 
         public PageInfo setHasPreviousPage(Boolean arg) {
-            optimisticData.put("hasPreviousPage", arg);
+            optimisticData.put(getKey("hasPreviousPage"), arg);
             return this;
         }
 
         public boolean unwrapsToObject(String key) {
-            switch (key) {
+            switch (getFieldName(key)) {
                 case "hasNextPage": return false;
 
                 case "hasPreviousPage": return false;
@@ -13095,6 +13626,9 @@ public class Storefront {
         void define(PaymentQuery _queryBuilder);
     }
 
+    /**
+    * A payment applied to a checkout.
+    */
     public static class PaymentQuery extends Query<PaymentQuery> {
         PaymentQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
@@ -13102,12 +13636,18 @@ public class Storefront {
             startField("id");
         }
 
+        /**
+        * The amount of the payment.
+        */
         public PaymentQuery amount() {
             startField("amount");
 
             return this;
         }
 
+        /**
+        * The billing address for the payment.
+        */
         public PaymentQuery billingAddress(MailingAddressQueryDefinition queryDef) {
             startField("billingAddress");
 
@@ -13118,6 +13658,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * The checkout to which the payment belongs.
+        */
         public PaymentQuery checkout(CheckoutQueryDefinition queryDef) {
             startField("checkout");
 
@@ -13128,6 +13671,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * The credit card used for the payment in the case of direct payments.
+        */
         public PaymentQuery creditCard(CreditCardQueryDefinition queryDef) {
             startField("creditCard");
 
@@ -13138,30 +13684,45 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * An message describing a processing error during asynchronous processing.
+        */
         public PaymentQuery errorMessage() {
             startField("errorMessage");
 
             return this;
         }
 
+        /**
+        * A client-side generated token to identify a payment and perform idempotent operations.
+        */
         public PaymentQuery idempotencyKey() {
             startField("idempotencyKey");
 
             return this;
         }
 
+        /**
+        * Whether or not the payment is still processing asynchronously.
+        */
         public PaymentQuery ready() {
             startField("ready");
 
             return this;
         }
 
+        /**
+        * A flag to indicate if the payment is to be done in test mode for gateways that support it.
+        */
         public PaymentQuery test() {
             startField("test");
 
             return this;
         }
 
+        /**
+        * The actual transaction recorded by Shopify after having processed the payment with the gateway.
+        */
         public PaymentQuery transaction(TransactionQueryDefinition queryDef) {
             startField("transaction");
 
@@ -13173,6 +13734,9 @@ public class Storefront {
         }
     }
 
+    /**
+    * A payment applied to a checkout.
+    */
     public static class Payment extends AbstractResponse<Payment> implements Node {
         public Payment() {
         }
@@ -13283,76 +13847,72 @@ public class Storefront {
             optimisticData.put("id", id);
         }
 
-        public List<Node> getNodes() {
-            List<Node> children = new ArrayList<>();
-
-            children.add(this);
-
-            if (getBillingAddress() != null) {
-                children.addAll(getBillingAddress().getNodes());
-            }
-
-            if (getCheckout() != null) {
-                children.addAll(getCheckout().getNodes());
-            }
-
-            if (getCreditCard() != null) {
-                children.addAll(getCreditCard().getNodes());
-            }
-
-            if (getTransaction() != null) {
-                children.addAll(getTransaction().getNodes());
-            }
-
-            return children;
-        }
-
         public String getGraphQlTypeName() {
             return "Payment";
         }
+
+        /**
+        * The amount of the payment.
+        */
 
         public BigDecimal getAmount() {
             return (BigDecimal) get("amount");
         }
 
         public Payment setAmount(BigDecimal arg) {
-            optimisticData.put("amount", arg);
+            optimisticData.put(getKey("amount"), arg);
             return this;
         }
+
+        /**
+        * The billing address for the payment.
+        */
 
         public MailingAddress getBillingAddress() {
             return (MailingAddress) get("billingAddress");
         }
 
         public Payment setBillingAddress(MailingAddress arg) {
-            optimisticData.put("billingAddress", arg);
+            optimisticData.put(getKey("billingAddress"), arg);
             return this;
         }
+
+        /**
+        * The checkout to which the payment belongs.
+        */
 
         public Checkout getCheckout() {
             return (Checkout) get("checkout");
         }
 
         public Payment setCheckout(Checkout arg) {
-            optimisticData.put("checkout", arg);
+            optimisticData.put(getKey("checkout"), arg);
             return this;
         }
+
+        /**
+        * The credit card used for the payment in the case of direct payments.
+        */
 
         public CreditCard getCreditCard() {
             return (CreditCard) get("creditCard");
         }
 
         public Payment setCreditCard(CreditCard arg) {
-            optimisticData.put("creditCard", arg);
+            optimisticData.put(getKey("creditCard"), arg);
             return this;
         }
+
+        /**
+        * An message describing a processing error during asynchronous processing.
+        */
 
         public String getErrorMessage() {
             return (String) get("errorMessage");
         }
 
         public Payment setErrorMessage(String arg) {
-            optimisticData.put("errorMessage", arg);
+            optimisticData.put(getKey("errorMessage"), arg);
             return this;
         }
 
@@ -13360,44 +13920,60 @@ public class Storefront {
             return (ID) get("id");
         }
 
+        /**
+        * A client-side generated token to identify a payment and perform idempotent operations.
+        */
+
         public String getIdempotencyKey() {
             return (String) get("idempotencyKey");
         }
 
         public Payment setIdempotencyKey(String arg) {
-            optimisticData.put("idempotencyKey", arg);
+            optimisticData.put(getKey("idempotencyKey"), arg);
             return this;
         }
+
+        /**
+        * Whether or not the payment is still processing asynchronously.
+        */
 
         public Boolean getReady() {
             return (Boolean) get("ready");
         }
 
         public Payment setReady(Boolean arg) {
-            optimisticData.put("ready", arg);
+            optimisticData.put(getKey("ready"), arg);
             return this;
         }
+
+        /**
+        * A flag to indicate if the payment is to be done in test mode for gateways that support it.
+        */
 
         public Boolean getTest() {
             return (Boolean) get("test");
         }
 
         public Payment setTest(Boolean arg) {
-            optimisticData.put("test", arg);
+            optimisticData.put(getKey("test"), arg);
             return this;
         }
+
+        /**
+        * The actual transaction recorded by Shopify after having processed the payment with the gateway.
+        */
 
         public Transaction getTransaction() {
             return (Transaction) get("transaction");
         }
 
         public Payment setTransaction(Transaction arg) {
-            optimisticData.put("transaction", arg);
+            optimisticData.put(getKey("transaction"), arg);
             return this;
         }
 
         public boolean unwrapsToObject(String key) {
-            switch (key) {
+            switch (getFieldName(key)) {
                 case "amount": return false;
 
                 case "billingAddress": return true;
@@ -13427,6 +14003,13 @@ public class Storefront {
         void define(ProductQuery _queryBuilder);
     }
 
+    /**
+    * A product represents an individual item for sale in a Shopify store. Products are often physical,
+    * but they don't have to be. 
+    * For example, a digital download (such as a movie, music or ebook file) also qualifies as a product,
+    * as do services (such as equipment rental, work for hire, customization of another product or an
+    * extended warranty).
+    */
     public static class ProductQuery extends Query<ProductQuery> {
         ProductQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
@@ -13460,10 +14043,16 @@ public class Storefront {
             void define(CollectionsArguments args);
         }
 
+        /**
+        * List of collections a product belongs to.
+        */
         public ProductQuery collections(int first, CollectionConnectionQueryDefinition queryDef) {
             return collections(first, args -> {}, queryDef);
         }
 
+        /**
+        * List of collections a product belongs to.
+        */
         public ProductQuery collections(int first, CollectionsArgumentsDefinition argsDef, CollectionConnectionQueryDefinition queryDef) {
             startField("collections");
 
@@ -13481,6 +14070,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * The date and time when the product was created.
+        */
         public ProductQuery createdAt() {
             startField("createdAt");
 
@@ -13492,6 +14084,9 @@ public class Storefront {
                 super(_queryBuilder, true);
             }
 
+            /**
+            * Truncates string after the given length.
+            */
             public DescriptionArguments truncateAt(Integer value) {
                 if (value != null) {
                     startArgument("truncateAt");
@@ -13505,10 +14100,16 @@ public class Storefront {
             void define(DescriptionArguments args);
         }
 
+        /**
+        * Stripped description of the product, single line with HTML tags removed.
+        */
         public ProductQuery description() {
             return description(args -> {});
         }
 
+        /**
+        * Stripped description of the product, single line with HTML tags removed.
+        */
         public ProductQuery description(DescriptionArgumentsDefinition argsDef) {
             startField("description");
 
@@ -13519,12 +14120,19 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * The description of the product, complete with HTML formatting.
+        */
         public ProductQuery descriptionHtml() {
             startField("descriptionHtml");
 
             return this;
         }
 
+        /**
+        * A human-friendly unique string for the Product automatically generated from its title.
+        * They are used by the Liquid templating language to refer to objects.
+        */
         public ProductQuery handle() {
             startField("handle");
 
@@ -13552,6 +14160,9 @@ public class Storefront {
                 return this;
             }
 
+            /**
+            * Image width in pixels between 1 and 2048
+            */
             public ImagesArguments maxWidth(Integer value) {
                 if (value != null) {
                     startArgument("maxWidth");
@@ -13560,6 +14171,9 @@ public class Storefront {
                 return this;
             }
 
+            /**
+            * Image height in pixels between 1 and 2048
+            */
             public ImagesArguments maxHeight(Integer value) {
                 if (value != null) {
                     startArgument("maxHeight");
@@ -13568,6 +14182,9 @@ public class Storefront {
                 return this;
             }
 
+            /**
+            * If specified, crop the image keeping the specified region
+            */
             public ImagesArguments crop(CropRegion value) {
                 if (value != null) {
                     startArgument("crop");
@@ -13576,6 +14193,9 @@ public class Storefront {
                 return this;
             }
 
+            /**
+            * Image size multiplier retina displays. Must be between 1 and 3
+            */
             public ImagesArguments scale(Integer value) {
                 if (value != null) {
                     startArgument("scale");
@@ -13589,10 +14209,16 @@ public class Storefront {
             void define(ImagesArguments args);
         }
 
+        /**
+        * List of images associated with the product.
+        */
         public ProductQuery images(int first, ImageConnectionQueryDefinition queryDef) {
             return images(first, args -> {}, queryDef);
         }
 
+        /**
+        * List of images associated with the product.
+        */
         public ProductQuery images(int first, ImagesArgumentsDefinition argsDef, ImageConnectionQueryDefinition queryDef) {
             startField("images");
 
@@ -13615,6 +14241,9 @@ public class Storefront {
                 super(_queryBuilder, true);
             }
 
+            /**
+            * Truncate the array result to this size
+            */
             public OptionsArguments first(Integer value) {
                 if (value != null) {
                     startArgument("first");
@@ -13628,10 +14257,16 @@ public class Storefront {
             void define(OptionsArguments args);
         }
 
+        /**
+        * Lst of custom product options (maximum of 3 per product).
+        */
         public ProductQuery options(ProductOptionQueryDefinition queryDef) {
             return options(args -> {}, queryDef);
         }
 
+        /**
+        * Lst of custom product options (maximum of 3 per product).
+        */
         public ProductQuery options(OptionsArgumentsDefinition argsDef, ProductOptionQueryDefinition queryDef) {
             startField("options");
 
@@ -13646,36 +14281,58 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * A categorization that a product can be tagged with, commonly used for filtering and searching.
+        */
         public ProductQuery productType() {
             startField("productType");
 
             return this;
         }
 
+        /**
+        * The date and time when the product was published to the Online Store channel.
+        * A value of `null` indicates that the product is not published to Online Store.
+        */
         public ProductQuery publishedAt() {
             startField("publishedAt");
 
             return this;
         }
 
+        /**
+        * A categorization that a product can be tagged with, commonly used for filtering and searching.
+        * Each comma-separated tag has a character limit of 255.
+        */
         public ProductQuery tags() {
             startField("tags");
 
             return this;
         }
 
+        /**
+        * The product’s title.
+        */
         public ProductQuery title() {
             startField("title");
 
             return this;
         }
 
+        /**
+        * The date and time when the product was last modified.
+        */
         public ProductQuery updatedAt() {
             startField("updatedAt");
 
             return this;
         }
 
+        /**
+        * Find a product’s variant based on its selected options.
+        * This is useful for converting a user’s selection of product options into a single matching variant.
+        * If there is not a variant for the selected options, `null` will be returned.
+        */
         public ProductQuery variantBySelectedOptions(List<SelectedOptionInput> selectedOptions, ProductVariantQueryDefinition queryDef) {
             startField("variantBySelectedOptions");
 
@@ -13725,10 +14382,16 @@ public class Storefront {
             void define(VariantsArguments args);
         }
 
+        /**
+        * List of the product’s variants.
+        */
         public ProductQuery variants(int first, ProductVariantConnectionQueryDefinition queryDef) {
             return variants(first, args -> {}, queryDef);
         }
 
+        /**
+        * List of the product’s variants.
+        */
         public ProductQuery variants(int first, VariantsArgumentsDefinition argsDef, ProductVariantConnectionQueryDefinition queryDef) {
             startField("variants");
 
@@ -13746,6 +14409,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * The product’s vendor name.
+        */
         public ProductQuery vendor() {
             startField("vendor");
 
@@ -13753,6 +14419,13 @@ public class Storefront {
         }
     }
 
+    /**
+    * A product represents an individual item for sale in a Shopify store. Products are often physical,
+    * but they don't have to be. 
+    * For example, a digital download (such as a movie, music or ebook file) also qualifies as a product,
+    * as do services (such as equipment rental, work for hire, customization of another product or an
+    * extended warranty).
+    */
     public static class Product extends AbstractResponse<Product> implements Node {
         public Product() {
         }
@@ -13889,82 +14562,73 @@ public class Storefront {
             optimisticData.put("id", id);
         }
 
-        public List<Node> getNodes() {
-            List<Node> children = new ArrayList<>();
-
-            children.add(this);
-
-            if (getCollections() != null) {
-                children.addAll(getCollections().getNodes());
-            }
-
-            if (getImages() != null) {
-                children.addAll(getImages().getNodes());
-            }
-
-            if (getOptions() != null) {
-                for (ProductOption elem: getOptions()) {
-                    children.addAll(elem.getNodes());
-                }
-            }
-
-            if (getVariantBySelectedOptions() != null) {
-                children.addAll(getVariantBySelectedOptions().getNodes());
-            }
-
-            if (getVariants() != null) {
-                children.addAll(getVariants().getNodes());
-            }
-
-            return children;
-        }
-
         public String getGraphQlTypeName() {
             return "Product";
         }
+
+        /**
+        * List of collections a product belongs to.
+        */
 
         public CollectionConnection getCollections() {
             return (CollectionConnection) get("collections");
         }
 
         public Product setCollections(CollectionConnection arg) {
-            optimisticData.put("collections", arg);
+            optimisticData.put(getKey("collections"), arg);
             return this;
         }
+
+        /**
+        * The date and time when the product was created.
+        */
 
         public DateTime getCreatedAt() {
             return (DateTime) get("createdAt");
         }
 
         public Product setCreatedAt(DateTime arg) {
-            optimisticData.put("createdAt", arg);
+            optimisticData.put(getKey("createdAt"), arg);
             return this;
         }
+
+        /**
+        * Stripped description of the product, single line with HTML tags removed.
+        */
 
         public String getDescription() {
             return (String) get("description");
         }
 
         public Product setDescription(String arg) {
-            optimisticData.put("description", arg);
+            optimisticData.put(getKey("description"), arg);
             return this;
         }
+
+        /**
+        * The description of the product, complete with HTML formatting.
+        */
 
         public String getDescriptionHtml() {
             return (String) get("descriptionHtml");
         }
 
         public Product setDescriptionHtml(String arg) {
-            optimisticData.put("descriptionHtml", arg);
+            optimisticData.put(getKey("descriptionHtml"), arg);
             return this;
         }
+
+        /**
+        * A human-friendly unique string for the Product automatically generated from its title.
+        * They are used by the Liquid templating language to refer to objects.
+        */
 
         public String getHandle() {
             return (String) get("handle");
         }
 
         public Product setHandle(String arg) {
-            optimisticData.put("handle", arg);
+            optimisticData.put(getKey("handle"), arg);
             return this;
         }
 
@@ -13972,98 +14636,142 @@ public class Storefront {
             return (ID) get("id");
         }
 
+        /**
+        * List of images associated with the product.
+        */
+
         public ImageConnection getImages() {
             return (ImageConnection) get("images");
         }
 
         public Product setImages(ImageConnection arg) {
-            optimisticData.put("images", arg);
+            optimisticData.put(getKey("images"), arg);
             return this;
         }
+
+        /**
+        * Lst of custom product options (maximum of 3 per product).
+        */
 
         public List<ProductOption> getOptions() {
             return (List<ProductOption>) get("options");
         }
 
         public Product setOptions(List<ProductOption> arg) {
-            optimisticData.put("options", arg);
+            optimisticData.put(getKey("options"), arg);
             return this;
         }
+
+        /**
+        * A categorization that a product can be tagged with, commonly used for filtering and searching.
+        */
 
         public String getProductType() {
             return (String) get("productType");
         }
 
         public Product setProductType(String arg) {
-            optimisticData.put("productType", arg);
+            optimisticData.put(getKey("productType"), arg);
             return this;
         }
+
+        /**
+        * The date and time when the product was published to the Online Store channel.
+        * A value of `null` indicates that the product is not published to Online Store.
+        */
 
         public DateTime getPublishedAt() {
             return (DateTime) get("publishedAt");
         }
 
         public Product setPublishedAt(DateTime arg) {
-            optimisticData.put("publishedAt", arg);
+            optimisticData.put(getKey("publishedAt"), arg);
             return this;
         }
+
+        /**
+        * A categorization that a product can be tagged with, commonly used for filtering and searching.
+        * Each comma-separated tag has a character limit of 255.
+        */
 
         public List<String> getTags() {
             return (List<String>) get("tags");
         }
 
         public Product setTags(List<String> arg) {
-            optimisticData.put("tags", arg);
+            optimisticData.put(getKey("tags"), arg);
             return this;
         }
+
+        /**
+        * The product’s title.
+        */
 
         public String getTitle() {
             return (String) get("title");
         }
 
         public Product setTitle(String arg) {
-            optimisticData.put("title", arg);
+            optimisticData.put(getKey("title"), arg);
             return this;
         }
+
+        /**
+        * The date and time when the product was last modified.
+        */
 
         public DateTime getUpdatedAt() {
             return (DateTime) get("updatedAt");
         }
 
         public Product setUpdatedAt(DateTime arg) {
-            optimisticData.put("updatedAt", arg);
+            optimisticData.put(getKey("updatedAt"), arg);
             return this;
         }
+
+        /**
+        * Find a product’s variant based on its selected options.
+        * This is useful for converting a user’s selection of product options into a single matching variant.
+        * If there is not a variant for the selected options, `null` will be returned.
+        */
 
         public ProductVariant getVariantBySelectedOptions() {
             return (ProductVariant) get("variantBySelectedOptions");
         }
 
         public Product setVariantBySelectedOptions(ProductVariant arg) {
-            optimisticData.put("variantBySelectedOptions", arg);
+            optimisticData.put(getKey("variantBySelectedOptions"), arg);
             return this;
         }
+
+        /**
+        * List of the product’s variants.
+        */
 
         public ProductVariantConnection getVariants() {
             return (ProductVariantConnection) get("variants");
         }
 
         public Product setVariants(ProductVariantConnection arg) {
-            optimisticData.put("variants", arg);
+            optimisticData.put(getKey("variants"), arg);
             return this;
         }
+
+        /**
+        * The product’s vendor name.
+        */
 
         public String getVendor() {
             return (String) get("vendor");
         }
 
         public Product setVendor(String arg) {
-            optimisticData.put("vendor", arg);
+            optimisticData.put(getKey("vendor"), arg);
             return this;
         }
 
         public boolean unwrapsToObject(String key) {
-            switch (key) {
+            switch (getFieldName(key)) {
                 case "collections": return true;
 
                 case "createdAt": return false;
@@ -14110,6 +14818,9 @@ public class Storefront {
             super(_queryBuilder);
         }
 
+        /**
+        * A list of edges.
+        */
         public ProductConnectionQuery edges(ProductEdgeQueryDefinition queryDef) {
             startField("edges");
 
@@ -14120,6 +14831,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * Information to aid in pagination.
+        */
         public ProductConnectionQuery pageInfo(PageInfoQueryDefinition queryDef) {
             startField("pageInfo");
 
@@ -14168,46 +14882,38 @@ public class Storefront {
             }
         }
 
-        public List<Node> getNodes() {
-            List<Node> children = new ArrayList<>();
-
-            if (getEdges() != null) {
-                for (ProductEdge elem: getEdges()) {
-                    children.addAll(elem.getNodes());
-                }
-            }
-
-            if (getPageInfo() != null) {
-                children.addAll(getPageInfo().getNodes());
-            }
-
-            return children;
-        }
-
         public String getGraphQlTypeName() {
             return "ProductConnection";
         }
+
+        /**
+        * A list of edges.
+        */
 
         public List<ProductEdge> getEdges() {
             return (List<ProductEdge>) get("edges");
         }
 
         public ProductConnection setEdges(List<ProductEdge> arg) {
-            optimisticData.put("edges", arg);
+            optimisticData.put(getKey("edges"), arg);
             return this;
         }
+
+        /**
+        * Information to aid in pagination.
+        */
 
         public PageInfo getPageInfo() {
             return (PageInfo) get("pageInfo");
         }
 
         public ProductConnection setPageInfo(PageInfo arg) {
-            optimisticData.put("pageInfo", arg);
+            optimisticData.put(getKey("pageInfo"), arg);
             return this;
         }
 
         public boolean unwrapsToObject(String key) {
-            switch (key) {
+            switch (getFieldName(key)) {
                 case "edges": return true;
 
                 case "pageInfo": return true;
@@ -14275,16 +14981,6 @@ public class Storefront {
             }
         }
 
-        public List<Node> getNodes() {
-            List<Node> children = new ArrayList<>();
-
-            if (getNode() != null) {
-                children.addAll(getNode().getNodes());
-            }
-
-            return children;
-        }
-
         public String getGraphQlTypeName() {
             return "ProductEdge";
         }
@@ -14294,7 +14990,7 @@ public class Storefront {
         }
 
         public ProductEdge setCursor(String arg) {
-            optimisticData.put("cursor", arg);
+            optimisticData.put(getKey("cursor"), arg);
             return this;
         }
 
@@ -14303,12 +14999,12 @@ public class Storefront {
         }
 
         public ProductEdge setNode(Product arg) {
-            optimisticData.put("node", arg);
+            optimisticData.put(getKey("node"), arg);
             return this;
         }
 
         public boolean unwrapsToObject(String key) {
-            switch (key) {
+            switch (getFieldName(key)) {
                 case "cursor": return false;
 
                 case "node": return true;
@@ -14322,6 +15018,12 @@ public class Storefront {
         void define(ProductOptionQuery _queryBuilder);
     }
 
+    /**
+    * Custom product property names like "Size", "Color", and "Material".
+    * Products are based on permutations of these options.
+    * A product may have a maximum of 3 options.
+    * 255 characters limit each.
+    */
     public static class ProductOptionQuery extends Query<ProductOptionQuery> {
         ProductOptionQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
@@ -14329,12 +15031,18 @@ public class Storefront {
             startField("id");
         }
 
+        /**
+        * The product option’s name.
+        */
         public ProductOptionQuery name() {
             startField("name");
 
             return this;
         }
 
+        /**
+        * The corresponding value to the product option name.
+        */
         public ProductOptionQuery values() {
             startField("values");
 
@@ -14342,6 +15050,12 @@ public class Storefront {
         }
     }
 
+    /**
+    * Custom product property names like "Size", "Color", and "Material".
+    * Products are based on permutations of these options.
+    * A product may have a maximum of 3 options.
+    * 255 characters limit each.
+    */
     public static class ProductOption extends AbstractResponse<ProductOption> implements Node {
         public ProductOption() {
         }
@@ -14390,14 +15104,6 @@ public class Storefront {
             optimisticData.put("id", id);
         }
 
-        public List<Node> getNodes() {
-            List<Node> children = new ArrayList<>();
-
-            children.add(this);
-
-            return children;
-        }
-
         public String getGraphQlTypeName() {
             return "ProductOption";
         }
@@ -14406,26 +15112,34 @@ public class Storefront {
             return (ID) get("id");
         }
 
+        /**
+        * The product option’s name.
+        */
+
         public String getName() {
             return (String) get("name");
         }
 
         public ProductOption setName(String arg) {
-            optimisticData.put("name", arg);
+            optimisticData.put(getKey("name"), arg);
             return this;
         }
+
+        /**
+        * The corresponding value to the product option name.
+        */
 
         public List<String> getValues() {
             return (List<String>) get("values");
         }
 
         public ProductOption setValues(List<String> arg) {
-            optimisticData.put("values", arg);
+            optimisticData.put(getKey("values"), arg);
             return this;
         }
 
         public boolean unwrapsToObject(String key) {
-            switch (key) {
+            switch (getFieldName(key)) {
                 case "id": return false;
 
                 case "name": return false;
@@ -14437,16 +15151,15 @@ public class Storefront {
         }
     }
 
+    /**
+    * The set of valid sort keys for the products query.
+    */
     public enum ProductSortKeys {
         CREATED_AT,
 
         ID,
 
-        INVENTORY_TOTAL,
-
         PRODUCT_TYPE,
-
-        PUBLISHED_AT,
 
         RELEVANCE,
 
@@ -14472,16 +15185,8 @@ public class Storefront {
                     return ID;
                 }
 
-                case "INVENTORY_TOTAL": {
-                    return INVENTORY_TOTAL;
-                }
-
                 case "PRODUCT_TYPE": {
                     return PRODUCT_TYPE;
-                }
-
-                case "PUBLISHED_AT": {
-                    return PUBLISHED_AT;
                 }
 
                 case "RELEVANCE": {
@@ -14515,16 +15220,8 @@ public class Storefront {
                     return "ID";
                 }
 
-                case INVENTORY_TOTAL: {
-                    return "INVENTORY_TOTAL";
-                }
-
                 case PRODUCT_TYPE: {
                     return "PRODUCT_TYPE";
-                }
-
-                case PUBLISHED_AT: {
-                    return "PUBLISHED_AT";
                 }
 
                 case RELEVANCE: {
@@ -14554,6 +15251,10 @@ public class Storefront {
         void define(ProductVariantQuery _queryBuilder);
     }
 
+    /**
+    * A product variant represents a different version of a product, such as differing sizes or differing
+    * colors.
+    */
     public static class ProductVariantQuery extends Query<ProductVariantQuery> {
         ProductVariantQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
@@ -14561,6 +15262,9 @@ public class Storefront {
             startField("id");
         }
 
+        /**
+        * Indicates if the product variant is in stock.
+        */
         public ProductVariantQuery available() {
             startField("available");
 
@@ -14572,6 +15276,9 @@ public class Storefront {
                 super(_queryBuilder, true);
             }
 
+            /**
+            * Image width in pixels between 1 and 2048
+            */
             public ImageArguments maxWidth(Integer value) {
                 if (value != null) {
                     startArgument("maxWidth");
@@ -14580,6 +15287,9 @@ public class Storefront {
                 return this;
             }
 
+            /**
+            * Image height in pixels between 1 and 2048
+            */
             public ImageArguments maxHeight(Integer value) {
                 if (value != null) {
                     startArgument("maxHeight");
@@ -14588,6 +15298,9 @@ public class Storefront {
                 return this;
             }
 
+            /**
+            * If specified, crop the image keeping the specified region
+            */
             public ImageArguments crop(CropRegion value) {
                 if (value != null) {
                     startArgument("crop");
@@ -14596,6 +15309,9 @@ public class Storefront {
                 return this;
             }
 
+            /**
+            * Image size multiplier retina displays. Must be between 1 and 3
+            */
             public ImageArguments scale(Integer value) {
                 if (value != null) {
                     startArgument("scale");
@@ -14609,10 +15325,16 @@ public class Storefront {
             void define(ImageArguments args);
         }
 
+        /**
+        * Image associated with the product variant.
+        */
         public ProductVariantQuery image(ImageQueryDefinition queryDef) {
             return image(args -> {}, queryDef);
         }
 
+        /**
+        * Image associated with the product variant.
+        */
         public ProductVariantQuery image(ImageArgumentsDefinition argsDef, ImageQueryDefinition queryDef) {
             startField("image");
 
@@ -14627,12 +15349,18 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * The product variant’s price.
+        */
         public ProductVariantQuery price() {
             startField("price");
 
             return this;
         }
 
+        /**
+        * The product object that the product variant belongs to.
+        */
         public ProductVariantQuery product(ProductQueryDefinition queryDef) {
             startField("product");
 
@@ -14643,6 +15371,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * List of product options applied to the variant.
+        */
         public ProductVariantQuery selectedOptions(SelectedOptionQueryDefinition queryDef) {
             startField("selectedOptions");
 
@@ -14653,18 +15384,27 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * The product variant’s title.
+        */
         public ProductVariantQuery title() {
             startField("title");
 
             return this;
         }
 
+        /**
+        * The weight of the product variant in the unit system specified with `weight_unit`.
+        */
         public ProductVariantQuery weight() {
             startField("weight");
 
             return this;
         }
 
+        /**
+        * Unit of measurement for weight.
+        */
         public ProductVariantQuery weightUnit() {
             startField("weightUnit");
 
@@ -14672,6 +15412,10 @@ public class Storefront {
         }
     }
 
+    /**
+    * A product variant represents a different version of a product, such as differing sizes or differing
+    * colors.
+    */
     public static class ProductVariant extends AbstractResponse<ProductVariant> implements Node {
         public ProductVariant() {
         }
@@ -14771,38 +15515,20 @@ public class Storefront {
             optimisticData.put("id", id);
         }
 
-        public List<Node> getNodes() {
-            List<Node> children = new ArrayList<>();
-
-            children.add(this);
-
-            if (getImage() != null) {
-                children.addAll(getImage().getNodes());
-            }
-
-            if (getProduct() != null) {
-                children.addAll(getProduct().getNodes());
-            }
-
-            if (getSelectedOptions() != null) {
-                for (SelectedOption elem: getSelectedOptions()) {
-                    children.addAll(elem.getNodes());
-                }
-            }
-
-            return children;
-        }
-
         public String getGraphQlTypeName() {
             return "ProductVariant";
         }
+
+        /**
+        * Indicates if the product variant is in stock.
+        */
 
         public Boolean getAvailable() {
             return (Boolean) get("available");
         }
 
         public ProductVariant setAvailable(Boolean arg) {
-            optimisticData.put("available", arg);
+            optimisticData.put(getKey("available"), arg);
             return this;
         }
 
@@ -14810,71 +15536,99 @@ public class Storefront {
             return (ID) get("id");
         }
 
+        /**
+        * Image associated with the product variant.
+        */
+
         public Image getImage() {
             return (Image) get("image");
         }
 
         public ProductVariant setImage(Image arg) {
-            optimisticData.put("image", arg);
+            optimisticData.put(getKey("image"), arg);
             return this;
         }
+
+        /**
+        * The product variant’s price.
+        */
 
         public BigDecimal getPrice() {
             return (BigDecimal) get("price");
         }
 
         public ProductVariant setPrice(BigDecimal arg) {
-            optimisticData.put("price", arg);
+            optimisticData.put(getKey("price"), arg);
             return this;
         }
+
+        /**
+        * The product object that the product variant belongs to.
+        */
 
         public Product getProduct() {
             return (Product) get("product");
         }
 
         public ProductVariant setProduct(Product arg) {
-            optimisticData.put("product", arg);
+            optimisticData.put(getKey("product"), arg);
             return this;
         }
+
+        /**
+        * List of product options applied to the variant.
+        */
 
         public List<SelectedOption> getSelectedOptions() {
             return (List<SelectedOption>) get("selectedOptions");
         }
 
         public ProductVariant setSelectedOptions(List<SelectedOption> arg) {
-            optimisticData.put("selectedOptions", arg);
+            optimisticData.put(getKey("selectedOptions"), arg);
             return this;
         }
+
+        /**
+        * The product variant’s title.
+        */
 
         public String getTitle() {
             return (String) get("title");
         }
 
         public ProductVariant setTitle(String arg) {
-            optimisticData.put("title", arg);
+            optimisticData.put(getKey("title"), arg);
             return this;
         }
+
+        /**
+        * The weight of the product variant in the unit system specified with `weight_unit`.
+        */
 
         public Double getWeight() {
             return (Double) get("weight");
         }
 
         public ProductVariant setWeight(Double arg) {
-            optimisticData.put("weight", arg);
+            optimisticData.put(getKey("weight"), arg);
             return this;
         }
+
+        /**
+        * Unit of measurement for weight.
+        */
 
         public WeightUnit getWeightUnit() {
             return (WeightUnit) get("weightUnit");
         }
 
         public ProductVariant setWeightUnit(WeightUnit arg) {
-            optimisticData.put("weightUnit", arg);
+            optimisticData.put(getKey("weightUnit"), arg);
             return this;
         }
 
         public boolean unwrapsToObject(String key) {
-            switch (key) {
+            switch (getFieldName(key)) {
                 case "available": return false;
 
                 case "id": return false;
@@ -14907,6 +15661,9 @@ public class Storefront {
             super(_queryBuilder);
         }
 
+        /**
+        * A list of edges.
+        */
         public ProductVariantConnectionQuery edges(ProductVariantEdgeQueryDefinition queryDef) {
             startField("edges");
 
@@ -14917,6 +15674,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * Information to aid in pagination.
+        */
         public ProductVariantConnectionQuery pageInfo(PageInfoQueryDefinition queryDef) {
             startField("pageInfo");
 
@@ -14965,46 +15725,38 @@ public class Storefront {
             }
         }
 
-        public List<Node> getNodes() {
-            List<Node> children = new ArrayList<>();
-
-            if (getEdges() != null) {
-                for (ProductVariantEdge elem: getEdges()) {
-                    children.addAll(elem.getNodes());
-                }
-            }
-
-            if (getPageInfo() != null) {
-                children.addAll(getPageInfo().getNodes());
-            }
-
-            return children;
-        }
-
         public String getGraphQlTypeName() {
             return "ProductVariantConnection";
         }
+
+        /**
+        * A list of edges.
+        */
 
         public List<ProductVariantEdge> getEdges() {
             return (List<ProductVariantEdge>) get("edges");
         }
 
         public ProductVariantConnection setEdges(List<ProductVariantEdge> arg) {
-            optimisticData.put("edges", arg);
+            optimisticData.put(getKey("edges"), arg);
             return this;
         }
+
+        /**
+        * Information to aid in pagination.
+        */
 
         public PageInfo getPageInfo() {
             return (PageInfo) get("pageInfo");
         }
 
         public ProductVariantConnection setPageInfo(PageInfo arg) {
-            optimisticData.put("pageInfo", arg);
+            optimisticData.put(getKey("pageInfo"), arg);
             return this;
         }
 
         public boolean unwrapsToObject(String key) {
-            switch (key) {
+            switch (getFieldName(key)) {
                 case "edges": return true;
 
                 case "pageInfo": return true;
@@ -15072,16 +15824,6 @@ public class Storefront {
             }
         }
 
-        public List<Node> getNodes() {
-            List<Node> children = new ArrayList<>();
-
-            if (getNode() != null) {
-                children.addAll(getNode().getNodes());
-            }
-
-            return children;
-        }
-
         public String getGraphQlTypeName() {
             return "ProductVariantEdge";
         }
@@ -15091,7 +15833,7 @@ public class Storefront {
         }
 
         public ProductVariantEdge setCursor(String arg) {
-            optimisticData.put("cursor", arg);
+            optimisticData.put(getKey("cursor"), arg);
             return this;
         }
 
@@ -15100,12 +15842,12 @@ public class Storefront {
         }
 
         public ProductVariantEdge setNode(ProductVariant arg) {
-            optimisticData.put("node", arg);
+            optimisticData.put(getKey("node"), arg);
             return this;
         }
 
         public boolean unwrapsToObject(String key) {
-            switch (key) {
+            switch (getFieldName(key)) {
                 case "cursor": return false;
 
                 case "node": return true;
@@ -15119,6 +15861,10 @@ public class Storefront {
         void define(QueryRootQuery _queryBuilder);
     }
 
+    /**
+    * The schema’s entry-point for queries. This acts as the public, top-level API from which all queries
+    * must start.
+    */
     public static class QueryRootQuery extends Query<QueryRootQuery> {
         QueryRootQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
@@ -15192,6 +15938,10 @@ public class Storefront {
         }
     }
 
+    /**
+    * The schema’s entry-point for queries. This acts as the public, top-level API from which all queries
+    * must start.
+    */
     public static class QueryRoot extends AbstractResponse<QueryRoot> {
         public QueryRoot() {
         }
@@ -15265,7 +16015,7 @@ public class Storefront {
         }
 
         public QueryRoot setCustomer(Customer arg) {
-            optimisticData.put("customer", arg);
+            optimisticData.put(getKey("customer"), arg);
             return this;
         }
 
@@ -15274,7 +16024,7 @@ public class Storefront {
         }
 
         public QueryRoot setNode(Node arg) {
-            optimisticData.put("node", arg);
+            optimisticData.put(getKey("node"), arg);
             return this;
         }
 
@@ -15283,7 +16033,7 @@ public class Storefront {
         }
 
         public QueryRoot setNodes(List<Node> arg) {
-            optimisticData.put("nodes", arg);
+            optimisticData.put(getKey("nodes"), arg);
             return this;
         }
 
@@ -15292,12 +16042,12 @@ public class Storefront {
         }
 
         public QueryRoot setShop(Shop arg) {
-            optimisticData.put("shop", arg);
+            optimisticData.put(getKey("shop"), arg);
             return this;
         }
 
         public boolean unwrapsToObject(String key) {
-            switch (key) {
+            switch (getFieldName(key)) {
                 case "customer": return true;
 
                 case "node": return false;
@@ -15315,17 +16065,27 @@ public class Storefront {
         void define(SelectedOptionQuery _queryBuilder);
     }
 
+    /**
+    * Custom properties that a shop owner can use to define product variants.
+    * Multiple options can exist. Options are represented as: option1, option2, option3, etc.
+    */
     public static class SelectedOptionQuery extends Query<SelectedOptionQuery> {
         SelectedOptionQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
         }
 
+        /**
+        * The product option’s name.
+        */
         public SelectedOptionQuery name() {
             startField("name");
 
             return this;
         }
 
+        /**
+        * The product option’s value.
+        */
         public SelectedOptionQuery value() {
             startField("value");
 
@@ -15333,6 +16093,10 @@ public class Storefront {
         }
     }
 
+    /**
+    * Custom properties that a shop owner can use to define product variants.
+    * Multiple options can exist. Options are represented as: option1, option2, option3, etc.
+    */
     public static class SelectedOption extends AbstractResponse<SelectedOption> {
         public SelectedOption() {
         }
@@ -15365,36 +16129,38 @@ public class Storefront {
             }
         }
 
-        public List<Node> getNodes() {
-            List<Node> children = new ArrayList<>();
-
-            return children;
-        }
-
         public String getGraphQlTypeName() {
             return "SelectedOption";
         }
+
+        /**
+        * The product option’s name.
+        */
 
         public String getName() {
             return (String) get("name");
         }
 
         public SelectedOption setName(String arg) {
-            optimisticData.put("name", arg);
+            optimisticData.put(getKey("name"), arg);
             return this;
         }
+
+        /**
+        * The product option’s value.
+        */
 
         public String getValue() {
             return (String) get("value");
         }
 
         public SelectedOption setValue(String arg) {
-            optimisticData.put("value", arg);
+            optimisticData.put(getKey("value"), arg);
             return this;
         }
 
         public boolean unwrapsToObject(String key) {
-            switch (key) {
+            switch (getFieldName(key)) {
                 case "name": return false;
 
                 case "value": return false;
@@ -15455,23 +16221,35 @@ public class Storefront {
         void define(ShippingRateQuery _queryBuilder);
     }
 
+    /**
+    * A shipping rate to be applied to a checkout.
+    */
     public static class ShippingRateQuery extends Query<ShippingRateQuery> {
         ShippingRateQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
         }
 
+        /**
+        * Human-readable unique identifier for this shipping rate.
+        */
         public ShippingRateQuery handle() {
             startField("handle");
 
             return this;
         }
 
+        /**
+        * Price of this shipping rate.
+        */
         public ShippingRateQuery price() {
             startField("price");
 
             return this;
         }
 
+        /**
+        * Title of this shipping rate.
+        */
         public ShippingRateQuery title() {
             startField("title");
 
@@ -15479,6 +16257,9 @@ public class Storefront {
         }
     }
 
+    /**
+    * A shipping rate to be applied to a checkout.
+    */
     public static class ShippingRate extends AbstractResponse<ShippingRate> {
         public ShippingRate() {
         }
@@ -15517,45 +16298,51 @@ public class Storefront {
             }
         }
 
-        public List<Node> getNodes() {
-            List<Node> children = new ArrayList<>();
-
-            return children;
-        }
-
         public String getGraphQlTypeName() {
             return "ShippingRate";
         }
+
+        /**
+        * Human-readable unique identifier for this shipping rate.
+        */
 
         public String getHandle() {
             return (String) get("handle");
         }
 
         public ShippingRate setHandle(String arg) {
-            optimisticData.put("handle", arg);
+            optimisticData.put(getKey("handle"), arg);
             return this;
         }
+
+        /**
+        * Price of this shipping rate.
+        */
 
         public BigDecimal getPrice() {
             return (BigDecimal) get("price");
         }
 
         public ShippingRate setPrice(BigDecimal arg) {
-            optimisticData.put("price", arg);
+            optimisticData.put(getKey("price"), arg);
             return this;
         }
+
+        /**
+        * Title of this shipping rate.
+        */
 
         public String getTitle() {
             return (String) get("title");
         }
 
         public ShippingRate setTitle(String arg) {
-            optimisticData.put("title", arg);
+            optimisticData.put(getKey("title"), arg);
             return this;
         }
 
         public boolean unwrapsToObject(String key) {
-            switch (key) {
+            switch (getFieldName(key)) {
                 case "handle": return false;
 
                 case "price": return false;
@@ -15571,9 +16358,21 @@ public class Storefront {
         void define(ShopQuery _queryBuilder);
     }
 
+    /**
+    * Shop represents a collection of the general settings and information about the shop.
+    */
     public static class ShopQuery extends Query<ShopQuery> {
         ShopQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
+        }
+
+        /**
+        * The url pointing to the endpoint to vault credit cards.
+        */
+        public ShopQuery cardVaultUrl() {
+            startField("cardVaultUrl");
+
+            return this;
         }
 
         public class CollectionsArguments extends Arguments {
@@ -15605,6 +16404,13 @@ public class Storefront {
                 return this;
             }
 
+            /**
+            * Supported filter parameters:
+            * - `title`
+            * - `collection_type`
+            * - `updated_at`
+            * - `published_status`
+            */
             public CollectionsArguments query(String value) {
                 if (value != null) {
                     startArgument("query");
@@ -15618,10 +16424,16 @@ public class Storefront {
             void define(CollectionsArguments args);
         }
 
+        /**
+        * List of the shop’ collections.
+        */
         public ShopQuery collections(int first, CollectionConnectionQueryDefinition queryDef) {
             return collections(first, args -> {}, queryDef);
         }
 
+        /**
+        * List of the shop’ collections.
+        */
         public ShopQuery collections(int first, CollectionsArgumentsDefinition argsDef, CollectionConnectionQueryDefinition queryDef) {
             startField("collections");
 
@@ -15639,30 +16451,45 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * The three-letter code for the currency that the shop accepts.
+        */
         public ShopQuery currencyCode() {
             startField("currencyCode");
 
             return this;
         }
 
+        /**
+        * A description of the shop.
+        */
         public ShopQuery description() {
             startField("description");
 
             return this;
         }
 
+        /**
+        * A string representing the way currency is formatted when the currency isn’t specified.
+        */
         public ShopQuery moneyFormat() {
             startField("moneyFormat");
 
             return this;
         }
 
+        /**
+        * The shop’s name.
+        */
         public ShopQuery name() {
             startField("name");
 
             return this;
         }
 
+        /**
+        * The shop’s primary domain.
+        */
         public ShopQuery primaryDomain(DomainQueryDefinition queryDef) {
             startField("primaryDomain");
 
@@ -15673,6 +16500,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * The shop’s privacy policy.
+        */
         public ShopQuery privacyPolicy(ShopPolicyQueryDefinition queryDef) {
             startField("privacyPolicy");
 
@@ -15712,6 +16542,15 @@ public class Storefront {
                 return this;
             }
 
+            /**
+            * Supported filter parameters:
+            * - `title`
+            * - `product_type`
+            * - `vendor`
+            * - `created_at`
+            * - `updated_at`
+            * - `tag`
+            */
             public ProductsArguments query(String value) {
                 if (value != null) {
                     startArgument("query");
@@ -15725,10 +16564,16 @@ public class Storefront {
             void define(ProductsArguments args);
         }
 
+        /**
+        * List of the shop’ products.
+        */
         public ShopQuery products(int first, ProductConnectionQueryDefinition queryDef) {
             return products(first, args -> {}, queryDef);
         }
 
+        /**
+        * List of the shop’ products.
+        */
         public ShopQuery products(int first, ProductsArgumentsDefinition argsDef, ProductConnectionQueryDefinition queryDef) {
             startField("products");
 
@@ -15746,6 +16591,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * The shop’s refund policy.
+        */
         public ShopQuery refundPolicy(ShopPolicyQueryDefinition queryDef) {
             startField("refundPolicy");
 
@@ -15756,12 +16604,18 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * The shop's Shopify Payments account id.
+        */
         public ShopQuery shopifyPaymentsAccountId() {
             startField("shopifyPaymentsAccountId");
 
             return this;
         }
 
+        /**
+        * The shop’s terms of service.
+        */
         public ShopQuery termsOfService(ShopPolicyQueryDefinition queryDef) {
             startField("termsOfService");
 
@@ -15773,6 +16627,9 @@ public class Storefront {
         }
     }
 
+    /**
+    * Shop represents a collection of the general settings and information about the shop.
+    */
     public static class Shop extends AbstractResponse<Shop> {
         public Shop() {
         }
@@ -15782,6 +16639,12 @@ public class Storefront {
                 String key = field.getKey();
                 String fieldName = getFieldName(key);
                 switch (fieldName) {
+                    case "cardVaultUrl": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+
+                        break;
+                    }
+
                     case "collections": {
                         responseData.put(key, new CollectionConnection(jsonAsObject(field.getValue(), key)));
 
@@ -15884,141 +16747,170 @@ public class Storefront {
             }
         }
 
-        public List<Node> getNodes() {
-            List<Node> children = new ArrayList<>();
-
-            if (getCollections() != null) {
-                children.addAll(getCollections().getNodes());
-            }
-
-            if (getPrimaryDomain() != null) {
-                children.addAll(getPrimaryDomain().getNodes());
-            }
-
-            if (getPrivacyPolicy() != null) {
-                children.addAll(getPrivacyPolicy().getNodes());
-            }
-
-            if (getProducts() != null) {
-                children.addAll(getProducts().getNodes());
-            }
-
-            if (getRefundPolicy() != null) {
-                children.addAll(getRefundPolicy().getNodes());
-            }
-
-            if (getTermsOfService() != null) {
-                children.addAll(getTermsOfService().getNodes());
-            }
-
-            return children;
-        }
-
         public String getGraphQlTypeName() {
             return "Shop";
         }
+
+        /**
+        * The url pointing to the endpoint to vault credit cards.
+        */
+
+        public String getCardVaultUrl() {
+            return (String) get("cardVaultUrl");
+        }
+
+        public Shop setCardVaultUrl(String arg) {
+            optimisticData.put(getKey("cardVaultUrl"), arg);
+            return this;
+        }
+
+        /**
+        * List of the shop’ collections.
+        */
 
         public CollectionConnection getCollections() {
             return (CollectionConnection) get("collections");
         }
 
         public Shop setCollections(CollectionConnection arg) {
-            optimisticData.put("collections", arg);
+            optimisticData.put(getKey("collections"), arg);
             return this;
         }
+
+        /**
+        * The three-letter code for the currency that the shop accepts.
+        */
 
         public CurrencyCode getCurrencyCode() {
             return (CurrencyCode) get("currencyCode");
         }
 
         public Shop setCurrencyCode(CurrencyCode arg) {
-            optimisticData.put("currencyCode", arg);
+            optimisticData.put(getKey("currencyCode"), arg);
             return this;
         }
+
+        /**
+        * A description of the shop.
+        */
 
         public String getDescription() {
             return (String) get("description");
         }
 
         public Shop setDescription(String arg) {
-            optimisticData.put("description", arg);
+            optimisticData.put(getKey("description"), arg);
             return this;
         }
+
+        /**
+        * A string representing the way currency is formatted when the currency isn’t specified.
+        */
 
         public String getMoneyFormat() {
             return (String) get("moneyFormat");
         }
 
         public Shop setMoneyFormat(String arg) {
-            optimisticData.put("moneyFormat", arg);
+            optimisticData.put(getKey("moneyFormat"), arg);
             return this;
         }
+
+        /**
+        * The shop’s name.
+        */
 
         public String getName() {
             return (String) get("name");
         }
 
         public Shop setName(String arg) {
-            optimisticData.put("name", arg);
+            optimisticData.put(getKey("name"), arg);
             return this;
         }
+
+        /**
+        * The shop’s primary domain.
+        */
 
         public Domain getPrimaryDomain() {
             return (Domain) get("primaryDomain");
         }
 
         public Shop setPrimaryDomain(Domain arg) {
-            optimisticData.put("primaryDomain", arg);
+            optimisticData.put(getKey("primaryDomain"), arg);
             return this;
         }
+
+        /**
+        * The shop’s privacy policy.
+        */
 
         public ShopPolicy getPrivacyPolicy() {
             return (ShopPolicy) get("privacyPolicy");
         }
 
         public Shop setPrivacyPolicy(ShopPolicy arg) {
-            optimisticData.put("privacyPolicy", arg);
+            optimisticData.put(getKey("privacyPolicy"), arg);
             return this;
         }
+
+        /**
+        * List of the shop’ products.
+        */
 
         public ProductConnection getProducts() {
             return (ProductConnection) get("products");
         }
 
         public Shop setProducts(ProductConnection arg) {
-            optimisticData.put("products", arg);
+            optimisticData.put(getKey("products"), arg);
             return this;
         }
+
+        /**
+        * The shop’s refund policy.
+        */
 
         public ShopPolicy getRefundPolicy() {
             return (ShopPolicy) get("refundPolicy");
         }
 
         public Shop setRefundPolicy(ShopPolicy arg) {
-            optimisticData.put("refundPolicy", arg);
+            optimisticData.put(getKey("refundPolicy"), arg);
             return this;
         }
+
+        /**
+        * The shop's Shopify Payments account id.
+        */
 
         public String getShopifyPaymentsAccountId() {
             return (String) get("shopifyPaymentsAccountId");
         }
 
         public Shop setShopifyPaymentsAccountId(String arg) {
-            optimisticData.put("shopifyPaymentsAccountId", arg);
+            optimisticData.put(getKey("shopifyPaymentsAccountId"), arg);
             return this;
         }
+
+        /**
+        * The shop’s terms of service.
+        */
 
         public ShopPolicy getTermsOfService() {
             return (ShopPolicy) get("termsOfService");
         }
 
         public Shop setTermsOfService(ShopPolicy arg) {
-            optimisticData.put("termsOfService", arg);
+            optimisticData.put(getKey("termsOfService"), arg);
             return this;
         }
 
         public boolean unwrapsToObject(String key) {
-            switch (key) {
+            switch (getFieldName(key)) {
+                case "cardVaultUrl": return false;
+
                 case "collections": return true;
 
                 case "currencyCode": return false;
@@ -16050,6 +16942,9 @@ public class Storefront {
         void define(ShopPolicyQuery _queryBuilder);
     }
 
+    /**
+    * Policy that a merchant has configured for their store, such as their refund or privacy policy.
+    */
     public static class ShopPolicyQuery extends Query<ShopPolicyQuery> {
         ShopPolicyQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
@@ -16057,18 +16952,27 @@ public class Storefront {
             startField("id");
         }
 
+        /**
+        * Policy text, maximum size of 64kb.
+        */
         public ShopPolicyQuery body() {
             startField("body");
 
             return this;
         }
 
+        /**
+        * Policy’s title.
+        */
         public ShopPolicyQuery title() {
             startField("title");
 
             return this;
         }
 
+        /**
+        * Public URL to the policy.
+        */
         public ShopPolicyQuery url() {
             startField("url");
 
@@ -16076,6 +16980,9 @@ public class Storefront {
         }
     }
 
+    /**
+    * Policy that a merchant has configured for their store, such as their refund or privacy policy.
+    */
     public static class ShopPolicy extends AbstractResponse<ShopPolicy> implements Node {
         public ShopPolicy() {
         }
@@ -16125,24 +17032,20 @@ public class Storefront {
             optimisticData.put("id", id);
         }
 
-        public List<Node> getNodes() {
-            List<Node> children = new ArrayList<>();
-
-            children.add(this);
-
-            return children;
-        }
-
         public String getGraphQlTypeName() {
             return "ShopPolicy";
         }
+
+        /**
+        * Policy text, maximum size of 64kb.
+        */
 
         public String getBody() {
             return (String) get("body");
         }
 
         public ShopPolicy setBody(String arg) {
-            optimisticData.put("body", arg);
+            optimisticData.put(getKey("body"), arg);
             return this;
         }
 
@@ -16150,26 +17053,34 @@ public class Storefront {
             return (ID) get("id");
         }
 
+        /**
+        * Policy’s title.
+        */
+
         public String getTitle() {
             return (String) get("title");
         }
 
         public ShopPolicy setTitle(String arg) {
-            optimisticData.put("title", arg);
+            optimisticData.put(getKey("title"), arg);
             return this;
         }
+
+        /**
+        * Public URL to the policy.
+        */
 
         public String getUrl() {
             return (String) get("url");
         }
 
         public ShopPolicy setUrl(String arg) {
-            optimisticData.put("url", arg);
+            optimisticData.put(getKey("url"), arg);
             return this;
         }
 
         public boolean unwrapsToObject(String key) {
-            switch (key) {
+            switch (getFieldName(key)) {
                 case "body": return false;
 
                 case "id": return false;
@@ -16186,28 +17097,28 @@ public class Storefront {
     public static class TokenizedPaymentInput implements Serializable {
         private BigDecimal amount;
 
-        private MailingAddressInput billingAddress;
-
         private String idempotencyKey;
 
-        private String paymentData;
+        private MailingAddressInput billingAddress;
 
         private String type;
 
-        private String identifier;
+        private String paymentData;
 
         private Boolean test;
 
-        public TokenizedPaymentInput(BigDecimal amount, MailingAddressInput billingAddress, String idempotencyKey, String paymentData, String type) {
-            this.amount = amount;
+        private String identifier;
 
-            this.billingAddress = billingAddress;
+        public TokenizedPaymentInput(BigDecimal amount, String idempotencyKey, MailingAddressInput billingAddress, String type, String paymentData) {
+            this.amount = amount;
 
             this.idempotencyKey = idempotencyKey;
 
-            this.paymentData = paymentData;
+            this.billingAddress = billingAddress;
 
             this.type = type;
+
+            this.paymentData = paymentData;
         }
 
         public BigDecimal getAmount() {
@@ -16216,15 +17127,6 @@ public class Storefront {
 
         public TokenizedPaymentInput setAmount(BigDecimal amount) {
             this.amount = amount;
-            return this;
-        }
-
-        public MailingAddressInput getBillingAddress() {
-            return billingAddress;
-        }
-
-        public TokenizedPaymentInput setBillingAddress(MailingAddressInput billingAddress) {
-            this.billingAddress = billingAddress;
             return this;
         }
 
@@ -16237,12 +17139,12 @@ public class Storefront {
             return this;
         }
 
-        public String getPaymentData() {
-            return paymentData;
+        public MailingAddressInput getBillingAddress() {
+            return billingAddress;
         }
 
-        public TokenizedPaymentInput setPaymentData(String paymentData) {
-            this.paymentData = paymentData;
+        public TokenizedPaymentInput setBillingAddress(MailingAddressInput billingAddress) {
+            this.billingAddress = billingAddress;
             return this;
         }
 
@@ -16255,12 +17157,12 @@ public class Storefront {
             return this;
         }
 
-        public String getIdentifier() {
-            return identifier;
+        public String getPaymentData() {
+            return paymentData;
         }
 
-        public TokenizedPaymentInput setIdentifier(String identifier) {
-            this.identifier = identifier;
+        public TokenizedPaymentInput setPaymentData(String paymentData) {
+            this.paymentData = paymentData;
             return this;
         }
 
@@ -16270,6 +17172,15 @@ public class Storefront {
 
         public TokenizedPaymentInput setTest(Boolean test) {
             this.test = test;
+            return this;
+        }
+
+        public String getIdentifier() {
+            return identifier;
+        }
+
+        public TokenizedPaymentInput setIdentifier(String identifier) {
+            this.identifier = identifier;
             return this;
         }
 
@@ -16284,36 +17195,36 @@ public class Storefront {
 
             _queryBuilder.append(separator);
             separator = ",";
-            _queryBuilder.append("billingAddress:");
-            billingAddress.appendTo(_queryBuilder);
-
-            _queryBuilder.append(separator);
-            separator = ",";
             _queryBuilder.append("idempotencyKey:");
             Query.appendQuotedString(_queryBuilder, idempotencyKey.toString());
 
             _queryBuilder.append(separator);
             separator = ",";
-            _queryBuilder.append("paymentData:");
-            Query.appendQuotedString(_queryBuilder, paymentData.toString());
+            _queryBuilder.append("billingAddress:");
+            billingAddress.appendTo(_queryBuilder);
 
             _queryBuilder.append(separator);
             separator = ",";
             _queryBuilder.append("type:");
             Query.appendQuotedString(_queryBuilder, type.toString());
 
-            if (identifier != null) {
-                _queryBuilder.append(separator);
-                separator = ",";
-                _queryBuilder.append("identifier:");
-                Query.appendQuotedString(_queryBuilder, identifier.toString());
-            }
+            _queryBuilder.append(separator);
+            separator = ",";
+            _queryBuilder.append("paymentData:");
+            Query.appendQuotedString(_queryBuilder, paymentData.toString());
 
             if (test != null) {
                 _queryBuilder.append(separator);
                 separator = ",";
                 _queryBuilder.append("test:");
                 _queryBuilder.append(test);
+            }
+
+            if (identifier != null) {
+                _queryBuilder.append(separator);
+                separator = ",";
+                _queryBuilder.append("identifier:");
+                Query.appendQuotedString(_queryBuilder, identifier.toString());
             }
 
             _queryBuilder.append('}');
@@ -16324,29 +17235,44 @@ public class Storefront {
         void define(TransactionQuery _queryBuilder);
     }
 
+    /**
+    * An object representing exchange of money for a product or service.
+    */
     public static class TransactionQuery extends Query<TransactionQuery> {
         TransactionQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
         }
 
+        /**
+        * The amount of money that the transaction was for.
+        */
         public TransactionQuery amount() {
             startField("amount");
 
             return this;
         }
 
+        /**
+        * The kind of the transaction.
+        */
         public TransactionQuery kind() {
             startField("kind");
 
             return this;
         }
 
+        /**
+        * The status of the transaction
+        */
         public TransactionQuery status() {
             startField("status");
 
             return this;
         }
 
+        /**
+        * Whether the transaction was done in test mode or not
+        */
         public TransactionQuery test() {
             startField("test");
 
@@ -16354,6 +17280,9 @@ public class Storefront {
         }
     }
 
+    /**
+    * An object representing exchange of money for a product or service.
+    */
     public static class Transaction extends AbstractResponse<Transaction> {
         public Transaction() {
         }
@@ -16398,54 +17327,64 @@ public class Storefront {
             }
         }
 
-        public List<Node> getNodes() {
-            List<Node> children = new ArrayList<>();
-
-            return children;
-        }
-
         public String getGraphQlTypeName() {
             return "Transaction";
         }
+
+        /**
+        * The amount of money that the transaction was for.
+        */
 
         public BigDecimal getAmount() {
             return (BigDecimal) get("amount");
         }
 
         public Transaction setAmount(BigDecimal arg) {
-            optimisticData.put("amount", arg);
+            optimisticData.put(getKey("amount"), arg);
             return this;
         }
+
+        /**
+        * The kind of the transaction.
+        */
 
         public TransactionKind getKind() {
             return (TransactionKind) get("kind");
         }
 
         public Transaction setKind(TransactionKind arg) {
-            optimisticData.put("kind", arg);
+            optimisticData.put(getKey("kind"), arg);
             return this;
         }
+
+        /**
+        * The status of the transaction
+        */
 
         public TransactionStatus getStatus() {
             return (TransactionStatus) get("status");
         }
 
         public Transaction setStatus(TransactionStatus arg) {
-            optimisticData.put("status", arg);
+            optimisticData.put(getKey("status"), arg);
             return this;
         }
+
+        /**
+        * Whether the transaction was done in test mode or not
+        */
 
         public Boolean getTest() {
             return (Boolean) get("test");
         }
 
         public Transaction setTest(Boolean arg) {
-            optimisticData.put("test", arg);
+            optimisticData.put(getKey("test"), arg);
             return this;
         }
 
         public boolean unwrapsToObject(String key) {
-            switch (key) {
+            switch (getFieldName(key)) {
                 case "amount": return false;
 
                 case "kind": return false;
@@ -16599,17 +17538,26 @@ public class Storefront {
         void define(UserErrorQuery _queryBuilder);
     }
 
+    /**
+    * Represents an error in the input of a mutation.
+    */
     public static class UserErrorQuery extends Query<UserErrorQuery> {
         UserErrorQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
         }
 
+        /**
+        * Path to input field which caused the error.
+        */
         public UserErrorQuery field() {
             startField("field");
 
             return this;
         }
 
+        /**
+        * The error message.
+        */
         public UserErrorQuery message() {
             startField("message");
 
@@ -16617,6 +17565,9 @@ public class Storefront {
         }
     }
 
+    /**
+    * Represents an error in the input of a mutation.
+    */
     public static class UserError extends AbstractResponse<UserError> {
         public UserError() {
         }
@@ -16659,36 +17610,38 @@ public class Storefront {
             }
         }
 
-        public List<Node> getNodes() {
-            List<Node> children = new ArrayList<>();
-
-            return children;
-        }
-
         public String getGraphQlTypeName() {
             return "UserError";
         }
+
+        /**
+        * Path to input field which caused the error.
+        */
 
         public List<String> getField() {
             return (List<String>) get("field");
         }
 
         public UserError setField(List<String> arg) {
-            optimisticData.put("field", arg);
+            optimisticData.put(getKey("field"), arg);
             return this;
         }
+
+        /**
+        * The error message.
+        */
 
         public String getMessage() {
             return (String) get("message");
         }
 
         public UserError setMessage(String arg) {
-            optimisticData.put("message", arg);
+            optimisticData.put(getKey("message"), arg);
             return this;
         }
 
         public boolean unwrapsToObject(String key) {
-            switch (key) {
+            switch (getFieldName(key)) {
                 case "field": return false;
 
                 case "message": return false;
@@ -16698,6 +17651,9 @@ public class Storefront {
         }
     }
 
+    /**
+    * Units of measurements for weight.
+    */
     public enum WeightUnit {
         GRAMS,
 

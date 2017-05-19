@@ -1,0 +1,83 @@
+{
+  "data": {
+    "shop": {
+      "name": "Greats Clone",
+      "currencyCode": "USD",
+      "description": "A description ",
+      "collections": {
+        "edges": [
+          {
+            "cursor": "eyJsYXN0X2lkIjoxNDg3ODQ0NTEsImxhc3RfdmFsdWUiOiIxNDg3ODQ0NTEifQ==",
+            "node": {
+              "id": "Z2lkOi8vc2hvcGlmeS9Db2xsZWN0aW9uLzE0ODc4NDQ1MQ==",
+              "title": "Frontpage"
+            }
+          },
+          {
+            "cursor": "eyJsYXN0X2lkIjoxNDg4MTc3MzEsImxhc3RfdmFsdWUiOiIxNDg4MTc3MzEifQ==",
+            "node": {
+              "id": "Z2lkOi8vc2hvcGlmeS9Db2xsZWN0aW9uLzE0ODgxNzczMQ==",
+              "title": "The Rosen"
+            }
+          },
+          {
+            "cursor": "eyJsYXN0X2lkIjoxNDg4MTc5ODcsImxhc3RfdmFsdWUiOiIxNDg4MTc5ODcifQ==",
+            "node": {
+              "id": "Z2lkOi8vc2hvcGlmeS9Db2xsZWN0aW9uLzE0ODgxNzk4Nw==",
+              "title": "The Royale Court"
+            }
+          },
+          {
+            "cursor": "eyJsYXN0X2lkIjoxNDg4MTkyMDMsImxhc3RfdmFsdWUiOiIxNDg4MTkyMDMifQ==",
+            "node": {
+              "id": "Z2lkOi8vc2hvcGlmeS9Db2xsZWN0aW9uLzE0ODgxOTIwMw==",
+              "title": "The Wooster Leather"
+            }
+          },
+          {
+            "cursor": "eyJsYXN0X2lkIjoxNDg4MTkzOTUsImxhc3RfdmFsdWUiOiIxNDg4MTkzOTUifQ==",
+            "node": {
+              "id": "Z2lkOi8vc2hvcGlmeS9Db2xsZWN0aW9uLzE0ODgxOTM5NQ==",
+              "title": "The Bab"
+            }
+          },
+          {
+            "cursor": "eyJsYXN0X2lkIjoxNDg4MTk1MjMsImxhc3RfdmFsdWUiOiIxNDg4MTk1MjMifQ==",
+            "node": {
+              "id": "Z2lkOi8vc2hvcGlmeS9Db2xsZWN0aW9uLzE0ODgxOTUyMw==",
+              "title": "The Pronto"
+            }
+          },
+          {
+            "cursor": "eyJsYXN0X2lkIjoxNDg4MjAwOTksImxhc3RfdmFsdWUiOiIxNDg4MjAwOTkifQ==",
+            "node": {
+              "id": "Z2lkOi8vc2hvcGlmeS9Db2xsZWN0aW9uLzE0ODgyMDA5OQ==",
+              "title": "The G-Knit"
+            }
+          },
+          {
+            "cursor": "eyJsYXN0X2lkIjoxNTAwOTYzMjMsImxhc3RfdmFsdWUiOiIxNTAwOTYzMjMifQ==",
+            "node": {
+              "id": "Z2lkOi8vc2hvcGlmeS9Db2xsZWN0aW9uLzE1MDA5NjMyMw==",
+              "title": "The Wilson"
+            }
+          },
+          {
+            "cursor": "eyJsYXN0X2lkIjoxNzk3MTM4NjIsImxhc3RfdmFsdWUiOiIxNzk3MTM4NjIifQ==",
+            "node": {
+              "id": "Z2lkOi8vc2hvcGlmeS9Db2xsZWN0aW9uLzE3OTcxMzg2Mg==",
+              "title": "A Test"
+            }
+          },
+          {
+            "cursor": "eyJsYXN0X2lkIjoxODU5MzUxMTAsImxhc3RfdmFsdWUiOiIxODU5MzUxMTAifQ==",
+            "node": {
+              "id": "Z2lkOi8vc2hvcGlmeS9Db2xsZWN0aW9uLzE4NTkzNTExMA==",
+              "title": "Z-test"
+            }
+          }
+        ]
+      }
+    }
+  }
+}

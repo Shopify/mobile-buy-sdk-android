@@ -34,7 +34,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static com.shopify.buy3.Utils.checkNotNull;
 
 /**
- * Handler that determines if {@code GraphQL} call should be retried.
+ * <p>Handler for retrying {@link GraphCall} calls.</p>
+ * Encapsulates the retry state and customization parameters for how the {@link GraphCall} will retry subsequent http requests.
  *
  * @see GraphCall#enqueue(GraphCall.Callback, android.os.Handler, RetryHandler)
  */
@@ -42,15 +43,15 @@ import static com.shopify.buy3.Utils.checkNotNull;
 public final class RetryHandler {
 
   /**
-   * Handler with no retries.
+   * Handler with no retries configuration.
    */
   public static final RetryHandler NO_RETRY = delay(0, TimeUnit.MILLISECONDS).maxCount(0).build();
 
   /**
-   * Prepare handler with periodic retries strategy.
+   * Prepares builder with periodic retries strategy.
    *
    * @param delay    between attempts
-   * @param timeUnit delay time unit
+   * @param timeUnit {@link TimeUnit} time unit
    * @return prepared {@link Builder}
    */
   public static Builder delay(final long delay, @NonNull final TimeUnit timeUnit) {
@@ -58,10 +59,10 @@ public final class RetryHandler {
   }
 
   /**
-   * Prepare handler with exponential backoff multiplier strategy.
+   * Prepares builder with exponential backoff multiplier strategy.
    *
    * @param delay      minimum delay between attempts
-   * @param timeUnit   delay time unit
+   * @param timeUnit   {@link TimeUnit} time unit
    * @param multiplier exponential backoff multiplier
    * @return prepared {@link Builder}
    */
@@ -85,20 +86,20 @@ public final class RetryHandler {
   }
 
   /**
-   * Checks if {@code GraphQL} call should be retried for specified {@code response} and max attempt count hasn't been reached.
+   * Checks if {@link GraphCall} call should be retried for provided {@code GraphResponse} and max attempt count hasn't been reached.
    *
    * @param response to check if retry is required for
-   * @return {@code true} if {@code GraphQL} call should be retried, {@code false} otherwise
+   * @return {@code true} if {@link GraphCall} call should be retried, {@code false} otherwise
    */
   public boolean retry(final GraphResponse response) {
     return responseRetryCondition.check(response) && retry();
   }
 
   /**
-   * Checks if {@code GraphQL} call should be retried for specified {@code error} and max attempt count hasn't been reached.
+   * Checks if {@link GraphCall} call should be retried for provided {@link GraphError} and max attempt count hasn't been reached.
    *
    * @param error to check if retry is required for
-   * @return {@code true} if {@code GraphQL} call should be retried, {@code false} otherwise
+   * @return {@code true} if {@link GraphCall} call should be retried, {@code false} otherwise
    */
   public boolean retry(final GraphError error) {
     return errorRetryCondition.check(error) && retry();
@@ -117,7 +118,7 @@ public final class RetryHandler {
   }
 
   /**
-   * Builds new {@code RetryHandler} instance
+   * Builds new {@link RetryHandler} instance
    */
   public static final class Builder {
     int maxCount = -1;
@@ -141,7 +142,7 @@ public final class RetryHandler {
     }
 
     /**
-     * Set maximum retry attempt count.
+     * Sets maximum retry attempt count.
      *
      * @param maxCount maximum retry attempt count
      * @return {@link Builder} to be used for chaining method calls
@@ -152,7 +153,7 @@ public final class RetryHandler {
     }
 
     /**
-     * Set condition on {@link GraphResponse} to check before next retry attempt.
+     * Sets condition on {@link GraphResponse} to check before next retry attempt.
      *
      * @param retryCondition condition to be checked
      * @param <T>            type of the {@link AbstractResponse} response
@@ -165,7 +166,7 @@ public final class RetryHandler {
     }
 
     /**
-     * Set condition on {@link GraphError} to check before next retry attempt.
+     * Sets condition on {@link GraphError} to check before next retry attempt.
      *
      * @param retryCondition condition to be checked
      * @return to be used for chaining method calls
@@ -176,9 +177,9 @@ public final class RetryHandler {
     }
 
     /**
-     * Builds the {@code RetryHandler} instance with specified configuration options.
+     * Builds new {@link RetryHandler} instance with provided configuration options.
      *
-     * @return configured {@link RetryHandler}
+     * @return {@link RetryHandler}
      */
     public RetryHandler build() {
       return new RetryHandler(this);
