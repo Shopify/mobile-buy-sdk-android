@@ -24,18 +24,43 @@
 
 package com.shopify.buy3;
 
-/**
- * Error to be thrown when {@link GraphCall} executed but http response is malformed and can't be parsed.
- */
-public final class GraphParseError extends GraphError {
-  public GraphParseError() {
+import android.support.test.InstrumentationRegistry;
+
+import com.google.common.io.CharStreams;
+import com.shopify.buy3.cache.HttpCache;
+
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.concurrent.TimeUnit;
+
+import okhttp3.HttpUrl;
+import okhttp3.OkHttpClient;
+
+public final class TestUtils {
+
+  public static String readFileToString(final Class contextClass, final String streamIdentifier) throws IOException {
+    InputStreamReader inputStreamReader = null;
+    try {
+      inputStreamReader = new InputStreamReader(contextClass.getResourceAsStream(streamIdentifier));
+      return CharStreams.toString(inputStreamReader);
+    } catch (IOException e) {
+      throw new IOException();
+    } finally {
+      if (inputStreamReader != null) {
+        inputStreamReader.close();
+      }
+    }
   }
 
-  public GraphParseError(final String message) {
-    super(message);
+  public static GraphClient createGraphClient(final HttpUrl serverUrl, final OkHttpClient okHttpClient, final HttpCache httpCache) {
+    return GraphClient.builder(InstrumentationRegistry.getContext())
+      .accessToken("access_token")
+      .serverUrl(serverUrl)
+      .httpClient(okHttpClient)
+      .httpCache(httpCache)
+      .build();
   }
 
-  public GraphParseError(final String message, final Throwable cause) {
-    super(message, cause);
+  private TestUtils() {
   }
 }

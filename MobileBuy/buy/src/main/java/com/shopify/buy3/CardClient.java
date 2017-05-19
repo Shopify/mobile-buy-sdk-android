@@ -35,7 +35,9 @@ import okhttp3.OkHttpClient;
 import static com.shopify.buy3.Utils.checkNotNull;
 
 /**
- * Class represents a factory for instantiating and preparing network calls to card server.
+ * <p>Client for card server.</p>
+ * Factory for network calls to the card server.
+ * Should be shared and reused for all calls to the card server.
  */
 public final class CardClient {
   private static final long DEFAULT_HTTP_CONNECTION_TIME_OUT_MS = TimeUnit.SECONDS.toMillis(10);
@@ -43,22 +45,30 @@ public final class CardClient {
 
   final Call.Factory httpCallFactory;
 
+  /**
+   * Creates client with default {@link OkHttpClient} network layer
+   */
   public CardClient() {
     this(defaultOkHttpClient());
   }
 
+  /**
+   * Creates client with provided {@link OkHttpClient}
+   *
+   * @param httpCallFactory {@link Call.Factory} to be used as network layer
+   */
   public CardClient(@NonNull final Call.Factory httpCallFactory) {
     this.httpCallFactory = checkNotNull(httpCallFactory, "httpCallFactory == null");
   }
 
   /**
-   * <p>Create a call to vault credit card on the server.</p>
+   * <p>Creates a call to vault credit card on the server.</p>
    * Credit cards cannot be sent to the checkout API directly. They must be sent to the card vault which in response will return an token.
-   * This token can then be used when calling the checkout API's.
+   * This token should be used for completion checkout with credit card.
    *
-   * @param creditCard     credit card info
-   * @param vaultServerUrl endpoint of card vault returned in {@link Storefront.Checkout#getVaultUrl()}
-   * @return call to vault credit card
+   * @param creditCard     {@link CreditCard} credit card info
+   * @param vaultServerUrl endpoint of card vault returned in {@link Storefront.Shop#getCardVaultUrl()}
+   * @return {@link CreditCardVaultCall}
    */
   public CreditCardVaultCall vault(@NonNull final CreditCard creditCard, @NonNull final String vaultServerUrl) {
     return new RealCreditCardVaultCall(creditCard, HttpUrl.parse(vaultServerUrl), httpCallFactory);

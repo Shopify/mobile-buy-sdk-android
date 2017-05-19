@@ -47,15 +47,16 @@ import static com.shopify.buy3.Utils.checkNotBlank;
 import static com.shopify.buy3.Utils.checkNotNull;
 
 /**
- * Class represents {@code GraphQL} client that is responsible for creating and preparing {@link GraphCall} calls.
- * <p>This client should be shared between calls to the same shop domain.</p>
- * <p>Internally {@code GraphQL} based on {@link OkHttpClient} that means it holds its own connection pool and thread pool, it is
- * recommended to only create a single instance use that for execution of all the {@code GraphQL} calls, as this would reduce latency and
+ * <p>Client for {@code GraphQL} server.</p>
+ * Creates and prepares {@link GraphCall} calls, which can be used to send {@code GraphQL} operation http requests.
+ * Should be shared and reused for all calls to the  {@code GraphQL} server.
+ * <p>Based internally on {@link OkHttpClient} network layer that holds its own connection pool and thread pool, it is
+ * recommended to only create a single instance use that for execution of all the {@link GraphCall} calls, as this would reduce latency and
  * would also save memory.</p>
  */
 public final class GraphClient {
   /**
-   * Creates builder to construct new {@code GraphClient} instance
+   * Instantiates new builder to construct new {@link GraphClient} instance
    *
    * @param context android context
    * @return {@link GraphClient.Builder}
@@ -66,15 +67,15 @@ public final class GraphClient {
 
   final HttpUrl serverUrl;
   final Call.Factory httpCallFactory;
-  final CachePolicy defaultCachePolicy;
+  final HttpCachePolicy.Policy defaultHttpCachePolicy;
   final HttpCache httpCache;
   final ScheduledExecutorService dispatcher;
 
   private GraphClient(@NonNull final HttpUrl serverUrl, @NonNull final Call.Factory httpCallFactory,
-    @NonNull final CachePolicy defaultCachePolicy, @Nullable final HttpCache httpCache) {
+    @NonNull final HttpCachePolicy.Policy defaultHttpCachePolicy, @Nullable final HttpCache httpCache) {
     this.serverUrl = checkNotNull(serverUrl, "serverUrl == null");
     this.httpCallFactory = checkNotNull(httpCallFactory, "httpCallFactory == null");
-    this.defaultCachePolicy = checkNotNull(defaultCachePolicy, "defaultCachePolicy == null");
+    this.defaultHttpCachePolicy = checkNotNull(defaultHttpCachePolicy, "defaultCachePolicy == null");
     this.httpCache = httpCache;
 
     ScheduledThreadPoolExecutor threadPoolExecutor = new ScheduledThreadPoolExecutor(2,
@@ -85,28 +86,31 @@ public final class GraphClient {
   }
 
   /**
-   * Creates and prepares {@link GraphCall} call to perform {@link Storefront.QueryRootQuery} execution.
+   * <p>Creates call to execute {@code GraphQL} query operation.</p>
+   * Creates and prepares {@link QueryGraphCall} that represents {@code GraphQL} query operation to be executed at some point in the future.
    *
-   * @param query {@code GraphQL} query to be executed
-   * @return prepared {@link QueryGraphCall} call for execution
-   * @see QueryGraphCall
+   * @param query {@link Storefront.QueryRootQuery} to be executed
+   * @return prepared {@link QueryGraphCall} call for later execution
    */
   public QueryGraphCall queryGraph(final Storefront.QueryRootQuery query) {
-    return new RealQueryGraphCall(query, serverUrl, httpCallFactory, dispatcher, defaultCachePolicy, httpCache);
+    return new RealQueryGraphCall(query, serverUrl, httpCallFactory, dispatcher, defaultHttpCachePolicy, httpCache);
   }
 
   /**
-   * Creates and prepares {@link GraphCall} call to perform {@link Storefront.MutationQuery} execution.
+   * <p>Creates call to execute {@code GraphQL} mutation operation.</p>
+   * Creates and prepares {@link MutationGraphCall} that represents {@code GraphQL} mutation operation to be executed at some point in the
+   * future.
    *
-   * @param query {@code GraphQL} query to be executed
-   * @return prepared {@link MutationGraphCall} call for execution
-   * @see MutationGraphCall
+   * @param query {@link Storefront.MutationQuery} to be executed
+   * @return prepared {@link MutationGraphCall} call for later execution
    */
   public MutationGraphCall mutateGraph(final Storefront.MutationQuery query) {
-    return new RealMutationGraphCall(query, serverUrl, httpCallFactory, dispatcher, CachePolicy.NETWORK_ONLY.obtain(), httpCache);
+    return new RealMutationGraphCall(query, serverUrl, httpCallFactory, dispatcher, HttpCachePolicy.NETWORK_ONLY, httpCache);
   }
 
   /**
+   * Returns reference to the {@link HttpCache} used by this client.
+   *
    * @return {@link HttpCache}
    */
   @Nullable public HttpCache httpCache() {
@@ -125,7 +129,7 @@ public final class GraphClient {
     private HttpUrl endpointUrl;
     private String accessToken;
     private OkHttpClient httpClient;
-    private CachePolicy defaultCachePolicy = CachePolicy.NETWORK_ONLY.obtain();
+    private HttpCachePolicy.Policy defaultHttpCachePolicy = HttpCachePolicy.NETWORK_ONLY;
     private File httpCacheFolder;
     private long httpCacheMaxSize;
     private HttpCache httpCache;
@@ -135,7 +139,7 @@ public final class GraphClient {
     }
 
     /**
-     * Set Shopify store domain url (usually {@code {store name}.myshopify.com}).
+     * Sets Shopify store domain url (usually {@code {store name}.myshopify.com}).
      *
      * @param shopDomain domain for the shop
      * @return {@link GraphClient.Builder} to be used for chaining method calls
@@ -148,7 +152,7 @@ public final class GraphClient {
     }
 
     /**
-     * Set Shopify store access token
+     * Sets Shopify store access obtained on your shop's admin page.
      *
      * @param accessToken store access token
      * @return {@link GraphClient.Builder} to be used for chaining method calls
@@ -161,9 +165,9 @@ public final class GraphClient {
     }
 
     /**
-     * Set the {@link OkHttpClient} to use for making network requests.
+     * Sets the {@link OkHttpClient} to be used as network layer for making http requests.
      *
-     * @param httpClient client to be used
+     * @param httpClient {@link OkHttpClient} client to be used
      * @return {@link GraphClient.Builder} to be used for chaining method calls
      * @throws NullPointerException when {@code httpClient} is null
      */
@@ -173,21 +177,21 @@ public final class GraphClient {
     }
 
     /**
-     * Set the default {@link CachePolicy} to be used for {@link QueryGraphCall}.
+     * Sets the {@link HttpCachePolicy.Policy} to be used as default for all {@link QueryGraphCall} calls.
      *
-     * @param cachePolicy default {@link CachePolicy}
+     * @param httpCachePolicy default {@link HttpCachePolicy.Policy}
      * @return {@link GraphClient.Builder} to be used for chaining method calls
      */
-    public Builder defaultCachePolicy(@NonNull CachePolicy cachePolicy) {
-      this.defaultCachePolicy = checkNotNull(cachePolicy, "cachePolicy == null");
+    public Builder defaultHttpCachePolicy(@NonNull final HttpCachePolicy.Policy httpCachePolicy) {
+      this.defaultHttpCachePolicy = checkNotNull(httpCachePolicy, "cachePolicy == null");
       return this;
     }
 
     /**
-     * Enable http cache by setting cache folder and maximum cache size in bytes.
+     * Enables http cache with provided storage settings.
      *
-     * @param folder  cache folder
-     * @param maxSize max available size for http cache in bytes
+     * @param folder  a writable cache directory
+     * @param maxSize the maximum number of bytes this cache should use to store
      * @return {@link GraphClient.Builder} to be used for chaining method calls
      * @see HttpCache
      */
@@ -208,7 +212,7 @@ public final class GraphClient {
     }
 
     /**
-     * Builds the {@code GraphClient} instance with specified configuration options.
+     * Builds the {@link GraphClient} instance with provided configuration options.
      *
      * @return configured {@link GraphClient}
      */
@@ -236,7 +240,7 @@ public final class GraphClient {
         httpClient = httpClient.newBuilder().addInterceptor(httpCache.httpInterceptor()).build();
       }
 
-      return new GraphClient(endpointUrl, httpClient, defaultCachePolicy, httpCache);
+      return new GraphClient(endpointUrl, httpClient, defaultHttpCachePolicy, httpCache);
     }
 
     OkHttpClient defaultOkHttpClient() {

@@ -25,7 +25,8 @@
 package com.shopify.buy3;
 
 /**
- * Represents mutation GraphQL call to perform {@link com.shopify.buy3.Storefront.MutationQuery}
+ * <p>Mutation {@code GraphQL} operation call.</p>
+ * Performs {@link Storefront.MutationQuery} queries that serves {@link Storefront.Mutation} responses.
  */
 public interface MutationGraphCall extends GraphCall<Storefront.Mutation> {
 }

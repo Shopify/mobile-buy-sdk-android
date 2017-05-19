@@ -22,20 +22,28 @@
  *   THE SOFTWARE.
  */
 
-package com.shopify.buy3;
+package com.shopify.buy3.cache;
 
-/**
- * Error to be thrown when {@link GraphCall} executed but http response is malformed and can't be parsed.
- */
-public final class GraphParseError extends GraphError {
-  public GraphParseError() {
+import android.support.annotation.NonNull;
+
+import java.io.IOException;
+
+final class MockCacheStore implements ResponseCacheStore {
+  ResponseCacheStore delegate;
+
+  @Override public ResponseCacheRecord cacheRecord(@NonNull String cacheKey) throws IOException {
+    return delegate.cacheRecord(cacheKey);
   }
 
-  public GraphParseError(final String message) {
-    super(message);
+  @Override public ResponseCacheRecordEditor cacheRecordEditor(@NonNull String cacheKey) throws IOException {
+    return delegate.cacheRecordEditor(cacheKey);
   }
 
-  public GraphParseError(final String message, final Throwable cause) {
-    super(message, cause);
+  @Override public void remove(@NonNull String cacheKey) throws IOException {
+    delegate.remove(cacheKey);
+  }
+
+  @Override public void delete() throws IOException {
+    delegate.delete();
   }
 }

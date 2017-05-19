@@ -36,8 +36,9 @@ import okhttp3.HttpUrl;
 final class RealMutationGraphCall extends RealGraphCall<Storefront.Mutation> implements MutationGraphCall {
 
   RealMutationGraphCall(final Storefront.MutationQuery query, final HttpUrl serverUrl, final Call.Factory httpCallFactory,
-    final ScheduledExecutorService dispatcher, final CachePolicy cachePolicy, final HttpCache httpCache) {
-    super(query, serverUrl, httpCallFactory, response -> new Storefront.Mutation(response.getData()), dispatcher, cachePolicy, httpCache);
+    final ScheduledExecutorService dispatcher, final HttpCachePolicy.Policy httpCachePolicy, final HttpCache httpCache) {
+    super(query, serverUrl, httpCallFactory, response -> new Storefront.Mutation(response.getData()), dispatcher, httpCachePolicy,
+      httpCache);
   }
 
   private RealMutationGraphCall(final RealGraphCall<Storefront.Mutation> other) {

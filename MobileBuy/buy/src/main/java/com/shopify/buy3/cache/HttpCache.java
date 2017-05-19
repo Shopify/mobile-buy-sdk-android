@@ -18,8 +18,8 @@ import static com.shopify.buy3.cache.Utils.checkNotNull;
 import static com.shopify.buy3.cache.Utils.closeQuietly;
 
 /**
- * <p>Represents http request / response cache.</p>
- * Caches http responses on the disk using DiskLRU model.
+ * <p>Caches Http responses to the filesystem so they may be reused.</p>
+ * Cached http responses will be stored on the disk with LRU eviction policy.
  */
 @SuppressWarnings("WeakerAccess")
 public final class HttpCache {
@@ -30,6 +30,12 @@ public final class HttpCache {
 
   private final ResponseCacheStore cacheStore;
 
+  /**
+   * Create new instance of http cache with provided storage configuration.
+   *
+   * @param directory a writable directory
+   * @param maxSize   the maximum number of bytes this cache should use to store
+   */
   public HttpCache(@NonNull final File directory, long maxSize) {
     this(new DiskLruCacheStore(checkNotNull(directory, "directory == null"), maxSize));
   }
@@ -39,7 +45,7 @@ public final class HttpCache {
   }
 
   /**
-   * Clear all cached http responses.
+   * Clear all cached responses ignoring any exceptions.
    */
   public void clear() {
     try {
@@ -51,7 +57,7 @@ public final class HttpCache {
   }
 
   /**
-   * Remove cached response by cache key.
+   * Remove cached response by its cache key ignoring any exceptions.
    *
    * @param cacheKey cache key
    */
@@ -95,6 +101,12 @@ public final class HttpCache {
     }
   }
 
+  /**
+   * Create {@link Interceptor} to be injected into {@link okhttp3.OkHttpClient} application interceptor chain to serve requests from the
+   * cache and write responses to the cache.
+   *
+   * @return {@link Interceptor} http cache interceptor
+   */
   public Interceptor httpInterceptor() {
     return new HttpCacheInterceptor(this);
   }
