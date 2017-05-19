@@ -26,7 +26,6 @@ package com.shopify.buy3;
 
 import android.content.Context;
 
-import com.google.common.truth.Truth;
 import com.shopify.graphql.support.ID;
 
 import org.junit.Before;
@@ -66,24 +65,24 @@ public class CacheTest {
         .connectTimeout(3, TimeUnit.SECONDS)
         .readTimeout(3, TimeUnit.SECONDS)
         .build())
-      .defaultCachePolicy(CachePolicy.NETWORK_FIRST.obtain(10, TimeUnit.MINUTES))
+      .defaultHttpCachePolicy(HttpCachePolicy.NETWORK_FIRST)
       .build();
   }
 
   @Test public void defaultCachePolicy() throws Exception {
     QueryGraphCall queryGraphCall = graphClient.queryGraph(shopNameQuery);
     RealGraphCall realGraphCall = (RealGraphCall) queryGraphCall;
-    assertThat(realGraphCall.cachePolicy.fetchStrategy).isEqualTo(CachePolicy.FetchStrategy.NETWORK_FIRST);
-    assertThat(realGraphCall.cachePolicy.expireTimeout).isEqualTo(10);
-    assertThat(realGraphCall.cachePolicy.expireTimeUnit).isEqualTo(TimeUnit.MINUTES);
+    assertThat(realGraphCall.httpCachePolicy.fetchStrategy).isEqualTo(HttpCachePolicy.FetchStrategy.NETWORK_FIRST);
+    assertThat(realGraphCall.httpCachePolicy.expireTimeout).isEqualTo(0);
+    assertThat(realGraphCall.httpCachePolicy.expireTimeUnit).isNull();
 
-    queryGraphCall.cachePolicy(CachePolicy.CACHE_FIRST.obtain(60, TimeUnit.SECONDS));
-    assertThat(realGraphCall.cachePolicy.fetchStrategy).isEqualTo(CachePolicy.FetchStrategy.CACHE_FIRST);
-    assertThat(realGraphCall.cachePolicy.expireTimeout).isEqualTo(60);
-    assertThat(realGraphCall.cachePolicy.expireTimeUnit).isEqualTo(TimeUnit.SECONDS);
+    realGraphCall = (RealGraphCall) queryGraphCall.cachePolicy(HttpCachePolicy.CACHE_FIRST.expireAfter(60, TimeUnit.SECONDS));
+    assertThat(realGraphCall.httpCachePolicy.fetchStrategy).isEqualTo(HttpCachePolicy.FetchStrategy.CACHE_FIRST);
+    assertThat(realGraphCall.httpCachePolicy.expireTimeout).isEqualTo(60);
+    assertThat(realGraphCall.httpCachePolicy.expireTimeUnit).isEqualTo(TimeUnit.SECONDS);
 
     MutationGraphCall mutationGraphCall = graphClient.mutateGraph(checkCompleteQuery);
     realGraphCall = (RealGraphCall) mutationGraphCall;
-    assertThat(realGraphCall.cachePolicy.fetchStrategy).isEqualTo(CachePolicy.FetchStrategy.NETWORK_ONLY);
+    assertThat(realGraphCall.httpCachePolicy.fetchStrategy).isEqualTo(HttpCachePolicy.FetchStrategy.NETWORK_ONLY);
   }
 }

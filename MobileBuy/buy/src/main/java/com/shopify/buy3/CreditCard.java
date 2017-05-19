@@ -27,7 +27,8 @@ package com.shopify.buy3;
 import static com.shopify.buy3.Utils.checkNotBlank;
 
 /**
- * Abstraction that represents credit card information used for Shopify card vaulting service.
+ * <p>Credit Card information</p>
+ * Abstraction that represents credit card information.
  */
 public final class CreditCard {
   public static CreditCard.Builder builder() {
@@ -52,7 +53,7 @@ public final class CreditCard {
   }
 
   /**
-   * Builds new {@code CreditCard} instance
+   * Builds new {@link CreditCard} instance
    */
   public static final class Builder {
     private String number;
@@ -95,6 +96,9 @@ public final class CreditCard {
       return this;
     }
 
+    /**
+     * Builds new {@link CreditCard} instance
+     */
     public CreditCard build() {
       return new CreditCard(number, firstName, lastName, expireMonth, expireYear, verificationCode);
     }

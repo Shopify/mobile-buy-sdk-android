@@ -66,7 +66,7 @@ public final class RealCheckoutCompleteInteractor implements CheckoutCompleteInt
       .setZip(billingAddress.zip);
 
     Storefront.TokenizedPaymentInput paymentInput = new Storefront.TokenizedPaymentInput(
-      payCart.totalPrice, mailingAddressInput, paymentToken.token, paymentToken.token, "android_pay")
+      payCart.totalPrice, paymentToken.token, mailingAddressInput, paymentToken.token, "android_pay")
       .setIdentifier(paymentToken.publicKeyHash);
 
     Storefront.CheckoutCompleteWithTokenizedPaymentPayloadQueryDefinition query =
