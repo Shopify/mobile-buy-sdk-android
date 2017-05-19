@@ -52,7 +52,7 @@ import static com.shopify.buy3.pay.Util.checkNotEmpty;
 import static com.shopify.buy3.pay.Util.checkNotNull;
 
 /**
- * Abstraction that represents Android Pay user cart with all required attributes for making checkout.
+ * Virtual Android Pay shopping cart with all required attributes required for making purchase.
  */
 @SuppressWarnings({"WeakerAccess", "unused"})
 public final class PayCart implements Parcelable {
@@ -176,8 +176,7 @@ public final class PayCart implements Parcelable {
   /**
    * Constructs {@link MaskedWallet} from this {@link PayCart}.
    *
-   * @param maskedWallet masked wallet associated with this {@link PayCart} that was requested
-   *                     via {@link PayCart#maskedWalletRequest(String)}
+   * @param maskedWallet masked wallet to be associated with
    * @return {@link MaskedWallet}
    */
   public FullWalletRequest fullWalletRequest(@NonNull final MaskedWallet maskedWallet) {

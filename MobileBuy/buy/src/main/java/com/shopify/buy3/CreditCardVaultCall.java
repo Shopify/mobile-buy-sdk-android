@@ -31,14 +31,14 @@ import android.support.annotation.Nullable;
 import java.io.IOException;
 
 /**
- * <p>Abstraction for call to card vault.</p>
+ * <p>Call to card server for vaulting credit card.</p>
  * Credit cards cannot be sent to the checkout API directly. They must be sent to the card vault which in response will return an token.
- * This token can then be used when calling the checkout API's.
+ * This token should be used for completion checkout with credit card.
  */
 public interface CreditCardVaultCall {
 
   /**
-   * Cancels the call, if possible.
+   * Cancels this call if possible.
    */
   void cancel();
 
@@ -52,24 +52,24 @@ public interface CreditCardVaultCall {
   /**
    * Creates a new, identical call to this one which can be enqueued or executed even if this call has already been executed or canceled.
    *
-   * @return new cloned call
+   * @return {@link CreditCardVaultCall} cloned call
    */
   @NonNull CreditCardVaultCall clone();
 
   /**
    * Sends credit card vault request immediately and blocks until the response can be processed or is an error.
    *
-   * @return stored credit card token
+   * @return stored credit card vault token
    * @throws IOException           if request failed
    * @throws IllegalStateException when the call has already been executed
    */
   @NonNull String execute() throws IOException;
 
   /**
-   * Schedules the call to be executed at some point in the future.
+   * Schedules this call to be executed at some point in the future.
    *
-   * @param callback which will handle the response or a failure exceptions.
-   * @return call that has been scheduled for execution
+   * @param callback {@link CreditCardVaultCall.Callback} to handle the response or a failure
+   * @return {@link CreditCardVaultCall} scheduled for execution
    * @throws IllegalStateException when the call has already been executed
    * @see GraphCall.Callback
    */
@@ -78,22 +78,23 @@ public interface CreditCardVaultCall {
   /**
    * Schedules the call to be executed at some point in the future.
    *
-   * @param callback        which will handle the response or a failure exceptions.
-   * @param callbackHandler the callback will be run on the thread to which this handler is attached to
-   * @return call that has been scheduled for execution
+   * @param callback        {@link CreditCardVaultCall.Callback} to handle the response or a failure
+   * @param callbackHandler the callback will be running on the thread to which this handler is attached to
+   * @return {@link CreditCardVaultCall} scheduled for execution
    * @throws IllegalStateException when the call has already been executed
    * @see CreditCardVaultCall.Callback
    */
   @NonNull CreditCardVaultCall enqueue(@NonNull CreditCardVaultCall.Callback callback, @Nullable Handler callbackHandler);
 
   /**
-   * Callback used for notifying response of the call that has been scheduled for execution.
+   * <p>Callback for {@link CreditCardVaultCall}</p>
+   * Callback used to handle response of the scheduled for execution call.
    */
   interface Callback {
     /**
-     * Called when response is received and parsed successfully.
+     * Called when credit card vault token is received and parsed successfully.
      *
-     * @param token stored credit card token
+     * @param token stored credit card vault token
      */
     void onResponse(@NonNull String token);
 

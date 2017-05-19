@@ -2,7 +2,6 @@ def versions = [
     androidSupportVersion       : '25.2.0',
     okHttpVersion               : '3.6.0',
     playServicesVersion         : '9.8.0',
-    shopifyGraphqlSupportVersion: '0.1.0',
     jodaTimeVersion             : '2.9.5.1',
     butterKnifeVersion          : '8.5.1',
     apolloVersion               : '0.3.0'
@@ -27,7 +26,6 @@ ext.dep = [
     okhttpLogging            : "com.squareup.okhttp3:logging-interceptor:$versions.okHttpVersion",
     okhttpTestSupport        : "com.squareup.okhttp3:okhttp-testing-support:$versions.okHttpVersion",
     playServicesWallet       : "com.google.android.gms:play-services-wallet:$versions.playServicesVersion",
-    shopifyGraphqlSupport    : "com.shopify.graphql.support:support:$versions.shopifyGraphqlSupportVersion",
     jodaTime                 : "net.danlew:android.joda:$versions.jodaTimeVersion",
     junit                    : "junit:junit:4.12",
     truth                    : "com.google.truth:truth:0.30",

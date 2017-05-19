@@ -73,8 +73,8 @@ public class CacheTest {
     QueryGraphCall queryGraphCall = graphClient.queryGraph(shopNameQuery);
     RealGraphCall realGraphCall = (RealGraphCall) queryGraphCall;
     assertThat(realGraphCall.httpCachePolicy.fetchStrategy).isEqualTo(HttpCachePolicy.FetchStrategy.NETWORK_FIRST);
-    assertThat(realGraphCall.httpCachePolicy.expireTimeout).isEqualTo(10);
-    assertThat(realGraphCall.httpCachePolicy.expireTimeUnit).isEqualTo(TimeUnit.MINUTES);
+    assertThat(realGraphCall.httpCachePolicy.expireTimeout).isEqualTo(0);
+    assertThat(realGraphCall.httpCachePolicy.expireTimeUnit).isNull();
 
     realGraphCall = (RealGraphCall) queryGraphCall.cachePolicy(HttpCachePolicy.CACHE_FIRST.expireAfter(60, TimeUnit.SECONDS));
     assertThat(realGraphCall.httpCachePolicy.fetchStrategy).isEqualTo(HttpCachePolicy.FetchStrategy.CACHE_FIRST);

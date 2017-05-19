@@ -27,15 +27,16 @@ package com.shopify.buy3;
 import android.support.annotation.NonNull;
 
 /**
- * Represents query GraphQL call to perform {@link com.shopify.buy3.Storefront.QueryRootQuery}
+ * <p>Query {@code GraphQL} operation call.</p>
+ * Performs {@link Storefront.QueryRootQuery} queries that serves {@link Storefront.QueryRoot} responses.
  */
 public interface QueryGraphCall extends GraphCall<Storefront.QueryRoot> {
 
   /**
-   * Define cache policy to be used with this call.
+   * Sets http cache policy to be used with this call.
    *
-   * @param httpCachePolicy {@link HttpCachePolicy} to be used
-   * @return call with updated cache policy
+   * @param httpCachePolicy {@link HttpCachePolicy.Policy} new http cache policy
+   * @return {@link QueryGraphCall} with updated cache policy
    * @see HttpCachePolicy
    */
   @NonNull QueryGraphCall cachePolicy(@NonNull HttpCachePolicy.Policy httpCachePolicy);

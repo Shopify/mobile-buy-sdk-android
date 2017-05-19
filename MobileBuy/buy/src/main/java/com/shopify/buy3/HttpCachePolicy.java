@@ -31,9 +31,8 @@ import java.util.concurrent.TimeUnit;
 import static com.shopify.buy3.Utils.checkNotNull;
 
 /**
- * The caching policy defines the method for executing the query.
- * Some policies require an {@code expireTimeout} parameter that determines the time until the cache is invalidated and is considered to
- * be stale.
+ * <p>Cache policies for {@link QueryGraphCall} http request / response cache.</p>
+ * Defines different strategies to fetch http response from the cache store and validate it's expiration date.
  *
  * @see HttpCachePolicy#CACHE_ONLY
  * @see HttpCachePolicy#NETWORK_ONLY
@@ -65,7 +64,7 @@ public final class HttpCachePolicy {
   }
 
   /**
-   * Abstraction for http cache policy configurations
+   * Cache policy configurations.
    */
   public static class Policy {
     public final FetchStrategy fetchStrategy;
@@ -86,9 +85,8 @@ public final class HttpCachePolicy {
     }
   }
 
-
   /**
-   * Cache policy with provided expiration configuration
+   * Cache policy with provided expiration configuration.
    */
   public static final class ExpirePolicy extends Policy {
     ExpirePolicy(FetchStrategy fetchStrategy) {
@@ -100,23 +98,15 @@ public final class HttpCachePolicy {
     }
 
     /**
-     * Create new cache policy with expire after timeout configuration. Cached response is treated as expired if it's
+     * Creates new cache policy with expire after timeout configuration. Cached response is treated as expired if it's
      * served date exceeds.
      *
      * @param expireTimeout  expire timeout after which cached response is treated as expired
-     * @param expireTimeUnit time unit
+     * @param expireTimeUnit {@link TimeUnit} time unit
      * @return new cache policy
      */
     public ExpirePolicy expireAfter(long expireTimeout, @NonNull TimeUnit expireTimeUnit) {
       return new ExpirePolicy(fetchStrategy, expireTimeout, checkNotNull(expireTimeUnit, "expireTimeUnit == null"));
-    }
-
-    /**
-     * Create new cache policy with expire after read configuration. Cached response will be evicted from the cache
-     * after it's been read.
-     */
-    public ExpirePolicy expireAfterRead() {
-      return new ExpirePolicy(fetchStrategy, expireTimeout, expireTimeUnit);
     }
   }
 
