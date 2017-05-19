@@ -24,7 +24,6 @@
 
 package com.shopify.sample.view.checkout;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -47,8 +46,6 @@ import com.shopify.sample.R;
 import com.shopify.sample.domain.interactor.RealCheckoutCompleteInteractor;
 import com.shopify.sample.domain.interactor.RealCheckoutShippingAddressUpdateInteractor;
 import com.shopify.sample.domain.interactor.RealCheckoutShippingLineUpdateInteractor;
-import com.shopify.sample.domain.interactor.RealCheckoutShippingRatesInteractor;
-import com.shopify.sample.domain.model.Checkout;
 import com.shopify.sample.presenter.checkout.CheckoutViewPresenter;
 import com.shopify.sample.view.ProgressDialogHelper;
 
@@ -60,7 +57,6 @@ import butterknife.OnClick;
 
 import static com.shopify.sample.presenter.checkout.CheckoutViewPresenter.REQUEST_ID_APPLY_SHIPPING_RATE;
 import static com.shopify.sample.presenter.checkout.CheckoutViewPresenter.REQUEST_ID_COMPLETE_CHECKOUT;
-import static com.shopify.sample.presenter.checkout.CheckoutViewPresenter.REQUEST_ID_FETCH_SHIPPING_RATES;
 import static com.shopify.sample.presenter.checkout.CheckoutViewPresenter.REQUEST_ID_UPDATE_CHECKOUT_SHIPPING_ADDRESS;
 
 public final class CheckoutActivity extends AppCompatActivity implements CheckoutViewPresenter.View {
@@ -70,7 +66,7 @@ public final class CheckoutActivity extends AppCompatActivity implements Checkou
 
   @BindView(R.id.toolbar) Toolbar toolbarView;
   @BindView(R.id.total_summary) TotalSummaryView totalSummaryView;
-  @BindView(R.id.shipping_method) ShippingMethodView shippingMethodView;
+  @BindView(R.id.shipping_rates) ShippingRatesView shippingRatesView;
 
   private ProgressDialogHelper progressDialogHelper;
   private CheckoutViewPresenter presenter;
@@ -92,10 +88,20 @@ public final class CheckoutActivity extends AppCompatActivity implements Checkou
     String checkoutId = getIntent().getStringExtra(EXTRAS_CHECKOUT_ID);
     PayCart payCart = getIntent().getParcelableExtra(EXTRAS_PAY_CART);
     MaskedWallet maskedWallet = getIntent().getParcelableExtra(EXTRAS_MASKED_WALLET);
-    presenter = new CheckoutViewPresenter(checkoutId, payCart, maskedWallet, new RealCheckoutShippingLineUpdateInteractor(),
-      new RealCheckoutCompleteInteractor(), new RealCheckoutShippingAddressUpdateInteractor(), new RealCheckoutShippingRatesInteractor());
+    presenter = new CheckoutViewPresenter(checkoutId, payCart, maskedWallet, new RealCheckoutShippingAddressUpdateInteractor(),
+      new RealCheckoutShippingLineUpdateInteractor(), new RealCheckoutCompleteInteractor());
 
-    shippingMethodView.onShippingRateSelectListener(shippingRate -> presenter.applyShippingRate(shippingRate));
+    shippingRatesView.init(checkoutId);
+    shippingRatesView.setOnProgressListener(new ShippingRatesView.OnProgressListener() {
+      @Override public void onShowProgress(@NonNull final String message) {
+        progressDialogHelper.show(0, null, message, CheckoutActivity.this::finish);
+      }
+
+      @Override public void onHideProgress() {
+        progressDialogHelper.dismiss(0);
+      }
+    });
+    shippingRatesView.setOnShippingRateSelectListener(shippingRate -> presenter.applyShippingRate(shippingRate));
   }
 
   @Override protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
@@ -131,10 +137,8 @@ public final class CheckoutActivity extends AppCompatActivity implements Checkou
     final String message;
     if (requestId == REQUEST_ID_UPDATE_CHECKOUT_SHIPPING_ADDRESS) {
       message = getString(R.string.checkout_update_shipping_address_progress);
-    } else if (requestId == REQUEST_ID_FETCH_SHIPPING_RATES) {
-      message = getString(R.string.checkout_fetch_shipping_rates_progress);
     } else if (requestId == REQUEST_ID_APPLY_SHIPPING_RATE) {
-      message = getString(R.string.checkout_apply_shipping_rate_progress);
+      message = getResources().getString(R.string.checkout_apply_shipping_rate_progress);
     } else if (requestId == REQUEST_ID_COMPLETE_CHECKOUT) {
       message = getString(R.string.checkout_complete_progress);
     } else {
@@ -187,13 +191,8 @@ public final class CheckoutActivity extends AppCompatActivity implements Checkou
     totalSummaryView.render(subtotal, shipping, tax, total);
   }
 
-  @Override public void renderShippingRates(@Nullable final Checkout.ShippingRates shippingRates,
-    @Nullable final Checkout.ShippingRate shippingLine) {
-    shippingMethodView.render(shippingLine, shippingRates);
-  }
-
-  @Override public Context context() {
-    return this;
+  @Override public void invalidateShippingRates() {
+    shippingRatesView.invalidateShippingRates();
   }
 
   @OnClick(R.id.confirm)
