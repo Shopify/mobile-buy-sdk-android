@@ -42,13 +42,42 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import timber.log.Timber;
+
 public abstract class BaseApplication extends Application {
   private final FrescoMemoryTrimmableRegistry frescoMemoryTrimmableRegistry = new FrescoMemoryTrimmableRegistry();
 
   @Override
   public void onCreate() {
     super.onCreate();
+    iniTimber();
     initFresco();
+  }
+
+  @Override
+  public void onTrimMemory(final int level) {
+    super.onTrimMemory(level);
+
+    switch (level) {
+
+      case TRIM_MEMORY_RUNNING_MODERATE:
+      case TRIM_MEMORY_RUNNING_LOW:
+      case TRIM_MEMORY_BACKGROUND:
+        frescoMemoryTrimmableRegistry.trim(MemoryTrimType.OnSystemLowMemoryWhileAppInBackground);
+        break;
+
+      case TRIM_MEMORY_RUNNING_CRITICAL:
+      case TRIM_MEMORY_COMPLETE:
+        frescoMemoryTrimmableRegistry.trim(MemoryTrimType.OnCloseToDalvikHeapLimit);
+        break;
+
+      default:
+        break;
+    }
+  }
+
+  private void iniTimber() {
+    Timber.plant(new Timber.DebugTree());
   }
 
   private void initFresco() {
@@ -77,28 +106,6 @@ public abstract class BaseApplication extends Application {
     configBuilder.setMemoryTrimmableRegistry(frescoMemoryTrimmableRegistry);
 
     Fresco.initialize(this, config.build());
-  }
-
-  @Override
-  public void onTrimMemory(final int level) {
-    super.onTrimMemory(level);
-
-    switch (level) {
-
-      case TRIM_MEMORY_RUNNING_MODERATE:
-      case TRIM_MEMORY_RUNNING_LOW:
-      case TRIM_MEMORY_BACKGROUND:
-        frescoMemoryTrimmableRegistry.trim(MemoryTrimType.OnSystemLowMemoryWhileAppInBackground);
-        break;
-
-      case TRIM_MEMORY_RUNNING_CRITICAL:
-      case TRIM_MEMORY_COMPLETE:
-        frescoMemoryTrimmableRegistry.trim(MemoryTrimType.OnCloseToDalvikHeapLimit);
-        break;
-
-      default:
-        break;
-    }
   }
 
   private static class FrescoMemoryTrimmableRegistry implements MemoryTrimmableRegistry {

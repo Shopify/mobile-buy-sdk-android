@@ -91,7 +91,7 @@ public final class CartListView extends FrameLayout implements PageListViewPrese
   @Override public void hideProgress(final int requestId) {
   }
 
-  @Override public void showError(final long requestId, final Throwable t) {
+  @Override public void showError(final int requestId, final Throwable t) {
     //TODO log error
     t.printStackTrace();
     Snackbar.make(this, R.string.default_error, Snackbar.LENGTH_LONG).show();

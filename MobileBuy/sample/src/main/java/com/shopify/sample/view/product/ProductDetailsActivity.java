@@ -120,7 +120,7 @@ public final class ProductDetailsActivity extends AppCompatActivity implements P
     presenter.detachView();
   }
 
-  @Override public void showError(final long requestId, final Throwable t) {
+  @Override public void showError(final int requestId, final Throwable t) {
     //TODO log error
     t.printStackTrace();
     Snackbar.make(rootView, R.string.default_error, Snackbar.LENGTH_LONG).show();

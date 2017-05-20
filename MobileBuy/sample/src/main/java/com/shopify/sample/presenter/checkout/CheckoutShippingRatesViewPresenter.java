@@ -43,6 +43,7 @@ public final class CheckoutShippingRatesViewPresenter extends BaseViewPresenter<
   public static final int REQUEST_ID_FETCH_SHIPPING_RATES = 1;
 
   private final String checkoutId;
+  private Checkout.ShippingRate selectedShippingRate;
   private final CheckoutShippingRatesInteractor checkoutShippingRatesInteractor;
   private Checkout.ShippingRates shippingRates = new Checkout.ShippingRates(false, emptyList());
 
@@ -56,9 +57,10 @@ public final class CheckoutShippingRatesViewPresenter extends BaseViewPresenter<
     if (isViewDetached()) {
       return;
     }
+    selectedShippingRate = null;
 
     this.shippingRates = new Checkout.ShippingRates(false, emptyList());
-    view().renderShippingRates(null);
+    view().onShippingRateSelected(selectedShippingRate);
     view().showProgress(REQUEST_ID_FETCH_SHIPPING_RATES);
 
     registerRequest(
@@ -73,23 +75,32 @@ public final class CheckoutShippingRatesViewPresenter extends BaseViewPresenter<
     );
   }
 
-  public Checkout.ShippingRates shippingRates() {
+  @NonNull public Checkout.ShippingRates shippingRates() {
     return shippingRates;
+  }
+
+  public void setSelectedShippingRate(@Nullable final Checkout.ShippingRate selectedShippingRate) {
+    this.selectedShippingRate = selectedShippingRate;
+    view().onShippingRateSelected(selectedShippingRate);
+  }
+
+  @Nullable public Checkout.ShippingRate selectedShippingRate() {
+    return selectedShippingRate;
   }
 
   private void onShippingRates(final Checkout.ShippingRates shippingRates) {
     if (isViewDetached()) {
       return;
     }
+    hideProgress(REQUEST_ID_FETCH_SHIPPING_RATES);
 
     this.shippingRates = shippingRates != null ? shippingRates : new Checkout.ShippingRates(false, emptyList());
+    selectedShippingRate = firstItem(this.shippingRates.shippingRates);
 
-    hideProgress(REQUEST_ID_FETCH_SHIPPING_RATES);
-    view().renderShippingRates(firstItem(this.shippingRates.shippingRates));
+    view().onShippingRateSelected(selectedShippingRate);
   }
 
   public interface View extends com.shopify.sample.mvp.View {
-
-    void renderShippingRates(@Nullable Checkout.ShippingRate shippingLine);
+    void onShippingRateSelected(@Nullable Checkout.ShippingRate shippingRate);
   }
 }

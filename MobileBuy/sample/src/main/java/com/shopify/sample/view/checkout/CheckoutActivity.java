@@ -28,8 +28,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.wallet.MaskedWallet;
@@ -46,6 +51,7 @@ import com.shopify.sample.R;
 import com.shopify.sample.domain.interactor.RealCheckoutCompleteInteractor;
 import com.shopify.sample.domain.interactor.RealCheckoutShippingAddressUpdateInteractor;
 import com.shopify.sample.domain.interactor.RealCheckoutShippingLineUpdateInteractor;
+import com.shopify.sample.domain.model.Checkout;
 import com.shopify.sample.presenter.checkout.CheckoutViewPresenter;
 import com.shopify.sample.view.ProgressDialogHelper;
 
@@ -58,15 +64,18 @@ import butterknife.OnClick;
 import static com.shopify.sample.presenter.checkout.CheckoutViewPresenter.REQUEST_ID_APPLY_SHIPPING_RATE;
 import static com.shopify.sample.presenter.checkout.CheckoutViewPresenter.REQUEST_ID_COMPLETE_CHECKOUT;
 import static com.shopify.sample.presenter.checkout.CheckoutViewPresenter.REQUEST_ID_UPDATE_CHECKOUT_SHIPPING_ADDRESS;
+import static com.shopify.sample.util.Util.checkNotBlank;
 
 public final class CheckoutActivity extends AppCompatActivity implements CheckoutViewPresenter.View {
   public static final String EXTRAS_CHECKOUT_ID = "checkout_id";
   public static final String EXTRAS_PAY_CART = "pay_cart";
   public static final String EXTRAS_MASKED_WALLET = "masked_wallet";
 
+  @BindView(R.id.root) View rootView;
   @BindView(R.id.toolbar) Toolbar toolbarView;
   @BindView(R.id.total_summary) TotalSummaryView totalSummaryView;
   @BindView(R.id.shipping_rates) ShippingRatesView shippingRatesView;
+  @BindView(R.id.confirm_layout) View confirmLayoutView;
 
   private ProgressDialogHelper progressDialogHelper;
   private CheckoutViewPresenter presenter;
@@ -101,7 +110,17 @@ public final class CheckoutActivity extends AppCompatActivity implements Checkou
         progressDialogHelper.dismiss(0);
       }
     });
-    shippingRatesView.setOnShippingRateSelectListener(shippingRate -> presenter.applyShippingRate(shippingRate));
+    shippingRatesView.setOnShippingRateSelectListener(new ShippingRatesView.OnShippingRateSelectListener() {
+      @Override public void onShippingRateSelected(@Nullable final Checkout.ShippingRate shippingRate) {
+        if (shippingRate != null) {
+          presenter.applyShippingRate(shippingRate);
+        }
+      }
+
+      @Override public void onError(@NonNull final Throwable t) {
+        showError(0, t);
+      }
+    });
   }
 
   @Override protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
@@ -151,9 +170,8 @@ public final class CheckoutActivity extends AppCompatActivity implements Checkou
     progressDialogHelper.dismiss(requestId);
   }
 
-  @Override public void showError(final long requestId, final Throwable t) {
-    //TODO log and show error message
-    t.printStackTrace();
+  @Override public void showError(final int requestId, final Throwable t) {
+    showError(getString(R.string.default_error));
   }
 
   @Override public void updateMaskedWallet(@NonNull final MaskedWallet maskedWallet) {
@@ -197,7 +215,27 @@ public final class CheckoutActivity extends AppCompatActivity implements Checkou
 
   @OnClick(R.id.confirm)
   void onConfirmClick() {
-    presenter.confirmCheckout(googleApiClient);
+    Checkout.ShippingRate shippingRate = shippingRatesView.selectedShippingRate();
+    if (shippingRate == null) {
+      showError(getString(R.string.checkout_shipping_select_shipping_rate));
+      return;
+    }
+
+    presenter.confirmCheckout(googleApiClient, shippingRate);
+  }
+
+  private void showError(@NonNull final String message) {
+    Snackbar snackbar = Snackbar.make(rootView, checkNotBlank(message, "message can't be blank"), Snackbar.LENGTH_LONG);
+    snackbar.getView().setBackgroundResource(R.color.snackbar_error_background);
+    snackbar.getView().setMinimumHeight(confirmLayoutView.getHeight());
+
+    TextView textView = (TextView) snackbar.getView().findViewById(android.support.design.R.id.snackbar_text);
+    ViewGroup.LayoutParams layoutParams = textView.getLayoutParams();
+    layoutParams.height = confirmLayoutView.getHeight();
+    textView.setLayoutParams(layoutParams);
+    textView.setGravity(Gravity.CENTER_VERTICAL);
+
+    snackbar.show();
   }
 
   private GoogleApiClient connectToGoogleApiClient() {

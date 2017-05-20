@@ -98,14 +98,20 @@ public final class ShippingRatesView extends ConstraintLayout implements Checkou
     onProgressListener.onHideProgress();
   }
 
-  @Override public void showError(final long requestId, final Throwable t) {
-    // TODO
+  @Override public void showError(final int requestId, final Throwable t) {
+    if (onShippingRateSelectListener != null) {
+      onShippingRateSelectListener.onError(t);
+    }
   }
 
-  @Override public void renderShippingRates(@Nullable final ShippingRate shippingLine) {
-    shippingLineView.setText(shippingLine != null ? shippingLine.title
+  @Override public void onShippingRateSelected(@Nullable final ShippingRate shippingRate) {
+    shippingLineView.setText(shippingRate != null ? shippingRate.title
       : getResources().getString(R.string.checkout_shipping_method_not_available));
-    priceView.setText(shippingLine != null ? CURRENCY_FORMAT.format(shippingLine.price) : "");
+    priceView.setText(shippingRate != null ? CURRENCY_FORMAT.format(shippingRate.price) : "");
+
+    if (onShippingRateSelectListener != null) {
+      onShippingRateSelectListener.onShippingRateSelected(shippingRate);
+    }
   }
 
   public void setOnProgressListener(@Nullable final OnProgressListener onProgressListener) {
@@ -116,18 +122,17 @@ public final class ShippingRatesView extends ConstraintLayout implements Checkou
     this.onShippingRateSelectListener = onShippingRateSelectListener;
   }
 
+  @Nullable public ShippingRate selectedShippingRate() {
+    return presenter != null ? presenter.selectedShippingRate() : null;
+  }
+
   @OnClick(R.id.change)
   void onChangeClick() {
     if (presenter == null) {
       return;
     }
 
-    new ShippingRateSelectDialog(getContext()).show(presenter.shippingRates(), shippingRate -> {
-      if (onShippingRateSelectListener != null) {
-        renderShippingRates(shippingRate);
-        onShippingRateSelectListener.onShippingRateSelected(shippingRate);
-      }
-    });
+    new ShippingRateSelectDialog(getContext()).show(presenter.shippingRates(), presenter::setSelectedShippingRate);
   }
 
   @Override protected void onFinishInflate() {
@@ -157,5 +162,7 @@ public final class ShippingRatesView extends ConstraintLayout implements Checkou
 
   public interface OnShippingRateSelectListener {
     void onShippingRateSelected(@Nullable ShippingRate shippingRate);
+
+    void onError(@NonNull Throwable t);
   }
 }

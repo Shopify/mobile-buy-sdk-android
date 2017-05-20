@@ -25,6 +25,7 @@
 package com.shopify.sample.presenter.cart;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -56,10 +57,12 @@ public final class CartCheckoutViewPresenter extends BaseViewPresenter<CartCheck
   public static final int REQUEST_ID_CREATE_WEB_CHECKOUT = 3;
   public static final int REQUEST_ID_PREPARE_ANDROID_PAY = 4;
   private static final NumberFormat CURRENCY_FORMAT = NumberFormat.getCurrencyInstance();
+  private static final String STATE_KEY_CHECKOUT_ID = "checkout_id";
+  private static final String STATE_KEY_PAY_CART = "pay_cart";
 
   private final CheckoutCreateInteractor checkoutCreateInteractor;
   private final CartRepository cartRepository;
-  private String currentCheckoutId;
+  private String checkoutId;
   private PayCart payCart;
 
   public CartCheckoutViewPresenter(@NonNull final CheckoutCreateInteractor checkoutCreateInteractor,
@@ -97,10 +100,23 @@ public final class CartCheckoutViewPresenter extends BaseViewPresenter<CartCheck
 
       @Override public void onMaskedWallet(final MaskedWallet maskedWallet) {
         if (isViewAttached()) {
-          view().showAndroidPayConfirmation(currentCheckoutId, payCart, maskedWallet);
+          view().showAndroidPayConfirmation(checkoutId, payCart, maskedWallet);
         }
       }
     });
+  }
+
+  @NonNull public Bundle saveState() {
+    Bundle bundle = new Bundle();
+    bundle.putString(STATE_KEY_CHECKOUT_ID, checkoutId);
+    bundle.putParcelable(STATE_KEY_PAY_CART, payCart);
+    return bundle;
+  }
+
+  public void restoreState(@NonNull final Bundle bundle) {
+    checkNotNull(bundle, "bundle == null");
+    checkoutId = bundle.getString(STATE_KEY_CHECKOUT_ID);
+    payCart = bundle.getParcelable(STATE_KEY_PAY_CART);
   }
 
   private void createCheckout(final int requestId, final GoogleApiClient googleApiClient) {
@@ -131,7 +147,7 @@ public final class CartCheckoutViewPresenter extends BaseViewPresenter<CartCheck
   private void onCreateCheckout(final int requestId, @NonNull final Checkout checkout, final GoogleApiClient googleApiClient) {
     if (isViewAttached()) {
       view().hideProgress(requestId);
-      this.currentCheckoutId = checkout.id;
+      this.checkoutId = checkout.id;
       if (requestId == REQUEST_ID_CREATE_WEB_CHECKOUT) {
         view().showWebCheckout(checkout);
       } else if (requestId == REQUEST_ID_CREATE_ANDROID_PAY_CHECKOUT) {

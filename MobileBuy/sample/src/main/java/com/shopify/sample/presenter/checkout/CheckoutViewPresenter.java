@@ -64,6 +64,7 @@ public final class CheckoutViewPresenter extends BaseViewPresenter<CheckoutViewP
   private PayCart payCart;
   private MaskedWallet maskedWallet;
   private boolean newMaskedWalletRequired;
+  private Checkout.ShippingRate pendingCheckoutShippingRate;
 
   public CheckoutViewPresenter(@NonNull final String checkoutId, @NonNull final PayCart payCart, @NonNull final MaskedWallet maskedWallet,
     @NonNull final CheckoutShippingAddressUpdateInteractor checkoutShippingAddressUpdateInteractor,
@@ -106,8 +107,12 @@ public final class CheckoutViewPresenter extends BaseViewPresenter<CheckoutViewP
     );
   }
 
-  public void confirmCheckout(@NonNull final GoogleApiClient googleApiClient) {
+  public void confirmCheckout(@NonNull final GoogleApiClient googleApiClient, @NonNull final Checkout.ShippingRate shippingRate) {
     checkNotNull(googleApiClient, "googleApiClient == null");
+    pendingCheckoutShippingRate = checkNotNull(shippingRate, "shippingRate == null");
+    payCart = payCart.toBuilder()
+      .shippingPrice(pendingCheckoutShippingRate.price)
+      .build();
     if (newMaskedWalletRequired) {
       newMaskedWalletRequired = false;
       PayHelper.newMaskedWallet(googleApiClient, maskedWallet);
@@ -159,7 +164,8 @@ public final class CheckoutViewPresenter extends BaseViewPresenter<CheckoutViewP
     view().showProgress(REQUEST_ID_COMPLETE_CHECKOUT);
     registerRequest(
       REQUEST_ID_COMPLETE_CHECKOUT,
-      checkoutCompleteInteractor.execute(checkoutId, payCart, paymentToken, fullWallet.getEmail(), billingAddress)
+      checkoutCompleteInteractor.execute(checkoutId, payCart, paymentToken, fullWallet.getEmail(), billingAddress,
+        pendingCheckoutShippingRate.handle)
         .observeOn(AndroidSchedulers.mainThread())
         .subscribeWith(WeakSingleObserver.<CheckoutViewPresenter, Payment>forTarget(this)
           .delegateOnSuccess(CheckoutViewPresenter::onCompleteCheckout)
@@ -229,6 +235,7 @@ public final class CheckoutViewPresenter extends BaseViewPresenter<CheckoutViewP
 
   private void onCompleteCheckout(final Payment payment) {
     hideProgress(REQUEST_ID_COMPLETE_CHECKOUT);
+    newMaskedWalletRequired = true;
     if (isViewDetached()) {
       return;
     }

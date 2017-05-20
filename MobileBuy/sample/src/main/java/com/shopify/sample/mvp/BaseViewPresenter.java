@@ -30,6 +30,7 @@ import java.lang.ref.WeakReference;
 
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
+import timber.log.Timber;
 
 import static com.shopify.sample.util.Util.checkNotNull;
 
@@ -116,7 +117,9 @@ public abstract class BaseViewPresenter<V extends View> implements ViewPresenter
     }
   }
 
-  protected void showError(final long requestId, final Throwable t) {
+  protected void showError(final int requestId, final Throwable t) {
+    Timber.e(t);
+
     if (isViewAttached()) {
       final V view = view();
       if (view != null) {

@@ -31,6 +31,8 @@ import com.shopify.buy3.pay.PayCart;
 import com.shopify.buy3.pay.PaymentToken;
 import com.shopify.sample.SampleApplication;
 import com.shopify.sample.domain.CheckoutCompleteWithAndroidPayQuery;
+import com.shopify.sample.domain.CheckoutEmailUpdateQuery;
+import com.shopify.sample.domain.CheckoutShippingLineUpdateQuery;
 import com.shopify.sample.domain.model.Payment;
 import com.shopify.sample.domain.repository.CheckoutRepository;
 import com.shopify.sample.domain.type.MailingAddressInput;
@@ -49,12 +51,14 @@ public final class RealCheckoutCompleteInteractor implements CheckoutCompleteInt
   }
 
   @Override public Single<Payment> execute(@NonNull final String checkoutId, @NonNull final PayCart payCart,
-    @NonNull final PaymentToken paymentToken, @NonNull final String email, @NonNull final PayAddress billingAddress) {
+    @NonNull final PaymentToken paymentToken, @NonNull final String email, @NonNull final PayAddress billingAddress,
+    @NonNull final String shippingRateHandle) {
     checkNotBlank(checkoutId, "checkoutId can't be empty");
     checkNotNull(payCart, "payCart == null");
     checkNotNull(paymentToken, "paymentToken == null");
     checkNotBlank(email, "email can't be empty");
     checkNotNull(billingAddress, "billingAddress == null");
+    checkNotBlank(shippingRateHandle, "shippingRateHandle can't be empty");
 
     MailingAddressInput mailingAddressInput = MailingAddressInput.builder()
       .address1(billingAddress.address1)
@@ -77,7 +81,10 @@ public final class RealCheckoutCompleteInteractor implements CheckoutCompleteInt
       .billingAddress(mailingAddressInput)
       .build();
 
-    CheckoutCompleteWithAndroidPayQuery query = new CheckoutCompleteWithAndroidPayQuery(checkoutId, paymentInput);
-    return repository.complete(query).map(Converters::convertToPayment);
+    return repository
+      .updateEmail(new CheckoutEmailUpdateQuery(checkoutId, email))
+      .flatMap(it -> repository.updateShippingLine(new CheckoutShippingLineUpdateQuery(checkoutId, shippingRateHandle)))
+      .flatMap(it -> repository.complete(new CheckoutCompleteWithAndroidPayQuery(checkoutId, paymentInput)))
+      .map(Converters::convertToPayment);
   }
 }

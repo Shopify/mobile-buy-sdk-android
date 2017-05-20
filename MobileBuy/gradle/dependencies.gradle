@@ -1,10 +1,10 @@
 def versions = [
-    androidSupportVersion       : '25.2.0',
-    okHttpVersion               : '3.6.0',
-    playServicesVersion         : '9.8.0',
-    jodaTimeVersion             : '2.9.5.1',
-    butterKnifeVersion          : '8.5.1',
-    apolloVersion               : '0.3.0'
+    androidSupportVersion: '25.2.0',
+    okHttpVersion        : '3.6.0',
+    playServicesVersion  : '9.8.0',
+    jodaTimeVersion      : '2.9.5.1',
+    butterKnifeVersion   : '8.5.1',
+    apolloVersion        : '0.3.0'
 ]
 
 ext.isCi = "true" == System.getenv('CI')

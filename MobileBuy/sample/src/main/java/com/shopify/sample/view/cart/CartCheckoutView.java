@@ -28,6 +28,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -105,7 +107,7 @@ public final class CartCheckoutView extends FrameLayout implements CartCheckoutV
     }
   }
 
-  @Override public void showError(final long requestId, final Throwable t) {
+  @Override public void showError(final int requestId, final Throwable t) {
     //TODO log and show error message
     t.printStackTrace();
   }
@@ -178,6 +180,16 @@ public final class CartCheckoutView extends FrameLayout implements CartCheckoutV
     void onConfirmAndroidPay(@NonNull String checkoutId, @NonNull PayCart payCart, @NonNull MaskedWallet maskedWallet);
   }
 
+  @Override protected Parcelable onSaveInstanceState() {
+    return new SavedState(super.onSaveInstanceState(), presenter);
+  }
+
+  @Override protected void onRestoreInstanceState(final Parcelable state) {
+    super.onRestoreInstanceState(state);
+    SavedState savedState = (SavedState) state;
+    presenter.restoreState(savedState.presenterState);
+  }
+
   private void init() {
     if (PayHelper.isAndroidPayEnabledInManifest(getContext())) {
       googleApiClient = new GoogleApiClient.Builder(getContext())
@@ -188,5 +200,36 @@ public final class CartCheckoutView extends FrameLayout implements CartCheckoutV
         .addConnectionCallbacks(this)
         .build();
     }
+  }
+
+  static class SavedState extends BaseSavedState {
+    private final Bundle presenterState;
+
+    SavedState(final Parcel source) {
+      super(source);
+      presenterState = source.readBundle(getClass().getClassLoader());
+    }
+
+    SavedState(final Parcelable source, final CartCheckoutViewPresenter presenter) {
+      super(source);
+      presenterState = presenter.saveState();
+    }
+
+    @Override public void writeToParcel(final Parcel out, final int flags) {
+      super.writeToParcel(out, flags);
+      out.writeBundle(presenterState);
+    }
+
+    public static final Creator<SavedState> CREATOR = new Creator<SavedState>() {
+      @Override
+      public SavedState createFromParcel(final Parcel source) {
+        return new SavedState(source);
+      }
+
+      @Override
+      public SavedState[] newArray(final int size) {
+        return new SavedState[size];
+      }
+    };
   }
 }

@@ -72,6 +72,8 @@ public final class RealCheckoutCompleteInteractor implements CheckoutCompleteInt
     Storefront.CheckoutCompleteWithTokenizedPaymentPayloadQueryDefinition query =
       it -> it.payment(new PaymentFragment()).userErrors(userError -> userError.field().message());
 
-    return repository.complete(checkoutId, paymentInput, query).map(Converters::convertToPayment);
+    return repository
+      email
+      .complete(checkoutId, paymentInput, query).map(Converters::convertToPayment);
   }
 }
