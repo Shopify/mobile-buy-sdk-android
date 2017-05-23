@@ -58,8 +58,8 @@ public abstract class BaseViewPresenter<V extends View> implements ViewPresenter
 
     if (requestRegister != null) {
       requestRegister.dispose();
+      requestRegister = null;
     }
-    requestRegister = null;
   }
 
   @Override

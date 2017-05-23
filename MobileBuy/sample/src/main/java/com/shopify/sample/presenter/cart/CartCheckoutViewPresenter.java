@@ -24,6 +24,13 @@
 
 package com.shopify.sample.presenter.cart;
 
+import android.arch.lifecycle.Lifecycle;
+import android.arch.lifecycle.LifecycleObserver;
+import android.arch.lifecycle.LifecycleOwner;
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MutableLiveData;
+import android.arch.lifecycle.OnLifecycleEvent;
+import android.arch.lifecycle.Transformations;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -41,6 +48,7 @@ import com.shopify.sample.domain.repository.CartRepository;
 import com.shopify.sample.mvp.BaseViewPresenter;
 import com.shopify.sample.util.WeakObserver;
 
+import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.util.List;
 
@@ -64,46 +72,55 @@ public final class CartCheckoutViewPresenter extends BaseViewPresenter<CartCheck
   private final CartRepository cartRepository;
   private String checkoutId;
   private PayCart payCart;
+  private final MutableLiveData<BigDecimal> totalData = new MutableLiveData<>();
+  private final MutableLiveData<Checkout> webCheckoutData = new MutableLiveData<>();
 
   public CartCheckoutViewPresenter(@NonNull final CheckoutCreateInteractor checkoutCreateInteractor,
-    @NonNull final CartRepository cartRepository) {
+    @NonNull final CartRepository cartRepository, @NonNull final View view) {
     this.checkoutCreateInteractor = checkNotNull(checkoutCreateInteractor, "checkoutCreateInteractor == null");
     this.cartRepository = checkNotNull(cartRepository, "cartRepository == null");
-  }
+    attachView(view);
 
-  @Override public void attachView(final View view) {
-    super.attachView(view);
-    registerRequest(
-      REQUEST_ID_UPDATE_CART,
-      cartRepository.watch()
-        .map(Cart::totalPrice)
-        .subscribeOn(AndroidSchedulers.mainThread())
-        .subscribeWith(WeakObserver.<CartCheckoutViewPresenter, Double>forTarget(this)
-          .delegateOnNext(CartCheckoutViewPresenter::onTotalPriceUpdated)
-          .create())
-    );
+    view.getLifecycle().addObserver(new LifecycleObserver() {
+      @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
+      public void onCreate() {
+        CartCheckoutViewPresenter.this.onCreate();
+      }
+
+      @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+      public void onDestroy() {
+        CartCheckoutViewPresenter.this.onDestroy();
+      }
+    });
   }
 
   public void createWebCheckout() {
-    createCheckout(REQUEST_ID_CREATE_WEB_CHECKOUT, null);
+    if (isViewAttached() && view().getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.CREATED)) {
+      createCheckout(REQUEST_ID_CREATE_WEB_CHECKOUT, null);
+    }
   }
 
   public void createAndroidPayCheckout(@NonNull final GoogleApiClient googleApiClient) {
-    createCheckout(REQUEST_ID_CREATE_ANDROID_PAY_CHECKOUT, checkNotNull(googleApiClient, "googleApiClient == null"));
+    if (isViewAttached() && view().getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.CREATED)) {
+      createCheckout(REQUEST_ID_CREATE_ANDROID_PAY_CHECKOUT, checkNotNull(googleApiClient, "googleApiClient == null"));
+    }
   }
 
   public boolean handleMaskedWalletResponse(final int requestCode, final int resultCode, @Nullable final Intent data) {
-    return PayHelper.handleWalletResponse(requestCode, resultCode, data, new PayHelper.WalletResponseHandler() {
-      @Override public void onWalletError(final int requestCode, final int errorCode) {
-        showError(REQUEST_ID_PREPARE_ANDROID_PAY, new RuntimeException("Failed to fetch masked wallet, errorCode: " + errorCode));
-      }
-
-      @Override public void onMaskedWallet(final MaskedWallet maskedWallet) {
-        if (isViewAttached()) {
-          view().showAndroidPayConfirmation(checkoutId, payCart, maskedWallet);
+    if (isViewAttached() && view().getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.CREATED)) {
+      return PayHelper.handleWalletResponse(requestCode, resultCode, data, new PayHelper.WalletResponseHandler() {
+        @Override public void onWalletError(final int requestCode, final int errorCode) {
+          showError(REQUEST_ID_PREPARE_ANDROID_PAY, new RuntimeException("Failed to fetch masked wallet, errorCode: " + errorCode));
         }
-      }
-    });
+
+        @Override public void onMaskedWallet(final MaskedWallet maskedWallet) {
+          if (isViewAttached()) {
+            view().showAndroidPayConfirmation(checkoutId, payCart, maskedWallet);
+          }
+        }
+      });
+    }
+    return false;
   }
 
   @NonNull public Bundle saveState() {
@@ -117,6 +134,30 @@ public final class CartCheckoutViewPresenter extends BaseViewPresenter<CartCheck
     checkNotNull(bundle, "bundle == null");
     checkoutId = bundle.getString(STATE_KEY_CHECKOUT_ID);
     payCart = bundle.getParcelable(STATE_KEY_PAY_CART);
+  }
+
+  public LiveData<String> totalData() {
+    return Transformations.map(totalData, CURRENCY_FORMAT::format);
+  }
+
+  public LiveData<Checkout> webCheckoutData() {
+    return webCheckoutData;
+  }
+
+  private void onCreate() {
+    registerRequest(
+      REQUEST_ID_UPDATE_CART,
+      cartRepository.watch()
+        .map(Cart::totalPrice)
+        .subscribeOn(AndroidSchedulers.mainThread())
+        .subscribeWith(WeakObserver.<CartCheckoutViewPresenter, BigDecimal>forTarget(this)
+          .delegateOnNext(CartCheckoutViewPresenter::onTotalUpdated)
+          .create())
+    );
+  }
+
+  private void onDestroy() {
+//    webCheckoutData.setValue(null);
   }
 
   private void createCheckout(final int requestId, final GoogleApiClient googleApiClient) {
@@ -138,9 +179,9 @@ public final class CartCheckoutViewPresenter extends BaseViewPresenter<CartCheck
     );
   }
 
-  private void onTotalPriceUpdated(final double total) {
-    if (isViewAttached()) {
-      view().renderTotal(CURRENCY_FORMAT.format(total));
+  private void onTotalUpdated(final BigDecimal total) {
+    if (isViewAttached() && view().getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.CREATED)) {
+      totalData.postValue(total);
     }
   }
 
@@ -149,7 +190,8 @@ public final class CartCheckoutViewPresenter extends BaseViewPresenter<CartCheck
       view().hideProgress(requestId);
       this.checkoutId = checkout.id;
       if (requestId == REQUEST_ID_CREATE_WEB_CHECKOUT) {
-        view().showWebCheckout(checkout);
+        webCheckoutData.postValue(checkout);
+//        view().showWebCheckoutConfirmation(checkout);
       } else if (requestId == REQUEST_ID_CREATE_ANDROID_PAY_CHECKOUT) {
         prepareForAndroidPayCheckout(checkout, googleApiClient);
       }
@@ -177,11 +219,9 @@ public final class CartCheckoutViewPresenter extends BaseViewPresenter<CartCheck
     PayHelper.requestMaskedWallet(googleApiClient, payCart, BuildConfig.ANDROID_PAY_PUBLIC_KEY);
   }
 
-  public interface View extends com.shopify.sample.mvp.View {
+  public interface View extends com.shopify.sample.mvp.View, LifecycleOwner {
 
-    void renderTotal(@NonNull String total);
-
-    void showWebCheckout(@NonNull Checkout checkout);
+//    void showWebCheckoutConfirmation(@NonNull Checkout checkout);
 
     void showAndroidPayConfirmation(@NonNull String checkoutId, @NonNull PayCart payCart, @NonNull MaskedWallet maskedWallet);
   }

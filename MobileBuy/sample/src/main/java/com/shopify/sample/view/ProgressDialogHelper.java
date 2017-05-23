@@ -51,17 +51,17 @@ public final class ProgressDialogHelper {
 
   public boolean show(final long requestId, @Nullable final String title, @Nullable final String message,
     @Nullable final Runnable onCancel) {
-      this.requestId.set(requestId);
-      dialog.setCanceledOnTouchOutside(false);
-      dialog.setTitle(title);
-      dialog.setMessage(message);
-      dialog.setOnCancelListener(dialog -> {
-        dialog.dismiss();
-        if (onCancel != null) {
-          onCancel.run();
-        }
-      });
-      dialog.show();
+    this.requestId.set(requestId);
+    dialog.setCanceledOnTouchOutside(false);
+    dialog.setTitle(title);
+    dialog.setMessage(message);
+    dialog.setOnCancelListener(dialog -> {
+      dialog.dismiss();
+      if (onCancel != null) {
+        onCancel.run();
+      }
+    });
+    dialog.show();
     return true;
   }
 
