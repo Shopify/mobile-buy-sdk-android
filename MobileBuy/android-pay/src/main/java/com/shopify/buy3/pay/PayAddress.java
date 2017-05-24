@@ -32,7 +32,7 @@ import com.google.android.gms.identity.intents.model.UserAddress;
 import static com.shopify.buy3.pay.Util.checkNotNull;
 
 /**
- * Convenient class that represents Shopify compliant address.
+ * Convenient class that represents a Shopify-compliant address.
  */
 public final class PayAddress {
   private static final int FIRST_NAME_PART = 0;

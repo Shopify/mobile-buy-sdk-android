@@ -54,7 +54,7 @@ import static com.shopify.buy3.pay.Util.checkNotEmpty;
 import static com.shopify.buy3.pay.Util.checkNotNull;
 
 /**
- * Helper class provides  utility functions to simplify Android Pay checkout flow.
+ * Helper class that provides utility functions to simplify the Android Pay checkout flow.
  */
 @SuppressWarnings({"WeakerAccess", "unused"})
 public final class PayHelper {
@@ -101,7 +101,7 @@ public final class PayHelper {
   }
 
   /**
-   * Handle activity results for masked wallet and full wallet requests and delegates response to specified call back handler.
+   * Handle activity results for masked wallet and full wallet requests, and delegate a response to a specified call back handler.
    *
    * @param requestCode Android Pay activity request code
    * @param resultCode  Android Pay activity result code
@@ -174,12 +174,12 @@ public final class PayHelper {
     checkNotNull(delegate, "delegate can't be null");
     checkNotNull(supportedCardNetworks, "supportedCardNetworks can't be null");
 
-    // make sure that device supports SHA-256 and UTF-8 required by hashing android pay public key for payment token creation
+    // Make sure that the device supports SHA-256 and UTF-8 (required by hashing Android Pay public key for payment token creation)
     try {
       MessageDigest.getInstance("SHA-256");
       byte[] ignore = "foo".getBytes("UTF-8");
     } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
-      // if not then android pay feature should be disabled
+      // If not, then the Android Pay feature should be disabled
       delegate.onResult(false);
       return;
     }
@@ -234,14 +234,14 @@ public final class PayHelper {
   }
 
   /**
-   * Interface for receiving results from {@link PayHelper#isReadyToPay(Context, GoogleApiClient, List, AndroidPayReadyCallback)}
+   * Interface for receiving results from {@link PayHelper#isReadyToPay(Context, GoogleApiClient, List, AndroidPayReadyCallback)}.
    */
   public interface AndroidPayReadyCallback {
     void onResult(boolean result);
   }
 
   /**
-   * Callback for handling wallet activity results from {@link PayHelper#handleWalletResponse(int, int, Intent, WalletResponseHandler)}
+   * Callback for handling wallet activity results from {@link PayHelper#handleWalletResponse(int, int, Intent, WalletResponseHandler)}.
    */
   public abstract static class WalletResponseHandler {
 
@@ -255,7 +255,7 @@ public final class PayHelper {
     public abstract void onWalletError(int requestCode, int errorCode);
 
     /**
-     * Called when new masked wallet required. Usually {@link PayHelper#requestMaskedWallet(GoogleApiClient, PayCart, String)} should be
+     * Called when new masked wallet is required. Usually {@link PayHelper#requestMaskedWallet(GoogleApiClient, PayCart, String)} should be
      * called again.
      */
     public void onMaskedWalletRequest() {
