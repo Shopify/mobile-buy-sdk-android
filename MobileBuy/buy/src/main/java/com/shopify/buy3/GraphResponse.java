@@ -66,7 +66,7 @@ public final class GraphResponse<T extends AbstractResponse<T>> {
   }
 
   /**
-   * Check if returned response had any errors
+   * Check if returned response had any errors.
    *
    * @return {@code true} if response has errors, {@code false} otherwise
    */
@@ -75,7 +75,7 @@ public final class GraphResponse<T extends AbstractResponse<T>> {
   }
 
   /**
-   * Return formatted {@code GraphQL} error message
+   * Return formatted {@code GraphQL} error message.
    *
    * @return formatted {@code GraphQL} error message
    */

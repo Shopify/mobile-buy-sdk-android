@@ -29,7 +29,7 @@ import android.support.annotation.NonNull;
 import okhttp3.Response;
 
 /**
- * Thrown when GraphQL call executed but HTTP response status code is not from {@code 200} series
+ * Thrown when GraphQL call executed but HTTP response status code is not from {@code 200} series.
  */
 public class GraphHttpError extends GraphError {
   private final int code;

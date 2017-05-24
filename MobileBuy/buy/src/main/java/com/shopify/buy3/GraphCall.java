@@ -31,9 +31,9 @@ import android.support.annotation.Nullable;
 import com.shopify.graphql.support.AbstractResponse;
 
 /**
- * <p> {@code GraphCall} is an abstraction for a {@code GraphQL} request that has been prepared for execution. As this class represents a
+ * <p> {@code GraphCall} is an abstraction for a {@code GraphQL} request that has been prepared for execution. Since this class represents a
  * single request/response pair, it can't be executed twice. A call can be canceled.</p>
- * <p>In order to execute the request again, use {@link GraphCall#clone()} method which creates a new identical call object.</p>
+ * <p>To execute the request again, use the {@link GraphCall#clone()} method which creates a new identical call object.</p>
  *
  * @param <T> type of the {@link AbstractResponse} response this call returns
  */
@@ -47,7 +47,7 @@ public interface GraphCall<T extends AbstractResponse<T>> {
   /**
    * Checks if this call has been canceled.
    *
-   * @return {@code true} if this call has been canceled otherwise {@code false}
+   * @return {@code true} if this call has been canceled, otherwise {@code false}
    */
   boolean isCanceled();
 
@@ -63,7 +63,7 @@ public interface GraphCall<T extends AbstractResponse<T>> {
    *
    * @return {@code GraphQL} response
    * @throws IllegalStateException when the call has already been executed
-   * @throws GraphError            if the request could not be executed due to cancellation, timeouts, network failure, parsing error etc.
+   * @throws GraphError            if the request could not be executed due to cancellation, timeouts, network failure, parsing error, etc.
    * @see GraphCallCanceledError
    * @see GraphNetworkError
    * @see GraphHttpError
@@ -74,7 +74,7 @@ public interface GraphCall<T extends AbstractResponse<T>> {
   /**
    * Schedules the call to be executed at some point in the future.
    *
-   * @param callback which will handle the response or a failure exceptions.
+   * @param callback which will handle the response or a failure exception
    * @return call that has been scheduled for execution
    * @throws IllegalStateException when the call has already been executed
    * @see Callback
@@ -84,8 +84,8 @@ public interface GraphCall<T extends AbstractResponse<T>> {
   /**
    * Schedules the call to be executed at some point in the future.
    *
-   * @param callback        which will handle the response or a failure exceptions.
-   * @param callbackHandler the callback will be run on the thread to which this handler is attached to
+   * @param callback        which will handle the response or a failure exception
+   * @param callbackHandler the callback will be run on the thread to which this handler is attached
    * @return call that has been scheduled for execution
    * @throws IllegalStateException when the call has already been executed
    * @see Callback
@@ -95,8 +95,8 @@ public interface GraphCall<T extends AbstractResponse<T>> {
   /**
    * Schedules the call to be executed at some point in the future.
    *
-   * @param callback     which will handle the response or a failure exceptions.
-   * @param handler      the callback will be run on the thread to which this handler is attached to
+   * @param callback     which will handle the response or a failure exception
+   * @param handler      the callback will be run on the thread to which this handler is attached
    * @param retryHandler request retry policy
    * @return call that has been scheduled for execution
    * @throws IllegalStateException when the call has already been executed
@@ -108,7 +108,7 @@ public interface GraphCall<T extends AbstractResponse<T>> {
   /**
    * Callback used for notifying response of {@code GraphQL} call that has been scheduled for execution.
    *
-   * @param <T> type of the {@link AbstractResponse} response this call back serves
+   * @param <T> type of the {@link AbstractResponse} response this callback serves
    */
   interface Callback<T extends AbstractResponse<T>> {
 
@@ -120,7 +120,7 @@ public interface GraphCall<T extends AbstractResponse<T>> {
     void onResponse(@NonNull GraphResponse<T> response);
 
     /**
-     * Called when {@code GraphQL} call could not be executed due to cancellation, timeouts, network failure, parsing error etc.
+     * Called when {@code GraphQL} call could not be executed. Possible reasons for failure include cancellation, timeouts, network failure, and parsing error.
      *
      * @param error {@link GraphError} that has been thrown during call execution
      * @see GraphCallCanceledError

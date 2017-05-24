@@ -43,13 +43,13 @@ import static com.shopify.buy3.Utils.checkNotNull;
 /**
  * Class represents {@code GraphQL} client that is responsible for creating and preparing {@link GraphCall} calls.
  * <p>This client should be shared between calls to the same shop domain.</p>
- * <p>Internally {@code GraphQL} based on {@link OkHttpClient} that means it holds its own connection pool and thread pool, it is
+ * <p>Internally {@code GraphQL} based on {@link OkHttpClient} that means it holds its own connection pool and thread pool. It is
  * recommended to only create a single instance use that for execution of all the {@code GraphQL} calls, as this would reduce latency and
  * would also save memory.</p>
  */
 public final class GraphClient {
   /**
-   * Creates builder to construct new {@code GraphClient} instance
+   * Creates builder to construct new {@code GraphClient} instance.
    *
    * @param context android context
    * @return {@link GraphClient.Builder}
@@ -100,7 +100,7 @@ public final class GraphClient {
   }
 
   /**
-   * Builds new {@code GraphClient} instance
+   * Builds new {@code GraphClient} instance.
    */
   public static final class Builder {
     private static final long DEFAULT_HTTP_CONNECTION_TIME_OUT_MS = TimeUnit.SECONDS.toMillis(10);
@@ -119,7 +119,7 @@ public final class GraphClient {
     }
 
     /**
-     * Set Shopify store domain url (usually {@code {store name}.myshopify.com}).
+     * Set Shopify store domain URL (usually {@code {store name}.myshopify.com}).
      *
      * @param shopDomain domain for the shop
      * @return {@link GraphClient.Builder} to be used for chaining method calls
@@ -132,7 +132,7 @@ public final class GraphClient {
     }
 
     /**
-     * Set Shopify store access token
+     * Set Shopify store access token.
      *
      * @param accessToken store access token
      * @return {@link GraphClient.Builder} to be used for chaining method calls

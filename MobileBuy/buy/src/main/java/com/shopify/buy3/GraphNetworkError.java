@@ -25,7 +25,7 @@
 package com.shopify.buy3;
 
 /**
- * Thrown when GraphQL call can't be executed due to any network errors (connectivity problem, timeouts etc.)
+ * Thrown when GraphQL call can't be executed due to any network errors (connectivity problem, timeouts, etc.).
  */
 public class GraphNetworkError extends GraphError {
   public GraphNetworkError() {
