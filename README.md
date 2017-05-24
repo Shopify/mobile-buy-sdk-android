@@ -182,7 +182,7 @@ Again, both of the approaches produce the same result, but the former case is sa
 
 ### The `Node` protocol [⤴](#table-of-contents)
 
-GraphQL schema defines a `Node` interface that declares an `id` field on any conforming type. This makes it convenient to query for any object in the schema given only its `id`. The concept is carried across to the Buy SDK as well, but requeries a cast to the correct type. You need to make sure that the `Node` type is of the correct type, otherwise casting to an incorrect type will return a runtime exception.
+GraphQL schema defines a `Node` interface that declares an `id` field on any conforming type. This makes it convenient to query for any object in the schema given only its `id`. The concept is carried across to the Buy SDK as well, but requires a cast to the correct type. You need to make sure that the `Node` type is of the correct type, otherwise casting to an incorrect type will return a runtime exception.
 
 Given this query:
 
@@ -575,14 +575,14 @@ PayCart payCart = PayCart.builder()
   .build();
 ```
 
-Additionally, `PayCart` provides two functions to create and prepare:
+Additionally, `PayCart` provides two functions to help with Masked Wallet and Full Wallet requests:
 
-1. Request for Masked Wallet information:
+1. `maskedWalletRequest` to request Masked Wallet information:
   ```java
   MaskedWalletRequest maskedWalletRequest = payCart.maskedWalletRequest(ANDROID_PAY_PUBLIC_KEY);
   ```
 
-2. Request for Full Wallet information:
+2. `fullWalletRequest` to request Full Wallet information:
   ```java
   FullWalletRequest fullWalletRequest = payCart.fullWalletRequest(maskedWallet);
   ```
@@ -598,7 +598,7 @@ Additionally, `PayCart` provides two functions to create and prepare:
 - `requestFullWallet` requests Full Wallet information to get payment token and complete checkout
 - `newMaskedWallet` requests Masked Wallet information from existing one with new Google Transaction Id. This is useful when a user wants to retry a failed purchase and the current Google Transaction Id is no longer valid.
 - `handleWalletResponse` helps to handle Android Pay wallet response by delegation callbacks via `WalletResponseHandler`
-- and finally extract `PaymentToken` to complete the checkout, see `PayHelper#extractPaymentToken`
+- `extractPaymentToken` to extract PaymentToken to complete the checkout
 
 #### Masked Wallet [⤴](#table-of-contents)
 
