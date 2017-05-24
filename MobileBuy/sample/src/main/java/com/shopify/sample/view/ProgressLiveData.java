@@ -22,20 +22,40 @@
  *   THE SOFTWARE.
  */
 
-package com.shopify.sample.view.cart;
+package com.shopify.sample.view;
 
 import android.arch.lifecycle.LiveData;
 
-import java.math.BigDecimal;
-
 @SuppressWarnings("WeakerAccess")
-public interface CartHeaderViewModel {
+public final class ProgressLiveData extends LiveData<ProgressLiveData.Progress> {
 
-  LiveData<Boolean> googleApiClientConnectionData();
+  public void show(final int requestId) {
+    setValue(new Progress(requestId, true));
+  }
 
-  LiveData<BigDecimal> cartTotalLiveData();
+  public void hide(final int requestId) {
+    Progress progress = getValue();
+    if (progress == null || !progress.show || progress.requestId != requestId) {
+      return;
+    }
+    setValue(new Progress(requestId, false));
+  }
 
-  void webCheckout();
+  public void hide() {
+    Progress progress = getValue();
+    if (progress == null || !progress.show) {
+      return;
+    }
+    setValue(new Progress(progress.requestId, false));
+  }
 
-  void androidPayCheckout();
+  public static final class Progress {
+    public final int requestId;
+    public final boolean show;
+
+    private Progress(final int requestId, final boolean show) {
+      this.requestId = requestId;
+      this.show = show;
+    }
+  }
 }

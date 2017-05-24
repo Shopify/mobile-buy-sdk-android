@@ -35,6 +35,6 @@ import io.reactivex.Single;
 
 public interface CheckoutCompleteInteractor {
   Single<Payment> execute(@NonNull String checkoutId, @NonNull PayCart payCart, @NonNull PaymentToken paymentToken,
-    @NonNull String email, @NonNull PayAddress billingAddress, @NonNull String shippingRateHandle);
+    @NonNull String email, @NonNull PayAddress billingAddress);
 
 }

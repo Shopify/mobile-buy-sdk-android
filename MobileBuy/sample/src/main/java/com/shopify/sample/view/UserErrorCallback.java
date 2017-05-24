@@ -22,20 +22,25 @@
  *   THE SOFTWARE.
  */
 
-package com.shopify.sample.view.cart;
+package com.shopify.sample.view;
 
-import android.arch.lifecycle.LiveData;
+import android.support.annotation.Nullable;
 
-import java.math.BigDecimal;
+public final class UserErrorCallback extends LifeCycleBoundCallback<UserErrorCallback.Error> {
 
-@SuppressWarnings("WeakerAccess")
-public interface CartHeaderViewModel {
+  public void notify(final int requestId, @Nullable final Throwable t, @Nullable final String message) {
+    notify(new Error(requestId, t, message));
+  }
 
-  LiveData<Boolean> googleApiClientConnectionData();
+  public static final class Error {
+    public final int requestId;
+    @Nullable public final Throwable t;
+    @Nullable public final String message;
 
-  LiveData<BigDecimal> cartTotalLiveData();
-
-  void webCheckout();
-
-  void androidPayCheckout();
+    private Error(final int requestId, final Throwable t, final String message) {
+      this.requestId = requestId;
+      this.t = t;
+      this.message = message;
+    }
+  }
 }

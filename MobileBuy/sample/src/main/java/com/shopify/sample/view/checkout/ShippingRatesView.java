@@ -24,17 +24,18 @@
 
 package com.shopify.sample.view.checkout;
 
+import android.arch.lifecycle.Lifecycle;
+import android.arch.lifecycle.LifecycleOwner;
+import android.arch.lifecycle.LifecycleRegistry;
+import android.arch.lifecycle.Transformations;
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
 import com.shopify.sample.R;
-import com.shopify.sample.domain.interactor.RealCheckoutShippingRatesInteractor;
-import com.shopify.sample.domain.model.Checkout.ShippingRate;
-import com.shopify.sample.presenter.checkout.CheckoutShippingRatesViewPresenter;
+import com.shopify.sample.domain.model.Checkout;
 
 import java.text.NumberFormat;
 
@@ -42,97 +43,64 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static com.shopify.sample.presenter.checkout.CheckoutShippingRatesViewPresenter.REQUEST_ID_FETCH_SHIPPING_RATES;
-
-public final class ShippingRatesView extends ConstraintLayout implements CheckoutShippingRatesViewPresenter.View {
+public final class ShippingRatesView extends ConstraintLayout implements LifecycleOwner {
   private static final NumberFormat CURRENCY_FORMAT = NumberFormat.getCurrencyInstance();
 
   @BindView(R.id.shipping_line) TextView shippingLineView;
   @BindView(R.id.price) TextView priceView;
 
-  private CheckoutShippingRatesViewPresenter presenter;
-  private OnProgressListener onProgressListener;
-  private OnShippingRateSelectListener onShippingRateSelectListener;
+  private final LifecycleRegistry lifecycleRegistry = new LifecycleRegistry(this);
+  private CheckoutShippingRatesViewModel viewModel;
 
   public ShippingRatesView(final Context context) {
     super(context);
+    lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE);
   }
 
   public ShippingRatesView(final Context context, final AttributeSet attrs) {
     super(context, attrs);
+    lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE);
   }
 
   public ShippingRatesView(final Context context, final AttributeSet attrs, final int defStyleAttr) {
     super(context, attrs, defStyleAttr);
+    lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE);
   }
 
-  public void init(@NonNull final String checkoutId) {
-    if (presenter != null) throw new IllegalStateException("Already initialized");
-    presenter = new CheckoutShippingRatesViewPresenter(checkoutId, new RealCheckoutShippingRatesInteractor());
-  }
-
-  public void invalidateShippingRates() {
-    if (presenter != null) {
-      presenter.invalidateShippingRates();
+  public void bindViewModel(@NonNull final CheckoutShippingRatesViewModel viewModel) {
+    if (this.viewModel != null) {
+      throw new IllegalStateException("Already bound");
     }
+    this.viewModel = viewModel;
+
+    Transformations.map(viewModel.selectedShippingRateLiveData(), shippingRate ->
+      shippingRate != null ? shippingRate.title : null)
+      .observe(this, title -> {
+        if (title != null) {
+          shippingLineView.setText(title);
+        } else {
+          shippingLineView.setText(R.string.checkout_shipping_method_not_selected);
+        }
+      });
+
+    Transformations.map(viewModel.selectedShippingRateLiveData(), shippingRate ->
+      shippingRate != null ? CURRENCY_FORMAT.format(shippingRate.price)
+        : getResources().getString(R.string.checkout_shipping_method_price_not_available))
+      .observe(this, price -> priceView.setText(price));
   }
 
-  @Override public void showProgress(final int requestId) {
-    if (onProgressListener == null) {
-      return;
-    }
-
-    final String message;
-    if (requestId == REQUEST_ID_FETCH_SHIPPING_RATES) {
-      message = getResources().getString(R.string.checkout_fetch_shipping_rates_progress);
-    } else {
-      message = getResources().getString(R.string.progress_loading);
-    }
-    onProgressListener.onShowProgress(message);
-  }
-
-  @Override public void hideProgress(final int requestId) {
-    if (onProgressListener == null) {
-      return;
-    }
-    onProgressListener.onHideProgress();
-  }
-
-  @Override public void showError(final int requestId, final Throwable t) {
-    if (onShippingRateSelectListener != null) {
-      onShippingRateSelectListener.onError(t);
-    }
-  }
-
-  @Override public void onShippingRateSelected(@Nullable final ShippingRate shippingRate) {
-    shippingLineView.setText(shippingRate != null ? shippingRate.title
-      : getResources().getString(R.string.checkout_shipping_method_not_available));
-    priceView.setText(shippingRate != null ? CURRENCY_FORMAT.format(shippingRate.price) : "");
-
-    if (onShippingRateSelectListener != null) {
-      onShippingRateSelectListener.onShippingRateSelected(shippingRate);
-    }
-  }
-
-  public void setOnProgressListener(@Nullable final OnProgressListener onProgressListener) {
-    this.onProgressListener = onProgressListener;
-  }
-
-  public void setOnShippingRateSelectListener(@Nullable final OnShippingRateSelectListener onShippingRateSelectListener) {
-    this.onShippingRateSelectListener = onShippingRateSelectListener;
-  }
-
-  @Nullable public ShippingRate selectedShippingRate() {
-    return presenter != null ? presenter.selectedShippingRate() : null;
+  @Override public Lifecycle getLifecycle() {
+    return lifecycleRegistry;
   }
 
   @OnClick(R.id.change)
   void onChangeClick() {
-    if (presenter == null) {
+    Checkout.ShippingRates shippingRates = viewModel.shippingRatesLiveData().getValue();
+    if (shippingRates == null || shippingRates.shippingRates.isEmpty()) {
       return;
     }
-
-    new ShippingRateSelectDialog(getContext()).show(presenter.shippingRates(), presenter::setSelectedShippingRate);
+    new ShippingRateSelectDialog(getContext()).show(shippingRates, shippingRate ->
+      viewModel.selectShippingRate(shippingRate));
   }
 
   @Override protected void onFinishInflate() {
@@ -142,27 +110,11 @@ public final class ShippingRatesView extends ConstraintLayout implements Checkou
 
   @Override protected void onAttachedToWindow() {
     super.onAttachedToWindow();
-    if (presenter != null) {
-      presenter.attachView(this);
-    }
+    lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_START);
   }
 
   @Override protected void onDetachedFromWindow() {
+    lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_DESTROY);
     super.onDetachedFromWindow();
-    if (presenter != null) {
-      presenter.detachView();
-    }
-  }
-
-  public interface OnProgressListener {
-    void onShowProgress(@NonNull String message);
-
-    void onHideProgress();
-  }
-
-  public interface OnShippingRateSelectListener {
-    void onShippingRateSelected(@Nullable ShippingRate shippingRate);
-
-    void onError(@NonNull Throwable t);
   }
 }

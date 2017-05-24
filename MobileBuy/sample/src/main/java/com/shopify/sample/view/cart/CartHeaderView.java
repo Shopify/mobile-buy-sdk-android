@@ -45,7 +45,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public final class CartCheckoutHeaderView extends FrameLayout implements LifecycleOwner {
+public final class CartHeaderView extends FrameLayout implements LifecycleOwner {
   private static final NumberFormat CURRENCY_FORMAT = NumberFormat.getCurrencyInstance();
 
   @BindView(R.id.android_pay_checkout) View androidPayCheckoutView;
@@ -55,17 +55,17 @@ public final class CartCheckoutHeaderView extends FrameLayout implements Lifecyc
 
   private CartHeaderViewModel viewModel;
 
-  public CartCheckoutHeaderView(@NonNull final Context context) {
+  public CartHeaderView(@NonNull final Context context) {
     super(context);
     lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE);
   }
 
-  public CartCheckoutHeaderView(@NonNull final Context context, @Nullable final AttributeSet attrs) {
+  public CartHeaderView(@NonNull final Context context, @Nullable final AttributeSet attrs) {
     super(context, attrs);
     lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE);
   }
 
-  public CartCheckoutHeaderView(@NonNull final Context context, @Nullable final AttributeSet attrs, @AttrRes final int defStyleAttr) {
+  public CartHeaderView(@NonNull final Context context, @Nullable final AttributeSet attrs, @AttrRes final int defStyleAttr) {
     super(context, attrs, defStyleAttr);
     lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE);
   }

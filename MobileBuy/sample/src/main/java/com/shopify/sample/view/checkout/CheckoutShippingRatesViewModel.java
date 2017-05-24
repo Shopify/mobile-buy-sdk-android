@@ -22,50 +22,23 @@
  *   THE SOFTWARE.
  */
 
-package com.shopify.sample.view.cart;
+package com.shopify.sample.view.checkout;
 
-import android.content.Intent;
-import android.os.Bundle;
+import android.arch.lifecycle.LiveData;
 import android.support.annotation.Nullable;
 
-import com.google.android.gms.wallet.MaskedWallet;
-import com.shopify.buy3.pay.PayCart;
 import com.shopify.sample.domain.model.Checkout;
-import com.shopify.sample.view.LifeCycleBoundCallback;
 import com.shopify.sample.view.ViewModel;
 
 import java.util.UUID;
 
 @SuppressWarnings("WeakerAccess")
-public interface CartViewModel extends ViewModel {
-  int REQUEST_ID_UPDATE_CART = UUID.randomUUID().hashCode();
-  int REQUEST_ID_CREATE_WEB_CHECKOUT = UUID.randomUUID().hashCode();
-  int REQUEST_ID_CREATE_ANDROID_PAY_CHECKOUT = UUID.randomUUID().hashCode();
-  int REQUEST_ID_PREPARE_ANDROID_PAY = UUID.randomUUID().hashCode();
+public interface CheckoutShippingRatesViewModel extends ViewModel {
+  int REQUEST_ID_FETCH_SHIPPING_RATES = UUID.randomUUID().hashCode();
 
-  void onGoogleApiClientConnectionChanged(boolean connected);
+  void selectShippingRate(@Nullable Checkout.ShippingRate shippingRate);
 
-  LifeCycleBoundCallback<Checkout> webCheckoutCallback();
+  LiveData<Checkout.ShippingRate> selectedShippingRateLiveData();
 
-  LifeCycleBoundCallback<CartViewModel.AndroidPayCheckout> androidPayCheckoutCallback();
-
-  LifeCycleBoundCallback<PayCart> androidPayStartCheckoutCallback();
-
-  void handleMaskedWalletResponse(int requestCode, int resultCode, @Nullable Intent data);
-
-  Bundle saveState();
-
-  void restoreState(Bundle bundle);
-
-  final class AndroidPayCheckout {
-    public final String checkoutId;
-    public final PayCart payCart;
-    public final MaskedWallet maskedWallet;
-
-    AndroidPayCheckout(final String checkoutId, final PayCart payCart, final MaskedWallet maskedWallet) {
-      this.checkoutId = checkoutId;
-      this.payCart = payCart;
-      this.maskedWallet = maskedWallet;
-    }
-  }
+  LiveData<Checkout.ShippingRates> shippingRatesLiveData();
 }

@@ -22,7 +22,7 @@
  *   THE SOFTWARE.
  */
 
-package com.shopify.sample.util;
+package com.shopify.sample.view;
 
 import android.arch.lifecycle.Lifecycle;
 import android.arch.lifecycle.LifecycleObserver;
@@ -38,7 +38,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import static android.arch.lifecycle.Lifecycle.State.DESTROYED;
 import static android.arch.lifecycle.Lifecycle.State.STARTED;
 
-public final class LifeCycleBoundCallback<T> {
+public class LifeCycleBoundCallback<T> {
   private final List<LifecycleBoundObserver> observers = new LinkedList<>();
   private final ReadWriteLock lock = new ReentrantReadWriteLock();
 

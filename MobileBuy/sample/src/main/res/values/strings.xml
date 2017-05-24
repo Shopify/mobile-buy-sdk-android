@@ -20,7 +20,8 @@
     <string name="checkout_apply_shipping_rate_progress">Applying shipping rate…</string>
     <string name="checkout_shipping_method_title">Shipping Method</string>
     <string name="checkout_shipping_method_change">CHANGE</string>
-    <string name="checkout_shipping_method_not_available">Not Available</string>
+    <string name="checkout_shipping_method_not_selected">Not Selected</string>
+    <string name="checkout_shipping_method_price_not_available">N/A</string>
     <string name="checkout_shipping_method_select_title">Select Shipping Method</string>
     <string name="checkout_confirm">Confirm Order</string>
     <string name="checkout_complete_progress">Confirming Order …</string>

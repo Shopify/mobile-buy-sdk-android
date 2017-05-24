@@ -28,6 +28,7 @@ import android.support.annotation.NonNull;
 
 import com.apollographql.apollo.ApolloCall;
 import com.apollographql.apollo.ApolloClient;
+import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.cache.http.HttpCacheControl;
 import com.shopify.sample.RxUtil;
@@ -38,12 +39,15 @@ import com.shopify.sample.domain.CheckoutEmailUpdateQuery;
 import com.shopify.sample.domain.CheckoutShippingAddressUpdateQuery;
 import com.shopify.sample.domain.CheckoutShippingLineUpdateQuery;
 import com.shopify.sample.domain.CheckoutShippingRatesQuery;
+import com.shopify.sample.domain.PaymentByIdQuery;
 import com.shopify.sample.domain.fragment.CheckoutFragment;
 import com.shopify.sample.domain.fragment.CheckoutShippingRatesFragment;
 import com.shopify.sample.domain.fragment.PaymentFragment;
 
 import io.reactivex.Single;
+import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
+import timber.log.Timber;
 
 import static com.shopify.sample.RxUtil.queryResponseDataTransformer;
 import static com.shopify.sample.RxUtil.rxApolloCall;
@@ -144,6 +148,26 @@ public final class CheckoutRepository {
       .map(data -> data.payment
         .map(it -> it.fragments)
         .flatMap(it -> it.paymentFragment)
+        .get())
+      .subscribeOn(Schedulers.io());
+  }
+
+  public Single<PaymentFragment> paymentById(@NonNull final PaymentByIdQuery query) {
+    checkNotNull(query, "query == null");
+    ApolloCall<Optional<PaymentByIdQuery.Data>> call = apolloClient.newCall(query)
+      .httpCacheControl(HttpCacheControl.NETWORK_ONLY);
+    return Single.fromCallable(call::clone)
+      .flatMap(RxUtil::rxApolloCall)
+      .doOnSuccess(new Consumer<Response<Optional<PaymentByIdQuery.Data>>>() {
+        @Override public void accept(@io.reactivex.annotations.NonNull final Response<Optional<PaymentByIdQuery.Data>> optionalResponse) throws Exception {
+          Timber.e(optionalResponse.toString());
+        }
+      })
+      .compose(queryResponseDataTransformer())
+      .map(data -> data
+        .flatMap(it -> it.node)
+        .map(it -> it.fragments)
+        .map(it -> it.paymentFragment)
         .get())
       .subscribeOn(Schedulers.io());
   }

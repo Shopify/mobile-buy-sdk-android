@@ -26,6 +26,8 @@ package com.shopify.sample.domain.interactor;
 
 import android.support.annotation.NonNull;
 
+import com.apollographql.apollo.exception.ApolloHttpException;
+import com.apollographql.apollo.exception.ApolloNetworkException;
 import com.shopify.sample.SampleApplication;
 import com.shopify.sample.domain.CheckoutShippingRatesQuery;
 import com.shopify.sample.domain.model.Checkout;
@@ -56,7 +58,7 @@ public final class RealCheckoutShippingRatesInteractor implements CheckoutShippi
         shippingRates.ready ? Single.just(shippingRates) : Single.error(new NotReadyException("Shipping rates not available yet")))
       .retryWhen(RxRetryHandler.exponentialBackoff(500, TimeUnit.MILLISECONDS, 1.2f)
         .maxRetries(10)
-        .when(t -> t instanceof NotReadyException)
+        .when(t -> t instanceof NotReadyException || t instanceof ApolloHttpException || t instanceof ApolloNetworkException)
         .build());
   }
 }

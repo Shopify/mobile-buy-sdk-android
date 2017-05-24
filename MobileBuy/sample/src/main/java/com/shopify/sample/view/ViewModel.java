@@ -22,40 +22,15 @@
  *   THE SOFTWARE.
  */
 
-package com.shopify.sample.util;
+package com.shopify.sample.view;
 
-import android.arch.lifecycle.LiveData;
+public interface ViewModel {
 
-@SuppressWarnings("WeakerAccess")
-public final class ProgressLiveData extends LiveData<ProgressLiveData.Progress> {
+  void cancelAllRequests();
 
-  public void show(final int requestId) {
-    setValue(new Progress(requestId, true));
-  }
+  void cancelRequest(int requestId);
 
-  public void hide(final int requestId) {
-    Progress progress = getValue();
-    if (progress == null || !progress.show || progress.requestId != requestId) {
-      return;
-    }
-    setValue(new Progress(requestId, false));
-  }
+  ProgressLiveData progressLiveData();
 
-  public void hide() {
-    Progress progress = getValue();
-    if (progress == null || !progress.show) {
-      return;
-    }
-    setValue(new Progress(progress.requestId, false));
-  }
-
-  public static final class Progress {
-    public final int requestId;
-    public final boolean show;
-
-    Progress(final int requestId, final boolean show) {
-      this.requestId = requestId;
-      this.show = show;
-    }
-  }
+  UserErrorCallback errorErrorCallback();
 }

@@ -22,50 +22,32 @@
  *   THE SOFTWARE.
  */
 
-package com.shopify.sample.view.cart;
+package com.shopify.sample.view.checkout;
 
+import android.arch.lifecycle.LiveData;
 import android.content.Intent;
-import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.google.android.gms.wallet.MaskedWallet;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.shopify.buy3.pay.PayCart;
-import com.shopify.sample.domain.model.Checkout;
-import com.shopify.sample.view.LifeCycleBoundCallback;
 import com.shopify.sample.view.ViewModel;
 
 import java.util.UUID;
 
 @SuppressWarnings("WeakerAccess")
-public interface CartViewModel extends ViewModel {
-  int REQUEST_ID_UPDATE_CART = UUID.randomUUID().hashCode();
-  int REQUEST_ID_CREATE_WEB_CHECKOUT = UUID.randomUUID().hashCode();
-  int REQUEST_ID_CREATE_ANDROID_PAY_CHECKOUT = UUID.randomUUID().hashCode();
-  int REQUEST_ID_PREPARE_ANDROID_PAY = UUID.randomUUID().hashCode();
+public interface CheckoutViewModel extends ViewModel {
+  int REQUEST_ID_UPDATE_CHECKOUT_SHIPPING_ADDRESS = UUID.randomUUID().hashCode();
+  int REQUEST_ID_APPLY_SHIPPING_RATE = UUID.randomUUID().hashCode();
+  int REQUEST_ID_CONFIRM_CHECKOUT = UUID.randomUUID().hashCode();
+  int REQUEST_ID_COMPLETE_CHECKOUT = UUID.randomUUID().hashCode();
 
-  void onGoogleApiClientConnectionChanged(boolean connected);
+  LiveData<PayCart> payCartLiveData();
 
-  LifeCycleBoundCallback<Checkout> webCheckoutCallback();
+  void confirmCheckout(@NonNull GoogleApiClient googleApiClient);
 
-  LifeCycleBoundCallback<CartViewModel.AndroidPayCheckout> androidPayCheckoutCallback();
+  void handleWalletResponse(int requestCode, int resultCode, @Nullable Intent data, @NonNull GoogleApiClient googleApiClient);
 
-  LifeCycleBoundCallback<PayCart> androidPayStartCheckoutCallback();
-
-  void handleMaskedWalletResponse(int requestCode, int resultCode, @Nullable Intent data);
-
-  Bundle saveState();
-
-  void restoreState(Bundle bundle);
-
-  final class AndroidPayCheckout {
-    public final String checkoutId;
-    public final PayCart payCart;
-    public final MaskedWallet maskedWallet;
-
-    AndroidPayCheckout(final String checkoutId, final PayCart payCart, final MaskedWallet maskedWallet) {
-      this.checkoutId = checkoutId;
-      this.payCart = payCart;
-      this.maskedWallet = maskedWallet;
-    }
+  class ShippingRateMissingException extends RuntimeException {
   }
 }

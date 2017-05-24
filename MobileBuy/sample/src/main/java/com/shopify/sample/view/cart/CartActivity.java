@@ -55,14 +55,13 @@ import butterknife.ButterKnife;
 public final class CartActivity extends AppCompatActivity implements LifecycleRegistryOwner,
   GoogleApiClient.ConnectionCallbacks {
   @BindView(R.id.root) View rootView;
-  @BindView(R.id.cart_header) CartCheckoutHeaderView cartCheckoutHeaderView;
+  @BindView(R.id.cart_header) CartHeaderView cartHeaderView;
   @BindView(R.id.cart_list) CartListView cartListView;
   @BindView(R.id.toolbar) Toolbar toolbarView;
 
   private final LifecycleRegistry lifecycleRegistry = new LifecycleRegistry(this);
-
-  private CartHeaderViewModel cartHeaderViewModel;
   private CartViewModel cartViewModel;
+  private CartHeaderViewModel cartHeaderViewModel;
 
   private GoogleApiClient googleApiClient;
   private ProgressDialogHelper progressDialogHelper;
@@ -79,13 +78,13 @@ public final class CartActivity extends AppCompatActivity implements LifecycleRe
   @Override public void onConnected(@Nullable final Bundle bundle) {
     PayHelper.isReadyToPay(this, googleApiClient, Collections.emptyList(), result -> {
       if (lifecycleRegistry.getCurrentState().isAtLeast(Lifecycle.State.STARTED)) {
-        cartHeaderViewModel.onGoogleApiClientConnectionChanged(true);
+        cartViewModel.onGoogleApiClientConnectionChanged(true);
       }
     });
   }
 
   @Override public void onConnectionSuspended(final int i) {
-    cartHeaderViewModel.onGoogleApiClientConnectionChanged(false);
+    cartViewModel.onGoogleApiClientConnectionChanged(false);
   }
 
   @SuppressWarnings("ConstantConditions") @Override protected void onCreate(@Nullable final Bundle savedInstanceState) {
@@ -149,24 +148,18 @@ public final class CartActivity extends AppCompatActivity implements LifecycleRe
 
   @Override protected void onSaveInstanceState(final Bundle outState) {
     super.onSaveInstanceState(outState);
-    outState.putBundle(CartViewModel.class.getName(), cartViewModel.saveState());
+    outState.putBundle(RealCartViewModel.class.getName(), cartViewModel.saveState());
   }
 
   @Override protected void onRestoreInstanceState(final Bundle savedInstanceState) {
     super.onRestoreInstanceState(savedInstanceState);
-    cartViewModel.restoreState(savedInstanceState.getBundle(CartViewModel.class.getName()));
+    cartViewModel.restoreState(savedInstanceState.getBundle(RealCartViewModel.class.getName()));
   }
 
   private void initViewModels() {
-    cartHeaderViewModel = ViewModelProviders.of(this).get(CartHeaderViewModel.class);
-    cartViewModel = ViewModelProviders.of(this).get(CartViewModel.class);
-
-    cartHeaderViewModel.checkoutCallback().observe(this.getLifecycle(), request -> {
-      if (request != null) {
-        cartViewModel.checkout(request.checkoutType == CartHeaderViewModel.CheckoutRequest.CHECKOUT_TYPE_WEB ?
-          CartViewModel.CHECKOUT_TYPE_WEB : CartViewModel.CHECKOUT_TYPE_ANDROID_PAY, request.cart);
-      }
-    });
+    RealCartViewModel realCartViewModel = ViewModelProviders.of(this).get(RealCartViewModel.class);
+    cartHeaderViewModel = realCartViewModel;
+    cartViewModel = realCartViewModel;
 
     cartViewModel.webCheckoutCallback().observe(this.getLifecycle(), checkout -> {
       if (checkout != null) {
@@ -193,13 +186,13 @@ public final class CartActivity extends AppCompatActivity implements LifecycleRe
         }
       }
     });
-    cartViewModel.errorCallback().observe(this.getLifecycle(), error -> {
+    cartViewModel.errorErrorCallback().observe(this.getLifecycle(), error -> {
       if (error != null) {
         showError(error.requestId, error.t);
       }
     });
 
-    cartCheckoutHeaderView.bindViewModel(cartHeaderViewModel);
+    cartHeaderView.bindViewModel(cartHeaderViewModel);
   }
 
   private void showProgress(final int requestId) {

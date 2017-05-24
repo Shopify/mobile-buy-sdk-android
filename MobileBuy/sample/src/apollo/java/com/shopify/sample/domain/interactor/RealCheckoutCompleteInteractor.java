@@ -26,17 +26,23 @@ package com.shopify.sample.domain.interactor;
 
 import android.support.annotation.NonNull;
 
+import com.apollographql.apollo.exception.ApolloHttpException;
+import com.apollographql.apollo.exception.ApolloNetworkException;
 import com.shopify.buy3.pay.PayAddress;
 import com.shopify.buy3.pay.PayCart;
 import com.shopify.buy3.pay.PaymentToken;
 import com.shopify.sample.SampleApplication;
 import com.shopify.sample.domain.CheckoutCompleteWithAndroidPayQuery;
 import com.shopify.sample.domain.CheckoutEmailUpdateQuery;
-import com.shopify.sample.domain.CheckoutShippingLineUpdateQuery;
+import com.shopify.sample.domain.PaymentByIdQuery;
 import com.shopify.sample.domain.model.Payment;
 import com.shopify.sample.domain.repository.CheckoutRepository;
 import com.shopify.sample.domain.type.MailingAddressInput;
 import com.shopify.sample.domain.type.TokenizedPaymentInput;
+import com.shopify.sample.util.NotReadyException;
+import com.shopify.sample.util.RxRetryHandler;
+
+import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Single;
 
@@ -51,14 +57,12 @@ public final class RealCheckoutCompleteInteractor implements CheckoutCompleteInt
   }
 
   @Override public Single<Payment> execute(@NonNull final String checkoutId, @NonNull final PayCart payCart,
-    @NonNull final PaymentToken paymentToken, @NonNull final String email, @NonNull final PayAddress billingAddress,
-    @NonNull final String shippingRateHandle) {
+    @NonNull final PaymentToken paymentToken, @NonNull final String email, @NonNull final PayAddress billingAddress) {
     checkNotBlank(checkoutId, "checkoutId can't be empty");
     checkNotNull(payCart, "payCart == null");
     checkNotNull(paymentToken, "paymentToken == null");
     checkNotBlank(email, "email can't be empty");
     checkNotNull(billingAddress, "billingAddress == null");
-    checkNotBlank(shippingRateHandle, "shippingRateHandle can't be empty");
 
     MailingAddressInput mailingAddressInput = MailingAddressInput.builder()
       .address1(billingAddress.address1)
@@ -83,8 +87,20 @@ public final class RealCheckoutCompleteInteractor implements CheckoutCompleteInt
 
     return repository
       .updateEmail(new CheckoutEmailUpdateQuery(checkoutId, email))
-      .flatMap(it -> repository.updateShippingLine(new CheckoutShippingLineUpdateQuery(checkoutId, shippingRateHandle)))
       .flatMap(it -> repository.complete(new CheckoutCompleteWithAndroidPayQuery(checkoutId, paymentInput)))
+      .flatMap(it -> {
+        if (it.ready) {
+          return Single.just(it);
+        } else {
+          return repository.paymentById(new PaymentByIdQuery(it.id))
+            .flatMap(payment -> payment.ready ? Single.just(payment)
+              : Single.error(new NotReadyException("Payment transaction is not finished")))
+            .retryWhen(RxRetryHandler.exponentialBackoff(500, TimeUnit.MILLISECONDS, 1.2f)
+              .maxRetries(10)
+              .when(t -> t instanceof NotReadyException || t instanceof ApolloHttpException || t instanceof ApolloNetworkException)
+              .build());
+        }
+      })
       .map(Converters::convertToPayment);
   }
 }
