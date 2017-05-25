@@ -120,7 +120,8 @@ public interface GraphCall<T extends AbstractResponse<T>> {
     void onResponse(@NonNull GraphResponse<T> response);
 
     /**
-     * Called when {@code GraphQL} call could not be executed. Possible reasons for failure include cancellation, timeouts, network failure, and parsing error.
+     * Called when {@code GraphQL} call could not be executed.
+     * Possible reasons for failure include cancellation, timeouts, network failure, and parsing error.
      *
      * @param error {@link GraphError} that has been thrown during call execution
      * @see GraphCallCanceledError
