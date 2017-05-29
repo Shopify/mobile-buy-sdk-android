@@ -97,8 +97,10 @@ public final class ShippingRatesView extends ConstraintLayout implements Lifecyc
   void onChangeClick() {
     Checkout.ShippingRates shippingRates = viewModel.shippingRatesLiveData().getValue();
     if (shippingRates == null || shippingRates.shippingRates.isEmpty()) {
+      viewModel.fetchShippingRates();
       return;
     }
+
     new ShippingRateSelectDialog(getContext()).show(shippingRates, shippingRate ->
       viewModel.selectShippingRate(shippingRate));
   }

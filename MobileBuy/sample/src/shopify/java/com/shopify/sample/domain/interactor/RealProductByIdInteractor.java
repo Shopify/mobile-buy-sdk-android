@@ -44,7 +44,7 @@ public final class RealProductByIdInteractor implements ProductByIdInteractor {
 
   @NonNull @Override public Single<ProductDetails> execute(@NonNull final String productId) {
     checkNotNull(productId, "productId == null");
-    Storefront.ProductQueryDefinition query = it -> it
+    Storefront.ProductQueryDefinition query = q -> q
       .title()
       .descriptionHtml()
       .tags()
@@ -70,6 +70,8 @@ public final class RealProductByIdInteractor implements ProductByIdInteractor {
           )
         )
       );
-    return repository.product(productId, query).map(Converters::convertToProductDetails);
+    return repository
+      .product(productId, query)
+      .map(Converters::convertToProductDetails);
   }
 }

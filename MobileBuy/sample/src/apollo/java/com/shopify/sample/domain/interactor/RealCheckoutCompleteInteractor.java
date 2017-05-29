@@ -36,7 +36,9 @@ import com.shopify.sample.domain.CheckoutCompleteWithAndroidPayQuery;
 import com.shopify.sample.domain.CheckoutEmailUpdateQuery;
 import com.shopify.sample.domain.PaymentByIdQuery;
 import com.shopify.sample.domain.model.Payment;
+import com.shopify.sample.domain.model.UserMessageError;
 import com.shopify.sample.domain.repository.CheckoutRepository;
+import com.shopify.sample.domain.repository.UserError;
 import com.shopify.sample.domain.type.MailingAddressInput;
 import com.shopify.sample.domain.type.TokenizedPaymentInput;
 import com.shopify.sample.util.NotReadyException;
@@ -101,6 +103,7 @@ public final class RealCheckoutCompleteInteractor implements CheckoutCompleteInt
               .build());
         }
       })
-      .map(Converters::convertToPayment);
+      .map(Converters::convertToPayment)
+      .onErrorResumeNext(t -> Single.error( (t instanceof UserError) ? new UserMessageError(t.getMessage()) : t));
   }
 }

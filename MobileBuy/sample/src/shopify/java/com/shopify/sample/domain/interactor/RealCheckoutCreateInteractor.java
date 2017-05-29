@@ -30,7 +30,9 @@ import com.shopify.buy3.Storefront;
 import com.shopify.graphql.support.ID;
 import com.shopify.sample.SampleApplication;
 import com.shopify.sample.domain.model.Checkout;
+import com.shopify.sample.domain.model.UserMessageError;
 import com.shopify.sample.domain.repository.CheckoutRepository;
+import com.shopify.sample.domain.repository.UserError;
 
 import java.util.List;
 
@@ -51,10 +53,12 @@ public final class RealCheckoutCreateInteractor implements CheckoutCreateInterac
 
     List<Storefront.CheckoutLineItemInput> storefrontLineItems = mapItems(lineItems, lineItem ->
       new Storefront.CheckoutLineItemInput(new ID(lineItem.variantId), lineItem.quantity));
+
     Storefront.CheckoutCreateInput input = new Storefront.CheckoutCreateInput().setLineItems(storefrontLineItems);
 
-    Storefront.CheckoutCreatePayloadQueryDefinition query =
-      it -> it.checkout(new CheckoutFragment()).userErrors(userError -> userError.field().message());
-    return repository.create(input, query).map(Converters::convertToCheckout);
+    return repository
+      .create(input, q -> q.checkout(new CheckoutCreateFragment()))
+      .map(Converters::convertToCheckout)
+      .onErrorResumeNext(t -> Single.error((t instanceof UserError) ? new UserMessageError(t.getMessage()) : t));
   }
 }

@@ -29,7 +29,9 @@ import android.support.annotation.NonNull;
 import com.shopify.sample.SampleApplication;
 import com.shopify.sample.domain.CheckoutCreateQuery;
 import com.shopify.sample.domain.model.Checkout;
+import com.shopify.sample.domain.model.UserMessageError;
 import com.shopify.sample.domain.repository.CheckoutRepository;
+import com.shopify.sample.domain.repository.UserError;
 import com.shopify.sample.domain.type.CheckoutCreateInput;
 import com.shopify.sample.domain.type.CheckoutLineItemInput;
 
@@ -56,7 +58,10 @@ public final class RealCheckoutCreateInteractor implements CheckoutCreateInterac
         .quantity(lineItem.quantity)
         .build());
     CheckoutCreateInput input = CheckoutCreateInput.builder().lineItems(lineItemInputs).build();
-    CheckoutCreateQuery query = CheckoutCreateQuery.builder().input(input).build();
-    return repository.create(query).map(Converters::convertToCheckout);
+    CheckoutCreateQuery query = new CheckoutCreateQuery(input).builder().input(input).build();
+
+    return repository.create(query)
+      .map(Converters::convertToCheckout)
+      .onErrorResumeNext(t -> Single.error( (t instanceof UserError) ? new UserMessageError(t.getMessage()) : t));
   }
 }

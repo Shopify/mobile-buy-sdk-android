@@ -44,7 +44,7 @@ public final class RealCollectionNextPageInteractor implements CollectionNextPag
   }
 
   @NonNull @Override public Single<List<Collection>> execute(@Nullable final String cursor, final int perPage) {
-    Storefront.CollectionConnectionQueryDefinition query = it -> it
+    Storefront.CollectionConnectionQueryDefinition query = q -> q
       .edges(collectionEdge -> collectionEdge
         .cursor()
         .node(collection -> collection
@@ -67,6 +67,8 @@ public final class RealCollectionNextPageInteractor implements CollectionNextPag
           )
         )
       );
-    return repository.nextPage(cursor, perPage, query).map(Converters::convertToCollections);
+    return repository
+      .nextPage(cursor, perPage, query)
+      .map(Converters::convertToCollections);
   }
 }

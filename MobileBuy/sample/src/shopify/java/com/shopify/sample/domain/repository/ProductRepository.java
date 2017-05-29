@@ -30,7 +30,6 @@ import android.text.TextUtils;
 
 import com.shopify.buy3.GraphCall;
 import com.shopify.buy3.GraphClient;
-import com.shopify.buy3.GraphResponse;
 import com.shopify.buy3.Storefront;
 import com.shopify.graphql.support.ID;
 
@@ -53,6 +52,7 @@ public final class ProductRepository {
     final int perPage, @NonNull Storefront.ProductConnectionQueryDefinition query) {
     checkNotNull(collectionId, "collectionId == null");
     checkNotNull(query, "query == null");
+
     GraphCall<Storefront.QueryRoot> call = graphClient.queryGraph(Storefront.query(
       root -> root.node(
         new ID(collectionId),
@@ -65,8 +65,8 @@ public final class ProductRepository {
         )
       )
     ));
+
     return rxGraphQueryCall(call)
-      .map(GraphResponse::data)
       .map(it -> (Storefront.Collection) it.getNode())
       .map(Storefront.Collection::getProducts)
       .map(Storefront.ProductConnection::getEdges)
@@ -76,6 +76,7 @@ public final class ProductRepository {
   @NonNull public Single<Storefront.Product> product(@NonNull final String productId, @NonNull Storefront.ProductQueryDefinition query) {
     checkNotNull(productId, "productId == null");
     checkNotNull(query, "query == null");
+
     GraphCall<Storefront.QueryRoot> call = graphClient.queryGraph(Storefront.query(
       root -> root
         .node(new ID(productId), node -> node
@@ -83,8 +84,8 @@ public final class ProductRepository {
         )
       )
     );
+
     return rxGraphQueryCall(call)
-      .map(GraphResponse::data)
       .map(it -> (Storefront.Product) it.getNode())
       .subscribeOn(Schedulers.io());
   }

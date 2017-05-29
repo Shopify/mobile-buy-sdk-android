@@ -26,4 +26,5 @@
     <string name="checkout_confirm">Confirm Order</string>
     <string name="checkout_complete_progress">Confirming Order …</string>
     <string name="checkout_shipping_select_shipping_rate">Please select shipping method</string>
+    <string name="checkout_success">Your order has been placed successfully</string>
 </resources>

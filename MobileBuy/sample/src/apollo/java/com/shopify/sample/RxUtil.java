@@ -26,10 +26,8 @@ package com.shopify.sample;
 
 import com.apollographql.apollo.ApolloCall;
 import com.apollographql.apollo.api.Response;
-import com.apollographql.apollo.api.internal.Optional;
 
 import io.reactivex.Single;
-import io.reactivex.SingleSource;
 import io.reactivex.SingleTransformer;
 import io.reactivex.exceptions.Exceptions;
 
@@ -37,8 +35,8 @@ import static com.shopify.sample.util.Util.fold;
 
 public final class RxUtil {
 
-  public static <T> Single<Response<T>> rxApolloCall(final ApolloCall<T> call) {
-    return Single.create(emitter -> {
+  public static <T> Single<T> rxApolloCall(final ApolloCall<T> call) {
+    return Single.<Response<T>>create(emitter -> {
       emitter.setCancellable(call::cancel);
       try {
         emitter.onSuccess(call.execute());
@@ -46,10 +44,11 @@ public final class RxUtil {
         Exceptions.throwIfFatal(e);
         emitter.onError(e);
       }
-    });
+    })
+      .compose(queryResponseDataTransformer());
   }
 
-  public static <T> SingleTransformer<Response<Optional<T>>, Optional<T>> queryResponseDataTransformer() {
+  private static <T> SingleTransformer<Response<T>, T> queryResponseDataTransformer() {
     return upstream -> upstream.flatMap(response -> {
       if (response.errors().isEmpty()) {
         return Single.just(response.data());

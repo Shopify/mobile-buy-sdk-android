@@ -44,7 +44,9 @@ public final class RealCheckoutByIdInteractor implements CheckoutByIdInteractor 
 
   @Override public Single<Checkout> execute(@NonNull final String checkoutId) {
     checkNotBlank(checkoutId, "checkoutId can't be empty");
-    Storefront.NodeQueryDefinition query = it -> it.onCheckout(new CheckoutFragment());
-    return repository.checkout(checkoutId, query).map(Converters::convertToCheckout);
+
+    return repository
+      .checkout(checkoutId, q -> q.onCheckout(new CheckoutFragment()))
+      .map(Converters::convertToCheckout);
   }
 }

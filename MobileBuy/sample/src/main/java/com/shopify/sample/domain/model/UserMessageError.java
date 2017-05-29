@@ -22,32 +22,11 @@
  *   THE SOFTWARE.
  */
 
-package com.shopify.sample.domain.interactor;
+package com.shopify.sample.domain.model;
 
-import android.support.annotation.NonNull;
+public final class UserMessageError extends RuntimeException {
 
-import com.shopify.buy3.Storefront;
-import com.shopify.graphql.support.ID;
-import com.shopify.sample.SampleApplication;
-import com.shopify.sample.domain.model.Checkout;
-import com.shopify.sample.domain.repository.CheckoutRepository;
-
-import io.reactivex.Single;
-
-import static com.shopify.sample.util.Util.checkNotBlank;
-
-public final class RealCheckoutEmailUpdateInteractor implements CheckoutEmailUpdateInteractor {
-  private final CheckoutRepository repository;
-
-  public RealCheckoutEmailUpdateInteractor() {
-    repository = new CheckoutRepository(SampleApplication.graphClient());
-  }
-
-  @Override public Single<Checkout> execute(@NonNull final String checkoutId, @NonNull final String email) {
-    checkNotBlank(checkoutId, "checkoutId can't be empty");
-    checkNotBlank(email, "email can't be empty");
-
-    Storefront.CheckoutEmailUpdatePayloadQueryDefinition query = it -> it.checkout(new CheckoutFragment());
-    return repository.updateEmail(checkoutId, email, query).map(Converters::convertToCheckout);
+  public UserMessageError(final String message) {
+    super(message);
   }
 }

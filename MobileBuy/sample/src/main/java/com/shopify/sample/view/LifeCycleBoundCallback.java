@@ -27,6 +27,7 @@ package com.shopify.sample.view;
 import android.arch.lifecycle.Lifecycle;
 import android.arch.lifecycle.LifecycleObserver;
 import android.arch.lifecycle.LifecycleOwner;
+import android.arch.lifecycle.LifecycleRegistry;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.OnLifecycleEvent;
 
@@ -41,6 +42,32 @@ import static android.arch.lifecycle.Lifecycle.State.STARTED;
 public class LifeCycleBoundCallback<T> {
   private final List<LifecycleBoundObserver> observers = new LinkedList<>();
   private final ReadWriteLock lock = new ReentrantReadWriteLock();
+
+  private static final LifecycleOwner ALWAYS_ON = new LifecycleOwner() {
+
+    private LifecycleRegistry mRegistry = init();
+
+    private LifecycleRegistry init() {
+      LifecycleRegistry registry = new LifecycleRegistry(this);
+      registry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE);
+      registry.handleLifecycleEvent(Lifecycle.Event.ON_START);
+      registry.handleLifecycleEvent(Lifecycle.Event.ON_RESUME);
+      return registry;
+    }
+
+    @Override
+    public Lifecycle getLifecycle() {
+      return mRegistry;
+    }
+  };
+
+  public void observeForever(final Observer<T> observer) {
+    observe(ALWAYS_ON, observer);
+  }
+
+  public void observe(final LifecycleOwner lifecycle, final Observer<T> observer) {
+    observe(lifecycle.getLifecycle(), observer);
+  }
 
   public void observe(final Lifecycle lifecycle, final Observer<T> observer) {
     if (lifecycle.getCurrentState() == DESTROYED) {

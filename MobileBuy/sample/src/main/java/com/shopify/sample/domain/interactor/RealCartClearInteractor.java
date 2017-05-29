@@ -24,38 +24,18 @@
 
 package com.shopify.sample.domain.interactor;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.text.TextUtils;
+import com.shopify.sample.domain.repository.CartRepository;
+import com.shopify.sample.domain.repository.RealCartRepository;
 
-import com.shopify.sample.SampleApplication;
-import com.shopify.sample.domain.CollectionProductPageQuery;
-import com.shopify.sample.domain.model.Product;
-import com.shopify.sample.domain.repository.ProductRepository;
+public class RealCartClearInteractor implements CartClearInteractor {
 
-import java.util.List;
+  private final CartRepository cartRepository;
 
-import io.reactivex.Single;
-
-import static com.shopify.sample.util.Util.checkNotBlank;
-
-public class RealCollectionProductNextPageInteractor implements CollectionProductNextPageInteractor {
-  private final ProductRepository repository;
-
-  public RealCollectionProductNextPageInteractor() {
-    repository = new ProductRepository(SampleApplication.apolloClient());
+  public RealCartClearInteractor() {
+    this.cartRepository = new RealCartRepository();
   }
 
-  @NonNull @Override public Single<List<Product>> execute(@NonNull final String collectionId, @Nullable final String cursor,
-    final int perPage) {
-    checkNotBlank(collectionId, "collectionId can't be empty");
-
-    CollectionProductPageQuery query = CollectionProductPageQuery.builder()
-      .perPage(perPage)
-      .nextPageCursor(TextUtils.isEmpty(cursor) ? null : cursor)
-      .collectionId(collectionId)
-      .build();
-
-    return repository.nextPage(query).map(Converters::convertToProducts);
+  @Override public void execute() {
+    cartRepository.clear();
   }
 }

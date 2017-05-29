@@ -30,7 +30,6 @@ import android.text.TextUtils;
 
 import com.shopify.buy3.GraphCall;
 import com.shopify.buy3.GraphClient;
-import com.shopify.buy3.GraphResponse;
 import com.shopify.buy3.Storefront;
 
 import java.util.List;
@@ -51,6 +50,7 @@ public final class CollectionRepository {
   @NonNull public Single<List<Storefront.CollectionEdge>> nextPage(@Nullable final String cursor, final int perPage,
     @NonNull Storefront.CollectionConnectionQueryDefinition query) {
     checkNotNull(query, "query == null");
+
     GraphCall<Storefront.QueryRoot> call = graphClient.queryGraph(Storefront.query(
       root -> root.shop(
         shop -> shop.collections(
@@ -62,8 +62,8 @@ public final class CollectionRepository {
         )
       )
     ));
+
     return rxGraphQueryCall(call)
-      .map(GraphResponse::data)
       .map(Storefront.QueryRoot::getShop)
       .map(Storefront.Shop::getCollections)
       .map(Storefront.CollectionConnection::getEdges)

@@ -33,6 +33,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -46,6 +47,7 @@ import com.shopify.sample.R;
 import com.shopify.sample.domain.model.Checkout;
 import com.shopify.sample.view.ProgressDialogHelper;
 import com.shopify.sample.view.ScreenRouter;
+import com.shopify.sample.view.checkout.CheckoutViewModel;
 
 import java.util.Collections;
 
@@ -188,7 +190,7 @@ public final class CartActivity extends AppCompatActivity implements LifecycleRe
     });
     cartViewModel.errorErrorCallback().observe(this.getLifecycle(), error -> {
       if (error != null) {
-        showError(error.requestId, error.t);
+        showError(error.requestId, error.t, error.message);
       }
     });
 
@@ -211,7 +213,29 @@ public final class CartActivity extends AppCompatActivity implements LifecycleRe
     startActivity(intent);
   }
 
-  private void showError(final int requestId, final Throwable t) {
+  private void showError(final int requestId, final Throwable t, final String message) {
+    if (message != null) {
+      showAlertErrorMessage(message);
+      return;
+    }
+
+    if (t instanceof CheckoutViewModel.ShippingRateMissingException) {
+      showAlertErrorMessage(getString(R.string.checkout_shipping_select_shipping_rate));
+      return;
+    }
+
+    showDefaultErrorMessage();
+  }
+
+  private void showAlertErrorMessage(final String message) {
+    new AlertDialog.Builder(this)
+      .setMessage(message)
+      .setPositiveButton(android.R.string.ok, (dialog, which) -> {
+      })
+      .show();
+  }
+
+  private void showDefaultErrorMessage() {
     Snackbar snackbar = Snackbar.make(rootView, R.string.default_error, Snackbar.LENGTH_LONG);
     snackbar.getView().setBackgroundResource(R.color.snackbar_error_background);
     snackbar.show();

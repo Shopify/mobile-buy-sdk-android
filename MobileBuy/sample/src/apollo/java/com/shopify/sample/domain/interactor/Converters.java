@@ -27,6 +27,7 @@ package com.shopify.sample.domain.interactor;
 import com.shopify.sample.domain.CollectionPageWithProductsQuery;
 import com.shopify.sample.domain.CollectionProductPageQuery;
 import com.shopify.sample.domain.ProductByIdQuery;
+import com.shopify.sample.domain.fragment.CheckoutCreateFragment;
 import com.shopify.sample.domain.fragment.CheckoutFragment;
 import com.shopify.sample.domain.fragment.CheckoutShippingRatesFragment;
 import com.shopify.sample.domain.fragment.PaymentFragment;
@@ -97,7 +98,14 @@ final class Converters {
     Checkout.ShippingRates shippingRates = checkout.availableShippingRates.flatMap(it -> it.fragments.checkoutShippingRatesFragment)
       .transform(Converters::convertToShippingRates).or(new Checkout.ShippingRates(false, emptyList()));
     return new Checkout(checkout.id, checkout.webUrl, checkout.currencyCode.toString(), checkout.requiresShipping, lineItems, shippingRates,
-      shippingLine, checkout.totalTax, checkout.subtotalPrice, checkout.totalPrice);
+      shippingLine, checkout.totalTax, checkout.subtotalPrice, checkout.paymentDue);
+  }
+
+  @SuppressWarnings("ConstantConditions") static Checkout convertToCheckout(final CheckoutCreateFragment checkout) {
+    List<Checkout.LineItem> lineItems = mapItems(checkout.lineItemConnection.lineItemEdges, it ->
+      new Checkout.LineItem(it.lineItem.variant.get().id, it.lineItem.title, it.lineItem.quantity, it.lineItem.variant.get().price));
+    return new Checkout(checkout.id, checkout.webUrl, checkout.currencyCode.toString(), checkout.requiresShipping, lineItems,
+      new Checkout.ShippingRates(false, emptyList()), null, checkout.totalTax, checkout.subtotalPrice, checkout.paymentDue);
   }
 
   static Checkout.ShippingRates convertToShippingRates(final CheckoutShippingRatesFragment availableShippingRates) {
@@ -107,8 +115,7 @@ final class Converters {
   }
 
   static Payment convertToPayment(final PaymentFragment payment) {
-    return new Payment(payment.id, payment.errorMessage.orNull(), payment.ready,
-      payment.transaction.transform(it -> new Payment.Transaction(it.status.name())).orNull());
+    return new Payment(payment.id, payment.errorMessage.orNull(), payment.ready);
   }
 
   private Converters() {

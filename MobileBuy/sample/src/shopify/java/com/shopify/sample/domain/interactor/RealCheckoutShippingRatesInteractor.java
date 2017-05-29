@@ -26,6 +26,8 @@ package com.shopify.sample.domain.interactor;
 
 import android.support.annotation.NonNull;
 
+import com.shopify.buy3.GraphHttpError;
+import com.shopify.buy3.GraphNetworkError;
 import com.shopify.buy3.Storefront;
 import com.shopify.sample.SampleApplication;
 import com.shopify.sample.domain.model.Checkout;
@@ -48,14 +50,15 @@ public final class RealCheckoutShippingRatesInteractor implements CheckoutShippi
 
   @Override public Single<Checkout.ShippingRates> execute(@NonNull final String checkoutId) {
     checkNotBlank(checkoutId, "checkoutId can't be empty");
-    Storefront.CheckoutQueryDefinition query = it -> it.availableShippingRates(new CheckoutShippingRatesFragment());
-    return repository.shippingRates(checkoutId, query)
+    return repository
+      .shippingRates(checkoutId, q -> q.availableShippingRates(new CheckoutShippingRatesFragment()))
       .map(Converters::convertToShippingRates)
       .flatMap(shippingRates ->
         shippingRates.ready ? Single.just(shippingRates) : Single.error(new NotReadyException("Shipping rates not available yet")))
-      .retryWhen(RxRetryHandler.exponentialBackoff(500, TimeUnit.MILLISECONDS, 1.2f)
+      .retryWhen(RxRetryHandler
+        .exponentialBackoff(500, TimeUnit.MILLISECONDS, 1.2f)
         .maxRetries(10)
-        .when(t -> t instanceof NotReadyException)
+        .when(t -> t instanceof NotReadyException || t instanceof GraphHttpError || t instanceof GraphNetworkError)
         .build());
   }
 }

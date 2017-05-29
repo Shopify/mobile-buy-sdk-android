@@ -52,6 +52,7 @@ public final class RealCheckoutShippingRatesInteractor implements CheckoutShippi
     checkNotBlank(checkoutId, "checkoutId can't be empty");
 
     CheckoutShippingRatesQuery query = new CheckoutShippingRatesQuery(checkoutId);
+
     return repository.shippingRates(query)
       .map(Converters::convertToShippingRates)
       .flatMap(shippingRates ->

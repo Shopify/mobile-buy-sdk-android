@@ -46,6 +46,7 @@ public final class RealCheckoutDetailsInteractor implements CheckoutByIdInteract
     checkNotBlank(checkoutId, "checkoutId can't be empty");
 
     CheckoutByIdQuery query = new CheckoutByIdQuery(checkoutId);
+
     return repository.checkout(query).map(Converters::convertToCheckout);
   }
 }
