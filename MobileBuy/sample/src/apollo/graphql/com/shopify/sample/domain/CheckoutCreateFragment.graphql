@@ -1,4 +1,4 @@
-fragment CheckoutFragment on Checkout {
+fragment CheckoutCreateFragment on Checkout {
   id
   webUrl
   requiresShipping
@@ -18,13 +18,5 @@ fragment CheckoutFragment on Checkout {
         }
       }
     }
-  }
-  availableShippingRates {
-    ... CheckoutShippingRatesFragment
-  }
-  shippingLine {
-    handle
-    price
-    title
   }
 }

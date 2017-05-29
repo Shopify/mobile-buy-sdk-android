@@ -24,29 +24,7 @@
 
 package com.shopify.sample.domain.interactor;
 
-import android.support.annotation.NonNull;
+public interface CartClearInteractor {
 
-import com.shopify.sample.SampleApplication;
-import com.shopify.sample.domain.CheckoutEmailUpdateQuery;
-import com.shopify.sample.domain.model.Checkout;
-import com.shopify.sample.domain.repository.CheckoutRepository;
-
-import io.reactivex.Single;
-
-import static com.shopify.sample.util.Util.checkNotBlank;
-
-public final class RealCheckoutEmailUpdateInteractor implements CheckoutEmailUpdateInteractor {
-  private final CheckoutRepository repository;
-
-  public RealCheckoutEmailUpdateInteractor() {
-    this.repository = new CheckoutRepository(SampleApplication.apolloClient());
-  }
-
-  @Override public Single<Checkout> execute(@NonNull final String checkoutId, @NonNull final String email) {
-    checkNotBlank(checkoutId, "checkoutId can't be empty");
-    checkNotBlank(email, "email can't be empty");
-
-    CheckoutEmailUpdateQuery query = new CheckoutEmailUpdateQuery(checkoutId, email);
-    return repository.updateEmail(query).map(Converters::convertToCheckout);
-  }
+  void execute();
 }

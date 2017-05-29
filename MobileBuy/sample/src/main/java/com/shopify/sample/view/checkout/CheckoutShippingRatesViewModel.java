@@ -36,6 +36,8 @@ import java.util.UUID;
 public interface CheckoutShippingRatesViewModel extends ViewModel {
   int REQUEST_ID_FETCH_SHIPPING_RATES = UUID.randomUUID().hashCode();
 
+  void fetchShippingRates();
+
   void selectShippingRate(@Nullable Checkout.ShippingRate shippingRate);
 
   LiveData<Checkout.ShippingRate> selectedShippingRateLiveData();

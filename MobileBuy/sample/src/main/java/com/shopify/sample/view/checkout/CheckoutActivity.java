@@ -35,6 +35,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
@@ -67,7 +68,6 @@ import static com.shopify.sample.util.Util.checkNotNull;
 import static com.shopify.sample.view.checkout.CheckoutShippingRatesViewModel.REQUEST_ID_FETCH_SHIPPING_RATES;
 import static com.shopify.sample.view.checkout.CheckoutViewModel.REQUEST_ID_APPLY_SHIPPING_RATE;
 import static com.shopify.sample.view.checkout.CheckoutViewModel.REQUEST_ID_COMPLETE_CHECKOUT;
-import static com.shopify.sample.view.checkout.CheckoutViewModel.REQUEST_ID_CONFIRM_CHECKOUT;
 import static com.shopify.sample.view.checkout.CheckoutViewModel.REQUEST_ID_UPDATE_CHECKOUT_SHIPPING_ADDRESS;
 
 public final class CheckoutActivity extends AppCompatActivity implements LifecycleRegistryOwner {
@@ -189,7 +189,7 @@ public final class CheckoutActivity extends AppCompatActivity implements Lifecyc
     });
     realCheckoutViewModel.errorErrorCallback().observe(this.getLifecycle(), error -> {
       if (error != null) {
-        showError(error.requestId, error.t);
+        showError(error.requestId, error.t, error.message);
       }
     });
     realCheckoutViewModel.payCartLiveData().observe(this, payCart -> {
@@ -203,6 +203,11 @@ public final class CheckoutActivity extends AppCompatActivity implements Lifecyc
     realCheckoutViewModel.maskedWalletLiveData().observe(this, maskedWallet -> {
       if (maskedWallet != null) {
         updateMaskedWallet(maskedWallet);
+      }
+    });
+    realCheckoutViewModel.successPaymentLiveData().observe(this, payment -> {
+      if (payment != null) {
+        showCheckoutSuccessMessage();
       }
     });
 
@@ -260,16 +265,30 @@ public final class CheckoutActivity extends AppCompatActivity implements Lifecyc
     progressDialogHelper.dismiss(requestId);
   }
 
-  private void showError(final int requestId, final Throwable t) {
-    if (t instanceof CheckoutViewModel.ShippingRateMissingException) {
-      showError(R.string.checkout_shipping_select_shipping_rate);
-    } else {
-      showError(R.string.default_error);
+  private void showError(final int requestId, final Throwable t, final String message) {
+    if (message != null) {
+      showAlertErrorMessage(message);
+      return;
     }
+
+    if (t instanceof CheckoutViewModel.ShippingRateMissingException) {
+      showAlertErrorMessage(getString(R.string.checkout_shipping_select_shipping_rate));
+      return;
+    }
+
+    showDefaultErrorMessage();
   }
 
-  private void showError(final int message) {
-    Snackbar snackbar = Snackbar.make(rootView, message, Snackbar.LENGTH_LONG);
+  private void showAlertErrorMessage(final String message) {
+    new AlertDialog.Builder(this)
+      .setMessage(message)
+      .setPositiveButton(android.R.string.ok, (dialog, which) -> {
+      })
+      .show();
+  }
+
+  private void showDefaultErrorMessage() {
+    Snackbar snackbar = Snackbar.make(rootView, R.string.default_error, Snackbar.LENGTH_LONG);
     snackbar.getView().setBackgroundResource(R.color.snackbar_error_background);
     snackbar.getView().setMinimumHeight(confirmLayoutView.getHeight());
 
@@ -280,6 +299,13 @@ public final class CheckoutActivity extends AppCompatActivity implements Lifecyc
     textView.setGravity(Gravity.CENTER_VERTICAL);
 
     snackbar.show();
+  }
+
+  private void showCheckoutSuccessMessage() {
+    new AlertDialog.Builder(this)
+      .setMessage(R.string.checkout_success)
+      .setPositiveButton(android.R.string.ok, (dialog, which) -> finish())
+      .show();
   }
 
   private void connectGoogleApiClient() {

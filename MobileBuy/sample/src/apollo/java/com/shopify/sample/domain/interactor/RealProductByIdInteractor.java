@@ -44,7 +44,9 @@ public final class RealProductByIdInteractor implements ProductByIdInteractor {
 
   @NonNull @Override public Single<ProductDetails> execute(@NonNull final String productId) {
     checkNotBlank(productId, "productId can't be empty");
+
     ProductByIdQuery query = new ProductByIdQuery(productId);
+
     return repository.product(query).map(Converters::convertToProductDetails);
   }
 }

@@ -39,10 +39,12 @@ import com.shopify.buy3.pay.PayCart;
 import com.shopify.buy3.pay.PayHelper;
 import com.shopify.buy3.pay.PaymentToken;
 import com.shopify.sample.BuildConfig;
+import com.shopify.sample.domain.interactor.CartClearInteractor;
 import com.shopify.sample.domain.interactor.CheckoutCompleteInteractor;
 import com.shopify.sample.domain.interactor.CheckoutShippingAddressUpdateInteractor;
 import com.shopify.sample.domain.interactor.CheckoutShippingLineUpdateInteractor;
 import com.shopify.sample.domain.interactor.CheckoutShippingRatesInteractor;
+import com.shopify.sample.domain.interactor.RealCartClearInteractor;
 import com.shopify.sample.domain.interactor.RealCheckoutCompleteInteractor;
 import com.shopify.sample.domain.interactor.RealCheckoutShippingAddressUpdateInteractor;
 import com.shopify.sample.domain.interactor.RealCheckoutShippingLineUpdateInteractor;
@@ -51,6 +53,7 @@ import com.shopify.sample.domain.model.Checkout;
 import com.shopify.sample.domain.model.Payment;
 import com.shopify.sample.util.WeakSingleObserver;
 import com.shopify.sample.view.BaseViewModel;
+import com.shopify.sample.view.LifeCycleBoundCallback;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
@@ -67,12 +70,14 @@ public class RealCheckoutViewModel extends BaseViewModel implements CheckoutView
     new RealCheckoutShippingAddressUpdateInteractor();
   private final CheckoutShippingLineUpdateInteractor checkoutShippingLineUpdateInteractor = new RealCheckoutShippingLineUpdateInteractor();
   private final CheckoutCompleteInteractor checkoutCompleteInteractor = new RealCheckoutCompleteInteractor();
+  private final CartClearInteractor cartClearInteractor = new RealCartClearInteractor();
 
   private final MutableLiveData<PayCart> payCartLiveData = new MutableLiveData<>();
   private final MutableLiveData<MaskedWallet> maskedWalletLiveData = new MutableLiveData<>();
   private final MutableLiveData<Checkout.ShippingRate> pendingSelectShippingRateLiveData = new MutableLiveData<>();
   private final MutableLiveData<Checkout.ShippingRate> selectedShippingRateLiveData = new MutableLiveData<>();
   private final MutableLiveData<Checkout.ShippingRates> shippingRatesLiveData = new MutableLiveData<>();
+  private final LifeCycleBoundCallback<Payment> successPaymentLiveData = new LifeCycleBoundCallback<>();
 
   private final String checkoutId;
   private boolean newMaskedWalletRequired;
@@ -96,6 +101,19 @@ public class RealCheckoutViewModel extends BaseViewModel implements CheckoutView
         updateShippingAddress(PayAddress.fromUserAddress(it.getBuyerShippingAddress()));
       }
     });
+    successPaymentLiveData.observeForever(it -> {
+      if (it != null) {
+        cartClearInteractor.execute();
+      }
+    });
+  }
+
+  @Override public void fetchShippingRates() {
+    MaskedWallet maskedWallet = maskedWalletLiveData().getValue();
+    if (maskedWallet == null) {
+      return;
+    }
+    updateShippingAddress(PayAddress.fromUserAddress(maskedWallet.getBuyerShippingAddress()));
   }
 
   @Override public void selectShippingRate(final Checkout.ShippingRate shippingRate) {
@@ -114,8 +132,12 @@ public class RealCheckoutViewModel extends BaseViewModel implements CheckoutView
     return payCartLiveData;
   }
 
-  public LiveData<MaskedWallet> maskedWalletLiveData() {
+  @Override public LiveData<MaskedWallet> maskedWalletLiveData() {
     return maskedWalletLiveData;
+  }
+
+  @Override public LifeCycleBoundCallback<Payment> successPaymentLiveData() {
+    return successPaymentLiveData;
   }
 
   @Override public void confirmCheckout(@NonNull final GoogleApiClient googleApiClient) {
@@ -132,7 +154,6 @@ public class RealCheckoutViewModel extends BaseViewModel implements CheckoutView
       .build());
 
     if (newMaskedWalletRequired) {
-      newMaskedWalletRequired = false;
       PayHelper.newMaskedWallet(googleApiClient, maskedWalletLiveData.getValue());
     } else {
       PayHelper.requestFullWallet(googleApiClient, payCartLiveData.getValue(), maskedWalletLiveData.getValue());
@@ -151,6 +172,7 @@ public class RealCheckoutViewModel extends BaseViewModel implements CheckoutView
       }
 
       @Override public void onMaskedWallet(final MaskedWallet maskedWallet) {
+        newMaskedWalletRequired = false;
         maskedWalletLiveData.setValue(maskedWallet);
       }
 
@@ -191,6 +213,8 @@ public class RealCheckoutViewModel extends BaseViewModel implements CheckoutView
   }
 
   private void onRequestError(final int requestId, final Throwable t) {
+    Timber.e(t);
+
     if (requestId == REQUEST_ID_UPDATE_CHECKOUT_SHIPPING_ADDRESS) {
       newMaskedWalletRequired = true;
     }
@@ -262,7 +286,7 @@ public class RealCheckoutViewModel extends BaseViewModel implements CheckoutView
         .observeOn(AndroidSchedulers.mainThread())
         .subscribeWith(WeakSingleObserver.<RealCheckoutViewModel, Payment>forTarget(this)
           .delegateOnSuccess(RealCheckoutViewModel::onCompleteCheckout)
-          .delegateOnError(RealCheckoutViewModel::onCompleteCheckoutError)
+          .delegateOnError((viewModel, t) -> viewModel.onRequestError(REQUEST_ID_COMPLETE_CHECKOUT, t))
           .create()
         )
     );
@@ -270,21 +294,18 @@ public class RealCheckoutViewModel extends BaseViewModel implements CheckoutView
 
   private void onCompleteCheckout(final Payment payment) {
     hideProgress(REQUEST_ID_COMPLETE_CHECKOUT);
-    if (payment.ready) {
-      if (payment.errorMessage != null) {
-        Timber.e("Payment transaction failed");
-        notifyUserError(REQUEST_ID_COMPLETE_CHECKOUT, new RuntimeException("Payment transaction failed"), payment.errorMessage);
-      } else {
-        //
-      }
-    } else {
+    if (!payment.ready) {
       Timber.e("Payment transaction has not been finished yet");
       notifyUserError(REQUEST_ID_COMPLETE_CHECKOUT, new RuntimeException("Payment transaction has not been finished yet"));
+      return;
     }
-  }
 
-  private void onCompleteCheckoutError(Throwable t) {
-    Timber.e(t);
-    onRequestError(REQUEST_ID_COMPLETE_CHECKOUT, t);
+    if (payment.errorMessage != null) {
+      Timber.e("Payment transaction failed");
+      notifyUserError(REQUEST_ID_COMPLETE_CHECKOUT, new RuntimeException("Payment transaction failed"), payment.errorMessage);
+      return;
+    }
+
+    successPaymentLiveData.notify(payment);
   }
 }

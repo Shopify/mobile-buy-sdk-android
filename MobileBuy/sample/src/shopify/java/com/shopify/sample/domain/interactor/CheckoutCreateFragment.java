@@ -22,29 +22,29 @@
  *   THE SOFTWARE.
  */
 
-package com.shopify.sample.domain.model;
+package com.shopify.sample.domain.interactor;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import com.shopify.buy3.Storefront;
 
-import static com.shopify.sample.util.Util.checkNotBlank;
-
-public final class Payment {
-  @NonNull public final String id;
-  @Nullable public final String errorMessage;
-  public final boolean ready;
-
-  public Payment(@NonNull final String id, @Nullable final String errorMessage, final boolean ready) {
-    this.id = checkNotBlank(id, "id == null");
-    this.errorMessage = errorMessage;
-    this.ready = ready;
-  }
-
-  @Override public String toString() {
-    return "Payment{" +
-      "id='" + id + '\'' +
-      ", errorMessage='" + errorMessage + '\'' +
-      ", ready=" + ready +
-      '}';
+final class CheckoutCreateFragment implements Storefront.CheckoutQueryDefinition {
+  @Override public void define(final Storefront.CheckoutQuery query) {
+    query
+      .webUrl()
+      .requiresShipping()
+      .currencyCode()
+      .lineItems(250,
+        lineItemConnection -> lineItemConnection.edges(
+          lineItemEdge -> lineItemEdge.node(
+            lineItemNode -> lineItemNode
+              .variant(variant -> variant.price())
+              .quantity()
+              .title()
+          )
+        )
+      )
+      .totalPrice()
+      .totalTax()
+      .subtotalPrice()
+      .shippingLine(new CheckoutShippingRateFragment());
   }
 }

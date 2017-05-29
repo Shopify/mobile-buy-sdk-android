@@ -27,10 +27,10 @@ package com.shopify.sample.domain.repository;
 import android.support.annotation.NonNull;
 
 import com.apollographql.apollo.ApolloClient;
+import com.apollographql.apollo.api.internal.Optional;
 import com.shopify.sample.domain.CollectionProductPageQuery;
 import com.shopify.sample.domain.ProductByIdQuery;
 
-import java.util.Collections;
 import java.util.List;
 
 import io.reactivex.Single;
@@ -50,22 +50,20 @@ public final class ProductRepository {
     @NonNull final CollectionProductPageQuery query) {
     checkNotNull(query, "query == null");
     return rxApolloCall(apolloClient.newCall(query))
-      .map(response -> response.data()
-        .flatMap(it -> it.collection)
-        .flatMap(it -> it.asCollection)
-        .map(it -> it.productConnection)
-        .map(it -> it.productEdges)
-        .or(Collections.emptyList()))
+      .map(Optional::get)
+      .map(it -> it.collection.get())
+      .map(it -> it.asCollection.get())
+      .map(it -> it.productConnection)
+      .map(it -> it.productEdges)
       .subscribeOn(Schedulers.io());
   }
 
   @NonNull public Single<ProductByIdQuery.Data.AsProduct> product(@NonNull final ProductByIdQuery query) {
     checkNotNull(query, "query == null");
     return rxApolloCall(apolloClient.newCall(query))
-      .map(response -> response.data()
-        .flatMap(it -> it.node)
-        .flatMap(it -> it.asProduct)
-        .get())
+      .map(Optional::get)
+      .map(it -> it.node.get())
+      .map(it -> it.asProduct.get())
       .subscribeOn(Schedulers.io());
   }
 }

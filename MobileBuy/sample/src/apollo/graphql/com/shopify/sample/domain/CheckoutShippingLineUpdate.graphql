@@ -3,5 +3,9 @@ mutation CheckoutShippingLineUpdateQuery($checkoutId: ID!, $shippingRateHandle: 
     checkout {
       ...CheckoutFragment
     }
+    userErrors {
+      field
+      message
+    }
   }
 }

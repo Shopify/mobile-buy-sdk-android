@@ -28,7 +28,6 @@ import android.support.annotation.NonNull;
 
 import com.shopify.buy3.GraphCall;
 import com.shopify.buy3.GraphClient;
-import com.shopify.buy3.GraphResponse;
 import com.shopify.buy3.HttpCachePolicy;
 import com.shopify.buy3.Storefront;
 import com.shopify.graphql.support.ID;
@@ -43,6 +42,7 @@ import static com.shopify.sample.RxUtil.rxGraphMutationCall;
 import static com.shopify.sample.RxUtil.rxGraphQueryCall;
 import static com.shopify.sample.util.Util.checkNotBlank;
 import static com.shopify.sample.util.Util.checkNotNull;
+import static com.shopify.sample.util.Util.mapItems;
 
 public final class CheckoutRepository {
   private final GraphClient graphClient;
@@ -55,11 +55,12 @@ public final class CheckoutRepository {
     @NonNull final Storefront.CheckoutCreatePayloadQueryDefinition query) {
     checkNotNull(input, "input == null");
     checkNotNull(query, "query == null");
+
     GraphCall<Storefront.Mutation> call = graphClient.mutateGraph(Storefront.mutation(
       root -> root.checkoutCreate(input, query)
     ));
+
     return rxGraphMutationCall(call)
-      .map(GraphResponse::data)
       .map(Storefront.Mutation::getCheckoutCreate)
       .map(Storefront.CheckoutCreatePayload::getCheckout)
       .subscribeOn(Schedulers.io());
@@ -71,26 +72,35 @@ public final class CheckoutRepository {
     checkNotBlank(checkoutId, "checkoutId can't be empty");
     checkNotNull(input, "input == null");
     checkNotNull(query, "query == null");
+
     GraphCall<Storefront.Mutation> call = graphClient.mutateGraph(Storefront.mutation(
-      root -> root.checkoutShippingAddressUpdate(input, new ID(checkoutId), query)
-    ));
+      root -> root.checkoutShippingAddressUpdate(input, new ID(checkoutId), it ->
+        query.define(it.userErrors(userError -> userError.field().message())))
+      )
+    );
+
     return rxGraphMutationCall(call)
-      .map(GraphResponse::data)
       .map(Storefront.Mutation::getCheckoutShippingAddressUpdate)
+      .flatMap(it -> {
+        if (it.getUserErrors().isEmpty()) {
+          return Single.just(it);
+        } else {
+          return Single.error(new UserError(mapItems(it.getUserErrors(), Storefront.UserError::getMessage)));
+        }
+      })
       .map(Storefront.CheckoutShippingAddressUpdatePayload::getCheckout)
       .subscribeOn(Schedulers.io());
   }
 
-  public Single<Storefront.Checkout> checkout(@NonNull final String checkoutId, @NonNull final Storefront.NodeQueryDefinition nodeQuery) {
+  public Single<Storefront.Checkout> checkout(@NonNull final String checkoutId, @NonNull final Storefront.NodeQueryDefinition query) {
     checkNotBlank(checkoutId, "checkoutId can't be empty");
-    checkNotNull(nodeQuery, "query == null");
-    GraphCall<Storefront.QueryRoot> call = graphClient
-      .queryGraph(Storefront.query(
-        root -> root.node(new ID(checkoutId), nodeQuery)
-      ))
-      .cachePolicy(HttpCachePolicy.NETWORK_FIRST.expireAfter(5, TimeUnit.MINUTES));
+    checkNotNull(query, "query == null");
+
+    GraphCall<Storefront.QueryRoot> call = graphClient.queryGraph(Storefront.query(
+      root -> root.node(new ID(checkoutId), query)
+    )).cachePolicy(HttpCachePolicy.NETWORK_FIRST.expireAfter(5, TimeUnit.MINUTES));
+
     return rxGraphQueryCall(call)
-      .map(GraphResponse::data)
       .map(it -> (Storefront.Checkout) it.getNode())
       .subscribeOn(Schedulers.io());
   }
@@ -99,14 +109,13 @@ public final class CheckoutRepository {
     @NonNull final Storefront.CheckoutQueryDefinition query) {
     checkNotBlank(checkoutId, "checkoutId can't be empty");
     checkNotNull(query, "query == null");
-    GraphCall<Storefront.QueryRoot> call = graphClient
-      .queryGraph(Storefront.query(
-        root -> root.node(new ID(checkoutId), q -> q.onCheckout(query))
-      ))
-      .cachePolicy(HttpCachePolicy.NETWORK_ONLY);
+
+    GraphCall<Storefront.QueryRoot> call = graphClient.queryGraph(Storefront.query(
+      root -> root.node(new ID(checkoutId), q -> q.onCheckout(query))
+    )).cachePolicy(HttpCachePolicy.NETWORK_ONLY);
+
     return Single.fromCallable(call::clone)
       .flatMap(RxUtil::rxGraphQueryCall)
-      .map(GraphResponse::data)
       .map(it -> (Storefront.Checkout) it.getNode())
       .map(Storefront.Checkout::getAvailableShippingRates)
       .subscribeOn(Schedulers.io());
@@ -115,12 +124,22 @@ public final class CheckoutRepository {
   public Single<Storefront.Checkout> updateShippingLine(@NonNull final String checkoutId, @NonNull final String shippingRateHandle,
     @NonNull final Storefront.CheckoutShippingLineUpdatePayloadQueryDefinition query) {
     checkNotNull(query, "query == null");
+
     GraphCall<Storefront.Mutation> call = graphClient.mutateGraph(Storefront.mutation(
-      root -> root.checkoutShippingLineUpdate(new ID(checkoutId), shippingRateHandle, query)
+      root -> root.checkoutShippingLineUpdate(new ID(checkoutId), shippingRateHandle, it ->
+        query.define(it.userErrors(userError -> userError.field().message()))
+      )
     ));
+
     return rxGraphMutationCall(call)
-      .map(GraphResponse::data)
       .map(Storefront.Mutation::getCheckoutShippingLineUpdate)
+      .flatMap(it -> {
+        if (it.getUserErrors().isEmpty()) {
+          return Single.just(it);
+        } else {
+          return Single.error(new UserError(mapItems(it.getUserErrors(), Storefront.UserError::getMessage)));
+        }
+      })
       .map(Storefront.CheckoutShippingLineUpdatePayload::getCheckout)
       .subscribeOn(Schedulers.io());
   }
@@ -130,12 +149,22 @@ public final class CheckoutRepository {
     checkNotBlank(checkoutId, "checkoutId can't be empty");
     checkNotBlank(email, "email can't be empty");
     checkNotNull(query, "query == null");
+
     GraphCall<Storefront.Mutation> call = graphClient.mutateGraph(Storefront.mutation(
-      root -> root.checkoutEmailUpdate(new ID(checkoutId), email, query)
+      root -> root.checkoutEmailUpdate(new ID(checkoutId), email, it ->
+        query.define(it.userErrors(userError -> userError.field().message()))
+      )
     ));
+
     return rxGraphMutationCall(call)
-      .map(GraphResponse::data)
       .map(Storefront.Mutation::getCheckoutEmailUpdate)
+      .flatMap(it -> {
+        if (it.getUserErrors().isEmpty()) {
+          return Single.just(it);
+        } else {
+          return Single.error(new UserError(mapItems(it.getUserErrors(), Storefront.UserError::getMessage)));
+        }
+      })
       .map(Storefront.CheckoutEmailUpdatePayload::getCheckout)
       .subscribeOn(Schedulers.io());
   }
@@ -146,13 +175,37 @@ public final class CheckoutRepository {
     checkNotBlank(checkoutId, "checkoutId can't be empty");
     checkNotNull(paymentInput, "paymentInput == null");
     checkNotNull(query, "query == null");
+
     GraphCall<Storefront.Mutation> call = graphClient.mutateGraph(Storefront.mutation(
-      root -> root.checkoutCompleteWithTokenizedPayment(new ID(checkoutId), paymentInput, query)
+      root -> root.checkoutCompleteWithTokenizedPayment(new ID(checkoutId), paymentInput, it ->
+        query.define(it.userErrors(userError -> userError.field().message()))
+      )
     ));
+
     return rxGraphMutationCall(call)
-      .map(GraphResponse::data)
       .map(Storefront.Mutation::getCheckoutCompleteWithTokenizedPayment)
+      .flatMap(it -> {
+        if (it.getUserErrors().isEmpty()) {
+          return Single.just(it);
+        } else {
+          return Single.error(new UserError(mapItems(it.getUserErrors(), Storefront.UserError::getMessage)));
+        }
+      })
       .map(Storefront.CheckoutCompleteWithTokenizedPaymentPayload::getPayment)
+      .subscribeOn(Schedulers.io());
+  }
+
+  public Single<Storefront.Payment> paymentById(@NonNull final String paymentId, @NonNull final Storefront.NodeQueryDefinition query) {
+    checkNotBlank(paymentId, "paymentId can't be empty");
+    checkNotNull(query, "query == null");
+
+    GraphCall<Storefront.QueryRoot> call = graphClient.queryGraph(Storefront.query(
+      root -> root.node(new ID(paymentId), query)
+    )).cachePolicy(HttpCachePolicy.NETWORK_ONLY);
+
+    return Single.fromCallable(call::clone)
+      .flatMap(RxUtil::rxGraphQueryCall)
+      .map(it -> (Storefront.Payment) it.getNode())
       .subscribeOn(Schedulers.io());
   }
 }

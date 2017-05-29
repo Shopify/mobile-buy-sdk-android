@@ -30,7 +30,10 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.wallet.MaskedWallet;
 import com.shopify.buy3.pay.PayCart;
+import com.shopify.sample.domain.model.Payment;
+import com.shopify.sample.view.LifeCycleBoundCallback;
 import com.shopify.sample.view.ViewModel;
 
 import java.util.UUID;
@@ -47,6 +50,10 @@ public interface CheckoutViewModel extends ViewModel {
   void confirmCheckout(@NonNull GoogleApiClient googleApiClient);
 
   void handleWalletResponse(int requestCode, int resultCode, @Nullable Intent data, @NonNull GoogleApiClient googleApiClient);
+
+  LiveData<MaskedWallet> maskedWalletLiveData();
+
+  LifeCycleBoundCallback<Payment> successPaymentLiveData();
 
   class ShippingRateMissingException extends RuntimeException {
   }

@@ -3,5 +3,9 @@ mutation CheckoutEmailUpdateQuery($checkoutId: ID!, $email: String!) {
     checkout {
       ...CheckoutFragment
     }
+    userErrors {
+      field
+      message
+    }
   }
 }

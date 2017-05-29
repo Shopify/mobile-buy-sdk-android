@@ -38,4 +38,6 @@ public interface CartRepository {
   void removeCartItem(final CartItem cartItem);
 
   Observable<Cart> watch();
+
+  void clear();
 }

@@ -180,6 +180,7 @@ public final class RealCartViewModel extends BaseViewModel implements CartViewMo
 
   private void onCreateCheckoutError(final int requestId, final Throwable t) {
     Timber.e(t);
+
     hideProgress(requestId);
     notifyUserError(requestId, t, null);
   }

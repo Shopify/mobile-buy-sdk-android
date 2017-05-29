@@ -26,6 +26,7 @@ package com.shopify.sample.view;
 
 import android.support.annotation.Nullable;
 
+import com.shopify.sample.domain.model.UserMessageError;
 import com.shopify.sample.util.RequestRegister;
 
 import io.reactivex.annotations.NonNull;
@@ -65,7 +66,11 @@ public abstract class BaseViewModel extends android.arch.lifecycle.ViewModel imp
   }
 
   protected void notifyUserError(final int requestId, @Nullable final Throwable t, @Nullable final String message) {
-    errorCallback.notify(requestId, t, message);
+    if (message == null && t instanceof UserMessageError) {
+      errorCallback.notify(requestId, t, t.getMessage());
+    } else {
+      errorCallback.notify(requestId, t, message);
+    }
   }
 
   protected void notifyUserError(final int requestId, @Nullable final Throwable t) {
