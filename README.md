@@ -416,12 +416,12 @@ Network queries and mutations can be both slow and expensive. For resources that
 
 There are four available cache policies `HttpCachePolicy`:
 
-- `CACHE_ONLY` - Fetch a response from the cache only, ignoring the network. If the cached response doesn't exist or expired, then return an error.
+- `CACHE_ONLY` - Fetch a response from the cache only, ignoring the network. If the cached response doesn't exist or is expired, then return an error.
 - `NETWORK_ONLY` - Fetch a response from the network only, ignoring any cached responses.
-- `CACHE_FIRST` - Fetch a response from the cache first. If the response doesn't exist or expired, then fetch a response from the network
+- `CACHE_FIRST` - Fetch a response from the cache first. If the response doesn't exist or is expired, then fetch a response from the network.
 - `NETWORK_FIRST` - Fetch a response from the network first. If the network fails and the cached response isn't expired, then return cached data instead.
 
-For `CACHE_ONLY`, `CACHE_FIRST` and `NETWORK_FIRST` policies you can define the timeout after what cached response is treated as expired and will be evicted from the http cache,  `expireAfter(expireTimeout, timeUnit)`.
+For `CACHE_ONLY`, `CACHE_FIRST` and `NETWORK_FIRST` policies you can define the timeout after what cached response is treated as expired and will be evicted from the http cache, `expireAfter(expireTimeout, timeUnit)`.
 
 #### Enable client-wide caching
 
