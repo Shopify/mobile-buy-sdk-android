@@ -29,7 +29,9 @@ import android.support.annotation.NonNull;
 import com.shopify.buy3.Storefront;
 import com.shopify.sample.SampleApplication;
 import com.shopify.sample.domain.model.Checkout;
+import com.shopify.sample.domain.model.UserMessageError;
 import com.shopify.sample.domain.repository.CheckoutRepository;
+import com.shopify.sample.domain.repository.UserError;
 
 import io.reactivex.Single;
 
@@ -46,7 +48,9 @@ public final class RealCheckoutShippingLineUpdateInteractor implements CheckoutS
     checkNotBlank(checkoutId, "checkoutId can't be empty");
     checkNotBlank(shippingRateHandle, "shippingRateHandle can't be empty");
 
-    Storefront.CheckoutShippingLineUpdatePayloadQueryDefinition query = it -> it.checkout(new CheckoutFragment());
-    return repository.updateShippingLine(checkoutId, shippingRateHandle, query).map(Converters::convertToCheckout);
+    return repository
+      .updateShippingLine(checkoutId, shippingRateHandle, q -> q.checkout(new CheckoutFragment()))
+      .map(Converters::convertToCheckout)
+      .onErrorResumeNext(t -> Single.error((t instanceof UserError) ? new UserMessageError(t.getMessage()) : t));
   }
 }

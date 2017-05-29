@@ -28,9 +28,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.apollographql.apollo.ApolloClient;
+import com.apollographql.apollo.api.internal.Optional;
 import com.shopify.sample.domain.CollectionPageWithProductsQuery;
 
-import java.util.Collections;
 import java.util.List;
 
 import io.reactivex.Single;
@@ -50,11 +50,10 @@ public final class CollectionRepository {
     @Nullable final CollectionPageWithProductsQuery query) {
     checkNotNull(query, "query == null");
     return rxApolloCall(apolloClient.newCall(query))
-      .map(response -> response.data()
-        .map(it -> it.shop)
-        .map(it -> it.collectionConnection)
-        .map(it -> it.edges)
-        .or(Collections.emptyList()))
+      .map(Optional::get)
+      .map(it -> it.shop)
+      .map(it -> it.collectionConnection)
+      .map(it -> it.edges)
       .subscribeOn(Schedulers.io());
   }
 }

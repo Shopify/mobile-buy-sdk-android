@@ -49,11 +49,13 @@ public class RealCollectionProductNextPageInteractor implements CollectionProduc
   @NonNull @Override public Single<List<Product>> execute(@NonNull final String collectionId, @Nullable final String cursor,
     final int perPage) {
     checkNotBlank(collectionId, "collectionId can't be empty");
+
     CollectionProductPageQuery query = CollectionProductPageQuery.builder()
       .perPage(perPage)
       .nextPageCursor(TextUtils.isEmpty(cursor) ? null : cursor)
       .collectionId(collectionId)
       .build();
+
     return repository.nextPage(query).map(Converters::convertToProducts);
   }
 }

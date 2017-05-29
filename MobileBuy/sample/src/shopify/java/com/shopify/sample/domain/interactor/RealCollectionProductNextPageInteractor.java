@@ -48,7 +48,7 @@ public final class RealCollectionProductNextPageInteractor implements Collection
   @NonNull @Override public Single<List<Product>> execute(@NonNull final String collectionId, @Nullable final String cursor,
     final int perPage) {
     checkNotNull(collectionId, "collectionId == null");
-    Storefront.ProductConnectionQueryDefinition query = it -> it
+    Storefront.ProductConnectionQueryDefinition query = q -> q
       .edges(productEdge -> productEdge
         .cursor()
         .node(product -> product
@@ -65,6 +65,8 @@ public final class RealCollectionProductNextPageInteractor implements Collection
           )
         )
       );
-    return repository.nextPage(collectionId, cursor, perPage, query).map(Converters::convertToProducts);
+    return repository
+      .nextPage(collectionId, cursor, perPage, query)
+      .map(Converters::convertToProducts);
   }
 }

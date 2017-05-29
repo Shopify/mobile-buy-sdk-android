@@ -28,6 +28,7 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.shopify.buy3.cache.HttpCache;
 import com.shopify.graphql.support.AbstractResponse;
 import com.shopify.graphql.support.Query;
 import com.shopify.graphql.support.SchemaViolationError;
@@ -46,36 +47,42 @@ import okhttp3.Response;
 
 import static com.shopify.buy3.Utils.checkNotNull;
 
-final class RealGraphCall<T extends AbstractResponse<T>> implements GraphCall<T> {
+abstract class RealGraphCall<T extends AbstractResponse<T>> implements GraphCall<T>, Cloneable {
   static final String ACCEPT_HEADER = "application/json";
   static final MediaType GRAPHQL_MEDIA_TYPE = MediaType.parse("application/graphql; charset=utf-8");
 
-  private final Query query;
-  private final HttpUrl serverUrl;
-  private final Call.Factory httpCallFactory;
-  private final HttpResponseParser<T> httpResponseParser;
-  private final ScheduledExecutorService dispatcher;
-  private final AtomicBoolean executed = new AtomicBoolean();
+  protected final Query query;
+  protected final HttpUrl serverUrl;
+  protected final Call.Factory httpCallFactory;
+  protected final HttpResponseParser<T> httpResponseParser;
+  protected final ScheduledExecutorService dispatcher;
+  protected HttpCachePolicy.Policy httpCachePolicy;
+  protected final HttpCache httpCache;
+  protected final AtomicBoolean executed = new AtomicBoolean();
   private volatile Call httpCall;
   private volatile HttpCallbackWithRetry httpCallbackWithRetry;
   private volatile boolean canceled;
 
   RealGraphCall(final Query query, final HttpUrl serverUrl, final Call.Factory httpCallFactory,
-    final ResponseDataConverter<T> responseDataConverter, final ScheduledExecutorService dispatcher) {
+    final ResponseDataConverter<T> responseDataConverter, final ScheduledExecutorService dispatcher,
+    final HttpCachePolicy.Policy httpCachePolicy, final HttpCache httpCache) {
     this.query = query;
     this.serverUrl = serverUrl;
     this.httpCallFactory = httpCallFactory;
     this.httpResponseParser = new HttpResponseParser<>(responseDataConverter);
     this.dispatcher = dispatcher;
+    this.httpCachePolicy = httpCachePolicy;
+    this.httpCache = httpCache;
   }
 
-  private RealGraphCall(final Query query, final HttpUrl serverUrl, final Call.Factory httpCallFactory,
-    final HttpResponseParser<T> httpResponseParser, final ScheduledExecutorService dispatcher) {
-    this.query = query;
-    this.serverUrl = serverUrl;
-    this.httpCallFactory = httpCallFactory;
-    this.httpResponseParser = httpResponseParser;
-    this.dispatcher = dispatcher;
+  RealGraphCall(final RealGraphCall<T> other) {
+    this.query = other.query;
+    this.serverUrl = other.serverUrl;
+    this.httpCallFactory = other.httpCallFactory;
+    this.httpResponseParser = other.httpResponseParser;
+    this.dispatcher = other.dispatcher;
+    this.httpCachePolicy = other.httpCachePolicy;
+    this.httpCache = other.httpCache;
   }
 
   @Override public void cancel() {
@@ -96,11 +103,6 @@ final class RealGraphCall<T extends AbstractResponse<T>> implements GraphCall<T>
     return canceled;
   }
 
-  @SuppressWarnings("CloneDoesntCallSuperClone")
-  @NonNull @Override public GraphCall<T> clone() {
-    return new RealGraphCall<>(query, serverUrl, httpCallFactory, httpResponseParser, dispatcher);
-  }
-
   @NonNull @Override public GraphResponse<T> execute() throws GraphError {
     if (!executed.compareAndSet(false, true)) {
       throw new IllegalStateException("Already Executed");
@@ -116,7 +118,21 @@ final class RealGraphCall<T extends AbstractResponse<T>> implements GraphCall<T>
       throw new GraphNetworkError("Failed to execute GraphQL http request", e);
     }
 
-    GraphResponse<T> graphResponse = httpResponseParser.parse(response);
+    GraphResponse<T> graphResponse;
+    try {
+      graphResponse = httpResponseParser.parse(response);
+      if (graphResponse.hasErrors()) {
+        removeCachedResponse(httpCall.request());
+      }
+    } catch (Exception rethrow) {
+      if (rethrow instanceof GraphParseError) {
+        removeCachedResponse(httpCall.request());
+      }
+      throw rethrow;
+    } finally {
+      response.close();
+    }
+
     checkIfCanceled();
     return graphResponse;
   }
@@ -147,11 +163,18 @@ final class RealGraphCall<T extends AbstractResponse<T>> implements GraphCall<T>
         if (canceled) {
           callback.onFailure(new GraphCallCanceledError());
         } else {
+          if (response.hasErrors()) {
+            removeCachedResponse(httpCall.request());
+          }
           callback.onResponse(response);
         }
       }
 
       @Override public void onFailure(@NonNull final GraphError error) {
+        if (error instanceof GraphParseError) {
+          removeCachedResponse(httpCall.request());
+        }
+
         if (canceled) {
           callback.onFailure(new GraphCallCanceledError());
         } else {
@@ -169,12 +192,18 @@ final class RealGraphCall<T extends AbstractResponse<T>> implements GraphCall<T>
     return this;
   }
 
+  @NonNull @Override public abstract GraphCall<T> clone();
+
   private Call httpCall() {
     RequestBody body = RequestBody.create(GRAPHQL_MEDIA_TYPE, query.toString());
+    String cacheKey = httpCache != null ? HttpCache.cacheKey(body) : "";
     Request request = new Request.Builder()
       .url(serverUrl)
       .post(body)
       .header("Accept", ACCEPT_HEADER)
+      .header(HttpCache.CACHE_KEY_HEADER, cacheKey)
+      .header(HttpCache.CACHE_FETCH_STRATEGY_HEADER, httpCachePolicy.fetchStrategy.name())
+      .header(HttpCache.CACHE_EXPIRE_TIMEOUT_HEADER, String.valueOf(httpCachePolicy.expireTimeoutMs()))
       .build();
     return httpCallFactory.newCall(request);
   }
@@ -183,6 +212,15 @@ final class RealGraphCall<T extends AbstractResponse<T>> implements GraphCall<T>
     if (canceled) {
       throw new GraphCallCanceledError();
     }
+  }
+
+  private void removeCachedResponse(@NonNull final Request request) {
+    String cacheKey = request.header(HttpCache.CACHE_KEY_HEADER);
+    if (httpCache == null || cacheKey == null || cacheKey.isEmpty()) {
+      return;
+    }
+
+    httpCache.removeQuietly(cacheKey);
   }
 
   interface ResponseDataConverter<R extends AbstractResponse<R>> {

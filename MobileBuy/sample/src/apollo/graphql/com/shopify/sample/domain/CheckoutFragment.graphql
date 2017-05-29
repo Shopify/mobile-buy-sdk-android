@@ -6,6 +6,7 @@ fragment CheckoutFragment on Checkout {
   totalPrice
   totalTax
   subtotalPrice
+  paymentDue
   lineItemConnection: lineItems(first: 250) {
     lineItemEdges: edges {
       lineItem: node {

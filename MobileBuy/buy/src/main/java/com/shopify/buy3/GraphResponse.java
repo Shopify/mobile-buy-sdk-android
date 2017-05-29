@@ -34,9 +34,11 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Represents parsed response returned by the {@code GraphQL} server.
+ * <p>A {@code GraphQL} operation response.</p>
+ * Response received as a result of {@link QueryGraphCall} or {@link MutationGraphCall} execution.
+ * <p><b>Note: {@link GraphResponse#data} and {@link GraphResponse#errors} are not mutually exclusively.</b></p>
  *
- * @param <T> type of parsed {@code GraphQL} response data
+ * @param <T> subtype of parsed {@link AbstractResponse} data. Can be either {@link Storefront.QueryRoot} or {@link Storefront.Mutation}
  */
 public final class GraphResponse<T extends AbstractResponse<T>> {
   private final T data;
@@ -48,25 +50,28 @@ public final class GraphResponse<T extends AbstractResponse<T>> {
   }
 
   /**
-   * Return parsed {@code GraphQL} response data.
+   * Returns parsed response data.
+   * It can be either {@link Storefront.QueryRoot} or {@link Storefront.Mutation} for {@link QueryGraphCall} and
+   * {@link MutationGraphCall} calls respectively.
    *
-   * @return parsed {@code GraphQL} response data
+   * @return parsed {@code GraphQL} response data, can be either {@link Storefront.QueryRoot} or {@link Storefront.Mutation}
    */
   @Nullable public T data() {
     return data;
   }
 
   /**
-   * Return parsed {@code GraphQL} response errors.
+   * Returns {@code GraphQL} operation errors.
+   * <p>These errors are not meant to be displayed to the end-user. <b>They are for debug purposes only</b>.</p>
    *
-   * @return parsed {@code GraphQL} response errors
+   * @return {@code GraphQL} operation errors
    */
   @NonNull public List<Error> errors() {
     return errors;
   }
 
   /**
-   * Check if returned response had any errors.
+   * Checks if returned response had any {@code GraphQL} operation errors.
    *
    * @return {@code true} if response has errors, {@code false} otherwise
    */
@@ -75,9 +80,9 @@ public final class GraphResponse<T extends AbstractResponse<T>> {
   }
 
   /**
-   * Return formatted {@code GraphQL} error message.
+   * Returns formatted {@code GraphQL} operation errors as one message.
    *
-   * @return formatted {@code GraphQL} error message
+   * @return formatted {@code GraphQL} operation error message
    */
   @NonNull public String formatErrorMessage() {
     StringBuilder message = new StringBuilder();

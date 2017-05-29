@@ -22,32 +22,32 @@
  *   THE SOFTWARE.
  */
 
-package com.shopify.sample.domain.interactor;
+package com.shopify.sample.domain.repository;
 
 import android.support.annotation.NonNull;
 
-import com.shopify.buy3.Storefront;
-import com.shopify.graphql.support.ID;
-import com.shopify.sample.SampleApplication;
-import com.shopify.sample.domain.model.Checkout;
-import com.shopify.sample.domain.repository.CheckoutRepository;
+import java.util.List;
 
-import io.reactivex.Single;
+import static com.shopify.sample.util.Util.checkNotEmpty;
 
-import static com.shopify.sample.util.Util.checkNotBlank;
+public final class UserError extends RuntimeException {
 
-public final class RealCheckoutEmailUpdateInteractor implements CheckoutEmailUpdateInteractor {
-  private final CheckoutRepository repository;
-
-  public RealCheckoutEmailUpdateInteractor() {
-    repository = new CheckoutRepository(SampleApplication.graphClient());
+  public UserError(@NonNull final List<String> messages) {
+    super(formatMessage(checkNotEmpty(messages, "messages can't be empty")));
   }
 
-  @Override public Single<Checkout> execute(@NonNull final String checkoutId, @NonNull final String email) {
-    checkNotBlank(checkoutId, "checkoutId can't be empty");
-    checkNotBlank(email, "email can't be empty");
+  public UserError(final String message) {
+    super(message);
+  }
 
-    Storefront.CheckoutEmailUpdatePayloadQueryDefinition query = it -> it.checkout(new CheckoutFragment());
-    return repository.updateEmail(checkoutId, email, query).map(Converters::convertToCheckout);
+  private static String formatMessage(final List<String> messages) {
+    StringBuilder builder = new StringBuilder();
+    for (final String message : messages) {
+      if (builder.length() > 0) {
+        builder.append('\n');
+      }
+      builder.append(message);
+    }
+    return builder.toString();
   }
 }

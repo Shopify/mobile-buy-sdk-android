@@ -26,7 +26,6 @@ package com.shopify.sample.view;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -39,7 +38,6 @@ public final class ProgressDialogHelper {
   private final ProgressDialog dialog;
   private final AtomicLong requestId = new AtomicLong(0);
   private final AtomicBoolean canBeShown = new AtomicBoolean(true);
-  private final Handler uiHandler = new Handler();
 
   public ProgressDialogHelper(@NonNull final Context context) {
     dialog = new ProgressDialog(checkNotNull(context, "context == null"));
@@ -53,31 +51,29 @@ public final class ProgressDialogHelper {
 
   public boolean show(final long requestId, @Nullable final String title, @Nullable final String message,
     @Nullable final Runnable onCancel) {
-    uiHandler.post(() -> {
-      this.requestId.set(requestId);
-      dialog.setCanceledOnTouchOutside(false);
-      dialog.setTitle(title);
-      dialog.setMessage(message);
-      dialog.setOnCancelListener(dialog -> {
-        dialog.dismiss();
-        if (onCancel != null) {
-          onCancel.run();
-        }
-      });
-      dialog.show();
+    this.requestId.set(requestId);
+    dialog.setCanceledOnTouchOutside(false);
+    dialog.setTitle(title);
+    dialog.setMessage(message);
+    dialog.setOnCancelListener(dialog -> {
+      dialog.dismiss();
+      if (onCancel != null) {
+        onCancel.run();
+      }
     });
+    dialog.show();
     return true;
   }
 
   public void dismiss() {
     canBeShown.set(true);
-    uiHandler.post(dialog::dismiss);
+    dialog.dismiss();
   }
 
   public boolean dismiss(final long requestId) {
     if (this.requestId.compareAndSet(requestId, 0)) {
       canBeShown.set(true);
-      uiHandler.post(dialog::dismiss);
+      dialog.dismiss();
       return true;
     } else {
       return false;

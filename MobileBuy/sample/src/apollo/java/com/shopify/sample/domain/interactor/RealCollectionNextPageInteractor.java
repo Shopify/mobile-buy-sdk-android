@@ -51,6 +51,7 @@ public final class RealCollectionNextPageInteractor implements CollectionNextPag
       .nextPageCursor(TextUtils.isEmpty(cursor) ? null : cursor)
       .collectionSortKey(CollectionSortKeys.TITLE)
       .build();
+
     return repository.nextPage(query).map(Converters::convertToCollections);
   }
 }

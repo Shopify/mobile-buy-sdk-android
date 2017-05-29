@@ -27,6 +27,7 @@ package com.shopify.sample.domain.model;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -54,14 +55,14 @@ public class Cart {
     }
   }
 
-  public double totalPrice() {
+  public BigDecimal totalPrice() {
     lock.readLock().lock();
     try {
       double total = 0;
       for (CartItem cartItem : cartItems.values()) {
         total += cartItem.price.doubleValue() * cartItem.quantity;
       }
-      return total;
+      return BigDecimal.valueOf(total);
     } finally {
       lock.readLock().unlock();
     }

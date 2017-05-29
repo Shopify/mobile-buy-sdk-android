@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 
+require 'bundler/setup'
 require 'graphql_java_gen'
 require 'graphql_schema'
 require 'json'
@@ -7,7 +8,7 @@ require 'optparse'
 require 'net/http'
 require 'fileutils'
 
-target_filename = nil
+target_filename = '../buy/src/main/java/com/shopify/buy3/Storefront.java'
 OptionParser.new do |opts|
   opts.on("-tFILENAME", "--target=FILENAME", "Target file name") do |filename|
     target_filename = filename

@@ -28,10 +28,11 @@ import android.support.annotation.NonNull;
 
 import com.shopify.buy3.Storefront;
 import com.shopify.buy3.pay.PayAddress;
-import com.shopify.graphql.support.ID;
 import com.shopify.sample.SampleApplication;
 import com.shopify.sample.domain.model.Checkout;
+import com.shopify.sample.domain.model.UserMessageError;
 import com.shopify.sample.domain.repository.CheckoutRepository;
+import com.shopify.sample.domain.repository.UserError;
 
 import io.reactivex.Single;
 
@@ -60,8 +61,9 @@ public final class RealCheckoutShippingAddressUpdateInteractor implements Checko
       .setProvince(address.province)
       .setZip(address.zip);
 
-    Storefront.CheckoutShippingAddressUpdatePayloadQueryDefinition query = it -> it.checkout(new CheckoutFragment());
-
-    return repository.updateShippingAddress(checkoutId, input, query).map(Converters::convertToCheckout);
+    return repository
+      .updateShippingAddress(checkoutId, input, q -> q.checkout(new CheckoutFragment()))
+      .map(Converters::convertToCheckout)
+      .onErrorResumeNext(t -> Single.error((t instanceof UserError) ? new UserMessageError(t.getMessage()) : t));
   }
 }

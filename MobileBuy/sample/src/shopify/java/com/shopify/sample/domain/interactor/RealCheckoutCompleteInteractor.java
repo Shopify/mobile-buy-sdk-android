@@ -26,13 +26,21 @@ package com.shopify.sample.domain.interactor;
 
 import android.support.annotation.NonNull;
 
+import com.shopify.buy3.GraphHttpError;
+import com.shopify.buy3.GraphNetworkError;
 import com.shopify.buy3.Storefront;
 import com.shopify.buy3.pay.PayAddress;
 import com.shopify.buy3.pay.PayCart;
 import com.shopify.buy3.pay.PaymentToken;
 import com.shopify.sample.SampleApplication;
 import com.shopify.sample.domain.model.Payment;
+import com.shopify.sample.domain.model.UserMessageError;
 import com.shopify.sample.domain.repository.CheckoutRepository;
+import com.shopify.sample.domain.repository.UserError;
+import com.shopify.sample.util.NotReadyException;
+import com.shopify.sample.util.RxRetryHandler;
+
+import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Single;
 
@@ -65,13 +73,29 @@ public final class RealCheckoutCompleteInteractor implements CheckoutCompleteInt
       .setProvince(billingAddress.province)
       .setZip(billingAddress.zip);
 
-    Storefront.TokenizedPaymentInput paymentInput = new Storefront.TokenizedPaymentInput(
-      payCart.totalPrice, mailingAddressInput, paymentToken.token, paymentToken.token, "android_pay")
-      .setIdentifier(paymentToken.publicKeyHash);
+    Storefront.TokenizedPaymentInput paymentInput = new Storefront.TokenizedPaymentInput(payCart.totalPrice, paymentToken.token,
+      mailingAddressInput, "android_pay", paymentToken.token).setIdentifier(paymentToken.publicKeyHash);
 
-    Storefront.CheckoutCompleteWithTokenizedPaymentPayloadQueryDefinition query =
-      it -> it.payment(new PaymentFragment()).userErrors(userError -> userError.field().message());
-
-    return repository.complete(checkoutId, paymentInput, query).map(Converters::convertToPayment);
+    return repository
+      .updateEmail(checkoutId, email, it -> it.checkout(new CheckoutFragment()))
+      .flatMap(it -> repository
+        .complete(checkoutId, paymentInput, q -> q.payment(new PaymentFragment())))
+      .flatMap(it -> {
+        if (it.getReady()) {
+          return Single.just(it);
+        } else {
+          return repository
+            .paymentById(it.getId().toString(), q -> q.onPayment(new PaymentFragment()))
+            .flatMap(payment -> payment.getReady() ? Single.just(payment)
+              : Single.error(new NotReadyException("Payment transaction is not finished")))
+            .retryWhen(RxRetryHandler
+              .exponentialBackoff(500, TimeUnit.MILLISECONDS, 1.2f)
+              .maxRetries(10)
+              .when(t -> t instanceof NotReadyException || t instanceof GraphHttpError || t instanceof GraphNetworkError)
+              .build());
+        }
+      })
+      .map(Converters::convertToPayment)
+      .onErrorResumeNext(t -> Single.error((t instanceof UserError) ? new UserMessageError(t.getMessage()) : t));
   }
 }

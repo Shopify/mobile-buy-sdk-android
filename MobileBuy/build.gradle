@@ -1,5 +1,9 @@
 subprojects {
-  apply from: "../gradle/dependencies.gradle"
+  def projectName = it.name
+
+  if (projectName != "graphql-java-support") {
+    apply from: "../gradle/dependencies.gradle"
+  }
 
   buildscript {
     System.properties['com.android.build.gradle.overrideVersionCheck'] = 'true'
@@ -14,27 +18,30 @@ subprojects {
   repositories {
     jcenter()
     maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
+    maven { url 'https://maven.google.com' }
   }
 
-  apply plugin: 'checkstyle'
+  if (projectName != "graphql-java-support") {
+    apply plugin: 'checkstyle'
 
-  checkstyle {
-    configFile rootProject.file('checkstyle.xml')
-    configProperties = ['checkstyle.cache.file': rootProject.file('build/checkstyle.cache')]
-    ignoreFailures false
-    showViolations true
-  }
+    checkstyle {
+      toolVersion = "5.9"
+      configFile rootProject.file('checkstyle.xml')
+      configProperties = ['checkstyle.cache.file': rootProject.file('build/checkstyle.cache')]
+      ignoreFailures false
+      showViolations true
+    }
 
-  task checkstyle(type: Checkstyle) {
-    source 'src/main/java'
-    include '**/*.java'
+    task checkstyle(type: Checkstyle) {
+      source 'src/main/java'
+      include '**/*.java'
+      classpath = files()
+    }
 
-    classpath = files()
-  }
-
-  afterEvaluate {
-    if (project.tasks.findByName('check')) {
-      check.dependsOn('checkstyle')
+    afterEvaluate {
+      if (project.tasks.findByName('check')) {
+        check.dependsOn('checkstyle')
+      }
     }
   }
 }

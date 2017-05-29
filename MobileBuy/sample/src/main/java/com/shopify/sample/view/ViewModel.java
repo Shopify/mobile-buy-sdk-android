@@ -22,31 +22,15 @@
  *   THE SOFTWARE.
  */
 
-package com.shopify.sample.domain.interactor;
+package com.shopify.sample.view;
 
-import android.support.annotation.NonNull;
+public interface ViewModel {
 
-import com.shopify.sample.SampleApplication;
-import com.shopify.sample.domain.CheckoutEmailUpdateQuery;
-import com.shopify.sample.domain.model.Checkout;
-import com.shopify.sample.domain.repository.CheckoutRepository;
+  void cancelAllRequests();
 
-import io.reactivex.Single;
+  void cancelRequest(int requestId);
 
-import static com.shopify.sample.util.Util.checkNotBlank;
+  ProgressLiveData progressLiveData();
 
-public final class RealCheckoutEmailUpdateInteractor implements CheckoutEmailUpdateInteractor {
-  private final CheckoutRepository repository;
-
-  public RealCheckoutEmailUpdateInteractor() {
-    this.repository = new CheckoutRepository(SampleApplication.apolloClient());
-  }
-
-  @Override public Single<Checkout> execute(@NonNull final String checkoutId, @NonNull final String email) {
-    checkNotBlank(checkoutId, "checkoutId can't be empty");
-    checkNotBlank(email, "email can't be empty");
-
-    CheckoutEmailUpdateQuery query = new CheckoutEmailUpdateQuery(checkoutId, email);
-    return repository.updateEmail(query).map(Converters::convertToCheckout);
-  }
+  UserErrorCallback errorErrorCallback();
 }

@@ -33,14 +33,11 @@ public final class Payment {
   @NonNull public final String id;
   @Nullable public final String errorMessage;
   public final boolean ready;
-  @Nullable public final Transaction transaction;
 
-  public Payment(@NonNull final String id, @Nullable final String errorMessage, final boolean ready,
-    @Nullable final Transaction transaction) {
+  public Payment(@NonNull final String id, @Nullable final String errorMessage, final boolean ready) {
     this.id = checkNotBlank(id, "id == null");
     this.errorMessage = errorMessage;
     this.ready = ready;
-    this.transaction = transaction;
   }
 
   @Override public String toString() {
@@ -48,21 +45,6 @@ public final class Payment {
       "id='" + id + '\'' +
       ", errorMessage='" + errorMessage + '\'' +
       ", ready=" + ready +
-      ", transaction=" + transaction +
       '}';
-  }
-
-  public static final class Transaction {
-    @NonNull public final String status;
-
-    public Transaction(@NonNull final String status) {
-      this.status = checkNotBlank(status, "status == null");
-    }
-
-    @Override public String toString() {
-      return "Transaction{" +
-        "status='" + status + '\'' +
-        '}';
-    }
   }
 }

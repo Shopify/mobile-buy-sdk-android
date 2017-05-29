@@ -85,7 +85,7 @@ public final class CollectionListView extends FrameLayout implements PageListVie
     swipeRefreshLayoutView.setRefreshing(false);
   }
 
-  @Override public void showError(final long requestId, final Throwable t) {
+  @Override public void showError(final int requestId, final Throwable t) {
     //TODO log error
     t.printStackTrace();
     Snackbar.make(swipeRefreshLayoutView, R.string.default_error, Snackbar.LENGTH_LONG).show();

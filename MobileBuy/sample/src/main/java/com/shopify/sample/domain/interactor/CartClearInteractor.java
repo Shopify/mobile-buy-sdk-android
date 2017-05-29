@@ -24,12 +24,7 @@
 
 package com.shopify.sample.domain.interactor;
 
-import android.support.annotation.NonNull;
+public interface CartClearInteractor {
 
-import com.shopify.sample.domain.model.Checkout;
-
-import io.reactivex.Single;
-
-public interface CheckoutEmailUpdateInteractor {
-  Single<Checkout> execute(@NonNull String checkoutId, @NonNull String email);
+  void execute();
 }

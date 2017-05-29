@@ -30,7 +30,6 @@ final class PaymentFragment implements Storefront.PaymentQueryDefinition {
   @Override public void define(final Storefront.PaymentQuery query) {
     query
       .ready()
-      .errorMessage()
-      .transaction(Storefront.TransactionQuery::status);
+      .errorMessage();
   }
 }

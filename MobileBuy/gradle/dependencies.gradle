@@ -1,11 +1,11 @@
 def versions = [
-    androidSupportVersion       : '25.2.0',
-    okHttpVersion               : '3.6.0',
-    playServicesVersion         : '9.8.0',
-    shopifyGraphqlSupportVersion: '0.1.0',
-    jodaTimeVersion             : '2.9.5.1',
-    butterKnifeVersion          : '8.5.1',
-    apolloVersion               : '0.3.0'
+    androidSupportVersion: '25.2.0',
+    okHttpVersion        : '3.6.0',
+    playServicesVersion  : '9.8.0',
+    jodaTimeVersion      : '2.9.5.1',
+    butterKnifeVersion   : '8.5.1',
+    apolloVersion        : '0.3.0',
+    archVersion          : '1.0.0-alpha1'
 ]
 
 ext.isCi = "true" == System.getenv('CI')
@@ -25,8 +25,8 @@ ext.dep = [
     androidSupportV7         : "com.android.support:appcompat-v7:$versions.androidSupportVersion",
     okhttp                   : "com.squareup.okhttp3:logging-interceptor:$versions.okHttpVersion",
     okhttpLogging            : "com.squareup.okhttp3:logging-interceptor:$versions.okHttpVersion",
+    okhttpTestSupport        : "com.squareup.okhttp3:okhttp-testing-support:$versions.okHttpVersion",
     playServicesWallet       : "com.google.android.gms:play-services-wallet:$versions.playServicesVersion",
-    shopifyGraphqlSupport    : "com.shopify.graphql.support:support:$versions.shopifyGraphqlSupportVersion",
     jodaTime                 : "net.danlew:android.joda:$versions.jodaTimeVersion",
     junit                    : "junit:junit:4.12",
     truth                    : "com.google.truth:truth:0.30",
@@ -47,5 +47,8 @@ ext.dep = [
     apolloApi                : "com.apollographql.apollo:apollo-api:$versions.apolloVersion",
     apolloRuntime            : "com.apollographql.apollo:apollo-runtime:$versions.apolloVersion",
     constraintLayout         : "com.android.support.constraint:constraint-layout:1.0.2",
-    rxrelay                  : "com.jakewharton.rxrelay2:rxrelay:2.0.0"
+    rxrelay                  : "com.jakewharton.rxrelay2:rxrelay:2.0.0",
+    archRuntime              : "android.arch.lifecycle:runtime:$versions.archVersion",
+    archExt                  : "android.arch.lifecycle:extensions:$versions.archVersion",
+    arcCompiler              : "android.arch.lifecycle:compiler:$versions.archVersion"
 ]

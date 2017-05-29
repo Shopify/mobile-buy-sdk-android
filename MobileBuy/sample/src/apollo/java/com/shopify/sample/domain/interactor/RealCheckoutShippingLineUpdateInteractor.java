@@ -29,7 +29,9 @@ import android.support.annotation.NonNull;
 import com.shopify.sample.SampleApplication;
 import com.shopify.sample.domain.CheckoutShippingLineUpdateQuery;
 import com.shopify.sample.domain.model.Checkout;
+import com.shopify.sample.domain.model.UserMessageError;
 import com.shopify.sample.domain.repository.CheckoutRepository;
+import com.shopify.sample.domain.repository.UserError;
 
 import io.reactivex.Single;
 
@@ -45,7 +47,11 @@ public final class RealCheckoutShippingLineUpdateInteractor implements CheckoutS
   @Override public Single<Checkout> execute(@NonNull final String checkoutId, @NonNull final String shippingRateHandle) {
     checkNotBlank(checkoutId, "checkoutId can't be empty");
     checkNotBlank(shippingRateHandle, "shippingRateHandle can't be empty");
+
     CheckoutShippingLineUpdateQuery query = new CheckoutShippingLineUpdateQuery(checkoutId, shippingRateHandle);
-    return repository.updateShippingLine(query).map(Converters::convertToCheckout);
+
+    return repository.updateShippingLine(query)
+      .map(Converters::convertToCheckout)
+      .onErrorResumeNext(t -> Single.error( (t instanceof UserError) ? new UserMessageError(t.getMessage()) : t));
   }
 }

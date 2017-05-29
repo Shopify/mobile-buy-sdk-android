@@ -30,7 +30,9 @@ import com.shopify.buy3.pay.PayAddress;
 import com.shopify.sample.SampleApplication;
 import com.shopify.sample.domain.CheckoutShippingAddressUpdateQuery;
 import com.shopify.sample.domain.model.Checkout;
+import com.shopify.sample.domain.model.UserMessageError;
 import com.shopify.sample.domain.repository.CheckoutRepository;
+import com.shopify.sample.domain.repository.UserError;
 import com.shopify.sample.domain.type.MailingAddressInput;
 
 import io.reactivex.Single;
@@ -62,6 +64,9 @@ public final class RealCheckoutShippingAddressUpdateInteractor implements Checko
       .build();
 
     CheckoutShippingAddressUpdateQuery query = new CheckoutShippingAddressUpdateQuery(checkoutId, mailingAddressInput);
-    return repository.updateShippingAddress(query).map(Converters::convertToCheckout);
+
+    return repository.updateShippingAddress(query)
+      .map(Converters::convertToCheckout)
+      .onErrorResumeNext(t -> Single.error( (t instanceof UserError) ? new UserMessageError(t.getMessage()) : t));
   }
 }

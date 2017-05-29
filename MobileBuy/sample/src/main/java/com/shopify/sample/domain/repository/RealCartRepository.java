@@ -47,6 +47,10 @@ public final class RealCartRepository implements CartRepository {
     return CartManager.INSTANCE.cartObservable();
   }
 
+  @Override public void clear() {
+    CartManager.INSTANCE.clear();
+  }
+
   private static final class CartManager {
     static final CartManager INSTANCE = new CartManager();
     final RealCart cart = new RealCart();
@@ -63,6 +67,11 @@ public final class RealCartRepository implements CartRepository {
 
     void removeCartItem(final CartItem cartItem) {
       cart.remove(cartItem);
+      updateCartSubject.accept(cart);
+    }
+
+    void clear() {
+      cart.clear();
       updateCartSubject.accept(cart);
     }
 

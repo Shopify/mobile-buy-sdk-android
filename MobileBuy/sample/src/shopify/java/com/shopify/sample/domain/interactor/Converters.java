@@ -108,8 +108,7 @@ final class Converters {
   }
 
   static Payment convertToPayment(final Storefront.Payment payment) {
-    return new Payment(payment.getId().toString(), payment.getErrorMessage(), payment.getReady(),
-      payment.getTransaction() != null ? new Payment.Transaction(payment.getTransaction().getStatus().name()) : null);
+    return new Payment(payment.getId().toString(), payment.getErrorMessage(), payment.getReady());
   }
 
   private Converters() {

@@ -24,13 +24,24 @@
 
 package com.shopify.sample.view.checkout;
 
-import android.content.Context;
+import android.arch.lifecycle.Lifecycle;
+import android.arch.lifecycle.LifecycleRegistry;
+import android.arch.lifecycle.LifecycleRegistryOwner;
+import android.arch.lifecycle.ViewModel;
+import android.arch.lifecycle.ViewModelProvider;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.wallet.MaskedWallet;
@@ -44,12 +55,6 @@ import com.shopify.buy3.pay.PayCart;
 import com.shopify.buy3.pay.PayHelper;
 import com.shopify.sample.BuildConfig;
 import com.shopify.sample.R;
-import com.shopify.sample.domain.interactor.RealCheckoutCompleteInteractor;
-import com.shopify.sample.domain.interactor.RealCheckoutShippingAddressUpdateInteractor;
-import com.shopify.sample.domain.interactor.RealCheckoutShippingLineUpdateInteractor;
-import com.shopify.sample.domain.interactor.RealCheckoutShippingRatesInteractor;
-import com.shopify.sample.domain.model.Checkout;
-import com.shopify.sample.presenter.checkout.CheckoutViewPresenter;
 import com.shopify.sample.view.ProgressDialogHelper;
 
 import java.math.BigDecimal;
@@ -58,23 +63,37 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static com.shopify.sample.presenter.checkout.CheckoutViewPresenter.REQUEST_ID_APPLY_SHIPPING_RATE;
-import static com.shopify.sample.presenter.checkout.CheckoutViewPresenter.REQUEST_ID_COMPLETE_CHECKOUT;
-import static com.shopify.sample.presenter.checkout.CheckoutViewPresenter.REQUEST_ID_FETCH_SHIPPING_RATES;
-import static com.shopify.sample.presenter.checkout.CheckoutViewPresenter.REQUEST_ID_UPDATE_CHECKOUT_SHIPPING_ADDRESS;
+import static com.shopify.sample.util.Util.checkNotBlank;
+import static com.shopify.sample.util.Util.checkNotNull;
+import static com.shopify.sample.view.checkout.CheckoutShippingRatesViewModel.REQUEST_ID_FETCH_SHIPPING_RATES;
+import static com.shopify.sample.view.checkout.CheckoutViewModel.REQUEST_ID_APPLY_SHIPPING_RATE;
+import static com.shopify.sample.view.checkout.CheckoutViewModel.REQUEST_ID_COMPLETE_CHECKOUT;
+import static com.shopify.sample.view.checkout.CheckoutViewModel.REQUEST_ID_UPDATE_CHECKOUT_SHIPPING_ADDRESS;
 
-public final class CheckoutActivity extends AppCompatActivity implements CheckoutViewPresenter.View {
+public final class CheckoutActivity extends AppCompatActivity implements LifecycleRegistryOwner {
   public static final String EXTRAS_CHECKOUT_ID = "checkout_id";
   public static final String EXTRAS_PAY_CART = "pay_cart";
   public static final String EXTRAS_MASKED_WALLET = "masked_wallet";
 
+  @BindView(R.id.root) View rootView;
   @BindView(R.id.toolbar) Toolbar toolbarView;
   @BindView(R.id.total_summary) TotalSummaryView totalSummaryView;
-  @BindView(R.id.shipping_method) ShippingMethodView shippingMethodView;
+  @BindView(R.id.shipping_rates) ShippingRatesView shippingRatesView;
+  @BindView(R.id.confirm_layout) View confirmLayoutView;
+
+  private String checkoutId;
+  private PayCart payCart;
+  private MaskedWallet maskedWallet;
+
+  private final LifecycleRegistry lifecycleRegistry = new LifecycleRegistry(this);
+  private CheckoutViewModel checkoutViewModel;
 
   private ProgressDialogHelper progressDialogHelper;
-  private CheckoutViewPresenter presenter;
   private GoogleApiClient googleApiClient;
+
+  @Override public LifecycleRegistry getLifecycle() {
+    return lifecycleRegistry;
+  }
 
   @Override protected void onCreate(@Nullable final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -87,20 +106,56 @@ public final class CheckoutActivity extends AppCompatActivity implements Checkou
     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
     progressDialogHelper = new ProgressDialogHelper(this);
-    googleApiClient = connectToGoogleApiClient();
 
-    String checkoutId = getIntent().getStringExtra(EXTRAS_CHECKOUT_ID);
-    PayCart payCart = getIntent().getParcelableExtra(EXTRAS_PAY_CART);
-    MaskedWallet maskedWallet = getIntent().getParcelableExtra(EXTRAS_MASKED_WALLET);
-    presenter = new CheckoutViewPresenter(checkoutId, payCart, maskedWallet, new RealCheckoutShippingLineUpdateInteractor(),
-      new RealCheckoutCompleteInteractor(), new RealCheckoutShippingAddressUpdateInteractor(), new RealCheckoutShippingRatesInteractor());
+    checkoutId = checkNotBlank(getIntent().getStringExtra(EXTRAS_CHECKOUT_ID), "checkoutId can't be empty");
+    payCart = checkNotNull(getIntent().getParcelableExtra(EXTRAS_PAY_CART), payCart == null);
+    maskedWallet = getIntent().getParcelableExtra(EXTRAS_MASKED_WALLET);
 
-    shippingMethodView.onShippingRateSelectListener(shippingRate -> presenter.applyShippingRate(shippingRate));
+    initViewModels();
+    connectGoogleApiClient();
+
+    lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE);
+  }
+
+  @Override protected void onStart() {
+    super.onStart();
+    lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_START);
+  }
+
+  @Override protected void onResume() {
+    super.onResume();
+    lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_RESUME);
+  }
+
+  @Override protected void onPause() {
+    lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_PAUSE);
+    super.onPause();
+  }
+
+  @Override protected void onStop() {
+    lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_STOP);
+    super.onStop();
+  }
+
+  @Override protected void onDestroy() {
+    lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_DESTROY);
+
+    super.onDestroy();
+
+    if (progressDialogHelper != null) {
+      progressDialogHelper.dismiss();
+      progressDialogHelper = null;
+    }
+
+    if (googleApiClient != null) {
+      googleApiClient.disconnect();
+      googleApiClient = null;
+    }
   }
 
   @Override protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
     super.onActivityResult(requestCode, resultCode, data);
-    presenter.handleWalletResponse(requestCode, resultCode, data, googleApiClient);
+    checkoutViewModel.handleWalletResponse(requestCode, resultCode, data, googleApiClient);
   }
 
   @Override public boolean onSupportNavigateUp() {
@@ -108,51 +163,59 @@ public final class CheckoutActivity extends AppCompatActivity implements Checkou
     return true;
   }
 
-  @Override public void onAttachedToWindow() {
-    super.onAttachedToWindow();
-    presenter.attachView(this);
+  @OnClick(R.id.confirm)
+  void onConfirmClick() {
+    checkoutViewModel.confirmCheckout(googleApiClient);
   }
 
-  @Override public void onDetachedFromWindow() {
-    super.onDetachedFromWindow();
-    presenter.detachView();
-    progressDialogHelper.dismiss();
+  private void initViewModels() {
+    RealCheckoutViewModel realCheckoutViewModel = ViewModelProviders.of(this, new ViewModelProvider.Factory() {
+      @SuppressWarnings("unchecked") @Override public <T extends ViewModel> T create(final Class<T> modelClass) {
+        if (modelClass.equals(RealCheckoutViewModel.class)) {
+          return (T) new RealCheckoutViewModel(checkoutId, payCart, maskedWallet);
+        } else {
+          return null;
+        }
+      }
+    }).get(RealCheckoutViewModel.class);
+    realCheckoutViewModel.progressLiveData().observe(this, progress -> {
+      if (progress != null) {
+        if (progress.show) {
+          showProgress(progress.requestId);
+        } else {
+          hideProgress(progress.requestId);
+        }
+      }
+    });
+    realCheckoutViewModel.errorErrorCallback().observe(this.getLifecycle(), error -> {
+      if (error != null) {
+        showError(error.requestId, error.t, error.message);
+      }
+    });
+    realCheckoutViewModel.payCartLiveData().observe(this, payCart -> {
+      if (payCart == null) {
+        totalSummaryView.render(BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO);
+      } else {
+        totalSummaryView.render(payCart.subtotal, payCart.shippingPrice != null ? payCart.shippingPrice : BigDecimal.ZERO,
+          payCart.taxPrice != null ? payCart.taxPrice : BigDecimal.ZERO, payCart.totalPrice);
+      }
+    });
+    realCheckoutViewModel.maskedWalletLiveData().observe(this, maskedWallet -> {
+      if (maskedWallet != null) {
+        updateMaskedWallet(maskedWallet);
+      }
+    });
+    realCheckoutViewModel.successPaymentLiveData().observe(this, payment -> {
+      if (payment != null) {
+        showCheckoutSuccessMessage();
+      }
+    });
+
+    checkoutViewModel = realCheckoutViewModel;
+    shippingRatesView.bindViewModel(realCheckoutViewModel);
   }
 
-  @Override protected void onDestroy() {
-    if (googleApiClient != null) {
-      googleApiClient.disconnect();
-      googleApiClient = null;
-    }
-    super.onDestroy();
-  }
-
-  @Override public void showProgress(final int requestId) {
-    final String message;
-    if (requestId == REQUEST_ID_UPDATE_CHECKOUT_SHIPPING_ADDRESS) {
-      message = getString(R.string.checkout_update_shipping_address_progress);
-    } else if (requestId == REQUEST_ID_FETCH_SHIPPING_RATES) {
-      message = getString(R.string.checkout_fetch_shipping_rates_progress);
-    } else if (requestId == REQUEST_ID_APPLY_SHIPPING_RATE) {
-      message = getString(R.string.checkout_apply_shipping_rate_progress);
-    } else if (requestId == REQUEST_ID_COMPLETE_CHECKOUT) {
-      message = getString(R.string.checkout_complete_progress);
-    } else {
-      message = getString(R.string.progress_loading);
-    }
-    progressDialogHelper.show(requestId, null, message, this::finish);
-  }
-
-  @Override public void hideProgress(final int requestId) {
-    progressDialogHelper.dismiss(requestId);
-  }
-
-  @Override public void showError(final long requestId, final Throwable t) {
-    //TODO log and show error message
-    t.printStackTrace();
-  }
-
-  @Override public void updateMaskedWallet(@NonNull final MaskedWallet maskedWallet) {
+  private void updateMaskedWallet(@NonNull final MaskedWallet maskedWallet) {
     final SupportWalletFragment walletFragment = (SupportWalletFragment) getSupportFragmentManager()
       .findFragmentById(R.id.android_pay_layout);
     if (walletFragment != null) {
@@ -182,33 +245,78 @@ public final class CheckoutActivity extends AppCompatActivity implements Checkou
     }
   }
 
-  @Override public void renderTotalSummary(@NonNull final BigDecimal subtotal, @NonNull final BigDecimal shipping,
-    @NonNull final BigDecimal tax, @NonNull final BigDecimal total) {
-    totalSummaryView.render(subtotal, shipping, tax, total);
+  private void showProgress(final int requestId) {
+    final String message;
+    if (requestId == REQUEST_ID_UPDATE_CHECKOUT_SHIPPING_ADDRESS) {
+      message = getString(R.string.checkout_update_shipping_address_progress);
+    } else if (requestId == REQUEST_ID_FETCH_SHIPPING_RATES) {
+      message = getResources().getString(R.string.checkout_fetch_shipping_rates_progress);
+    } else if (requestId == REQUEST_ID_APPLY_SHIPPING_RATE) {
+      message = getResources().getString(R.string.checkout_apply_shipping_rate_progress);
+    } else if (requestId == REQUEST_ID_COMPLETE_CHECKOUT) {
+      message = getString(R.string.checkout_complete_progress);
+    } else {
+      message = getString(R.string.progress_loading);
+    }
+    progressDialogHelper.show(requestId, null, message, this::finish);
   }
 
-  @Override public void renderShippingRates(@Nullable final Checkout.ShippingRates shippingRates,
-    @Nullable final Checkout.ShippingRate shippingLine) {
-    shippingMethodView.render(shippingLine, shippingRates);
+  private void hideProgress(final int requestId) {
+    progressDialogHelper.dismiss(requestId);
   }
 
-  @Override public Context context() {
-    return this;
+  private void showError(final int requestId, final Throwable t, final String message) {
+    if (message != null) {
+      showAlertErrorMessage(message);
+      return;
+    }
+
+    if (t instanceof CheckoutViewModel.ShippingRateMissingException) {
+      showAlertErrorMessage(getString(R.string.checkout_shipping_select_shipping_rate));
+      return;
+    }
+
+    showDefaultErrorMessage();
   }
 
-  @OnClick(R.id.confirm)
-  void onConfirmClick() {
-    presenter.confirmCheckout(googleApiClient);
+  private void showAlertErrorMessage(final String message) {
+    new AlertDialog.Builder(this)
+      .setMessage(message)
+      .setPositiveButton(android.R.string.ok, (dialog, which) -> {
+      })
+      .show();
   }
 
-  private GoogleApiClient connectToGoogleApiClient() {
-    GoogleApiClient googleApiClient = new GoogleApiClient.Builder(this)
-      .addApi(Wallet.API, new Wallet.WalletOptions.Builder()
-        .setEnvironment(BuildConfig.ANDROID_PAY_ENVIRONMENT)
-        .setTheme(WalletConstants.THEME_DARK)
-        .build())
-      .build();
-    googleApiClient.connect();
-    return googleApiClient;
+  private void showDefaultErrorMessage() {
+    Snackbar snackbar = Snackbar.make(rootView, R.string.default_error, Snackbar.LENGTH_LONG);
+    snackbar.getView().setBackgroundResource(R.color.snackbar_error_background);
+    snackbar.getView().setMinimumHeight(confirmLayoutView.getHeight());
+
+    TextView textView = (TextView) snackbar.getView().findViewById(android.support.design.R.id.snackbar_text);
+    ViewGroup.LayoutParams layoutParams = textView.getLayoutParams();
+    layoutParams.height = confirmLayoutView.getHeight();
+    textView.setLayoutParams(layoutParams);
+    textView.setGravity(Gravity.CENTER_VERTICAL);
+
+    snackbar.show();
+  }
+
+  private void showCheckoutSuccessMessage() {
+    new AlertDialog.Builder(this)
+      .setMessage(R.string.checkout_success)
+      .setPositiveButton(android.R.string.ok, (dialog, which) -> finish())
+      .show();
+  }
+
+  private void connectGoogleApiClient() {
+    if (PayHelper.isAndroidPayEnabledInManifest(this)) {
+      googleApiClient = new GoogleApiClient.Builder(this)
+        .addApi(Wallet.API, new Wallet.WalletOptions.Builder()
+          .setEnvironment(BuildConfig.ANDROID_PAY_ENVIRONMENT)
+          .setTheme(WalletConstants.THEME_DARK)
+          .build())
+        .build();
+      googleApiClient.connect();
+    }
   }
 }

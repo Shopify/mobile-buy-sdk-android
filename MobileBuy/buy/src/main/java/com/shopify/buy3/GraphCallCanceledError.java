@@ -25,7 +25,7 @@
 package com.shopify.buy3;
 
 /**
- * Thrown when GraphQL call has been canceled.
+ * Thrown when {@link GraphCall} call has been canceled.
  */
 public class GraphCallCanceledError extends GraphError {
   public GraphCallCanceledError() {

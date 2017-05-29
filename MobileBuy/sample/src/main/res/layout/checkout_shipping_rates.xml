@@ -22,7 +22,7 @@
   ~   THE SOFTWARE.
   -->
 
-<com.shopify.sample.view.checkout.ShippingMethodView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.shopify.sample.view.checkout.ShippingRatesView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -59,7 +59,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/default_padding"
         android:layout_marginTop="@dimen/default_padding_half"
-        android:text="@string/checkout_shipping_method_not_available"
+        android:text="@string/checkout_shipping_method_not_selected"
         android:textAppearance="@style/Shopify.BodyText.Inverse"
         android:textColor="@color/text_grey"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -72,10 +72,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/default_padding_half"
-        android:text="@string/checkout_shipping_method_not_available"
+        android:text="@string/checkout_shipping_method_price_not_available"
         android:textAppearance="@style/Shopify.BodyText.Inverse"
         android:textColor="@color/text_grey"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/change"
         tools:text="$59.60" />
-</com.shopify.sample.view.checkout.ShippingMethodView>
+</com.shopify.sample.view.checkout.ShippingRatesView>

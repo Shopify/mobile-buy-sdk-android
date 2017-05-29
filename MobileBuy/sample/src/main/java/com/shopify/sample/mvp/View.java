@@ -30,5 +30,5 @@ public interface View {
 
   void hideProgress(int requestId);
 
-  void showError(long requestId, Throwable t);
+  void showError(int requestId, Throwable t);
 }
