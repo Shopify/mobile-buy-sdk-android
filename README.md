@@ -1,4 +1,4 @@
-![Mobile Buy SDK](https://raw.github.com/Shopify/mobile-buy-sdk-ios/master/Assets/Mobile_Buy_SDK_Github_banner.png)
+![Mobile Buy SDK](https://cloud.githubusercontent.com/assets/5244861/26374751/6895a582-3fd4-11e7-80c4-2c1632262d66.png)
 
 [![Build Status](https://travis-ci.org/Shopify/mobile-buy-sdk-android.svg?branch=develop-v3)](https://travis-ci.org/Shopify/mobile-buy-sdk-android)
 [![GitHub license](https://img.shields.io/badge/license-MIT-lightgrey.svg)](https://github.com/Shopify/mobile-buy-sdk-ios/blob/master/LICENSE)
@@ -22,6 +22,7 @@ The Mobile Buy SDK makes it easy to create custom storefronts in your mobile app
   - [Queries](#queries-)
   - [Mutations](#mutations-)
   - [Retry and polling](#retry-)
+  - [Caching](#caching-)
   - [Errors](#errors-)
       - [GraphQL Error](#graphql-error)
       - [GraphError](#grapherror)
@@ -406,6 +407,45 @@ call.enqueue(new GraphCall.Callback<Storefront.QueryRoot>() {
 ```
 
 The retry handler is generic, and can handle both `QueryGraphCall` and `MutationGraphCall` requests equally well.
+
+### Caching [⤴](#table-of-contents)
+
+Network queries and mutations can be both slow and expensive. For resources that change infrequently, you might want to use caching to help reduce both bandwidth and latency. Since GraphQL relies on `POST` requests, we can't easily take advantage of the HTTP caching that's available in `OkHttp`. For this reason, the `GraphClient` is equipped with an opt-in caching layer that can be enabled client-wide or on a per-request basis.
+
+**IMPORTANT:** Caching is provided only for `query` operations. It isn't available for `mutation` operations.
+
+There are four available cache policies `HttpCachePolicy`:
+
+- `CACHE_ONLY` - Fetch a response from the cache only, ignoring the network. If the cached response doesn't exist or expired, then return an error.
+- `NETWORK_ONLY` - Fetch a response from the network only, ignoring any cached responses.
+- `CACHE_FIRST` - Fetch a response from the cache first. If the response doesn't exist or expired, then fetch a response from the network
+- `NETWORK_FIRST` - Fetch a response from the network first. If the network fails and the cached response isn't expired, then return cached data instead.
+
+For `CACHE_ONLY`, `CACHE_FIRST` and `NETWORK_FIRST` policies you can define the timeout after what cached response is treated as expired and will be evicted from the http cache,  `expireAfter(expireTimeout, timeUnit)`.
+
+#### Enable client-wide caching
+
+You can enable client-wide caching by providing a default `defaultHttpCachePolicy` for any instance of `GraphClient`. This sets all `query` operations to use your default cache policy, unless you specify an alternate policy for an individual request.
+
+In this example, we set the client's `defaultHttpCachePolicy` property to `CACHE_FIRST `:
+
+```java
+GraphClient.Builder builder = ...;
+builder.defaultHttpCachePolicy(HttpCachePolicy.CACHE_FIRST)
+```
+
+Now, all calls to `queryGraph` will yield a `QueryGraphCall` with a `CACHE_FIRST` cache policy.
+
+If you want to override a client-wide cache policy for an individual request, then specify an alternate cache policy as a parameter of `QueryGraphCall`:
+
+```java
+GraphClient client = ...;
+QueryGraphCall queryCall = client.queryGraph(query)
+  .cachePolicy(HttpCachePolicy.NETWORK_FIRST.expireAfter(5, TimeUnit.MINUTES))
+```
+
+In this example, the `queryCall` cache policy changes to `NETWORK_FIRST`, which means that the cached response will be valid for 5 minutes from the time the response is received.
+
 
 ### Errors [⤴](#table-of-contents)
 
