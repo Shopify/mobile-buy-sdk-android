@@ -85,7 +85,7 @@ public final class PayHelper {
   }
 
   /**
-   * Initializes Android Pay wallet fragment with provided masked wallet.
+   * Initializes Android Pay wallet fragment with provided Masked Wallet.
    *
    * @param walletFragment {@link SupportWalletFragment}
    * @param maskedWallet   {@link MaskedWallet}
@@ -111,7 +111,7 @@ public final class PayHelper {
   }
 
   /**
-   * Handles activity results for masked wallet and full wallet requests, and delegate a response to a specified call back handler.
+   * Handles activity results for masked wallet and full wallet requests, and delegates a response to a specified call back handler.
    *
    * @param requestCode Android Pay Wallet activity request code
    * @param resultCode  Android Pay Wallet activity result code
@@ -158,9 +158,9 @@ public final class PayHelper {
   }
 
   /**
-   * Checks if Android Pay is enabled in the android manifest file.
+   * Checks if Android Pay is enabled in the Android manifest file.
    *
-   * @param context android context
+   * @param context Android context
    * @return {@code true} if Android Pay enabled, {@code false} otherwise
    */
   public static boolean isAndroidPayEnabledInManifest(@NonNull final Context context) {
@@ -269,7 +269,7 @@ public final class PayHelper {
     public abstract void onWalletError(int requestCode, int errorCode);
 
     /**
-     * Called when new masked wallet is returned.
+     * Called when new Masked Wallet is returned.
      *
      * @param maskedWallet {@link MaskedWallet}
      */

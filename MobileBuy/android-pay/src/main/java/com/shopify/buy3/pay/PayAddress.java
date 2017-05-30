@@ -51,8 +51,8 @@ public final class PayAddress {
   /**
    * Converts Android Pay {@link UserAddress} to Shopify address format.
    *
-   * @param userAddress android pay user address
-   * @return Shopify compliant address
+   * @param userAddress Android pay user address
+   * @return Shopify-compliant address
    */
   public static PayAddress fromUserAddress(@NonNull final UserAddress userAddress) {
     checkNotNull(userAddress, "userAddress == null");

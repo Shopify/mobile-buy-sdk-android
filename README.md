@@ -514,7 +514,7 @@ Learn more about [GraphQL errors](http://graphql.org/learn/validation/)
 
 Errors for either a `QueryGraphCall` or `MutationGraphCall` request are defined by the hierarchy of the `GraphError` abstraction, which represents critical errors for query execution. These errors appear in the `GraphCall.Callback#onFailure` callback call. The error codes include:
 
-- `GraphError`: `GraphCall` can't be executed due to unknown reason
+- `GraphError`: `GraphCall` can't be executed due to an unknown reason
 - `GraphCallCanceledError`: `GraphCall` has been canceled
 - `GraphHttpError`: `GraphCall` executed but the HTTP response status code is not from the 200 series
 - `GraphNetworkError`: `GraphCall` can't be executed due to network issues, such as a timeout or the network being offline
@@ -553,7 +553,7 @@ call.enqueue(new GraphCall.Callback<Storefront.QueryRoot>() {
 
 ## Card Vaulting [⤴](#table-of-contents)
 
-The Buy SDK offers support for native checkout via GraphQL, which lets you complete a checkout with a credit card. However, it doesn't accept credit card numbers directly. Instead, you need to vault the credit cards via the standalone, PCI-compliant web service. The Buy SDK makes it easy to do this using `CardClient`.
+The Buy SDK supports native checkout via GraphQL, which lets you complete a checkout with a credit card. However, it doesn't accept credit card numbers directly. Instead, you need to vault the credit cards via the standalone, PCI-compliant web service. The Buy SDK makes it easy to do this using `CardClient`.
 
 ### Card Client [⤴](#table-of-contents)
 

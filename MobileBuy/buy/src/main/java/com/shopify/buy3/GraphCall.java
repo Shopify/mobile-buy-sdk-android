@@ -95,12 +95,12 @@ public interface GraphCall<T extends AbstractResponse<T>> {
   @NonNull GraphCall<T> enqueue(@NonNull Callback<T> callback, @Nullable Handler callbackHandler);
 
   /**
-   * Schedules this call to be executed at some point in the future with the provided retry handler to repeat subsequent http requests.
+   * Schedules this call to be executed at some point in the future with the provided retry handler to repeat subsequent HTTP requests.
    * Can be used for polling {@code GraphQL} resource that is not ready yet.
    *
    * @param callback     {@link GraphCall.Callback} to handle the response or a failure
    * @param handler      the callback will be running on the thread to which this handler is attached
-   * @param retryHandler http request retry policy
+   * @param retryHandler HTTP request retry policy
    * @return {@link GraphCall} that has been scheduled for execution
    * @throws IllegalStateException when the call has already been executed
    * @see GraphCall.Callback

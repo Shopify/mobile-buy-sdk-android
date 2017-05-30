@@ -166,7 +166,7 @@ public final class GraphClient {
     }
 
     /**
-     * Sets the {@link OkHttpClient} to be used as network layer for making http requests.
+     * Sets the {@link OkHttpClient} to be used as network layer for making HTTP requests.
      *
      * @param httpClient {@link OkHttpClient} client to be used
      * @return {@link GraphClient.Builder} to be used for chaining method calls

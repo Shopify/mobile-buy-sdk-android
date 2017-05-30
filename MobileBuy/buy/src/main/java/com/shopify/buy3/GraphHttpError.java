@@ -44,7 +44,7 @@ public class GraphHttpError extends GraphError {
   /**
    * Return HTTP status code.
    *
-   * @return http status code
+   * @return HTTP status code
    */
   public int code() {
     return code;
@@ -53,7 +53,7 @@ public class GraphHttpError extends GraphError {
   /**
    * Return HTTP status message.
    *
-   * @return http status message
+   * @return HTTP status message
    */
   public String message() {
     return message;

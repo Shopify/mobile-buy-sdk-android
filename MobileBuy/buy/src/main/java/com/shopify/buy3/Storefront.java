@@ -120,7 +120,7 @@ public class Storefront {
         }
 
         /**
-        * The amount that was used taken from the Gift Card by applying it.
+        * The amount that was taken from the Gift Card by applying it to the purchase.
         */
         public AppliedGiftCardQuery amountUsed() {
             startField("amountUsed");
@@ -138,7 +138,7 @@ public class Storefront {
         }
 
         /**
-        * The last characters of the Gift Card code
+        * The last characters of the Gift Card code.
         */
         public AppliedGiftCardQuery lastCharacters() {
             startField("lastCharacters");
@@ -204,7 +204,7 @@ public class Storefront {
         }
 
         /**
-        * The amount that was used taken from the Gift Card by applying it.
+        * The amount that was taken from the Gift Card by applying it to the purchase.
         */
 
         public BigDecimal getAmountUsed() {
@@ -234,7 +234,7 @@ public class Storefront {
         }
 
         /**
-        * The last characters of the Gift Card code
+        * The last characters of the Gift Card code.
         */
 
         public String getLastCharacters() {
@@ -570,7 +570,7 @@ public class Storefront {
         }
 
         /**
-        * The available shipping rates for this Checkout.
+        * The available shipping rates for this checkout.
         * Should only be used when checkout `requiresShipping` is `true` and
         * the shipping address is valid.
         */
@@ -603,7 +603,7 @@ public class Storefront {
         }
 
         /**
-        * The currency code for the Checkout.
+        * The currency code for the checkout.
         */
         public CheckoutQuery currencyCode() {
             startField("currencyCode");
@@ -719,7 +719,7 @@ public class Storefront {
         }
 
         /**
-        * The Order Status Page for this Checkout, null when checkout is not completed.
+        * The Order Status page URL for this checkout. Returns `null` when checkout is not completed.
         */
         public CheckoutQuery orderStatusUrl() {
             startField("orderStatusUrl");
@@ -728,7 +728,7 @@ public class Storefront {
         }
 
         /**
-        * The amount left to be paid. This is equal to the cost of the line items, taxes and shipping minus
+        * The amount left to be paid. This is equal to the cost of the line items, taxes, and shipping, minus
         * discounts and gift cards.
         */
         public CheckoutQuery paymentDue() {
@@ -738,9 +738,9 @@ public class Storefront {
         }
 
         /**
-        * Whether or not the Checkout is ready and can be completed. Checkouts may have asynchronous
+        * Whether or not the checkout is ready and can be completed. Checkouts may have asynchronous
         * operations that can take time to finish. If you want to complete a checkout or ensure all the fields
-        * are populated and up to date, polling is required until the value is true. 
+        * are populated and up to date, then polling is required until the value is true.
         */
         public CheckoutQuery ready() {
             startField("ready");
@@ -771,7 +771,7 @@ public class Storefront {
         }
 
         /**
-        * Once a shipping rate is selected by the customer it is transitioned to a `shipping_line` object.
+        * After a shipping rate is selected by the customer, it is transitioned to a `shipping_line` object.
         */
         public CheckoutQuery shippingLine(ShippingRateQueryDefinition queryDef) {
             startField("shippingLine");
@@ -793,7 +793,7 @@ public class Storefront {
         }
 
         /**
-        * Specifies if the Checkout is tax exempt.
+        * Specifies if the checkout is tax exempt.
         */
         public CheckoutQuery taxExempt() {
             startField("taxExempt");
@@ -838,7 +838,7 @@ public class Storefront {
         }
 
         /**
-        * The url pointing to the checkout accessible from the web.
+        * The URL pointing to the checkout accessible from the web.
         */
         public CheckoutQuery webUrl() {
             startField("webUrl");
@@ -1094,8 +1094,8 @@ public class Storefront {
         }
 
         /**
-        * The available shipping rates for this Checkout.
-        * Should only be used when checkout `requiresShipping` is `true` and
+        * The available shipping rates for this checkout.
+        * Should only be used when `requiresShipping` is `true` and
         * the shipping address is valid.
         */
 
@@ -1109,7 +1109,7 @@ public class Storefront {
         }
 
         /**
-        * The date and time when the checkout was completed.
+        * The date and time that the checkout was completed.
         */
 
         public DateTime getCompletedAt() {
@@ -1122,7 +1122,7 @@ public class Storefront {
         }
 
         /**
-        * The date and time when the checkout was created.
+        * The date and time that the checkout was created.
         */
 
         public DateTime getCreatedAt() {
@@ -1135,7 +1135,7 @@ public class Storefront {
         }
 
         /**
-        * The currency code for the Checkout.
+        * The currency code for the checkout.
         */
 
         public CurrencyCode getCurrencyCode() {
@@ -1226,7 +1226,7 @@ public class Storefront {
         }
 
         /**
-        * The Order Status Page for this Checkout, null when checkout is not completed.
+        * The Order Status Page for this checkout. Returns `null` when checkout is not completed.
         */
 
         public String getOrderStatusUrl() {
@@ -1239,7 +1239,7 @@ public class Storefront {
         }
 
         /**
-        * The amount left to be paid. This is equal to the cost of the line items, taxes and shipping minus
+        * The amount left to be paid. This is equal to the cost of the line items, taxes, and shipping, minus
         * discounts and gift cards.
         */
 
@@ -1253,9 +1253,9 @@ public class Storefront {
         }
 
         /**
-        * Whether or not the Checkout is ready and can be completed. Checkouts may have asynchronous
+        * Whether or not the checkout is ready and can be completed. Checkouts may have asynchronous
         * operations that can take time to finish. If you want to complete a checkout or ensure all the fields
-        * are populated and up to date, polling is required until the value is true. 
+        * are populated and up to date, then polling is required until the value is true.
         */
 
         public Boolean getReady() {
@@ -1281,7 +1281,7 @@ public class Storefront {
         }
 
         /**
-        * The shipping address to where the line items will be shipped.
+        * The shipping address where the line items will be shipped.
         */
 
         public MailingAddress getShippingAddress() {
@@ -1294,7 +1294,7 @@ public class Storefront {
         }
 
         /**
-        * Once a shipping rate is selected by the customer it is transitioned to a `shipping_line` object.
+        * After a shipping rate is selected by the customer, it is transitioned to a `shipping_line` object.
         */
 
         public ShippingRate getShippingLine() {
@@ -1320,7 +1320,7 @@ public class Storefront {
         }
 
         /**
-        * Specifies if the Checkout is tax exempt.
+        * Specifies if the checkout is tax exempt.
         */
 
         public Boolean getTaxExempt() {
@@ -1385,7 +1385,7 @@ public class Storefront {
         }
 
         /**
-        * The url pointing to the checkout accessible from the web.
+        * The URL pointing to the checkout accessible from the web.
         */
 
         public String getWebUrl() {
@@ -1548,7 +1548,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred executing the mutation.
+        * List of errors that occurred while executing the mutation.
         */
         public CheckoutAttributesUpdatePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
@@ -1616,7 +1616,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred executing the mutation.
+        * List of errors that occurred while executing the mutation.
         */
 
         public List<UserError> getUserErrors() {
@@ -1662,7 +1662,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred executing the mutation.
+        * List of errors that occurred while executing the mutation.
         */
         public CheckoutCompleteFreePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
@@ -1735,7 +1735,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred executing the mutation.
+        * List of errors that occurred while executing the mutation.
         */
 
         public List<UserError> getUserErrors() {
@@ -1794,7 +1794,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred executing the mutation.
+        * List of errors that occurred while executing the mutation.
         */
         public CheckoutCompleteWithCreditCardPayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
@@ -1886,7 +1886,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred executing the mutation.
+        * List of errors that occurred while executing the mutation.
         */
 
         public List<UserError> getUserErrors() {
@@ -2039,7 +2039,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred executing the mutation.
+        * List of errors that occurred while executing the mutation.
         */
 
         public List<UserError> getUserErrors() {
@@ -2220,7 +2220,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred executing the mutation.
+        * List of errors that occurred while executing the mutation.
         */
         public CheckoutCreatePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
@@ -2293,7 +2293,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred executing the mutation.
+        * List of errors that occurred while executing the mutation.
         */
 
         public List<UserError> getUserErrors() {
@@ -2339,7 +2339,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred executing the mutation.
+        * List of errors that occurred while executing the mutation.
         */
         public CheckoutCustomerAssociatePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
@@ -2407,7 +2407,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred executing the mutation.
+        * List of errors that occurred while executing the mutation.
         */
 
         public List<UserError> getUserErrors() {
@@ -2453,7 +2453,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred executing the mutation.
+        * List of errors that occurred while executing the mutation.
         */
         public CheckoutCustomerDisassociatePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
@@ -2521,7 +2521,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred executing the mutation.
+        * List of errors that occurred while executing the mutation.
         */
 
         public List<UserError> getUserErrors() {
@@ -2567,7 +2567,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred executing the mutation.
+        * List of errors that occurred while executing the mutation.
         */
         public CheckoutEmailUpdatePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
@@ -2681,7 +2681,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred executing the mutation.
+        * List of errors that occurred while executing the mutation.
         */
         public CheckoutGiftCardApplyPayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
@@ -2749,7 +2749,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred executing the mutation.
+        * List of errors that occurred while executing the mutation.
         */
 
         public List<UserError> getUserErrors() {
@@ -2795,7 +2795,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred executing the mutation.
+        * List of errors that occurred while executing the mutation.
         */
         public CheckoutGiftCardRemovePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
@@ -2863,7 +2863,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred executing the mutation.
+        * List of errors that occurred while executing the mutation.
         */
 
         public List<UserError> getUserErrors() {
@@ -3480,7 +3480,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred executing the mutation.
+        * List of errors that occurred while executing the mutation.
         */
         public CheckoutLineItemsAddPayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
@@ -3553,7 +3553,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred executing the mutation.
+        * List of errors that occurred while executing the mutation.
         */
 
         public List<UserError> getUserErrors() {
@@ -3596,7 +3596,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred executing the mutation.
+        * List of errors that occurred while executing the mutation.
         */
         public CheckoutLineItemsRemovePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
@@ -3665,7 +3665,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred executing the mutation.
+        * List of errors that occurred while executing the mutation.
         */
 
         public List<UserError> getUserErrors() {
@@ -3711,7 +3711,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred executing the mutation.
+        * List of errors that occurred while executing the mutation.
         */
         public CheckoutLineItemsUpdatePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
@@ -3784,7 +3784,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred executing the mutation.
+        * List of errors that occurred while executing the mutation.
         */
 
         public List<UserError> getUserErrors() {
@@ -3830,7 +3830,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred executing the mutation.
+        * List of errors that occurred while executing the mutation.
         */
         public CheckoutShippingAddressUpdatePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
@@ -3898,7 +3898,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred executing the mutation.
+        * List of errors that occurred while executing the mutation.
         */
 
         public List<UserError> getUserErrors() {
@@ -3944,7 +3944,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred executing the mutation.
+        * List of errors that occurred while executing the mutation.
         */
         public CheckoutShippingLineUpdatePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
@@ -4017,7 +4017,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred executing the mutation.
+        * List of errors that occurred while executing the mutation.
         */
 
         public List<UserError> getUserErrors() {
@@ -4106,7 +4106,7 @@ public class Storefront {
         }
 
         /**
-        * A human-friendly unique string for the collection automatically generated from its title.
+        * A human-friendly unique string for the collection, automatically generated from its title.
         * Limit of 255 characters.
         */
         public CollectionQuery handle() {
@@ -4121,7 +4121,7 @@ public class Storefront {
             }
 
             /**
-            * Image width in pixels between 1 and 2048
+            * Image width in pixels between 1 and 2048.
             */
             public ImageArguments maxWidth(Integer value) {
                 if (value != null) {
@@ -4132,7 +4132,7 @@ public class Storefront {
             }
 
             /**
-            * Image height in pixels between 1 and 2048
+            * Image height in pixels between 1 and 2048.
             */
             public ImageArguments maxHeight(Integer value) {
                 if (value != null) {
@@ -4143,7 +4143,7 @@ public class Storefront {
             }
 
             /**
-            * If specified, crop the image keeping the specified region
+            * If specified, crop the image keeping the specified region.
             */
             public ImageArguments crop(CropRegion value) {
                 if (value != null) {
@@ -4154,7 +4154,7 @@ public class Storefront {
             }
 
             /**
-            * Image size multiplier retina displays. Must be between 1 and 3
+            * Image size multiplier for Retina displays. Must be between 1 and 3.
             */
             public ImageArguments scale(Integer value) {
                 if (value != null) {
@@ -4796,7 +4796,7 @@ public class Storefront {
         }
 
         /**
-        * Masked credit card number with only the last 4 digits displayed
+        * Masked credit card number with only the last 4 digits displayed.
         */
         public CreditCardQuery maskedNumber() {
             startField("maskedNumber");
@@ -4984,7 +4984,7 @@ public class Storefront {
         }
 
         /**
-        * Masked credit card number with only the last 4 digits displayed
+        * Masked credit card number with only the last 4 digits displayed.
         */
 
         public String getMaskedNumber() {
@@ -7439,7 +7439,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred executing the mutation.
+        * List of errors that occurred while executing the mutation.
         */
         public CustomerAccessTokenDeletePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
@@ -7536,7 +7536,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred executing the mutation.
+        * List of errors that occurred while executing the mutation.
         */
 
         public List<UserError> getUserErrors() {
@@ -7584,7 +7584,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred executing the mutation.
+        * List of errors that occurred while executing the mutation.
         */
         public CustomerAccessTokenRenewPayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
@@ -7657,7 +7657,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred executing the mutation.
+        * List of errors that occurred while executing the mutation.
         */
 
         public List<UserError> getUserErrors() {
@@ -7750,7 +7750,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred executing the mutation.
+        * List of errors that occurred while executing the mutation.
         */
         public CustomerActivatePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
@@ -7823,7 +7823,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred executing the mutation.
+        * List of errors that occurred while executing the mutation.
         */
 
         public List<UserError> getUserErrors() {
@@ -7869,7 +7869,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred executing the mutation.
+        * List of errors that occurred while executing the mutation.
         */
         public CustomerAddressCreatePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
@@ -7942,7 +7942,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred executing the mutation.
+        * List of errors that occurred while executing the mutation.
         */
 
         public List<UserError> getUserErrors() {
@@ -7984,7 +7984,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred executing the mutation.
+        * List of errors that occurred while executing the mutation.
         */
         public CustomerAddressDeletePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
@@ -8057,7 +8057,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred executing the mutation.
+        * List of errors that occurred while executing the mutation.
         */
 
         public List<UserError> getUserErrors() {
@@ -8103,7 +8103,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred executing the mutation.
+        * List of errors that occurred while executing the mutation.
         */
         public CustomerAddressUpdatePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
@@ -8176,7 +8176,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred executing the mutation.
+        * List of errors that occurred while executing the mutation.
         */
 
         public List<UserError> getUserErrors() {
@@ -8323,7 +8323,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred executing the mutation.
+        * List of errors that occurred while executing the mutation.
         */
         public CustomerCreatePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
@@ -8396,7 +8396,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred executing the mutation.
+        * List of errors that occurred while executing the mutation.
         */
 
         public List<UserError> getUserErrors() {
@@ -8429,7 +8429,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred executing the mutation.
+        * List of errors that occurred while executing the mutation.
         */
         public CustomerRecoverPayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
@@ -8569,7 +8569,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred executing the mutation.
+        * List of errors that occurred while executing the mutation.
         */
         public CustomerResetPayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
@@ -8642,7 +8642,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred executing the mutation.
+        * List of errors that occurred while executing the mutation.
         */
 
         public List<UserError> getUserErrors() {
@@ -8787,7 +8787,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred executing the mutation.
+        * List of errors that occurred while executing the mutation.
         */
         public CustomerUpdatePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
@@ -8860,7 +8860,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred executing the mutation.
+        * List of errors that occurred while executing the mutation.
         */
 
         public List<UserError> getUserErrors() {
@@ -9116,7 +9116,7 @@ public class Storefront {
         }
 
         /**
-        * A word or phrase to share the nature or contents of an image.
+        * A word or phrase to describe the nature or contents of an image.
         */
 
         public String getAltText() {
@@ -10364,7 +10364,7 @@ public class Storefront {
         }
 
         /**
-        * Completes a checkout using a credit card token from Shopify's Vault.
+        * Completes a checkout using a credit card token from Shopify's vault.
         */
         public MutationQuery checkoutCompleteWithCreditCard(ID checkoutId, CreditCardPaymentInput payment, CheckoutCompleteWithCreditCardPayloadQueryDefinition queryDef) {
             startField("checkoutCompleteWithCreditCard");
@@ -10555,7 +10555,7 @@ public class Storefront {
         }
 
         /**
-        * Removes line items from an existing checkout
+        * Removes line items from an existing checkout.
         */
         public MutationQuery checkoutLineItemsRemove(ID checkoutId, List<ID> lineItemIds, CheckoutLineItemsRemovePayloadQueryDefinition queryDef) {
             startField("checkoutLineItemsRemove");
@@ -11216,7 +11216,7 @@ public class Storefront {
         }
 
         /**
-        * Completes a checkout using a credit card token from Shopify's Vault.
+        * Completes a checkout using a credit card token from Shopify's vault.
         */
 
         public CheckoutCompleteWithCreditCardPayload getCheckoutCompleteWithCreditCard() {
@@ -11333,7 +11333,7 @@ public class Storefront {
         }
 
         /**
-        * Removes line items from an existing checkout
+        * Removes line items from an existing checkout.
         */
 
         public CheckoutLineItemsRemovePayload getCheckoutLineItemsRemove() {
@@ -11819,7 +11819,7 @@ public class Storefront {
         }
 
         /**
-        * The reason why the order was cancelled.
+        * The reason why the order was canceled.
         * If the order was not cancelled, this value is `null`.
         */
         public OrderQuery cancelReason() {
@@ -11829,7 +11829,7 @@ public class Storefront {
         }
 
         /**
-        * The date and time when the order was cancelled.
+        * The date and time when the order was canceled.
         * If the order was not cancelled, this value is `null.`
         */
         public OrderQuery cancelledAt() {
@@ -11966,7 +11966,7 @@ public class Storefront {
         /**
         * The date and time when the order was imported.
         * This value can be set to dates in the past when importing from other systems.
-        * If no value is provided, it will be auto-generated based on current date and time.
+        * If no value is provided, then it will be auto-generated based on current date and time.
         */
         public OrderQuery processedAt() {
             startField("processedAt");
@@ -11975,7 +11975,7 @@ public class Storefront {
         }
 
         /**
-        * The address to where the order will be shipped.
+        * The address where the order will be shipped.
         */
         public OrderQuery shippingAddress(MailingAddressQueryDefinition queryDef) {
             startField("shippingAddress");
@@ -12046,7 +12046,7 @@ public class Storefront {
     /**
     * An order is a customer’s completed request to purchase one or more products from a shop. An order is
     * created when a customer completes the checkout process, during which time they provides an email
-    * address, billing address and payment information.
+    * address, billing address, and payment information.
     */
     public static class Order extends AbstractResponse<Order> implements Node {
         public Order() {
@@ -12243,8 +12243,8 @@ public class Storefront {
         }
 
         /**
-        * The reason why the order was cancelled.
-        * If the order was not cancelled, this value is `null`.
+        * The reason why the order was canceled.
+        * If the order was not cancelled, then this value is `null`.
         */
 
         public OrderCancelReason getCancelReason() {
@@ -12257,8 +12257,8 @@ public class Storefront {
         }
 
         /**
-        * The date and time when the order was cancelled.
-        * If the order was not cancelled, this value is `null.`
+        * The date and time when the order was canceled.
+        * If the order was not cancelled, then this value is `null.`
         */
 
         public DateTime getCancelledAt() {
@@ -12394,7 +12394,7 @@ public class Storefront {
         /**
         * The date and time when the order was imported.
         * This value can be set to dates in the past when importing from other systems.
-        * If no value is provided, it will be auto-generated based on current date and time.
+        * If no value is provided, then it will be auto-generated based on current date and time.
         */
 
         public DateTime getProcessedAt() {
@@ -12407,7 +12407,7 @@ public class Storefront {
         }
 
         /**
-        * The address to where the order will be shipped.
+        * The address where the order will be shipped.
         */
 
         public MailingAddress getShippingAddress() {
@@ -14005,7 +14005,7 @@ public class Storefront {
 
     /**
     * A product represents an individual item for sale in a Shopify store. Products are often physical,
-    * but they don't have to be. 
+    * but they don't have to be.
     * For example, a digital download (such as a movie, music or ebook file) also qualifies as a product,
     * as do services (such as equipment rental, work for hire, customization of another product or an
     * extended warranty).
@@ -14130,7 +14130,7 @@ public class Storefront {
         }
 
         /**
-        * A human-friendly unique string for the Product automatically generated from its title.
+        * A human-friendly unique string for the product, automatically generated from its title.
         * They are used by the Liquid templating language to refer to objects.
         */
         public ProductQuery handle() {
@@ -14161,7 +14161,7 @@ public class Storefront {
             }
 
             /**
-            * Image width in pixels between 1 and 2048
+            * Image width in pixels between 1 and 2048.
             */
             public ImagesArguments maxWidth(Integer value) {
                 if (value != null) {
@@ -14172,7 +14172,7 @@ public class Storefront {
             }
 
             /**
-            * Image height in pixels between 1 and 2048
+            * Image height in pixels between 1 and 2048.
             */
             public ImagesArguments maxHeight(Integer value) {
                 if (value != null) {
@@ -14183,7 +14183,7 @@ public class Storefront {
             }
 
             /**
-            * If specified, crop the image keeping the specified region
+            * If specified, then crop the image keeping the specified region.
             */
             public ImagesArguments crop(CropRegion value) {
                 if (value != null) {
@@ -14194,7 +14194,7 @@ public class Storefront {
             }
 
             /**
-            * Image size multiplier retina displays. Must be between 1 and 3
+            * Image size multiplier retina displays. Must be between 1 and 3.
             */
             public ImagesArguments scale(Integer value) {
                 if (value != null) {
@@ -14242,7 +14242,7 @@ public class Storefront {
             }
 
             /**
-            * Truncate the array result to this size
+            * Truncate the array result to this size.
             */
             public OptionsArguments first(Integer value) {
                 if (value != null) {
@@ -14331,7 +14331,7 @@ public class Storefront {
         /**
         * Find a product’s variant based on its selected options.
         * This is useful for converting a user’s selection of product options into a single matching variant.
-        * If there is not a variant for the selected options, `null` will be returned.
+        * If there is not a variant for the selected options, then `null` will be returned.
         */
         public ProductQuery variantBySelectedOptions(List<SelectedOptionInput> selectedOptions, ProductVariantQueryDefinition queryDef) {
             startField("variantBySelectedOptions");
@@ -14421,7 +14421,7 @@ public class Storefront {
 
     /**
     * A product represents an individual item for sale in a Shopify store. Products are often physical,
-    * but they don't have to be. 
+    * but they don't have to be.
     * For example, a digital download (such as a movie, music or ebook file) also qualifies as a product,
     * as do services (such as equipment rental, work for hire, customization of another product or an
     * extended warranty).
@@ -14619,7 +14619,7 @@ public class Storefront {
         }
 
         /**
-        * A human-friendly unique string for the Product automatically generated from its title.
+        * A human-friendly unique string for the product, automatically generated from its title.
         * They are used by the Liquid templating language to refer to objects.
         */
 
@@ -14732,7 +14732,7 @@ public class Storefront {
         /**
         * Find a product’s variant based on its selected options.
         * This is useful for converting a user’s selection of product options into a single matching variant.
-        * If there is not a variant for the selected options, `null` will be returned.
+        * If there is not a variant for the selected options, then `null` will be returned.
         */
 
         public ProductVariant getVariantBySelectedOptions() {
@@ -15277,7 +15277,7 @@ public class Storefront {
             }
 
             /**
-            * Image width in pixels between 1 and 2048
+            * Image width in pixels between 1 and 2048.
             */
             public ImageArguments maxWidth(Integer value) {
                 if (value != null) {
@@ -15288,7 +15288,7 @@ public class Storefront {
             }
 
             /**
-            * Image height in pixels between 1 and 2048
+            * Image height in pixels between 1 and 2048.
             */
             public ImageArguments maxHeight(Integer value) {
                 if (value != null) {
@@ -15299,7 +15299,7 @@ public class Storefront {
             }
 
             /**
-            * If specified, crop the image keeping the specified region
+            * If specified, then crop the image keeping the specified region.
             */
             public ImageArguments crop(CropRegion value) {
                 if (value != null) {
@@ -15310,7 +15310,7 @@ public class Storefront {
             }
 
             /**
-            * Image size multiplier retina displays. Must be between 1 and 3
+            * Image size multiplier retina displays. Must be between 1 and 3.
             */
             public ImageArguments scale(Integer value) {
                 if (value != null) {
@@ -16367,7 +16367,7 @@ public class Storefront {
         }
 
         /**
-        * The url pointing to the endpoint to vault credit cards.
+        * The URL pointing to the endpoint to vault credit cards.
         */
         public ShopQuery cardVaultUrl() {
             startField("cardVaultUrl");
@@ -16752,7 +16752,7 @@ public class Storefront {
         }
 
         /**
-        * The url pointing to the endpoint to vault credit cards.
+        * The URL pointing to the endpoint to vault credit cards.
         */
 
         public String getCardVaultUrl() {
@@ -16765,7 +16765,7 @@ public class Storefront {
         }
 
         /**
-        * List of the shop’ collections.
+        * List of the shop’s collections.
         */
 
         public CollectionConnection getCollections() {
@@ -16856,7 +16856,7 @@ public class Storefront {
         }
 
         /**
-        * List of the shop’ products.
+        * List of the shop’s products.
         */
 
         public ProductConnection getProducts() {
@@ -17262,7 +17262,7 @@ public class Storefront {
         }
 
         /**
-        * The status of the transaction
+        * The status of the transaction.
         */
         public TransactionQuery status() {
             startField("status");
@@ -17271,7 +17271,7 @@ public class Storefront {
         }
 
         /**
-        * Whether the transaction was done in test mode or not
+        * Whether the transaction was done in test mode.
         */
         public TransactionQuery test() {
             startField("test");
@@ -17281,7 +17281,7 @@ public class Storefront {
     }
 
     /**
-    * An object representing exchange of money for a product or service.
+    * An object representing an exchange of money for a product or service.
     */
     public static class Transaction extends AbstractResponse<Transaction> {
         public Transaction() {
@@ -17358,7 +17358,7 @@ public class Storefront {
         }
 
         /**
-        * The status of the transaction
+        * The status of the transaction.
         */
 
         public TransactionStatus getStatus() {
@@ -17371,7 +17371,7 @@ public class Storefront {
         }
 
         /**
-        * Whether the transaction was done in test mode or not
+        * Whether the transaction was done in test mode.
         */
 
         public Boolean getTest() {
