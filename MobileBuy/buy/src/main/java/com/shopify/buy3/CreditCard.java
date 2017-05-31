@@ -53,7 +53,7 @@ public final class CreditCard {
   }
 
   /**
-   * Builds new {@link CreditCard} instance
+   * Builds new {@link CreditCard} instance.
    */
   public static final class Builder {
     private String number;
@@ -97,7 +97,7 @@ public final class CreditCard {
     }
 
     /**
-     * Builds new {@link CreditCard} instance
+     * Builds new {@link CreditCard} instance.
      */
     public CreditCard build() {
       return new CreditCard(number, firstName, lastName, expireMonth, expireYear, verificationCode);

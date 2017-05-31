@@ -28,14 +28,14 @@ import android.support.annotation.NonNull;
 
 /**
  * <p>Query {@code GraphQL} operation call.</p>
- * Performs {@link Storefront.QueryRootQuery} queries that serves {@link Storefront.QueryRoot} responses.
+ * Performs {@link Storefront.QueryRootQuery} queries that serve {@link Storefront.QueryRoot} responses.
  */
 public interface QueryGraphCall extends GraphCall<Storefront.QueryRoot> {
 
   /**
    * Sets http cache policy to be used with this call.
    *
-   * @param httpCachePolicy {@link HttpCachePolicy.Policy} new http cache policy
+   * @param httpCachePolicy {@link HttpCachePolicy.Policy} new HTTP cache policy
    * @return {@link QueryGraphCall} with updated cache policy
    * @see HttpCachePolicy
    */

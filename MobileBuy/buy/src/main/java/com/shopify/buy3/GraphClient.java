@@ -48,15 +48,16 @@ import static com.shopify.buy3.Utils.checkNotNull;
 
 /**
  * <p>Client for {@code GraphQL} server.</p>
- * Creates and prepares {@link GraphCall} calls, which can be used to send {@code GraphQL} operation http requests.
- * Should be shared and reused for all calls to the  {@code GraphQL} server.
- * <p>Based internally on {@link OkHttpClient} network layer that holds its own connection pool and thread pool, it is
- * recommended to only create a single instance use that for execution of all the {@link GraphCall} calls, as this would reduce latency and
- * would also save memory.</p>
+ * Client is responsible for creating and preparing {@link GraphCall} calls, which can be used to send {@code GraphQL} operation http
+ * requests.
+ * <p>Internally client is based on {@link OkHttpClient} that means it holds its own connection pool and thread pool. It is
+ * recommended to only create a single instance and use that for execution of all the {@code GraphQL} calls, as this would reduce latency
+ * and would also save memory.</p>
+ * <p>This client should be shared between calls to the same shop domain.</p>
  */
 public final class GraphClient {
   /**
-   * Instantiates new builder to construct new {@link GraphClient} instance
+   * Instantiates new builder to construct new {@code GraphClient} instance.
    *
    * @param context android context
    * @return {@link GraphClient.Builder}
@@ -139,7 +140,7 @@ public final class GraphClient {
     }
 
     /**
-     * Sets Shopify store domain url (usually {@code {store name}.myshopify.com}).
+     * Sets Shopify store domain URL (usually {@code {store name}.myshopify.com}).
      *
      * @param shopDomain domain for the shop
      * @return {@link GraphClient.Builder} to be used for chaining method calls
@@ -152,7 +153,7 @@ public final class GraphClient {
     }
 
     /**
-     * Sets Shopify store access obtained on your shop's admin page.
+     * Sets Shopify store access token obtained on your shop's admin page.
      *
      * @param accessToken store access token
      * @return {@link GraphClient.Builder} to be used for chaining method calls
@@ -165,7 +166,7 @@ public final class GraphClient {
     }
 
     /**
-     * Sets the {@link OkHttpClient} to be used as network layer for making http requests.
+     * Sets the {@link OkHttpClient} to be used as network layer for making HTTP requests.
      *
      * @param httpClient {@link OkHttpClient} client to be used
      * @return {@link GraphClient.Builder} to be used for chaining method calls

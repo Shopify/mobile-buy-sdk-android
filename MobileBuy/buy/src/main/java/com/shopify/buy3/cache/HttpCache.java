@@ -18,8 +18,8 @@ import static com.shopify.buy3.cache.Utils.checkNotNull;
 import static com.shopify.buy3.cache.Utils.closeQuietly;
 
 /**
- * <p>Caches Http responses to the filesystem so they may be reused.</p>
- * Cached http responses will be stored on the disk with LRU eviction policy.
+ * <p>Caches HTTP responses to the filesystem so they can be reused.</p>
+ * Cached HTTP responses will be stored on the disk with LRU eviction policy.
  */
 @SuppressWarnings("WeakerAccess")
 public final class HttpCache {
@@ -31,7 +31,7 @@ public final class HttpCache {
   private final ResponseCacheStore cacheStore;
 
   /**
-   * Create new instance of http cache with provided storage configuration.
+   * Create new instance of HTTP cache with the provided storage configuration.
    *
    * @param directory a writable directory
    * @param maxSize   the maximum number of bytes this cache should use to store
@@ -57,7 +57,7 @@ public final class HttpCache {
   }
 
   /**
-   * Remove cached response by its cache key ignoring any exceptions.
+   * Remove cached response by its cache key, ignoring any exceptions.
    *
    * @param cacheKey cache key
    */
@@ -105,7 +105,7 @@ public final class HttpCache {
    * Create {@link Interceptor} to be injected into {@link okhttp3.OkHttpClient} application interceptor chain to serve requests from the
    * cache and write responses to the cache.
    *
-   * @return {@link Interceptor} http cache interceptor
+   * @return {@link Interceptor} HTTP cache interceptor
    */
   public Interceptor httpInterceptor() {
     return new HttpCacheInterceptor(this);
@@ -114,7 +114,7 @@ public final class HttpCache {
   /**
    * Return cache key for request body, md5 hash from string representation of request body.
    *
-   * @param requestBody cache key to be resolved of
+   * @param requestBody cache key to be resolved
    * @return md5 hash of request body
    */
   public static String cacheKey(@NonNull final RequestBody requestBody) {

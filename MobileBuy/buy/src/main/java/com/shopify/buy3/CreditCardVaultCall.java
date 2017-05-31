@@ -50,7 +50,7 @@ public interface CreditCardVaultCall {
   boolean isCanceled();
 
   /**
-   * Creates a new, identical call to this one which can be enqueued or executed even if this call has already been executed or canceled.
+   * Creates a new, identical call to this one, which can be enqueued or executed even if this call has already been executed or canceled.
    *
    * @return {@link CreditCardVaultCall} cloned call
    */
@@ -99,7 +99,7 @@ public interface CreditCardVaultCall {
     void onResponse(@NonNull String token);
 
     /**
-     * Called when call could not be executed due to cancellation, timeouts, network failure, parsing error etc.
+     * Called when call could not be executed due to cancellation, timeouts, network failure, parsing error, etc.
      *
      * @param error that has been thrown during call execution
      */
