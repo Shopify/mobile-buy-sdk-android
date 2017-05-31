@@ -29,7 +29,7 @@ import android.support.annotation.NonNull;
 import okhttp3.Response;
 
 /**
- * Error to be thrown when {@link GraphCall} executed but http response status code is not from {@code 200} series.
+ * Thrown when {@link GraphCall} call executed but HTTP response status code is not from {@code 200} series.
  */
 public class GraphHttpError extends GraphError {
   private final int code;
@@ -44,7 +44,7 @@ public class GraphHttpError extends GraphError {
   /**
    * Return HTTP status code.
    *
-   * @return http status code
+   * @return HTTP status code
    */
   public int code() {
     return code;
@@ -53,7 +53,7 @@ public class GraphHttpError extends GraphError {
   /**
    * Return HTTP status message.
    *
-   * @return http status message
+   * @return HTTP status message
    */
   public String message() {
     return message;

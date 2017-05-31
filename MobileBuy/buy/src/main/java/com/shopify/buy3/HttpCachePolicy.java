@@ -31,8 +31,8 @@ import java.util.concurrent.TimeUnit;
 import static com.shopify.buy3.Utils.checkNotNull;
 
 /**
- * <p>Cache policies for {@link QueryGraphCall} http request / response cache.</p>
- * Defines different strategies to fetch http response from the cache store and validate it's expiration date.
+ * <p>Cache policies for {@link QueryGraphCall} HTTP request / response cache.</p>
+ * Defines different strategies to fetch HTTP response from the cache store and validate its expiration date.
  *
  * @see HttpCachePolicy#CACHE_ONLY
  * @see HttpCachePolicy#NETWORK_ONLY
@@ -56,7 +56,7 @@ public final class HttpCachePolicy {
   public static final ExpirePolicy CACHE_FIRST = new ExpirePolicy(FetchStrategy.CACHE_FIRST);
 
   /**
-   * Fetch response from network first but fallback to cached data if the request fails
+   * Fetch response from network first, but fallback to cached data if the request fails
    */
   public static final ExpirePolicy NETWORK_FIRST = new ExpirePolicy(FetchStrategy.NETWORK_FIRST);
 
@@ -98,8 +98,8 @@ public final class HttpCachePolicy {
     }
 
     /**
-     * Creates new cache policy with expire after timeout configuration. Cached response is treated as expired if it's
-     * served date exceeds.
+     * Creates new cache policy that's will expire after timeout. Cached response is treated as expired if its
+     * served date exceeds expireTimeout.
      *
      * @param expireTimeout  expire timeout after which cached response is treated as expired
      * @param expireTimeUnit {@link TimeUnit} time unit

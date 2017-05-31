@@ -27,14 +27,14 @@ package com.shopify.buy3;
 /**
  * Boolean condition to be checked on specified object.
  *
- * @param <T> type of object to be checked on
+ * @param <T> type of object to be checked
  */
 public interface Condition<T> {
   /**
    * Checks condition on specified object.
    *
    * @param t object to be checked
-   * @return {@code true} if condition success or {@code false} otherwise
+   * @return {@code true} if condition succeeds, or {@code false} otherwise
    */
   boolean check(T t);
 }

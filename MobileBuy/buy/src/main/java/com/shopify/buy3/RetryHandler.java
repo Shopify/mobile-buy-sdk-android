@@ -35,7 +35,7 @@ import static com.shopify.buy3.Utils.checkNotNull;
 
 /**
  * <p>Handler for retrying {@link GraphCall} calls.</p>
- * Encapsulates the retry state and customization parameters for how the {@link GraphCall} will retry subsequent http requests.
+ * Encapsulates the retry state and customization parameters for how the {@link GraphCall} will retry subsequent HTTP requests.
  *
  * @see GraphCall#enqueue(GraphCall.Callback, android.os.Handler, RetryHandler)
  */

@@ -46,14 +46,14 @@ public final class CardClient {
   final Call.Factory httpCallFactory;
 
   /**
-   * Creates client with default {@link OkHttpClient} network layer
+   * Creates client with default {@link OkHttpClient} network layer.
    */
   public CardClient() {
     this(defaultOkHttpClient());
   }
 
   /**
-   * Creates client with provided {@link OkHttpClient}
+   * Creates client with provided {@link OkHttpClient}.
    *
    * @param httpCallFactory {@link Call.Factory} to be used as network layer
    */

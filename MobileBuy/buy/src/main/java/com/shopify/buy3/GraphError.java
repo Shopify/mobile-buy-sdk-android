@@ -26,7 +26,7 @@ package com.shopify.buy3;
 
 
 /**
- * Error to be thrown when {@link GraphCall} call failed to execute due to unknown reasons.
+ * Thrown when {@link GraphCall} call can't be executed due to to unknown reasons.
  */
 public class GraphError extends Exception {
   public GraphError() {

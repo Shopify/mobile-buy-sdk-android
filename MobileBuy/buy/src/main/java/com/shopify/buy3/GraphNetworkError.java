@@ -25,7 +25,7 @@
 package com.shopify.buy3;
 
 /**
- * Error to be thrown when {@link GraphCall} can't be executed due to any network errors (connectivity problem, timeouts etc.)
+ * Thrown when {@link GraphCall} call can't be executed due to any network errors (connectivity problem, timeouts, etc.).
  */
 public class GraphNetworkError extends GraphError {
   public GraphNetworkError() {
