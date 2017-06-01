@@ -12,6 +12,7 @@ import okhttp3.Response;
 import okio.Buffer;
 import okio.ForwardingSource;
 import okio.Source;
+import timber.log.Timber;
 
 import static com.shopify.buy3.cache.Utils.abortQuietly;
 import static com.shopify.buy3.cache.Utils.checkNotNull;
@@ -51,8 +52,7 @@ public final class HttpCache {
     try {
       cacheStore.delete();
     } catch (IOException e) {
-      //TODO log me
-      //logger.e(e, "Failed to clear http cache");
+      Timber.w(e, "failed to clear http cache");
     }
   }
 
@@ -65,8 +65,7 @@ public final class HttpCache {
     try {
       cacheStore.remove(cacheKey);
     } catch (IOException e) {
-      //TODO log me
-      //logger.e(e, "Failed to clear http cache");
+      Timber.w(e, "failed to remove cached response by key: %s", cacheKey);
     }
   }
 
@@ -95,8 +94,7 @@ public final class HttpCache {
         .build();
     } catch (Exception e) {
       closeQuietly(responseCacheRecord);
-      //TODO log me
-      //logger.e(e, "Failed to read http cache entry for key: %s", cacheKey);
+      Timber.w(e, "failed to read cached response by key: %s", cacheKey);
       return null;
     }
   }
@@ -123,7 +121,7 @@ public final class HttpCache {
       requestBody.writeTo(hashBuffer);
       return hashBuffer.readByteString().md5().hex();
     } catch (Exception e) {
-      //TODO log me
+      Timber.w(e, "failed to resolve cache key");
       return "";
     }
   }
@@ -140,8 +138,7 @@ public final class HttpCache {
       }
     } catch (Exception e) {
       abortQuietly(cacheRecordEditor);
-      //TODO log me
-      //logger.e(e, "Failed to proxy http response for key: %s", cacheKey);
+      Timber.w(e, "failed to proxy response");
     }
     return response;
   }

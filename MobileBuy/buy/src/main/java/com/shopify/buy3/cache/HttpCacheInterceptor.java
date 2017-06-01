@@ -7,6 +7,7 @@ import java.io.IOException;
 import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
+import timber.log.Timber;
 
 import static com.shopify.buy3.cache.HttpCache.CACHE_KEY_HEADER;
 import static com.shopify.buy3.cache.Utils.closeQuietly;
@@ -28,24 +29,16 @@ final class HttpCacheInterceptor implements Interceptor {
   @Override public Response intercept(final Chain chain) throws IOException {
     Request request = chain.request();
     if (shouldSkipCache(request)) {
-      //TODO log me
-      //logger.d("Skip cache for request: %s", request);
       return chain.proceed(request);
     }
 
     if (shouldSkipNetwork(request)) {
-      //TODO log me
-      //logger.d("Cache only for request: %s", request);
       return cacheOnlyResponse(request);
     }
 
     if (isNetworkFirst(request)) {
-      //TODO log me
-      //logger.d("Network first for request: %s", request);
       return networkFirst(request, chain);
     } else {
-      //TODO log me
-      //logger.d("Cache first for request: %s", request);
       return cacheFirst(request, chain);
     }
   }
@@ -66,8 +59,6 @@ final class HttpCacheInterceptor implements Interceptor {
   private Response networkFirst(@NonNull final Request request, @NonNull final Chain chain) throws IOException {
     Response networkResponse = withServedDateHeader(chain.proceed(request));
     if (networkResponse.isSuccessful()) {
-      //TODO log me
-      //logger.d("Network success, skip cache for request: %s, with cache key: %s", request, cacheKey);
       String cacheKey = request.header(CACHE_KEY_HEADER);
       return cache.proxyResponse(networkResponse, cacheKey);
     }
@@ -125,12 +116,18 @@ final class HttpCacheInterceptor implements Interceptor {
   }
 
   private void logCacheHit(@NonNull final Request request) {
-    //TODO log me
-    //logger.d("Cache HIT for request: %s, with cache key: %s", request, cacheKey);
+    String cacheKey = request.header(CACHE_KEY_HEADER);
+    if (cacheKey == null || cacheKey.isEmpty()) {
+      return;
+    }
+    Timber.d("cache HIT for key: %s", cacheKey);
   }
 
   private void logCacheMiss(@NonNull final Request request) {
-    //TODO log me
-    //logger.d("Cache MISS for request: %s, with cache key: %s", request, cacheKey);
+    String cacheKey = request.header(CACHE_KEY_HEADER);
+    if (cacheKey == null || cacheKey.isEmpty()) {
+      return;
+    }
+    Timber.d("cache MISS for key: %s", cacheKey);
   }
 }

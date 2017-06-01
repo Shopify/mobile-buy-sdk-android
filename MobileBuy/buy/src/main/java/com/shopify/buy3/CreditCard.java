@@ -30,6 +30,7 @@ import static com.shopify.buy3.Utils.checkNotBlank;
  * <p>Credit Card information</p>
  * Abstraction that represents credit card information.
  */
+@SuppressWarnings("WeakerAccess")
 public final class CreditCard {
   public static CreditCard.Builder builder() {
     return new CreditCard.Builder();

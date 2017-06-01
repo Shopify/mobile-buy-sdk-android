@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 
 import com.shopify.buy3.HttpCachePolicy;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.util.Date;
 
@@ -82,32 +83,42 @@ final class Utils {
   }
 
   static void closeQuietly(@Nullable final Response response) {
-    try {
-      if (response != null) {
+    if (response != null) {
+      try {
         response.close();
+      } catch (Exception ignore) {
+        // ignore
       }
-    } catch (Exception ignore) {
-      // ignore
     }
   }
 
   static void closeQuietly(@Nullable final ResponseCacheRecord cacheRecord) {
-    try {
-      if (cacheRecord != null) {
+    if (cacheRecord != null) {
+      try {
         cacheRecord.close();
+      } catch (Exception ignore) {
+        // ignore
       }
-    } catch (Exception ignore) {
-      // ignore
     }
   }
 
   static void abortQuietly(@Nullable final ResponseCacheRecordEditor cacheRecordEditor) {
-    try {
-      if (cacheRecordEditor != null) {
+    if (cacheRecordEditor != null) {
+      try {
         cacheRecordEditor.abort();
+      } catch (Exception ignore) {
+        // ignore
       }
-    } catch (Exception ignore) {
-      // ignore
+    }
+  }
+
+  static void closeQuietly(@Nullable final Closeable closeable) {
+    if (closeable != null) {
+      try {
+        closeable.close();
+      } catch (Exception ignored) {
+        // ignore
+      }
     }
   }
 

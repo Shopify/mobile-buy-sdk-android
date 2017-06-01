@@ -33,6 +33,7 @@ import com.shopify.graphql.support.AbstractResponse;
 import com.shopify.graphql.support.TopLevelResponse;
 
 import okhttp3.Response;
+import timber.log.Timber;
 
 import static com.shopify.buy3.Utils.checkNotNull;
 
@@ -49,6 +50,7 @@ final class HttpResponseParser<T extends AbstractResponse<T>> {
       T data = topLevelResponse.getData() != null ? responseDataConverter.convert(topLevelResponse) : null;
       return new GraphResponse<>(data, topLevelResponse.getErrors());
     } catch (Exception e) {
+      Timber.w(e, "failed to process GraphQL response");
       throw new GraphError("Failed to process GraphQL response ", e);
     }
   }
@@ -70,6 +72,7 @@ final class HttpResponseParser<T extends AbstractResponse<T>> {
       JsonObject root = (JsonObject) new JsonParser().parse(reader);
       return new TopLevelResponse(root);
     } catch (Exception e) {
+      Timber.w(e, "failed to parse GraphQL response");
       throw new GraphParseError("Failed to parse GraphQL http response", e);
     } finally {
       response.close();

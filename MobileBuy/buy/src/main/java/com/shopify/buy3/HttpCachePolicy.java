@@ -67,9 +67,9 @@ public final class HttpCachePolicy {
    * Cache policy configurations.
    */
   public static class Policy {
-    public final FetchStrategy fetchStrategy;
-    public final long expireTimeout;
-    public final TimeUnit expireTimeUnit;
+    final FetchStrategy fetchStrategy;
+    final long expireTimeout;
+    final TimeUnit expireTimeUnit;
 
     Policy(FetchStrategy fetchStrategy, long expireTimeout, TimeUnit expireTimeUnit) {
       this.fetchStrategy = fetchStrategy;
@@ -77,7 +77,7 @@ public final class HttpCachePolicy {
       this.expireTimeUnit = expireTimeUnit;
     }
 
-    public long expireTimeoutMs() {
+    long expireTimeoutMs() {
       if (expireTimeUnit == null) {
         return 0;
       }
@@ -88,12 +88,13 @@ public final class HttpCachePolicy {
   /**
    * Cache policy with provided expiration configuration.
    */
+  @SuppressWarnings("WeakerAccess")
   public static final class ExpirePolicy extends Policy {
     ExpirePolicy(FetchStrategy fetchStrategy) {
       super(fetchStrategy, 0, null);
     }
 
-    private ExpirePolicy(FetchStrategy fetchStrategy, long expireTimeout, TimeUnit expireTimeUnit) {
+    ExpirePolicy(FetchStrategy fetchStrategy, long expireTimeout, TimeUnit expireTimeUnit) {
       super(fetchStrategy, expireTimeout, expireTimeUnit);
     }
 

@@ -27,6 +27,7 @@ package com.shopify.buy3;
 /**
  * Thrown when {@link GraphCall} call can't be executed due to any network errors (connectivity problem, timeouts, etc.).
  */
+@SuppressWarnings("WeakerAccess")
 public class GraphNetworkError extends GraphError {
   public GraphNetworkError() {
   }

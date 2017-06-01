@@ -130,7 +130,7 @@ final class RealCreditCardVaultCall implements CreditCardVaultCall {
     return httpCallFactory.newCall(request);
   }
 
-  String toJson(final CreditCard creditCard) throws JSONException {
+  private String toJson(final CreditCard creditCard) throws JSONException {
     return new JSONObject()
       .put("credit_card", new JSONObject()
         .put("number", creditCard.number)

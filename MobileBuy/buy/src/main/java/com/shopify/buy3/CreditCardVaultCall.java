@@ -35,6 +35,7 @@ import java.io.IOException;
  * Credit cards cannot be sent to the checkout API directly. They must be sent to the card vault which in response will return an token.
  * This token should be used for completion checkout with credit card.
  */
+@SuppressWarnings("WeakerAccess")
 public interface CreditCardVaultCall {
 
   /**

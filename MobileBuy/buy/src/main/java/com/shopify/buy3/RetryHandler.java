@@ -39,7 +39,7 @@ import static com.shopify.buy3.Utils.checkNotNull;
  *
  * @see GraphCall#enqueue(GraphCall.Callback, android.os.Handler, RetryHandler)
  */
-@SuppressWarnings("unchecked")
+@SuppressWarnings({"unchecked", "WeakerAccess"})
 public final class RetryHandler {
 
   /**

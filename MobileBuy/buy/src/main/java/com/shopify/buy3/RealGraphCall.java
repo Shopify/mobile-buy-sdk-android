@@ -47,6 +47,7 @@ import okhttp3.Response;
 
 import static com.shopify.buy3.Utils.checkNotNull;
 
+@SuppressWarnings("WeakerAccess")
 abstract class RealGraphCall<T extends AbstractResponse<T>> implements GraphCall<T>, Cloneable {
   static final String ACCEPT_HEADER = "application/json";
   static final MediaType GRAPHQL_MEDIA_TYPE = MediaType.parse("application/graphql; charset=utf-8");
@@ -56,7 +57,7 @@ abstract class RealGraphCall<T extends AbstractResponse<T>> implements GraphCall
   protected final Call.Factory httpCallFactory;
   protected final HttpResponseParser<T> httpResponseParser;
   protected final ScheduledExecutorService dispatcher;
-  protected HttpCachePolicy.Policy httpCachePolicy;
+  protected final HttpCachePolicy.Policy httpCachePolicy;
   protected final HttpCache httpCache;
   protected final AtomicBoolean executed = new AtomicBoolean();
   private volatile Call httpCall;
