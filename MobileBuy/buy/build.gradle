@@ -23,6 +23,10 @@ android {
     targetCompatibility JavaVersion.VERSION_1_8
   }
 
+  sourceSets {
+    main.java.srcDirs += '../libs/graphql_java_gen/support/src/main/java'
+  }
+
   defaultConfig {
     minSdkVersion androidConfig.minSdkVersion
     targetSdkVersion androidConfig.targetSdkVersion
@@ -112,10 +116,9 @@ android {
 
 dependencies {
   compile dep.okhttp
-  compile dep.okhttpLogging
   compile dep.androidSupportAnnotations
   compile dep.jodaTime
-  compile project(':graphql-java-support')
+  compile dep.gson
 
   androidTestCompile dep.mockitoCore
   androidTestCompile dep.mockWebServer

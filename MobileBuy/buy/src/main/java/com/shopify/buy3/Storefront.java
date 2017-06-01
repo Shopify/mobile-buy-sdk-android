@@ -120,7 +120,7 @@ public class Storefront {
         }
 
         /**
-        * The amount that was taken from the Gift Card by applying it to the purchase.
+        * The amount that was used taken from the Gift Card by applying it.
         */
         public AppliedGiftCardQuery amountUsed() {
             startField("amountUsed");
@@ -138,7 +138,7 @@ public class Storefront {
         }
 
         /**
-        * The last characters of the Gift Card code.
+        * The last characters of the Gift Card code
         */
         public AppliedGiftCardQuery lastCharacters() {
             startField("lastCharacters");
@@ -204,7 +204,7 @@ public class Storefront {
         }
 
         /**
-        * The amount that was taken from the Gift Card by applying it to the purchase.
+        * The amount that was used taken from the Gift Card by applying it.
         */
 
         public BigDecimal getAmountUsed() {
@@ -234,7 +234,7 @@ public class Storefront {
         }
 
         /**
-        * The last characters of the Gift Card code.
+        * The last characters of the Gift Card code
         */
 
         public String getLastCharacters() {
@@ -257,6 +257,1118 @@ public class Storefront {
                 case "lastCharacters": return false;
 
                 default: return false;
+            }
+        }
+    }
+
+    public interface ArticleQueryDefinition {
+        void define(ArticleQuery _queryBuilder);
+    }
+
+    public static class ArticleQuery extends Query<ArticleQuery> {
+        ArticleQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+
+            startField("id");
+        }
+
+        /**
+        * The article's author.
+        */
+        public ArticleQuery author(ArticleAuthorQueryDefinition queryDef) {
+            startField("author");
+
+            _queryBuilder.append('{');
+            queryDef.define(new ArticleAuthorQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * The blog that the article belongs to.
+        */
+        public ArticleQuery blog(BlogQueryDefinition queryDef) {
+            startField("blog");
+
+            _queryBuilder.append('{');
+            queryDef.define(new BlogQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        public class CommentsArguments extends Arguments {
+            CommentsArguments(StringBuilder _queryBuilder) {
+                super(_queryBuilder, false);
+            }
+
+            public CommentsArguments after(String value) {
+                if (value != null) {
+                    startArgument("after");
+                    Query.appendQuotedString(_queryBuilder, value.toString());
+                }
+                return this;
+            }
+
+            public CommentsArguments reverse(Boolean value) {
+                if (value != null) {
+                    startArgument("reverse");
+                    _queryBuilder.append(value);
+                }
+                return this;
+            }
+        }
+
+        public interface CommentsArgumentsDefinition {
+            void define(CommentsArguments args);
+        }
+
+        /**
+        * List of comments posted on the article.
+        */
+        public ArticleQuery comments(int first, CommentConnectionQueryDefinition queryDef) {
+            return comments(first, args -> {}, queryDef);
+        }
+
+        /**
+        * List of comments posted on the article.
+        */
+        public ArticleQuery comments(int first, CommentsArgumentsDefinition argsDef, CommentConnectionQueryDefinition queryDef) {
+            startField("comments");
+
+            _queryBuilder.append("(first:");
+            _queryBuilder.append(first);
+
+            argsDef.define(new CommentsArguments(_queryBuilder));
+
+            _queryBuilder.append(')');
+
+            _queryBuilder.append('{');
+            queryDef.define(new CommentConnectionQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        public class ContentArguments extends Arguments {
+            ContentArguments(StringBuilder _queryBuilder) {
+                super(_queryBuilder, true);
+            }
+
+            /**
+            * Truncates string after the given length.
+            */
+            public ContentArguments truncateAt(Integer value) {
+                if (value != null) {
+                    startArgument("truncateAt");
+                    _queryBuilder.append(value);
+                }
+                return this;
+            }
+        }
+
+        public interface ContentArgumentsDefinition {
+            void define(ContentArguments args);
+        }
+
+        /**
+        * Stripped content of the article, single line with HTML tags removed.
+        */
+        public ArticleQuery content() {
+            return content(args -> {});
+        }
+
+        /**
+        * Stripped content of the article, single line with HTML tags removed.
+        */
+        public ArticleQuery content(ContentArgumentsDefinition argsDef) {
+            startField("content");
+
+            ContentArguments args = new ContentArguments(_queryBuilder);
+            argsDef.define(args);
+            ContentArguments.end(args);
+
+            return this;
+        }
+
+        /**
+        * The content of the article, complete with HTML formatting.
+        */
+        public ArticleQuery contentHtml() {
+            startField("contentHtml");
+
+            return this;
+        }
+
+        public class ExcerptArguments extends Arguments {
+            ExcerptArguments(StringBuilder _queryBuilder) {
+                super(_queryBuilder, true);
+            }
+
+            /**
+            * Truncates string after the given length.
+            */
+            public ExcerptArguments truncateAt(Integer value) {
+                if (value != null) {
+                    startArgument("truncateAt");
+                    _queryBuilder.append(value);
+                }
+                return this;
+            }
+        }
+
+        public interface ExcerptArgumentsDefinition {
+            void define(ExcerptArguments args);
+        }
+
+        /**
+        * Stripped excerpt of the article, single line with HTML tags removed.
+        */
+        public ArticleQuery excerpt() {
+            return excerpt(args -> {});
+        }
+
+        /**
+        * Stripped excerpt of the article, single line with HTML tags removed.
+        */
+        public ArticleQuery excerpt(ExcerptArgumentsDefinition argsDef) {
+            startField("excerpt");
+
+            ExcerptArguments args = new ExcerptArguments(_queryBuilder);
+            argsDef.define(args);
+            ExcerptArguments.end(args);
+
+            return this;
+        }
+
+        /**
+        * The excerpt of the article, complete with HTML formatting.
+        */
+        public ArticleQuery excerptHtml() {
+            startField("excerptHtml");
+
+            return this;
+        }
+
+        public class ImageArguments extends Arguments {
+            ImageArguments(StringBuilder _queryBuilder) {
+                super(_queryBuilder, true);
+            }
+
+            /**
+            * Image width in pixels between 1 and 2048
+            */
+            public ImageArguments maxWidth(Integer value) {
+                if (value != null) {
+                    startArgument("maxWidth");
+                    _queryBuilder.append(value);
+                }
+                return this;
+            }
+
+            /**
+            * Image height in pixels between 1 and 2048
+            */
+            public ImageArguments maxHeight(Integer value) {
+                if (value != null) {
+                    startArgument("maxHeight");
+                    _queryBuilder.append(value);
+                }
+                return this;
+            }
+
+            /**
+            * If specified, crop the image keeping the specified region
+            */
+            public ImageArguments crop(CropRegion value) {
+                if (value != null) {
+                    startArgument("crop");
+                    _queryBuilder.append(value.toString());
+                }
+                return this;
+            }
+
+            /**
+            * Image size multiplier retina displays. Must be between 1 and 3
+            */
+            public ImageArguments scale(Integer value) {
+                if (value != null) {
+                    startArgument("scale");
+                    _queryBuilder.append(value);
+                }
+                return this;
+            }
+        }
+
+        public interface ImageArgumentsDefinition {
+            void define(ImageArguments args);
+        }
+
+        /**
+        * The image associated with the article.
+        */
+        public ArticleQuery image(ImageQueryDefinition queryDef) {
+            return image(args -> {}, queryDef);
+        }
+
+        /**
+        * The image associated with the article.
+        */
+        public ArticleQuery image(ImageArgumentsDefinition argsDef, ImageQueryDefinition queryDef) {
+            startField("image");
+
+            ImageArguments args = new ImageArguments(_queryBuilder);
+            argsDef.define(args);
+            ImageArguments.end(args);
+
+            _queryBuilder.append('{');
+            queryDef.define(new ImageQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * The date and time when the article was published.
+        */
+        public ArticleQuery publishedAt() {
+            startField("publishedAt");
+
+            return this;
+        }
+
+        /**
+        * A categorization that a article can be tagged with.
+        */
+        public ArticleQuery tags() {
+            startField("tags");
+
+            return this;
+        }
+
+        /**
+        * The article’s name.
+        */
+        public ArticleQuery title() {
+            startField("title");
+
+            return this;
+        }
+
+        /**
+        * The url pointing to the article accessible from the web.
+        */
+        public ArticleQuery url() {
+            startField("url");
+
+            return this;
+        }
+    }
+
+    public static class Article extends AbstractResponse<Article> implements Node {
+        public Article() {
+        }
+
+        public Article(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "author": {
+                        responseData.put(key, new ArticleAuthor(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "blog": {
+                        responseData.put(key, new Blog(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "comments": {
+                        responseData.put(key, new CommentConnection(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "content": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "contentHtml": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "excerpt": {
+                        String optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = jsonAsString(field.getValue(), key);
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "excerptHtml": {
+                        String optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = jsonAsString(field.getValue(), key);
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "id": {
+                        responseData.put(key, new ID(jsonAsString(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "image": {
+                        Image optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new Image(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "publishedAt": {
+                        responseData.put(key, Utils.parseDateTime(jsonAsString(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "tags": {
+                        List<String> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(jsonAsString(element1, key));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "title": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "url": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public Article(ID id) {
+            this();
+            optimisticData.put("id", id);
+        }
+
+        public String getGraphQlTypeName() {
+            return "Article";
+        }
+
+        /**
+        * The article's author.
+        */
+
+        public ArticleAuthor getAuthor() {
+            return (ArticleAuthor) get("author");
+        }
+
+        public Article setAuthor(ArticleAuthor arg) {
+            optimisticData.put(getKey("author"), arg);
+            return this;
+        }
+
+        /**
+        * The blog that the article belongs to.
+        */
+
+        public Blog getBlog() {
+            return (Blog) get("blog");
+        }
+
+        public Article setBlog(Blog arg) {
+            optimisticData.put(getKey("blog"), arg);
+            return this;
+        }
+
+        /**
+        * List of comments posted on the article.
+        */
+
+        public CommentConnection getComments() {
+            return (CommentConnection) get("comments");
+        }
+
+        public Article setComments(CommentConnection arg) {
+            optimisticData.put(getKey("comments"), arg);
+            return this;
+        }
+
+        /**
+        * Stripped content of the article, single line with HTML tags removed.
+        */
+
+        public String getContent() {
+            return (String) get("content");
+        }
+
+        public Article setContent(String arg) {
+            optimisticData.put(getKey("content"), arg);
+            return this;
+        }
+
+        /**
+        * The content of the article, complete with HTML formatting.
+        */
+
+        public String getContentHtml() {
+            return (String) get("contentHtml");
+        }
+
+        public Article setContentHtml(String arg) {
+            optimisticData.put(getKey("contentHtml"), arg);
+            return this;
+        }
+
+        /**
+        * Stripped excerpt of the article, single line with HTML tags removed.
+        */
+
+        public String getExcerpt() {
+            return (String) get("excerpt");
+        }
+
+        public Article setExcerpt(String arg) {
+            optimisticData.put(getKey("excerpt"), arg);
+            return this;
+        }
+
+        /**
+        * The excerpt of the article, complete with HTML formatting.
+        */
+
+        public String getExcerptHtml() {
+            return (String) get("excerptHtml");
+        }
+
+        public Article setExcerptHtml(String arg) {
+            optimisticData.put(getKey("excerptHtml"), arg);
+            return this;
+        }
+
+        public ID getId() {
+            return (ID) get("id");
+        }
+
+        /**
+        * The image associated with the article.
+        */
+
+        public Image getImage() {
+            return (Image) get("image");
+        }
+
+        public Article setImage(Image arg) {
+            optimisticData.put(getKey("image"), arg);
+            return this;
+        }
+
+        /**
+        * The date and time when the article was published.
+        */
+
+        public DateTime getPublishedAt() {
+            return (DateTime) get("publishedAt");
+        }
+
+        public Article setPublishedAt(DateTime arg) {
+            optimisticData.put(getKey("publishedAt"), arg);
+            return this;
+        }
+
+        /**
+        * A categorization that a article can be tagged with.
+        */
+
+        public List<String> getTags() {
+            return (List<String>) get("tags");
+        }
+
+        public Article setTags(List<String> arg) {
+            optimisticData.put(getKey("tags"), arg);
+            return this;
+        }
+
+        /**
+        * The article’s name.
+        */
+
+        public String getTitle() {
+            return (String) get("title");
+        }
+
+        public Article setTitle(String arg) {
+            optimisticData.put(getKey("title"), arg);
+            return this;
+        }
+
+        /**
+        * The url pointing to the article accessible from the web.
+        */
+
+        public String getUrl() {
+            return (String) get("url");
+        }
+
+        public Article setUrl(String arg) {
+            optimisticData.put(getKey("url"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "author": return true;
+
+                case "blog": return true;
+
+                case "comments": return true;
+
+                case "content": return false;
+
+                case "contentHtml": return false;
+
+                case "excerpt": return false;
+
+                case "excerptHtml": return false;
+
+                case "id": return false;
+
+                case "image": return true;
+
+                case "publishedAt": return false;
+
+                case "tags": return false;
+
+                case "title": return false;
+
+                case "url": return false;
+
+                default: return false;
+            }
+        }
+    }
+
+    public interface ArticleAuthorQueryDefinition {
+        void define(ArticleAuthorQuery _queryBuilder);
+    }
+
+    public static class ArticleAuthorQuery extends Query<ArticleAuthorQuery> {
+        ArticleAuthorQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * The author's bio.
+        */
+        public ArticleAuthorQuery bio() {
+            startField("bio");
+
+            return this;
+        }
+
+        /**
+        * The author’s email.
+        */
+        public ArticleAuthorQuery email() {
+            startField("email");
+
+            return this;
+        }
+
+        /**
+        * The author's first name.
+        */
+        public ArticleAuthorQuery firstName() {
+            startField("firstName");
+
+            return this;
+        }
+
+        /**
+        * The author's last name.
+        */
+        public ArticleAuthorQuery lastName() {
+            startField("lastName");
+
+            return this;
+        }
+
+        /**
+        * The author's full name
+        */
+        public ArticleAuthorQuery name() {
+            startField("name");
+
+            return this;
+        }
+    }
+
+    public static class ArticleAuthor extends AbstractResponse<ArticleAuthor> {
+        public ArticleAuthor() {
+        }
+
+        public ArticleAuthor(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "bio": {
+                        String optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = jsonAsString(field.getValue(), key);
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "email": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "firstName": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "lastName": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "name": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "ArticleAuthor";
+        }
+
+        /**
+        * The author's bio.
+        */
+
+        public String getBio() {
+            return (String) get("bio");
+        }
+
+        public ArticleAuthor setBio(String arg) {
+            optimisticData.put(getKey("bio"), arg);
+            return this;
+        }
+
+        /**
+        * The author’s email.
+        */
+
+        public String getEmail() {
+            return (String) get("email");
+        }
+
+        public ArticleAuthor setEmail(String arg) {
+            optimisticData.put(getKey("email"), arg);
+            return this;
+        }
+
+        /**
+        * The author's first name.
+        */
+
+        public String getFirstName() {
+            return (String) get("firstName");
+        }
+
+        public ArticleAuthor setFirstName(String arg) {
+            optimisticData.put(getKey("firstName"), arg);
+            return this;
+        }
+
+        /**
+        * The author's last name.
+        */
+
+        public String getLastName() {
+            return (String) get("lastName");
+        }
+
+        public ArticleAuthor setLastName(String arg) {
+            optimisticData.put(getKey("lastName"), arg);
+            return this;
+        }
+
+        /**
+        * The author's full name
+        */
+
+        public String getName() {
+            return (String) get("name");
+        }
+
+        public ArticleAuthor setName(String arg) {
+            optimisticData.put(getKey("name"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "bio": return false;
+
+                case "email": return false;
+
+                case "firstName": return false;
+
+                case "lastName": return false;
+
+                case "name": return false;
+
+                default: return false;
+            }
+        }
+    }
+
+    public interface ArticleConnectionQueryDefinition {
+        void define(ArticleConnectionQuery _queryBuilder);
+    }
+
+    public static class ArticleConnectionQuery extends Query<ArticleConnectionQuery> {
+        ArticleConnectionQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * A list of edges.
+        */
+        public ArticleConnectionQuery edges(ArticleEdgeQueryDefinition queryDef) {
+            startField("edges");
+
+            _queryBuilder.append('{');
+            queryDef.define(new ArticleEdgeQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * Information to aid in pagination.
+        */
+        public ArticleConnectionQuery pageInfo(PageInfoQueryDefinition queryDef) {
+            startField("pageInfo");
+
+            _queryBuilder.append('{');
+            queryDef.define(new PageInfoQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+    }
+
+    public static class ArticleConnection extends AbstractResponse<ArticleConnection> {
+        public ArticleConnection() {
+        }
+
+        public ArticleConnection(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "edges": {
+                        List<ArticleEdge> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new ArticleEdge(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "pageInfo": {
+                        responseData.put(key, new PageInfo(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "ArticleConnection";
+        }
+
+        /**
+        * A list of edges.
+        */
+
+        public List<ArticleEdge> getEdges() {
+            return (List<ArticleEdge>) get("edges");
+        }
+
+        public ArticleConnection setEdges(List<ArticleEdge> arg) {
+            optimisticData.put(getKey("edges"), arg);
+            return this;
+        }
+
+        /**
+        * Information to aid in pagination.
+        */
+
+        public PageInfo getPageInfo() {
+            return (PageInfo) get("pageInfo");
+        }
+
+        public ArticleConnection setPageInfo(PageInfo arg) {
+            optimisticData.put(getKey("pageInfo"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "edges": return true;
+
+                case "pageInfo": return true;
+
+                default: return false;
+            }
+        }
+    }
+
+    public interface ArticleEdgeQueryDefinition {
+        void define(ArticleEdgeQuery _queryBuilder);
+    }
+
+    public static class ArticleEdgeQuery extends Query<ArticleEdgeQuery> {
+        ArticleEdgeQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        public ArticleEdgeQuery cursor() {
+            startField("cursor");
+
+            return this;
+        }
+
+        public ArticleEdgeQuery node(ArticleQueryDefinition queryDef) {
+            startField("node");
+
+            _queryBuilder.append('{');
+            queryDef.define(new ArticleQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+    }
+
+    public static class ArticleEdge extends AbstractResponse<ArticleEdge> {
+        public ArticleEdge() {
+        }
+
+        public ArticleEdge(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "cursor": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "node": {
+                        responseData.put(key, new Article(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "ArticleEdge";
+        }
+
+        public String getCursor() {
+            return (String) get("cursor");
+        }
+
+        public ArticleEdge setCursor(String arg) {
+            optimisticData.put(getKey("cursor"), arg);
+            return this;
+        }
+
+        public Article getNode() {
+            return (Article) get("node");
+        }
+
+        public ArticleEdge setNode(Article arg) {
+            optimisticData.put(getKey("node"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "cursor": return false;
+
+                case "node": return true;
+
+                default: return false;
+            }
+        }
+    }
+
+    /**
+    * The set of valid sort keys for the articles query.
+    */
+    public enum ArticleSortKeys {
+        AUTHOR,
+
+        BLOG_TITLE,
+
+        ID,
+
+        RELEVANCE,
+
+        TITLE,
+
+        UPDATED_AT,
+
+        UNKNOWN_VALUE;
+
+        public static ArticleSortKeys fromGraphQl(String value) {
+            if (value == null) {
+                return null;
+            }
+
+            switch (value) {
+                case "AUTHOR": {
+                    return AUTHOR;
+                }
+
+                case "BLOG_TITLE": {
+                    return BLOG_TITLE;
+                }
+
+                case "ID": {
+                    return ID;
+                }
+
+                case "RELEVANCE": {
+                    return RELEVANCE;
+                }
+
+                case "TITLE": {
+                    return TITLE;
+                }
+
+                case "UPDATED_AT": {
+                    return UPDATED_AT;
+                }
+
+                default: {
+                    return UNKNOWN_VALUE;
+                }
+            }
+        }
+        public String toString() {
+            switch (this) {
+                case AUTHOR: {
+                    return "AUTHOR";
+                }
+
+                case BLOG_TITLE: {
+                    return "BLOG_TITLE";
+                }
+
+                case ID: {
+                    return "ID";
+                }
+
+                case RELEVANCE: {
+                    return "RELEVANCE";
+                }
+
+                case TITLE: {
+                    return "TITLE";
+                }
+
+                case UPDATED_AT: {
+                    return "UPDATED_AT";
+                }
+
+                default: {
+                    return "";
+                }
             }
         }
     }
@@ -545,6 +1657,471 @@ public class Storefront {
         }
     }
 
+    public interface BlogQueryDefinition {
+        void define(BlogQuery _queryBuilder);
+    }
+
+    public static class BlogQuery extends Query<BlogQuery> {
+        BlogQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+
+            startField("id");
+        }
+
+        public class ArticlesArguments extends Arguments {
+            ArticlesArguments(StringBuilder _queryBuilder) {
+                super(_queryBuilder, false);
+            }
+
+            public ArticlesArguments after(String value) {
+                if (value != null) {
+                    startArgument("after");
+                    Query.appendQuotedString(_queryBuilder, value.toString());
+                }
+                return this;
+            }
+
+            public ArticlesArguments reverse(Boolean value) {
+                if (value != null) {
+                    startArgument("reverse");
+                    _queryBuilder.append(value);
+                }
+                return this;
+            }
+        }
+
+        public interface ArticlesArgumentsDefinition {
+            void define(ArticlesArguments args);
+        }
+
+        /**
+        * List of the blog's articles.
+        */
+        public BlogQuery articles(int first, ArticleConnectionQueryDefinition queryDef) {
+            return articles(first, args -> {}, queryDef);
+        }
+
+        /**
+        * List of the blog's articles.
+        */
+        public BlogQuery articles(int first, ArticlesArgumentsDefinition argsDef, ArticleConnectionQueryDefinition queryDef) {
+            startField("articles");
+
+            _queryBuilder.append("(first:");
+            _queryBuilder.append(first);
+
+            argsDef.define(new ArticlesArguments(_queryBuilder));
+
+            _queryBuilder.append(')');
+
+            _queryBuilder.append('{');
+            queryDef.define(new ArticleConnectionQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * The blogs’s title.
+        */
+        public BlogQuery title() {
+            startField("title");
+
+            return this;
+        }
+
+        /**
+        * The url pointing to the blog accessible from the web.
+        */
+        public BlogQuery url() {
+            startField("url");
+
+            return this;
+        }
+    }
+
+    public static class Blog extends AbstractResponse<Blog> implements Node {
+        public Blog() {
+        }
+
+        public Blog(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "articles": {
+                        responseData.put(key, new ArticleConnection(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "id": {
+                        responseData.put(key, new ID(jsonAsString(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "title": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "url": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public Blog(ID id) {
+            this();
+            optimisticData.put("id", id);
+        }
+
+        public String getGraphQlTypeName() {
+            return "Blog";
+        }
+
+        /**
+        * List of the blog's articles.
+        */
+
+        public ArticleConnection getArticles() {
+            return (ArticleConnection) get("articles");
+        }
+
+        public Blog setArticles(ArticleConnection arg) {
+            optimisticData.put(getKey("articles"), arg);
+            return this;
+        }
+
+        public ID getId() {
+            return (ID) get("id");
+        }
+
+        /**
+        * The blogs’s title.
+        */
+
+        public String getTitle() {
+            return (String) get("title");
+        }
+
+        public Blog setTitle(String arg) {
+            optimisticData.put(getKey("title"), arg);
+            return this;
+        }
+
+        /**
+        * The url pointing to the blog accessible from the web.
+        */
+
+        public String getUrl() {
+            return (String) get("url");
+        }
+
+        public Blog setUrl(String arg) {
+            optimisticData.put(getKey("url"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "articles": return true;
+
+                case "id": return false;
+
+                case "title": return false;
+
+                case "url": return false;
+
+                default: return false;
+            }
+        }
+    }
+
+    public interface BlogConnectionQueryDefinition {
+        void define(BlogConnectionQuery _queryBuilder);
+    }
+
+    public static class BlogConnectionQuery extends Query<BlogConnectionQuery> {
+        BlogConnectionQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * A list of edges.
+        */
+        public BlogConnectionQuery edges(BlogEdgeQueryDefinition queryDef) {
+            startField("edges");
+
+            _queryBuilder.append('{');
+            queryDef.define(new BlogEdgeQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * Information to aid in pagination.
+        */
+        public BlogConnectionQuery pageInfo(PageInfoQueryDefinition queryDef) {
+            startField("pageInfo");
+
+            _queryBuilder.append('{');
+            queryDef.define(new PageInfoQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+    }
+
+    public static class BlogConnection extends AbstractResponse<BlogConnection> {
+        public BlogConnection() {
+        }
+
+        public BlogConnection(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "edges": {
+                        List<BlogEdge> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new BlogEdge(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "pageInfo": {
+                        responseData.put(key, new PageInfo(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "BlogConnection";
+        }
+
+        /**
+        * A list of edges.
+        */
+
+        public List<BlogEdge> getEdges() {
+            return (List<BlogEdge>) get("edges");
+        }
+
+        public BlogConnection setEdges(List<BlogEdge> arg) {
+            optimisticData.put(getKey("edges"), arg);
+            return this;
+        }
+
+        /**
+        * Information to aid in pagination.
+        */
+
+        public PageInfo getPageInfo() {
+            return (PageInfo) get("pageInfo");
+        }
+
+        public BlogConnection setPageInfo(PageInfo arg) {
+            optimisticData.put(getKey("pageInfo"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "edges": return true;
+
+                case "pageInfo": return true;
+
+                default: return false;
+            }
+        }
+    }
+
+    public interface BlogEdgeQueryDefinition {
+        void define(BlogEdgeQuery _queryBuilder);
+    }
+
+    public static class BlogEdgeQuery extends Query<BlogEdgeQuery> {
+        BlogEdgeQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        public BlogEdgeQuery cursor() {
+            startField("cursor");
+
+            return this;
+        }
+
+        public BlogEdgeQuery node(BlogQueryDefinition queryDef) {
+            startField("node");
+
+            _queryBuilder.append('{');
+            queryDef.define(new BlogQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+    }
+
+    public static class BlogEdge extends AbstractResponse<BlogEdge> {
+        public BlogEdge() {
+        }
+
+        public BlogEdge(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "cursor": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "node": {
+                        responseData.put(key, new Blog(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "BlogEdge";
+        }
+
+        public String getCursor() {
+            return (String) get("cursor");
+        }
+
+        public BlogEdge setCursor(String arg) {
+            optimisticData.put(getKey("cursor"), arg);
+            return this;
+        }
+
+        public Blog getNode() {
+            return (Blog) get("node");
+        }
+
+        public BlogEdge setNode(Blog arg) {
+            optimisticData.put(getKey("node"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "cursor": return false;
+
+                case "node": return true;
+
+                default: return false;
+            }
+        }
+    }
+
+    /**
+    * The set of valid sort keys for the blogs query.
+    */
+    public enum BlogSortKeys {
+        HANDLE,
+
+        ID,
+
+        RELEVANCE,
+
+        TITLE,
+
+        UNKNOWN_VALUE;
+
+        public static BlogSortKeys fromGraphQl(String value) {
+            if (value == null) {
+                return null;
+            }
+
+            switch (value) {
+                case "HANDLE": {
+                    return HANDLE;
+                }
+
+                case "ID": {
+                    return ID;
+                }
+
+                case "RELEVANCE": {
+                    return RELEVANCE;
+                }
+
+                case "TITLE": {
+                    return TITLE;
+                }
+
+                default: {
+                    return UNKNOWN_VALUE;
+                }
+            }
+        }
+        public String toString() {
+            switch (this) {
+                case HANDLE: {
+                    return "HANDLE";
+                }
+
+                case ID: {
+                    return "ID";
+                }
+
+                case RELEVANCE: {
+                    return "RELEVANCE";
+                }
+
+                case TITLE: {
+                    return "TITLE";
+                }
+
+                default: {
+                    return "";
+                }
+            }
+        }
+    }
+
     public interface CheckoutQueryDefinition {
         void define(CheckoutQuery _queryBuilder);
     }
@@ -570,7 +2147,7 @@ public class Storefront {
         }
 
         /**
-        * The available shipping rates for this checkout.
+        * The available shipping rates for this Checkout.
         * Should only be used when checkout `requiresShipping` is `true` and
         * the shipping address is valid.
         */
@@ -603,7 +2180,7 @@ public class Storefront {
         }
 
         /**
-        * The currency code for the checkout.
+        * The currency code for the Checkout.
         */
         public CheckoutQuery currencyCode() {
             startField("currencyCode");
@@ -719,7 +2296,7 @@ public class Storefront {
         }
 
         /**
-        * The Order Status page URL for this checkout. Returns `null` when checkout is not completed.
+        * The Order Status Page for this Checkout, null when checkout is not completed.
         */
         public CheckoutQuery orderStatusUrl() {
             startField("orderStatusUrl");
@@ -728,7 +2305,7 @@ public class Storefront {
         }
 
         /**
-        * The amount left to be paid. This is equal to the cost of the line items, taxes, and shipping, minus
+        * The amount left to be paid. This is equal to the cost of the line items, taxes and shipping minus
         * discounts and gift cards.
         */
         public CheckoutQuery paymentDue() {
@@ -738,9 +2315,9 @@ public class Storefront {
         }
 
         /**
-        * Whether or not the checkout is ready and can be completed. Checkouts may have asynchronous
+        * Whether or not the Checkout is ready and can be completed. Checkouts may have asynchronous
         * operations that can take time to finish. If you want to complete a checkout or ensure all the fields
-        * are populated and up to date, then polling is required until the value is true.
+        * are populated and up to date, polling is required until the value is true. 
         */
         public CheckoutQuery ready() {
             startField("ready");
@@ -771,7 +2348,7 @@ public class Storefront {
         }
 
         /**
-        * After a shipping rate is selected by the customer, it is transitioned to a `shipping_line` object.
+        * Once a shipping rate is selected by the customer it is transitioned to a `shipping_line` object.
         */
         public CheckoutQuery shippingLine(ShippingRateQueryDefinition queryDef) {
             startField("shippingLine");
@@ -793,7 +2370,7 @@ public class Storefront {
         }
 
         /**
-        * Specifies if the checkout is tax exempt.
+        * Specifies if the Checkout is tax exempt.
         */
         public CheckoutQuery taxExempt() {
             startField("taxExempt");
@@ -838,7 +2415,7 @@ public class Storefront {
         }
 
         /**
-        * The URL pointing to the checkout accessible from the web.
+        * The url pointing to the checkout accessible from the web.
         */
         public CheckoutQuery webUrl() {
             startField("webUrl");
@@ -1094,8 +2671,8 @@ public class Storefront {
         }
 
         /**
-        * The available shipping rates for this checkout.
-        * Should only be used when `requiresShipping` is `true` and
+        * The available shipping rates for this Checkout.
+        * Should only be used when checkout `requiresShipping` is `true` and
         * the shipping address is valid.
         */
 
@@ -1109,7 +2686,7 @@ public class Storefront {
         }
 
         /**
-        * The date and time that the checkout was completed.
+        * The date and time when the checkout was completed.
         */
 
         public DateTime getCompletedAt() {
@@ -1122,7 +2699,7 @@ public class Storefront {
         }
 
         /**
-        * The date and time that the checkout was created.
+        * The date and time when the checkout was created.
         */
 
         public DateTime getCreatedAt() {
@@ -1135,7 +2712,7 @@ public class Storefront {
         }
 
         /**
-        * The currency code for the checkout.
+        * The currency code for the Checkout.
         */
 
         public CurrencyCode getCurrencyCode() {
@@ -1226,7 +2803,7 @@ public class Storefront {
         }
 
         /**
-        * The Order Status Page for this checkout. Returns `null` when checkout is not completed.
+        * The Order Status Page for this Checkout, null when checkout is not completed.
         */
 
         public String getOrderStatusUrl() {
@@ -1239,7 +2816,7 @@ public class Storefront {
         }
 
         /**
-        * The amount left to be paid. This is equal to the cost of the line items, taxes, and shipping, minus
+        * The amount left to be paid. This is equal to the cost of the line items, taxes and shipping minus
         * discounts and gift cards.
         */
 
@@ -1253,9 +2830,9 @@ public class Storefront {
         }
 
         /**
-        * Whether or not the checkout is ready and can be completed. Checkouts may have asynchronous
+        * Whether or not the Checkout is ready and can be completed. Checkouts may have asynchronous
         * operations that can take time to finish. If you want to complete a checkout or ensure all the fields
-        * are populated and up to date, then polling is required until the value is true.
+        * are populated and up to date, polling is required until the value is true. 
         */
 
         public Boolean getReady() {
@@ -1281,7 +2858,7 @@ public class Storefront {
         }
 
         /**
-        * The shipping address where the line items will be shipped.
+        * The shipping address to where the line items will be shipped.
         */
 
         public MailingAddress getShippingAddress() {
@@ -1294,7 +2871,7 @@ public class Storefront {
         }
 
         /**
-        * After a shipping rate is selected by the customer, it is transitioned to a `shipping_line` object.
+        * Once a shipping rate is selected by the customer it is transitioned to a `shipping_line` object.
         */
 
         public ShippingRate getShippingLine() {
@@ -1320,7 +2897,7 @@ public class Storefront {
         }
 
         /**
-        * Specifies if the checkout is tax exempt.
+        * Specifies if the Checkout is tax exempt.
         */
 
         public Boolean getTaxExempt() {
@@ -1385,7 +2962,7 @@ public class Storefront {
         }
 
         /**
-        * The URL pointing to the checkout accessible from the web.
+        * The url pointing to the checkout accessible from the web.
         */
 
         public String getWebUrl() {
@@ -1548,7 +3125,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred while executing the mutation.
+        * List of errors that occurred executing the mutation.
         */
         public CheckoutAttributesUpdatePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
@@ -1616,7 +3193,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred while executing the mutation.
+        * List of errors that occurred executing the mutation.
         */
 
         public List<UserError> getUserErrors() {
@@ -1662,7 +3239,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred while executing the mutation.
+        * List of errors that occurred executing the mutation.
         */
         public CheckoutCompleteFreePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
@@ -1735,7 +3312,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred while executing the mutation.
+        * List of errors that occurred executing the mutation.
         */
 
         public List<UserError> getUserErrors() {
@@ -1794,7 +3371,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred while executing the mutation.
+        * List of errors that occurred executing the mutation.
         */
         public CheckoutCompleteWithCreditCardPayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
@@ -1886,7 +3463,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred while executing the mutation.
+        * List of errors that occurred executing the mutation.
         */
 
         public List<UserError> getUserErrors() {
@@ -2039,7 +3616,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred while executing the mutation.
+        * List of errors that occurred executing the mutation.
         */
 
         public List<UserError> getUserErrors() {
@@ -2220,7 +3797,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred while executing the mutation.
+        * List of errors that occurred executing the mutation.
         */
         public CheckoutCreatePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
@@ -2293,7 +3870,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred while executing the mutation.
+        * List of errors that occurred executing the mutation.
         */
 
         public List<UserError> getUserErrors() {
@@ -2339,7 +3916,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred while executing the mutation.
+        * List of errors that occurred executing the mutation.
         */
         public CheckoutCustomerAssociatePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
@@ -2407,7 +3984,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred while executing the mutation.
+        * List of errors that occurred executing the mutation.
         */
 
         public List<UserError> getUserErrors() {
@@ -2453,7 +4030,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred while executing the mutation.
+        * List of errors that occurred executing the mutation.
         */
         public CheckoutCustomerDisassociatePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
@@ -2521,7 +4098,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred while executing the mutation.
+        * List of errors that occurred executing the mutation.
         */
 
         public List<UserError> getUserErrors() {
@@ -2567,7 +4144,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred while executing the mutation.
+        * List of errors that occurred executing the mutation.
         */
         public CheckoutEmailUpdatePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
@@ -2681,7 +4258,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred while executing the mutation.
+        * List of errors that occurred executing the mutation.
         */
         public CheckoutGiftCardApplyPayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
@@ -2749,7 +4326,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred while executing the mutation.
+        * List of errors that occurred executing the mutation.
         */
 
         public List<UserError> getUserErrors() {
@@ -2795,7 +4372,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred while executing the mutation.
+        * List of errors that occurred executing the mutation.
         */
         public CheckoutGiftCardRemovePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
@@ -2863,7 +4440,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred while executing the mutation.
+        * List of errors that occurred executing the mutation.
         */
 
         public List<UserError> getUserErrors() {
@@ -3480,7 +5057,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred while executing the mutation.
+        * List of errors that occurred executing the mutation.
         */
         public CheckoutLineItemsAddPayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
@@ -3553,7 +5130,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred while executing the mutation.
+        * List of errors that occurred executing the mutation.
         */
 
         public List<UserError> getUserErrors() {
@@ -3596,7 +5173,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred while executing the mutation.
+        * List of errors that occurred executing the mutation.
         */
         public CheckoutLineItemsRemovePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
@@ -3665,7 +5242,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred while executing the mutation.
+        * List of errors that occurred executing the mutation.
         */
 
         public List<UserError> getUserErrors() {
@@ -3711,7 +5288,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred while executing the mutation.
+        * List of errors that occurred executing the mutation.
         */
         public CheckoutLineItemsUpdatePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
@@ -3784,7 +5361,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred while executing the mutation.
+        * List of errors that occurred executing the mutation.
         */
 
         public List<UserError> getUserErrors() {
@@ -3830,7 +5407,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred while executing the mutation.
+        * List of errors that occurred executing the mutation.
         */
         public CheckoutShippingAddressUpdatePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
@@ -3898,7 +5475,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred while executing the mutation.
+        * List of errors that occurred executing the mutation.
         */
 
         public List<UserError> getUserErrors() {
@@ -3944,7 +5521,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred while executing the mutation.
+        * List of errors that occurred executing the mutation.
         */
         public CheckoutShippingLineUpdatePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
@@ -4017,7 +5594,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred while executing the mutation.
+        * List of errors that occurred executing the mutation.
         */
 
         public List<UserError> getUserErrors() {
@@ -4106,7 +5683,7 @@ public class Storefront {
         }
 
         /**
-        * A human-friendly unique string for the collection, automatically generated from its title.
+        * A human-friendly unique string for the collection automatically generated from its title.
         * Limit of 255 characters.
         */
         public CollectionQuery handle() {
@@ -4121,7 +5698,7 @@ public class Storefront {
             }
 
             /**
-            * Image width in pixels between 1 and 2048.
+            * Image width in pixels between 1 and 2048
             */
             public ImageArguments maxWidth(Integer value) {
                 if (value != null) {
@@ -4132,7 +5709,7 @@ public class Storefront {
             }
 
             /**
-            * Image height in pixels between 1 and 2048.
+            * Image height in pixels between 1 and 2048
             */
             public ImageArguments maxHeight(Integer value) {
                 if (value != null) {
@@ -4143,7 +5720,7 @@ public class Storefront {
             }
 
             /**
-            * If specified, crop the image keeping the specified region.
+            * If specified, crop the image keeping the specified region
             */
             public ImageArguments crop(CropRegion value) {
                 if (value != null) {
@@ -4154,7 +5731,7 @@ public class Storefront {
             }
 
             /**
-            * Image size multiplier for Retina displays. Must be between 1 and 3.
+            * Image size multiplier retina displays. Must be between 1 and 3
             */
             public ImageArguments scale(Integer value) {
                 if (value != null) {
@@ -4741,6 +6318,498 @@ public class Storefront {
         }
     }
 
+    public interface CommentQueryDefinition {
+        void define(CommentQuery _queryBuilder);
+    }
+
+    public static class CommentQuery extends Query<CommentQuery> {
+        CommentQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+
+            startField("id");
+        }
+
+        /**
+        * The comment’s author.
+        */
+        public CommentQuery author(CommentAuthorQueryDefinition queryDef) {
+            startField("author");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CommentAuthorQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        public class ContentArguments extends Arguments {
+            ContentArguments(StringBuilder _queryBuilder) {
+                super(_queryBuilder, true);
+            }
+
+            /**
+            * Truncates string after the given length.
+            */
+            public ContentArguments truncateAt(Integer value) {
+                if (value != null) {
+                    startArgument("truncateAt");
+                    _queryBuilder.append(value);
+                }
+                return this;
+            }
+        }
+
+        public interface ContentArgumentsDefinition {
+            void define(ContentArguments args);
+        }
+
+        /**
+        * Stripped content of the comment, single line with HTML tags removed.
+        */
+        public CommentQuery content() {
+            return content(args -> {});
+        }
+
+        /**
+        * Stripped content of the comment, single line with HTML tags removed.
+        */
+        public CommentQuery content(ContentArgumentsDefinition argsDef) {
+            startField("content");
+
+            ContentArguments args = new ContentArguments(_queryBuilder);
+            argsDef.define(args);
+            ContentArguments.end(args);
+
+            return this;
+        }
+
+        /**
+        * The content of the comment, complete with HTML formatting.
+        */
+        public CommentQuery contentHtml() {
+            startField("contentHtml");
+
+            return this;
+        }
+    }
+
+    public static class Comment extends AbstractResponse<Comment> implements Node {
+        public Comment() {
+        }
+
+        public Comment(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "author": {
+                        responseData.put(key, new CommentAuthor(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "content": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "contentHtml": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "id": {
+                        responseData.put(key, new ID(jsonAsString(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public Comment(ID id) {
+            this();
+            optimisticData.put("id", id);
+        }
+
+        public String getGraphQlTypeName() {
+            return "Comment";
+        }
+
+        /**
+        * The comment’s author.
+        */
+
+        public CommentAuthor getAuthor() {
+            return (CommentAuthor) get("author");
+        }
+
+        public Comment setAuthor(CommentAuthor arg) {
+            optimisticData.put(getKey("author"), arg);
+            return this;
+        }
+
+        /**
+        * Stripped content of the comment, single line with HTML tags removed.
+        */
+
+        public String getContent() {
+            return (String) get("content");
+        }
+
+        public Comment setContent(String arg) {
+            optimisticData.put(getKey("content"), arg);
+            return this;
+        }
+
+        /**
+        * The content of the comment, complete with HTML formatting.
+        */
+
+        public String getContentHtml() {
+            return (String) get("contentHtml");
+        }
+
+        public Comment setContentHtml(String arg) {
+            optimisticData.put(getKey("contentHtml"), arg);
+            return this;
+        }
+
+        public ID getId() {
+            return (ID) get("id");
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "author": return true;
+
+                case "content": return false;
+
+                case "contentHtml": return false;
+
+                case "id": return false;
+
+                default: return false;
+            }
+        }
+    }
+
+    public interface CommentAuthorQueryDefinition {
+        void define(CommentAuthorQuery _queryBuilder);
+    }
+
+    public static class CommentAuthorQuery extends Query<CommentAuthorQuery> {
+        CommentAuthorQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * The author's email.
+        */
+        public CommentAuthorQuery email() {
+            startField("email");
+
+            return this;
+        }
+
+        /**
+        * The author’s name.
+        */
+        public CommentAuthorQuery name() {
+            startField("name");
+
+            return this;
+        }
+    }
+
+    public static class CommentAuthor extends AbstractResponse<CommentAuthor> {
+        public CommentAuthor() {
+        }
+
+        public CommentAuthor(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "email": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "name": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "CommentAuthor";
+        }
+
+        /**
+        * The author's email.
+        */
+
+        public String getEmail() {
+            return (String) get("email");
+        }
+
+        public CommentAuthor setEmail(String arg) {
+            optimisticData.put(getKey("email"), arg);
+            return this;
+        }
+
+        /**
+        * The author’s name.
+        */
+
+        public String getName() {
+            return (String) get("name");
+        }
+
+        public CommentAuthor setName(String arg) {
+            optimisticData.put(getKey("name"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "email": return false;
+
+                case "name": return false;
+
+                default: return false;
+            }
+        }
+    }
+
+    public interface CommentConnectionQueryDefinition {
+        void define(CommentConnectionQuery _queryBuilder);
+    }
+
+    public static class CommentConnectionQuery extends Query<CommentConnectionQuery> {
+        CommentConnectionQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * A list of edges.
+        */
+        public CommentConnectionQuery edges(CommentEdgeQueryDefinition queryDef) {
+            startField("edges");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CommentEdgeQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * Information to aid in pagination.
+        */
+        public CommentConnectionQuery pageInfo(PageInfoQueryDefinition queryDef) {
+            startField("pageInfo");
+
+            _queryBuilder.append('{');
+            queryDef.define(new PageInfoQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+    }
+
+    public static class CommentConnection extends AbstractResponse<CommentConnection> {
+        public CommentConnection() {
+        }
+
+        public CommentConnection(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "edges": {
+                        List<CommentEdge> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new CommentEdge(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "pageInfo": {
+                        responseData.put(key, new PageInfo(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "CommentConnection";
+        }
+
+        /**
+        * A list of edges.
+        */
+
+        public List<CommentEdge> getEdges() {
+            return (List<CommentEdge>) get("edges");
+        }
+
+        public CommentConnection setEdges(List<CommentEdge> arg) {
+            optimisticData.put(getKey("edges"), arg);
+            return this;
+        }
+
+        /**
+        * Information to aid in pagination.
+        */
+
+        public PageInfo getPageInfo() {
+            return (PageInfo) get("pageInfo");
+        }
+
+        public CommentConnection setPageInfo(PageInfo arg) {
+            optimisticData.put(getKey("pageInfo"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "edges": return true;
+
+                case "pageInfo": return true;
+
+                default: return false;
+            }
+        }
+    }
+
+    public interface CommentEdgeQueryDefinition {
+        void define(CommentEdgeQuery _queryBuilder);
+    }
+
+    public static class CommentEdgeQuery extends Query<CommentEdgeQuery> {
+        CommentEdgeQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        public CommentEdgeQuery cursor() {
+            startField("cursor");
+
+            return this;
+        }
+
+        public CommentEdgeQuery node(CommentQueryDefinition queryDef) {
+            startField("node");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CommentQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+    }
+
+    public static class CommentEdge extends AbstractResponse<CommentEdge> {
+        public CommentEdge() {
+        }
+
+        public CommentEdge(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "cursor": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "node": {
+                        responseData.put(key, new Comment(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "CommentEdge";
+        }
+
+        public String getCursor() {
+            return (String) get("cursor");
+        }
+
+        public CommentEdge setCursor(String arg) {
+            optimisticData.put(getKey("cursor"), arg);
+            return this;
+        }
+
+        public Comment getNode() {
+            return (Comment) get("node");
+        }
+
+        public CommentEdge setNode(Comment arg) {
+            optimisticData.put(getKey("node"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "cursor": return false;
+
+                case "node": return true;
+
+                default: return false;
+            }
+        }
+    }
+
     public interface CreditCardQueryDefinition {
         void define(CreditCardQuery _queryBuilder);
     }
@@ -4796,7 +6865,7 @@ public class Storefront {
         }
 
         /**
-        * Masked credit card number with only the last 4 digits displayed.
+        * Masked credit card number with only the last 4 digits displayed
         */
         public CreditCardQuery maskedNumber() {
             startField("maskedNumber");
@@ -4984,7 +7053,7 @@ public class Storefront {
         }
 
         /**
-        * Masked credit card number with only the last 4 digits displayed.
+        * Masked credit card number with only the last 4 digits displayed
         */
 
         public String getMaskedNumber() {
@@ -5419,6 +7488,8 @@ public class Storefront {
         SGD,
 
         SRD,
+
+        SSP,
 
         STD,
 
@@ -5916,6 +7987,10 @@ public class Storefront {
 
                 case "SRD": {
                     return SRD;
+                }
+
+                case "SSP": {
+                    return SSP;
                 }
 
                 case "STD": {
@@ -6463,6 +8538,10 @@ public class Storefront {
 
                 case SRD: {
                     return "SRD";
+                }
+
+                case SSP: {
+                    return "SSP";
                 }
 
                 case STD: {
@@ -7439,7 +9518,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred while executing the mutation.
+        * List of errors that occurred executing the mutation.
         */
         public CustomerAccessTokenDeletePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
@@ -7536,7 +9615,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred while executing the mutation.
+        * List of errors that occurred executing the mutation.
         */
 
         public List<UserError> getUserErrors() {
@@ -7584,7 +9663,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred while executing the mutation.
+        * List of errors that occurred executing the mutation.
         */
         public CustomerAccessTokenRenewPayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
@@ -7657,7 +9736,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred while executing the mutation.
+        * List of errors that occurred executing the mutation.
         */
 
         public List<UserError> getUserErrors() {
@@ -7750,7 +9829,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred while executing the mutation.
+        * List of errors that occurred executing the mutation.
         */
         public CustomerActivatePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
@@ -7823,7 +9902,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred while executing the mutation.
+        * List of errors that occurred executing the mutation.
         */
 
         public List<UserError> getUserErrors() {
@@ -7869,7 +9948,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred while executing the mutation.
+        * List of errors that occurred executing the mutation.
         */
         public CustomerAddressCreatePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
@@ -7942,7 +10021,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred while executing the mutation.
+        * List of errors that occurred executing the mutation.
         */
 
         public List<UserError> getUserErrors() {
@@ -7984,7 +10063,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred while executing the mutation.
+        * List of errors that occurred executing the mutation.
         */
         public CustomerAddressDeletePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
@@ -8057,7 +10136,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred while executing the mutation.
+        * List of errors that occurred executing the mutation.
         */
 
         public List<UserError> getUserErrors() {
@@ -8103,7 +10182,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred while executing the mutation.
+        * List of errors that occurred executing the mutation.
         */
         public CustomerAddressUpdatePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
@@ -8176,7 +10255,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred while executing the mutation.
+        * List of errors that occurred executing the mutation.
         */
 
         public List<UserError> getUserErrors() {
@@ -8323,7 +10402,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred while executing the mutation.
+        * List of errors that occurred executing the mutation.
         */
         public CustomerCreatePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
@@ -8396,7 +10475,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred while executing the mutation.
+        * List of errors that occurred executing the mutation.
         */
 
         public List<UserError> getUserErrors() {
@@ -8429,7 +10508,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred while executing the mutation.
+        * List of errors that occurred executing the mutation.
         */
         public CustomerRecoverPayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
@@ -8569,7 +10648,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred while executing the mutation.
+        * List of errors that occurred executing the mutation.
         */
         public CustomerResetPayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
@@ -8642,7 +10721,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred while executing the mutation.
+        * List of errors that occurred executing the mutation.
         */
 
         public List<UserError> getUserErrors() {
@@ -8787,7 +10866,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred while executing the mutation.
+        * List of errors that occurred executing the mutation.
         */
         public CustomerUpdatePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
@@ -8860,7 +10939,7 @@ public class Storefront {
         }
 
         /**
-        * List of errors that occurred while executing the mutation.
+        * List of errors that occurred executing the mutation.
         */
 
         public List<UserError> getUserErrors() {
@@ -9116,7 +11195,7 @@ public class Storefront {
         }
 
         /**
-        * A word or phrase to describe the nature or contents of an image.
+        * A word or phrase to share the nature or contents of an image.
         */
 
         public String getAltText() {
@@ -10364,7 +12443,7 @@ public class Storefront {
         }
 
         /**
-        * Completes a checkout using a credit card token from Shopify's vault.
+        * Completes a checkout using a credit card token from Shopify's Vault.
         */
         public MutationQuery checkoutCompleteWithCreditCard(ID checkoutId, CreditCardPaymentInput payment, CheckoutCompleteWithCreditCardPayloadQueryDefinition queryDef) {
             startField("checkoutCompleteWithCreditCard");
@@ -10555,7 +12634,7 @@ public class Storefront {
         }
 
         /**
-        * Removes line items from an existing checkout.
+        * Removes line items from an existing checkout
         */
         public MutationQuery checkoutLineItemsRemove(ID checkoutId, List<ID> lineItemIds, CheckoutLineItemsRemovePayloadQueryDefinition queryDef) {
             startField("checkoutLineItemsRemove");
@@ -11216,7 +13295,7 @@ public class Storefront {
         }
 
         /**
-        * Completes a checkout using a credit card token from Shopify's vault.
+        * Completes a checkout using a credit card token from Shopify's Vault.
         */
 
         public CheckoutCompleteWithCreditCardPayload getCheckoutCompleteWithCreditCard() {
@@ -11333,7 +13412,7 @@ public class Storefront {
         }
 
         /**
-        * Removes line items from an existing checkout.
+        * Removes line items from an existing checkout
         */
 
         public CheckoutLineItemsRemovePayload getCheckoutLineItemsRemove() {
@@ -11617,6 +13696,20 @@ public class Storefront {
             return this;
         }
 
+        public NodeQuery onArticle(ArticleQueryDefinition queryDef) {
+            startInlineFragment("Article");
+            queryDef.define(new ArticleQuery(_queryBuilder));
+            _queryBuilder.append('}');
+            return this;
+        }
+
+        public NodeQuery onBlog(BlogQueryDefinition queryDef) {
+            startInlineFragment("Blog");
+            queryDef.define(new BlogQuery(_queryBuilder));
+            _queryBuilder.append('}');
+            return this;
+        }
+
         public NodeQuery onCheckout(CheckoutQueryDefinition queryDef) {
             startInlineFragment("Checkout");
             queryDef.define(new CheckoutQuery(_queryBuilder));
@@ -11634,6 +13727,13 @@ public class Storefront {
         public NodeQuery onCollection(CollectionQueryDefinition queryDef) {
             startInlineFragment("Collection");
             queryDef.define(new CollectionQuery(_queryBuilder));
+            _queryBuilder.append('}');
+            return this;
+        }
+
+        public NodeQuery onComment(CommentQueryDefinition queryDef) {
+            startInlineFragment("Comment");
+            queryDef.define(new CommentQuery(_queryBuilder));
             _queryBuilder.append('}');
             return this;
         }
@@ -11730,6 +13830,14 @@ public class Storefront {
                     return new AppliedGiftCard(fields);
                 }
 
+                case "Article": {
+                    return new Article(fields);
+                }
+
+                case "Blog": {
+                    return new Blog(fields);
+                }
+
                 case "Checkout": {
                     return new Checkout(fields);
                 }
@@ -11740,6 +13848,10 @@ public class Storefront {
 
                 case "Collection": {
                     return new Collection(fields);
+                }
+
+                case "Comment": {
+                    return new Comment(fields);
                 }
 
                 case "MailingAddress": {
@@ -11819,7 +13931,7 @@ public class Storefront {
         }
 
         /**
-        * The reason why the order was canceled.
+        * The reason why the order was cancelled.
         * If the order was not cancelled, this value is `null`.
         */
         public OrderQuery cancelReason() {
@@ -11829,7 +13941,7 @@ public class Storefront {
         }
 
         /**
-        * The date and time when the order was canceled.
+        * The date and time when the order was cancelled.
         * If the order was not cancelled, this value is `null.`
         */
         public OrderQuery cancelledAt() {
@@ -11966,7 +14078,7 @@ public class Storefront {
         /**
         * The date and time when the order was imported.
         * This value can be set to dates in the past when importing from other systems.
-        * If no value is provided, then it will be auto-generated based on current date and time.
+        * If no value is provided, it will be auto-generated based on current date and time.
         */
         public OrderQuery processedAt() {
             startField("processedAt");
@@ -11975,7 +14087,7 @@ public class Storefront {
         }
 
         /**
-        * The address where the order will be shipped.
+        * The address to where the order will be shipped.
         */
         public OrderQuery shippingAddress(MailingAddressQueryDefinition queryDef) {
             startField("shippingAddress");
@@ -12046,7 +14158,7 @@ public class Storefront {
     /**
     * An order is a customer’s completed request to purchase one or more products from a shop. An order is
     * created when a customer completes the checkout process, during which time they provides an email
-    * address, billing address, and payment information.
+    * address, billing address and payment information.
     */
     public static class Order extends AbstractResponse<Order> implements Node {
         public Order() {
@@ -12243,8 +14355,8 @@ public class Storefront {
         }
 
         /**
-        * The reason why the order was canceled.
-        * If the order was not cancelled, then this value is `null`.
+        * The reason why the order was cancelled.
+        * If the order was not cancelled, this value is `null`.
         */
 
         public OrderCancelReason getCancelReason() {
@@ -12257,8 +14369,8 @@ public class Storefront {
         }
 
         /**
-        * The date and time when the order was canceled.
-        * If the order was not cancelled, then this value is `null.`
+        * The date and time when the order was cancelled.
+        * If the order was not cancelled, this value is `null.`
         */
 
         public DateTime getCancelledAt() {
@@ -12394,7 +14506,7 @@ public class Storefront {
         /**
         * The date and time when the order was imported.
         * This value can be set to dates in the past when importing from other systems.
-        * If no value is provided, then it will be auto-generated based on current date and time.
+        * If no value is provided, it will be auto-generated based on current date and time.
         */
 
         public DateTime getProcessedAt() {
@@ -12407,7 +14519,7 @@ public class Storefront {
         }
 
         /**
-        * The address where the order will be shipped.
+        * The address to where the order will be shipped.
         */
 
         public MailingAddress getShippingAddress() {
@@ -14005,7 +16117,7 @@ public class Storefront {
 
     /**
     * A product represents an individual item for sale in a Shopify store. Products are often physical,
-    * but they don't have to be.
+    * but they don't have to be. 
     * For example, a digital download (such as a movie, music or ebook file) also qualifies as a product,
     * as do services (such as equipment rental, work for hire, customization of another product or an
     * extended warranty).
@@ -14130,7 +16242,7 @@ public class Storefront {
         }
 
         /**
-        * A human-friendly unique string for the product, automatically generated from its title.
+        * A human-friendly unique string for the Product automatically generated from its title.
         * They are used by the Liquid templating language to refer to objects.
         */
         public ProductQuery handle() {
@@ -14161,7 +16273,7 @@ public class Storefront {
             }
 
             /**
-            * Image width in pixels between 1 and 2048.
+            * Image width in pixels between 1 and 2048
             */
             public ImagesArguments maxWidth(Integer value) {
                 if (value != null) {
@@ -14172,7 +16284,7 @@ public class Storefront {
             }
 
             /**
-            * Image height in pixels between 1 and 2048.
+            * Image height in pixels between 1 and 2048
             */
             public ImagesArguments maxHeight(Integer value) {
                 if (value != null) {
@@ -14183,7 +16295,7 @@ public class Storefront {
             }
 
             /**
-            * If specified, then crop the image keeping the specified region.
+            * If specified, crop the image keeping the specified region
             */
             public ImagesArguments crop(CropRegion value) {
                 if (value != null) {
@@ -14194,7 +16306,7 @@ public class Storefront {
             }
 
             /**
-            * Image size multiplier retina displays. Must be between 1 and 3.
+            * Image size multiplier retina displays. Must be between 1 and 3
             */
             public ImagesArguments scale(Integer value) {
                 if (value != null) {
@@ -14242,7 +16354,7 @@ public class Storefront {
             }
 
             /**
-            * Truncate the array result to this size.
+            * Truncate the array result to this size
             */
             public OptionsArguments first(Integer value) {
                 if (value != null) {
@@ -14331,7 +16443,7 @@ public class Storefront {
         /**
         * Find a product’s variant based on its selected options.
         * This is useful for converting a user’s selection of product options into a single matching variant.
-        * If there is not a variant for the selected options, then `null` will be returned.
+        * If there is not a variant for the selected options, `null` will be returned.
         */
         public ProductQuery variantBySelectedOptions(List<SelectedOptionInput> selectedOptions, ProductVariantQueryDefinition queryDef) {
             startField("variantBySelectedOptions");
@@ -14421,7 +16533,7 @@ public class Storefront {
 
     /**
     * A product represents an individual item for sale in a Shopify store. Products are often physical,
-    * but they don't have to be.
+    * but they don't have to be. 
     * For example, a digital download (such as a movie, music or ebook file) also qualifies as a product,
     * as do services (such as equipment rental, work for hire, customization of another product or an
     * extended warranty).
@@ -14619,7 +16731,7 @@ public class Storefront {
         }
 
         /**
-        * A human-friendly unique string for the product, automatically generated from its title.
+        * A human-friendly unique string for the Product automatically generated from its title.
         * They are used by the Liquid templating language to refer to objects.
         */
 
@@ -14732,7 +16844,7 @@ public class Storefront {
         /**
         * Find a product’s variant based on its selected options.
         * This is useful for converting a user’s selection of product options into a single matching variant.
-        * If there is not a variant for the selected options, then `null` will be returned.
+        * If there is not a variant for the selected options, `null` will be returned.
         */
 
         public ProductVariant getVariantBySelectedOptions() {
@@ -15277,7 +17389,7 @@ public class Storefront {
             }
 
             /**
-            * Image width in pixels between 1 and 2048.
+            * Image width in pixels between 1 and 2048
             */
             public ImageArguments maxWidth(Integer value) {
                 if (value != null) {
@@ -15288,7 +17400,7 @@ public class Storefront {
             }
 
             /**
-            * Image height in pixels between 1 and 2048.
+            * Image height in pixels between 1 and 2048
             */
             public ImageArguments maxHeight(Integer value) {
                 if (value != null) {
@@ -15299,7 +17411,7 @@ public class Storefront {
             }
 
             /**
-            * If specified, then crop the image keeping the specified region.
+            * If specified, crop the image keeping the specified region
             */
             public ImageArguments crop(CropRegion value) {
                 if (value != null) {
@@ -15310,7 +17422,7 @@ public class Storefront {
             }
 
             /**
-            * Image size multiplier retina displays. Must be between 1 and 3.
+            * Image size multiplier retina displays. Must be between 1 and 3
             */
             public ImageArguments scale(Integer value) {
                 if (value != null) {
@@ -16366,8 +18478,161 @@ public class Storefront {
             super(_queryBuilder);
         }
 
+        public class ArticlesArguments extends Arguments {
+            ArticlesArguments(StringBuilder _queryBuilder) {
+                super(_queryBuilder, false);
+            }
+
+            public ArticlesArguments after(String value) {
+                if (value != null) {
+                    startArgument("after");
+                    Query.appendQuotedString(_queryBuilder, value.toString());
+                }
+                return this;
+            }
+
+            public ArticlesArguments sortKey(ArticleSortKeys value) {
+                if (value != null) {
+                    startArgument("sortKey");
+                    _queryBuilder.append(value.toString());
+                }
+                return this;
+            }
+
+            public ArticlesArguments reverse(Boolean value) {
+                if (value != null) {
+                    startArgument("reverse");
+                    _queryBuilder.append(value);
+                }
+                return this;
+            }
+
+            /**
+            * Supported filter parameters:
+            * - `author`
+            * - `updated_at`
+            * - `created_at`
+            * - `blog_title`
+            * - `tag`
+            */
+            public ArticlesArguments query(String value) {
+                if (value != null) {
+                    startArgument("query");
+                    Query.appendQuotedString(_queryBuilder, value.toString());
+                }
+                return this;
+            }
+        }
+
+        public interface ArticlesArgumentsDefinition {
+            void define(ArticlesArguments args);
+        }
+
         /**
-        * The URL pointing to the endpoint to vault credit cards.
+        * List of the shop' articles.
+        */
+        public ShopQuery articles(int first, ArticleConnectionQueryDefinition queryDef) {
+            return articles(first, args -> {}, queryDef);
+        }
+
+        /**
+        * List of the shop' articles.
+        */
+        public ShopQuery articles(int first, ArticlesArgumentsDefinition argsDef, ArticleConnectionQueryDefinition queryDef) {
+            startField("articles");
+
+            _queryBuilder.append("(first:");
+            _queryBuilder.append(first);
+
+            argsDef.define(new ArticlesArguments(_queryBuilder));
+
+            _queryBuilder.append(')');
+
+            _queryBuilder.append('{');
+            queryDef.define(new ArticleConnectionQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        public class BlogsArguments extends Arguments {
+            BlogsArguments(StringBuilder _queryBuilder) {
+                super(_queryBuilder, false);
+            }
+
+            public BlogsArguments after(String value) {
+                if (value != null) {
+                    startArgument("after");
+                    Query.appendQuotedString(_queryBuilder, value.toString());
+                }
+                return this;
+            }
+
+            public BlogsArguments sortKey(BlogSortKeys value) {
+                if (value != null) {
+                    startArgument("sortKey");
+                    _queryBuilder.append(value.toString());
+                }
+                return this;
+            }
+
+            public BlogsArguments reverse(Boolean value) {
+                if (value != null) {
+                    startArgument("reverse");
+                    _queryBuilder.append(value);
+                }
+                return this;
+            }
+
+            /**
+            * Supported filter parameters:
+            * - `handle`
+            * - `title`
+            * - `updated_at`
+            * - `created_at`
+            */
+            public BlogsArguments query(String value) {
+                if (value != null) {
+                    startArgument("query");
+                    Query.appendQuotedString(_queryBuilder, value.toString());
+                }
+                return this;
+            }
+        }
+
+        public interface BlogsArgumentsDefinition {
+            void define(BlogsArguments args);
+        }
+
+        /**
+        * List of the shop' blogs.
+        */
+        public ShopQuery blogs(int first, BlogConnectionQueryDefinition queryDef) {
+            return blogs(first, args -> {}, queryDef);
+        }
+
+        /**
+        * List of the shop' blogs.
+        */
+        public ShopQuery blogs(int first, BlogsArgumentsDefinition argsDef, BlogConnectionQueryDefinition queryDef) {
+            startField("blogs");
+
+            _queryBuilder.append("(first:");
+            _queryBuilder.append(first);
+
+            argsDef.define(new BlogsArguments(_queryBuilder));
+
+            _queryBuilder.append(')');
+
+            _queryBuilder.append('{');
+            queryDef.define(new BlogConnectionQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * The url pointing to the endpoint to vault credit cards.
         */
         public ShopQuery cardVaultUrl() {
             startField("cardVaultUrl");
@@ -16425,14 +18690,14 @@ public class Storefront {
         }
 
         /**
-        * List of the shop’ collections.
+        * List of the shop’s collections.
         */
         public ShopQuery collections(int first, CollectionConnectionQueryDefinition queryDef) {
             return collections(first, args -> {}, queryDef);
         }
 
         /**
-        * List of the shop’ collections.
+        * List of the shop’s collections.
         */
         public ShopQuery collections(int first, CollectionsArgumentsDefinition argsDef, CollectionConnectionQueryDefinition queryDef) {
             startField("collections");
@@ -16565,14 +18830,14 @@ public class Storefront {
         }
 
         /**
-        * List of the shop’ products.
+        * List of the shop’s products.
         */
         public ShopQuery products(int first, ProductConnectionQueryDefinition queryDef) {
             return products(first, args -> {}, queryDef);
         }
 
         /**
-        * List of the shop’ products.
+        * List of the shop’s products.
         */
         public ShopQuery products(int first, ProductsArgumentsDefinition argsDef, ProductConnectionQueryDefinition queryDef) {
             startField("products");
@@ -16605,7 +18870,7 @@ public class Storefront {
         }
 
         /**
-        * The shop's Shopify Payments account id.
+        * The shop’s Shopify Payments account id.
         */
         public ShopQuery shopifyPaymentsAccountId() {
             startField("shopifyPaymentsAccountId");
@@ -16639,6 +18904,18 @@ public class Storefront {
                 String key = field.getKey();
                 String fieldName = getFieldName(key);
                 switch (fieldName) {
+                    case "articles": {
+                        responseData.put(key, new ArticleConnection(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "blogs": {
+                        responseData.put(key, new BlogConnection(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
                     case "cardVaultUrl": {
                         responseData.put(key, jsonAsString(field.getValue(), key));
 
@@ -16752,7 +19029,33 @@ public class Storefront {
         }
 
         /**
-        * The URL pointing to the endpoint to vault credit cards.
+        * List of the shop' articles.
+        */
+
+        public ArticleConnection getArticles() {
+            return (ArticleConnection) get("articles");
+        }
+
+        public Shop setArticles(ArticleConnection arg) {
+            optimisticData.put(getKey("articles"), arg);
+            return this;
+        }
+
+        /**
+        * List of the shop' blogs.
+        */
+
+        public BlogConnection getBlogs() {
+            return (BlogConnection) get("blogs");
+        }
+
+        public Shop setBlogs(BlogConnection arg) {
+            optimisticData.put(getKey("blogs"), arg);
+            return this;
+        }
+
+        /**
+        * The url pointing to the endpoint to vault credit cards.
         */
 
         public String getCardVaultUrl() {
@@ -16882,7 +19185,7 @@ public class Storefront {
         }
 
         /**
-        * The shop's Shopify Payments account id.
+        * The shop’s Shopify Payments account id.
         */
 
         public String getShopifyPaymentsAccountId() {
@@ -16909,6 +19212,10 @@ public class Storefront {
 
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
+                case "articles": return true;
+
+                case "blogs": return true;
+
                 case "cardVaultUrl": return false;
 
                 case "collections": return true;
@@ -17262,7 +19569,7 @@ public class Storefront {
         }
 
         /**
-        * The status of the transaction.
+        * The status of the transaction
         */
         public TransactionQuery status() {
             startField("status");
@@ -17271,7 +19578,7 @@ public class Storefront {
         }
 
         /**
-        * Whether the transaction was done in test mode.
+        * Whether the transaction was done in test mode or not
         */
         public TransactionQuery test() {
             startField("test");
@@ -17281,7 +19588,7 @@ public class Storefront {
     }
 
     /**
-    * An object representing an exchange of money for a product or service.
+    * An object representing exchange of money for a product or service.
     */
     public static class Transaction extends AbstractResponse<Transaction> {
         public Transaction() {
@@ -17358,7 +19665,7 @@ public class Storefront {
         }
 
         /**
-        * The status of the transaction.
+        * The status of the transaction
         */
 
         public TransactionStatus getStatus() {
@@ -17371,7 +19678,7 @@ public class Storefront {
         }
 
         /**
-        * Whether the transaction was done in test mode.
+        * Whether the transaction was done in test mode or not
         */
 
         public Boolean getTest() {

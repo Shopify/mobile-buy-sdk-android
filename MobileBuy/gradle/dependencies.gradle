@@ -2,7 +2,7 @@ def versions = [
     androidSupportVersion: '25.2.0',
     okHttpVersion        : '3.6.0',
     playServicesVersion  : '9.8.0',
-    jodaTimeVersion      : '2.9.5.1',
+    jodaTimeVersion      : '2.9.9',
     butterKnifeVersion   : '8.5.1',
     apolloVersion        : '0.3.0',
     archVersion          : '1.0.0-alpha1'
@@ -50,5 +50,6 @@ ext.dep = [
     rxrelay                  : "com.jakewharton.rxrelay2:rxrelay:2.0.0",
     archRuntime              : "android.arch.lifecycle:runtime:$versions.archVersion",
     archExt                  : "android.arch.lifecycle:extensions:$versions.archVersion",
-    arcCompiler              : "android.arch.lifecycle:compiler:$versions.archVersion"
+    arcCompiler              : "android.arch.lifecycle:compiler:$versions.archVersion",
+    gson                     : "com.google.code.gson:gson:2.7"
 ]
