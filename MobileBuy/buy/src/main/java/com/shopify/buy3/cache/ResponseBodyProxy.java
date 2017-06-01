@@ -13,9 +13,10 @@ import okio.BufferedSource;
 import okio.Okio;
 import okio.Source;
 import okio.Timeout;
+import timber.log.Timber;
 
+import static com.shopify.buy3.cache.Utils.closeQuietly;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static okhttp3.internal.Util.closeQuietly;
 import static okhttp3.internal.Util.discard;
 
 final class ResponseBodyProxy extends ResponseBody {
@@ -37,6 +38,7 @@ final class ResponseBodyProxy extends ResponseBody {
     try {
       return contentLength != null ? Long.parseLong(contentLength) : -1;
     } catch (NumberFormatException e) {
+      Timber.w(e, "failed to parse content length");
       return -1;
     }
   }
@@ -57,7 +59,7 @@ final class ResponseBodyProxy extends ResponseBody {
       responseBodyCacheSink = new ResponseBodyCacheSink(Okio.buffer(cacheRecordEditor.bodySink())) {
         @Override void onException(Exception e) {
           abortCacheQuietly();
-          //TODO log me
+          Timber.w(e, "failed to write to cache response sink");
         }
       };
     }
@@ -68,7 +70,6 @@ final class ResponseBodyProxy extends ResponseBody {
         bytesRead = responseBodySource.read(sink, byteCount);
       } catch (IOException e) {
         if (!closed) {
-          // Failed to write a complete cache response.
           closed = true;
           abortCacheQuietly();
         }
@@ -77,7 +78,6 @@ final class ResponseBodyProxy extends ResponseBody {
 
       if (bytesRead == -1) {
         if (!closed) {
-          // The cache response is complete!
           closed = true;
           commitCache();
         }
@@ -112,7 +112,7 @@ final class ResponseBodyProxy extends ResponseBody {
       } catch (Exception e) {
         closeQuietly(responseBodyCacheSink);
         abortCacheQuietly();
-        //TODO log me
+        Timber.w(e, "failed to commit cache response");
       }
     }
 
@@ -121,7 +121,7 @@ final class ResponseBodyProxy extends ResponseBody {
       try {
         cacheRecordEditor.abort();
       } catch (Exception ignore) {
-        //TODO log me
+        // ignore
       }
     }
   }

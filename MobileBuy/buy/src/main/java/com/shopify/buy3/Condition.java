@@ -29,6 +29,7 @@ package com.shopify.buy3;
  *
  * @param <T> type of object to be checked
  */
+@SuppressWarnings("WeakerAccess")
 public interface Condition<T> {
   /**
    * Checks condition on specified object.

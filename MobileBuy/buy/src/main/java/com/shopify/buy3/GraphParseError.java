@@ -27,6 +27,7 @@ package com.shopify.buy3;
 /**
  * Error to be thrown when {@link GraphCall} executed but http response is malformed and can't be parsed.
  */
+@SuppressWarnings("WeakerAccess")
 public final class GraphParseError extends GraphError {
   public GraphParseError() {
   }

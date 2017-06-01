@@ -8,6 +8,7 @@ import okio.Buffer;
 import okio.BufferedSink;
 import okio.ForwardingSink;
 
+@SuppressWarnings("WeakerAccess")
 abstract class ResponseBodyCacheSink extends ForwardingSink {
   private boolean failed;
 
@@ -45,7 +46,7 @@ abstract class ResponseBodyCacheSink extends ForwardingSink {
     }
   }
 
-  void copyFrom(@NonNull final Buffer buffer, long offset, long bytesCount) {
+  protected void copyFrom(@NonNull final Buffer buffer, long offset, long bytesCount) {
     if (failed) return;
     try {
       BufferedSink outSink = (BufferedSink) delegate();

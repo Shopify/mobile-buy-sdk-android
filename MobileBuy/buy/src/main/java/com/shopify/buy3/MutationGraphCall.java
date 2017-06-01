@@ -28,5 +28,6 @@ package com.shopify.buy3;
  * <p>Mutation {@code GraphQL} operation call.</p>
  * Performs {@link Storefront.MutationQuery} queries that serve {@link Storefront.Mutation} responses.
  */
+@SuppressWarnings("WeakerAccess")
 public interface MutationGraphCall extends GraphCall<Storefront.Mutation> {
 }

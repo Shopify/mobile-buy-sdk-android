@@ -55,6 +55,7 @@ import static com.shopify.buy3.Utils.checkNotNull;
  * and would also save memory.</p>
  * <p>This client should be shared between calls to the same shop domain.</p>
  */
+@SuppressWarnings("WeakerAccess")
 public final class GraphClient {
   /**
    * Instantiates new builder to construct new {@code GraphClient} instance.

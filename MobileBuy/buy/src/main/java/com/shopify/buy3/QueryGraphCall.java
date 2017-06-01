@@ -30,6 +30,7 @@ import android.support.annotation.NonNull;
  * <p>Query {@code GraphQL} operation call.</p>
  * Performs {@link Storefront.QueryRootQuery} queries that serve {@link Storefront.QueryRoot} responses.
  */
+@SuppressWarnings("WeakerAccess")
 public interface QueryGraphCall extends GraphCall<Storefront.QueryRoot> {
 
   /**

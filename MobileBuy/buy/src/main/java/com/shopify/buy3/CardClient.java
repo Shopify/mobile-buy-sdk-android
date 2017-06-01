@@ -39,6 +39,7 @@ import static com.shopify.buy3.Utils.checkNotNull;
  * Factory for network calls to the card server.
  * Should be shared and reused for all calls to the card server.
  */
+@SuppressWarnings("WeakerAccess")
 public final class CardClient {
   private static final long DEFAULT_HTTP_CONNECTION_TIME_OUT_MS = TimeUnit.SECONDS.toMillis(10);
   private static final long DEFAULT_HTTP_READ_WRITE_TIME_OUT_MS = TimeUnit.SECONDS.toMillis(20);

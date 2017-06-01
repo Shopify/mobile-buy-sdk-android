@@ -27,6 +27,7 @@ package com.shopify.buy3;
 /**
  * Thrown when {@link GraphCall} call has been canceled.
  */
+@SuppressWarnings("WeakerAccess")
 public class GraphCallCanceledError extends GraphError {
   public GraphCallCanceledError() {
   }

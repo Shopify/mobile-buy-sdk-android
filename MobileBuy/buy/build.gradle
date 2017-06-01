@@ -119,6 +119,7 @@ dependencies {
   compile dep.androidSupportAnnotations
   compile dep.jodaTime
   compile dep.gson
+  compile dep.timber
 
   androidTestCompile dep.mockitoCore
   androidTestCompile dep.mockWebServer

@@ -7,6 +7,7 @@ import okhttp3.ResponseBody;
 import okio.BufferedSource;
 import okio.Okio;
 import okio.Source;
+import timber.log.Timber;
 
 final class CacheResponseBody extends ResponseBody {
   private BufferedSource responseBodySource;
@@ -27,6 +28,7 @@ final class CacheResponseBody extends ResponseBody {
     try {
       return contentLength != null ? Long.parseLong(contentLength) : -1;
     } catch (NumberFormatException e) {
+      Timber.w(e, "failed to parse content length");
       return -1;
     }
   }

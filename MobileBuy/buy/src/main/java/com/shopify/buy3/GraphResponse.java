@@ -40,6 +40,7 @@ import java.util.List;
  *
  * @param <T> subtype of parsed {@link AbstractResponse} data. Can be either {@link Storefront.QueryRoot} or {@link Storefront.Mutation}
  */
+@SuppressWarnings("WeakerAccess")
 public final class GraphResponse<T extends AbstractResponse<T>> {
   private final T data;
   private final List<Error> errors;
