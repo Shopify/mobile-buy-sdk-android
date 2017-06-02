@@ -1495,7 +1495,7 @@ Again, just like when [polling for available shipping rates](#polling-for-shippi
 
 ## Sample application [⤴](#table-of-contents)
 
-The Buy SDK includes a comprehensive sample application that covers the SDK's most common use cases. It's built on best practices and our recommended `ViewModel` architecture. You can use it as a template, a starting point, or a place to cherrypick components as needed. Check out the [Storefront readme](/Sample%20Apps/Storefront/) for more details.
+The Buy SDK includes a comprehensive sample application that covers the SDK's most common use cases. It's built on best practices and our recommended `ViewModel` architecture. You can use it as a template, a starting point, or a place to cherrypick components as needed. Check out the [Sample readme](/MobileBuy/sample/) for more details.
 
 ## Contributions [⤴](#table-of-contents)
 
