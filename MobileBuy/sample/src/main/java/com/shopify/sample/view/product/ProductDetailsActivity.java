@@ -172,14 +172,6 @@ public final class ProductDetailsActivity extends AppCompatActivity implements L
   private void showDefaultErrorMessage() {
     Snackbar snackbar = Snackbar.make(rootView, R.string.default_error, Snackbar.LENGTH_LONG);
     snackbar.getView().setBackgroundResource(R.color.snackbar_error_background);
-    snackbar.getView().setMinimumHeight(rootView.getHeight());
-
-    TextView textView = (TextView) snackbar.getView().findViewById(android.support.design.R.id.snackbar_text);
-    ViewGroup.LayoutParams layoutParams = textView.getLayoutParams();
-    layoutParams.height = rootView.getHeight();
-    textView.setLayoutParams(layoutParams);
-    textView.setGravity(Gravity.CENTER_VERTICAL);
-
     snackbar.show();
   }
 }

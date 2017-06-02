@@ -23,6 +23,10 @@ android {
     targetCompatibility JavaVersion.VERSION_1_8
   }
 
+  sourceSets {
+    main.java.srcDirs += '../libs/graphql_java_gen/support/src/main/java'
+  }
+
   defaultConfig {
     minSdkVersion androidConfig.minSdkVersion
     targetSdkVersion androidConfig.targetSdkVersion
@@ -34,7 +38,7 @@ android {
 
   buildTypes {
     release {
-      minifyEnabled false
+      minifyEnabled = false
       proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
     }
   }
@@ -68,7 +72,7 @@ android {
       task("javadocJar", type: Jar, dependsOn: javadoc) {
         description "Bundles Javadoc into zip"
         classifier = "javadoc"
-        baseName = 'buy'
+        baseName = 'buy3'
         from tasks["javadoc"]
       }
 
@@ -88,7 +92,7 @@ android {
         }
 
         from("./build/outputs/aar") {
-          include "buy-" + VERSION_NAME + ".aar"
+          include "buy3-" + VERSION_NAME + ".aar"
         }
 
         from("../..") {
@@ -108,6 +112,26 @@ android {
   testOptions {
     unitTests.returnDefaultValues = true
   }
+}
+
+dependencies {
+  compile dep.okhttp
+  compile dep.androidSupportAnnotations
+  compile dep.jodaTime
+  compile dep.gson
+  compile dep.timber
+
+  androidTestCompile dep.mockitoCore
+  androidTestCompile dep.mockWebServer
+  androidTestCompile dep.truth
+  androidTestCompile dep.okhttpTestSupport
+  androidTestCompile 'com.android.support.test:runner:0.5'
+  androidTestCompile 'com.android.support.test:rules:0.5'
+
+  testCompile dep.mockitoCore
+  testCompile dep.junit
+  testCompile dep.truth
+  testCompile dep.mockWebServer
 }
 
 /*
@@ -131,7 +155,7 @@ install {
         artifactId POM_ARTIFACT_ID
 
         // Add your description here
-        name POM_NAME
+        name POM_LIBRARY_NAME
         description POM_DESCRIPTION
         url POM_WEB_URL
 
@@ -168,6 +192,8 @@ if (localProperties.exists()) {
   properties.load(localProperties.newDataInputStream())
 }
 
+group = POM_GROUP_ID
+
 bintray {
   user = properties.getProperty("bintray.user")
   key = properties.getProperty("bintray.apikey")
@@ -189,16 +215,24 @@ bintray {
   }
 }
 
-dependencies {
-  compile dep.playServicesWallet
-  provided project(':buy')
+//task updateSchema(type: DefaultTask, group: "GraphQL", description: "Download GraphQL store front API schema and run generation script") {
+//  doLast {
+//    println("Updating GraphQL API schema...")
+//    def scriptFilePath = project.file('update_schema.rb').absolutePath
+//    def targetFilePath = project.projectDir.absolutePath + '/src/main/java/com/shopify/buy3/Storefront.java'
+//    def scriptCommand = "${scriptFilePath} -t ${targetFilePath}"
+//    println("Running script: " + scriptCommand)
+//    def scriptProc = scriptCommand.execute()
+//    scriptProc.in.eachLine { line -> println line }
+//    scriptProc.err.eachLine { line -> println 'ERROR: ' + line }
+//    if (scriptProc.waitFor() != 0) {
+//      throw new GradleException('Failed to update API schema')
+//    }
+//    println("API schema has been updated!")
+//  }
+//}
 
-  androidTestCompile dep.mockitoCore
-  androidTestCompile dep.truth
-  androidTestCompile 'com.android.support.test:runner:0.5'
-  androidTestCompile 'com.android.support.test:rules:0.5'
-
-  testCompile dep.mockitoCore
-  testCompile dep.junit
-  testCompile dep.truth
+tasks.withType(Checkstyle) {
+  exclude '**/Storefront.java'
 }
+
