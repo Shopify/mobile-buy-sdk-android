@@ -71,7 +71,7 @@ The Mobile Buy SDK makes it easy to create custom storefronts in your mobile app
 Mobile Buy SDK for Android is represented by runtime module that provides support to build and execute GraphQL queries, and an optional library to help with the Android Pay purchase flow.
 
 ##### Download the latest JARs:
-[Mobile Buy SDK - link TBD](https://bintray.com/shopify/shopify-android/mobile-buy-sdk/_latestVersion)
+[Mobile Buy SDK](https://bintray.com/shopify/shopify-android/mobile-buy-sdk/_latestVersion)
 
 [Optional Android Pay Helper - link TBD](https://bintray.com/shopify/shopify-android/mobile-buy-sdk/_latestVersion)
 
