@@ -11,7 +11,7 @@ To run the sample application, you need to provide credentials to the shop that 
 1. Make sure that you have the **Mobile App** channel installed in your Shopify admin.
 2. From your Shopify admin, navigate to the **Mobile App** channel, and then copy your API key.
 3. Open the Sample Application project in `/MobileBuy/sample`
-4. Create `shop.properties` file under root folder and add next lines:
+4. Create `shop.properties` file under the root folder and add next lines:
 
 ```
 SHOP_DOMAIN=<your-shop-here>.myshopify.com
