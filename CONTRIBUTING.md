@@ -18,5 +18,4 @@ We welcome contributions to the Mobile Buy SDK. But before you contribute, make 
 
 1. Fork the repo, and branch off of `develop`.
 2. Create a new branch in your fork.
-3. If it makes sense to add tests for your code, then do so (and make sure that they pass). Add new keys to `test_shop_data.json`, but don't check in their values.
-4. Create a pull request
+3. Create a pull request
