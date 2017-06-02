@@ -27,6 +27,14 @@ The Mobile Buy SDK makes it easy to create custom storefronts in your mobile app
       - [GraphQL Error](#graphql-error)
       - [GraphError](#grapherror)
 
+- [Search](#search-)
+  - [Fuzzy matching](#fuzzy-matching-)
+  - [Field matching](#field-matching-)
+  - [Negating field matching](#negating-field-matching-)
+  - [Boolean operators](#boolean-operators-)
+  - [Comparison operators](#comparison-operators-)
+  - [Exists operator](#exists-operator-)
+
 - [Card vaulting](#card-vaulting-)
   - [Card client](#card-client-)
 
@@ -550,6 +558,97 @@ call.enqueue(new GraphCall.Callback<Storefront.QueryRoot>() {
   }
 });
 
+```
+
+## Search [⤴](#table-of-contents)
+
+Some `Storefront` models accept search terms via the `query` parameter. For example, you can provide a `query` to search for collections that contain a specific search term in any of their fields.
+
+The following example shows how you can find collections that contain the word "shoes":
+
+```java
+Storefront.query(root -> root
+  .shop(shop -> shop
+    .collections(10, arg -> arg.query("shoes"), connection -> connection
+      .edges(edges -> edges
+        .node(node -> node
+          .title()
+          .description()
+        )
+      )
+    )
+  )
+)
+```
+
+#### Fuzzy matching [⤴](#table-of-contents)
+
+In the example above, the query is `shoes`. This will match collections that contain "shoes" in the description, title, and other fields. This is the simplest form of query. It provides fuzzy matching of search terms on all fields of a collection.
+
+#### Field matching [⤴](#table-of-contents)
+
+As an alternative to object-wide fuzzy matches, you can also specify individual fields to include in your search. For example, if you want to match collections of particular type, you can do so by specifying a field directly:
+
+```java
+.collections(10, arg -> arg.query("collection_type:runners"), ...
+```
+
+The format for specifying fields and search parameters is the following: `field:search_term`. Note that it's critical that there be no space between the `:` and the `search_term`. Fields that support search are documented in the generated interfaces of the Buy SDK.
+
+**IMPORTANT:** If you specify a field in a search (as in the example above), then the `search_term` will be an **exact match** instead of a fuzzy match. For example, based on the query above, a collection with the type `blue_runners` will not match the query for `runners`.
+
+#### Negating field matching [⤴](#table-of-contents)
+
+Each search field can also be negated. Building on the example above, if you want to match all collections that were **not** of the type `runners`, then you can append a `-` to the relevant field:
+
+```java
+.collections(10, arg -> arg.query("-collection_type:runners"), ...
+```
+
+#### Boolean operators [⤴](#table-of-contents)
+
+In addition to single field searches, you can build more complex searches using boolean operators. They very much like ordinary SQL operators.
+
+The following example shows how you can search for products that are tagged with `blue` and that are of type `sneaker`:
+
+```java
+.products(10, arg -> arg.query("tag:blue AND product_type:sneaker"), ...
+```
+
+You can also group search terms:
+
+```java
+.products(10, arg -> arg.query("(tag:blue AND product_type:sneaker) OR tag:red"), ...
+```
+
+#### Comparison operators [⤴](#table-of-contents)
+
+The search syntax also allows for comparing values that aren't exact matches. For example, you might want to get products that were updated only after a certain a date. You can do that as well:
+
+```java
+.products(10, arg -> arg.query("updated_at:>\"2017-05-29T00:00:00Z\""), ...
+```
+
+The query above will return products that have been updated after midnight on May 29, 2017. Note how the date is enclosed by another pair of escaped quotations. You can also use this technique for multiple words or sentences.
+
+The SDK supports the following comparison operators:
+
+- `:` equal to
+- `:<` less than
+- `:>` greater than
+- `:<=` less than or equal to
+- `:>=` greater than or equal to
+
+**IMPORTANT:** `:=` is not a valid operator.
+
+#### Exists operator [⤴](#table-of-contents)
+
+There is one special operator that can be used for checking `null` or empty values.
+
+The following example shows how you can find products that don't have any tags. You can do so using the `*` operator and negating the field:
+
+```java
+.products(10, arg -> arg.query("-tag:*"), ...
 ```
 
 ## Card Vaulting [⤴](#table-of-contents)
