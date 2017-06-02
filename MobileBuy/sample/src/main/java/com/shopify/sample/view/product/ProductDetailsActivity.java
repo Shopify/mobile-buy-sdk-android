@@ -24,26 +24,27 @@
 
 package com.shopify.sample.view.product;
 
-import android.content.Context;
+import android.arch.lifecycle.Lifecycle;
+import android.arch.lifecycle.LifecycleRegistry;
+import android.arch.lifecycle.LifecycleRegistryOwner;
+import android.arch.lifecycle.ViewModel;
+import android.arch.lifecycle.ViewModelProvider;
+import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.shopify.sample.R;
-import com.shopify.sample.domain.interactor.RealProductByIdInteractor;
 import com.shopify.sample.domain.model.ProductDetails;
-import com.shopify.sample.domain.repository.RealCartRepository;
-import com.shopify.sample.presenter.product.ProductDetailsViewPresenter;
 import com.shopify.sample.view.ScreenRouter;
 import com.shopify.sample.view.cart.CartClickActionEvent;
 import com.shopify.sample.view.widget.image.ImageGalleryView;
@@ -55,7 +56,7 @@ import butterknife.ButterKnife;
 
 import static com.shopify.sample.util.Util.checkNotNull;
 
-public final class ProductDetailsActivity extends AppCompatActivity implements ProductDetailsViewPresenter.View {
+public final class ProductDetailsActivity extends AppCompatActivity implements LifecycleRegistryOwner {
   public static final String EXTRAS_PRODUCT_ID = "product_id";
   public static final String EXTRAS_PRODUCT_IMAGE_URL = "product_image_url";
   public static final String EXTRAS_PRODUCT_TITLE = "product_title";
@@ -67,7 +68,26 @@ public final class ProductDetailsActivity extends AppCompatActivity implements P
   @BindView(R.id.image_gallery) ImageGalleryView imageGalleryView;
   @BindView(R.id.product_description) ProductDescriptionView productDescriptionView;
 
-  private ProductDetailsViewPresenter presenter;
+  private final LifecycleRegistry lifecycleRegistry = new LifecycleRegistry(this);
+  private ProductDetailsViewModel productDetailsViewModel;
+
+  @Override public LifecycleRegistry getLifecycle() {
+    return lifecycleRegistry;
+  }
+
+  @Override public boolean onSupportNavigateUp() {
+    finish();
+    return true;
+  }
+
+  @Override public boolean onCreateOptionsMenu(final Menu menu) {
+    MenuInflater inflater = getMenuInflater();
+    inflater.inflate(R.menu.menu, menu);
+    menu.findItem(R.id.cart).getActionView().setOnClickListener(v -> {
+      ScreenRouter.route(this, new CartClickActionEvent());
+    });
+    return true;
+  }
 
   @Override protected void onCreate(@Nullable final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -82,90 +102,84 @@ public final class ProductDetailsActivity extends AppCompatActivity implements P
     checkNotNull(productId, "productId == null");
     checkNotNull(productTitle, "productTitle == null");
 
-    presenter = new ProductDetailsViewPresenter(productId, new RealProductByIdInteractor(), new RealCartRepository());
-
     setSupportActionBar(toolbarView);
     getSupportActionBar().setTitle(productTitle);
     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+    initViewModels(productId);
+
     imageGalleryView.renderImages(Arrays.asList(productImageUrl));
-
-    swipeRefreshLayoutView.setOnRefreshListener(() -> presenter.fetchProduct());
-
+    swipeRefreshLayoutView.setOnRefreshListener(() -> productDetailsViewModel.refetch());
     productDescriptionView.renderProduct(productTitle, productPrice);
-    productDescriptionView.setOnAddToCartClickListener(() -> presenter.addToCart());
+    productDescriptionView.setOnAddToCartClickListener(() -> productDetailsViewModel.addToCart());
+
+    lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE);
   }
 
-  @Override public boolean onSupportNavigateUp() {
-    finish();
-    return true;
+  @Override protected void onStart() {
+    super.onStart();
+    lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_START);
   }
 
-  @Override public void showProgress(final int requestId) {
-    swipeRefreshLayoutView.setRefreshing(true);
+  @Override protected void onResume() {
+    super.onResume();
+    lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_RESUME);
   }
 
-  @Override public void hideProgress(final int requestId) {
-    swipeRefreshLayoutView.setRefreshing(false);
+  @Override protected void onPause() {
+    lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_PAUSE);
+    super.onPause();
   }
 
-  @Override public void onAttachedToWindow() {
-    super.onAttachedToWindow();
-    presenter.attachView(this);
-    presenter.fetchProduct();
+  @Override protected void onStop() {
+    lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_STOP);
+    super.onStop();
   }
 
-  @Override public void onDetachedFromWindow() {
-    super.onDetachedFromWindow();
-    presenter.detachView();
+  @Override protected void onDestroy() {
+    lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_DESTROY);
+    super.onDestroy();
   }
 
-  @Override public void showError(final int requestId, final Throwable t) {
-    Snackbar.make(rootView, R.string.default_error, Snackbar.LENGTH_LONG).show();
+  private void initViewModels(final String productId) {
+    productDetailsViewModel = ViewModelProviders.of(this, new ViewModelProvider.Factory() {
+      @SuppressWarnings("unchecked") @Override public <T extends ViewModel> T create(final Class<T> modelClass) {
+        if (modelClass.equals(RealProductDetailsViewModel.class)) {
+          return (T) new RealProductDetailsViewModel(productId);
+        } else {
+          return null;
+        }
+      }
+    }).get(RealProductDetailsViewModel.class);
+    productDetailsViewModel.productLiveData().observe(this, this::renderProduct);
+    productDetailsViewModel.progressLiveData().observe(this, progress -> {
+      if (progress != null) {
+        swipeRefreshLayoutView.setRefreshing(progress.show);
+      }
+    });
+    productDetailsViewModel.errorErrorCallback().observe(this.getLifecycle(), error -> {
+      if (error != null) {
+        showDefaultErrorMessage();
+      }
+    });
   }
 
-  @Override public void renderProduct(final ProductDetails product) {
+  private void renderProduct(final ProductDetails product) {
     imageGalleryView.renderImages(product.images);
     productDescriptionView.renderProduct(product);
   }
 
-  @Override public boolean onCreateOptionsMenu(final Menu menu) {
-    MenuInflater inflater = getMenuInflater();
-    inflater.inflate(R.menu.menu, menu);
-    menu.findItem(R.id.cart).getActionView().setOnClickListener(v -> {
-      ScreenRouter.route(this, new CartClickActionEvent());
-    });
-    return true;
-  }
+  private void showDefaultErrorMessage() {
+    Snackbar snackbar = Snackbar.make(rootView, R.string.default_error, Snackbar.LENGTH_LONG);
+    snackbar.getView().setBackgroundResource(R.color.snackbar_error_background);
+    snackbar.getView().setMinimumHeight(rootView.getHeight());
 
-  @SuppressWarnings("unused")
-  public static final class FabBehaviour extends CoordinatorLayout.Behavior<View> {
+    TextView textView = (TextView) snackbar.getView().findViewById(android.support.design.R.id.snackbar_text);
+    ViewGroup.LayoutParams layoutParams = textView.getLayoutParams();
+    layoutParams.height = rootView.getHeight();
+    textView.setLayoutParams(layoutParams);
+    textView.setGravity(Gravity.CENTER_VERTICAL);
 
-    public FabBehaviour() {
-    }
-
-    public FabBehaviour(final Context context, final AttributeSet attrs) {
-      super(context, attrs);
-    }
-
-    @Override
-    public boolean layoutDependsOn(CoordinatorLayout parent, View child, View dependency) {
-      return dependency instanceof AppBarLayout;
-    }
-
-    @Override
-    public boolean onDependentViewChanged(CoordinatorLayout parent, View child, View dependency) {
-      FloatingActionButton actionButton = (FloatingActionButton) child;
-      if (dependency.getHeight() / 3 < Math.abs(dependency.getTop())) {
-        if (actionButton.isShown()) {
-          actionButton.hide();
-        }
-      } else {
-        if (!actionButton.isShown()) {
-          actionButton.show();
-        }
-      }
-      return false;
-    }
+    snackbar.show();
   }
 }
