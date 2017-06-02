@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView android:id="@+id/title"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="@dimen/default_padding"
+    android:paddingLeft="@dimen/default_padding_half"
+    android:paddingRight="@dimen/default_padding_half"
+    android:paddingTop="@dimen/default_padding"
+    android:textAppearance="@style/Shopify.TitleText"
+    tools:text="Collection Title" />

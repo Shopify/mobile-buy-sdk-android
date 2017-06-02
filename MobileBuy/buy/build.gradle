@@ -1,226 +1,137 @@
+buildscript {
+  dependencies {
+    classpath dep.androidPlugin
+    classpath dep.retrolambda
+    classpath dep.androidMavenGradlePlugin
+    classpath dep.bintrayGradlePlugin
+  }
+}
+
 apply plugin: 'com.android.library'
-apply plugin: 'jacoco-android'
 apply plugin: 'maven'
 apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
 apply plugin: 'maven-publish'
-
-def VERSION_NAME = '2.1.1-SNAPSHOT'
-
-buildscript {
-    System.properties['com.android.build.gradle.overrideVersionCheck'] = 'true'
-    repositories {
-        jcenter()
-    }
-    dependencies {
-        classpath 'com.dicedmelon.gradle:jacoco-android:0.1.1'
-    }
-}
-
-jacocoAndroidUnitTestReport {
-    csv.enabled false
-    html.enabled true
-    xml.enabled true
-}
-
-buildscript {
-    System.properties['com.android.build.gradle.overrideVersionCheck'] = 'true'
-}
-
-// Params for bintrayUpload
-ext {
-    bintrayOrg = 'shopify'
-    bintrayRepo = 'shopify-android'
-    bintrayName = 'mobile-buy-sdk'
-
-    publishedGroupId = 'com.shopify.mobilebuysdk'
-    libraryName = 'MobileBuySDK'
-    artifact = 'buy'
-
-    libraryDescription = 'Shopify\'s Mobile Buy SDK makes it simple to sell physical products inside your mobile app.'
-
-    siteUrl = 'https://github.com/Shopify/mobile-buy-sdk-android'
-    gitUrl = 'https://github.com/Shopify/mobile-buy-sdk-android.git'
-
-    libraryVersion = VERSION_NAME
-
-    licenseName = 'The MIT License'
-    licenseUrl = 'https://opensource.org/licenses/MIT'
-    allLicenses = ["MIT"]
-}
+apply plugin: 'me.tatarka.retrolambda'
 
 android {
-    compileSdkVersion 24
-    buildToolsVersion "24.0.1"
-    com.android.ddmlib.DdmPreferences.setTimeOut(60000) // https://code.google.com/p/android/issues/detail?id=104305
+  compileSdkVersion androidConfig.compileSdkVersion
+  buildToolsVersion androidConfig.buildToolsVersion
 
-    defaultConfig {
-        minSdkVersion 14
-        targetSdkVersion 24
-        versionName VERSION_NAME
-        version VERSION_NAME
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_8
+    targetCompatibility JavaVersion.VERSION_1_8
+  }
 
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+  sourceSets {
+    main.java.srcDirs += '../libs/graphql_java_gen/support/src/main/java'
+  }
+
+  defaultConfig {
+    minSdkVersion androidConfig.minSdkVersion
+    targetSdkVersion androidConfig.targetSdkVersion
+    versionName VERSION_NAME
+    version VERSION_NAME
+
+    testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+  }
+
+  buildTypes {
+    release {
+      minifyEnabled = false
+      proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+    }
+  }
+
+  libraryVariants.all { variant ->
+    variant.outputs.each { output ->
+      def outputFile = output.outputFile
+      if (outputFile != null && outputFile.name.endsWith('.aar')) {
+        def fileName = "${archivesBaseName}-${VERSION_NAME}.aar"
+        output.outputFile = new File(outputFile.parent, fileName)
+      }
     }
 
-    buildTypes {
-        debug {
-            buildConfigField 'okhttp3.logging.HttpLoggingInterceptor.Level', 'OKHTTP_LOG_LEVEL', 'okhttp3.logging.HttpLoggingInterceptor.Level.BODY'
+    if (variant.name.equals('release')) {
 
-            // for legacy http support
-            useLibrary 'org.apache.http.legacy'
+      task("javadoc", type: Javadoc, dependsOn: assembleRelease) {
+        description "Generate Javadoc"
+        title = "Mobile Buy SDK"
+        source = android.sourceSets.main.java.srcDirs
 
-            // We pull the shop settings either from the Environment or a file called shop.properties at the root of the project.
-            // Environment variables will take precedence, we will attempt to read those first.
-            def shopDomain
-            def apiKey
-            def appId
-            def useMockResponses
-            def androidPayPublicKey
-            def runTestCoverage
+        def androidJar = "${android.sdkDirectory}/platforms/${android.compileSdkVersion}/android.jar"
+        classpath = files(variant.javaCompile.classpath.files) + files(androidJar)
 
-            // get the shop setting from the environment if there any
-            shopDomain = System.getenv("SHOP_DOMAIN")
-            apiKey = System.getenv("API_KEY")
-            appId = System.getenv("APP_ID")
-            androidPayPublicKey = System.getenv("ANDROID_PAY_PUBLIC_KEY")
-
-            runTestCoverage = System.getProperty("RunTestCoverage")
-
-            // pull the store properties from the local file if it exists.  Environment variables take precedence
-            def shopProperties = new Properties();
-            File shopPropertiesFile = project.file('shop.properties')
-
-            if (shopPropertiesFile.exists()) {
-                shopProperties.load(new FileInputStream(shopPropertiesFile))
-                shopDomain = shopDomain ?: shopProperties["SHOP_DOMAIN"]
-                apiKey = apiKey ?: shopProperties["API_KEY"]
-                appId = appId ?: shopProperties["APP_ID"]
-                androidPayPublicKey = androidPayPublicKey ?: shopProperties["ANDROID_PAY_PUBLIC_KEY"]
-            }
-
-            if (!shopDomain) {
-                shopDomain = ""
-            }
-            if (!apiKey) {
-                apiKey = ""
-            }
-            if (!appId) {
-                appId = ""
-            }
-            if (!androidPayPublicKey) {
-                androidPayPublicKey = ""
-            }
-            if (!runTestCoverage) {
-                runTestCoverage = "false"
-            }
-
-            buildConfigField "String", "SHOP_DOMAIN", "\"" + shopDomain.toString() + "\""
-            buildConfigField "String", "API_KEY", "\"" + apiKey.toString() + "\""
-            buildConfigField "String", "APP_ID", "\"" + appId.toString() + "\""
-            buildConfigField "String", "ANDROID_PAY_PUBLIC_KEY", "\"" + androidPayPublicKey.toString() + "\""
-
-            testCoverageEnabled runTestCoverage.toBoolean()
+        options {
+          linksOffline("http://d.android.com/reference", "${android.sdkDirectory}/docs/reference")
         }
 
-        release {
-            minifyEnabled = false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            buildConfigField 'okhttp3.logging.HttpLoggingInterceptor.Level', 'OKHTTP_LOG_LEVEL', 'okhttp3.logging.HttpLoggingInterceptor.Level.NONE'
+        exclude('**/BuildConfig.java')
+      }
+
+      task("javadocJar", type: Jar, dependsOn: javadoc) {
+        description "Bundles Javadoc into zip"
+        classifier = "javadoc"
+        baseName = 'buy'
+        from tasks["javadoc"]
+      }
+
+      artifacts {
+        archives project.javadocJar
+      }
+
+      task("archiveReleasePackage", type: Zip, dependsOn: [javadocJar]) {
+        baseName = "mobile-buy-sdk-android"
+
+        from("./build/libs") {
+          include javadocJar.getArchiveName()
         }
+
+        from("./build/docs") {
+          include 'javadoc/**'
+        }
+
+        from("./build/outputs/aar") {
+          include "buy-" + VERSION_NAME + ".aar"
+        }
+
+        from("../..") {
+          include "LICENSE"
+          include "NOTICE"
+        }
+
+        into(baseName + "-" + VERSION_NAME)
+      }
     }
+  }
 
-    libraryVariants.all { variant ->
-        variant.outputs.each { output ->
-            def outputFile = output.outputFile
-            if (outputFile != null && outputFile.name.endsWith('.aar')) {
-                def fileName = "${archivesBaseName}-${version}.aar"
-                output.outputFile = new File(outputFile.parent, fileName)
-            }
-        }
+  lintOptions {
+    abortOnError false
+  }
 
-        if (variant.name.equals('release')) {
-
-            task("javadoc", type: Javadoc, dependsOn: assembleRelease) {
-                description "Generate Javadoc"
-                title = "Mobile Buy SDK"
-                source = android.sourceSets.main.java.srcDirs
-
-                def androidJar = "${android.sdkDirectory}/platforms/${android.compileSdkVersion}/android.jar"
-                classpath = files(variant.javaCompile.classpath.files) + files(androidJar)
-
-                options {
-                    linksOffline("http://d.android.com/reference", "${android.sdkDirectory}/docs/reference")
-                    links("http://square.github.io/retrofit/2.x/retrofit/")
-                }
-
-                exclude('**/customTabs/**')
-                exclude('**/BuildConfig.java')
-            }
-
-            task("javadocJar", type: Jar, dependsOn: javadoc) {
-                description "Bundles Javadoc into zip"
-                classifier = "javadoc"
-                baseName = 'buy'
-                from tasks["javadoc"]
-            }
-
-            artifacts {
-                archives project.javadocJar
-            }
-
-            task("archiveReleasePackage", type: Zip, dependsOn: [javadocJar]) {
-                baseName = "mobile-buy-sdk-android"
-
-                from("./build/libs") {
-                    include javadocJar.getArchiveName()
-                }
-
-                from("./build/docs") {
-                    include 'javadoc/**'
-                }
-
-                from("./build/outputs/aar") {
-                    include "buy-" + version + ".aar"
-                }
-
-                from("../..") {
-                    include "LICENSE"
-                    include "NOTICE"
-                }
-
-                into(baseName + "-" + version)
-            }
-        }
-    }
-
-    sourceSets { main { assets.srcDirs = ['src/main/assets'] } }
-
-    lintOptions {
-        abortOnError false
-    }
+  testOptions {
+    unitTests.returnDefaultValues = true
+  }
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.squareup.retrofit2:retrofit:2.0.1'
-    compile 'com.squareup.okhttp3:okhttp-urlconnection:3.2.0'
-    compile 'com.squareup.okhttp3:logging-interceptor:3.2.0'
-    compile 'com.squareup.retrofit2:converter-gson:2.0.1'
+  compile dep.okhttp
+  compile dep.androidSupportAnnotations
+  compile dep.jodaTime
+  compile dep.gson
+  compile dep.timber
 
-    compile 'com.google.android.gms:play-services-wallet:9.8.0'
+  androidTestCompile dep.mockitoCore
+  androidTestCompile dep.mockWebServer
+  androidTestCompile dep.truth
+  androidTestCompile dep.okhttpTestSupport
+  androidTestCompile 'com.android.support.test:runner:0.5'
+  androidTestCompile 'com.android.support.test:rules:0.5'
 
-    compile 'com.android.support:customtabs:24.0.0'
-
-    compile 'com.squareup.retrofit2:adapter-rxjava:2.0.1'
-    compile 'io.reactivex:rxandroid:1.0.1'
-
-    androidTestCompile 'org.mockito:mockito-core:1.9.5'
-    androidTestCompile 'com.google.dexmaker:dexmaker:1.1'
-    androidTestCompile 'com.google.dexmaker:dexmaker-mockito:1.1'
-    androidTestCompile 'com.android.support:support-annotations:24.0.0'
-    androidTestCompile 'com.android.support.test:runner:0.5'
-    androidTestCompile 'com.android.support.test:rules:0.5'
+  testCompile dep.mockitoCore
+  testCompile dep.junit
+  testCompile dep.truth
+  testCompile dep.mockWebServer
 }
 
 /*
@@ -234,77 +145,92 @@ Steps:
 gradlew install
 gradlew bintrayUpload
 */
-
-group = publishedGroupId
-
 install {
-    repositories.mavenInstaller {
-        // This generates POM.xml with proper parameters
-        pom {
-            project {
-                packaging 'aar'
-                groupId publishedGroupId
-                artifactId artifact
+  repositories.mavenInstaller {
+    // This generates POM.xml with proper parameters
+    pom {
+      project {
+        packaging POM_PACKAGING
+        groupId POM_GROUP_ID
+        artifactId POM_ARTIFACT_ID
 
-                // Add your description here
-                name libraryName
-                description libraryDescription
-                url siteUrl
+        // Add your description here
+        name POM_NAME
+        description POM_DESCRIPTION
+        url POM_WEB_URL
 
-                // Set your license
-                licenses {
-                    license {
-                        name licenseName
-                        url licenseUrl
-                    }
-                }
-
-                scm {
-                    connection gitUrl
-                    developerConnection gitUrl
-                    url siteUrl
-
-                }
-            }
+        // Set your license
+        licenses {
+          license {
+            name POM_LICENSE
+            url POM_LICENSE_URL
+          }
         }
+
+        scm {
+          connection POM_DEVELOPER_URL
+          developerConnection POM_DEVELOPER_URL
+          url POM_WEB_URL
+        }
+      }
     }
+  }
 }
 
-version = VERSION_NAME
-
 task sourcesJar(type: Jar) {
-    from android.sourceSets.main.java.srcDirs
-    classifier = 'sources'
+  from android.sourceSets.main.java.srcDirs
+  classifier = 'sources'
 }
 
 artifacts {
-    archives sourcesJar
+  archives sourcesJar
 }
 
 File localProperties = project.rootProject.file('local.properties')
 Properties properties = new Properties()
 if (localProperties.exists()) {
-    properties.load(localProperties.newDataInputStream())
+  properties.load(localProperties.newDataInputStream())
 }
 
 bintray {
-    user = properties.getProperty("bintray.user")
-    key = properties.getProperty("bintray.apikey")
+  user = properties.getProperty("bintray.user")
+  key = properties.getProperty("bintray.apikey")
 
-    configurations = ['archives']
-    pkg {
-        userOrg = bintrayOrg
-        repo = bintrayRepo
-        name = bintrayName
-        desc = libraryDescription
-        websiteUrl = siteUrl
-        vcsUrl = gitUrl
-        licenses = allLicenses
-        publish = true
-        publicDownloadNumbers = true
-        version {
-            desc = libraryDescription
-        }
+  configurations = ['archives']
+  pkg {
+    userOrg = POM_DEVELOPER_NAME
+    repo = POM_REPO
+    name = POM_NAME
+    desc = POM_DESCRIPTION
+    websiteUrl = POM_WEB_URL
+    vcsUrl = POM_DEVELOPER_URL
+    licenses = [POM_LICENSE]
+    publish = true
+    publicDownloadNumbers = true
+    version {
+      desc = POM_DESCRIPTION
     }
-
+  }
 }
+
+//task updateSchema(type: DefaultTask, group: "GraphQL", description: "Download GraphQL store front API schema and run generation script") {
+//  doLast {
+//    println("Updating GraphQL API schema...")
+//    def scriptFilePath = project.file('update_schema.rb').absolutePath
+//    def targetFilePath = project.projectDir.absolutePath + '/src/main/java/com/shopify/buy3/Storefront.java'
+//    def scriptCommand = "${scriptFilePath} -t ${targetFilePath}"
+//    println("Running script: " + scriptCommand)
+//    def scriptProc = scriptCommand.execute()
+//    scriptProc.in.eachLine { line -> println line }
+//    scriptProc.err.eachLine { line -> println 'ERROR: ' + line }
+//    if (scriptProc.waitFor() != 0) {
+//      throw new GradleException('Failed to update API schema')
+//    }
+//    println("API schema has been updated!")
+//  }
+//}
+
+tasks.withType(Checkstyle) {
+  exclude '**/Storefront.java'
+}
+

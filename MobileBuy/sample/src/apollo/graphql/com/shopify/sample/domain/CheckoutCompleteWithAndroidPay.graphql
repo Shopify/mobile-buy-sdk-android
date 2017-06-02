@@ -1,0 +1,11 @@
+mutation CheckoutCompleteWithAndroidPayQuery($checkoutId: ID!, $payment: TokenizedPaymentInput!) {
+  checkoutCompleteWithTokenizedPayment(checkoutId: $checkoutId, payment: $payment) {
+    payment {
+      ...PaymentFragment
+    }
+    userErrors {
+      field
+      message
+    }
+  }
+}

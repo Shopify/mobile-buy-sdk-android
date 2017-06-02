@@ -1,90 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="android:Theme.Holo.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
+    <style name="Shopify" />
+
+    <style name="ShopifyDraweeView">
+        <item name="failureImage">@drawable/no_product_image</item>
+        <item name="failureImageScaleType">fitCenter</item>
+        <item name="placeholderImage">@drawable/shopify_drawee_place_holder</item>
+        <item name="placeholderImageScaleType">fitXY</item>
+        <item name="android:foreground">?attr/selectableItemBackground</item>
     </style>
 
-    <style name="Button">
-        <item name="android:textSize">@dimen/text_large</item>
-        <item name="android:textColor">@android:color/white</item>
-        <item name="android:background">?android:attr/selectableItemBackground</item>
-        <item name="android:layout_gravity">center</item>
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">56dp</item>
+    <style name="AppTheme" parent="Theme.AppCompat">
+        <item name="colorControlNormal">@android:color/white</item>
+        <item name="colorAccent">@android:color/holo_green_dark</item>
+        <item name="colorControlHighlight">#65669900</item>
+        <item name="colorPrimary">#0A0A0B</item>
     </style>
 
-    <style name="OrderSummaryTextView">
-        <item name="android:textSize">@dimen/text_large</item>
-        <item name="android:textColor">@android:color/black</item>
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_margin">6dp</item>
-    </style>
-
-    <style name="ProductOptionsTextView">
-        <item name="android:textSize">16sp</item>
-        <item name="android:textColor">@android:color/black</item>
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginLeft">16dp</item>
-    </style>
-
-    <style name="Switch">
-        <item name="android:layout_alignParentRight">true</item>
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginRight">16dp</item>
-    </style>
-
-    <style name="SampleWalletButton" parent="WalletFragmentDefaultStyle">
-        <item name="android:layout_width">match_parent</item>
-        <item name="buyButtonHeight">64dp</item>
-    </style>
-
-    <style name="SampleWalletFragmentDetailsTextAppearance">
-        <item name="android:textColor">@android:color/black</item>
-        <item name="android:textSize">@dimen/text_medium</item>
-        <item name="android:textStyle">normal</item>
-    </style>
-
-    <style name="SampleWalletFragmentDetailsHeaderTextAppearance"
-           parent="SampleWalletFragmentDetailsTextAppearance">
-        <item name="android:textStyle">bold</item>
-    </style>
-
-    <style name="Divider">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">1dp</item>
-    </style>
-
-    <!-- the theme applied to the application or activity -->
-    <style name="CustomActionBarTheme"
-           parent="@style/Theme.AppCompat.DialogWhenLarge">
-        <item name="android:windowActionBarOverlay">true</item>
-        <item name="android:actionBarSize">@dimen/action_bar_height</item>
-
-        <item name="android:background">@android:color/transparent</item>
-
-        <item name="android:windowIsFloating">false</item>
-        <item name="android:windowIsTranslucent">true</item>
-
-        <!-- Support library compatibility -->
-        <item name="windowActionBarOverlay">true</item>
+    <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="VariantOptionName">
-        <item name="android:maxLines">1</item>
-        <item name="android:ellipsize">end</item>
-        <item name="android:textSize">@dimen/text_small</item>
-        <item name="android:fontFamily">sans-serif-medium</item>
+    <style name="ExpandedTitleTextAppearance" parent="TextAppearance.AppCompat.Title">
+        <item name="android:textSize">26sp</item>
     </style>
 
-    <style name="VariantOptionValue">
-        <item name="android:maxLines">1</item>
-        <item name="android:ellipsize">end</item>
-        <item name="android:textSize">@dimen/text_medium</item>
+    <style name="Shopify.HeaderText" parent="TextAppearance.AppCompat">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="Shopify.HeaderText.Inverse" parent="Shopify.HeaderText">
+        <item name="android:textColor">@android:color/black</item>
+    </style>
+
+    <style name="Shopify.TitleText" parent="TextAppearance.AppCompat">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+
+    <style name="Shopify.TitleText.Inverse" parent="Shopify.TitleText">
+        <item name="android:textColor">@android:color/black</item>
+    </style>
+
+    <style name="Shopify.SubTitleText" parent="TextAppearance.AppCompat">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="Shopify.SubTitleText.Inverse" parent="Shopify.SubTitleText">
+        <item name="android:textColor">@android:color/black</item>
+    </style>
+
+    <style name="Shopify.BodyText" parent="TextAppearance.AppCompat">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="Shopify.BodyText.Inverse" parent="Shopify.BodyText">
+        <item name="android:textColor">@android:color/black</item>
+    </style>
+
+    <style name="WalletDetailsHeaderTextAppearance" parent="Shopify.TitleText.Inverse">
+    </style>
+
+    <style name="WalletDetailsTextAppearance" parent="Shopify.SubTitleText.Inverse">
+        <item name="android:textColor">@color/text_grey</item>
+    </style>
+
+    <style name="WalletDetailsButton" parent="Shopify.SubTitleText">
+        <item name="android:textColor">@android:color/holo_green_dark</item>
     </style>
 </resources>

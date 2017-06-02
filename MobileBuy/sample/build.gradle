@@ -1,91 +1,147 @@
 buildscript {
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
-    }
+  dependencies {
+    classpath dep.androidPlugin
+    classpath dep.retrolambda
+    classpath dep.butterknifePlugin
+    classpath dep.apolloPlugin
+  }
 }
 
 apply plugin: 'com.android.application'
-apply plugin: 'com.neenbedankt.android-apt'
+apply plugin: 'me.tatarka.retrolambda'
+apply plugin: 'com.jakewharton.butterknife'
+apply plugin: 'com.apollographql.android'
 
 android {
-    compileSdkVersion 24
-    buildToolsVersion "24.0.1"
+  compileSdkVersion androidConfig.compileSdkVersion
+  buildToolsVersion androidConfig.buildToolsVersion
 
-    defaultConfig {
-        applicationId "com.shopify.sample"
-        minSdkVersion 14
-        targetSdkVersion 24
-        versionCode 1
-        versionName "1.0"
+  defaultConfig {
+    applicationId "com.shopify.sample"
+    minSdkVersion androidConfig.minSdkVersion
+    targetSdkVersion androidConfig.targetSdkVersion
+    versionCode 1
+    versionName "1.0"
+  }
+
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_8
+    targetCompatibility JavaVersion.VERSION_1_8
+  }
+
+  buildTypes {
+    all {
+      buildConfigField 'okhttp3.logging.HttpLoggingInterceptor.Level', 'OKHTTP_LOG_LEVEL', 'okhttp3.logging.HttpLoggingInterceptor.Level.BODY'
+
+      // We pull the shop settings either from the Environment or a file called shop.properties at the root of the project.
+      // Environment variables will take precedence, we will attempt to read those first.
+      def shopDomain
+      def apiKey
+      def androidPayPublicKey
+      def androidPayEnvironment
+
+      // get the shop setting from the environment if there any
+      shopDomain = System.getenv("SHOP_DOMAIN")
+      apiKey = System.getenv("API_KEY")
+      androidPayPublicKey = System.getenv("ANDROID_PAY_PUBLIC_KEY")
+      androidPayEnvironment = System.getenv("ANDROID_PAY_ENVIRONMENT")
+
+      // pull the store properties from the local file if it exists.  Environment variables take precedence
+      def shopProperties = new Properties();
+      File shopPropertiesFile = project.file('shop.properties')
+
+      if (shopPropertiesFile.exists()) {
+        shopProperties.load(new FileInputStream(shopPropertiesFile))
+        shopDomain = shopDomain ?: shopProperties["SHOP_DOMAIN"]
+        apiKey = apiKey ?: shopProperties["API_KEY"]
+        androidPayPublicKey = androidPayPublicKey ?: shopProperties["ANDROID_PAY_PUBLIC_KEY"]
+        androidPayEnvironment = androidPayEnvironment ?: shopProperties["ANDROID_PAY_ENVIRONMENT"]
+      }
+
+      if (!shopDomain) {
+        shopDomain = ""
+      }
+      if (!apiKey) {
+        apiKey = ""
+      }
+      if (!androidPayPublicKey) {
+        androidPayPublicKey = ""
+      }
+      if (!androidPayEnvironment) {
+        androidPayEnvironment = "com.google.android.gms.wallet.WalletConstants.ENVIRONMENT_SANDBOX"
+      }
+
+      buildConfigField "String", "SHOP_DOMAIN", "\"" + shopDomain.toString() + "\""
+      buildConfigField "String", "API_KEY", "\"" + apiKey.toString() + "\""
+      buildConfigField "String", "ANDROID_PAY_PUBLIC_KEY", "\"" + androidPayPublicKey.toString() + "\""
+      buildConfigField "int", "ANDROID_PAY_ENVIRONMENT", androidPayEnvironment
+
+      debuggable = true
+      minifyEnabled = false
     }
-    buildTypes {
-        all {
-            buildConfigField 'okhttp3.logging.HttpLoggingInterceptor.Level', 'OKHTTP_LOG_LEVEL', 'okhttp3.logging.HttpLoggingInterceptor.Level.BODY'
+  }
 
-            // We pull the shop settings either from the Environment or a file called shop.properties at the root of the project.
-            // Environment variables will take precedence, we will attempt to read those first.
-            def shopDomain
-            def apiKey
-            def appId
-            def androidPayPublicKey
-
-            // get the shop setting from the environment if there any
-            shopDomain = System.getenv("SHOP_DOMAIN")
-            apiKey = System.getenv("API_KEY")
-            appId = System.getenv("APP_ID")
-            androidPayPublicKey = System.getenv("ANDROID_PAY_PUBLIC_KEY")
-
-            // pull the store properties from the local file if it exists.  Environment variables take precedence
-            def shopProperties = new Properties();
-            File shopPropertiesFile = project.file('shop.properties')
-
-            if (shopPropertiesFile.exists()) {
-                shopProperties.load(new FileInputStream(shopPropertiesFile))
-                shopDomain = shopDomain ?: shopProperties["SHOP_DOMAIN"]
-                apiKey = apiKey ?: shopProperties["API_KEY"]
-                appId = appId ?: shopProperties["APP_ID"]
-                androidPayPublicKey = androidPayPublicKey ?: shopProperties["ANDROID_PAY_PUBLIC_KEY"]
-            }
-
-            if (!shopDomain) {
-                shopDomain = ""
-            }
-            if (!apiKey) {
-                apiKey = ""
-            }
-            if (!appId) {
-                appId = ""
-            }
-            if (!androidPayPublicKey) {
-                androidPayPublicKey = ""
-            }
-
-            buildConfigField "String", "SHOP_DOMAIN", "\"" + shopDomain.toString() + "\""
-            buildConfigField "String", "API_KEY", "\"" + apiKey.toString() + "\""
-            buildConfigField "String", "APP_ID", "\"" + appId.toString() + "\""
-            buildConfigField "String", "ANDROID_PAY_PUBLIC_KEY",  "\"" + androidPayPublicKey.toString() + "\""
-            buildConfigField "boolean", "USE_RX_API", "false"
-        }
+  productFlavors {
+    shopify {
     }
 
-    lintOptions {
-        abortOnError false
+    apollo {
     }
+  }
+
+  lintOptions {
+    abortOnError false
+  }
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
+  compile dep.androidSupportDesign
+  compile dep.androidSupportV4
+  compile dep.androidSupportV7
+  compile dep.androidSupportAnnotations
+  compile dep.rxAndroid
+  compile dep.rxJava
+  compile dep.timber
+  compile dep.butterKnife
+  annotationProcessor dep.butterKnifeCompiler
+  compile(dep.fresco) {
+    exclude group: 'com.android.support'
+  }
+  compile dep.rxbindingRecyclerView
+  compile dep.constraintLayout
+  compile dep.rxrelay
+  compile dep.archRuntime
+  compile dep.archExt
+  annotationProcessor dep.arcCompiler
 
-    compile 'com.android.support:design:24.0.0'
-    compile 'com.android.support:support-v4:24.0.0'
-    compile 'com.android.support:appcompat-v7:24.0.0'
-    compile 'com.android.support:palette-v7:24.0.0'
+  compile project(':android-pay')
+  shopifyCompile project(':buy')
 
-    compile 'com.squareup.picasso:picasso:2.5.2'
-    compile 'com.jakewharton:butterknife:8.0.1'
-    apt 'com.jakewharton:butterknife-compiler:8.0.1'
-    compile project(':buy')
+  apolloCompile dep.apolloApi
+  apolloCompile dep.apolloRuntime
+  apolloCompile dep.okhttpLogging
+}
+
+task downloadApolloSchema(type: DefaultTask, group: "GraphQL", description: "Download GraphQL store front API schema") {
+  doLast {
+    println("Downloading GraphQL schema...")
+    def schemaFile = new File(project.projectDir.absolutePath + '/src/apollo/graphql/com/shopify/sample/domain/schema.json')
+    if (schemaFile.exists()) {
+      schemaFile.delete()
+    }
+    new URL('https://app.shopify.com/services/ping/storefront_graphql_schema').withInputStream { i ->
+      schemaFile.withOutputStream {
+        it << i
+      }
+    }
+    println("GraphQL schema has been downloaded!")
+  }
+}
+
+apollo {
+  customTypeMapping['URL'] = "String"
+  customTypeMapping['HTML'] = "String"
+  customTypeMapping['Money'] = "java.math.BigDecimal"
+  nullableValueType = "apolloOptional"
+  generateAccessors = false
 }
