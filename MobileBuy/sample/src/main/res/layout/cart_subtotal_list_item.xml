@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/white"
+    android:gravity="end"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/default_padding">
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="200dp"
+        android:layout_height="1dp"
+        android:background="?attr/colorAccent" />
+
+    <TextView
+        android:id="@+id/subtotal"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/default_padding"
+        android:layout_marginTop="@dimen/default_padding"
+        android:ellipsize="end"
+        android:gravity="end"
+        android:lines="1"
+        android:textAppearance="@style/Shopify.BodyText.Inverse"
+        tools:text="SubTotal: $50.99" />
+
+</LinearLayout>

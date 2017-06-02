@@ -1,0 +1,55 @@
+def versions = [
+    androidSupportVersion: '25.2.0',
+    okHttpVersion        : '3.6.0',
+    playServicesVersion  : '9.8.0',
+    jodaTimeVersion      : '2.9.9',
+    butterKnifeVersion   : '8.5.1',
+    apolloVersion        : '0.3.0',
+    archVersion          : '1.0.0-alpha1'
+]
+
+ext.isCi = "true" == System.getenv('CI')
+
+ext.androidConfig = [
+    compileSdkVersion: 24,
+    buildToolsVersion: '25.0.2',
+    minSdkVersion    : 19,
+    targetSdkVersion : 24,
+]
+
+ext.dep = [
+    androidPlugin            : "com.android.tools.build:gradle:2.3.0",
+    androidSupportAnnotations: "com.android.support:support-annotations:$versions.androidSupportVersion",
+    androidSupportDesign     : "com.android.support:design:$versions.androidSupportVersion",
+    androidSupportV4         : "com.android.support:support-v4:$versions.androidSupportVersion",
+    androidSupportV7         : "com.android.support:appcompat-v7:$versions.androidSupportVersion",
+    okhttp                   : "com.squareup.okhttp3:logging-interceptor:$versions.okHttpVersion",
+    okhttpLogging            : "com.squareup.okhttp3:logging-interceptor:$versions.okHttpVersion",
+    okhttpTestSupport        : "com.squareup.okhttp3:okhttp-testing-support:$versions.okHttpVersion",
+    playServicesWallet       : "com.google.android.gms:play-services-wallet:$versions.playServicesVersion",
+    jodaTime                 : "net.danlew:android.joda:$versions.jodaTimeVersion",
+    junit                    : "junit:junit:4.12",
+    truth                    : "com.google.truth:truth:0.30",
+    mockWebServer            : "com.squareup.okhttp3:mockwebserver:$versions.okHttpVersion",
+    mockitoCore              : "org.mockito:mockito-core:2.6.3",
+    rxAndroid                : "io.reactivex.rxjava2:rxandroid:2.0.1",
+    rxJava                   : "io.reactivex.rxjava2:rxjava:2.0.6",
+    timber                   : "com.jakewharton.timber:timber:4.5.1",
+    butterKnife              : "com.jakewharton:butterknife:$versions.butterKnifeVersion",
+    butterKnifeCompiler      : "com.jakewharton:butterknife-compiler:$versions.butterKnifeVersion",
+    butterknifePlugin        : "com.jakewharton:butterknife-gradle-plugin:$versions.butterKnifeVersion",
+    retrolambda              : "me.tatarka:gradle-retrolambda:3.6.0",
+    androidMavenGradlePlugin : "com.github.dcendents:android-maven-gradle-plugin:1.5",
+    bintrayGradlePlugin      : "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.2",
+    fresco                   : "com.facebook.fresco:fresco:0.14.1",
+    rxbindingRecyclerView    : "com.jakewharton.rxbinding2:rxbinding-recyclerview-v7:2.0.0",
+    apolloPlugin             : "com.apollographql.apollo:gradle-plugin:$versions.apolloVersion",
+    apolloApi                : "com.apollographql.apollo:apollo-api:$versions.apolloVersion",
+    apolloRuntime            : "com.apollographql.apollo:apollo-runtime:$versions.apolloVersion",
+    constraintLayout         : "com.android.support.constraint:constraint-layout:1.0.2",
+    rxrelay                  : "com.jakewharton.rxrelay2:rxrelay:2.0.0",
+    archRuntime              : "android.arch.lifecycle:runtime:$versions.archVersion",
+    archExt                  : "android.arch.lifecycle:extensions:$versions.archVersion",
+    arcCompiler              : "android.arch.lifecycle:compiler:$versions.archVersion",
+    gson                     : "com.google.code.gson:gson:2.7"
+]

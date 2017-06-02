@@ -1,34 +1,59 @@
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
+subprojects {
+  def projectName = it.name
 
-buildscript {
+  if (projectName != "graphql-java-support") {
+    apply from: "../gradle/dependencies.gradle"
+  }
+
+  buildscript {
     System.properties['com.android.build.gradle.overrideVersionCheck'] = 'true'
-
     repositories {
-        jcenter()
+      jcenter()
+      mavenCentral()
+      maven { url "https://jitpack.io" }
+      maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
     }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:2.2.1'
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.2'
-        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
-    }
-}
+  }
 
-allprojects {
-    repositories {
-        jcenter()
+  repositories {
+    jcenter()
+    maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
+    maven { url 'https://maven.google.com' }
+  }
+
+  if (projectName != "graphql-java-support") {
+    apply plugin: 'checkstyle'
+
+    checkstyle {
+      toolVersion = "5.9"
+      configFile rootProject.file('checkstyle.xml')
+      configProperties = ['checkstyle.cache.file': rootProject.file('build/checkstyle.cache')]
+      ignoreFailures false
+      showViolations true
     }
+
+    task checkstyle(type: Checkstyle) {
+      source 'src/main/java'
+      include '**/*.java'
+      classpath = files()
+    }
+
+    afterEvaluate {
+      if (project.tasks.findByName('check')) {
+        check.dependsOn('checkstyle')
+      }
+    }
+  }
 }
 
 project.ext.preDexLibs = !project.hasProperty('disablePreDex')
 
 subprojects {
-    project.plugins.whenPluginAdded { plugin ->
-        if ("com.android.build.gradle.AppPlugin".equals(plugin.class.name)) {
-            project.android.dexOptions.preDexLibraries = rootProject.ext.preDexLibs
-        } else if ("com.android.build.gradle.LibraryPlugin".equals(plugin.class.name)) {
-            project.android.dexOptions.preDexLibraries = rootProject.ext.preDexLibs
-        }
+  project.plugins.whenPluginAdded { plugin ->
+    if ("com.android.build.gradle.AppPlugin".equals(plugin.class.name)) {
+      project.android.dexOptions.preDexLibraries = rootProject.ext.preDexLibs
+    } else if ("com.android.build.gradle.LibraryPlugin".equals(plugin.class.name)) {
+      project.android.dexOptions.preDexLibraries = rootProject.ext.preDexLibs
     }
+  }
 }
