@@ -1,0 +1,205 @@
+buildscript {
+  dependencies {
+    classpath dep.androidPlugin
+    classpath dep.retrolambda
+    classpath dep.androidMavenGradlePlugin
+    classpath dep.bintrayGradlePlugin
+  }
+}
+
+apply plugin: 'com.android.library'
+apply plugin: 'maven'
+apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'com.jfrog.bintray'
+apply plugin: 'maven-publish'
+apply plugin: 'me.tatarka.retrolambda'
+
+android {
+  compileSdkVersion androidConfig.compileSdkVersion
+  buildToolsVersion androidConfig.buildToolsVersion
+
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_8
+    targetCompatibility JavaVersion.VERSION_1_8
+  }
+
+  defaultConfig {
+    minSdkVersion androidConfig.minSdkVersion
+    targetSdkVersion androidConfig.targetSdkVersion
+    versionName VERSION_NAME
+    version VERSION_NAME
+
+    testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+  }
+
+  buildTypes {
+    release {
+      minifyEnabled false
+      proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+    }
+  }
+
+  libraryVariants.all { variant ->
+    variant.outputs.each { output ->
+      def outputFile = output.outputFile
+      if (outputFile != null && outputFile.name.endsWith('.aar')) {
+        def fileName = "${archivesBaseName}-${VERSION_NAME}.aar"
+        output.outputFile = new File(outputFile.parent, fileName)
+      }
+    }
+
+    if (variant.name.equals('release')) {
+
+      task("javadoc", type: Javadoc, dependsOn: assembleRelease) {
+        description "Generate Javadoc"
+        title = "Mobile Buy SDK"
+        source = android.sourceSets.main.java.srcDirs
+
+        def androidJar = "${android.sdkDirectory}/platforms/${android.compileSdkVersion}/android.jar"
+        classpath = files(variant.javaCompile.classpath.files) + files(androidJar)
+
+        options {
+          linksOffline("http://d.android.com/reference", "${android.sdkDirectory}/docs/reference")
+        }
+
+        exclude('**/BuildConfig.java')
+      }
+
+      task("javadocJar", type: Jar, dependsOn: javadoc) {
+        description "Bundles Javadoc into zip"
+        classifier = "javadoc"
+        baseName = 'buy3-pay-support'
+        from tasks["javadoc"]
+      }
+
+      artifacts {
+        archives project.javadocJar
+      }
+
+      task("archiveReleasePackage", type: Zip, dependsOn: [javadocJar]) {
+        baseName = "mobile-buy-sdk-android"
+
+        from("./build/libs") {
+          include javadocJar.getArchiveName()
+        }
+
+        from("./build/docs") {
+          include 'javadoc/**'
+        }
+
+        from("./build/outputs/aar") {
+          include "buy3-pay-support-" + VERSION_NAME + ".aar"
+        }
+
+        from("../..") {
+          include "LICENSE"
+          include "NOTICE"
+        }
+
+        into(baseName + "-" + VERSION_NAME)
+      }
+    }
+  }
+
+  lintOptions {
+    abortOnError false
+  }
+
+  testOptions {
+    unitTests.returnDefaultValues = true
+  }
+}
+
+/*
+Great guide for publishing to JCenter:
+http://inthecheesefactory.com/blog/how-to-upload-library-to-jcenter-maven-central-as-dependency/en
+
+Also search for 'userOrg' here (we need this to publish to the Shopify organization on Bintray):
+https://github.com/bintray/gradle-bintray-plugin
+
+Steps:
+gradlew install
+gradlew bintrayUpload
+*/
+install {
+  repositories.mavenInstaller {
+    // This generates POM.xml with proper parameters
+    pom {
+      project {
+        packaging POM_PACKAGING
+        groupId POM_GROUP_ID
+        artifactId POM_ARTIFACT_ID
+
+        // Add your description here
+        name POM_NAME
+        description POM_DESCRIPTION
+        url POM_WEB_URL
+
+        // Set your license
+        licenses {
+          license {
+            name POM_LICENSE
+            url POM_LICENSE_URL
+          }
+        }
+
+        scm {
+          connection POM_DEVELOPER_URL
+          developerConnection POM_DEVELOPER_URL
+          url POM_WEB_URL
+        }
+      }
+    }
+  }
+}
+
+task sourcesJar(type: Jar) {
+  from android.sourceSets.main.java.srcDirs
+  classifier = 'sources'
+}
+
+artifacts {
+  archives sourcesJar
+}
+
+File localProperties = project.rootProject.file('local.properties')
+Properties properties = new Properties()
+if (localProperties.exists()) {
+  properties.load(localProperties.newDataInputStream())
+}
+
+group = POM_GROUP_ID
+
+bintray {
+  user = properties.getProperty("bintray.user")
+  key = properties.getProperty("bintray.apikey")
+
+  configurations = ['archives']
+  pkg {
+    userOrg = POM_DEVELOPER_NAME
+    repo = POM_REPO
+    name = POM_NAME
+    desc = POM_DESCRIPTION
+    websiteUrl = POM_WEB_URL
+    vcsUrl = POM_DEVELOPER_URL
+    licenses = [POM_LICENSE]
+    publish = true
+    publicDownloadNumbers = true
+    version {
+      desc = POM_DESCRIPTION
+    }
+  }
+}
+
+dependencies {
+  compile dep.playServicesWallet
+
+  androidTestCompile dep.mockitoCore
+  androidTestCompile dep.truth
+  androidTestCompile 'com.android.support.test:runner:0.5'
+  androidTestCompile 'com.android.support.test:rules:0.5'
+
+  testCompile dep.mockitoCore
+  testCompile dep.junit
+  testCompile dep.truth
+}

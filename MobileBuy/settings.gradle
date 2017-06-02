@@ -1,2 +1,2 @@
-include ':sample', ':buy', ':android-pay', ':graphql-java-support'
+include ':sample', ':buy3', ':buy3-pay-support', ':graphql-java-support'
 project(':graphql-java-support').projectDir = new File('./libs/graphql_java_gen/support')

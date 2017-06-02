@@ -36,12 +36,9 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.shopify.sample.R;
 import com.shopify.sample.domain.model.ProductDetails;
@@ -172,14 +169,6 @@ public final class ProductDetailsActivity extends AppCompatActivity implements L
   private void showDefaultErrorMessage() {
     Snackbar snackbar = Snackbar.make(rootView, R.string.default_error, Snackbar.LENGTH_LONG);
     snackbar.getView().setBackgroundResource(R.color.snackbar_error_background);
-    snackbar.getView().setMinimumHeight(rootView.getHeight());
-
-    TextView textView = (TextView) snackbar.getView().findViewById(android.support.design.R.id.snackbar_text);
-    ViewGroup.LayoutParams layoutParams = textView.getLayoutParams();
-    layoutParams.height = rootView.getHeight();
-    textView.setLayoutParams(layoutParams);
-    textView.setGravity(Gravity.CENTER_VERTICAL);
-
     snackbar.show();
   }
 }

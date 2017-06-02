@@ -72,7 +72,7 @@ android {
       task("javadocJar", type: Jar, dependsOn: javadoc) {
         description "Bundles Javadoc into zip"
         classifier = "javadoc"
-        baseName = 'buy'
+        baseName = 'buy3'
         from tasks["javadoc"]
       }
 
@@ -92,7 +92,7 @@ android {
         }
 
         from("./build/outputs/aar") {
-          include "buy-" + VERSION_NAME + ".aar"
+          include "buy3-" + VERSION_NAME + ".aar"
         }
 
         from("../..") {
@@ -155,7 +155,7 @@ install {
         artifactId POM_ARTIFACT_ID
 
         // Add your description here
-        name POM_NAME
+        name POM_LIBRARY_NAME
         description POM_DESCRIPTION
         url POM_WEB_URL
 
@@ -191,6 +191,8 @@ Properties properties = new Properties()
 if (localProperties.exists()) {
   properties.load(localProperties.newDataInputStream())
 }
+
+group = POM_GROUP_ID
 
 bintray {
   user = properties.getProperty("bintray.user")
