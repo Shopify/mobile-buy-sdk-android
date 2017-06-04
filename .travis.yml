@@ -42,7 +42,7 @@ before_script:
   - adb shell input keyevent 82
 
 script:
-  - ./gradlew clean build connectedCheck -x :sample:build -PdisablePreDex --console=plain
+  - ./gradlew clean build connectedCheck -x :sample:build -x :sample:connectedCheck -PdisablePreDex --console=plain
   - ./gradlew clean :sample:assembleShopifyDebug -PdisablePreDex --console=plain 
   - ./gradlew clean :sample:assembleApolloDebug -PdisablePreDex --console=plain
 
