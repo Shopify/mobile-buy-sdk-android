@@ -42,7 +42,6 @@ ext.dep = [
     androidMavenGradlePlugin : "com.github.dcendents:android-maven-gradle-plugin:1.5",
     bintrayGradlePlugin      : "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.2",
     fresco                   : "com.facebook.fresco:fresco:0.14.1",
-    rxbindingRecyclerView    : "com.jakewharton.rxbinding2:rxbinding-recyclerview-v7:2.0.0",
     apolloPlugin             : "com.apollographql.apollo:gradle-plugin:$versions.apolloVersion",
     apolloApi                : "com.apollographql.apollo:apollo-api:$versions.apolloVersion",
     apolloRuntime            : "com.apollographql.apollo:apollo-runtime:$versions.apolloVersion",

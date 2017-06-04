@@ -29,8 +29,8 @@ import android.widget.TextView;
 
 import com.shopify.sample.R;
 import com.shopify.sample.domain.model.Collection;
-import com.shopify.sample.view.base.ListItemViewModel;
 import com.shopify.sample.view.base.ListItemViewHolder;
+import com.shopify.sample.view.base.ListItemViewModel;
 
 import butterknife.BindView;
 
@@ -43,6 +43,22 @@ final class CollectionTitleListItemViewModel extends ListItemViewModel<Collectio
   @Override public ListItemViewHolder<Collection, ListItemViewModel<Collection>> createViewHolder(
     final ListItemViewHolder.OnClickListener onClickListener) {
     return new ItemViewHolder(onClickListener);
+  }
+
+  @Override public boolean equalsById(@NonNull final ListItemViewModel other) {
+    if (other instanceof CollectionTitleListItemViewModel) {
+      Collection otherPayload = ((CollectionTitleListItemViewModel) other).payload();
+      return payload().equalsById(otherPayload);
+    }
+    return false;
+  }
+
+  @Override public boolean equalsByContent(@NonNull final ListItemViewModel other) {
+    if (other instanceof CollectionTitleListItemViewModel) {
+      Collection otherPayload = ((CollectionTitleListItemViewModel) other).payload();
+      return payload().equals(otherPayload);
+    }
+    return false;
   }
 
   static final class ItemViewHolder extends ListItemViewHolder<Collection, ListItemViewModel<Collection>> {

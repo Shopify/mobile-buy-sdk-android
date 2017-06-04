@@ -107,7 +107,6 @@ dependencies {
   compile(dep.fresco) {
     exclude group: 'com.android.support'
   }
-  compile dep.rxbindingRecyclerView
   compile dep.constraintLayout
   compile dep.rxrelay
   compile dep.archRuntime

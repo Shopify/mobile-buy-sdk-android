@@ -60,4 +60,32 @@ public final class Collection {
       ", products=" + products +
       '}';
   }
+
+  public boolean equalsById(@NonNull final Collection other) {
+    return id.equals(other.id);
+  }
+
+  @Override public boolean equals(final Object o) {
+    if (this == o) return true;
+    if (!(o instanceof Collection)) return false;
+
+    final Collection that = (Collection) o;
+
+    if (!id.equals(that.id)) return false;
+    if (!title.equals(that.title)) return false;
+    if (!description.equals(that.description)) return false;
+    if (image != null ? !image.equals(that.image) : that.image != null) return false;
+    if (!cursor.equals(that.cursor)) return false;
+    return products.equals(that.products);
+  }
+
+  @Override public int hashCode() {
+    int result = id.hashCode();
+    result = 31 * result + title.hashCode();
+    result = 31 * result + description.hashCode();
+    result = 31 * result + (image != null ? image.hashCode() : 0);
+    result = 31 * result + cursor.hashCode();
+    result = 31 * result + products.hashCode();
+    return result;
+  }
 }

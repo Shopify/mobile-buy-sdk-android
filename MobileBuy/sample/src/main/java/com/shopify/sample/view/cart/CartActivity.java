@@ -62,7 +62,7 @@ public final class CartActivity extends AppCompatActivity implements LifecycleRe
   @BindView(R.id.toolbar) Toolbar toolbarView;
 
   private final LifecycleRegistry lifecycleRegistry = new LifecycleRegistry(this);
-  private CartViewModel cartViewModel;
+  private CartDetailsViewModel cartDetailsViewModel;
   private CartHeaderViewModel cartHeaderViewModel;
 
   private GoogleApiClient googleApiClient;
@@ -80,13 +80,13 @@ public final class CartActivity extends AppCompatActivity implements LifecycleRe
   @Override public void onConnected(@Nullable final Bundle bundle) {
     PayHelper.isReadyToPay(this, googleApiClient, Collections.emptyList(), result -> {
       if (lifecycleRegistry.getCurrentState().isAtLeast(Lifecycle.State.STARTED)) {
-        cartViewModel.onGoogleApiClientConnectionChanged(true);
+        cartDetailsViewModel.onGoogleApiClientConnectionChanged(true);
       }
     });
   }
 
   @Override public void onConnectionSuspended(final int i) {
-    cartViewModel.onGoogleApiClientConnectionChanged(false);
+    cartDetailsViewModel.onGoogleApiClientConnectionChanged(false);
   }
 
   @SuppressWarnings("ConstantConditions") @Override protected void onCreate(@Nullable final Bundle savedInstanceState) {
@@ -145,41 +145,41 @@ public final class CartActivity extends AppCompatActivity implements LifecycleRe
 
   @Override protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
     super.onActivityResult(requestCode, resultCode, data);
-    cartViewModel.handleMaskedWalletResponse(requestCode, resultCode, data);
+    cartDetailsViewModel.handleMaskedWalletResponse(requestCode, resultCode, data);
   }
 
   @Override protected void onSaveInstanceState(final Bundle outState) {
     super.onSaveInstanceState(outState);
-    outState.putBundle(RealCartViewModel.class.getName(), cartViewModel.saveState());
+    outState.putBundle(CartViewModel.class.getName(), cartDetailsViewModel.saveState());
   }
 
   @Override protected void onRestoreInstanceState(final Bundle savedInstanceState) {
     super.onRestoreInstanceState(savedInstanceState);
-    cartViewModel.restoreState(savedInstanceState.getBundle(RealCartViewModel.class.getName()));
+    cartDetailsViewModel.restoreState(savedInstanceState.getBundle(CartViewModel.class.getName()));
   }
 
   private void initViewModels() {
-    RealCartViewModel realCartViewModel = ViewModelProviders.of(this).get(RealCartViewModel.class);
-    cartHeaderViewModel = realCartViewModel;
-    cartViewModel = realCartViewModel;
+    CartViewModel cartViewModel = ViewModelProviders.of(this).get(CartViewModel.class);
+    cartHeaderViewModel = cartViewModel;
+    cartDetailsViewModel = cartViewModel;
 
-    cartViewModel.webCheckoutCallback().observe(this.getLifecycle(), checkout -> {
+    cartDetailsViewModel.webCheckoutCallback().observe(this.getLifecycle(), checkout -> {
       if (checkout != null) {
         onWebCheckoutConfirmation(checkout);
       }
     });
-    cartViewModel.androidPayStartCheckoutCallback().observe(this.getLifecycle(), payCart -> {
+    cartDetailsViewModel.androidPayStartCheckoutCallback().observe(this.getLifecycle(), payCart -> {
       if (cartHeaderViewModel.googleApiClientConnectionData().getValue() == Boolean.TRUE && payCart != null) {
         PayHelper.requestMaskedWallet(googleApiClient, payCart, BuildConfig.ANDROID_PAY_PUBLIC_KEY);
       }
     });
-    cartViewModel.androidPayCheckoutCallback().observe(this.getLifecycle(), confirmation -> {
+    cartDetailsViewModel.androidPayCheckoutCallback().observe(this.getLifecycle(), confirmation -> {
       if (confirmation != null) {
         ScreenRouter.route(this, new AndroidPayConfirmationClickActionEvent(confirmation.checkoutId, confirmation.payCart,
           confirmation.maskedWallet));
       }
     });
-    cartViewModel.progressLiveData().observe(this, progress -> {
+    cartDetailsViewModel.progressLiveData().observe(this, progress -> {
       if (progress != null) {
         if (progress.show) {
           showProgress(progress.requestId);
@@ -188,19 +188,22 @@ public final class CartActivity extends AppCompatActivity implements LifecycleRe
         }
       }
     });
-    cartViewModel.errorErrorCallback().observe(this.getLifecycle(), error -> {
+    cartDetailsViewModel.errorErrorCallback().observe(this.getLifecycle(), error -> {
       if (error != null) {
         showError(error.requestId, error.t, error.message);
       }
     });
 
     cartHeaderView.bindViewModel(cartHeaderViewModel);
+
+    CartListViewModel cartListViewModel = ViewModelProviders.of(this).get(CartListViewModel.class);
+    cartListView.bindViewModel(cartListViewModel);
   }
 
   private void showProgress(final int requestId) {
     progressDialogHelper.show(requestId, null, getResources().getString(R.string.progress_loading), () -> {
-      cartViewModel.cancelRequest(requestId);
-      cartViewModel.progressLiveData().hide(requestId);
+      cartDetailsViewModel.cancelRequest(requestId);
+      cartDetailsViewModel.progressLiveData().hide(requestId);
     });
   }
 

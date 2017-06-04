@@ -47,6 +47,22 @@ final class CollectionDescriptionSummaryListItemViewModel extends ListItemViewMo
     return new ItemViewHolder(onClickListener);
   }
 
+  @Override public boolean equalsById(@NonNull final ListItemViewModel other) {
+    if (other instanceof CollectionDescriptionSummaryListItemViewModel) {
+      Collection otherPayload = ((CollectionDescriptionSummaryListItemViewModel) other).payload();
+      return payload().equalsById(otherPayload);
+    }
+    return false;
+  }
+
+  @Override public boolean equalsByContent(@NonNull final ListItemViewModel other) {
+    if (other instanceof CollectionDescriptionSummaryListItemViewModel) {
+      Collection otherPayload = ((CollectionDescriptionSummaryListItemViewModel) other).payload();
+      return payload().equals(otherPayload);
+    }
+    return false;
+  }
+
   static final class ItemViewHolder extends ListItemViewHolder<Collection, ListItemViewModel<Collection>> {
     @BindView(R.id.description) TextView descriptionView;
 

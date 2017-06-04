@@ -56,4 +56,31 @@ public final class Product {
       ", cursor='" + cursor + '\'' +
       '}';
   }
+
+  public boolean equalsById(@NonNull final Product other) {
+    return id.equals(other.id);
+  }
+
+  @Override public boolean equals(final Object o) {
+    if (this == o) return true;
+    if (!(o instanceof Product)) return false;
+
+    final Product product = (Product) o;
+
+    if (!id.equals(product.id)) return false;
+    if (!title.equals(product.title)) return false;
+    if (image != null ? !image.equals(product.image) : product.image != null) return false;
+    if (!price.equals(product.price)) return false;
+    return cursor.equals(product.cursor);
+
+  }
+
+  @Override public int hashCode() {
+    int result = id.hashCode();
+    result = 31 * result + title.hashCode();
+    result = 31 * result + (image != null ? image.hashCode() : 0);
+    result = 31 * result + price.hashCode();
+    result = 31 * result + cursor.hashCode();
+    return result;
+  }
 }

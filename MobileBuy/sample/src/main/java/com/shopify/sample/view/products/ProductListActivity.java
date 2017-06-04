@@ -24,6 +24,9 @@
 
 package com.shopify.sample.view.products;
 
+import android.arch.lifecycle.ViewModel;
+import android.arch.lifecycle.ViewModelProvider;
+import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -66,7 +69,8 @@ public final class ProductListActivity extends AppCompatActivity {
     getSupportActionBar().setTitle(collectionTitle);
     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     collectionImageView.loadShopifyImage(collectionImageUrl);
-    productListView.refresh(collectionId);
+
+    initViewModels(collectionId);
   }
 
   @Override public boolean onSupportNavigateUp() {
@@ -81,5 +85,18 @@ public final class ProductListActivity extends AppCompatActivity {
       ScreenRouter.route(this, new CartClickActionEvent());
     });
     return true;
+  }
+
+  private void initViewModels(final String collectionId) {
+    ProductPaginatedListViewModel listViewModel = ViewModelProviders.of(this, new ViewModelProvider.Factory() {
+      @SuppressWarnings("unchecked") @Override public <T extends ViewModel> T create(final Class<T> modelClass) {
+        if (modelClass.equals(ProductPaginatedListViewModel.class)) {
+          return (T) new ProductPaginatedListViewModel(collectionId);
+        } else {
+          return null;
+        }
+      }
+    }).get(ProductPaginatedListViewModel.class);
+    productListView.bindViewModel(listViewModel);
   }
 }

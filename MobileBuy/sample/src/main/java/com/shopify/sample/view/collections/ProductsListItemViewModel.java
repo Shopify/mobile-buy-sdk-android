@@ -45,6 +45,38 @@ final class ProductsListItemViewModel extends ListItemViewModel<List<Product>> {
     return new ItemViewHolder(onClickListener);
   }
 
+  @Override public boolean equalsById(@NonNull final ListItemViewModel other) {
+    if (other instanceof ProductsListItemViewModel) {
+      List<Product> payload = payload();
+      List<Product> otherPayload = ((ProductsListItemViewModel) other).payload();
+      if (payload.size() == otherPayload.size()) {
+        for (int i = 0; i < payload.size(); i++) {
+          if (!payload.get(i).equalsById(otherPayload.get(i))) {
+            return false;
+          }
+        }
+        return true;
+      }
+    }
+    return false;
+  }
+
+  @Override public boolean equalsByContent(@NonNull final ListItemViewModel other) {
+    if (other instanceof ProductsListItemViewModel) {
+      List<Product> payload = payload();
+      List<Product> otherPayload = ((ProductsListItemViewModel) other).payload();
+      if (payload.size() == otherPayload.size()) {
+        for (int i = 0; i < payload.size(); i++) {
+          if (!payload.get(i).equals(otherPayload.get(i))) {
+            return false;
+          }
+        }
+        return true;
+      }
+    }
+    return false;
+  }
+
   static final class ItemViewHolder extends ListItemViewHolder<List<Product>, ListItemViewModel<List<Product>>> {
     @BindView(R.id.product_list) ProductListView productListView;
 
