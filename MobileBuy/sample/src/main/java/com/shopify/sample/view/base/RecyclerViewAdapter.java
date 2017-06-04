@@ -113,6 +113,20 @@ public final class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
     diffResult.dispatchUpdatesTo(this);
   }
 
+  public void swapItemsAndNotify(final List<ListItemViewModel> newItems) {
+    final DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new ItemsDiffCallback(items, newItems, new ItemComparator() {
+      @Override public boolean equalsById(final ListItemViewModel oldItem, final ListItemViewModel newItem) {
+        return oldItem.equalsById(newItem);
+      }
+
+      @Override public boolean equalsByContent(final ListItemViewModel oldItem, final ListItemViewModel newItem) {
+        return oldItem.equalsByContent(newItem);
+      }
+    }));
+    items = new ArrayList<>(newItems);
+    diffResult.dispatchUpdatesTo(this);
+  }
+
   public int itemPosition(ListItemViewModel item) {
     return items.indexOf(item);
   }

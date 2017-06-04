@@ -42,6 +42,22 @@ final class CollectionDividerListItemViewModel extends ListItemViewModel<Collect
     return new CollectionDividerListItemViewModel.ItemViewHolder(onClickListener);
   }
 
+  @Override public boolean equalsById(@NonNull final ListItemViewModel other) {
+    if (other instanceof CollectionDividerListItemViewModel) {
+      Collection otherPayload = ((CollectionDividerListItemViewModel) other).payload();
+      return payload().equalsById(otherPayload);
+    }
+    return false;
+  }
+
+  @Override public boolean equalsByContent(@NonNull final ListItemViewModel other) {
+    if (other instanceof CollectionDividerListItemViewModel) {
+      Collection otherPayload = ((CollectionDividerListItemViewModel) other).payload();
+      return payload().equals(otherPayload);
+    }
+    return false;
+  }
+
   static final class ItemViewHolder extends ListItemViewHolder<Collection, ListItemViewModel<Collection>> {
     ItemViewHolder(@NonNull final OnClickListener onClickListener) {
       super(onClickListener);

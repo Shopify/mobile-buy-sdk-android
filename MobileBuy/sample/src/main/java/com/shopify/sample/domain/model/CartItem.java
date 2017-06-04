@@ -27,6 +27,8 @@ package com.shopify.sample.domain.model;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.shopify.sample.view.base.ListItemViewModel;
+
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -92,13 +94,25 @@ public final class CartItem {
 
     if (!productId.equals(cartItem.productId)) return false;
     return productVariantId.equals(cartItem.productVariantId);
-
   }
 
   @Override public int hashCode() {
     int result = productId.hashCode();
     result = 31 * result + productVariantId.hashCode();
     return result;
+  }
+
+  public boolean equalsById(final CartItem other) {
+    return equals(other);
+  }
+
+  public boolean equalsByContent(final CartItem other) {
+    return quantity == other.quantity
+      && productTitle.equals(other.productTitle)
+      && variantTitle.equals(other.variantTitle)
+      && price.equals(other.price)
+      && options.equals(other.options)
+      && (image != null ? image.equals(other.image) : other.image == null);
   }
 
   public static final class Option {

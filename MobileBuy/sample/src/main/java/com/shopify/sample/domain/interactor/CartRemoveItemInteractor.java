@@ -22,13 +22,12 @@
  *   THE SOFTWARE.
  */
 
-package com.shopify.sample.mvp;
+package com.shopify.sample.domain.interactor;
 
-public interface View {
+import android.support.annotation.NonNull;
 
-  void showProgress(int requestId);
+import com.shopify.sample.domain.model.CartItem;
 
-  void hideProgress(int requestId);
-
-  void showError(int requestId, Throwable t);
+public interface CartRemoveItemInteractor {
+  void execute(@NonNull CartItem cartItem);
 }

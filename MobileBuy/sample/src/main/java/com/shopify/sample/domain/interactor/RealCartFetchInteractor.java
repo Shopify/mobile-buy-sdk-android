@@ -22,31 +22,23 @@
  *   THE SOFTWARE.
  */
 
-package com.shopify.sample.presenter.collections;
+package com.shopify.sample.domain.interactor;
 
 import android.support.annotation.NonNull;
 
-import com.shopify.sample.domain.interactor.CollectionNextPageInteractor;
-import com.shopify.sample.domain.model.Collection;
-import com.shopify.sample.mvp.BasePageListViewPresenter;
-import com.shopify.sample.mvp.PageListViewPresenter;
+import com.shopify.sample.domain.model.Cart;
+import com.shopify.sample.domain.repository.CartRepository;
+import com.shopify.sample.domain.repository.RealCartRepository;
 
-import java.util.List;
+public class RealCartFetchInteractor implements CartFetchInteractor {
 
-import io.reactivex.ObservableTransformer;
+  private final CartRepository cartRepository;
 
-import static com.shopify.sample.util.Util.checkNotNull;
-
-public final class CollectionListViewPresenter extends BasePageListViewPresenter<Collection, PageListViewPresenter.View<Collection>> {
-  private final CollectionNextPageInteractor collectionNextPageInteractor;
-
-  public CollectionListViewPresenter(@NonNull final CollectionNextPageInteractor collectionNextPageInteractor) {
-    this.collectionNextPageInteractor = checkNotNull(collectionNextPageInteractor, "collectionNextPageInteractor == null");
+  public RealCartFetchInteractor() {
+    this.cartRepository = new RealCartRepository();
   }
 
-  @Override protected ObservableTransformer<String, List<Collection>> nextPageRequestComposer() {
-    return upstream -> upstream.flatMapSingle(
-      cursor -> collectionNextPageInteractor.execute(cursor, PER_PAGE)
-    );
+  @NonNull @Override public Cart execute() {
+    return cartRepository.cart();
   }
 }

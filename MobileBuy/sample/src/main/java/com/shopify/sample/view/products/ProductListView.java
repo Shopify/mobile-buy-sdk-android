@@ -24,6 +24,9 @@
 
 package com.shopify.sample.view.products;
 
+import android.arch.lifecycle.Lifecycle;
+import android.arch.lifecycle.LifecycleOwner;
+import android.arch.lifecycle.LifecycleRegistry;
 import android.content.Context;
 import android.graphics.Rect;
 import android.support.annotation.NonNull;
@@ -35,60 +38,56 @@ import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.jakewharton.rxbinding2.support.v7.widget.RxRecyclerView;
 import com.shopify.sample.R;
-import com.shopify.sample.domain.interactor.RealCollectionProductNextPageInteractor;
 import com.shopify.sample.domain.model.Product;
-import com.shopify.sample.mvp.BasePageListViewPresenter;
-import com.shopify.sample.mvp.PageListViewPresenter;
-import com.shopify.sample.presenter.products.ProductListViewPresenter;
+import com.shopify.sample.view.BasePaginatedListViewModel;
 import com.shopify.sample.view.ScreenRouter;
 import com.shopify.sample.view.base.ListItemViewModel;
 import com.shopify.sample.view.base.RecyclerViewAdapter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.reactivex.Observable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.subjects.PublishSubject;
 
-public final class ProductListView extends SwipeRefreshLayout implements PageListViewPresenter.View<Product>,
-  RecyclerViewAdapter.OnItemClickListener {
+import static com.shopify.sample.util.Util.checkNotNull;
+
+public final class ProductListView extends SwipeRefreshLayout implements LifecycleOwner, RecyclerViewAdapter.OnItemClickListener {
   @BindView(R.id.list) RecyclerView listView;
 
+  private final LifecycleRegistry lifecycleRegistry = new LifecycleRegistry(this);
   private final RecyclerViewAdapter listViewAdapter = new RecyclerViewAdapter(this);
-  private BasePageListViewPresenter<Product, PageListViewPresenter.View<Product>> presenter;
-  private final PublishSubject<String> refreshSubject = PublishSubject.create();
+  private BasePaginatedListViewModel<Product> viewModel;
 
   public ProductListView(@NonNull final Context context) {
     super(context);
+    lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE);
   }
 
   public ProductListView(@NonNull final Context context, @Nullable final AttributeSet attrs) {
     super(context, attrs);
+    lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE);
   }
 
-  public void refresh(final String collectionId) {
-    if (presenter != null) {
-      presenter.detachView();
-    }
-    presenter = new ProductListViewPresenter(collectionId, new RealCollectionProductNextPageInteractor());
-    if (isAttachedToWindow()) {
-      presenter.attachView(this);
-      refresh();
-    }
+  @Override public Lifecycle getLifecycle() {
+    return lifecycleRegistry;
   }
 
-  public void refresh() {
-    if (presenter == null) {
-      return;
-    }
+  public void bindViewModel(@NonNull final BasePaginatedListViewModel<Product> viewModel) {
+    this.viewModel = checkNotNull(viewModel, "viewModel == null");
 
-    presenter.reset();
-    refreshSubject.onNext("");
+    viewModel.reset();
+    viewModel.progressLiveData().observe(this, progress -> {
+      if (progress != null) {
+        setRefreshing(progress.show);
+      }
+    });
+    viewModel.errorErrorCallback().observe(this, error -> {
+      if (error != null) {
+        showDefaultErrorMessage();
+      }
+    });
+    viewModel.listItemsLiveData().observe(this, this::swapItems);
   }
 
   @Override protected void onFinishInflate() {
@@ -98,7 +97,18 @@ public final class ProductListView extends SwipeRefreshLayout implements PageLis
     listView.setLayoutManager(new GridLayoutManager(getContext(), 2));
     listView.setHasFixedSize(true);
     listView.setAdapter(listViewAdapter);
-    setOnRefreshListener(this::refresh);
+    listView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+      @Override public void onScrollStateChanged(final RecyclerView recyclerView, final int newState) {
+        if (viewModel != null && shouldRequestNextPage(newState)) {
+          viewModel.nextPage(nextPageCursor());
+        }
+      }
+    });
+    setOnRefreshListener(() -> {
+      if (viewModel != null) {
+        viewModel.reset();
+      }
+    });
 
     int defaultPadding = getResources().getDimensionPixelOffset(R.dimen.default_padding);
     listView.addItemDecoration(new RecyclerView.ItemDecoration() {
@@ -119,40 +129,6 @@ public final class ProductListView extends SwipeRefreshLayout implements PageLis
     });
   }
 
-  @Override public void showProgress(final int requestId) {
-    setRefreshing(true);
-  }
-
-  @Override public void hideProgress(final int requestId) {
-    setRefreshing(false);
-  }
-
-  @Override public void showError(final int requestId, final Throwable t) {
-    //TODO log error
-    t.printStackTrace();
-    Snackbar.make(this, R.string.default_error, Snackbar.LENGTH_LONG).show();
-  }
-
-  @Override public Observable<String> nextPageObservable() {
-    return RxRecyclerView.scrollStateChanges(listView)
-      .filter(this::shouldRequestNextPage)
-      .map(event -> nextPageCursor())
-      .subscribeOn(AndroidSchedulers.mainThread())
-      .mergeWith(refreshSubject);
-  }
-
-  @Override public void addItems(final List<Product> items) {
-    List<ListItemViewModel> viewModels = new ArrayList<>();
-    for (Product product : items) {
-      viewModels.add(new ProductListItemViewModel(product));
-    }
-    listViewAdapter.addItems(viewModels);
-  }
-
-  @Override public void clearItems() {
-    listViewAdapter.clearItems();
-  }
-
   @Override public void onItemClick(@NonNull final ListItemViewModel itemViewModel) {
     if (itemViewModel.payload() instanceof Product) {
       ScreenRouter.route(getContext(), new ProductClickActionEvent((Product) itemViewModel.payload()));
@@ -161,27 +137,28 @@ public final class ProductListView extends SwipeRefreshLayout implements PageLis
 
   @Override protected void onAttachedToWindow() {
     super.onAttachedToWindow();
-    if (isInEditMode()) return;
-
-    if (presenter != null) {
-      presenter.attachView(this);
-      refresh();
-    }
+    lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_START);
   }
 
   @Override protected void onDetachedFromWindow() {
+    lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_DESTROY);
     super.onDetachedFromWindow();
-    if (isInEditMode()) return;
+  }
 
-    if (presenter != null) {
-      presenter.detachView();
-    }
+  private void swapItems(final List<ListItemViewModel> newItems) {
+    listViewAdapter.swapItemsAndNotify(newItems);
+  }
+
+  private void showDefaultErrorMessage() {
+    Snackbar snackbar = Snackbar.make(this, R.string.default_error, Snackbar.LENGTH_LONG);
+    snackbar.getView().setBackgroundResource(R.color.snackbar_error_background);
+    snackbar.show();
   }
 
   private boolean shouldRequestNextPage(final int scrollState) {
     GridLayoutManager layoutManager = (GridLayoutManager) listView.getLayoutManager();
     if (scrollState == RecyclerView.SCROLL_STATE_IDLE) {
-      return layoutManager.findLastVisibleItemPosition() > listViewAdapter.getItemCount() - PageListViewPresenter.PER_PAGE / 2;
+      return layoutManager.findLastVisibleItemPosition() > listViewAdapter.getItemCount() - 2;
     } else {
       return layoutManager.findLastVisibleItemPosition() >= listViewAdapter.getItemCount() - 2;
     }

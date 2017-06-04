@@ -24,6 +24,7 @@
 
 package com.shopify.sample.view.collections;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -50,6 +51,8 @@ public final class CollectionListActivity extends AppCompatActivity {
     setSupportActionBar(toolbarView);
     getSupportActionBar().setTitle(R.string.collection_list_title);
     getSupportActionBar().setLogo(R.drawable.ic_logo);
+
+    initViewModels();
   }
 
   @Override public boolean onCreateOptionsMenu(final Menu menu) {
@@ -59,5 +62,10 @@ public final class CollectionListActivity extends AppCompatActivity {
       ScreenRouter.route(this, new CartClickActionEvent());
     });
     return true;
+  }
+
+  private void initViewModels() {
+    CollectionPaginatedListViewModel listViewModel = ViewModelProviders.of(this).get(CollectionPaginatedListViewModel.class);
+    collectionListView.bindViewModel(listViewModel);
   }
 }

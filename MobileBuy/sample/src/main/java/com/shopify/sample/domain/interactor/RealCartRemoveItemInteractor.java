@@ -22,23 +22,22 @@
  *   THE SOFTWARE.
  */
 
-package com.shopify.sample.mvp;
+package com.shopify.sample.domain.interactor;
 
-import java.util.List;
+import android.support.annotation.NonNull;
 
-import io.reactivex.Observable;
+import com.shopify.sample.domain.model.CartItem;
+import com.shopify.sample.domain.repository.CartRepository;
+import com.shopify.sample.domain.repository.RealCartRepository;
 
-public interface PageListViewPresenter<ITEM, VIEW extends PageListViewPresenter.View<ITEM>> extends ViewPresenter<VIEW> {
-  int REQUEST_ID_NEXT_PAGE = 1;
-  int PER_PAGE = 10;
+public class RealCartRemoveItemInteractor implements CartRemoveItemInteractor {
+  private final CartRepository cartRepository;
 
-  void reset();
+  public RealCartRemoveItemInteractor() {
+    this.cartRepository = new RealCartRepository();
+  }
 
-  interface View<ITEM> extends com.shopify.sample.mvp.View {
-    Observable<String> nextPageObservable();
-
-    void addItems(List<ITEM> items);
-
-    void clearItems();
+  @Override public void execute(@NonNull final CartItem cartItem) {
+    cartRepository.removeCartItem(cartItem);
   }
 }

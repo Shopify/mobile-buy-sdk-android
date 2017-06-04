@@ -24,6 +24,9 @@
 
 package com.shopify.sample.view.collections;
 
+import android.arch.lifecycle.Lifecycle;
+import android.arch.lifecycle.LifecycleOwner;
+import android.arch.lifecycle.LifecycleRegistry;
 import android.content.Context;
 import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
@@ -35,92 +38,65 @@ import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.widget.FrameLayout;
 
-import com.jakewharton.rxbinding2.support.v7.widget.RxRecyclerView;
 import com.shopify.sample.R;
-import com.shopify.sample.domain.interactor.RealCollectionNextPageInteractor;
 import com.shopify.sample.domain.model.Collection;
-import com.shopify.sample.mvp.BasePageListViewPresenter;
-import com.shopify.sample.mvp.PageListViewPresenter;
-import com.shopify.sample.presenter.collections.CollectionListViewPresenter;
+import com.shopify.sample.view.BasePaginatedListViewModel;
 import com.shopify.sample.view.ScreenRouter;
 import com.shopify.sample.view.base.ListItemViewModel;
 import com.shopify.sample.view.base.RecyclerViewAdapter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.reactivex.Observable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.subjects.PublishSubject;
 
-public final class CollectionListView extends FrameLayout implements PageListViewPresenter.View<Collection>,
-  RecyclerViewAdapter.OnItemClickListener {
+import static com.shopify.sample.util.Util.checkNotNull;
+
+public final class CollectionListView extends FrameLayout implements LifecycleOwner, RecyclerViewAdapter.OnItemClickListener {
   @BindView(R.id.list) RecyclerView listView;
   @BindView(R.id.swipe_refresh_layout) SwipeRefreshLayout swipeRefreshLayoutView;
 
+  private final LifecycleRegistry lifecycleRegistry = new LifecycleRegistry(this);
   private final RecyclerViewAdapter listViewAdapter = new RecyclerViewAdapter(this);
-  private final BasePageListViewPresenter<Collection, PageListViewPresenter.View<Collection>> presenter =
-    new CollectionListViewPresenter(new RealCollectionNextPageInteractor());
-  private final PublishSubject<String> refreshSubject = PublishSubject.create();
+  private BasePaginatedListViewModel<Collection> viewModel;
 
   public CollectionListView(@NonNull final Context context) {
     super(context);
+    lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE);
   }
 
   public CollectionListView(@NonNull final Context context, @Nullable final AttributeSet attrs) {
     super(context, attrs);
+    lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE);
   }
 
   public CollectionListView(@NonNull final Context context, @Nullable final AttributeSet attrs, @AttrRes final int defStyleAttr) {
     super(context, attrs, defStyleAttr);
+    lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE);
   }
 
-  @Override public void showProgress(final int requestId) {
-    swipeRefreshLayoutView.setRefreshing(true);
+  @Override public Lifecycle getLifecycle() {
+    return lifecycleRegistry;
   }
 
-  @Override public void hideProgress(final int requestId) {
-    swipeRefreshLayoutView.setRefreshing(false);
+  public void bindViewModel(@NonNull final BasePaginatedListViewModel<Collection> viewModel) {
+    this.viewModel = checkNotNull(viewModel, "viewModel == null");
+
+    viewModel.reset();
+    viewModel.progressLiveData().observe(this, progress -> {
+      if (progress != null) {
+        swipeRefreshLayoutView.setRefreshing(progress.show);
+      }
+    });
+    viewModel.errorErrorCallback().observe(this, error -> {
+      if (error != null) {
+        showDefaultErrorMessage();
+      }
+    });
+    viewModel.listItemsLiveData().observe(this, this::swapItems);
   }
 
-  @Override public void showError(final int requestId, final Throwable t) {
-    //TODO log error
-    t.printStackTrace();
-    Snackbar.make(swipeRefreshLayoutView, R.string.default_error, Snackbar.LENGTH_LONG).show();
-  }
-
-  public void refresh() {
-    presenter.reset();
-    refreshSubject.onNext("");
-  }
-
-  @Override public Observable<String> nextPageObservable() {
-    return RxRecyclerView.scrollStateChanges(listView)
-      .filter(this::shouldRequestNextPage)
-      .map(event -> nextPageCursor())
-      .subscribeOn(AndroidSchedulers.mainThread())
-      .mergeWith(refreshSubject);
-  }
-
-  @Override public void addItems(final List<Collection> items) {
-    List<ListItemViewModel> viewModels = new ArrayList<>();
-    for (Collection collection : items) {
-      viewModels.add(new CollectionTitleListItemViewModel(collection));
-      viewModels.add(new CollectionImageListItemViewModel(collection));
-      viewModels.add(new ProductsListItemViewModel(collection.products));
-      viewModels.add(new CollectionDescriptionSummaryListItemViewModel(collection));
-      viewModels.add(new CollectionDividerListItemViewModel(collection));
-    }
-    listViewAdapter.addItems(viewModels);
-  }
-
-  @Override public void clearItems() {
-    listViewAdapter.clearItems();
-  }
-
-  @Override public void onItemClick(final ListItemViewModel itemViewModel) {
+  @Override public void onItemClick(@NonNull final ListItemViewModel itemViewModel) {
     if (itemViewModel.payload() instanceof Collection) {
       ScreenRouter.route(getContext(), new CollectionClickActionEvent((Collection) itemViewModel.payload()));
     }
@@ -132,26 +108,44 @@ public final class CollectionListView extends FrameLayout implements PageListVie
     listView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
     listView.setHasFixedSize(true);
     listView.setAdapter(listViewAdapter);
-    swipeRefreshLayoutView.setOnRefreshListener(this::refresh);
+    listView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+      @Override public void onScrollStateChanged(final RecyclerView recyclerView, final int newState) {
+        if (viewModel != null && shouldRequestNextPage(newState)) {
+          viewModel.nextPage(nextPageCursor());
+        }
+      }
+    });
+    swipeRefreshLayoutView.setOnRefreshListener(() -> {
+      if (viewModel != null) {
+        viewModel.reset();
+      }
+    });
   }
 
   @Override protected void onAttachedToWindow() {
     super.onAttachedToWindow();
-    if (isInEditMode()) return;
-    presenter.attachView(this);
-    refresh();
+    lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_START);
   }
 
   @Override protected void onDetachedFromWindow() {
+    lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_DESTROY);
     super.onDetachedFromWindow();
-    if (isInEditMode()) return;
-    presenter.detachView();
+  }
+
+  private void swapItems(final List<ListItemViewModel> newItems) {
+    listViewAdapter.swapItemsAndNotify(newItems);
+  }
+
+  private void showDefaultErrorMessage() {
+    Snackbar snackbar = Snackbar.make(this, R.string.default_error, Snackbar.LENGTH_LONG);
+    snackbar.getView().setBackgroundResource(R.color.snackbar_error_background);
+    snackbar.show();
   }
 
   private boolean shouldRequestNextPage(final int scrollState) {
     LinearLayoutManager layoutManager = (LinearLayoutManager) listView.getLayoutManager();
     if (scrollState == RecyclerView.SCROLL_STATE_IDLE) {
-      return layoutManager.findLastVisibleItemPosition() > listViewAdapter.getItemCount() - PageListViewPresenter.PER_PAGE / 2;
+      return layoutManager.findLastVisibleItemPosition() > listViewAdapter.getItemCount() - 2;
     } else {
       return layoutManager.findLastVisibleItemPosition() >= listViewAdapter.getItemCount() - 2;
     }

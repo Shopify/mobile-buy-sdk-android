@@ -49,6 +49,22 @@ final class ProductListItemViewModel extends ListItemViewModel<Product> {
     return new ItemViewHolder(onClickListener);
   }
 
+  @Override public boolean equalsById(@NonNull final ListItemViewModel other) {
+    if (other instanceof ProductListItemViewModel) {
+      Product otherPayload = ((ProductListItemViewModel) other).payload();
+      return payload().equalsById(otherPayload);
+    }
+    return false;
+  }
+
+  @Override public boolean equalsByContent(@NonNull final ListItemViewModel other) {
+    if (other instanceof ProductListItemViewModel) {
+      Product otherPayload = ((ProductListItemViewModel) other).payload();
+      return payload().equals(otherPayload);
+    }
+    return false;
+  }
+
   static final class ItemViewHolder extends ListItemViewHolder<Product, ListItemViewModel<Product>> {
     static final NumberFormat CURRENCY_FORMAT = NumberFormat.getCurrencyInstance();
     @BindView(R.id.image) ShopifyDraweeView imageView;

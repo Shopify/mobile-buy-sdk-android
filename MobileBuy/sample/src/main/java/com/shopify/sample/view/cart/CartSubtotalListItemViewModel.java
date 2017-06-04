@@ -52,6 +52,14 @@ final class CartSubtotalListItemViewModel extends ListItemViewModel<Cart> {
     return new CartSubtotalListItemViewModel.ItemViewHolder(onClickListener);
   }
 
+  @Override public boolean equalsById(@NonNull final ListItemViewModel other) {
+    return other instanceof CartSubtotalListItemViewModel;
+  }
+
+  @Override public boolean equalsByContent(@NonNull final ListItemViewModel other) {
+    return false;
+  }
+
   static final class ItemViewHolder extends ListItemViewHolder<Cart, ListItemViewModel<Cart>> {
     static final NumberFormat CURRENCY_FORMAT = NumberFormat.getCurrencyInstance();
     @BindView(R.id.subtotal) TextView subtotalView;

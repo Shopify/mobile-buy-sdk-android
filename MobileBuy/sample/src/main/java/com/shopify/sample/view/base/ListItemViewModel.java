@@ -25,6 +25,7 @@
 package com.shopify.sample.view.base;
 
 import android.support.annotation.LayoutRes;
+import android.support.annotation.NonNull;
 
 public abstract class ListItemViewModel<T> {
   private final T payload;
@@ -80,5 +81,13 @@ public abstract class ListItemViewModel<T> {
     int result = payload != null ? payload.hashCode() : 0;
     result = 31 * result + viewType;
     return result;
+  }
+
+  public boolean equalsById(@NonNull final ListItemViewModel other) {
+    return false;
+  }
+
+  public boolean equalsByContent(@NonNull final ListItemViewModel other) {
+    return false;
   }
 }

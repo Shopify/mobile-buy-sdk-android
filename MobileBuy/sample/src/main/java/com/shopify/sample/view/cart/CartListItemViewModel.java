@@ -55,6 +55,22 @@ final class CartListItemViewModel extends ListItemViewModel<CartItem> {
     return new CartListItemViewModel.ItemViewHolder(onChangeQuantityClickListener, onClickListener);
   }
 
+  @Override public boolean equalsById(@NonNull final ListItemViewModel other) {
+    if (other instanceof CartListItemViewModel) {
+      CartItem otherPayload = ((CartListItemViewModel) other).payload();
+      return payload().equalsById(otherPayload);
+    }
+    return false;
+  }
+
+  @Override public boolean equalsByContent(@NonNull final ListItemViewModel other) {
+    if (other instanceof CartListItemViewModel) {
+      CartItem otherPayload = ((CartListItemViewModel) other).payload();
+      return payload().equalsByContent(otherPayload);
+    }
+    return false;
+  }
+
   static final class ItemViewHolder extends ListItemViewHolder<CartItem, ListItemViewModel<CartItem>> {
     static final NumberFormat CURRENCY_FORMAT = NumberFormat.getCurrencyInstance();
     @BindView(R.id.image) ShopifyDraweeView imageView;
