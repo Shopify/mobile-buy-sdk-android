@@ -43,14 +43,15 @@ import static com.shopify.sample.util.Util.checkNotNull;
 import static com.shopify.sample.util.Util.firstItem;
 import static com.shopify.sample.util.Util.mapItems;
 
-public class RealProductDetailsViewModel extends BaseViewModel implements ProductDetailsViewModel {
+@SuppressWarnings("WeakerAccess")
+public final class RealProductViewModel extends BaseViewModel implements ProductViewModel {
   private final ProductByIdInteractor productByIdInteractor = new RealProductByIdInteractor();
   private final CartAddItemInteractor cartAddItemInteractor = new RealCartAddItemInteractor();
   private final MutableLiveData<ProductDetails> productLiveData = new MutableLiveData<>();
 
   private final String productId;
 
-  public RealProductDetailsViewModel(@NonNull final String productId) {
+  public RealProductViewModel(@NonNull final String productId) {
     this.productId = checkNotNull(productId, "productId == null");
     refetch();
   }
@@ -62,9 +63,9 @@ public class RealProductDetailsViewModel extends BaseViewModel implements Produc
       productByIdInteractor.execute(productId)
         .toObservable()
         .observeOn(AndroidSchedulers.mainThread())
-        .subscribeWith(WeakObserver.<RealProductDetailsViewModel, ProductDetails>forTarget(this)
-          .delegateOnNext(RealProductDetailsViewModel::onProductDetailsResponse)
-          .delegateOnError(RealProductDetailsViewModel::onProductDetailsError)
+        .subscribeWith(WeakObserver.<RealProductViewModel, ProductDetails>forTarget(this)
+          .delegateOnNext(RealProductViewModel::onProductDetailsResponse)
+          .delegateOnError(RealProductViewModel::onProductDetailsError)
           .create())
     );
   }

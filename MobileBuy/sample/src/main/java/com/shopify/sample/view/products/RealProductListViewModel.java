@@ -16,13 +16,13 @@ import io.reactivex.ObservableTransformer;
 import static com.shopify.sample.util.Util.checkNotNull;
 
 @SuppressWarnings("WeakerAccess")
-public class ProductPaginatedListViewModel extends BasePaginatedListViewModel<Product> {
+public final class RealProductListViewModel extends BasePaginatedListViewModel<Product> {
   private static final int PER_PAGE = 20;
 
   private final String collectionId;
   private final CollectionProductNextPageInteractor collectionProductNextPageInteractor = new RealCollectionProductNextPageInteractor();
 
-  public ProductPaginatedListViewModel(@NonNull final String collectionId) {
+  public RealProductListViewModel(@NonNull final String collectionId) {
     this.collectionId = checkNotNull(collectionId, "collectionId == null");
   }
 

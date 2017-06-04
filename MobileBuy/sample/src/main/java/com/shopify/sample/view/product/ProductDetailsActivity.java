@@ -66,7 +66,7 @@ public final class ProductDetailsActivity extends AppCompatActivity implements L
   @BindView(R.id.product_description) ProductDescriptionView productDescriptionView;
 
   private final LifecycleRegistry lifecycleRegistry = new LifecycleRegistry(this);
-  private ProductDetailsViewModel productDetailsViewModel;
+  private ProductViewModel productViewModel;
 
   @Override public LifecycleRegistry getLifecycle() {
     return lifecycleRegistry;
@@ -106,9 +106,9 @@ public final class ProductDetailsActivity extends AppCompatActivity implements L
     initViewModels(productId);
 
     imageGalleryView.renderImages(Arrays.asList(productImageUrl));
-    swipeRefreshLayoutView.setOnRefreshListener(() -> productDetailsViewModel.refetch());
+    swipeRefreshLayoutView.setOnRefreshListener(() -> productViewModel.refetch());
     productDescriptionView.renderProduct(productTitle, productPrice);
-    productDescriptionView.setOnAddToCartClickListener(() -> productDetailsViewModel.addToCart());
+    productDescriptionView.setOnAddToCartClickListener(() -> productViewModel.addToCart());
 
     lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE);
   }
@@ -139,22 +139,22 @@ public final class ProductDetailsActivity extends AppCompatActivity implements L
   }
 
   private void initViewModels(final String productId) {
-    productDetailsViewModel = ViewModelProviders.of(this, new ViewModelProvider.Factory() {
+    productViewModel = ViewModelProviders.of(this, new ViewModelProvider.Factory() {
       @SuppressWarnings("unchecked") @Override public <T extends ViewModel> T create(final Class<T> modelClass) {
-        if (modelClass.equals(RealProductDetailsViewModel.class)) {
-          return (T) new RealProductDetailsViewModel(productId);
+        if (modelClass.equals(RealProductViewModel.class)) {
+          return (T) new RealProductViewModel(productId);
         } else {
           return null;
         }
       }
-    }).get(RealProductDetailsViewModel.class);
-    productDetailsViewModel.productLiveData().observe(this, this::renderProduct);
-    productDetailsViewModel.progressLiveData().observe(this, progress -> {
+    }).get(RealProductViewModel.class);
+    productViewModel.productLiveData().observe(this, this::renderProduct);
+    productViewModel.progressLiveData().observe(this, progress -> {
       if (progress != null) {
         swipeRefreshLayoutView.setRefreshing(progress.show);
       }
     });
-    productDetailsViewModel.errorErrorCallback().observe(this.getLifecycle(), error -> {
+    productViewModel.errorErrorCallback().observe(this.getLifecycle(), error -> {
       if (error != null) {
         showDefaultErrorMessage();
       }

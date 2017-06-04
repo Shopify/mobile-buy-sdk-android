@@ -31,7 +31,7 @@ import com.shopify.sample.view.ViewModel;
 
 import java.util.UUID;
 
-public interface ProductDetailsViewModel extends ViewModel {
+public interface ProductViewModel extends ViewModel {
   int REQUEST_ID_PRODUCT_DETAILS = UUID.randomUUID().hashCode();
 
   LiveData<ProductDetails> productLiveData();

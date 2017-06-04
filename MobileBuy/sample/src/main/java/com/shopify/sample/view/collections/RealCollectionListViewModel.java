@@ -14,7 +14,7 @@ import java.util.List;
 import io.reactivex.ObservableTransformer;
 
 @SuppressWarnings("WeakerAccess")
-public class CollectionPaginatedListViewModel extends BasePaginatedListViewModel<Collection> {
+public final class RealCollectionListViewModel extends BasePaginatedListViewModel<Collection> {
   private static final int PER_PAGE = 10;
 
   private final CollectionNextPageInteractor collectionNextPageInteractor = new RealCollectionNextPageInteractor();
