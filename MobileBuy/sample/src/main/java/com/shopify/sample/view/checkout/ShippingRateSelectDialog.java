@@ -50,7 +50,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
+import static com.shopify.sample.util.Util.checkNotNull;
 
 public final class ShippingRateSelectDialog extends BottomSheetDialog implements RecyclerViewAdapter.OnItemClickListener {
   @BindView(R.id.toolbar) Toolbar toolbarView;

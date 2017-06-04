@@ -65,7 +65,7 @@ public final class CollectionListActivity extends AppCompatActivity {
   }
 
   private void initViewModels() {
-    CollectionPaginatedListViewModel listViewModel = ViewModelProviders.of(this).get(CollectionPaginatedListViewModel.class);
+    RealCollectionListViewModel listViewModel = ViewModelProviders.of(this).get(RealCollectionListViewModel.class);
     collectionListView.bindViewModel(listViewModel);
   }
 }

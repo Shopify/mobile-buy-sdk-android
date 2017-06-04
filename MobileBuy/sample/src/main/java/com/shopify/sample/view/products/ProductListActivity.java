@@ -88,15 +88,15 @@ public final class ProductListActivity extends AppCompatActivity {
   }
 
   private void initViewModels(final String collectionId) {
-    ProductPaginatedListViewModel listViewModel = ViewModelProviders.of(this, new ViewModelProvider.Factory() {
+    RealProductListViewModel listViewModel = ViewModelProviders.of(this, new ViewModelProvider.Factory() {
       @SuppressWarnings("unchecked") @Override public <T extends ViewModel> T create(final Class<T> modelClass) {
-        if (modelClass.equals(ProductPaginatedListViewModel.class)) {
-          return (T) new ProductPaginatedListViewModel(collectionId);
+        if (modelClass.equals(RealProductListViewModel.class)) {
+          return (T) new RealProductListViewModel(collectionId);
         } else {
           return null;
         }
       }
-    }).get(ProductPaginatedListViewModel.class);
+    }).get(RealProductListViewModel.class);
     productListView.bindViewModel(listViewModel);
   }
 }

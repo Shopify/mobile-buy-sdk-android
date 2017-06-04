@@ -26,10 +26,10 @@ package com.shopify.sample.domain.repository;
 
 import android.support.annotation.NonNull;
 
-import com.apollographql.apollo.ApolloCall;
 import com.apollographql.apollo.ApolloClient;
+import com.apollographql.apollo.ApolloQueryCall;
 import com.apollographql.apollo.api.internal.Optional;
-import com.apollographql.apollo.cache.http.HttpCacheControl;
+import com.apollographql.apollo.cache.http.HttpCachePolicy;
 import com.shopify.sample.RxUtil;
 import com.shopify.sample.domain.CheckoutByIdQuery;
 import com.shopify.sample.domain.CheckoutCompleteWithAndroidPayQuery;
@@ -47,7 +47,8 @@ import com.shopify.sample.domain.fragment.PaymentFragment;
 import io.reactivex.Single;
 import io.reactivex.schedulers.Schedulers;
 
-import static com.shopify.sample.RxUtil.rxApolloCall;
+import static com.shopify.sample.RxUtil.rxApolloMutationCall;
+import static com.shopify.sample.RxUtil.rxApolloQueryCall;
 import static com.shopify.sample.util.Util.checkNotNull;
 import static com.shopify.sample.util.Util.mapItems;
 
@@ -60,8 +61,7 @@ public final class CheckoutRepository {
 
   public Single<CheckoutCreateFragment> create(@NonNull final CheckoutCreateQuery query) {
     checkNotNull(query, "query == null");
-    return rxApolloCall(apolloClient.newCall(query)
-      .httpCacheControl(HttpCacheControl.NETWORK_ONLY))
+    return rxApolloMutationCall(apolloClient.mutate(query))
       .map(Optional::get)
       .map(it -> it.checkoutCreate.get())
       .flatMap(it -> {
@@ -79,8 +79,7 @@ public final class CheckoutRepository {
 
   public Single<CheckoutFragment> updateShippingAddress(@NonNull final CheckoutShippingAddressUpdateQuery query) {
     checkNotNull(query, "query == null");
-    return rxApolloCall(apolloClient.newCall(query)
-      .httpCacheControl(HttpCacheControl.NETWORK_ONLY))
+    return rxApolloMutationCall(apolloClient.mutate(query))
       .map(Optional::get)
       .map(it -> it.checkoutShippingAddressUpdate.get())
       .flatMap(it -> {
@@ -98,8 +97,8 @@ public final class CheckoutRepository {
 
   public Single<CheckoutFragment> checkout(@NonNull final CheckoutByIdQuery query) {
     checkNotNull(query, "query == null");
-    return rxApolloCall(apolloClient.newCall(query)
-      .httpCacheControl(HttpCacheControl.NETWORK_ONLY))
+    return rxApolloQueryCall(apolloClient.query(query)
+      .httpCachePolicy(HttpCachePolicy.NETWORK_ONLY))
       .map(Optional::get)
       .map(it -> it.node.get())
       .map(it -> it.fragments.checkoutFragment)
@@ -108,23 +107,22 @@ public final class CheckoutRepository {
 
   public Single<CheckoutShippingRatesFragment> shippingRates(@NonNull final CheckoutShippingRatesQuery query) {
     checkNotNull(query, "query == null");
-    ApolloCall<Optional<CheckoutShippingRatesQuery.Data>> call = apolloClient.newCall(query)
-      .httpCacheControl(HttpCacheControl.NETWORK_ONLY);
+    ApolloQueryCall<Optional<CheckoutShippingRatesQuery.Data>> call = apolloClient.query(query)
+      .httpCachePolicy(HttpCachePolicy.NETWORK_ONLY);
     return Single.fromCallable(call::clone)
-      .flatMap(RxUtil::rxApolloCall)
+      .flatMap(RxUtil::rxApolloQueryCall)
       .map(Optional::get)
       .map(it -> it.node.get())
       .map(it -> it.asCheckout.get())
       .map(it -> it.availableShippingRates.get())
       .map(it -> it.fragments.checkoutShippingRatesFragment)
-      .map(it -> it.or(new CheckoutShippingRatesFragment(false, null)))
+      .map(it -> it.or(new CheckoutShippingRatesFragment("", false, null)))
       .subscribeOn(Schedulers.io());
   }
 
   public Single<CheckoutFragment> updateShippingLine(@NonNull final CheckoutShippingLineUpdateQuery query) {
     checkNotNull(query, "query == null");
-    return rxApolloCall(apolloClient.newCall(query)
-      .httpCacheControl(HttpCacheControl.NETWORK_ONLY))
+    return rxApolloMutationCall(apolloClient.mutate(query))
       .map(Optional::get)
       .map(it -> it.checkoutShippingLineUpdate.get())
       .flatMap(it -> {
@@ -141,8 +139,7 @@ public final class CheckoutRepository {
 
   public Single<CheckoutFragment> updateEmail(@NonNull final CheckoutEmailUpdateQuery query) {
     checkNotNull(query, "query == null");
-    return rxApolloCall(apolloClient.newCall(query)
-      .httpCacheControl(HttpCacheControl.NETWORK_ONLY))
+    return rxApolloMutationCall(apolloClient.mutate(query))
       .map(Optional::get)
       .map(it -> it.checkoutEmailUpdate.get())
       .flatMap(it -> {
@@ -160,8 +157,7 @@ public final class CheckoutRepository {
 
   public Single<PaymentFragment> complete(@NonNull final CheckoutCompleteWithAndroidPayQuery query) {
     checkNotNull(query, "query == null");
-    return rxApolloCall(apolloClient.newCall(query)
-      .httpCacheControl(HttpCacheControl.NETWORK_ONLY))
+    return rxApolloMutationCall(apolloClient.mutate(query))
       .map(Optional::get)
       .map(it -> it.checkoutCompleteWithTokenizedPayment.get())
       .flatMap(it -> {
@@ -179,10 +175,10 @@ public final class CheckoutRepository {
 
   public Single<PaymentFragment> paymentById(@NonNull final PaymentByIdQuery query) {
     checkNotNull(query, "query == null");
-    ApolloCall<Optional<PaymentByIdQuery.Data>> call = apolloClient.newCall(query)
-      .httpCacheControl(HttpCacheControl.NETWORK_ONLY);
+    ApolloQueryCall<Optional<PaymentByIdQuery.Data>> call = apolloClient.query(query)
+      .httpCachePolicy(HttpCachePolicy.NETWORK_ONLY);
     return Single.fromCallable(call::clone)
-      .flatMap(RxUtil::rxApolloCall)
+      .flatMap(RxUtil::rxApolloQueryCall)
       .map(Optional::get)
       .map(it -> it.node.get())
       .map(it -> it.fragments)

@@ -150,16 +150,16 @@ public final class CartActivity extends AppCompatActivity implements LifecycleRe
 
   @Override protected void onSaveInstanceState(final Bundle outState) {
     super.onSaveInstanceState(outState);
-    outState.putBundle(CartViewModel.class.getName(), cartDetailsViewModel.saveState());
+    outState.putBundle(RealCartViewModel.class.getName(), cartDetailsViewModel.saveState());
   }
 
   @Override protected void onRestoreInstanceState(final Bundle savedInstanceState) {
     super.onRestoreInstanceState(savedInstanceState);
-    cartDetailsViewModel.restoreState(savedInstanceState.getBundle(CartViewModel.class.getName()));
+    cartDetailsViewModel.restoreState(savedInstanceState.getBundle(RealCartViewModel.class.getName()));
   }
 
   private void initViewModels() {
-    CartViewModel cartViewModel = ViewModelProviders.of(this).get(CartViewModel.class);
+    RealCartViewModel cartViewModel = ViewModelProviders.of(this).get(RealCartViewModel.class);
     cartHeaderViewModel = cartViewModel;
     cartDetailsViewModel = cartViewModel;
 

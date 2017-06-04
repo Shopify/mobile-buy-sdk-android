@@ -74,7 +74,7 @@ public class SampleApplication extends BaseApplication {
       .accessToken(BuildConfig.API_KEY)
       .httpClient(httpClient)
       .httpCache(getCacheDir(), 1024 * 1024 * 10)
-      .defaultHttpCachePolicy(HttpCachePolicy.CACHE_FIRST.expireAfter(5, TimeUnit.MINUTES))
+      .defaultHttpCachePolicy(HttpCachePolicy.CACHE_FIRST.expireAfter(20, TimeUnit.MINUTES))
       .build();
   }
 }

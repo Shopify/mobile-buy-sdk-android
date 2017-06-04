@@ -55,7 +55,7 @@ import static com.shopify.sample.util.Util.fold;
 import static com.shopify.sample.util.Util.mapItems;
 
 @SuppressWarnings({"WeakerAccess", "FieldCanBeLocal"})
-public final class CartViewModel extends BaseViewModel implements CartDetailsViewModel, CartHeaderViewModel {
+public final class RealCartViewModel extends BaseViewModel implements CartDetailsViewModel, CartHeaderViewModel {
   private static final String STATE_KEY_CHECKOUT_ID = "checkout_id";
   private static final String STATE_KEY_PAY_CART = "pay_cart";
 
@@ -70,13 +70,13 @@ public final class CartViewModel extends BaseViewModel implements CartDetailsVie
   private String checkoutId;
   private PayCart payCart;
 
-  public CartViewModel() {
+  public RealCartViewModel() {
     registerRequest(
       REQUEST_ID_UPDATE_CART,
       cartWatchInteractor.execute()
         .observeOn(AndroidSchedulers.mainThread())
-        .subscribeWith(WeakObserver.<CartViewModel, Cart>forTarget(this)
-          .delegateOnNext(CartViewModel::onCartUpdated)
+        .subscribeWith(WeakObserver.<RealCartViewModel, Cart>forTarget(this)
+          .delegateOnNext(RealCartViewModel::onCartUpdated)
           .create())
     );
   }
@@ -160,7 +160,7 @@ public final class CartViewModel extends BaseViewModel implements CartDetailsVie
       checkoutCreateInteractor.execute(lineItems)
         .toObservable()
         .observeOn(AndroidSchedulers.mainThread())
-        .subscribeWith(WeakObserver.<CartViewModel, Checkout>forTarget(this)
+        .subscribeWith(WeakObserver.<RealCartViewModel, Checkout>forTarget(this)
           .delegateOnNext((presenter, checkout) -> presenter.onCreateCheckout(requestId, checkout))
           .delegateOnError((presenter, t) -> presenter.onCreateCheckoutError(requestId, t))
           .create())

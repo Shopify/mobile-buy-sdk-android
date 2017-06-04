@@ -116,7 +116,6 @@ dependencies {
   compile project(':buy3-pay-support')
   shopifyCompile project(':buy3')
 
-  apolloCompile dep.apolloApi
   apolloCompile dep.apolloRuntime
   apolloCompile dep.okhttpLogging
 }
