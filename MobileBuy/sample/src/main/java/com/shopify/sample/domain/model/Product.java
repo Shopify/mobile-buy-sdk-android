@@ -27,8 +27,6 @@ package com.shopify.sample.domain.model;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.shopify.sample.view.base.ListItemViewModel;
-
 import java.math.BigDecimal;
 
 import static com.shopify.sample.util.Util.checkNotNull;

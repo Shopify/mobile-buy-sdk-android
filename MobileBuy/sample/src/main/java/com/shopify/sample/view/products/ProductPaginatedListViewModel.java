@@ -17,7 +17,7 @@ import static com.shopify.sample.util.Util.checkNotNull;
 
 @SuppressWarnings("WeakerAccess")
 public class ProductPaginatedListViewModel extends BasePaginatedListViewModel<Product> {
-  private final static int PER_PAGE = 10;
+  private static final int PER_PAGE = 20;
 
   private final String collectionId;
   private final CollectionProductNextPageInteractor collectionProductNextPageInteractor = new RealCollectionProductNextPageInteractor();
@@ -28,7 +28,7 @@ public class ProductPaginatedListViewModel extends BasePaginatedListViewModel<Pr
 
   @Override protected ObservableTransformer<String, List<Product>> nextPageRequestComposer() {
     return upstream -> upstream.flatMapSingle(
-      cursor -> collectionProductNextPageInteractor.execute(collectionId, cursor, PER_PAGE * 2)
+      cursor -> collectionProductNextPageInteractor.execute(collectionId, cursor, PER_PAGE)
     );
   }
 
