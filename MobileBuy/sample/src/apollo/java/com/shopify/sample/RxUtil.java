@@ -24,7 +24,8 @@
 
 package com.shopify.sample;
 
-import com.apollographql.apollo.ApolloCall;
+import com.apollographql.apollo.ApolloMutationCall;
+import com.apollographql.apollo.ApolloQueryCall;
 import com.apollographql.apollo.api.Response;
 
 import io.reactivex.Single;
@@ -35,7 +36,20 @@ import static com.shopify.sample.util.Util.fold;
 
 public final class RxUtil {
 
-  public static <T> Single<T> rxApolloCall(final ApolloCall<T> call) {
+  public static <T> Single<T> rxApolloQueryCall(final ApolloQueryCall<T> call) {
+    return Single.<Response<T>>create(emitter -> {
+      emitter.setCancellable(call::cancel);
+      try {
+        emitter.onSuccess(call.execute());
+      } catch (Exception e) {
+        Exceptions.throwIfFatal(e);
+        emitter.onError(e);
+      }
+    })
+      .compose(queryResponseDataTransformer());
+  }
+
+  public static <T> Single<T> rxApolloMutationCall(final ApolloMutationCall<T> call) {
     return Single.<Response<T>>create(emitter -> {
       emitter.setCancellable(call::cancel);
       try {

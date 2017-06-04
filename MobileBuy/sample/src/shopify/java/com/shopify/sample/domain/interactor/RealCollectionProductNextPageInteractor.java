@@ -36,7 +36,7 @@ import java.util.List;
 
 import io.reactivex.Single;
 
-import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
+import static com.shopify.sample.util.Util.checkNotNull;
 
 public final class RealCollectionProductNextPageInteractor implements CollectionProductNextPageInteractor {
   private final ProductRepository repository;

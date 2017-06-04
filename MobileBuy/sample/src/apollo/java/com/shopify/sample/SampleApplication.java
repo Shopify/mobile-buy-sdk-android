@@ -4,9 +4,8 @@ import android.text.TextUtils;
 
 import com.apollographql.apollo.ApolloClient;
 import com.apollographql.apollo.CustomTypeAdapter;
-import com.apollographql.apollo.cache.http.DiskLruCacheStore;
-import com.apollographql.apollo.cache.http.HttpCacheControl;
-import com.apollographql.apollo.cache.http.TimeoutEvictionStrategy;
+import com.apollographql.apollo.cache.http.DiskLruHttpCacheStore;
+import com.apollographql.apollo.cache.http.HttpCachePolicy;
 import com.shopify.sample.domain.type.CustomType;
 
 import java.math.BigDecimal;
@@ -62,9 +61,9 @@ public class SampleApplication extends BaseApplication {
     apolloClient = ApolloClient.builder()
       .okHttpClient(httpClient)
       .serverUrl(HttpUrl.parse("https://" + shopUrl + "/api/graphql"))
-      .httpCache(new DiskLruCacheStore(getCacheDir(), 1000 * 1024), new TimeoutEvictionStrategy(5, TimeUnit.MINUTES))
-      .defaultHttpCacheControl(HttpCacheControl.CACHE_FIRST)
-      .withCustomTypeAdapter(CustomType.MONEY, new CustomTypeAdapter<BigDecimal>() {
+      .httpCacheStore(new DiskLruHttpCacheStore(getCacheDir(), 1000 * 1024))
+      .defaultHttpCachePolicy(HttpCachePolicy.CACHE_FIRST.expireAfter(20, TimeUnit.MINUTES))
+      .addCustomTypeAdapter(CustomType.MONEY, new CustomTypeAdapter<BigDecimal>() {
         @Override public BigDecimal decode(final String value) {
           return new BigDecimal(value);
         }

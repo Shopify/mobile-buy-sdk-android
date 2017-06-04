@@ -47,7 +47,7 @@ import static java.util.Collections.emptyList;
 
 final class Converters {
 
-  static List<Product> convertToProducts(final List<CollectionProductPageQuery.Data.ProductEdge> productEdges) {
+  static List<Product> convertToProducts(final List<CollectionProductPageQuery.ProductEdge> productEdges) {
     return mapItems(productEdges, productEdge -> {
       String productImageUrl = firstItem(productEdge.product.imageConnection.imageEdges,
         imageEdge -> imageEdge != null ? imageEdge.image.src : null);
@@ -58,7 +58,7 @@ final class Converters {
     });
   }
 
-  static ProductDetails convertToProductDetails(ProductByIdQuery.Data.AsProduct product) {
+  static ProductDetails convertToProductDetails(ProductByIdQuery.AsProduct product) {
     List<String> images = mapItems(product.imageConnection.imageEdge, imageEdge -> imageEdge.image.src);
     List<ProductDetails.Option> options = mapItems(product.options, option -> new ProductDetails.Option(option.id, option.name,
       option.values));
@@ -73,7 +73,7 @@ final class Converters {
   }
 
   @SuppressWarnings("Convert2MethodRef") static List<Collection> convertToCollections(
-    final List<CollectionPageWithProductsQuery.Data.Edge> collectionEdges) {
+    final List<CollectionPageWithProductsQuery.Edge> collectionEdges) {
     return mapItems(collectionEdges, collectionEdge -> {
         String collectionImageUrl = collectionEdge.collection.image.transform(it -> it.src).or("");
         return new Collection(collectionEdge.collection.id, collectionEdge.collection.title,
