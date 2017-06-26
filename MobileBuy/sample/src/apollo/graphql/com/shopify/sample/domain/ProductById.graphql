@@ -22,7 +22,7 @@ query ProductByIdQuery($id: ID!) {
           variant: node {
             id
             title
-            available
+            availableForSale
             selectedOptions {
               name
               value

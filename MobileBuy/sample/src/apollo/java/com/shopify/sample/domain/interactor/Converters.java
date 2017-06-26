@@ -66,7 +66,7 @@ final class Converters {
       variantEdge -> {
         List<ProductDetails.SelectedOption> selectedOptions = mapItems(variantEdge.variant.selectedOptions, selectedOption ->
           new ProductDetails.SelectedOption(selectedOption.name, selectedOption.value));
-        return new ProductDetails.Variant(variantEdge.variant.id, variantEdge.variant.title, variantEdge.variant.available.or(true),
+        return new ProductDetails.Variant(variantEdge.variant.id, variantEdge.variant.title, variantEdge.variant.availableForSale,
           selectedOptions, variantEdge.variant.price);
       });
     return new ProductDetails(product.id, product.title, product.descriptionHtml, product.tags, images, options, variants);
