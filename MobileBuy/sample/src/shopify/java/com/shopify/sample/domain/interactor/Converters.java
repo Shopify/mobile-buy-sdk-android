@@ -60,7 +60,7 @@ final class Converters {
         List<ProductDetails.SelectedOption> selectedOptions = mapItems(variantEdge.getNode().getSelectedOptions(), selectedOption ->
           new ProductDetails.SelectedOption(selectedOption.getName(), selectedOption.getValue()));
         return new ProductDetails.Variant(variantEdge.getNode().getId().toString(), variantEdge.getNode().getTitle(),
-          (variantEdge.getNode().getAvailable() == null || Boolean.TRUE.equals(variantEdge.getNode().getAvailable())),
+          (variantEdge.getNode().getAvailableForSale() == null || Boolean.TRUE.equals(variantEdge.getNode().getAvailableForSale())),
           selectedOptions, variantEdge.getNode().getPrice());
       });
     return new ProductDetails(product.getId().toString(), product.getTitle(), product.getDescriptionHtml(), product.getTags(), images, options,

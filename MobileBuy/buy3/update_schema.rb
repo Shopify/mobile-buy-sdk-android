@@ -8,7 +8,7 @@ require 'optparse'
 require 'net/http'
 require 'fileutils'
 
-target_filename = '../buy/src/main/java/com/shopify/buy3/Storefront.java'
+target_filename = '../buy3/src/main/java/com/shopify/buy3/Storefront.java'
 OptionParser.new do |opts|
   opts.on("-tFILENAME", "--target=FILENAME", "Target file name") do |filename|
     target_filename = filename

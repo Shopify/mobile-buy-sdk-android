@@ -61,7 +61,7 @@ public final class RealProductByIdInteractor implements ProductByIdInteractor {
         .edges(variantEdge -> variantEdge
           .node(variant -> variant
             .title()
-            .available()
+            .availableForSale()
             .selectedOptions(selectedOption -> selectedOption
               .name()
               .value()

@@ -8824,25 +8824,7 @@ public class Storefront {
 
             /**
             * Supported filter parameters:
-            * - `status`
-            * - `financial_status`
-            * - `fulfillment_status`
-            * - `source_name`
-            * - `chargeback_status`
-            * - `risk_level`
-            * - `customer_id`
-            * - `email`
-            * - `credit_card_last4`
             * - `processed_at`
-            * - `checkout_token`
-            * - `cart_token`
-            * - `location_id`
-            * - `channel_id`
-            * - `discount_code`
-            * - `tag`
-            * - `since_id`
-            * - `updated_at`
-            * - `created_at`
             */
             public OrdersArguments query(String value) {
                 if (value != null) {
@@ -10287,6 +10269,8 @@ public class Storefront {
 
         private String lastName;
 
+        private String phone;
+
         private Boolean acceptsMarketing;
 
         public CustomerCreateInput(String email, String password) {
@@ -10331,6 +10315,15 @@ public class Storefront {
             return this;
         }
 
+        public String getPhone() {
+            return phone;
+        }
+
+        public CustomerCreateInput setPhone(String phone) {
+            this.phone = phone;
+            return this;
+        }
+
         public Boolean getAcceptsMarketing() {
             return acceptsMarketing;
         }
@@ -10366,6 +10359,13 @@ public class Storefront {
                 separator = ",";
                 _queryBuilder.append("lastName:");
                 Query.appendQuotedString(_queryBuilder, lastName.toString());
+            }
+
+            if (phone != null) {
+                _queryBuilder.append(separator);
+                separator = ",";
+                _queryBuilder.append("phone:");
+                Query.appendQuotedString(_queryBuilder, phone.toString());
             }
 
             if (acceptsMarketing != null) {
@@ -10751,6 +10751,8 @@ public class Storefront {
 
         private String email;
 
+        private String phone;
+
         private String password;
 
         private Boolean acceptsMarketing;
@@ -10779,6 +10781,15 @@ public class Storefront {
 
         public CustomerUpdateInput setEmail(String email) {
             this.email = email;
+            return this;
+        }
+
+        public String getPhone() {
+            return phone;
+        }
+
+        public CustomerUpdateInput setPhone(String phone) {
+            this.phone = phone;
             return this;
         }
 
@@ -10823,6 +10834,13 @@ public class Storefront {
                 separator = ",";
                 _queryBuilder.append("email:");
                 Query.appendQuotedString(_queryBuilder, email.toString());
+            }
+
+            if (phone != null) {
+                _queryBuilder.append(separator);
+                separator = ",";
+                _queryBuilder.append("phone:");
+                Query.appendQuotedString(_queryBuilder, phone.toString());
             }
 
             if (password != null) {
@@ -11547,6 +11565,12 @@ public class Storefront {
             return this;
         }
 
+        public MailingAddressQuery formattedArea() {
+            startField("formattedArea");
+
+            return this;
+        }
+
         public MailingAddressQuery lastName() {
             startField("lastName");
 
@@ -11692,6 +11716,12 @@ public class Storefront {
                         }
 
                         responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "formattedArea": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
 
                         break;
                     }
@@ -11882,6 +11912,15 @@ public class Storefront {
             return this;
         }
 
+        public String getFormattedArea() {
+            return (String) get("formattedArea");
+        }
+
+        public MailingAddress setFormattedArea(String arg) {
+            optimisticData.put(getKey("formattedArea"), arg);
+            return this;
+        }
+
         public ID getId() {
             return (ID) get("id");
         }
@@ -11975,6 +12014,8 @@ public class Storefront {
                 case "firstName": return false;
 
                 case "formatted": return false;
+
+                case "formattedArea": return false;
 
                 case "id": return false;
 
@@ -13931,35 +13972,6 @@ public class Storefront {
         }
 
         /**
-        * The reason why the order was cancelled.
-        * If the order was not cancelled, this value is `null`.
-        */
-        public OrderQuery cancelReason() {
-            startField("cancelReason");
-
-            return this;
-        }
-
-        /**
-        * The date and time when the order was cancelled.
-        * If the order was not cancelled, this value is `null.`
-        */
-        public OrderQuery cancelledAt() {
-            startField("cancelledAt");
-
-            return this;
-        }
-
-        /**
-        * The date and time when the order was created.
-        */
-        public OrderQuery createdAt() {
-            startField("createdAt");
-
-            return this;
-        }
-
-        /**
         * The code of the currency used for the payment.
         */
         public OrderQuery currencyCode() {
@@ -13973,24 +13985,6 @@ public class Storefront {
         */
         public OrderQuery customerUrl() {
             startField("customerUrl");
-
-            return this;
-        }
-
-        /**
-        * Displays financial status of order payment processing.
-        */
-        public OrderQuery displayFinancialStatus() {
-            startField("displayFinancialStatus");
-
-            return this;
-        }
-
-        /**
-        * Displays fulfillment status of the order.
-        */
-        public OrderQuery displayFulfillmentStatus() {
-            startField("displayFulfillmentStatus");
 
             return this;
         }
@@ -14144,15 +14138,6 @@ public class Storefront {
 
             return this;
         }
-
-        /**
-        * The date and time when the order was last modified.
-        */
-        public OrderQuery updatedAt() {
-            startField("updatedAt");
-
-            return this;
-        }
     }
 
     /**
@@ -14169,34 +14154,6 @@ public class Storefront {
                 String key = field.getKey();
                 String fieldName = getFieldName(key);
                 switch (fieldName) {
-                    case "cancelReason": {
-                        OrderCancelReason optional1 = null;
-                        if (!field.getValue().isJsonNull()) {
-                            optional1 = OrderCancelReason.fromGraphQl(jsonAsString(field.getValue(), key));
-                        }
-
-                        responseData.put(key, optional1);
-
-                        break;
-                    }
-
-                    case "cancelledAt": {
-                        DateTime optional1 = null;
-                        if (!field.getValue().isJsonNull()) {
-                            optional1 = Utils.parseDateTime(jsonAsString(field.getValue(), key));
-                        }
-
-                        responseData.put(key, optional1);
-
-                        break;
-                    }
-
-                    case "createdAt": {
-                        responseData.put(key, Utils.parseDateTime(jsonAsString(field.getValue(), key)));
-
-                        break;
-                    }
-
                     case "currencyCode": {
                         responseData.put(key, CurrencyCode.fromGraphQl(jsonAsString(field.getValue(), key)));
 
@@ -14210,23 +14167,6 @@ public class Storefront {
                         }
 
                         responseData.put(key, optional1);
-
-                        break;
-                    }
-
-                    case "displayFinancialStatus": {
-                        OrderDisplayFinancialStatus optional1 = null;
-                        if (!field.getValue().isJsonNull()) {
-                            optional1 = OrderDisplayFinancialStatus.fromGraphQl(jsonAsString(field.getValue(), key));
-                        }
-
-                        responseData.put(key, optional1);
-
-                        break;
-                    }
-
-                    case "displayFulfillmentStatus": {
-                        responseData.put(key, OrderDisplayFulfillmentStatus.fromGraphQl(jsonAsString(field.getValue(), key)));
 
                         break;
                     }
@@ -14328,12 +14268,6 @@ public class Storefront {
                         break;
                     }
 
-                    case "updatedAt": {
-                        responseData.put(key, Utils.parseDateTime(jsonAsString(field.getValue(), key)));
-
-                        break;
-                    }
-
                     case "__typename": {
                         responseData.put(key, jsonAsString(field.getValue(), key));
                         break;
@@ -14352,47 +14286,6 @@ public class Storefront {
 
         public String getGraphQlTypeName() {
             return "Order";
-        }
-
-        /**
-        * The reason why the order was cancelled.
-        * If the order was not cancelled, this value is `null`.
-        */
-
-        public OrderCancelReason getCancelReason() {
-            return (OrderCancelReason) get("cancelReason");
-        }
-
-        public Order setCancelReason(OrderCancelReason arg) {
-            optimisticData.put(getKey("cancelReason"), arg);
-            return this;
-        }
-
-        /**
-        * The date and time when the order was cancelled.
-        * If the order was not cancelled, this value is `null.`
-        */
-
-        public DateTime getCancelledAt() {
-            return (DateTime) get("cancelledAt");
-        }
-
-        public Order setCancelledAt(DateTime arg) {
-            optimisticData.put(getKey("cancelledAt"), arg);
-            return this;
-        }
-
-        /**
-        * The date and time when the order was created.
-        */
-
-        public DateTime getCreatedAt() {
-            return (DateTime) get("createdAt");
-        }
-
-        public Order setCreatedAt(DateTime arg) {
-            optimisticData.put(getKey("createdAt"), arg);
-            return this;
         }
 
         /**
@@ -14418,32 +14311,6 @@ public class Storefront {
 
         public Order setCustomerUrl(String arg) {
             optimisticData.put(getKey("customerUrl"), arg);
-            return this;
-        }
-
-        /**
-        * Displays financial status of order payment processing.
-        */
-
-        public OrderDisplayFinancialStatus getDisplayFinancialStatus() {
-            return (OrderDisplayFinancialStatus) get("displayFinancialStatus");
-        }
-
-        public Order setDisplayFinancialStatus(OrderDisplayFinancialStatus arg) {
-            optimisticData.put(getKey("displayFinancialStatus"), arg);
-            return this;
-        }
-
-        /**
-        * Displays fulfillment status of the order.
-        */
-
-        public OrderDisplayFulfillmentStatus getDisplayFulfillmentStatus() {
-            return (OrderDisplayFulfillmentStatus) get("displayFulfillmentStatus");
-        }
-
-        public Order setDisplayFulfillmentStatus(OrderDisplayFulfillmentStatus arg) {
-            optimisticData.put(getKey("displayFulfillmentStatus"), arg);
             return this;
         }
 
@@ -14597,34 +14464,11 @@ public class Storefront {
             return this;
         }
 
-        /**
-        * The date and time when the order was last modified.
-        */
-
-        public DateTime getUpdatedAt() {
-            return (DateTime) get("updatedAt");
-        }
-
-        public Order setUpdatedAt(DateTime arg) {
-            optimisticData.put(getKey("updatedAt"), arg);
-            return this;
-        }
-
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "cancelReason": return false;
-
-                case "cancelledAt": return false;
-
-                case "createdAt": return false;
-
                 case "currencyCode": return false;
 
                 case "customerUrl": return false;
-
-                case "displayFinancialStatus": return false;
-
-                case "displayFulfillmentStatus": return false;
 
                 case "email": return false;
 
@@ -14650,82 +14494,7 @@ public class Storefront {
 
                 case "totalTax": return false;
 
-                case "updatedAt": return false;
-
                 default: return false;
-            }
-        }
-    }
-
-    public enum OrderCancelReason {
-        CUSTOMER,
-
-        DECLINED,
-
-        FRAUD,
-
-        INVENTORY,
-
-        OTHER,
-
-        UNKNOWN_VALUE;
-
-        public static OrderCancelReason fromGraphQl(String value) {
-            if (value == null) {
-                return null;
-            }
-
-            switch (value) {
-                case "CUSTOMER": {
-                    return CUSTOMER;
-                }
-
-                case "DECLINED": {
-                    return DECLINED;
-                }
-
-                case "FRAUD": {
-                    return FRAUD;
-                }
-
-                case "INVENTORY": {
-                    return INVENTORY;
-                }
-
-                case "OTHER": {
-                    return OTHER;
-                }
-
-                default: {
-                    return UNKNOWN_VALUE;
-                }
-            }
-        }
-        public String toString() {
-            switch (this) {
-                case CUSTOMER: {
-                    return "CUSTOMER";
-                }
-
-                case DECLINED: {
-                    return "DECLINED";
-                }
-
-                case FRAUD: {
-                    return "FRAUD";
-                }
-
-                case INVENTORY: {
-                    return "INVENTORY";
-                }
-
-                case OTHER: {
-                    return "OTHER";
-                }
-
-                default: {
-                    return "";
-                }
             }
         }
     }
@@ -14840,182 +14609,6 @@ public class Storefront {
                 case "pageInfo": return true;
 
                 default: return false;
-            }
-        }
-    }
-
-    public enum OrderDisplayFinancialStatus {
-        AUTHORIZED,
-
-        PAID,
-
-        PARTIALLY_PAID,
-
-        PARTIALLY_REFUNDED,
-
-        PENDING,
-
-        REFUNDED,
-
-        VOIDED,
-
-        UNKNOWN_VALUE;
-
-        public static OrderDisplayFinancialStatus fromGraphQl(String value) {
-            if (value == null) {
-                return null;
-            }
-
-            switch (value) {
-                case "AUTHORIZED": {
-                    return AUTHORIZED;
-                }
-
-                case "PAID": {
-                    return PAID;
-                }
-
-                case "PARTIALLY_PAID": {
-                    return PARTIALLY_PAID;
-                }
-
-                case "PARTIALLY_REFUNDED": {
-                    return PARTIALLY_REFUNDED;
-                }
-
-                case "PENDING": {
-                    return PENDING;
-                }
-
-                case "REFUNDED": {
-                    return REFUNDED;
-                }
-
-                case "VOIDED": {
-                    return VOIDED;
-                }
-
-                default: {
-                    return UNKNOWN_VALUE;
-                }
-            }
-        }
-        public String toString() {
-            switch (this) {
-                case AUTHORIZED: {
-                    return "AUTHORIZED";
-                }
-
-                case PAID: {
-                    return "PAID";
-                }
-
-                case PARTIALLY_PAID: {
-                    return "PARTIALLY_PAID";
-                }
-
-                case PARTIALLY_REFUNDED: {
-                    return "PARTIALLY_REFUNDED";
-                }
-
-                case PENDING: {
-                    return "PENDING";
-                }
-
-                case REFUNDED: {
-                    return "REFUNDED";
-                }
-
-                case VOIDED: {
-                    return "VOIDED";
-                }
-
-                default: {
-                    return "";
-                }
-            }
-        }
-    }
-
-    public enum OrderDisplayFulfillmentStatus {
-        FULFILLED,
-
-        OPEN,
-
-        PARTIALLY_FULFILLED,
-
-        PENDING_FULFILLMENT,
-
-        RESTOCKED,
-
-        UNFULFILLED,
-
-        UNKNOWN_VALUE;
-
-        public static OrderDisplayFulfillmentStatus fromGraphQl(String value) {
-            if (value == null) {
-                return null;
-            }
-
-            switch (value) {
-                case "FULFILLED": {
-                    return FULFILLED;
-                }
-
-                case "OPEN": {
-                    return OPEN;
-                }
-
-                case "PARTIALLY_FULFILLED": {
-                    return PARTIALLY_FULFILLED;
-                }
-
-                case "PENDING_FULFILLMENT": {
-                    return PENDING_FULFILLMENT;
-                }
-
-                case "RESTOCKED": {
-                    return RESTOCKED;
-                }
-
-                case "UNFULFILLED": {
-                    return UNFULFILLED;
-                }
-
-                default: {
-                    return UNKNOWN_VALUE;
-                }
-            }
-        }
-        public String toString() {
-            switch (this) {
-                case FULFILLED: {
-                    return "FULFILLED";
-                }
-
-                case OPEN: {
-                    return "OPEN";
-                }
-
-                case PARTIALLY_FULFILLED: {
-                    return "PARTIALLY_FULFILLED";
-                }
-
-                case PENDING_FULFILLMENT: {
-                    return "PENDING_FULFILLMENT";
-                }
-
-                case RESTOCKED: {
-                    return "RESTOCKED";
-                }
-
-                case UNFULFILLED: {
-                    return "UNFULFILLED";
-                }
-
-                default: {
-                    return "";
-                }
             }
         }
     }
@@ -15505,25 +15098,13 @@ public class Storefront {
     * The set of valid sort keys for the orders query.
     */
     public enum OrderSortKeys {
-        CREATED_AT,
-
-        CUSTOMER_NAME,
-
-        FINANCIAL_STATUS,
-
-        FULFILLMENT_STATUS,
-
         ID,
-
-        ORDER_NUMBER,
 
         PROCESSED_AT,
 
         RELEVANCE,
 
         TOTAL_PRICE,
-
-        UPDATED_AT,
 
         UNKNOWN_VALUE;
 
@@ -15533,28 +15114,8 @@ public class Storefront {
             }
 
             switch (value) {
-                case "CREATED_AT": {
-                    return CREATED_AT;
-                }
-
-                case "CUSTOMER_NAME": {
-                    return CUSTOMER_NAME;
-                }
-
-                case "FINANCIAL_STATUS": {
-                    return FINANCIAL_STATUS;
-                }
-
-                case "FULFILLMENT_STATUS": {
-                    return FULFILLMENT_STATUS;
-                }
-
                 case "ID": {
                     return ID;
-                }
-
-                case "ORDER_NUMBER": {
-                    return ORDER_NUMBER;
                 }
 
                 case "PROCESSED_AT": {
@@ -15569,10 +15130,6 @@ public class Storefront {
                     return TOTAL_PRICE;
                 }
 
-                case "UPDATED_AT": {
-                    return UPDATED_AT;
-                }
-
                 default: {
                     return UNKNOWN_VALUE;
                 }
@@ -15580,28 +15137,8 @@ public class Storefront {
         }
         public String toString() {
             switch (this) {
-                case CREATED_AT: {
-                    return "CREATED_AT";
-                }
-
-                case CUSTOMER_NAME: {
-                    return "CUSTOMER_NAME";
-                }
-
-                case FINANCIAL_STATUS: {
-                    return "FINANCIAL_STATUS";
-                }
-
-                case FULFILLMENT_STATUS: {
-                    return "FULFILLMENT_STATUS";
-                }
-
                 case ID: {
                     return "ID";
-                }
-
-                case ORDER_NUMBER: {
-                    return "ORDER_NUMBER";
                 }
 
                 case PROCESSED_AT: {
@@ -15614,10 +15151,6 @@ public class Storefront {
 
                 case TOTAL_PRICE: {
                     return "TOTAL_PRICE";
-                }
-
-                case UPDATED_AT: {
-                    return "UPDATED_AT";
                 }
 
                 default: {
@@ -17375,10 +16908,10 @@ public class Storefront {
         }
 
         /**
-        * Indicates if the product variant is in stock.
+        * Indicates if the product variant is available for sale.
         */
-        public ProductVariantQuery available() {
-            startField("available");
+        public ProductVariantQuery availableForSale() {
+            startField("availableForSale");
 
             return this;
         }
@@ -17537,13 +17070,8 @@ public class Storefront {
                 String key = field.getKey();
                 String fieldName = getFieldName(key);
                 switch (fieldName) {
-                    case "available": {
-                        Boolean optional1 = null;
-                        if (!field.getValue().isJsonNull()) {
-                            optional1 = jsonAsBoolean(field.getValue(), key);
-                        }
-
-                        responseData.put(key, optional1);
+                    case "availableForSale": {
+                        responseData.put(key, jsonAsBoolean(field.getValue(), key));
 
                         break;
                     }
@@ -17632,15 +17160,15 @@ public class Storefront {
         }
 
         /**
-        * Indicates if the product variant is in stock.
+        * Indicates if the product variant is available for sale.
         */
 
-        public Boolean getAvailable() {
-            return (Boolean) get("available");
+        public Boolean getAvailableForSale() {
+            return (Boolean) get("availableForSale");
         }
 
-        public ProductVariant setAvailable(Boolean arg) {
-            optimisticData.put(getKey("available"), arg);
+        public ProductVariant setAvailableForSale(Boolean arg) {
+            optimisticData.put(getKey("availableForSale"), arg);
             return this;
         }
 
@@ -17741,7 +17269,7 @@ public class Storefront {
 
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "available": return false;
+                case "availableForSale": return false;
 
                 case "id": return false;
 
@@ -18640,6 +18168,24 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * Find a collection by its handle.
+        */
+        public ShopQuery collectionByHandle(String handle, CollectionQueryDefinition queryDef) {
+            startField("collectionByHandle");
+
+            _queryBuilder.append("(handle:");
+            Query.appendQuotedString(_queryBuilder, handle.toString());
+
+            _queryBuilder.append(')');
+
+            _queryBuilder.append('{');
+            queryDef.define(new CollectionQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
         public class CollectionsArguments extends Arguments {
             CollectionsArguments(StringBuilder _queryBuilder) {
                 super(_queryBuilder, false);
@@ -18674,7 +18220,6 @@ public class Storefront {
             * - `title`
             * - `collection_type`
             * - `updated_at`
-            * - `published_status`
             */
             public CollectionsArguments query(String value) {
                 if (value != null) {
@@ -18773,6 +18318,24 @@ public class Storefront {
 
             _queryBuilder.append('{');
             queryDef.define(new ShopPolicyQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * Find a product by its handle.
+        */
+        public ShopQuery productByHandle(String handle, ProductQueryDefinition queryDef) {
+            startField("productByHandle");
+
+            _queryBuilder.append("(handle:");
+            Query.appendQuotedString(_queryBuilder, handle.toString());
+
+            _queryBuilder.append(')');
+
+            _queryBuilder.append('{');
+            queryDef.define(new ProductQuery(_queryBuilder));
             _queryBuilder.append('}');
 
             return this;
@@ -18922,6 +18485,17 @@ public class Storefront {
                         break;
                     }
 
+                    case "collectionByHandle": {
+                        Collection optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new Collection(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
                     case "collections": {
                         responseData.put(key, new CollectionConnection(jsonAsObject(field.getValue(), key)));
 
@@ -18967,6 +18541,17 @@ public class Storefront {
                         ShopPolicy optional1 = null;
                         if (!field.getValue().isJsonNull()) {
                             optional1 = new ShopPolicy(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "productByHandle": {
+                        Product optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new Product(jsonAsObject(field.getValue(), key));
                         }
 
                         responseData.put(key, optional1);
@@ -19068,6 +18653,19 @@ public class Storefront {
         }
 
         /**
+        * Find a collection by its handle.
+        */
+
+        public Collection getCollectionByHandle() {
+            return (Collection) get("collectionByHandle");
+        }
+
+        public Shop setCollectionByHandle(Collection arg) {
+            optimisticData.put(getKey("collectionByHandle"), arg);
+            return this;
+        }
+
+        /**
         * List of the shop’s collections.
         */
 
@@ -19159,6 +18757,19 @@ public class Storefront {
         }
 
         /**
+        * Find a product by its handle.
+        */
+
+        public Product getProductByHandle() {
+            return (Product) get("productByHandle");
+        }
+
+        public Shop setProductByHandle(Product arg) {
+            optimisticData.put(getKey("productByHandle"), arg);
+            return this;
+        }
+
+        /**
         * List of the shop’s products.
         */
 
@@ -19218,6 +18829,8 @@ public class Storefront {
 
                 case "cardVaultUrl": return false;
 
+                case "collectionByHandle": return true;
+
                 case "collections": return true;
 
                 case "currencyCode": return false;
@@ -19231,6 +18844,8 @@ public class Storefront {
                 case "primaryDomain": return true;
 
                 case "privacyPolicy": return true;
+
+                case "productByHandle": return true;
 
                 case "products": return true;
 
