@@ -73,7 +73,7 @@ Mobile Buy SDK for Android is represented by runtime module that provides suppor
 ##### Gradle:
 
 ```gradle
-compile 'com.shopify.mobilebuysdk:buy3:3.0.0'
+compile 'com.shopify.mobilebuysdk:buy3:3.x.x'
 // optional library to help with Android Pay purchase flow
 compile 'com.shopify.mobilebuysdk:buy3-pay-support:1.0.0'
 ```
@@ -84,7 +84,7 @@ compile 'com.shopify.mobilebuysdk:buy3-pay-support:1.0.0'
 <dependency>
   <groupId>com.shopify.mobilebuysdk</groupId>
   <artifactId>buy3</artifactId>
-  <version>3.0.0</version>
+  <version>3.x.x</version>
 </dependency>
 
 <dependency>
