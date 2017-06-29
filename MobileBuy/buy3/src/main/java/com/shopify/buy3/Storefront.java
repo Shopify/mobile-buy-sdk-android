@@ -7329,6 +7329,8 @@ public class Storefront {
 
         CRC,
 
+        CVE,
+
         CZK,
 
         DKK,
@@ -7667,6 +7669,10 @@ public class Storefront {
 
                 case "CRC": {
                     return CRC;
+                }
+
+                case "CVE": {
+                    return CVE;
                 }
 
                 case "CZK": {
@@ -8218,6 +8224,10 @@ public class Storefront {
 
                 case CRC: {
                     return "CRC";
+                }
+
+                case CVE: {
+                    return "CVE";
                 }
 
                 case CZK: {
@@ -11721,7 +11731,12 @@ public class Storefront {
                     }
 
                     case "formattedArea": {
-                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        String optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = jsonAsString(field.getValue(), key);
+                        }
+
+                        responseData.put(key, optional1);
 
                         break;
                     }
