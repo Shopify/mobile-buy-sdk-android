@@ -11,7 +11,9 @@ To run the sample application, you need to provide credentials to the shop that 
 1. Make sure that you have the **Mobile App** channel installed in your Shopify admin.
 2. From your Shopify admin, navigate to the **Mobile App** channel, and then copy your API key.
 3. Open the Sample Application project in `/MobileBuy/sample`
-4. Create `shop.properties` file under the root folder and add next lines:
+4. Run `git submodule update --init --recursive` to update recursevly git submodules
+5. Sample application provides 2 product flavours: `shopify` and `apollo`. You should select `shopify` in AS to switch sample application to use BuySDK. At the same time `apollo` flavour demonstrates how you can use Apollo GraphQL client with Shopify StoreFront schema. (NOTE: please make sure you clean the project after you switching between these 2 flavours)
+6. Create `shop.properties` file under the root folder and add next lines:
 
 ```
 SHOP_DOMAIN=<your-shop-here>.myshopify.com
