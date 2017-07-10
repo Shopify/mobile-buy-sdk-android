@@ -52,7 +52,7 @@ public final class RealCheckoutCreateInteractor implements CheckoutCreateInterac
     checkNotEmpty(lineItems, "lineItems can't be empty");
 
     List<Storefront.CheckoutLineItemInput> storefrontLineItems = mapItems(lineItems, lineItem ->
-      new Storefront.CheckoutLineItemInput(new ID(lineItem.variantId), lineItem.quantity));
+      new Storefront.CheckoutLineItemInput(lineItem.quantity, new ID(lineItem.variantId)));
 
     Storefront.CheckoutCreateInput input = new Storefront.CheckoutCreateInput().setLineItems(storefrontLineItems);
 

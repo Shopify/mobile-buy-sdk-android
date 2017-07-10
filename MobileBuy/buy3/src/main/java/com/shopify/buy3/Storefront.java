@@ -206,7 +206,6 @@ public class Storefront {
         /**
         * The amount that was used taken from the Gift Card by applying it.
         */
-
         public BigDecimal getAmountUsed() {
             return (BigDecimal) get("amountUsed");
         }
@@ -219,7 +218,6 @@ public class Storefront {
         /**
         * The amount left on the Gift Card.
         */
-
         public BigDecimal getBalance() {
             return (BigDecimal) get("balance");
         }
@@ -236,7 +234,6 @@ public class Storefront {
         /**
         * The last characters of the Gift Card code
         */
-
         public String getLastCharacters() {
             return (String) get("lastCharacters");
         }
@@ -696,7 +693,6 @@ public class Storefront {
         /**
         * The article's author.
         */
-
         public ArticleAuthor getAuthor() {
             return (ArticleAuthor) get("author");
         }
@@ -709,7 +705,6 @@ public class Storefront {
         /**
         * The blog that the article belongs to.
         */
-
         public Blog getBlog() {
             return (Blog) get("blog");
         }
@@ -722,7 +717,6 @@ public class Storefront {
         /**
         * List of comments posted on the article.
         */
-
         public CommentConnection getComments() {
             return (CommentConnection) get("comments");
         }
@@ -735,7 +729,6 @@ public class Storefront {
         /**
         * Stripped content of the article, single line with HTML tags removed.
         */
-
         public String getContent() {
             return (String) get("content");
         }
@@ -748,7 +741,6 @@ public class Storefront {
         /**
         * The content of the article, complete with HTML formatting.
         */
-
         public String getContentHtml() {
             return (String) get("contentHtml");
         }
@@ -761,7 +753,6 @@ public class Storefront {
         /**
         * Stripped excerpt of the article, single line with HTML tags removed.
         */
-
         public String getExcerpt() {
             return (String) get("excerpt");
         }
@@ -774,7 +765,6 @@ public class Storefront {
         /**
         * The excerpt of the article, complete with HTML formatting.
         */
-
         public String getExcerptHtml() {
             return (String) get("excerptHtml");
         }
@@ -791,7 +781,6 @@ public class Storefront {
         /**
         * The image associated with the article.
         */
-
         public Image getImage() {
             return (Image) get("image");
         }
@@ -804,7 +793,6 @@ public class Storefront {
         /**
         * The date and time when the article was published.
         */
-
         public DateTime getPublishedAt() {
             return (DateTime) get("publishedAt");
         }
@@ -817,7 +805,6 @@ public class Storefront {
         /**
         * A categorization that a article can be tagged with.
         */
-
         public List<String> getTags() {
             return (List<String>) get("tags");
         }
@@ -830,7 +817,6 @@ public class Storefront {
         /**
         * The article’s name.
         */
-
         public String getTitle() {
             return (String) get("title");
         }
@@ -843,7 +829,6 @@ public class Storefront {
         /**
         * The url pointing to the article accessible from the web.
         */
-
         public String getUrl() {
             return (String) get("url");
         }
@@ -1003,7 +988,6 @@ public class Storefront {
         /**
         * The author's bio.
         */
-
         public String getBio() {
             return (String) get("bio");
         }
@@ -1016,7 +1000,6 @@ public class Storefront {
         /**
         * The author’s email.
         */
-
         public String getEmail() {
             return (String) get("email");
         }
@@ -1029,7 +1012,6 @@ public class Storefront {
         /**
         * The author's first name.
         */
-
         public String getFirstName() {
             return (String) get("firstName");
         }
@@ -1042,7 +1024,6 @@ public class Storefront {
         /**
         * The author's last name.
         */
-
         public String getLastName() {
             return (String) get("lastName");
         }
@@ -1055,7 +1036,6 @@ public class Storefront {
         /**
         * The author's full name
         */
-
         public String getName() {
             return (String) get("name");
         }
@@ -1162,7 +1142,6 @@ public class Storefront {
         /**
         * A list of edges.
         */
-
         public List<ArticleEdge> getEdges() {
             return (List<ArticleEdge>) get("edges");
         }
@@ -1175,7 +1154,6 @@ public class Storefront {
         /**
         * Information to aid in pagination.
         */
-
         public PageInfo getPageInfo() {
             return (PageInfo) get("pageInfo");
         }
@@ -1451,7 +1429,6 @@ public class Storefront {
         /**
         * Key or name of the attribute.
         */
-
         public String getKey() {
             return (String) get("key");
         }
@@ -1464,7 +1441,6 @@ public class Storefront {
         /**
         * Value of the attribute.
         */
-
         public String getValue() {
             return (String) get("value");
         }
@@ -1623,7 +1599,6 @@ public class Storefront {
         * The `shippingRates` field is `null` when this value is `false`.
         * This field should be polled until its value becomes `true`.
         */
-
         public Boolean getReady() {
             return (Boolean) get("ready");
         }
@@ -1636,7 +1611,6 @@ public class Storefront {
         /**
         * The fetched shipping rates. `null` until the `ready` field is `true`.
         */
-
         public List<ShippingRate> getShippingRates() {
             return (List<ShippingRate>) get("shippingRates");
         }
@@ -1796,7 +1770,6 @@ public class Storefront {
         /**
         * List of the blog's articles.
         */
-
         public ArticleConnection getArticles() {
             return (ArticleConnection) get("articles");
         }
@@ -1813,7 +1786,6 @@ public class Storefront {
         /**
         * The blogs’s title.
         */
-
         public String getTitle() {
             return (String) get("title");
         }
@@ -1826,7 +1798,6 @@ public class Storefront {
         /**
         * The url pointing to the blog accessible from the web.
         */
-
         public String getUrl() {
             return (String) get("url");
         }
@@ -1931,7 +1902,6 @@ public class Storefront {
         /**
         * A list of edges.
         */
-
         public List<BlogEdge> getEdges() {
             return (List<BlogEdge>) get("edges");
         }
@@ -1944,7 +1914,6 @@ public class Storefront {
         /**
         * Information to aid in pagination.
         */
-
         public PageInfo getPageInfo() {
             return (PageInfo) get("pageInfo");
         }
@@ -2675,7 +2644,6 @@ public class Storefront {
         * Should only be used when checkout `requiresShipping` is `true` and
         * the shipping address is valid.
         */
-
         public AvailableShippingRates getAvailableShippingRates() {
             return (AvailableShippingRates) get("availableShippingRates");
         }
@@ -2688,7 +2656,6 @@ public class Storefront {
         /**
         * The date and time when the checkout was completed.
         */
-
         public DateTime getCompletedAt() {
             return (DateTime) get("completedAt");
         }
@@ -2701,7 +2668,6 @@ public class Storefront {
         /**
         * The date and time when the checkout was created.
         */
-
         public DateTime getCreatedAt() {
             return (DateTime) get("createdAt");
         }
@@ -2714,7 +2680,6 @@ public class Storefront {
         /**
         * The currency code for the Checkout.
         */
-
         public CurrencyCode getCurrencyCode() {
             return (CurrencyCode) get("currencyCode");
         }
@@ -2727,7 +2692,6 @@ public class Storefront {
         /**
         * A list of extra information that is added to the checkout.
         */
-
         public List<Attribute> getCustomAttributes() {
             return (List<Attribute>) get("customAttributes");
         }
@@ -2740,7 +2704,6 @@ public class Storefront {
         /**
         * The customer associated with the checkout.
         */
-
         public Customer getCustomer() {
             return (Customer) get("customer");
         }
@@ -2753,7 +2716,6 @@ public class Storefront {
         /**
         * The email attached to this checkout.
         */
-
         public String getEmail() {
             return (String) get("email");
         }
@@ -2770,7 +2732,6 @@ public class Storefront {
         /**
         * A list of line item objects, each one containing information about an item in the checkout.
         */
-
         public CheckoutLineItemConnection getLineItems() {
             return (CheckoutLineItemConnection) get("lineItems");
         }
@@ -2792,7 +2753,6 @@ public class Storefront {
         /**
         * The resulting order from a paid checkout.
         */
-
         public Order getOrder() {
             return (Order) get("order");
         }
@@ -2805,7 +2765,6 @@ public class Storefront {
         /**
         * The Order Status Page for this Checkout, null when checkout is not completed.
         */
-
         public String getOrderStatusUrl() {
             return (String) get("orderStatusUrl");
         }
@@ -2819,7 +2778,6 @@ public class Storefront {
         * The amount left to be paid. This is equal to the cost of the line items, taxes and shipping minus
         * discounts and gift cards.
         */
-
         public BigDecimal getPaymentDue() {
             return (BigDecimal) get("paymentDue");
         }
@@ -2834,7 +2792,6 @@ public class Storefront {
         * operations that can take time to finish. If you want to complete a checkout or ensure all the fields
         * are populated and up to date, polling is required until the value is true. 
         */
-
         public Boolean getReady() {
             return (Boolean) get("ready");
         }
@@ -2847,7 +2804,6 @@ public class Storefront {
         /**
         * States whether or not the fulfillment requires shipping.
         */
-
         public Boolean getRequiresShipping() {
             return (Boolean) get("requiresShipping");
         }
@@ -2860,7 +2816,6 @@ public class Storefront {
         /**
         * The shipping address to where the line items will be shipped.
         */
-
         public MailingAddress getShippingAddress() {
             return (MailingAddress) get("shippingAddress");
         }
@@ -2873,7 +2828,6 @@ public class Storefront {
         /**
         * Once a shipping rate is selected by the customer it is transitioned to a `shipping_line` object.
         */
-
         public ShippingRate getShippingLine() {
             return (ShippingRate) get("shippingLine");
         }
@@ -2886,7 +2840,6 @@ public class Storefront {
         /**
         * Price of the checkout before shipping, taxes, and discounts.
         */
-
         public BigDecimal getSubtotalPrice() {
             return (BigDecimal) get("subtotalPrice");
         }
@@ -2899,7 +2852,6 @@ public class Storefront {
         /**
         * Specifies if the Checkout is tax exempt.
         */
-
         public Boolean getTaxExempt() {
             return (Boolean) get("taxExempt");
         }
@@ -2912,7 +2864,6 @@ public class Storefront {
         /**
         * Specifies if taxes are included in the line item and shipping line prices.
         */
-
         public Boolean getTaxesIncluded() {
             return (Boolean) get("taxesIncluded");
         }
@@ -2925,7 +2876,6 @@ public class Storefront {
         /**
         * The sum of all the prices of all the items in the checkout, taxes and discounts included.
         */
-
         public BigDecimal getTotalPrice() {
             return (BigDecimal) get("totalPrice");
         }
@@ -2938,7 +2888,6 @@ public class Storefront {
         /**
         * The sum of all the taxes applied to the line items and shipping lines in the checkout.
         */
-
         public BigDecimal getTotalTax() {
             return (BigDecimal) get("totalTax");
         }
@@ -2951,7 +2900,6 @@ public class Storefront {
         /**
         * The date and time when the checkout was last updated.
         */
-
         public DateTime getUpdatedAt() {
             return (DateTime) get("updatedAt");
         }
@@ -2964,7 +2912,6 @@ public class Storefront {
         /**
         * The url pointing to the checkout accessible from the web.
         */
-
         public String getWebUrl() {
             return (String) get("webUrl");
         }
@@ -3182,7 +3129,6 @@ public class Storefront {
         /**
         * The updated checkout object.
         */
-
         public Checkout getCheckout() {
             return (Checkout) get("checkout");
         }
@@ -3195,7 +3141,6 @@ public class Storefront {
         /**
         * List of errors that occurred executing the mutation.
         */
-
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -3301,7 +3246,6 @@ public class Storefront {
         /**
         * The updated checkout object.
         */
-
         public Checkout getCheckout() {
             return (Checkout) get("checkout");
         }
@@ -3314,7 +3258,6 @@ public class Storefront {
         /**
         * List of errors that occurred executing the mutation.
         */
-
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -3439,7 +3382,6 @@ public class Storefront {
         /**
         * The checkout on which the payment was applied.
         */
-
         public Checkout getCheckout() {
             return (Checkout) get("checkout");
         }
@@ -3452,7 +3394,6 @@ public class Storefront {
         /**
         * A representation of the attempted payment.
         */
-
         public Payment getPayment() {
             return (Payment) get("payment");
         }
@@ -3465,7 +3406,6 @@ public class Storefront {
         /**
         * List of errors that occurred executing the mutation.
         */
-
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -3592,7 +3532,6 @@ public class Storefront {
         /**
         * The checkout on which the payment was applied.
         */
-
         public Checkout getCheckout() {
             return (Checkout) get("checkout");
         }
@@ -3605,7 +3544,6 @@ public class Storefront {
         /**
         * A representation of the attempted payment.
         */
-
         public Payment getPayment() {
             return (Payment) get("payment");
         }
@@ -3618,7 +3556,6 @@ public class Storefront {
         /**
         * List of errors that occurred executing the mutation.
         */
-
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -3859,7 +3796,6 @@ public class Storefront {
         /**
         * The new checkout object.
         */
-
         public Checkout getCheckout() {
             return (Checkout) get("checkout");
         }
@@ -3872,7 +3808,6 @@ public class Storefront {
         /**
         * List of errors that occurred executing the mutation.
         */
-
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -3973,7 +3908,6 @@ public class Storefront {
         /**
         * The updated checkout object.
         */
-
         public Checkout getCheckout() {
             return (Checkout) get("checkout");
         }
@@ -3986,7 +3920,6 @@ public class Storefront {
         /**
         * List of errors that occurred executing the mutation.
         */
-
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -4087,7 +4020,6 @@ public class Storefront {
         /**
         * The updated checkout object.
         */
-
         public Checkout getCheckout() {
             return (Checkout) get("checkout");
         }
@@ -4100,7 +4032,6 @@ public class Storefront {
         /**
         * List of errors that occurred executing the mutation.
         */
-
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -4201,7 +4132,6 @@ public class Storefront {
         /**
         * The checkout object with the updated email.
         */
-
         public Checkout getCheckout() {
             return (Checkout) get("checkout");
         }
@@ -4214,7 +4144,6 @@ public class Storefront {
         /**
         * List of errors that occurred executing the mutation.
         */
-
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -4315,7 +4244,6 @@ public class Storefront {
         /**
         * The updated checkout object.
         */
-
         public Checkout getCheckout() {
             return (Checkout) get("checkout");
         }
@@ -4328,7 +4256,6 @@ public class Storefront {
         /**
         * List of errors that occurred executing the mutation.
         */
-
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -4429,7 +4356,6 @@ public class Storefront {
         /**
         * The updated checkout object.
         */
-
         public Checkout getCheckout() {
             return (Checkout) get("checkout");
         }
@@ -4442,7 +4368,6 @@ public class Storefront {
         /**
         * List of errors that occurred executing the mutation.
         */
-
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -4597,7 +4522,6 @@ public class Storefront {
         /**
         * Extra information in the form of an array of Key-Value pairs about the line item.
         */
-
         public List<Attribute> getCustomAttributes() {
             return (List<Attribute>) get("customAttributes");
         }
@@ -4614,7 +4538,6 @@ public class Storefront {
         /**
         * The quantity of the line item.
         */
-
         public Integer getQuantity() {
             return (Integer) get("quantity");
         }
@@ -4627,7 +4550,6 @@ public class Storefront {
         /**
         * Title of the line item. Defaults to the product's title.
         */
-
         public String getTitle() {
             return (String) get("title");
         }
@@ -4640,7 +4562,6 @@ public class Storefront {
         /**
         * Product variant of the line item.
         */
-
         public ProductVariant getVariant() {
             return (ProductVariant) get("variant");
         }
@@ -4747,7 +4668,6 @@ public class Storefront {
         /**
         * A list of edges.
         */
-
         public List<CheckoutLineItemEdge> getEdges() {
             return (List<CheckoutLineItemEdge>) get("edges");
         }
@@ -4760,7 +4680,6 @@ public class Storefront {
         /**
         * Information to aid in pagination.
         */
-
         public PageInfo getPageInfo() {
             return (PageInfo) get("pageInfo");
         }
@@ -4873,25 +4792,16 @@ public class Storefront {
     }
 
     public static class CheckoutLineItemInput implements Serializable {
-        private ID variantId;
-
         private int quantity;
+
+        private ID variantId;
 
         private List<AttributeInput> customAttributes;
 
-        public CheckoutLineItemInput(ID variantId, int quantity) {
-            this.variantId = variantId;
-
+        public CheckoutLineItemInput(int quantity, ID variantId) {
             this.quantity = quantity;
-        }
 
-        public ID getVariantId() {
-            return variantId;
-        }
-
-        public CheckoutLineItemInput setVariantId(ID variantId) {
             this.variantId = variantId;
-            return this;
         }
 
         public int getQuantity() {
@@ -4900,6 +4810,15 @@ public class Storefront {
 
         public CheckoutLineItemInput setQuantity(int quantity) {
             this.quantity = quantity;
+            return this;
+        }
+
+        public ID getVariantId() {
+            return variantId;
+        }
+
+        public CheckoutLineItemInput setVariantId(ID variantId) {
+            this.variantId = variantId;
             return this;
         }
 
@@ -4918,13 +4837,13 @@ public class Storefront {
 
             _queryBuilder.append(separator);
             separator = ",";
-            _queryBuilder.append("variantId:");
-            Query.appendQuotedString(_queryBuilder, variantId.toString());
+            _queryBuilder.append("quantity:");
+            _queryBuilder.append(quantity);
 
             _queryBuilder.append(separator);
             separator = ",";
-            _queryBuilder.append("quantity:");
-            _queryBuilder.append(quantity);
+            _queryBuilder.append("variantId:");
+            Query.appendQuotedString(_queryBuilder, variantId.toString());
 
             if (customAttributes != null) {
                 _queryBuilder.append(separator);
@@ -5119,7 +5038,6 @@ public class Storefront {
         /**
         * The updated checkout object.
         */
-
         public Checkout getCheckout() {
             return (Checkout) get("checkout");
         }
@@ -5132,7 +5050,6 @@ public class Storefront {
         /**
         * List of errors that occurred executing the mutation.
         */
-
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -5244,7 +5161,6 @@ public class Storefront {
         /**
         * List of errors that occurred executing the mutation.
         */
-
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -5350,7 +5266,6 @@ public class Storefront {
         /**
         * The updated checkout object.
         */
-
         public Checkout getCheckout() {
             return (Checkout) get("checkout");
         }
@@ -5363,7 +5278,6 @@ public class Storefront {
         /**
         * List of errors that occurred executing the mutation.
         */
-
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -5464,7 +5378,6 @@ public class Storefront {
         /**
         * The updated checkout object.
         */
-
         public Checkout getCheckout() {
             return (Checkout) get("checkout");
         }
@@ -5477,7 +5390,6 @@ public class Storefront {
         /**
         * List of errors that occurred executing the mutation.
         */
-
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -5583,7 +5495,6 @@ public class Storefront {
         /**
         * The updated checkout object.
         */
-
         public Checkout getCheckout() {
             return (Checkout) get("checkout");
         }
@@ -5596,7 +5507,6 @@ public class Storefront {
         /**
         * List of errors that occurred executing the mutation.
         */
-
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -5783,6 +5693,14 @@ public class Storefront {
                 return this;
             }
 
+            public ProductsArguments sortKey(ProductCollectionSortKeys value) {
+                if (value != null) {
+                    startArgument("sortKey");
+                    _queryBuilder.append(value.toString());
+                }
+                return this;
+            }
+
             public ProductsArguments reverse(Boolean value) {
                 if (value != null) {
                     startArgument("reverse");
@@ -5931,7 +5849,6 @@ public class Storefront {
         /**
         * Stripped description of the collection, single line with HTML tags removed.
         */
-
         public String getDescription() {
             return (String) get("description");
         }
@@ -5944,7 +5861,6 @@ public class Storefront {
         /**
         * The description of the collection, complete with HTML formatting.
         */
-
         public String getDescriptionHtml() {
             return (String) get("descriptionHtml");
         }
@@ -5958,7 +5874,6 @@ public class Storefront {
         * A human-friendly unique string for the collection automatically generated from its title.
         * Limit of 255 characters.
         */
-
         public String getHandle() {
             return (String) get("handle");
         }
@@ -5975,7 +5890,6 @@ public class Storefront {
         /**
         * Image associated with the collection.
         */
-
         public Image getImage() {
             return (Image) get("image");
         }
@@ -5988,7 +5902,6 @@ public class Storefront {
         /**
         * List of products in the collection.
         */
-
         public ProductConnection getProducts() {
             return (ProductConnection) get("products");
         }
@@ -6001,7 +5914,6 @@ public class Storefront {
         /**
         * The collection’s name. Limit of 255 characters.
         */
-
         public String getTitle() {
             return (String) get("title");
         }
@@ -6014,7 +5926,6 @@ public class Storefront {
         /**
         * The date and time when the collection was last modified.
         */
-
         public DateTime getUpdatedAt() {
             return (DateTime) get("updatedAt");
         }
@@ -6127,7 +6038,6 @@ public class Storefront {
         /**
         * A list of edges.
         */
-
         public List<CollectionEdge> getEdges() {
             return (List<CollectionEdge>) get("edges");
         }
@@ -6140,7 +6050,6 @@ public class Storefront {
         /**
         * Information to aid in pagination.
         */
-
         public PageInfo getPageInfo() {
             return (PageInfo) get("pageInfo");
         }
@@ -6449,7 +6358,6 @@ public class Storefront {
         /**
         * The comment’s author.
         */
-
         public CommentAuthor getAuthor() {
             return (CommentAuthor) get("author");
         }
@@ -6462,7 +6370,6 @@ public class Storefront {
         /**
         * Stripped content of the comment, single line with HTML tags removed.
         */
-
         public String getContent() {
             return (String) get("content");
         }
@@ -6475,7 +6382,6 @@ public class Storefront {
         /**
         * The content of the comment, complete with HTML formatting.
         */
-
         public String getContentHtml() {
             return (String) get("contentHtml");
         }
@@ -6571,7 +6477,6 @@ public class Storefront {
         /**
         * The author's email.
         */
-
         public String getEmail() {
             return (String) get("email");
         }
@@ -6584,7 +6489,6 @@ public class Storefront {
         /**
         * The author’s name.
         */
-
         public String getName() {
             return (String) get("name");
         }
@@ -6685,7 +6589,6 @@ public class Storefront {
         /**
         * A list of edges.
         */
-
         public List<CommentEdge> getEdges() {
             return (List<CommentEdge>) get("edges");
         }
@@ -6698,7 +6601,6 @@ public class Storefront {
         /**
         * Information to aid in pagination.
         */
-
         public PageInfo getPageInfo() {
             return (PageInfo) get("pageInfo");
         }
@@ -6806,6 +6708,3165 @@ public class Storefront {
                 case "node": return true;
 
                 default: return false;
+            }
+        }
+    }
+
+    /**
+    * Country codes
+    */
+    public enum CountryCode {
+        /**
+        * Andorra
+        */
+        AD,
+
+        /**
+        * United Arab Emirates
+        */
+        AE,
+
+        /**
+        * Afghanistan
+        */
+        AF,
+
+        /**
+        * Antigua And Barbuda
+        */
+        AG,
+
+        /**
+        * Anguilla
+        */
+        AI,
+
+        /**
+        * Albania
+        */
+        AL,
+
+        /**
+        * Armenia
+        */
+        AM,
+
+        /**
+        * Netherlands Antilles
+        */
+        AN,
+
+        /**
+        * Angola
+        */
+        AO,
+
+        /**
+        * Argentina
+        */
+        AR,
+
+        /**
+        * Austria
+        */
+        AT,
+
+        /**
+        * Australia
+        */
+        AU,
+
+        /**
+        * Aruba
+        */
+        AW,
+
+        /**
+        * Aland Islands
+        */
+        AX,
+
+        /**
+        * Azerbaijan
+        */
+        AZ,
+
+        /**
+        * Bosnia And Herzegovina
+        */
+        BA,
+
+        /**
+        * Barbados
+        */
+        BB,
+
+        /**
+        * Bangladesh
+        */
+        BD,
+
+        /**
+        * Belgium
+        */
+        BE,
+
+        /**
+        * Burkina Faso
+        */
+        BF,
+
+        /**
+        * Bulgaria
+        */
+        BG,
+
+        /**
+        * Bahrain
+        */
+        BH,
+
+        /**
+        * Burundi
+        */
+        BI,
+
+        /**
+        * Benin
+        */
+        BJ,
+
+        /**
+        * Saint Barthélemy
+        */
+        BL,
+
+        /**
+        * Bermuda
+        */
+        BM,
+
+        /**
+        * Brunei
+        */
+        BN,
+
+        /**
+        * Bolivia
+        */
+        BO,
+
+        /**
+        * Brazil
+        */
+        BR,
+
+        /**
+        * Bahamas
+        */
+        BS,
+
+        /**
+        * Bhutan
+        */
+        BT,
+
+        /**
+        * Bouvet Island
+        */
+        BV,
+
+        /**
+        * Botswana
+        */
+        BW,
+
+        /**
+        * Belarus
+        */
+        BY,
+
+        /**
+        * Belize
+        */
+        BZ,
+
+        /**
+        * Canada
+        */
+        CA,
+
+        /**
+        * Cocos (Keeling) Islands
+        */
+        CC,
+
+        /**
+        * Congo, The Democratic Republic Of The
+        */
+        CD,
+
+        /**
+        * Central African Republic
+        */
+        CF,
+
+        /**
+        * Congo
+        */
+        CG,
+
+        /**
+        * Switzerland
+        */
+        CH,
+
+        /**
+        * Côte d'Ivoire
+        */
+        CI,
+
+        /**
+        * Cook Islands
+        */
+        CK,
+
+        /**
+        * Chile
+        */
+        CL,
+
+        /**
+        * Republic of Cameroon
+        */
+        CM,
+
+        /**
+        * China
+        */
+        CN,
+
+        /**
+        * Colombia
+        */
+        CO,
+
+        /**
+        * Costa Rica
+        */
+        CR,
+
+        /**
+        * Cuba
+        */
+        CU,
+
+        /**
+        * Cape Verde
+        */
+        CV,
+
+        /**
+        * Curaçao
+        */
+        CW,
+
+        /**
+        * Christmas Island
+        */
+        CX,
+
+        /**
+        * Cyprus
+        */
+        CY,
+
+        /**
+        * Czech Republic
+        */
+        CZ,
+
+        /**
+        * Germany
+        */
+        DE,
+
+        /**
+        * Djibouti
+        */
+        DJ,
+
+        /**
+        * Denmark
+        */
+        DK,
+
+        /**
+        * Dominica
+        */
+        DM,
+
+        /**
+        * Dominican Republic
+        */
+        DO,
+
+        /**
+        * Algeria
+        */
+        DZ,
+
+        /**
+        * Ecuador
+        */
+        EC,
+
+        /**
+        * Estonia
+        */
+        EE,
+
+        /**
+        * Egypt
+        */
+        EG,
+
+        /**
+        * Western Sahara
+        */
+        EH,
+
+        /**
+        * Eritrea
+        */
+        ER,
+
+        /**
+        * Spain
+        */
+        ES,
+
+        /**
+        * Ethiopia
+        */
+        ET,
+
+        /**
+        * Finland
+        */
+        FI,
+
+        /**
+        * Fiji
+        */
+        FJ,
+
+        /**
+        * Falkland Islands (Malvinas)
+        */
+        FK,
+
+        /**
+        * Faroe Islands
+        */
+        FO,
+
+        /**
+        * France
+        */
+        FR,
+
+        /**
+        * Gabon
+        */
+        GA,
+
+        /**
+        * United Kingdom
+        */
+        GB,
+
+        /**
+        * Grenada
+        */
+        GD,
+
+        /**
+        * Georgia
+        */
+        GE,
+
+        /**
+        * French Guiana
+        */
+        GF,
+
+        /**
+        * Guernsey
+        */
+        GG,
+
+        /**
+        * Ghana
+        */
+        GH,
+
+        /**
+        * Gibraltar
+        */
+        GI,
+
+        /**
+        * Greenland
+        */
+        GL,
+
+        /**
+        * Gambia
+        */
+        GM,
+
+        /**
+        * Guinea
+        */
+        GN,
+
+        /**
+        * Guadeloupe
+        */
+        GP,
+
+        /**
+        * Equatorial Guinea
+        */
+        GQ,
+
+        /**
+        * Greece
+        */
+        GR,
+
+        /**
+        * South Georgia And The South Sandwich Islands
+        */
+        GS,
+
+        /**
+        * Guatemala
+        */
+        GT,
+
+        /**
+        * Guinea Bissau
+        */
+        GW,
+
+        /**
+        * Guyana
+        */
+        GY,
+
+        /**
+        * Hong Kong
+        */
+        HK,
+
+        /**
+        * Heard Island And Mcdonald Islands
+        */
+        HM,
+
+        /**
+        * Honduras
+        */
+        HN,
+
+        /**
+        * Croatia
+        */
+        HR,
+
+        /**
+        * Haiti
+        */
+        HT,
+
+        /**
+        * Hungary
+        */
+        HU,
+
+        /**
+        * Indonesia
+        */
+        ID,
+
+        /**
+        * Ireland
+        */
+        IE,
+
+        /**
+        * Israel
+        */
+        IL,
+
+        /**
+        * Isle Of Man
+        */
+        IM,
+
+        /**
+        * India
+        */
+        IN,
+
+        /**
+        * British Indian Ocean Territory
+        */
+        IO,
+
+        /**
+        * Iraq
+        */
+        IQ,
+
+        /**
+        * Iran, Islamic Republic Of
+        */
+        IR,
+
+        /**
+        * Iceland
+        */
+        IS,
+
+        /**
+        * Italy
+        */
+        IT,
+
+        /**
+        * Jersey
+        */
+        JE,
+
+        /**
+        * Jamaica
+        */
+        JM,
+
+        /**
+        * Jordan
+        */
+        JO,
+
+        /**
+        * Japan
+        */
+        JP,
+
+        /**
+        * Kenya
+        */
+        KE,
+
+        /**
+        * Kyrgyzstan
+        */
+        KG,
+
+        /**
+        * Cambodia
+        */
+        KH,
+
+        /**
+        * Kiribati
+        */
+        KI,
+
+        /**
+        * Comoros
+        */
+        KM,
+
+        /**
+        * Saint Kitts And Nevis
+        */
+        KN,
+
+        /**
+        * Korea, Democratic People's Republic Of
+        */
+        KP,
+
+        /**
+        * South Korea
+        */
+        KR,
+
+        /**
+        * Kuwait
+        */
+        KW,
+
+        /**
+        * Cayman Islands
+        */
+        KY,
+
+        /**
+        * Kazakhstan
+        */
+        KZ,
+
+        /**
+        * Lao People's Democratic Republic
+        */
+        LA,
+
+        /**
+        * Lebanon
+        */
+        LB,
+
+        /**
+        * Saint Lucia
+        */
+        LC,
+
+        /**
+        * Liechtenstein
+        */
+        LI,
+
+        /**
+        * Sri Lanka
+        */
+        LK,
+
+        /**
+        * Liberia
+        */
+        LR,
+
+        /**
+        * Lesotho
+        */
+        LS,
+
+        /**
+        * Lithuania
+        */
+        LT,
+
+        /**
+        * Luxembourg
+        */
+        LU,
+
+        /**
+        * Latvia
+        */
+        LV,
+
+        /**
+        * Libyan Arab Jamahiriya
+        */
+        LY,
+
+        /**
+        * Morocco
+        */
+        MA,
+
+        /**
+        * Monaco
+        */
+        MC,
+
+        /**
+        * Moldova, Republic of
+        */
+        MD,
+
+        /**
+        * Montenegro
+        */
+        ME,
+
+        /**
+        * Saint Martin
+        */
+        MF,
+
+        /**
+        * Madagascar
+        */
+        MG,
+
+        /**
+        * Macedonia, Republic Of
+        */
+        MK,
+
+        /**
+        * Mali
+        */
+        ML,
+
+        /**
+        * Myanmar
+        */
+        MM,
+
+        /**
+        * Mongolia
+        */
+        MN,
+
+        /**
+        * Macao
+        */
+        MO,
+
+        /**
+        * Martinique
+        */
+        MQ,
+
+        /**
+        * Mauritania
+        */
+        MR,
+
+        /**
+        * Montserrat
+        */
+        MS,
+
+        /**
+        * Malta
+        */
+        MT,
+
+        /**
+        * Mauritius
+        */
+        MU,
+
+        /**
+        * Maldives
+        */
+        MV,
+
+        /**
+        * Malawi
+        */
+        MW,
+
+        /**
+        * Mexico
+        */
+        MX,
+
+        /**
+        * Malaysia
+        */
+        MY,
+
+        /**
+        * Mozambique
+        */
+        MZ,
+
+        /**
+        * Namibia
+        */
+        NA,
+
+        /**
+        * New Caledonia
+        */
+        NC,
+
+        /**
+        * Niger
+        */
+        NE,
+
+        /**
+        * Norfolk Island
+        */
+        NF,
+
+        /**
+        * Nigeria
+        */
+        NG,
+
+        /**
+        * Nicaragua
+        */
+        NI,
+
+        /**
+        * Netherlands
+        */
+        NL,
+
+        /**
+        * Norway
+        */
+        NO,
+
+        /**
+        * Nepal
+        */
+        NP,
+
+        /**
+        * Nauru
+        */
+        NR,
+
+        /**
+        * Niue
+        */
+        NU,
+
+        /**
+        * New Zealand
+        */
+        NZ,
+
+        /**
+        * Oman
+        */
+        OM,
+
+        /**
+        * Panama
+        */
+        PA,
+
+        /**
+        * Peru
+        */
+        PE,
+
+        /**
+        * French Polynesia
+        */
+        PF,
+
+        /**
+        * Papua New Guinea
+        */
+        PG,
+
+        /**
+        * Philippines
+        */
+        PH,
+
+        /**
+        * Pakistan
+        */
+        PK,
+
+        /**
+        * Poland
+        */
+        PL,
+
+        /**
+        * Saint Pierre And Miquelon
+        */
+        PM,
+
+        /**
+        * Pitcairn
+        */
+        PN,
+
+        /**
+        * Palestinian Territory, Occupied
+        */
+        PS,
+
+        /**
+        * Portugal
+        */
+        PT,
+
+        /**
+        * Paraguay
+        */
+        PY,
+
+        /**
+        * Qatar
+        */
+        QA,
+
+        /**
+        * Reunion
+        */
+        RE,
+
+        /**
+        * Romania
+        */
+        RO,
+
+        /**
+        * Serbia
+        */
+        RS,
+
+        /**
+        * Russia
+        */
+        RU,
+
+        /**
+        * Rwanda
+        */
+        RW,
+
+        /**
+        * Saudi Arabia
+        */
+        SA,
+
+        /**
+        * Solomon Islands
+        */
+        SB,
+
+        /**
+        * Seychelles
+        */
+        SC,
+
+        /**
+        * Sudan
+        */
+        SD,
+
+        /**
+        * Sweden
+        */
+        SE,
+
+        /**
+        * Singapore
+        */
+        SG,
+
+        /**
+        * Saint Helena
+        */
+        SH,
+
+        /**
+        * Slovenia
+        */
+        SI,
+
+        /**
+        * Svalbard And Jan Mayen
+        */
+        SJ,
+
+        /**
+        * Slovakia
+        */
+        SK,
+
+        /**
+        * Sierra Leone
+        */
+        SL,
+
+        /**
+        * San Marino
+        */
+        SM,
+
+        /**
+        * Senegal
+        */
+        SN,
+
+        /**
+        * Somalia
+        */
+        SO,
+
+        /**
+        * Suriname
+        */
+        SR,
+
+        /**
+        * South Sudan
+        */
+        SS,
+
+        /**
+        * Sao Tome And Principe
+        */
+        ST,
+
+        /**
+        * El Salvador
+        */
+        SV,
+
+        /**
+        * Sint Maarten
+        */
+        SX,
+
+        /**
+        * Syria
+        */
+        SY,
+
+        /**
+        * Swaziland
+        */
+        SZ,
+
+        /**
+        * Turks and Caicos Islands
+        */
+        TC,
+
+        /**
+        * Chad
+        */
+        TD,
+
+        /**
+        * French Southern Territories
+        */
+        TF,
+
+        /**
+        * Togo
+        */
+        TG,
+
+        /**
+        * Thailand
+        */
+        TH,
+
+        /**
+        * Tajikistan
+        */
+        TJ,
+
+        /**
+        * Tokelau
+        */
+        TK,
+
+        /**
+        * Timor Leste
+        */
+        TL,
+
+        /**
+        * Turkmenistan
+        */
+        TM,
+
+        /**
+        * Tunisia
+        */
+        TN,
+
+        /**
+        * Tonga
+        */
+        TO,
+
+        /**
+        * Turkey
+        */
+        TR,
+
+        /**
+        * Trinidad and Tobago
+        */
+        TT,
+
+        /**
+        * Tuvalu
+        */
+        TV,
+
+        /**
+        * Taiwan
+        */
+        TW,
+
+        /**
+        * Tanzania, United Republic Of
+        */
+        TZ,
+
+        /**
+        * Ukraine
+        */
+        UA,
+
+        /**
+        * Uganda
+        */
+        UG,
+
+        /**
+        * United States Minor Outlying Islands
+        */
+        UM,
+
+        /**
+        * United States
+        */
+        US,
+
+        /**
+        * Uruguay
+        */
+        UY,
+
+        /**
+        * Uzbekistan
+        */
+        UZ,
+
+        /**
+        * Holy See (Vatican City State)
+        */
+        VA,
+
+        /**
+        * St. Vincent
+        */
+        VC,
+
+        /**
+        * Venezuela
+        */
+        VE,
+
+        /**
+        * Virgin Islands, British
+        */
+        VG,
+
+        /**
+        * Vietnam
+        */
+        VN,
+
+        /**
+        * Vanuatu
+        */
+        VU,
+
+        /**
+        * Wallis And Futuna
+        */
+        WF,
+
+        /**
+        * Samoa
+        */
+        WS,
+
+        /**
+        * Kosovo
+        */
+        XK,
+
+        /**
+        * Yemen
+        */
+        YE,
+
+        /**
+        * Mayotte
+        */
+        YT,
+
+        /**
+        * South Africa
+        */
+        ZA,
+
+        /**
+        * Zambia
+        */
+        ZM,
+
+        /**
+        * Zimbabwe
+        */
+        ZW,
+
+        UNKNOWN_VALUE;
+
+        public static CountryCode fromGraphQl(String value) {
+            if (value == null) {
+                return null;
+            }
+
+            switch (value) {
+                case "AD": {
+                    return AD;
+                }
+
+                case "AE": {
+                    return AE;
+                }
+
+                case "AF": {
+                    return AF;
+                }
+
+                case "AG": {
+                    return AG;
+                }
+
+                case "AI": {
+                    return AI;
+                }
+
+                case "AL": {
+                    return AL;
+                }
+
+                case "AM": {
+                    return AM;
+                }
+
+                case "AN": {
+                    return AN;
+                }
+
+                case "AO": {
+                    return AO;
+                }
+
+                case "AR": {
+                    return AR;
+                }
+
+                case "AT": {
+                    return AT;
+                }
+
+                case "AU": {
+                    return AU;
+                }
+
+                case "AW": {
+                    return AW;
+                }
+
+                case "AX": {
+                    return AX;
+                }
+
+                case "AZ": {
+                    return AZ;
+                }
+
+                case "BA": {
+                    return BA;
+                }
+
+                case "BB": {
+                    return BB;
+                }
+
+                case "BD": {
+                    return BD;
+                }
+
+                case "BE": {
+                    return BE;
+                }
+
+                case "BF": {
+                    return BF;
+                }
+
+                case "BG": {
+                    return BG;
+                }
+
+                case "BH": {
+                    return BH;
+                }
+
+                case "BI": {
+                    return BI;
+                }
+
+                case "BJ": {
+                    return BJ;
+                }
+
+                case "BL": {
+                    return BL;
+                }
+
+                case "BM": {
+                    return BM;
+                }
+
+                case "BN": {
+                    return BN;
+                }
+
+                case "BO": {
+                    return BO;
+                }
+
+                case "BR": {
+                    return BR;
+                }
+
+                case "BS": {
+                    return BS;
+                }
+
+                case "BT": {
+                    return BT;
+                }
+
+                case "BV": {
+                    return BV;
+                }
+
+                case "BW": {
+                    return BW;
+                }
+
+                case "BY": {
+                    return BY;
+                }
+
+                case "BZ": {
+                    return BZ;
+                }
+
+                case "CA": {
+                    return CA;
+                }
+
+                case "CC": {
+                    return CC;
+                }
+
+                case "CD": {
+                    return CD;
+                }
+
+                case "CF": {
+                    return CF;
+                }
+
+                case "CG": {
+                    return CG;
+                }
+
+                case "CH": {
+                    return CH;
+                }
+
+                case "CI": {
+                    return CI;
+                }
+
+                case "CK": {
+                    return CK;
+                }
+
+                case "CL": {
+                    return CL;
+                }
+
+                case "CM": {
+                    return CM;
+                }
+
+                case "CN": {
+                    return CN;
+                }
+
+                case "CO": {
+                    return CO;
+                }
+
+                case "CR": {
+                    return CR;
+                }
+
+                case "CU": {
+                    return CU;
+                }
+
+                case "CV": {
+                    return CV;
+                }
+
+                case "CW": {
+                    return CW;
+                }
+
+                case "CX": {
+                    return CX;
+                }
+
+                case "CY": {
+                    return CY;
+                }
+
+                case "CZ": {
+                    return CZ;
+                }
+
+                case "DE": {
+                    return DE;
+                }
+
+                case "DJ": {
+                    return DJ;
+                }
+
+                case "DK": {
+                    return DK;
+                }
+
+                case "DM": {
+                    return DM;
+                }
+
+                case "DO": {
+                    return DO;
+                }
+
+                case "DZ": {
+                    return DZ;
+                }
+
+                case "EC": {
+                    return EC;
+                }
+
+                case "EE": {
+                    return EE;
+                }
+
+                case "EG": {
+                    return EG;
+                }
+
+                case "EH": {
+                    return EH;
+                }
+
+                case "ER": {
+                    return ER;
+                }
+
+                case "ES": {
+                    return ES;
+                }
+
+                case "ET": {
+                    return ET;
+                }
+
+                case "FI": {
+                    return FI;
+                }
+
+                case "FJ": {
+                    return FJ;
+                }
+
+                case "FK": {
+                    return FK;
+                }
+
+                case "FO": {
+                    return FO;
+                }
+
+                case "FR": {
+                    return FR;
+                }
+
+                case "GA": {
+                    return GA;
+                }
+
+                case "GB": {
+                    return GB;
+                }
+
+                case "GD": {
+                    return GD;
+                }
+
+                case "GE": {
+                    return GE;
+                }
+
+                case "GF": {
+                    return GF;
+                }
+
+                case "GG": {
+                    return GG;
+                }
+
+                case "GH": {
+                    return GH;
+                }
+
+                case "GI": {
+                    return GI;
+                }
+
+                case "GL": {
+                    return GL;
+                }
+
+                case "GM": {
+                    return GM;
+                }
+
+                case "GN": {
+                    return GN;
+                }
+
+                case "GP": {
+                    return GP;
+                }
+
+                case "GQ": {
+                    return GQ;
+                }
+
+                case "GR": {
+                    return GR;
+                }
+
+                case "GS": {
+                    return GS;
+                }
+
+                case "GT": {
+                    return GT;
+                }
+
+                case "GW": {
+                    return GW;
+                }
+
+                case "GY": {
+                    return GY;
+                }
+
+                case "HK": {
+                    return HK;
+                }
+
+                case "HM": {
+                    return HM;
+                }
+
+                case "HN": {
+                    return HN;
+                }
+
+                case "HR": {
+                    return HR;
+                }
+
+                case "HT": {
+                    return HT;
+                }
+
+                case "HU": {
+                    return HU;
+                }
+
+                case "ID": {
+                    return ID;
+                }
+
+                case "IE": {
+                    return IE;
+                }
+
+                case "IL": {
+                    return IL;
+                }
+
+                case "IM": {
+                    return IM;
+                }
+
+                case "IN": {
+                    return IN;
+                }
+
+                case "IO": {
+                    return IO;
+                }
+
+                case "IQ": {
+                    return IQ;
+                }
+
+                case "IR": {
+                    return IR;
+                }
+
+                case "IS": {
+                    return IS;
+                }
+
+                case "IT": {
+                    return IT;
+                }
+
+                case "JE": {
+                    return JE;
+                }
+
+                case "JM": {
+                    return JM;
+                }
+
+                case "JO": {
+                    return JO;
+                }
+
+                case "JP": {
+                    return JP;
+                }
+
+                case "KE": {
+                    return KE;
+                }
+
+                case "KG": {
+                    return KG;
+                }
+
+                case "KH": {
+                    return KH;
+                }
+
+                case "KI": {
+                    return KI;
+                }
+
+                case "KM": {
+                    return KM;
+                }
+
+                case "KN": {
+                    return KN;
+                }
+
+                case "KP": {
+                    return KP;
+                }
+
+                case "KR": {
+                    return KR;
+                }
+
+                case "KW": {
+                    return KW;
+                }
+
+                case "KY": {
+                    return KY;
+                }
+
+                case "KZ": {
+                    return KZ;
+                }
+
+                case "LA": {
+                    return LA;
+                }
+
+                case "LB": {
+                    return LB;
+                }
+
+                case "LC": {
+                    return LC;
+                }
+
+                case "LI": {
+                    return LI;
+                }
+
+                case "LK": {
+                    return LK;
+                }
+
+                case "LR": {
+                    return LR;
+                }
+
+                case "LS": {
+                    return LS;
+                }
+
+                case "LT": {
+                    return LT;
+                }
+
+                case "LU": {
+                    return LU;
+                }
+
+                case "LV": {
+                    return LV;
+                }
+
+                case "LY": {
+                    return LY;
+                }
+
+                case "MA": {
+                    return MA;
+                }
+
+                case "MC": {
+                    return MC;
+                }
+
+                case "MD": {
+                    return MD;
+                }
+
+                case "ME": {
+                    return ME;
+                }
+
+                case "MF": {
+                    return MF;
+                }
+
+                case "MG": {
+                    return MG;
+                }
+
+                case "MK": {
+                    return MK;
+                }
+
+                case "ML": {
+                    return ML;
+                }
+
+                case "MM": {
+                    return MM;
+                }
+
+                case "MN": {
+                    return MN;
+                }
+
+                case "MO": {
+                    return MO;
+                }
+
+                case "MQ": {
+                    return MQ;
+                }
+
+                case "MR": {
+                    return MR;
+                }
+
+                case "MS": {
+                    return MS;
+                }
+
+                case "MT": {
+                    return MT;
+                }
+
+                case "MU": {
+                    return MU;
+                }
+
+                case "MV": {
+                    return MV;
+                }
+
+                case "MW": {
+                    return MW;
+                }
+
+                case "MX": {
+                    return MX;
+                }
+
+                case "MY": {
+                    return MY;
+                }
+
+                case "MZ": {
+                    return MZ;
+                }
+
+                case "NA": {
+                    return NA;
+                }
+
+                case "NC": {
+                    return NC;
+                }
+
+                case "NE": {
+                    return NE;
+                }
+
+                case "NF": {
+                    return NF;
+                }
+
+                case "NG": {
+                    return NG;
+                }
+
+                case "NI": {
+                    return NI;
+                }
+
+                case "NL": {
+                    return NL;
+                }
+
+                case "NO": {
+                    return NO;
+                }
+
+                case "NP": {
+                    return NP;
+                }
+
+                case "NR": {
+                    return NR;
+                }
+
+                case "NU": {
+                    return NU;
+                }
+
+                case "NZ": {
+                    return NZ;
+                }
+
+                case "OM": {
+                    return OM;
+                }
+
+                case "PA": {
+                    return PA;
+                }
+
+                case "PE": {
+                    return PE;
+                }
+
+                case "PF": {
+                    return PF;
+                }
+
+                case "PG": {
+                    return PG;
+                }
+
+                case "PH": {
+                    return PH;
+                }
+
+                case "PK": {
+                    return PK;
+                }
+
+                case "PL": {
+                    return PL;
+                }
+
+                case "PM": {
+                    return PM;
+                }
+
+                case "PN": {
+                    return PN;
+                }
+
+                case "PS": {
+                    return PS;
+                }
+
+                case "PT": {
+                    return PT;
+                }
+
+                case "PY": {
+                    return PY;
+                }
+
+                case "QA": {
+                    return QA;
+                }
+
+                case "RE": {
+                    return RE;
+                }
+
+                case "RO": {
+                    return RO;
+                }
+
+                case "RS": {
+                    return RS;
+                }
+
+                case "RU": {
+                    return RU;
+                }
+
+                case "RW": {
+                    return RW;
+                }
+
+                case "SA": {
+                    return SA;
+                }
+
+                case "SB": {
+                    return SB;
+                }
+
+                case "SC": {
+                    return SC;
+                }
+
+                case "SD": {
+                    return SD;
+                }
+
+                case "SE": {
+                    return SE;
+                }
+
+                case "SG": {
+                    return SG;
+                }
+
+                case "SH": {
+                    return SH;
+                }
+
+                case "SI": {
+                    return SI;
+                }
+
+                case "SJ": {
+                    return SJ;
+                }
+
+                case "SK": {
+                    return SK;
+                }
+
+                case "SL": {
+                    return SL;
+                }
+
+                case "SM": {
+                    return SM;
+                }
+
+                case "SN": {
+                    return SN;
+                }
+
+                case "SO": {
+                    return SO;
+                }
+
+                case "SR": {
+                    return SR;
+                }
+
+                case "SS": {
+                    return SS;
+                }
+
+                case "ST": {
+                    return ST;
+                }
+
+                case "SV": {
+                    return SV;
+                }
+
+                case "SX": {
+                    return SX;
+                }
+
+                case "SY": {
+                    return SY;
+                }
+
+                case "SZ": {
+                    return SZ;
+                }
+
+                case "TC": {
+                    return TC;
+                }
+
+                case "TD": {
+                    return TD;
+                }
+
+                case "TF": {
+                    return TF;
+                }
+
+                case "TG": {
+                    return TG;
+                }
+
+                case "TH": {
+                    return TH;
+                }
+
+                case "TJ": {
+                    return TJ;
+                }
+
+                case "TK": {
+                    return TK;
+                }
+
+                case "TL": {
+                    return TL;
+                }
+
+                case "TM": {
+                    return TM;
+                }
+
+                case "TN": {
+                    return TN;
+                }
+
+                case "TO": {
+                    return TO;
+                }
+
+                case "TR": {
+                    return TR;
+                }
+
+                case "TT": {
+                    return TT;
+                }
+
+                case "TV": {
+                    return TV;
+                }
+
+                case "TW": {
+                    return TW;
+                }
+
+                case "TZ": {
+                    return TZ;
+                }
+
+                case "UA": {
+                    return UA;
+                }
+
+                case "UG": {
+                    return UG;
+                }
+
+                case "UM": {
+                    return UM;
+                }
+
+                case "US": {
+                    return US;
+                }
+
+                case "UY": {
+                    return UY;
+                }
+
+                case "UZ": {
+                    return UZ;
+                }
+
+                case "VA": {
+                    return VA;
+                }
+
+                case "VC": {
+                    return VC;
+                }
+
+                case "VE": {
+                    return VE;
+                }
+
+                case "VG": {
+                    return VG;
+                }
+
+                case "VN": {
+                    return VN;
+                }
+
+                case "VU": {
+                    return VU;
+                }
+
+                case "WF": {
+                    return WF;
+                }
+
+                case "WS": {
+                    return WS;
+                }
+
+                case "XK": {
+                    return XK;
+                }
+
+                case "YE": {
+                    return YE;
+                }
+
+                case "YT": {
+                    return YT;
+                }
+
+                case "ZA": {
+                    return ZA;
+                }
+
+                case "ZM": {
+                    return ZM;
+                }
+
+                case "ZW": {
+                    return ZW;
+                }
+
+                default: {
+                    return UNKNOWN_VALUE;
+                }
+            }
+        }
+        public String toString() {
+            switch (this) {
+                case AD: {
+                    return "AD";
+                }
+
+                case AE: {
+                    return "AE";
+                }
+
+                case AF: {
+                    return "AF";
+                }
+
+                case AG: {
+                    return "AG";
+                }
+
+                case AI: {
+                    return "AI";
+                }
+
+                case AL: {
+                    return "AL";
+                }
+
+                case AM: {
+                    return "AM";
+                }
+
+                case AN: {
+                    return "AN";
+                }
+
+                case AO: {
+                    return "AO";
+                }
+
+                case AR: {
+                    return "AR";
+                }
+
+                case AT: {
+                    return "AT";
+                }
+
+                case AU: {
+                    return "AU";
+                }
+
+                case AW: {
+                    return "AW";
+                }
+
+                case AX: {
+                    return "AX";
+                }
+
+                case AZ: {
+                    return "AZ";
+                }
+
+                case BA: {
+                    return "BA";
+                }
+
+                case BB: {
+                    return "BB";
+                }
+
+                case BD: {
+                    return "BD";
+                }
+
+                case BE: {
+                    return "BE";
+                }
+
+                case BF: {
+                    return "BF";
+                }
+
+                case BG: {
+                    return "BG";
+                }
+
+                case BH: {
+                    return "BH";
+                }
+
+                case BI: {
+                    return "BI";
+                }
+
+                case BJ: {
+                    return "BJ";
+                }
+
+                case BL: {
+                    return "BL";
+                }
+
+                case BM: {
+                    return "BM";
+                }
+
+                case BN: {
+                    return "BN";
+                }
+
+                case BO: {
+                    return "BO";
+                }
+
+                case BR: {
+                    return "BR";
+                }
+
+                case BS: {
+                    return "BS";
+                }
+
+                case BT: {
+                    return "BT";
+                }
+
+                case BV: {
+                    return "BV";
+                }
+
+                case BW: {
+                    return "BW";
+                }
+
+                case BY: {
+                    return "BY";
+                }
+
+                case BZ: {
+                    return "BZ";
+                }
+
+                case CA: {
+                    return "CA";
+                }
+
+                case CC: {
+                    return "CC";
+                }
+
+                case CD: {
+                    return "CD";
+                }
+
+                case CF: {
+                    return "CF";
+                }
+
+                case CG: {
+                    return "CG";
+                }
+
+                case CH: {
+                    return "CH";
+                }
+
+                case CI: {
+                    return "CI";
+                }
+
+                case CK: {
+                    return "CK";
+                }
+
+                case CL: {
+                    return "CL";
+                }
+
+                case CM: {
+                    return "CM";
+                }
+
+                case CN: {
+                    return "CN";
+                }
+
+                case CO: {
+                    return "CO";
+                }
+
+                case CR: {
+                    return "CR";
+                }
+
+                case CU: {
+                    return "CU";
+                }
+
+                case CV: {
+                    return "CV";
+                }
+
+                case CW: {
+                    return "CW";
+                }
+
+                case CX: {
+                    return "CX";
+                }
+
+                case CY: {
+                    return "CY";
+                }
+
+                case CZ: {
+                    return "CZ";
+                }
+
+                case DE: {
+                    return "DE";
+                }
+
+                case DJ: {
+                    return "DJ";
+                }
+
+                case DK: {
+                    return "DK";
+                }
+
+                case DM: {
+                    return "DM";
+                }
+
+                case DO: {
+                    return "DO";
+                }
+
+                case DZ: {
+                    return "DZ";
+                }
+
+                case EC: {
+                    return "EC";
+                }
+
+                case EE: {
+                    return "EE";
+                }
+
+                case EG: {
+                    return "EG";
+                }
+
+                case EH: {
+                    return "EH";
+                }
+
+                case ER: {
+                    return "ER";
+                }
+
+                case ES: {
+                    return "ES";
+                }
+
+                case ET: {
+                    return "ET";
+                }
+
+                case FI: {
+                    return "FI";
+                }
+
+                case FJ: {
+                    return "FJ";
+                }
+
+                case FK: {
+                    return "FK";
+                }
+
+                case FO: {
+                    return "FO";
+                }
+
+                case FR: {
+                    return "FR";
+                }
+
+                case GA: {
+                    return "GA";
+                }
+
+                case GB: {
+                    return "GB";
+                }
+
+                case GD: {
+                    return "GD";
+                }
+
+                case GE: {
+                    return "GE";
+                }
+
+                case GF: {
+                    return "GF";
+                }
+
+                case GG: {
+                    return "GG";
+                }
+
+                case GH: {
+                    return "GH";
+                }
+
+                case GI: {
+                    return "GI";
+                }
+
+                case GL: {
+                    return "GL";
+                }
+
+                case GM: {
+                    return "GM";
+                }
+
+                case GN: {
+                    return "GN";
+                }
+
+                case GP: {
+                    return "GP";
+                }
+
+                case GQ: {
+                    return "GQ";
+                }
+
+                case GR: {
+                    return "GR";
+                }
+
+                case GS: {
+                    return "GS";
+                }
+
+                case GT: {
+                    return "GT";
+                }
+
+                case GW: {
+                    return "GW";
+                }
+
+                case GY: {
+                    return "GY";
+                }
+
+                case HK: {
+                    return "HK";
+                }
+
+                case HM: {
+                    return "HM";
+                }
+
+                case HN: {
+                    return "HN";
+                }
+
+                case HR: {
+                    return "HR";
+                }
+
+                case HT: {
+                    return "HT";
+                }
+
+                case HU: {
+                    return "HU";
+                }
+
+                case ID: {
+                    return "ID";
+                }
+
+                case IE: {
+                    return "IE";
+                }
+
+                case IL: {
+                    return "IL";
+                }
+
+                case IM: {
+                    return "IM";
+                }
+
+                case IN: {
+                    return "IN";
+                }
+
+                case IO: {
+                    return "IO";
+                }
+
+                case IQ: {
+                    return "IQ";
+                }
+
+                case IR: {
+                    return "IR";
+                }
+
+                case IS: {
+                    return "IS";
+                }
+
+                case IT: {
+                    return "IT";
+                }
+
+                case JE: {
+                    return "JE";
+                }
+
+                case JM: {
+                    return "JM";
+                }
+
+                case JO: {
+                    return "JO";
+                }
+
+                case JP: {
+                    return "JP";
+                }
+
+                case KE: {
+                    return "KE";
+                }
+
+                case KG: {
+                    return "KG";
+                }
+
+                case KH: {
+                    return "KH";
+                }
+
+                case KI: {
+                    return "KI";
+                }
+
+                case KM: {
+                    return "KM";
+                }
+
+                case KN: {
+                    return "KN";
+                }
+
+                case KP: {
+                    return "KP";
+                }
+
+                case KR: {
+                    return "KR";
+                }
+
+                case KW: {
+                    return "KW";
+                }
+
+                case KY: {
+                    return "KY";
+                }
+
+                case KZ: {
+                    return "KZ";
+                }
+
+                case LA: {
+                    return "LA";
+                }
+
+                case LB: {
+                    return "LB";
+                }
+
+                case LC: {
+                    return "LC";
+                }
+
+                case LI: {
+                    return "LI";
+                }
+
+                case LK: {
+                    return "LK";
+                }
+
+                case LR: {
+                    return "LR";
+                }
+
+                case LS: {
+                    return "LS";
+                }
+
+                case LT: {
+                    return "LT";
+                }
+
+                case LU: {
+                    return "LU";
+                }
+
+                case LV: {
+                    return "LV";
+                }
+
+                case LY: {
+                    return "LY";
+                }
+
+                case MA: {
+                    return "MA";
+                }
+
+                case MC: {
+                    return "MC";
+                }
+
+                case MD: {
+                    return "MD";
+                }
+
+                case ME: {
+                    return "ME";
+                }
+
+                case MF: {
+                    return "MF";
+                }
+
+                case MG: {
+                    return "MG";
+                }
+
+                case MK: {
+                    return "MK";
+                }
+
+                case ML: {
+                    return "ML";
+                }
+
+                case MM: {
+                    return "MM";
+                }
+
+                case MN: {
+                    return "MN";
+                }
+
+                case MO: {
+                    return "MO";
+                }
+
+                case MQ: {
+                    return "MQ";
+                }
+
+                case MR: {
+                    return "MR";
+                }
+
+                case MS: {
+                    return "MS";
+                }
+
+                case MT: {
+                    return "MT";
+                }
+
+                case MU: {
+                    return "MU";
+                }
+
+                case MV: {
+                    return "MV";
+                }
+
+                case MW: {
+                    return "MW";
+                }
+
+                case MX: {
+                    return "MX";
+                }
+
+                case MY: {
+                    return "MY";
+                }
+
+                case MZ: {
+                    return "MZ";
+                }
+
+                case NA: {
+                    return "NA";
+                }
+
+                case NC: {
+                    return "NC";
+                }
+
+                case NE: {
+                    return "NE";
+                }
+
+                case NF: {
+                    return "NF";
+                }
+
+                case NG: {
+                    return "NG";
+                }
+
+                case NI: {
+                    return "NI";
+                }
+
+                case NL: {
+                    return "NL";
+                }
+
+                case NO: {
+                    return "NO";
+                }
+
+                case NP: {
+                    return "NP";
+                }
+
+                case NR: {
+                    return "NR";
+                }
+
+                case NU: {
+                    return "NU";
+                }
+
+                case NZ: {
+                    return "NZ";
+                }
+
+                case OM: {
+                    return "OM";
+                }
+
+                case PA: {
+                    return "PA";
+                }
+
+                case PE: {
+                    return "PE";
+                }
+
+                case PF: {
+                    return "PF";
+                }
+
+                case PG: {
+                    return "PG";
+                }
+
+                case PH: {
+                    return "PH";
+                }
+
+                case PK: {
+                    return "PK";
+                }
+
+                case PL: {
+                    return "PL";
+                }
+
+                case PM: {
+                    return "PM";
+                }
+
+                case PN: {
+                    return "PN";
+                }
+
+                case PS: {
+                    return "PS";
+                }
+
+                case PT: {
+                    return "PT";
+                }
+
+                case PY: {
+                    return "PY";
+                }
+
+                case QA: {
+                    return "QA";
+                }
+
+                case RE: {
+                    return "RE";
+                }
+
+                case RO: {
+                    return "RO";
+                }
+
+                case RS: {
+                    return "RS";
+                }
+
+                case RU: {
+                    return "RU";
+                }
+
+                case RW: {
+                    return "RW";
+                }
+
+                case SA: {
+                    return "SA";
+                }
+
+                case SB: {
+                    return "SB";
+                }
+
+                case SC: {
+                    return "SC";
+                }
+
+                case SD: {
+                    return "SD";
+                }
+
+                case SE: {
+                    return "SE";
+                }
+
+                case SG: {
+                    return "SG";
+                }
+
+                case SH: {
+                    return "SH";
+                }
+
+                case SI: {
+                    return "SI";
+                }
+
+                case SJ: {
+                    return "SJ";
+                }
+
+                case SK: {
+                    return "SK";
+                }
+
+                case SL: {
+                    return "SL";
+                }
+
+                case SM: {
+                    return "SM";
+                }
+
+                case SN: {
+                    return "SN";
+                }
+
+                case SO: {
+                    return "SO";
+                }
+
+                case SR: {
+                    return "SR";
+                }
+
+                case SS: {
+                    return "SS";
+                }
+
+                case ST: {
+                    return "ST";
+                }
+
+                case SV: {
+                    return "SV";
+                }
+
+                case SX: {
+                    return "SX";
+                }
+
+                case SY: {
+                    return "SY";
+                }
+
+                case SZ: {
+                    return "SZ";
+                }
+
+                case TC: {
+                    return "TC";
+                }
+
+                case TD: {
+                    return "TD";
+                }
+
+                case TF: {
+                    return "TF";
+                }
+
+                case TG: {
+                    return "TG";
+                }
+
+                case TH: {
+                    return "TH";
+                }
+
+                case TJ: {
+                    return "TJ";
+                }
+
+                case TK: {
+                    return "TK";
+                }
+
+                case TL: {
+                    return "TL";
+                }
+
+                case TM: {
+                    return "TM";
+                }
+
+                case TN: {
+                    return "TN";
+                }
+
+                case TO: {
+                    return "TO";
+                }
+
+                case TR: {
+                    return "TR";
+                }
+
+                case TT: {
+                    return "TT";
+                }
+
+                case TV: {
+                    return "TV";
+                }
+
+                case TW: {
+                    return "TW";
+                }
+
+                case TZ: {
+                    return "TZ";
+                }
+
+                case UA: {
+                    return "UA";
+                }
+
+                case UG: {
+                    return "UG";
+                }
+
+                case UM: {
+                    return "UM";
+                }
+
+                case US: {
+                    return "US";
+                }
+
+                case UY: {
+                    return "UY";
+                }
+
+                case UZ: {
+                    return "UZ";
+                }
+
+                case VA: {
+                    return "VA";
+                }
+
+                case VC: {
+                    return "VC";
+                }
+
+                case VE: {
+                    return "VE";
+                }
+
+                case VG: {
+                    return "VG";
+                }
+
+                case VN: {
+                    return "VN";
+                }
+
+                case VU: {
+                    return "VU";
+                }
+
+                case WF: {
+                    return "WF";
+                }
+
+                case WS: {
+                    return "WS";
+                }
+
+                case XK: {
+                    return "XK";
+                }
+
+                case YE: {
+                    return "YE";
+                }
+
+                case YT: {
+                    return "YT";
+                }
+
+                case ZA: {
+                    return "ZA";
+                }
+
+                case ZM: {
+                    return "ZM";
+                }
+
+                case ZW: {
+                    return "ZW";
+                }
+
+                default: {
+                    return "";
+                }
             }
         }
     }
@@ -7055,7 +10116,6 @@ public class Storefront {
         /**
         * Masked credit card number with only the last 4 digits displayed
         */
-
         public String getMaskedNumber() {
             return (String) get("maskedNumber");
         }
@@ -7193,14 +10253,29 @@ public class Storefront {
     * The part of the image that should remain after cropping.
     */
     public enum CropRegion {
+        /**
+        * Keep the bottom of the image
+        */
         BOTTOM,
 
+        /**
+        * Keep the center of the image
+        */
         CENTER,
 
+        /**
+        * Keep the left of the image
+        */
         LEFT,
 
+        /**
+        * Keep the right of the image
+        */
         RIGHT,
 
+        /**
+        * Keep the top of the image
+        */
         TOP,
 
         UNKNOWN_VALUE;
@@ -7269,278 +10344,689 @@ public class Storefront {
     * Currency codes
     */
     public enum CurrencyCode {
+        /**
+        * United Arab Emirates Dirham (AED)
+        */
         AED,
 
+        /**
+        * Afghan Afghani (AFN)
+        */
         AFN,
 
+        /**
+        * Albanian Lek (ALL)
+        */
         ALL,
 
+        /**
+        * Armenian Dram (AMD)
+        */
         AMD,
 
+        /**
+        * Netherlands Antillean Guilder
+        */
         ANG,
 
+        /**
+        * Angolan Kwanza (AOA)
+        */
         AOA,
 
+        /**
+        * Argentine Pesos (ARS)
+        */
         ARS,
 
+        /**
+        * Australian Dollars (AUD)
+        */
         AUD,
 
+        /**
+        * Aruban Florin (AWG)
+        */
         AWG,
 
+        /**
+        * Azerbaijani Manat (AZN)
+        */
         AZN,
 
+        /**
+        * Bosnia and Herzegovina Convertible Mark (BAM)
+        */
         BAM,
 
+        /**
+        * Barbadian Dollar (BBD)
+        */
         BBD,
 
+        /**
+        * Bangladesh Taka (BDT)
+        */
         BDT,
 
+        /**
+        * Bulgarian Lev (BGN)
+        */
         BGN,
 
+        /**
+        * Bahraini Dinar (BHD)
+        */
         BHD,
 
+        /**
+        * Brunei Dollar (BND)
+        */
         BND,
 
+        /**
+        * Bolivian Boliviano (BOB)
+        */
         BOB,
 
+        /**
+        * Brazilian Real (BRL)
+        */
         BRL,
 
+        /**
+        * Bahamian Dollar (BSD)
+        */
         BSD,
 
+        /**
+        * Bhutanese Ngultrum (BTN)
+        */
         BTN,
 
+        /**
+        * Botswana Pula (BWP)
+        */
         BWP,
 
+        /**
+        * Belarusian Ruble (BYR)
+        */
         BYR,
 
+        /**
+        * Belize Dollar (BZD)
+        */
         BZD,
 
+        /**
+        * Canadian Dollars (CAD)
+        */
         CAD,
 
+        /**
+        * Congolese franc (CDF)
+        */
         CDF,
 
+        /**
+        * Swiss Francs (CHF)
+        */
         CHF,
 
+        /**
+        * Chilean Peso (CLP)
+        */
         CLP,
 
+        /**
+        * Chinese Yuan Renminbi (CNY)
+        */
         CNY,
 
+        /**
+        * Colombian Peso (COP)
+        */
         COP,
 
+        /**
+        * Costa Rican Colones (CRC)
+        */
         CRC,
 
+        /**
+        * Cape Verdean escudo (CVE)
+        */
         CVE,
 
+        /**
+        * Czech Koruny (CZK)
+        */
         CZK,
 
+        /**
+        * Danish Kroner (DKK)
+        */
         DKK,
 
+        /**
+        * Dominican Peso (DOP)
+        */
         DOP,
 
+        /**
+        * Algerian Dinar (DZD)
+        */
         DZD,
 
+        /**
+        * Egyptian Pound (EGP)
+        */
         EGP,
 
+        /**
+        * Ethiopian Birr (ETB)
+        */
         ETB,
 
+        /**
+        * Euro (EUR)
+        */
         EUR,
 
+        /**
+        * Fijian Dollars (FJD)
+        */
         FJD,
 
+        /**
+        * United Kingdom Pounds (GBP)
+        */
         GBP,
 
+        /**
+        * Georgian Lari (GEL)
+        */
         GEL,
 
+        /**
+        * Ghanaian Cedi (GHS)
+        */
         GHS,
 
+        /**
+        * Gambian Dalasi (GMD)
+        */
         GMD,
 
+        /**
+        * Guatemalan Quetzal (GTQ)
+        */
         GTQ,
 
+        /**
+        * Guyanese Dollar (GYD)
+        */
         GYD,
 
+        /**
+        * Hong Kong Dollars (HKD)
+        */
         HKD,
 
+        /**
+        * Honduran Lempira (HNL)
+        */
         HNL,
 
+        /**
+        * Croatian Kuna (HRK)
+        */
         HRK,
 
+        /**
+        * Haitian Gourde (HTG)
+        */
         HTG,
 
+        /**
+        * Hungarian Forint (HUF)
+        */
         HUF,
 
+        /**
+        * Indonesian Rupiah (IDR)
+        */
         IDR,
 
+        /**
+        * Israeli New Shekel (NIS)
+        */
         ILS,
 
+        /**
+        * Indian Rupees (INR)
+        */
         INR,
 
+        /**
+        * Icelandic Kronur (ISK)
+        */
         ISK,
 
+        /**
+        * Jersey Pound
+        */
         JEP,
 
+        /**
+        * Jamaican Dollars (JMD)
+        */
         JMD,
 
+        /**
+        * Jordanian Dinar (JOD)
+        */
         JOD,
 
+        /**
+        * Japanese Yen (JPY)
+        */
         JPY,
 
+        /**
+        * Kenyan Shilling (KES)
+        */
         KES,
 
+        /**
+        * Kyrgyzstani Som (KGS)
+        */
         KGS,
 
+        /**
+        * Cambodian Riel
+        */
         KHR,
 
+        /**
+        * Comorian Franc (KMF)
+        */
         KMF,
 
+        /**
+        * South Korean Won (KRW)
+        */
         KRW,
 
+        /**
+        * Kuwaiti Dinar (KWD)
+        */
         KWD,
 
+        /**
+        * Cayman Dollars (KYD)
+        */
         KYD,
 
+        /**
+        * Kazakhstani Tenge (KZT)
+        */
         KZT,
 
+        /**
+        * Laotian Kip (LAK)
+        */
         LAK,
 
+        /**
+        * Lebanese Pounds (LBP)
+        */
         LBP,
 
+        /**
+        * Sri Lankan Rupees (LKR)
+        */
         LKR,
 
+        /**
+        * Liberian Dollar (LRD)
+        */
         LRD,
 
+        /**
+        * Lesotho Loti (LSL)
+        */
         LSL,
 
+        /**
+        * Lithuanian Litai (LTL)
+        */
         LTL,
 
+        /**
+        * Latvian Lati (LVL)
+        */
         LVL,
 
+        /**
+        * Moroccan Dirham
+        */
         MAD,
 
+        /**
+        * Moldovan Leu (MDL)
+        */
         MDL,
 
+        /**
+        * Malagasy Ariary (MGA)
+        */
         MGA,
 
+        /**
+        * Macedonia Denar (MKD)
+        */
         MKD,
 
+        /**
+        * Burmese Kyat (MMK)
+        */
         MMK,
 
+        /**
+        * Mongolian Tugrik
+        */
         MNT,
 
+        /**
+        * Macanese Pataca (MOP)
+        */
         MOP,
 
+        /**
+        * Mauritian Rupee (MUR)
+        */
         MUR,
 
+        /**
+        * Maldivian Rufiyaa (MVR)
+        */
         MVR,
 
+        /**
+        * Malawian Kwacha (MWK)
+        */
         MWK,
 
+        /**
+        * Mexican Pesos (MXN)
+        */
         MXN,
 
+        /**
+        * Malaysian Ringgits (MYR)
+        */
         MYR,
 
+        /**
+        * Mozambican Metical
+        */
         MZN,
 
+        /**
+        * Namibian Dollar
+        */
         NAD,
 
+        /**
+        * Nigerian Naira (NGN)
+        */
         NGN,
 
+        /**
+        * Nicaraguan Córdoba (NIO)
+        */
         NIO,
 
+        /**
+        * Norwegian Kroner (NOK)
+        */
         NOK,
 
+        /**
+        * Nepalese Rupee (NPR)
+        */
         NPR,
 
+        /**
+        * New Zealand Dollars (NZD)
+        */
         NZD,
 
+        /**
+        * Omani Rial (OMR)
+        */
         OMR,
 
+        /**
+        * Peruvian Nuevo Sol (PEN)
+        */
         PEN,
 
+        /**
+        * Papua New Guinean Kina (PGK)
+        */
         PGK,
 
+        /**
+        * Philippine Peso (PHP)
+        */
         PHP,
 
+        /**
+        * Pakistani Rupee (PKR)
+        */
         PKR,
 
+        /**
+        * Polish Zlotych (PLN)
+        */
         PLN,
 
+        /**
+        * Paraguayan Guarani (PYG)
+        */
         PYG,
 
+        /**
+        * Qatari Rial (QAR)
+        */
         QAR,
 
+        /**
+        * Romanian Lei (RON)
+        */
         RON,
 
+        /**
+        * Serbian dinar (RSD)
+        */
         RSD,
 
+        /**
+        * Russian Rubles (RUB)
+        */
         RUB,
 
+        /**
+        * Rwandan Franc (RWF)
+        */
         RWF,
 
+        /**
+        * Saudi Riyal (SAR)
+        */
         SAR,
 
+        /**
+        * Solomon Islands Dollar (SBD)
+        */
         SBD,
 
+        /**
+        * Seychellois Rupee (SCR)
+        */
         SCR,
 
+        /**
+        * Sudanese Pound (SDG)
+        */
         SDG,
 
+        /**
+        * Swedish Kronor (SEK)
+        */
         SEK,
 
+        /**
+        * Singapore Dollars (SGD)
+        */
         SGD,
 
+        /**
+        * Surinamese Dollar (SRD)
+        */
         SRD,
 
+        /**
+        * South Sudanese Pound (SSP)
+        */
         SSP,
 
+        /**
+        * Sao Tome And Principe Dobra (STD)
+        */
         STD,
 
+        /**
+        * Syrian Pound (SYP)
+        */
         SYP,
 
+        /**
+        * Thai baht (THB)
+        */
         THB,
 
+        /**
+        * Turkmenistani Manat (TMT)
+        */
         TMT,
 
+        /**
+        * Tunisian Dinar (TND)
+        */
         TND,
 
+        /**
+        * Turkish Lira (TRY)
+        */
         TRY,
 
+        /**
+        * Trinidad and Tobago Dollars (TTD)
+        */
         TTD,
 
+        /**
+        * Taiwan Dollars (TWD)
+        */
         TWD,
 
+        /**
+        * Tanzanian Shilling (TZS)
+        */
         TZS,
 
+        /**
+        * Ukrainian Hryvnia (UAH)
+        */
         UAH,
 
+        /**
+        * Ugandan Shilling (UGX)
+        */
         UGX,
 
+        /**
+        * United States Dollars (USD)
+        */
         USD,
 
+        /**
+        * Uruguayan Pesos (UYU)
+        */
         UYU,
 
+        /**
+        * Uzbekistan som (UZS)
+        */
         UZS,
 
+        /**
+        * Venezuelan Bolivares (VEF)
+        */
         VEF,
 
+        /**
+        * Vietnamese đồng (VND)
+        */
         VND,
 
+        /**
+        * Vanuatu Vatu (VUV)
+        */
         VUV,
 
+        /**
+        * Samoan Tala (WST)
+        */
         WST,
 
+        /**
+        * Central African CFA Franc (XAF)
+        */
         XAF,
 
+        /**
+        * East Caribbean Dollar (XCD)
+        */
         XCD,
 
+        /**
+        * West African CFA franc (XOF)
+        */
         XOF,
 
+        /**
+        * CFP Franc (XPF)
+        */
         XPF,
 
+        /**
+        * Yemeni Rial (YER)
+        */
         YER,
 
+        /**
+        * South African Rand (ZAR)
+        */
         ZAR,
 
+        /**
+        * Zambian Kwacha (ZMW)
+        */
         ZMW,
 
         UNKNOWN_VALUE;
@@ -9023,7 +12509,6 @@ public class Storefront {
         /**
         * Indicates whether the customer has consented to be sent marketing material via email.
         */
-
         public Boolean getAcceptsMarketing() {
             return (Boolean) get("acceptsMarketing");
         }
@@ -9036,7 +12521,6 @@ public class Storefront {
         /**
         * A list of addresses for the customer.
         */
-
         public MailingAddressConnection getAddresses() {
             return (MailingAddressConnection) get("addresses");
         }
@@ -9049,7 +12533,6 @@ public class Storefront {
         /**
         * The date and time when the customer was created.
         */
-
         public DateTime getCreatedAt() {
             return (DateTime) get("createdAt");
         }
@@ -9062,7 +12545,6 @@ public class Storefront {
         /**
         * The customer’s default address.
         */
-
         public MailingAddress getDefaultAddress() {
             return (MailingAddress) get("defaultAddress");
         }
@@ -9075,7 +12557,6 @@ public class Storefront {
         /**
         * The customer’s name, email or phone number.
         */
-
         public String getDisplayName() {
             return (String) get("displayName");
         }
@@ -9088,7 +12569,6 @@ public class Storefront {
         /**
         * The customer’s email address.
         */
-
         public String getEmail() {
             return (String) get("email");
         }
@@ -9101,7 +12581,6 @@ public class Storefront {
         /**
         * The customer’s first name.
         */
-
         public String getFirstName() {
             return (String) get("firstName");
         }
@@ -9114,7 +12593,6 @@ public class Storefront {
         /**
         * A unique identifier for the customer.
         */
-
         public ID getId() {
             return (ID) get("id");
         }
@@ -9127,7 +12605,6 @@ public class Storefront {
         /**
         * The customer’s last name.
         */
-
         public String getLastName() {
             return (String) get("lastName");
         }
@@ -9140,7 +12617,6 @@ public class Storefront {
         /**
         * The orders associated with the customer.
         */
-
         public OrderConnection getOrders() {
             return (OrderConnection) get("orders");
         }
@@ -9153,7 +12629,6 @@ public class Storefront {
         /**
         * The customer’s phone number.
         */
-
         public String getPhone() {
             return (String) get("phone");
         }
@@ -9166,7 +12641,6 @@ public class Storefront {
         /**
         * The date and time when the customer information was updated.
         */
-
         public DateTime getUpdatedAt() {
             return (DateTime) get("updatedAt");
         }
@@ -9282,7 +12756,6 @@ public class Storefront {
         /**
         * The customer’s access token.
         */
-
         public String getAccessToken() {
             return (String) get("accessToken");
         }
@@ -9295,7 +12768,6 @@ public class Storefront {
         /**
         * The date and time when the customer access token expires.
         */
-
         public DateTime getExpiresAt() {
             return (DateTime) get("expiresAt");
         }
@@ -9448,7 +12920,6 @@ public class Storefront {
         /**
         * The newly created customer access token object.
         */
-
         public CustomerAccessToken getCustomerAccessToken() {
             return (CustomerAccessToken) get("customerAccessToken");
         }
@@ -9461,7 +12932,6 @@ public class Storefront {
         /**
         * List of errors that occurred executing the mutation.
         */
-
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -9583,7 +13053,6 @@ public class Storefront {
         /**
         * The destroyed access token.
         */
-
         public String getDeletedAccessToken() {
             return (String) get("deletedAccessToken");
         }
@@ -9596,7 +13065,6 @@ public class Storefront {
         /**
         * ID of the destroyed customer access token.
         */
-
         public String getDeletedCustomerAccessTokenId() {
             return (String) get("deletedCustomerAccessTokenId");
         }
@@ -9609,7 +13077,6 @@ public class Storefront {
         /**
         * List of errors that occurred executing the mutation.
         */
-
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -9717,7 +13184,6 @@ public class Storefront {
         /**
         * The renewed customer access token object.
         */
-
         public CustomerAccessToken getCustomerAccessToken() {
             return (CustomerAccessToken) get("customerAccessToken");
         }
@@ -9730,7 +13196,6 @@ public class Storefront {
         /**
         * List of errors that occurred executing the mutation.
         */
-
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -9883,7 +13348,6 @@ public class Storefront {
         /**
         * The customer object.
         */
-
         public Customer getCustomer() {
             return (Customer) get("customer");
         }
@@ -9896,7 +13360,6 @@ public class Storefront {
         /**
         * List of errors that occurred executing the mutation.
         */
-
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -10002,7 +13465,6 @@ public class Storefront {
         /**
         * The new customer address object.
         */
-
         public MailingAddress getCustomerAddress() {
             return (MailingAddress) get("customerAddress");
         }
@@ -10015,7 +13477,6 @@ public class Storefront {
         /**
         * List of errors that occurred executing the mutation.
         */
-
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -10117,7 +13578,6 @@ public class Storefront {
         /**
         * ID of the deleted customer address.
         */
-
         public String getDeletedCustomerAddressId() {
             return (String) get("deletedCustomerAddressId");
         }
@@ -10130,7 +13590,6 @@ public class Storefront {
         /**
         * List of errors that occurred executing the mutation.
         */
-
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -10236,7 +13695,6 @@ public class Storefront {
         /**
         * The customer’s updated mailing address.
         */
-
         public MailingAddress getCustomerAddress() {
             return (MailingAddress) get("customerAddress");
         }
@@ -10249,7 +13707,6 @@ public class Storefront {
         /**
         * List of errors that occurred executing the mutation.
         */
-
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -10474,7 +13931,6 @@ public class Storefront {
         /**
         * The created customer object.
         */
-
         public Customer getCustomer() {
             return (Customer) get("customer");
         }
@@ -10487,7 +13943,6 @@ public class Storefront {
         /**
         * List of errors that occurred executing the mutation.
         */
-
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -10569,7 +14024,6 @@ public class Storefront {
         /**
         * List of errors that occurred executing the mutation.
         */
-
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -10720,7 +14174,6 @@ public class Storefront {
         /**
         * The customer object which was reset.
         */
-
         public Customer getCustomer() {
             return (Customer) get("customer");
         }
@@ -10733,7 +14186,6 @@ public class Storefront {
         /**
         * List of errors that occurred executing the mutation.
         */
-
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -10956,7 +14408,6 @@ public class Storefront {
         /**
         * The updated customer object.
         */
-
         public Customer getCustomer() {
             return (Customer) get("customer");
         }
@@ -10969,7 +14420,6 @@ public class Storefront {
         /**
         * List of errors that occurred executing the mutation.
         */
-
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -11078,7 +14528,6 @@ public class Storefront {
         /**
         * The host name of the domain (eg: `example.com`).
         */
-
         public String getHost() {
             return (String) get("host");
         }
@@ -11091,7 +14540,6 @@ public class Storefront {
         /**
         * Whether SSL is enabled or not.
         */
-
         public Boolean getSslEnabled() {
             return (Boolean) get("sslEnabled");
         }
@@ -11104,7 +14552,6 @@ public class Storefront {
         /**
         * The URL of the domain (eg: `https://example.com`).
         */
-
         public String getUrl() {
             return (String) get("url");
         }
@@ -11225,7 +14672,6 @@ public class Storefront {
         /**
         * A word or phrase to share the nature or contents of an image.
         */
-
         public String getAltText() {
             return (String) get("altText");
         }
@@ -11238,7 +14684,6 @@ public class Storefront {
         /**
         * A unique identifier for the image.
         */
-
         public ID getId() {
             return (ID) get("id");
         }
@@ -11251,7 +14696,6 @@ public class Storefront {
         /**
         * The location of the image as a URL.
         */
-
         public String getSrc() {
             return (String) get("src");
         }
@@ -11354,7 +14798,6 @@ public class Storefront {
         /**
         * A list of edges.
         */
-
         public List<ImageEdge> getEdges() {
             return (List<ImageEdge>) get("edges");
         }
@@ -11367,7 +14810,6 @@ public class Storefront {
         /**
         * Information to aid in pagination.
         */
-
         public PageInfo getPageInfo() {
             return (PageInfo) get("pageInfo");
         }
@@ -12135,7 +15577,6 @@ public class Storefront {
         /**
         * A list of edges.
         */
-
         public List<MailingAddressEdge> getEdges() {
             return (List<MailingAddressEdge>) get("edges");
         }
@@ -12148,7 +15589,6 @@ public class Storefront {
         /**
         * Information to aid in pagination.
         */
-
         public PageInfo getPageInfo() {
             return (PageInfo) get("pageInfo");
         }
@@ -13331,7 +16771,6 @@ public class Storefront {
         /**
         * Updates the attributes of a checkout.
         */
-
         public CheckoutAttributesUpdatePayload getCheckoutAttributesUpdate() {
             return (CheckoutAttributesUpdatePayload) get("checkoutAttributesUpdate");
         }
@@ -13353,7 +16792,6 @@ public class Storefront {
         /**
         * Completes a checkout using a credit card token from Shopify's Vault.
         */
-
         public CheckoutCompleteWithCreditCardPayload getCheckoutCompleteWithCreditCard() {
             return (CheckoutCompleteWithCreditCardPayload) get("checkoutCompleteWithCreditCard");
         }
@@ -13366,7 +16804,6 @@ public class Storefront {
         /**
         * Completes a checkout with a tokenized payment.
         */
-
         public CheckoutCompleteWithTokenizedPaymentPayload getCheckoutCompleteWithTokenizedPayment() {
             return (CheckoutCompleteWithTokenizedPaymentPayload) get("checkoutCompleteWithTokenizedPayment");
         }
@@ -13379,7 +16816,6 @@ public class Storefront {
         /**
         * Creates a new checkout.
         */
-
         public CheckoutCreatePayload getCheckoutCreate() {
             return (CheckoutCreatePayload) get("checkoutCreate");
         }
@@ -13392,7 +16828,6 @@ public class Storefront {
         /**
         * Associates a customer to the checkout.
         */
-
         public CheckoutCustomerAssociatePayload getCheckoutCustomerAssociate() {
             return (CheckoutCustomerAssociatePayload) get("checkoutCustomerAssociate");
         }
@@ -13405,7 +16840,6 @@ public class Storefront {
         /**
         * Disassociates the current checkout customer from the checkout.
         */
-
         public CheckoutCustomerDisassociatePayload getCheckoutCustomerDisassociate() {
             return (CheckoutCustomerDisassociatePayload) get("checkoutCustomerDisassociate");
         }
@@ -13418,7 +16852,6 @@ public class Storefront {
         /**
         * Updates the email on an existing checkout.
         */
-
         public CheckoutEmailUpdatePayload getCheckoutEmailUpdate() {
             return (CheckoutEmailUpdatePayload) get("checkoutEmailUpdate");
         }
@@ -13431,7 +16864,6 @@ public class Storefront {
         /**
         * Applies a gift card to an existing checkout using a gift card code.
         */
-
         public CheckoutGiftCardApplyPayload getCheckoutGiftCardApply() {
             return (CheckoutGiftCardApplyPayload) get("checkoutGiftCardApply");
         }
@@ -13444,7 +16876,6 @@ public class Storefront {
         /**
         * Removes an applied gift card from the checkout.
         */
-
         public CheckoutGiftCardRemovePayload getCheckoutGiftCardRemove() {
             return (CheckoutGiftCardRemovePayload) get("checkoutGiftCardRemove");
         }
@@ -13457,7 +16888,6 @@ public class Storefront {
         /**
         * Adds a list of line items to a checkout.
         */
-
         public CheckoutLineItemsAddPayload getCheckoutLineItemsAdd() {
             return (CheckoutLineItemsAddPayload) get("checkoutLineItemsAdd");
         }
@@ -13470,7 +16900,6 @@ public class Storefront {
         /**
         * Removes line items from an existing checkout
         */
-
         public CheckoutLineItemsRemovePayload getCheckoutLineItemsRemove() {
             return (CheckoutLineItemsRemovePayload) get("checkoutLineItemsRemove");
         }
@@ -13483,7 +16912,6 @@ public class Storefront {
         /**
         * Updates line items on a checkout.
         */
-
         public CheckoutLineItemsUpdatePayload getCheckoutLineItemsUpdate() {
             return (CheckoutLineItemsUpdatePayload) get("checkoutLineItemsUpdate");
         }
@@ -13496,7 +16924,6 @@ public class Storefront {
         /**
         * Updates the shipping address of an existing checkout.
         */
-
         public CheckoutShippingAddressUpdatePayload getCheckoutShippingAddressUpdate() {
             return (CheckoutShippingAddressUpdatePayload) get("checkoutShippingAddressUpdate");
         }
@@ -13509,7 +16936,6 @@ public class Storefront {
         /**
         * Updates the shipping lines on an existing checkout.
         */
-
         public CheckoutShippingLineUpdatePayload getCheckoutShippingLineUpdate() {
             return (CheckoutShippingLineUpdatePayload) get("checkoutShippingLineUpdate");
         }
@@ -13523,7 +16949,6 @@ public class Storefront {
         * Creates a customer access token.
         * The customer access token is required to modify the customer object in any way.
         */
-
         public CustomerAccessTokenCreatePayload getCustomerAccessTokenCreate() {
             return (CustomerAccessTokenCreatePayload) get("customerAccessTokenCreate");
         }
@@ -13536,7 +16961,6 @@ public class Storefront {
         /**
         * Permanently destroys a customer access token.
         */
-
         public CustomerAccessTokenDeletePayload getCustomerAccessTokenDelete() {
             return (CustomerAccessTokenDeletePayload) get("customerAccessTokenDelete");
         }
@@ -13549,7 +16973,6 @@ public class Storefront {
         /**
         * Renews a customer access token.
         */
-
         public CustomerAccessTokenRenewPayload getCustomerAccessTokenRenew() {
             return (CustomerAccessTokenRenewPayload) get("customerAccessTokenRenew");
         }
@@ -13562,7 +16985,6 @@ public class Storefront {
         /**
         * Activates a customer.
         */
-
         public CustomerActivatePayload getCustomerActivate() {
             return (CustomerActivatePayload) get("customerActivate");
         }
@@ -13575,7 +16997,6 @@ public class Storefront {
         /**
         * Creates a new address for a customer.
         */
-
         public CustomerAddressCreatePayload getCustomerAddressCreate() {
             return (CustomerAddressCreatePayload) get("customerAddressCreate");
         }
@@ -13588,7 +17009,6 @@ public class Storefront {
         /**
         * Permanently deletes the address of an existing customer.
         */
-
         public CustomerAddressDeletePayload getCustomerAddressDelete() {
             return (CustomerAddressDeletePayload) get("customerAddressDelete");
         }
@@ -13601,7 +17021,6 @@ public class Storefront {
         /**
         * Updates the address of an existing customer.
         */
-
         public CustomerAddressUpdatePayload getCustomerAddressUpdate() {
             return (CustomerAddressUpdatePayload) get("customerAddressUpdate");
         }
@@ -13614,7 +17033,6 @@ public class Storefront {
         /**
         * Creates a new customer.
         */
-
         public CustomerCreatePayload getCustomerCreate() {
             return (CustomerCreatePayload) get("customerCreate");
         }
@@ -13627,7 +17045,6 @@ public class Storefront {
         /**
         * Sends a reset password email to the customer, as the first step in the reset password process.
         */
-
         public CustomerRecoverPayload getCustomerRecover() {
             return (CustomerRecoverPayload) get("customerRecover");
         }
@@ -13640,7 +17057,6 @@ public class Storefront {
         /**
         * Resets a customer’s password with a token received from `CustomerRecover`.
         */
-
         public CustomerResetPayload getCustomerReset() {
             return (CustomerResetPayload) get("customerReset");
         }
@@ -13653,7 +17069,6 @@ public class Storefront {
         /**
         * Updates an existing customer.
         */
-
         public CustomerUpdatePayload getCustomerUpdate() {
             return (CustomerUpdatePayload) get("customerUpdate");
         }
@@ -13951,7 +17366,6 @@ public class Storefront {
         /**
         * Globally unique identifier.
         */
-
         public ID getId() {
             return (ID) get("id");
         }
@@ -13991,6 +17405,15 @@ public class Storefront {
         */
         public OrderQuery currencyCode() {
             startField("currencyCode");
+
+            return this;
+        }
+
+        /**
+        * The locale code in which this specific order happened.
+        */
+        public OrderQuery customerLocale() {
+            startField("customerLocale");
 
             return this;
         }
@@ -14175,6 +17598,17 @@ public class Storefront {
                         break;
                     }
 
+                    case "customerLocale": {
+                        String optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = jsonAsString(field.getValue(), key);
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
                     case "customerUrl": {
                         String optional1 = null;
                         if (!field.getValue().isJsonNull()) {
@@ -14306,7 +17740,6 @@ public class Storefront {
         /**
         * The code of the currency used for the payment.
         */
-
         public CurrencyCode getCurrencyCode() {
             return (CurrencyCode) get("currencyCode");
         }
@@ -14317,9 +17750,20 @@ public class Storefront {
         }
 
         /**
+        * The locale code in which this specific order happened.
+        */
+        public String getCustomerLocale() {
+            return (String) get("customerLocale");
+        }
+
+        public Order setCustomerLocale(String arg) {
+            optimisticData.put(getKey("customerLocale"), arg);
+            return this;
+        }
+
+        /**
         * The order’s URL for a customer.
         */
-
         public String getCustomerUrl() {
             return (String) get("customerUrl");
         }
@@ -14332,7 +17776,6 @@ public class Storefront {
         /**
         * The customer's email address.
         */
-
         public String getEmail() {
             return (String) get("email");
         }
@@ -14349,7 +17792,6 @@ public class Storefront {
         /**
         * List of the order’s line items.
         */
-
         public OrderLineItemConnection getLineItems() {
             return (OrderLineItemConnection) get("lineItems");
         }
@@ -14362,7 +17804,6 @@ public class Storefront {
         /**
         * A unique numeric identifier for the order for use by shop owner and customer.
         */
-
         public Integer getOrderNumber() {
             return (Integer) get("orderNumber");
         }
@@ -14375,7 +17816,6 @@ public class Storefront {
         /**
         * The customer's phone number.
         */
-
         public String getPhone() {
             return (String) get("phone");
         }
@@ -14390,7 +17830,6 @@ public class Storefront {
         * This value can be set to dates in the past when importing from other systems.
         * If no value is provided, it will be auto-generated based on current date and time.
         */
-
         public DateTime getProcessedAt() {
             return (DateTime) get("processedAt");
         }
@@ -14403,7 +17842,6 @@ public class Storefront {
         /**
         * The address to where the order will be shipped.
         */
-
         public MailingAddress getShippingAddress() {
             return (MailingAddress) get("shippingAddress");
         }
@@ -14416,7 +17854,6 @@ public class Storefront {
         /**
         * Price of the order before shipping and taxes.
         */
-
         public BigDecimal getSubtotalPrice() {
             return (BigDecimal) get("subtotalPrice");
         }
@@ -14430,7 +17867,6 @@ public class Storefront {
         * The sum of all the prices of all the items in the order, taxes and discounts included (must be
         * positive).
         */
-
         public BigDecimal getTotalPrice() {
             return (BigDecimal) get("totalPrice");
         }
@@ -14443,7 +17879,6 @@ public class Storefront {
         /**
         * The total amount that has been refunded.
         */
-
         public BigDecimal getTotalRefunded() {
             return (BigDecimal) get("totalRefunded");
         }
@@ -14456,7 +17891,6 @@ public class Storefront {
         /**
         * The total cost of shipping.
         */
-
         public BigDecimal getTotalShippingPrice() {
             return (BigDecimal) get("totalShippingPrice");
         }
@@ -14469,7 +17903,6 @@ public class Storefront {
         /**
         * The total cost of taxes.
         */
-
         public BigDecimal getTotalTax() {
             return (BigDecimal) get("totalTax");
         }
@@ -14482,6 +17915,8 @@ public class Storefront {
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "currencyCode": return false;
+
+                case "customerLocale": return false;
 
                 case "customerUrl": return false;
 
@@ -14594,7 +18029,6 @@ public class Storefront {
         /**
         * A list of edges.
         */
-
         public List<OrderEdge> getEdges() {
             return (List<OrderEdge>) get("edges");
         }
@@ -14607,7 +18041,6 @@ public class Storefront {
         /**
         * Information to aid in pagination.
         */
-
         public PageInfo getPageInfo() {
             return (PageInfo) get("pageInfo");
         }
@@ -14840,7 +18273,6 @@ public class Storefront {
         /**
         * List of custom attributes associated to the line item.
         */
-
         public List<Attribute> getCustomAttributes() {
             return (List<Attribute>) get("customAttributes");
         }
@@ -14853,7 +18285,6 @@ public class Storefront {
         /**
         * The number of products variants associated to the line item.
         */
-
         public Integer getQuantity() {
             return (Integer) get("quantity");
         }
@@ -14866,7 +18297,6 @@ public class Storefront {
         /**
         * The title of the product combined with title of the variant.
         */
-
         public String getTitle() {
             return (String) get("title");
         }
@@ -14879,7 +18309,6 @@ public class Storefront {
         /**
         * The product variant object associated to the line item.
         */
-
         public ProductVariant getVariant() {
             return (ProductVariant) get("variant");
         }
@@ -14984,7 +18413,6 @@ public class Storefront {
         /**
         * A list of edges.
         */
-
         public List<OrderLineItemEdge> getEdges() {
             return (List<OrderLineItemEdge>) get("edges");
         }
@@ -14997,7 +18425,6 @@ public class Storefront {
         /**
         * Information to aid in pagination.
         */
-
         public PageInfo getPageInfo() {
             return (PageInfo) get("pageInfo");
         }
@@ -15248,7 +18675,6 @@ public class Storefront {
         /**
         * Indicates if there are more pages to fetch.
         */
-
         public Boolean getHasNextPage() {
             return (Boolean) get("hasNextPage");
         }
@@ -15261,7 +18687,6 @@ public class Storefront {
         /**
         * Indicates if there are any pages prior to the current page.
         */
-
         public Boolean getHasPreviousPage() {
             return (Boolean) get("hasPreviousPage");
         }
@@ -15514,7 +18939,6 @@ public class Storefront {
         /**
         * The amount of the payment.
         */
-
         public BigDecimal getAmount() {
             return (BigDecimal) get("amount");
         }
@@ -15527,7 +18951,6 @@ public class Storefront {
         /**
         * The billing address for the payment.
         */
-
         public MailingAddress getBillingAddress() {
             return (MailingAddress) get("billingAddress");
         }
@@ -15540,7 +18963,6 @@ public class Storefront {
         /**
         * The checkout to which the payment belongs.
         */
-
         public Checkout getCheckout() {
             return (Checkout) get("checkout");
         }
@@ -15553,7 +18975,6 @@ public class Storefront {
         /**
         * The credit card used for the payment in the case of direct payments.
         */
-
         public CreditCard getCreditCard() {
             return (CreditCard) get("creditCard");
         }
@@ -15566,7 +18987,6 @@ public class Storefront {
         /**
         * An message describing a processing error during asynchronous processing.
         */
-
         public String getErrorMessage() {
             return (String) get("errorMessage");
         }
@@ -15583,7 +19003,6 @@ public class Storefront {
         /**
         * A client-side generated token to identify a payment and perform idempotent operations.
         */
-
         public String getIdempotencyKey() {
             return (String) get("idempotencyKey");
         }
@@ -15596,7 +19015,6 @@ public class Storefront {
         /**
         * Whether or not the payment is still processing asynchronously.
         */
-
         public Boolean getReady() {
             return (Boolean) get("ready");
         }
@@ -15609,7 +19027,6 @@ public class Storefront {
         /**
         * A flag to indicate if the payment is to be done in test mode for gateways that support it.
         */
-
         public Boolean getTest() {
             return (Boolean) get("test");
         }
@@ -15622,7 +19039,6 @@ public class Storefront {
         /**
         * The actual transaction recorded by Shopify after having processed the payment with the gateway.
         */
-
         public Transaction getTransaction() {
             return (Transaction) get("transaction");
         }
@@ -15653,6 +19069,174 @@ public class Storefront {
                 case "test": return false;
 
                 case "transaction": return true;
+
+                default: return false;
+            }
+        }
+    }
+
+    public interface PaymentSettingsQueryDefinition {
+        void define(PaymentSettingsQuery _queryBuilder);
+    }
+
+    /**
+    * Values required for completing various payment methods.
+    */
+    public static class PaymentSettingsQuery extends Query<PaymentSettingsQuery> {
+        PaymentSettingsQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * The url pointing to the endpoint to vault credit cards.
+        */
+        public PaymentSettingsQuery cardVaultUrl() {
+            startField("cardVaultUrl");
+
+            return this;
+        }
+
+        /**
+        * The two-letter code for where the shop is located.
+        */
+        public PaymentSettingsQuery countryCode() {
+            startField("countryCode");
+
+            return this;
+        }
+
+        /**
+        * The three-letter code for the currency that the shop accepts.
+        */
+        public PaymentSettingsQuery currencyCode() {
+            startField("currencyCode");
+
+            return this;
+        }
+
+        /**
+        * The shop’s Shopify Payments account id.
+        */
+        public PaymentSettingsQuery shopifyPaymentsAccountId() {
+            startField("shopifyPaymentsAccountId");
+
+            return this;
+        }
+    }
+
+    /**
+    * Values required for completing various payment methods.
+    */
+    public static class PaymentSettings extends AbstractResponse<PaymentSettings> {
+        public PaymentSettings() {
+        }
+
+        public PaymentSettings(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "cardVaultUrl": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "countryCode": {
+                        responseData.put(key, CountryCode.fromGraphQl(jsonAsString(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "currencyCode": {
+                        responseData.put(key, CurrencyCode.fromGraphQl(jsonAsString(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "shopifyPaymentsAccountId": {
+                        String optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = jsonAsString(field.getValue(), key);
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "PaymentSettings";
+        }
+
+        /**
+        * The url pointing to the endpoint to vault credit cards.
+        */
+        public String getCardVaultUrl() {
+            return (String) get("cardVaultUrl");
+        }
+
+        public PaymentSettings setCardVaultUrl(String arg) {
+            optimisticData.put(getKey("cardVaultUrl"), arg);
+            return this;
+        }
+
+        /**
+        * The two-letter code for where the shop is located.
+        */
+        public CountryCode getCountryCode() {
+            return (CountryCode) get("countryCode");
+        }
+
+        public PaymentSettings setCountryCode(CountryCode arg) {
+            optimisticData.put(getKey("countryCode"), arg);
+            return this;
+        }
+
+        /**
+        * The three-letter code for the currency that the shop accepts.
+        */
+        public CurrencyCode getCurrencyCode() {
+            return (CurrencyCode) get("currencyCode");
+        }
+
+        public PaymentSettings setCurrencyCode(CurrencyCode arg) {
+            optimisticData.put(getKey("currencyCode"), arg);
+            return this;
+        }
+
+        /**
+        * The shop’s Shopify Payments account id.
+        */
+        public String getShopifyPaymentsAccountId() {
+            return (String) get("shopifyPaymentsAccountId");
+        }
+
+        public PaymentSettings setShopifyPaymentsAccountId(String arg) {
+            optimisticData.put(getKey("shopifyPaymentsAccountId"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "cardVaultUrl": return false;
+
+                case "countryCode": return false;
+
+                case "currencyCode": return false;
+
+                case "shopifyPaymentsAccountId": return false;
 
                 default: return false;
             }
@@ -16229,7 +19813,6 @@ public class Storefront {
         /**
         * List of collections a product belongs to.
         */
-
         public CollectionConnection getCollections() {
             return (CollectionConnection) get("collections");
         }
@@ -16242,7 +19825,6 @@ public class Storefront {
         /**
         * The date and time when the product was created.
         */
-
         public DateTime getCreatedAt() {
             return (DateTime) get("createdAt");
         }
@@ -16255,7 +19837,6 @@ public class Storefront {
         /**
         * Stripped description of the product, single line with HTML tags removed.
         */
-
         public String getDescription() {
             return (String) get("description");
         }
@@ -16268,7 +19849,6 @@ public class Storefront {
         /**
         * The description of the product, complete with HTML formatting.
         */
-
         public String getDescriptionHtml() {
             return (String) get("descriptionHtml");
         }
@@ -16282,7 +19862,6 @@ public class Storefront {
         * A human-friendly unique string for the Product automatically generated from its title.
         * They are used by the Liquid templating language to refer to objects.
         */
-
         public String getHandle() {
             return (String) get("handle");
         }
@@ -16299,7 +19878,6 @@ public class Storefront {
         /**
         * List of images associated with the product.
         */
-
         public ImageConnection getImages() {
             return (ImageConnection) get("images");
         }
@@ -16312,7 +19890,6 @@ public class Storefront {
         /**
         * Lst of custom product options (maximum of 3 per product).
         */
-
         public List<ProductOption> getOptions() {
             return (List<ProductOption>) get("options");
         }
@@ -16325,7 +19902,6 @@ public class Storefront {
         /**
         * A categorization that a product can be tagged with, commonly used for filtering and searching.
         */
-
         public String getProductType() {
             return (String) get("productType");
         }
@@ -16339,7 +19915,6 @@ public class Storefront {
         * The date and time when the product was published to the Online Store channel.
         * A value of `null` indicates that the product is not published to Online Store.
         */
-
         public DateTime getPublishedAt() {
             return (DateTime) get("publishedAt");
         }
@@ -16353,7 +19928,6 @@ public class Storefront {
         * A categorization that a product can be tagged with, commonly used for filtering and searching.
         * Each comma-separated tag has a character limit of 255.
         */
-
         public List<String> getTags() {
             return (List<String>) get("tags");
         }
@@ -16366,7 +19940,6 @@ public class Storefront {
         /**
         * The product’s title.
         */
-
         public String getTitle() {
             return (String) get("title");
         }
@@ -16379,7 +19952,6 @@ public class Storefront {
         /**
         * The date and time when the product was last modified.
         */
-
         public DateTime getUpdatedAt() {
             return (DateTime) get("updatedAt");
         }
@@ -16394,7 +19966,6 @@ public class Storefront {
         * This is useful for converting a user’s selection of product options into a single matching variant.
         * If there is not a variant for the selected options, `null` will be returned.
         */
-
         public ProductVariant getVariantBySelectedOptions() {
             return (ProductVariant) get("variantBySelectedOptions");
         }
@@ -16407,7 +19978,6 @@ public class Storefront {
         /**
         * List of the product’s variants.
         */
-
         public ProductVariantConnection getVariants() {
             return (ProductVariantConnection) get("variants");
         }
@@ -16420,7 +19990,6 @@ public class Storefront {
         /**
         * The product’s vendor name.
         */
-
         public String getVendor() {
             return (String) get("vendor");
         }
@@ -16465,6 +20034,112 @@ public class Storefront {
                 case "vendor": return false;
 
                 default: return false;
+            }
+        }
+    }
+
+    /**
+    * The set of valid sort keys for the products query.
+    */
+    public enum ProductCollectionSortKeys {
+        BEST_SELLING,
+
+        COLLECTION_DEFAULT,
+
+        CREATED,
+
+        ID,
+
+        MANUAL,
+
+        PRICE,
+
+        RELEVANCE,
+
+        TITLE,
+
+        UNKNOWN_VALUE;
+
+        public static ProductCollectionSortKeys fromGraphQl(String value) {
+            if (value == null) {
+                return null;
+            }
+
+            switch (value) {
+                case "BEST_SELLING": {
+                    return BEST_SELLING;
+                }
+
+                case "COLLECTION_DEFAULT": {
+                    return COLLECTION_DEFAULT;
+                }
+
+                case "CREATED": {
+                    return CREATED;
+                }
+
+                case "ID": {
+                    return ID;
+                }
+
+                case "MANUAL": {
+                    return MANUAL;
+                }
+
+                case "PRICE": {
+                    return PRICE;
+                }
+
+                case "RELEVANCE": {
+                    return RELEVANCE;
+                }
+
+                case "TITLE": {
+                    return TITLE;
+                }
+
+                default: {
+                    return UNKNOWN_VALUE;
+                }
+            }
+        }
+        public String toString() {
+            switch (this) {
+                case BEST_SELLING: {
+                    return "BEST_SELLING";
+                }
+
+                case COLLECTION_DEFAULT: {
+                    return "COLLECTION_DEFAULT";
+                }
+
+                case CREATED: {
+                    return "CREATED";
+                }
+
+                case ID: {
+                    return "ID";
+                }
+
+                case MANUAL: {
+                    return "MANUAL";
+                }
+
+                case PRICE: {
+                    return "PRICE";
+                }
+
+                case RELEVANCE: {
+                    return "RELEVANCE";
+                }
+
+                case TITLE: {
+                    return "TITLE";
+                }
+
+                default: {
+                    return "";
+                }
             }
         }
     }
@@ -16549,7 +20224,6 @@ public class Storefront {
         /**
         * A list of edges.
         */
-
         public List<ProductEdge> getEdges() {
             return (List<ProductEdge>) get("edges");
         }
@@ -16562,7 +20236,6 @@ public class Storefront {
         /**
         * Information to aid in pagination.
         */
-
         public PageInfo getPageInfo() {
             return (PageInfo) get("pageInfo");
         }
@@ -16775,7 +20448,6 @@ public class Storefront {
         /**
         * The product option’s name.
         */
-
         public String getName() {
             return (String) get("name");
         }
@@ -16788,7 +20460,6 @@ public class Storefront {
         /**
         * The corresponding value to the product option name.
         */
-
         public List<String> getValues() {
             return (List<String>) get("values");
         }
@@ -16920,6 +20591,18 @@ public class Storefront {
             super(_queryBuilder);
 
             startField("id");
+        }
+
+        /**
+        * Indicates if the product variant is in stock.
+        *
+        * @deprecated Use `availableForSale` instead
+        */
+        @Deprecated
+        public ProductVariantQuery available() {
+            startField("available");
+
+            return this;
         }
 
         /**
@@ -17085,6 +20768,17 @@ public class Storefront {
                 String key = field.getKey();
                 String fieldName = getFieldName(key);
                 switch (fieldName) {
+                    case "available": {
+                        Boolean optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = jsonAsBoolean(field.getValue(), key);
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
                     case "availableForSale": {
                         responseData.put(key, jsonAsBoolean(field.getValue(), key));
 
@@ -17175,9 +20869,22 @@ public class Storefront {
         }
 
         /**
+        * Indicates if the product variant is in stock.
+        *
+        * @deprecated Use `availableForSale` instead
+        */
+        public Boolean getAvailable() {
+            return (Boolean) get("available");
+        }
+
+        public ProductVariant setAvailable(Boolean arg) {
+            optimisticData.put(getKey("available"), arg);
+            return this;
+        }
+
+        /**
         * Indicates if the product variant is available for sale.
         */
-
         public Boolean getAvailableForSale() {
             return (Boolean) get("availableForSale");
         }
@@ -17194,7 +20901,6 @@ public class Storefront {
         /**
         * Image associated with the product variant.
         */
-
         public Image getImage() {
             return (Image) get("image");
         }
@@ -17207,7 +20913,6 @@ public class Storefront {
         /**
         * The product variant’s price.
         */
-
         public BigDecimal getPrice() {
             return (BigDecimal) get("price");
         }
@@ -17220,7 +20925,6 @@ public class Storefront {
         /**
         * The product object that the product variant belongs to.
         */
-
         public Product getProduct() {
             return (Product) get("product");
         }
@@ -17233,7 +20937,6 @@ public class Storefront {
         /**
         * List of product options applied to the variant.
         */
-
         public List<SelectedOption> getSelectedOptions() {
             return (List<SelectedOption>) get("selectedOptions");
         }
@@ -17246,7 +20949,6 @@ public class Storefront {
         /**
         * The product variant’s title.
         */
-
         public String getTitle() {
             return (String) get("title");
         }
@@ -17259,7 +20961,6 @@ public class Storefront {
         /**
         * The weight of the product variant in the unit system specified with `weight_unit`.
         */
-
         public Double getWeight() {
             return (Double) get("weight");
         }
@@ -17272,7 +20973,6 @@ public class Storefront {
         /**
         * Unit of measurement for weight.
         */
-
         public WeightUnit getWeightUnit() {
             return (WeightUnit) get("weightUnit");
         }
@@ -17284,6 +20984,8 @@ public class Storefront {
 
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
+                case "available": return false;
+
                 case "availableForSale": return false;
 
                 case "id": return false;
@@ -17387,7 +21089,6 @@ public class Storefront {
         /**
         * A list of edges.
         */
-
         public List<ProductVariantEdge> getEdges() {
             return (List<ProductVariantEdge>) get("edges");
         }
@@ -17400,7 +21101,6 @@ public class Storefront {
         /**
         * Information to aid in pagination.
         */
-
         public PageInfo getPageInfo() {
             return (PageInfo) get("pageInfo");
         }
@@ -17791,7 +21491,6 @@ public class Storefront {
         /**
         * The product option’s name.
         */
-
         public String getName() {
             return (String) get("name");
         }
@@ -17804,7 +21503,6 @@ public class Storefront {
         /**
         * The product option’s value.
         */
-
         public String getValue() {
             return (String) get("value");
         }
@@ -17960,7 +21658,6 @@ public class Storefront {
         /**
         * Human-readable unique identifier for this shipping rate.
         */
-
         public String getHandle() {
             return (String) get("handle");
         }
@@ -17973,7 +21670,6 @@ public class Storefront {
         /**
         * Price of this shipping rate.
         */
-
         public BigDecimal getPrice() {
             return (BigDecimal) get("price");
         }
@@ -17986,7 +21682,6 @@ public class Storefront {
         /**
         * Title of this shipping rate.
         */
-
         public String getTitle() {
             return (String) get("title");
         }
@@ -18176,7 +21871,10 @@ public class Storefront {
 
         /**
         * The url pointing to the endpoint to vault credit cards.
+        *
+        * @deprecated Use `paymentSettings` instead
         */
+        @Deprecated
         public ShopQuery cardVaultUrl() {
             startField("cardVaultUrl");
 
@@ -18278,7 +21976,10 @@ public class Storefront {
 
         /**
         * The three-letter code for the currency that the shop accepts.
+        *
+        * @deprecated Use `paymentSettings` instead
         */
+        @Deprecated
         public ShopQuery currencyCode() {
             startField("currencyCode");
 
@@ -18308,6 +22009,19 @@ public class Storefront {
         */
         public ShopQuery name() {
             startField("name");
+
+            return this;
+        }
+
+        /**
+        * Values required for completing various payment methods.
+        */
+        public ShopQuery paymentSettings(PaymentSettingsQueryDefinition queryDef) {
+            startField("paymentSettings");
+
+            _queryBuilder.append('{');
+            queryDef.define(new PaymentSettingsQuery(_queryBuilder));
+            _queryBuilder.append('}');
 
             return this;
         }
@@ -18449,7 +22163,10 @@ public class Storefront {
 
         /**
         * The shop’s Shopify Payments account id.
+        *
+        * @deprecated Use `paymentSettings` instead
         */
+        @Deprecated
         public ShopQuery shopifyPaymentsAccountId() {
             startField("shopifyPaymentsAccountId");
 
@@ -18546,6 +22263,12 @@ public class Storefront {
                         break;
                     }
 
+                    case "paymentSettings": {
+                        responseData.put(key, new PaymentSettings(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
                     case "primaryDomain": {
                         responseData.put(key, new Domain(jsonAsObject(field.getValue(), key)));
 
@@ -18631,7 +22354,6 @@ public class Storefront {
         /**
         * List of the shop' articles.
         */
-
         public ArticleConnection getArticles() {
             return (ArticleConnection) get("articles");
         }
@@ -18644,7 +22366,6 @@ public class Storefront {
         /**
         * List of the shop' blogs.
         */
-
         public BlogConnection getBlogs() {
             return (BlogConnection) get("blogs");
         }
@@ -18656,8 +22377,9 @@ public class Storefront {
 
         /**
         * The url pointing to the endpoint to vault credit cards.
+        *
+        * @deprecated Use `paymentSettings` instead
         */
-
         public String getCardVaultUrl() {
             return (String) get("cardVaultUrl");
         }
@@ -18670,7 +22392,6 @@ public class Storefront {
         /**
         * Find a collection by its handle.
         */
-
         public Collection getCollectionByHandle() {
             return (Collection) get("collectionByHandle");
         }
@@ -18683,7 +22404,6 @@ public class Storefront {
         /**
         * List of the shop’s collections.
         */
-
         public CollectionConnection getCollections() {
             return (CollectionConnection) get("collections");
         }
@@ -18695,8 +22415,9 @@ public class Storefront {
 
         /**
         * The three-letter code for the currency that the shop accepts.
+        *
+        * @deprecated Use `paymentSettings` instead
         */
-
         public CurrencyCode getCurrencyCode() {
             return (CurrencyCode) get("currencyCode");
         }
@@ -18709,7 +22430,6 @@ public class Storefront {
         /**
         * A description of the shop.
         */
-
         public String getDescription() {
             return (String) get("description");
         }
@@ -18722,7 +22442,6 @@ public class Storefront {
         /**
         * A string representing the way currency is formatted when the currency isn’t specified.
         */
-
         public String getMoneyFormat() {
             return (String) get("moneyFormat");
         }
@@ -18735,7 +22454,6 @@ public class Storefront {
         /**
         * The shop’s name.
         */
-
         public String getName() {
             return (String) get("name");
         }
@@ -18746,9 +22464,20 @@ public class Storefront {
         }
 
         /**
+        * Values required for completing various payment methods.
+        */
+        public PaymentSettings getPaymentSettings() {
+            return (PaymentSettings) get("paymentSettings");
+        }
+
+        public Shop setPaymentSettings(PaymentSettings arg) {
+            optimisticData.put(getKey("paymentSettings"), arg);
+            return this;
+        }
+
+        /**
         * The shop’s primary domain.
         */
-
         public Domain getPrimaryDomain() {
             return (Domain) get("primaryDomain");
         }
@@ -18761,7 +22490,6 @@ public class Storefront {
         /**
         * The shop’s privacy policy.
         */
-
         public ShopPolicy getPrivacyPolicy() {
             return (ShopPolicy) get("privacyPolicy");
         }
@@ -18774,7 +22502,6 @@ public class Storefront {
         /**
         * Find a product by its handle.
         */
-
         public Product getProductByHandle() {
             return (Product) get("productByHandle");
         }
@@ -18787,7 +22514,6 @@ public class Storefront {
         /**
         * List of the shop’s products.
         */
-
         public ProductConnection getProducts() {
             return (ProductConnection) get("products");
         }
@@ -18800,7 +22526,6 @@ public class Storefront {
         /**
         * The shop’s refund policy.
         */
-
         public ShopPolicy getRefundPolicy() {
             return (ShopPolicy) get("refundPolicy");
         }
@@ -18812,8 +22537,9 @@ public class Storefront {
 
         /**
         * The shop’s Shopify Payments account id.
+        *
+        * @deprecated Use `paymentSettings` instead
         */
-
         public String getShopifyPaymentsAccountId() {
             return (String) get("shopifyPaymentsAccountId");
         }
@@ -18826,7 +22552,6 @@ public class Storefront {
         /**
         * The shop’s terms of service.
         */
-
         public ShopPolicy getTermsOfService() {
             return (ShopPolicy) get("termsOfService");
         }
@@ -18855,6 +22580,8 @@ public class Storefront {
                 case "moneyFormat": return false;
 
                 case "name": return false;
+
+                case "paymentSettings": return true;
 
                 case "primaryDomain": return true;
 
@@ -18976,7 +22703,6 @@ public class Storefront {
         /**
         * Policy text, maximum size of 64kb.
         */
-
         public String getBody() {
             return (String) get("body");
         }
@@ -18993,7 +22719,6 @@ public class Storefront {
         /**
         * Policy’s title.
         */
-
         public String getTitle() {
             return (String) get("title");
         }
@@ -19006,7 +22731,6 @@ public class Storefront {
         /**
         * Public URL to the policy.
         */
-
         public String getUrl() {
             return (String) get("url");
         }
@@ -19271,7 +22995,6 @@ public class Storefront {
         /**
         * The amount of money that the transaction was for.
         */
-
         public BigDecimal getAmount() {
             return (BigDecimal) get("amount");
         }
@@ -19284,7 +23007,6 @@ public class Storefront {
         /**
         * The kind of the transaction.
         */
-
         public TransactionKind getKind() {
             return (TransactionKind) get("kind");
         }
@@ -19297,7 +23019,6 @@ public class Storefront {
         /**
         * The status of the transaction
         */
-
         public TransactionStatus getStatus() {
             return (TransactionStatus) get("status");
         }
@@ -19310,7 +23031,6 @@ public class Storefront {
         /**
         * Whether the transaction was done in test mode or not
         */
-
         public Boolean getTest() {
             return (Boolean) get("test");
         }
@@ -19554,7 +23274,6 @@ public class Storefront {
         /**
         * Path to input field which caused the error.
         */
-
         public List<String> getField() {
             return (List<String>) get("field");
         }
@@ -19567,7 +23286,6 @@ public class Storefront {
         /**
         * The error message.
         */
-
         public String getMessage() {
             return (String) get("message");
         }
@@ -19592,12 +23310,24 @@ public class Storefront {
     * Units of measurements for weight.
     */
     public enum WeightUnit {
+        /**
+        * Metric system unit of mass
+        */
         GRAMS,
 
+        /**
+        * 1 equals 1000 grams
+        */
         KILOGRAMS,
 
+        /**
+        * Imperial system unit of mass
+        */
         OUNCES,
 
+        /**
+        * 1 equals 16 ounces
+        */
         POUNDS,
 
         UNKNOWN_VALUE;
