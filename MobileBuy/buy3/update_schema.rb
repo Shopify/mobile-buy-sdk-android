@@ -36,5 +36,6 @@ GraphQLJavaGen.new(
   schema,
   package_name: "com.shopify.buy3",
   nest_under: 'Storefront',
-  custom_scalars: custom_scalars
+  custom_scalars: custom_scalars,
+  include_deprecated: true
 ).save(target_filename)
