@@ -37,6 +37,7 @@ import com.shopify.graphql.support.TopLevelResponse;
 import java.io.IOException;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 import okhttp3.Call;
 import okhttp3.HttpUrl;
@@ -63,6 +64,7 @@ abstract class RealGraphCall<T extends AbstractResponse<T>> implements GraphCall
   private volatile Call httpCall;
   private volatile HttpCallbackWithRetry httpCallbackWithRetry;
   private volatile boolean canceled;
+  private CallbackProxy<T> responseCallback;
 
   RealGraphCall(final Query query, final HttpUrl serverUrl, final Call.Factory httpCallFactory,
     final ResponseDataConverter<T> responseDataConverter, final ScheduledExecutorService dispatcher,
@@ -88,6 +90,11 @@ abstract class RealGraphCall<T extends AbstractResponse<T>> implements GraphCall
 
   @Override public void cancel() {
     canceled = true;
+
+    CallbackProxy<T> callbackProxy = responseCallback;
+    if (callbackProxy != null) {
+      callbackProxy.cancel();
+    }
 
     HttpCallbackWithRetry httpCallbackWithRetry = this.httpCallbackWithRetry;
     if (httpCallbackWithRetry != null) {
@@ -123,11 +130,11 @@ abstract class RealGraphCall<T extends AbstractResponse<T>> implements GraphCall
     try {
       graphResponse = httpResponseParser.parse(response);
       if (graphResponse.hasErrors()) {
-        removeCachedResponse(httpCall.request());
+        removeCachedResponse();
       }
     } catch (Exception rethrow) {
       if (rethrow instanceof GraphParseError) {
-        removeCachedResponse(httpCall.request());
+        removeCachedResponse();
       }
       throw rethrow;
     } finally {
@@ -151,42 +158,19 @@ abstract class RealGraphCall<T extends AbstractResponse<T>> implements GraphCall
     if (!executed.compareAndSet(false, true)) {
       throw new IllegalStateException("Already Executed");
     }
-
     checkNotNull(retryHandler, "retryHandler == null");
 
-    if (canceled) {
-      callback.onFailure(new GraphCallCanceledError());
-      return this;
-    }
-
-    final Callback<T> proxyCallBack = new Callback<T>() {
-      @Override public void onResponse(@NonNull final GraphResponse<T> response) {
-        if (canceled) {
-          callback.onFailure(new GraphCallCanceledError());
-        } else {
-          if (response.hasErrors()) {
-            removeCachedResponse(httpCall.request());
-          }
-          callback.onResponse(response);
-        }
-      }
-
-      @Override public void onFailure(@NonNull final GraphError error) {
-        if (error instanceof GraphParseError) {
-          removeCachedResponse(httpCall.request());
-        }
-
-        if (canceled) {
-          callback.onFailure(new GraphCallCanceledError());
-        } else {
-          callback.onFailure(error);
-        }
-      }
-    };
-
+    responseCallback = new CallbackProxy<T>(this, callback);
+    
     dispatcher.execute(() -> {
+      if (canceled) {
+        responseCallback.cancel();
+        return;
+      }
+
       httpCall = httpCall();
-      httpCallbackWithRetry = new HttpCallbackWithRetry<>(httpCall, httpResponseParser, retryHandler, proxyCallBack, dispatcher, handler);
+      httpCallbackWithRetry = new HttpCallbackWithRetry<>(httpCall, httpResponseParser, retryHandler, responseCallback, dispatcher,
+        handler);
       httpCall.enqueue(httpCallbackWithRetry);
     });
 
@@ -215,8 +199,8 @@ abstract class RealGraphCall<T extends AbstractResponse<T>> implements GraphCall
     }
   }
 
-  private void removeCachedResponse(@NonNull final Request request) {
-    String cacheKey = request.header(HttpCache.CACHE_KEY_HEADER);
+  private void removeCachedResponse() {
+    String cacheKey = httpCall != null ? httpCall.request().header(HttpCache.CACHE_KEY_HEADER) : null;
     if (httpCache == null || cacheKey == null || cacheKey.isEmpty()) {
       return;
     }
@@ -226,5 +210,45 @@ abstract class RealGraphCall<T extends AbstractResponse<T>> implements GraphCall
 
   interface ResponseDataConverter<R extends AbstractResponse<R>> {
     R convert(TopLevelResponse response) throws SchemaViolationError;
+  }
+
+  private static class CallbackProxy<T extends AbstractResponse<T>> implements Callback<T> {
+    final RealGraphCall<T> graphCall;
+    final AtomicReference<Callback<T>> originalCallbackRef;
+
+    CallbackProxy(final RealGraphCall<T> graphCall, final Callback<T> originalCallback) {
+      this.graphCall = graphCall;
+      this.originalCallbackRef = new AtomicReference<>(originalCallback);
+    }
+
+    @Override public void onResponse(@NonNull final GraphResponse<T> response) {
+      if (response.hasErrors()) {
+        graphCall.removeCachedResponse();
+      }
+
+      Callback<T> originalCallback = originalCallbackRef.get();
+      if (originalCallback == null || !originalCallbackRef.compareAndSet(originalCallback, null)) {
+        return;
+      }
+      originalCallback.onResponse(response);
+    }
+
+    @Override public void onFailure(@NonNull final GraphError error) {
+      if (error instanceof GraphParseError) {
+        graphCall.removeCachedResponse();
+      }
+
+      Callback<T> originalCallback = originalCallbackRef.get();
+      if (originalCallback != null && originalCallbackRef.compareAndSet(originalCallback, null)) {
+        originalCallback.onFailure(error);
+      }
+    }
+
+    void cancel() {
+      Callback<T> originalCallback = originalCallbackRef.getAndSet(null);
+      if (originalCallback != null) {
+        originalCallback.onFailure(new GraphCallCanceledError());
+      }
+    }
   }
 }
