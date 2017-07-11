@@ -241,8 +241,9 @@ public class RetryTest {
 
     Thread.sleep(TimeUnit.SECONDS.toMillis(3));
     call.cancel();
+    Thread.sleep(TimeUnit.SECONDS.toMillis(2));
 
-    if (graphError.get() != null || graphResponse.get() != null) {
+    if (!(graphError.get() instanceof GraphCallCanceledError) || graphResponse.get() != null) {
       fail("Expected to cancel");
     }
   }

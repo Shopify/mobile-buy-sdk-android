@@ -237,7 +237,7 @@ public class GraphClientIntegrationTest {
 
     countDownLatch.await(5, TimeUnit.SECONDS);
     assertThat(call.isCanceled()).isTrue();
-    assertThat(executedInCallbackHandler.get()).isFalse();
+    assertThat(executedInCallbackHandler.get()).isTrue();
   }
 
   @Test public void canceledErrorDuringExecute() throws Exception {
