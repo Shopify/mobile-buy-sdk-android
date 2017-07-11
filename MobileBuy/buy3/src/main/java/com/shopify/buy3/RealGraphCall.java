@@ -161,7 +161,7 @@ abstract class RealGraphCall<T extends AbstractResponse<T>> implements GraphCall
     checkNotNull(retryHandler, "retryHandler == null");
 
     responseCallback = new CallbackProxy<T>(this, callback);
-    
+
     dispatcher.execute(() -> {
       if (canceled) {
         responseCallback.cancel();
