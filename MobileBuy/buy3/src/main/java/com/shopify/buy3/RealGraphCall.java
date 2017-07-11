@@ -160,11 +160,15 @@ abstract class RealGraphCall<T extends AbstractResponse<T>> implements GraphCall
     }
     checkNotNull(retryHandler, "retryHandler == null");
 
-    responseCallback = new CallbackProxy<T>(this, callback);
+    responseCallback = new CallbackProxy<T>(this, callback, handler);
 
     dispatcher.execute(() -> {
       if (canceled) {
-        responseCallback.cancel();
+        if (handler != null) {
+          handler.post(() -> responseCallback.cancel());
+        } else {
+          responseCallback.cancel();
+        }
         return;
       }
 
@@ -215,10 +219,12 @@ abstract class RealGraphCall<T extends AbstractResponse<T>> implements GraphCall
   private static class CallbackProxy<T extends AbstractResponse<T>> implements Callback<T> {
     final RealGraphCall<T> graphCall;
     final AtomicReference<Callback<T>> originalCallbackRef;
+    final Handler handler;
 
-    CallbackProxy(final RealGraphCall<T> graphCall, final Callback<T> originalCallback) {
+    CallbackProxy(final RealGraphCall<T> graphCall, final Callback<T> originalCallback, final Handler handler) {
       this.graphCall = graphCall;
       this.originalCallbackRef = new AtomicReference<>(originalCallback);
+      this.handler = handler;
     }
 
     @Override public void onResponse(@NonNull final GraphResponse<T> response) {
@@ -247,7 +253,11 @@ abstract class RealGraphCall<T extends AbstractResponse<T>> implements GraphCall
     void cancel() {
       Callback<T> originalCallback = originalCallbackRef.getAndSet(null);
       if (originalCallback != null) {
-        originalCallback.onFailure(new GraphCallCanceledError());
+        if (handler != null) {
+          handler.post(() -> originalCallback.onFailure(new GraphCallCanceledError()));
+        } else {
+          originalCallback.onFailure(new GraphCallCanceledError());
+        }
       }
     }
   }
