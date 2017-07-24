@@ -73,7 +73,7 @@ public final class CheckoutRepository {
       })
       .map(it -> it.checkout.get())
       .map(it -> it.fragments)
-      .map(it -> it.checkoutCreateFragment.get())
+      .map(it -> it.checkoutCreateFragment)
       .subscribeOn(Schedulers.io());
   }
 
@@ -91,7 +91,7 @@ public final class CheckoutRepository {
       })
       .map(it -> it.checkout)
       .map(it -> it.fragments)
-      .map(it -> it.checkoutFragment.get())
+      .map(it -> it.checkoutFragment)
       .subscribeOn(Schedulers.io());
   }
 
@@ -101,7 +101,7 @@ public final class CheckoutRepository {
       .httpCachePolicy(HttpCachePolicy.NETWORK_ONLY))
       .map(Optional::get)
       .map(it -> it.node.get())
-      .map(it -> it.fragments.checkoutFragment)
+      .map(it -> it.fragments.checkoutFragment.get())
       .subscribeOn(Schedulers.io());
   }
 
@@ -116,7 +116,6 @@ public final class CheckoutRepository {
       .map(it -> it.asCheckout.get())
       .map(it -> it.availableShippingRates.get())
       .map(it -> it.fragments.checkoutShippingRatesFragment)
-      .map(it -> it.or(new CheckoutShippingRatesFragment("", false, null)))
       .subscribeOn(Schedulers.io());
   }
 
@@ -133,7 +132,7 @@ public final class CheckoutRepository {
         }
       })
       .map(it -> it.checkout.get())
-      .map(it -> it.fragments.checkoutFragment.get())
+      .map(it -> it.fragments.checkoutFragment)
       .subscribeOn(Schedulers.io());
   }
 
@@ -151,7 +150,7 @@ public final class CheckoutRepository {
       })
       .map(it -> it.checkout)
       .map(it -> it.fragments)
-      .map(it -> it.checkoutFragment.get())
+      .map(it -> it.checkoutFragment)
       .subscribeOn(Schedulers.io());
   }
 
@@ -169,7 +168,7 @@ public final class CheckoutRepository {
       })
       .map(it -> it.payment.get())
       .map(it -> it.fragments)
-      .map(it -> it.paymentFragment.get())
+      .map(it -> it.paymentFragment)
       .subscribeOn(Schedulers.io());
   }
 
@@ -182,7 +181,7 @@ public final class CheckoutRepository {
       .map(Optional::get)
       .map(it -> it.node.get())
       .map(it -> it.fragments)
-      .map(it -> it.paymentFragment)
+      .map(it -> it.paymentFragment.get())
       .subscribeOn(Schedulers.io());
   }
 }
