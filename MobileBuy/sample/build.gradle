@@ -142,4 +142,5 @@ apollo {
   customTypeMapping['Money'] = "java.math.BigDecimal"
   nullableValueType = "apolloOptional"
   generateAccessors = false
+  useSemanticNaming = false
 }

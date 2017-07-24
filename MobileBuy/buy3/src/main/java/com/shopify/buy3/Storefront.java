@@ -19396,6 +19396,14 @@ public class Storefront {
                 return this;
             }
 
+            public ImagesArguments sortKey(ProductImageSortKeys value) {
+                if (value != null) {
+                    startArgument("sortKey");
+                    _queryBuilder.append(value.toString());
+                }
+                return this;
+            }
+
             public ImagesArguments reverse(Boolean value) {
                 if (value != null) {
                     startArgument("reverse");
@@ -20343,6 +20351,72 @@ public class Storefront {
                 case "node": return true;
 
                 default: return false;
+            }
+        }
+    }
+
+    /**
+    * The set of valid sort keys for the images query.
+    */
+    public enum ProductImageSortKeys {
+        CREATED_AT,
+
+        ID,
+
+        POSITION,
+
+        RELEVANCE,
+
+        UNKNOWN_VALUE;
+
+        public static ProductImageSortKeys fromGraphQl(String value) {
+            if (value == null) {
+                return null;
+            }
+
+            switch (value) {
+                case "CREATED_AT": {
+                    return CREATED_AT;
+                }
+
+                case "ID": {
+                    return ID;
+                }
+
+                case "POSITION": {
+                    return POSITION;
+                }
+
+                case "RELEVANCE": {
+                    return RELEVANCE;
+                }
+
+                default: {
+                    return UNKNOWN_VALUE;
+                }
+            }
+        }
+        public String toString() {
+            switch (this) {
+                case CREATED_AT: {
+                    return "CREATED_AT";
+                }
+
+                case ID: {
+                    return "ID";
+                }
+
+                case POSITION: {
+                    return "POSITION";
+                }
+
+                case RELEVANCE: {
+                    return "RELEVANCE";
+                }
+
+                default: {
+                    return "";
+                }
             }
         }
     }
@@ -22070,6 +22144,24 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * List of the shop’s product types.
+        */
+        public ShopQuery productTypes(int first, StringConnectionQueryDefinition queryDef) {
+            startField("productTypes");
+
+            _queryBuilder.append("(first:");
+            _queryBuilder.append(first);
+
+            _queryBuilder.append(')');
+
+            _queryBuilder.append('{');
+            queryDef.define(new StringConnectionQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
         public class ProductsArguments extends Arguments {
             ProductsArguments(StringBuilder _queryBuilder) {
                 super(_queryBuilder, false);
@@ -22297,6 +22389,12 @@ public class Storefront {
                         break;
                     }
 
+                    case "productTypes": {
+                        responseData.put(key, new StringConnection(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
                     case "products": {
                         responseData.put(key, new ProductConnection(jsonAsObject(field.getValue(), key)));
 
@@ -22512,6 +22610,18 @@ public class Storefront {
         }
 
         /**
+        * List of the shop’s product types.
+        */
+        public StringConnection getProductTypes() {
+            return (StringConnection) get("productTypes");
+        }
+
+        public Shop setProductTypes(StringConnection arg) {
+            optimisticData.put(getKey("productTypes"), arg);
+            return this;
+        }
+
+        /**
         * List of the shop’s products.
         */
         public ProductConnection getProducts() {
@@ -22588,6 +22698,8 @@ public class Storefront {
                 case "privacyPolicy": return true;
 
                 case "productByHandle": return true;
+
+                case "productTypes": return true;
 
                 case "products": return true;
 
@@ -22749,6 +22861,205 @@ public class Storefront {
                 case "title": return false;
 
                 case "url": return false;
+
+                default: return false;
+            }
+        }
+    }
+
+    public interface StringConnectionQueryDefinition {
+        void define(StringConnectionQuery _queryBuilder);
+    }
+
+    public static class StringConnectionQuery extends Query<StringConnectionQuery> {
+        StringConnectionQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * A list of edges.
+        */
+        public StringConnectionQuery edges(StringEdgeQueryDefinition queryDef) {
+            startField("edges");
+
+            _queryBuilder.append('{');
+            queryDef.define(new StringEdgeQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * Information to aid in pagination.
+        */
+        public StringConnectionQuery pageInfo(PageInfoQueryDefinition queryDef) {
+            startField("pageInfo");
+
+            _queryBuilder.append('{');
+            queryDef.define(new PageInfoQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+    }
+
+    public static class StringConnection extends AbstractResponse<StringConnection> {
+        public StringConnection() {
+        }
+
+        public StringConnection(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "edges": {
+                        List<StringEdge> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new StringEdge(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "pageInfo": {
+                        responseData.put(key, new PageInfo(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "StringConnection";
+        }
+
+        /**
+        * A list of edges.
+        */
+        public List<StringEdge> getEdges() {
+            return (List<StringEdge>) get("edges");
+        }
+
+        public StringConnection setEdges(List<StringEdge> arg) {
+            optimisticData.put(getKey("edges"), arg);
+            return this;
+        }
+
+        /**
+        * Information to aid in pagination.
+        */
+        public PageInfo getPageInfo() {
+            return (PageInfo) get("pageInfo");
+        }
+
+        public StringConnection setPageInfo(PageInfo arg) {
+            optimisticData.put(getKey("pageInfo"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "edges": return true;
+
+                case "pageInfo": return true;
+
+                default: return false;
+            }
+        }
+    }
+
+    public interface StringEdgeQueryDefinition {
+        void define(StringEdgeQuery _queryBuilder);
+    }
+
+    public static class StringEdgeQuery extends Query<StringEdgeQuery> {
+        StringEdgeQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        public StringEdgeQuery cursor() {
+            startField("cursor");
+
+            return this;
+        }
+
+        public StringEdgeQuery node() {
+            startField("node");
+
+            return this;
+        }
+    }
+
+    public static class StringEdge extends AbstractResponse<StringEdge> {
+        public StringEdge() {
+        }
+
+        public StringEdge(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "cursor": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "node": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "StringEdge";
+        }
+
+        public String getCursor() {
+            return (String) get("cursor");
+        }
+
+        public StringEdge setCursor(String arg) {
+            optimisticData.put(getKey("cursor"), arg);
+            return this;
+        }
+
+        public String getNode() {
+            return (String) get("node");
+        }
+
+        public StringEdge setNode(String arg) {
+            optimisticData.put(getKey("node"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "cursor": return false;
+
+                case "node": return false;
 
                 default: return false;
             }

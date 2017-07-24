@@ -95,7 +95,7 @@ final class Converters {
       new Checkout.LineItem(it.lineItem.variant.get().id, it.lineItem.title, it.lineItem.quantity, it.lineItem.variant.get().price));
     Checkout.ShippingRate shippingLine = checkout.shippingLine.transform(it -> new Checkout.ShippingRate(it.handle, it.price, it.title))
       .orNull();
-    Checkout.ShippingRates shippingRates = checkout.availableShippingRates.flatMap(it -> it.fragments.checkoutShippingRatesFragment)
+    Checkout.ShippingRates shippingRates = checkout.availableShippingRates.map(it -> it.fragments.checkoutShippingRatesFragment)
       .transform(Converters::convertToShippingRates).or(new Checkout.ShippingRates(false, emptyList()));
     return new Checkout(checkout.id, checkout.webUrl, checkout.currencyCode.toString(), checkout.requiresShipping, lineItems, shippingRates,
       shippingLine, checkout.totalTax, checkout.subtotalPrice, checkout.paymentDue);
