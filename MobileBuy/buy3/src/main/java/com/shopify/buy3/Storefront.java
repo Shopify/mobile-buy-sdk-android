@@ -227,6 +227,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * Globally unique identifier.
+        */
         public ID getId() {
             return (ID) get("id");
         }
@@ -774,6 +777,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * Globally unique identifier.
+        */
         public ID getId() {
             return (ID) get("id");
         }
@@ -1183,12 +1189,18 @@ public class Storefront {
             super(_queryBuilder);
         }
 
+        /**
+        * A cursor for use in pagination.
+        */
         public ArticleEdgeQuery cursor() {
             startField("cursor");
 
             return this;
         }
 
+        /**
+        * The item at the end of ArticleEdge.
+        */
         public ArticleEdgeQuery node(ArticleQueryDefinition queryDef) {
             startField("node");
 
@@ -1236,6 +1248,9 @@ public class Storefront {
             return "ArticleEdge";
         }
 
+        /**
+        * A cursor for use in pagination.
+        */
         public String getCursor() {
             return (String) get("cursor");
         }
@@ -1245,6 +1260,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * The item at the end of ArticleEdge.
+        */
         public Article getNode() {
             return (Article) get("node");
         }
@@ -1779,6 +1797,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * Globally unique identifier.
+        */
         public ID getId() {
             return (ID) get("id");
         }
@@ -1943,12 +1964,18 @@ public class Storefront {
             super(_queryBuilder);
         }
 
+        /**
+        * A cursor for use in pagination.
+        */
         public BlogEdgeQuery cursor() {
             startField("cursor");
 
             return this;
         }
 
+        /**
+        * The item at the end of BlogEdge.
+        */
         public BlogEdgeQuery node(BlogQueryDefinition queryDef) {
             startField("node");
 
@@ -1996,6 +2023,9 @@ public class Storefront {
             return "BlogEdge";
         }
 
+        /**
+        * A cursor for use in pagination.
+        */
         public String getCursor() {
             return (String) get("cursor");
         }
@@ -2005,6 +2035,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * The item at the end of BlogEdge.
+        */
         public Blog getNode() {
             return (Blog) get("node");
         }
@@ -2082,6 +2115,110 @@ public class Storefront {
 
                 case TITLE: {
                     return "TITLE";
+                }
+
+                default: {
+                    return "";
+                }
+            }
+        }
+    }
+
+    /**
+    * Card brand, such as Visa or Mastercard, which can be used for payments.
+    */
+    public enum CardBrand {
+        /**
+        * American Express
+        */
+        AMERICAN_EXPRESS,
+
+        /**
+        * Diners Club
+        */
+        DINERS_CLUB,
+
+        /**
+        * Discover
+        */
+        DISCOVER,
+
+        /**
+        * JCB
+        */
+        JCB,
+
+        /**
+        * Mastercard
+        */
+        MASTERCARD,
+
+        /**
+        * Visa
+        */
+        VISA,
+
+        UNKNOWN_VALUE;
+
+        public static CardBrand fromGraphQl(String value) {
+            if (value == null) {
+                return null;
+            }
+
+            switch (value) {
+                case "AMERICAN_EXPRESS": {
+                    return AMERICAN_EXPRESS;
+                }
+
+                case "DINERS_CLUB": {
+                    return DINERS_CLUB;
+                }
+
+                case "DISCOVER": {
+                    return DISCOVER;
+                }
+
+                case "JCB": {
+                    return JCB;
+                }
+
+                case "MASTERCARD": {
+                    return MASTERCARD;
+                }
+
+                case "VISA": {
+                    return VISA;
+                }
+
+                default: {
+                    return UNKNOWN_VALUE;
+                }
+            }
+        }
+        public String toString() {
+            switch (this) {
+                case AMERICAN_EXPRESS: {
+                    return "AMERICAN_EXPRESS";
+                }
+
+                case DINERS_CLUB: {
+                    return "DINERS_CLUB";
+                }
+
+                case DISCOVER: {
+                    return "DISCOVER";
+                }
+
+                case JCB: {
+                    return "JCB";
+                }
+
+                case MASTERCARD: {
+                    return "MASTERCARD";
+                }
+
+                case VISA: {
+                    return "VISA";
                 }
 
                 default: {
@@ -2725,6 +2862,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * Globally unique identifier.
+        */
         public ID getId() {
             return (ID) get("id");
         }
@@ -4531,6 +4671,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * Globally unique identifier.
+        */
         public ID getId() {
             return (ID) get("id");
         }
@@ -4709,12 +4852,18 @@ public class Storefront {
             super(_queryBuilder);
         }
 
+        /**
+        * A cursor for use in pagination.
+        */
         public CheckoutLineItemEdgeQuery cursor() {
             startField("cursor");
 
             return this;
         }
 
+        /**
+        * The item at the end of CheckoutLineItemEdge.
+        */
         public CheckoutLineItemEdgeQuery node(CheckoutLineItemQueryDefinition queryDef) {
             startField("node");
 
@@ -4762,6 +4911,9 @@ public class Storefront {
             return "CheckoutLineItemEdge";
         }
 
+        /**
+        * A cursor for use in pagination.
+        */
         public String getCursor() {
             return (String) get("cursor");
         }
@@ -4771,6 +4923,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * The item at the end of CheckoutLineItemEdge.
+        */
         public CheckoutLineItem getNode() {
             return (CheckoutLineItem) get("node");
         }
@@ -5883,6 +6038,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * Globally unique identifier.
+        */
         public ID getId() {
             return (ID) get("id");
         }
@@ -6079,12 +6237,18 @@ public class Storefront {
             super(_queryBuilder);
         }
 
+        /**
+        * A cursor for use in pagination.
+        */
         public CollectionEdgeQuery cursor() {
             startField("cursor");
 
             return this;
         }
 
+        /**
+        * The item at the end of CollectionEdge.
+        */
         public CollectionEdgeQuery node(CollectionQueryDefinition queryDef) {
             startField("node");
 
@@ -6132,6 +6296,9 @@ public class Storefront {
             return "CollectionEdge";
         }
 
+        /**
+        * A cursor for use in pagination.
+        */
         public String getCursor() {
             return (String) get("cursor");
         }
@@ -6141,6 +6308,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * The item at the end of CollectionEdge.
+        */
         public Collection getNode() {
             return (Collection) get("node");
         }
@@ -6391,6 +6561,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * Globally unique identifier.
+        */
         public ID getId() {
             return (ID) get("id");
         }
@@ -6630,12 +6803,18 @@ public class Storefront {
             super(_queryBuilder);
         }
 
+        /**
+        * A cursor for use in pagination.
+        */
         public CommentEdgeQuery cursor() {
             startField("cursor");
 
             return this;
         }
 
+        /**
+        * The item at the end of CommentEdge.
+        */
         public CommentEdgeQuery node(CommentQueryDefinition queryDef) {
             startField("node");
 
@@ -6683,6 +6862,9 @@ public class Storefront {
             return "CommentEdge";
         }
 
+        /**
+        * A cursor for use in pagination.
+        */
         public String getCursor() {
             return (String) get("cursor");
         }
@@ -6692,6 +6874,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * The item at the end of CommentEdge.
+        */
         public Comment getNode() {
             return (Comment) get("node");
         }
@@ -6713,7 +6898,7 @@ public class Storefront {
     }
 
     /**
-    * Country codes
+    * ISO 3166-1 alpha-2 country codes with some differences.
     */
     public enum CountryCode {
         /**
@@ -14440,6 +14625,71 @@ public class Storefront {
         }
     }
 
+    /**
+    * Digital wallet, such as Apple Pay, which can be used for accelerated checkouts.
+    */
+    public enum DigitalWallet {
+        /**
+        * Android Pay
+        */
+        ANDROID_PAY,
+
+        /**
+        * Apple Pay
+        */
+        APPLE_PAY,
+
+        /**
+        * Shopify Pay
+        */
+        SHOPIFY_PAY,
+
+        UNKNOWN_VALUE;
+
+        public static DigitalWallet fromGraphQl(String value) {
+            if (value == null) {
+                return null;
+            }
+
+            switch (value) {
+                case "ANDROID_PAY": {
+                    return ANDROID_PAY;
+                }
+
+                case "APPLE_PAY": {
+                    return APPLE_PAY;
+                }
+
+                case "SHOPIFY_PAY": {
+                    return SHOPIFY_PAY;
+                }
+
+                default: {
+                    return UNKNOWN_VALUE;
+                }
+            }
+        }
+        public String toString() {
+            switch (this) {
+                case ANDROID_PAY: {
+                    return "ANDROID_PAY";
+                }
+
+                case APPLE_PAY: {
+                    return "APPLE_PAY";
+                }
+
+                case SHOPIFY_PAY: {
+                    return "SHOPIFY_PAY";
+                }
+
+                default: {
+                    return "";
+                }
+            }
+        }
+    }
+
     public interface DomainQueryDefinition {
         void define(DomainQuery _queryBuilder);
     }
@@ -14839,12 +15089,18 @@ public class Storefront {
             super(_queryBuilder);
         }
 
+        /**
+        * A cursor for use in pagination.
+        */
         public ImageEdgeQuery cursor() {
             startField("cursor");
 
             return this;
         }
 
+        /**
+        * The item at the end of ImageEdge.
+        */
         public ImageEdgeQuery node(ImageQueryDefinition queryDef) {
             startField("node");
 
@@ -14892,6 +15148,9 @@ public class Storefront {
             return "ImageEdge";
         }
 
+        /**
+        * A cursor for use in pagination.
+        */
         public String getCursor() {
             return (String) get("cursor");
         }
@@ -14901,6 +15160,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * The item at the end of ImageEdge.
+        */
         public Image getNode() {
             return (Image) get("node");
         }
@@ -15378,6 +15640,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * Globally unique identifier.
+        */
         public ID getId() {
             return (ID) get("id");
         }
@@ -15618,12 +15883,18 @@ public class Storefront {
             super(_queryBuilder);
         }
 
+        /**
+        * A cursor for use in pagination.
+        */
         public MailingAddressEdgeQuery cursor() {
             startField("cursor");
 
             return this;
         }
 
+        /**
+        * The item at the end of MailingAddressEdge.
+        */
         public MailingAddressEdgeQuery node(MailingAddressQueryDefinition queryDef) {
             startField("node");
 
@@ -15671,6 +15942,9 @@ public class Storefront {
             return "MailingAddressEdge";
         }
 
+        /**
+        * A cursor for use in pagination.
+        */
         public String getCursor() {
             return (String) get("cursor");
         }
@@ -15680,6 +15954,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * The item at the end of MailingAddressEdge.
+        */
         public MailingAddress getNode() {
             return (MailingAddress) get("node");
         }
@@ -17785,6 +18062,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * Globally unique identifier.
+        */
         public ID getId() {
             return (ID) get("id");
         }
@@ -18070,12 +18350,18 @@ public class Storefront {
             super(_queryBuilder);
         }
 
+        /**
+        * A cursor for use in pagination.
+        */
         public OrderEdgeQuery cursor() {
             startField("cursor");
 
             return this;
         }
 
+        /**
+        * The item at the end of OrderEdge.
+        */
         public OrderEdgeQuery node(OrderQueryDefinition queryDef) {
             startField("node");
 
@@ -18123,6 +18409,9 @@ public class Storefront {
             return "OrderEdge";
         }
 
+        /**
+        * A cursor for use in pagination.
+        */
         public String getCursor() {
             return (String) get("cursor");
         }
@@ -18132,6 +18421,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * The item at the end of OrderEdge.
+        */
         public Order getNode() {
             return (Order) get("node");
         }
@@ -18454,12 +18746,18 @@ public class Storefront {
             super(_queryBuilder);
         }
 
+        /**
+        * A cursor for use in pagination.
+        */
         public OrderLineItemEdgeQuery cursor() {
             startField("cursor");
 
             return this;
         }
 
+        /**
+        * The item at the end of OrderLineItemEdge.
+        */
         public OrderLineItemEdgeQuery node(OrderLineItemQueryDefinition queryDef) {
             startField("node");
 
@@ -18507,6 +18805,9 @@ public class Storefront {
             return "OrderLineItemEdge";
         }
 
+        /**
+        * A cursor for use in pagination.
+        */
         public String getCursor() {
             return (String) get("cursor");
         }
@@ -18516,6 +18817,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * The item at the end of OrderLineItemEdge.
+        */
         public OrderLineItem getNode() {
             return (OrderLineItem) get("node");
         }
@@ -18996,6 +19300,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * Globally unique identifier.
+        */
         public ID getId() {
             return (ID) get("id");
         }
@@ -19088,6 +19395,15 @@ public class Storefront {
         }
 
         /**
+        * List of the card brands which the shop accepts.
+        */
+        public PaymentSettingsQuery acceptedCardBrands() {
+            startField("acceptedCardBrands");
+
+            return this;
+        }
+
+        /**
         * The url pointing to the endpoint to vault credit cards.
         */
         public PaymentSettingsQuery cardVaultUrl() {
@@ -19097,7 +19413,7 @@ public class Storefront {
         }
 
         /**
-        * The two-letter code for where the shop is located.
+        * The country where the shop is located.
         */
         public PaymentSettingsQuery countryCode() {
             startField("countryCode");
@@ -19122,6 +19438,15 @@ public class Storefront {
 
             return this;
         }
+
+        /**
+        * List of the digital wallets which the shop supports.
+        */
+        public PaymentSettingsQuery supportedDigitalWallets() {
+            startField("supportedDigitalWallets");
+
+            return this;
+        }
     }
 
     /**
@@ -19136,6 +19461,17 @@ public class Storefront {
                 String key = field.getKey();
                 String fieldName = getFieldName(key);
                 switch (fieldName) {
+                    case "acceptedCardBrands": {
+                        List<CardBrand> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(CardBrand.fromGraphQl(jsonAsString(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
                     case "cardVaultUrl": {
                         responseData.put(key, jsonAsString(field.getValue(), key));
 
@@ -19165,6 +19501,17 @@ public class Storefront {
                         break;
                     }
 
+                    case "supportedDigitalWallets": {
+                        List<DigitalWallet> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(DigitalWallet.fromGraphQl(jsonAsString(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
                     case "__typename": {
                         responseData.put(key, jsonAsString(field.getValue(), key));
                         break;
@@ -19181,6 +19528,18 @@ public class Storefront {
         }
 
         /**
+        * List of the card brands which the shop accepts.
+        */
+        public List<CardBrand> getAcceptedCardBrands() {
+            return (List<CardBrand>) get("acceptedCardBrands");
+        }
+
+        public PaymentSettings setAcceptedCardBrands(List<CardBrand> arg) {
+            optimisticData.put(getKey("acceptedCardBrands"), arg);
+            return this;
+        }
+
+        /**
         * The url pointing to the endpoint to vault credit cards.
         */
         public String getCardVaultUrl() {
@@ -19193,7 +19552,7 @@ public class Storefront {
         }
 
         /**
-        * The two-letter code for where the shop is located.
+        * The country where the shop is located.
         */
         public CountryCode getCountryCode() {
             return (CountryCode) get("countryCode");
@@ -19228,8 +19587,22 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * List of the digital wallets which the shop supports.
+        */
+        public List<DigitalWallet> getSupportedDigitalWallets() {
+            return (List<DigitalWallet>) get("supportedDigitalWallets");
+        }
+
+        public PaymentSettings setSupportedDigitalWallets(List<DigitalWallet> arg) {
+            optimisticData.put(getKey("supportedDigitalWallets"), arg);
+            return this;
+        }
+
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
+                case "acceptedCardBrands": return false;
+
                 case "cardVaultUrl": return false;
 
                 case "countryCode": return false;
@@ -19237,6 +19610,8 @@ public class Storefront {
                 case "currencyCode": return false;
 
                 case "shopifyPaymentsAccountId": return false;
+
+                case "supportedDigitalWallets": return false;
 
                 default: return false;
             }
@@ -19879,6 +20254,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * Globally unique identifier.
+        */
         public ID getId() {
             return (ID) get("id");
         }
@@ -20273,12 +20651,18 @@ public class Storefront {
             super(_queryBuilder);
         }
 
+        /**
+        * A cursor for use in pagination.
+        */
         public ProductEdgeQuery cursor() {
             startField("cursor");
 
             return this;
         }
 
+        /**
+        * The item at the end of ProductEdge.
+        */
         public ProductEdgeQuery node(ProductQueryDefinition queryDef) {
             startField("node");
 
@@ -20326,6 +20710,9 @@ public class Storefront {
             return "ProductEdge";
         }
 
+        /**
+        * A cursor for use in pagination.
+        */
         public String getCursor() {
             return (String) get("cursor");
         }
@@ -20335,6 +20722,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * The item at the end of ProductEdge.
+        */
         public Product getNode() {
             return (Product) get("node");
         }
@@ -20515,6 +20905,9 @@ public class Storefront {
             return "ProductOption";
         }
 
+        /**
+        * Globally unique identifier.
+        */
         public ID getId() {
             return (ID) get("id");
         }
@@ -20802,6 +21195,15 @@ public class Storefront {
         }
 
         /**
+        * The SKU (Stock Keeping Unit) associated with the variant.
+        */
+        public ProductVariantQuery sku() {
+            startField("sku");
+
+            return this;
+        }
+
+        /**
         * The product variant’s title.
         */
         public ProductVariantQuery title() {
@@ -20899,6 +21301,17 @@ public class Storefront {
                         break;
                     }
 
+                    case "sku": {
+                        String optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = jsonAsString(field.getValue(), key);
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
                     case "title": {
                         responseData.put(key, jsonAsString(field.getValue(), key));
 
@@ -20968,6 +21381,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * Globally unique identifier.
+        */
         public ID getId() {
             return (ID) get("id");
         }
@@ -21017,6 +21433,18 @@ public class Storefront {
 
         public ProductVariant setSelectedOptions(List<SelectedOption> arg) {
             optimisticData.put(getKey("selectedOptions"), arg);
+            return this;
+        }
+
+        /**
+        * The SKU (Stock Keeping Unit) associated with the variant.
+        */
+        public String getSku() {
+            return (String) get("sku");
+        }
+
+        public ProductVariant setSku(String arg) {
+            optimisticData.put(getKey("sku"), arg);
             return this;
         }
 
@@ -21071,6 +21499,8 @@ public class Storefront {
                 case "product": return true;
 
                 case "selectedOptions": return true;
+
+                case "sku": return false;
 
                 case "title": return false;
 
@@ -21204,12 +21634,18 @@ public class Storefront {
             super(_queryBuilder);
         }
 
+        /**
+        * A cursor for use in pagination.
+        */
         public ProductVariantEdgeQuery cursor() {
             startField("cursor");
 
             return this;
         }
 
+        /**
+        * The item at the end of ProductVariantEdge.
+        */
         public ProductVariantEdgeQuery node(ProductVariantQueryDefinition queryDef) {
             startField("node");
 
@@ -21257,6 +21693,9 @@ public class Storefront {
             return "ProductVariantEdge";
         }
 
+        /**
+        * A cursor for use in pagination.
+        */
         public String getCursor() {
             return (String) get("cursor");
         }
@@ -21266,6 +21705,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * The item at the end of ProductVariantEdge.
+        */
         public ProductVariant getNode() {
             return (ProductVariant) get("node");
         }
@@ -22824,6 +23266,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * Globally unique identifier.
+        */
         public ID getId() {
             return (ID) get("id");
         }
@@ -22988,12 +23433,18 @@ public class Storefront {
             super(_queryBuilder);
         }
 
+        /**
+        * A cursor for use in pagination.
+        */
         public StringEdgeQuery cursor() {
             startField("cursor");
 
             return this;
         }
 
+        /**
+        * The item at the end of StringEdge.
+        */
         public StringEdgeQuery node() {
             startField("node");
 
@@ -23037,6 +23488,9 @@ public class Storefront {
             return "StringEdge";
         }
 
+        /**
+        * A cursor for use in pagination.
+        */
         public String getCursor() {
             return (String) get("cursor");
         }
@@ -23046,6 +23500,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * The item at the end of StringEdge.
+        */
         public String getNode() {
             return (String) get("node");
         }

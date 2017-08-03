@@ -57,6 +57,7 @@ import static com.shopify.buy3.pay.Util.checkNotNull;
 @SuppressWarnings({"WeakerAccess", "unused"})
 public final class PayCart implements Parcelable {
   @NonNull public final String currencyCode;
+  @NonNull public final String countryCode;
   @NonNull public final String merchantName;
   @NonNull public final List<String> shipsToCountries;
   public final boolean shippingAddressRequired;
@@ -69,6 +70,7 @@ public final class PayCart implements Parcelable {
 
   protected PayCart(Parcel in) {
     currencyCode = in.readString();
+    countryCode = in.readString();
     merchantName = in.readString();
     shipsToCountries = Collections.unmodifiableList(in.createStringArrayList());
     shippingAddressRequired = in.readByte() != 0;
@@ -88,11 +90,12 @@ public final class PayCart implements Parcelable {
     totalPrice = BigDecimal.valueOf(in.readDouble()).setScale(2, RoundingMode.HALF_EVEN);
   }
 
-  PayCart(@NonNull final String currencyCode, @NonNull final String merchantName, @NonNull final List<String> shipsToCountries,
-    final boolean shippingAddressRequired, final boolean phoneNumberRequired, @NonNull final List<LineItem> lineItems,
-    @NonNull final BigDecimal subtotal, @Nullable final BigDecimal taxPrice, @Nullable final BigDecimal shippingPrice,
-    @NonNull final BigDecimal totalPrice) {
+  PayCart(@NonNull final String currencyCode, @NonNull String countryCode, @NonNull final String merchantName,
+    @NonNull final List<String> shipsToCountries, final boolean shippingAddressRequired, final boolean phoneNumberRequired,
+    @NonNull final List<LineItem> lineItems, @NonNull final BigDecimal subtotal, @Nullable final BigDecimal taxPrice,
+    @Nullable final BigDecimal shippingPrice, @NonNull final BigDecimal totalPrice) {
     this.currencyCode = checkNotEmpty(currencyCode, "currencyCode can't be empty");
+    this.countryCode = checkNotEmpty(countryCode, "countryCode can't be empty");
     this.merchantName = checkNotEmpty(merchantName, "merchantName can't be empty");
     this.shipsToCountries = Collections.unmodifiableList(shipsToCountries);
     this.shippingAddressRequired = shippingAddressRequired;
@@ -107,6 +110,7 @@ public final class PayCart implements Parcelable {
   @Override
   public void writeToParcel(Parcel dest, int flags) {
     dest.writeString(currencyCode);
+    dest.writeString(countryCode);
     dest.writeString(merchantName);
     dest.writeStringList(shipsToCountries);
     dest.writeByte((byte) (shippingAddressRequired ? 1 : 0));
@@ -163,6 +167,7 @@ public final class PayCart implements Parcelable {
       .setPhoneNumberRequired(phoneNumberRequired)
       .setShippingAddressRequired(shippingAddressRequired)
       .setCurrencyCode(currencyCode)
+      .setCountryCode(countryCode)
       .setEstimatedTotalPrice(totalPrice.toString())
       .setPaymentMethodTokenizationParameters(parameters)
       .setCart(cartBuilder().build());
@@ -190,6 +195,7 @@ public final class PayCart implements Parcelable {
   public Builder toBuilder() {
     Builder builder = new Builder();
     builder.currencyCode = currencyCode;
+    builder.countryCode = countryCode;
     builder.merchantName = merchantName;
     builder.shipsToCountries = shipsToCountries;
     builder.shippingAddressRequired = shippingAddressRequired;
@@ -244,6 +250,7 @@ public final class PayCart implements Parcelable {
 
   public static final class Builder {
     String currencyCode;
+    String countryCode;
     String merchantName;
     boolean shippingAddressRequired;
     List<String> shipsToCountries = Collections.singletonList("*");
@@ -266,6 +273,11 @@ public final class PayCart implements Parcelable {
 
     public Builder currencyCode(@NonNull final String currencyCode) {
       this.currencyCode = checkNotEmpty(currencyCode, "currencyCode can't be empty");
+      return this;
+    }
+
+    public Builder countryCode(@NonNull final String countryCode) {
+      this.countryCode = checkNotEmpty(countryCode, "countryCode can't be empty");
       return this;
     }
 
@@ -345,8 +357,8 @@ public final class PayCart implements Parcelable {
         }
       }
 
-      return new PayCart(currencyCode, merchantName, shipsToCountries, shippingAddressRequired, phoneNumberRequired, lineItems, subtotal,
-        taxPrice, shippingPrice, totalPrice);
+      return new PayCart(currencyCode, countryCode, merchantName, shipsToCountries, shippingAddressRequired, phoneNumberRequired, lineItems,
+        subtotal, taxPrice, shippingPrice, totalPrice);
     }
   }
 }

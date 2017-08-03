@@ -27,6 +27,7 @@ package com.shopify.sample.domain.interactor;
 import com.shopify.sample.domain.CollectionPageWithProductsQuery;
 import com.shopify.sample.domain.CollectionProductPageQuery;
 import com.shopify.sample.domain.ProductByIdQuery;
+import com.shopify.sample.domain.ShopSettingsQuery;
 import com.shopify.sample.domain.fragment.CheckoutCreateFragment;
 import com.shopify.sample.domain.fragment.CheckoutFragment;
 import com.shopify.sample.domain.fragment.CheckoutShippingRatesFragment;
@@ -36,6 +37,7 @@ import com.shopify.sample.domain.model.Collection;
 import com.shopify.sample.domain.model.Payment;
 import com.shopify.sample.domain.model.Product;
 import com.shopify.sample.domain.model.ProductDetails;
+import com.shopify.sample.domain.model.ShopSettings;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -116,6 +118,11 @@ final class Converters {
 
   static Payment convertToPayment(final PaymentFragment payment) {
     return new Payment(payment.id, payment.errorMessage.orNull(), payment.ready);
+  }
+
+  static ShopSettings convertToShopSettings(final ShopSettingsQuery.Shop shop) {
+    return new ShopSettings(shop.name, mapItems(shop.paymentSettings.acceptedCardBrands, Enum::name),
+      shop.paymentSettings.countryCode.name());
   }
 
   private Converters() {

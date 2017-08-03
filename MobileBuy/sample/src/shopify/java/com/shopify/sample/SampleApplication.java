@@ -48,8 +48,8 @@ public class SampleApplication extends BaseApplication {
 
   @Override
   public void onCreate() {
-    super.onCreate();
     initializeGraphClient();
+    super.onCreate();
   }
 
   private void initializeGraphClient() {

@@ -48,7 +48,12 @@ import com.google.android.gms.wallet.fragment.WalletFragmentInitParams;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import static com.shopify.buy3.pay.Util.checkNotEmpty;
 import static com.shopify.buy3.pay.Util.checkNotNull;
@@ -61,6 +66,18 @@ public final class PayHelper {
   public static final int REQUEST_CODE_MASKED_WALLET = 500;
   public static final int REQUEST_CODE_CHANGE_MASKED_WALLET = 501;
   public static final int REQUEST_CODE_FULL_WALLET = 502;
+  public static final Map<String, Integer> SUPPORTED_CARD_NETWORKS_MAP;
+
+  static {
+    Map<String, Integer> supportedCardNetworkMap = new HashMap<>(5);
+    supportedCardNetworkMap.put("VISA", WalletConstants.CardNetwork.VISA);
+    supportedCardNetworkMap.put("MASTERCARD", WalletConstants.CardNetwork.MASTERCARD);
+    supportedCardNetworkMap.put("DISCOVER", WalletConstants.CardNetwork.DISCOVER);
+    supportedCardNetworkMap.put("AMERICAN_EXPRESS", WalletConstants.CardNetwork.AMEX);
+    supportedCardNetworkMap.put("AMEX", WalletConstants.CardNetwork.AMEX);
+    supportedCardNetworkMap.put("JCB", WalletConstants.CardNetwork.JCB);
+    SUPPORTED_CARD_NETWORKS_MAP = Collections.unmodifiableMap(supportedCardNetworkMap);
+  }
 
   /**
    * Requests Masked Wallet for provided {@link PayCart}.
@@ -181,9 +198,25 @@ public final class PayHelper {
    * @param apiClient             {@link GoogleApiClient}
    * @param supportedCardNetworks list of supported credit card networks for current checkout
    * @param delegate              callback result will be delegated to
+   * @throws IllegalArgumentException in case of unsupported card network been provided with {@code supportedCardNetworks}
    */
   public static void isReadyToPay(@NonNull final Context context, @NonNull final GoogleApiClient apiClient,
-    @NonNull final List<Integer> supportedCardNetworks, @NonNull final AndroidPayReadyCallback delegate) {
+    @NonNull final List<String> supportedCardNetworks, @NonNull final AndroidPayReadyCallback delegate) {
+    Set<Integer> cardNetworks = convertSupportedCardNetworks(supportedCardNetworks);
+    isReadyToPay(context, apiClient, cardNetworks, delegate);
+  }
+
+  /**
+   * Checks if Android Pay is enabled and ready to use.
+   *
+   * @param context               {@link Context}
+   * @param apiClient             {@link GoogleApiClient}
+   * @param supportedCardNetworks list of supported credit card networks for current checkout one of {@link WalletConstants.CardNetwork}
+   *                              value
+   * @param delegate              callback result will be delegated to
+   */
+  public static void isReadyToPay(@NonNull final Context context, @NonNull final GoogleApiClient apiClient,
+    @NonNull final Set<Integer> supportedCardNetworks, @NonNull final AndroidPayReadyCallback delegate) {
     checkNotNull(apiClient, "apiClient can't be null");
     checkNotNull(delegate, "delegate can't be null");
     checkNotNull(supportedCardNetworks, "supportedCardNetworks can't be null");
@@ -252,6 +285,20 @@ public final class PayHelper {
    */
   public interface AndroidPayReadyCallback {
     void onResult(boolean result);
+  }
+
+  static Set<Integer> convertSupportedCardNetworks(@NonNull final List<String> supportedCardNetworks) {
+    checkNotNull(supportedCardNetworks, "supportedCardNetworks can't be null");
+
+    Set<Integer> cardNetworks = new LinkedHashSet<>(supportedCardNetworks.size());
+    for (String supportedCardNetwork : supportedCardNetworks) {
+      Integer cardNetwork = SUPPORTED_CARD_NETWORKS_MAP.get(supportedCardNetwork.trim().toUpperCase());
+      if (cardNetwork != null) {
+        cardNetworks.add(cardNetwork);
+      }
+    }
+
+    return Collections.unmodifiableSet(cardNetworks);
   }
 
   /**
