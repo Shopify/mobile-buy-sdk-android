@@ -27,6 +27,8 @@ package com.shopify.sample.view.cart;
 import android.arch.lifecycle.Lifecycle;
 import android.arch.lifecycle.LifecycleRegistry;
 import android.arch.lifecycle.LifecycleRegistryOwner;
+import android.arch.lifecycle.ViewModel;
+import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.net.Uri;
@@ -42,14 +44,14 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.wallet.Wallet;
 import com.google.android.gms.wallet.WalletConstants;
 import com.shopify.buy3.pay.PayHelper;
+import com.shopify.sample.BaseApplication;
 import com.shopify.sample.BuildConfig;
 import com.shopify.sample.R;
 import com.shopify.sample.domain.model.Checkout;
+import com.shopify.sample.domain.model.ShopSettings;
 import com.shopify.sample.view.ProgressDialogHelper;
 import com.shopify.sample.view.ScreenRouter;
 import com.shopify.sample.view.checkout.CheckoutViewModel;
-
-import java.util.Collections;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -78,7 +80,8 @@ public final class CartActivity extends AppCompatActivity implements LifecycleRe
   }
 
   @Override public void onConnected(@Nullable final Bundle bundle) {
-    PayHelper.isReadyToPay(this, googleApiClient, Collections.emptyList(), result -> {
+    ShopSettings shopSettings = ((BaseApplication) getApplication()).shopSettings().getValue();
+    PayHelper.isReadyToPay(getApplicationContext(), googleApiClient, shopSettings.acceptedCardBrands, result -> {
       if (lifecycleRegistry.getCurrentState().isAtLeast(Lifecycle.State.STARTED)) {
         cartDetailsViewModel.onGoogleApiClientConnectionChanged(true);
       }
@@ -159,7 +162,17 @@ public final class CartActivity extends AppCompatActivity implements LifecycleRe
   }
 
   private void initViewModels() {
-    RealCartViewModel cartViewModel = ViewModelProviders.of(this).get(RealCartViewModel.class);
+    ShopSettings shopSettings = ((BaseApplication) getApplication()).shopSettings().getValue();
+    RealCartViewModel cartViewModel = ViewModelProviders.of(this, new ViewModelProvider.Factory() {
+      @Override public <T extends ViewModel> T create(final Class<T> modelClass) {
+        if (modelClass.equals(RealCartViewModel.class)) {
+          //noinspection unchecked
+          return (T) new RealCartViewModel(shopSettings);
+        } else {
+          return null;
+        }
+      }
+    }).get(RealCartViewModel.class);
     cartHeaderViewModel = cartViewModel;
     cartDetailsViewModel = cartViewModel;
 

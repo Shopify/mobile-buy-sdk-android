@@ -41,9 +41,10 @@ import com.shopify.sample.domain.interactor.RealCartWatchInteractor;
 import com.shopify.sample.domain.interactor.RealCheckoutCreateInteractor;
 import com.shopify.sample.domain.model.Cart;
 import com.shopify.sample.domain.model.Checkout;
-import com.shopify.sample.view.LifeCycleBoundCallback;
+import com.shopify.sample.domain.model.ShopSettings;
 import com.shopify.sample.util.WeakObserver;
 import com.shopify.sample.view.BaseViewModel;
+import com.shopify.sample.view.LifeCycleBoundCallback;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -69,8 +70,10 @@ public final class RealCartViewModel extends BaseViewModel implements CartDetail
 
   private String checkoutId;
   private PayCart payCart;
+  private ShopSettings shopSettings;
 
-  public RealCartViewModel() {
+  public RealCartViewModel(ShopSettings shopSettings) {
+    this.shopSettings = shopSettings;
     registerRequest(
       REQUEST_ID_UPDATE_CART,
       cartWatchInteractor.execute()
@@ -187,8 +190,9 @@ public final class RealCartViewModel extends BaseViewModel implements CartDetail
 
   private PayCart checkoutPayCart(final Checkout checkout) {
     PayCart.Builder payCartBuilder = PayCart.builder()
-      .merchantName("SampleApp")
+      .merchantName(shopSettings.name)
       .currencyCode(checkout.currency)
+      .countryCode(shopSettings.countryCode)
       .phoneNumberRequired(true)
       .shippingAddressRequired(checkout.requiresShipping);
 

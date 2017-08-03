@@ -25,6 +25,8 @@
 package com.shopify.sample;
 
 import android.app.Application;
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MutableLiveData;
 
 import com.facebook.cache.disk.DiskCacheConfig;
 import com.facebook.common.logging.FLog;
@@ -35,23 +37,32 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.imagepipeline.core.ImagePipelineConfig;
 import com.facebook.imagepipeline.listener.RequestListener;
 import com.facebook.imagepipeline.listener.RequestLoggingListener;
+import com.shopify.sample.domain.interactor.RealShopSettingInteractor;
+import com.shopify.sample.domain.model.ShopSettings;
+import com.shopify.sample.util.RxRetryHandler;
 
 import java.io.File;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
+
+import static java.util.Collections.emptyList;
 
 public abstract class BaseApplication extends Application {
   private final FrescoMemoryTrimmableRegistry frescoMemoryTrimmableRegistry = new FrescoMemoryTrimmableRegistry();
+  private MutableLiveData<ShopSettings> shopSettings = new MutableLiveData<>();
 
   @Override
   public void onCreate() {
     super.onCreate();
     iniTimber();
     initFresco();
+    fetchShopSettings();
   }
 
   @Override
@@ -74,6 +85,10 @@ public abstract class BaseApplication extends Application {
       default:
         break;
     }
+  }
+
+  public LiveData<ShopSettings> shopSettings() {
+    return shopSettings;
   }
 
   private void iniTimber() {
@@ -106,6 +121,19 @@ public abstract class BaseApplication extends Application {
     configBuilder.setMemoryTrimmableRegistry(frescoMemoryTrimmableRegistry);
 
     Fresco.initialize(this, config.build());
+  }
+
+  private void fetchShopSettings() {
+    shopSettings.setValue(new ShopSettings("test", emptyList(), "US"));
+    new RealShopSettingInteractor()
+      .execute()
+      .observeOn(AndroidSchedulers.mainThread())
+      .retryWhen(RxRetryHandler.delay(3, TimeUnit.SECONDS).maxRetries(5).build())
+      .onErrorReturn(it -> {
+        Timber.e(it, "Failed to fetch shop settings");
+        return shopSettings.getValue();
+      })
+      .subscribe(it -> shopSettings.setValue(it));
   }
 
   private static class FrescoMemoryTrimmableRegistry implements MemoryTrimmableRegistry {

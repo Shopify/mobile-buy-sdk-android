@@ -67,6 +67,18 @@ public final class Util {
     return source != null && !source.isEmpty() ? source.get(0) : null;
   }
 
+  @Nullable public static <T> List<T> filter(@Nullable final List<T> source, @NonNull final Function<T, Boolean> condition) {
+    checkNotNull(source, "source == null");
+    checkNotNull(condition, "condition == null");
+    List<T> result = new ArrayList<>();
+    for (T item : source) {
+      if (condition.apply(item)) {
+        result.add(item);
+      }
+    }
+    return result;
+  }
+
   @Nullable public static <T, R> R firstItem(@Nullable final List<T> source, @NonNull final Function<T, R> transformer) {
     checkNotNull(transformer, "transformer == null");
     return source != null && !source.isEmpty() ? transformer.apply(source.get(0)) : null;
