@@ -24,6 +24,7 @@
 
 package com.shopify.buy3.pay;
 
+import android.os.Parcel;
 import android.support.test.runner.AndroidJUnit4;
 
 import com.google.android.gms.identity.intents.model.UserAddress;
@@ -49,10 +50,12 @@ public class PayCartTest {
 
   @Test public void preconditions() throws Exception {
     final PayCart.Builder builder = PayCart.builder();
-    testNullPointerException(() -> builder.merchantName(null));
-    testIllegalArgumentException(() -> builder.merchantName(""));
     testNullPointerException(() -> builder.currencyCode(null));
     testIllegalArgumentException(() -> builder.currencyCode(""));
+    testNullPointerException(() -> builder.countryCode(null));
+    testIllegalArgumentException(() -> builder.countryCode(""));
+    testNullPointerException(() -> builder.merchantName(null));
+    testIllegalArgumentException(() -> builder.merchantName(""));
     testNullPointerException(() -> builder.addLineItem(null, 1, BigDecimal.ZERO));
     testIllegalArgumentException(() -> builder.addLineItem("", 1, BigDecimal.ZERO));
     testIllegalArgumentException(() -> builder.addLineItem("title", -1, BigDecimal.ZERO));
@@ -62,13 +65,15 @@ public class PayCartTest {
     testNullPointerException(() -> builder.totalPrice(null));
 
     testNullPointerException(() -> PayCart.builder().build());
-    testNullPointerException(() -> PayCart.builder().merchantName("merchantName").build());
+    testNullPointerException(() -> PayCart.builder().currencyCode("UAH").build());
+    testNullPointerException(() -> PayCart.builder().currencyCode("UAH").countryCode("UA").build());
   }
 
   @Test public void successBuild() throws Exception {
     PayCart payCart = PayCart.builder()
       .merchantName("merchantName")
       .currencyCode("UAH")
+      .countryCode("UA")
       .shippingAddressRequired(true)
       .addLineItem("lineItem1", 10, BigDecimal.valueOf(1.09))
       .addLineItem("lineItem2", 20, BigDecimal.valueOf(2.99))
@@ -82,6 +87,59 @@ public class PayCartTest {
 
     assertThat(payCart.merchantName).isEqualTo("merchantName");
     assertThat(payCart.currencyCode).isEqualTo("UAH");
+    assertThat(payCart.countryCode).isEqualTo("UA");
+
+    assertThat(payCart.shippingAddressRequired).isTrue();
+    assertThat(payCart.lineItems).hasSize(2);
+
+    assertThat(payCart.lineItems.get(0).getDescription()).isEqualTo("lineItem1");
+    assertThat(payCart.lineItems.get(0).getQuantity()).isEqualTo("10");
+    assertThat(payCart.lineItems.get(0).getUnitPrice()).isEqualTo("1.09");
+    assertThat(payCart.lineItems.get(0).getTotalPrice()).isEqualTo("10.90");
+    assertThat(payCart.lineItems.get(0).getCurrencyCode()).isEqualTo("UAH");
+    assertThat(payCart.lineItems.get(0).getRole()).isEqualTo(LineItem.Role.REGULAR);
+
+    assertThat(payCart.lineItems.get(1).getDescription()).isEqualTo("lineItem2");
+    assertThat(payCart.lineItems.get(1).getQuantity()).isEqualTo("20");
+    assertThat(payCart.lineItems.get(1).getUnitPrice()).isEqualTo("2.99");
+    assertThat(payCart.lineItems.get(1).getTotalPrice()).isEqualTo("59.80");
+    assertThat(payCart.lineItems.get(1).getCurrencyCode()).isEqualTo("UAH");
+    assertThat(payCart.lineItems.get(1).getRole()).isEqualTo(LineItem.Role.REGULAR);
+
+    assertThat(payCart.phoneNumberRequired).isTrue();
+    assertThat(payCart.shipsToCountries).isEqualTo(Arrays.asList("US, CA, UA"));
+    assertThat(payCart.shippingPrice).isEqualTo(BigDecimal.valueOf(3.01));
+    assertThat(payCart.taxPrice).isEqualTo(BigDecimal.valueOf(2.01));
+    assertThat(payCart.subtotal).isEqualTo(BigDecimal.valueOf(29.01));
+    assertThat(payCart.totalPrice).isEqualTo(BigDecimal.valueOf(100.99));
+  }
+
+  @Test public void parcelWriteRead() throws Exception {
+    Parcel parcel = Parcel.obtain();
+
+    PayCart.builder()
+      .merchantName("merchantName")
+      .currencyCode("UAH")
+      .countryCode("UA")
+      .shippingAddressRequired(true)
+      .addLineItem("lineItem1", 10, BigDecimal.valueOf(1.09))
+      .addLineItem("lineItem2", 20, BigDecimal.valueOf(2.99))
+      .phoneNumberRequired(true)
+      .shipsToCountries(Arrays.asList("US, CA, UA"))
+      .shippingPrice(BigDecimal.valueOf(3.01))
+      .taxPrice(BigDecimal.valueOf(2.01))
+      .subtotal(BigDecimal.valueOf(29.01))
+      .totalPrice(BigDecimal.valueOf(100.99))
+      .build()
+      .writeToParcel(parcel, 0);
+    parcel.setDataPosition(0);
+
+    PayCart payCart = new PayCart(parcel);
+
+    assertThat(payCart.merchantName).isEqualTo("merchantName");
+    assertThat(payCart.currencyCode).isEqualTo("UAH");
+    assertThat(payCart.countryCode).isEqualTo("UA");
+
     assertThat(payCart.shippingAddressRequired).isTrue();
     assertThat(payCart.lineItems).hasSize(2);
 
@@ -111,6 +169,7 @@ public class PayCartTest {
     PayCart payCart = PayCart.builder()
       .merchantName("merchantName")
       .currencyCode("UAH")
+      .countryCode("UA")
       .build();
 
     assertThat(payCart.shipsToCountries).hasSize(1);
@@ -119,6 +178,7 @@ public class PayCartTest {
     payCart = PayCart.builder()
       .merchantName("merchantName")
       .currencyCode("UAH")
+      .countryCode("UA")
       .shipsToCountries(null)
       .build();
 
@@ -128,6 +188,7 @@ public class PayCartTest {
     payCart = PayCart.builder()
       .merchantName("merchantName")
       .currencyCode("UAH")
+      .countryCode("UA")
       .shipsToCountries(Collections.emptyList())
       .build();
 
@@ -139,6 +200,7 @@ public class PayCartTest {
     PayCart payCart = PayCart.builder()
       .merchantName("merchantName")
       .currencyCode("UAH")
+      .countryCode("UA")
       .addLineItem("lineItem1", 10, BigDecimal.valueOf(1.09))
       .addLineItem("lineItem2", 15, BigDecimal.valueOf(2.91))
       .addLineItem("lineItem3", 30, BigDecimal.valueOf(3.09))
@@ -156,6 +218,7 @@ public class PayCartTest {
     PayCart payCart = PayCart.builder()
       .merchantName("merchantName")
       .currencyCode("UAH")
+      .countryCode("UA")
       .shippingAddressRequired(true)
       .addLineItem("lineItem1", 10, BigDecimal.valueOf(1.09))
       .addLineItem("lineItem2", 20, BigDecimal.valueOf(2.99))
@@ -172,6 +235,7 @@ public class PayCartTest {
     assertThat(maskedWalletRequest.isPhoneNumberRequired()).isTrue();
     assertThat(maskedWalletRequest.isShippingAddressRequired()).isTrue();
     assertThat(maskedWalletRequest.getCurrencyCode()).isEqualTo("UAH");
+    assertThat(maskedWalletRequest.getCountryCode()).isEqualTo("UA");
     assertThat(maskedWalletRequest.getEstimatedTotalPrice()).isEqualTo("100.99");
     assertThat(maskedWalletRequest.getPaymentMethodTokenizationParameters().getPaymentMethodTokenizationType())
       .isEqualTo(PaymentMethodTokenizationType.NETWORK_TOKEN);
@@ -210,6 +274,7 @@ public class PayCartTest {
     PayCart payCart = PayCart.builder()
       .merchantName("merchantName")
       .currencyCode("UAH")
+      .countryCode("UA")
       .shippingAddressRequired(true)
       .addLineItem("lineItem1", 10, BigDecimal.valueOf(1.09))
       .addLineItem("lineItem2", 20, BigDecimal.valueOf(2.99))

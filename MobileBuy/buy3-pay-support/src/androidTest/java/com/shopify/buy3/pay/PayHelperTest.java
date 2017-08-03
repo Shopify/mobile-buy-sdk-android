@@ -32,14 +32,19 @@ import com.google.android.gms.wallet.FullWallet;
 import com.google.android.gms.wallet.InstrumentInfo;
 import com.google.android.gms.wallet.PaymentMethodToken;
 import com.google.android.gms.wallet.ProxyCard;
+import com.google.android.gms.wallet.WalletConstants;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.lang.reflect.Constructor;
 import java.security.MessageDigest;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Set;
 
 import static com.google.common.truth.Truth.assertThat;
+import static junit.framework.Assert.fail;
 
 @RunWith(AndroidJUnit4.class)
 public class PayHelperTest {
@@ -68,5 +73,21 @@ public class PayHelperTest {
 
     assertThat(paymentToken.token).isEqualTo(PAYMENT_TOKEN);
     assertThat(paymentToken.publicKeyHash).isEqualTo(androidPayPublicKeyHash);
+  }
+
+  @Test
+  public void convertSupportedCardNetworks() {
+    try {
+      PayHelper.convertSupportedCardNetworks(null);
+      fail("expected NullPointerException");
+    } catch (NullPointerException expected) {
+    }
+
+    Set<Integer> cardNetworks = PayHelper.convertSupportedCardNetworks(Arrays.asList("viSa", "MASTERCARD", "discover",
+      "AMERICAN_EXPRESS", "AMEX", "JCB", "VISA", "AMEX", "BLA-BLA-CARD"));
+
+    assertThat(new ArrayList<>(cardNetworks)).isEqualTo(Arrays.asList(WalletConstants.CardNetwork.VISA,
+      WalletConstants.CardNetwork.MASTERCARD, WalletConstants.CardNetwork.DISCOVER, WalletConstants.CardNetwork.AMEX,
+      WalletConstants.CardNetwork.JCB));
   }
 }

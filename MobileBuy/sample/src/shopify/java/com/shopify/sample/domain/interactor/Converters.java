@@ -30,10 +30,12 @@ import com.shopify.sample.domain.model.Collection;
 import com.shopify.sample.domain.model.Payment;
 import com.shopify.sample.domain.model.Product;
 import com.shopify.sample.domain.model.ProductDetails;
+import com.shopify.sample.domain.model.ShopSettings;
 
 import java.math.BigDecimal;
 import java.util.List;
 
+import static com.shopify.sample.util.Util.filter;
 import static com.shopify.sample.util.Util.firstItem;
 import static com.shopify.sample.util.Util.mapItems;
 import static com.shopify.sample.util.Util.minItem;
@@ -109,6 +111,11 @@ final class Converters {
 
   static Payment convertToPayment(final Storefront.Payment payment) {
     return new Payment(payment.getId().toString(), payment.getErrorMessage(), payment.getReady());
+  }
+
+  static ShopSettings convertToShopSettings(final Storefront.Shop shop) {
+    return new ShopSettings(shop.getName(), mapItems(shop.getPaymentSettings().getAcceptedCardBrands(), Enum::name),
+      shop.getPaymentSettings().getCountryCode().name());
   }
 
   private Converters() {
