@@ -12487,6 +12487,18 @@ public class Storefront {
                 return this;
             }
 
+            /**
+            * Supported filter parameters:
+            * - `processed_at`
+            */
+            public OrdersArguments query(String value) {
+                if (value != null) {
+                    startArgument("query");
+                    Query.appendQuotedString(_queryBuilder, value.toString());
+                }
+                return this;
+            }
+
             public OrdersArguments sortKey(OrderSortKeys value) {
                 if (value != null) {
                     startArgument("sortKey");
@@ -12499,18 +12511,6 @@ public class Storefront {
                 if (value != null) {
                     startArgument("reverse");
                     _queryBuilder.append(value);
-                }
-                return this;
-            }
-
-            /**
-            * Supported filter parameters:
-            * - `processed_at`
-            */
-            public OrdersArguments query(String value) {
-                if (value != null) {
-                    startArgument("query");
-                    Query.appendQuotedString(_queryBuilder, value.toString());
                 }
                 return this;
             }
@@ -19387,7 +19387,7 @@ public class Storefront {
     }
 
     /**
-    * Values required for completing various payment methods.
+    * Settings related to payments.
     */
     public static class PaymentSettingsQuery extends Query<PaymentSettingsQuery> {
         PaymentSettingsQuery(StringBuilder _queryBuilder) {
@@ -19450,7 +19450,7 @@ public class Storefront {
     }
 
     /**
-    * Values required for completing various payment methods.
+    * Settings related to payments.
     */
     public static class PaymentSettings extends AbstractResponse<PaymentSettings> {
         public PaymentSettings() {
@@ -21081,6 +21081,16 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * The compare at price of the variant. This can be used to mark a variant as on sale, when
+        * `compareAtPrice` is higher than `price`.
+        */
+        public ProductVariantQuery compareAtPrice() {
+            startField("compareAtPrice");
+
+            return this;
+        }
+
         public class ImageArguments extends Arguments {
             ImageArguments(StringBuilder _queryBuilder) {
                 super(_queryBuilder, true);
@@ -21261,6 +21271,17 @@ public class Storefront {
                         break;
                     }
 
+                    case "compareAtPrice": {
+                        BigDecimal optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new BigDecimal(jsonAsString(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
                     case "id": {
                         responseData.put(key, new ID(jsonAsString(field.getValue(), key)));
 
@@ -21382,6 +21403,19 @@ public class Storefront {
         }
 
         /**
+        * The compare at price of the variant. This can be used to mark a variant as on sale, when
+        * `compareAtPrice` is higher than `price`.
+        */
+        public BigDecimal getCompareAtPrice() {
+            return (BigDecimal) get("compareAtPrice");
+        }
+
+        public ProductVariant setCompareAtPrice(BigDecimal arg) {
+            optimisticData.put(getKey("compareAtPrice"), arg);
+            return this;
+        }
+
+        /**
         * Globally unique identifier.
         */
         public ID getId() {
@@ -21489,6 +21523,8 @@ public class Storefront {
                 case "available": return false;
 
                 case "availableForSale": return false;
+
+                case "compareAtPrice": return false;
 
                 case "id": return false;
 
@@ -22245,22 +22281,6 @@ public class Storefront {
                 return this;
             }
 
-            public ArticlesArguments sortKey(ArticleSortKeys value) {
-                if (value != null) {
-                    startArgument("sortKey");
-                    _queryBuilder.append(value.toString());
-                }
-                return this;
-            }
-
-            public ArticlesArguments reverse(Boolean value) {
-                if (value != null) {
-                    startArgument("reverse");
-                    _queryBuilder.append(value);
-                }
-                return this;
-            }
-
             /**
             * Supported filter parameters:
             * - `author`
@@ -22273,6 +22293,22 @@ public class Storefront {
                 if (value != null) {
                     startArgument("query");
                     Query.appendQuotedString(_queryBuilder, value.toString());
+                }
+                return this;
+            }
+
+            public ArticlesArguments sortKey(ArticleSortKeys value) {
+                if (value != null) {
+                    startArgument("sortKey");
+                    _queryBuilder.append(value.toString());
+                }
+                return this;
+            }
+
+            public ArticlesArguments reverse(Boolean value) {
+                if (value != null) {
+                    startArgument("reverse");
+                    _queryBuilder.append(value);
                 }
                 return this;
             }
@@ -22322,6 +22358,21 @@ public class Storefront {
                 return this;
             }
 
+            /**
+            * Supported filter parameters:
+            * - `handle`
+            * - `title`
+            * - `updated_at`
+            * - `created_at`
+            */
+            public BlogsArguments query(String value) {
+                if (value != null) {
+                    startArgument("query");
+                    Query.appendQuotedString(_queryBuilder, value.toString());
+                }
+                return this;
+            }
+
             public BlogsArguments sortKey(BlogSortKeys value) {
                 if (value != null) {
                     startArgument("sortKey");
@@ -22334,21 +22385,6 @@ public class Storefront {
                 if (value != null) {
                     startArgument("reverse");
                     _queryBuilder.append(value);
-                }
-                return this;
-            }
-
-            /**
-            * Supported filter parameters:
-            * - `handle`
-            * - `title`
-            * - `updated_at`
-            * - `created_at`
-            */
-            public BlogsArguments query(String value) {
-                if (value != null) {
-                    startArgument("query");
-                    Query.appendQuotedString(_queryBuilder, value.toString());
                 }
                 return this;
             }
@@ -22428,6 +22464,20 @@ public class Storefront {
                 return this;
             }
 
+            /**
+            * Supported filter parameters:
+            * - `title`
+            * - `collection_type`
+            * - `updated_at`
+            */
+            public CollectionsArguments query(String value) {
+                if (value != null) {
+                    startArgument("query");
+                    Query.appendQuotedString(_queryBuilder, value.toString());
+                }
+                return this;
+            }
+
             public CollectionsArguments sortKey(CollectionSortKeys value) {
                 if (value != null) {
                     startArgument("sortKey");
@@ -22440,20 +22490,6 @@ public class Storefront {
                 if (value != null) {
                     startArgument("reverse");
                     _queryBuilder.append(value);
-                }
-                return this;
-            }
-
-            /**
-            * Supported filter parameters:
-            * - `title`
-            * - `collection_type`
-            * - `updated_at`
-            */
-            public CollectionsArguments query(String value) {
-                if (value != null) {
-                    startArgument("query");
-                    Query.appendQuotedString(_queryBuilder, value.toString());
                 }
                 return this;
             }
@@ -22530,7 +22566,7 @@ public class Storefront {
         }
 
         /**
-        * Values required for completing various payment methods.
+        * Settings related to payments.
         */
         public ShopQuery paymentSettings(PaymentSettingsQueryDefinition queryDef) {
             startField("paymentSettings");
@@ -22617,22 +22653,6 @@ public class Storefront {
                 return this;
             }
 
-            public ProductsArguments sortKey(ProductSortKeys value) {
-                if (value != null) {
-                    startArgument("sortKey");
-                    _queryBuilder.append(value.toString());
-                }
-                return this;
-            }
-
-            public ProductsArguments reverse(Boolean value) {
-                if (value != null) {
-                    startArgument("reverse");
-                    _queryBuilder.append(value);
-                }
-                return this;
-            }
-
             /**
             * Supported filter parameters:
             * - `title`
@@ -22646,6 +22666,22 @@ public class Storefront {
                 if (value != null) {
                     startArgument("query");
                     Query.appendQuotedString(_queryBuilder, value.toString());
+                }
+                return this;
+            }
+
+            public ProductsArguments sortKey(ProductSortKeys value) {
+                if (value != null) {
+                    startArgument("sortKey");
+                    _queryBuilder.append(value.toString());
+                }
+                return this;
+            }
+
+            public ProductsArguments reverse(Boolean value) {
+                if (value != null) {
+                    startArgument("reverse");
+                    _queryBuilder.append(value);
                 }
                 return this;
             }
@@ -23004,7 +23040,7 @@ public class Storefront {
         }
 
         /**
-        * Values required for completing various payment methods.
+        * Settings related to payments.
         */
         public PaymentSettings getPaymentSettings() {
             return (PaymentSettings) get("paymentSettings");
