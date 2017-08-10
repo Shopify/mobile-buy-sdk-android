@@ -24,6 +24,7 @@
 
 package com.shopify.sample.domain.interactor;
 
+import com.shopify.buy3.pay.CardNetworkType;
 import com.shopify.sample.domain.CollectionPageWithProductsQuery;
 import com.shopify.sample.domain.CollectionProductPageQuery;
 import com.shopify.sample.domain.ProductByIdQuery;
@@ -40,6 +41,7 @@ import com.shopify.sample.domain.model.ProductDetails;
 import com.shopify.sample.domain.model.ShopSettings;
 
 import java.math.BigDecimal;
+import java.util.HashSet;
 import java.util.List;
 
 import static com.shopify.sample.util.Util.firstItem;
@@ -121,8 +123,11 @@ final class Converters {
   }
 
   static ShopSettings convertToShopSettings(final ShopSettingsQuery.Shop shop) {
-    return new ShopSettings(shop.name, mapItems(shop.paymentSettings.acceptedCardBrands, Enum::name),
-      shop.paymentSettings.countryCode.name());
+    return new ShopSettings(
+      shop.name,
+      new HashSet<>(mapItems(shop.paymentSettings.acceptedCardBrands, cardBrand -> CardNetworkType.findByName(cardBrand.name()))),
+      shop.paymentSettings.countryCode.name()
+    );
   }
 
   private Converters() {

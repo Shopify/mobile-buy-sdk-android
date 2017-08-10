@@ -41,6 +41,8 @@ import java.lang.reflect.Constructor;
 import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -83,8 +85,11 @@ public class PayHelperTest {
     } catch (NullPointerException expected) {
     }
 
-    Set<Integer> cardNetworks = PayHelper.convertSupportedCardNetworks(Arrays.asList("viSa", "MASTERCARD", "discover",
-      "AMERICAN_EXPRESS", "AMEX", "JCB", "VISA", "AMEX", "BLA-BLA-CARD"));
+    Set<Integer> cardNetworks = PayHelper.convertSupportedCardNetworks(
+      new LinkedHashSet<>(Arrays.asList(CardNetworkType.VISA, CardNetworkType.MASTERCARD, CardNetworkType.DISCOVER,
+        CardNetworkType.AMERICAN_EXPRESS, CardNetworkType.JCB)
+      )
+    );
 
     assertThat(new ArrayList<>(cardNetworks)).isEqualTo(Arrays.asList(WalletConstants.CardNetwork.VISA,
       WalletConstants.CardNetwork.MASTERCARD, WalletConstants.CardNetwork.DISCOVER, WalletConstants.CardNetwork.AMEX,

@@ -52,6 +52,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 import static java.util.Collections.emptyList;
+import static java.util.Collections.emptySet;
 
 public abstract class BaseApplication extends Application {
   private final FrescoMemoryTrimmableRegistry frescoMemoryTrimmableRegistry = new FrescoMemoryTrimmableRegistry();
@@ -124,7 +125,7 @@ public abstract class BaseApplication extends Application {
   }
 
   private void fetchShopSettings() {
-    shopSettings.setValue(new ShopSettings("test", emptyList(), "US"));
+    shopSettings.setValue(new ShopSettings("test", emptySet(), "US"));
     new RealShopSettingInteractor()
       .execute()
       .observeOn(AndroidSchedulers.mainThread())
