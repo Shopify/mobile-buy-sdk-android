@@ -50,8 +50,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -66,16 +66,15 @@ public final class PayHelper {
   public static final int REQUEST_CODE_MASKED_WALLET = 500;
   public static final int REQUEST_CODE_CHANGE_MASKED_WALLET = 501;
   public static final int REQUEST_CODE_FULL_WALLET = 502;
-  public static final Map<String, Integer> SUPPORTED_CARD_NETWORKS_MAP;
+  public static final Map<CardNetworkType, Integer> SUPPORTED_CARD_NETWORKS_MAP;
 
   static {
-    Map<String, Integer> supportedCardNetworkMap = new HashMap<>(5);
-    supportedCardNetworkMap.put("VISA", WalletConstants.CardNetwork.VISA);
-    supportedCardNetworkMap.put("MASTERCARD", WalletConstants.CardNetwork.MASTERCARD);
-    supportedCardNetworkMap.put("DISCOVER", WalletConstants.CardNetwork.DISCOVER);
-    supportedCardNetworkMap.put("AMERICAN_EXPRESS", WalletConstants.CardNetwork.AMEX);
-    supportedCardNetworkMap.put("AMEX", WalletConstants.CardNetwork.AMEX);
-    supportedCardNetworkMap.put("JCB", WalletConstants.CardNetwork.JCB);
+    Map<CardNetworkType, Integer> supportedCardNetworkMap = new HashMap<>(5);
+    supportedCardNetworkMap.put(CardNetworkType.VISA, WalletConstants.CardNetwork.VISA);
+    supportedCardNetworkMap.put(CardNetworkType.MASTERCARD, WalletConstants.CardNetwork.MASTERCARD);
+    supportedCardNetworkMap.put(CardNetworkType.DISCOVER, WalletConstants.CardNetwork.DISCOVER);
+    supportedCardNetworkMap.put(CardNetworkType.AMERICAN_EXPRESS, WalletConstants.CardNetwork.AMEX);
+    supportedCardNetworkMap.put(CardNetworkType.JCB, WalletConstants.CardNetwork.JCB);
     SUPPORTED_CARD_NETWORKS_MAP = Collections.unmodifiableMap(supportedCardNetworkMap);
   }
 
@@ -201,25 +200,15 @@ public final class PayHelper {
    * @throws IllegalArgumentException in case of unsupported card network been provided with {@code supportedCardNetworks}
    */
   public static void isReadyToPay(@NonNull final Context context, @NonNull final GoogleApiClient apiClient,
-    @NonNull final List<String> supportedCardNetworks, @NonNull final AndroidPayReadyCallback delegate) {
-    Set<Integer> cardNetworks = convertSupportedCardNetworks(supportedCardNetworks);
-    isReadyToPay(context, apiClient, cardNetworks, delegate);
-  }
-
-  /**
-   * Checks if Android Pay is enabled and ready to use.
-   *
-   * @param context               {@link Context}
-   * @param apiClient             {@link GoogleApiClient}
-   * @param supportedCardNetworks list of supported credit card networks for current checkout one of {@link WalletConstants.CardNetwork}
-   *                              value
-   * @param delegate              callback result will be delegated to
-   */
-  public static void isReadyToPay(@NonNull final Context context, @NonNull final GoogleApiClient apiClient,
-    @NonNull final Set<Integer> supportedCardNetworks, @NonNull final AndroidPayReadyCallback delegate) {
+    @NonNull final Set<CardNetworkType> supportedCardNetworks, @NonNull final AndroidPayReadyCallback delegate) {
     checkNotNull(apiClient, "apiClient can't be null");
     checkNotNull(delegate, "delegate can't be null");
     checkNotNull(supportedCardNetworks, "supportedCardNetworks can't be null");
+
+    Set<Integer> cardNetworks = convertSupportedCardNetworks(supportedCardNetworks);
+    if (cardNetworks.isEmpty()) {
+      cardNetworks = new HashSet<>(SUPPORTED_CARD_NETWORKS_MAP.values());
+    }
 
     // Make sure that the device supports SHA-256 and UTF-8 (required by hashing Android Pay public key for payment token creation)
     try {
@@ -238,16 +227,8 @@ public final class PayHelper {
     }
 
     IsReadyToPayRequest.Builder payRequestBuilder = IsReadyToPayRequest.newBuilder();
-    if (supportedCardNetworks.isEmpty()) {
-      payRequestBuilder.addAllowedCardNetwork(WalletConstants.CardNetwork.AMEX)
-        .addAllowedCardNetwork(WalletConstants.CardNetwork.DISCOVER)
-        .addAllowedCardNetwork(WalletConstants.CardNetwork.JCB)
-        .addAllowedCardNetwork(WalletConstants.CardNetwork.MASTERCARD)
-        .addAllowedCardNetwork(WalletConstants.CardNetwork.VISA);
-    } else {
-      for (Integer supportedCardNetwork : supportedCardNetworks) {
-        payRequestBuilder.addAllowedCardNetwork(supportedCardNetwork);
-      }
+    for (Integer cardNetwork : cardNetworks) {
+      payRequestBuilder.addAllowedCardNetwork(cardNetwork);
     }
 
     Wallet.Payments.isReadyToPay(apiClient, payRequestBuilder.build())
@@ -281,18 +262,18 @@ public final class PayHelper {
   }
 
   /**
-   * Interface for receiving results from {@link PayHelper#isReadyToPay(Context, GoogleApiClient, List, AndroidPayReadyCallback)}.
+   * Interface for receiving results from {@link PayHelper#isReadyToPay(Context, GoogleApiClient, Set, AndroidPayReadyCallback)}.
    */
   public interface AndroidPayReadyCallback {
     void onResult(boolean result);
   }
 
-  static Set<Integer> convertSupportedCardNetworks(@NonNull final List<String> supportedCardNetworks) {
+  static Set<Integer> convertSupportedCardNetworks(@NonNull final Set<CardNetworkType> supportedCardNetworks) {
     checkNotNull(supportedCardNetworks, "supportedCardNetworks can't be null");
 
     Set<Integer> cardNetworks = new LinkedHashSet<>(supportedCardNetworks.size());
-    for (String supportedCardNetwork : supportedCardNetworks) {
-      Integer cardNetwork = SUPPORTED_CARD_NETWORKS_MAP.get(supportedCardNetwork.trim().toUpperCase());
+    for (CardNetworkType type : supportedCardNetworks) {
+      Integer cardNetwork = SUPPORTED_CARD_NETWORKS_MAP.get(type);
       if (cardNetwork != null) {
         cardNetworks.add(cardNetwork);
       }
