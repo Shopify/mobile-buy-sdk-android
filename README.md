@@ -1357,7 +1357,7 @@ After obtaining a credit card vault token, we can proceed to complete the checko
 GraphClient client = ...;
 ID checkoutId = ...;
 BigDecimal amount = ...;
-String idempotencyKey = ...;
+String idempotencyKey = UUID.randomUUID().toString();
 Storefront.MailingAddressInput billingAddress = ...;
 String creditCardVaultToken = ...;
 
@@ -1406,7 +1406,7 @@ ID checkoutId = ...;
 PaymentToken paymentToken = ...;
 PayAddress billingAddress = ...;
 PayCart payCart = ...;
-String idempotencyKey = ...;
+String idempotencyKey = UUID.randomUUID().toString();
 
 Storefront.MailingAddressInput mailingAddressInput = new Storefront.MailingAddressInput()
   .setAddress1(billingAddress.address1)
