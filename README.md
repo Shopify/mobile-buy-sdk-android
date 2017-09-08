@@ -6,7 +6,7 @@
 
 # Mobile Buy SDK
 
-The Mobile Buy SDK makes it easy to create custom storefronts in your mobile app, where users can buy products using Apple Pay or their credit card. The SDK connects to the Shopify platform using GraphQL, and supports a wide range of native storefront experiences.
+The Mobile Buy SDK makes it easy to create custom storefronts in your mobile app, where users can buy products using Android Pay or their credit card. The SDK connects to the Shopify platform using GraphQL, and supports a wide range of native storefront experiences.
 
 ## Table of contents
 
@@ -24,8 +24,8 @@ The Mobile Buy SDK makes it easy to create custom storefronts in your mobile app
   - [Retry and polling](#retry-)
   - [Caching](#caching-)
   - [Errors](#errors-)
-      - [GraphQL Error](#graphql-error)
-      - [GraphError](#grapherror)
+      - [GraphQL Error](#graphql-error-)
+      - [GraphError](#grapherror-)
 
 - [Search](#search-)
   - [Fuzzy matching](#fuzzy-matching-)
@@ -56,9 +56,9 @@ The Mobile Buy SDK makes it easy to create custom storefronts in your mobile app
       - [Updating a checkout](#updating-a-checkout-)
       - [Polling for shipping rates](#polling-for-shipping-rates-)
       - [Completing a checkout](#completing-a-checkout-)
-          - [Web](#web-checkout)
-          - [Credit card](#credit-card-checkout)
-          - [Android Pay](#android-pay-checkout)
+          - [Web](#web-checkout-)
+          - [Credit card](#credit-card-checkout-)
+          - [Android Pay](#android-pay-checkout-)
       - [Polling for checkout completion](#polling-for-checkout-completion-)
   - [Customer Accounts](#customer-accounts-)
       - [Creating a customer](#creating-a-customer-)
@@ -117,7 +117,7 @@ Unfortunately, the specifics of generation GraphQL models make it almost impossi
 
 ## Code Generation [⤴](#table-of-contents)
 
-The Buy SDK is built on a hierarchy of generated classes that construct and parse GraphQL queries and response. These classes are generated manually by running a custom Ruby script that relies on the [GraphQL Java Generation](https://github.com/Shopify/graphql_java_gen) library. Most of the generation functionality and supporting classes live inside the library. It works by downloading the GraphQL schema, generating Java class hieirarchy, and saving the generated files to the specified folder path. In addition, it provides overrides for custom GraphQL scalar types like `DateTime`.
+The Buy SDK is built on a hierarchy of generated classes that construct and parse GraphQL queries and response. These classes are generated manually by running a custom Ruby script that relies on the [GraphQL Java Generation](https://github.com/Shopify/graphql_java_gen) library. Most of the generation functionality and supporting classes live inside the library. It works by downloading the GraphQL schema, generating Java class hierarchy, and saving the generated files to the specified folder path. In addition, it provides overrides for custom GraphQL scalar types like `DateTime`.
 
 
 ### Request Models [⤴](#table-of-contents)
@@ -850,7 +850,7 @@ The confirmation fragment will notify in `onActivityResult` about any changes th
   PayHelper.handleWalletResponse(requestCode, resultCode, data, new PayHelper.WalletResponseHandler() {
 
     @Override public void onMaskedWallet(MaskedWallet maskedWallet) {
-      // called when user made changes to Masked Wallet inforamtion
+      // called when user made changes to Masked Wallet information
       // like shipping address that requires to update checkout to request new shipping rates
 
       updateMaskedWallet(maskedWallet);
@@ -1302,7 +1302,7 @@ Storefront.QueryRootQuery query = Storefront.query(rootQuery -> rootQuery
 );
 ```
 
-The query above starts an asynchoronous task on the server to fetch shipping rates from multiple shipping providers. Although the request might return immediately (network latency aside), it does not mean that the list of shipping rates is complete. This is indicated by the `ready` field in the query above. It is your application's responsibility to continue retrying this query until `ready == true`. The Buy SDK has [built-in support for retrying requests](#retry-), so we'll create a retry handler and perform the query:
+The query above starts an asynchronous task on the server to fetch shipping rates from multiple shipping providers. Although the request might return immediately (network latency aside), it does not mean that the list of shipping rates is complete. This is indicated by the `ready` field in the query above. It is your application's responsibility to continue retrying this query until `ready == true`. The Buy SDK has [built-in support for retrying requests](#retry-), so we'll create a retry handler and perform the query:
 
 ```java
 GraphClient client = ...;
