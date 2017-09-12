@@ -5848,18 +5848,18 @@ public class Storefront {
                 return this;
             }
 
-            public ProductsArguments sortKey(ProductCollectionSortKeys value) {
-                if (value != null) {
-                    startArgument("sortKey");
-                    _queryBuilder.append(value.toString());
-                }
-                return this;
-            }
-
             public ProductsArguments reverse(Boolean value) {
                 if (value != null) {
                     startArgument("reverse");
                     _queryBuilder.append(value);
+                }
+                return this;
+            }
+
+            public ProductsArguments sortKey(ProductCollectionSortKeys value) {
+                if (value != null) {
+                    startArgument("sortKey");
+                    _queryBuilder.append(value.toString());
                 }
                 return this;
             }
@@ -12487,14 +12487,10 @@ public class Storefront {
                 return this;
             }
 
-            /**
-            * Supported filter parameters:
-            * - `processed_at`
-            */
-            public OrdersArguments query(String value) {
+            public OrdersArguments reverse(Boolean value) {
                 if (value != null) {
-                    startArgument("query");
-                    Query.appendQuotedString(_queryBuilder, value.toString());
+                    startArgument("reverse");
+                    _queryBuilder.append(value);
                 }
                 return this;
             }
@@ -12507,10 +12503,14 @@ public class Storefront {
                 return this;
             }
 
-            public OrdersArguments reverse(Boolean value) {
+            /**
+            * Supported filter parameters:
+            * - `processed_at`
+            */
+            public OrdersArguments query(String value) {
                 if (value != null) {
-                    startArgument("reverse");
-                    _queryBuilder.append(value);
+                    startArgument("query");
+                    Query.appendQuotedString(_queryBuilder, value.toString());
                 }
                 return this;
             }
@@ -15197,42 +15197,64 @@ public class Storefront {
             startField("id");
         }
 
+        /**
+        * Address line 1 (Street address/PO Box/Company name).
+        */
         public MailingAddressQuery address1() {
             startField("address1");
 
             return this;
         }
 
+        /**
+        * Address line 2 (Apartment/Suite/Unit/Building).
+        */
         public MailingAddressQuery address2() {
             startField("address2");
 
             return this;
         }
 
+        /**
+        * City/District/Suburb/Town/Village.
+        */
         public MailingAddressQuery city() {
             startField("city");
 
             return this;
         }
 
+        /**
+        * Company/Organization/Government.
+        */
         public MailingAddressQuery company() {
             startField("company");
 
             return this;
         }
 
+        /**
+        * State/County/Province/Region.
+        */
         public MailingAddressQuery country() {
             startField("country");
 
             return this;
         }
 
+        /**
+        * Two-letter country code.
+        * For example, US.
+        */
         public MailingAddressQuery countryCode() {
             startField("countryCode");
 
             return this;
         }
 
+        /**
+        * First name of the customer.
+        */
         public MailingAddressQuery firstName() {
             startField("firstName");
 
@@ -15279,54 +15301,83 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * Comma-separated list of city, province, and country.
+        */
         public MailingAddressQuery formattedArea() {
             startField("formattedArea");
 
             return this;
         }
 
+        /**
+        * Last name of the customer.
+        */
         public MailingAddressQuery lastName() {
             startField("lastName");
 
             return this;
         }
 
+        /**
+        * Latitude coordinate of the customer address.
+        */
         public MailingAddressQuery latitude() {
             startField("latitude");
 
             return this;
         }
 
+        /**
+        * Longitude coordinate of the customer address.
+        */
         public MailingAddressQuery longitude() {
             startField("longitude");
 
             return this;
         }
 
+        /**
+        * Name of the customer, based on first name + last name.
+        */
         public MailingAddressQuery name() {
             startField("name");
 
             return this;
         }
 
+        /**
+        * Unique phone number for the customer.
+        * Formatted using E.164 standard. For example, _+16135551111_.
+        */
         public MailingAddressQuery phone() {
             startField("phone");
 
             return this;
         }
 
+        /**
+        * State/County/Province/Region.
+        */
         public MailingAddressQuery province() {
             startField("province");
 
             return this;
         }
 
+        /**
+        * Two-letter province or state code.
+        * For example, ON.
+        */
         public MailingAddressQuery provinceCode() {
             startField("provinceCode");
 
             return this;
         }
 
+        /**
+        * Zip/Postal Code.
+        */
         public MailingAddressQuery zip() {
             startField("zip");
 
@@ -15559,6 +15610,9 @@ public class Storefront {
             return "MailingAddress";
         }
 
+        /**
+        * Address line 1 (Street address/PO Box/Company name).
+        */
         public String getAddress1() {
             return (String) get("address1");
         }
@@ -15568,6 +15622,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * Address line 2 (Apartment/Suite/Unit/Building).
+        */
         public String getAddress2() {
             return (String) get("address2");
         }
@@ -15577,6 +15634,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * City/District/Suburb/Town/Village.
+        */
         public String getCity() {
             return (String) get("city");
         }
@@ -15586,6 +15646,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * Company/Organization/Government.
+        */
         public String getCompany() {
             return (String) get("company");
         }
@@ -15595,6 +15658,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * State/County/Province/Region.
+        */
         public String getCountry() {
             return (String) get("country");
         }
@@ -15604,6 +15670,10 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * Two-letter country code.
+        * For example, US.
+        */
         public String getCountryCode() {
             return (String) get("countryCode");
         }
@@ -15613,6 +15683,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * First name of the customer.
+        */
         public String getFirstName() {
             return (String) get("firstName");
         }
@@ -15631,6 +15704,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * Comma-separated list of city, province, and country.
+        */
         public String getFormattedArea() {
             return (String) get("formattedArea");
         }
@@ -15647,6 +15723,9 @@ public class Storefront {
             return (ID) get("id");
         }
 
+        /**
+        * Last name of the customer.
+        */
         public String getLastName() {
             return (String) get("lastName");
         }
@@ -15656,6 +15735,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * Latitude coordinate of the customer address.
+        */
         public Double getLatitude() {
             return (Double) get("latitude");
         }
@@ -15665,6 +15747,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * Longitude coordinate of the customer address.
+        */
         public Double getLongitude() {
             return (Double) get("longitude");
         }
@@ -15674,6 +15759,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * Name of the customer, based on first name + last name.
+        */
         public String getName() {
             return (String) get("name");
         }
@@ -15683,6 +15771,10 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * Unique phone number for the customer.
+        * Formatted using E.164 standard. For example, _+16135551111_.
+        */
         public String getPhone() {
             return (String) get("phone");
         }
@@ -15692,6 +15784,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * State/County/Province/Region.
+        */
         public String getProvince() {
             return (String) get("province");
         }
@@ -15701,6 +15796,10 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * Two-letter province or state code.
+        * For example, ON.
+        */
         public String getProvinceCode() {
             return (String) get("provinceCode");
         }
@@ -15710,6 +15809,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * Zip/Postal Code.
+        */
         public String getZip() {
             return (String) get("zip");
         }
@@ -19771,18 +19873,18 @@ public class Storefront {
                 return this;
             }
 
-            public ImagesArguments sortKey(ProductImageSortKeys value) {
-                if (value != null) {
-                    startArgument("sortKey");
-                    _queryBuilder.append(value.toString());
-                }
-                return this;
-            }
-
             public ImagesArguments reverse(Boolean value) {
                 if (value != null) {
                     startArgument("reverse");
                     _queryBuilder.append(value);
+                }
+                return this;
+            }
+
+            public ImagesArguments sortKey(ProductImageSortKeys value) {
+                if (value != null) {
+                    startArgument("sortKey");
+                    _queryBuilder.append(value.toString());
                 }
                 return this;
             }
@@ -19863,6 +19965,16 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * The online store URL for the product.
+        * A value of `null` indicates that the product is not published to the Online Store sales channel.
+        */
+        public ProductQuery onlineStoreUrl() {
+            startField("onlineStoreUrl");
+
+            return this;
+        }
+
         public class OptionsArguments extends Arguments {
             OptionsArguments(StringBuilder _queryBuilder) {
                 super(_queryBuilder, true);
@@ -19885,14 +19997,14 @@ public class Storefront {
         }
 
         /**
-        * Lst of custom product options (maximum of 3 per product).
+        * List of custom product options (maximum of 3 per product).
         */
         public ProductQuery options(ProductOptionQueryDefinition queryDef) {
             return options(args -> {}, queryDef);
         }
 
         /**
-        * Lst of custom product options (maximum of 3 per product).
+        * List of custom product options (maximum of 3 per product).
         */
         public ProductQuery options(OptionsArgumentsDefinition argsDef, ProductOptionQueryDefinition queryDef) {
             startField("options");
@@ -19918,8 +20030,7 @@ public class Storefront {
         }
 
         /**
-        * The date and time when the product was published to the Online Store channel.
-        * A value of `null` indicates that the product is not published to Online Store.
+        * The date and time when the product was published to the channel.
         */
         public ProductQuery publishedAt() {
             startField("publishedAt");
@@ -20000,6 +20111,14 @@ public class Storefront {
                 if (value != null) {
                     startArgument("reverse");
                     _queryBuilder.append(value);
+                }
+                return this;
+            }
+
+            public VariantsArguments sortKey(ProductVariantSortKeys value) {
+                if (value != null) {
+                    startArgument("sortKey");
+                    _queryBuilder.append(value.toString());
                 }
                 return this;
             }
@@ -20100,6 +20219,17 @@ public class Storefront {
 
                     case "images": {
                         responseData.put(key, new ImageConnection(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "onlineStoreUrl": {
+                        String optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = jsonAsString(field.getValue(), key);
+                        }
+
+                        responseData.put(key, optional1);
 
                         break;
                     }
@@ -20274,7 +20404,20 @@ public class Storefront {
         }
 
         /**
-        * Lst of custom product options (maximum of 3 per product).
+        * The online store URL for the product.
+        * A value of `null` indicates that the product is not published to the Online Store sales channel.
+        */
+        public String getOnlineStoreUrl() {
+            return (String) get("onlineStoreUrl");
+        }
+
+        public Product setOnlineStoreUrl(String arg) {
+            optimisticData.put(getKey("onlineStoreUrl"), arg);
+            return this;
+        }
+
+        /**
+        * List of custom product options (maximum of 3 per product).
         */
         public List<ProductOption> getOptions() {
             return (List<ProductOption>) get("options");
@@ -20298,8 +20441,7 @@ public class Storefront {
         }
 
         /**
-        * The date and time when the product was published to the Online Store channel.
-        * A value of `null` indicates that the product is not published to Online Store.
+        * The date and time when the product was published to the channel.
         */
         public DateTime getPublishedAt() {
             return (DateTime) get("publishedAt");
@@ -20400,6 +20542,8 @@ public class Storefront {
                 case "id": return false;
 
                 case "images": return true;
+
+                case "onlineStoreUrl": return false;
 
                 case "options": return true;
 
@@ -21764,6 +21908,82 @@ public class Storefront {
         }
     }
 
+    /**
+    * The set of valid sort keys for the variants query.
+    */
+    public enum ProductVariantSortKeys {
+        ID,
+
+        POSITION,
+
+        RELEVANCE,
+
+        SKU,
+
+        TITLE,
+
+        UNKNOWN_VALUE;
+
+        public static ProductVariantSortKeys fromGraphQl(String value) {
+            if (value == null) {
+                return null;
+            }
+
+            switch (value) {
+                case "ID": {
+                    return ID;
+                }
+
+                case "POSITION": {
+                    return POSITION;
+                }
+
+                case "RELEVANCE": {
+                    return RELEVANCE;
+                }
+
+                case "SKU": {
+                    return SKU;
+                }
+
+                case "TITLE": {
+                    return TITLE;
+                }
+
+                default: {
+                    return UNKNOWN_VALUE;
+                }
+            }
+        }
+        public String toString() {
+            switch (this) {
+                case ID: {
+                    return "ID";
+                }
+
+                case POSITION: {
+                    return "POSITION";
+                }
+
+                case RELEVANCE: {
+                    return "RELEVANCE";
+                }
+
+                case SKU: {
+                    return "SKU";
+                }
+
+                case TITLE: {
+                    return "TITLE";
+                }
+
+                default: {
+                    return "";
+                }
+            }
+        }
+    }
+
     public interface QueryRootQueryDefinition {
         void define(QueryRootQuery _queryBuilder);
     }
@@ -22281,18 +22501,10 @@ public class Storefront {
                 return this;
             }
 
-            /**
-            * Supported filter parameters:
-            * - `author`
-            * - `updated_at`
-            * - `created_at`
-            * - `blog_title`
-            * - `tag`
-            */
-            public ArticlesArguments query(String value) {
+            public ArticlesArguments reverse(Boolean value) {
                 if (value != null) {
-                    startArgument("query");
-                    Query.appendQuotedString(_queryBuilder, value.toString());
+                    startArgument("reverse");
+                    _queryBuilder.append(value);
                 }
                 return this;
             }
@@ -22305,10 +22517,18 @@ public class Storefront {
                 return this;
             }
 
-            public ArticlesArguments reverse(Boolean value) {
+            /**
+            * Supported filter parameters:
+            * - `author`
+            * - `updated_at`
+            * - `created_at`
+            * - `blog_title`
+            * - `tag`
+            */
+            public ArticlesArguments query(String value) {
                 if (value != null) {
-                    startArgument("reverse");
-                    _queryBuilder.append(value);
+                    startArgument("query");
+                    Query.appendQuotedString(_queryBuilder, value.toString());
                 }
                 return this;
             }
@@ -22358,17 +22578,10 @@ public class Storefront {
                 return this;
             }
 
-            /**
-            * Supported filter parameters:
-            * - `handle`
-            * - `title`
-            * - `updated_at`
-            * - `created_at`
-            */
-            public BlogsArguments query(String value) {
+            public BlogsArguments reverse(Boolean value) {
                 if (value != null) {
-                    startArgument("query");
-                    Query.appendQuotedString(_queryBuilder, value.toString());
+                    startArgument("reverse");
+                    _queryBuilder.append(value);
                 }
                 return this;
             }
@@ -22381,10 +22594,17 @@ public class Storefront {
                 return this;
             }
 
-            public BlogsArguments reverse(Boolean value) {
+            /**
+            * Supported filter parameters:
+            * - `handle`
+            * - `title`
+            * - `updated_at`
+            * - `created_at`
+            */
+            public BlogsArguments query(String value) {
                 if (value != null) {
-                    startArgument("reverse");
-                    _queryBuilder.append(value);
+                    startArgument("query");
+                    Query.appendQuotedString(_queryBuilder, value.toString());
                 }
                 return this;
             }
@@ -22464,16 +22684,10 @@ public class Storefront {
                 return this;
             }
 
-            /**
-            * Supported filter parameters:
-            * - `title`
-            * - `collection_type`
-            * - `updated_at`
-            */
-            public CollectionsArguments query(String value) {
+            public CollectionsArguments reverse(Boolean value) {
                 if (value != null) {
-                    startArgument("query");
-                    Query.appendQuotedString(_queryBuilder, value.toString());
+                    startArgument("reverse");
+                    _queryBuilder.append(value);
                 }
                 return this;
             }
@@ -22486,10 +22700,16 @@ public class Storefront {
                 return this;
             }
 
-            public CollectionsArguments reverse(Boolean value) {
+            /**
+            * Supported filter parameters:
+            * - `title`
+            * - `collection_type`
+            * - `updated_at`
+            */
+            public CollectionsArguments query(String value) {
                 if (value != null) {
-                    startArgument("reverse");
-                    _queryBuilder.append(value);
+                    startArgument("query");
+                    Query.appendQuotedString(_queryBuilder, value.toString());
                 }
                 return this;
             }
@@ -22653,6 +22873,22 @@ public class Storefront {
                 return this;
             }
 
+            public ProductsArguments reverse(Boolean value) {
+                if (value != null) {
+                    startArgument("reverse");
+                    _queryBuilder.append(value);
+                }
+                return this;
+            }
+
+            public ProductsArguments sortKey(ProductSortKeys value) {
+                if (value != null) {
+                    startArgument("sortKey");
+                    _queryBuilder.append(value.toString());
+                }
+                return this;
+            }
+
             /**
             * Supported filter parameters:
             * - `title`
@@ -22666,22 +22902,6 @@ public class Storefront {
                 if (value != null) {
                     startArgument("query");
                     Query.appendQuotedString(_queryBuilder, value.toString());
-                }
-                return this;
-            }
-
-            public ProductsArguments sortKey(ProductSortKeys value) {
-                if (value != null) {
-                    startArgument("sortKey");
-                    _queryBuilder.append(value.toString());
-                }
-                return this;
-            }
-
-            public ProductsArguments reverse(Boolean value) {
-                if (value != null) {
-                    startArgument("reverse");
-                    _queryBuilder.append(value);
                 }
                 return this;
             }

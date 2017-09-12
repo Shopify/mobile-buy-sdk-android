@@ -85,7 +85,7 @@ android {
     shopify {
     }
 
-    apollo {
+    xApollo {
     }
   }
 
@@ -116,14 +116,14 @@ dependencies {
   compile project(':buy3-pay-support')
   shopifyCompile project(':buy3')
 
-  apolloCompile dep.apolloRuntime
-  apolloCompile dep.okhttpLogging
+  xApolloCompile dep.apolloRuntime
+  xApolloCompile dep.okhttpLogging
 }
 
 task downloadApolloSchema(type: DefaultTask, group: "GraphQL", description: "Download GraphQL store front API schema") {
   doLast {
     println("Downloading GraphQL schema...")
-    def schemaFile = new File(project.projectDir.absolutePath + '/src/apollo/graphql/com/shopify/sample/domain/schema.json')
+    def schemaFile = new File(project.projectDir.absolutePath + '/src/xApollo/graphql/com/shopify/sample/domain/schema.json')
     if (schemaFile.exists()) {
       schemaFile.delete()
     }
