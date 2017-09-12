@@ -1,5 +1,6 @@
 language: android
 sudo: true
+dist: precise
 
 android:
   components:
@@ -44,7 +45,7 @@ before_script:
 script:
   - ./gradlew clean build connectedCheck -x :sample:build -x :sample:connectedCheck -PdisablePreDex --console=plain
   - ./gradlew clean :sample:assembleShopifyDebug -PdisablePreDex --console=plain 
-  - ./gradlew clean :sample:assembleApolloDebug -PdisablePreDex --console=plain
+  - ./gradlew clean :sample:assembleXApolloDebug -PdisablePreDex --console=plain
 
 before_cache:
     - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
