@@ -48,7 +48,7 @@ public final class RealProductByIdInteractor implements ProductByIdInteractor {
       .title()
       .descriptionHtml()
       .tags()
-      .images(250, imageConnection -> imageConnection
+      .images(args ->  args.first(250), imageConnection -> imageConnection
         .edges(imageEdge -> imageEdge
           .node(Storefront.ImageQuery::src)
         )
@@ -57,7 +57,7 @@ public final class RealProductByIdInteractor implements ProductByIdInteractor {
         .name()
         .values()
       )
-      .variants(250, variantConnection -> variantConnection
+      .variants(args ->  args.first(250), variantConnection -> variantConnection
         .edges(variantEdge -> variantEdge
           .node(variant -> variant
             .title()

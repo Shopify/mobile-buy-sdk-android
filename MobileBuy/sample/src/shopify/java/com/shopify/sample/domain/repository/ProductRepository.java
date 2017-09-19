@@ -58,8 +58,7 @@ public final class ProductRepository {
         new ID(collectionId),
         node -> node.onCollection(collectionConnection -> collectionConnection
           .products(
-            perPage,
-            args -> args.after(TextUtils.isEmpty(cursor) ? null : cursor),
+            args -> args.first(perPage).after(TextUtils.isEmpty(cursor) ? null : cursor),
             query
           )
         )

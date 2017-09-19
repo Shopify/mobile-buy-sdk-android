@@ -300,12 +300,36 @@ public class Storefront {
 
         public class CommentsArguments extends Arguments {
             CommentsArguments(StringBuilder _queryBuilder) {
-                super(_queryBuilder, false);
+                super(_queryBuilder, true);
+            }
+
+            public CommentsArguments first(Integer value) {
+                if (value != null) {
+                    startArgument("first");
+                    _queryBuilder.append(value);
+                }
+                return this;
             }
 
             public CommentsArguments after(String value) {
                 if (value != null) {
                     startArgument("after");
+                    Query.appendQuotedString(_queryBuilder, value.toString());
+                }
+                return this;
+            }
+
+            public CommentsArguments last(Integer value) {
+                if (value != null) {
+                    startArgument("last");
+                    _queryBuilder.append(value);
+                }
+                return this;
+            }
+
+            public CommentsArguments before(String value) {
+                if (value != null) {
+                    startArgument("before");
                     Query.appendQuotedString(_queryBuilder, value.toString());
                 }
                 return this;
@@ -327,22 +351,19 @@ public class Storefront {
         /**
         * List of comments posted on the article.
         */
-        public ArticleQuery comments(int first, CommentConnectionQueryDefinition queryDef) {
-            return comments(first, args -> {}, queryDef);
+        public ArticleQuery comments(CommentConnectionQueryDefinition queryDef) {
+            return comments(args -> {}, queryDef);
         }
 
         /**
         * List of comments posted on the article.
         */
-        public ArticleQuery comments(int first, CommentsArgumentsDefinition argsDef, CommentConnectionQueryDefinition queryDef) {
+        public ArticleQuery comments(CommentsArgumentsDefinition argsDef, CommentConnectionQueryDefinition queryDef) {
             startField("comments");
 
-            _queryBuilder.append("(first:");
-            _queryBuilder.append(first);
-
-            argsDef.define(new CommentsArguments(_queryBuilder));
-
-            _queryBuilder.append(')');
+            CommentsArguments args = new CommentsArguments(_queryBuilder);
+            argsDef.define(args);
+            CommentsArguments.end(args);
 
             _queryBuilder.append('{');
             queryDef.define(new CommentConnectionQuery(_queryBuilder));
@@ -1662,12 +1683,36 @@ public class Storefront {
 
         public class ArticlesArguments extends Arguments {
             ArticlesArguments(StringBuilder _queryBuilder) {
-                super(_queryBuilder, false);
+                super(_queryBuilder, true);
+            }
+
+            public ArticlesArguments first(Integer value) {
+                if (value != null) {
+                    startArgument("first");
+                    _queryBuilder.append(value);
+                }
+                return this;
             }
 
             public ArticlesArguments after(String value) {
                 if (value != null) {
                     startArgument("after");
+                    Query.appendQuotedString(_queryBuilder, value.toString());
+                }
+                return this;
+            }
+
+            public ArticlesArguments last(Integer value) {
+                if (value != null) {
+                    startArgument("last");
+                    _queryBuilder.append(value);
+                }
+                return this;
+            }
+
+            public ArticlesArguments before(String value) {
+                if (value != null) {
+                    startArgument("before");
                     Query.appendQuotedString(_queryBuilder, value.toString());
                 }
                 return this;
@@ -1689,22 +1734,19 @@ public class Storefront {
         /**
         * List of the blog's articles.
         */
-        public BlogQuery articles(int first, ArticleConnectionQueryDefinition queryDef) {
-            return articles(first, args -> {}, queryDef);
+        public BlogQuery articles(ArticleConnectionQueryDefinition queryDef) {
+            return articles(args -> {}, queryDef);
         }
 
         /**
         * List of the blog's articles.
         */
-        public BlogQuery articles(int first, ArticlesArgumentsDefinition argsDef, ArticleConnectionQueryDefinition queryDef) {
+        public BlogQuery articles(ArticlesArgumentsDefinition argsDef, ArticleConnectionQueryDefinition queryDef) {
             startField("articles");
 
-            _queryBuilder.append("(first:");
-            _queryBuilder.append(first);
-
-            argsDef.define(new ArticlesArguments(_queryBuilder));
-
-            _queryBuilder.append(')');
+            ArticlesArguments args = new ArticlesArguments(_queryBuilder);
+            argsDef.define(args);
+            ArticlesArguments.end(args);
 
             _queryBuilder.append('{');
             queryDef.define(new ArticleConnectionQuery(_queryBuilder));
@@ -2331,12 +2373,36 @@ public class Storefront {
 
         public class LineItemsArguments extends Arguments {
             LineItemsArguments(StringBuilder _queryBuilder) {
-                super(_queryBuilder, false);
+                super(_queryBuilder, true);
+            }
+
+            public LineItemsArguments first(Integer value) {
+                if (value != null) {
+                    startArgument("first");
+                    _queryBuilder.append(value);
+                }
+                return this;
             }
 
             public LineItemsArguments after(String value) {
                 if (value != null) {
                     startArgument("after");
+                    Query.appendQuotedString(_queryBuilder, value.toString());
+                }
+                return this;
+            }
+
+            public LineItemsArguments last(Integer value) {
+                if (value != null) {
+                    startArgument("last");
+                    _queryBuilder.append(value);
+                }
+                return this;
+            }
+
+            public LineItemsArguments before(String value) {
+                if (value != null) {
+                    startArgument("before");
                     Query.appendQuotedString(_queryBuilder, value.toString());
                 }
                 return this;
@@ -2358,22 +2424,19 @@ public class Storefront {
         /**
         * A list of line item objects, each one containing information about an item in the checkout.
         */
-        public CheckoutQuery lineItems(int first, CheckoutLineItemConnectionQueryDefinition queryDef) {
-            return lineItems(first, args -> {}, queryDef);
+        public CheckoutQuery lineItems(CheckoutLineItemConnectionQueryDefinition queryDef) {
+            return lineItems(args -> {}, queryDef);
         }
 
         /**
         * A list of line item objects, each one containing information about an item in the checkout.
         */
-        public CheckoutQuery lineItems(int first, LineItemsArgumentsDefinition argsDef, CheckoutLineItemConnectionQueryDefinition queryDef) {
+        public CheckoutQuery lineItems(LineItemsArgumentsDefinition argsDef, CheckoutLineItemConnectionQueryDefinition queryDef) {
             startField("lineItems");
 
-            _queryBuilder.append("(first:");
-            _queryBuilder.append(first);
-
-            argsDef.define(new LineItemsArguments(_queryBuilder));
-
-            _queryBuilder.append(')');
+            LineItemsArguments args = new LineItemsArguments(_queryBuilder);
+            argsDef.define(args);
+            LineItemsArguments.end(args);
 
             _queryBuilder.append('{');
             queryDef.define(new CheckoutLineItemConnectionQuery(_queryBuilder));
@@ -5837,12 +5900,36 @@ public class Storefront {
 
         public class ProductsArguments extends Arguments {
             ProductsArguments(StringBuilder _queryBuilder) {
-                super(_queryBuilder, false);
+                super(_queryBuilder, true);
+            }
+
+            public ProductsArguments first(Integer value) {
+                if (value != null) {
+                    startArgument("first");
+                    _queryBuilder.append(value);
+                }
+                return this;
             }
 
             public ProductsArguments after(String value) {
                 if (value != null) {
                     startArgument("after");
+                    Query.appendQuotedString(_queryBuilder, value.toString());
+                }
+                return this;
+            }
+
+            public ProductsArguments last(Integer value) {
+                if (value != null) {
+                    startArgument("last");
+                    _queryBuilder.append(value);
+                }
+                return this;
+            }
+
+            public ProductsArguments before(String value) {
+                if (value != null) {
+                    startArgument("before");
                     Query.appendQuotedString(_queryBuilder, value.toString());
                 }
                 return this;
@@ -5872,22 +5959,19 @@ public class Storefront {
         /**
         * List of products in the collection.
         */
-        public CollectionQuery products(int first, ProductConnectionQueryDefinition queryDef) {
-            return products(first, args -> {}, queryDef);
+        public CollectionQuery products(ProductConnectionQueryDefinition queryDef) {
+            return products(args -> {}, queryDef);
         }
 
         /**
         * List of products in the collection.
         */
-        public CollectionQuery products(int first, ProductsArgumentsDefinition argsDef, ProductConnectionQueryDefinition queryDef) {
+        public CollectionQuery products(ProductsArgumentsDefinition argsDef, ProductConnectionQueryDefinition queryDef) {
             startField("products");
 
-            _queryBuilder.append("(first:");
-            _queryBuilder.append(first);
-
-            argsDef.define(new ProductsArguments(_queryBuilder));
-
-            _queryBuilder.append(')');
+            ProductsArguments args = new ProductsArguments(_queryBuilder);
+            argsDef.define(args);
+            ProductsArguments.end(args);
 
             _queryBuilder.append('{');
             queryDef.define(new ProductConnectionQuery(_queryBuilder));
@@ -12356,12 +12440,36 @@ public class Storefront {
 
         public class AddressesArguments extends Arguments {
             AddressesArguments(StringBuilder _queryBuilder) {
-                super(_queryBuilder, false);
+                super(_queryBuilder, true);
+            }
+
+            public AddressesArguments first(Integer value) {
+                if (value != null) {
+                    startArgument("first");
+                    _queryBuilder.append(value);
+                }
+                return this;
             }
 
             public AddressesArguments after(String value) {
                 if (value != null) {
                     startArgument("after");
+                    Query.appendQuotedString(_queryBuilder, value.toString());
+                }
+                return this;
+            }
+
+            public AddressesArguments last(Integer value) {
+                if (value != null) {
+                    startArgument("last");
+                    _queryBuilder.append(value);
+                }
+                return this;
+            }
+
+            public AddressesArguments before(String value) {
+                if (value != null) {
+                    startArgument("before");
                     Query.appendQuotedString(_queryBuilder, value.toString());
                 }
                 return this;
@@ -12383,22 +12491,19 @@ public class Storefront {
         /**
         * A list of addresses for the customer.
         */
-        public CustomerQuery addresses(int first, MailingAddressConnectionQueryDefinition queryDef) {
-            return addresses(first, args -> {}, queryDef);
+        public CustomerQuery addresses(MailingAddressConnectionQueryDefinition queryDef) {
+            return addresses(args -> {}, queryDef);
         }
 
         /**
         * A list of addresses for the customer.
         */
-        public CustomerQuery addresses(int first, AddressesArgumentsDefinition argsDef, MailingAddressConnectionQueryDefinition queryDef) {
+        public CustomerQuery addresses(AddressesArgumentsDefinition argsDef, MailingAddressConnectionQueryDefinition queryDef) {
             startField("addresses");
 
-            _queryBuilder.append("(first:");
-            _queryBuilder.append(first);
-
-            argsDef.define(new AddressesArguments(_queryBuilder));
-
-            _queryBuilder.append(')');
+            AddressesArguments args = new AddressesArguments(_queryBuilder);
+            argsDef.define(args);
+            AddressesArguments.end(args);
 
             _queryBuilder.append('{');
             queryDef.define(new MailingAddressConnectionQuery(_queryBuilder));
@@ -12476,12 +12581,36 @@ public class Storefront {
 
         public class OrdersArguments extends Arguments {
             OrdersArguments(StringBuilder _queryBuilder) {
-                super(_queryBuilder, false);
+                super(_queryBuilder, true);
+            }
+
+            public OrdersArguments first(Integer value) {
+                if (value != null) {
+                    startArgument("first");
+                    _queryBuilder.append(value);
+                }
+                return this;
             }
 
             public OrdersArguments after(String value) {
                 if (value != null) {
                     startArgument("after");
+                    Query.appendQuotedString(_queryBuilder, value.toString());
+                }
+                return this;
+            }
+
+            public OrdersArguments last(Integer value) {
+                if (value != null) {
+                    startArgument("last");
+                    _queryBuilder.append(value);
+                }
+                return this;
+            }
+
+            public OrdersArguments before(String value) {
+                if (value != null) {
+                    startArgument("before");
                     Query.appendQuotedString(_queryBuilder, value.toString());
                 }
                 return this;
@@ -12523,22 +12652,19 @@ public class Storefront {
         /**
         * The orders associated with the customer.
         */
-        public CustomerQuery orders(int first, OrderConnectionQueryDefinition queryDef) {
-            return orders(first, args -> {}, queryDef);
+        public CustomerQuery orders(OrderConnectionQueryDefinition queryDef) {
+            return orders(args -> {}, queryDef);
         }
 
         /**
         * The orders associated with the customer.
         */
-        public CustomerQuery orders(int first, OrdersArgumentsDefinition argsDef, OrderConnectionQueryDefinition queryDef) {
+        public CustomerQuery orders(OrdersArgumentsDefinition argsDef, OrderConnectionQueryDefinition queryDef) {
             startField("orders");
 
-            _queryBuilder.append("(first:");
-            _queryBuilder.append(first);
-
-            argsDef.define(new OrdersArguments(_queryBuilder));
-
-            _queryBuilder.append(')');
+            OrdersArguments args = new OrdersArguments(_queryBuilder);
+            argsDef.define(args);
+            OrdersArguments.end(args);
 
             _queryBuilder.append('{');
             queryDef.define(new OrderConnectionQuery(_queryBuilder));
@@ -17817,12 +17943,36 @@ public class Storefront {
 
         public class LineItemsArguments extends Arguments {
             LineItemsArguments(StringBuilder _queryBuilder) {
-                super(_queryBuilder, false);
+                super(_queryBuilder, true);
+            }
+
+            public LineItemsArguments first(Integer value) {
+                if (value != null) {
+                    startArgument("first");
+                    _queryBuilder.append(value);
+                }
+                return this;
             }
 
             public LineItemsArguments after(String value) {
                 if (value != null) {
                     startArgument("after");
+                    Query.appendQuotedString(_queryBuilder, value.toString());
+                }
+                return this;
+            }
+
+            public LineItemsArguments last(Integer value) {
+                if (value != null) {
+                    startArgument("last");
+                    _queryBuilder.append(value);
+                }
+                return this;
+            }
+
+            public LineItemsArguments before(String value) {
+                if (value != null) {
+                    startArgument("before");
                     Query.appendQuotedString(_queryBuilder, value.toString());
                 }
                 return this;
@@ -17844,22 +17994,19 @@ public class Storefront {
         /**
         * List of the order’s line items.
         */
-        public OrderQuery lineItems(int first, OrderLineItemConnectionQueryDefinition queryDef) {
-            return lineItems(first, args -> {}, queryDef);
+        public OrderQuery lineItems(OrderLineItemConnectionQueryDefinition queryDef) {
+            return lineItems(args -> {}, queryDef);
         }
 
         /**
         * List of the order’s line items.
         */
-        public OrderQuery lineItems(int first, LineItemsArgumentsDefinition argsDef, OrderLineItemConnectionQueryDefinition queryDef) {
+        public OrderQuery lineItems(LineItemsArgumentsDefinition argsDef, OrderLineItemConnectionQueryDefinition queryDef) {
             startField("lineItems");
 
-            _queryBuilder.append("(first:");
-            _queryBuilder.append(first);
-
-            argsDef.define(new LineItemsArguments(_queryBuilder));
-
-            _queryBuilder.append(')');
+            LineItemsArguments args = new LineItemsArguments(_queryBuilder);
+            argsDef.define(args);
+            LineItemsArguments.end(args);
 
             _queryBuilder.append('{');
             queryDef.define(new OrderLineItemConnectionQuery(_queryBuilder));
@@ -19740,12 +19887,36 @@ public class Storefront {
 
         public class CollectionsArguments extends Arguments {
             CollectionsArguments(StringBuilder _queryBuilder) {
-                super(_queryBuilder, false);
+                super(_queryBuilder, true);
+            }
+
+            public CollectionsArguments first(Integer value) {
+                if (value != null) {
+                    startArgument("first");
+                    _queryBuilder.append(value);
+                }
+                return this;
             }
 
             public CollectionsArguments after(String value) {
                 if (value != null) {
                     startArgument("after");
+                    Query.appendQuotedString(_queryBuilder, value.toString());
+                }
+                return this;
+            }
+
+            public CollectionsArguments last(Integer value) {
+                if (value != null) {
+                    startArgument("last");
+                    _queryBuilder.append(value);
+                }
+                return this;
+            }
+
+            public CollectionsArguments before(String value) {
+                if (value != null) {
+                    startArgument("before");
                     Query.appendQuotedString(_queryBuilder, value.toString());
                 }
                 return this;
@@ -19767,22 +19938,19 @@ public class Storefront {
         /**
         * List of collections a product belongs to.
         */
-        public ProductQuery collections(int first, CollectionConnectionQueryDefinition queryDef) {
-            return collections(first, args -> {}, queryDef);
+        public ProductQuery collections(CollectionConnectionQueryDefinition queryDef) {
+            return collections(args -> {}, queryDef);
         }
 
         /**
         * List of collections a product belongs to.
         */
-        public ProductQuery collections(int first, CollectionsArgumentsDefinition argsDef, CollectionConnectionQueryDefinition queryDef) {
+        public ProductQuery collections(CollectionsArgumentsDefinition argsDef, CollectionConnectionQueryDefinition queryDef) {
             startField("collections");
 
-            _queryBuilder.append("(first:");
-            _queryBuilder.append(first);
-
-            argsDef.define(new CollectionsArguments(_queryBuilder));
-
-            _queryBuilder.append(')');
+            CollectionsArguments args = new CollectionsArguments(_queryBuilder);
+            argsDef.define(args);
+            CollectionsArguments.end(args);
 
             _queryBuilder.append('{');
             queryDef.define(new CollectionConnectionQuery(_queryBuilder));
@@ -19862,12 +20030,36 @@ public class Storefront {
 
         public class ImagesArguments extends Arguments {
             ImagesArguments(StringBuilder _queryBuilder) {
-                super(_queryBuilder, false);
+                super(_queryBuilder, true);
+            }
+
+            public ImagesArguments first(Integer value) {
+                if (value != null) {
+                    startArgument("first");
+                    _queryBuilder.append(value);
+                }
+                return this;
             }
 
             public ImagesArguments after(String value) {
                 if (value != null) {
                     startArgument("after");
+                    Query.appendQuotedString(_queryBuilder, value.toString());
+                }
+                return this;
+            }
+
+            public ImagesArguments last(Integer value) {
+                if (value != null) {
+                    startArgument("last");
+                    _queryBuilder.append(value);
+                }
+                return this;
+            }
+
+            public ImagesArguments before(String value) {
+                if (value != null) {
+                    startArgument("before");
                     Query.appendQuotedString(_queryBuilder, value.toString());
                 }
                 return this;
@@ -19941,22 +20133,19 @@ public class Storefront {
         /**
         * List of images associated with the product.
         */
-        public ProductQuery images(int first, ImageConnectionQueryDefinition queryDef) {
-            return images(first, args -> {}, queryDef);
+        public ProductQuery images(ImageConnectionQueryDefinition queryDef) {
+            return images(args -> {}, queryDef);
         }
 
         /**
         * List of images associated with the product.
         */
-        public ProductQuery images(int first, ImagesArgumentsDefinition argsDef, ImageConnectionQueryDefinition queryDef) {
+        public ProductQuery images(ImagesArgumentsDefinition argsDef, ImageConnectionQueryDefinition queryDef) {
             startField("images");
 
-            _queryBuilder.append("(first:");
-            _queryBuilder.append(first);
-
-            argsDef.define(new ImagesArguments(_queryBuilder));
-
-            _queryBuilder.append(')');
+            ImagesArguments args = new ImagesArguments(_queryBuilder);
+            argsDef.define(args);
+            ImagesArguments.end(args);
 
             _queryBuilder.append('{');
             queryDef.define(new ImageConnectionQuery(_queryBuilder));
@@ -20096,12 +20285,36 @@ public class Storefront {
 
         public class VariantsArguments extends Arguments {
             VariantsArguments(StringBuilder _queryBuilder) {
-                super(_queryBuilder, false);
+                super(_queryBuilder, true);
+            }
+
+            public VariantsArguments first(Integer value) {
+                if (value != null) {
+                    startArgument("first");
+                    _queryBuilder.append(value);
+                }
+                return this;
             }
 
             public VariantsArguments after(String value) {
                 if (value != null) {
                     startArgument("after");
+                    Query.appendQuotedString(_queryBuilder, value.toString());
+                }
+                return this;
+            }
+
+            public VariantsArguments last(Integer value) {
+                if (value != null) {
+                    startArgument("last");
+                    _queryBuilder.append(value);
+                }
+                return this;
+            }
+
+            public VariantsArguments before(String value) {
+                if (value != null) {
+                    startArgument("before");
                     Query.appendQuotedString(_queryBuilder, value.toString());
                 }
                 return this;
@@ -20131,22 +20344,19 @@ public class Storefront {
         /**
         * List of the product’s variants.
         */
-        public ProductQuery variants(int first, ProductVariantConnectionQueryDefinition queryDef) {
-            return variants(first, args -> {}, queryDef);
+        public ProductQuery variants(ProductVariantConnectionQueryDefinition queryDef) {
+            return variants(args -> {}, queryDef);
         }
 
         /**
         * List of the product’s variants.
         */
-        public ProductQuery variants(int first, VariantsArgumentsDefinition argsDef, ProductVariantConnectionQueryDefinition queryDef) {
+        public ProductQuery variants(VariantsArgumentsDefinition argsDef, ProductVariantConnectionQueryDefinition queryDef) {
             startField("variants");
 
-            _queryBuilder.append("(first:");
-            _queryBuilder.append(first);
-
-            argsDef.define(new VariantsArguments(_queryBuilder));
-
-            _queryBuilder.append(')');
+            VariantsArguments args = new VariantsArguments(_queryBuilder);
+            argsDef.define(args);
+            VariantsArguments.end(args);
 
             _queryBuilder.append('{');
             queryDef.define(new ProductVariantConnectionQuery(_queryBuilder));
@@ -22490,12 +22700,36 @@ public class Storefront {
 
         public class ArticlesArguments extends Arguments {
             ArticlesArguments(StringBuilder _queryBuilder) {
-                super(_queryBuilder, false);
+                super(_queryBuilder, true);
+            }
+
+            public ArticlesArguments first(Integer value) {
+                if (value != null) {
+                    startArgument("first");
+                    _queryBuilder.append(value);
+                }
+                return this;
             }
 
             public ArticlesArguments after(String value) {
                 if (value != null) {
                     startArgument("after");
+                    Query.appendQuotedString(_queryBuilder, value.toString());
+                }
+                return this;
+            }
+
+            public ArticlesArguments last(Integer value) {
+                if (value != null) {
+                    startArgument("last");
+                    _queryBuilder.append(value);
+                }
+                return this;
+            }
+
+            public ArticlesArguments before(String value) {
+                if (value != null) {
+                    startArgument("before");
                     Query.appendQuotedString(_queryBuilder, value.toString());
                 }
                 return this;
@@ -22541,22 +22775,19 @@ public class Storefront {
         /**
         * List of the shop' articles.
         */
-        public ShopQuery articles(int first, ArticleConnectionQueryDefinition queryDef) {
-            return articles(first, args -> {}, queryDef);
+        public ShopQuery articles(ArticleConnectionQueryDefinition queryDef) {
+            return articles(args -> {}, queryDef);
         }
 
         /**
         * List of the shop' articles.
         */
-        public ShopQuery articles(int first, ArticlesArgumentsDefinition argsDef, ArticleConnectionQueryDefinition queryDef) {
+        public ShopQuery articles(ArticlesArgumentsDefinition argsDef, ArticleConnectionQueryDefinition queryDef) {
             startField("articles");
 
-            _queryBuilder.append("(first:");
-            _queryBuilder.append(first);
-
-            argsDef.define(new ArticlesArguments(_queryBuilder));
-
-            _queryBuilder.append(')');
+            ArticlesArguments args = new ArticlesArguments(_queryBuilder);
+            argsDef.define(args);
+            ArticlesArguments.end(args);
 
             _queryBuilder.append('{');
             queryDef.define(new ArticleConnectionQuery(_queryBuilder));
@@ -22567,12 +22798,36 @@ public class Storefront {
 
         public class BlogsArguments extends Arguments {
             BlogsArguments(StringBuilder _queryBuilder) {
-                super(_queryBuilder, false);
+                super(_queryBuilder, true);
+            }
+
+            public BlogsArguments first(Integer value) {
+                if (value != null) {
+                    startArgument("first");
+                    _queryBuilder.append(value);
+                }
+                return this;
             }
 
             public BlogsArguments after(String value) {
                 if (value != null) {
                     startArgument("after");
+                    Query.appendQuotedString(_queryBuilder, value.toString());
+                }
+                return this;
+            }
+
+            public BlogsArguments last(Integer value) {
+                if (value != null) {
+                    startArgument("last");
+                    _queryBuilder.append(value);
+                }
+                return this;
+            }
+
+            public BlogsArguments before(String value) {
+                if (value != null) {
+                    startArgument("before");
                     Query.appendQuotedString(_queryBuilder, value.toString());
                 }
                 return this;
@@ -22617,22 +22872,19 @@ public class Storefront {
         /**
         * List of the shop' blogs.
         */
-        public ShopQuery blogs(int first, BlogConnectionQueryDefinition queryDef) {
-            return blogs(first, args -> {}, queryDef);
+        public ShopQuery blogs(BlogConnectionQueryDefinition queryDef) {
+            return blogs(args -> {}, queryDef);
         }
 
         /**
         * List of the shop' blogs.
         */
-        public ShopQuery blogs(int first, BlogsArgumentsDefinition argsDef, BlogConnectionQueryDefinition queryDef) {
+        public ShopQuery blogs(BlogsArgumentsDefinition argsDef, BlogConnectionQueryDefinition queryDef) {
             startField("blogs");
 
-            _queryBuilder.append("(first:");
-            _queryBuilder.append(first);
-
-            argsDef.define(new BlogsArguments(_queryBuilder));
-
-            _queryBuilder.append(')');
+            BlogsArguments args = new BlogsArguments(_queryBuilder);
+            argsDef.define(args);
+            BlogsArguments.end(args);
 
             _queryBuilder.append('{');
             queryDef.define(new BlogConnectionQuery(_queryBuilder));
@@ -22673,12 +22925,36 @@ public class Storefront {
 
         public class CollectionsArguments extends Arguments {
             CollectionsArguments(StringBuilder _queryBuilder) {
-                super(_queryBuilder, false);
+                super(_queryBuilder, true);
+            }
+
+            public CollectionsArguments first(Integer value) {
+                if (value != null) {
+                    startArgument("first");
+                    _queryBuilder.append(value);
+                }
+                return this;
             }
 
             public CollectionsArguments after(String value) {
                 if (value != null) {
                     startArgument("after");
+                    Query.appendQuotedString(_queryBuilder, value.toString());
+                }
+                return this;
+            }
+
+            public CollectionsArguments last(Integer value) {
+                if (value != null) {
+                    startArgument("last");
+                    _queryBuilder.append(value);
+                }
+                return this;
+            }
+
+            public CollectionsArguments before(String value) {
+                if (value != null) {
+                    startArgument("before");
                     Query.appendQuotedString(_queryBuilder, value.toString());
                 }
                 return this;
@@ -22722,22 +22998,19 @@ public class Storefront {
         /**
         * List of the shop’s collections.
         */
-        public ShopQuery collections(int first, CollectionConnectionQueryDefinition queryDef) {
-            return collections(first, args -> {}, queryDef);
+        public ShopQuery collections(CollectionConnectionQueryDefinition queryDef) {
+            return collections(args -> {}, queryDef);
         }
 
         /**
         * List of the shop’s collections.
         */
-        public ShopQuery collections(int first, CollectionsArgumentsDefinition argsDef, CollectionConnectionQueryDefinition queryDef) {
+        public ShopQuery collections(CollectionsArgumentsDefinition argsDef, CollectionConnectionQueryDefinition queryDef) {
             startField("collections");
 
-            _queryBuilder.append("(first:");
-            _queryBuilder.append(first);
-
-            argsDef.define(new CollectionsArguments(_queryBuilder));
-
-            _queryBuilder.append(')');
+            CollectionsArguments args = new CollectionsArguments(_queryBuilder);
+            argsDef.define(args);
+            CollectionsArguments.end(args);
 
             _queryBuilder.append('{');
             queryDef.define(new CollectionConnectionQuery(_queryBuilder));
@@ -22862,12 +23135,36 @@ public class Storefront {
 
         public class ProductsArguments extends Arguments {
             ProductsArguments(StringBuilder _queryBuilder) {
-                super(_queryBuilder, false);
+                super(_queryBuilder, true);
+            }
+
+            public ProductsArguments first(Integer value) {
+                if (value != null) {
+                    startArgument("first");
+                    _queryBuilder.append(value);
+                }
+                return this;
             }
 
             public ProductsArguments after(String value) {
                 if (value != null) {
                     startArgument("after");
+                    Query.appendQuotedString(_queryBuilder, value.toString());
+                }
+                return this;
+            }
+
+            public ProductsArguments last(Integer value) {
+                if (value != null) {
+                    startArgument("last");
+                    _queryBuilder.append(value);
+                }
+                return this;
+            }
+
+            public ProductsArguments before(String value) {
+                if (value != null) {
+                    startArgument("before");
                     Query.appendQuotedString(_queryBuilder, value.toString());
                 }
                 return this;
@@ -22914,22 +23211,19 @@ public class Storefront {
         /**
         * List of the shop’s products.
         */
-        public ShopQuery products(int first, ProductConnectionQueryDefinition queryDef) {
-            return products(first, args -> {}, queryDef);
+        public ShopQuery products(ProductConnectionQueryDefinition queryDef) {
+            return products(args -> {}, queryDef);
         }
 
         /**
         * List of the shop’s products.
         */
-        public ShopQuery products(int first, ProductsArgumentsDefinition argsDef, ProductConnectionQueryDefinition queryDef) {
+        public ShopQuery products(ProductsArgumentsDefinition argsDef, ProductConnectionQueryDefinition queryDef) {
             startField("products");
 
-            _queryBuilder.append("(first:");
-            _queryBuilder.append(first);
-
-            argsDef.define(new ProductsArguments(_queryBuilder));
-
-            _queryBuilder.append(')');
+            ProductsArguments args = new ProductsArguments(_queryBuilder);
+            argsDef.define(args);
+            ProductsArguments.end(args);
 
             _queryBuilder.append('{');
             queryDef.define(new ProductConnectionQuery(_queryBuilder));

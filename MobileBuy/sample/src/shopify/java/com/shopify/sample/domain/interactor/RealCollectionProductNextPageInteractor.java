@@ -53,12 +53,12 @@ public final class RealCollectionProductNextPageInteractor implements Collection
         .cursor()
         .node(product -> product
           .title()
-          .images(1, imageConnection -> imageConnection
+          .images(args ->  args.first(1), imageConnection -> imageConnection
             .edges(imageEdge -> imageEdge
               .node(Storefront.ImageQuery::src)
             )
           )
-          .variants(250, variantConnection -> variantConnection
+          .variants(args ->  args.first(250), variantConnection -> variantConnection
             .edges(variantEdge -> variantEdge
               .node(Storefront.ProductVariantQuery::price)
             )
