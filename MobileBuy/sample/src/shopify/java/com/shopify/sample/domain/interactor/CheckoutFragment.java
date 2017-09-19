@@ -32,7 +32,7 @@ final class CheckoutFragment implements Storefront.CheckoutQueryDefinition {
       .webUrl()
       .requiresShipping()
       .currencyCode()
-      .lineItems(250,
+      .lineItems(args ->  args.first(250),
         lineItemConnection -> lineItemConnection.edges(
           lineItemEdge -> lineItemEdge.node(
             lineItemNode -> lineItemNode

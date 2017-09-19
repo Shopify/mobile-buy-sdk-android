@@ -381,7 +381,7 @@ public class CacheTest {
           .name()
           .currencyCode()
           .description()
-          .collections(10, collectionConnection -> collectionConnection
+          .collections(args -> args.first(10), collectionConnection -> collectionConnection
             .edges(collectionEdge -> collectionEdge
               .cursor()
               .node(Storefront.CollectionQuery::title)
