@@ -24,8 +24,14 @@
 
 package com.shopify.sample.util;
 
+import android.content.Context;
+import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -53,7 +59,8 @@ public final class Util {
     return reference;
   }
 
-  @NonNull public static <T, R> List<R> mapItems(@NonNull final Collection<T> source, @NonNull final Function<T, R> transformer) {
+  @NonNull
+  public static <T, R> List<R> mapItems(@NonNull final Collection<T> source, @NonNull final Function<T, R> transformer) {
     checkNotNull(source, "source == null");
     checkNotNull(transformer, "transformer == null");
     List<R> result = new ArrayList<>();
@@ -63,11 +70,13 @@ public final class Util {
     return result;
   }
 
-  @Nullable public static <T> T firstItem(@Nullable final List<T> source) {
+  @Nullable
+  public static <T> T firstItem(@Nullable final List<T> source) {
     return source != null && !source.isEmpty() ? source.get(0) : null;
   }
 
-  @Nullable public static <T> List<T> filter(@Nullable final List<T> source, @NonNull final Function<T, Boolean> condition) {
+  @Nullable
+  public static <T> List<T> filter(@Nullable final List<T> source, @NonNull final Function<T, Boolean> condition) {
     checkNotNull(source, "source == null");
     checkNotNull(condition, "condition == null");
     List<T> result = new ArrayList<>();
@@ -79,13 +88,15 @@ public final class Util {
     return result;
   }
 
-  @Nullable public static <T, R> R firstItem(@Nullable final List<T> source, @NonNull final Function<T, R> transformer) {
+  @Nullable
+  public static <T, R> R firstItem(@Nullable final List<T> source, @NonNull final Function<T, R> transformer) {
     checkNotNull(transformer, "transformer == null");
     return source != null && !source.isEmpty() ? transformer.apply(source.get(0)) : null;
   }
 
-  @NonNull public static <T> T minItem(@NonNull final Collection<T> source, @NonNull final T defaultValue,
-    @NonNull final Comparator<T> comparator) {
+  @NonNull
+  public static <T> T minItem(@NonNull final Collection<T> source, @NonNull final T defaultValue,
+                              @NonNull final Comparator<T> comparator) {
     checkNotNull(source, "source == null");
     checkNotNull(comparator, "comparator == null");
     if (source.isEmpty()) {
@@ -108,7 +119,7 @@ public final class Util {
   }
 
   public static <T, R> R fold(@Nullable final R initialValue, @NonNull final Collection<T> source,
-    @NonNull final BiFunction<R, T, R> accumulator) {
+                              @NonNull final BiFunction<R, T, R> accumulator) {
     checkNotNull(source, "source == null");
     checkNotNull(accumulator, "accumulator == null");
     R result = initialValue;
@@ -116,6 +127,56 @@ public final class Util {
       result = accumulator.apply(result, item);
     }
     return result;
+  }
+
+  public static <T> T inflate(@NonNull final ViewGroup parent, @LayoutRes final int layoutId) {
+    return inflate(parent.getContext(), layoutId, parent, false);
+  }
+
+  public static <T> T inflate(@NonNull final Context context, @LayoutRes final int layoutId) {
+    return inflate(context, layoutId, null, false);
+  }
+
+  @SuppressWarnings("unchecked")
+  public static <T> T inflate(@NonNull final Context context, @LayoutRes final int layoutId, @Nullable final ViewGroup parent, boolean attachToRoot) {
+    return (T) LayoutInflater.from(context).inflate(layoutId, parent, attachToRoot);
+  }
+
+  public static <T, R> R reduce(@Nullable final Collection<T> source, @NonNull final ReduceCallback<T, R> callback, @Nullable final R initialValue) {
+    R acc = initialValue;
+    if (source != null) {
+      for (T val : source) {
+        acc = callback.reduce(acc, val);
+      }
+    }
+    return acc;
+  }
+
+  public static void setOnEndlessListener(@NonNull final RecyclerView list, final int threshold, @NonNull final OnEndlessListener onEndlessListener) {
+    list.addOnScrollListener(new RecyclerView.OnScrollListener() {
+      @Override
+      public void onScrollStateChanged(final RecyclerView recyclerView, final int newState) {
+        boolean isEnded = false;
+        final RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
+        final int itemCount = recyclerView.getAdapter().getItemCount();
+        if (layoutManager instanceof LinearLayoutManager) {
+          isEnded = ((LinearLayoutManager) layoutManager).findLastVisibleItemPosition() >= itemCount - threshold;
+        }
+        if (isEnded) {
+          onEndlessListener.onEndless();
+        }
+      }
+    });
+  }
+
+  public interface OnEndlessListener {
+
+    void onEndless();
+  }
+
+  public interface ReduceCallback<T, R> {
+
+    R reduce(R acc, T val);
   }
 
   private Util() {
