@@ -40,10 +40,13 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public final class CollectionListActivity extends AppCompatActivity {
+
   @BindView(R.id.collection_list) CollectionListView collectionListView;
   @BindView(R.id.toolbar) Toolbar toolbarView;
 
-  @SuppressWarnings("ConstantConditions") @Override protected void onCreate(@Nullable final Bundle savedInstanceState) {
+  @SuppressWarnings("ConstantConditions")
+  @Override
+  protected void onCreate(@Nullable final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_collection_list);
     ButterKnife.bind(this);
@@ -52,20 +55,16 @@ public final class CollectionListActivity extends AppCompatActivity {
     getSupportActionBar().setTitle(R.string.collection_list_title);
     getSupportActionBar().setLogo(R.drawable.ic_logo);
 
-    initViewModels();
+    collectionListView.bindViewModel(ViewModelProviders.of(this).get(CollectionListViewModel.class));
   }
 
-  @Override public boolean onCreateOptionsMenu(final Menu menu) {
+  @Override
+  public boolean onCreateOptionsMenu(final Menu menu) {
     MenuInflater inflater = getMenuInflater();
     inflater.inflate(R.menu.menu, menu);
     menu.findItem(R.id.cart).getActionView().setOnClickListener(v -> {
       ScreenRouter.route(this, new CartClickActionEvent());
     });
     return true;
-  }
-
-  private void initViewModels() {
-    RealCollectionListViewModel listViewModel = ViewModelProviders.of(this).get(RealCollectionListViewModel.class);
-    collectionListView.bindViewModel(listViewModel);
   }
 }
