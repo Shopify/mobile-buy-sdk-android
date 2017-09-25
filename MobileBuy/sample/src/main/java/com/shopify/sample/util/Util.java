@@ -24,14 +24,10 @@
 
 package com.shopify.sample.util;
 
-import android.content.Context;
-import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.ViewGroup;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -129,19 +125,6 @@ public final class Util {
     return result;
   }
 
-  public static <T> T inflate(@NonNull final ViewGroup parent, @LayoutRes final int layoutId) {
-    return inflate(parent.getContext(), layoutId, parent, false);
-  }
-
-  public static <T> T inflate(@NonNull final Context context, @LayoutRes final int layoutId) {
-    return inflate(context, layoutId, null, false);
-  }
-
-  @SuppressWarnings("unchecked")
-  public static <T> T inflate(@NonNull final Context context, @LayoutRes final int layoutId, @Nullable final ViewGroup parent, boolean attachToRoot) {
-    return (T) LayoutInflater.from(context).inflate(layoutId, parent, attachToRoot);
-  }
-
   public static <T, R> R reduce(@Nullable final Collection<T> source, @NonNull final ReduceCallback<T, R> callback, @Nullable final R initialValue) {
     R acc = initialValue;
     if (source != null) {
@@ -152,7 +135,7 @@ public final class Util {
     return acc;
   }
 
-  public static void setOnEndlessListener(@NonNull final RecyclerView list, final int threshold, @NonNull final OnEndlessListener onEndlessListener) {
+  public static void setOnNextPageListener(@NonNull final RecyclerView list, final int threshold, @NonNull final OnNextPageListener onNextPageListener) {
     list.addOnScrollListener(new RecyclerView.OnScrollListener() {
       @Override
       public void onScrollStateChanged(final RecyclerView recyclerView, final int newState) {
@@ -163,15 +146,15 @@ public final class Util {
           isEnded = ((LinearLayoutManager) layoutManager).findLastVisibleItemPosition() >= itemCount - threshold;
         }
         if (isEnded) {
-          onEndlessListener.onEndless();
+          onNextPageListener.onNextPage();
         }
       }
     });
   }
 
-  public interface OnEndlessListener {
+  public interface OnNextPageListener {
 
-    void onEndless();
+    void onNextPage();
   }
 
   public interface ReduceCallback<T, R> {

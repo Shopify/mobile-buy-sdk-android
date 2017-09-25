@@ -4,7 +4,7 @@ import android.arch.lifecycle.ViewModel;
 
 import com.shopify.sample.BaseApplication;
 import com.shopify.sample.domain.UseCases;
-import com.shopify.sample.util.usecase.Cancelable;
+import com.shopify.sample.util.UseCase.Cancelable;
 
 import java.util.ArrayList;
 import java.util.List;

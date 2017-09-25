@@ -30,7 +30,7 @@ import com.shopify.buy3.GraphClient;
 import com.shopify.buy3.HttpCachePolicy;
 import com.shopify.sample.domain.UseCases;
 import com.shopify.sample.domain.UseCasesImpl;
-import com.shopify.sample.util.Executors;
+import com.shopify.sample.util.CallbackExecutors;
 
 import java.util.concurrent.TimeUnit;
 
@@ -57,7 +57,7 @@ public class SampleApplication extends BaseApplication {
 
   @Override
   protected UseCases createUseCases() {
-    return new UseCasesImpl(Executors.getDefault(), graphClient);
+    return new UseCasesImpl(CallbackExecutors.getDefault(), graphClient);
   }
 
   private void initializeGraphClient() {
