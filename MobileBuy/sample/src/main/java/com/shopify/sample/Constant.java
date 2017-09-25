@@ -1,7 +1,7 @@
 package com.shopify.sample;
 
-public final class Constant {
+public interface Constant {
 
-  public static final int PAGE_SIZE = 10;
-  public static final int THRESHOLD = 10;
+  int PAGE_SIZE = 10;
+  int THRESHOLD = 10;
 }

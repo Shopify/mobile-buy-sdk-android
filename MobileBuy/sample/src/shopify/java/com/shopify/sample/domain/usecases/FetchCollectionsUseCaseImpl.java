@@ -13,19 +13,17 @@ import com.shopify.sample.Constant;
 import com.shopify.sample.data.graphql.Converter;
 import com.shopify.sample.data.graphql.Query;
 import com.shopify.sample.domain.model.Collection;
-import com.shopify.sample.util.Executors;
-import com.shopify.sample.util.usecase.Callback1;
-import com.shopify.sample.util.usecase.Cancelable;
+import com.shopify.sample.util.CallbackExecutors;
 
 import java.util.List;
 
 public class FetchCollectionsUseCaseImpl implements FetchCollectionsUseCase {
 
-  private final Executors executors;
+  private final CallbackExecutors callbackExecutors;
   private final GraphClient graphClient;
 
-  public FetchCollectionsUseCaseImpl(final Executors executors, final GraphClient graphClient) {
-    this.executors = executors;
+  public FetchCollectionsUseCaseImpl(final CallbackExecutors callbackExecutors, final GraphClient graphClient) {
+    this.callbackExecutors = callbackExecutors;
     this.graphClient = graphClient;
   }
 
@@ -51,7 +49,7 @@ public class FetchCollectionsUseCaseImpl implements FetchCollectionsUseCase {
       )
     );
     final QueryGraphCall call = graphClient.queryGraph(query);
-    call.enqueue(new Callback(callback), executors.getMainThreadHandler());
+    call.enqueue(new Callback(callback), callbackExecutors.getHandler());
     return call::cancel;
   }
 

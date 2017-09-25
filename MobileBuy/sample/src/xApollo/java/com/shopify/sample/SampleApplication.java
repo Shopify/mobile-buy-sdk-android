@@ -6,6 +6,7 @@ import com.apollographql.apollo.ApolloClient;
 import com.apollographql.apollo.CustomTypeAdapter;
 import com.apollographql.apollo.cache.http.DiskLruHttpCacheStore;
 import com.apollographql.apollo.cache.http.HttpCachePolicy;
+import com.shopify.sample.domain.UseCases;
 import com.shopify.sample.domain.type.CustomType;
 
 import java.math.BigDecimal;
@@ -17,6 +18,7 @@ import okhttp3.Request;
 import okhttp3.logging.HttpLoggingInterceptor;
 
 public class SampleApplication extends BaseApplication {
+
   private static final String SHOP_PROPERTIES_INSTRUCTION =
     "\n\tAdd your shop credentials to a shop.properties file in the main app folder (e.g. 'app/shop.properties')."
       + "Include these keys:\n" + "\t\tSHOP_DOMAIN=<myshop>.myshopify.com\n"
@@ -32,6 +34,16 @@ public class SampleApplication extends BaseApplication {
   public void onCreate() {
     initializeGraphClient();
     super.onCreate();
+  }
+
+  @Override
+  protected UseCases createUseCases() {
+    throw new RuntimeException("Not implement yet");
+  }
+
+  @Override
+  protected void initialize() {
+    throw new RuntimeException("Not implement yet");
   }
 
   private void initializeGraphClient() {
@@ -64,11 +76,13 @@ public class SampleApplication extends BaseApplication {
       .httpCacheStore(new DiskLruHttpCacheStore(getCacheDir(), 1000 * 1024))
       .defaultHttpCachePolicy(HttpCachePolicy.CACHE_FIRST.expireAfter(20, TimeUnit.MINUTES))
       .addCustomTypeAdapter(CustomType.MONEY, new CustomTypeAdapter<BigDecimal>() {
-        @Override public BigDecimal decode(final String value) {
+        @Override
+        public BigDecimal decode(final String value) {
           return new BigDecimal(value);
         }
 
-        @Override public String encode(final BigDecimal value) {
+        @Override
+        public String encode(final BigDecimal value) {
           return value.toString();
         }
       })

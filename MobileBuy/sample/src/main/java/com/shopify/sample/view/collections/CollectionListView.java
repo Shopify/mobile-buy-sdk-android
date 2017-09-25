@@ -49,7 +49,7 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public final class CollectionListView extends LifecycleFrameLayout implements Util.OnEndlessListener, SwipeRefreshLayout.OnRefreshListener, RecyclerViewAdapter.OnItemClickListener {
+public final class CollectionListView extends LifecycleFrameLayout implements Util.OnNextPageListener, SwipeRefreshLayout.OnRefreshListener, RecyclerViewAdapter.OnItemClickListener {
 
   @BindView(R.id.list) RecyclerView listView;
   @BindView(R.id.swipe_refresh_layout) SwipeRefreshLayout swipeRefreshLayoutView;
@@ -70,8 +70,8 @@ public final class CollectionListView extends LifecycleFrameLayout implements Ut
   }
 
   @Override
-  public void onEndless() {
-    viewModel.fetchMore();
+  public void onNextPage() {
+    viewModel.fetchData();
   }
 
   @Override
@@ -84,6 +84,7 @@ public final class CollectionListView extends LifecycleFrameLayout implements Ut
   @Override
   public void onRefresh() {
     viewModel.reset();
+    viewModel.fetchData();
   }
 
   public void bindViewModel(@NonNull final CollectionListViewModel viewModel) {
@@ -102,7 +103,7 @@ public final class CollectionListView extends LifecycleFrameLayout implements Ut
         snackbar.show();
       });
     Transformations
-      .map(viewModel.getCollections(), collections -> Util.reduce(collections, (viewModels, collection) -> {
+      .map(viewModel.getData(), collections -> Util.reduce(collections, (viewModels, collection) -> {
         viewModels.add(new CollectionTitleListItemViewModel(collection));
         viewModels.add(new CollectionImageListItemViewModel(collection));
         viewModels.add(new ProductsListItemViewModel(collection.products));
@@ -123,7 +124,7 @@ public final class CollectionListView extends LifecycleFrameLayout implements Ut
     listView.setHasFixedSize(true);
     listView.setAdapter(adapter);
 
-    Util.setOnEndlessListener(listView, Constant.THRESHOLD, this);
+    Util.setOnNextPageListener(listView, Constant.THRESHOLD, this);
     swipeRefreshLayoutView.setOnRefreshListener(this);
   }
 }

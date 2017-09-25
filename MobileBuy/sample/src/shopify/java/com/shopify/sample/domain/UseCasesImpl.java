@@ -3,20 +3,20 @@ package com.shopify.sample.domain;
 import com.shopify.buy3.GraphClient;
 import com.shopify.sample.domain.usecases.FetchCollectionsUseCase;
 import com.shopify.sample.domain.usecases.FetchCollectionsUseCaseImpl;
-import com.shopify.sample.util.Executors;
+import com.shopify.sample.util.CallbackExecutors;
 
 public class UseCasesImpl implements UseCases {
 
-  private final Executors executors;
+  private final CallbackExecutors callbackExecutors;
   private final GraphClient graphClient;
 
-  public UseCasesImpl(final Executors executors, final GraphClient graphClient) {
-    this.executors = executors;
+  public UseCasesImpl(final CallbackExecutors callbackExecutors, final GraphClient graphClient) {
+    this.callbackExecutors = callbackExecutors;
     this.graphClient = graphClient;
   }
 
   @Override
   public FetchCollectionsUseCase fetchCollections() {
-    return new FetchCollectionsUseCaseImpl(executors, graphClient);
+    return new FetchCollectionsUseCaseImpl(callbackExecutors, graphClient);
   }
 }
