@@ -12,6 +12,7 @@ import com.shopify.graphql.support.Error;
 import com.shopify.graphql.support.Query;
 import com.shopify.graphql.support.SchemaViolationError;
 import com.shopify.graphql.support.TopLevelResponse;
+import com.shopify.graphql.support.Input;
 
 import com.shopify.graphql.support.ID;
 
@@ -206,6 +207,7 @@ public class Storefront {
         /**
         * The amount that was used taken from the Gift Card by applying it.
         */
+
         public BigDecimal getAmountUsed() {
             return (BigDecimal) get("amountUsed");
         }
@@ -218,6 +220,7 @@ public class Storefront {
         /**
         * The amount left on the Gift Card.
         */
+
         public BigDecimal getBalance() {
             return (BigDecimal) get("balance");
         }
@@ -230,6 +233,7 @@ public class Storefront {
         /**
         * Globally unique identifier.
         */
+
         public ID getId() {
             return (ID) get("id");
         }
@@ -237,6 +241,7 @@ public class Storefront {
         /**
         * The last characters of the Gift Card code
         */
+
         public String getLastCharacters() {
             return (String) get("lastCharacters");
         }
@@ -300,12 +305,36 @@ public class Storefront {
 
         public class CommentsArguments extends Arguments {
             CommentsArguments(StringBuilder _queryBuilder) {
-                super(_queryBuilder, false);
+                super(_queryBuilder, true);
+            }
+
+            public CommentsArguments first(Integer value) {
+                if (value != null) {
+                    startArgument("first");
+                    _queryBuilder.append(value);
+                }
+                return this;
             }
 
             public CommentsArguments after(String value) {
                 if (value != null) {
                     startArgument("after");
+                    Query.appendQuotedString(_queryBuilder, value.toString());
+                }
+                return this;
+            }
+
+            public CommentsArguments last(Integer value) {
+                if (value != null) {
+                    startArgument("last");
+                    _queryBuilder.append(value);
+                }
+                return this;
+            }
+
+            public CommentsArguments before(String value) {
+                if (value != null) {
+                    startArgument("before");
                     Query.appendQuotedString(_queryBuilder, value.toString());
                 }
                 return this;
@@ -327,22 +356,19 @@ public class Storefront {
         /**
         * List of comments posted on the article.
         */
-        public ArticleQuery comments(int first, CommentConnectionQueryDefinition queryDef) {
-            return comments(first, args -> {}, queryDef);
+        public ArticleQuery comments(CommentConnectionQueryDefinition queryDef) {
+            return comments(args -> {}, queryDef);
         }
 
         /**
         * List of comments posted on the article.
         */
-        public ArticleQuery comments(int first, CommentsArgumentsDefinition argsDef, CommentConnectionQueryDefinition queryDef) {
+        public ArticleQuery comments(CommentsArgumentsDefinition argsDef, CommentConnectionQueryDefinition queryDef) {
             startField("comments");
 
-            _queryBuilder.append("(first:");
-            _queryBuilder.append(first);
-
-            argsDef.define(new CommentsArguments(_queryBuilder));
-
-            _queryBuilder.append(')');
+            CommentsArguments args = new CommentsArguments(_queryBuilder);
+            argsDef.define(args);
+            CommentsArguments.end(args);
 
             _queryBuilder.append('{');
             queryDef.define(new CommentConnectionQuery(_queryBuilder));
@@ -696,6 +722,7 @@ public class Storefront {
         /**
         * The article's author.
         */
+
         public ArticleAuthor getAuthor() {
             return (ArticleAuthor) get("author");
         }
@@ -708,6 +735,7 @@ public class Storefront {
         /**
         * The blog that the article belongs to.
         */
+
         public Blog getBlog() {
             return (Blog) get("blog");
         }
@@ -720,6 +748,7 @@ public class Storefront {
         /**
         * List of comments posted on the article.
         */
+
         public CommentConnection getComments() {
             return (CommentConnection) get("comments");
         }
@@ -732,6 +761,7 @@ public class Storefront {
         /**
         * Stripped content of the article, single line with HTML tags removed.
         */
+
         public String getContent() {
             return (String) get("content");
         }
@@ -744,6 +774,7 @@ public class Storefront {
         /**
         * The content of the article, complete with HTML formatting.
         */
+
         public String getContentHtml() {
             return (String) get("contentHtml");
         }
@@ -756,6 +787,7 @@ public class Storefront {
         /**
         * Stripped excerpt of the article, single line with HTML tags removed.
         */
+
         public String getExcerpt() {
             return (String) get("excerpt");
         }
@@ -768,6 +800,7 @@ public class Storefront {
         /**
         * The excerpt of the article, complete with HTML formatting.
         */
+
         public String getExcerptHtml() {
             return (String) get("excerptHtml");
         }
@@ -780,6 +813,7 @@ public class Storefront {
         /**
         * Globally unique identifier.
         */
+
         public ID getId() {
             return (ID) get("id");
         }
@@ -787,6 +821,7 @@ public class Storefront {
         /**
         * The image associated with the article.
         */
+
         public Image getImage() {
             return (Image) get("image");
         }
@@ -799,6 +834,7 @@ public class Storefront {
         /**
         * The date and time when the article was published.
         */
+
         public DateTime getPublishedAt() {
             return (DateTime) get("publishedAt");
         }
@@ -811,6 +847,7 @@ public class Storefront {
         /**
         * A categorization that a article can be tagged with.
         */
+
         public List<String> getTags() {
             return (List<String>) get("tags");
         }
@@ -823,6 +860,7 @@ public class Storefront {
         /**
         * The article’s name.
         */
+
         public String getTitle() {
             return (String) get("title");
         }
@@ -835,6 +873,7 @@ public class Storefront {
         /**
         * The url pointing to the article accessible from the web.
         */
+
         public String getUrl() {
             return (String) get("url");
         }
@@ -994,6 +1033,7 @@ public class Storefront {
         /**
         * The author's bio.
         */
+
         public String getBio() {
             return (String) get("bio");
         }
@@ -1006,6 +1046,7 @@ public class Storefront {
         /**
         * The author’s email.
         */
+
         public String getEmail() {
             return (String) get("email");
         }
@@ -1018,6 +1059,7 @@ public class Storefront {
         /**
         * The author's first name.
         */
+
         public String getFirstName() {
             return (String) get("firstName");
         }
@@ -1030,6 +1072,7 @@ public class Storefront {
         /**
         * The author's last name.
         */
+
         public String getLastName() {
             return (String) get("lastName");
         }
@@ -1042,6 +1085,7 @@ public class Storefront {
         /**
         * The author's full name
         */
+
         public String getName() {
             return (String) get("name");
         }
@@ -1148,6 +1192,7 @@ public class Storefront {
         /**
         * A list of edges.
         */
+
         public List<ArticleEdge> getEdges() {
             return (List<ArticleEdge>) get("edges");
         }
@@ -1160,6 +1205,7 @@ public class Storefront {
         /**
         * Information to aid in pagination.
         */
+
         public PageInfo getPageInfo() {
             return (PageInfo) get("pageInfo");
         }
@@ -1251,6 +1297,7 @@ public class Storefront {
         /**
         * A cursor for use in pagination.
         */
+
         public String getCursor() {
             return (String) get("cursor");
         }
@@ -1263,6 +1310,7 @@ public class Storefront {
         /**
         * The item at the end of ArticleEdge.
         */
+
         public Article getNode() {
             return (Article) get("node");
         }
@@ -1447,6 +1495,7 @@ public class Storefront {
         /**
         * Key or name of the attribute.
         */
+
         public String getKey() {
             return (String) get("key");
         }
@@ -1459,6 +1508,7 @@ public class Storefront {
         /**
         * Value of the attribute.
         */
+
         public String getValue() {
             return (String) get("value");
         }
@@ -1617,6 +1667,7 @@ public class Storefront {
         * The `shippingRates` field is `null` when this value is `false`.
         * This field should be polled until its value becomes `true`.
         */
+
         public Boolean getReady() {
             return (Boolean) get("ready");
         }
@@ -1629,6 +1680,7 @@ public class Storefront {
         /**
         * The fetched shipping rates. `null` until the `ready` field is `true`.
         */
+
         public List<ShippingRate> getShippingRates() {
             return (List<ShippingRate>) get("shippingRates");
         }
@@ -1662,12 +1714,36 @@ public class Storefront {
 
         public class ArticlesArguments extends Arguments {
             ArticlesArguments(StringBuilder _queryBuilder) {
-                super(_queryBuilder, false);
+                super(_queryBuilder, true);
+            }
+
+            public ArticlesArguments first(Integer value) {
+                if (value != null) {
+                    startArgument("first");
+                    _queryBuilder.append(value);
+                }
+                return this;
             }
 
             public ArticlesArguments after(String value) {
                 if (value != null) {
                     startArgument("after");
+                    Query.appendQuotedString(_queryBuilder, value.toString());
+                }
+                return this;
+            }
+
+            public ArticlesArguments last(Integer value) {
+                if (value != null) {
+                    startArgument("last");
+                    _queryBuilder.append(value);
+                }
+                return this;
+            }
+
+            public ArticlesArguments before(String value) {
+                if (value != null) {
+                    startArgument("before");
                     Query.appendQuotedString(_queryBuilder, value.toString());
                 }
                 return this;
@@ -1689,22 +1765,19 @@ public class Storefront {
         /**
         * List of the blog's articles.
         */
-        public BlogQuery articles(int first, ArticleConnectionQueryDefinition queryDef) {
-            return articles(first, args -> {}, queryDef);
+        public BlogQuery articles(ArticleConnectionQueryDefinition queryDef) {
+            return articles(args -> {}, queryDef);
         }
 
         /**
         * List of the blog's articles.
         */
-        public BlogQuery articles(int first, ArticlesArgumentsDefinition argsDef, ArticleConnectionQueryDefinition queryDef) {
+        public BlogQuery articles(ArticlesArgumentsDefinition argsDef, ArticleConnectionQueryDefinition queryDef) {
             startField("articles");
 
-            _queryBuilder.append("(first:");
-            _queryBuilder.append(first);
-
-            argsDef.define(new ArticlesArguments(_queryBuilder));
-
-            _queryBuilder.append(')');
+            ArticlesArguments args = new ArticlesArguments(_queryBuilder);
+            argsDef.define(args);
+            ArticlesArguments.end(args);
 
             _queryBuilder.append('{');
             queryDef.define(new ArticleConnectionQuery(_queryBuilder));
@@ -1788,6 +1861,7 @@ public class Storefront {
         /**
         * List of the blog's articles.
         */
+
         public ArticleConnection getArticles() {
             return (ArticleConnection) get("articles");
         }
@@ -1800,6 +1874,7 @@ public class Storefront {
         /**
         * Globally unique identifier.
         */
+
         public ID getId() {
             return (ID) get("id");
         }
@@ -1807,6 +1882,7 @@ public class Storefront {
         /**
         * The blogs’s title.
         */
+
         public String getTitle() {
             return (String) get("title");
         }
@@ -1819,6 +1895,7 @@ public class Storefront {
         /**
         * The url pointing to the blog accessible from the web.
         */
+
         public String getUrl() {
             return (String) get("url");
         }
@@ -1923,6 +2000,7 @@ public class Storefront {
         /**
         * A list of edges.
         */
+
         public List<BlogEdge> getEdges() {
             return (List<BlogEdge>) get("edges");
         }
@@ -1935,6 +2013,7 @@ public class Storefront {
         /**
         * Information to aid in pagination.
         */
+
         public PageInfo getPageInfo() {
             return (PageInfo) get("pageInfo");
         }
@@ -2026,6 +2105,7 @@ public class Storefront {
         /**
         * A cursor for use in pagination.
         */
+
         public String getCursor() {
             return (String) get("cursor");
         }
@@ -2038,6 +2118,7 @@ public class Storefront {
         /**
         * The item at the end of BlogEdge.
         */
+
         public Blog getNode() {
             return (Blog) get("node");
         }
@@ -2331,12 +2412,36 @@ public class Storefront {
 
         public class LineItemsArguments extends Arguments {
             LineItemsArguments(StringBuilder _queryBuilder) {
-                super(_queryBuilder, false);
+                super(_queryBuilder, true);
+            }
+
+            public LineItemsArguments first(Integer value) {
+                if (value != null) {
+                    startArgument("first");
+                    _queryBuilder.append(value);
+                }
+                return this;
             }
 
             public LineItemsArguments after(String value) {
                 if (value != null) {
                     startArgument("after");
+                    Query.appendQuotedString(_queryBuilder, value.toString());
+                }
+                return this;
+            }
+
+            public LineItemsArguments last(Integer value) {
+                if (value != null) {
+                    startArgument("last");
+                    _queryBuilder.append(value);
+                }
+                return this;
+            }
+
+            public LineItemsArguments before(String value) {
+                if (value != null) {
+                    startArgument("before");
                     Query.appendQuotedString(_queryBuilder, value.toString());
                 }
                 return this;
@@ -2358,22 +2463,19 @@ public class Storefront {
         /**
         * A list of line item objects, each one containing information about an item in the checkout.
         */
-        public CheckoutQuery lineItems(int first, CheckoutLineItemConnectionQueryDefinition queryDef) {
-            return lineItems(first, args -> {}, queryDef);
+        public CheckoutQuery lineItems(CheckoutLineItemConnectionQueryDefinition queryDef) {
+            return lineItems(args -> {}, queryDef);
         }
 
         /**
         * A list of line item objects, each one containing information about an item in the checkout.
         */
-        public CheckoutQuery lineItems(int first, LineItemsArgumentsDefinition argsDef, CheckoutLineItemConnectionQueryDefinition queryDef) {
+        public CheckoutQuery lineItems(LineItemsArgumentsDefinition argsDef, CheckoutLineItemConnectionQueryDefinition queryDef) {
             startField("lineItems");
 
-            _queryBuilder.append("(first:");
-            _queryBuilder.append(first);
-
-            argsDef.define(new LineItemsArguments(_queryBuilder));
-
-            _queryBuilder.append(')');
+            LineItemsArguments args = new LineItemsArguments(_queryBuilder);
+            argsDef.define(args);
+            LineItemsArguments.end(args);
 
             _queryBuilder.append('{');
             queryDef.define(new CheckoutLineItemConnectionQuery(_queryBuilder));
@@ -2781,6 +2883,7 @@ public class Storefront {
         * Should only be used when checkout `requiresShipping` is `true` and
         * the shipping address is valid.
         */
+
         public AvailableShippingRates getAvailableShippingRates() {
             return (AvailableShippingRates) get("availableShippingRates");
         }
@@ -2793,6 +2896,7 @@ public class Storefront {
         /**
         * The date and time when the checkout was completed.
         */
+
         public DateTime getCompletedAt() {
             return (DateTime) get("completedAt");
         }
@@ -2805,6 +2909,7 @@ public class Storefront {
         /**
         * The date and time when the checkout was created.
         */
+
         public DateTime getCreatedAt() {
             return (DateTime) get("createdAt");
         }
@@ -2817,6 +2922,7 @@ public class Storefront {
         /**
         * The currency code for the Checkout.
         */
+
         public CurrencyCode getCurrencyCode() {
             return (CurrencyCode) get("currencyCode");
         }
@@ -2829,6 +2935,7 @@ public class Storefront {
         /**
         * A list of extra information that is added to the checkout.
         */
+
         public List<Attribute> getCustomAttributes() {
             return (List<Attribute>) get("customAttributes");
         }
@@ -2841,6 +2948,7 @@ public class Storefront {
         /**
         * The customer associated with the checkout.
         */
+
         public Customer getCustomer() {
             return (Customer) get("customer");
         }
@@ -2853,6 +2961,7 @@ public class Storefront {
         /**
         * The email attached to this checkout.
         */
+
         public String getEmail() {
             return (String) get("email");
         }
@@ -2865,6 +2974,7 @@ public class Storefront {
         /**
         * Globally unique identifier.
         */
+
         public ID getId() {
             return (ID) get("id");
         }
@@ -2872,6 +2982,7 @@ public class Storefront {
         /**
         * A list of line item objects, each one containing information about an item in the checkout.
         */
+
         public CheckoutLineItemConnection getLineItems() {
             return (CheckoutLineItemConnection) get("lineItems");
         }
@@ -2893,6 +3004,7 @@ public class Storefront {
         /**
         * The resulting order from a paid checkout.
         */
+
         public Order getOrder() {
             return (Order) get("order");
         }
@@ -2905,6 +3017,7 @@ public class Storefront {
         /**
         * The Order Status Page for this Checkout, null when checkout is not completed.
         */
+
         public String getOrderStatusUrl() {
             return (String) get("orderStatusUrl");
         }
@@ -2918,6 +3031,7 @@ public class Storefront {
         * The amount left to be paid. This is equal to the cost of the line items, taxes and shipping minus
         * discounts and gift cards.
         */
+
         public BigDecimal getPaymentDue() {
             return (BigDecimal) get("paymentDue");
         }
@@ -2932,6 +3046,7 @@ public class Storefront {
         * operations that can take time to finish. If you want to complete a checkout or ensure all the fields
         * are populated and up to date, polling is required until the value is true. 
         */
+
         public Boolean getReady() {
             return (Boolean) get("ready");
         }
@@ -2944,6 +3059,7 @@ public class Storefront {
         /**
         * States whether or not the fulfillment requires shipping.
         */
+
         public Boolean getRequiresShipping() {
             return (Boolean) get("requiresShipping");
         }
@@ -2956,6 +3072,7 @@ public class Storefront {
         /**
         * The shipping address to where the line items will be shipped.
         */
+
         public MailingAddress getShippingAddress() {
             return (MailingAddress) get("shippingAddress");
         }
@@ -2968,6 +3085,7 @@ public class Storefront {
         /**
         * Once a shipping rate is selected by the customer it is transitioned to a `shipping_line` object.
         */
+
         public ShippingRate getShippingLine() {
             return (ShippingRate) get("shippingLine");
         }
@@ -2980,6 +3098,7 @@ public class Storefront {
         /**
         * Price of the checkout before shipping, taxes, and discounts.
         */
+
         public BigDecimal getSubtotalPrice() {
             return (BigDecimal) get("subtotalPrice");
         }
@@ -2992,6 +3111,7 @@ public class Storefront {
         /**
         * Specifies if the Checkout is tax exempt.
         */
+
         public Boolean getTaxExempt() {
             return (Boolean) get("taxExempt");
         }
@@ -3004,6 +3124,7 @@ public class Storefront {
         /**
         * Specifies if taxes are included in the line item and shipping line prices.
         */
+
         public Boolean getTaxesIncluded() {
             return (Boolean) get("taxesIncluded");
         }
@@ -3016,6 +3137,7 @@ public class Storefront {
         /**
         * The sum of all the prices of all the items in the checkout, taxes and discounts included.
         */
+
         public BigDecimal getTotalPrice() {
             return (BigDecimal) get("totalPrice");
         }
@@ -3028,6 +3150,7 @@ public class Storefront {
         /**
         * The sum of all the taxes applied to the line items and shipping lines in the checkout.
         */
+
         public BigDecimal getTotalTax() {
             return (BigDecimal) get("totalTax");
         }
@@ -3040,6 +3163,7 @@ public class Storefront {
         /**
         * The date and time when the checkout was last updated.
         */
+
         public DateTime getUpdatedAt() {
             return (DateTime) get("updatedAt");
         }
@@ -3052,6 +3176,7 @@ public class Storefront {
         /**
         * The url pointing to the checkout accessible from the web.
         */
+
         public String getWebUrl() {
             return (String) get("webUrl");
         }
@@ -3119,35 +3244,71 @@ public class Storefront {
     }
 
     public static class CheckoutAttributesUpdateInput implements Serializable {
-        private String note;
+        private Input<String> note = Input.undefined();
 
-        private List<AttributeInput> customAttributes;
+        private Input<List<AttributeInput>> customAttributes = Input.undefined();
 
-        private Boolean allowPartialAddresses;
+        private Input<Boolean> allowPartialAddresses = Input.undefined();
 
         public String getNote() {
+            return note.getValue();
+        }
+
+        public Input<String> getNoteInput() {
             return note;
         }
 
         public CheckoutAttributesUpdateInput setNote(String note) {
+            this.note = Input.value(note);
+            return this;
+        }
+
+        public CheckoutAttributesUpdateInput setNoteInput(Input<String> note) {
+            if (note == null) {
+                throw new IllegalArgumentException("Input can not be null");
+            }
             this.note = note;
             return this;
         }
 
         public List<AttributeInput> getCustomAttributes() {
+            return customAttributes.getValue();
+        }
+
+        public Input<List<AttributeInput>> getCustomAttributesInput() {
             return customAttributes;
         }
 
         public CheckoutAttributesUpdateInput setCustomAttributes(List<AttributeInput> customAttributes) {
+            this.customAttributes = Input.value(customAttributes);
+            return this;
+        }
+
+        public CheckoutAttributesUpdateInput setCustomAttributesInput(Input<List<AttributeInput>> customAttributes) {
+            if (customAttributes == null) {
+                throw new IllegalArgumentException("Input can not be null");
+            }
             this.customAttributes = customAttributes;
             return this;
         }
 
         public Boolean getAllowPartialAddresses() {
+            return allowPartialAddresses.getValue();
+        }
+
+        public Input<Boolean> getAllowPartialAddressesInput() {
             return allowPartialAddresses;
         }
 
         public CheckoutAttributesUpdateInput setAllowPartialAddresses(Boolean allowPartialAddresses) {
+            this.allowPartialAddresses = Input.value(allowPartialAddresses);
+            return this;
+        }
+
+        public CheckoutAttributesUpdateInput setAllowPartialAddressesInput(Input<Boolean> allowPartialAddresses) {
+            if (allowPartialAddresses == null) {
+                throw new IllegalArgumentException("Input can not be null");
+            }
             this.allowPartialAddresses = allowPartialAddresses;
             return this;
         }
@@ -3156,33 +3317,45 @@ public class Storefront {
             String separator = "";
             _queryBuilder.append('{');
 
-            if (note != null) {
+            if (this.note.isDefined()) {
                 _queryBuilder.append(separator);
                 separator = ",";
                 _queryBuilder.append("note:");
-                Query.appendQuotedString(_queryBuilder, note.toString());
+                if (note.getValue() != null) {
+                    Query.appendQuotedString(_queryBuilder, note.getValue().toString());
+                } else {
+                    _queryBuilder.append("null");
+                }
             }
 
-            if (customAttributes != null) {
+            if (this.customAttributes.isDefined()) {
                 _queryBuilder.append(separator);
                 separator = ",";
                 _queryBuilder.append("customAttributes:");
-                _queryBuilder.append('[');
+                if (customAttributes.getValue() != null) {
+                    _queryBuilder.append('[');
 
-                String listSeperator1 = "";
-                for (AttributeInput item1 : customAttributes) {
-                    _queryBuilder.append(listSeperator1);
-                    listSeperator1 = ",";
-                    item1.appendTo(_queryBuilder);
+                    String listSeperator1 = "";
+                    for (AttributeInput item1 : customAttributes.getValue()) {
+                        _queryBuilder.append(listSeperator1);
+                        listSeperator1 = ",";
+                        item1.appendTo(_queryBuilder);
+                    }
+                    _queryBuilder.append(']');
+                } else {
+                    _queryBuilder.append("null");
                 }
-                _queryBuilder.append(']');
             }
 
-            if (allowPartialAddresses != null) {
+            if (this.allowPartialAddresses.isDefined()) {
                 _queryBuilder.append(separator);
                 separator = ",";
                 _queryBuilder.append("allowPartialAddresses:");
-                _queryBuilder.append(allowPartialAddresses);
+                if (allowPartialAddresses.getValue() != null) {
+                    _queryBuilder.append(allowPartialAddresses.getValue());
+                } else {
+                    _queryBuilder.append("null");
+                }
             }
 
             _queryBuilder.append('}');
@@ -3269,6 +3442,7 @@ public class Storefront {
         /**
         * The updated checkout object.
         */
+
         public Checkout getCheckout() {
             return (Checkout) get("checkout");
         }
@@ -3281,6 +3455,7 @@ public class Storefront {
         /**
         * List of errors that occurred executing the mutation.
         */
+
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -3386,6 +3561,7 @@ public class Storefront {
         /**
         * The updated checkout object.
         */
+
         public Checkout getCheckout() {
             return (Checkout) get("checkout");
         }
@@ -3398,6 +3574,7 @@ public class Storefront {
         /**
         * List of errors that occurred executing the mutation.
         */
+
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -3522,6 +3699,7 @@ public class Storefront {
         /**
         * The checkout on which the payment was applied.
         */
+
         public Checkout getCheckout() {
             return (Checkout) get("checkout");
         }
@@ -3534,6 +3712,7 @@ public class Storefront {
         /**
         * A representation of the attempted payment.
         */
+
         public Payment getPayment() {
             return (Payment) get("payment");
         }
@@ -3546,6 +3725,7 @@ public class Storefront {
         /**
         * List of errors that occurred executing the mutation.
         */
+
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -3672,6 +3852,7 @@ public class Storefront {
         /**
         * The checkout on which the payment was applied.
         */
+
         public Checkout getCheckout() {
             return (Checkout) get("checkout");
         }
@@ -3684,6 +3865,7 @@ public class Storefront {
         /**
         * A representation of the attempted payment.
         */
+
         public Payment getPayment() {
             return (Payment) get("payment");
         }
@@ -3696,6 +3878,7 @@ public class Storefront {
         /**
         * List of errors that occurred executing the mutation.
         */
+
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -3719,68 +3902,140 @@ public class Storefront {
     }
 
     public static class CheckoutCreateInput implements Serializable {
-        private String email;
+        private Input<String> email = Input.undefined();
 
-        private List<CheckoutLineItemInput> lineItems;
+        private Input<List<CheckoutLineItemInput>> lineItems = Input.undefined();
 
-        private MailingAddressInput shippingAddress;
+        private Input<MailingAddressInput> shippingAddress = Input.undefined();
 
-        private String note;
+        private Input<String> note = Input.undefined();
 
-        private List<AttributeInput> customAttributes;
+        private Input<List<AttributeInput>> customAttributes = Input.undefined();
 
-        private Boolean allowPartialAddresses;
+        private Input<Boolean> allowPartialAddresses = Input.undefined();
 
         public String getEmail() {
+            return email.getValue();
+        }
+
+        public Input<String> getEmailInput() {
             return email;
         }
 
         public CheckoutCreateInput setEmail(String email) {
+            this.email = Input.value(email);
+            return this;
+        }
+
+        public CheckoutCreateInput setEmailInput(Input<String> email) {
+            if (email == null) {
+                throw new IllegalArgumentException("Input can not be null");
+            }
             this.email = email;
             return this;
         }
 
         public List<CheckoutLineItemInput> getLineItems() {
+            return lineItems.getValue();
+        }
+
+        public Input<List<CheckoutLineItemInput>> getLineItemsInput() {
             return lineItems;
         }
 
         public CheckoutCreateInput setLineItems(List<CheckoutLineItemInput> lineItems) {
+            this.lineItems = Input.value(lineItems);
+            return this;
+        }
+
+        public CheckoutCreateInput setLineItemsInput(Input<List<CheckoutLineItemInput>> lineItems) {
+            if (lineItems == null) {
+                throw new IllegalArgumentException("Input can not be null");
+            }
             this.lineItems = lineItems;
             return this;
         }
 
         public MailingAddressInput getShippingAddress() {
+            return shippingAddress.getValue();
+        }
+
+        public Input<MailingAddressInput> getShippingAddressInput() {
             return shippingAddress;
         }
 
         public CheckoutCreateInput setShippingAddress(MailingAddressInput shippingAddress) {
+            this.shippingAddress = Input.value(shippingAddress);
+            return this;
+        }
+
+        public CheckoutCreateInput setShippingAddressInput(Input<MailingAddressInput> shippingAddress) {
+            if (shippingAddress == null) {
+                throw new IllegalArgumentException("Input can not be null");
+            }
             this.shippingAddress = shippingAddress;
             return this;
         }
 
         public String getNote() {
+            return note.getValue();
+        }
+
+        public Input<String> getNoteInput() {
             return note;
         }
 
         public CheckoutCreateInput setNote(String note) {
+            this.note = Input.value(note);
+            return this;
+        }
+
+        public CheckoutCreateInput setNoteInput(Input<String> note) {
+            if (note == null) {
+                throw new IllegalArgumentException("Input can not be null");
+            }
             this.note = note;
             return this;
         }
 
         public List<AttributeInput> getCustomAttributes() {
+            return customAttributes.getValue();
+        }
+
+        public Input<List<AttributeInput>> getCustomAttributesInput() {
             return customAttributes;
         }
 
         public CheckoutCreateInput setCustomAttributes(List<AttributeInput> customAttributes) {
+            this.customAttributes = Input.value(customAttributes);
+            return this;
+        }
+
+        public CheckoutCreateInput setCustomAttributesInput(Input<List<AttributeInput>> customAttributes) {
+            if (customAttributes == null) {
+                throw new IllegalArgumentException("Input can not be null");
+            }
             this.customAttributes = customAttributes;
             return this;
         }
 
         public Boolean getAllowPartialAddresses() {
+            return allowPartialAddresses.getValue();
+        }
+
+        public Input<Boolean> getAllowPartialAddressesInput() {
             return allowPartialAddresses;
         }
 
         public CheckoutCreateInput setAllowPartialAddresses(Boolean allowPartialAddresses) {
+            this.allowPartialAddresses = Input.value(allowPartialAddresses);
+            return this;
+        }
+
+        public CheckoutCreateInput setAllowPartialAddressesInput(Input<Boolean> allowPartialAddresses) {
+            if (allowPartialAddresses == null) {
+                throw new IllegalArgumentException("Input can not be null");
+            }
             this.allowPartialAddresses = allowPartialAddresses;
             return this;
         }
@@ -3789,62 +4044,86 @@ public class Storefront {
             String separator = "";
             _queryBuilder.append('{');
 
-            if (email != null) {
+            if (this.email.isDefined()) {
                 _queryBuilder.append(separator);
                 separator = ",";
                 _queryBuilder.append("email:");
-                Query.appendQuotedString(_queryBuilder, email.toString());
+                if (email.getValue() != null) {
+                    Query.appendQuotedString(_queryBuilder, email.getValue().toString());
+                } else {
+                    _queryBuilder.append("null");
+                }
             }
 
-            if (lineItems != null) {
+            if (this.lineItems.isDefined()) {
                 _queryBuilder.append(separator);
                 separator = ",";
                 _queryBuilder.append("lineItems:");
-                _queryBuilder.append('[');
+                if (lineItems.getValue() != null) {
+                    _queryBuilder.append('[');
 
-                String listSeperator1 = "";
-                for (CheckoutLineItemInput item1 : lineItems) {
-                    _queryBuilder.append(listSeperator1);
-                    listSeperator1 = ",";
-                    item1.appendTo(_queryBuilder);
+                    String listSeperator1 = "";
+                    for (CheckoutLineItemInput item1 : lineItems.getValue()) {
+                        _queryBuilder.append(listSeperator1);
+                        listSeperator1 = ",";
+                        item1.appendTo(_queryBuilder);
+                    }
+                    _queryBuilder.append(']');
+                } else {
+                    _queryBuilder.append("null");
                 }
-                _queryBuilder.append(']');
             }
 
-            if (shippingAddress != null) {
+            if (this.shippingAddress.isDefined()) {
                 _queryBuilder.append(separator);
                 separator = ",";
                 _queryBuilder.append("shippingAddress:");
-                shippingAddress.appendTo(_queryBuilder);
+                if (shippingAddress.getValue() != null) {
+                    shippingAddress.getValue().appendTo(_queryBuilder);
+                } else {
+                    _queryBuilder.append("null");
+                }
             }
 
-            if (note != null) {
+            if (this.note.isDefined()) {
                 _queryBuilder.append(separator);
                 separator = ",";
                 _queryBuilder.append("note:");
-                Query.appendQuotedString(_queryBuilder, note.toString());
+                if (note.getValue() != null) {
+                    Query.appendQuotedString(_queryBuilder, note.getValue().toString());
+                } else {
+                    _queryBuilder.append("null");
+                }
             }
 
-            if (customAttributes != null) {
+            if (this.customAttributes.isDefined()) {
                 _queryBuilder.append(separator);
                 separator = ",";
                 _queryBuilder.append("customAttributes:");
-                _queryBuilder.append('[');
+                if (customAttributes.getValue() != null) {
+                    _queryBuilder.append('[');
 
-                String listSeperator1 = "";
-                for (AttributeInput item1 : customAttributes) {
-                    _queryBuilder.append(listSeperator1);
-                    listSeperator1 = ",";
-                    item1.appendTo(_queryBuilder);
+                    String listSeperator1 = "";
+                    for (AttributeInput item1 : customAttributes.getValue()) {
+                        _queryBuilder.append(listSeperator1);
+                        listSeperator1 = ",";
+                        item1.appendTo(_queryBuilder);
+                    }
+                    _queryBuilder.append(']');
+                } else {
+                    _queryBuilder.append("null");
                 }
-                _queryBuilder.append(']');
             }
 
-            if (allowPartialAddresses != null) {
+            if (this.allowPartialAddresses.isDefined()) {
                 _queryBuilder.append(separator);
                 separator = ",";
                 _queryBuilder.append("allowPartialAddresses:");
-                _queryBuilder.append(allowPartialAddresses);
+                if (allowPartialAddresses.getValue() != null) {
+                    _queryBuilder.append(allowPartialAddresses.getValue());
+                } else {
+                    _queryBuilder.append("null");
+                }
             }
 
             _queryBuilder.append('}');
@@ -3936,6 +4215,7 @@ public class Storefront {
         /**
         * The new checkout object.
         */
+
         public Checkout getCheckout() {
             return (Checkout) get("checkout");
         }
@@ -3948,6 +4228,7 @@ public class Storefront {
         /**
         * List of errors that occurred executing the mutation.
         */
+
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -4048,6 +4329,7 @@ public class Storefront {
         /**
         * The updated checkout object.
         */
+
         public Checkout getCheckout() {
             return (Checkout) get("checkout");
         }
@@ -4060,6 +4342,7 @@ public class Storefront {
         /**
         * List of errors that occurred executing the mutation.
         */
+
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -4160,6 +4443,7 @@ public class Storefront {
         /**
         * The updated checkout object.
         */
+
         public Checkout getCheckout() {
             return (Checkout) get("checkout");
         }
@@ -4172,6 +4456,7 @@ public class Storefront {
         /**
         * List of errors that occurred executing the mutation.
         */
+
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -4272,6 +4557,7 @@ public class Storefront {
         /**
         * The checkout object with the updated email.
         */
+
         public Checkout getCheckout() {
             return (Checkout) get("checkout");
         }
@@ -4284,6 +4570,7 @@ public class Storefront {
         /**
         * List of errors that occurred executing the mutation.
         */
+
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -4384,6 +4671,7 @@ public class Storefront {
         /**
         * The updated checkout object.
         */
+
         public Checkout getCheckout() {
             return (Checkout) get("checkout");
         }
@@ -4396,6 +4684,7 @@ public class Storefront {
         /**
         * List of errors that occurred executing the mutation.
         */
+
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -4496,6 +4785,7 @@ public class Storefront {
         /**
         * The updated checkout object.
         */
+
         public Checkout getCheckout() {
             return (Checkout) get("checkout");
         }
@@ -4508,6 +4798,7 @@ public class Storefront {
         /**
         * List of errors that occurred executing the mutation.
         */
+
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -4662,6 +4953,7 @@ public class Storefront {
         /**
         * Extra information in the form of an array of Key-Value pairs about the line item.
         */
+
         public List<Attribute> getCustomAttributes() {
             return (List<Attribute>) get("customAttributes");
         }
@@ -4674,6 +4966,7 @@ public class Storefront {
         /**
         * Globally unique identifier.
         */
+
         public ID getId() {
             return (ID) get("id");
         }
@@ -4681,6 +4974,7 @@ public class Storefront {
         /**
         * The quantity of the line item.
         */
+
         public Integer getQuantity() {
             return (Integer) get("quantity");
         }
@@ -4693,6 +4987,7 @@ public class Storefront {
         /**
         * Title of the line item. Defaults to the product's title.
         */
+
         public String getTitle() {
             return (String) get("title");
         }
@@ -4705,6 +5000,7 @@ public class Storefront {
         /**
         * Product variant of the line item.
         */
+
         public ProductVariant getVariant() {
             return (ProductVariant) get("variant");
         }
@@ -4811,6 +5107,7 @@ public class Storefront {
         /**
         * A list of edges.
         */
+
         public List<CheckoutLineItemEdge> getEdges() {
             return (List<CheckoutLineItemEdge>) get("edges");
         }
@@ -4823,6 +5120,7 @@ public class Storefront {
         /**
         * Information to aid in pagination.
         */
+
         public PageInfo getPageInfo() {
             return (PageInfo) get("pageInfo");
         }
@@ -4914,6 +5212,7 @@ public class Storefront {
         /**
         * A cursor for use in pagination.
         */
+
         public String getCursor() {
             return (String) get("cursor");
         }
@@ -4926,6 +5225,7 @@ public class Storefront {
         /**
         * The item at the end of CheckoutLineItemEdge.
         */
+
         public CheckoutLineItem getNode() {
             return (CheckoutLineItem) get("node");
         }
@@ -4951,7 +5251,7 @@ public class Storefront {
 
         private ID variantId;
 
-        private List<AttributeInput> customAttributes;
+        private Input<List<AttributeInput>> customAttributes = Input.undefined();
 
         public CheckoutLineItemInput(int quantity, ID variantId) {
             this.quantity = quantity;
@@ -4978,10 +5278,22 @@ public class Storefront {
         }
 
         public List<AttributeInput> getCustomAttributes() {
+            return customAttributes.getValue();
+        }
+
+        public Input<List<AttributeInput>> getCustomAttributesInput() {
             return customAttributes;
         }
 
         public CheckoutLineItemInput setCustomAttributes(List<AttributeInput> customAttributes) {
+            this.customAttributes = Input.value(customAttributes);
+            return this;
+        }
+
+        public CheckoutLineItemInput setCustomAttributesInput(Input<List<AttributeInput>> customAttributes) {
+            if (customAttributes == null) {
+                throw new IllegalArgumentException("Input can not be null");
+            }
             this.customAttributes = customAttributes;
             return this;
         }
@@ -5000,19 +5312,23 @@ public class Storefront {
             _queryBuilder.append("variantId:");
             Query.appendQuotedString(_queryBuilder, variantId.toString());
 
-            if (customAttributes != null) {
+            if (this.customAttributes.isDefined()) {
                 _queryBuilder.append(separator);
                 separator = ",";
                 _queryBuilder.append("customAttributes:");
-                _queryBuilder.append('[');
+                if (customAttributes.getValue() != null) {
+                    _queryBuilder.append('[');
 
-                String listSeperator1 = "";
-                for (AttributeInput item1 : customAttributes) {
-                    _queryBuilder.append(listSeperator1);
-                    listSeperator1 = ",";
-                    item1.appendTo(_queryBuilder);
+                    String listSeperator1 = "";
+                    for (AttributeInput item1 : customAttributes.getValue()) {
+                        _queryBuilder.append(listSeperator1);
+                        listSeperator1 = ",";
+                        item1.appendTo(_queryBuilder);
+                    }
+                    _queryBuilder.append(']');
+                } else {
+                    _queryBuilder.append("null");
                 }
-                _queryBuilder.append(']');
             }
 
             _queryBuilder.append('}');
@@ -5020,46 +5336,94 @@ public class Storefront {
     }
 
     public static class CheckoutLineItemUpdateInput implements Serializable {
-        private ID id;
+        private Input<ID> id = Input.undefined();
 
-        private ID variantId;
+        private Input<ID> variantId = Input.undefined();
 
-        private Integer quantity;
+        private Input<Integer> quantity = Input.undefined();
 
-        private List<AttributeInput> customAttributes;
+        private Input<List<AttributeInput>> customAttributes = Input.undefined();
 
         public ID getId() {
+            return id.getValue();
+        }
+
+        public Input<ID> getIdInput() {
             return id;
         }
 
         public CheckoutLineItemUpdateInput setId(ID id) {
+            this.id = Input.value(id);
+            return this;
+        }
+
+        public CheckoutLineItemUpdateInput setIdInput(Input<ID> id) {
+            if (id == null) {
+                throw new IllegalArgumentException("Input can not be null");
+            }
             this.id = id;
             return this;
         }
 
         public ID getVariantId() {
+            return variantId.getValue();
+        }
+
+        public Input<ID> getVariantIdInput() {
             return variantId;
         }
 
         public CheckoutLineItemUpdateInput setVariantId(ID variantId) {
+            this.variantId = Input.value(variantId);
+            return this;
+        }
+
+        public CheckoutLineItemUpdateInput setVariantIdInput(Input<ID> variantId) {
+            if (variantId == null) {
+                throw new IllegalArgumentException("Input can not be null");
+            }
             this.variantId = variantId;
             return this;
         }
 
         public Integer getQuantity() {
+            return quantity.getValue();
+        }
+
+        public Input<Integer> getQuantityInput() {
             return quantity;
         }
 
         public CheckoutLineItemUpdateInput setQuantity(Integer quantity) {
+            this.quantity = Input.value(quantity);
+            return this;
+        }
+
+        public CheckoutLineItemUpdateInput setQuantityInput(Input<Integer> quantity) {
+            if (quantity == null) {
+                throw new IllegalArgumentException("Input can not be null");
+            }
             this.quantity = quantity;
             return this;
         }
 
         public List<AttributeInput> getCustomAttributes() {
+            return customAttributes.getValue();
+        }
+
+        public Input<List<AttributeInput>> getCustomAttributesInput() {
             return customAttributes;
         }
 
         public CheckoutLineItemUpdateInput setCustomAttributes(List<AttributeInput> customAttributes) {
+            this.customAttributes = Input.value(customAttributes);
+            return this;
+        }
+
+        public CheckoutLineItemUpdateInput setCustomAttributesInput(Input<List<AttributeInput>> customAttributes) {
+            if (customAttributes == null) {
+                throw new IllegalArgumentException("Input can not be null");
+            }
             this.customAttributes = customAttributes;
             return this;
         }
@@ -5068,40 +5432,56 @@ public class Storefront {
             String separator = "";
             _queryBuilder.append('{');
 
-            if (id != null) {
+            if (this.id.isDefined()) {
                 _queryBuilder.append(separator);
                 separator = ",";
                 _queryBuilder.append("id:");
-                Query.appendQuotedString(_queryBuilder, id.toString());
+                if (id.getValue() != null) {
+                    Query.appendQuotedString(_queryBuilder, id.getValue().toString());
+                } else {
+                    _queryBuilder.append("null");
+                }
             }
 
-            if (variantId != null) {
+            if (this.variantId.isDefined()) {
                 _queryBuilder.append(separator);
                 separator = ",";
                 _queryBuilder.append("variantId:");
-                Query.appendQuotedString(_queryBuilder, variantId.toString());
+                if (variantId.getValue() != null) {
+                    Query.appendQuotedString(_queryBuilder, variantId.getValue().toString());
+                } else {
+                    _queryBuilder.append("null");
+                }
             }
 
-            if (quantity != null) {
+            if (this.quantity.isDefined()) {
                 _queryBuilder.append(separator);
                 separator = ",";
                 _queryBuilder.append("quantity:");
-                _queryBuilder.append(quantity);
+                if (quantity.getValue() != null) {
+                    _queryBuilder.append(quantity.getValue());
+                } else {
+                    _queryBuilder.append("null");
+                }
             }
 
-            if (customAttributes != null) {
+            if (this.customAttributes.isDefined()) {
                 _queryBuilder.append(separator);
                 separator = ",";
                 _queryBuilder.append("customAttributes:");
-                _queryBuilder.append('[');
+                if (customAttributes.getValue() != null) {
+                    _queryBuilder.append('[');
 
-                String listSeperator1 = "";
-                for (AttributeInput item1 : customAttributes) {
-                    _queryBuilder.append(listSeperator1);
-                    listSeperator1 = ",";
-                    item1.appendTo(_queryBuilder);
+                    String listSeperator1 = "";
+                    for (AttributeInput item1 : customAttributes.getValue()) {
+                        _queryBuilder.append(listSeperator1);
+                        listSeperator1 = ",";
+                        item1.appendTo(_queryBuilder);
+                    }
+                    _queryBuilder.append(']');
+                } else {
+                    _queryBuilder.append("null");
                 }
-                _queryBuilder.append(']');
             }
 
             _queryBuilder.append('}');
@@ -5193,6 +5573,7 @@ public class Storefront {
         /**
         * The updated checkout object.
         */
+
         public Checkout getCheckout() {
             return (Checkout) get("checkout");
         }
@@ -5205,6 +5586,7 @@ public class Storefront {
         /**
         * List of errors that occurred executing the mutation.
         */
+
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -5316,6 +5698,7 @@ public class Storefront {
         /**
         * List of errors that occurred executing the mutation.
         */
+
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -5421,6 +5804,7 @@ public class Storefront {
         /**
         * The updated checkout object.
         */
+
         public Checkout getCheckout() {
             return (Checkout) get("checkout");
         }
@@ -5433,6 +5817,7 @@ public class Storefront {
         /**
         * List of errors that occurred executing the mutation.
         */
+
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -5533,6 +5918,7 @@ public class Storefront {
         /**
         * The updated checkout object.
         */
+
         public Checkout getCheckout() {
             return (Checkout) get("checkout");
         }
@@ -5545,6 +5931,7 @@ public class Storefront {
         /**
         * List of errors that occurred executing the mutation.
         */
+
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -5650,6 +6037,7 @@ public class Storefront {
         /**
         * The updated checkout object.
         */
+
         public Checkout getCheckout() {
             return (Checkout) get("checkout");
         }
@@ -5662,6 +6050,7 @@ public class Storefront {
         /**
         * List of errors that occurred executing the mutation.
         */
+
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -5837,12 +6226,36 @@ public class Storefront {
 
         public class ProductsArguments extends Arguments {
             ProductsArguments(StringBuilder _queryBuilder) {
-                super(_queryBuilder, false);
+                super(_queryBuilder, true);
+            }
+
+            public ProductsArguments first(Integer value) {
+                if (value != null) {
+                    startArgument("first");
+                    _queryBuilder.append(value);
+                }
+                return this;
             }
 
             public ProductsArguments after(String value) {
                 if (value != null) {
                     startArgument("after");
+                    Query.appendQuotedString(_queryBuilder, value.toString());
+                }
+                return this;
+            }
+
+            public ProductsArguments last(Integer value) {
+                if (value != null) {
+                    startArgument("last");
+                    _queryBuilder.append(value);
+                }
+                return this;
+            }
+
+            public ProductsArguments before(String value) {
+                if (value != null) {
+                    startArgument("before");
                     Query.appendQuotedString(_queryBuilder, value.toString());
                 }
                 return this;
@@ -5872,22 +6285,19 @@ public class Storefront {
         /**
         * List of products in the collection.
         */
-        public CollectionQuery products(int first, ProductConnectionQueryDefinition queryDef) {
-            return products(first, args -> {}, queryDef);
+        public CollectionQuery products(ProductConnectionQueryDefinition queryDef) {
+            return products(args -> {}, queryDef);
         }
 
         /**
         * List of products in the collection.
         */
-        public CollectionQuery products(int first, ProductsArgumentsDefinition argsDef, ProductConnectionQueryDefinition queryDef) {
+        public CollectionQuery products(ProductsArgumentsDefinition argsDef, ProductConnectionQueryDefinition queryDef) {
             startField("products");
 
-            _queryBuilder.append("(first:");
-            _queryBuilder.append(first);
-
-            argsDef.define(new ProductsArguments(_queryBuilder));
-
-            _queryBuilder.append(')');
+            ProductsArguments args = new ProductsArguments(_queryBuilder);
+            argsDef.define(args);
+            ProductsArguments.end(args);
 
             _queryBuilder.append('{');
             queryDef.define(new ProductConnectionQuery(_queryBuilder));
@@ -6004,6 +6414,7 @@ public class Storefront {
         /**
         * Stripped description of the collection, single line with HTML tags removed.
         */
+
         public String getDescription() {
             return (String) get("description");
         }
@@ -6016,6 +6427,7 @@ public class Storefront {
         /**
         * The description of the collection, complete with HTML formatting.
         */
+
         public String getDescriptionHtml() {
             return (String) get("descriptionHtml");
         }
@@ -6029,6 +6441,7 @@ public class Storefront {
         * A human-friendly unique string for the collection automatically generated from its title.
         * Limit of 255 characters.
         */
+
         public String getHandle() {
             return (String) get("handle");
         }
@@ -6041,6 +6454,7 @@ public class Storefront {
         /**
         * Globally unique identifier.
         */
+
         public ID getId() {
             return (ID) get("id");
         }
@@ -6048,6 +6462,7 @@ public class Storefront {
         /**
         * Image associated with the collection.
         */
+
         public Image getImage() {
             return (Image) get("image");
         }
@@ -6060,6 +6475,7 @@ public class Storefront {
         /**
         * List of products in the collection.
         */
+
         public ProductConnection getProducts() {
             return (ProductConnection) get("products");
         }
@@ -6072,6 +6488,7 @@ public class Storefront {
         /**
         * The collection’s name. Limit of 255 characters.
         */
+
         public String getTitle() {
             return (String) get("title");
         }
@@ -6084,6 +6501,7 @@ public class Storefront {
         /**
         * The date and time when the collection was last modified.
         */
+
         public DateTime getUpdatedAt() {
             return (DateTime) get("updatedAt");
         }
@@ -6196,6 +6614,7 @@ public class Storefront {
         /**
         * A list of edges.
         */
+
         public List<CollectionEdge> getEdges() {
             return (List<CollectionEdge>) get("edges");
         }
@@ -6208,6 +6627,7 @@ public class Storefront {
         /**
         * Information to aid in pagination.
         */
+
         public PageInfo getPageInfo() {
             return (PageInfo) get("pageInfo");
         }
@@ -6299,6 +6719,7 @@ public class Storefront {
         /**
         * A cursor for use in pagination.
         */
+
         public String getCursor() {
             return (String) get("cursor");
         }
@@ -6311,6 +6732,7 @@ public class Storefront {
         /**
         * The item at the end of CollectionEdge.
         */
+
         public Collection getNode() {
             return (Collection) get("node");
         }
@@ -6528,6 +6950,7 @@ public class Storefront {
         /**
         * The comment’s author.
         */
+
         public CommentAuthor getAuthor() {
             return (CommentAuthor) get("author");
         }
@@ -6540,6 +6963,7 @@ public class Storefront {
         /**
         * Stripped content of the comment, single line with HTML tags removed.
         */
+
         public String getContent() {
             return (String) get("content");
         }
@@ -6552,6 +6976,7 @@ public class Storefront {
         /**
         * The content of the comment, complete with HTML formatting.
         */
+
         public String getContentHtml() {
             return (String) get("contentHtml");
         }
@@ -6564,6 +6989,7 @@ public class Storefront {
         /**
         * Globally unique identifier.
         */
+
         public ID getId() {
             return (ID) get("id");
         }
@@ -6650,6 +7076,7 @@ public class Storefront {
         /**
         * The author's email.
         */
+
         public String getEmail() {
             return (String) get("email");
         }
@@ -6662,6 +7089,7 @@ public class Storefront {
         /**
         * The author’s name.
         */
+
         public String getName() {
             return (String) get("name");
         }
@@ -6762,6 +7190,7 @@ public class Storefront {
         /**
         * A list of edges.
         */
+
         public List<CommentEdge> getEdges() {
             return (List<CommentEdge>) get("edges");
         }
@@ -6774,6 +7203,7 @@ public class Storefront {
         /**
         * Information to aid in pagination.
         */
+
         public PageInfo getPageInfo() {
             return (PageInfo) get("pageInfo");
         }
@@ -6865,6 +7295,7 @@ public class Storefront {
         /**
         * A cursor for use in pagination.
         */
+
         public String getCursor() {
             return (String) get("cursor");
         }
@@ -6877,6 +7308,7 @@ public class Storefront {
         /**
         * The item at the end of CommentEdge.
         */
+
         public Comment getNode() {
             return (Comment) get("node");
         }
@@ -10301,6 +10733,7 @@ public class Storefront {
         /**
         * Masked credit card number with only the last 4 digits displayed
         */
+
         public String getMaskedNumber() {
             return (String) get("maskedNumber");
         }
@@ -10342,7 +10775,7 @@ public class Storefront {
 
         private String vaultId;
 
-        private Boolean test;
+        private Input<Boolean> test = Input.undefined();
 
         public CreditCardPaymentInput(BigDecimal amount, String idempotencyKey, MailingAddressInput billingAddress, String vaultId) {
             this.amount = amount;
@@ -10391,10 +10824,22 @@ public class Storefront {
         }
 
         public Boolean getTest() {
+            return test.getValue();
+        }
+
+        public Input<Boolean> getTestInput() {
             return test;
         }
 
         public CreditCardPaymentInput setTest(Boolean test) {
+            this.test = Input.value(test);
+            return this;
+        }
+
+        public CreditCardPaymentInput setTestInput(Input<Boolean> test) {
+            if (test == null) {
+                throw new IllegalArgumentException("Input can not be null");
+            }
             this.test = test;
             return this;
         }
@@ -10423,11 +10868,15 @@ public class Storefront {
             _queryBuilder.append("vaultId:");
             Query.appendQuotedString(_queryBuilder, vaultId.toString());
 
-            if (test != null) {
+            if (this.test.isDefined()) {
                 _queryBuilder.append(separator);
                 separator = ",";
                 _queryBuilder.append("test:");
-                _queryBuilder.append(test);
+                if (test.getValue() != null) {
+                    _queryBuilder.append(test.getValue());
+                } else {
+                    _queryBuilder.append("null");
+                }
             }
 
             _queryBuilder.append('}');
@@ -12356,12 +12805,36 @@ public class Storefront {
 
         public class AddressesArguments extends Arguments {
             AddressesArguments(StringBuilder _queryBuilder) {
-                super(_queryBuilder, false);
+                super(_queryBuilder, true);
+            }
+
+            public AddressesArguments first(Integer value) {
+                if (value != null) {
+                    startArgument("first");
+                    _queryBuilder.append(value);
+                }
+                return this;
             }
 
             public AddressesArguments after(String value) {
                 if (value != null) {
                     startArgument("after");
+                    Query.appendQuotedString(_queryBuilder, value.toString());
+                }
+                return this;
+            }
+
+            public AddressesArguments last(Integer value) {
+                if (value != null) {
+                    startArgument("last");
+                    _queryBuilder.append(value);
+                }
+                return this;
+            }
+
+            public AddressesArguments before(String value) {
+                if (value != null) {
+                    startArgument("before");
                     Query.appendQuotedString(_queryBuilder, value.toString());
                 }
                 return this;
@@ -12383,22 +12856,19 @@ public class Storefront {
         /**
         * A list of addresses for the customer.
         */
-        public CustomerQuery addresses(int first, MailingAddressConnectionQueryDefinition queryDef) {
-            return addresses(first, args -> {}, queryDef);
+        public CustomerQuery addresses(MailingAddressConnectionQueryDefinition queryDef) {
+            return addresses(args -> {}, queryDef);
         }
 
         /**
         * A list of addresses for the customer.
         */
-        public CustomerQuery addresses(int first, AddressesArgumentsDefinition argsDef, MailingAddressConnectionQueryDefinition queryDef) {
+        public CustomerQuery addresses(AddressesArgumentsDefinition argsDef, MailingAddressConnectionQueryDefinition queryDef) {
             startField("addresses");
 
-            _queryBuilder.append("(first:");
-            _queryBuilder.append(first);
-
-            argsDef.define(new AddressesArguments(_queryBuilder));
-
-            _queryBuilder.append(')');
+            AddressesArguments args = new AddressesArguments(_queryBuilder);
+            argsDef.define(args);
+            AddressesArguments.end(args);
 
             _queryBuilder.append('{');
             queryDef.define(new MailingAddressConnectionQuery(_queryBuilder));
@@ -12476,12 +12946,36 @@ public class Storefront {
 
         public class OrdersArguments extends Arguments {
             OrdersArguments(StringBuilder _queryBuilder) {
-                super(_queryBuilder, false);
+                super(_queryBuilder, true);
+            }
+
+            public OrdersArguments first(Integer value) {
+                if (value != null) {
+                    startArgument("first");
+                    _queryBuilder.append(value);
+                }
+                return this;
             }
 
             public OrdersArguments after(String value) {
                 if (value != null) {
                     startArgument("after");
+                    Query.appendQuotedString(_queryBuilder, value.toString());
+                }
+                return this;
+            }
+
+            public OrdersArguments last(Integer value) {
+                if (value != null) {
+                    startArgument("last");
+                    _queryBuilder.append(value);
+                }
+                return this;
+            }
+
+            public OrdersArguments before(String value) {
+                if (value != null) {
+                    startArgument("before");
                     Query.appendQuotedString(_queryBuilder, value.toString());
                 }
                 return this;
@@ -12523,22 +13017,19 @@ public class Storefront {
         /**
         * The orders associated with the customer.
         */
-        public CustomerQuery orders(int first, OrderConnectionQueryDefinition queryDef) {
-            return orders(first, args -> {}, queryDef);
+        public CustomerQuery orders(OrderConnectionQueryDefinition queryDef) {
+            return orders(args -> {}, queryDef);
         }
 
         /**
         * The orders associated with the customer.
         */
-        public CustomerQuery orders(int first, OrdersArgumentsDefinition argsDef, OrderConnectionQueryDefinition queryDef) {
+        public CustomerQuery orders(OrdersArgumentsDefinition argsDef, OrderConnectionQueryDefinition queryDef) {
             startField("orders");
 
-            _queryBuilder.append("(first:");
-            _queryBuilder.append(first);
-
-            argsDef.define(new OrdersArguments(_queryBuilder));
-
-            _queryBuilder.append(')');
+            OrdersArguments args = new OrdersArguments(_queryBuilder);
+            argsDef.define(args);
+            OrdersArguments.end(args);
 
             _queryBuilder.append('{');
             queryDef.define(new OrderConnectionQuery(_queryBuilder));
@@ -12694,6 +13185,7 @@ public class Storefront {
         /**
         * Indicates whether the customer has consented to be sent marketing material via email.
         */
+
         public Boolean getAcceptsMarketing() {
             return (Boolean) get("acceptsMarketing");
         }
@@ -12706,6 +13198,7 @@ public class Storefront {
         /**
         * A list of addresses for the customer.
         */
+
         public MailingAddressConnection getAddresses() {
             return (MailingAddressConnection) get("addresses");
         }
@@ -12718,6 +13211,7 @@ public class Storefront {
         /**
         * The date and time when the customer was created.
         */
+
         public DateTime getCreatedAt() {
             return (DateTime) get("createdAt");
         }
@@ -12730,6 +13224,7 @@ public class Storefront {
         /**
         * The customer’s default address.
         */
+
         public MailingAddress getDefaultAddress() {
             return (MailingAddress) get("defaultAddress");
         }
@@ -12742,6 +13237,7 @@ public class Storefront {
         /**
         * The customer’s name, email or phone number.
         */
+
         public String getDisplayName() {
             return (String) get("displayName");
         }
@@ -12754,6 +13250,7 @@ public class Storefront {
         /**
         * The customer’s email address.
         */
+
         public String getEmail() {
             return (String) get("email");
         }
@@ -12766,6 +13263,7 @@ public class Storefront {
         /**
         * The customer’s first name.
         */
+
         public String getFirstName() {
             return (String) get("firstName");
         }
@@ -12778,6 +13276,7 @@ public class Storefront {
         /**
         * A unique identifier for the customer.
         */
+
         public ID getId() {
             return (ID) get("id");
         }
@@ -12790,6 +13289,7 @@ public class Storefront {
         /**
         * The customer’s last name.
         */
+
         public String getLastName() {
             return (String) get("lastName");
         }
@@ -12802,6 +13302,7 @@ public class Storefront {
         /**
         * The orders associated with the customer.
         */
+
         public OrderConnection getOrders() {
             return (OrderConnection) get("orders");
         }
@@ -12814,6 +13315,7 @@ public class Storefront {
         /**
         * The customer’s phone number.
         */
+
         public String getPhone() {
             return (String) get("phone");
         }
@@ -12826,6 +13328,7 @@ public class Storefront {
         /**
         * The date and time when the customer information was updated.
         */
+
         public DateTime getUpdatedAt() {
             return (DateTime) get("updatedAt");
         }
@@ -12941,6 +13444,7 @@ public class Storefront {
         /**
         * The customer’s access token.
         */
+
         public String getAccessToken() {
             return (String) get("accessToken");
         }
@@ -12953,6 +13457,7 @@ public class Storefront {
         /**
         * The date and time when the customer access token expires.
         */
+
         public DateTime getExpiresAt() {
             return (DateTime) get("expiresAt");
         }
@@ -13105,6 +13610,7 @@ public class Storefront {
         /**
         * The newly created customer access token object.
         */
+
         public CustomerAccessToken getCustomerAccessToken() {
             return (CustomerAccessToken) get("customerAccessToken");
         }
@@ -13117,6 +13623,7 @@ public class Storefront {
         /**
         * List of errors that occurred executing the mutation.
         */
+
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -13238,6 +13745,7 @@ public class Storefront {
         /**
         * The destroyed access token.
         */
+
         public String getDeletedAccessToken() {
             return (String) get("deletedAccessToken");
         }
@@ -13250,6 +13758,7 @@ public class Storefront {
         /**
         * ID of the destroyed customer access token.
         */
+
         public String getDeletedCustomerAccessTokenId() {
             return (String) get("deletedCustomerAccessTokenId");
         }
@@ -13262,6 +13771,7 @@ public class Storefront {
         /**
         * List of errors that occurred executing the mutation.
         */
+
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -13369,6 +13879,7 @@ public class Storefront {
         /**
         * The renewed customer access token object.
         */
+
         public CustomerAccessToken getCustomerAccessToken() {
             return (CustomerAccessToken) get("customerAccessToken");
         }
@@ -13381,6 +13892,7 @@ public class Storefront {
         /**
         * List of errors that occurred executing the mutation.
         */
+
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -13533,6 +14045,7 @@ public class Storefront {
         /**
         * The customer object.
         */
+
         public Customer getCustomer() {
             return (Customer) get("customer");
         }
@@ -13545,6 +14058,7 @@ public class Storefront {
         /**
         * List of errors that occurred executing the mutation.
         */
+
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -13650,6 +14164,7 @@ public class Storefront {
         /**
         * The new customer address object.
         */
+
         public MailingAddress getCustomerAddress() {
             return (MailingAddress) get("customerAddress");
         }
@@ -13662,6 +14177,7 @@ public class Storefront {
         /**
         * List of errors that occurred executing the mutation.
         */
+
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -13763,6 +14279,7 @@ public class Storefront {
         /**
         * ID of the deleted customer address.
         */
+
         public String getDeletedCustomerAddressId() {
             return (String) get("deletedCustomerAddressId");
         }
@@ -13775,6 +14292,7 @@ public class Storefront {
         /**
         * List of errors that occurred executing the mutation.
         */
+
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -13880,6 +14398,7 @@ public class Storefront {
         /**
         * The customer’s updated mailing address.
         */
+
         public MailingAddress getCustomerAddress() {
             return (MailingAddress) get("customerAddress");
         }
@@ -13892,6 +14411,7 @@ public class Storefront {
         /**
         * List of errors that occurred executing the mutation.
         */
+
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -13917,13 +14437,13 @@ public class Storefront {
 
         private String password;
 
-        private String firstName;
+        private Input<String> firstName = Input.undefined();
 
-        private String lastName;
+        private Input<String> lastName = Input.undefined();
 
-        private String phone;
+        private Input<String> phone = Input.undefined();
 
-        private Boolean acceptsMarketing;
+        private Input<Boolean> acceptsMarketing = Input.undefined();
 
         public CustomerCreateInput(String email, String password) {
             this.email = email;
@@ -13950,37 +14470,85 @@ public class Storefront {
         }
 
         public String getFirstName() {
+            return firstName.getValue();
+        }
+
+        public Input<String> getFirstNameInput() {
             return firstName;
         }
 
         public CustomerCreateInput setFirstName(String firstName) {
+            this.firstName = Input.value(firstName);
+            return this;
+        }
+
+        public CustomerCreateInput setFirstNameInput(Input<String> firstName) {
+            if (firstName == null) {
+                throw new IllegalArgumentException("Input can not be null");
+            }
             this.firstName = firstName;
             return this;
         }
 
         public String getLastName() {
+            return lastName.getValue();
+        }
+
+        public Input<String> getLastNameInput() {
             return lastName;
         }
 
         public CustomerCreateInput setLastName(String lastName) {
+            this.lastName = Input.value(lastName);
+            return this;
+        }
+
+        public CustomerCreateInput setLastNameInput(Input<String> lastName) {
+            if (lastName == null) {
+                throw new IllegalArgumentException("Input can not be null");
+            }
             this.lastName = lastName;
             return this;
         }
 
         public String getPhone() {
+            return phone.getValue();
+        }
+
+        public Input<String> getPhoneInput() {
             return phone;
         }
 
         public CustomerCreateInput setPhone(String phone) {
+            this.phone = Input.value(phone);
+            return this;
+        }
+
+        public CustomerCreateInput setPhoneInput(Input<String> phone) {
+            if (phone == null) {
+                throw new IllegalArgumentException("Input can not be null");
+            }
             this.phone = phone;
             return this;
         }
 
         public Boolean getAcceptsMarketing() {
+            return acceptsMarketing.getValue();
+        }
+
+        public Input<Boolean> getAcceptsMarketingInput() {
             return acceptsMarketing;
         }
 
         public CustomerCreateInput setAcceptsMarketing(Boolean acceptsMarketing) {
+            this.acceptsMarketing = Input.value(acceptsMarketing);
+            return this;
+        }
+
+        public CustomerCreateInput setAcceptsMarketingInput(Input<Boolean> acceptsMarketing) {
+            if (acceptsMarketing == null) {
+                throw new IllegalArgumentException("Input can not be null");
+            }
             this.acceptsMarketing = acceptsMarketing;
             return this;
         }
@@ -13999,32 +14567,48 @@ public class Storefront {
             _queryBuilder.append("password:");
             Query.appendQuotedString(_queryBuilder, password.toString());
 
-            if (firstName != null) {
+            if (this.firstName.isDefined()) {
                 _queryBuilder.append(separator);
                 separator = ",";
                 _queryBuilder.append("firstName:");
-                Query.appendQuotedString(_queryBuilder, firstName.toString());
+                if (firstName.getValue() != null) {
+                    Query.appendQuotedString(_queryBuilder, firstName.getValue().toString());
+                } else {
+                    _queryBuilder.append("null");
+                }
             }
 
-            if (lastName != null) {
+            if (this.lastName.isDefined()) {
                 _queryBuilder.append(separator);
                 separator = ",";
                 _queryBuilder.append("lastName:");
-                Query.appendQuotedString(_queryBuilder, lastName.toString());
+                if (lastName.getValue() != null) {
+                    Query.appendQuotedString(_queryBuilder, lastName.getValue().toString());
+                } else {
+                    _queryBuilder.append("null");
+                }
             }
 
-            if (phone != null) {
+            if (this.phone.isDefined()) {
                 _queryBuilder.append(separator);
                 separator = ",";
                 _queryBuilder.append("phone:");
-                Query.appendQuotedString(_queryBuilder, phone.toString());
+                if (phone.getValue() != null) {
+                    Query.appendQuotedString(_queryBuilder, phone.getValue().toString());
+                } else {
+                    _queryBuilder.append("null");
+                }
             }
 
-            if (acceptsMarketing != null) {
+            if (this.acceptsMarketing.isDefined()) {
                 _queryBuilder.append(separator);
                 separator = ",";
                 _queryBuilder.append("acceptsMarketing:");
-                _queryBuilder.append(acceptsMarketing);
+                if (acceptsMarketing.getValue() != null) {
+                    _queryBuilder.append(acceptsMarketing.getValue());
+                } else {
+                    _queryBuilder.append("null");
+                }
             }
 
             _queryBuilder.append('}');
@@ -14116,6 +14700,7 @@ public class Storefront {
         /**
         * The created customer object.
         */
+
         public Customer getCustomer() {
             return (Customer) get("customer");
         }
@@ -14128,6 +14713,7 @@ public class Storefront {
         /**
         * List of errors that occurred executing the mutation.
         */
+
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -14209,6 +14795,7 @@ public class Storefront {
         /**
         * List of errors that occurred executing the mutation.
         */
+
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -14359,6 +14946,7 @@ public class Storefront {
         /**
         * The customer object which was reset.
         */
+
         public Customer getCustomer() {
             return (Customer) get("customer");
         }
@@ -14371,6 +14959,7 @@ public class Storefront {
         /**
         * List of errors that occurred executing the mutation.
         */
+
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -14392,68 +14981,140 @@ public class Storefront {
     }
 
     public static class CustomerUpdateInput implements Serializable {
-        private String firstName;
+        private Input<String> firstName = Input.undefined();
 
-        private String lastName;
+        private Input<String> lastName = Input.undefined();
 
-        private String email;
+        private Input<String> email = Input.undefined();
 
-        private String phone;
+        private Input<String> phone = Input.undefined();
 
-        private String password;
+        private Input<String> password = Input.undefined();
 
-        private Boolean acceptsMarketing;
+        private Input<Boolean> acceptsMarketing = Input.undefined();
 
         public String getFirstName() {
+            return firstName.getValue();
+        }
+
+        public Input<String> getFirstNameInput() {
             return firstName;
         }
 
         public CustomerUpdateInput setFirstName(String firstName) {
+            this.firstName = Input.value(firstName);
+            return this;
+        }
+
+        public CustomerUpdateInput setFirstNameInput(Input<String> firstName) {
+            if (firstName == null) {
+                throw new IllegalArgumentException("Input can not be null");
+            }
             this.firstName = firstName;
             return this;
         }
 
         public String getLastName() {
+            return lastName.getValue();
+        }
+
+        public Input<String> getLastNameInput() {
             return lastName;
         }
 
         public CustomerUpdateInput setLastName(String lastName) {
+            this.lastName = Input.value(lastName);
+            return this;
+        }
+
+        public CustomerUpdateInput setLastNameInput(Input<String> lastName) {
+            if (lastName == null) {
+                throw new IllegalArgumentException("Input can not be null");
+            }
             this.lastName = lastName;
             return this;
         }
 
         public String getEmail() {
+            return email.getValue();
+        }
+
+        public Input<String> getEmailInput() {
             return email;
         }
 
         public CustomerUpdateInput setEmail(String email) {
+            this.email = Input.value(email);
+            return this;
+        }
+
+        public CustomerUpdateInput setEmailInput(Input<String> email) {
+            if (email == null) {
+                throw new IllegalArgumentException("Input can not be null");
+            }
             this.email = email;
             return this;
         }
 
         public String getPhone() {
+            return phone.getValue();
+        }
+
+        public Input<String> getPhoneInput() {
             return phone;
         }
 
         public CustomerUpdateInput setPhone(String phone) {
+            this.phone = Input.value(phone);
+            return this;
+        }
+
+        public CustomerUpdateInput setPhoneInput(Input<String> phone) {
+            if (phone == null) {
+                throw new IllegalArgumentException("Input can not be null");
+            }
             this.phone = phone;
             return this;
         }
 
         public String getPassword() {
+            return password.getValue();
+        }
+
+        public Input<String> getPasswordInput() {
             return password;
         }
 
         public CustomerUpdateInput setPassword(String password) {
+            this.password = Input.value(password);
+            return this;
+        }
+
+        public CustomerUpdateInput setPasswordInput(Input<String> password) {
+            if (password == null) {
+                throw new IllegalArgumentException("Input can not be null");
+            }
             this.password = password;
             return this;
         }
 
         public Boolean getAcceptsMarketing() {
+            return acceptsMarketing.getValue();
+        }
+
+        public Input<Boolean> getAcceptsMarketingInput() {
             return acceptsMarketing;
         }
 
         public CustomerUpdateInput setAcceptsMarketing(Boolean acceptsMarketing) {
+            this.acceptsMarketing = Input.value(acceptsMarketing);
+            return this;
+        }
+
+        public CustomerUpdateInput setAcceptsMarketingInput(Input<Boolean> acceptsMarketing) {
+            if (acceptsMarketing == null) {
+                throw new IllegalArgumentException("Input can not be null");
+            }
             this.acceptsMarketing = acceptsMarketing;
             return this;
         }
@@ -14462,46 +15123,70 @@ public class Storefront {
             String separator = "";
             _queryBuilder.append('{');
 
-            if (firstName != null) {
+            if (this.firstName.isDefined()) {
                 _queryBuilder.append(separator);
                 separator = ",";
                 _queryBuilder.append("firstName:");
-                Query.appendQuotedString(_queryBuilder, firstName.toString());
+                if (firstName.getValue() != null) {
+                    Query.appendQuotedString(_queryBuilder, firstName.getValue().toString());
+                } else {
+                    _queryBuilder.append("null");
+                }
             }
 
-            if (lastName != null) {
+            if (this.lastName.isDefined()) {
                 _queryBuilder.append(separator);
                 separator = ",";
                 _queryBuilder.append("lastName:");
-                Query.appendQuotedString(_queryBuilder, lastName.toString());
+                if (lastName.getValue() != null) {
+                    Query.appendQuotedString(_queryBuilder, lastName.getValue().toString());
+                } else {
+                    _queryBuilder.append("null");
+                }
             }
 
-            if (email != null) {
+            if (this.email.isDefined()) {
                 _queryBuilder.append(separator);
                 separator = ",";
                 _queryBuilder.append("email:");
-                Query.appendQuotedString(_queryBuilder, email.toString());
+                if (email.getValue() != null) {
+                    Query.appendQuotedString(_queryBuilder, email.getValue().toString());
+                } else {
+                    _queryBuilder.append("null");
+                }
             }
 
-            if (phone != null) {
+            if (this.phone.isDefined()) {
                 _queryBuilder.append(separator);
                 separator = ",";
                 _queryBuilder.append("phone:");
-                Query.appendQuotedString(_queryBuilder, phone.toString());
+                if (phone.getValue() != null) {
+                    Query.appendQuotedString(_queryBuilder, phone.getValue().toString());
+                } else {
+                    _queryBuilder.append("null");
+                }
             }
 
-            if (password != null) {
+            if (this.password.isDefined()) {
                 _queryBuilder.append(separator);
                 separator = ",";
                 _queryBuilder.append("password:");
-                Query.appendQuotedString(_queryBuilder, password.toString());
+                if (password.getValue() != null) {
+                    Query.appendQuotedString(_queryBuilder, password.getValue().toString());
+                } else {
+                    _queryBuilder.append("null");
+                }
             }
 
-            if (acceptsMarketing != null) {
+            if (this.acceptsMarketing.isDefined()) {
                 _queryBuilder.append(separator);
                 separator = ",";
                 _queryBuilder.append("acceptsMarketing:");
-                _queryBuilder.append(acceptsMarketing);
+                if (acceptsMarketing.getValue() != null) {
+                    _queryBuilder.append(acceptsMarketing.getValue());
+                } else {
+                    _queryBuilder.append("null");
+                }
             }
 
             _queryBuilder.append('}');
@@ -14593,6 +15278,7 @@ public class Storefront {
         /**
         * The updated customer object.
         */
+
         public Customer getCustomer() {
             return (Customer) get("customer");
         }
@@ -14605,6 +15291,7 @@ public class Storefront {
         /**
         * List of errors that occurred executing the mutation.
         */
+
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -14778,6 +15465,7 @@ public class Storefront {
         /**
         * The host name of the domain (eg: `example.com`).
         */
+
         public String getHost() {
             return (String) get("host");
         }
@@ -14790,6 +15478,7 @@ public class Storefront {
         /**
         * Whether SSL is enabled or not.
         */
+
         public Boolean getSslEnabled() {
             return (Boolean) get("sslEnabled");
         }
@@ -14802,6 +15491,7 @@ public class Storefront {
         /**
         * The URL of the domain (eg: `https://example.com`).
         */
+
         public String getUrl() {
             return (String) get("url");
         }
@@ -14922,6 +15612,7 @@ public class Storefront {
         /**
         * A word or phrase to share the nature or contents of an image.
         */
+
         public String getAltText() {
             return (String) get("altText");
         }
@@ -14934,6 +15625,7 @@ public class Storefront {
         /**
         * A unique identifier for the image.
         */
+
         public ID getId() {
             return (ID) get("id");
         }
@@ -14946,6 +15638,7 @@ public class Storefront {
         /**
         * The location of the image as a URL.
         */
+
         public String getSrc() {
             return (String) get("src");
         }
@@ -15048,6 +15741,7 @@ public class Storefront {
         /**
         * A list of edges.
         */
+
         public List<ImageEdge> getEdges() {
             return (List<ImageEdge>) get("edges");
         }
@@ -15060,6 +15754,7 @@ public class Storefront {
         /**
         * Information to aid in pagination.
         */
+
         public PageInfo getPageInfo() {
             return (PageInfo) get("pageInfo");
         }
@@ -15151,6 +15846,7 @@ public class Storefront {
         /**
         * A cursor for use in pagination.
         */
+
         public String getCursor() {
             return (String) get("cursor");
         }
@@ -15163,6 +15859,7 @@ public class Storefront {
         /**
         * The item at the end of ImageEdge.
         */
+
         public Image getNode() {
             return (Image) get("node");
         }
@@ -15613,6 +16310,7 @@ public class Storefront {
         /**
         * Address line 1 (Street address/PO Box/Company name).
         */
+
         public String getAddress1() {
             return (String) get("address1");
         }
@@ -15625,6 +16323,7 @@ public class Storefront {
         /**
         * Address line 2 (Apartment/Suite/Unit/Building).
         */
+
         public String getAddress2() {
             return (String) get("address2");
         }
@@ -15637,6 +16336,7 @@ public class Storefront {
         /**
         * City/District/Suburb/Town/Village.
         */
+
         public String getCity() {
             return (String) get("city");
         }
@@ -15649,6 +16349,7 @@ public class Storefront {
         /**
         * Company/Organization/Government.
         */
+
         public String getCompany() {
             return (String) get("company");
         }
@@ -15661,6 +16362,7 @@ public class Storefront {
         /**
         * State/County/Province/Region.
         */
+
         public String getCountry() {
             return (String) get("country");
         }
@@ -15674,6 +16376,7 @@ public class Storefront {
         * Two-letter country code.
         * For example, US.
         */
+
         public String getCountryCode() {
             return (String) get("countryCode");
         }
@@ -15686,6 +16389,7 @@ public class Storefront {
         /**
         * First name of the customer.
         */
+
         public String getFirstName() {
             return (String) get("firstName");
         }
@@ -15707,6 +16411,7 @@ public class Storefront {
         /**
         * Comma-separated list of city, province, and country.
         */
+
         public String getFormattedArea() {
             return (String) get("formattedArea");
         }
@@ -15719,6 +16424,7 @@ public class Storefront {
         /**
         * Globally unique identifier.
         */
+
         public ID getId() {
             return (ID) get("id");
         }
@@ -15726,6 +16432,7 @@ public class Storefront {
         /**
         * Last name of the customer.
         */
+
         public String getLastName() {
             return (String) get("lastName");
         }
@@ -15738,6 +16445,7 @@ public class Storefront {
         /**
         * Latitude coordinate of the customer address.
         */
+
         public Double getLatitude() {
             return (Double) get("latitude");
         }
@@ -15750,6 +16458,7 @@ public class Storefront {
         /**
         * Longitude coordinate of the customer address.
         */
+
         public Double getLongitude() {
             return (Double) get("longitude");
         }
@@ -15762,6 +16471,7 @@ public class Storefront {
         /**
         * Name of the customer, based on first name + last name.
         */
+
         public String getName() {
             return (String) get("name");
         }
@@ -15775,6 +16485,7 @@ public class Storefront {
         * Unique phone number for the customer.
         * Formatted using E.164 standard. For example, _+16135551111_.
         */
+
         public String getPhone() {
             return (String) get("phone");
         }
@@ -15787,6 +16498,7 @@ public class Storefront {
         /**
         * State/County/Province/Region.
         */
+
         public String getProvince() {
             return (String) get("province");
         }
@@ -15800,6 +16512,7 @@ public class Storefront {
         * Two-letter province or state code.
         * For example, ON.
         */
+
         public String getProvinceCode() {
             return (String) get("provinceCode");
         }
@@ -15812,6 +16525,7 @@ public class Storefront {
         /**
         * Zip/Postal Code.
         */
+
         public String getZip() {
             return (String) get("zip");
         }
@@ -15944,6 +16658,7 @@ public class Storefront {
         /**
         * A list of edges.
         */
+
         public List<MailingAddressEdge> getEdges() {
             return (List<MailingAddressEdge>) get("edges");
         }
@@ -15956,6 +16671,7 @@ public class Storefront {
         /**
         * Information to aid in pagination.
         */
+
         public PageInfo getPageInfo() {
             return (PageInfo) get("pageInfo");
         }
@@ -16047,6 +16763,7 @@ public class Storefront {
         /**
         * A cursor for use in pagination.
         */
+
         public String getCursor() {
             return (String) get("cursor");
         }
@@ -16059,6 +16776,7 @@ public class Storefront {
         /**
         * The item at the end of MailingAddressEdge.
         */
+
         public MailingAddress getNode() {
             return (MailingAddress) get("node");
         }
@@ -16080,112 +16798,232 @@ public class Storefront {
     }
 
     public static class MailingAddressInput implements Serializable {
-        private String address1;
+        private Input<String> address1 = Input.undefined();
 
-        private String address2;
+        private Input<String> address2 = Input.undefined();
 
-        private String city;
+        private Input<String> city = Input.undefined();
 
-        private String company;
+        private Input<String> company = Input.undefined();
 
-        private String country;
+        private Input<String> country = Input.undefined();
 
-        private String firstName;
+        private Input<String> firstName = Input.undefined();
 
-        private String lastName;
+        private Input<String> lastName = Input.undefined();
 
-        private String phone;
+        private Input<String> phone = Input.undefined();
 
-        private String province;
+        private Input<String> province = Input.undefined();
 
-        private String zip;
+        private Input<String> zip = Input.undefined();
 
         public String getAddress1() {
+            return address1.getValue();
+        }
+
+        public Input<String> getAddress1Input() {
             return address1;
         }
 
         public MailingAddressInput setAddress1(String address1) {
+            this.address1 = Input.value(address1);
+            return this;
+        }
+
+        public MailingAddressInput setAddress1Input(Input<String> address1) {
+            if (address1 == null) {
+                throw new IllegalArgumentException("Input can not be null");
+            }
             this.address1 = address1;
             return this;
         }
 
         public String getAddress2() {
+            return address2.getValue();
+        }
+
+        public Input<String> getAddress2Input() {
             return address2;
         }
 
         public MailingAddressInput setAddress2(String address2) {
+            this.address2 = Input.value(address2);
+            return this;
+        }
+
+        public MailingAddressInput setAddress2Input(Input<String> address2) {
+            if (address2 == null) {
+                throw new IllegalArgumentException("Input can not be null");
+            }
             this.address2 = address2;
             return this;
         }
 
         public String getCity() {
+            return city.getValue();
+        }
+
+        public Input<String> getCityInput() {
             return city;
         }
 
         public MailingAddressInput setCity(String city) {
+            this.city = Input.value(city);
+            return this;
+        }
+
+        public MailingAddressInput setCityInput(Input<String> city) {
+            if (city == null) {
+                throw new IllegalArgumentException("Input can not be null");
+            }
             this.city = city;
             return this;
         }
 
         public String getCompany() {
+            return company.getValue();
+        }
+
+        public Input<String> getCompanyInput() {
             return company;
         }
 
         public MailingAddressInput setCompany(String company) {
+            this.company = Input.value(company);
+            return this;
+        }
+
+        public MailingAddressInput setCompanyInput(Input<String> company) {
+            if (company == null) {
+                throw new IllegalArgumentException("Input can not be null");
+            }
             this.company = company;
             return this;
         }
 
         public String getCountry() {
+            return country.getValue();
+        }
+
+        public Input<String> getCountryInput() {
             return country;
         }
 
         public MailingAddressInput setCountry(String country) {
+            this.country = Input.value(country);
+            return this;
+        }
+
+        public MailingAddressInput setCountryInput(Input<String> country) {
+            if (country == null) {
+                throw new IllegalArgumentException("Input can not be null");
+            }
             this.country = country;
             return this;
         }
 
         public String getFirstName() {
+            return firstName.getValue();
+        }
+
+        public Input<String> getFirstNameInput() {
             return firstName;
         }
 
         public MailingAddressInput setFirstName(String firstName) {
+            this.firstName = Input.value(firstName);
+            return this;
+        }
+
+        public MailingAddressInput setFirstNameInput(Input<String> firstName) {
+            if (firstName == null) {
+                throw new IllegalArgumentException("Input can not be null");
+            }
             this.firstName = firstName;
             return this;
         }
 
         public String getLastName() {
+            return lastName.getValue();
+        }
+
+        public Input<String> getLastNameInput() {
             return lastName;
         }
 
         public MailingAddressInput setLastName(String lastName) {
+            this.lastName = Input.value(lastName);
+            return this;
+        }
+
+        public MailingAddressInput setLastNameInput(Input<String> lastName) {
+            if (lastName == null) {
+                throw new IllegalArgumentException("Input can not be null");
+            }
             this.lastName = lastName;
             return this;
         }
 
         public String getPhone() {
+            return phone.getValue();
+        }
+
+        public Input<String> getPhoneInput() {
             return phone;
         }
 
         public MailingAddressInput setPhone(String phone) {
+            this.phone = Input.value(phone);
+            return this;
+        }
+
+        public MailingAddressInput setPhoneInput(Input<String> phone) {
+            if (phone == null) {
+                throw new IllegalArgumentException("Input can not be null");
+            }
             this.phone = phone;
             return this;
         }
 
         public String getProvince() {
+            return province.getValue();
+        }
+
+        public Input<String> getProvinceInput() {
             return province;
         }
 
         public MailingAddressInput setProvince(String province) {
+            this.province = Input.value(province);
+            return this;
+        }
+
+        public MailingAddressInput setProvinceInput(Input<String> province) {
+            if (province == null) {
+                throw new IllegalArgumentException("Input can not be null");
+            }
             this.province = province;
             return this;
         }
 
         public String getZip() {
+            return zip.getValue();
+        }
+
+        public Input<String> getZipInput() {
             return zip;
         }
 
         public MailingAddressInput setZip(String zip) {
+            this.zip = Input.value(zip);
+            return this;
+        }
+
+        public MailingAddressInput setZipInput(Input<String> zip) {
+            if (zip == null) {
+                throw new IllegalArgumentException("Input can not be null");
+            }
             this.zip = zip;
             return this;
         }
@@ -16194,74 +17032,114 @@ public class Storefront {
             String separator = "";
             _queryBuilder.append('{');
 
-            if (address1 != null) {
+            if (this.address1.isDefined()) {
                 _queryBuilder.append(separator);
                 separator = ",";
                 _queryBuilder.append("address1:");
-                Query.appendQuotedString(_queryBuilder, address1.toString());
+                if (address1.getValue() != null) {
+                    Query.appendQuotedString(_queryBuilder, address1.getValue().toString());
+                } else {
+                    _queryBuilder.append("null");
+                }
             }
 
-            if (address2 != null) {
+            if (this.address2.isDefined()) {
                 _queryBuilder.append(separator);
                 separator = ",";
                 _queryBuilder.append("address2:");
-                Query.appendQuotedString(_queryBuilder, address2.toString());
+                if (address2.getValue() != null) {
+                    Query.appendQuotedString(_queryBuilder, address2.getValue().toString());
+                } else {
+                    _queryBuilder.append("null");
+                }
             }
 
-            if (city != null) {
+            if (this.city.isDefined()) {
                 _queryBuilder.append(separator);
                 separator = ",";
                 _queryBuilder.append("city:");
-                Query.appendQuotedString(_queryBuilder, city.toString());
+                if (city.getValue() != null) {
+                    Query.appendQuotedString(_queryBuilder, city.getValue().toString());
+                } else {
+                    _queryBuilder.append("null");
+                }
             }
 
-            if (company != null) {
+            if (this.company.isDefined()) {
                 _queryBuilder.append(separator);
                 separator = ",";
                 _queryBuilder.append("company:");
-                Query.appendQuotedString(_queryBuilder, company.toString());
+                if (company.getValue() != null) {
+                    Query.appendQuotedString(_queryBuilder, company.getValue().toString());
+                } else {
+                    _queryBuilder.append("null");
+                }
             }
 
-            if (country != null) {
+            if (this.country.isDefined()) {
                 _queryBuilder.append(separator);
                 separator = ",";
                 _queryBuilder.append("country:");
-                Query.appendQuotedString(_queryBuilder, country.toString());
+                if (country.getValue() != null) {
+                    Query.appendQuotedString(_queryBuilder, country.getValue().toString());
+                } else {
+                    _queryBuilder.append("null");
+                }
             }
 
-            if (firstName != null) {
+            if (this.firstName.isDefined()) {
                 _queryBuilder.append(separator);
                 separator = ",";
                 _queryBuilder.append("firstName:");
-                Query.appendQuotedString(_queryBuilder, firstName.toString());
+                if (firstName.getValue() != null) {
+                    Query.appendQuotedString(_queryBuilder, firstName.getValue().toString());
+                } else {
+                    _queryBuilder.append("null");
+                }
             }
 
-            if (lastName != null) {
+            if (this.lastName.isDefined()) {
                 _queryBuilder.append(separator);
                 separator = ",";
                 _queryBuilder.append("lastName:");
-                Query.appendQuotedString(_queryBuilder, lastName.toString());
+                if (lastName.getValue() != null) {
+                    Query.appendQuotedString(_queryBuilder, lastName.getValue().toString());
+                } else {
+                    _queryBuilder.append("null");
+                }
             }
 
-            if (phone != null) {
+            if (this.phone.isDefined()) {
                 _queryBuilder.append(separator);
                 separator = ",";
                 _queryBuilder.append("phone:");
-                Query.appendQuotedString(_queryBuilder, phone.toString());
+                if (phone.getValue() != null) {
+                    Query.appendQuotedString(_queryBuilder, phone.getValue().toString());
+                } else {
+                    _queryBuilder.append("null");
+                }
             }
 
-            if (province != null) {
+            if (this.province.isDefined()) {
                 _queryBuilder.append(separator);
                 separator = ",";
                 _queryBuilder.append("province:");
-                Query.appendQuotedString(_queryBuilder, province.toString());
+                if (province.getValue() != null) {
+                    Query.appendQuotedString(_queryBuilder, province.getValue().toString());
+                } else {
+                    _queryBuilder.append("null");
+                }
             }
 
-            if (zip != null) {
+            if (this.zip.isDefined()) {
                 _queryBuilder.append(separator);
                 separator = ",";
                 _queryBuilder.append("zip:");
-                Query.appendQuotedString(_queryBuilder, zip.toString());
+                if (zip.getValue() != null) {
+                    Query.appendQuotedString(_queryBuilder, zip.getValue().toString());
+                } else {
+                    _queryBuilder.append("null");
+                }
             }
 
             _queryBuilder.append('}');
@@ -17150,6 +18028,7 @@ public class Storefront {
         /**
         * Updates the attributes of a checkout.
         */
+
         public CheckoutAttributesUpdatePayload getCheckoutAttributesUpdate() {
             return (CheckoutAttributesUpdatePayload) get("checkoutAttributesUpdate");
         }
@@ -17171,6 +18050,7 @@ public class Storefront {
         /**
         * Completes a checkout using a credit card token from Shopify's Vault.
         */
+
         public CheckoutCompleteWithCreditCardPayload getCheckoutCompleteWithCreditCard() {
             return (CheckoutCompleteWithCreditCardPayload) get("checkoutCompleteWithCreditCard");
         }
@@ -17183,6 +18063,7 @@ public class Storefront {
         /**
         * Completes a checkout with a tokenized payment.
         */
+
         public CheckoutCompleteWithTokenizedPaymentPayload getCheckoutCompleteWithTokenizedPayment() {
             return (CheckoutCompleteWithTokenizedPaymentPayload) get("checkoutCompleteWithTokenizedPayment");
         }
@@ -17195,6 +18076,7 @@ public class Storefront {
         /**
         * Creates a new checkout.
         */
+
         public CheckoutCreatePayload getCheckoutCreate() {
             return (CheckoutCreatePayload) get("checkoutCreate");
         }
@@ -17207,6 +18089,7 @@ public class Storefront {
         /**
         * Associates a customer to the checkout.
         */
+
         public CheckoutCustomerAssociatePayload getCheckoutCustomerAssociate() {
             return (CheckoutCustomerAssociatePayload) get("checkoutCustomerAssociate");
         }
@@ -17219,6 +18102,7 @@ public class Storefront {
         /**
         * Disassociates the current checkout customer from the checkout.
         */
+
         public CheckoutCustomerDisassociatePayload getCheckoutCustomerDisassociate() {
             return (CheckoutCustomerDisassociatePayload) get("checkoutCustomerDisassociate");
         }
@@ -17231,6 +18115,7 @@ public class Storefront {
         /**
         * Updates the email on an existing checkout.
         */
+
         public CheckoutEmailUpdatePayload getCheckoutEmailUpdate() {
             return (CheckoutEmailUpdatePayload) get("checkoutEmailUpdate");
         }
@@ -17243,6 +18128,7 @@ public class Storefront {
         /**
         * Applies a gift card to an existing checkout using a gift card code.
         */
+
         public CheckoutGiftCardApplyPayload getCheckoutGiftCardApply() {
             return (CheckoutGiftCardApplyPayload) get("checkoutGiftCardApply");
         }
@@ -17255,6 +18141,7 @@ public class Storefront {
         /**
         * Removes an applied gift card from the checkout.
         */
+
         public CheckoutGiftCardRemovePayload getCheckoutGiftCardRemove() {
             return (CheckoutGiftCardRemovePayload) get("checkoutGiftCardRemove");
         }
@@ -17267,6 +18154,7 @@ public class Storefront {
         /**
         * Adds a list of line items to a checkout.
         */
+
         public CheckoutLineItemsAddPayload getCheckoutLineItemsAdd() {
             return (CheckoutLineItemsAddPayload) get("checkoutLineItemsAdd");
         }
@@ -17279,6 +18167,7 @@ public class Storefront {
         /**
         * Removes line items from an existing checkout
         */
+
         public CheckoutLineItemsRemovePayload getCheckoutLineItemsRemove() {
             return (CheckoutLineItemsRemovePayload) get("checkoutLineItemsRemove");
         }
@@ -17291,6 +18180,7 @@ public class Storefront {
         /**
         * Updates line items on a checkout.
         */
+
         public CheckoutLineItemsUpdatePayload getCheckoutLineItemsUpdate() {
             return (CheckoutLineItemsUpdatePayload) get("checkoutLineItemsUpdate");
         }
@@ -17303,6 +18193,7 @@ public class Storefront {
         /**
         * Updates the shipping address of an existing checkout.
         */
+
         public CheckoutShippingAddressUpdatePayload getCheckoutShippingAddressUpdate() {
             return (CheckoutShippingAddressUpdatePayload) get("checkoutShippingAddressUpdate");
         }
@@ -17315,6 +18206,7 @@ public class Storefront {
         /**
         * Updates the shipping lines on an existing checkout.
         */
+
         public CheckoutShippingLineUpdatePayload getCheckoutShippingLineUpdate() {
             return (CheckoutShippingLineUpdatePayload) get("checkoutShippingLineUpdate");
         }
@@ -17328,6 +18220,7 @@ public class Storefront {
         * Creates a customer access token.
         * The customer access token is required to modify the customer object in any way.
         */
+
         public CustomerAccessTokenCreatePayload getCustomerAccessTokenCreate() {
             return (CustomerAccessTokenCreatePayload) get("customerAccessTokenCreate");
         }
@@ -17340,6 +18233,7 @@ public class Storefront {
         /**
         * Permanently destroys a customer access token.
         */
+
         public CustomerAccessTokenDeletePayload getCustomerAccessTokenDelete() {
             return (CustomerAccessTokenDeletePayload) get("customerAccessTokenDelete");
         }
@@ -17352,6 +18246,7 @@ public class Storefront {
         /**
         * Renews a customer access token.
         */
+
         public CustomerAccessTokenRenewPayload getCustomerAccessTokenRenew() {
             return (CustomerAccessTokenRenewPayload) get("customerAccessTokenRenew");
         }
@@ -17364,6 +18259,7 @@ public class Storefront {
         /**
         * Activates a customer.
         */
+
         public CustomerActivatePayload getCustomerActivate() {
             return (CustomerActivatePayload) get("customerActivate");
         }
@@ -17376,6 +18272,7 @@ public class Storefront {
         /**
         * Creates a new address for a customer.
         */
+
         public CustomerAddressCreatePayload getCustomerAddressCreate() {
             return (CustomerAddressCreatePayload) get("customerAddressCreate");
         }
@@ -17388,6 +18285,7 @@ public class Storefront {
         /**
         * Permanently deletes the address of an existing customer.
         */
+
         public CustomerAddressDeletePayload getCustomerAddressDelete() {
             return (CustomerAddressDeletePayload) get("customerAddressDelete");
         }
@@ -17400,6 +18298,7 @@ public class Storefront {
         /**
         * Updates the address of an existing customer.
         */
+
         public CustomerAddressUpdatePayload getCustomerAddressUpdate() {
             return (CustomerAddressUpdatePayload) get("customerAddressUpdate");
         }
@@ -17412,6 +18311,7 @@ public class Storefront {
         /**
         * Creates a new customer.
         */
+
         public CustomerCreatePayload getCustomerCreate() {
             return (CustomerCreatePayload) get("customerCreate");
         }
@@ -17424,6 +18324,7 @@ public class Storefront {
         /**
         * Sends a reset password email to the customer, as the first step in the reset password process.
         */
+
         public CustomerRecoverPayload getCustomerRecover() {
             return (CustomerRecoverPayload) get("customerRecover");
         }
@@ -17436,6 +18337,7 @@ public class Storefront {
         /**
         * Resets a customer’s password with a token received from `CustomerRecover`.
         */
+
         public CustomerResetPayload getCustomerReset() {
             return (CustomerResetPayload) get("customerReset");
         }
@@ -17448,6 +18350,7 @@ public class Storefront {
         /**
         * Updates an existing customer.
         */
+
         public CustomerUpdatePayload getCustomerUpdate() {
             return (CustomerUpdatePayload) get("customerUpdate");
         }
@@ -17745,6 +18648,7 @@ public class Storefront {
         /**
         * Globally unique identifier.
         */
+
         public ID getId() {
             return (ID) get("id");
         }
@@ -17817,12 +18721,36 @@ public class Storefront {
 
         public class LineItemsArguments extends Arguments {
             LineItemsArguments(StringBuilder _queryBuilder) {
-                super(_queryBuilder, false);
+                super(_queryBuilder, true);
+            }
+
+            public LineItemsArguments first(Integer value) {
+                if (value != null) {
+                    startArgument("first");
+                    _queryBuilder.append(value);
+                }
+                return this;
             }
 
             public LineItemsArguments after(String value) {
                 if (value != null) {
                     startArgument("after");
+                    Query.appendQuotedString(_queryBuilder, value.toString());
+                }
+                return this;
+            }
+
+            public LineItemsArguments last(Integer value) {
+                if (value != null) {
+                    startArgument("last");
+                    _queryBuilder.append(value);
+                }
+                return this;
+            }
+
+            public LineItemsArguments before(String value) {
+                if (value != null) {
+                    startArgument("before");
                     Query.appendQuotedString(_queryBuilder, value.toString());
                 }
                 return this;
@@ -17844,22 +18772,19 @@ public class Storefront {
         /**
         * List of the order’s line items.
         */
-        public OrderQuery lineItems(int first, OrderLineItemConnectionQueryDefinition queryDef) {
-            return lineItems(first, args -> {}, queryDef);
+        public OrderQuery lineItems(OrderLineItemConnectionQueryDefinition queryDef) {
+            return lineItems(args -> {}, queryDef);
         }
 
         /**
         * List of the order’s line items.
         */
-        public OrderQuery lineItems(int first, LineItemsArgumentsDefinition argsDef, OrderLineItemConnectionQueryDefinition queryDef) {
+        public OrderQuery lineItems(LineItemsArgumentsDefinition argsDef, OrderLineItemConnectionQueryDefinition queryDef) {
             startField("lineItems");
 
-            _queryBuilder.append("(first:");
-            _queryBuilder.append(first);
-
-            argsDef.define(new LineItemsArguments(_queryBuilder));
-
-            _queryBuilder.append(')');
+            LineItemsArguments args = new LineItemsArguments(_queryBuilder);
+            argsDef.define(args);
+            LineItemsArguments.end(args);
 
             _queryBuilder.append('{');
             queryDef.define(new OrderLineItemConnectionQuery(_queryBuilder));
@@ -18119,6 +19044,7 @@ public class Storefront {
         /**
         * The code of the currency used for the payment.
         */
+
         public CurrencyCode getCurrencyCode() {
             return (CurrencyCode) get("currencyCode");
         }
@@ -18131,6 +19057,7 @@ public class Storefront {
         /**
         * The locale code in which this specific order happened.
         */
+
         public String getCustomerLocale() {
             return (String) get("customerLocale");
         }
@@ -18143,6 +19070,7 @@ public class Storefront {
         /**
         * The order’s URL for a customer.
         */
+
         public String getCustomerUrl() {
             return (String) get("customerUrl");
         }
@@ -18155,6 +19083,7 @@ public class Storefront {
         /**
         * The customer's email address.
         */
+
         public String getEmail() {
             return (String) get("email");
         }
@@ -18167,6 +19096,7 @@ public class Storefront {
         /**
         * Globally unique identifier.
         */
+
         public ID getId() {
             return (ID) get("id");
         }
@@ -18174,6 +19104,7 @@ public class Storefront {
         /**
         * List of the order’s line items.
         */
+
         public OrderLineItemConnection getLineItems() {
             return (OrderLineItemConnection) get("lineItems");
         }
@@ -18186,6 +19117,7 @@ public class Storefront {
         /**
         * A unique numeric identifier for the order for use by shop owner and customer.
         */
+
         public Integer getOrderNumber() {
             return (Integer) get("orderNumber");
         }
@@ -18198,6 +19130,7 @@ public class Storefront {
         /**
         * The customer's phone number.
         */
+
         public String getPhone() {
             return (String) get("phone");
         }
@@ -18212,6 +19145,7 @@ public class Storefront {
         * This value can be set to dates in the past when importing from other systems.
         * If no value is provided, it will be auto-generated based on current date and time.
         */
+
         public DateTime getProcessedAt() {
             return (DateTime) get("processedAt");
         }
@@ -18224,6 +19158,7 @@ public class Storefront {
         /**
         * The address to where the order will be shipped.
         */
+
         public MailingAddress getShippingAddress() {
             return (MailingAddress) get("shippingAddress");
         }
@@ -18236,6 +19171,7 @@ public class Storefront {
         /**
         * Price of the order before shipping and taxes.
         */
+
         public BigDecimal getSubtotalPrice() {
             return (BigDecimal) get("subtotalPrice");
         }
@@ -18249,6 +19185,7 @@ public class Storefront {
         * The sum of all the prices of all the items in the order, taxes and discounts included (must be
         * positive).
         */
+
         public BigDecimal getTotalPrice() {
             return (BigDecimal) get("totalPrice");
         }
@@ -18261,6 +19198,7 @@ public class Storefront {
         /**
         * The total amount that has been refunded.
         */
+
         public BigDecimal getTotalRefunded() {
             return (BigDecimal) get("totalRefunded");
         }
@@ -18273,6 +19211,7 @@ public class Storefront {
         /**
         * The total cost of shipping.
         */
+
         public BigDecimal getTotalShippingPrice() {
             return (BigDecimal) get("totalShippingPrice");
         }
@@ -18285,6 +19224,7 @@ public class Storefront {
         /**
         * The total cost of taxes.
         */
+
         public BigDecimal getTotalTax() {
             return (BigDecimal) get("totalTax");
         }
@@ -18411,6 +19351,7 @@ public class Storefront {
         /**
         * A list of edges.
         */
+
         public List<OrderEdge> getEdges() {
             return (List<OrderEdge>) get("edges");
         }
@@ -18423,6 +19364,7 @@ public class Storefront {
         /**
         * Information to aid in pagination.
         */
+
         public PageInfo getPageInfo() {
             return (PageInfo) get("pageInfo");
         }
@@ -18514,6 +19456,7 @@ public class Storefront {
         /**
         * A cursor for use in pagination.
         */
+
         public String getCursor() {
             return (String) get("cursor");
         }
@@ -18526,6 +19469,7 @@ public class Storefront {
         /**
         * The item at the end of OrderEdge.
         */
+
         public Order getNode() {
             return (Order) get("node");
         }
@@ -18667,6 +19611,7 @@ public class Storefront {
         /**
         * List of custom attributes associated to the line item.
         */
+
         public List<Attribute> getCustomAttributes() {
             return (List<Attribute>) get("customAttributes");
         }
@@ -18679,6 +19624,7 @@ public class Storefront {
         /**
         * The number of products variants associated to the line item.
         */
+
         public Integer getQuantity() {
             return (Integer) get("quantity");
         }
@@ -18691,6 +19637,7 @@ public class Storefront {
         /**
         * The title of the product combined with title of the variant.
         */
+
         public String getTitle() {
             return (String) get("title");
         }
@@ -18703,6 +19650,7 @@ public class Storefront {
         /**
         * The product variant object associated to the line item.
         */
+
         public ProductVariant getVariant() {
             return (ProductVariant) get("variant");
         }
@@ -18807,6 +19755,7 @@ public class Storefront {
         /**
         * A list of edges.
         */
+
         public List<OrderLineItemEdge> getEdges() {
             return (List<OrderLineItemEdge>) get("edges");
         }
@@ -18819,6 +19768,7 @@ public class Storefront {
         /**
         * Information to aid in pagination.
         */
+
         public PageInfo getPageInfo() {
             return (PageInfo) get("pageInfo");
         }
@@ -18910,6 +19860,7 @@ public class Storefront {
         /**
         * A cursor for use in pagination.
         */
+
         public String getCursor() {
             return (String) get("cursor");
         }
@@ -18922,6 +19873,7 @@ public class Storefront {
         /**
         * The item at the end of OrderLineItemEdge.
         */
+
         public OrderLineItem getNode() {
             return (OrderLineItem) get("node");
         }
@@ -19081,6 +20033,7 @@ public class Storefront {
         /**
         * Indicates if there are more pages to fetch.
         */
+
         public Boolean getHasNextPage() {
             return (Boolean) get("hasNextPage");
         }
@@ -19093,6 +20046,7 @@ public class Storefront {
         /**
         * Indicates if there are any pages prior to the current page.
         */
+
         public Boolean getHasPreviousPage() {
             return (Boolean) get("hasPreviousPage");
         }
@@ -19345,6 +20299,7 @@ public class Storefront {
         /**
         * The amount of the payment.
         */
+
         public BigDecimal getAmount() {
             return (BigDecimal) get("amount");
         }
@@ -19357,6 +20312,7 @@ public class Storefront {
         /**
         * The billing address for the payment.
         */
+
         public MailingAddress getBillingAddress() {
             return (MailingAddress) get("billingAddress");
         }
@@ -19369,6 +20325,7 @@ public class Storefront {
         /**
         * The checkout to which the payment belongs.
         */
+
         public Checkout getCheckout() {
             return (Checkout) get("checkout");
         }
@@ -19381,6 +20338,7 @@ public class Storefront {
         /**
         * The credit card used for the payment in the case of direct payments.
         */
+
         public CreditCard getCreditCard() {
             return (CreditCard) get("creditCard");
         }
@@ -19393,6 +20351,7 @@ public class Storefront {
         /**
         * An message describing a processing error during asynchronous processing.
         */
+
         public String getErrorMessage() {
             return (String) get("errorMessage");
         }
@@ -19405,6 +20364,7 @@ public class Storefront {
         /**
         * Globally unique identifier.
         */
+
         public ID getId() {
             return (ID) get("id");
         }
@@ -19412,6 +20372,7 @@ public class Storefront {
         /**
         * A client-side generated token to identify a payment and perform idempotent operations.
         */
+
         public String getIdempotencyKey() {
             return (String) get("idempotencyKey");
         }
@@ -19424,6 +20385,7 @@ public class Storefront {
         /**
         * Whether or not the payment is still processing asynchronously.
         */
+
         public Boolean getReady() {
             return (Boolean) get("ready");
         }
@@ -19436,6 +20398,7 @@ public class Storefront {
         /**
         * A flag to indicate if the payment is to be done in test mode for gateways that support it.
         */
+
         public Boolean getTest() {
             return (Boolean) get("test");
         }
@@ -19448,6 +20411,7 @@ public class Storefront {
         /**
         * The actual transaction recorded by Shopify after having processed the payment with the gateway.
         */
+
         public Transaction getTransaction() {
             return (Transaction) get("transaction");
         }
@@ -19632,6 +20596,7 @@ public class Storefront {
         /**
         * List of the card brands which the shop accepts.
         */
+
         public List<CardBrand> getAcceptedCardBrands() {
             return (List<CardBrand>) get("acceptedCardBrands");
         }
@@ -19644,6 +20609,7 @@ public class Storefront {
         /**
         * The url pointing to the endpoint to vault credit cards.
         */
+
         public String getCardVaultUrl() {
             return (String) get("cardVaultUrl");
         }
@@ -19656,6 +20622,7 @@ public class Storefront {
         /**
         * The country where the shop is located.
         */
+
         public CountryCode getCountryCode() {
             return (CountryCode) get("countryCode");
         }
@@ -19668,6 +20635,7 @@ public class Storefront {
         /**
         * The three-letter code for the currency that the shop accepts.
         */
+
         public CurrencyCode getCurrencyCode() {
             return (CurrencyCode) get("currencyCode");
         }
@@ -19680,6 +20648,7 @@ public class Storefront {
         /**
         * The shop’s Shopify Payments account id.
         */
+
         public String getShopifyPaymentsAccountId() {
             return (String) get("shopifyPaymentsAccountId");
         }
@@ -19692,6 +20661,7 @@ public class Storefront {
         /**
         * List of the digital wallets which the shop supports.
         */
+
         public List<DigitalWallet> getSupportedDigitalWallets() {
             return (List<DigitalWallet>) get("supportedDigitalWallets");
         }
@@ -19740,12 +20710,36 @@ public class Storefront {
 
         public class CollectionsArguments extends Arguments {
             CollectionsArguments(StringBuilder _queryBuilder) {
-                super(_queryBuilder, false);
+                super(_queryBuilder, true);
+            }
+
+            public CollectionsArguments first(Integer value) {
+                if (value != null) {
+                    startArgument("first");
+                    _queryBuilder.append(value);
+                }
+                return this;
             }
 
             public CollectionsArguments after(String value) {
                 if (value != null) {
                     startArgument("after");
+                    Query.appendQuotedString(_queryBuilder, value.toString());
+                }
+                return this;
+            }
+
+            public CollectionsArguments last(Integer value) {
+                if (value != null) {
+                    startArgument("last");
+                    _queryBuilder.append(value);
+                }
+                return this;
+            }
+
+            public CollectionsArguments before(String value) {
+                if (value != null) {
+                    startArgument("before");
                     Query.appendQuotedString(_queryBuilder, value.toString());
                 }
                 return this;
@@ -19767,22 +20761,19 @@ public class Storefront {
         /**
         * List of collections a product belongs to.
         */
-        public ProductQuery collections(int first, CollectionConnectionQueryDefinition queryDef) {
-            return collections(first, args -> {}, queryDef);
+        public ProductQuery collections(CollectionConnectionQueryDefinition queryDef) {
+            return collections(args -> {}, queryDef);
         }
 
         /**
         * List of collections a product belongs to.
         */
-        public ProductQuery collections(int first, CollectionsArgumentsDefinition argsDef, CollectionConnectionQueryDefinition queryDef) {
+        public ProductQuery collections(CollectionsArgumentsDefinition argsDef, CollectionConnectionQueryDefinition queryDef) {
             startField("collections");
 
-            _queryBuilder.append("(first:");
-            _queryBuilder.append(first);
-
-            argsDef.define(new CollectionsArguments(_queryBuilder));
-
-            _queryBuilder.append(')');
+            CollectionsArguments args = new CollectionsArguments(_queryBuilder);
+            argsDef.define(args);
+            CollectionsArguments.end(args);
 
             _queryBuilder.append('{');
             queryDef.define(new CollectionConnectionQuery(_queryBuilder));
@@ -19862,12 +20853,36 @@ public class Storefront {
 
         public class ImagesArguments extends Arguments {
             ImagesArguments(StringBuilder _queryBuilder) {
-                super(_queryBuilder, false);
+                super(_queryBuilder, true);
+            }
+
+            public ImagesArguments first(Integer value) {
+                if (value != null) {
+                    startArgument("first");
+                    _queryBuilder.append(value);
+                }
+                return this;
             }
 
             public ImagesArguments after(String value) {
                 if (value != null) {
                     startArgument("after");
+                    Query.appendQuotedString(_queryBuilder, value.toString());
+                }
+                return this;
+            }
+
+            public ImagesArguments last(Integer value) {
+                if (value != null) {
+                    startArgument("last");
+                    _queryBuilder.append(value);
+                }
+                return this;
+            }
+
+            public ImagesArguments before(String value) {
+                if (value != null) {
+                    startArgument("before");
                     Query.appendQuotedString(_queryBuilder, value.toString());
                 }
                 return this;
@@ -19941,22 +20956,19 @@ public class Storefront {
         /**
         * List of images associated with the product.
         */
-        public ProductQuery images(int first, ImageConnectionQueryDefinition queryDef) {
-            return images(first, args -> {}, queryDef);
+        public ProductQuery images(ImageConnectionQueryDefinition queryDef) {
+            return images(args -> {}, queryDef);
         }
 
         /**
         * List of images associated with the product.
         */
-        public ProductQuery images(int first, ImagesArgumentsDefinition argsDef, ImageConnectionQueryDefinition queryDef) {
+        public ProductQuery images(ImagesArgumentsDefinition argsDef, ImageConnectionQueryDefinition queryDef) {
             startField("images");
 
-            _queryBuilder.append("(first:");
-            _queryBuilder.append(first);
-
-            argsDef.define(new ImagesArguments(_queryBuilder));
-
-            _queryBuilder.append(')');
+            ImagesArguments args = new ImagesArguments(_queryBuilder);
+            argsDef.define(args);
+            ImagesArguments.end(args);
 
             _queryBuilder.append('{');
             queryDef.define(new ImageConnectionQuery(_queryBuilder));
@@ -20096,12 +21108,36 @@ public class Storefront {
 
         public class VariantsArguments extends Arguments {
             VariantsArguments(StringBuilder _queryBuilder) {
-                super(_queryBuilder, false);
+                super(_queryBuilder, true);
+            }
+
+            public VariantsArguments first(Integer value) {
+                if (value != null) {
+                    startArgument("first");
+                    _queryBuilder.append(value);
+                }
+                return this;
             }
 
             public VariantsArguments after(String value) {
                 if (value != null) {
                     startArgument("after");
+                    Query.appendQuotedString(_queryBuilder, value.toString());
+                }
+                return this;
+            }
+
+            public VariantsArguments last(Integer value) {
+                if (value != null) {
+                    startArgument("last");
+                    _queryBuilder.append(value);
+                }
+                return this;
+            }
+
+            public VariantsArguments before(String value) {
+                if (value != null) {
+                    startArgument("before");
                     Query.appendQuotedString(_queryBuilder, value.toString());
                 }
                 return this;
@@ -20131,22 +21167,19 @@ public class Storefront {
         /**
         * List of the product’s variants.
         */
-        public ProductQuery variants(int first, ProductVariantConnectionQueryDefinition queryDef) {
-            return variants(first, args -> {}, queryDef);
+        public ProductQuery variants(ProductVariantConnectionQueryDefinition queryDef) {
+            return variants(args -> {}, queryDef);
         }
 
         /**
         * List of the product’s variants.
         */
-        public ProductQuery variants(int first, VariantsArgumentsDefinition argsDef, ProductVariantConnectionQueryDefinition queryDef) {
+        public ProductQuery variants(VariantsArgumentsDefinition argsDef, ProductVariantConnectionQueryDefinition queryDef) {
             startField("variants");
 
-            _queryBuilder.append("(first:");
-            _queryBuilder.append(first);
-
-            argsDef.define(new VariantsArguments(_queryBuilder));
-
-            _queryBuilder.append(')');
+            VariantsArguments args = new VariantsArguments(_queryBuilder);
+            argsDef.define(args);
+            VariantsArguments.end(args);
 
             _queryBuilder.append('{');
             queryDef.define(new ProductVariantConnectionQuery(_queryBuilder));
@@ -20326,6 +21359,7 @@ public class Storefront {
         /**
         * List of collections a product belongs to.
         */
+
         public CollectionConnection getCollections() {
             return (CollectionConnection) get("collections");
         }
@@ -20338,6 +21372,7 @@ public class Storefront {
         /**
         * The date and time when the product was created.
         */
+
         public DateTime getCreatedAt() {
             return (DateTime) get("createdAt");
         }
@@ -20350,6 +21385,7 @@ public class Storefront {
         /**
         * Stripped description of the product, single line with HTML tags removed.
         */
+
         public String getDescription() {
             return (String) get("description");
         }
@@ -20362,6 +21398,7 @@ public class Storefront {
         /**
         * The description of the product, complete with HTML formatting.
         */
+
         public String getDescriptionHtml() {
             return (String) get("descriptionHtml");
         }
@@ -20375,6 +21412,7 @@ public class Storefront {
         * A human-friendly unique string for the Product automatically generated from its title.
         * They are used by the Liquid templating language to refer to objects.
         */
+
         public String getHandle() {
             return (String) get("handle");
         }
@@ -20387,6 +21425,7 @@ public class Storefront {
         /**
         * Globally unique identifier.
         */
+
         public ID getId() {
             return (ID) get("id");
         }
@@ -20394,6 +21433,7 @@ public class Storefront {
         /**
         * List of images associated with the product.
         */
+
         public ImageConnection getImages() {
             return (ImageConnection) get("images");
         }
@@ -20407,6 +21447,7 @@ public class Storefront {
         * The online store URL for the product.
         * A value of `null` indicates that the product is not published to the Online Store sales channel.
         */
+
         public String getOnlineStoreUrl() {
             return (String) get("onlineStoreUrl");
         }
@@ -20419,6 +21460,7 @@ public class Storefront {
         /**
         * List of custom product options (maximum of 3 per product).
         */
+
         public List<ProductOption> getOptions() {
             return (List<ProductOption>) get("options");
         }
@@ -20431,6 +21473,7 @@ public class Storefront {
         /**
         * A categorization that a product can be tagged with, commonly used for filtering and searching.
         */
+
         public String getProductType() {
             return (String) get("productType");
         }
@@ -20443,6 +21486,7 @@ public class Storefront {
         /**
         * The date and time when the product was published to the channel.
         */
+
         public DateTime getPublishedAt() {
             return (DateTime) get("publishedAt");
         }
@@ -20456,6 +21500,7 @@ public class Storefront {
         * A categorization that a product can be tagged with, commonly used for filtering and searching.
         * Each comma-separated tag has a character limit of 255.
         */
+
         public List<String> getTags() {
             return (List<String>) get("tags");
         }
@@ -20468,6 +21513,7 @@ public class Storefront {
         /**
         * The product’s title.
         */
+
         public String getTitle() {
             return (String) get("title");
         }
@@ -20480,6 +21526,7 @@ public class Storefront {
         /**
         * The date and time when the product was last modified.
         */
+
         public DateTime getUpdatedAt() {
             return (DateTime) get("updatedAt");
         }
@@ -20494,6 +21541,7 @@ public class Storefront {
         * This is useful for converting a user’s selection of product options into a single matching variant.
         * If there is not a variant for the selected options, `null` will be returned.
         */
+
         public ProductVariant getVariantBySelectedOptions() {
             return (ProductVariant) get("variantBySelectedOptions");
         }
@@ -20506,6 +21554,7 @@ public class Storefront {
         /**
         * List of the product’s variants.
         */
+
         public ProductVariantConnection getVariants() {
             return (ProductVariantConnection) get("variants");
         }
@@ -20518,6 +21567,7 @@ public class Storefront {
         /**
         * The product’s vendor name.
         */
+
         public String getVendor() {
             return (String) get("vendor");
         }
@@ -20754,6 +21804,7 @@ public class Storefront {
         /**
         * A list of edges.
         */
+
         public List<ProductEdge> getEdges() {
             return (List<ProductEdge>) get("edges");
         }
@@ -20766,6 +21817,7 @@ public class Storefront {
         /**
         * Information to aid in pagination.
         */
+
         public PageInfo getPageInfo() {
             return (PageInfo) get("pageInfo");
         }
@@ -20857,6 +21909,7 @@ public class Storefront {
         /**
         * A cursor for use in pagination.
         */
+
         public String getCursor() {
             return (String) get("cursor");
         }
@@ -20869,6 +21922,7 @@ public class Storefront {
         /**
         * The item at the end of ProductEdge.
         */
+
         public Product getNode() {
             return (Product) get("node");
         }
@@ -21052,6 +22106,7 @@ public class Storefront {
         /**
         * Globally unique identifier.
         */
+
         public ID getId() {
             return (ID) get("id");
         }
@@ -21059,6 +22114,7 @@ public class Storefront {
         /**
         * The product option’s name.
         */
+
         public String getName() {
             return (String) get("name");
         }
@@ -21071,6 +22127,7 @@ public class Storefront {
         /**
         * The corresponding value to the product option name.
         */
+
         public List<String> getValues() {
             return (List<String>) get("values");
         }
@@ -21525,6 +22582,7 @@ public class Storefront {
         *
         * @deprecated Use `availableForSale` instead
         */
+
         public Boolean getAvailable() {
             return (Boolean) get("available");
         }
@@ -21537,6 +22595,7 @@ public class Storefront {
         /**
         * Indicates if the product variant is available for sale.
         */
+
         public Boolean getAvailableForSale() {
             return (Boolean) get("availableForSale");
         }
@@ -21550,6 +22609,7 @@ public class Storefront {
         * The compare at price of the variant. This can be used to mark a variant as on sale, when
         * `compareAtPrice` is higher than `price`.
         */
+
         public BigDecimal getCompareAtPrice() {
             return (BigDecimal) get("compareAtPrice");
         }
@@ -21562,6 +22622,7 @@ public class Storefront {
         /**
         * Globally unique identifier.
         */
+
         public ID getId() {
             return (ID) get("id");
         }
@@ -21569,6 +22630,7 @@ public class Storefront {
         /**
         * Image associated with the product variant.
         */
+
         public Image getImage() {
             return (Image) get("image");
         }
@@ -21581,6 +22643,7 @@ public class Storefront {
         /**
         * The product variant’s price.
         */
+
         public BigDecimal getPrice() {
             return (BigDecimal) get("price");
         }
@@ -21593,6 +22656,7 @@ public class Storefront {
         /**
         * The product object that the product variant belongs to.
         */
+
         public Product getProduct() {
             return (Product) get("product");
         }
@@ -21605,6 +22669,7 @@ public class Storefront {
         /**
         * List of product options applied to the variant.
         */
+
         public List<SelectedOption> getSelectedOptions() {
             return (List<SelectedOption>) get("selectedOptions");
         }
@@ -21617,6 +22682,7 @@ public class Storefront {
         /**
         * The SKU (Stock Keeping Unit) associated with the variant.
         */
+
         public String getSku() {
             return (String) get("sku");
         }
@@ -21629,6 +22695,7 @@ public class Storefront {
         /**
         * The product variant’s title.
         */
+
         public String getTitle() {
             return (String) get("title");
         }
@@ -21641,6 +22708,7 @@ public class Storefront {
         /**
         * The weight of the product variant in the unit system specified with `weight_unit`.
         */
+
         public Double getWeight() {
             return (Double) get("weight");
         }
@@ -21653,6 +22721,7 @@ public class Storefront {
         /**
         * Unit of measurement for weight.
         */
+
         public WeightUnit getWeightUnit() {
             return (WeightUnit) get("weightUnit");
         }
@@ -21773,6 +22842,7 @@ public class Storefront {
         /**
         * A list of edges.
         */
+
         public List<ProductVariantEdge> getEdges() {
             return (List<ProductVariantEdge>) get("edges");
         }
@@ -21785,6 +22855,7 @@ public class Storefront {
         /**
         * Information to aid in pagination.
         */
+
         public PageInfo getPageInfo() {
             return (PageInfo) get("pageInfo");
         }
@@ -21876,6 +22947,7 @@ public class Storefront {
         /**
         * A cursor for use in pagination.
         */
+
         public String getCursor() {
             return (String) get("cursor");
         }
@@ -21888,6 +22960,7 @@ public class Storefront {
         /**
         * The item at the end of ProductVariantEdge.
         */
+
         public ProductVariant getNode() {
             return (ProductVariant) get("node");
         }
@@ -22263,6 +23336,7 @@ public class Storefront {
         /**
         * The product option’s name.
         */
+
         public String getName() {
             return (String) get("name");
         }
@@ -22275,6 +23349,7 @@ public class Storefront {
         /**
         * The product option’s value.
         */
+
         public String getValue() {
             return (String) get("value");
         }
@@ -22430,6 +23505,7 @@ public class Storefront {
         /**
         * Human-readable unique identifier for this shipping rate.
         */
+
         public String getHandle() {
             return (String) get("handle");
         }
@@ -22442,6 +23518,7 @@ public class Storefront {
         /**
         * Price of this shipping rate.
         */
+
         public BigDecimal getPrice() {
             return (BigDecimal) get("price");
         }
@@ -22454,6 +23531,7 @@ public class Storefront {
         /**
         * Title of this shipping rate.
         */
+
         public String getTitle() {
             return (String) get("title");
         }
@@ -22490,12 +23568,36 @@ public class Storefront {
 
         public class ArticlesArguments extends Arguments {
             ArticlesArguments(StringBuilder _queryBuilder) {
-                super(_queryBuilder, false);
+                super(_queryBuilder, true);
+            }
+
+            public ArticlesArguments first(Integer value) {
+                if (value != null) {
+                    startArgument("first");
+                    _queryBuilder.append(value);
+                }
+                return this;
             }
 
             public ArticlesArguments after(String value) {
                 if (value != null) {
                     startArgument("after");
+                    Query.appendQuotedString(_queryBuilder, value.toString());
+                }
+                return this;
+            }
+
+            public ArticlesArguments last(Integer value) {
+                if (value != null) {
+                    startArgument("last");
+                    _queryBuilder.append(value);
+                }
+                return this;
+            }
+
+            public ArticlesArguments before(String value) {
+                if (value != null) {
+                    startArgument("before");
                     Query.appendQuotedString(_queryBuilder, value.toString());
                 }
                 return this;
@@ -22541,22 +23643,19 @@ public class Storefront {
         /**
         * List of the shop' articles.
         */
-        public ShopQuery articles(int first, ArticleConnectionQueryDefinition queryDef) {
-            return articles(first, args -> {}, queryDef);
+        public ShopQuery articles(ArticleConnectionQueryDefinition queryDef) {
+            return articles(args -> {}, queryDef);
         }
 
         /**
         * List of the shop' articles.
         */
-        public ShopQuery articles(int first, ArticlesArgumentsDefinition argsDef, ArticleConnectionQueryDefinition queryDef) {
+        public ShopQuery articles(ArticlesArgumentsDefinition argsDef, ArticleConnectionQueryDefinition queryDef) {
             startField("articles");
 
-            _queryBuilder.append("(first:");
-            _queryBuilder.append(first);
-
-            argsDef.define(new ArticlesArguments(_queryBuilder));
-
-            _queryBuilder.append(')');
+            ArticlesArguments args = new ArticlesArguments(_queryBuilder);
+            argsDef.define(args);
+            ArticlesArguments.end(args);
 
             _queryBuilder.append('{');
             queryDef.define(new ArticleConnectionQuery(_queryBuilder));
@@ -22567,12 +23666,36 @@ public class Storefront {
 
         public class BlogsArguments extends Arguments {
             BlogsArguments(StringBuilder _queryBuilder) {
-                super(_queryBuilder, false);
+                super(_queryBuilder, true);
+            }
+
+            public BlogsArguments first(Integer value) {
+                if (value != null) {
+                    startArgument("first");
+                    _queryBuilder.append(value);
+                }
+                return this;
             }
 
             public BlogsArguments after(String value) {
                 if (value != null) {
                     startArgument("after");
+                    Query.appendQuotedString(_queryBuilder, value.toString());
+                }
+                return this;
+            }
+
+            public BlogsArguments last(Integer value) {
+                if (value != null) {
+                    startArgument("last");
+                    _queryBuilder.append(value);
+                }
+                return this;
+            }
+
+            public BlogsArguments before(String value) {
+                if (value != null) {
+                    startArgument("before");
                     Query.appendQuotedString(_queryBuilder, value.toString());
                 }
                 return this;
@@ -22617,22 +23740,19 @@ public class Storefront {
         /**
         * List of the shop' blogs.
         */
-        public ShopQuery blogs(int first, BlogConnectionQueryDefinition queryDef) {
-            return blogs(first, args -> {}, queryDef);
+        public ShopQuery blogs(BlogConnectionQueryDefinition queryDef) {
+            return blogs(args -> {}, queryDef);
         }
 
         /**
         * List of the shop' blogs.
         */
-        public ShopQuery blogs(int first, BlogsArgumentsDefinition argsDef, BlogConnectionQueryDefinition queryDef) {
+        public ShopQuery blogs(BlogsArgumentsDefinition argsDef, BlogConnectionQueryDefinition queryDef) {
             startField("blogs");
 
-            _queryBuilder.append("(first:");
-            _queryBuilder.append(first);
-
-            argsDef.define(new BlogsArguments(_queryBuilder));
-
-            _queryBuilder.append(')');
+            BlogsArguments args = new BlogsArguments(_queryBuilder);
+            argsDef.define(args);
+            BlogsArguments.end(args);
 
             _queryBuilder.append('{');
             queryDef.define(new BlogConnectionQuery(_queryBuilder));
@@ -22673,12 +23793,36 @@ public class Storefront {
 
         public class CollectionsArguments extends Arguments {
             CollectionsArguments(StringBuilder _queryBuilder) {
-                super(_queryBuilder, false);
+                super(_queryBuilder, true);
+            }
+
+            public CollectionsArguments first(Integer value) {
+                if (value != null) {
+                    startArgument("first");
+                    _queryBuilder.append(value);
+                }
+                return this;
             }
 
             public CollectionsArguments after(String value) {
                 if (value != null) {
                     startArgument("after");
+                    Query.appendQuotedString(_queryBuilder, value.toString());
+                }
+                return this;
+            }
+
+            public CollectionsArguments last(Integer value) {
+                if (value != null) {
+                    startArgument("last");
+                    _queryBuilder.append(value);
+                }
+                return this;
+            }
+
+            public CollectionsArguments before(String value) {
+                if (value != null) {
+                    startArgument("before");
                     Query.appendQuotedString(_queryBuilder, value.toString());
                 }
                 return this;
@@ -22722,22 +23866,19 @@ public class Storefront {
         /**
         * List of the shop’s collections.
         */
-        public ShopQuery collections(int first, CollectionConnectionQueryDefinition queryDef) {
-            return collections(first, args -> {}, queryDef);
+        public ShopQuery collections(CollectionConnectionQueryDefinition queryDef) {
+            return collections(args -> {}, queryDef);
         }
 
         /**
         * List of the shop’s collections.
         */
-        public ShopQuery collections(int first, CollectionsArgumentsDefinition argsDef, CollectionConnectionQueryDefinition queryDef) {
+        public ShopQuery collections(CollectionsArgumentsDefinition argsDef, CollectionConnectionQueryDefinition queryDef) {
             startField("collections");
 
-            _queryBuilder.append("(first:");
-            _queryBuilder.append(first);
-
-            argsDef.define(new CollectionsArguments(_queryBuilder));
-
-            _queryBuilder.append(')');
+            CollectionsArguments args = new CollectionsArguments(_queryBuilder);
+            argsDef.define(args);
+            CollectionsArguments.end(args);
 
             _queryBuilder.append('{');
             queryDef.define(new CollectionConnectionQuery(_queryBuilder));
@@ -22862,12 +24003,36 @@ public class Storefront {
 
         public class ProductsArguments extends Arguments {
             ProductsArguments(StringBuilder _queryBuilder) {
-                super(_queryBuilder, false);
+                super(_queryBuilder, true);
+            }
+
+            public ProductsArguments first(Integer value) {
+                if (value != null) {
+                    startArgument("first");
+                    _queryBuilder.append(value);
+                }
+                return this;
             }
 
             public ProductsArguments after(String value) {
                 if (value != null) {
                     startArgument("after");
+                    Query.appendQuotedString(_queryBuilder, value.toString());
+                }
+                return this;
+            }
+
+            public ProductsArguments last(Integer value) {
+                if (value != null) {
+                    startArgument("last");
+                    _queryBuilder.append(value);
+                }
+                return this;
+            }
+
+            public ProductsArguments before(String value) {
+                if (value != null) {
+                    startArgument("before");
                     Query.appendQuotedString(_queryBuilder, value.toString());
                 }
                 return this;
@@ -22914,22 +24079,19 @@ public class Storefront {
         /**
         * List of the shop’s products.
         */
-        public ShopQuery products(int first, ProductConnectionQueryDefinition queryDef) {
-            return products(first, args -> {}, queryDef);
+        public ShopQuery products(ProductConnectionQueryDefinition queryDef) {
+            return products(args -> {}, queryDef);
         }
 
         /**
         * List of the shop’s products.
         */
-        public ShopQuery products(int first, ProductsArgumentsDefinition argsDef, ProductConnectionQueryDefinition queryDef) {
+        public ShopQuery products(ProductsArgumentsDefinition argsDef, ProductConnectionQueryDefinition queryDef) {
             startField("products");
 
-            _queryBuilder.append("(first:");
-            _queryBuilder.append(first);
-
-            argsDef.define(new ProductsArguments(_queryBuilder));
-
-            _queryBuilder.append(')');
+            ProductsArguments args = new ProductsArguments(_queryBuilder);
+            argsDef.define(args);
+            ProductsArguments.end(args);
 
             _queryBuilder.append('{');
             queryDef.define(new ProductConnectionQuery(_queryBuilder));
@@ -23150,6 +24312,7 @@ public class Storefront {
         /**
         * List of the shop' articles.
         */
+
         public ArticleConnection getArticles() {
             return (ArticleConnection) get("articles");
         }
@@ -23162,6 +24325,7 @@ public class Storefront {
         /**
         * List of the shop' blogs.
         */
+
         public BlogConnection getBlogs() {
             return (BlogConnection) get("blogs");
         }
@@ -23176,6 +24340,7 @@ public class Storefront {
         *
         * @deprecated Use `paymentSettings` instead
         */
+
         public String getCardVaultUrl() {
             return (String) get("cardVaultUrl");
         }
@@ -23188,6 +24353,7 @@ public class Storefront {
         /**
         * Find a collection by its handle.
         */
+
         public Collection getCollectionByHandle() {
             return (Collection) get("collectionByHandle");
         }
@@ -23200,6 +24366,7 @@ public class Storefront {
         /**
         * List of the shop’s collections.
         */
+
         public CollectionConnection getCollections() {
             return (CollectionConnection) get("collections");
         }
@@ -23214,6 +24381,7 @@ public class Storefront {
         *
         * @deprecated Use `paymentSettings` instead
         */
+
         public CurrencyCode getCurrencyCode() {
             return (CurrencyCode) get("currencyCode");
         }
@@ -23226,6 +24394,7 @@ public class Storefront {
         /**
         * A description of the shop.
         */
+
         public String getDescription() {
             return (String) get("description");
         }
@@ -23238,6 +24407,7 @@ public class Storefront {
         /**
         * A string representing the way currency is formatted when the currency isn’t specified.
         */
+
         public String getMoneyFormat() {
             return (String) get("moneyFormat");
         }
@@ -23250,6 +24420,7 @@ public class Storefront {
         /**
         * The shop’s name.
         */
+
         public String getName() {
             return (String) get("name");
         }
@@ -23262,6 +24433,7 @@ public class Storefront {
         /**
         * Settings related to payments.
         */
+
         public PaymentSettings getPaymentSettings() {
             return (PaymentSettings) get("paymentSettings");
         }
@@ -23274,6 +24446,7 @@ public class Storefront {
         /**
         * The shop’s primary domain.
         */
+
         public Domain getPrimaryDomain() {
             return (Domain) get("primaryDomain");
         }
@@ -23286,6 +24459,7 @@ public class Storefront {
         /**
         * The shop’s privacy policy.
         */
+
         public ShopPolicy getPrivacyPolicy() {
             return (ShopPolicy) get("privacyPolicy");
         }
@@ -23298,6 +24472,7 @@ public class Storefront {
         /**
         * Find a product by its handle.
         */
+
         public Product getProductByHandle() {
             return (Product) get("productByHandle");
         }
@@ -23310,6 +24485,7 @@ public class Storefront {
         /**
         * List of the shop’s product types.
         */
+
         public StringConnection getProductTypes() {
             return (StringConnection) get("productTypes");
         }
@@ -23322,6 +24498,7 @@ public class Storefront {
         /**
         * List of the shop’s products.
         */
+
         public ProductConnection getProducts() {
             return (ProductConnection) get("products");
         }
@@ -23334,6 +24511,7 @@ public class Storefront {
         /**
         * The shop’s refund policy.
         */
+
         public ShopPolicy getRefundPolicy() {
             return (ShopPolicy) get("refundPolicy");
         }
@@ -23348,6 +24526,7 @@ public class Storefront {
         *
         * @deprecated Use `paymentSettings` instead
         */
+
         public String getShopifyPaymentsAccountId() {
             return (String) get("shopifyPaymentsAccountId");
         }
@@ -23360,6 +24539,7 @@ public class Storefront {
         /**
         * The shop’s terms of service.
         */
+
         public ShopPolicy getTermsOfService() {
             return (ShopPolicy) get("termsOfService");
         }
@@ -23513,6 +24693,7 @@ public class Storefront {
         /**
         * Policy text, maximum size of 64kb.
         */
+
         public String getBody() {
             return (String) get("body");
         }
@@ -23525,6 +24706,7 @@ public class Storefront {
         /**
         * Globally unique identifier.
         */
+
         public ID getId() {
             return (ID) get("id");
         }
@@ -23532,6 +24714,7 @@ public class Storefront {
         /**
         * Policy’s title.
         */
+
         public String getTitle() {
             return (String) get("title");
         }
@@ -23544,6 +24727,7 @@ public class Storefront {
         /**
         * Public URL to the policy.
         */
+
         public String getUrl() {
             return (String) get("url");
         }
@@ -23648,6 +24832,7 @@ public class Storefront {
         /**
         * A list of edges.
         */
+
         public List<StringEdge> getEdges() {
             return (List<StringEdge>) get("edges");
         }
@@ -23660,6 +24845,7 @@ public class Storefront {
         /**
         * Information to aid in pagination.
         */
+
         public PageInfo getPageInfo() {
             return (PageInfo) get("pageInfo");
         }
@@ -23747,6 +24933,7 @@ public class Storefront {
         /**
         * A cursor for use in pagination.
         */
+
         public String getCursor() {
             return (String) get("cursor");
         }
@@ -23759,6 +24946,7 @@ public class Storefront {
         /**
         * The item at the end of StringEdge.
         */
+
         public String getNode() {
             return (String) get("node");
         }
@@ -23790,9 +24978,9 @@ public class Storefront {
 
         private String paymentData;
 
-        private Boolean test;
+        private Input<Boolean> test = Input.undefined();
 
-        private String identifier;
+        private Input<String> identifier = Input.undefined();
 
         public TokenizedPaymentInput(BigDecimal amount, String idempotencyKey, MailingAddressInput billingAddress, String type, String paymentData) {
             this.amount = amount;
@@ -23852,19 +25040,43 @@ public class Storefront {
         }
 
         public Boolean getTest() {
+            return test.getValue();
+        }
+
+        public Input<Boolean> getTestInput() {
             return test;
         }
 
         public TokenizedPaymentInput setTest(Boolean test) {
+            this.test = Input.value(test);
+            return this;
+        }
+
+        public TokenizedPaymentInput setTestInput(Input<Boolean> test) {
+            if (test == null) {
+                throw new IllegalArgumentException("Input can not be null");
+            }
             this.test = test;
             return this;
         }
 
         public String getIdentifier() {
+            return identifier.getValue();
+        }
+
+        public Input<String> getIdentifierInput() {
             return identifier;
         }
 
         public TokenizedPaymentInput setIdentifier(String identifier) {
+            this.identifier = Input.value(identifier);
+            return this;
+        }
+
+        public TokenizedPaymentInput setIdentifierInput(Input<String> identifier) {
+            if (identifier == null) {
+                throw new IllegalArgumentException("Input can not be null");
+            }
             this.identifier = identifier;
             return this;
         }
@@ -23898,18 +25110,26 @@ public class Storefront {
             _queryBuilder.append("paymentData:");
             Query.appendQuotedString(_queryBuilder, paymentData.toString());
 
-            if (test != null) {
+            if (this.test.isDefined()) {
                 _queryBuilder.append(separator);
                 separator = ",";
                 _queryBuilder.append("test:");
-                _queryBuilder.append(test);
+                if (test.getValue() != null) {
+                    _queryBuilder.append(test.getValue());
+                } else {
+                    _queryBuilder.append("null");
+                }
             }
 
-            if (identifier != null) {
+            if (this.identifier.isDefined()) {
                 _queryBuilder.append(separator);
                 separator = ",";
                 _queryBuilder.append("identifier:");
-                Query.appendQuotedString(_queryBuilder, identifier.toString());
+                if (identifier.getValue() != null) {
+                    Query.appendQuotedString(_queryBuilder, identifier.getValue().toString());
+                } else {
+                    _queryBuilder.append("null");
+                }
             }
 
             _queryBuilder.append('}');
@@ -24019,6 +25239,7 @@ public class Storefront {
         /**
         * The amount of money that the transaction was for.
         */
+
         public BigDecimal getAmount() {
             return (BigDecimal) get("amount");
         }
@@ -24031,6 +25252,7 @@ public class Storefront {
         /**
         * The kind of the transaction.
         */
+
         public TransactionKind getKind() {
             return (TransactionKind) get("kind");
         }
@@ -24043,6 +25265,7 @@ public class Storefront {
         /**
         * The status of the transaction
         */
+
         public TransactionStatus getStatus() {
             return (TransactionStatus) get("status");
         }
@@ -24055,6 +25278,7 @@ public class Storefront {
         /**
         * Whether the transaction was done in test mode or not
         */
+
         public Boolean getTest() {
             return (Boolean) get("test");
         }
@@ -24298,6 +25522,7 @@ public class Storefront {
         /**
         * Path to input field which caused the error.
         */
+
         public List<String> getField() {
             return (List<String>) get("field");
         }
@@ -24310,6 +25535,7 @@ public class Storefront {
         /**
         * The error message.
         */
+
         public String getMessage() {
             return (String) get("message");
         }

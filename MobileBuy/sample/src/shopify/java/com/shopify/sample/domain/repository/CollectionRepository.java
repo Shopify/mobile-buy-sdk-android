@@ -54,8 +54,8 @@ public final class CollectionRepository {
     GraphCall<Storefront.QueryRoot> call = graphClient.queryGraph(Storefront.query(
       root -> root.shop(
         shop -> shop.collections(
-          perPage,
           args -> args
+            .first(perPage)
             .after(TextUtils.isEmpty(cursor) ? null : cursor)
             .sortKey(Storefront.CollectionSortKeys.TITLE),
           query
