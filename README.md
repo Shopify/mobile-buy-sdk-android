@@ -68,6 +68,7 @@ The Mobile Buy SDK makes it easy to create custom storefronts in your mobile app
       - [Customer information](#customer-information-)
       - [Customer Addresses](#customer-addresses-)
       - [Customer Orders](#customer-orders-)
+      - [Customer Update](#customer-update-)
 
 - [Sample application](#sample-application-)
 - [Contributions](#contributions-)
@@ -1186,10 +1187,10 @@ Almost every `mutation` query requires an input object. This is the object that 
 
 ```java
 Storefront.CheckoutCreateInput input = new Storefront.CheckoutCreateInput()
-  .setLineItems(Arrays.asList(
+  .setLineItemsInput(Input.value(Arrays.asList(
     new Storefront.CheckoutLineItemInput(new ID("mFyaWFu"), 5),
     new Storefront.CheckoutLineItemInput(new ID("8vc2hGl"), 3)
-  ));
+  )));
 ```
 
 The checkout input object accepts other arguments like `email` and `shippingAddress`. In our example we don't have access to that information from the customer until a later time, so we won't include them in this mutation. Given the checkout input, we can execute the `checkoutCreate` mutation:
@@ -1507,10 +1508,10 @@ Before a customer can log in, they must first create an account. In your applica
 
 ```java
 Storefront.CustomerCreateInput input = new Storefront.CustomerCreateInput("john.smith@gmail.com", "123456")
-  .setFirstName("John")
-  .setLastName("Smith")
-  .setAcceptsMarketing(true)
-  .setPhone("1-123-456-7890");
+  .setFirstName(Input.value("John"))
+  .setLastName(Input.value("Smith"))
+  .setAcceptsMarketing(Input.value(true))
+  .setPhone(Input.value("1-123-456-7890"));
 
 Storefront.MutationQuery mutationQuery = Storefront.mutation(mutation -> mutation
   .customerCreate(input, query -> query
@@ -1581,15 +1582,15 @@ The following example shows a mutation for creating an address:
 String accessToken = ...;
 
 Storefront.MailingAddressInput input = new Storefront.MailingAddressInput()
-  .setAddress1("80 Spadina Ave.")
-  .setAddress2("Suite 400")
-  .setCity("Toronto")
-  .setCountry("Canada")
-  .setFirstName("John")
-  .setLastName("Smith")
-  .setPhone("1-123-456-7890")
-  .setProvince("ON")
-  .setZip("M5V 2J4");
+  .setAddress1(Input.value("80 Spadina Ave."))
+  .setAddress2(Input.value("Suite 400"))
+  .setCity(Input.value("Toronto"))
+  .setCountry(Input.value("Canada"))
+  .setFirstName(Input.value("John"))
+  .setLastName(Input.value("Smith"))
+  .setPhone(Input.value("1-123-456-7890"))
+  .setProvince(Input.value("ON"))
+  .setZip(Input.value("M5V 2J4"));
 
 Storefront.MutationQuery mutationQuery = Storefront.mutation(mutation -> mutation
   .customerAddressCreate(accessToken, input, query -> query
@@ -1668,6 +1669,53 @@ Storefront.QueryRootQuery query = Storefront.query(root -> root
 );
 ```
 
+#### Customer Update [⤴](#table-of-contents)
+
+Input objects, like `Storefront.CustomerUpdateInput`, use `Input<T>` (where `T` is the type of value) to represent optional fields and distinguish `null` values from `undefined` values (eg. phone: `Input<String>`).
+
+The following example uses `Storefront.CustomerUpdateInput` to show how to update a customer's phone number:
+
+```java
+Storefront.CustomerUpdateInput input = new Storefront.CustomerUpdateInput()
+  .setPhone(Input.value("1-123-456-7890"));
+```
+
+In this example, you create an input object by setting the phone field to the new phone number that you want to update the field with. Notice that you need to pass in an `Input.value()` instead of a simple string containing the phone number.
+
+The `Storefront.CustomerUpdateInput` object also includes other fields besides the `phone` field. These fields all default to a value of `Input.undefined()` if you don't specify them otherwise. This means that the fields aren't serialized in the mutation, and will be omitted entirely. The result GraphQL query looks like this:
+
+```graphql
+mutation {
+  customerUpdate(customer: {
+    phone: "+16471234567"
+  }, customerAccessToken: "...") {
+    customer {
+      phone
+    }
+  }
+}
+```
+
+This approach works well for setting a new phone number or updating an existing phone number to a new value. But what if the customer wants to remove the phone number completely? Leaving the phone number blank or sending an empty string are semantically different and won't achieve the intended result. The former approach indicates that we didn't define a value, and the latter returns an invalid phone number error. This is where the `Input<T>` is especially useful. You can use it to signal the intention to remove a phone number by specifying a `null` value:
+
+```java
+Storefront.CustomerUpdateInput input = new Storefront.CustomerUpdateInput()
+  .setPhone(Input.value(null));
+```
+
+The result is a mutation that updates a customer's phone number to `null`:
+
+```graphql
+mutation {
+  customerUpdate(customer: {
+    phone: null
+  }, customerAccessToken: "...") {
+    customer {
+      phone
+    }
+  }
+}
+```
 
 ## Sample application [⤴](#table-of-contents)
 
