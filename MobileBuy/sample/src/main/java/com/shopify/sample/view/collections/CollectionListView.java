@@ -91,19 +91,19 @@ public final class CollectionListView extends LifecycleFrameLayout implements Ut
     this.viewModel = viewModel;
     viewModel.fetchDataIfNecessary();
     viewModel
-      .getState()
+      .state()
       .observe(this, state -> {
         swipeRefreshLayoutView.setRefreshing(state == CollectionListViewModel.State.FETCHING);
       });
     viewModel
-      .getError()
+      .error()
       .observe(this, error -> {
         Snackbar snackbar = Snackbar.make(this, R.string.default_error, Snackbar.LENGTH_LONG);
         snackbar.getView().setBackgroundResource(R.color.snackbar_error_background);
         snackbar.show();
       });
     Transformations
-      .map(viewModel.getData(), collections -> Util.reduce(collections, (viewModels, collection) -> {
+      .map(viewModel.data(), collections -> Util.reduce(collections, (viewModels, collection) -> {
         viewModels.add(new CollectionTitleListItemViewModel(collection));
         viewModels.add(new CollectionImageListItemViewModel(collection));
         viewModels.add(new ProductsListItemViewModel(collection.products));

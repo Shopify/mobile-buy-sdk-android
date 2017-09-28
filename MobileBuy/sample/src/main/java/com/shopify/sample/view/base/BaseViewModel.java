@@ -9,7 +9,7 @@ import com.shopify.sample.util.UseCase.Cancelable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BaseViewModel extends ViewModel {
+public abstract class BaseViewModel extends ViewModel {
 
   private final List<Cancelable> tasks = new ArrayList<>();
 

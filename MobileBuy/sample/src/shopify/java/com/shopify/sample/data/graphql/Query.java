@@ -2,7 +2,7 @@ package com.shopify.sample.data.graphql;
 
 import com.shopify.buy3.Storefront;
 
-public class Query {
+public final class Query {
 
   private static void collection(final Storefront.CollectionQuery collection) {
     collection
@@ -49,5 +49,8 @@ public class Query {
         .countryCode()
         .acceptedCardBrands()
       );
+  }
+
+  private Query() {
   }
 }

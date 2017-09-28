@@ -7,7 +7,7 @@ public final class CallbackExecutors {
 
   private final Handler handler;
 
-  public static CallbackExecutors getDefault() {
+  public static CallbackExecutors createDefault() {
     return new CallbackExecutors(new Handler(Looper.getMainLooper()));
   }
 
@@ -15,7 +15,7 @@ public final class CallbackExecutors {
     this.handler = handler;
   }
 
-  public Handler getHandler() {
+  public Handler handler() {
     return handler;
   }
 }

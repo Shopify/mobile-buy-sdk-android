@@ -43,4 +43,7 @@ public final class Converter {
     }
     return products;
   }
+
+  private Converter() {
+  }
 }
