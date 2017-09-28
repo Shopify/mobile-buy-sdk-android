@@ -17,7 +17,7 @@ import com.shopify.sample.util.CallbackExecutors;
 
 import java.util.List;
 
-public class FetchCollectionsUseCaseImpl implements FetchCollectionsUseCase {
+public final class FetchCollectionsUseCaseImpl implements FetchCollectionsUseCase {
 
   private final CallbackExecutors callbackExecutors;
   private final GraphClient graphClient;
@@ -49,7 +49,7 @@ public class FetchCollectionsUseCaseImpl implements FetchCollectionsUseCase {
       )
     );
     final QueryGraphCall call = graphClient.queryGraph(query);
-    call.enqueue(new Callback(callback), callbackExecutors.getHandler());
+    call.enqueue(new Callback(callback), callbackExecutors.handler());
     return call::cancel;
   }
 

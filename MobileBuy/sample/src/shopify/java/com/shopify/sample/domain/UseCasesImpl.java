@@ -5,7 +5,7 @@ import com.shopify.sample.domain.usecases.FetchCollectionsUseCase;
 import com.shopify.sample.domain.usecases.FetchCollectionsUseCaseImpl;
 import com.shopify.sample.util.CallbackExecutors;
 
-public class UseCasesImpl implements UseCases {
+public final class UseCasesImpl implements UseCases {
 
   private final CallbackExecutors callbackExecutors;
   private final GraphClient graphClient;

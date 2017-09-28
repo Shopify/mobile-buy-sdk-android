@@ -40,15 +40,15 @@ public abstract class BasePaginatedListViewModel<T> extends BaseViewModel implem
     addTask(onFetchData(data.getValue()));
   }
 
-  public LiveData<List<T>> getData() {
+  public LiveData<List<T>> data() {
     return data;
   }
 
-  public LiveData<Throwable> getError() {
+  public LiveData<Throwable> error() {
     return error;
   }
 
-  public LiveData<State> getState() {
+  public LiveData<State> state() {
     return state;
   }
 

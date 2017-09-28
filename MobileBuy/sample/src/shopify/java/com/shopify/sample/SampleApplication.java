@@ -57,7 +57,7 @@ public class SampleApplication extends BaseApplication {
 
   @Override
   protected UseCases createUseCases() {
-    return new UseCasesImpl(CallbackExecutors.getDefault(), graphClient);
+    return new UseCasesImpl(CallbackExecutors.createDefault(), graphClient);
   }
 
   private void initializeGraphClient() {

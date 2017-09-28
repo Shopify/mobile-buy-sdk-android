@@ -10,7 +10,7 @@ import com.shopify.sample.view.base.BasePaginatedListViewModel;
 
 import java.util.List;
 
-public class CollectionListViewModel extends BasePaginatedListViewModel<Collection> {
+public final class CollectionListViewModel extends BasePaginatedListViewModel<Collection> {
 
   @Override
   protected Cancelable onFetchData(@NonNull final List<Collection> data) {
