@@ -6,8 +6,10 @@ import com.apollographql.apollo.ApolloClient;
 import com.apollographql.apollo.CustomTypeAdapter;
 import com.apollographql.apollo.cache.http.DiskLruHttpCacheStore;
 import com.apollographql.apollo.cache.http.HttpCachePolicy;
-import com.shopify.sample.domain.UseCases;
 import com.shopify.sample.domain.type.CustomType;
+import com.shopify.sample.domain.usecases.UseCases;
+import com.shopify.sample.domain.usecases.UseCasesImpl;
+import com.shopify.sample.util.CallbackExecutors;
 
 import java.math.BigDecimal;
 import java.util.concurrent.TimeUnit;
@@ -31,22 +33,16 @@ public class SampleApplication extends BaseApplication {
   }
 
   @Override
-  public void onCreate() {
-    initializeGraphClient();
-    super.onCreate();
-  }
-
-  @Override
-  protected UseCases createUseCases() {
-    throw new RuntimeException("Not implement yet");
-  }
-
-  @Override
   protected void initialize() {
-    throw new RuntimeException("Not implement yet");
+    initializeApolloClient();
   }
 
-  private void initializeGraphClient() {
+  @Override
+  protected UseCases onCreateUseCases() {
+    return new UseCasesImpl(CallbackExecutors.createDefault(), apolloClient);
+  }
+
+  private void initializeApolloClient() {
     String shopUrl = BuildConfig.SHOP_DOMAIN;
     if (TextUtils.isEmpty(shopUrl)) {
       throw new IllegalArgumentException(SHOP_PROPERTIES_INSTRUCTION + "You must add 'SHOP_DOMAIN' entry in "

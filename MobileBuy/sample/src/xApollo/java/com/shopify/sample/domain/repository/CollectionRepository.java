@@ -40,13 +40,15 @@ import static com.shopify.sample.RxUtil.rxApolloQueryCall;
 import static com.shopify.sample.util.Util.checkNotNull;
 
 public final class CollectionRepository {
+
   private final ApolloClient apolloClient;
 
   public CollectionRepository(@NonNull final ApolloClient apolloClient) {
     this.apolloClient = checkNotNull(apolloClient, "apolloClient == null");
   }
 
-  @NonNull public Single<List<CollectionPageWithProductsQuery.Edge>> nextPage(
+  @NonNull
+  public Single<List<CollectionPageWithProductsQuery.Edge>> nextPage(
     @Nullable final CollectionPageWithProductsQuery query) {
     checkNotNull(query, "query == null");
     return rxApolloQueryCall(apolloClient.query(query))
