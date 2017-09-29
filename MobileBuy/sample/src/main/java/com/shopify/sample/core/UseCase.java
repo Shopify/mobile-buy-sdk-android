@@ -1,4 +1,4 @@
-package com.shopify.sample.util;
+package com.shopify.sample.core;
 
 public interface UseCase {
 

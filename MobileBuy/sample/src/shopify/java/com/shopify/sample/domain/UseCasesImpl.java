@@ -3,6 +3,7 @@ package com.shopify.sample.domain;
 import com.shopify.buy3.GraphClient;
 import com.shopify.sample.domain.usecases.FetchCollectionsUseCase;
 import com.shopify.sample.domain.usecases.FetchCollectionsUseCaseImpl;
+import com.shopify.sample.domain.usecases.UseCases;
 import com.shopify.sample.util.CallbackExecutors;
 
 public final class UseCasesImpl implements UseCases {

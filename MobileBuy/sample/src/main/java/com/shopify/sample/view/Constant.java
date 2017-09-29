@@ -1,4 +1,4 @@
-package com.shopify.sample;
+package com.shopify.sample.view;
 
 public interface Constant {
 

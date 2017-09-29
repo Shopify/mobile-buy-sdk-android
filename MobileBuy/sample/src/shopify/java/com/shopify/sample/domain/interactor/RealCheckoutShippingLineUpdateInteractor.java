@@ -26,7 +26,6 @@ package com.shopify.sample.domain.interactor;
 
 import android.support.annotation.NonNull;
 
-import com.shopify.buy3.Storefront;
 import com.shopify.sample.SampleApplication;
 import com.shopify.sample.domain.model.Checkout;
 import com.shopify.sample.domain.model.UserMessageError;

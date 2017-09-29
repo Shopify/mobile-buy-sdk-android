@@ -28,7 +28,7 @@ import android.text.TextUtils;
 
 import com.shopify.buy3.GraphClient;
 import com.shopify.buy3.HttpCachePolicy;
-import com.shopify.sample.domain.UseCases;
+import com.shopify.sample.domain.usecases.UseCases;
 import com.shopify.sample.domain.UseCasesImpl;
 import com.shopify.sample.util.CallbackExecutors;
 
@@ -56,7 +56,7 @@ public class SampleApplication extends BaseApplication {
   }
 
   @Override
-  protected UseCases createUseCases() {
+  protected UseCases onCreateUseCases() {
     return new UseCasesImpl(CallbackExecutors.createDefault(), graphClient);
   }
 
