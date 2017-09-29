@@ -14,7 +14,7 @@ public final class Converter {
   public static List<Collection> convertCollections(Storefront.CollectionConnection collectionConnection) {
     List<Collection> collections = new ArrayList<>();
     for (Storefront.CollectionEdge collectionEdge : collectionConnection.getEdges()) {
-      Storefront.Collection collection = collectionEdge.getNode();
+      final Storefront.Collection collection = collectionEdge.getNode();
       collections.add(new Collection(
         collection.getId().toString(),
         collection.getTitle(),

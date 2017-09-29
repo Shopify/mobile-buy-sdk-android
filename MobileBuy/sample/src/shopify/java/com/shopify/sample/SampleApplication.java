@@ -29,7 +29,7 @@ import android.text.TextUtils;
 import com.shopify.buy3.GraphClient;
 import com.shopify.buy3.HttpCachePolicy;
 import com.shopify.sample.domain.usecases.UseCases;
-import com.shopify.sample.domain.UseCasesImpl;
+import com.shopify.sample.domain.usecases.UseCasesImpl;
 import com.shopify.sample.util.CallbackExecutors;
 
 import java.util.concurrent.TimeUnit;

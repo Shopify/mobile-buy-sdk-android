@@ -82,8 +82,9 @@ public abstract class BasePaginatedListViewModel<T> extends BaseViewModel implem
     if (data.isEmpty()) {
       state.setValue(State.COMPLETED);
     } else {
-      this.data.getValue().addAll(data);
-      this.data.setValue(data);
+      List<T> newData = this.data.getValue();
+      newData.addAll(data);
+      this.data.setValue(newData);
       state.setValue(State.FETCH_COMPLETE);
     }
   }

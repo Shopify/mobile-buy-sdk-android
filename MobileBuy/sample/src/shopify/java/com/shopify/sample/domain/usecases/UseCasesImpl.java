@@ -1,4 +1,4 @@
-package com.shopify.sample.domain;
+package com.shopify.sample.domain.usecases;
 
 import com.shopify.buy3.GraphClient;
 import com.shopify.sample.domain.usecases.FetchCollectionsUseCase;

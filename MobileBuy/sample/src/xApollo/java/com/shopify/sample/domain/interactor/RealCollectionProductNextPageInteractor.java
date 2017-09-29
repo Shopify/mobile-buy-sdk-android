@@ -40,14 +40,17 @@ import io.reactivex.Single;
 import static com.shopify.sample.util.Util.checkNotBlank;
 
 public class RealCollectionProductNextPageInteractor implements CollectionProductNextPageInteractor {
+
   private final ProductRepository repository;
 
   public RealCollectionProductNextPageInteractor() {
     repository = new ProductRepository(SampleApplication.apolloClient());
   }
 
-  @NonNull @Override public Single<List<Product>> execute(@NonNull final String collectionId, @Nullable final String cursor,
-    final int perPage) {
+  @NonNull
+  @Override
+  public Single<List<Product>> execute(@NonNull final String collectionId, @Nullable final String cursor,
+                                       final int perPage) {
     checkNotBlank(collectionId, "collectionId can't be empty");
 
     CollectionProductPageQuery query = CollectionProductPageQuery.builder()
