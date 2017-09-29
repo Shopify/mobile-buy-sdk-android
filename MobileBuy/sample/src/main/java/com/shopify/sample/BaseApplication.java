@@ -37,7 +37,7 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.imagepipeline.core.ImagePipelineConfig;
 import com.facebook.imagepipeline.listener.RequestListener;
 import com.facebook.imagepipeline.listener.RequestLoggingListener;
-import com.shopify.sample.domain.UseCases;
+import com.shopify.sample.domain.usecases.UseCases;
 import com.shopify.sample.domain.interactor.RealShopSettingInteractor;
 import com.shopify.sample.domain.model.ShopSettings;
 import com.shopify.sample.util.RxRetryHandler;
@@ -62,7 +62,7 @@ public abstract class BaseApplication extends Application {
   private MutableLiveData<ShopSettings> shopSettings = new MutableLiveData<>();
   private UseCases useCases;
 
-  public static BaseApplication getInstance() {
+  public static BaseApplication instance() {
     return instance;
   }
 
@@ -72,14 +72,14 @@ public abstract class BaseApplication extends Application {
 
     instance = this;
     initialize();
-    useCases = createUseCases();
+    useCases = onCreateUseCases();
 
     iniTimber();
     initFresco();
     fetchShopSettings();
   }
 
-  public UseCases getUseCases() {
+  public UseCases useCases() {
     return useCases;
   }
 
@@ -175,7 +175,7 @@ public abstract class BaseApplication extends Application {
     }
   }
 
-  protected abstract UseCases createUseCases();
+  protected abstract UseCases onCreateUseCases();
 
   protected abstract void initialize();
 }

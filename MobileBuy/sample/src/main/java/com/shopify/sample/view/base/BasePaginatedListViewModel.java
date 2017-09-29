@@ -4,10 +4,10 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.support.annotation.NonNull;
 
-import com.shopify.sample.util.UseCase.Callback1;
-import com.shopify.sample.util.UseCase.Cancelable;
+import com.shopify.sample.core.UseCase.Callback1;
+import com.shopify.sample.core.UseCase.Cancelable;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class BasePaginatedListViewModel<T> extends BaseViewModel implements Callback1<List<T>> {
@@ -33,7 +33,7 @@ public abstract class BasePaginatedListViewModel<T> extends BaseViewModel implem
 
   @SuppressWarnings("ConstantConditions")
   public void fetchData() {
-    if (isFetching() || isEnded()) {
+    if (isFetching() || hasMorePages()) {
       return;
     }
     state.setValue(State.FETCHING);
@@ -54,16 +54,16 @@ public abstract class BasePaginatedListViewModel<T> extends BaseViewModel implem
 
   public void reset() {
     onCleared();
-    state.setValue(State.NONE);
-    data.setValue(Collections.emptyList());
+    state.setValue(State.IDLE);
+    data.setValue(new ArrayList<>());
   }
 
   private boolean isEmpty() {
     return data.getValue() == null || data.getValue().size() == 0;
   }
 
-  private boolean isEnded() {
-    return state.getValue() == State.ENDED;
+  private boolean hasMorePages() {
+    return state.getValue() == State.COMPLETED;
   }
 
   private boolean isFetching() {
@@ -80,18 +80,16 @@ public abstract class BasePaginatedListViewModel<T> extends BaseViewModel implem
   @Override
   public void onResponse(final List<T> data) {
     if (data.isEmpty()) {
-      state.setValue(State.ENDED);
+      state.setValue(State.COMPLETED);
     } else {
-      if (!isEmpty()) {
-        data.addAll(0, this.data.getValue());
-      }
+      this.data.getValue().addAll(data);
       this.data.setValue(data);
-      state.setValue(State.FETCHED);
+      state.setValue(State.FETCH_COMPLETE);
     }
   }
 
   public enum State {
-    NONE, FETCHING, FETCHED, ERROR, ENDED
+    IDLE, FETCHING, FETCH_COMPLETE, ERROR, COMPLETED
   }
 
   protected abstract Cancelable onFetchData(@NonNull List<T> data);

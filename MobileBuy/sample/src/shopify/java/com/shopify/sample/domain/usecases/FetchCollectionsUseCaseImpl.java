@@ -9,7 +9,7 @@ import com.shopify.buy3.GraphError;
 import com.shopify.buy3.GraphResponse;
 import com.shopify.buy3.QueryGraphCall;
 import com.shopify.buy3.Storefront;
-import com.shopify.sample.Constant;
+import com.shopify.sample.view.Constant;
 import com.shopify.sample.data.graphql.Converter;
 import com.shopify.sample.data.graphql.Query;
 import com.shopify.sample.domain.model.Collection;
@@ -65,7 +65,7 @@ public final class FetchCollectionsUseCaseImpl implements FetchCollectionsUseCas
     @Override
     public void onResponse(@NonNull final GraphResponse<Storefront.QueryRoot> response) {
       final Storefront.Shop shop = response.data().getShop();
-      this.callback.onResponse(Converter.getCollections(shop.getCollections()));
+      this.callback.onResponse(Converter.convertCollections(shop.getCollections()));
     }
 
     @Override

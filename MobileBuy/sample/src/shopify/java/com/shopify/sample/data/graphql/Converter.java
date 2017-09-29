@@ -11,7 +11,7 @@ import java.util.List;
 
 public final class Converter {
 
-  public static List<Collection> getCollections(Storefront.CollectionConnection collectionConnection) {
+  public static List<Collection> convertCollections(Storefront.CollectionConnection collectionConnection) {
     List<Collection> collections = new ArrayList<>();
     for (Storefront.CollectionEdge collectionEdge : collectionConnection.getEdges()) {
       Storefront.Collection collection = collectionEdge.getNode();
@@ -21,13 +21,13 @@ public final class Converter {
         collection.getDescription(),
         collection.getImage() != null ? collection.getImage().getSrc() : null,
         collectionEdge.getCursor(),
-        getProducts(collection.getProducts())
+        convertProducts(collection.getProducts())
       ));
     }
     return collections;
   }
 
-  public static List<Product> getProducts(Storefront.ProductConnection productConnection) {
+  public static List<Product> convertProducts(Storefront.ProductConnection productConnection) {
     List<Product> products = new ArrayList<>();
     for (Storefront.ProductEdge productEdge : productConnection.getEdges()) {
       Storefront.Product product = productEdge.getNode();

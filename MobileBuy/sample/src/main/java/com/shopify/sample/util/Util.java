@@ -26,8 +26,6 @@ package com.shopify.sample.util;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -126,35 +124,14 @@ public final class Util {
   }
 
   public static <T, R> R reduce(@Nullable final Collection<T> source, @NonNull final ReduceCallback<T, R> callback, @Nullable final R initialValue) {
+    if (source == null) {
+      return initialValue;
+    }
     R acc = initialValue;
-    if (source != null) {
-      for (T val : source) {
-        acc = callback.reduce(acc, val);
-      }
+    for (T val : source) {
+      acc = callback.reduce(acc, val);
     }
     return acc;
-  }
-
-  public static void setOnNextPageListener(@NonNull final RecyclerView list, final int threshold, @NonNull final OnNextPageListener onNextPageListener) {
-    list.addOnScrollListener(new RecyclerView.OnScrollListener() {
-      @Override
-      public void onScrollStateChanged(final RecyclerView recyclerView, final int newState) {
-        boolean isEnded = false;
-        final RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
-        final int itemCount = recyclerView.getAdapter().getItemCount();
-        if (layoutManager instanceof LinearLayoutManager) {
-          isEnded = ((LinearLayoutManager) layoutManager).findLastVisibleItemPosition() >= itemCount - threshold;
-        }
-        if (isEnded) {
-          onNextPageListener.onNextPage();
-        }
-      }
-    });
-  }
-
-  public interface OnNextPageListener {
-
-    void onNextPage();
   }
 
   public interface ReduceCallback<T, R> {

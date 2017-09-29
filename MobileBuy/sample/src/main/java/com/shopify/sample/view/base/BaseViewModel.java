@@ -3,8 +3,8 @@ package com.shopify.sample.view.base;
 import android.arch.lifecycle.ViewModel;
 
 import com.shopify.sample.BaseApplication;
-import com.shopify.sample.domain.UseCases;
-import com.shopify.sample.util.UseCase.Cancelable;
+import com.shopify.sample.domain.usecases.UseCases;
+import com.shopify.sample.core.UseCase.Cancelable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,8 +13,8 @@ public abstract class BaseViewModel extends ViewModel {
 
   private final List<Cancelable> tasks = new ArrayList<>();
 
-  protected UseCases getUseCases() {
-    return BaseApplication.getInstance().getUseCases();
+  protected UseCases useCases() {
+    return BaseApplication.instance().useCases();
   }
 
   protected void addTask(Cancelable task) {

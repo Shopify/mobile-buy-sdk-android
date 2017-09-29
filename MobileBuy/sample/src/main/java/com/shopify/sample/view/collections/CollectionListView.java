@@ -35,11 +35,13 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 
-import com.shopify.sample.Constant;
 import com.shopify.sample.R;
 import com.shopify.sample.domain.model.Collection;
 import com.shopify.sample.util.Util;
+import com.shopify.sample.view.Constant;
 import com.shopify.sample.view.ScreenRouter;
+import com.shopify.sample.view.ViewUtils;
+import com.shopify.sample.view.ViewUtils.OnNextPageListener;
 import com.shopify.sample.view.base.LifecycleFrameLayout;
 import com.shopify.sample.view.base.ListItemViewModel;
 import com.shopify.sample.view.base.RecyclerViewAdapter;
@@ -49,7 +51,7 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public final class CollectionListView extends LifecycleFrameLayout implements Util.OnNextPageListener, SwipeRefreshLayout.OnRefreshListener, RecyclerViewAdapter.OnItemClickListener {
+public final class CollectionListView extends LifecycleFrameLayout implements OnNextPageListener, SwipeRefreshLayout.OnRefreshListener, RecyclerViewAdapter.OnItemClickListener {
 
   @BindView(R.id.list) RecyclerView listView;
   @BindView(R.id.swipe_refresh_layout) SwipeRefreshLayout swipeRefreshLayoutView;
@@ -124,7 +126,7 @@ public final class CollectionListView extends LifecycleFrameLayout implements Ut
     listView.setHasFixedSize(true);
     listView.setAdapter(adapter);
 
-    Util.setOnNextPageListener(listView, Constant.THRESHOLD, this);
+    ViewUtils.setOnNextPageListener(listView, Constant.THRESHOLD, this);
     swipeRefreshLayoutView.setOnRefreshListener(this);
   }
 }

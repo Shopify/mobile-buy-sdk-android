@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.shopify.sample.domain.model.Collection;
-import com.shopify.sample.util.UseCase;
+import com.shopify.sample.core.UseCase;
 
 import java.util.List;
 
