@@ -4477,6 +4477,120 @@ public class Storefront {
         }
     }
 
+    public interface CheckoutDiscountCodeApplyPayloadQueryDefinition {
+        void define(CheckoutDiscountCodeApplyPayloadQuery _queryBuilder);
+    }
+
+    public static class CheckoutDiscountCodeApplyPayloadQuery extends Query<CheckoutDiscountCodeApplyPayloadQuery> {
+        CheckoutDiscountCodeApplyPayloadQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * The updated checkout object.
+        */
+        public CheckoutDiscountCodeApplyPayloadQuery checkout(CheckoutQueryDefinition queryDef) {
+            startField("checkout");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CheckoutQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        */
+        public CheckoutDiscountCodeApplyPayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
+            startField("userErrors");
+
+            _queryBuilder.append('{');
+            queryDef.define(new UserErrorQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+    }
+
+    public static class CheckoutDiscountCodeApplyPayload extends AbstractResponse<CheckoutDiscountCodeApplyPayload> {
+        public CheckoutDiscountCodeApplyPayload() {
+        }
+
+        public CheckoutDiscountCodeApplyPayload(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "checkout": {
+                        responseData.put(key, new Checkout(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "userErrors": {
+                        List<UserError> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new UserError(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "CheckoutDiscountCodeApplyPayload";
+        }
+
+        /**
+        * The updated checkout object.
+        */
+
+        public Checkout getCheckout() {
+            return (Checkout) get("checkout");
+        }
+
+        public CheckoutDiscountCodeApplyPayload setCheckout(Checkout arg) {
+            optimisticData.put(getKey("checkout"), arg);
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        */
+
+        public List<UserError> getUserErrors() {
+            return (List<UserError>) get("userErrors");
+        }
+
+        public CheckoutDiscountCodeApplyPayload setUserErrors(List<UserError> arg) {
+            optimisticData.put(getKey("userErrors"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "checkout": return true;
+
+                case "userErrors": return true;
+
+                default: return false;
+            }
+        }
+    }
+
     public interface CheckoutEmailUpdatePayloadQueryDefinition {
         void define(CheckoutEmailUpdatePayloadQuery _queryBuilder);
     }
@@ -14734,6 +14848,125 @@ public class Storefront {
         }
     }
 
+    public interface CustomerDefaultAddressUpdatePayloadQueryDefinition {
+        void define(CustomerDefaultAddressUpdatePayloadQuery _queryBuilder);
+    }
+
+    public static class CustomerDefaultAddressUpdatePayloadQuery extends Query<CustomerDefaultAddressUpdatePayloadQuery> {
+        CustomerDefaultAddressUpdatePayloadQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * The updated customer object.
+        */
+        public CustomerDefaultAddressUpdatePayloadQuery customer(CustomerQueryDefinition queryDef) {
+            startField("customer");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CustomerQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        */
+        public CustomerDefaultAddressUpdatePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
+            startField("userErrors");
+
+            _queryBuilder.append('{');
+            queryDef.define(new UserErrorQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+    }
+
+    public static class CustomerDefaultAddressUpdatePayload extends AbstractResponse<CustomerDefaultAddressUpdatePayload> {
+        public CustomerDefaultAddressUpdatePayload() {
+        }
+
+        public CustomerDefaultAddressUpdatePayload(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "customer": {
+                        Customer optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new Customer(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "userErrors": {
+                        List<UserError> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new UserError(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "CustomerDefaultAddressUpdatePayload";
+        }
+
+        /**
+        * The updated customer object.
+        */
+
+        public Customer getCustomer() {
+            return (Customer) get("customer");
+        }
+
+        public CustomerDefaultAddressUpdatePayload setCustomer(Customer arg) {
+            optimisticData.put(getKey("customer"), arg);
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        */
+
+        public List<UserError> getUserErrors() {
+            return (List<UserError>) get("userErrors");
+        }
+
+        public CustomerDefaultAddressUpdatePayload setUserErrors(List<UserError> arg) {
+            optimisticData.put(getKey("userErrors"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "customer": return true;
+
+                case "userErrors": return true;
+
+                default: return false;
+            }
+        }
+    }
+
     public interface CustomerRecoverPayloadQueryDefinition {
         void define(CustomerRecoverPayloadQuery _queryBuilder);
     }
@@ -17295,6 +17528,27 @@ public class Storefront {
         }
 
         /**
+        * Applies a discount to an existing checkout using a discount code.
+        */
+        public MutationQuery checkoutDiscountCodeApply(String discountCode, ID checkoutId, CheckoutDiscountCodeApplyPayloadQueryDefinition queryDef) {
+            startField("checkoutDiscountCodeApply");
+
+            _queryBuilder.append("(discountCode:");
+            Query.appendQuotedString(_queryBuilder, discountCode.toString());
+
+            _queryBuilder.append(",checkoutId:");
+            Query.appendQuotedString(_queryBuilder, checkoutId.toString());
+
+            _queryBuilder.append(')');
+
+            _queryBuilder.append('{');
+            queryDef.define(new CheckoutDiscountCodeApplyPayloadQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
         * Updates the email on an existing checkout.
         */
         public MutationQuery checkoutEmailUpdate(ID checkoutId, String email, CheckoutEmailUpdatePayloadQueryDefinition queryDef) {
@@ -17647,6 +17901,27 @@ public class Storefront {
         }
 
         /**
+        * Updates the default address of an existing customer.
+        */
+        public MutationQuery customerDefaultAddressUpdate(String customerAccessToken, ID addressId, CustomerDefaultAddressUpdatePayloadQueryDefinition queryDef) {
+            startField("customerDefaultAddressUpdate");
+
+            _queryBuilder.append("(customerAccessToken:");
+            Query.appendQuotedString(_queryBuilder, customerAccessToken.toString());
+
+            _queryBuilder.append(",addressId:");
+            Query.appendQuotedString(_queryBuilder, addressId.toString());
+
+            _queryBuilder.append(')');
+
+            _queryBuilder.append('{');
+            queryDef.define(new CustomerDefaultAddressUpdatePayloadQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
         * Sends a reset password email to the customer, as the first step in the reset password process.
         */
         public MutationQuery customerRecover(String email, CustomerRecoverPayloadQueryDefinition queryDef) {
@@ -17794,6 +18069,17 @@ public class Storefront {
                         CheckoutCustomerDisassociatePayload optional1 = null;
                         if (!field.getValue().isJsonNull()) {
                             optional1 = new CheckoutCustomerDisassociatePayload(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "checkoutDiscountCodeApply": {
+                        CheckoutDiscountCodeApplyPayload optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new CheckoutDiscountCodeApplyPayload(jsonAsObject(field.getValue(), key));
                         }
 
                         responseData.put(key, optional1);
@@ -17977,6 +18263,17 @@ public class Storefront {
                         break;
                     }
 
+                    case "customerDefaultAddressUpdate": {
+                        CustomerDefaultAddressUpdatePayload optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new CustomerDefaultAddressUpdatePayload(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
                     case "customerRecover": {
                         CustomerRecoverPayload optional1 = null;
                         if (!field.getValue().isJsonNull()) {
@@ -18109,6 +18406,19 @@ public class Storefront {
 
         public Mutation setCheckoutCustomerDisassociate(CheckoutCustomerDisassociatePayload arg) {
             optimisticData.put(getKey("checkoutCustomerDisassociate"), arg);
+            return this;
+        }
+
+        /**
+        * Applies a discount to an existing checkout using a discount code.
+        */
+
+        public CheckoutDiscountCodeApplyPayload getCheckoutDiscountCodeApply() {
+            return (CheckoutDiscountCodeApplyPayload) get("checkoutDiscountCodeApply");
+        }
+
+        public Mutation setCheckoutDiscountCodeApply(CheckoutDiscountCodeApplyPayload arg) {
+            optimisticData.put(getKey("checkoutDiscountCodeApply"), arg);
             return this;
         }
 
@@ -18322,6 +18632,19 @@ public class Storefront {
         }
 
         /**
+        * Updates the default address of an existing customer.
+        */
+
+        public CustomerDefaultAddressUpdatePayload getCustomerDefaultAddressUpdate() {
+            return (CustomerDefaultAddressUpdatePayload) get("customerDefaultAddressUpdate");
+        }
+
+        public Mutation setCustomerDefaultAddressUpdate(CustomerDefaultAddressUpdatePayload arg) {
+            optimisticData.put(getKey("customerDefaultAddressUpdate"), arg);
+            return this;
+        }
+
+        /**
         * Sends a reset password email to the customer, as the first step in the reset password process.
         */
 
@@ -18376,6 +18699,8 @@ public class Storefront {
 
                 case "checkoutCustomerDisassociate": return true;
 
+                case "checkoutDiscountCodeApply": return true;
+
                 case "checkoutEmailUpdate": return true;
 
                 case "checkoutGiftCardApply": return true;
@@ -18407,6 +18732,8 @@ public class Storefront {
                 case "customerAddressUpdate": return true;
 
                 case "customerCreate": return true;
+
+                case "customerDefaultAddressUpdate": return true;
 
                 case "customerRecover": return true;
 

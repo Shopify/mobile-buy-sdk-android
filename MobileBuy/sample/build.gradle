@@ -118,6 +118,7 @@ dependencies {
 
   xApolloCompile dep.apolloRuntime
   xApolloCompile dep.okhttpLogging
+  xApolloCompile dep.apolloHttpCache
 }
 
 task downloadApolloSchema(type: DefaultTask, group: "GraphQL", description: "Download GraphQL store front API schema") {

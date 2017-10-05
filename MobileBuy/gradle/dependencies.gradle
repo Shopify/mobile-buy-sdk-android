@@ -4,7 +4,7 @@ def versions = [
     playServicesVersion  : '9.8.0',
     jodaTimeVersion      : '2.9.9',
     butterKnifeVersion   : '8.5.1',
-    apolloVersion        : '0.4.1',
+    apolloVersion        : '0.4.2-SNAPSHOT',
     archVersion          : '1.0.0-alpha1'
 ]
 
@@ -44,6 +44,7 @@ ext.dep = [
     fresco                   : "com.facebook.fresco:fresco:0.14.1",
     apolloPlugin             : "com.apollographql.apollo:gradle-plugin:$versions.apolloVersion",
     apolloRuntime            : "com.apollographql.apollo:apollo-runtime:$versions.apolloVersion",
+    apolloHttpCache          : "com.apollographql.apollo:apollo-http-cache:$versions.apolloVersion",
     constraintLayout         : "com.android.support.constraint:constraint-layout:1.0.2",
     rxrelay                  : "com.jakewharton.rxrelay2:rxrelay:2.0.0",
     archRuntime              : "android.arch.lifecycle:runtime:$versions.archVersion",

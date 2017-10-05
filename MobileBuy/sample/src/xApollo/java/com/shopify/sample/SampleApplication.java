@@ -1,11 +1,13 @@
 package com.shopify.sample;
 
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.apollographql.apollo.ApolloClient;
 import com.apollographql.apollo.CustomTypeAdapter;
+import com.apollographql.apollo.api.cache.http.HttpCachePolicy;
+import com.apollographql.apollo.cache.http.ApolloHttpCache;
 import com.apollographql.apollo.cache.http.DiskLruHttpCacheStore;
-import com.apollographql.apollo.cache.http.HttpCachePolicy;
 import com.shopify.sample.domain.type.CustomType;
 
 import java.math.BigDecimal;
@@ -61,14 +63,14 @@ public class SampleApplication extends BaseApplication {
     apolloClient = ApolloClient.builder()
       .okHttpClient(httpClient)
       .serverUrl(HttpUrl.parse("https://" + shopUrl + "/api/graphql"))
-      .httpCacheStore(new DiskLruHttpCacheStore(getCacheDir(), 1000 * 1024))
+      .httpCache(new ApolloHttpCache(new DiskLruHttpCacheStore(getCacheDir(), 1000 * 1024), null))
       .defaultHttpCachePolicy(HttpCachePolicy.CACHE_FIRST.expireAfter(20, TimeUnit.MINUTES))
       .addCustomTypeAdapter(CustomType.MONEY, new CustomTypeAdapter<BigDecimal>() {
-        @Override public BigDecimal decode(final String value) {
+        @NonNull @Override public BigDecimal decode(@NonNull final String value) {
           return new BigDecimal(value);
         }
 
-        @Override public String encode(final BigDecimal value) {
+        @NonNull @Override public String encode(@NonNull final BigDecimal value) {
           return value.toString();
         }
       })
