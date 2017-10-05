@@ -36,7 +36,7 @@ import java.util.List;
 import io.reactivex.Single;
 import io.reactivex.schedulers.Schedulers;
 
-import static com.shopify.sample.RxUtil.rxApolloQueryCall;
+import static com.shopify.sample.RxUtil.rxApolloCall;
 import static com.shopify.sample.util.Util.checkNotNull;
 
 public final class ProductRepository {
@@ -49,7 +49,7 @@ public final class ProductRepository {
   @NonNull public Single<List<CollectionProductPageQuery.ProductEdge>> nextPage(
     @NonNull final CollectionProductPageQuery query) {
     checkNotNull(query, "query == null");
-    return rxApolloQueryCall(apolloClient.query(query))
+    return rxApolloCall(apolloClient.query(query))
       .map(Optional::get)
       .map(it -> it.collection.get())
       .map(it -> it.asCollection.get())
@@ -60,7 +60,7 @@ public final class ProductRepository {
 
   @NonNull public Single<ProductByIdQuery.AsProduct> product(@NonNull final ProductByIdQuery query) {
     checkNotNull(query, "query == null");
-    return rxApolloQueryCall(apolloClient.query(query))
+    return rxApolloCall(apolloClient.query(query))
       .map(Optional::get)
       .map(it -> it.node.get())
       .map(it -> it.asProduct.get())

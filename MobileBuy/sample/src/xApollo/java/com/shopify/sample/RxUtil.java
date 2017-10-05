@@ -24,41 +24,50 @@
 
 package com.shopify.sample;
 
-import com.apollographql.apollo.ApolloMutationCall;
-import com.apollographql.apollo.ApolloQueryCall;
+import com.apollographql.apollo.ApolloCall;
 import com.apollographql.apollo.api.Response;
+import com.apollographql.apollo.exception.ApolloException;
+import com.apollographql.apollo.internal.util.Cancelable;
 
+import javax.annotation.Nonnull;
+
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Single;
 import io.reactivex.SingleTransformer;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.exceptions.Exceptions;
 
 import static com.shopify.sample.util.Util.fold;
 
 public final class RxUtil {
 
-  public static <T> Single<T> rxApolloQueryCall(final ApolloQueryCall<T> call) {
-    return Single.<Response<T>>create(emitter -> {
-      emitter.setCancellable(call::cancel);
-      try {
-        emitter.onSuccess(call.execute());
-      } catch (Exception e) {
-        Exceptions.throwIfFatal(e);
-        emitter.onError(e);
-      }
-    })
-      .compose(queryResponseDataTransformer());
-  }
+  public static <T> Single<T> rxApolloCall(final ApolloCall<T> call) {
+    return Observable.create((ObservableOnSubscribe<Response<T>>) emitter -> {
+      cancelOnObservableDisposed(emitter, call);
+      call.enqueue(new ApolloCall.Callback<T>() {
+        @Override public void onResponse(@Nonnull Response<T> response) {
+          if (!emitter.isDisposed()) {
+            emitter.onNext(response);
+          }
+        }
 
-  public static <T> Single<T> rxApolloMutationCall(final ApolloMutationCall<T> call) {
-    return Single.<Response<T>>create(emitter -> {
-      emitter.setCancellable(call::cancel);
-      try {
-        emitter.onSuccess(call.execute());
-      } catch (Exception e) {
-        Exceptions.throwIfFatal(e);
-        emitter.onError(e);
-      }
+        @Override public void onFailure(@Nonnull ApolloException e) {
+          Exceptions.throwIfFatal(e);
+          if (!emitter.isDisposed()) {
+            emitter.onError(e);
+          }
+        }
+
+        @Override public void onStatusEvent(@Nonnull ApolloCall.StatusEvent event) {
+          if (event == ApolloCall.StatusEvent.COMPLETED && !emitter.isDisposed()) {
+            emitter.onComplete();
+          }
+        }
+      });
     })
+      .firstOrError()
       .compose(queryResponseDataTransformer());
   }
 
@@ -72,6 +81,22 @@ public final class RxUtil {
         return Single.error(new RuntimeException(errorMessage));
       }
     });
+  }
+
+  private static <T> void cancelOnObservableDisposed(ObservableEmitter<T> emitter, final Cancelable cancelable) {
+    emitter.setDisposable(getRx2Disposable(cancelable));
+  }
+
+  private static Disposable getRx2Disposable(final Cancelable cancelable) {
+    return new Disposable() {
+      @Override public void dispose() {
+        cancelable.cancel();
+      }
+
+      @Override public boolean isDisposed() {
+        return cancelable.isCanceled();
+      }
+    };
   }
 
   private RxUtil() {

@@ -9,7 +9,7 @@ import com.shopify.sample.domain.ShopSettingsQuery;
 import io.reactivex.Single;
 import io.reactivex.schedulers.Schedulers;
 
-import static com.shopify.sample.RxUtil.rxApolloQueryCall;
+import static com.shopify.sample.RxUtil.rxApolloCall;
 import static com.shopify.sample.util.Util.checkNotNull;
 
 public final class ShopRepository {
@@ -21,7 +21,7 @@ public final class ShopRepository {
 
   @NonNull public Single<ShopSettingsQuery.Shop> shopSettings(@NonNull ShopSettingsQuery query) {
     checkNotNull(query, "query == null");
-    return rxApolloQueryCall(apolloClient.query(query))
+    return rxApolloCall(apolloClient.query(query))
       .map(Optional::get)
       .map(it -> it.shop)
       .subscribeOn(Schedulers.io());
