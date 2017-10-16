@@ -3259,7 +3259,7 @@ public class Storefront {
         }
 
         public CheckoutAttributesUpdateInput setNote(String note) {
-            this.note = Input.value(note);
+            this.note = Input.optional(note);
             return this;
         }
 
@@ -3280,7 +3280,7 @@ public class Storefront {
         }
 
         public CheckoutAttributesUpdateInput setCustomAttributes(List<AttributeInput> customAttributes) {
-            this.customAttributes = Input.value(customAttributes);
+            this.customAttributes = Input.optional(customAttributes);
             return this;
         }
 
@@ -3301,7 +3301,7 @@ public class Storefront {
         }
 
         public CheckoutAttributesUpdateInput setAllowPartialAddresses(Boolean allowPartialAddresses) {
-            this.allowPartialAddresses = Input.value(allowPartialAddresses);
+            this.allowPartialAddresses = Input.optional(allowPartialAddresses);
             return this;
         }
 
@@ -3923,7 +3923,7 @@ public class Storefront {
         }
 
         public CheckoutCreateInput setEmail(String email) {
-            this.email = Input.value(email);
+            this.email = Input.optional(email);
             return this;
         }
 
@@ -3944,7 +3944,7 @@ public class Storefront {
         }
 
         public CheckoutCreateInput setLineItems(List<CheckoutLineItemInput> lineItems) {
-            this.lineItems = Input.value(lineItems);
+            this.lineItems = Input.optional(lineItems);
             return this;
         }
 
@@ -3965,7 +3965,7 @@ public class Storefront {
         }
 
         public CheckoutCreateInput setShippingAddress(MailingAddressInput shippingAddress) {
-            this.shippingAddress = Input.value(shippingAddress);
+            this.shippingAddress = Input.optional(shippingAddress);
             return this;
         }
 
@@ -3986,7 +3986,7 @@ public class Storefront {
         }
 
         public CheckoutCreateInput setNote(String note) {
-            this.note = Input.value(note);
+            this.note = Input.optional(note);
             return this;
         }
 
@@ -4007,7 +4007,7 @@ public class Storefront {
         }
 
         public CheckoutCreateInput setCustomAttributes(List<AttributeInput> customAttributes) {
-            this.customAttributes = Input.value(customAttributes);
+            this.customAttributes = Input.optional(customAttributes);
             return this;
         }
 
@@ -4028,7 +4028,7 @@ public class Storefront {
         }
 
         public CheckoutCreateInput setAllowPartialAddresses(Boolean allowPartialAddresses) {
-            this.allowPartialAddresses = Input.value(allowPartialAddresses);
+            this.allowPartialAddresses = Input.optional(allowPartialAddresses);
             return this;
         }
 
@@ -5400,7 +5400,7 @@ public class Storefront {
         }
 
         public CheckoutLineItemInput setCustomAttributes(List<AttributeInput> customAttributes) {
-            this.customAttributes = Input.value(customAttributes);
+            this.customAttributes = Input.optional(customAttributes);
             return this;
         }
 
@@ -5467,7 +5467,7 @@ public class Storefront {
         }
 
         public CheckoutLineItemUpdateInput setId(ID id) {
-            this.id = Input.value(id);
+            this.id = Input.optional(id);
             return this;
         }
 
@@ -5488,7 +5488,7 @@ public class Storefront {
         }
 
         public CheckoutLineItemUpdateInput setVariantId(ID variantId) {
-            this.variantId = Input.value(variantId);
+            this.variantId = Input.optional(variantId);
             return this;
         }
 
@@ -5509,7 +5509,7 @@ public class Storefront {
         }
 
         public CheckoutLineItemUpdateInput setQuantity(Integer quantity) {
-            this.quantity = Input.value(quantity);
+            this.quantity = Input.optional(quantity);
             return this;
         }
 
@@ -5530,7 +5530,7 @@ public class Storefront {
         }
 
         public CheckoutLineItemUpdateInput setCustomAttributes(List<AttributeInput> customAttributes) {
-            this.customAttributes = Input.value(customAttributes);
+            this.customAttributes = Input.optional(customAttributes);
             return this;
         }
 
@@ -10946,7 +10946,7 @@ public class Storefront {
         }
 
         public CreditCardPaymentInput setTest(Boolean test) {
-            this.test = Input.value(test);
+            this.test = Input.optional(test);
             return this;
         }
 
@@ -11663,6 +11663,11 @@ public class Storefront {
         SYP,
 
         /**
+        * Swazi Lilangeni (SZL)
+        */
+        SZL,
+
+        /**
         * Thai baht (THB)
         */
         THB,
@@ -12241,6 +12246,10 @@ public class Storefront {
                     return SYP;
                 }
 
+                case "SZL": {
+                    return SZL;
+                }
+
                 case "THB": {
                     return THB;
                 }
@@ -12794,6 +12803,10 @@ public class Storefront {
 
                 case SYP: {
                     return "SYP";
+                }
+
+                case SZL: {
+                    return "SZL";
                 }
 
                 case THB: {
@@ -14592,7 +14605,7 @@ public class Storefront {
         }
 
         public CustomerCreateInput setFirstName(String firstName) {
-            this.firstName = Input.value(firstName);
+            this.firstName = Input.optional(firstName);
             return this;
         }
 
@@ -14613,7 +14626,7 @@ public class Storefront {
         }
 
         public CustomerCreateInput setLastName(String lastName) {
-            this.lastName = Input.value(lastName);
+            this.lastName = Input.optional(lastName);
             return this;
         }
 
@@ -14634,7 +14647,7 @@ public class Storefront {
         }
 
         public CustomerCreateInput setPhone(String phone) {
-            this.phone = Input.value(phone);
+            this.phone = Input.optional(phone);
             return this;
         }
 
@@ -14655,7 +14668,7 @@ public class Storefront {
         }
 
         public CustomerCreateInput setAcceptsMarketing(Boolean acceptsMarketing) {
-            this.acceptsMarketing = Input.value(acceptsMarketing);
+            this.acceptsMarketing = Input.optional(acceptsMarketing);
             return this;
         }
 
@@ -15235,7 +15248,7 @@ public class Storefront {
         }
 
         public CustomerUpdateInput setFirstName(String firstName) {
-            this.firstName = Input.value(firstName);
+            this.firstName = Input.optional(firstName);
             return this;
         }
 
@@ -15256,7 +15269,7 @@ public class Storefront {
         }
 
         public CustomerUpdateInput setLastName(String lastName) {
-            this.lastName = Input.value(lastName);
+            this.lastName = Input.optional(lastName);
             return this;
         }
 
@@ -15277,7 +15290,7 @@ public class Storefront {
         }
 
         public CustomerUpdateInput setEmail(String email) {
-            this.email = Input.value(email);
+            this.email = Input.optional(email);
             return this;
         }
 
@@ -15298,7 +15311,7 @@ public class Storefront {
         }
 
         public CustomerUpdateInput setPhone(String phone) {
-            this.phone = Input.value(phone);
+            this.phone = Input.optional(phone);
             return this;
         }
 
@@ -15319,7 +15332,7 @@ public class Storefront {
         }
 
         public CustomerUpdateInput setPassword(String password) {
-            this.password = Input.value(password);
+            this.password = Input.optional(password);
             return this;
         }
 
@@ -15340,7 +15353,7 @@ public class Storefront {
         }
 
         public CustomerUpdateInput setAcceptsMarketing(Boolean acceptsMarketing) {
-            this.acceptsMarketing = Input.value(acceptsMarketing);
+            this.acceptsMarketing = Input.optional(acceptsMarketing);
             return this;
         }
 
@@ -17060,7 +17073,7 @@ public class Storefront {
         }
 
         public MailingAddressInput setAddress1(String address1) {
-            this.address1 = Input.value(address1);
+            this.address1 = Input.optional(address1);
             return this;
         }
 
@@ -17081,7 +17094,7 @@ public class Storefront {
         }
 
         public MailingAddressInput setAddress2(String address2) {
-            this.address2 = Input.value(address2);
+            this.address2 = Input.optional(address2);
             return this;
         }
 
@@ -17102,7 +17115,7 @@ public class Storefront {
         }
 
         public MailingAddressInput setCity(String city) {
-            this.city = Input.value(city);
+            this.city = Input.optional(city);
             return this;
         }
 
@@ -17123,7 +17136,7 @@ public class Storefront {
         }
 
         public MailingAddressInput setCompany(String company) {
-            this.company = Input.value(company);
+            this.company = Input.optional(company);
             return this;
         }
 
@@ -17144,7 +17157,7 @@ public class Storefront {
         }
 
         public MailingAddressInput setCountry(String country) {
-            this.country = Input.value(country);
+            this.country = Input.optional(country);
             return this;
         }
 
@@ -17165,7 +17178,7 @@ public class Storefront {
         }
 
         public MailingAddressInput setFirstName(String firstName) {
-            this.firstName = Input.value(firstName);
+            this.firstName = Input.optional(firstName);
             return this;
         }
 
@@ -17186,7 +17199,7 @@ public class Storefront {
         }
 
         public MailingAddressInput setLastName(String lastName) {
-            this.lastName = Input.value(lastName);
+            this.lastName = Input.optional(lastName);
             return this;
         }
 
@@ -17207,7 +17220,7 @@ public class Storefront {
         }
 
         public MailingAddressInput setPhone(String phone) {
-            this.phone = Input.value(phone);
+            this.phone = Input.optional(phone);
             return this;
         }
 
@@ -17228,7 +17241,7 @@ public class Storefront {
         }
 
         public MailingAddressInput setProvince(String province) {
-            this.province = Input.value(province);
+            this.province = Input.optional(province);
             return this;
         }
 
@@ -17249,7 +17262,7 @@ public class Storefront {
         }
 
         public MailingAddressInput setZip(String zip) {
-            this.zip = Input.value(zip);
+            this.zip = Input.optional(zip);
             return this;
         }
 
@@ -25375,7 +25388,7 @@ public class Storefront {
         }
 
         public TokenizedPaymentInput setTest(Boolean test) {
-            this.test = Input.value(test);
+            this.test = Input.optional(test);
             return this;
         }
 
@@ -25396,7 +25409,7 @@ public class Storefront {
         }
 
         public TokenizedPaymentInput setIdentifier(String identifier) {
-            this.identifier = Input.value(identifier);
+            this.identifier = Input.optional(identifier);
             return this;
         }
 
