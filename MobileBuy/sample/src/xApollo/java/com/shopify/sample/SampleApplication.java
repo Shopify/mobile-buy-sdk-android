@@ -8,7 +8,6 @@ import com.apollographql.apollo.CustomTypeAdapter;
 import com.apollographql.apollo.api.cache.http.HttpCachePolicy;
 import com.apollographql.apollo.cache.http.ApolloHttpCache;
 import com.apollographql.apollo.cache.http.DiskLruHttpCacheStore;
-import com.apollographql.apollo.cache.http.HttpCachePolicy;
 import com.shopify.sample.domain.type.CustomType;
 import com.shopify.sample.domain.usecases.UseCases;
 import com.shopify.sample.domain.usecases.UseCasesImpl;
