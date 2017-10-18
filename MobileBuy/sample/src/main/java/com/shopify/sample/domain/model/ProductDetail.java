@@ -32,7 +32,7 @@ import java.util.List;
 import static com.shopify.sample.util.Util.checkNotNull;
 import static java.util.Collections.unmodifiableList;
 
-public final class ProductDetails {
+public final class ProductDetail {
   @NonNull public final String id;
   @NonNull public final String title;
   @NonNull public final String description;
@@ -41,9 +41,9 @@ public final class ProductDetails {
   @NonNull public List<Option> options;
   @NonNull public List<Variant> variants;
 
-  public ProductDetails(@NonNull final String id, @NonNull final String title, @NonNull final String description,
-    @NonNull final List<String> tags, @NonNull final List<String> images, @NonNull final List<Option> options,
-    @NonNull final List<Variant> variants) {
+  public ProductDetail(@NonNull final String id, @NonNull final String title, @NonNull final String description,
+                       @NonNull final List<String> tags, @NonNull final List<String> images, @NonNull final List<Option> options,
+                       @NonNull final List<Variant> variants) {
     this.id = checkNotNull(id, "id == null");
     this.title = checkNotNull(title, "title == null");
     this.description = checkNotNull(description, "description == null");

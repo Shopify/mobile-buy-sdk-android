@@ -26,15 +26,16 @@ package com.shopify.sample.view.product;
 
 import android.arch.lifecycle.LiveData;
 
-import com.shopify.sample.domain.model.ProductDetails;
+import com.shopify.sample.domain.model.ProductDetail;
 import com.shopify.sample.view.ViewModel;
 
 import java.util.UUID;
 
 public interface ProductViewModel extends ViewModel {
+
   int REQUEST_ID_PRODUCT_DETAILS = UUID.randomUUID().hashCode();
 
-  LiveData<ProductDetails> productLiveData();
+  LiveData<ProductDetail> productLiveData();
 
   void refetch();
 

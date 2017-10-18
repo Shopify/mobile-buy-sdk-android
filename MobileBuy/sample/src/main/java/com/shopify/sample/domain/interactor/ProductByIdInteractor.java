@@ -26,10 +26,10 @@ package com.shopify.sample.domain.interactor;
 
 import android.support.annotation.NonNull;
 
-import com.shopify.sample.domain.model.ProductDetails;
+import com.shopify.sample.domain.model.ProductDetail;
 
 import io.reactivex.Single;
 
 public interface ProductByIdInteractor {
-  @NonNull Single<ProductDetails> execute(@NonNull String productId);
+  @NonNull Single<ProductDetail> execute(@NonNull String productId);
 }

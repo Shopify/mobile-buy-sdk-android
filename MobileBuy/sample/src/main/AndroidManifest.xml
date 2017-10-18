@@ -34,7 +34,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
-            android:name=".view.product.ProductDetailsActivity"
+            android:name=".view.product.ProductDetailActivity"
             android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
