@@ -43,6 +43,7 @@ import com.google.android.gms.wallet.MaskedWalletRequest;
 import com.google.android.gms.wallet.Wallet;
 import com.google.android.gms.wallet.WalletConstants;
 import com.google.android.gms.wallet.fragment.SupportWalletFragment;
+import com.google.android.gms.wallet.fragment.WalletFragment;
 import com.google.android.gms.wallet.fragment.WalletFragmentInitParams;
 
 import java.io.UnsupportedEncodingException;
@@ -98,6 +99,20 @@ public final class PayHelper {
    */
   public static void newMaskedWallet(final GoogleApiClient googleApiClient, final MaskedWallet maskedWallet) {
     Wallet.Payments.changeMaskedWallet(googleApiClient, maskedWallet.getGoogleTransactionId(), null, PayHelper.REQUEST_CODE_MASKED_WALLET);
+  }
+
+  /**
+   * Initializes Android Pay wallet fragment with provided Masked Wallet.
+   *
+   * @param walletFragment {@link WalletFragment}
+   * @param maskedWallet   {@link MaskedWallet}
+   */
+  public static void initializeWalletFragment(final WalletFragment walletFragment, final MaskedWallet maskedWallet) {
+    WalletFragmentInitParams initParams = WalletFragmentInitParams.newBuilder()
+      .setMaskedWallet(maskedWallet)
+      .setMaskedWalletRequestCode(PayHelper.REQUEST_CODE_CHANGE_MASKED_WALLET)
+      .build();
+    walletFragment.initialize(initParams);
   }
 
   /**
