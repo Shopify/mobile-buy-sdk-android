@@ -1,9 +1,6 @@
 package com.shopify.sample.domain.usecases;
 
 import com.shopify.buy3.GraphClient;
-import com.shopify.sample.domain.usecases.FetchCollectionsUseCase;
-import com.shopify.sample.domain.usecases.FetchCollectionsUseCaseImpl;
-import com.shopify.sample.domain.usecases.UseCases;
 import com.shopify.sample.util.CallbackExecutors;
 
 public final class UseCasesImpl implements UseCases {
@@ -19,5 +16,10 @@ public final class UseCasesImpl implements UseCases {
   @Override
   public FetchCollectionsUseCase fetchCollections() {
     return new FetchCollectionsUseCaseImpl(callbackExecutors, graphClient);
+  }
+
+  @Override
+  public FetchProductsUseCaseImpl fetchProducts() {
+    return new FetchProductsUseCaseImpl(callbackExecutors, graphClient);
   }
 }

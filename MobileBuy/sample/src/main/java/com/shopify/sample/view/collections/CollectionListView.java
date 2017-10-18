@@ -72,15 +72,15 @@ public final class CollectionListView extends LifecycleFrameLayout implements On
   }
 
   @Override
-  public void onNextPage() {
-    viewModel.fetchData();
-  }
-
-  @Override
   public void onItemClick(@NonNull final ListItemViewModel itemViewModel) {
     if (itemViewModel.payload() instanceof Collection) {
       ScreenRouter.route(getContext(), new CollectionClickActionEvent((Collection) itemViewModel.payload()));
     }
+  }
+
+  @Override
+  public void onNextPage() {
+    viewModel.fetchData();
   }
 
   @Override

@@ -36,6 +36,7 @@ import java.math.BigDecimal;
 import static com.shopify.sample.util.Util.checkNotNull;
 
 public final class ProductClickActionEvent extends ScreenActionEvent implements Parcelable {
+
   public static final Creator<ProductClickActionEvent> CREATOR = new Creator<ProductClickActionEvent>() {
     @Override
     public ProductClickActionEvent createFromParcel(Parcel in) {
@@ -63,7 +64,8 @@ public final class ProductClickActionEvent extends ScreenActionEvent implements 
     payload.putDouble(EXTRAS_PRICE, product.price.doubleValue());
   }
 
-  @SuppressWarnings("WeakerAccess") ProductClickActionEvent(Parcel in) {
+  @SuppressWarnings("WeakerAccess")
+  ProductClickActionEvent(Parcel in) {
     super(in);
   }
 
