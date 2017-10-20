@@ -20,7 +20,7 @@ import com.shopify.sample.view.Constant;
 
 import java.util.List;
 
-public class FetchProductsUseCaseImpl implements FetchProductsUseCase {
+public final class FetchProductsUseCaseImpl implements FetchProductsUseCase {
 
   private final CallbackExecutors callbackExectors;
   private final GraphClient graphClient;

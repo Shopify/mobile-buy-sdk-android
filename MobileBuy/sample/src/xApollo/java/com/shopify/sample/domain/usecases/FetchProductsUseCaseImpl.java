@@ -21,7 +21,7 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
-public class FetchProductsUseCaseImpl implements FetchProductsUseCase {
+public final class FetchProductsUseCaseImpl implements FetchProductsUseCase {
 
   private final CallbackExecutors callbackExecutors;
   private final ApolloClient apoloClient;
