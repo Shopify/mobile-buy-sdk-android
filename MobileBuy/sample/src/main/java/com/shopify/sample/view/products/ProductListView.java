@@ -24,7 +24,6 @@
 
 package com.shopify.sample.view.products;
 
-import android.arch.lifecycle.Transformations;
 import android.content.Context;
 import android.graphics.Rect;
 import android.support.annotation.NonNull;
@@ -37,7 +36,6 @@ import android.view.View;
 
 import com.shopify.sample.R;
 import com.shopify.sample.domain.model.Product;
-import com.shopify.sample.util.Util;
 import com.shopify.sample.view.Constant;
 import com.shopify.sample.view.ScreenRouter;
 import com.shopify.sample.view.ViewUtils;
@@ -45,8 +43,6 @@ import com.shopify.sample.view.base.LifecycleSwipeRefreshLayout;
 import com.shopify.sample.view.base.ListItemViewModel;
 import com.shopify.sample.view.base.RecyclerViewAdapter;
 import com.shopify.sample.view.collections.CollectionListViewModel;
-
-import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -97,11 +93,8 @@ public final class ProductListView extends LifecycleSwipeRefreshLayout implement
         snackbar.getView().setBackgroundResource(R.color.snackbar_error_background);
         snackbar.show();
       });
-    Transformations
-      .map(viewModel.data(), products -> Util.reduce(products, (viewModels, product) -> {
-        viewModels.add(new ProductListItemViewModel(product));
-        return viewModels;
-      }, new ArrayList<ListItemViewModel>()))
+    viewModel
+      .items()
       .observe(this, adapter::swapItemsAndNotify);
   }
 
