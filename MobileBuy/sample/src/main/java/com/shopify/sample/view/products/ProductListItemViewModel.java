@@ -44,12 +44,14 @@ final class ProductListItemViewModel extends ListItemViewModel<Product> {
     super(payload, R.layout.product_list_item);
   }
 
-  @Override public ListItemViewHolder<Product, ListItemViewModel<Product>> createViewHolder(
+  @Override
+  public ListItemViewHolder<Product, ListItemViewModel<Product>> createViewHolder(
     final ListItemViewHolder.OnClickListener onClickListener) {
     return new ItemViewHolder(onClickListener);
   }
 
-  @Override public boolean equalsById(@NonNull final ListItemViewModel other) {
+  @Override
+  public boolean equalsById(@NonNull final ListItemViewModel other) {
     if (other instanceof ProductListItemViewModel) {
       Product otherPayload = ((ProductListItemViewModel) other).payload();
       return payload().equalsById(otherPayload);
@@ -57,7 +59,8 @@ final class ProductListItemViewModel extends ListItemViewModel<Product> {
     return false;
   }
 
-  @Override public boolean equalsByContent(@NonNull final ListItemViewModel other) {
+  @Override
+  public boolean equalsByContent(@NonNull final ListItemViewModel other) {
     if (other instanceof ProductListItemViewModel) {
       Product otherPayload = ((ProductListItemViewModel) other).payload();
       return payload().equals(otherPayload);
@@ -66,6 +69,7 @@ final class ProductListItemViewModel extends ListItemViewModel<Product> {
   }
 
   static final class ItemViewHolder extends ListItemViewHolder<Product, ListItemViewModel<Product>> {
+
     static final NumberFormat CURRENCY_FORMAT = NumberFormat.getCurrencyInstance();
     @BindView(R.id.image) ShopifyDraweeView imageView;
     @BindView(R.id.title) TextView titleView;
@@ -75,14 +79,16 @@ final class ProductListItemViewModel extends ListItemViewModel<Product> {
       super(onClickListener);
     }
 
-    @Override public void bindModel(@NonNull final ListItemViewModel<Product> listViewItemModel, final int position) {
+    @Override
+    public void bindModel(@NonNull final ListItemViewModel<Product> listViewItemModel, final int position) {
       super.bindModel(listViewItemModel, position);
       imageView.loadShopifyImage(listViewItemModel.payload().image);
       titleView.setText(listViewItemModel.payload().title);
       priceView.setText(CURRENCY_FORMAT.format(listViewItemModel.payload().price));
     }
 
-    @SuppressWarnings("unchecked") @OnClick({R.id.image, R.id.title, R.id.price})
+    @SuppressWarnings("unchecked")
+    @OnClick({R.id.image, R.id.title, R.id.price})
     void onClick() {
       onClickListener().onClick(itemModel());
     }

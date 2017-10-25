@@ -24,7 +24,6 @@
 
 package com.shopify.sample.view.collections;
 
-import android.arch.lifecycle.Transformations;
 import android.content.Context;
 import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
@@ -37,7 +36,6 @@ import android.util.AttributeSet;
 
 import com.shopify.sample.R;
 import com.shopify.sample.domain.model.Collection;
-import com.shopify.sample.util.Util;
 import com.shopify.sample.view.Constant;
 import com.shopify.sample.view.ScreenRouter;
 import com.shopify.sample.view.ViewUtils;
@@ -45,8 +43,6 @@ import com.shopify.sample.view.ViewUtils.OnNextPageListener;
 import com.shopify.sample.view.base.LifecycleFrameLayout;
 import com.shopify.sample.view.base.ListItemViewModel;
 import com.shopify.sample.view.base.RecyclerViewAdapter;
-
-import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -72,15 +68,15 @@ public final class CollectionListView extends LifecycleFrameLayout implements On
   }
 
   @Override
-  public void onNextPage() {
-    viewModel.fetchData();
-  }
-
-  @Override
   public void onItemClick(@NonNull final ListItemViewModel itemViewModel) {
     if (itemViewModel.payload() instanceof Collection) {
       ScreenRouter.route(getContext(), new CollectionClickActionEvent((Collection) itemViewModel.payload()));
     }
+  }
+
+  @Override
+  public void onNextPage() {
+    viewModel.fetchData();
   }
 
   @Override
@@ -104,15 +100,8 @@ public final class CollectionListView extends LifecycleFrameLayout implements On
         snackbar.getView().setBackgroundResource(R.color.snackbar_error_background);
         snackbar.show();
       });
-    Transformations
-      .map(viewModel.data(), collections -> Util.reduce(collections, (viewModels, collection) -> {
-        viewModels.add(new CollectionTitleListItemViewModel(collection));
-        viewModels.add(new CollectionImageListItemViewModel(collection));
-        viewModels.add(new ProductsListItemViewModel(collection.products));
-        viewModels.add(new CollectionDescriptionSummaryListItemViewModel(collection));
-        viewModels.add(new CollectionDividerListItemViewModel(collection));
-        return viewModels;
-      }, new ArrayList<ListItemViewModel>()))
+    viewModel
+      .items()
       .observe(this, adapter::swapItemsAndNotify);
   }
 

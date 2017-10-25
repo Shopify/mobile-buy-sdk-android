@@ -1,6 +1,7 @@
 package com.shopify.sample.data.apollo;
 
 import com.shopify.sample.domain.CollectionPageWithProductsQuery;
+import com.shopify.sample.domain.CollectionProductPageQuery;
 import com.shopify.sample.domain.model.Collection;
 import com.shopify.sample.domain.model.Product;
 import com.shopify.sample.util.Util;
@@ -36,6 +37,21 @@ public final class Converter {
         product.title,
         Util.reduce(product.imageConnection.edges, (acc, val) -> val.image.src, null),
         Util.reduce(product.variantConnection.variantEdge, (acc, val) -> val.variant.price, BigDecimal.ZERO),
+        productEdge.cursor
+      ));
+    }
+    return products;
+  }
+
+  public static List<Product> convertProducts(final CollectionProductPageQuery.ProductConnection productConnection) {
+    List<Product> products = new ArrayList<>();
+    for (CollectionProductPageQuery.ProductEdge productEdge : productConnection.productEdges) {
+      final CollectionProductPageQuery.Product product = productEdge.product;
+      products.add(new Product(
+        product.id,
+        product.title,
+        Util.reduce(product.imageConnection.imageEdges, (acc, val) -> val.image.src, null),
+        Util.reduce(product.variantConnection.variantEdges, (acc, val) -> val.variant.price, BigDecimal.ZERO),
         productEdge.cursor
       ));
     }
