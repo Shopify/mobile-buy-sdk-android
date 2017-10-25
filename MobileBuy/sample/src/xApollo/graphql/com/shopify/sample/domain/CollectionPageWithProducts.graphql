@@ -23,7 +23,7 @@ query CollectionPageWithProductsQuery($perPage: Int!, $nextPageCursor: String, $
                     }
                   }
                 }
-                variantConnection: variants(first: 250) {
+                variantConnection: variants(first: 1) {
                   variantEdge: edges {
                     variant: node {
                       price

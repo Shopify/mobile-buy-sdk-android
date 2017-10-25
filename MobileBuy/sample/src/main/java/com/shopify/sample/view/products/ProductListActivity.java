@@ -45,6 +45,7 @@ import butterknife.ButterKnife;
 import static com.shopify.sample.util.Util.checkNotNull;
 
 public final class ProductListActivity extends AppCompatActivity {
+
   public static final String EXTRAS_COLLECTION_ID = "collection_id";
   public static final String EXTRAS_COLLECTION_IMAGE_URL = "collection_image_url";
   public static final String EXTRAS_COLLECTION_TITLE = "collection_title";
@@ -53,7 +54,8 @@ public final class ProductListActivity extends AppCompatActivity {
   @BindView(R.id.collection_image) ShopifyDraweeView collectionImageView;
   @BindView(R.id.product_list) ProductListView productListView;
 
-  @Override protected void onCreate(@Nullable final Bundle savedInstanceState) {
+  @Override
+  protected void onCreate(@Nullable final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_product_list);
     ButterKnife.bind(this);
@@ -73,12 +75,14 @@ public final class ProductListActivity extends AppCompatActivity {
     initViewModels(collectionId);
   }
 
-  @Override public boolean onSupportNavigateUp() {
+  @Override
+  public boolean onSupportNavigateUp() {
     finish();
     return true;
   }
 
-  @Override public boolean onCreateOptionsMenu(final Menu menu) {
+  @Override
+  public boolean onCreateOptionsMenu(final Menu menu) {
     MenuInflater inflater = getMenuInflater();
     inflater.inflate(R.menu.menu, menu);
     menu.findItem(R.id.cart).getActionView().setOnClickListener(v -> {
@@ -88,15 +92,17 @@ public final class ProductListActivity extends AppCompatActivity {
   }
 
   private void initViewModels(final String collectionId) {
-    RealProductListViewModel listViewModel = ViewModelProviders.of(this, new ViewModelProvider.Factory() {
-      @SuppressWarnings("unchecked") @Override public <T extends ViewModel> T create(final Class<T> modelClass) {
-        if (modelClass.equals(RealProductListViewModel.class)) {
-          return (T) new RealProductListViewModel(collectionId);
+    ProductListViewModel listViewModel = ViewModelProviders.of(this, new ViewModelProvider.Factory() {
+      @SuppressWarnings("unchecked")
+      @Override
+      public <T extends ViewModel> T create(final Class<T> modelClass) {
+        if (modelClass.equals(ProductListViewModel.class)) {
+          return (T) new ProductListViewModel(collectionId);
         } else {
           return null;
         }
       }
-    }).get(RealProductListViewModel.class);
+    }).get(ProductListViewModel.class);
     productListView.bindViewModel(listViewModel);
   }
 }

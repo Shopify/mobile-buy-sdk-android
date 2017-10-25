@@ -228,8 +228,7 @@ public final class GraphClient {
 
       HttpCache httpCache = this.httpCache;
       if (httpCache == null && httpCacheFolder != null) {
-        byte[] tmp = (endpointUrl.toString() + "/" + accessToken).getBytes(Charset.forName("UTF-8"));
-        File cacheFolder = new File(httpCacheFolder, ByteString.of(tmp).md5().hex());
+        File cacheFolder = cacheFolder();
         httpCache = new HttpCache(cacheFolder, httpCacheMaxSize);
       }
 
@@ -263,6 +262,12 @@ public final class GraphClient {
         builder.header("X-Shopify-Storefront-Access-Token", accessToken);
         return chain.proceed(builder.build());
       };
+    }
+
+    private File cacheFolder() {
+      String version = BuildConfig.VERSION_NAME;
+      byte[] tmp = (endpointUrl.toString() + "/" + version + "/" + accessToken).getBytes(Charset.forName("UTF-8"));
+      return new File(httpCacheFolder, ByteString.of(tmp).md5().hex());
     }
   }
 }

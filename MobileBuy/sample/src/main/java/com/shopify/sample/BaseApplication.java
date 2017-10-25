@@ -37,6 +37,7 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.imagepipeline.core.ImagePipelineConfig;
 import com.facebook.imagepipeline.listener.RequestListener;
 import com.facebook.imagepipeline.listener.RequestLoggingListener;
+import com.shopify.sample.domain.usecases.UseCases;
 import com.shopify.sample.domain.interactor.RealShopSettingInteractor;
 import com.shopify.sample.domain.model.ShopSettings;
 import com.shopify.sample.util.RxRetryHandler;
@@ -51,19 +52,35 @@ import java.util.concurrent.TimeUnit;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
-import static java.util.Collections.emptyList;
 import static java.util.Collections.emptySet;
 
 public abstract class BaseApplication extends Application {
+
+  private static BaseApplication instance;
+
   private final FrescoMemoryTrimmableRegistry frescoMemoryTrimmableRegistry = new FrescoMemoryTrimmableRegistry();
   private MutableLiveData<ShopSettings> shopSettings = new MutableLiveData<>();
+  private UseCases useCases;
+
+  public static BaseApplication instance() {
+    return instance;
+  }
 
   @Override
   public void onCreate() {
     super.onCreate();
+
+    instance = this;
+    initialize();
+    useCases = onCreateUseCases();
+
     iniTimber();
     initFresco();
     fetchShopSettings();
+  }
+
+  public UseCases useCases() {
+    return useCases;
   }
 
   @Override
@@ -157,4 +174,8 @@ public abstract class BaseApplication extends Application {
       }
     }
   }
+
+  protected abstract UseCases onCreateUseCases();
+
+  protected abstract void initialize();
 }

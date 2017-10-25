@@ -5,8 +5,6 @@ import android.support.annotation.NonNull;
 import com.shopify.buy3.pay.CardNetworkType;
 
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import static com.shopify.sample.util.Util.checkNotNull;

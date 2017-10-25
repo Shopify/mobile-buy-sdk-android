@@ -28,7 +28,6 @@ import android.support.annotation.NonNull;
 
 import com.shopify.buy3.GraphHttpError;
 import com.shopify.buy3.GraphNetworkError;
-import com.shopify.buy3.Storefront;
 import com.shopify.sample.SampleApplication;
 import com.shopify.sample.domain.model.Checkout;
 import com.shopify.sample.domain.repository.CheckoutRepository;

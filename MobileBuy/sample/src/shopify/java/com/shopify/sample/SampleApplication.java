@@ -28,6 +28,9 @@ import android.text.TextUtils;
 
 import com.shopify.buy3.GraphClient;
 import com.shopify.buy3.HttpCachePolicy;
+import com.shopify.sample.domain.usecases.UseCases;
+import com.shopify.sample.domain.usecases.UseCasesImpl;
+import com.shopify.sample.util.CallbackExecutors;
 
 import java.util.concurrent.TimeUnit;
 
@@ -35,6 +38,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 
 public class SampleApplication extends BaseApplication {
+
   private static final String SHOP_PROPERTIES_INSTRUCTION =
     "\n\tAdd your shop credentials to a shop.properties file in the main app folder (e.g. 'app/shop.properties')."
       + "Include these keys:\n" + "\t\tSHOP_DOMAIN=<myshop>.myshopify.com\n"
@@ -47,9 +51,13 @@ public class SampleApplication extends BaseApplication {
   }
 
   @Override
-  public void onCreate() {
+  protected void initialize() {
     initializeGraphClient();
-    super.onCreate();
+  }
+
+  @Override
+  protected UseCases onCreateUseCases() {
+    return new UseCasesImpl(CallbackExecutors.createDefault(), graphClient);
   }
 
   private void initializeGraphClient() {

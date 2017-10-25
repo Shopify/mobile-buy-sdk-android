@@ -53,7 +53,8 @@ public final class Util {
     return reference;
   }
 
-  @NonNull public static <T, R> List<R> mapItems(@NonNull final Collection<T> source, @NonNull final Function<T, R> transformer) {
+  @NonNull
+  public static <T, R> List<R> mapItems(@NonNull final Collection<T> source, @NonNull final Function<T, R> transformer) {
     checkNotNull(source, "source == null");
     checkNotNull(transformer, "transformer == null");
     List<R> result = new ArrayList<>();
@@ -63,11 +64,13 @@ public final class Util {
     return result;
   }
 
-  @Nullable public static <T> T firstItem(@Nullable final List<T> source) {
+  @Nullable
+  public static <T> T firstItem(@Nullable final List<T> source) {
     return source != null && !source.isEmpty() ? source.get(0) : null;
   }
 
-  @Nullable public static <T> List<T> filter(@Nullable final List<T> source, @NonNull final Function<T, Boolean> condition) {
+  @Nullable
+  public static <T> List<T> filter(@Nullable final List<T> source, @NonNull final Function<T, Boolean> condition) {
     checkNotNull(source, "source == null");
     checkNotNull(condition, "condition == null");
     List<T> result = new ArrayList<>();
@@ -79,13 +82,15 @@ public final class Util {
     return result;
   }
 
-  @Nullable public static <T, R> R firstItem(@Nullable final List<T> source, @NonNull final Function<T, R> transformer) {
+  @Nullable
+  public static <T, R> R firstItem(@Nullable final List<T> source, @NonNull final Function<T, R> transformer) {
     checkNotNull(transformer, "transformer == null");
     return source != null && !source.isEmpty() ? transformer.apply(source.get(0)) : null;
   }
 
-  @NonNull public static <T> T minItem(@NonNull final Collection<T> source, @NonNull final T defaultValue,
-    @NonNull final Comparator<T> comparator) {
+  @NonNull
+  public static <T> T minItem(@NonNull final Collection<T> source, @NonNull final T defaultValue,
+                              @NonNull final Comparator<T> comparator) {
     checkNotNull(source, "source == null");
     checkNotNull(comparator, "comparator == null");
     if (source.isEmpty()) {
@@ -108,7 +113,7 @@ public final class Util {
   }
 
   public static <T, R> R fold(@Nullable final R initialValue, @NonNull final Collection<T> source,
-    @NonNull final BiFunction<R, T, R> accumulator) {
+                              @NonNull final BiFunction<R, T, R> accumulator) {
     checkNotNull(source, "source == null");
     checkNotNull(accumulator, "accumulator == null");
     R result = initialValue;
@@ -116,6 +121,22 @@ public final class Util {
       result = accumulator.apply(result, item);
     }
     return result;
+  }
+
+  public static <T, R> R reduce(@Nullable final Collection<T> source, @NonNull final ReduceCallback<T, R> callback, @Nullable final R initialValue) {
+    if (source == null) {
+      return initialValue;
+    }
+    R acc = initialValue;
+    for (T val : source) {
+      acc = callback.reduce(acc, val);
+    }
+    return acc;
+  }
+
+  public interface ReduceCallback<T, R> {
+
+    R reduce(R acc, T val);
   }
 
   private Util() {
