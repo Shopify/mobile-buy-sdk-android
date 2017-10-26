@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:animateLayoutChanges="true">
+                                             xmlns:app="http://schemas.android.com/apk/res-auto"
+                                             xmlns:tools="http://schemas.android.com/tools"
+                                             android:layout_width="match_parent"
+                                             android:layout_height="wrap_content"
+                                             android:animateLayoutChanges="true">
 
     <TextView
         android:id="@+id/title1"
@@ -14,7 +14,7 @@
         android:textAppearance="@style/Shopify.TitleText"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <TextView
         android:id="@+id/subtotal"
@@ -27,7 +27,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/title1"
-        tools:text="$59.99" />
+        tools:text="$59.99"/>
 
     <TextView
         android:id="@+id/title2"
@@ -38,36 +38,62 @@
         android:textAppearance="@style/Shopify.BodyText"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/subtotal" />
+        app:layout_constraintTop_toBottomOf="@+id/subtotal"/>
 
-    <ImageButton
-        android:id="@+id/android_pay_checkout"
-        android:layout_width="160dp"
-        android:layout_height="48dp"
-        android:layout_marginEnd="@dimen/default_padding_half"
-        android:layout_marginStart="@dimen/default_padding_half"
-        android:layout_marginTop="@dimen/default_padding"
-        android:padding="12dp"
-        android:scaleType="fitCenter"
-        android:src="@drawable/ic_android_pay"
-        android:text="@string/android_pay"
-        android:visibility="gone"
-        app:layout_constraintHorizontal_chainStyle="packed"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/web_checkout"
-        app:layout_constraintTop_toBottomOf="@+id/title2"
-        tools:visibility="visible" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintTop_toBottomOf="@+id/title2">
 
-    <Button
-        android:id="@+id/web_checkout"
-        android:layout_width="160dp"
-        android:layout_height="48dp"
-        android:layout_marginEnd="@dimen/default_padding_half"
-        android:layout_marginStart="@dimen/default_padding_half"
-        android:layout_marginTop="@dimen/default_padding"
-        android:text="@string/web_checkout"
-        app:layout_constraintLeft_toRightOf="@+id/android_pay_checkout"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/title2" />
+        <RelativeLayout
+            android:id="@+id/android_pay_checkout"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginEnd="@dimen/default_padding_half"
+            android:layout_marginStart="@dimen/default_padding_half"
+            android:layout_marginTop="@dimen/default_padding"
+            android:background="@drawable/pay_with_google_button_background"
+            android:clickable="true"
+            android:contentDescription="@string/android_pay"
+            android:focusable="true"
+            android:padding="4dp"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:duplicateParentState="true"
+                android:gravity="center_vertical"
+                android:orientation="vertical"
+                android:weightSum="2">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:duplicateParentState="true"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/pay_with_google_button_content"/>
+            </LinearLayout>
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:duplicateParentState="true"
+                android:scaleType="fitXY"
+                android:src="@drawable/pay_with_google_button_overlay"/>
+        </RelativeLayout>
+
+        <Button
+            android:id="@+id/web_checkout"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginEnd="@dimen/default_padding_half"
+            android:layout_marginStart="@dimen/default_padding_half"
+            android:layout_marginTop="@dimen/default_padding_half"
+            android:text="@string/web_checkout"/>
+    </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

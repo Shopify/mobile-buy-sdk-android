@@ -21,7 +21,7 @@
 
         <activity
             android:name=".view.collections.CollectionListActivity"
-            android:icon="@drawable/ic_logo"
+            android:icon="@drawable/ic_launcher"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

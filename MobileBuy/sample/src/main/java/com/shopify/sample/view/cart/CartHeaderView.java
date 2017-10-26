@@ -79,8 +79,10 @@ public final class CartHeaderView extends FrameLayout implements LifecycleOwner 
     Transformations.map(viewModel.cartTotalLiveData(), CURRENCY_FORMAT::format)
       .observe(this, (total) -> subtotalView.setText(total));
 
-    viewModel.googleApiClientConnectionData().observe(this, connected ->
-      androidPayCheckoutView.setVisibility(connected == Boolean.TRUE ? VISIBLE : GONE));
+//    viewModel.googleApiClientConnectionData().observe(this, connected ->
+//      androidPayCheckoutView.setVisibility(connected == Boolean.TRUE ? VISIBLE : GONE));
+    viewModel.isReadyToPayRequest().observe(this, isReadyToPayRequest ->
+      androidPayCheckoutView.setVisibility(isReadyToPayRequest == Boolean.TRUE ? VISIBLE : GONE));
   }
 
   @Override public LifecycleRegistry getLifecycle() {

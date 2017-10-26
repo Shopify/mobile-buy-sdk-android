@@ -276,6 +276,18 @@ public final class PayHelper {
     }
   }
 
+  public static PaymentToken extractPaymentToken(String token, @NonNull final String androidPayPublicKey) {
+    checkNotEmpty(androidPayPublicKey, "androidPayPublicKey can't be empty");
+    try {
+      final MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
+      final byte[] digest = messageDigest.digest(androidPayPublicKey.getBytes("UTF-8"));
+      return new PaymentToken(token, Base64.encodeToString(digest,
+        Base64.DEFAULT));
+    } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
+      return null;
+    }
+  }
+
   /**
    * Interface for receiving results from {@link PayHelper#isReadyToPay(Context, GoogleApiClient, Set, AndroidPayReadyCallback)}.
    */

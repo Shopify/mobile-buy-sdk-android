@@ -1,7 +1,7 @@
 def versions = [
     androidSupportVersion: '25.2.0',
     okHttpVersion        : '3.6.0',
-    playServicesVersion  : '9.8.0',
+    playServicesVersion  : '11.4.2',
     jodaTimeVersion      : '2.9.9',
     butterKnifeVersion   : '8.5.1',
     apolloVersion        : '0.4.2',
@@ -11,14 +11,14 @@ def versions = [
 ext.isCi = "true" == System.getenv('CI')
 
 ext.androidConfig = [
-    compileSdkVersion: 24,
-    buildToolsVersion: '25.0.2',
+    compileSdkVersion: 26,
+    buildToolsVersion: '26.0.0',
     minSdkVersion    : 19,
-    targetSdkVersion : 24,
+    targetSdkVersion : 26,
 ]
 
 ext.dep = [
-    androidPlugin            : "com.android.tools.build:gradle:2.3.0",
+    androidPlugin            : "com.android.tools.build:gradle:2.3.3",
     androidSupportAnnotations: "com.android.support:support-annotations:$versions.androidSupportVersion",
     androidSupportDesign     : "com.android.support:design:$versions.androidSupportVersion",
     androidSupportV4         : "com.android.support:support-v4:$versions.androidSupportVersion",

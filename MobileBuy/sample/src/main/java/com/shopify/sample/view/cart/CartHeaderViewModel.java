@@ -35,6 +35,8 @@ public interface CartHeaderViewModel {
 
   LiveData<BigDecimal> cartTotalLiveData();
 
+  LiveData<Boolean> isReadyToPayRequest();
+
   void webCheckout();
 
   void androidPayCheckout();

@@ -32,9 +32,16 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.wallet.IsReadyToPayRequest;
 import com.google.android.gms.wallet.MaskedWallet;
+import com.google.android.gms.wallet.PaymentsClient;
+import com.google.android.gms.wallet.Wallet;
+import com.google.android.gms.wallet.WalletConstants;
 import com.shopify.buy3.pay.PayCart;
 import com.shopify.buy3.pay.PayHelper;
+import com.shopify.sample.BaseApplication;
+import com.shopify.sample.BuildConfig;
 import com.shopify.sample.domain.interactor.CartWatchInteractor;
 import com.shopify.sample.domain.interactor.CheckoutCreateInteractor;
 import com.shopify.sample.domain.interactor.RealCartWatchInteractor;
@@ -57,6 +64,7 @@ import static com.shopify.sample.util.Util.mapItems;
 
 @SuppressWarnings({"WeakerAccess", "FieldCanBeLocal"})
 public final class RealCartViewModel extends BaseViewModel implements CartDetailsViewModel, CartHeaderViewModel {
+
   private static final String STATE_KEY_CHECKOUT_ID = "checkout_id";
   private static final String STATE_KEY_PAY_CART = "pay_cart";
 
@@ -67,6 +75,7 @@ public final class RealCartViewModel extends BaseViewModel implements CartDetail
   private final LifeCycleBoundCallback<AndroidPayCheckout> androidPayCheckoutCallback = new LifeCycleBoundCallback<>();
   private final MutableLiveData<Cart> cartLiveData = new MutableLiveData<>();
   private final MutableLiveData<Boolean> googleApiClientConnectionData = new MutableLiveData<>();
+  private final MutableLiveData<Boolean> isReadyToPayRequest = new MutableLiveData<>();
 
   private String checkoutId;
   private PayCart payCart;
@@ -82,61 +91,104 @@ public final class RealCartViewModel extends BaseViewModel implements CartDetail
           .delegateOnNext(RealCartViewModel::onCartUpdated)
           .create())
     );
+
+    // New Google Payment API
+    final PaymentsClient paymentsClient = Wallet.getPaymentsClient(BaseApplication.instance(), new Wallet.WalletOptions.Builder()
+      .setEnvironment(BuildConfig.ANDROID_PAY_ENVIRONMENT)
+      .build());
+    final IsReadyToPayRequest request = IsReadyToPayRequest.newBuilder()
+      .addAllowedPaymentMethod(WalletConstants.PAYMENT_METHOD_CARD)
+      .addAllowedPaymentMethod(WalletConstants.PAYMENT_METHOD_TOKENIZED_CARD)
+      .build();
+    paymentsClient.isReadyToPay(request).addOnCompleteListener(task -> {
+      try {
+        isReadyToPayRequest.setValue(task.getResult(ApiException.class));
+      } catch (ApiException ignored) {
+      }
+    });
   }
 
-  @Override public void webCheckout() {
+  @Override
+  public String getCheckoutId() {
+    return checkoutId;
+  }
+
+  @Override
+  public PayCart getPayCart() {
+    return payCart;
+  }
+
+  @Override
+  public void webCheckout() {
     createCheckout(REQUEST_ID_CREATE_WEB_CHECKOUT, cartLiveData.getValue());
   }
 
-  @Override public void androidPayCheckout() {
+  @Override
+  public void androidPayCheckout() {
     createCheckout(REQUEST_ID_CREATE_ANDROID_PAY_CHECKOUT, cartLiveData.getValue());
   }
 
-  @Override public LiveData<Boolean> googleApiClientConnectionData() {
+  @Override
+  public LiveData<Boolean> googleApiClientConnectionData() {
     return googleApiClientConnectionData;
   }
 
-  @Override public void onGoogleApiClientConnectionChanged(final boolean connected) {
+  @Override
+  public void onGoogleApiClientConnectionChanged(final boolean connected) {
     googleApiClientConnectionData.setValue(connected);
   }
 
-  @Override public LiveData<BigDecimal> cartTotalLiveData() {
+  @Override
+  public LiveData<BigDecimal> cartTotalLiveData() {
     return Transformations.map(cartLiveData, cart -> cart != null ? cart.totalPrice() : BigDecimal.ZERO);
   }
 
-  @Override public LifeCycleBoundCallback<Checkout> webCheckoutCallback() {
+  @Override
+  public LiveData<Boolean> isReadyToPayRequest() {
+    return isReadyToPayRequest;
+  }
+
+  @Override
+  public LifeCycleBoundCallback<Checkout> webCheckoutCallback() {
     return webCheckoutCallback;
   }
 
-  @Override public LifeCycleBoundCallback<AndroidPayCheckout> androidPayCheckoutCallback() {
+  @Override
+  public LifeCycleBoundCallback<AndroidPayCheckout> androidPayCheckoutCallback() {
     return androidPayCheckoutCallback;
   }
 
-  @Override public LifeCycleBoundCallback<PayCart> androidPayStartCheckoutCallback() {
+  @Override
+  public LifeCycleBoundCallback<PayCart> androidPayStartCheckoutCallback() {
     return androidPayStartCheckoutCallback;
   }
 
-  @Override public void handleMaskedWalletResponse(final int requestCode, final int resultCode, @Nullable final Intent data) {
+  @Override
+  public void handleMaskedWalletResponse(final int requestCode, final int resultCode, @Nullable final Intent data) {
     PayHelper.handleWalletResponse(requestCode, resultCode, data, new PayHelper.WalletResponseHandler() {
-      @Override public void onWalletError(final int requestCode, final int errorCode) {
+      @Override
+      public void onWalletError(final int requestCode, final int errorCode) {
         notifyUserError(REQUEST_ID_PREPARE_ANDROID_PAY, new RuntimeException("Failed to fetch masked wallet, errorCode: " +
           errorCode), null);
       }
 
-      @Override public void onMaskedWallet(final MaskedWallet maskedWallet) {
+      @Override
+      public void onMaskedWallet(final MaskedWallet maskedWallet) {
         androidPayCheckoutCallback.notify(new AndroidPayCheckout(checkoutId, payCart, maskedWallet));
       }
     });
   }
 
-  @Override public Bundle saveState() {
+  @Override
+  public Bundle saveState() {
     Bundle bundle = new Bundle();
     bundle.putString(STATE_KEY_CHECKOUT_ID, checkoutId);
     bundle.putParcelable(STATE_KEY_PAY_CART, payCart);
     return bundle;
   }
 
-  @Override public void restoreState(final Bundle bundle) {
+  @Override
+  public void restoreState(final Bundle bundle) {
     if (bundle == null) {
       return;
     }
@@ -194,7 +246,7 @@ public final class RealCartViewModel extends BaseViewModel implements CartDetail
       .currencyCode(checkout.currency)
       .countryCode(shopSettings.countryCode)
       .phoneNumberRequired(true)
-      .shippingAddressRequired(checkout.requiresShipping);
+      .shippingAddressRequired(true);
 
     fold(payCartBuilder, checkout.lineItems, (accumulator, lineItem) ->
       accumulator.addLineItem(lineItem.title, lineItem.quantity, lineItem.price));

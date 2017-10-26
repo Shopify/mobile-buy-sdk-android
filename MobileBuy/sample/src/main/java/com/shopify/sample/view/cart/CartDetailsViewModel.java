@@ -57,6 +57,10 @@ public interface CartDetailsViewModel extends ViewModel {
 
   void restoreState(Bundle bundle);
 
+  String getCheckoutId();
+
+  PayCart getPayCart();
+
   final class AndroidPayCheckout {
     public final String checkoutId;
     public final PayCart payCart;

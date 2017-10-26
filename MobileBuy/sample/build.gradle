@@ -17,10 +17,10 @@ android {
   buildToolsVersion androidConfig.buildToolsVersion
 
   defaultConfig {
-    applicationId "com.shopify.sample"
+    applicationId "me.henrytao.com.shopify.sample"
     minSdkVersion androidConfig.minSdkVersion
     targetSdkVersion androidConfig.targetSdkVersion
-    versionCode 1
+    versionCode 4
     versionName "1.0"
   }
 
@@ -76,7 +76,7 @@ android {
       buildConfigField "String", "ANDROID_PAY_PUBLIC_KEY", "\"" + androidPayPublicKey.toString() + "\""
       buildConfigField "int", "ANDROID_PAY_ENVIRONMENT", androidPayEnvironment
 
-      debuggable = true
+      // debuggable = false
       minifyEnabled = false
     }
   }
