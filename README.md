@@ -573,13 +573,17 @@ The following example shows how you can find collections that contain the word "
 ```java
 Storefront.query(root -> root
   .shop(shop -> shop
-    .collections(10, arg -> arg.query("shoes"), connection -> connection
-      .edges(edges -> edges
-        .node(node -> node
-          .title()
-          .description()
+    .collections(
+      arg -> arg
+        .first(10)
+        .query("shoes"),
+      connection -> connection
+        .edges(edges -> edges
+          .node(node -> node
+            .title()
+            .description()
+          )
         )
-      )
     )
   )
 )
@@ -594,7 +598,7 @@ In the example above, the query is `shoes`. This will match collections that con
 As an alternative to object-wide fuzzy matches, you can also specify individual fields to include in your search. For example, if you want to match collections of particular type, you can do so by specifying a field directly:
 
 ```java
-.collections(10, arg -> arg.query("collection_type:runners"), ...
+.collections(arg -> arg.query("collection_type:runners"), ...
 ```
 
 The format for specifying fields and search parameters is the following: `field:search_term`. Note that it's critical that there be no space between the `:` and the `search_term`. Fields that support search are documented in the generated interfaces of the Buy SDK.
@@ -606,7 +610,7 @@ The format for specifying fields and search parameters is the following: `field:
 Each search field can also be negated. Building on the example above, if you want to match all collections that were **not** of the type `runners`, then you can append a `-` to the relevant field:
 
 ```java
-.collections(10, arg -> arg.query("-collection_type:runners"), ...
+.collections(arg -> arg.query("-collection_type:runners"), ...
 ```
 
 #### Boolean operators [⤴](#table-of-contents)
@@ -616,13 +620,13 @@ In addition to single field searches, you can build more complex searches using 
 The following example shows how you can search for products that are tagged with `blue` and that are of type `sneaker`:
 
 ```java
-.products(10, arg -> arg.query("tag:blue AND product_type:sneaker"), ...
+.products(arg -> arg.query("tag:blue AND product_type:sneaker"), ...
 ```
 
 You can also group search terms:
 
 ```java
-.products(10, arg -> arg.query("(tag:blue AND product_type:sneaker) OR tag:red"), ...
+.products(arg -> arg.query("(tag:blue AND product_type:sneaker) OR tag:red"), ...
 ```
 
 #### Comparison operators [⤴](#table-of-contents)
@@ -630,7 +634,7 @@ You can also group search terms:
 The search syntax also allows for comparing values that aren't exact matches. For example, you might want to get products that were updated only after a certain a date. You can do that as well:
 
 ```java
-.products(10, arg -> arg.query("updated_at:>\"2017-05-29T00:00:00Z\""), ...
+.products(arg -> arg.query("updated_at:>\"2017-05-29T00:00:00Z\""), ...
 ```
 
 The query above will return products that have been updated after midnight on May 29, 2017. Note how the date is enclosed by another pair of escaped quotations. You can also use this technique for multiple words or sentences.
@@ -652,7 +656,7 @@ There is one special operator that can be used for checking `null` or empty valu
 The following example shows how you can find products that don't have any tags. You can do so using the `*` operator and negating the field:
 
 ```java
-.products(10, arg -> arg.query("-tag:*"), ...
+.products(arg -> arg.query("-tag:*"), ...
 ```
 
 ## Card Vaulting [⤴](#table-of-contents)
@@ -953,11 +957,11 @@ GraphClient client = ...;
 
 Storefront.QueryRootQuery query = Storefront.query(rootQuery -> rootQuery
   .shop(shopQuery -> shopQuery
-    .collections(10, collectionConnectionQuery -> collectionConnectionQuery
+    .collections(arg -> arg.first(10), collectionConnectionQuery -> collectionConnectionQuery
       .edges(collectionEdgeQuery -> collectionEdgeQuery
         .node(collectionQuery -> collectionQuery
           .title()
-          .products(10, productConnectionQuery -> productConnectionQuery
+          .products(arg -> arg.first(10), productConnectionQuery -> productConnectionQuery
             .edges(productEdgeQuery -> productEdgeQuery
               .node(productQuery -> productQuery
                 .title()
@@ -1037,18 +1041,22 @@ GraphClient client = ...;
 Storefront.QueryRootQuery query = Storefront.query(rootQuery -> rootQuery
   .node(new ID("IjoxNDg4MTc3MzEsImxhc3R"), nodeQuery -> nodeQuery
     .onCollection(collectionQuery -> collectionQuery
-      .products(10, args -> args.after(productPageCursor), productConnectionQuery -> productConnectionQuery
-        .pageInfo(pageInfoQuery -> pageInfoQuery
-          .hasNextPage()
-        )
-        .edges(productEdgeQuery -> productEdgeQuery
-          .cursor()
-          .node(productQuery -> productQuery
-            .title()
-            .productType()
-            .description()
+      .products(
+        args -> args
+          .first(10)
+          .after(productPageCursor),
+        productConnectionQuery -> productConnectionQuery
+          .pageInfo(pageInfoQuery -> pageInfoQuery
+            .hasNextPage()
           )
-        )
+          .edges(productEdgeQuery -> productEdgeQuery
+            .cursor()
+            .node(productQuery -> productQuery
+              .title()
+              .productType()
+              .description()
+            )
+          )
       )
     )
   )
@@ -1109,14 +1117,14 @@ Storefront.QueryRootQuery query = Storefront.query(rootQuery -> rootQuery
     .onProduct(productQuery -> productQuery
       .title()
       .description()
-      .images(10, imageConnectionQuery -> imageConnectionQuery
+      .images(arg -> arg.first(10), imageConnectionQuery -> imageConnectionQuery
         .edges(imageEdgeQuery -> imageEdgeQuery
           .node(imageQuery -> imageQuery
             .src()
           )
         )
       )
-      .variants(10, variantConnectionQuery -> variantConnectionQuery
+      .variants(arg -> arg.first(10), variantConnectionQuery -> variantConnectionQuery
         .edges(variantEdgeQuery -> variantEdgeQuery
           .node(productVariantQuery -> productVariantQuery
             .price()
@@ -1633,7 +1641,7 @@ String accessToken = ...;
 
 Storefront.QueryRootQuery query = Storefront.query(root -> root
   .customer(accessToken, customer -> customer
-    .addresses(10, connection -> connection
+    .addresses(arg -> arg.first(10), connection -> connection
       .edges(edge -> edge
         .node(node -> node
           .address1()
@@ -1657,7 +1665,7 @@ String accessToken = ...;
 
 Storefront.QueryRootQuery query = Storefront.query(root -> root
   .customer(accessToken, customer -> customer
-    .orders(10, connection -> connection
+    .orders(arg -> arg.first(10), connection -> connection
       .edges(edge -> edge
         .node(node -> node
           .orderNumber()
