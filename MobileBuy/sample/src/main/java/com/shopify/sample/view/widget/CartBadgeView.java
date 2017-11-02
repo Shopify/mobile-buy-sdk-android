@@ -30,25 +30,21 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.shopify.sample.R;
 import com.shopify.sample.domain.model.Cart;
-import com.shopify.sample.domain.repository.CartRepository;
-import com.shopify.sample.domain.repository.RealCartRepository;
-import com.shopify.sample.util.WeakObserver;
+import com.shopify.sample.view.base.LifecycleFrameLayout;
+import com.shopify.sample.view.livedata.CartLiveData;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
 
-public final class CartBadgeView extends FrameLayout {
+public final class CartBadgeView extends LifecycleFrameLayout {
+
   @BindView(R.id.count) TextView countView;
 
-  private CartRepository cartRepository = new RealCartRepository();
-  private Disposable cartSubscription;
+  private CartLiveData cartLiveData = CartLiveData.get();
 
   public CartBadgeView(@NonNull final Context context) {
     super(context);
@@ -62,29 +58,14 @@ public final class CartBadgeView extends FrameLayout {
     super(context, attrs, defStyleAttr);
   }
 
-  @Override protected void onFinishInflate() {
+  @Override
+  protected void onFinishInflate() {
     super.onFinishInflate();
     ButterKnife.bind(this);
+    cartLiveData.observe(this, this::onCartUpdate);
   }
 
-  @Override protected void onAttachedToWindow() {
-    super.onAttachedToWindow();
-    cartSubscription = cartRepository.watch()
-      .subscribeOn(AndroidSchedulers.mainThread())
-      .subscribeWith(WeakObserver.<CartBadgeView, Cart>forTarget(this)
-        .delegateOnNext(CartBadgeView::onCartUpdate)
-        .create());
-  }
-
-  @Override protected void onDetachedFromWindow() {
-    super.onDetachedFromWindow();
-    if (cartSubscription != null) {
-      cartSubscription.dispose();
-      cartSubscription = null;
-    }
-  }
-
-  private void onCartUpdate(final Cart cart) {
+  private void onCartUpdate(@NonNull final Cart cart) {
     final int totalQuantity = cart.totalQuantity();
     countView.setVisibility(totalQuantity == 0 ? View.INVISIBLE : VISIBLE);
     countView.setText(String.valueOf(totalQuantity));

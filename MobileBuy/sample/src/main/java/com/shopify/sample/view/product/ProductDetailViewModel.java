@@ -8,11 +8,13 @@ import com.shopify.sample.core.UseCase;
 import com.shopify.sample.core.UseCase.Cancelable;
 import com.shopify.sample.domain.model.ProductDetail;
 import com.shopify.sample.view.base.BaseViewModel;
+import com.shopify.sample.view.livedata.CartLiveData;
 
 public class ProductDetailViewModel extends BaseViewModel implements UseCase.Callback1<ProductDetail> {
 
   private final String productId;
 
+  private final CartLiveData cart = CartLiveData.get();
   private final MutableLiveData<ProductDetail> data = new MutableLiveData<>();
   private final MutableLiveData<Throwable> error = new MutableLiveData<>();
   private final MutableLiveData<State> state = new MutableLiveData<>();
@@ -32,6 +34,10 @@ public class ProductDetailViewModel extends BaseViewModel implements UseCase.Cal
   public void onResponse(final ProductDetail productDetail) {
     data.setValue(productDetail);
     state.setValue(State.COMPLETED);
+  }
+
+  public void addToCart() {
+    cart.addToCart(data().getValue());
   }
 
   public void fetchData() {

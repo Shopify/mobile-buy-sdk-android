@@ -112,7 +112,7 @@ public final class ProductDetailActivity extends AppCompatActivity implements Li
     imageGalleryView.renderImages(Arrays.asList(productImageUrl));
     swipeRefreshLayoutView.setOnRefreshListener(() -> productDetailViewModel.fetchData());
     productDescriptionView.renderProduct(productTitle, productPrice);
-//    productDescriptionView.setOnAddToCartClickListener(() -> productDetailViewModel.addToCart());
+    productDescriptionView.setOnAddToCartClickListener(() -> productDetailViewModel.addToCart());
 
     lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE);
   }

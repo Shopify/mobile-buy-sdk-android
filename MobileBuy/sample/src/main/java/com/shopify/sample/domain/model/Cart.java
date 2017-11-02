@@ -36,17 +36,17 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class Cart {
+
   private final Map<String, CartItem> cartItems = new LinkedHashMap<>();
   private ReadWriteLock lock = new ReentrantReadWriteLock();
 
-  protected Cart() {
-  }
-
-  @Nullable public CartItem findByProductVariantId(final String productVariantId) {
+  @Nullable
+  public CartItem findByProductVariantId(final String productVariantId) {
     return cartItems.get(productVariantId);
   }
 
-  @NonNull public List<CartItem> cartItems() {
+  @NonNull
+  public List<CartItem> cartItems() {
     lock.readLock().lock();
     try {
       return new ArrayList<>(cartItems.values());
@@ -81,7 +81,7 @@ public class Cart {
     }
   }
 
-  protected void add(final CartItem cartItem) {
+  public void add(final CartItem cartItem) {
     lock.writeLock().lock();
     try {
       CartItem existing = cartItems.get(cartItem.productVariantId);
@@ -95,7 +95,7 @@ public class Cart {
     }
   }
 
-  protected void remove(final CartItem cartItem) {
+  public void remove(final CartItem cartItem) {
     lock.writeLock().lock();
     try {
       CartItem existing = cartItems.get(cartItem.productVariantId);
@@ -110,7 +110,7 @@ public class Cart {
     }
   }
 
-  protected void clear() {
+  public void clear() {
     lock.writeLock().lock();
     try {
       cartItems.clear();
