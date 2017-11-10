@@ -1329,11 +1329,11 @@ client.queryGraph(query).enqueue(
         }
       },
       null,
-      RetryHandler.exponentialBackoff(1, TimeUnit.MILLISECONDS, 1.2f)
+      RetryHandler.exponentialBackoff(800, TimeUnit.MILLISECONDS, 1.2f)
         .whenResponse(
           response -> ((Storefront.Checkout) response.data().getNode()).getAvailableShippingRates().getReady() == false
         )
-        .maxCount(10)
+        .maxCount(5)
         .build()
     );
 ```
