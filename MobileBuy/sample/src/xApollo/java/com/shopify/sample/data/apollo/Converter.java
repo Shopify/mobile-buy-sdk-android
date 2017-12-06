@@ -2,13 +2,17 @@ package com.shopify.sample.data.apollo;
 
 import com.shopify.sample.domain.CollectionPageWithProductsQuery;
 import com.shopify.sample.domain.CollectionProductPageQuery;
+import com.shopify.sample.domain.ProductByIdQuery;
 import com.shopify.sample.domain.model.Collection;
 import com.shopify.sample.domain.model.Product;
+import com.shopify.sample.domain.model.ProductDetail;
 import com.shopify.sample.util.Util;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.shopify.sample.util.Util.mapItems;
 
 public final class Converter {
 
@@ -56,6 +60,20 @@ public final class Converter {
       ));
     }
     return products;
+  }
+
+  public static ProductDetail convertProductDetail(ProductByIdQuery.AsProduct product) {
+    List<String> images = mapItems(product.imageConnection.imageEdge, imageEdge -> imageEdge.image.src);
+    List<ProductDetail.Option> options = mapItems(product.options, option -> new ProductDetail.Option(option.id, option.name,
+      option.values));
+    List<ProductDetail.Variant> variants = mapItems(product.variantConnection.variantEdge,
+      variantEdge -> {
+        List<ProductDetail.SelectedOption> selectedOptions = mapItems(variantEdge.variant.selectedOptions, selectedOption ->
+          new ProductDetail.SelectedOption(selectedOption.name, selectedOption.value));
+        return new ProductDetail.Variant(variantEdge.variant.id, variantEdge.variant.title, variantEdge.variant.availableForSale,
+          selectedOptions, variantEdge.variant.price);
+      });
+    return new ProductDetail(product.id, product.title, product.descriptionHtml, product.tags, images, options, variants);
   }
 
   private Converter() {

@@ -81,15 +81,15 @@ public final class RealCartRepository implements CartRepository {
   }
 
   private static final class RealCart extends Cart {
-    @Override protected void add(final CartItem cartItem) {
+    @Override public void add(final CartItem cartItem) {
       super.add(cartItem);
     }
 
-    @Override protected void remove(final CartItem cartItem) {
+    @Override public void remove(final CartItem cartItem) {
       super.remove(cartItem);
     }
 
-    @Override protected void clear() {
+    @Override public void clear() {
       super.clear();
     }
   }

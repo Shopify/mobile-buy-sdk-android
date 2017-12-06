@@ -30,7 +30,7 @@ import com.shopify.sample.domain.model.Checkout;
 import com.shopify.sample.domain.model.Collection;
 import com.shopify.sample.domain.model.Payment;
 import com.shopify.sample.domain.model.Product;
-import com.shopify.sample.domain.model.ProductDetails;
+import com.shopify.sample.domain.model.ProductDetail;
 import com.shopify.sample.domain.model.ShopSettings;
 
 import java.math.BigDecimal;
@@ -54,19 +54,19 @@ final class Converters {
     });
   }
 
-  static ProductDetails convertToProductDetails(final Storefront.Product product) {
+  static ProductDetail convertToProductDetails(final Storefront.Product product) {
     List<String> images = mapItems(product.getImages().getEdges(), imageEdge -> imageEdge.getNode().getSrc());
-    List<ProductDetails.Option> options = mapItems(product.getOptions(), option ->
-      new ProductDetails.Option(option.getId().toString(), option.getName(), option.getValues()));
-    List<ProductDetails.Variant> variants = mapItems(product.getVariants().getEdges(),
+    List<ProductDetail.Option> options = mapItems(product.getOptions(), option ->
+      new ProductDetail.Option(option.getId().toString(), option.getName(), option.getValues()));
+    List<ProductDetail.Variant> variants = mapItems(product.getVariants().getEdges(),
       variantEdge -> {
-        List<ProductDetails.SelectedOption> selectedOptions = mapItems(variantEdge.getNode().getSelectedOptions(), selectedOption ->
-          new ProductDetails.SelectedOption(selectedOption.getName(), selectedOption.getValue()));
-        return new ProductDetails.Variant(variantEdge.getNode().getId().toString(), variantEdge.getNode().getTitle(),
+        List<ProductDetail.SelectedOption> selectedOptions = mapItems(variantEdge.getNode().getSelectedOptions(), selectedOption ->
+          new ProductDetail.SelectedOption(selectedOption.getName(), selectedOption.getValue()));
+        return new ProductDetail.Variant(variantEdge.getNode().getId().toString(), variantEdge.getNode().getTitle(),
           (variantEdge.getNode().getAvailableForSale() == null || Boolean.TRUE.equals(variantEdge.getNode().getAvailableForSale())),
           selectedOptions, variantEdge.getNode().getPrice());
       });
-    return new ProductDetails(product.getId().toString(), product.getTitle(), product.getDescriptionHtml(), product.getTags(), images, options,
+    return new ProductDetail(product.getId().toString(), product.getTitle(), product.getDescriptionHtml(), product.getTags(), images, options,
       variants);
   }
 

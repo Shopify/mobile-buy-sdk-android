@@ -5,4 +5,6 @@ public interface UseCases {
   FetchCollectionsUseCase fetchCollections();
 
   FetchProductsUseCase fetchProducts();
+
+  FetchProductDetailUseCase fetchProductDetail();
 }

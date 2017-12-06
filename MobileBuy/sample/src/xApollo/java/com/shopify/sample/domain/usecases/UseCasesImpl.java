@@ -22,4 +22,9 @@ public final class UseCasesImpl implements UseCases {
   public FetchProductsUseCase fetchProducts() {
     return new FetchProductsUseCaseImpl(callbackExecutors, apolloClient);
   }
+
+  @Override
+  public FetchProductDetailUseCase fetchProductDetail() {
+    return new FetchProductDetailUseCaseImpl(callbackExecutors, apolloClient);
+  }
 }

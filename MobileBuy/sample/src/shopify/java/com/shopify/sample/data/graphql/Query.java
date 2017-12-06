@@ -42,6 +42,35 @@ public final class Query {
       .pageInfo(Storefront.PageInfoQuery::hasNextPage);
   }
 
+  public static void productDetail(final Storefront.ProductQuery product) {
+    product
+      .title()
+      .descriptionHtml()
+      .tags()
+      .images(args -> args.first(250), imageConnection -> imageConnection
+        .edges(imageEdge -> imageEdge
+          .node(Storefront.ImageQuery::src)
+        )
+      )
+      .options(option -> option
+        .name()
+        .values()
+      )
+      .variants(args -> args.first(250), variantConnection -> variantConnection
+        .edges(variantEdge -> variantEdge
+          .node(variant -> variant
+            .title()
+            .availableForSale()
+            .selectedOptions(selectedOption -> selectedOption
+              .name()
+              .value()
+            )
+            .price()
+          )
+        )
+      );
+  }
+
   public static void shop(final Storefront.ShopQuery shop) {
     shop
       .name()

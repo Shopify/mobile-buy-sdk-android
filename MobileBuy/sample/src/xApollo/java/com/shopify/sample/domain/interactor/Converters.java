@@ -37,7 +37,7 @@ import com.shopify.sample.domain.model.Checkout;
 import com.shopify.sample.domain.model.Collection;
 import com.shopify.sample.domain.model.Payment;
 import com.shopify.sample.domain.model.Product;
-import com.shopify.sample.domain.model.ProductDetails;
+import com.shopify.sample.domain.model.ProductDetail;
 import com.shopify.sample.domain.model.ShopSettings;
 
 import java.math.BigDecimal;
@@ -62,21 +62,22 @@ final class Converters {
     });
   }
 
-  static ProductDetails convertToProductDetails(ProductByIdQuery.AsProduct product) {
+  static ProductDetail convertToProductDetails(ProductByIdQuery.AsProduct product) {
     List<String> images = mapItems(product.imageConnection.imageEdge, imageEdge -> imageEdge.image.src);
-    List<ProductDetails.Option> options = mapItems(product.options, option -> new ProductDetails.Option(option.id, option.name,
+    List<ProductDetail.Option> options = mapItems(product.options, option -> new ProductDetail.Option(option.id, option.name,
       option.values));
-    List<ProductDetails.Variant> variants = mapItems(product.variantConnection.variantEdge,
+    List<ProductDetail.Variant> variants = mapItems(product.variantConnection.variantEdge,
       variantEdge -> {
-        List<ProductDetails.SelectedOption> selectedOptions = mapItems(variantEdge.variant.selectedOptions, selectedOption ->
-          new ProductDetails.SelectedOption(selectedOption.name, selectedOption.value));
-        return new ProductDetails.Variant(variantEdge.variant.id, variantEdge.variant.title, variantEdge.variant.availableForSale,
+        List<ProductDetail.SelectedOption> selectedOptions = mapItems(variantEdge.variant.selectedOptions, selectedOption ->
+          new ProductDetail.SelectedOption(selectedOption.name, selectedOption.value));
+        return new ProductDetail.Variant(variantEdge.variant.id, variantEdge.variant.title, variantEdge.variant.availableForSale,
           selectedOptions, variantEdge.variant.price);
       });
-    return new ProductDetails(product.id, product.title, product.descriptionHtml, product.tags, images, options, variants);
+    return new ProductDetail(product.id, product.title, product.descriptionHtml, product.tags, images, options, variants);
   }
 
-  @SuppressWarnings("Convert2MethodRef") static List<Collection> convertToCollections(
+  @SuppressWarnings("Convert2MethodRef")
+  static List<Collection> convertToCollections(
     final List<CollectionPageWithProductsQuery.Edge> collectionEdges) {
     return mapItems(collectionEdges, collectionEdge -> {
         String collectionImageUrl = collectionEdge.collection.image.transform(it -> it.src).or("");
@@ -94,7 +95,8 @@ final class Converters {
     );
   }
 
-  @SuppressWarnings("ConstantConditions") static Checkout convertToCheckout(final CheckoutFragment checkout) {
+  @SuppressWarnings("ConstantConditions")
+  static Checkout convertToCheckout(final CheckoutFragment checkout) {
     List<Checkout.LineItem> lineItems = mapItems(checkout.lineItemConnection.lineItemEdges, it ->
       new Checkout.LineItem(it.lineItem.variant.get().id, it.lineItem.title, it.lineItem.quantity, it.lineItem.variant.get().price));
     Checkout.ShippingRate shippingLine = checkout.shippingLine.transform(it -> new Checkout.ShippingRate(it.handle, it.price, it.title))
@@ -105,7 +107,8 @@ final class Converters {
       shippingLine, checkout.totalTax, checkout.subtotalPrice, checkout.paymentDue);
   }
 
-  @SuppressWarnings("ConstantConditions") static Checkout convertToCheckout(final CheckoutCreateFragment checkout) {
+  @SuppressWarnings("ConstantConditions")
+  static Checkout convertToCheckout(final CheckoutCreateFragment checkout) {
     List<Checkout.LineItem> lineItems = mapItems(checkout.lineItemConnection.lineItemEdges, it ->
       new Checkout.LineItem(it.lineItem.variant.get().id, it.lineItem.title, it.lineItem.quantity, it.lineItem.variant.get().price));
     return new Checkout(checkout.id, checkout.webUrl, checkout.currencyCode.toString(), checkout.requiresShipping, lineItems,

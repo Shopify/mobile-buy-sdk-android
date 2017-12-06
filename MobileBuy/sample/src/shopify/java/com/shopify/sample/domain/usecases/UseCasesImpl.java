@@ -22,4 +22,9 @@ public final class UseCasesImpl implements UseCases {
   public FetchProductsUseCaseImpl fetchProducts() {
     return new FetchProductsUseCaseImpl(callbackExecutors, graphClient);
   }
+
+  @Override
+  public FetchProductDetailUseCase fetchProductDetail() {
+    return new FetchProductDetailUseCaseImpl(callbackExecutors, graphClient);
+  }
 }

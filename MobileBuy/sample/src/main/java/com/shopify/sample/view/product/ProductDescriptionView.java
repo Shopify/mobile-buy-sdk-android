@@ -31,7 +31,7 @@ import android.util.AttributeSet;
 import android.widget.TextView;
 
 import com.shopify.sample.R;
-import com.shopify.sample.domain.model.ProductDetails;
+import com.shopify.sample.domain.model.ProductDetail;
 
 import java.math.BigDecimal;
 import java.text.NumberFormat;
@@ -45,6 +45,7 @@ import static com.shopify.sample.util.Util.mapItems;
 import static com.shopify.sample.util.Util.minItem;
 
 public final class ProductDescriptionView extends NestedScrollView {
+
   static final NumberFormat CURRENCY_FORMAT = NumberFormat.getCurrencyInstance();
 
   @BindView(R.id.title) TextView titleView;
@@ -64,7 +65,8 @@ public final class ProductDescriptionView extends NestedScrollView {
     super(context, attrs, defStyleAttr);
   }
 
-  @Override protected void onFinishInflate() {
+  @Override
+  protected void onFinishInflate() {
     super.onFinishInflate();
     ButterKnife.bind(this);
   }
@@ -74,7 +76,7 @@ public final class ProductDescriptionView extends NestedScrollView {
     priceView.setText(getResources().getString(R.string.price_from, CURRENCY_FORMAT.format(price)));
   }
 
-  public void renderProduct(final ProductDetails product) {
+  public void renderProduct(final ProductDetail product) {
     titleView.setText(product.title);
     priceView.setText(getResources().getString(R.string.price_from, formatMinPrice(product)));
     descriptionView.setText(Html.fromHtml(product.description));
@@ -91,13 +93,14 @@ public final class ProductDescriptionView extends NestedScrollView {
     }
   }
 
-  private String formatMinPrice(final ProductDetails product) {
+  private String formatMinPrice(final ProductDetail product) {
     List<BigDecimal> prices = mapItems(product.variants, variant -> variant.price);
     BigDecimal minPrice = minItem(prices, BigDecimal.ZERO, BigDecimal::compareTo);
     return CURRENCY_FORMAT.format(minPrice);
   }
 
   public interface OnAddToCartClickListener {
+
     void onAddToCartClick();
   }
 }
