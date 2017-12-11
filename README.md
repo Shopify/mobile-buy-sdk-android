@@ -1274,7 +1274,7 @@ Storefront.MailingAddressInput input = new Storefront.MailingAddressInput()
   .setProvince(address.province)
   .setZip(address.zip);
 
-Storefront.Mutation query = Storefront.mutation((mutationQuery -> mutationQuery
+Storefront.MutationQuery query = Storefront.mutation((mutationQuery -> mutationQuery
     .checkoutShippingAddressUpdate(input, checkoutId, shippingAddressUpdatePayloadQuery -> shippingAddressUpdatePayloadQuery
       .checkout(checkoutQuery -> checkoutQuery
         .webUrl()
