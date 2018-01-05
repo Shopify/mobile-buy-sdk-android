@@ -1469,41 +1469,51 @@ After a successful `checkoutCompleteWith...` mutation, the checkout process star
 
 ```java
 GraphClient client = ...;
-ID checkoutId = ...;
+ID paymentId = ...;
 
 Storefront.QueryRootQuery query = Storefront.query(rootQuery -> rootQuery
-  .node(checkoutId, nodeQuery -> nodeQuery
-    .onCheckout(checkoutQuery -> checkoutQuery
-      .order(orderQuery -> orderQuery
-        .createdAt()
-        .orderNumber()
-        .totalPrice()
-      )
+    .node(paymentId, nodeQuery -> nodeQuery
+	    .onPayment(paymentQuery -> paymentQuery
+		.checkout(checkoutQuery -> checkoutQuery
+		    .order(orderQuery -> orderQuery
+			.processedAt()
+			.orderNumber()
+			.totalPrice()))
+		.errorMessage()
+		.ready()
+		)
     )
-  )
 );
 
 client.queryGraph(query).enqueue(
   new GraphCall.Callback<Storefront.QueryRoot>() {
 	@Override public void onResponse(@NonNull GraphResponse<Storefront.QueryRoot> response) {
-      Storefront.Checkout checkout = (Storefront.Checkout) response.data().getNode();
-      String orderId = checkout.getOrder().getId().toString();
-    }
+     
+	     Storefront.Payment payment = (Storefront.Payment) response.data().getNode();	
 
+	     if (payment.getErrorMessage() == null || payment.getErrorMessage().isEmpty()){
+		Storefront.Checkout checkout = payment.getCheckout();
+		String orderId = checkout.getOrder().getId().toString();
+	     }
+	     else{
+		String errorMessage = payment.getErrorMessage();
+	     }
+      
+    }
     @Override public void onFailure(@NonNull GraphError error) {
     }
   },
   null,
-  RetryHandler.exponentialBackoff(1, TimeUnit.MILLISECONDS, 1.2f)
+  RetryHandler.exponentialBackoff(500, TimeUnit.MILLISECONDS, 1.2f)
     .whenResponse(
-      response -> ((Storefront.Checkout) response.data().getNode()).getOrder() == null
+      response -> ((Storefront.Payment) ((GraphResponse<Storefront.QueryRoot>) response).data().getNode()).getReady() == false
     )
-    .maxCount(10)
+    .maxCount(12)
     .build()
 );
 ```
 
-Again, just like when [polling for available shipping rates](#polling-for-shipping-rates-), we need to create a `RetryHandler` to provide a condition upon which to retry the request. In this case, we're asserting that the `Storefront.Order` is `null` an continue retrying the request if it is.
+Again, just like when [polling for available shipping rates](#polling-for-shipping-rates-), we need to create a `RetryHandler` to provide a condition upon which to retry the request. In this case, we're asserting that the `Storefront.Payment` is `false` an continue retrying the request if it is.
 
 ## Customer Accounts [⤴](#table-of-contents)
 
