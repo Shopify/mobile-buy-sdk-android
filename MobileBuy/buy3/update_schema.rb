@@ -15,7 +15,9 @@ OptionParser.new do |opts|
   end
 end.parse!
 
-body = Net::HTTP.get(URI("https://app.shopify.com/services/ping/storefront_graphql_schema"))
+shared_storefront_api_key = "e3e948e3697fcc37a837f7dd35719525"
+endpoint = URI("https://app.shopify.com/services/graphql/introspection/storefront?api_client_api_key=#{shared_storefront_api_key}")
+body = Net::HTTP.get(endpoint)
 schema = GraphQLSchema.new(JSON.parse(body))
 custom_scalars = [
   GraphQLJavaGen::Scalar.new(
