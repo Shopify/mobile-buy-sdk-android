@@ -301,8 +301,9 @@ public final class CartActivity extends AppCompatActivity implements LifecycleRe
           .setBillingAddressFormat(WalletConstants.BILLING_ADDRESS_FORMAT_FULL)
           .build())
         .setPaymentMethodTokenizationParameters(PaymentMethodTokenizationParameters.newBuilder()
-          .setPaymentMethodTokenizationType(WalletConstants.PAYMENT_METHOD_TOKENIZATION_TYPE_DIRECT)
-          .addParameter("publicKey", BuildConfig.ANDROID_PAY_PUBLIC_KEY)
+          .setPaymentMethodTokenizationType(WalletConstants.PAYMENT_METHOD_TOKENIZATION_TYPE_PAYMENT_GATEWAY)
+          .addParameter("gateway", "shopify")
+          .addParameter("gatewayMerchantId", "22648459")
           .build())
         .setUiRequired(true)
         .build();
