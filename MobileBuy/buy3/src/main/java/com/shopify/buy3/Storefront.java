@@ -308,6 +308,9 @@ public class Storefront {
                 super(_queryBuilder, true);
             }
 
+            /**
+            * Returns up to the first `n` elements from the list.
+            */
             public CommentsArguments first(Integer value) {
                 if (value != null) {
                     startArgument("first");
@@ -316,6 +319,9 @@ public class Storefront {
                 return this;
             }
 
+            /**
+            * Returns the elements that come after the specified cursor.
+            */
             public CommentsArguments after(String value) {
                 if (value != null) {
                     startArgument("after");
@@ -324,6 +330,9 @@ public class Storefront {
                 return this;
             }
 
+            /**
+            * Returns up to the last `n` elements from the list.
+            */
             public CommentsArguments last(Integer value) {
                 if (value != null) {
                     startArgument("last");
@@ -332,6 +341,9 @@ public class Storefront {
                 return this;
             }
 
+            /**
+            * Returns the elements that come before the specified cursor.
+            */
             public CommentsArguments before(String value) {
                 if (value != null) {
                     startArgument("before");
@@ -340,6 +352,9 @@ public class Storefront {
                 return this;
             }
 
+            /**
+            * Reverse the order of the underlying list.
+            */
             public CommentsArguments reverse(Boolean value) {
                 if (value != null) {
                     startArgument("reverse");
@@ -483,7 +498,8 @@ public class Storefront {
             }
 
             /**
-            * Image width in pixels between 1 and 2048
+            * Image width in pixels between 1 and 2048. This argument is deprecated: Use `maxWidth` on
+            * `Image.transformedSrc` instead.
             */
             public ImageArguments maxWidth(Integer value) {
                 if (value != null) {
@@ -494,7 +510,8 @@ public class Storefront {
             }
 
             /**
-            * Image height in pixels between 1 and 2048
+            * Image height in pixels between 1 and 2048. This argument is deprecated: Use `maxHeight` on
+            * `Image.transformedSrc` instead.
             */
             public ImageArguments maxHeight(Integer value) {
                 if (value != null) {
@@ -505,7 +522,8 @@ public class Storefront {
             }
 
             /**
-            * If specified, crop the image keeping the specified region
+            * Crops the image according to the specified region. This argument is deprecated: Use `crop` on
+            * `Image.transformedSrc` instead.
             */
             public ImageArguments crop(CropRegion value) {
                 if (value != null) {
@@ -516,7 +534,8 @@ public class Storefront {
             }
 
             /**
-            * Image size multiplier retina displays. Must be between 1 and 3
+            * Image size multiplier for high-resolution retina displays. Must be between 1 and 3. This argument is
+            * deprecated: Use `scale` on `Image.transformedSrc` instead.
             */
             public ImageArguments scale(Integer value) {
                 if (value != null) {
@@ -1341,6 +1360,12 @@ public class Storefront {
 
         ID,
 
+        /**
+        * During a search (i.e. when the `query` parameter has been specified on the connection) this sorts
+        * the
+        * results by relevance to the search term(s). When no search query is specified, this sort key is not
+        * deterministic and should not be used.
+        */
         RELEVANCE,
 
         TITLE,
@@ -1717,6 +1742,9 @@ public class Storefront {
                 super(_queryBuilder, true);
             }
 
+            /**
+            * Returns up to the first `n` elements from the list.
+            */
             public ArticlesArguments first(Integer value) {
                 if (value != null) {
                     startArgument("first");
@@ -1725,6 +1753,9 @@ public class Storefront {
                 return this;
             }
 
+            /**
+            * Returns the elements that come after the specified cursor.
+            */
             public ArticlesArguments after(String value) {
                 if (value != null) {
                     startArgument("after");
@@ -1733,6 +1764,9 @@ public class Storefront {
                 return this;
             }
 
+            /**
+            * Returns up to the last `n` elements from the list.
+            */
             public ArticlesArguments last(Integer value) {
                 if (value != null) {
                     startArgument("last");
@@ -1741,6 +1775,9 @@ public class Storefront {
                 return this;
             }
 
+            /**
+            * Returns the elements that come before the specified cursor.
+            */
             public ArticlesArguments before(String value) {
                 if (value != null) {
                     startArgument("before");
@@ -1749,6 +1786,9 @@ public class Storefront {
                 return this;
             }
 
+            /**
+            * Reverse the order of the underlying list.
+            */
             public ArticlesArguments reverse(Boolean value) {
                 if (value != null) {
                     startArgument("reverse");
@@ -2147,6 +2187,12 @@ public class Storefront {
 
         ID,
 
+        /**
+        * During a search (i.e. when the `query` parameter has been specified on the connection) this sorts
+        * the
+        * results by relevance to the search term(s). When no search query is specified, this sort key is not
+        * deterministic and should not be used.
+        */
         RELEVANCE,
 
         TITLE,
@@ -2415,6 +2461,9 @@ public class Storefront {
                 super(_queryBuilder, true);
             }
 
+            /**
+            * Returns up to the first `n` elements from the list.
+            */
             public LineItemsArguments first(Integer value) {
                 if (value != null) {
                     startArgument("first");
@@ -2423,6 +2472,9 @@ public class Storefront {
                 return this;
             }
 
+            /**
+            * Returns the elements that come after the specified cursor.
+            */
             public LineItemsArguments after(String value) {
                 if (value != null) {
                     startArgument("after");
@@ -2431,6 +2483,9 @@ public class Storefront {
                 return this;
             }
 
+            /**
+            * Returns up to the last `n` elements from the list.
+            */
             public LineItemsArguments last(Integer value) {
                 if (value != null) {
                     startArgument("last");
@@ -2439,6 +2494,9 @@ public class Storefront {
                 return this;
             }
 
+            /**
+            * Returns the elements that come before the specified cursor.
+            */
             public LineItemsArguments before(String value) {
                 if (value != null) {
                     startArgument("before");
@@ -2447,6 +2505,9 @@ public class Storefront {
                 return this;
             }
 
+            /**
+            * Reverse the order of the underlying list.
+            */
             public LineItemsArguments reverse(Boolean value) {
                 if (value != null) {
                     startArgument("reverse");
@@ -3334,12 +3395,13 @@ public class Storefront {
                 _queryBuilder.append("customAttributes:");
                 if (customAttributes.getValue() != null) {
                     _queryBuilder.append('[');
-
-                    String listSeperator1 = "";
-                    for (AttributeInput item1 : customAttributes.getValue()) {
-                        _queryBuilder.append(listSeperator1);
-                        listSeperator1 = ",";
-                        item1.appendTo(_queryBuilder);
+                    {
+                        String listSeperator1 = "";
+                        for (AttributeInput item1 : customAttributes.getValue()) {
+                            _queryBuilder.append(listSeperator1);
+                            listSeperator1 = ",";
+                            item1.appendTo(_queryBuilder);
+                        }
                     }
                     _queryBuilder.append(']');
                 } else {
@@ -4061,12 +4123,13 @@ public class Storefront {
                 _queryBuilder.append("lineItems:");
                 if (lineItems.getValue() != null) {
                     _queryBuilder.append('[');
-
-                    String listSeperator1 = "";
-                    for (CheckoutLineItemInput item1 : lineItems.getValue()) {
-                        _queryBuilder.append(listSeperator1);
-                        listSeperator1 = ",";
-                        item1.appendTo(_queryBuilder);
+                    {
+                        String listSeperator1 = "";
+                        for (CheckoutLineItemInput item1 : lineItems.getValue()) {
+                            _queryBuilder.append(listSeperator1);
+                            listSeperator1 = ",";
+                            item1.appendTo(_queryBuilder);
+                        }
                     }
                     _queryBuilder.append(']');
                 } else {
@@ -4102,12 +4165,13 @@ public class Storefront {
                 _queryBuilder.append("customAttributes:");
                 if (customAttributes.getValue() != null) {
                     _queryBuilder.append('[');
-
-                    String listSeperator1 = "";
-                    for (AttributeInput item1 : customAttributes.getValue()) {
-                        _queryBuilder.append(listSeperator1);
-                        listSeperator1 = ",";
-                        item1.appendTo(_queryBuilder);
+                    {
+                        String listSeperator1 = "";
+                        for (AttributeInput item1 : customAttributes.getValue()) {
+                            _queryBuilder.append(listSeperator1);
+                            listSeperator1 = ",";
+                            item1.appendTo(_queryBuilder);
+                        }
                     }
                     _queryBuilder.append(']');
                 } else {
@@ -5432,12 +5496,13 @@ public class Storefront {
                 _queryBuilder.append("customAttributes:");
                 if (customAttributes.getValue() != null) {
                     _queryBuilder.append('[');
-
-                    String listSeperator1 = "";
-                    for (AttributeInput item1 : customAttributes.getValue()) {
-                        _queryBuilder.append(listSeperator1);
-                        listSeperator1 = ",";
-                        item1.appendTo(_queryBuilder);
+                    {
+                        String listSeperator1 = "";
+                        for (AttributeInput item1 : customAttributes.getValue()) {
+                            _queryBuilder.append(listSeperator1);
+                            listSeperator1 = ",";
+                            item1.appendTo(_queryBuilder);
+                        }
                     }
                     _queryBuilder.append(']');
                 } else {
@@ -5585,12 +5650,13 @@ public class Storefront {
                 _queryBuilder.append("customAttributes:");
                 if (customAttributes.getValue() != null) {
                     _queryBuilder.append('[');
-
-                    String listSeperator1 = "";
-                    for (AttributeInput item1 : customAttributes.getValue()) {
-                        _queryBuilder.append(listSeperator1);
-                        listSeperator1 = ",";
-                        item1.appendTo(_queryBuilder);
+                    {
+                        String listSeperator1 = "";
+                        for (AttributeInput item1 : customAttributes.getValue()) {
+                            _queryBuilder.append(listSeperator1);
+                            listSeperator1 = ",";
+                            item1.appendTo(_queryBuilder);
+                        }
                     }
                     _queryBuilder.append(']');
                 } else {
@@ -6266,7 +6332,8 @@ public class Storefront {
             }
 
             /**
-            * Image width in pixels between 1 and 2048
+            * Image width in pixels between 1 and 2048. This argument is deprecated: Use `maxWidth` on
+            * `Image.transformedSrc` instead.
             */
             public ImageArguments maxWidth(Integer value) {
                 if (value != null) {
@@ -6277,7 +6344,8 @@ public class Storefront {
             }
 
             /**
-            * Image height in pixels between 1 and 2048
+            * Image height in pixels between 1 and 2048. This argument is deprecated: Use `maxHeight` on
+            * `Image.transformedSrc` instead.
             */
             public ImageArguments maxHeight(Integer value) {
                 if (value != null) {
@@ -6288,7 +6356,8 @@ public class Storefront {
             }
 
             /**
-            * If specified, crop the image keeping the specified region
+            * Crops the image according to the specified region. This argument is deprecated: Use `crop` on
+            * `Image.transformedSrc` instead.
             */
             public ImageArguments crop(CropRegion value) {
                 if (value != null) {
@@ -6299,7 +6368,8 @@ public class Storefront {
             }
 
             /**
-            * Image size multiplier retina displays. Must be between 1 and 3
+            * Image size multiplier for high-resolution retina displays. Must be between 1 and 3. This argument is
+            * deprecated: Use `scale` on `Image.transformedSrc` instead.
             */
             public ImageArguments scale(Integer value) {
                 if (value != null) {
@@ -6343,6 +6413,9 @@ public class Storefront {
                 super(_queryBuilder, true);
             }
 
+            /**
+            * Returns up to the first `n` elements from the list.
+            */
             public ProductsArguments first(Integer value) {
                 if (value != null) {
                     startArgument("first");
@@ -6351,6 +6424,9 @@ public class Storefront {
                 return this;
             }
 
+            /**
+            * Returns the elements that come after the specified cursor.
+            */
             public ProductsArguments after(String value) {
                 if (value != null) {
                     startArgument("after");
@@ -6359,6 +6435,9 @@ public class Storefront {
                 return this;
             }
 
+            /**
+            * Returns up to the last `n` elements from the list.
+            */
             public ProductsArguments last(Integer value) {
                 if (value != null) {
                     startArgument("last");
@@ -6367,6 +6446,9 @@ public class Storefront {
                 return this;
             }
 
+            /**
+            * Returns the elements that come before the specified cursor.
+            */
             public ProductsArguments before(String value) {
                 if (value != null) {
                     startArgument("before");
@@ -6375,6 +6457,9 @@ public class Storefront {
                 return this;
             }
 
+            /**
+            * Reverse the order of the underlying list.
+            */
             public ProductsArguments reverse(Boolean value) {
                 if (value != null) {
                     startArgument("reverse");
@@ -6383,6 +6468,9 @@ public class Storefront {
                 return this;
             }
 
+            /**
+            * Sort the underlying list by the given key.
+            */
             public ProductsArguments sortKey(ProductCollectionSortKeys value) {
                 if (value != null) {
                     startArgument("sortKey");
@@ -6873,6 +6961,12 @@ public class Storefront {
     public enum CollectionSortKeys {
         ID,
 
+        /**
+        * During a search (i.e. when the `query` parameter has been specified on the connection) this sorts
+        * the
+        * results by relevance to the search term(s). When no search query is specified, this sort key is not
+        * deterministic and should not be used.
+        */
         RELEVANCE,
 
         TITLE,
@@ -12935,6 +13029,9 @@ public class Storefront {
                 super(_queryBuilder, true);
             }
 
+            /**
+            * Returns up to the first `n` elements from the list.
+            */
             public AddressesArguments first(Integer value) {
                 if (value != null) {
                     startArgument("first");
@@ -12943,6 +13040,9 @@ public class Storefront {
                 return this;
             }
 
+            /**
+            * Returns the elements that come after the specified cursor.
+            */
             public AddressesArguments after(String value) {
                 if (value != null) {
                     startArgument("after");
@@ -12951,6 +13051,9 @@ public class Storefront {
                 return this;
             }
 
+            /**
+            * Returns up to the last `n` elements from the list.
+            */
             public AddressesArguments last(Integer value) {
                 if (value != null) {
                     startArgument("last");
@@ -12959,6 +13062,9 @@ public class Storefront {
                 return this;
             }
 
+            /**
+            * Returns the elements that come before the specified cursor.
+            */
             public AddressesArguments before(String value) {
                 if (value != null) {
                     startArgument("before");
@@ -12967,6 +13073,9 @@ public class Storefront {
                 return this;
             }
 
+            /**
+            * Reverse the order of the underlying list.
+            */
             public AddressesArguments reverse(Boolean value) {
                 if (value != null) {
                     startArgument("reverse");
@@ -13076,6 +13185,9 @@ public class Storefront {
                 super(_queryBuilder, true);
             }
 
+            /**
+            * Returns up to the first `n` elements from the list.
+            */
             public OrdersArguments first(Integer value) {
                 if (value != null) {
                     startArgument("first");
@@ -13084,6 +13196,9 @@ public class Storefront {
                 return this;
             }
 
+            /**
+            * Returns the elements that come after the specified cursor.
+            */
             public OrdersArguments after(String value) {
                 if (value != null) {
                     startArgument("after");
@@ -13092,6 +13207,9 @@ public class Storefront {
                 return this;
             }
 
+            /**
+            * Returns up to the last `n` elements from the list.
+            */
             public OrdersArguments last(Integer value) {
                 if (value != null) {
                     startArgument("last");
@@ -13100,6 +13218,9 @@ public class Storefront {
                 return this;
             }
 
+            /**
+            * Returns the elements that come before the specified cursor.
+            */
             public OrdersArguments before(String value) {
                 if (value != null) {
                     startArgument("before");
@@ -13108,6 +13229,9 @@ public class Storefront {
                 return this;
             }
 
+            /**
+            * Reverse the order of the underlying list.
+            */
             public OrdersArguments reverse(Boolean value) {
                 if (value != null) {
                     startArgument("reverse");
@@ -13116,6 +13240,9 @@ public class Storefront {
                 return this;
             }
 
+            /**
+            * Sort the underlying list by the given key.
+            */
             public OrdersArguments sortKey(OrderSortKeys value) {
                 if (value != null) {
                     startArgument("sortKey");
@@ -15462,6 +15589,21 @@ public class Storefront {
         }
 
         /**
+        * The newly created customer access token. If the customer's password is updated, all previous access
+        * tokens
+        * (including the one used to perform this mutation) become invalid, and a new token is generated.
+        */
+        public CustomerUpdatePayloadQuery customerAccessToken(CustomerAccessTokenQueryDefinition queryDef) {
+            startField("customerAccessToken");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CustomerAccessTokenQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
         * List of errors that occurred executing the mutation.
         */
         public CustomerUpdatePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
@@ -15488,6 +15630,17 @@ public class Storefront {
                         Customer optional1 = null;
                         if (!field.getValue().isJsonNull()) {
                             optional1 = new Customer(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "customerAccessToken": {
+                        CustomerAccessToken optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new CustomerAccessToken(jsonAsObject(field.getValue(), key));
                         }
 
                         responseData.put(key, optional1);
@@ -15535,6 +15688,21 @@ public class Storefront {
         }
 
         /**
+        * The newly created customer access token. If the customer's password is updated, all previous access
+        * tokens
+        * (including the one used to perform this mutation) become invalid, and a new token is generated.
+        */
+
+        public CustomerAccessToken getCustomerAccessToken() {
+            return (CustomerAccessToken) get("customerAccessToken");
+        }
+
+        public CustomerUpdatePayload setCustomerAccessToken(CustomerAccessToken arg) {
+            optimisticData.put(getKey("customerAccessToken"), arg);
+            return this;
+        }
+
+        /**
         * List of errors that occurred executing the mutation.
         */
 
@@ -15550,6 +15718,8 @@ public class Storefront {
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "customer": return true;
+
+                case "customerAccessToken": return true;
 
                 case "userErrors": return true;
 
@@ -15573,6 +15743,11 @@ public class Storefront {
         APPLE_PAY,
 
         /**
+        * Google Pay
+        */
+        GOOGLE_PAY,
+
+        /**
         * Shopify Pay
         */
         SHOPIFY_PAY,
@@ -15593,6 +15768,10 @@ public class Storefront {
                     return APPLE_PAY;
                 }
 
+                case "GOOGLE_PAY": {
+                    return GOOGLE_PAY;
+                }
+
                 case "SHOPIFY_PAY": {
                     return SHOPIFY_PAY;
                 }
@@ -15610,6 +15789,10 @@ public class Storefront {
 
                 case APPLE_PAY: {
                     return "APPLE_PAY";
+                }
+
+                case GOOGLE_PAY: {
+                    return "GOOGLE_PAY";
                 }
 
                 case SHOPIFY_PAY: {
@@ -15791,10 +15974,155 @@ public class Storefront {
         }
 
         /**
-        * The location of the image as a URL.
+        * The location of the original (untransformed) image as a URL.
         */
+        public ImageQuery originalSrc() {
+            startField("originalSrc");
+
+            return this;
+        }
+
+        /**
+        * The location of the image as a URL.
+        *
+        * @deprecated Previously an image had a single `src` field. This could either return the original image
+        location or a URL that contained transformations such as sizing or scale.
+
+        These transformations were specified by arguments on the parent field.
+
+        Now an image has two distinct URL fields: `originalSrc` and `transformedSrc`.
+
+        * `originalSrc` - the original, untransformed image URL
+        * `transformedSrc` - the image URL with transformations included
+
+        To migrate to the new fields, image transformations should be moved from the parent field to `transformedSrc`.
+
+        Before:
+        ```graphql
+        {
+            shop {
+                productImages(maxWidth: 200, scale: 2) {
+                    edges {
+                        node {
+                            src
+                        }
+                    }
+                }
+            }
+        }
+        ```
+
+        After:
+        ```graphql
+        {
+            shop {
+                productImages {
+                    edges {
+                        node {
+                            transformedSrc(maxWidth: 200, scale: 2)
+                        }
+                    }
+                }
+            }
+        }
+        ```
+
+        */
+        @Deprecated
         public ImageQuery src() {
             startField("src");
+
+            return this;
+        }
+
+        public class TransformedSrcArguments extends Arguments {
+            TransformedSrcArguments(StringBuilder _queryBuilder) {
+                super(_queryBuilder, true);
+            }
+
+            /**
+            * Image width in pixels between 1 and 5760.
+            */
+            public TransformedSrcArguments maxWidth(Integer value) {
+                if (value != null) {
+                    startArgument("maxWidth");
+                    _queryBuilder.append(value);
+                }
+                return this;
+            }
+
+            /**
+            * Image height in pixels between 1 and 5760.
+            */
+            public TransformedSrcArguments maxHeight(Integer value) {
+                if (value != null) {
+                    startArgument("maxHeight");
+                    _queryBuilder.append(value);
+                }
+                return this;
+            }
+
+            /**
+            * Crops the image according to the specified region.
+            */
+            public TransformedSrcArguments crop(CropRegion value) {
+                if (value != null) {
+                    startArgument("crop");
+                    _queryBuilder.append(value.toString());
+                }
+                return this;
+            }
+
+            /**
+            * Image size multiplier for high-resolution retina displays. Must be between 1 and 3.
+            */
+            public TransformedSrcArguments scale(Integer value) {
+                if (value != null) {
+                    startArgument("scale");
+                    _queryBuilder.append(value);
+                }
+                return this;
+            }
+
+            /**
+            * Best effort conversion of image into content type (SVG -> PNG, Anything -> JGP, Anything -> WEBP are
+            * supported).
+            */
+            public TransformedSrcArguments preferredContentType(ImageContentType value) {
+                if (value != null) {
+                    startArgument("preferredContentType");
+                    _queryBuilder.append(value.toString());
+                }
+                return this;
+            }
+        }
+
+        public interface TransformedSrcArgumentsDefinition {
+            void define(TransformedSrcArguments args);
+        }
+
+        /**
+        * The location of the transformed image as a URL.
+        * All transformation arguments are considered "best-effort". If they can be applied to an image, they
+        * will be.
+        * Otherwise any transformations which an image type does not support will be ignored.
+        */
+        public ImageQuery transformedSrc() {
+            return transformedSrc(args -> {});
+        }
+
+        /**
+        * The location of the transformed image as a URL.
+        * All transformation arguments are considered "best-effort". If they can be applied to an image, they
+        * will be.
+        * Otherwise any transformations which an image type does not support will be ignored.
+        */
+        public ImageQuery transformedSrc(TransformedSrcArgumentsDefinition argsDef) {
+            startField("transformedSrc");
+
+            TransformedSrcArguments args = new TransformedSrcArguments(_queryBuilder);
+            argsDef.define(args);
+            TransformedSrcArguments.end(args);
 
             return this;
         }
@@ -15834,7 +16162,19 @@ public class Storefront {
                         break;
                     }
 
+                    case "originalSrc": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+
+                        break;
+                    }
+
                     case "src": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "transformedSrc": {
                         responseData.put(key, jsonAsString(field.getValue(), key));
 
                         break;
@@ -15882,7 +16222,63 @@ public class Storefront {
         }
 
         /**
+        * The location of the original (untransformed) image as a URL.
+        */
+
+        public String getOriginalSrc() {
+            return (String) get("originalSrc");
+        }
+
+        public Image setOriginalSrc(String arg) {
+            optimisticData.put(getKey("originalSrc"), arg);
+            return this;
+        }
+
+        /**
         * The location of the image as a URL.
+        *
+        * @deprecated Previously an image had a single `src` field. This could either return the original image
+        location or a URL that contained transformations such as sizing or scale.
+
+        These transformations were specified by arguments on the parent field.
+
+        Now an image has two distinct URL fields: `originalSrc` and `transformedSrc`.
+
+        * `originalSrc` - the original, untransformed image URL
+        * `transformedSrc` - the image URL with transformations included
+
+        To migrate to the new fields, image transformations should be moved from the parent field to `transformedSrc`.
+
+        Before:
+        ```graphql
+        {
+            shop {
+                productImages(maxWidth: 200, scale: 2) {
+                    edges {
+                        node {
+                            src
+                        }
+                    }
+                }
+            }
+        }
+        ```
+
+        After:
+        ```graphql
+        {
+            shop {
+                productImages {
+                    edges {
+                        node {
+                            transformedSrc(maxWidth: 200, scale: 2)
+                        }
+                    }
+                }
+            }
+        }
+        ```
+
         */
 
         public String getSrc() {
@@ -15894,13 +16290,33 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * The location of the transformed image as a URL.
+        * All transformation arguments are considered "best-effort". If they can be applied to an image, they
+        * will be.
+        * Otherwise any transformations which an image type does not support will be ignored.
+        */
+
+        public String getTransformedSrc() {
+            return (String) get("transformedSrc");
+        }
+
+        public Image setTransformedSrc(String arg) {
+            optimisticData.put(getKey("transformedSrc"), arg);
+            return this;
+        }
+
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "altText": return false;
 
                 case "id": return false;
 
+                case "originalSrc": return false;
+
                 case "src": return false;
+
+                case "transformedSrc": return false;
 
                 default: return false;
             }
@@ -16017,6 +16433,62 @@ public class Storefront {
                 case "pageInfo": return true;
 
                 default: return false;
+            }
+        }
+    }
+
+    /**
+    * List of supported image content types.
+    */
+    public enum ImageContentType {
+        JPG,
+
+        PNG,
+
+        WEBP,
+
+        UNKNOWN_VALUE;
+
+        public static ImageContentType fromGraphQl(String value) {
+            if (value == null) {
+                return null;
+            }
+
+            switch (value) {
+                case "JPG": {
+                    return JPG;
+                }
+
+                case "PNG": {
+                    return PNG;
+                }
+
+                case "WEBP": {
+                    return WEBP;
+                }
+
+                default: {
+                    return UNKNOWN_VALUE;
+                }
+            }
+        }
+        public String toString() {
+            switch (this) {
+                case JPG: {
+                    return "JPG";
+                }
+
+                case PNG: {
+                    return "PNG";
+                }
+
+                case WEBP: {
+                    return "WEBP";
+                }
+
+                default: {
+                    return "";
+                }
             }
         }
     }
@@ -17392,8585 +17864,8910 @@ public class Storefront {
         }
     }
 
-    public interface MutationQueryDefinition {
-        void define(MutationQuery _queryBuilder);
+    public interface MoneyV2QueryDefinition {
+        void define(MoneyV2Query _queryBuilder);
     }
 
     /**
-    * The schema’s entry-point for mutations. This acts as the public, top-level API from which all
-    * mutation queries must start.
-    */
-    public static class MutationQuery extends Query<MutationQuery> {
-        MutationQuery(StringBuilder _queryBuilder) {
-            super(_queryBuilder);
-        }
-
-        /**
-        * Updates the attributes of a checkout.
-        */
-        public MutationQuery checkoutAttributesUpdate(ID checkoutId, CheckoutAttributesUpdateInput input, CheckoutAttributesUpdatePayloadQueryDefinition queryDef) {
-            startField("checkoutAttributesUpdate");
-
-            _queryBuilder.append("(checkoutId:");
-            Query.appendQuotedString(_queryBuilder, checkoutId.toString());
-
-            _queryBuilder.append(",input:");
-            input.appendTo(_queryBuilder);
-
-            _queryBuilder.append(')');
-
-            _queryBuilder.append('{');
-            queryDef.define(new CheckoutAttributesUpdatePayloadQuery(_queryBuilder));
-            _queryBuilder.append('}');
-
-            return this;
-        }
-
-        public MutationQuery checkoutCompleteFree(ID checkoutId, CheckoutCompleteFreePayloadQueryDefinition queryDef) {
-            startField("checkoutCompleteFree");
-
-            _queryBuilder.append("(checkoutId:");
-            Query.appendQuotedString(_queryBuilder, checkoutId.toString());
-
-            _queryBuilder.append(')');
-
-            _queryBuilder.append('{');
-            queryDef.define(new CheckoutCompleteFreePayloadQuery(_queryBuilder));
-            _queryBuilder.append('}');
-
-            return this;
-        }
-
-        /**
-        * Completes a checkout using a credit card token from Shopify's Vault.
-        */
-        public MutationQuery checkoutCompleteWithCreditCard(ID checkoutId, CreditCardPaymentInput payment, CheckoutCompleteWithCreditCardPayloadQueryDefinition queryDef) {
-            startField("checkoutCompleteWithCreditCard");
-
-            _queryBuilder.append("(checkoutId:");
-            Query.appendQuotedString(_queryBuilder, checkoutId.toString());
-
-            _queryBuilder.append(",payment:");
-            payment.appendTo(_queryBuilder);
-
-            _queryBuilder.append(')');
-
-            _queryBuilder.append('{');
-            queryDef.define(new CheckoutCompleteWithCreditCardPayloadQuery(_queryBuilder));
-            _queryBuilder.append('}');
-
-            return this;
-        }
-
-        /**
-        * Completes a checkout with a tokenized payment.
-        */
-        public MutationQuery checkoutCompleteWithTokenizedPayment(ID checkoutId, TokenizedPaymentInput payment, CheckoutCompleteWithTokenizedPaymentPayloadQueryDefinition queryDef) {
-            startField("checkoutCompleteWithTokenizedPayment");
-
-            _queryBuilder.append("(checkoutId:");
-            Query.appendQuotedString(_queryBuilder, checkoutId.toString());
-
-            _queryBuilder.append(",payment:");
-            payment.appendTo(_queryBuilder);
-
-            _queryBuilder.append(')');
-
-            _queryBuilder.append('{');
-            queryDef.define(new CheckoutCompleteWithTokenizedPaymentPayloadQuery(_queryBuilder));
-            _queryBuilder.append('}');
-
-            return this;
-        }
-
-        /**
-        * Creates a new checkout.
-        */
-        public MutationQuery checkoutCreate(CheckoutCreateInput input, CheckoutCreatePayloadQueryDefinition queryDef) {
-            startField("checkoutCreate");
-
-            _queryBuilder.append("(input:");
-            input.appendTo(_queryBuilder);
-
-            _queryBuilder.append(')');
-
-            _queryBuilder.append('{');
-            queryDef.define(new CheckoutCreatePayloadQuery(_queryBuilder));
-            _queryBuilder.append('}');
-
-            return this;
-        }
-
-        /**
-        * Associates a customer to the checkout.
-        */
-        public MutationQuery checkoutCustomerAssociate(ID checkoutId, String customerAccessToken, CheckoutCustomerAssociatePayloadQueryDefinition queryDef) {
-            startField("checkoutCustomerAssociate");
-
-            _queryBuilder.append("(checkoutId:");
-            Query.appendQuotedString(_queryBuilder, checkoutId.toString());
-
-            _queryBuilder.append(",customerAccessToken:");
-            Query.appendQuotedString(_queryBuilder, customerAccessToken.toString());
-
-            _queryBuilder.append(')');
-
-            _queryBuilder.append('{');
-            queryDef.define(new CheckoutCustomerAssociatePayloadQuery(_queryBuilder));
-            _queryBuilder.append('}');
-
-            return this;
-        }
-
-        /**
-        * Disassociates the current checkout customer from the checkout.
-        */
-        public MutationQuery checkoutCustomerDisassociate(ID checkoutId, CheckoutCustomerDisassociatePayloadQueryDefinition queryDef) {
-            startField("checkoutCustomerDisassociate");
-
-            _queryBuilder.append("(checkoutId:");
-            Query.appendQuotedString(_queryBuilder, checkoutId.toString());
-
-            _queryBuilder.append(')');
-
-            _queryBuilder.append('{');
-            queryDef.define(new CheckoutCustomerDisassociatePayloadQuery(_queryBuilder));
-            _queryBuilder.append('}');
-
-            return this;
-        }
-
-        /**
-        * Applies a discount to an existing checkout using a discount code.
-        */
-        public MutationQuery checkoutDiscountCodeApply(String discountCode, ID checkoutId, CheckoutDiscountCodeApplyPayloadQueryDefinition queryDef) {
-            startField("checkoutDiscountCodeApply");
-
-            _queryBuilder.append("(discountCode:");
-            Query.appendQuotedString(_queryBuilder, discountCode.toString());
-
-            _queryBuilder.append(",checkoutId:");
-            Query.appendQuotedString(_queryBuilder, checkoutId.toString());
-
-            _queryBuilder.append(')');
-
-            _queryBuilder.append('{');
-            queryDef.define(new CheckoutDiscountCodeApplyPayloadQuery(_queryBuilder));
-            _queryBuilder.append('}');
-
-            return this;
-        }
-
-        /**
-        * Updates the email on an existing checkout.
-        */
-        public MutationQuery checkoutEmailUpdate(ID checkoutId, String email, CheckoutEmailUpdatePayloadQueryDefinition queryDef) {
-            startField("checkoutEmailUpdate");
-
-            _queryBuilder.append("(checkoutId:");
-            Query.appendQuotedString(_queryBuilder, checkoutId.toString());
-
-            _queryBuilder.append(",email:");
-            Query.appendQuotedString(_queryBuilder, email.toString());
-
-            _queryBuilder.append(')');
-
-            _queryBuilder.append('{');
-            queryDef.define(new CheckoutEmailUpdatePayloadQuery(_queryBuilder));
-            _queryBuilder.append('}');
-
-            return this;
-        }
-
-        /**
-        * Applies a gift card to an existing checkout using a gift card code.
-        */
-        public MutationQuery checkoutGiftCardApply(String giftCardCode, ID checkoutId, CheckoutGiftCardApplyPayloadQueryDefinition queryDef) {
-            startField("checkoutGiftCardApply");
-
-            _queryBuilder.append("(giftCardCode:");
-            Query.appendQuotedString(_queryBuilder, giftCardCode.toString());
-
-            _queryBuilder.append(",checkoutId:");
-            Query.appendQuotedString(_queryBuilder, checkoutId.toString());
-
-            _queryBuilder.append(')');
-
-            _queryBuilder.append('{');
-            queryDef.define(new CheckoutGiftCardApplyPayloadQuery(_queryBuilder));
-            _queryBuilder.append('}');
-
-            return this;
-        }
-
-        /**
-        * Removes an applied gift card from the checkout.
-        */
-        public MutationQuery checkoutGiftCardRemove(ID appliedGiftCardId, ID checkoutId, CheckoutGiftCardRemovePayloadQueryDefinition queryDef) {
-            startField("checkoutGiftCardRemove");
-
-            _queryBuilder.append("(appliedGiftCardId:");
-            Query.appendQuotedString(_queryBuilder, appliedGiftCardId.toString());
-
-            _queryBuilder.append(",checkoutId:");
-            Query.appendQuotedString(_queryBuilder, checkoutId.toString());
-
-            _queryBuilder.append(')');
-
-            _queryBuilder.append('{');
-            queryDef.define(new CheckoutGiftCardRemovePayloadQuery(_queryBuilder));
-            _queryBuilder.append('}');
-
-            return this;
-        }
-
-        /**
-        * Adds a list of line items to a checkout.
-        */
-        public MutationQuery checkoutLineItemsAdd(List<CheckoutLineItemInput> lineItems, ID checkoutId, CheckoutLineItemsAddPayloadQueryDefinition queryDef) {
-            startField("checkoutLineItemsAdd");
-
-            _queryBuilder.append("(lineItems:");
-            _queryBuilder.append('[');
-
-            String listSeperator1 = "";
-            for (CheckoutLineItemInput item1 : lineItems) {
-                _queryBuilder.append(listSeperator1);
-                listSeperator1 = ",";
-                item1.appendTo(_queryBuilder);
-            }
-            _queryBuilder.append(']');
-
-            _queryBuilder.append(",checkoutId:");
-            Query.appendQuotedString(_queryBuilder, checkoutId.toString());
-
-            _queryBuilder.append(')');
-
-            _queryBuilder.append('{');
-            queryDef.define(new CheckoutLineItemsAddPayloadQuery(_queryBuilder));
-            _queryBuilder.append('}');
-
-            return this;
-        }
-
-        /**
-        * Removes line items from an existing checkout
-        */
-        public MutationQuery checkoutLineItemsRemove(ID checkoutId, List<ID> lineItemIds, CheckoutLineItemsRemovePayloadQueryDefinition queryDef) {
-            startField("checkoutLineItemsRemove");
-
-            _queryBuilder.append("(checkoutId:");
-            Query.appendQuotedString(_queryBuilder, checkoutId.toString());
-
-            _queryBuilder.append(",lineItemIds:");
-            _queryBuilder.append('[');
-
-            String listSeperator1 = "";
-            for (ID item1 : lineItemIds) {
-                _queryBuilder.append(listSeperator1);
-                listSeperator1 = ",";
-                Query.appendQuotedString(_queryBuilder, item1.toString());
-            }
-            _queryBuilder.append(']');
-
-            _queryBuilder.append(')');
-
-            _queryBuilder.append('{');
-            queryDef.define(new CheckoutLineItemsRemovePayloadQuery(_queryBuilder));
-            _queryBuilder.append('}');
-
-            return this;
-        }
-
-        /**
-        * Updates line items on a checkout.
-        */
-        public MutationQuery checkoutLineItemsUpdate(ID checkoutId, List<CheckoutLineItemUpdateInput> lineItems, CheckoutLineItemsUpdatePayloadQueryDefinition queryDef) {
-            startField("checkoutLineItemsUpdate");
-
-            _queryBuilder.append("(checkoutId:");
-            Query.appendQuotedString(_queryBuilder, checkoutId.toString());
-
-            _queryBuilder.append(",lineItems:");
-            _queryBuilder.append('[');
-
-            String listSeperator1 = "";
-            for (CheckoutLineItemUpdateInput item1 : lineItems) {
-                _queryBuilder.append(listSeperator1);
-                listSeperator1 = ",";
-                item1.appendTo(_queryBuilder);
-            }
-            _queryBuilder.append(']');
-
-            _queryBuilder.append(')');
-
-            _queryBuilder.append('{');
-            queryDef.define(new CheckoutLineItemsUpdatePayloadQuery(_queryBuilder));
-            _queryBuilder.append('}');
-
-            return this;
-        }
-
-        /**
-        * Updates the shipping address of an existing checkout.
-        */
-        public MutationQuery checkoutShippingAddressUpdate(MailingAddressInput shippingAddress, ID checkoutId, CheckoutShippingAddressUpdatePayloadQueryDefinition queryDef) {
-            startField("checkoutShippingAddressUpdate");
-
-            _queryBuilder.append("(shippingAddress:");
-            shippingAddress.appendTo(_queryBuilder);
-
-            _queryBuilder.append(",checkoutId:");
-            Query.appendQuotedString(_queryBuilder, checkoutId.toString());
-
-            _queryBuilder.append(')');
-
-            _queryBuilder.append('{');
-            queryDef.define(new CheckoutShippingAddressUpdatePayloadQuery(_queryBuilder));
-            _queryBuilder.append('}');
-
-            return this;
-        }
-
-        /**
-        * Updates the shipping lines on an existing checkout.
-        */
-        public MutationQuery checkoutShippingLineUpdate(ID checkoutId, String shippingRateHandle, CheckoutShippingLineUpdatePayloadQueryDefinition queryDef) {
-            startField("checkoutShippingLineUpdate");
-
-            _queryBuilder.append("(checkoutId:");
-            Query.appendQuotedString(_queryBuilder, checkoutId.toString());
-
-            _queryBuilder.append(",shippingRateHandle:");
-            Query.appendQuotedString(_queryBuilder, shippingRateHandle.toString());
-
-            _queryBuilder.append(')');
-
-            _queryBuilder.append('{');
-            queryDef.define(new CheckoutShippingLineUpdatePayloadQuery(_queryBuilder));
-            _queryBuilder.append('}');
-
-            return this;
-        }
-
-        /**
-        * Creates a customer access token.
-        * The customer access token is required to modify the customer object in any way.
-        */
-        public MutationQuery customerAccessTokenCreate(CustomerAccessTokenCreateInput input, CustomerAccessTokenCreatePayloadQueryDefinition queryDef) {
-            startField("customerAccessTokenCreate");
-
-            _queryBuilder.append("(input:");
-            input.appendTo(_queryBuilder);
-
-            _queryBuilder.append(')');
-
-            _queryBuilder.append('{');
-            queryDef.define(new CustomerAccessTokenCreatePayloadQuery(_queryBuilder));
-            _queryBuilder.append('}');
-
-            return this;
-        }
-
-        /**
-        * Permanently destroys a customer access token.
-        */
-        public MutationQuery customerAccessTokenDelete(String customerAccessToken, CustomerAccessTokenDeletePayloadQueryDefinition queryDef) {
-            startField("customerAccessTokenDelete");
-
-            _queryBuilder.append("(customerAccessToken:");
-            Query.appendQuotedString(_queryBuilder, customerAccessToken.toString());
-
-            _queryBuilder.append(')');
-
-            _queryBuilder.append('{');
-            queryDef.define(new CustomerAccessTokenDeletePayloadQuery(_queryBuilder));
-            _queryBuilder.append('}');
-
-            return this;
-        }
-
-        /**
-        * Renews a customer access token.
-        */
-        public MutationQuery customerAccessTokenRenew(String customerAccessToken, CustomerAccessTokenRenewPayloadQueryDefinition queryDef) {
-            startField("customerAccessTokenRenew");
-
-            _queryBuilder.append("(customerAccessToken:");
-            Query.appendQuotedString(_queryBuilder, customerAccessToken.toString());
-
-            _queryBuilder.append(')');
-
-            _queryBuilder.append('{');
-            queryDef.define(new CustomerAccessTokenRenewPayloadQuery(_queryBuilder));
-            _queryBuilder.append('}');
-
-            return this;
-        }
-
-        /**
-        * Activates a customer.
-        */
-        public MutationQuery customerActivate(ID id, CustomerActivateInput input, CustomerActivatePayloadQueryDefinition queryDef) {
-            startField("customerActivate");
-
-            _queryBuilder.append("(id:");
-            Query.appendQuotedString(_queryBuilder, id.toString());
-
-            _queryBuilder.append(",input:");
-            input.appendTo(_queryBuilder);
-
-            _queryBuilder.append(')');
-
-            _queryBuilder.append('{');
-            queryDef.define(new CustomerActivatePayloadQuery(_queryBuilder));
-            _queryBuilder.append('}');
-
-            return this;
-        }
-
-        /**
-        * Creates a new address for a customer.
-        */
-        public MutationQuery customerAddressCreate(String customerAccessToken, MailingAddressInput address, CustomerAddressCreatePayloadQueryDefinition queryDef) {
-            startField("customerAddressCreate");
-
-            _queryBuilder.append("(customerAccessToken:");
-            Query.appendQuotedString(_queryBuilder, customerAccessToken.toString());
-
-            _queryBuilder.append(",address:");
-            address.appendTo(_queryBuilder);
-
-            _queryBuilder.append(')');
-
-            _queryBuilder.append('{');
-            queryDef.define(new CustomerAddressCreatePayloadQuery(_queryBuilder));
-            _queryBuilder.append('}');
-
-            return this;
-        }
-
-        /**
-        * Permanently deletes the address of an existing customer.
-        */
-        public MutationQuery customerAddressDelete(ID id, String customerAccessToken, CustomerAddressDeletePayloadQueryDefinition queryDef) {
-            startField("customerAddressDelete");
-
-            _queryBuilder.append("(id:");
-            Query.appendQuotedString(_queryBuilder, id.toString());
-
-            _queryBuilder.append(",customerAccessToken:");
-            Query.appendQuotedString(_queryBuilder, customerAccessToken.toString());
-
-            _queryBuilder.append(')');
-
-            _queryBuilder.append('{');
-            queryDef.define(new CustomerAddressDeletePayloadQuery(_queryBuilder));
-            _queryBuilder.append('}');
-
-            return this;
-        }
-
-        /**
-        * Updates the address of an existing customer.
-        */
-        public MutationQuery customerAddressUpdate(String customerAccessToken, ID id, MailingAddressInput address, CustomerAddressUpdatePayloadQueryDefinition queryDef) {
-            startField("customerAddressUpdate");
-
-            _queryBuilder.append("(customerAccessToken:");
-            Query.appendQuotedString(_queryBuilder, customerAccessToken.toString());
-
-            _queryBuilder.append(",id:");
-            Query.appendQuotedString(_queryBuilder, id.toString());
-
-            _queryBuilder.append(",address:");
-            address.appendTo(_queryBuilder);
-
-            _queryBuilder.append(')');
-
-            _queryBuilder.append('{');
-            queryDef.define(new CustomerAddressUpdatePayloadQuery(_queryBuilder));
-            _queryBuilder.append('}');
-
-            return this;
-        }
-
-        /**
-        * Creates a new customer.
-        */
-        public MutationQuery customerCreate(CustomerCreateInput input, CustomerCreatePayloadQueryDefinition queryDef) {
-            startField("customerCreate");
-
-            _queryBuilder.append("(input:");
-            input.appendTo(_queryBuilder);
-
-            _queryBuilder.append(')');
-
-            _queryBuilder.append('{');
-            queryDef.define(new CustomerCreatePayloadQuery(_queryBuilder));
-            _queryBuilder.append('}');
-
-            return this;
-        }
-
-        /**
-        * Updates the default address of an existing customer.
-        */
-        public MutationQuery customerDefaultAddressUpdate(String customerAccessToken, ID addressId, CustomerDefaultAddressUpdatePayloadQueryDefinition queryDef) {
-            startField("customerDefaultAddressUpdate");
-
-            _queryBuilder.append("(customerAccessToken:");
-            Query.appendQuotedString(_queryBuilder, customerAccessToken.toString());
-
-            _queryBuilder.append(",addressId:");
-            Query.appendQuotedString(_queryBuilder, addressId.toString());
-
-            _queryBuilder.append(')');
-
-            _queryBuilder.append('{');
-            queryDef.define(new CustomerDefaultAddressUpdatePayloadQuery(_queryBuilder));
-            _queryBuilder.append('}');
-
-            return this;
-        }
-
-        /**
-        * Sends a reset password email to the customer, as the first step in the reset password process.
-        */
-        public MutationQuery customerRecover(String email, CustomerRecoverPayloadQueryDefinition queryDef) {
-            startField("customerRecover");
-
-            _queryBuilder.append("(email:");
-            Query.appendQuotedString(_queryBuilder, email.toString());
-
-            _queryBuilder.append(')');
-
-            _queryBuilder.append('{');
-            queryDef.define(new CustomerRecoverPayloadQuery(_queryBuilder));
-            _queryBuilder.append('}');
-
-            return this;
-        }
-
-        /**
-        * Resets a customer’s password with a token received from `CustomerRecover`.
-        */
-        public MutationQuery customerReset(ID id, CustomerResetInput input, CustomerResetPayloadQueryDefinition queryDef) {
-            startField("customerReset");
-
-            _queryBuilder.append("(id:");
-            Query.appendQuotedString(_queryBuilder, id.toString());
-
-            _queryBuilder.append(",input:");
-            input.appendTo(_queryBuilder);
-
-            _queryBuilder.append(')');
-
-            _queryBuilder.append('{');
-            queryDef.define(new CustomerResetPayloadQuery(_queryBuilder));
-            _queryBuilder.append('}');
-
-            return this;
-        }
-
-        /**
-        * Updates an existing customer.
-        */
-        public MutationQuery customerUpdate(String customerAccessToken, CustomerUpdateInput customer, CustomerUpdatePayloadQueryDefinition queryDef) {
-            startField("customerUpdate");
-
-            _queryBuilder.append("(customerAccessToken:");
-            Query.appendQuotedString(_queryBuilder, customerAccessToken.toString());
-
-            _queryBuilder.append(",customer:");
-            customer.appendTo(_queryBuilder);
-
-            _queryBuilder.append(')');
-
-            _queryBuilder.append('{');
-            queryDef.define(new CustomerUpdatePayloadQuery(_queryBuilder));
-            _queryBuilder.append('}');
-
-            return this;
-        }
-
-        public String toString() {
-            return _queryBuilder.toString();
-        }
-    }
-
-    /**
-    * The schema’s entry-point for mutations. This acts as the public, top-level API from which all
-    * mutation queries must start.
-    */
-    public static class Mutation extends AbstractResponse<Mutation> {
-        public Mutation() {
-        }
-
-        public Mutation(JsonObject fields) throws SchemaViolationError {
-            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
-                String key = field.getKey();
-                String fieldName = getFieldName(key);
-                switch (fieldName) {
-                    case "checkoutAttributesUpdate": {
-                        CheckoutAttributesUpdatePayload optional1 = null;
-                        if (!field.getValue().isJsonNull()) {
-                            optional1 = new CheckoutAttributesUpdatePayload(jsonAsObject(field.getValue(), key));
-                        }
-
-                        responseData.put(key, optional1);
-
-                        break;
-                    }
-
-                    case "checkoutCompleteFree": {
-                        CheckoutCompleteFreePayload optional1 = null;
-                        if (!field.getValue().isJsonNull()) {
-                            optional1 = new CheckoutCompleteFreePayload(jsonAsObject(field.getValue(), key));
-                        }
-
-                        responseData.put(key, optional1);
-
-                        break;
-                    }
-
-                    case "checkoutCompleteWithCreditCard": {
-                        CheckoutCompleteWithCreditCardPayload optional1 = null;
-                        if (!field.getValue().isJsonNull()) {
-                            optional1 = new CheckoutCompleteWithCreditCardPayload(jsonAsObject(field.getValue(), key));
-                        }
-
-                        responseData.put(key, optional1);
-
-                        break;
-                    }
-
-                    case "checkoutCompleteWithTokenizedPayment": {
-                        CheckoutCompleteWithTokenizedPaymentPayload optional1 = null;
-                        if (!field.getValue().isJsonNull()) {
-                            optional1 = new CheckoutCompleteWithTokenizedPaymentPayload(jsonAsObject(field.getValue(), key));
-                        }
-
-                        responseData.put(key, optional1);
-
-                        break;
-                    }
-
-                    case "checkoutCreate": {
-                        CheckoutCreatePayload optional1 = null;
-                        if (!field.getValue().isJsonNull()) {
-                            optional1 = new CheckoutCreatePayload(jsonAsObject(field.getValue(), key));
-                        }
-
-                        responseData.put(key, optional1);
-
-                        break;
-                    }
-
-                    case "checkoutCustomerAssociate": {
-                        CheckoutCustomerAssociatePayload optional1 = null;
-                        if (!field.getValue().isJsonNull()) {
-                            optional1 = new CheckoutCustomerAssociatePayload(jsonAsObject(field.getValue(), key));
-                        }
-
-                        responseData.put(key, optional1);
-
-                        break;
-                    }
-
-                    case "checkoutCustomerDisassociate": {
-                        CheckoutCustomerDisassociatePayload optional1 = null;
-                        if (!field.getValue().isJsonNull()) {
-                            optional1 = new CheckoutCustomerDisassociatePayload(jsonAsObject(field.getValue(), key));
-                        }
-
-                        responseData.put(key, optional1);
-
-                        break;
-                    }
-
-                    case "checkoutDiscountCodeApply": {
-                        CheckoutDiscountCodeApplyPayload optional1 = null;
-                        if (!field.getValue().isJsonNull()) {
-                            optional1 = new CheckoutDiscountCodeApplyPayload(jsonAsObject(field.getValue(), key));
-                        }
-
-                        responseData.put(key, optional1);
-
-                        break;
-                    }
-
-                    case "checkoutEmailUpdate": {
-                        CheckoutEmailUpdatePayload optional1 = null;
-                        if (!field.getValue().isJsonNull()) {
-                            optional1 = new CheckoutEmailUpdatePayload(jsonAsObject(field.getValue(), key));
-                        }
-
-                        responseData.put(key, optional1);
-
-                        break;
-                    }
-
-                    case "checkoutGiftCardApply": {
-                        CheckoutGiftCardApplyPayload optional1 = null;
-                        if (!field.getValue().isJsonNull()) {
-                            optional1 = new CheckoutGiftCardApplyPayload(jsonAsObject(field.getValue(), key));
-                        }
-
-                        responseData.put(key, optional1);
-
-                        break;
-                    }
-
-                    case "checkoutGiftCardRemove": {
-                        CheckoutGiftCardRemovePayload optional1 = null;
-                        if (!field.getValue().isJsonNull()) {
-                            optional1 = new CheckoutGiftCardRemovePayload(jsonAsObject(field.getValue(), key));
-                        }
-
-                        responseData.put(key, optional1);
-
-                        break;
-                    }
-
-                    case "checkoutLineItemsAdd": {
-                        CheckoutLineItemsAddPayload optional1 = null;
-                        if (!field.getValue().isJsonNull()) {
-                            optional1 = new CheckoutLineItemsAddPayload(jsonAsObject(field.getValue(), key));
-                        }
-
-                        responseData.put(key, optional1);
-
-                        break;
-                    }
-
-                    case "checkoutLineItemsRemove": {
-                        CheckoutLineItemsRemovePayload optional1 = null;
-                        if (!field.getValue().isJsonNull()) {
-                            optional1 = new CheckoutLineItemsRemovePayload(jsonAsObject(field.getValue(), key));
-                        }
-
-                        responseData.put(key, optional1);
-
-                        break;
-                    }
-
-                    case "checkoutLineItemsUpdate": {
-                        CheckoutLineItemsUpdatePayload optional1 = null;
-                        if (!field.getValue().isJsonNull()) {
-                            optional1 = new CheckoutLineItemsUpdatePayload(jsonAsObject(field.getValue(), key));
-                        }
-
-                        responseData.put(key, optional1);
-
-                        break;
-                    }
-
-                    case "checkoutShippingAddressUpdate": {
-                        CheckoutShippingAddressUpdatePayload optional1 = null;
-                        if (!field.getValue().isJsonNull()) {
-                            optional1 = new CheckoutShippingAddressUpdatePayload(jsonAsObject(field.getValue(), key));
-                        }
-
-                        responseData.put(key, optional1);
-
-                        break;
-                    }
-
-                    case "checkoutShippingLineUpdate": {
-                        CheckoutShippingLineUpdatePayload optional1 = null;
-                        if (!field.getValue().isJsonNull()) {
-                            optional1 = new CheckoutShippingLineUpdatePayload(jsonAsObject(field.getValue(), key));
-                        }
-
-                        responseData.put(key, optional1);
-
-                        break;
-                    }
-
-                    case "customerAccessTokenCreate": {
-                        CustomerAccessTokenCreatePayload optional1 = null;
-                        if (!field.getValue().isJsonNull()) {
-                            optional1 = new CustomerAccessTokenCreatePayload(jsonAsObject(field.getValue(), key));
-                        }
-
-                        responseData.put(key, optional1);
-
-                        break;
-                    }
-
-                    case "customerAccessTokenDelete": {
-                        CustomerAccessTokenDeletePayload optional1 = null;
-                        if (!field.getValue().isJsonNull()) {
-                            optional1 = new CustomerAccessTokenDeletePayload(jsonAsObject(field.getValue(), key));
-                        }
-
-                        responseData.put(key, optional1);
-
-                        break;
-                    }
-
-                    case "customerAccessTokenRenew": {
-                        CustomerAccessTokenRenewPayload optional1 = null;
-                        if (!field.getValue().isJsonNull()) {
-                            optional1 = new CustomerAccessTokenRenewPayload(jsonAsObject(field.getValue(), key));
-                        }
-
-                        responseData.put(key, optional1);
-
-                        break;
-                    }
-
-                    case "customerActivate": {
-                        CustomerActivatePayload optional1 = null;
-                        if (!field.getValue().isJsonNull()) {
-                            optional1 = new CustomerActivatePayload(jsonAsObject(field.getValue(), key));
-                        }
-
-                        responseData.put(key, optional1);
-
-                        break;
-                    }
-
-                    case "customerAddressCreate": {
-                        CustomerAddressCreatePayload optional1 = null;
-                        if (!field.getValue().isJsonNull()) {
-                            optional1 = new CustomerAddressCreatePayload(jsonAsObject(field.getValue(), key));
-                        }
-
-                        responseData.put(key, optional1);
-
-                        break;
-                    }
-
-                    case "customerAddressDelete": {
-                        CustomerAddressDeletePayload optional1 = null;
-                        if (!field.getValue().isJsonNull()) {
-                            optional1 = new CustomerAddressDeletePayload(jsonAsObject(field.getValue(), key));
-                        }
-
-                        responseData.put(key, optional1);
-
-                        break;
-                    }
-
-                    case "customerAddressUpdate": {
-                        CustomerAddressUpdatePayload optional1 = null;
-                        if (!field.getValue().isJsonNull()) {
-                            optional1 = new CustomerAddressUpdatePayload(jsonAsObject(field.getValue(), key));
-                        }
-
-                        responseData.put(key, optional1);
-
-                        break;
-                    }
-
-                    case "customerCreate": {
-                        CustomerCreatePayload optional1 = null;
-                        if (!field.getValue().isJsonNull()) {
-                            optional1 = new CustomerCreatePayload(jsonAsObject(field.getValue(), key));
-                        }
-
-                        responseData.put(key, optional1);
-
-                        break;
-                    }
-
-                    case "customerDefaultAddressUpdate": {
-                        CustomerDefaultAddressUpdatePayload optional1 = null;
-                        if (!field.getValue().isJsonNull()) {
-                            optional1 = new CustomerDefaultAddressUpdatePayload(jsonAsObject(field.getValue(), key));
-                        }
-
-                        responseData.put(key, optional1);
-
-                        break;
-                    }
-
-                    case "customerRecover": {
-                        CustomerRecoverPayload optional1 = null;
-                        if (!field.getValue().isJsonNull()) {
-                            optional1 = new CustomerRecoverPayload(jsonAsObject(field.getValue(), key));
-                        }
-
-                        responseData.put(key, optional1);
-
-                        break;
-                    }
-
-                    case "customerReset": {
-                        CustomerResetPayload optional1 = null;
-                        if (!field.getValue().isJsonNull()) {
-                            optional1 = new CustomerResetPayload(jsonAsObject(field.getValue(), key));
-                        }
-
-                        responseData.put(key, optional1);
-
-                        break;
-                    }
-
-                    case "customerUpdate": {
-                        CustomerUpdatePayload optional1 = null;
-                        if (!field.getValue().isJsonNull()) {
-                            optional1 = new CustomerUpdatePayload(jsonAsObject(field.getValue(), key));
-                        }
-
-                        responseData.put(key, optional1);
-
-                        break;
-                    }
-
-                    case "__typename": {
-                        responseData.put(key, jsonAsString(field.getValue(), key));
-                        break;
-                    }
-                    default: {
-                        throw new SchemaViolationError(this, key, field.getValue());
-                    }
-                }
-            }
-        }
-
-        public String getGraphQlTypeName() {
-            return "Mutation";
-        }
-
-        /**
-        * Updates the attributes of a checkout.
-        */
-
-        public CheckoutAttributesUpdatePayload getCheckoutAttributesUpdate() {
-            return (CheckoutAttributesUpdatePayload) get("checkoutAttributesUpdate");
-        }
-
-        public Mutation setCheckoutAttributesUpdate(CheckoutAttributesUpdatePayload arg) {
-            optimisticData.put(getKey("checkoutAttributesUpdate"), arg);
-            return this;
-        }
-
-        public CheckoutCompleteFreePayload getCheckoutCompleteFree() {
-            return (CheckoutCompleteFreePayload) get("checkoutCompleteFree");
-        }
-
-        public Mutation setCheckoutCompleteFree(CheckoutCompleteFreePayload arg) {
-            optimisticData.put(getKey("checkoutCompleteFree"), arg);
-            return this;
-        }
-
-        /**
-        * Completes a checkout using a credit card token from Shopify's Vault.
-        */
-
-        public CheckoutCompleteWithCreditCardPayload getCheckoutCompleteWithCreditCard() {
-            return (CheckoutCompleteWithCreditCardPayload) get("checkoutCompleteWithCreditCard");
-        }
-
-        public Mutation setCheckoutCompleteWithCreditCard(CheckoutCompleteWithCreditCardPayload arg) {
-            optimisticData.put(getKey("checkoutCompleteWithCreditCard"), arg);
-            return this;
-        }
-
-        /**
-        * Completes a checkout with a tokenized payment.
-        */
-
-        public CheckoutCompleteWithTokenizedPaymentPayload getCheckoutCompleteWithTokenizedPayment() {
-            return (CheckoutCompleteWithTokenizedPaymentPayload) get("checkoutCompleteWithTokenizedPayment");
-        }
-
-        public Mutation setCheckoutCompleteWithTokenizedPayment(CheckoutCompleteWithTokenizedPaymentPayload arg) {
-            optimisticData.put(getKey("checkoutCompleteWithTokenizedPayment"), arg);
-            return this;
-        }
-
-        /**
-        * Creates a new checkout.
-        */
-
-        public CheckoutCreatePayload getCheckoutCreate() {
-            return (CheckoutCreatePayload) get("checkoutCreate");
-        }
-
-        public Mutation setCheckoutCreate(CheckoutCreatePayload arg) {
-            optimisticData.put(getKey("checkoutCreate"), arg);
-            return this;
-        }
-
-        /**
-        * Associates a customer to the checkout.
-        */
-
-        public CheckoutCustomerAssociatePayload getCheckoutCustomerAssociate() {
-            return (CheckoutCustomerAssociatePayload) get("checkoutCustomerAssociate");
-        }
-
-        public Mutation setCheckoutCustomerAssociate(CheckoutCustomerAssociatePayload arg) {
-            optimisticData.put(getKey("checkoutCustomerAssociate"), arg);
-            return this;
-        }
-
-        /**
-        * Disassociates the current checkout customer from the checkout.
-        */
-
-        public CheckoutCustomerDisassociatePayload getCheckoutCustomerDisassociate() {
-            return (CheckoutCustomerDisassociatePayload) get("checkoutCustomerDisassociate");
-        }
-
-        public Mutation setCheckoutCustomerDisassociate(CheckoutCustomerDisassociatePayload arg) {
-            optimisticData.put(getKey("checkoutCustomerDisassociate"), arg);
-            return this;
-        }
-
-        /**
-        * Applies a discount to an existing checkout using a discount code.
-        */
-
-        public CheckoutDiscountCodeApplyPayload getCheckoutDiscountCodeApply() {
-            return (CheckoutDiscountCodeApplyPayload) get("checkoutDiscountCodeApply");
-        }
-
-        public Mutation setCheckoutDiscountCodeApply(CheckoutDiscountCodeApplyPayload arg) {
-            optimisticData.put(getKey("checkoutDiscountCodeApply"), arg);
-            return this;
-        }
-
-        /**
-        * Updates the email on an existing checkout.
-        */
-
-        public CheckoutEmailUpdatePayload getCheckoutEmailUpdate() {
-            return (CheckoutEmailUpdatePayload) get("checkoutEmailUpdate");
-        }
-
-        public Mutation setCheckoutEmailUpdate(CheckoutEmailUpdatePayload arg) {
-            optimisticData.put(getKey("checkoutEmailUpdate"), arg);
-            return this;
-        }
-
-        /**
-        * Applies a gift card to an existing checkout using a gift card code.
-        */
-
-        public CheckoutGiftCardApplyPayload getCheckoutGiftCardApply() {
-            return (CheckoutGiftCardApplyPayload) get("checkoutGiftCardApply");
-        }
-
-        public Mutation setCheckoutGiftCardApply(CheckoutGiftCardApplyPayload arg) {
-            optimisticData.put(getKey("checkoutGiftCardApply"), arg);
-            return this;
-        }
-
-        /**
-        * Removes an applied gift card from the checkout.
-        */
-
-        public CheckoutGiftCardRemovePayload getCheckoutGiftCardRemove() {
-            return (CheckoutGiftCardRemovePayload) get("checkoutGiftCardRemove");
-        }
-
-        public Mutation setCheckoutGiftCardRemove(CheckoutGiftCardRemovePayload arg) {
-            optimisticData.put(getKey("checkoutGiftCardRemove"), arg);
-            return this;
-        }
-
-        /**
-        * Adds a list of line items to a checkout.
-        */
-
-        public CheckoutLineItemsAddPayload getCheckoutLineItemsAdd() {
-            return (CheckoutLineItemsAddPayload) get("checkoutLineItemsAdd");
-        }
-
-        public Mutation setCheckoutLineItemsAdd(CheckoutLineItemsAddPayload arg) {
-            optimisticData.put(getKey("checkoutLineItemsAdd"), arg);
-            return this;
-        }
-
-        /**
-        * Removes line items from an existing checkout
-        */
-
-        public CheckoutLineItemsRemovePayload getCheckoutLineItemsRemove() {
-            return (CheckoutLineItemsRemovePayload) get("checkoutLineItemsRemove");
-        }
-
-        public Mutation setCheckoutLineItemsRemove(CheckoutLineItemsRemovePayload arg) {
-            optimisticData.put(getKey("checkoutLineItemsRemove"), arg);
-            return this;
-        }
-
-        /**
-        * Updates line items on a checkout.
-        */
-
-        public CheckoutLineItemsUpdatePayload getCheckoutLineItemsUpdate() {
-            return (CheckoutLineItemsUpdatePayload) get("checkoutLineItemsUpdate");
-        }
-
-        public Mutation setCheckoutLineItemsUpdate(CheckoutLineItemsUpdatePayload arg) {
-            optimisticData.put(getKey("checkoutLineItemsUpdate"), arg);
-            return this;
-        }
-
-        /**
-        * Updates the shipping address of an existing checkout.
-        */
-
-        public CheckoutShippingAddressUpdatePayload getCheckoutShippingAddressUpdate() {
-            return (CheckoutShippingAddressUpdatePayload) get("checkoutShippingAddressUpdate");
-        }
-
-        public Mutation setCheckoutShippingAddressUpdate(CheckoutShippingAddressUpdatePayload arg) {
-            optimisticData.put(getKey("checkoutShippingAddressUpdate"), arg);
-            return this;
-        }
-
-        /**
-        * Updates the shipping lines on an existing checkout.
-        */
-
-        public CheckoutShippingLineUpdatePayload getCheckoutShippingLineUpdate() {
-            return (CheckoutShippingLineUpdatePayload) get("checkoutShippingLineUpdate");
-        }
-
-        public Mutation setCheckoutShippingLineUpdate(CheckoutShippingLineUpdatePayload arg) {
-            optimisticData.put(getKey("checkoutShippingLineUpdate"), arg);
-            return this;
-        }
-
-        /**
-        * Creates a customer access token.
-        * The customer access token is required to modify the customer object in any way.
-        */
-
-        public CustomerAccessTokenCreatePayload getCustomerAccessTokenCreate() {
-            return (CustomerAccessTokenCreatePayload) get("customerAccessTokenCreate");
-        }
-
-        public Mutation setCustomerAccessTokenCreate(CustomerAccessTokenCreatePayload arg) {
-            optimisticData.put(getKey("customerAccessTokenCreate"), arg);
-            return this;
-        }
-
-        /**
-        * Permanently destroys a customer access token.
-        */
-
-        public CustomerAccessTokenDeletePayload getCustomerAccessTokenDelete() {
-            return (CustomerAccessTokenDeletePayload) get("customerAccessTokenDelete");
-        }
-
-        public Mutation setCustomerAccessTokenDelete(CustomerAccessTokenDeletePayload arg) {
-            optimisticData.put(getKey("customerAccessTokenDelete"), arg);
-            return this;
-        }
-
-        /**
-        * Renews a customer access token.
-        */
-
-        public CustomerAccessTokenRenewPayload getCustomerAccessTokenRenew() {
-            return (CustomerAccessTokenRenewPayload) get("customerAccessTokenRenew");
-        }
-
-        public Mutation setCustomerAccessTokenRenew(CustomerAccessTokenRenewPayload arg) {
-            optimisticData.put(getKey("customerAccessTokenRenew"), arg);
-            return this;
-        }
-
-        /**
-        * Activates a customer.
-        */
-
-        public CustomerActivatePayload getCustomerActivate() {
-            return (CustomerActivatePayload) get("customerActivate");
-        }
-
-        public Mutation setCustomerActivate(CustomerActivatePayload arg) {
-            optimisticData.put(getKey("customerActivate"), arg);
-            return this;
-        }
-
-        /**
-        * Creates a new address for a customer.
-        */
-
-        public CustomerAddressCreatePayload getCustomerAddressCreate() {
-            return (CustomerAddressCreatePayload) get("customerAddressCreate");
-        }
-
-        public Mutation setCustomerAddressCreate(CustomerAddressCreatePayload arg) {
-            optimisticData.put(getKey("customerAddressCreate"), arg);
-            return this;
-        }
-
-        /**
-        * Permanently deletes the address of an existing customer.
-        */
-
-        public CustomerAddressDeletePayload getCustomerAddressDelete() {
-            return (CustomerAddressDeletePayload) get("customerAddressDelete");
-        }
-
-        public Mutation setCustomerAddressDelete(CustomerAddressDeletePayload arg) {
-            optimisticData.put(getKey("customerAddressDelete"), arg);
-            return this;
-        }
-
-        /**
-        * Updates the address of an existing customer.
-        */
-
-        public CustomerAddressUpdatePayload getCustomerAddressUpdate() {
-            return (CustomerAddressUpdatePayload) get("customerAddressUpdate");
-        }
-
-        public Mutation setCustomerAddressUpdate(CustomerAddressUpdatePayload arg) {
-            optimisticData.put(getKey("customerAddressUpdate"), arg);
-            return this;
-        }
-
-        /**
-        * Creates a new customer.
-        */
-
-        public CustomerCreatePayload getCustomerCreate() {
-            return (CustomerCreatePayload) get("customerCreate");
-        }
-
-        public Mutation setCustomerCreate(CustomerCreatePayload arg) {
-            optimisticData.put(getKey("customerCreate"), arg);
-            return this;
-        }
-
-        /**
-        * Updates the default address of an existing customer.
-        */
-
-        public CustomerDefaultAddressUpdatePayload getCustomerDefaultAddressUpdate() {
-            return (CustomerDefaultAddressUpdatePayload) get("customerDefaultAddressUpdate");
-        }
-
-        public Mutation setCustomerDefaultAddressUpdate(CustomerDefaultAddressUpdatePayload arg) {
-            optimisticData.put(getKey("customerDefaultAddressUpdate"), arg);
-            return this;
-        }
-
-        /**
-        * Sends a reset password email to the customer, as the first step in the reset password process.
-        */
-
-        public CustomerRecoverPayload getCustomerRecover() {
-            return (CustomerRecoverPayload) get("customerRecover");
-        }
-
-        public Mutation setCustomerRecover(CustomerRecoverPayload arg) {
-            optimisticData.put(getKey("customerRecover"), arg);
-            return this;
-        }
-
-        /**
-        * Resets a customer’s password with a token received from `CustomerRecover`.
-        */
-
-        public CustomerResetPayload getCustomerReset() {
-            return (CustomerResetPayload) get("customerReset");
-        }
-
-        public Mutation setCustomerReset(CustomerResetPayload arg) {
-            optimisticData.put(getKey("customerReset"), arg);
-            return this;
-        }
-
-        /**
-        * Updates an existing customer.
-        */
-
-        public CustomerUpdatePayload getCustomerUpdate() {
-            return (CustomerUpdatePayload) get("customerUpdate");
-        }
-
-        public Mutation setCustomerUpdate(CustomerUpdatePayload arg) {
-            optimisticData.put(getKey("customerUpdate"), arg);
-            return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "checkoutAttributesUpdate": return true;
-
-                case "checkoutCompleteFree": return true;
-
-                case "checkoutCompleteWithCreditCard": return true;
-
-                case "checkoutCompleteWithTokenizedPayment": return true;
-
-                case "checkoutCreate": return true;
-
-                case "checkoutCustomerAssociate": return true;
-
-                case "checkoutCustomerDisassociate": return true;
-
-                case "checkoutDiscountCodeApply": return true;
-
-                case "checkoutEmailUpdate": return true;
-
-                case "checkoutGiftCardApply": return true;
-
-                case "checkoutGiftCardRemove": return true;
-
-                case "checkoutLineItemsAdd": return true;
-
-                case "checkoutLineItemsRemove": return true;
-
-                case "checkoutLineItemsUpdate": return true;
-
-                case "checkoutShippingAddressUpdate": return true;
-
-                case "checkoutShippingLineUpdate": return true;
-
-                case "customerAccessTokenCreate": return true;
-
-                case "customerAccessTokenDelete": return true;
-
-                case "customerAccessTokenRenew": return true;
-
-                case "customerActivate": return true;
-
-                case "customerAddressCreate": return true;
-
-                case "customerAddressDelete": return true;
-
-                case "customerAddressUpdate": return true;
-
-                case "customerCreate": return true;
-
-                case "customerDefaultAddressUpdate": return true;
-
-                case "customerRecover": return true;
-
-                case "customerReset": return true;
-
-                case "customerUpdate": return true;
-
-                default: return false;
-            }
-        }
-    }
-
-    public interface NodeQueryDefinition {
-        void define(NodeQuery _queryBuilder);
-    }
-
-    /**
-    * An object with an ID to support global identification.
-    */
-    public static class NodeQuery extends Query<NodeQuery> {
-        NodeQuery(StringBuilder _queryBuilder) {
-            super(_queryBuilder);
-
-            startField("__typename");
-        }
-
-        /**
-        * Globally unique identifier.
-        */
-        public NodeQuery id() {
-            startField("id");
-
-            return this;
-        }
-
-        public NodeQuery onAppliedGiftCard(AppliedGiftCardQueryDefinition queryDef) {
-            startInlineFragment("AppliedGiftCard");
-            queryDef.define(new AppliedGiftCardQuery(_queryBuilder));
-            _queryBuilder.append('}');
-            return this;
-        }
-
-        public NodeQuery onArticle(ArticleQueryDefinition queryDef) {
-            startInlineFragment("Article");
-            queryDef.define(new ArticleQuery(_queryBuilder));
-            _queryBuilder.append('}');
-            return this;
-        }
-
-        public NodeQuery onBlog(BlogQueryDefinition queryDef) {
-            startInlineFragment("Blog");
-            queryDef.define(new BlogQuery(_queryBuilder));
-            _queryBuilder.append('}');
-            return this;
-        }
-
-        public NodeQuery onCheckout(CheckoutQueryDefinition queryDef) {
-            startInlineFragment("Checkout");
-            queryDef.define(new CheckoutQuery(_queryBuilder));
-            _queryBuilder.append('}');
-            return this;
-        }
-
-        public NodeQuery onCheckoutLineItem(CheckoutLineItemQueryDefinition queryDef) {
-            startInlineFragment("CheckoutLineItem");
-            queryDef.define(new CheckoutLineItemQuery(_queryBuilder));
-            _queryBuilder.append('}');
-            return this;
-        }
-
-        public NodeQuery onCollection(CollectionQueryDefinition queryDef) {
-            startInlineFragment("Collection");
-            queryDef.define(new CollectionQuery(_queryBuilder));
-            _queryBuilder.append('}');
-            return this;
-        }
-
-        public NodeQuery onComment(CommentQueryDefinition queryDef) {
-            startInlineFragment("Comment");
-            queryDef.define(new CommentQuery(_queryBuilder));
-            _queryBuilder.append('}');
-            return this;
-        }
-
-        public NodeQuery onMailingAddress(MailingAddressQueryDefinition queryDef) {
-            startInlineFragment("MailingAddress");
-            queryDef.define(new MailingAddressQuery(_queryBuilder));
-            _queryBuilder.append('}');
-            return this;
-        }
-
-        public NodeQuery onOrder(OrderQueryDefinition queryDef) {
-            startInlineFragment("Order");
-            queryDef.define(new OrderQuery(_queryBuilder));
-            _queryBuilder.append('}');
-            return this;
-        }
-
-        public NodeQuery onPayment(PaymentQueryDefinition queryDef) {
-            startInlineFragment("Payment");
-            queryDef.define(new PaymentQuery(_queryBuilder));
-            _queryBuilder.append('}');
-            return this;
-        }
-
-        public NodeQuery onProduct(ProductQueryDefinition queryDef) {
-            startInlineFragment("Product");
-            queryDef.define(new ProductQuery(_queryBuilder));
-            _queryBuilder.append('}');
-            return this;
-        }
-
-        public NodeQuery onProductOption(ProductOptionQueryDefinition queryDef) {
-            startInlineFragment("ProductOption");
-            queryDef.define(new ProductOptionQuery(_queryBuilder));
-            _queryBuilder.append('}');
-            return this;
-        }
-
-        public NodeQuery onProductVariant(ProductVariantQueryDefinition queryDef) {
-            startInlineFragment("ProductVariant");
-            queryDef.define(new ProductVariantQuery(_queryBuilder));
-            _queryBuilder.append('}');
-            return this;
-        }
-
-        public NodeQuery onShopPolicy(ShopPolicyQueryDefinition queryDef) {
-            startInlineFragment("ShopPolicy");
-            queryDef.define(new ShopPolicyQuery(_queryBuilder));
-            _queryBuilder.append('}');
-            return this;
-        }
-    }
-
-    public interface Node extends com.shopify.graphql.support.Node {
-        String getGraphQlTypeName();
-
-        ID getId();
-    }
-
-    /**
-    * An object with an ID to support global identification.
-    */
-    public static class UnknownNode extends AbstractResponse<UnknownNode> implements Node {
-        public UnknownNode() {
-        }
-
-        public UnknownNode(JsonObject fields) throws SchemaViolationError {
-            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
-                String key = field.getKey();
-                String fieldName = getFieldName(key);
-                switch (fieldName) {
-                    case "id": {
-                        responseData.put(key, new ID(jsonAsString(field.getValue(), key)));
-
-                        break;
-                    }
-
-                    case "__typename": {
-                        responseData.put(key, jsonAsString(field.getValue(), key));
-                        break;
-                    }
-                    default: {
-                        throw new SchemaViolationError(this, key, field.getValue());
-                    }
-                }
-            }
-        }
-
-        public static Node create(JsonObject fields) throws SchemaViolationError {
-            String typeName = fields.getAsJsonPrimitive("__typename").getAsString();
-            switch (typeName) {
-                case "AppliedGiftCard": {
-                    return new AppliedGiftCard(fields);
-                }
-
-                case "Article": {
-                    return new Article(fields);
-                }
-
-                case "Blog": {
-                    return new Blog(fields);
-                }
-
-                case "Checkout": {
-                    return new Checkout(fields);
-                }
-
-                case "CheckoutLineItem": {
-                    return new CheckoutLineItem(fields);
-                }
-
-                case "Collection": {
-                    return new Collection(fields);
-                }
-
-                case "Comment": {
-                    return new Comment(fields);
-                }
-
-                case "MailingAddress": {
-                    return new MailingAddress(fields);
-                }
-
-                case "Order": {
-                    return new Order(fields);
-                }
-
-                case "Payment": {
-                    return new Payment(fields);
-                }
-
-                case "Product": {
-                    return new Product(fields);
-                }
-
-                case "ProductOption": {
-                    return new ProductOption(fields);
-                }
-
-                case "ProductVariant": {
-                    return new ProductVariant(fields);
-                }
-
-                case "ShopPolicy": {
-                    return new ShopPolicy(fields);
-                }
-
-                default: {
-                    return new UnknownNode(fields);
-                }
-            }
-        }
-
-        public String getGraphQlTypeName() {
-            return (String) get("__typename");
-        }
-
-        /**
-        * Globally unique identifier.
-        */
-
-        public ID getId() {
-            return (ID) get("id");
-        }
-
-        public UnknownNode setId(ID arg) {
-            optimisticData.put(getKey("id"), arg);
-            return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "id": return false;
-
-                default: return false;
-            }
-        }
-    }
-
-    public interface OrderQueryDefinition {
-        void define(OrderQuery _queryBuilder);
-    }
-
-    /**
-    * An order is a customer’s completed request to purchase one or more products from a shop. An order is
-    * created when a customer completes the checkout process, during which time they provides an email
-    * address, billing address and payment information.
-    */
-    public static class OrderQuery extends Query<OrderQuery> {
-        OrderQuery(StringBuilder _queryBuilder) {
-            super(_queryBuilder);
-
-            startField("id");
-        }
-
-        /**
-        * The code of the currency used for the payment.
-        */
-        public OrderQuery currencyCode() {
-            startField("currencyCode");
-
-            return this;
-        }
-
-        /**
-        * The locale code in which this specific order happened.
-        */
-        public OrderQuery customerLocale() {
-            startField("customerLocale");
-
-            return this;
-        }
-
-        /**
-        * The order’s URL for a customer.
-        */
-        public OrderQuery customerUrl() {
-            startField("customerUrl");
-
-            return this;
-        }
-
-        /**
-        * The customer's email address.
-        */
-        public OrderQuery email() {
-            startField("email");
-
-            return this;
-        }
-
-        public class LineItemsArguments extends Arguments {
-            LineItemsArguments(StringBuilder _queryBuilder) {
-                super(_queryBuilder, true);
-            }
-
-            public LineItemsArguments first(Integer value) {
-                if (value != null) {
-                    startArgument("first");
-                    _queryBuilder.append(value);
-                }
-                return this;
-            }
-
-            public LineItemsArguments after(String value) {
-                if (value != null) {
-                    startArgument("after");
-                    Query.appendQuotedString(_queryBuilder, value.toString());
-                }
-                return this;
-            }
-
-            public LineItemsArguments last(Integer value) {
-                if (value != null) {
-                    startArgument("last");
-                    _queryBuilder.append(value);
-                }
-                return this;
-            }
-
-            public LineItemsArguments before(String value) {
-                if (value != null) {
-                    startArgument("before");
-                    Query.appendQuotedString(_queryBuilder, value.toString());
-                }
-                return this;
-            }
-
-            public LineItemsArguments reverse(Boolean value) {
-                if (value != null) {
-                    startArgument("reverse");
-                    _queryBuilder.append(value);
-                }
-                return this;
-            }
-        }
-
-        public interface LineItemsArgumentsDefinition {
-            void define(LineItemsArguments args);
-        }
-
-        /**
-        * List of the order’s line items.
-        */
-        public OrderQuery lineItems(OrderLineItemConnectionQueryDefinition queryDef) {
-            return lineItems(args -> {}, queryDef);
-        }
-
-        /**
-        * List of the order’s line items.
-        */
-        public OrderQuery lineItems(LineItemsArgumentsDefinition argsDef, OrderLineItemConnectionQueryDefinition queryDef) {
-            startField("lineItems");
-
-            LineItemsArguments args = new LineItemsArguments(_queryBuilder);
-            argsDef.define(args);
-            LineItemsArguments.end(args);
-
-            _queryBuilder.append('{');
-            queryDef.define(new OrderLineItemConnectionQuery(_queryBuilder));
-            _queryBuilder.append('}');
-
-            return this;
-        }
-
-        /**
-        * A unique numeric identifier for the order for use by shop owner and customer.
-        */
-        public OrderQuery orderNumber() {
-            startField("orderNumber");
-
-            return this;
-        }
-
-        /**
-        * The customer's phone number.
-        */
-        public OrderQuery phone() {
-            startField("phone");
-
-            return this;
-        }
-
-        /**
-        * The date and time when the order was imported.
-        * This value can be set to dates in the past when importing from other systems.
-        * If no value is provided, it will be auto-generated based on current date and time.
-        */
-        public OrderQuery processedAt() {
-            startField("processedAt");
-
-            return this;
-        }
-
-        /**
-        * The address to where the order will be shipped.
-        */
-        public OrderQuery shippingAddress(MailingAddressQueryDefinition queryDef) {
-            startField("shippingAddress");
-
-            _queryBuilder.append('{');
-            queryDef.define(new MailingAddressQuery(_queryBuilder));
-            _queryBuilder.append('}');
-
-            return this;
-        }
-
-        /**
-        * Price of the order before shipping and taxes.
-        */
-        public OrderQuery subtotalPrice() {
-            startField("subtotalPrice");
-
-            return this;
-        }
-
-        /**
-        * The sum of all the prices of all the items in the order, taxes and discounts included (must be
-        * positive).
-        */
-        public OrderQuery totalPrice() {
-            startField("totalPrice");
-
-            return this;
-        }
-
-        /**
-        * The total amount that has been refunded.
-        */
-        public OrderQuery totalRefunded() {
-            startField("totalRefunded");
-
-            return this;
-        }
-
-        /**
-        * The total cost of shipping.
-        */
-        public OrderQuery totalShippingPrice() {
-            startField("totalShippingPrice");
-
-            return this;
-        }
-
-        /**
-        * The total cost of taxes.
-        */
-        public OrderQuery totalTax() {
-            startField("totalTax");
-
-            return this;
-        }
-    }
-
-    /**
-    * An order is a customer’s completed request to purchase one or more products from a shop. An order is
-    * created when a customer completes the checkout process, during which time they provides an email
-    * address, billing address and payment information.
-    */
-    public static class Order extends AbstractResponse<Order> implements Node {
-        public Order() {
-        }
-
-        public Order(JsonObject fields) throws SchemaViolationError {
-            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
-                String key = field.getKey();
-                String fieldName = getFieldName(key);
-                switch (fieldName) {
-                    case "currencyCode": {
-                        responseData.put(key, CurrencyCode.fromGraphQl(jsonAsString(field.getValue(), key)));
-
-                        break;
-                    }
-
-                    case "customerLocale": {
-                        String optional1 = null;
-                        if (!field.getValue().isJsonNull()) {
-                            optional1 = jsonAsString(field.getValue(), key);
-                        }
-
-                        responseData.put(key, optional1);
-
-                        break;
-                    }
-
-                    case "customerUrl": {
-                        String optional1 = null;
-                        if (!field.getValue().isJsonNull()) {
-                            optional1 = jsonAsString(field.getValue(), key);
-                        }
-
-                        responseData.put(key, optional1);
-
-                        break;
-                    }
-
-                    case "email": {
-                        String optional1 = null;
-                        if (!field.getValue().isJsonNull()) {
-                            optional1 = jsonAsString(field.getValue(), key);
-                        }
-
-                        responseData.put(key, optional1);
-
-                        break;
-                    }
-
-                    case "id": {
-                        responseData.put(key, new ID(jsonAsString(field.getValue(), key)));
-
-                        break;
-                    }
-
-                    case "lineItems": {
-                        responseData.put(key, new OrderLineItemConnection(jsonAsObject(field.getValue(), key)));
-
-                        break;
-                    }
-
-                    case "orderNumber": {
-                        responseData.put(key, jsonAsInteger(field.getValue(), key));
-
-                        break;
-                    }
-
-                    case "phone": {
-                        String optional1 = null;
-                        if (!field.getValue().isJsonNull()) {
-                            optional1 = jsonAsString(field.getValue(), key);
-                        }
-
-                        responseData.put(key, optional1);
-
-                        break;
-                    }
-
-                    case "processedAt": {
-                        responseData.put(key, Utils.parseDateTime(jsonAsString(field.getValue(), key)));
-
-                        break;
-                    }
-
-                    case "shippingAddress": {
-                        MailingAddress optional1 = null;
-                        if (!field.getValue().isJsonNull()) {
-                            optional1 = new MailingAddress(jsonAsObject(field.getValue(), key));
-                        }
-
-                        responseData.put(key, optional1);
-
-                        break;
-                    }
-
-                    case "subtotalPrice": {
-                        BigDecimal optional1 = null;
-                        if (!field.getValue().isJsonNull()) {
-                            optional1 = new BigDecimal(jsonAsString(field.getValue(), key));
-                        }
-
-                        responseData.put(key, optional1);
-
-                        break;
-                    }
-
-                    case "totalPrice": {
-                        responseData.put(key, new BigDecimal(jsonAsString(field.getValue(), key)));
-
-                        break;
-                    }
-
-                    case "totalRefunded": {
-                        responseData.put(key, new BigDecimal(jsonAsString(field.getValue(), key)));
-
-                        break;
-                    }
-
-                    case "totalShippingPrice": {
-                        responseData.put(key, new BigDecimal(jsonAsString(field.getValue(), key)));
-
-                        break;
-                    }
-
-                    case "totalTax": {
-                        BigDecimal optional1 = null;
-                        if (!field.getValue().isJsonNull()) {
-                            optional1 = new BigDecimal(jsonAsString(field.getValue(), key));
-                        }
-
-                        responseData.put(key, optional1);
-
-                        break;
-                    }
-
-                    case "__typename": {
-                        responseData.put(key, jsonAsString(field.getValue(), key));
-                        break;
-                    }
-                    default: {
-                        throw new SchemaViolationError(this, key, field.getValue());
-                    }
-                }
-            }
-        }
-
-        public Order(ID id) {
-            this();
-            optimisticData.put("id", id);
-        }
-
-        public String getGraphQlTypeName() {
-            return "Order";
-        }
-
-        /**
-        * The code of the currency used for the payment.
-        */
-
-        public CurrencyCode getCurrencyCode() {
-            return (CurrencyCode) get("currencyCode");
-        }
-
-        public Order setCurrencyCode(CurrencyCode arg) {
-            optimisticData.put(getKey("currencyCode"), arg);
-            return this;
-        }
-
-        /**
-        * The locale code in which this specific order happened.
-        */
-
-        public String getCustomerLocale() {
-            return (String) get("customerLocale");
-        }
-
-        public Order setCustomerLocale(String arg) {
-            optimisticData.put(getKey("customerLocale"), arg);
-            return this;
-        }
-
-        /**
-        * The order’s URL for a customer.
-        */
-
-        public String getCustomerUrl() {
-            return (String) get("customerUrl");
-        }
-
-        public Order setCustomerUrl(String arg) {
-            optimisticData.put(getKey("customerUrl"), arg);
-            return this;
-        }
-
-        /**
-        * The customer's email address.
-        */
-
-        public String getEmail() {
-            return (String) get("email");
-        }
-
-        public Order setEmail(String arg) {
-            optimisticData.put(getKey("email"), arg);
-            return this;
-        }
-
-        /**
-        * Globally unique identifier.
-        */
-
-        public ID getId() {
-            return (ID) get("id");
-        }
-
-        /**
-        * List of the order’s line items.
-        */
-
-        public OrderLineItemConnection getLineItems() {
-            return (OrderLineItemConnection) get("lineItems");
-        }
-
-        public Order setLineItems(OrderLineItemConnection arg) {
-            optimisticData.put(getKey("lineItems"), arg);
-            return this;
-        }
-
-        /**
-        * A unique numeric identifier for the order for use by shop owner and customer.
-        */
-
-        public Integer getOrderNumber() {
-            return (Integer) get("orderNumber");
-        }
-
-        public Order setOrderNumber(Integer arg) {
-            optimisticData.put(getKey("orderNumber"), arg);
-            return this;
-        }
-
-        /**
-        * The customer's phone number.
-        */
-
-        public String getPhone() {
-            return (String) get("phone");
-        }
-
-        public Order setPhone(String arg) {
-            optimisticData.put(getKey("phone"), arg);
-            return this;
-        }
-
-        /**
-        * The date and time when the order was imported.
-        * This value can be set to dates in the past when importing from other systems.
-        * If no value is provided, it will be auto-generated based on current date and time.
-        */
-
-        public DateTime getProcessedAt() {
-            return (DateTime) get("processedAt");
-        }
-
-        public Order setProcessedAt(DateTime arg) {
-            optimisticData.put(getKey("processedAt"), arg);
-            return this;
-        }
-
-        /**
-        * The address to where the order will be shipped.
-        */
-
-        public MailingAddress getShippingAddress() {
-            return (MailingAddress) get("shippingAddress");
-        }
-
-        public Order setShippingAddress(MailingAddress arg) {
-            optimisticData.put(getKey("shippingAddress"), arg);
-            return this;
-        }
-
-        /**
-        * Price of the order before shipping and taxes.
-        */
-
-        public BigDecimal getSubtotalPrice() {
-            return (BigDecimal) get("subtotalPrice");
-        }
-
-        public Order setSubtotalPrice(BigDecimal arg) {
-            optimisticData.put(getKey("subtotalPrice"), arg);
-            return this;
-        }
-
-        /**
-        * The sum of all the prices of all the items in the order, taxes and discounts included (must be
-        * positive).
-        */
-
-        public BigDecimal getTotalPrice() {
-            return (BigDecimal) get("totalPrice");
-        }
-
-        public Order setTotalPrice(BigDecimal arg) {
-            optimisticData.put(getKey("totalPrice"), arg);
-            return this;
-        }
-
-        /**
-        * The total amount that has been refunded.
-        */
-
-        public BigDecimal getTotalRefunded() {
-            return (BigDecimal) get("totalRefunded");
-        }
-
-        public Order setTotalRefunded(BigDecimal arg) {
-            optimisticData.put(getKey("totalRefunded"), arg);
-            return this;
-        }
-
-        /**
-        * The total cost of shipping.
-        */
-
-        public BigDecimal getTotalShippingPrice() {
-            return (BigDecimal) get("totalShippingPrice");
-        }
-
-        public Order setTotalShippingPrice(BigDecimal arg) {
-            optimisticData.put(getKey("totalShippingPrice"), arg);
-            return this;
-        }
-
-        /**
-        * The total cost of taxes.
-        */
-
-        public BigDecimal getTotalTax() {
-            return (BigDecimal) get("totalTax");
-        }
-
-        public Order setTotalTax(BigDecimal arg) {
-            optimisticData.put(getKey("totalTax"), arg);
-            return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "currencyCode": return false;
-
-                case "customerLocale": return false;
-
-                case "customerUrl": return false;
-
-                case "email": return false;
-
-                case "id": return false;
-
-                case "lineItems": return true;
-
-                case "orderNumber": return false;
-
-                case "phone": return false;
-
-                case "processedAt": return false;
-
-                case "shippingAddress": return true;
-
-                case "subtotalPrice": return false;
-
-                case "totalPrice": return false;
-
-                case "totalRefunded": return false;
-
-                case "totalShippingPrice": return false;
-
-                case "totalTax": return false;
-
-                default: return false;
-            }
-        }
-    }
-
-    public interface OrderConnectionQueryDefinition {
-        void define(OrderConnectionQuery _queryBuilder);
-    }
-
-    public static class OrderConnectionQuery extends Query<OrderConnectionQuery> {
-        OrderConnectionQuery(StringBuilder _queryBuilder) {
-            super(_queryBuilder);
-        }
-
-        /**
-        * A list of edges.
-        */
-        public OrderConnectionQuery edges(OrderEdgeQueryDefinition queryDef) {
-            startField("edges");
-
-            _queryBuilder.append('{');
-            queryDef.define(new OrderEdgeQuery(_queryBuilder));
-            _queryBuilder.append('}');
-
-            return this;
-        }
-
-        /**
-        * Information to aid in pagination.
-        */
-        public OrderConnectionQuery pageInfo(PageInfoQueryDefinition queryDef) {
-            startField("pageInfo");
-
-            _queryBuilder.append('{');
-            queryDef.define(new PageInfoQuery(_queryBuilder));
-            _queryBuilder.append('}');
-
-            return this;
-        }
-    }
-
-    public static class OrderConnection extends AbstractResponse<OrderConnection> {
-        public OrderConnection() {
-        }
-
-        public OrderConnection(JsonObject fields) throws SchemaViolationError {
-            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
-                String key = field.getKey();
-                String fieldName = getFieldName(key);
-                switch (fieldName) {
-                    case "edges": {
-                        List<OrderEdge> list1 = new ArrayList<>();
-                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
-                            list1.add(new OrderEdge(jsonAsObject(element1, key)));
-                        }
-
-                        responseData.put(key, list1);
-
-                        break;
-                    }
-
-                    case "pageInfo": {
-                        responseData.put(key, new PageInfo(jsonAsObject(field.getValue(), key)));
-
-                        break;
-                    }
-
-                    case "__typename": {
-                        responseData.put(key, jsonAsString(field.getValue(), key));
-                        break;
-                    }
-                    default: {
-                        throw new SchemaViolationError(this, key, field.getValue());
-                    }
-                }
-            }
-        }
-
-        public String getGraphQlTypeName() {
-            return "OrderConnection";
-        }
-
-        /**
-        * A list of edges.
-        */
-
-        public List<OrderEdge> getEdges() {
-            return (List<OrderEdge>) get("edges");
-        }
-
-        public OrderConnection setEdges(List<OrderEdge> arg) {
-            optimisticData.put(getKey("edges"), arg);
-            return this;
-        }
-
-        /**
-        * Information to aid in pagination.
-        */
-
-        public PageInfo getPageInfo() {
-            return (PageInfo) get("pageInfo");
-        }
-
-        public OrderConnection setPageInfo(PageInfo arg) {
-            optimisticData.put(getKey("pageInfo"), arg);
-            return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "edges": return true;
-
-                case "pageInfo": return true;
-
-                default: return false;
-            }
-        }
-    }
-
-    public interface OrderEdgeQueryDefinition {
-        void define(OrderEdgeQuery _queryBuilder);
-    }
-
-    public static class OrderEdgeQuery extends Query<OrderEdgeQuery> {
-        OrderEdgeQuery(StringBuilder _queryBuilder) {
-            super(_queryBuilder);
-        }
-
-        /**
-        * A cursor for use in pagination.
-        */
-        public OrderEdgeQuery cursor() {
-            startField("cursor");
-
-            return this;
-        }
-
-        /**
-        * The item at the end of OrderEdge.
-        */
-        public OrderEdgeQuery node(OrderQueryDefinition queryDef) {
-            startField("node");
-
-            _queryBuilder.append('{');
-            queryDef.define(new OrderQuery(_queryBuilder));
-            _queryBuilder.append('}');
-
-            return this;
-        }
-    }
-
-    public static class OrderEdge extends AbstractResponse<OrderEdge> {
-        public OrderEdge() {
-        }
-
-        public OrderEdge(JsonObject fields) throws SchemaViolationError {
-            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
-                String key = field.getKey();
-                String fieldName = getFieldName(key);
-                switch (fieldName) {
-                    case "cursor": {
-                        responseData.put(key, jsonAsString(field.getValue(), key));
-
-                        break;
-                    }
-
-                    case "node": {
-                        responseData.put(key, new Order(jsonAsObject(field.getValue(), key)));
-
-                        break;
-                    }
-
-                    case "__typename": {
-                        responseData.put(key, jsonAsString(field.getValue(), key));
-                        break;
-                    }
-                    default: {
-                        throw new SchemaViolationError(this, key, field.getValue());
-                    }
-                }
-            }
-        }
-
-        public String getGraphQlTypeName() {
-            return "OrderEdge";
-        }
-
-        /**
-        * A cursor for use in pagination.
-        */
-
-        public String getCursor() {
-            return (String) get("cursor");
-        }
-
-        public OrderEdge setCursor(String arg) {
-            optimisticData.put(getKey("cursor"), arg);
-            return this;
-        }
-
-        /**
-        * The item at the end of OrderEdge.
-        */
-
-        public Order getNode() {
-            return (Order) get("node");
-        }
-
-        public OrderEdge setNode(Order arg) {
-            optimisticData.put(getKey("node"), arg);
-            return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "cursor": return false;
-
-                case "node": return true;
-
-                default: return false;
-            }
-        }
-    }
-
-    public interface OrderLineItemQueryDefinition {
-        void define(OrderLineItemQuery _queryBuilder);
-    }
-
-    /**
-    * Represents a single line in an order. There is one line item for each distinct product variant.
-    */
-    public static class OrderLineItemQuery extends Query<OrderLineItemQuery> {
-        OrderLineItemQuery(StringBuilder _queryBuilder) {
-            super(_queryBuilder);
-        }
-
-        /**
-        * List of custom attributes associated to the line item.
-        */
-        public OrderLineItemQuery customAttributes(AttributeQueryDefinition queryDef) {
-            startField("customAttributes");
-
-            _queryBuilder.append('{');
-            queryDef.define(new AttributeQuery(_queryBuilder));
-            _queryBuilder.append('}');
-
-            return this;
-        }
-
-        /**
-        * The number of products variants associated to the line item.
-        */
-        public OrderLineItemQuery quantity() {
-            startField("quantity");
-
-            return this;
-        }
-
-        /**
-        * The title of the product combined with title of the variant.
-        */
-        public OrderLineItemQuery title() {
-            startField("title");
-
-            return this;
-        }
-
-        /**
-        * The product variant object associated to the line item.
-        */
-        public OrderLineItemQuery variant(ProductVariantQueryDefinition queryDef) {
-            startField("variant");
-
-            _queryBuilder.append('{');
-            queryDef.define(new ProductVariantQuery(_queryBuilder));
-            _queryBuilder.append('}');
-
-            return this;
-        }
-    }
-
-    /**
-    * Represents a single line in an order. There is one line item for each distinct product variant.
-    */
-    public static class OrderLineItem extends AbstractResponse<OrderLineItem> {
-        public OrderLineItem() {
-        }
-
-        public OrderLineItem(JsonObject fields) throws SchemaViolationError {
-            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
-                String key = field.getKey();
-                String fieldName = getFieldName(key);
-                switch (fieldName) {
-                    case "customAttributes": {
-                        List<Attribute> list1 = new ArrayList<>();
-                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
-                            list1.add(new Attribute(jsonAsObject(element1, key)));
-                        }
-
-                        responseData.put(key, list1);
-
-                        break;
-                    }
-
-                    case "quantity": {
-                        responseData.put(key, jsonAsInteger(field.getValue(), key));
-
-                        break;
-                    }
-
-                    case "title": {
-                        responseData.put(key, jsonAsString(field.getValue(), key));
-
-                        break;
-                    }
-
-                    case "variant": {
-                        ProductVariant optional1 = null;
-                        if (!field.getValue().isJsonNull()) {
-                            optional1 = new ProductVariant(jsonAsObject(field.getValue(), key));
-                        }
-
-                        responseData.put(key, optional1);
-
-                        break;
-                    }
-
-                    case "__typename": {
-                        responseData.put(key, jsonAsString(field.getValue(), key));
-                        break;
-                    }
-                    default: {
-                        throw new SchemaViolationError(this, key, field.getValue());
-                    }
-                }
-            }
-        }
-
-        public String getGraphQlTypeName() {
-            return "OrderLineItem";
-        }
-
-        /**
-        * List of custom attributes associated to the line item.
-        */
-
-        public List<Attribute> getCustomAttributes() {
-            return (List<Attribute>) get("customAttributes");
-        }
-
-        public OrderLineItem setCustomAttributes(List<Attribute> arg) {
-            optimisticData.put(getKey("customAttributes"), arg);
-            return this;
-        }
-
-        /**
-        * The number of products variants associated to the line item.
-        */
-
-        public Integer getQuantity() {
-            return (Integer) get("quantity");
-        }
-
-        public OrderLineItem setQuantity(Integer arg) {
-            optimisticData.put(getKey("quantity"), arg);
-            return this;
-        }
-
-        /**
-        * The title of the product combined with title of the variant.
-        */
-
-        public String getTitle() {
-            return (String) get("title");
-        }
-
-        public OrderLineItem setTitle(String arg) {
-            optimisticData.put(getKey("title"), arg);
-            return this;
-        }
-
-        /**
-        * The product variant object associated to the line item.
-        */
-
-        public ProductVariant getVariant() {
-            return (ProductVariant) get("variant");
-        }
-
-        public OrderLineItem setVariant(ProductVariant arg) {
-            optimisticData.put(getKey("variant"), arg);
-            return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "customAttributes": return true;
-
-                case "quantity": return false;
-
-                case "title": return false;
-
-                case "variant": return true;
-
-                default: return false;
-            }
-        }
-    }
-
-    public interface OrderLineItemConnectionQueryDefinition {
-        void define(OrderLineItemConnectionQuery _queryBuilder);
-    }
-
-    public static class OrderLineItemConnectionQuery extends Query<OrderLineItemConnectionQuery> {
-        OrderLineItemConnectionQuery(StringBuilder _queryBuilder) {
-            super(_queryBuilder);
-        }
-
-        /**
-        * A list of edges.
-        */
-        public OrderLineItemConnectionQuery edges(OrderLineItemEdgeQueryDefinition queryDef) {
-            startField("edges");
-
-            _queryBuilder.append('{');
-            queryDef.define(new OrderLineItemEdgeQuery(_queryBuilder));
-            _queryBuilder.append('}');
-
-            return this;
-        }
-
-        /**
-        * Information to aid in pagination.
-        */
-        public OrderLineItemConnectionQuery pageInfo(PageInfoQueryDefinition queryDef) {
-            startField("pageInfo");
-
-            _queryBuilder.append('{');
-            queryDef.define(new PageInfoQuery(_queryBuilder));
-            _queryBuilder.append('}');
-
-            return this;
-        }
-    }
-
-    public static class OrderLineItemConnection extends AbstractResponse<OrderLineItemConnection> {
-        public OrderLineItemConnection() {
-        }
-
-        public OrderLineItemConnection(JsonObject fields) throws SchemaViolationError {
-            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
-                String key = field.getKey();
-                String fieldName = getFieldName(key);
-                switch (fieldName) {
-                    case "edges": {
-                        List<OrderLineItemEdge> list1 = new ArrayList<>();
-                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
-                            list1.add(new OrderLineItemEdge(jsonAsObject(element1, key)));
-                        }
-
-                        responseData.put(key, list1);
-
-                        break;
-                    }
-
-                    case "pageInfo": {
-                        responseData.put(key, new PageInfo(jsonAsObject(field.getValue(), key)));
-
-                        break;
-                    }
-
-                    case "__typename": {
-                        responseData.put(key, jsonAsString(field.getValue(), key));
-                        break;
-                    }
-                    default: {
-                        throw new SchemaViolationError(this, key, field.getValue());
-                    }
-                }
-            }
-        }
-
-        public String getGraphQlTypeName() {
-            return "OrderLineItemConnection";
-        }
-
-        /**
-        * A list of edges.
-        */
-
-        public List<OrderLineItemEdge> getEdges() {
-            return (List<OrderLineItemEdge>) get("edges");
-        }
-
-        public OrderLineItemConnection setEdges(List<OrderLineItemEdge> arg) {
-            optimisticData.put(getKey("edges"), arg);
-            return this;
-        }
-
-        /**
-        * Information to aid in pagination.
-        */
-
-        public PageInfo getPageInfo() {
-            return (PageInfo) get("pageInfo");
-        }
-
-        public OrderLineItemConnection setPageInfo(PageInfo arg) {
-            optimisticData.put(getKey("pageInfo"), arg);
-            return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "edges": return true;
-
-                case "pageInfo": return true;
-
-                default: return false;
-            }
-        }
-    }
-
-    public interface OrderLineItemEdgeQueryDefinition {
-        void define(OrderLineItemEdgeQuery _queryBuilder);
-    }
-
-    public static class OrderLineItemEdgeQuery extends Query<OrderLineItemEdgeQuery> {
-        OrderLineItemEdgeQuery(StringBuilder _queryBuilder) {
-            super(_queryBuilder);
-        }
-
-        /**
-        * A cursor for use in pagination.
-        */
-        public OrderLineItemEdgeQuery cursor() {
-            startField("cursor");
-
-            return this;
-        }
-
-        /**
-        * The item at the end of OrderLineItemEdge.
-        */
-        public OrderLineItemEdgeQuery node(OrderLineItemQueryDefinition queryDef) {
-            startField("node");
-
-            _queryBuilder.append('{');
-            queryDef.define(new OrderLineItemQuery(_queryBuilder));
-            _queryBuilder.append('}');
-
-            return this;
-        }
-    }
-
-    public static class OrderLineItemEdge extends AbstractResponse<OrderLineItemEdge> {
-        public OrderLineItemEdge() {
-        }
-
-        public OrderLineItemEdge(JsonObject fields) throws SchemaViolationError {
-            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
-                String key = field.getKey();
-                String fieldName = getFieldName(key);
-                switch (fieldName) {
-                    case "cursor": {
-                        responseData.put(key, jsonAsString(field.getValue(), key));
-
-                        break;
-                    }
-
-                    case "node": {
-                        responseData.put(key, new OrderLineItem(jsonAsObject(field.getValue(), key)));
-
-                        break;
-                    }
-
-                    case "__typename": {
-                        responseData.put(key, jsonAsString(field.getValue(), key));
-                        break;
-                    }
-                    default: {
-                        throw new SchemaViolationError(this, key, field.getValue());
-                    }
-                }
-            }
-        }
-
-        public String getGraphQlTypeName() {
-            return "OrderLineItemEdge";
-        }
-
-        /**
-        * A cursor for use in pagination.
-        */
-
-        public String getCursor() {
-            return (String) get("cursor");
-        }
-
-        public OrderLineItemEdge setCursor(String arg) {
-            optimisticData.put(getKey("cursor"), arg);
-            return this;
-        }
-
-        /**
-        * The item at the end of OrderLineItemEdge.
-        */
-
-        public OrderLineItem getNode() {
-            return (OrderLineItem) get("node");
-        }
-
-        public OrderLineItemEdge setNode(OrderLineItem arg) {
-            optimisticData.put(getKey("node"), arg);
-            return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "cursor": return false;
-
-                case "node": return true;
-
-                default: return false;
-            }
-        }
-    }
-
-    /**
-    * The set of valid sort keys for the orders query.
-    */
-    public enum OrderSortKeys {
-        ID,
-
-        PROCESSED_AT,
-
-        RELEVANCE,
-
-        TOTAL_PRICE,
-
-        UNKNOWN_VALUE;
-
-        public static OrderSortKeys fromGraphQl(String value) {
-            if (value == null) {
-                return null;
-            }
-
-            switch (value) {
-                case "ID": {
-                    return ID;
-                }
-
-                case "PROCESSED_AT": {
-                    return PROCESSED_AT;
-                }
-
-                case "RELEVANCE": {
-                    return RELEVANCE;
-                }
-
-                case "TOTAL_PRICE": {
-                    return TOTAL_PRICE;
-                }
-
-                default: {
-                    return UNKNOWN_VALUE;
-                }
-            }
-        }
-        public String toString() {
-            switch (this) {
-                case ID: {
-                    return "ID";
-                }
-
-                case PROCESSED_AT: {
-                    return "PROCESSED_AT";
-                }
-
-                case RELEVANCE: {
-                    return "RELEVANCE";
-                }
-
-                case TOTAL_PRICE: {
-                    return "TOTAL_PRICE";
-                }
-
-                default: {
-                    return "";
-                }
-            }
-        }
-    }
-
-    public interface PageInfoQueryDefinition {
-        void define(PageInfoQuery _queryBuilder);
-    }
-
-    /**
-    * Information about pagination in a connection.
-    */
-    public static class PageInfoQuery extends Query<PageInfoQuery> {
-        PageInfoQuery(StringBuilder _queryBuilder) {
-            super(_queryBuilder);
-        }
-
-        /**
-        * Indicates if there are more pages to fetch.
-        */
-        public PageInfoQuery hasNextPage() {
-            startField("hasNextPage");
-
-            return this;
-        }
-
-        /**
-        * Indicates if there are any pages prior to the current page.
-        */
-        public PageInfoQuery hasPreviousPage() {
-            startField("hasPreviousPage");
-
-            return this;
-        }
-    }
-
-    /**
-    * Information about pagination in a connection.
-    */
-    public static class PageInfo extends AbstractResponse<PageInfo> {
-        public PageInfo() {
-        }
-
-        public PageInfo(JsonObject fields) throws SchemaViolationError {
-            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
-                String key = field.getKey();
-                String fieldName = getFieldName(key);
-                switch (fieldName) {
-                    case "hasNextPage": {
-                        responseData.put(key, jsonAsBoolean(field.getValue(), key));
-
-                        break;
-                    }
-
-                    case "hasPreviousPage": {
-                        responseData.put(key, jsonAsBoolean(field.getValue(), key));
-
-                        break;
-                    }
-
-                    case "__typename": {
-                        responseData.put(key, jsonAsString(field.getValue(), key));
-                        break;
-                    }
-                    default: {
-                        throw new SchemaViolationError(this, key, field.getValue());
-                    }
-                }
-            }
-        }
-
-        public String getGraphQlTypeName() {
-            return "PageInfo";
-        }
-
-        /**
-        * Indicates if there are more pages to fetch.
-        */
-
-        public Boolean getHasNextPage() {
-            return (Boolean) get("hasNextPage");
-        }
-
-        public PageInfo setHasNextPage(Boolean arg) {
-            optimisticData.put(getKey("hasNextPage"), arg);
-            return this;
-        }
-
-        /**
-        * Indicates if there are any pages prior to the current page.
-        */
-
-        public Boolean getHasPreviousPage() {
-            return (Boolean) get("hasPreviousPage");
-        }
-
-        public PageInfo setHasPreviousPage(Boolean arg) {
-            optimisticData.put(getKey("hasPreviousPage"), arg);
-            return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "hasNextPage": return false;
-
-                case "hasPreviousPage": return false;
-
-                default: return false;
-            }
-        }
-    }
-
-    public interface PaymentQueryDefinition {
-        void define(PaymentQuery _queryBuilder);
-    }
-
-    /**
-    * A payment applied to a checkout.
-    */
-    public static class PaymentQuery extends Query<PaymentQuery> {
-        PaymentQuery(StringBuilder _queryBuilder) {
-            super(_queryBuilder);
-
-            startField("id");
-        }
-
-        /**
-        * The amount of the payment.
-        */
-        public PaymentQuery amount() {
-            startField("amount");
-
-            return this;
-        }
-
-        /**
-        * The billing address for the payment.
-        */
-        public PaymentQuery billingAddress(MailingAddressQueryDefinition queryDef) {
-            startField("billingAddress");
-
-            _queryBuilder.append('{');
-            queryDef.define(new MailingAddressQuery(_queryBuilder));
-            _queryBuilder.append('}');
-
-            return this;
-        }
-
-        /**
-        * The checkout to which the payment belongs.
-        */
-        public PaymentQuery checkout(CheckoutQueryDefinition queryDef) {
-            startField("checkout");
-
-            _queryBuilder.append('{');
-            queryDef.define(new CheckoutQuery(_queryBuilder));
-            _queryBuilder.append('}');
-
-            return this;
-        }
-
-        /**
-        * The credit card used for the payment in the case of direct payments.
-        */
-        public PaymentQuery creditCard(CreditCardQueryDefinition queryDef) {
-            startField("creditCard");
-
-            _queryBuilder.append('{');
-            queryDef.define(new CreditCardQuery(_queryBuilder));
-            _queryBuilder.append('}');
-
-            return this;
-        }
-
-        /**
-        * An message describing a processing error during asynchronous processing.
-        */
-        public PaymentQuery errorMessage() {
-            startField("errorMessage");
-
-            return this;
-        }
-
-        /**
-        * A client-side generated token to identify a payment and perform idempotent operations.
-        */
-        public PaymentQuery idempotencyKey() {
-            startField("idempotencyKey");
-
-            return this;
-        }
-
-        /**
-        * Whether or not the payment is still processing asynchronously.
-        */
-        public PaymentQuery ready() {
-            startField("ready");
-
-            return this;
-        }
-
-        /**
-        * A flag to indicate if the payment is to be done in test mode for gateways that support it.
-        */
-        public PaymentQuery test() {
-            startField("test");
-
-            return this;
-        }
-
-        /**
-        * The actual transaction recorded by Shopify after having processed the payment with the gateway.
-        */
-        public PaymentQuery transaction(TransactionQueryDefinition queryDef) {
-            startField("transaction");
-
-            _queryBuilder.append('{');
-            queryDef.define(new TransactionQuery(_queryBuilder));
-            _queryBuilder.append('}');
-
-            return this;
-        }
-    }
-
-    /**
-    * A payment applied to a checkout.
-    */
-    public static class Payment extends AbstractResponse<Payment> implements Node {
-        public Payment() {
-        }
-
-        public Payment(JsonObject fields) throws SchemaViolationError {
-            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
-                String key = field.getKey();
-                String fieldName = getFieldName(key);
-                switch (fieldName) {
-                    case "amount": {
-                        responseData.put(key, new BigDecimal(jsonAsString(field.getValue(), key)));
-
-                        break;
-                    }
-
-                    case "billingAddress": {
-                        MailingAddress optional1 = null;
-                        if (!field.getValue().isJsonNull()) {
-                            optional1 = new MailingAddress(jsonAsObject(field.getValue(), key));
-                        }
-
-                        responseData.put(key, optional1);
-
-                        break;
-                    }
-
-                    case "checkout": {
-                        responseData.put(key, new Checkout(jsonAsObject(field.getValue(), key)));
-
-                        break;
-                    }
-
-                    case "creditCard": {
-                        CreditCard optional1 = null;
-                        if (!field.getValue().isJsonNull()) {
-                            optional1 = new CreditCard(jsonAsObject(field.getValue(), key));
-                        }
-
-                        responseData.put(key, optional1);
-
-                        break;
-                    }
-
-                    case "errorMessage": {
-                        String optional1 = null;
-                        if (!field.getValue().isJsonNull()) {
-                            optional1 = jsonAsString(field.getValue(), key);
-                        }
-
-                        responseData.put(key, optional1);
-
-                        break;
-                    }
-
-                    case "id": {
-                        responseData.put(key, new ID(jsonAsString(field.getValue(), key)));
-
-                        break;
-                    }
-
-                    case "idempotencyKey": {
-                        String optional1 = null;
-                        if (!field.getValue().isJsonNull()) {
-                            optional1 = jsonAsString(field.getValue(), key);
-                        }
-
-                        responseData.put(key, optional1);
-
-                        break;
-                    }
-
-                    case "ready": {
-                        responseData.put(key, jsonAsBoolean(field.getValue(), key));
-
-                        break;
-                    }
-
-                    case "test": {
-                        responseData.put(key, jsonAsBoolean(field.getValue(), key));
-
-                        break;
-                    }
-
-                    case "transaction": {
-                        Transaction optional1 = null;
-                        if (!field.getValue().isJsonNull()) {
-                            optional1 = new Transaction(jsonAsObject(field.getValue(), key));
-                        }
-
-                        responseData.put(key, optional1);
-
-                        break;
-                    }
-
-                    case "__typename": {
-                        responseData.put(key, jsonAsString(field.getValue(), key));
-                        break;
-                    }
-                    default: {
-                        throw new SchemaViolationError(this, key, field.getValue());
-                    }
-                }
-            }
-        }
-
-        public Payment(ID id) {
-            this();
-            optimisticData.put("id", id);
-        }
-
-        public String getGraphQlTypeName() {
-            return "Payment";
-        }
-
-        /**
-        * The amount of the payment.
-        */
-
-        public BigDecimal getAmount() {
-            return (BigDecimal) get("amount");
-        }
-
-        public Payment setAmount(BigDecimal arg) {
-            optimisticData.put(getKey("amount"), arg);
-            return this;
-        }
-
-        /**
-        * The billing address for the payment.
-        */
-
-        public MailingAddress getBillingAddress() {
-            return (MailingAddress) get("billingAddress");
-        }
-
-        public Payment setBillingAddress(MailingAddress arg) {
-            optimisticData.put(getKey("billingAddress"), arg);
-            return this;
-        }
-
-        /**
-        * The checkout to which the payment belongs.
-        */
-
-        public Checkout getCheckout() {
-            return (Checkout) get("checkout");
-        }
-
-        public Payment setCheckout(Checkout arg) {
-            optimisticData.put(getKey("checkout"), arg);
-            return this;
-        }
-
-        /**
-        * The credit card used for the payment in the case of direct payments.
-        */
-
-        public CreditCard getCreditCard() {
-            return (CreditCard) get("creditCard");
-        }
-
-        public Payment setCreditCard(CreditCard arg) {
-            optimisticData.put(getKey("creditCard"), arg);
-            return this;
-        }
-
-        /**
-        * An message describing a processing error during asynchronous processing.
-        */
-
-        public String getErrorMessage() {
-            return (String) get("errorMessage");
-        }
-
-        public Payment setErrorMessage(String arg) {
-            optimisticData.put(getKey("errorMessage"), arg);
-            return this;
-        }
-
-        /**
-        * Globally unique identifier.
-        */
-
-        public ID getId() {
-            return (ID) get("id");
-        }
-
-        /**
-        * A client-side generated token to identify a payment and perform idempotent operations.
-        */
-
-        public String getIdempotencyKey() {
-            return (String) get("idempotencyKey");
-        }
-
-        public Payment setIdempotencyKey(String arg) {
-            optimisticData.put(getKey("idempotencyKey"), arg);
-            return this;
-        }
-
-        /**
-        * Whether or not the payment is still processing asynchronously.
-        */
-
-        public Boolean getReady() {
-            return (Boolean) get("ready");
-        }
-
-        public Payment setReady(Boolean arg) {
-            optimisticData.put(getKey("ready"), arg);
-            return this;
-        }
-
-        /**
-        * A flag to indicate if the payment is to be done in test mode for gateways that support it.
-        */
-
-        public Boolean getTest() {
-            return (Boolean) get("test");
-        }
-
-        public Payment setTest(Boolean arg) {
-            optimisticData.put(getKey("test"), arg);
-            return this;
-        }
-
-        /**
-        * The actual transaction recorded by Shopify after having processed the payment with the gateway.
-        */
-
-        public Transaction getTransaction() {
-            return (Transaction) get("transaction");
-        }
-
-        public Payment setTransaction(Transaction arg) {
-            optimisticData.put(getKey("transaction"), arg);
-            return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "amount": return false;
-
-                case "billingAddress": return true;
-
-                case "checkout": return true;
-
-                case "creditCard": return true;
-
-                case "errorMessage": return false;
-
-                case "id": return false;
-
-                case "idempotencyKey": return false;
-
-                case "ready": return false;
-
-                case "test": return false;
-
-                case "transaction": return true;
-
-                default: return false;
-            }
-        }
-    }
-
-    public interface PaymentSettingsQueryDefinition {
-        void define(PaymentSettingsQuery _queryBuilder);
-    }
-
-    /**
-    * Settings related to payments.
-    */
-    public static class PaymentSettingsQuery extends Query<PaymentSettingsQuery> {
-        PaymentSettingsQuery(StringBuilder _queryBuilder) {
-            super(_queryBuilder);
-        }
-
-        /**
-        * List of the card brands which the shop accepts.
-        */
-        public PaymentSettingsQuery acceptedCardBrands() {
-            startField("acceptedCardBrands");
-
-            return this;
-        }
-
-        /**
-        * The url pointing to the endpoint to vault credit cards.
-        */
-        public PaymentSettingsQuery cardVaultUrl() {
-            startField("cardVaultUrl");
-
-            return this;
-        }
-
-        /**
-        * The country where the shop is located.
-        */
-        public PaymentSettingsQuery countryCode() {
-            startField("countryCode");
-
-            return this;
-        }
-
-        /**
-        * The three-letter code for the currency that the shop accepts.
-        */
-        public PaymentSettingsQuery currencyCode() {
-            startField("currencyCode");
-
-            return this;
-        }
-
-        /**
-        * The shop’s Shopify Payments account id.
-        */
-        public PaymentSettingsQuery shopifyPaymentsAccountId() {
-            startField("shopifyPaymentsAccountId");
-
-            return this;
-        }
-
-        /**
-        * List of the digital wallets which the shop supports.
-        */
-        public PaymentSettingsQuery supportedDigitalWallets() {
-            startField("supportedDigitalWallets");
-
-            return this;
-        }
-    }
-
-    /**
-    * Settings related to payments.
-    */
-    public static class PaymentSettings extends AbstractResponse<PaymentSettings> {
-        public PaymentSettings() {
-        }
-
-        public PaymentSettings(JsonObject fields) throws SchemaViolationError {
-            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
-                String key = field.getKey();
-                String fieldName = getFieldName(key);
-                switch (fieldName) {
-                    case "acceptedCardBrands": {
-                        List<CardBrand> list1 = new ArrayList<>();
-                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
-                            list1.add(CardBrand.fromGraphQl(jsonAsString(element1, key)));
-                        }
-
-                        responseData.put(key, list1);
-
-                        break;
-                    }
-
-                    case "cardVaultUrl": {
-                        responseData.put(key, jsonAsString(field.getValue(), key));
-
-                        break;
-                    }
-
-                    case "countryCode": {
-                        responseData.put(key, CountryCode.fromGraphQl(jsonAsString(field.getValue(), key)));
-
-                        break;
-                    }
-
-                    case "currencyCode": {
-                        responseData.put(key, CurrencyCode.fromGraphQl(jsonAsString(field.getValue(), key)));
-
-                        break;
-                    }
-
-                    case "shopifyPaymentsAccountId": {
-                        String optional1 = null;
-                        if (!field.getValue().isJsonNull()) {
-                            optional1 = jsonAsString(field.getValue(), key);
-                        }
-
-                        responseData.put(key, optional1);
-
-                        break;
-                    }
-
-                    case "supportedDigitalWallets": {
-                        List<DigitalWallet> list1 = new ArrayList<>();
-                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
-                            list1.add(DigitalWallet.fromGraphQl(jsonAsString(element1, key)));
-                        }
-
-                        responseData.put(key, list1);
-
-                        break;
-                    }
-
-                    case "__typename": {
-                        responseData.put(key, jsonAsString(field.getValue(), key));
-                        break;
-                    }
-                    default: {
-                        throw new SchemaViolationError(this, key, field.getValue());
-                    }
-                }
-            }
-        }
-
-        public String getGraphQlTypeName() {
-            return "PaymentSettings";
-        }
-
-        /**
-        * List of the card brands which the shop accepts.
-        */
-
-        public List<CardBrand> getAcceptedCardBrands() {
-            return (List<CardBrand>) get("acceptedCardBrands");
-        }
-
-        public PaymentSettings setAcceptedCardBrands(List<CardBrand> arg) {
-            optimisticData.put(getKey("acceptedCardBrands"), arg);
-            return this;
-        }
-
-        /**
-        * The url pointing to the endpoint to vault credit cards.
-        */
-
-        public String getCardVaultUrl() {
-            return (String) get("cardVaultUrl");
-        }
-
-        public PaymentSettings setCardVaultUrl(String arg) {
-            optimisticData.put(getKey("cardVaultUrl"), arg);
-            return this;
-        }
-
-        /**
-        * The country where the shop is located.
-        */
-
-        public CountryCode getCountryCode() {
-            return (CountryCode) get("countryCode");
-        }
-
-        public PaymentSettings setCountryCode(CountryCode arg) {
-            optimisticData.put(getKey("countryCode"), arg);
-            return this;
-        }
-
-        /**
-        * The three-letter code for the currency that the shop accepts.
-        */
-
-        public CurrencyCode getCurrencyCode() {
-            return (CurrencyCode) get("currencyCode");
-        }
-
-        public PaymentSettings setCurrencyCode(CurrencyCode arg) {
-            optimisticData.put(getKey("currencyCode"), arg);
-            return this;
-        }
-
-        /**
-        * The shop’s Shopify Payments account id.
-        */
-
-        public String getShopifyPaymentsAccountId() {
-            return (String) get("shopifyPaymentsAccountId");
-        }
-
-        public PaymentSettings setShopifyPaymentsAccountId(String arg) {
-            optimisticData.put(getKey("shopifyPaymentsAccountId"), arg);
-            return this;
-        }
-
-        /**
-        * List of the digital wallets which the shop supports.
-        */
-
-        public List<DigitalWallet> getSupportedDigitalWallets() {
-            return (List<DigitalWallet>) get("supportedDigitalWallets");
-        }
-
-        public PaymentSettings setSupportedDigitalWallets(List<DigitalWallet> arg) {
-            optimisticData.put(getKey("supportedDigitalWallets"), arg);
-            return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "acceptedCardBrands": return false;
-
-                case "cardVaultUrl": return false;
-
-                case "countryCode": return false;
-
-                case "currencyCode": return false;
-
-                case "shopifyPaymentsAccountId": return false;
-
-                case "supportedDigitalWallets": return false;
-
-                default: return false;
-            }
-        }
-    }
-
-    public interface ProductQueryDefinition {
-        void define(ProductQuery _queryBuilder);
-    }
-
-    /**
-    * A product represents an individual item for sale in a Shopify store. Products are often physical,
-    * but they don't have to be. 
-    * For example, a digital download (such as a movie, music or ebook file) also qualifies as a product,
-    * as do services (such as equipment rental, work for hire, customization of another product or an
-    * extended warranty).
-    */
-    public static class ProductQuery extends Query<ProductQuery> {
-        ProductQuery(StringBuilder _queryBuilder) {
-            super(_queryBuilder);
-
-            startField("id");
-        }
-
-        public class CollectionsArguments extends Arguments {
-            CollectionsArguments(StringBuilder _queryBuilder) {
-                super(_queryBuilder, true);
-            }
-
-            public CollectionsArguments first(Integer value) {
-                if (value != null) {
-                    startArgument("first");
-                    _queryBuilder.append(value);
-                }
-                return this;
-            }
-
-            public CollectionsArguments after(String value) {
-                if (value != null) {
-                    startArgument("after");
-                    Query.appendQuotedString(_queryBuilder, value.toString());
-                }
-                return this;
-            }
-
-            public CollectionsArguments last(Integer value) {
-                if (value != null) {
-                    startArgument("last");
-                    _queryBuilder.append(value);
-                }
-                return this;
-            }
-
-            public CollectionsArguments before(String value) {
-                if (value != null) {
-                    startArgument("before");
-                    Query.appendQuotedString(_queryBuilder, value.toString());
-                }
-                return this;
-            }
-
-            public CollectionsArguments reverse(Boolean value) {
-                if (value != null) {
-                    startArgument("reverse");
-                    _queryBuilder.append(value);
-                }
-                return this;
-            }
-        }
-
-        public interface CollectionsArgumentsDefinition {
-            void define(CollectionsArguments args);
-        }
-
-        /**
-        * List of collections a product belongs to.
-        */
-        public ProductQuery collections(CollectionConnectionQueryDefinition queryDef) {
-            return collections(args -> {}, queryDef);
-        }
-
-        /**
-        * List of collections a product belongs to.
-        */
-        public ProductQuery collections(CollectionsArgumentsDefinition argsDef, CollectionConnectionQueryDefinition queryDef) {
-            startField("collections");
-
-            CollectionsArguments args = new CollectionsArguments(_queryBuilder);
-            argsDef.define(args);
-            CollectionsArguments.end(args);
-
-            _queryBuilder.append('{');
-            queryDef.define(new CollectionConnectionQuery(_queryBuilder));
-            _queryBuilder.append('}');
-
-            return this;
-        }
-
-        /**
-        * The date and time when the product was created.
-        */
-        public ProductQuery createdAt() {
-            startField("createdAt");
-
-            return this;
-        }
-
-        public class DescriptionArguments extends Arguments {
-            DescriptionArguments(StringBuilder _queryBuilder) {
-                super(_queryBuilder, true);
+    * A monetary value with currency.
+    * To format currencies, combine this type's amount and currencyCode fields with your client's locale.
+    * For example, in JavaScript you could use Intl.NumberFormat:
+    * ```js
+    * new Intl.NumberFormat(locale, {
+        * style: 'currency',
+        * currency: currencyCode
+        * }).format(amount);
+        * ```
+        * Other formatting libraries include:
+        * * iOS - [NumberFormatter](https://developer.apple.com/documentation/foundation/numberformatter)
+        * * Android - [NumberFormat](https://developer.android.com/reference/java/text/NumberFormat.html)
+        * * PHP - [NumberFormatter](http://php.net/manual/en/class.numberformatter.php)
+        * For a more general solution, the [Unicode CLDR number formatting database] is available with many
+        * implementations
+        * (such as [TwitterCldr](https://github.com/twitter/twitter-cldr-rb)).
+        */
+        public static class MoneyV2Query extends Query<MoneyV2Query> {
+            MoneyV2Query(StringBuilder _queryBuilder) {
+                super(_queryBuilder);
             }
 
             /**
-            * Truncates string after the given length.
+            * Decimal money amount.
             */
-            public DescriptionArguments truncateAt(Integer value) {
-                if (value != null) {
-                    startArgument("truncateAt");
-                    _queryBuilder.append(value);
-                }
-                return this;
-            }
-        }
+            public MoneyV2Query amount() {
+                startField("amount");
 
-        public interface DescriptionArgumentsDefinition {
-            void define(DescriptionArguments args);
-        }
-
-        /**
-        * Stripped description of the product, single line with HTML tags removed.
-        */
-        public ProductQuery description() {
-            return description(args -> {});
-        }
-
-        /**
-        * Stripped description of the product, single line with HTML tags removed.
-        */
-        public ProductQuery description(DescriptionArgumentsDefinition argsDef) {
-            startField("description");
-
-            DescriptionArguments args = new DescriptionArguments(_queryBuilder);
-            argsDef.define(args);
-            DescriptionArguments.end(args);
-
-            return this;
-        }
-
-        /**
-        * The description of the product, complete with HTML formatting.
-        */
-        public ProductQuery descriptionHtml() {
-            startField("descriptionHtml");
-
-            return this;
-        }
-
-        /**
-        * A human-friendly unique string for the Product automatically generated from its title.
-        * They are used by the Liquid templating language to refer to objects.
-        */
-        public ProductQuery handle() {
-            startField("handle");
-
-            return this;
-        }
-
-        public class ImagesArguments extends Arguments {
-            ImagesArguments(StringBuilder _queryBuilder) {
-                super(_queryBuilder, true);
-            }
-
-            public ImagesArguments first(Integer value) {
-                if (value != null) {
-                    startArgument("first");
-                    _queryBuilder.append(value);
-                }
-                return this;
-            }
-
-            public ImagesArguments after(String value) {
-                if (value != null) {
-                    startArgument("after");
-                    Query.appendQuotedString(_queryBuilder, value.toString());
-                }
-                return this;
-            }
-
-            public ImagesArguments last(Integer value) {
-                if (value != null) {
-                    startArgument("last");
-                    _queryBuilder.append(value);
-                }
-                return this;
-            }
-
-            public ImagesArguments before(String value) {
-                if (value != null) {
-                    startArgument("before");
-                    Query.appendQuotedString(_queryBuilder, value.toString());
-                }
-                return this;
-            }
-
-            public ImagesArguments reverse(Boolean value) {
-                if (value != null) {
-                    startArgument("reverse");
-                    _queryBuilder.append(value);
-                }
-                return this;
-            }
-
-            public ImagesArguments sortKey(ProductImageSortKeys value) {
-                if (value != null) {
-                    startArgument("sortKey");
-                    _queryBuilder.append(value.toString());
-                }
                 return this;
             }
 
             /**
-            * Image width in pixels between 1 and 2048
+            * Currency of the money.
             */
-            public ImagesArguments maxWidth(Integer value) {
-                if (value != null) {
-                    startArgument("maxWidth");
-                    _queryBuilder.append(value);
-                }
+            public MoneyV2Query currencyCode() {
+                startField("currencyCode");
+
                 return this;
             }
+        }
 
-            /**
-            * Image height in pixels between 1 and 2048
+        /**
+        * A monetary value with currency.
+        * To format currencies, combine this type's amount and currencyCode fields with your client's locale.
+        * For example, in JavaScript you could use Intl.NumberFormat:
+        * ```js
+        * new Intl.NumberFormat(locale, {
+            * style: 'currency',
+            * currency: currencyCode
+            * }).format(amount);
+            * ```
+            * Other formatting libraries include:
+            * * iOS - [NumberFormatter](https://developer.apple.com/documentation/foundation/numberformatter)
+            * * Android - [NumberFormat](https://developer.android.com/reference/java/text/NumberFormat.html)
+            * * PHP - [NumberFormatter](http://php.net/manual/en/class.numberformatter.php)
+            * For a more general solution, the [Unicode CLDR number formatting database] is available with many
+            * implementations
+            * (such as [TwitterCldr](https://github.com/twitter/twitter-cldr-rb)).
             */
-            public ImagesArguments maxHeight(Integer value) {
-                if (value != null) {
-                    startArgument("maxHeight");
-                    _queryBuilder.append(value);
-                }
-                return this;
-            }
-
-            /**
-            * If specified, crop the image keeping the specified region
-            */
-            public ImagesArguments crop(CropRegion value) {
-                if (value != null) {
-                    startArgument("crop");
-                    _queryBuilder.append(value.toString());
-                }
-                return this;
-            }
-
-            /**
-            * Image size multiplier retina displays. Must be between 1 and 3
-            */
-            public ImagesArguments scale(Integer value) {
-                if (value != null) {
-                    startArgument("scale");
-                    _queryBuilder.append(value);
-                }
-                return this;
-            }
-        }
-
-        public interface ImagesArgumentsDefinition {
-            void define(ImagesArguments args);
-        }
-
-        /**
-        * List of images associated with the product.
-        */
-        public ProductQuery images(ImageConnectionQueryDefinition queryDef) {
-            return images(args -> {}, queryDef);
-        }
-
-        /**
-        * List of images associated with the product.
-        */
-        public ProductQuery images(ImagesArgumentsDefinition argsDef, ImageConnectionQueryDefinition queryDef) {
-            startField("images");
-
-            ImagesArguments args = new ImagesArguments(_queryBuilder);
-            argsDef.define(args);
-            ImagesArguments.end(args);
-
-            _queryBuilder.append('{');
-            queryDef.define(new ImageConnectionQuery(_queryBuilder));
-            _queryBuilder.append('}');
-
-            return this;
-        }
-
-        /**
-        * The online store URL for the product.
-        * A value of `null` indicates that the product is not published to the Online Store sales channel.
-        */
-        public ProductQuery onlineStoreUrl() {
-            startField("onlineStoreUrl");
-
-            return this;
-        }
-
-        public class OptionsArguments extends Arguments {
-            OptionsArguments(StringBuilder _queryBuilder) {
-                super(_queryBuilder, true);
-            }
-
-            /**
-            * Truncate the array result to this size
-            */
-            public OptionsArguments first(Integer value) {
-                if (value != null) {
-                    startArgument("first");
-                    _queryBuilder.append(value);
-                }
-                return this;
-            }
-        }
-
-        public interface OptionsArgumentsDefinition {
-            void define(OptionsArguments args);
-        }
-
-        /**
-        * List of custom product options (maximum of 3 per product).
-        */
-        public ProductQuery options(ProductOptionQueryDefinition queryDef) {
-            return options(args -> {}, queryDef);
-        }
-
-        /**
-        * List of custom product options (maximum of 3 per product).
-        */
-        public ProductQuery options(OptionsArgumentsDefinition argsDef, ProductOptionQueryDefinition queryDef) {
-            startField("options");
-
-            OptionsArguments args = new OptionsArguments(_queryBuilder);
-            argsDef.define(args);
-            OptionsArguments.end(args);
-
-            _queryBuilder.append('{');
-            queryDef.define(new ProductOptionQuery(_queryBuilder));
-            _queryBuilder.append('}');
-
-            return this;
-        }
-
-        /**
-        * A categorization that a product can be tagged with, commonly used for filtering and searching.
-        */
-        public ProductQuery productType() {
-            startField("productType");
-
-            return this;
-        }
-
-        /**
-        * The date and time when the product was published to the channel.
-        */
-        public ProductQuery publishedAt() {
-            startField("publishedAt");
-
-            return this;
-        }
-
-        /**
-        * A categorization that a product can be tagged with, commonly used for filtering and searching.
-        * Each comma-separated tag has a character limit of 255.
-        */
-        public ProductQuery tags() {
-            startField("tags");
-
-            return this;
-        }
-
-        /**
-        * The product’s title.
-        */
-        public ProductQuery title() {
-            startField("title");
-
-            return this;
-        }
-
-        /**
-        * The date and time when the product was last modified.
-        */
-        public ProductQuery updatedAt() {
-            startField("updatedAt");
-
-            return this;
-        }
-
-        /**
-        * Find a product’s variant based on its selected options.
-        * This is useful for converting a user’s selection of product options into a single matching variant.
-        * If there is not a variant for the selected options, `null` will be returned.
-        */
-        public ProductQuery variantBySelectedOptions(List<SelectedOptionInput> selectedOptions, ProductVariantQueryDefinition queryDef) {
-            startField("variantBySelectedOptions");
-
-            _queryBuilder.append("(selectedOptions:");
-            _queryBuilder.append('[');
-
-            String listSeperator1 = "";
-            for (SelectedOptionInput item1 : selectedOptions) {
-                _queryBuilder.append(listSeperator1);
-                listSeperator1 = ",";
-                item1.appendTo(_queryBuilder);
-            }
-            _queryBuilder.append(']');
-
-            _queryBuilder.append(')');
-
-            _queryBuilder.append('{');
-            queryDef.define(new ProductVariantQuery(_queryBuilder));
-            _queryBuilder.append('}');
-
-            return this;
-        }
-
-        public class VariantsArguments extends Arguments {
-            VariantsArguments(StringBuilder _queryBuilder) {
-                super(_queryBuilder, true);
-            }
-
-            public VariantsArguments first(Integer value) {
-                if (value != null) {
-                    startArgument("first");
-                    _queryBuilder.append(value);
-                }
-                return this;
-            }
-
-            public VariantsArguments after(String value) {
-                if (value != null) {
-                    startArgument("after");
-                    Query.appendQuotedString(_queryBuilder, value.toString());
-                }
-                return this;
-            }
-
-            public VariantsArguments last(Integer value) {
-                if (value != null) {
-                    startArgument("last");
-                    _queryBuilder.append(value);
-                }
-                return this;
-            }
-
-            public VariantsArguments before(String value) {
-                if (value != null) {
-                    startArgument("before");
-                    Query.appendQuotedString(_queryBuilder, value.toString());
-                }
-                return this;
-            }
-
-            public VariantsArguments reverse(Boolean value) {
-                if (value != null) {
-                    startArgument("reverse");
-                    _queryBuilder.append(value);
-                }
-                return this;
-            }
-
-            public VariantsArguments sortKey(ProductVariantSortKeys value) {
-                if (value != null) {
-                    startArgument("sortKey");
-                    _queryBuilder.append(value.toString());
-                }
-                return this;
-            }
-        }
-
-        public interface VariantsArgumentsDefinition {
-            void define(VariantsArguments args);
-        }
-
-        /**
-        * List of the product’s variants.
-        */
-        public ProductQuery variants(ProductVariantConnectionQueryDefinition queryDef) {
-            return variants(args -> {}, queryDef);
-        }
-
-        /**
-        * List of the product’s variants.
-        */
-        public ProductQuery variants(VariantsArgumentsDefinition argsDef, ProductVariantConnectionQueryDefinition queryDef) {
-            startField("variants");
-
-            VariantsArguments args = new VariantsArguments(_queryBuilder);
-            argsDef.define(args);
-            VariantsArguments.end(args);
-
-            _queryBuilder.append('{');
-            queryDef.define(new ProductVariantConnectionQuery(_queryBuilder));
-            _queryBuilder.append('}');
-
-            return this;
-        }
-
-        /**
-        * The product’s vendor name.
-        */
-        public ProductQuery vendor() {
-            startField("vendor");
-
-            return this;
-        }
-    }
-
-    /**
-    * A product represents an individual item for sale in a Shopify store. Products are often physical,
-    * but they don't have to be. 
-    * For example, a digital download (such as a movie, music or ebook file) also qualifies as a product,
-    * as do services (such as equipment rental, work for hire, customization of another product or an
-    * extended warranty).
-    */
-    public static class Product extends AbstractResponse<Product> implements Node {
-        public Product() {
-        }
-
-        public Product(JsonObject fields) throws SchemaViolationError {
-            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
-                String key = field.getKey();
-                String fieldName = getFieldName(key);
-                switch (fieldName) {
-                    case "collections": {
-                        responseData.put(key, new CollectionConnection(jsonAsObject(field.getValue(), key)));
-
-                        break;
-                    }
-
-                    case "createdAt": {
-                        responseData.put(key, Utils.parseDateTime(jsonAsString(field.getValue(), key)));
-
-                        break;
-                    }
-
-                    case "description": {
-                        responseData.put(key, jsonAsString(field.getValue(), key));
-
-                        break;
-                    }
-
-                    case "descriptionHtml": {
-                        responseData.put(key, jsonAsString(field.getValue(), key));
-
-                        break;
-                    }
-
-                    case "handle": {
-                        responseData.put(key, jsonAsString(field.getValue(), key));
-
-                        break;
-                    }
-
-                    case "id": {
-                        responseData.put(key, new ID(jsonAsString(field.getValue(), key)));
-
-                        break;
-                    }
-
-                    case "images": {
-                        responseData.put(key, new ImageConnection(jsonAsObject(field.getValue(), key)));
-
-                        break;
-                    }
-
-                    case "onlineStoreUrl": {
-                        String optional1 = null;
-                        if (!field.getValue().isJsonNull()) {
-                            optional1 = jsonAsString(field.getValue(), key);
-                        }
-
-                        responseData.put(key, optional1);
-
-                        break;
-                    }
-
-                    case "options": {
-                        List<ProductOption> list1 = new ArrayList<>();
-                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
-                            list1.add(new ProductOption(jsonAsObject(element1, key)));
-                        }
-
-                        responseData.put(key, list1);
-
-                        break;
-                    }
-
-                    case "productType": {
-                        responseData.put(key, jsonAsString(field.getValue(), key));
-
-                        break;
-                    }
-
-                    case "publishedAt": {
-                        responseData.put(key, Utils.parseDateTime(jsonAsString(field.getValue(), key)));
-
-                        break;
-                    }
-
-                    case "tags": {
-                        List<String> list1 = new ArrayList<>();
-                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
-                            list1.add(jsonAsString(element1, key));
-                        }
-
-                        responseData.put(key, list1);
-
-                        break;
-                    }
-
-                    case "title": {
-                        responseData.put(key, jsonAsString(field.getValue(), key));
-
-                        break;
-                    }
-
-                    case "updatedAt": {
-                        responseData.put(key, Utils.parseDateTime(jsonAsString(field.getValue(), key)));
-
-                        break;
-                    }
-
-                    case "variantBySelectedOptions": {
-                        ProductVariant optional1 = null;
-                        if (!field.getValue().isJsonNull()) {
-                            optional1 = new ProductVariant(jsonAsObject(field.getValue(), key));
-                        }
-
-                        responseData.put(key, optional1);
-
-                        break;
-                    }
-
-                    case "variants": {
-                        responseData.put(key, new ProductVariantConnection(jsonAsObject(field.getValue(), key)));
-
-                        break;
-                    }
-
-                    case "vendor": {
-                        responseData.put(key, jsonAsString(field.getValue(), key));
-
-                        break;
-                    }
-
-                    case "__typename": {
-                        responseData.put(key, jsonAsString(field.getValue(), key));
-                        break;
-                    }
-                    default: {
-                        throw new SchemaViolationError(this, key, field.getValue());
-                    }
-                }
-            }
-        }
-
-        public Product(ID id) {
-            this();
-            optimisticData.put("id", id);
-        }
-
-        public String getGraphQlTypeName() {
-            return "Product";
-        }
-
-        /**
-        * List of collections a product belongs to.
-        */
-
-        public CollectionConnection getCollections() {
-            return (CollectionConnection) get("collections");
-        }
-
-        public Product setCollections(CollectionConnection arg) {
-            optimisticData.put(getKey("collections"), arg);
-            return this;
-        }
-
-        /**
-        * The date and time when the product was created.
-        */
-
-        public DateTime getCreatedAt() {
-            return (DateTime) get("createdAt");
-        }
-
-        public Product setCreatedAt(DateTime arg) {
-            optimisticData.put(getKey("createdAt"), arg);
-            return this;
-        }
-
-        /**
-        * Stripped description of the product, single line with HTML tags removed.
-        */
-
-        public String getDescription() {
-            return (String) get("description");
-        }
-
-        public Product setDescription(String arg) {
-            optimisticData.put(getKey("description"), arg);
-            return this;
-        }
-
-        /**
-        * The description of the product, complete with HTML formatting.
-        */
-
-        public String getDescriptionHtml() {
-            return (String) get("descriptionHtml");
-        }
-
-        public Product setDescriptionHtml(String arg) {
-            optimisticData.put(getKey("descriptionHtml"), arg);
-            return this;
-        }
-
-        /**
-        * A human-friendly unique string for the Product automatically generated from its title.
-        * They are used by the Liquid templating language to refer to objects.
-        */
-
-        public String getHandle() {
-            return (String) get("handle");
-        }
-
-        public Product setHandle(String arg) {
-            optimisticData.put(getKey("handle"), arg);
-            return this;
-        }
-
-        /**
-        * Globally unique identifier.
-        */
-
-        public ID getId() {
-            return (ID) get("id");
-        }
-
-        /**
-        * List of images associated with the product.
-        */
-
-        public ImageConnection getImages() {
-            return (ImageConnection) get("images");
-        }
-
-        public Product setImages(ImageConnection arg) {
-            optimisticData.put(getKey("images"), arg);
-            return this;
-        }
-
-        /**
-        * The online store URL for the product.
-        * A value of `null` indicates that the product is not published to the Online Store sales channel.
-        */
-
-        public String getOnlineStoreUrl() {
-            return (String) get("onlineStoreUrl");
-        }
-
-        public Product setOnlineStoreUrl(String arg) {
-            optimisticData.put(getKey("onlineStoreUrl"), arg);
-            return this;
-        }
-
-        /**
-        * List of custom product options (maximum of 3 per product).
-        */
-
-        public List<ProductOption> getOptions() {
-            return (List<ProductOption>) get("options");
-        }
-
-        public Product setOptions(List<ProductOption> arg) {
-            optimisticData.put(getKey("options"), arg);
-            return this;
-        }
-
-        /**
-        * A categorization that a product can be tagged with, commonly used for filtering and searching.
-        */
-
-        public String getProductType() {
-            return (String) get("productType");
-        }
-
-        public Product setProductType(String arg) {
-            optimisticData.put(getKey("productType"), arg);
-            return this;
-        }
-
-        /**
-        * The date and time when the product was published to the channel.
-        */
-
-        public DateTime getPublishedAt() {
-            return (DateTime) get("publishedAt");
-        }
-
-        public Product setPublishedAt(DateTime arg) {
-            optimisticData.put(getKey("publishedAt"), arg);
-            return this;
-        }
-
-        /**
-        * A categorization that a product can be tagged with, commonly used for filtering and searching.
-        * Each comma-separated tag has a character limit of 255.
-        */
-
-        public List<String> getTags() {
-            return (List<String>) get("tags");
-        }
-
-        public Product setTags(List<String> arg) {
-            optimisticData.put(getKey("tags"), arg);
-            return this;
-        }
-
-        /**
-        * The product’s title.
-        */
-
-        public String getTitle() {
-            return (String) get("title");
-        }
-
-        public Product setTitle(String arg) {
-            optimisticData.put(getKey("title"), arg);
-            return this;
-        }
-
-        /**
-        * The date and time when the product was last modified.
-        */
-
-        public DateTime getUpdatedAt() {
-            return (DateTime) get("updatedAt");
-        }
-
-        public Product setUpdatedAt(DateTime arg) {
-            optimisticData.put(getKey("updatedAt"), arg);
-            return this;
-        }
-
-        /**
-        * Find a product’s variant based on its selected options.
-        * This is useful for converting a user’s selection of product options into a single matching variant.
-        * If there is not a variant for the selected options, `null` will be returned.
-        */
-
-        public ProductVariant getVariantBySelectedOptions() {
-            return (ProductVariant) get("variantBySelectedOptions");
-        }
-
-        public Product setVariantBySelectedOptions(ProductVariant arg) {
-            optimisticData.put(getKey("variantBySelectedOptions"), arg);
-            return this;
-        }
-
-        /**
-        * List of the product’s variants.
-        */
-
-        public ProductVariantConnection getVariants() {
-            return (ProductVariantConnection) get("variants");
-        }
-
-        public Product setVariants(ProductVariantConnection arg) {
-            optimisticData.put(getKey("variants"), arg);
-            return this;
-        }
-
-        /**
-        * The product’s vendor name.
-        */
-
-        public String getVendor() {
-            return (String) get("vendor");
-        }
-
-        public Product setVendor(String arg) {
-            optimisticData.put(getKey("vendor"), arg);
-            return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "collections": return true;
-
-                case "createdAt": return false;
-
-                case "description": return false;
-
-                case "descriptionHtml": return false;
-
-                case "handle": return false;
-
-                case "id": return false;
-
-                case "images": return true;
-
-                case "onlineStoreUrl": return false;
-
-                case "options": return true;
-
-                case "productType": return false;
-
-                case "publishedAt": return false;
-
-                case "tags": return false;
-
-                case "title": return false;
-
-                case "updatedAt": return false;
-
-                case "variantBySelectedOptions": return true;
-
-                case "variants": return true;
-
-                case "vendor": return false;
-
-                default: return false;
-            }
-        }
-    }
-
-    /**
-    * The set of valid sort keys for the products query.
-    */
-    public enum ProductCollectionSortKeys {
-        BEST_SELLING,
-
-        COLLECTION_DEFAULT,
-
-        CREATED,
-
-        ID,
-
-        MANUAL,
-
-        PRICE,
-
-        RELEVANCE,
-
-        TITLE,
-
-        UNKNOWN_VALUE;
-
-        public static ProductCollectionSortKeys fromGraphQl(String value) {
-            if (value == null) {
-                return null;
-            }
-
-            switch (value) {
-                case "BEST_SELLING": {
-                    return BEST_SELLING;
-                }
-
-                case "COLLECTION_DEFAULT": {
-                    return COLLECTION_DEFAULT;
-                }
-
-                case "CREATED": {
-                    return CREATED;
-                }
-
-                case "ID": {
-                    return ID;
-                }
-
-                case "MANUAL": {
-                    return MANUAL;
-                }
-
-                case "PRICE": {
-                    return PRICE;
-                }
-
-                case "RELEVANCE": {
-                    return RELEVANCE;
-                }
-
-                case "TITLE": {
-                    return TITLE;
-                }
-
-                default: {
-                    return UNKNOWN_VALUE;
-                }
-            }
-        }
-        public String toString() {
-            switch (this) {
-                case BEST_SELLING: {
-                    return "BEST_SELLING";
-                }
-
-                case COLLECTION_DEFAULT: {
-                    return "COLLECTION_DEFAULT";
-                }
-
-                case CREATED: {
-                    return "CREATED";
-                }
-
-                case ID: {
-                    return "ID";
-                }
-
-                case MANUAL: {
-                    return "MANUAL";
-                }
-
-                case PRICE: {
-                    return "PRICE";
-                }
-
-                case RELEVANCE: {
-                    return "RELEVANCE";
-                }
-
-                case TITLE: {
-                    return "TITLE";
-                }
-
-                default: {
-                    return "";
-                }
-            }
-        }
-    }
-
-    public interface ProductConnectionQueryDefinition {
-        void define(ProductConnectionQuery _queryBuilder);
-    }
-
-    public static class ProductConnectionQuery extends Query<ProductConnectionQuery> {
-        ProductConnectionQuery(StringBuilder _queryBuilder) {
-            super(_queryBuilder);
-        }
-
-        /**
-        * A list of edges.
-        */
-        public ProductConnectionQuery edges(ProductEdgeQueryDefinition queryDef) {
-            startField("edges");
-
-            _queryBuilder.append('{');
-            queryDef.define(new ProductEdgeQuery(_queryBuilder));
-            _queryBuilder.append('}');
-
-            return this;
-        }
-
-        /**
-        * Information to aid in pagination.
-        */
-        public ProductConnectionQuery pageInfo(PageInfoQueryDefinition queryDef) {
-            startField("pageInfo");
-
-            _queryBuilder.append('{');
-            queryDef.define(new PageInfoQuery(_queryBuilder));
-            _queryBuilder.append('}');
-
-            return this;
-        }
-    }
-
-    public static class ProductConnection extends AbstractResponse<ProductConnection> {
-        public ProductConnection() {
-        }
-
-        public ProductConnection(JsonObject fields) throws SchemaViolationError {
-            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
-                String key = field.getKey();
-                String fieldName = getFieldName(key);
-                switch (fieldName) {
-                    case "edges": {
-                        List<ProductEdge> list1 = new ArrayList<>();
-                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
-                            list1.add(new ProductEdge(jsonAsObject(element1, key)));
-                        }
-
-                        responseData.put(key, list1);
-
-                        break;
-                    }
-
-                    case "pageInfo": {
-                        responseData.put(key, new PageInfo(jsonAsObject(field.getValue(), key)));
-
-                        break;
-                    }
-
-                    case "__typename": {
-                        responseData.put(key, jsonAsString(field.getValue(), key));
-                        break;
-                    }
-                    default: {
-                        throw new SchemaViolationError(this, key, field.getValue());
-                    }
-                }
-            }
-        }
-
-        public String getGraphQlTypeName() {
-            return "ProductConnection";
-        }
-
-        /**
-        * A list of edges.
-        */
-
-        public List<ProductEdge> getEdges() {
-            return (List<ProductEdge>) get("edges");
-        }
-
-        public ProductConnection setEdges(List<ProductEdge> arg) {
-            optimisticData.put(getKey("edges"), arg);
-            return this;
-        }
-
-        /**
-        * Information to aid in pagination.
-        */
-
-        public PageInfo getPageInfo() {
-            return (PageInfo) get("pageInfo");
-        }
-
-        public ProductConnection setPageInfo(PageInfo arg) {
-            optimisticData.put(getKey("pageInfo"), arg);
-            return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "edges": return true;
-
-                case "pageInfo": return true;
-
-                default: return false;
-            }
-        }
-    }
-
-    public interface ProductEdgeQueryDefinition {
-        void define(ProductEdgeQuery _queryBuilder);
-    }
-
-    public static class ProductEdgeQuery extends Query<ProductEdgeQuery> {
-        ProductEdgeQuery(StringBuilder _queryBuilder) {
-            super(_queryBuilder);
-        }
-
-        /**
-        * A cursor for use in pagination.
-        */
-        public ProductEdgeQuery cursor() {
-            startField("cursor");
-
-            return this;
-        }
-
-        /**
-        * The item at the end of ProductEdge.
-        */
-        public ProductEdgeQuery node(ProductQueryDefinition queryDef) {
-            startField("node");
-
-            _queryBuilder.append('{');
-            queryDef.define(new ProductQuery(_queryBuilder));
-            _queryBuilder.append('}');
-
-            return this;
-        }
-    }
-
-    public static class ProductEdge extends AbstractResponse<ProductEdge> {
-        public ProductEdge() {
-        }
-
-        public ProductEdge(JsonObject fields) throws SchemaViolationError {
-            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
-                String key = field.getKey();
-                String fieldName = getFieldName(key);
-                switch (fieldName) {
-                    case "cursor": {
-                        responseData.put(key, jsonAsString(field.getValue(), key));
-
-                        break;
-                    }
-
-                    case "node": {
-                        responseData.put(key, new Product(jsonAsObject(field.getValue(), key)));
-
-                        break;
-                    }
-
-                    case "__typename": {
-                        responseData.put(key, jsonAsString(field.getValue(), key));
-                        break;
-                    }
-                    default: {
-                        throw new SchemaViolationError(this, key, field.getValue());
-                    }
-                }
-            }
-        }
-
-        public String getGraphQlTypeName() {
-            return "ProductEdge";
-        }
-
-        /**
-        * A cursor for use in pagination.
-        */
-
-        public String getCursor() {
-            return (String) get("cursor");
-        }
-
-        public ProductEdge setCursor(String arg) {
-            optimisticData.put(getKey("cursor"), arg);
-            return this;
-        }
-
-        /**
-        * The item at the end of ProductEdge.
-        */
-
-        public Product getNode() {
-            return (Product) get("node");
-        }
-
-        public ProductEdge setNode(Product arg) {
-            optimisticData.put(getKey("node"), arg);
-            return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "cursor": return false;
-
-                case "node": return true;
-
-                default: return false;
-            }
-        }
-    }
-
-    /**
-    * The set of valid sort keys for the images query.
-    */
-    public enum ProductImageSortKeys {
-        CREATED_AT,
-
-        ID,
-
-        POSITION,
-
-        RELEVANCE,
-
-        UNKNOWN_VALUE;
-
-        public static ProductImageSortKeys fromGraphQl(String value) {
-            if (value == null) {
-                return null;
-            }
-
-            switch (value) {
-                case "CREATED_AT": {
-                    return CREATED_AT;
-                }
-
-                case "ID": {
-                    return ID;
-                }
-
-                case "POSITION": {
-                    return POSITION;
-                }
-
-                case "RELEVANCE": {
-                    return RELEVANCE;
-                }
-
-                default: {
-                    return UNKNOWN_VALUE;
-                }
-            }
-        }
-        public String toString() {
-            switch (this) {
-                case CREATED_AT: {
-                    return "CREATED_AT";
-                }
-
-                case ID: {
-                    return "ID";
-                }
-
-                case POSITION: {
-                    return "POSITION";
-                }
-
-                case RELEVANCE: {
-                    return "RELEVANCE";
-                }
-
-                default: {
-                    return "";
-                }
-            }
-        }
-    }
-
-    public interface ProductOptionQueryDefinition {
-        void define(ProductOptionQuery _queryBuilder);
-    }
-
-    /**
-    * Custom product property names like "Size", "Color", and "Material".
-    * Products are based on permutations of these options.
-    * A product may have a maximum of 3 options.
-    * 255 characters limit each.
-    */
-    public static class ProductOptionQuery extends Query<ProductOptionQuery> {
-        ProductOptionQuery(StringBuilder _queryBuilder) {
-            super(_queryBuilder);
-
-            startField("id");
-        }
-
-        /**
-        * The product option’s name.
-        */
-        public ProductOptionQuery name() {
-            startField("name");
-
-            return this;
-        }
-
-        /**
-        * The corresponding value to the product option name.
-        */
-        public ProductOptionQuery values() {
-            startField("values");
-
-            return this;
-        }
-    }
-
-    /**
-    * Custom product property names like "Size", "Color", and "Material".
-    * Products are based on permutations of these options.
-    * A product may have a maximum of 3 options.
-    * 255 characters limit each.
-    */
-    public static class ProductOption extends AbstractResponse<ProductOption> implements Node {
-        public ProductOption() {
-        }
-
-        public ProductOption(JsonObject fields) throws SchemaViolationError {
-            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
-                String key = field.getKey();
-                String fieldName = getFieldName(key);
-                switch (fieldName) {
-                    case "id": {
-                        responseData.put(key, new ID(jsonAsString(field.getValue(), key)));
-
-                        break;
-                    }
-
-                    case "name": {
-                        responseData.put(key, jsonAsString(field.getValue(), key));
-
-                        break;
-                    }
-
-                    case "values": {
-                        List<String> list1 = new ArrayList<>();
-                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
-                            list1.add(jsonAsString(element1, key));
-                        }
-
-                        responseData.put(key, list1);
-
-                        break;
-                    }
-
-                    case "__typename": {
-                        responseData.put(key, jsonAsString(field.getValue(), key));
-                        break;
-                    }
-                    default: {
-                        throw new SchemaViolationError(this, key, field.getValue());
-                    }
-                }
-            }
-        }
-
-        public ProductOption(ID id) {
-            this();
-            optimisticData.put("id", id);
-        }
-
-        public String getGraphQlTypeName() {
-            return "ProductOption";
-        }
-
-        /**
-        * Globally unique identifier.
-        */
-
-        public ID getId() {
-            return (ID) get("id");
-        }
-
-        /**
-        * The product option’s name.
-        */
-
-        public String getName() {
-            return (String) get("name");
-        }
-
-        public ProductOption setName(String arg) {
-            optimisticData.put(getKey("name"), arg);
-            return this;
-        }
-
-        /**
-        * The corresponding value to the product option name.
-        */
-
-        public List<String> getValues() {
-            return (List<String>) get("values");
-        }
-
-        public ProductOption setValues(List<String> arg) {
-            optimisticData.put(getKey("values"), arg);
-            return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "id": return false;
-
-                case "name": return false;
-
-                case "values": return false;
-
-                default: return false;
-            }
-        }
-    }
-
-    /**
-    * The set of valid sort keys for the products query.
-    */
-    public enum ProductSortKeys {
-        CREATED_AT,
-
-        ID,
-
-        PRODUCT_TYPE,
-
-        RELEVANCE,
-
-        TITLE,
-
-        UPDATED_AT,
-
-        VENDOR,
-
-        UNKNOWN_VALUE;
-
-        public static ProductSortKeys fromGraphQl(String value) {
-            if (value == null) {
-                return null;
-            }
-
-            switch (value) {
-                case "CREATED_AT": {
-                    return CREATED_AT;
-                }
-
-                case "ID": {
-                    return ID;
-                }
-
-                case "PRODUCT_TYPE": {
-                    return PRODUCT_TYPE;
-                }
-
-                case "RELEVANCE": {
-                    return RELEVANCE;
-                }
-
-                case "TITLE": {
-                    return TITLE;
-                }
-
-                case "UPDATED_AT": {
-                    return UPDATED_AT;
-                }
-
-                case "VENDOR": {
-                    return VENDOR;
-                }
-
-                default: {
-                    return UNKNOWN_VALUE;
-                }
-            }
-        }
-        public String toString() {
-            switch (this) {
-                case CREATED_AT: {
-                    return "CREATED_AT";
-                }
-
-                case ID: {
-                    return "ID";
-                }
-
-                case PRODUCT_TYPE: {
-                    return "PRODUCT_TYPE";
-                }
-
-                case RELEVANCE: {
-                    return "RELEVANCE";
-                }
-
-                case TITLE: {
-                    return "TITLE";
-                }
-
-                case UPDATED_AT: {
-                    return "UPDATED_AT";
-                }
-
-                case VENDOR: {
-                    return "VENDOR";
-                }
-
-                default: {
-                    return "";
-                }
-            }
-        }
-    }
-
-    public interface ProductVariantQueryDefinition {
-        void define(ProductVariantQuery _queryBuilder);
-    }
-
-    /**
-    * A product variant represents a different version of a product, such as differing sizes or differing
-    * colors.
-    */
-    public static class ProductVariantQuery extends Query<ProductVariantQuery> {
-        ProductVariantQuery(StringBuilder _queryBuilder) {
-            super(_queryBuilder);
-
-            startField("id");
-        }
-
-        /**
-        * Indicates if the product variant is in stock.
-        *
-        * @deprecated Use `availableForSale` instead
-        */
-        @Deprecated
-        public ProductVariantQuery available() {
-            startField("available");
-
-            return this;
-        }
-
-        /**
-        * Indicates if the product variant is available for sale.
-        */
-        public ProductVariantQuery availableForSale() {
-            startField("availableForSale");
-
-            return this;
-        }
-
-        /**
-        * The compare at price of the variant. This can be used to mark a variant as on sale, when
-        * `compareAtPrice` is higher than `price`.
-        */
-        public ProductVariantQuery compareAtPrice() {
-            startField("compareAtPrice");
-
-            return this;
-        }
-
-        public class ImageArguments extends Arguments {
-            ImageArguments(StringBuilder _queryBuilder) {
-                super(_queryBuilder, true);
-            }
-
-            /**
-            * Image width in pixels between 1 and 2048
-            */
-            public ImageArguments maxWidth(Integer value) {
-                if (value != null) {
-                    startArgument("maxWidth");
-                    _queryBuilder.append(value);
-                }
-                return this;
-            }
-
-            /**
-            * Image height in pixels between 1 and 2048
-            */
-            public ImageArguments maxHeight(Integer value) {
-                if (value != null) {
-                    startArgument("maxHeight");
-                    _queryBuilder.append(value);
-                }
-                return this;
-            }
-
-            /**
-            * If specified, crop the image keeping the specified region
-            */
-            public ImageArguments crop(CropRegion value) {
-                if (value != null) {
-                    startArgument("crop");
-                    _queryBuilder.append(value.toString());
-                }
-                return this;
-            }
-
-            /**
-            * Image size multiplier retina displays. Must be between 1 and 3
-            */
-            public ImageArguments scale(Integer value) {
-                if (value != null) {
-                    startArgument("scale");
-                    _queryBuilder.append(value);
-                }
-                return this;
-            }
-        }
-
-        public interface ImageArgumentsDefinition {
-            void define(ImageArguments args);
-        }
-
-        /**
-        * Image associated with the product variant.
-        */
-        public ProductVariantQuery image(ImageQueryDefinition queryDef) {
-            return image(args -> {}, queryDef);
-        }
-
-        /**
-        * Image associated with the product variant.
-        */
-        public ProductVariantQuery image(ImageArgumentsDefinition argsDef, ImageQueryDefinition queryDef) {
-            startField("image");
-
-            ImageArguments args = new ImageArguments(_queryBuilder);
-            argsDef.define(args);
-            ImageArguments.end(args);
-
-            _queryBuilder.append('{');
-            queryDef.define(new ImageQuery(_queryBuilder));
-            _queryBuilder.append('}');
-
-            return this;
-        }
-
-        /**
-        * The product variant’s price.
-        */
-        public ProductVariantQuery price() {
-            startField("price");
-
-            return this;
-        }
-
-        /**
-        * The product object that the product variant belongs to.
-        */
-        public ProductVariantQuery product(ProductQueryDefinition queryDef) {
-            startField("product");
-
-            _queryBuilder.append('{');
-            queryDef.define(new ProductQuery(_queryBuilder));
-            _queryBuilder.append('}');
-
-            return this;
-        }
-
-        /**
-        * List of product options applied to the variant.
-        */
-        public ProductVariantQuery selectedOptions(SelectedOptionQueryDefinition queryDef) {
-            startField("selectedOptions");
-
-            _queryBuilder.append('{');
-            queryDef.define(new SelectedOptionQuery(_queryBuilder));
-            _queryBuilder.append('}');
-
-            return this;
-        }
-
-        /**
-        * The SKU (Stock Keeping Unit) associated with the variant.
-        */
-        public ProductVariantQuery sku() {
-            startField("sku");
-
-            return this;
-        }
-
-        /**
-        * The product variant’s title.
-        */
-        public ProductVariantQuery title() {
-            startField("title");
-
-            return this;
-        }
-
-        /**
-        * The weight of the product variant in the unit system specified with `weight_unit`.
-        */
-        public ProductVariantQuery weight() {
-            startField("weight");
-
-            return this;
-        }
-
-        /**
-        * Unit of measurement for weight.
-        */
-        public ProductVariantQuery weightUnit() {
-            startField("weightUnit");
-
-            return this;
-        }
-    }
-
-    /**
-    * A product variant represents a different version of a product, such as differing sizes or differing
-    * colors.
-    */
-    public static class ProductVariant extends AbstractResponse<ProductVariant> implements Node {
-        public ProductVariant() {
-        }
-
-        public ProductVariant(JsonObject fields) throws SchemaViolationError {
-            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
-                String key = field.getKey();
-                String fieldName = getFieldName(key);
-                switch (fieldName) {
-                    case "available": {
-                        Boolean optional1 = null;
-                        if (!field.getValue().isJsonNull()) {
-                            optional1 = jsonAsBoolean(field.getValue(), key);
-                        }
-
-                        responseData.put(key, optional1);
-
-                        break;
-                    }
-
-                    case "availableForSale": {
-                        responseData.put(key, jsonAsBoolean(field.getValue(), key));
-
-                        break;
-                    }
-
-                    case "compareAtPrice": {
-                        BigDecimal optional1 = null;
-                        if (!field.getValue().isJsonNull()) {
-                            optional1 = new BigDecimal(jsonAsString(field.getValue(), key));
-                        }
-
-                        responseData.put(key, optional1);
-
-                        break;
-                    }
-
-                    case "id": {
-                        responseData.put(key, new ID(jsonAsString(field.getValue(), key)));
-
-                        break;
-                    }
-
-                    case "image": {
-                        Image optional1 = null;
-                        if (!field.getValue().isJsonNull()) {
-                            optional1 = new Image(jsonAsObject(field.getValue(), key));
-                        }
-
-                        responseData.put(key, optional1);
-
-                        break;
-                    }
-
-                    case "price": {
-                        responseData.put(key, new BigDecimal(jsonAsString(field.getValue(), key)));
-
-                        break;
-                    }
-
-                    case "product": {
-                        responseData.put(key, new Product(jsonAsObject(field.getValue(), key)));
-
-                        break;
-                    }
-
-                    case "selectedOptions": {
-                        List<SelectedOption> list1 = new ArrayList<>();
-                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
-                            list1.add(new SelectedOption(jsonAsObject(element1, key)));
-                        }
-
-                        responseData.put(key, list1);
-
-                        break;
-                    }
-
-                    case "sku": {
-                        String optional1 = null;
-                        if (!field.getValue().isJsonNull()) {
-                            optional1 = jsonAsString(field.getValue(), key);
-                        }
-
-                        responseData.put(key, optional1);
-
-                        break;
-                    }
-
-                    case "title": {
-                        responseData.put(key, jsonAsString(field.getValue(), key));
-
-                        break;
-                    }
-
-                    case "weight": {
-                        Double optional1 = null;
-                        if (!field.getValue().isJsonNull()) {
-                            optional1 = jsonAsDouble(field.getValue(), key);
-                        }
-
-                        responseData.put(key, optional1);
-
-                        break;
-                    }
-
-                    case "weightUnit": {
-                        responseData.put(key, WeightUnit.fromGraphQl(jsonAsString(field.getValue(), key)));
-
-                        break;
-                    }
-
-                    case "__typename": {
-                        responseData.put(key, jsonAsString(field.getValue(), key));
-                        break;
-                    }
-                    default: {
-                        throw new SchemaViolationError(this, key, field.getValue());
-                    }
-                }
-            }
-        }
-
-        public ProductVariant(ID id) {
-            this();
-            optimisticData.put("id", id);
-        }
-
-        public String getGraphQlTypeName() {
-            return "ProductVariant";
-        }
-
-        /**
-        * Indicates if the product variant is in stock.
-        *
-        * @deprecated Use `availableForSale` instead
-        */
-
-        public Boolean getAvailable() {
-            return (Boolean) get("available");
-        }
-
-        public ProductVariant setAvailable(Boolean arg) {
-            optimisticData.put(getKey("available"), arg);
-            return this;
-        }
-
-        /**
-        * Indicates if the product variant is available for sale.
-        */
-
-        public Boolean getAvailableForSale() {
-            return (Boolean) get("availableForSale");
-        }
-
-        public ProductVariant setAvailableForSale(Boolean arg) {
-            optimisticData.put(getKey("availableForSale"), arg);
-            return this;
-        }
-
-        /**
-        * The compare at price of the variant. This can be used to mark a variant as on sale, when
-        * `compareAtPrice` is higher than `price`.
-        */
-
-        public BigDecimal getCompareAtPrice() {
-            return (BigDecimal) get("compareAtPrice");
-        }
-
-        public ProductVariant setCompareAtPrice(BigDecimal arg) {
-            optimisticData.put(getKey("compareAtPrice"), arg);
-            return this;
-        }
-
-        /**
-        * Globally unique identifier.
-        */
-
-        public ID getId() {
-            return (ID) get("id");
-        }
-
-        /**
-        * Image associated with the product variant.
-        */
-
-        public Image getImage() {
-            return (Image) get("image");
-        }
-
-        public ProductVariant setImage(Image arg) {
-            optimisticData.put(getKey("image"), arg);
-            return this;
-        }
-
-        /**
-        * The product variant’s price.
-        */
-
-        public BigDecimal getPrice() {
-            return (BigDecimal) get("price");
-        }
-
-        public ProductVariant setPrice(BigDecimal arg) {
-            optimisticData.put(getKey("price"), arg);
-            return this;
-        }
-
-        /**
-        * The product object that the product variant belongs to.
-        */
-
-        public Product getProduct() {
-            return (Product) get("product");
-        }
-
-        public ProductVariant setProduct(Product arg) {
-            optimisticData.put(getKey("product"), arg);
-            return this;
-        }
-
-        /**
-        * List of product options applied to the variant.
-        */
-
-        public List<SelectedOption> getSelectedOptions() {
-            return (List<SelectedOption>) get("selectedOptions");
-        }
-
-        public ProductVariant setSelectedOptions(List<SelectedOption> arg) {
-            optimisticData.put(getKey("selectedOptions"), arg);
-            return this;
-        }
-
-        /**
-        * The SKU (Stock Keeping Unit) associated with the variant.
-        */
-
-        public String getSku() {
-            return (String) get("sku");
-        }
-
-        public ProductVariant setSku(String arg) {
-            optimisticData.put(getKey("sku"), arg);
-            return this;
-        }
-
-        /**
-        * The product variant’s title.
-        */
-
-        public String getTitle() {
-            return (String) get("title");
-        }
-
-        public ProductVariant setTitle(String arg) {
-            optimisticData.put(getKey("title"), arg);
-            return this;
-        }
-
-        /**
-        * The weight of the product variant in the unit system specified with `weight_unit`.
-        */
-
-        public Double getWeight() {
-            return (Double) get("weight");
-        }
-
-        public ProductVariant setWeight(Double arg) {
-            optimisticData.put(getKey("weight"), arg);
-            return this;
-        }
-
-        /**
-        * Unit of measurement for weight.
-        */
-
-        public WeightUnit getWeightUnit() {
-            return (WeightUnit) get("weightUnit");
-        }
-
-        public ProductVariant setWeightUnit(WeightUnit arg) {
-            optimisticData.put(getKey("weightUnit"), arg);
-            return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "available": return false;
-
-                case "availableForSale": return false;
-
-                case "compareAtPrice": return false;
-
-                case "id": return false;
-
-                case "image": return true;
-
-                case "price": return false;
-
-                case "product": return true;
-
-                case "selectedOptions": return true;
-
-                case "sku": return false;
-
-                case "title": return false;
-
-                case "weight": return false;
-
-                case "weightUnit": return false;
-
-                default: return false;
-            }
-        }
-    }
-
-    public interface ProductVariantConnectionQueryDefinition {
-        void define(ProductVariantConnectionQuery _queryBuilder);
-    }
-
-    public static class ProductVariantConnectionQuery extends Query<ProductVariantConnectionQuery> {
-        ProductVariantConnectionQuery(StringBuilder _queryBuilder) {
-            super(_queryBuilder);
-        }
-
-        /**
-        * A list of edges.
-        */
-        public ProductVariantConnectionQuery edges(ProductVariantEdgeQueryDefinition queryDef) {
-            startField("edges");
-
-            _queryBuilder.append('{');
-            queryDef.define(new ProductVariantEdgeQuery(_queryBuilder));
-            _queryBuilder.append('}');
-
-            return this;
-        }
-
-        /**
-        * Information to aid in pagination.
-        */
-        public ProductVariantConnectionQuery pageInfo(PageInfoQueryDefinition queryDef) {
-            startField("pageInfo");
-
-            _queryBuilder.append('{');
-            queryDef.define(new PageInfoQuery(_queryBuilder));
-            _queryBuilder.append('}');
-
-            return this;
-        }
-    }
-
-    public static class ProductVariantConnection extends AbstractResponse<ProductVariantConnection> {
-        public ProductVariantConnection() {
-        }
-
-        public ProductVariantConnection(JsonObject fields) throws SchemaViolationError {
-            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
-                String key = field.getKey();
-                String fieldName = getFieldName(key);
-                switch (fieldName) {
-                    case "edges": {
-                        List<ProductVariantEdge> list1 = new ArrayList<>();
-                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
-                            list1.add(new ProductVariantEdge(jsonAsObject(element1, key)));
-                        }
-
-                        responseData.put(key, list1);
-
-                        break;
-                    }
-
-                    case "pageInfo": {
-                        responseData.put(key, new PageInfo(jsonAsObject(field.getValue(), key)));
-
-                        break;
-                    }
-
-                    case "__typename": {
-                        responseData.put(key, jsonAsString(field.getValue(), key));
-                        break;
-                    }
-                    default: {
-                        throw new SchemaViolationError(this, key, field.getValue());
-                    }
-                }
-            }
-        }
-
-        public String getGraphQlTypeName() {
-            return "ProductVariantConnection";
-        }
-
-        /**
-        * A list of edges.
-        */
-
-        public List<ProductVariantEdge> getEdges() {
-            return (List<ProductVariantEdge>) get("edges");
-        }
-
-        public ProductVariantConnection setEdges(List<ProductVariantEdge> arg) {
-            optimisticData.put(getKey("edges"), arg);
-            return this;
-        }
-
-        /**
-        * Information to aid in pagination.
-        */
-
-        public PageInfo getPageInfo() {
-            return (PageInfo) get("pageInfo");
-        }
-
-        public ProductVariantConnection setPageInfo(PageInfo arg) {
-            optimisticData.put(getKey("pageInfo"), arg);
-            return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "edges": return true;
-
-                case "pageInfo": return true;
-
-                default: return false;
-            }
-        }
-    }
-
-    public interface ProductVariantEdgeQueryDefinition {
-        void define(ProductVariantEdgeQuery _queryBuilder);
-    }
-
-    public static class ProductVariantEdgeQuery extends Query<ProductVariantEdgeQuery> {
-        ProductVariantEdgeQuery(StringBuilder _queryBuilder) {
-            super(_queryBuilder);
-        }
-
-        /**
-        * A cursor for use in pagination.
-        */
-        public ProductVariantEdgeQuery cursor() {
-            startField("cursor");
-
-            return this;
-        }
-
-        /**
-        * The item at the end of ProductVariantEdge.
-        */
-        public ProductVariantEdgeQuery node(ProductVariantQueryDefinition queryDef) {
-            startField("node");
-
-            _queryBuilder.append('{');
-            queryDef.define(new ProductVariantQuery(_queryBuilder));
-            _queryBuilder.append('}');
-
-            return this;
-        }
-    }
-
-    public static class ProductVariantEdge extends AbstractResponse<ProductVariantEdge> {
-        public ProductVariantEdge() {
-        }
-
-        public ProductVariantEdge(JsonObject fields) throws SchemaViolationError {
-            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
-                String key = field.getKey();
-                String fieldName = getFieldName(key);
-                switch (fieldName) {
-                    case "cursor": {
-                        responseData.put(key, jsonAsString(field.getValue(), key));
-
-                        break;
-                    }
-
-                    case "node": {
-                        responseData.put(key, new ProductVariant(jsonAsObject(field.getValue(), key)));
-
-                        break;
-                    }
-
-                    case "__typename": {
-                        responseData.put(key, jsonAsString(field.getValue(), key));
-                        break;
-                    }
-                    default: {
-                        throw new SchemaViolationError(this, key, field.getValue());
-                    }
-                }
-            }
-        }
-
-        public String getGraphQlTypeName() {
-            return "ProductVariantEdge";
-        }
-
-        /**
-        * A cursor for use in pagination.
-        */
-
-        public String getCursor() {
-            return (String) get("cursor");
-        }
-
-        public ProductVariantEdge setCursor(String arg) {
-            optimisticData.put(getKey("cursor"), arg);
-            return this;
-        }
-
-        /**
-        * The item at the end of ProductVariantEdge.
-        */
-
-        public ProductVariant getNode() {
-            return (ProductVariant) get("node");
-        }
-
-        public ProductVariantEdge setNode(ProductVariant arg) {
-            optimisticData.put(getKey("node"), arg);
-            return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "cursor": return false;
-
-                case "node": return true;
-
-                default: return false;
-            }
-        }
-    }
-
-    /**
-    * The set of valid sort keys for the variants query.
-    */
-    public enum ProductVariantSortKeys {
-        ID,
-
-        POSITION,
-
-        RELEVANCE,
-
-        SKU,
-
-        TITLE,
-
-        UNKNOWN_VALUE;
-
-        public static ProductVariantSortKeys fromGraphQl(String value) {
-            if (value == null) {
-                return null;
-            }
-
-            switch (value) {
-                case "ID": {
-                    return ID;
-                }
-
-                case "POSITION": {
-                    return POSITION;
-                }
-
-                case "RELEVANCE": {
-                    return RELEVANCE;
-                }
-
-                case "SKU": {
-                    return SKU;
-                }
-
-                case "TITLE": {
-                    return TITLE;
-                }
-
-                default: {
-                    return UNKNOWN_VALUE;
-                }
-            }
-        }
-        public String toString() {
-            switch (this) {
-                case ID: {
-                    return "ID";
-                }
-
-                case POSITION: {
-                    return "POSITION";
-                }
-
-                case RELEVANCE: {
-                    return "RELEVANCE";
-                }
-
-                case SKU: {
-                    return "SKU";
-                }
-
-                case TITLE: {
-                    return "TITLE";
-                }
-
-                default: {
-                    return "";
-                }
-            }
-        }
-    }
-
-    public interface QueryRootQueryDefinition {
-        void define(QueryRootQuery _queryBuilder);
-    }
-
-    /**
-    * The schema’s entry-point for queries. This acts as the public, top-level API from which all queries
-    * must start.
-    */
-    public static class QueryRootQuery extends Query<QueryRootQuery> {
-        QueryRootQuery(StringBuilder _queryBuilder) {
-            super(_queryBuilder);
-        }
-
-        public QueryRootQuery customer(String customerAccessToken, CustomerQueryDefinition queryDef) {
-            startField("customer");
-
-            _queryBuilder.append("(customerAccessToken:");
-            Query.appendQuotedString(_queryBuilder, customerAccessToken.toString());
-
-            _queryBuilder.append(')');
-
-            _queryBuilder.append('{');
-            queryDef.define(new CustomerQuery(_queryBuilder));
-            _queryBuilder.append('}');
-
-            return this;
-        }
-
-        public QueryRootQuery node(ID id, NodeQueryDefinition queryDef) {
-            startField("node");
-
-            _queryBuilder.append("(id:");
-            Query.appendQuotedString(_queryBuilder, id.toString());
-
-            _queryBuilder.append(')');
-
-            _queryBuilder.append('{');
-            queryDef.define(new NodeQuery(_queryBuilder));
-            _queryBuilder.append('}');
-
-            return this;
-        }
-
-        public QueryRootQuery nodes(List<ID> ids, NodeQueryDefinition queryDef) {
-            startField("nodes");
-
-            _queryBuilder.append("(ids:");
-            _queryBuilder.append('[');
-
-            String listSeperator1 = "";
-            for (ID item1 : ids) {
-                _queryBuilder.append(listSeperator1);
-                listSeperator1 = ",";
-                Query.appendQuotedString(_queryBuilder, item1.toString());
-            }
-            _queryBuilder.append(']');
-
-            _queryBuilder.append(')');
-
-            _queryBuilder.append('{');
-            queryDef.define(new NodeQuery(_queryBuilder));
-            _queryBuilder.append('}');
-
-            return this;
-        }
-
-        public QueryRootQuery shop(ShopQueryDefinition queryDef) {
-            startField("shop");
-
-            _queryBuilder.append('{');
-            queryDef.define(new ShopQuery(_queryBuilder));
-            _queryBuilder.append('}');
-
-            return this;
-        }
-
-        public String toString() {
-            return _queryBuilder.toString();
-        }
-    }
-
-    /**
-    * The schema’s entry-point for queries. This acts as the public, top-level API from which all queries
-    * must start.
-    */
-    public static class QueryRoot extends AbstractResponse<QueryRoot> {
-        public QueryRoot() {
-        }
-
-        public QueryRoot(JsonObject fields) throws SchemaViolationError {
-            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
-                String key = field.getKey();
-                String fieldName = getFieldName(key);
-                switch (fieldName) {
-                    case "customer": {
-                        Customer optional1 = null;
-                        if (!field.getValue().isJsonNull()) {
-                            optional1 = new Customer(jsonAsObject(field.getValue(), key));
-                        }
-
-                        responseData.put(key, optional1);
-
-                        break;
-                    }
-
-                    case "node": {
-                        Node optional1 = null;
-                        if (!field.getValue().isJsonNull()) {
-                            optional1 = UnknownNode.create(jsonAsObject(field.getValue(), key));
-                        }
-
-                        responseData.put(key, optional1);
-
-                        break;
-                    }
-
-                    case "nodes": {
-                        List<Node> list1 = new ArrayList<>();
-                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
-                            Node optional2 = null;
-                            if (!element1.isJsonNull()) {
-                                optional2 = UnknownNode.create(jsonAsObject(element1, key));
+            public static class MoneyV2 extends AbstractResponse<MoneyV2> {
+                public MoneyV2() {
+                }
+
+                public MoneyV2(JsonObject fields) throws SchemaViolationError {
+                    for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                        String key = field.getKey();
+                        String fieldName = getFieldName(key);
+                        switch (fieldName) {
+                            case "amount": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+
+                                break;
                             }
 
-                            list1.add(optional2);
-                        }
+                            case "currencyCode": {
+                                responseData.put(key, CurrencyCode.fromGraphQl(jsonAsString(field.getValue(), key)));
 
-                        responseData.put(key, list1);
-
-                        break;
-                    }
-
-                    case "shop": {
-                        responseData.put(key, new Shop(jsonAsObject(field.getValue(), key)));
-
-                        break;
-                    }
-
-                    case "__typename": {
-                        responseData.put(key, jsonAsString(field.getValue(), key));
-                        break;
-                    }
-                    default: {
-                        throw new SchemaViolationError(this, key, field.getValue());
-                    }
-                }
-            }
-        }
-
-        public String getGraphQlTypeName() {
-            return "QueryRoot";
-        }
-
-        public Customer getCustomer() {
-            return (Customer) get("customer");
-        }
-
-        public QueryRoot setCustomer(Customer arg) {
-            optimisticData.put(getKey("customer"), arg);
-            return this;
-        }
-
-        public Node getNode() {
-            return (Node) get("node");
-        }
-
-        public QueryRoot setNode(Node arg) {
-            optimisticData.put(getKey("node"), arg);
-            return this;
-        }
-
-        public List<Node> getNodes() {
-            return (List<Node>) get("nodes");
-        }
-
-        public QueryRoot setNodes(List<Node> arg) {
-            optimisticData.put(getKey("nodes"), arg);
-            return this;
-        }
-
-        public Shop getShop() {
-            return (Shop) get("shop");
-        }
-
-        public QueryRoot setShop(Shop arg) {
-            optimisticData.put(getKey("shop"), arg);
-            return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "customer": return true;
-
-                case "node": return false;
-
-                case "nodes": return false;
-
-                case "shop": return true;
-
-                default: return false;
-            }
-        }
-    }
-
-    public interface SelectedOptionQueryDefinition {
-        void define(SelectedOptionQuery _queryBuilder);
-    }
-
-    /**
-    * Custom properties that a shop owner can use to define product variants.
-    * Multiple options can exist. Options are represented as: option1, option2, option3, etc.
-    */
-    public static class SelectedOptionQuery extends Query<SelectedOptionQuery> {
-        SelectedOptionQuery(StringBuilder _queryBuilder) {
-            super(_queryBuilder);
-        }
-
-        /**
-        * The product option’s name.
-        */
-        public SelectedOptionQuery name() {
-            startField("name");
-
-            return this;
-        }
-
-        /**
-        * The product option’s value.
-        */
-        public SelectedOptionQuery value() {
-            startField("value");
-
-            return this;
-        }
-    }
-
-    /**
-    * Custom properties that a shop owner can use to define product variants.
-    * Multiple options can exist. Options are represented as: option1, option2, option3, etc.
-    */
-    public static class SelectedOption extends AbstractResponse<SelectedOption> {
-        public SelectedOption() {
-        }
-
-        public SelectedOption(JsonObject fields) throws SchemaViolationError {
-            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
-                String key = field.getKey();
-                String fieldName = getFieldName(key);
-                switch (fieldName) {
-                    case "name": {
-                        responseData.put(key, jsonAsString(field.getValue(), key));
-
-                        break;
-                    }
-
-                    case "value": {
-                        responseData.put(key, jsonAsString(field.getValue(), key));
-
-                        break;
-                    }
-
-                    case "__typename": {
-                        responseData.put(key, jsonAsString(field.getValue(), key));
-                        break;
-                    }
-                    default: {
-                        throw new SchemaViolationError(this, key, field.getValue());
-                    }
-                }
-            }
-        }
-
-        public String getGraphQlTypeName() {
-            return "SelectedOption";
-        }
-
-        /**
-        * The product option’s name.
-        */
-
-        public String getName() {
-            return (String) get("name");
-        }
-
-        public SelectedOption setName(String arg) {
-            optimisticData.put(getKey("name"), arg);
-            return this;
-        }
-
-        /**
-        * The product option’s value.
-        */
-
-        public String getValue() {
-            return (String) get("value");
-        }
-
-        public SelectedOption setValue(String arg) {
-            optimisticData.put(getKey("value"), arg);
-            return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "name": return false;
-
-                case "value": return false;
-
-                default: return false;
-            }
-        }
-    }
-
-    public static class SelectedOptionInput implements Serializable {
-        private String name;
-
-        private String value;
-
-        public SelectedOptionInput(String name, String value) {
-            this.name = name;
-
-            this.value = value;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public SelectedOptionInput setName(String name) {
-            this.name = name;
-            return this;
-        }
-
-        public String getValue() {
-            return value;
-        }
-
-        public SelectedOptionInput setValue(String value) {
-            this.value = value;
-            return this;
-        }
-
-        public void appendTo(StringBuilder _queryBuilder) {
-            String separator = "";
-            _queryBuilder.append('{');
-
-            _queryBuilder.append(separator);
-            separator = ",";
-            _queryBuilder.append("name:");
-            Query.appendQuotedString(_queryBuilder, name.toString());
-
-            _queryBuilder.append(separator);
-            separator = ",";
-            _queryBuilder.append("value:");
-            Query.appendQuotedString(_queryBuilder, value.toString());
-
-            _queryBuilder.append('}');
-        }
-    }
-
-    public interface ShippingRateQueryDefinition {
-        void define(ShippingRateQuery _queryBuilder);
-    }
-
-    /**
-    * A shipping rate to be applied to a checkout.
-    */
-    public static class ShippingRateQuery extends Query<ShippingRateQuery> {
-        ShippingRateQuery(StringBuilder _queryBuilder) {
-            super(_queryBuilder);
-        }
-
-        /**
-        * Human-readable unique identifier for this shipping rate.
-        */
-        public ShippingRateQuery handle() {
-            startField("handle");
-
-            return this;
-        }
-
-        /**
-        * Price of this shipping rate.
-        */
-        public ShippingRateQuery price() {
-            startField("price");
-
-            return this;
-        }
-
-        /**
-        * Title of this shipping rate.
-        */
-        public ShippingRateQuery title() {
-            startField("title");
-
-            return this;
-        }
-    }
-
-    /**
-    * A shipping rate to be applied to a checkout.
-    */
-    public static class ShippingRate extends AbstractResponse<ShippingRate> {
-        public ShippingRate() {
-        }
-
-        public ShippingRate(JsonObject fields) throws SchemaViolationError {
-            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
-                String key = field.getKey();
-                String fieldName = getFieldName(key);
-                switch (fieldName) {
-                    case "handle": {
-                        responseData.put(key, jsonAsString(field.getValue(), key));
-
-                        break;
-                    }
-
-                    case "price": {
-                        responseData.put(key, new BigDecimal(jsonAsString(field.getValue(), key)));
-
-                        break;
-                    }
-
-                    case "title": {
-                        responseData.put(key, jsonAsString(field.getValue(), key));
-
-                        break;
-                    }
-
-                    case "__typename": {
-                        responseData.put(key, jsonAsString(field.getValue(), key));
-                        break;
-                    }
-                    default: {
-                        throw new SchemaViolationError(this, key, field.getValue());
-                    }
-                }
-            }
-        }
-
-        public String getGraphQlTypeName() {
-            return "ShippingRate";
-        }
-
-        /**
-        * Human-readable unique identifier for this shipping rate.
-        */
-
-        public String getHandle() {
-            return (String) get("handle");
-        }
-
-        public ShippingRate setHandle(String arg) {
-            optimisticData.put(getKey("handle"), arg);
-            return this;
-        }
-
-        /**
-        * Price of this shipping rate.
-        */
-
-        public BigDecimal getPrice() {
-            return (BigDecimal) get("price");
-        }
-
-        public ShippingRate setPrice(BigDecimal arg) {
-            optimisticData.put(getKey("price"), arg);
-            return this;
-        }
-
-        /**
-        * Title of this shipping rate.
-        */
-
-        public String getTitle() {
-            return (String) get("title");
-        }
-
-        public ShippingRate setTitle(String arg) {
-            optimisticData.put(getKey("title"), arg);
-            return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "handle": return false;
-
-                case "price": return false;
-
-                case "title": return false;
-
-                default: return false;
-            }
-        }
-    }
-
-    public interface ShopQueryDefinition {
-        void define(ShopQuery _queryBuilder);
-    }
-
-    /**
-    * Shop represents a collection of the general settings and information about the shop.
-    */
-    public static class ShopQuery extends Query<ShopQuery> {
-        ShopQuery(StringBuilder _queryBuilder) {
-            super(_queryBuilder);
-        }
-
-        public class ArticlesArguments extends Arguments {
-            ArticlesArguments(StringBuilder _queryBuilder) {
-                super(_queryBuilder, true);
-            }
-
-            public ArticlesArguments first(Integer value) {
-                if (value != null) {
-                    startArgument("first");
-                    _queryBuilder.append(value);
-                }
-                return this;
-            }
-
-            public ArticlesArguments after(String value) {
-                if (value != null) {
-                    startArgument("after");
-                    Query.appendQuotedString(_queryBuilder, value.toString());
-                }
-                return this;
-            }
-
-            public ArticlesArguments last(Integer value) {
-                if (value != null) {
-                    startArgument("last");
-                    _queryBuilder.append(value);
-                }
-                return this;
-            }
-
-            public ArticlesArguments before(String value) {
-                if (value != null) {
-                    startArgument("before");
-                    Query.appendQuotedString(_queryBuilder, value.toString());
-                }
-                return this;
-            }
-
-            public ArticlesArguments reverse(Boolean value) {
-                if (value != null) {
-                    startArgument("reverse");
-                    _queryBuilder.append(value);
-                }
-                return this;
-            }
-
-            public ArticlesArguments sortKey(ArticleSortKeys value) {
-                if (value != null) {
-                    startArgument("sortKey");
-                    _queryBuilder.append(value.toString());
-                }
-                return this;
-            }
-
-            /**
-            * Supported filter parameters:
-            * - `author`
-            * - `updated_at`
-            * - `created_at`
-            * - `blog_title`
-            * - `tag`
-            */
-            public ArticlesArguments query(String value) {
-                if (value != null) {
-                    startArgument("query");
-                    Query.appendQuotedString(_queryBuilder, value.toString());
-                }
-                return this;
-            }
-        }
-
-        public interface ArticlesArgumentsDefinition {
-            void define(ArticlesArguments args);
-        }
-
-        /**
-        * List of the shop' articles.
-        */
-        public ShopQuery articles(ArticleConnectionQueryDefinition queryDef) {
-            return articles(args -> {}, queryDef);
-        }
-
-        /**
-        * List of the shop' articles.
-        */
-        public ShopQuery articles(ArticlesArgumentsDefinition argsDef, ArticleConnectionQueryDefinition queryDef) {
-            startField("articles");
-
-            ArticlesArguments args = new ArticlesArguments(_queryBuilder);
-            argsDef.define(args);
-            ArticlesArguments.end(args);
-
-            _queryBuilder.append('{');
-            queryDef.define(new ArticleConnectionQuery(_queryBuilder));
-            _queryBuilder.append('}');
-
-            return this;
-        }
-
-        public class BlogsArguments extends Arguments {
-            BlogsArguments(StringBuilder _queryBuilder) {
-                super(_queryBuilder, true);
-            }
-
-            public BlogsArguments first(Integer value) {
-                if (value != null) {
-                    startArgument("first");
-                    _queryBuilder.append(value);
-                }
-                return this;
-            }
-
-            public BlogsArguments after(String value) {
-                if (value != null) {
-                    startArgument("after");
-                    Query.appendQuotedString(_queryBuilder, value.toString());
-                }
-                return this;
-            }
-
-            public BlogsArguments last(Integer value) {
-                if (value != null) {
-                    startArgument("last");
-                    _queryBuilder.append(value);
-                }
-                return this;
-            }
-
-            public BlogsArguments before(String value) {
-                if (value != null) {
-                    startArgument("before");
-                    Query.appendQuotedString(_queryBuilder, value.toString());
-                }
-                return this;
-            }
-
-            public BlogsArguments reverse(Boolean value) {
-                if (value != null) {
-                    startArgument("reverse");
-                    _queryBuilder.append(value);
-                }
-                return this;
-            }
-
-            public BlogsArguments sortKey(BlogSortKeys value) {
-                if (value != null) {
-                    startArgument("sortKey");
-                    _queryBuilder.append(value.toString());
-                }
-                return this;
-            }
-
-            /**
-            * Supported filter parameters:
-            * - `handle`
-            * - `title`
-            * - `updated_at`
-            * - `created_at`
-            */
-            public BlogsArguments query(String value) {
-                if (value != null) {
-                    startArgument("query");
-                    Query.appendQuotedString(_queryBuilder, value.toString());
-                }
-                return this;
-            }
-        }
-
-        public interface BlogsArgumentsDefinition {
-            void define(BlogsArguments args);
-        }
-
-        /**
-        * List of the shop' blogs.
-        */
-        public ShopQuery blogs(BlogConnectionQueryDefinition queryDef) {
-            return blogs(args -> {}, queryDef);
-        }
-
-        /**
-        * List of the shop' blogs.
-        */
-        public ShopQuery blogs(BlogsArgumentsDefinition argsDef, BlogConnectionQueryDefinition queryDef) {
-            startField("blogs");
-
-            BlogsArguments args = new BlogsArguments(_queryBuilder);
-            argsDef.define(args);
-            BlogsArguments.end(args);
-
-            _queryBuilder.append('{');
-            queryDef.define(new BlogConnectionQuery(_queryBuilder));
-            _queryBuilder.append('}');
-
-            return this;
-        }
-
-        /**
-        * The url pointing to the endpoint to vault credit cards.
-        *
-        * @deprecated Use `paymentSettings` instead
-        */
-        @Deprecated
-        public ShopQuery cardVaultUrl() {
-            startField("cardVaultUrl");
-
-            return this;
-        }
-
-        /**
-        * Find a collection by its handle.
-        */
-        public ShopQuery collectionByHandle(String handle, CollectionQueryDefinition queryDef) {
-            startField("collectionByHandle");
-
-            _queryBuilder.append("(handle:");
-            Query.appendQuotedString(_queryBuilder, handle.toString());
-
-            _queryBuilder.append(')');
-
-            _queryBuilder.append('{');
-            queryDef.define(new CollectionQuery(_queryBuilder));
-            _queryBuilder.append('}');
-
-            return this;
-        }
-
-        public class CollectionsArguments extends Arguments {
-            CollectionsArguments(StringBuilder _queryBuilder) {
-                super(_queryBuilder, true);
-            }
-
-            public CollectionsArguments first(Integer value) {
-                if (value != null) {
-                    startArgument("first");
-                    _queryBuilder.append(value);
-                }
-                return this;
-            }
-
-            public CollectionsArguments after(String value) {
-                if (value != null) {
-                    startArgument("after");
-                    Query.appendQuotedString(_queryBuilder, value.toString());
-                }
-                return this;
-            }
-
-            public CollectionsArguments last(Integer value) {
-                if (value != null) {
-                    startArgument("last");
-                    _queryBuilder.append(value);
-                }
-                return this;
-            }
-
-            public CollectionsArguments before(String value) {
-                if (value != null) {
-                    startArgument("before");
-                    Query.appendQuotedString(_queryBuilder, value.toString());
-                }
-                return this;
-            }
-
-            public CollectionsArguments reverse(Boolean value) {
-                if (value != null) {
-                    startArgument("reverse");
-                    _queryBuilder.append(value);
-                }
-                return this;
-            }
-
-            public CollectionsArguments sortKey(CollectionSortKeys value) {
-                if (value != null) {
-                    startArgument("sortKey");
-                    _queryBuilder.append(value.toString());
-                }
-                return this;
-            }
-
-            /**
-            * Supported filter parameters:
-            * - `title`
-            * - `collection_type`
-            * - `updated_at`
-            */
-            public CollectionsArguments query(String value) {
-                if (value != null) {
-                    startArgument("query");
-                    Query.appendQuotedString(_queryBuilder, value.toString());
-                }
-                return this;
-            }
-        }
-
-        public interface CollectionsArgumentsDefinition {
-            void define(CollectionsArguments args);
-        }
-
-        /**
-        * List of the shop’s collections.
-        */
-        public ShopQuery collections(CollectionConnectionQueryDefinition queryDef) {
-            return collections(args -> {}, queryDef);
-        }
-
-        /**
-        * List of the shop’s collections.
-        */
-        public ShopQuery collections(CollectionsArgumentsDefinition argsDef, CollectionConnectionQueryDefinition queryDef) {
-            startField("collections");
-
-            CollectionsArguments args = new CollectionsArguments(_queryBuilder);
-            argsDef.define(args);
-            CollectionsArguments.end(args);
-
-            _queryBuilder.append('{');
-            queryDef.define(new CollectionConnectionQuery(_queryBuilder));
-            _queryBuilder.append('}');
-
-            return this;
-        }
-
-        /**
-        * The three-letter code for the currency that the shop accepts.
-        *
-        * @deprecated Use `paymentSettings` instead
-        */
-        @Deprecated
-        public ShopQuery currencyCode() {
-            startField("currencyCode");
-
-            return this;
-        }
-
-        /**
-        * A description of the shop.
-        */
-        public ShopQuery description() {
-            startField("description");
-
-            return this;
-        }
-
-        /**
-        * A string representing the way currency is formatted when the currency isn’t specified.
-        */
-        public ShopQuery moneyFormat() {
-            startField("moneyFormat");
-
-            return this;
-        }
-
-        /**
-        * The shop’s name.
-        */
-        public ShopQuery name() {
-            startField("name");
-
-            return this;
-        }
-
-        /**
-        * Settings related to payments.
-        */
-        public ShopQuery paymentSettings(PaymentSettingsQueryDefinition queryDef) {
-            startField("paymentSettings");
-
-            _queryBuilder.append('{');
-            queryDef.define(new PaymentSettingsQuery(_queryBuilder));
-            _queryBuilder.append('}');
-
-            return this;
-        }
-
-        /**
-        * The shop’s primary domain.
-        */
-        public ShopQuery primaryDomain(DomainQueryDefinition queryDef) {
-            startField("primaryDomain");
-
-            _queryBuilder.append('{');
-            queryDef.define(new DomainQuery(_queryBuilder));
-            _queryBuilder.append('}');
-
-            return this;
-        }
-
-        /**
-        * The shop’s privacy policy.
-        */
-        public ShopQuery privacyPolicy(ShopPolicyQueryDefinition queryDef) {
-            startField("privacyPolicy");
-
-            _queryBuilder.append('{');
-            queryDef.define(new ShopPolicyQuery(_queryBuilder));
-            _queryBuilder.append('}');
-
-            return this;
-        }
-
-        /**
-        * Find a product by its handle.
-        */
-        public ShopQuery productByHandle(String handle, ProductQueryDefinition queryDef) {
-            startField("productByHandle");
-
-            _queryBuilder.append("(handle:");
-            Query.appendQuotedString(_queryBuilder, handle.toString());
-
-            _queryBuilder.append(')');
-
-            _queryBuilder.append('{');
-            queryDef.define(new ProductQuery(_queryBuilder));
-            _queryBuilder.append('}');
-
-            return this;
-        }
-
-        /**
-        * List of the shop’s product types.
-        */
-        public ShopQuery productTypes(int first, StringConnectionQueryDefinition queryDef) {
-            startField("productTypes");
-
-            _queryBuilder.append("(first:");
-            _queryBuilder.append(first);
-
-            _queryBuilder.append(')');
-
-            _queryBuilder.append('{');
-            queryDef.define(new StringConnectionQuery(_queryBuilder));
-            _queryBuilder.append('}');
-
-            return this;
-        }
-
-        public class ProductsArguments extends Arguments {
-            ProductsArguments(StringBuilder _queryBuilder) {
-                super(_queryBuilder, true);
-            }
-
-            public ProductsArguments first(Integer value) {
-                if (value != null) {
-                    startArgument("first");
-                    _queryBuilder.append(value);
-                }
-                return this;
-            }
-
-            public ProductsArguments after(String value) {
-                if (value != null) {
-                    startArgument("after");
-                    Query.appendQuotedString(_queryBuilder, value.toString());
-                }
-                return this;
-            }
-
-            public ProductsArguments last(Integer value) {
-                if (value != null) {
-                    startArgument("last");
-                    _queryBuilder.append(value);
-                }
-                return this;
-            }
-
-            public ProductsArguments before(String value) {
-                if (value != null) {
-                    startArgument("before");
-                    Query.appendQuotedString(_queryBuilder, value.toString());
-                }
-                return this;
-            }
-
-            public ProductsArguments reverse(Boolean value) {
-                if (value != null) {
-                    startArgument("reverse");
-                    _queryBuilder.append(value);
-                }
-                return this;
-            }
-
-            public ProductsArguments sortKey(ProductSortKeys value) {
-                if (value != null) {
-                    startArgument("sortKey");
-                    _queryBuilder.append(value.toString());
-                }
-                return this;
-            }
-
-            /**
-            * Supported filter parameters:
-            * - `title`
-            * - `product_type`
-            * - `vendor`
-            * - `created_at`
-            * - `updated_at`
-            * - `tag`
-            */
-            public ProductsArguments query(String value) {
-                if (value != null) {
-                    startArgument("query");
-                    Query.appendQuotedString(_queryBuilder, value.toString());
-                }
-                return this;
-            }
-        }
-
-        public interface ProductsArgumentsDefinition {
-            void define(ProductsArguments args);
-        }
-
-        /**
-        * List of the shop’s products.
-        */
-        public ShopQuery products(ProductConnectionQueryDefinition queryDef) {
-            return products(args -> {}, queryDef);
-        }
-
-        /**
-        * List of the shop’s products.
-        */
-        public ShopQuery products(ProductsArgumentsDefinition argsDef, ProductConnectionQueryDefinition queryDef) {
-            startField("products");
-
-            ProductsArguments args = new ProductsArguments(_queryBuilder);
-            argsDef.define(args);
-            ProductsArguments.end(args);
-
-            _queryBuilder.append('{');
-            queryDef.define(new ProductConnectionQuery(_queryBuilder));
-            _queryBuilder.append('}');
-
-            return this;
-        }
-
-        /**
-        * The shop’s refund policy.
-        */
-        public ShopQuery refundPolicy(ShopPolicyQueryDefinition queryDef) {
-            startField("refundPolicy");
-
-            _queryBuilder.append('{');
-            queryDef.define(new ShopPolicyQuery(_queryBuilder));
-            _queryBuilder.append('}');
-
-            return this;
-        }
-
-        /**
-        * The shop’s Shopify Payments account id.
-        *
-        * @deprecated Use `paymentSettings` instead
-        */
-        @Deprecated
-        public ShopQuery shopifyPaymentsAccountId() {
-            startField("shopifyPaymentsAccountId");
-
-            return this;
-        }
-
-        /**
-        * The shop’s terms of service.
-        */
-        public ShopQuery termsOfService(ShopPolicyQueryDefinition queryDef) {
-            startField("termsOfService");
-
-            _queryBuilder.append('{');
-            queryDef.define(new ShopPolicyQuery(_queryBuilder));
-            _queryBuilder.append('}');
-
-            return this;
-        }
-    }
-
-    /**
-    * Shop represents a collection of the general settings and information about the shop.
-    */
-    public static class Shop extends AbstractResponse<Shop> {
-        public Shop() {
-        }
-
-        public Shop(JsonObject fields) throws SchemaViolationError {
-            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
-                String key = field.getKey();
-                String fieldName = getFieldName(key);
-                switch (fieldName) {
-                    case "articles": {
-                        responseData.put(key, new ArticleConnection(jsonAsObject(field.getValue(), key)));
-
-                        break;
-                    }
-
-                    case "blogs": {
-                        responseData.put(key, new BlogConnection(jsonAsObject(field.getValue(), key)));
-
-                        break;
-                    }
-
-                    case "cardVaultUrl": {
-                        responseData.put(key, jsonAsString(field.getValue(), key));
-
-                        break;
-                    }
-
-                    case "collectionByHandle": {
-                        Collection optional1 = null;
-                        if (!field.getValue().isJsonNull()) {
-                            optional1 = new Collection(jsonAsObject(field.getValue(), key));
-                        }
-
-                        responseData.put(key, optional1);
-
-                        break;
-                    }
-
-                    case "collections": {
-                        responseData.put(key, new CollectionConnection(jsonAsObject(field.getValue(), key)));
-
-                        break;
-                    }
-
-                    case "currencyCode": {
-                        responseData.put(key, CurrencyCode.fromGraphQl(jsonAsString(field.getValue(), key)));
-
-                        break;
-                    }
-
-                    case "description": {
-                        String optional1 = null;
-                        if (!field.getValue().isJsonNull()) {
-                            optional1 = jsonAsString(field.getValue(), key);
-                        }
-
-                        responseData.put(key, optional1);
-
-                        break;
-                    }
-
-                    case "moneyFormat": {
-                        responseData.put(key, jsonAsString(field.getValue(), key));
-
-                        break;
-                    }
-
-                    case "name": {
-                        responseData.put(key, jsonAsString(field.getValue(), key));
-
-                        break;
-                    }
-
-                    case "paymentSettings": {
-                        responseData.put(key, new PaymentSettings(jsonAsObject(field.getValue(), key)));
-
-                        break;
-                    }
-
-                    case "primaryDomain": {
-                        responseData.put(key, new Domain(jsonAsObject(field.getValue(), key)));
-
-                        break;
-                    }
-
-                    case "privacyPolicy": {
-                        ShopPolicy optional1 = null;
-                        if (!field.getValue().isJsonNull()) {
-                            optional1 = new ShopPolicy(jsonAsObject(field.getValue(), key));
-                        }
-
-                        responseData.put(key, optional1);
-
-                        break;
-                    }
-
-                    case "productByHandle": {
-                        Product optional1 = null;
-                        if (!field.getValue().isJsonNull()) {
-                            optional1 = new Product(jsonAsObject(field.getValue(), key));
-                        }
-
-                        responseData.put(key, optional1);
-
-                        break;
-                    }
-
-                    case "productTypes": {
-                        responseData.put(key, new StringConnection(jsonAsObject(field.getValue(), key)));
-
-                        break;
-                    }
-
-                    case "products": {
-                        responseData.put(key, new ProductConnection(jsonAsObject(field.getValue(), key)));
-
-                        break;
-                    }
-
-                    case "refundPolicy": {
-                        ShopPolicy optional1 = null;
-                        if (!field.getValue().isJsonNull()) {
-                            optional1 = new ShopPolicy(jsonAsObject(field.getValue(), key));
-                        }
-
-                        responseData.put(key, optional1);
-
-                        break;
-                    }
-
-                    case "shopifyPaymentsAccountId": {
-                        String optional1 = null;
-                        if (!field.getValue().isJsonNull()) {
-                            optional1 = jsonAsString(field.getValue(), key);
-                        }
-
-                        responseData.put(key, optional1);
-
-                        break;
-                    }
-
-                    case "termsOfService": {
-                        ShopPolicy optional1 = null;
-                        if (!field.getValue().isJsonNull()) {
-                            optional1 = new ShopPolicy(jsonAsObject(field.getValue(), key));
-                        }
-
-                        responseData.put(key, optional1);
-
-                        break;
-                    }
-
-                    case "__typename": {
-                        responseData.put(key, jsonAsString(field.getValue(), key));
-                        break;
-                    }
-                    default: {
-                        throw new SchemaViolationError(this, key, field.getValue());
-                    }
-                }
-            }
-        }
-
-        public String getGraphQlTypeName() {
-            return "Shop";
-        }
-
-        /**
-        * List of the shop' articles.
-        */
-
-        public ArticleConnection getArticles() {
-            return (ArticleConnection) get("articles");
-        }
-
-        public Shop setArticles(ArticleConnection arg) {
-            optimisticData.put(getKey("articles"), arg);
-            return this;
-        }
-
-        /**
-        * List of the shop' blogs.
-        */
-
-        public BlogConnection getBlogs() {
-            return (BlogConnection) get("blogs");
-        }
-
-        public Shop setBlogs(BlogConnection arg) {
-            optimisticData.put(getKey("blogs"), arg);
-            return this;
-        }
-
-        /**
-        * The url pointing to the endpoint to vault credit cards.
-        *
-        * @deprecated Use `paymentSettings` instead
-        */
-
-        public String getCardVaultUrl() {
-            return (String) get("cardVaultUrl");
-        }
-
-        public Shop setCardVaultUrl(String arg) {
-            optimisticData.put(getKey("cardVaultUrl"), arg);
-            return this;
-        }
-
-        /**
-        * Find a collection by its handle.
-        */
-
-        public Collection getCollectionByHandle() {
-            return (Collection) get("collectionByHandle");
-        }
-
-        public Shop setCollectionByHandle(Collection arg) {
-            optimisticData.put(getKey("collectionByHandle"), arg);
-            return this;
-        }
-
-        /**
-        * List of the shop’s collections.
-        */
-
-        public CollectionConnection getCollections() {
-            return (CollectionConnection) get("collections");
-        }
-
-        public Shop setCollections(CollectionConnection arg) {
-            optimisticData.put(getKey("collections"), arg);
-            return this;
-        }
-
-        /**
-        * The three-letter code for the currency that the shop accepts.
-        *
-        * @deprecated Use `paymentSettings` instead
-        */
-
-        public CurrencyCode getCurrencyCode() {
-            return (CurrencyCode) get("currencyCode");
-        }
-
-        public Shop setCurrencyCode(CurrencyCode arg) {
-            optimisticData.put(getKey("currencyCode"), arg);
-            return this;
-        }
-
-        /**
-        * A description of the shop.
-        */
-
-        public String getDescription() {
-            return (String) get("description");
-        }
-
-        public Shop setDescription(String arg) {
-            optimisticData.put(getKey("description"), arg);
-            return this;
-        }
-
-        /**
-        * A string representing the way currency is formatted when the currency isn’t specified.
-        */
-
-        public String getMoneyFormat() {
-            return (String) get("moneyFormat");
-        }
-
-        public Shop setMoneyFormat(String arg) {
-            optimisticData.put(getKey("moneyFormat"), arg);
-            return this;
-        }
-
-        /**
-        * The shop’s name.
-        */
-
-        public String getName() {
-            return (String) get("name");
-        }
-
-        public Shop setName(String arg) {
-            optimisticData.put(getKey("name"), arg);
-            return this;
-        }
-
-        /**
-        * Settings related to payments.
-        */
-
-        public PaymentSettings getPaymentSettings() {
-            return (PaymentSettings) get("paymentSettings");
-        }
-
-        public Shop setPaymentSettings(PaymentSettings arg) {
-            optimisticData.put(getKey("paymentSettings"), arg);
-            return this;
-        }
-
-        /**
-        * The shop’s primary domain.
-        */
-
-        public Domain getPrimaryDomain() {
-            return (Domain) get("primaryDomain");
-        }
-
-        public Shop setPrimaryDomain(Domain arg) {
-            optimisticData.put(getKey("primaryDomain"), arg);
-            return this;
-        }
-
-        /**
-        * The shop’s privacy policy.
-        */
-
-        public ShopPolicy getPrivacyPolicy() {
-            return (ShopPolicy) get("privacyPolicy");
-        }
-
-        public Shop setPrivacyPolicy(ShopPolicy arg) {
-            optimisticData.put(getKey("privacyPolicy"), arg);
-            return this;
-        }
-
-        /**
-        * Find a product by its handle.
-        */
-
-        public Product getProductByHandle() {
-            return (Product) get("productByHandle");
-        }
-
-        public Shop setProductByHandle(Product arg) {
-            optimisticData.put(getKey("productByHandle"), arg);
-            return this;
-        }
-
-        /**
-        * List of the shop’s product types.
-        */
-
-        public StringConnection getProductTypes() {
-            return (StringConnection) get("productTypes");
-        }
-
-        public Shop setProductTypes(StringConnection arg) {
-            optimisticData.put(getKey("productTypes"), arg);
-            return this;
-        }
-
-        /**
-        * List of the shop’s products.
-        */
-
-        public ProductConnection getProducts() {
-            return (ProductConnection) get("products");
-        }
-
-        public Shop setProducts(ProductConnection arg) {
-            optimisticData.put(getKey("products"), arg);
-            return this;
-        }
-
-        /**
-        * The shop’s refund policy.
-        */
-
-        public ShopPolicy getRefundPolicy() {
-            return (ShopPolicy) get("refundPolicy");
-        }
-
-        public Shop setRefundPolicy(ShopPolicy arg) {
-            optimisticData.put(getKey("refundPolicy"), arg);
-            return this;
-        }
-
-        /**
-        * The shop’s Shopify Payments account id.
-        *
-        * @deprecated Use `paymentSettings` instead
-        */
-
-        public String getShopifyPaymentsAccountId() {
-            return (String) get("shopifyPaymentsAccountId");
-        }
-
-        public Shop setShopifyPaymentsAccountId(String arg) {
-            optimisticData.put(getKey("shopifyPaymentsAccountId"), arg);
-            return this;
-        }
-
-        /**
-        * The shop’s terms of service.
-        */
-
-        public ShopPolicy getTermsOfService() {
-            return (ShopPolicy) get("termsOfService");
-        }
-
-        public Shop setTermsOfService(ShopPolicy arg) {
-            optimisticData.put(getKey("termsOfService"), arg);
-            return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "articles": return true;
-
-                case "blogs": return true;
-
-                case "cardVaultUrl": return false;
-
-                case "collectionByHandle": return true;
-
-                case "collections": return true;
-
-                case "currencyCode": return false;
-
-                case "description": return false;
-
-                case "moneyFormat": return false;
-
-                case "name": return false;
-
-                case "paymentSettings": return true;
-
-                case "primaryDomain": return true;
-
-                case "privacyPolicy": return true;
-
-                case "productByHandle": return true;
-
-                case "productTypes": return true;
-
-                case "products": return true;
-
-                case "refundPolicy": return true;
-
-                case "shopifyPaymentsAccountId": return false;
-
-                case "termsOfService": return true;
-
-                default: return false;
-            }
-        }
-    }
-
-    public interface ShopPolicyQueryDefinition {
-        void define(ShopPolicyQuery _queryBuilder);
-    }
-
-    /**
-    * Policy that a merchant has configured for their store, such as their refund or privacy policy.
-    */
-    public static class ShopPolicyQuery extends Query<ShopPolicyQuery> {
-        ShopPolicyQuery(StringBuilder _queryBuilder) {
-            super(_queryBuilder);
-
-            startField("id");
-        }
-
-        /**
-        * Policy text, maximum size of 64kb.
-        */
-        public ShopPolicyQuery body() {
-            startField("body");
-
-            return this;
-        }
-
-        /**
-        * Policy’s title.
-        */
-        public ShopPolicyQuery title() {
-            startField("title");
-
-            return this;
-        }
-
-        /**
-        * Public URL to the policy.
-        */
-        public ShopPolicyQuery url() {
-            startField("url");
-
-            return this;
-        }
-    }
-
-    /**
-    * Policy that a merchant has configured for their store, such as their refund or privacy policy.
-    */
-    public static class ShopPolicy extends AbstractResponse<ShopPolicy> implements Node {
-        public ShopPolicy() {
-        }
-
-        public ShopPolicy(JsonObject fields) throws SchemaViolationError {
-            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
-                String key = field.getKey();
-                String fieldName = getFieldName(key);
-                switch (fieldName) {
-                    case "body": {
-                        responseData.put(key, jsonAsString(field.getValue(), key));
-
-                        break;
-                    }
-
-                    case "id": {
-                        responseData.put(key, new ID(jsonAsString(field.getValue(), key)));
-
-                        break;
-                    }
-
-                    case "title": {
-                        responseData.put(key, jsonAsString(field.getValue(), key));
-
-                        break;
-                    }
-
-                    case "url": {
-                        responseData.put(key, jsonAsString(field.getValue(), key));
-
-                        break;
-                    }
-
-                    case "__typename": {
-                        responseData.put(key, jsonAsString(field.getValue(), key));
-                        break;
-                    }
-                    default: {
-                        throw new SchemaViolationError(this, key, field.getValue());
-                    }
-                }
-            }
-        }
-
-        public ShopPolicy(ID id) {
-            this();
-            optimisticData.put("id", id);
-        }
-
-        public String getGraphQlTypeName() {
-            return "ShopPolicy";
-        }
-
-        /**
-        * Policy text, maximum size of 64kb.
-        */
-
-        public String getBody() {
-            return (String) get("body");
-        }
-
-        public ShopPolicy setBody(String arg) {
-            optimisticData.put(getKey("body"), arg);
-            return this;
-        }
-
-        /**
-        * Globally unique identifier.
-        */
-
-        public ID getId() {
-            return (ID) get("id");
-        }
-
-        /**
-        * Policy’s title.
-        */
-
-        public String getTitle() {
-            return (String) get("title");
-        }
-
-        public ShopPolicy setTitle(String arg) {
-            optimisticData.put(getKey("title"), arg);
-            return this;
-        }
-
-        /**
-        * Public URL to the policy.
-        */
-
-        public String getUrl() {
-            return (String) get("url");
-        }
-
-        public ShopPolicy setUrl(String arg) {
-            optimisticData.put(getKey("url"), arg);
-            return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "body": return false;
-
-                case "id": return false;
-
-                case "title": return false;
-
-                case "url": return false;
-
-                default: return false;
-            }
-        }
-    }
-
-    public interface StringConnectionQueryDefinition {
-        void define(StringConnectionQuery _queryBuilder);
-    }
-
-    public static class StringConnectionQuery extends Query<StringConnectionQuery> {
-        StringConnectionQuery(StringBuilder _queryBuilder) {
-            super(_queryBuilder);
-        }
-
-        /**
-        * A list of edges.
-        */
-        public StringConnectionQuery edges(StringEdgeQueryDefinition queryDef) {
-            startField("edges");
-
-            _queryBuilder.append('{');
-            queryDef.define(new StringEdgeQuery(_queryBuilder));
-            _queryBuilder.append('}');
-
-            return this;
-        }
-
-        /**
-        * Information to aid in pagination.
-        */
-        public StringConnectionQuery pageInfo(PageInfoQueryDefinition queryDef) {
-            startField("pageInfo");
-
-            _queryBuilder.append('{');
-            queryDef.define(new PageInfoQuery(_queryBuilder));
-            _queryBuilder.append('}');
-
-            return this;
-        }
-    }
-
-    public static class StringConnection extends AbstractResponse<StringConnection> {
-        public StringConnection() {
-        }
-
-        public StringConnection(JsonObject fields) throws SchemaViolationError {
-            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
-                String key = field.getKey();
-                String fieldName = getFieldName(key);
-                switch (fieldName) {
-                    case "edges": {
-                        List<StringEdge> list1 = new ArrayList<>();
-                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
-                            list1.add(new StringEdge(jsonAsObject(element1, key)));
-                        }
-
-                        responseData.put(key, list1);
-
-                        break;
-                    }
-
-                    case "pageInfo": {
-                        responseData.put(key, new PageInfo(jsonAsObject(field.getValue(), key)));
-
-                        break;
-                    }
-
-                    case "__typename": {
-                        responseData.put(key, jsonAsString(field.getValue(), key));
-                        break;
-                    }
-                    default: {
-                        throw new SchemaViolationError(this, key, field.getValue());
-                    }
-                }
-            }
-        }
-
-        public String getGraphQlTypeName() {
-            return "StringConnection";
-        }
-
-        /**
-        * A list of edges.
-        */
-
-        public List<StringEdge> getEdges() {
-            return (List<StringEdge>) get("edges");
-        }
-
-        public StringConnection setEdges(List<StringEdge> arg) {
-            optimisticData.put(getKey("edges"), arg);
-            return this;
-        }
-
-        /**
-        * Information to aid in pagination.
-        */
-
-        public PageInfo getPageInfo() {
-            return (PageInfo) get("pageInfo");
-        }
-
-        public StringConnection setPageInfo(PageInfo arg) {
-            optimisticData.put(getKey("pageInfo"), arg);
-            return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "edges": return true;
-
-                case "pageInfo": return true;
-
-                default: return false;
-            }
-        }
-    }
-
-    public interface StringEdgeQueryDefinition {
-        void define(StringEdgeQuery _queryBuilder);
-    }
-
-    public static class StringEdgeQuery extends Query<StringEdgeQuery> {
-        StringEdgeQuery(StringBuilder _queryBuilder) {
-            super(_queryBuilder);
-        }
-
-        /**
-        * A cursor for use in pagination.
-        */
-        public StringEdgeQuery cursor() {
-            startField("cursor");
-
-            return this;
-        }
-
-        /**
-        * The item at the end of StringEdge.
-        */
-        public StringEdgeQuery node() {
-            startField("node");
-
-            return this;
-        }
-    }
-
-    public static class StringEdge extends AbstractResponse<StringEdge> {
-        public StringEdge() {
-        }
-
-        public StringEdge(JsonObject fields) throws SchemaViolationError {
-            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
-                String key = field.getKey();
-                String fieldName = getFieldName(key);
-                switch (fieldName) {
-                    case "cursor": {
-                        responseData.put(key, jsonAsString(field.getValue(), key));
-
-                        break;
-                    }
-
-                    case "node": {
-                        responseData.put(key, jsonAsString(field.getValue(), key));
-
-                        break;
-                    }
-
-                    case "__typename": {
-                        responseData.put(key, jsonAsString(field.getValue(), key));
-                        break;
-                    }
-                    default: {
-                        throw new SchemaViolationError(this, key, field.getValue());
-                    }
-                }
-            }
-        }
-
-        public String getGraphQlTypeName() {
-            return "StringEdge";
-        }
-
-        /**
-        * A cursor for use in pagination.
-        */
-
-        public String getCursor() {
-            return (String) get("cursor");
-        }
-
-        public StringEdge setCursor(String arg) {
-            optimisticData.put(getKey("cursor"), arg);
-            return this;
-        }
-
-        /**
-        * The item at the end of StringEdge.
-        */
-
-        public String getNode() {
-            return (String) get("node");
-        }
-
-        public StringEdge setNode(String arg) {
-            optimisticData.put(getKey("node"), arg);
-            return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "cursor": return false;
-
-                case "node": return false;
-
-                default: return false;
-            }
-        }
-    }
-
-    public static class TokenizedPaymentInput implements Serializable {
-        private BigDecimal amount;
-
-        private String idempotencyKey;
-
-        private MailingAddressInput billingAddress;
-
-        private String type;
-
-        private String paymentData;
-
-        private Input<Boolean> test = Input.undefined();
-
-        private Input<String> identifier = Input.undefined();
-
-        public TokenizedPaymentInput(BigDecimal amount, String idempotencyKey, MailingAddressInput billingAddress, String type, String paymentData) {
-            this.amount = amount;
-
-            this.idempotencyKey = idempotencyKey;
-
-            this.billingAddress = billingAddress;
-
-            this.type = type;
-
-            this.paymentData = paymentData;
-        }
-
-        public BigDecimal getAmount() {
-            return amount;
-        }
-
-        public TokenizedPaymentInput setAmount(BigDecimal amount) {
-            this.amount = amount;
-            return this;
-        }
-
-        public String getIdempotencyKey() {
-            return idempotencyKey;
-        }
-
-        public TokenizedPaymentInput setIdempotencyKey(String idempotencyKey) {
-            this.idempotencyKey = idempotencyKey;
-            return this;
-        }
-
-        public MailingAddressInput getBillingAddress() {
-            return billingAddress;
-        }
-
-        public TokenizedPaymentInput setBillingAddress(MailingAddressInput billingAddress) {
-            this.billingAddress = billingAddress;
-            return this;
-        }
-
-        public String getType() {
-            return type;
-        }
-
-        public TokenizedPaymentInput setType(String type) {
-            this.type = type;
-            return this;
-        }
-
-        public String getPaymentData() {
-            return paymentData;
-        }
-
-        public TokenizedPaymentInput setPaymentData(String paymentData) {
-            this.paymentData = paymentData;
-            return this;
-        }
-
-        public Boolean getTest() {
-            return test.getValue();
-        }
-
-        public Input<Boolean> getTestInput() {
-            return test;
-        }
-
-        public TokenizedPaymentInput setTest(Boolean test) {
-            this.test = Input.optional(test);
-            return this;
-        }
-
-        public TokenizedPaymentInput setTestInput(Input<Boolean> test) {
-            if (test == null) {
-                throw new IllegalArgumentException("Input can not be null");
-            }
-            this.test = test;
-            return this;
-        }
-
-        public String getIdentifier() {
-            return identifier.getValue();
-        }
-
-        public Input<String> getIdentifierInput() {
-            return identifier;
-        }
-
-        public TokenizedPaymentInput setIdentifier(String identifier) {
-            this.identifier = Input.optional(identifier);
-            return this;
-        }
-
-        public TokenizedPaymentInput setIdentifierInput(Input<String> identifier) {
-            if (identifier == null) {
-                throw new IllegalArgumentException("Input can not be null");
-            }
-            this.identifier = identifier;
-            return this;
-        }
-
-        public void appendTo(StringBuilder _queryBuilder) {
-            String separator = "";
-            _queryBuilder.append('{');
-
-            _queryBuilder.append(separator);
-            separator = ",";
-            _queryBuilder.append("amount:");
-            Query.appendQuotedString(_queryBuilder, amount.toString());
-
-            _queryBuilder.append(separator);
-            separator = ",";
-            _queryBuilder.append("idempotencyKey:");
-            Query.appendQuotedString(_queryBuilder, idempotencyKey.toString());
-
-            _queryBuilder.append(separator);
-            separator = ",";
-            _queryBuilder.append("billingAddress:");
-            billingAddress.appendTo(_queryBuilder);
-
-            _queryBuilder.append(separator);
-            separator = ",";
-            _queryBuilder.append("type:");
-            Query.appendQuotedString(_queryBuilder, type.toString());
-
-            _queryBuilder.append(separator);
-            separator = ",";
-            _queryBuilder.append("paymentData:");
-            Query.appendQuotedString(_queryBuilder, paymentData.toString());
-
-            if (this.test.isDefined()) {
-                _queryBuilder.append(separator);
-                separator = ",";
-                _queryBuilder.append("test:");
-                if (test.getValue() != null) {
-                    _queryBuilder.append(test.getValue());
-                } else {
-                    _queryBuilder.append("null");
-                }
-            }
-
-            if (this.identifier.isDefined()) {
-                _queryBuilder.append(separator);
-                separator = ",";
-                _queryBuilder.append("identifier:");
-                if (identifier.getValue() != null) {
-                    Query.appendQuotedString(_queryBuilder, identifier.getValue().toString());
-                } else {
-                    _queryBuilder.append("null");
-                }
-            }
-
-            _queryBuilder.append('}');
-        }
-    }
-
-    public interface TransactionQueryDefinition {
-        void define(TransactionQuery _queryBuilder);
-    }
-
-    /**
-    * An object representing exchange of money for a product or service.
-    */
-    public static class TransactionQuery extends Query<TransactionQuery> {
-        TransactionQuery(StringBuilder _queryBuilder) {
-            super(_queryBuilder);
-        }
-
-        /**
-        * The amount of money that the transaction was for.
-        */
-        public TransactionQuery amount() {
-            startField("amount");
-
-            return this;
-        }
-
-        /**
-        * The kind of the transaction.
-        */
-        public TransactionQuery kind() {
-            startField("kind");
-
-            return this;
-        }
-
-        /**
-        * The status of the transaction
-        */
-        public TransactionQuery status() {
-            startField("status");
-
-            return this;
-        }
-
-        /**
-        * Whether the transaction was done in test mode or not
-        */
-        public TransactionQuery test() {
-            startField("test");
-
-            return this;
-        }
-    }
-
-    /**
-    * An object representing exchange of money for a product or service.
-    */
-    public static class Transaction extends AbstractResponse<Transaction> {
-        public Transaction() {
-        }
-
-        public Transaction(JsonObject fields) throws SchemaViolationError {
-            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
-                String key = field.getKey();
-                String fieldName = getFieldName(key);
-                switch (fieldName) {
-                    case "amount": {
-                        responseData.put(key, new BigDecimal(jsonAsString(field.getValue(), key)));
-
-                        break;
-                    }
-
-                    case "kind": {
-                        responseData.put(key, TransactionKind.fromGraphQl(jsonAsString(field.getValue(), key)));
-
-                        break;
-                    }
-
-                    case "status": {
-                        responseData.put(key, TransactionStatus.fromGraphQl(jsonAsString(field.getValue(), key)));
-
-                        break;
-                    }
-
-                    case "test": {
-                        responseData.put(key, jsonAsBoolean(field.getValue(), key));
-
-                        break;
-                    }
-
-                    case "__typename": {
-                        responseData.put(key, jsonAsString(field.getValue(), key));
-                        break;
-                    }
-                    default: {
-                        throw new SchemaViolationError(this, key, field.getValue());
-                    }
-                }
-            }
-        }
-
-        public String getGraphQlTypeName() {
-            return "Transaction";
-        }
-
-        /**
-        * The amount of money that the transaction was for.
-        */
-
-        public BigDecimal getAmount() {
-            return (BigDecimal) get("amount");
-        }
-
-        public Transaction setAmount(BigDecimal arg) {
-            optimisticData.put(getKey("amount"), arg);
-            return this;
-        }
-
-        /**
-        * The kind of the transaction.
-        */
-
-        public TransactionKind getKind() {
-            return (TransactionKind) get("kind");
-        }
-
-        public Transaction setKind(TransactionKind arg) {
-            optimisticData.put(getKey("kind"), arg);
-            return this;
-        }
-
-        /**
-        * The status of the transaction
-        */
-
-        public TransactionStatus getStatus() {
-            return (TransactionStatus) get("status");
-        }
-
-        public Transaction setStatus(TransactionStatus arg) {
-            optimisticData.put(getKey("status"), arg);
-            return this;
-        }
-
-        /**
-        * Whether the transaction was done in test mode or not
-        */
-
-        public Boolean getTest() {
-            return (Boolean) get("test");
-        }
-
-        public Transaction setTest(Boolean arg) {
-            optimisticData.put(getKey("test"), arg);
-            return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "amount": return false;
-
-                case "kind": return false;
-
-                case "status": return false;
-
-                case "test": return false;
-
-                default: return false;
-            }
-        }
-    }
-
-    public enum TransactionKind {
-        AUTHORIZATION,
-
-        CAPTURE,
-
-        CHANGE,
-
-        EMV_AUTHORIZATION,
-
-        SALE,
-
-        UNKNOWN_VALUE;
-
-        public static TransactionKind fromGraphQl(String value) {
-            if (value == null) {
-                return null;
-            }
-
-            switch (value) {
-                case "AUTHORIZATION": {
-                    return AUTHORIZATION;
-                }
-
-                case "CAPTURE": {
-                    return CAPTURE;
-                }
-
-                case "CHANGE": {
-                    return CHANGE;
-                }
-
-                case "EMV_AUTHORIZATION": {
-                    return EMV_AUTHORIZATION;
-                }
-
-                case "SALE": {
-                    return SALE;
-                }
-
-                default: {
-                    return UNKNOWN_VALUE;
-                }
-            }
-        }
-        public String toString() {
-            switch (this) {
-                case AUTHORIZATION: {
-                    return "AUTHORIZATION";
-                }
-
-                case CAPTURE: {
-                    return "CAPTURE";
-                }
-
-                case CHANGE: {
-                    return "CHANGE";
-                }
-
-                case EMV_AUTHORIZATION: {
-                    return "EMV_AUTHORIZATION";
-                }
-
-                case SALE: {
-                    return "SALE";
-                }
-
-                default: {
-                    return "";
-                }
-            }
-        }
-    }
-
-    public enum TransactionStatus {
-        ERROR,
-
-        FAILURE,
-
-        PENDING,
-
-        SUCCESS,
-
-        UNKNOWN_VALUE;
-
-        public static TransactionStatus fromGraphQl(String value) {
-            if (value == null) {
-                return null;
-            }
-
-            switch (value) {
-                case "ERROR": {
-                    return ERROR;
-                }
-
-                case "FAILURE": {
-                    return FAILURE;
-                }
-
-                case "PENDING": {
-                    return PENDING;
-                }
-
-                case "SUCCESS": {
-                    return SUCCESS;
-                }
-
-                default: {
-                    return UNKNOWN_VALUE;
-                }
-            }
-        }
-        public String toString() {
-            switch (this) {
-                case ERROR: {
-                    return "ERROR";
-                }
-
-                case FAILURE: {
-                    return "FAILURE";
-                }
-
-                case PENDING: {
-                    return "PENDING";
-                }
-
-                case SUCCESS: {
-                    return "SUCCESS";
-                }
-
-                default: {
-                    return "";
-                }
-            }
-        }
-    }
-
-    public interface UserErrorQueryDefinition {
-        void define(UserErrorQuery _queryBuilder);
-    }
-
-    /**
-    * Represents an error in the input of a mutation.
-    */
-    public static class UserErrorQuery extends Query<UserErrorQuery> {
-        UserErrorQuery(StringBuilder _queryBuilder) {
-            super(_queryBuilder);
-        }
-
-        /**
-        * Path to input field which caused the error.
-        */
-        public UserErrorQuery field() {
-            startField("field");
-
-            return this;
-        }
-
-        /**
-        * The error message.
-        */
-        public UserErrorQuery message() {
-            startField("message");
-
-            return this;
-        }
-    }
-
-    /**
-    * Represents an error in the input of a mutation.
-    */
-    public static class UserError extends AbstractResponse<UserError> {
-        public UserError() {
-        }
-
-        public UserError(JsonObject fields) throws SchemaViolationError {
-            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
-                String key = field.getKey();
-                String fieldName = getFieldName(key);
-                switch (fieldName) {
-                    case "field": {
-                        List<String> optional1 = null;
-                        if (!field.getValue().isJsonNull()) {
-                            List<String> list1 = new ArrayList<>();
-                            for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
-                                list1.add(jsonAsString(element1, key));
+                                break;
                             }
 
-                            optional1 = list1;
+                            case "__typename": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+                                break;
+                            }
+                            default: {
+                                throw new SchemaViolationError(this, key, field.getValue());
+                            }
+                        }
+                    }
+                }
+
+                public String getGraphQlTypeName() {
+                    return "MoneyV2";
+                }
+
+                /**
+                * Decimal money amount.
+                */
+
+                public String getAmount() {
+                    return (String) get("amount");
+                }
+
+                public MoneyV2 setAmount(String arg) {
+                    optimisticData.put(getKey("amount"), arg);
+                    return this;
+                }
+
+                /**
+                * Currency of the money.
+                */
+
+                public CurrencyCode getCurrencyCode() {
+                    return (CurrencyCode) get("currencyCode");
+                }
+
+                public MoneyV2 setCurrencyCode(CurrencyCode arg) {
+                    optimisticData.put(getKey("currencyCode"), arg);
+                    return this;
+                }
+
+                public boolean unwrapsToObject(String key) {
+                    switch (getFieldName(key)) {
+                        case "amount": return false;
+
+                        case "currencyCode": return false;
+
+                        default: return false;
+                    }
+                }
+            }
+
+            public interface MutationQueryDefinition {
+                void define(MutationQuery _queryBuilder);
+            }
+
+            /**
+            * The schema’s entry-point for mutations. This acts as the public, top-level API from which all
+            * mutation queries must start.
+            */
+            public static class MutationQuery extends Query<MutationQuery> {
+                MutationQuery(StringBuilder _queryBuilder) {
+                    super(_queryBuilder);
+                }
+
+                /**
+                * Updates the attributes of a checkout.
+                */
+                public MutationQuery checkoutAttributesUpdate(ID checkoutId, CheckoutAttributesUpdateInput input, CheckoutAttributesUpdatePayloadQueryDefinition queryDef) {
+                    startField("checkoutAttributesUpdate");
+
+                    _queryBuilder.append("(checkoutId:");
+                    Query.appendQuotedString(_queryBuilder, checkoutId.toString());
+
+                    _queryBuilder.append(",input:");
+                    input.appendTo(_queryBuilder);
+
+                    _queryBuilder.append(')');
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new CheckoutAttributesUpdatePayloadQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                public MutationQuery checkoutCompleteFree(ID checkoutId, CheckoutCompleteFreePayloadQueryDefinition queryDef) {
+                    startField("checkoutCompleteFree");
+
+                    _queryBuilder.append("(checkoutId:");
+                    Query.appendQuotedString(_queryBuilder, checkoutId.toString());
+
+                    _queryBuilder.append(')');
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new CheckoutCompleteFreePayloadQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * Completes a checkout using a credit card token from Shopify's Vault.
+                */
+                public MutationQuery checkoutCompleteWithCreditCard(ID checkoutId, CreditCardPaymentInput payment, CheckoutCompleteWithCreditCardPayloadQueryDefinition queryDef) {
+                    startField("checkoutCompleteWithCreditCard");
+
+                    _queryBuilder.append("(checkoutId:");
+                    Query.appendQuotedString(_queryBuilder, checkoutId.toString());
+
+                    _queryBuilder.append(",payment:");
+                    payment.appendTo(_queryBuilder);
+
+                    _queryBuilder.append(')');
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new CheckoutCompleteWithCreditCardPayloadQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * Completes a checkout with a tokenized payment.
+                */
+                public MutationQuery checkoutCompleteWithTokenizedPayment(ID checkoutId, TokenizedPaymentInput payment, CheckoutCompleteWithTokenizedPaymentPayloadQueryDefinition queryDef) {
+                    startField("checkoutCompleteWithTokenizedPayment");
+
+                    _queryBuilder.append("(checkoutId:");
+                    Query.appendQuotedString(_queryBuilder, checkoutId.toString());
+
+                    _queryBuilder.append(",payment:");
+                    payment.appendTo(_queryBuilder);
+
+                    _queryBuilder.append(')');
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new CheckoutCompleteWithTokenizedPaymentPayloadQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * Creates a new checkout.
+                */
+                public MutationQuery checkoutCreate(CheckoutCreateInput input, CheckoutCreatePayloadQueryDefinition queryDef) {
+                    startField("checkoutCreate");
+
+                    _queryBuilder.append("(input:");
+                    input.appendTo(_queryBuilder);
+
+                    _queryBuilder.append(')');
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new CheckoutCreatePayloadQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * Associates a customer to the checkout.
+                */
+                public MutationQuery checkoutCustomerAssociate(ID checkoutId, String customerAccessToken, CheckoutCustomerAssociatePayloadQueryDefinition queryDef) {
+                    startField("checkoutCustomerAssociate");
+
+                    _queryBuilder.append("(checkoutId:");
+                    Query.appendQuotedString(_queryBuilder, checkoutId.toString());
+
+                    _queryBuilder.append(",customerAccessToken:");
+                    Query.appendQuotedString(_queryBuilder, customerAccessToken.toString());
+
+                    _queryBuilder.append(')');
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new CheckoutCustomerAssociatePayloadQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * Disassociates the current checkout customer from the checkout.
+                */
+                public MutationQuery checkoutCustomerDisassociate(ID checkoutId, CheckoutCustomerDisassociatePayloadQueryDefinition queryDef) {
+                    startField("checkoutCustomerDisassociate");
+
+                    _queryBuilder.append("(checkoutId:");
+                    Query.appendQuotedString(_queryBuilder, checkoutId.toString());
+
+                    _queryBuilder.append(')');
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new CheckoutCustomerDisassociatePayloadQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * Applies a discount to an existing checkout using a discount code.
+                */
+                public MutationQuery checkoutDiscountCodeApply(String discountCode, ID checkoutId, CheckoutDiscountCodeApplyPayloadQueryDefinition queryDef) {
+                    startField("checkoutDiscountCodeApply");
+
+                    _queryBuilder.append("(discountCode:");
+                    Query.appendQuotedString(_queryBuilder, discountCode.toString());
+
+                    _queryBuilder.append(",checkoutId:");
+                    Query.appendQuotedString(_queryBuilder, checkoutId.toString());
+
+                    _queryBuilder.append(')');
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new CheckoutDiscountCodeApplyPayloadQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * Updates the email on an existing checkout.
+                */
+                public MutationQuery checkoutEmailUpdate(ID checkoutId, String email, CheckoutEmailUpdatePayloadQueryDefinition queryDef) {
+                    startField("checkoutEmailUpdate");
+
+                    _queryBuilder.append("(checkoutId:");
+                    Query.appendQuotedString(_queryBuilder, checkoutId.toString());
+
+                    _queryBuilder.append(",email:");
+                    Query.appendQuotedString(_queryBuilder, email.toString());
+
+                    _queryBuilder.append(')');
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new CheckoutEmailUpdatePayloadQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * Applies a gift card to an existing checkout using a gift card code.
+                */
+                public MutationQuery checkoutGiftCardApply(String giftCardCode, ID checkoutId, CheckoutGiftCardApplyPayloadQueryDefinition queryDef) {
+                    startField("checkoutGiftCardApply");
+
+                    _queryBuilder.append("(giftCardCode:");
+                    Query.appendQuotedString(_queryBuilder, giftCardCode.toString());
+
+                    _queryBuilder.append(",checkoutId:");
+                    Query.appendQuotedString(_queryBuilder, checkoutId.toString());
+
+                    _queryBuilder.append(')');
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new CheckoutGiftCardApplyPayloadQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * Removes an applied gift card from the checkout.
+                */
+                public MutationQuery checkoutGiftCardRemove(ID appliedGiftCardId, ID checkoutId, CheckoutGiftCardRemovePayloadQueryDefinition queryDef) {
+                    startField("checkoutGiftCardRemove");
+
+                    _queryBuilder.append("(appliedGiftCardId:");
+                    Query.appendQuotedString(_queryBuilder, appliedGiftCardId.toString());
+
+                    _queryBuilder.append(",checkoutId:");
+                    Query.appendQuotedString(_queryBuilder, checkoutId.toString());
+
+                    _queryBuilder.append(')');
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new CheckoutGiftCardRemovePayloadQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * Adds a list of line items to a checkout.
+                */
+                public MutationQuery checkoutLineItemsAdd(List<CheckoutLineItemInput> lineItems, ID checkoutId, CheckoutLineItemsAddPayloadQueryDefinition queryDef) {
+                    startField("checkoutLineItemsAdd");
+
+                    _queryBuilder.append("(lineItems:");
+                    _queryBuilder.append('[');
+                    {
+                        String listSeperator1 = "";
+                        for (CheckoutLineItemInput item1 : lineItems) {
+                            _queryBuilder.append(listSeperator1);
+                            listSeperator1 = ",";
+                            item1.appendTo(_queryBuilder);
+                        }
+                    }
+                    _queryBuilder.append(']');
+
+                    _queryBuilder.append(",checkoutId:");
+                    Query.appendQuotedString(_queryBuilder, checkoutId.toString());
+
+                    _queryBuilder.append(')');
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new CheckoutLineItemsAddPayloadQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * Removes line items from an existing checkout
+                */
+                public MutationQuery checkoutLineItemsRemove(ID checkoutId, List<ID> lineItemIds, CheckoutLineItemsRemovePayloadQueryDefinition queryDef) {
+                    startField("checkoutLineItemsRemove");
+
+                    _queryBuilder.append("(checkoutId:");
+                    Query.appendQuotedString(_queryBuilder, checkoutId.toString());
+
+                    _queryBuilder.append(",lineItemIds:");
+                    _queryBuilder.append('[');
+                    {
+                        String listSeperator1 = "";
+                        for (ID item1 : lineItemIds) {
+                            _queryBuilder.append(listSeperator1);
+                            listSeperator1 = ",";
+                            Query.appendQuotedString(_queryBuilder, item1.toString());
+                        }
+                    }
+                    _queryBuilder.append(']');
+
+                    _queryBuilder.append(')');
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new CheckoutLineItemsRemovePayloadQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * Updates line items on a checkout.
+                */
+                public MutationQuery checkoutLineItemsUpdate(ID checkoutId, List<CheckoutLineItemUpdateInput> lineItems, CheckoutLineItemsUpdatePayloadQueryDefinition queryDef) {
+                    startField("checkoutLineItemsUpdate");
+
+                    _queryBuilder.append("(checkoutId:");
+                    Query.appendQuotedString(_queryBuilder, checkoutId.toString());
+
+                    _queryBuilder.append(",lineItems:");
+                    _queryBuilder.append('[');
+                    {
+                        String listSeperator1 = "";
+                        for (CheckoutLineItemUpdateInput item1 : lineItems) {
+                            _queryBuilder.append(listSeperator1);
+                            listSeperator1 = ",";
+                            item1.appendTo(_queryBuilder);
+                        }
+                    }
+                    _queryBuilder.append(']');
+
+                    _queryBuilder.append(')');
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new CheckoutLineItemsUpdatePayloadQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * Updates the shipping address of an existing checkout.
+                */
+                public MutationQuery checkoutShippingAddressUpdate(MailingAddressInput shippingAddress, ID checkoutId, CheckoutShippingAddressUpdatePayloadQueryDefinition queryDef) {
+                    startField("checkoutShippingAddressUpdate");
+
+                    _queryBuilder.append("(shippingAddress:");
+                    shippingAddress.appendTo(_queryBuilder);
+
+                    _queryBuilder.append(",checkoutId:");
+                    Query.appendQuotedString(_queryBuilder, checkoutId.toString());
+
+                    _queryBuilder.append(')');
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new CheckoutShippingAddressUpdatePayloadQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * Updates the shipping lines on an existing checkout.
+                */
+                public MutationQuery checkoutShippingLineUpdate(ID checkoutId, String shippingRateHandle, CheckoutShippingLineUpdatePayloadQueryDefinition queryDef) {
+                    startField("checkoutShippingLineUpdate");
+
+                    _queryBuilder.append("(checkoutId:");
+                    Query.appendQuotedString(_queryBuilder, checkoutId.toString());
+
+                    _queryBuilder.append(",shippingRateHandle:");
+                    Query.appendQuotedString(_queryBuilder, shippingRateHandle.toString());
+
+                    _queryBuilder.append(')');
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new CheckoutShippingLineUpdatePayloadQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * Creates a customer access token.
+                * The customer access token is required to modify the customer object in any way.
+                */
+                public MutationQuery customerAccessTokenCreate(CustomerAccessTokenCreateInput input, CustomerAccessTokenCreatePayloadQueryDefinition queryDef) {
+                    startField("customerAccessTokenCreate");
+
+                    _queryBuilder.append("(input:");
+                    input.appendTo(_queryBuilder);
+
+                    _queryBuilder.append(')');
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new CustomerAccessTokenCreatePayloadQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * Permanently destroys a customer access token.
+                */
+                public MutationQuery customerAccessTokenDelete(String customerAccessToken, CustomerAccessTokenDeletePayloadQueryDefinition queryDef) {
+                    startField("customerAccessTokenDelete");
+
+                    _queryBuilder.append("(customerAccessToken:");
+                    Query.appendQuotedString(_queryBuilder, customerAccessToken.toString());
+
+                    _queryBuilder.append(')');
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new CustomerAccessTokenDeletePayloadQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * Renews a customer access token.
+                * Access token renewal must happen *before* a token expires.
+                * If a token has already expired, a new one should be created instead via `customerAccessTokenCreate`.
+                */
+                public MutationQuery customerAccessTokenRenew(String customerAccessToken, CustomerAccessTokenRenewPayloadQueryDefinition queryDef) {
+                    startField("customerAccessTokenRenew");
+
+                    _queryBuilder.append("(customerAccessToken:");
+                    Query.appendQuotedString(_queryBuilder, customerAccessToken.toString());
+
+                    _queryBuilder.append(')');
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new CustomerAccessTokenRenewPayloadQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * Activates a customer.
+                */
+                public MutationQuery customerActivate(ID id, CustomerActivateInput input, CustomerActivatePayloadQueryDefinition queryDef) {
+                    startField("customerActivate");
+
+                    _queryBuilder.append("(id:");
+                    Query.appendQuotedString(_queryBuilder, id.toString());
+
+                    _queryBuilder.append(",input:");
+                    input.appendTo(_queryBuilder);
+
+                    _queryBuilder.append(')');
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new CustomerActivatePayloadQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * Creates a new address for a customer.
+                */
+                public MutationQuery customerAddressCreate(String customerAccessToken, MailingAddressInput address, CustomerAddressCreatePayloadQueryDefinition queryDef) {
+                    startField("customerAddressCreate");
+
+                    _queryBuilder.append("(customerAccessToken:");
+                    Query.appendQuotedString(_queryBuilder, customerAccessToken.toString());
+
+                    _queryBuilder.append(",address:");
+                    address.appendTo(_queryBuilder);
+
+                    _queryBuilder.append(')');
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new CustomerAddressCreatePayloadQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * Permanently deletes the address of an existing customer.
+                */
+                public MutationQuery customerAddressDelete(ID id, String customerAccessToken, CustomerAddressDeletePayloadQueryDefinition queryDef) {
+                    startField("customerAddressDelete");
+
+                    _queryBuilder.append("(id:");
+                    Query.appendQuotedString(_queryBuilder, id.toString());
+
+                    _queryBuilder.append(",customerAccessToken:");
+                    Query.appendQuotedString(_queryBuilder, customerAccessToken.toString());
+
+                    _queryBuilder.append(')');
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new CustomerAddressDeletePayloadQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * Updates the address of an existing customer.
+                */
+                public MutationQuery customerAddressUpdate(String customerAccessToken, ID id, MailingAddressInput address, CustomerAddressUpdatePayloadQueryDefinition queryDef) {
+                    startField("customerAddressUpdate");
+
+                    _queryBuilder.append("(customerAccessToken:");
+                    Query.appendQuotedString(_queryBuilder, customerAccessToken.toString());
+
+                    _queryBuilder.append(",id:");
+                    Query.appendQuotedString(_queryBuilder, id.toString());
+
+                    _queryBuilder.append(",address:");
+                    address.appendTo(_queryBuilder);
+
+                    _queryBuilder.append(')');
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new CustomerAddressUpdatePayloadQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * Creates a new customer.
+                */
+                public MutationQuery customerCreate(CustomerCreateInput input, CustomerCreatePayloadQueryDefinition queryDef) {
+                    startField("customerCreate");
+
+                    _queryBuilder.append("(input:");
+                    input.appendTo(_queryBuilder);
+
+                    _queryBuilder.append(')');
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new CustomerCreatePayloadQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * Updates the default address of an existing customer.
+                */
+                public MutationQuery customerDefaultAddressUpdate(String customerAccessToken, ID addressId, CustomerDefaultAddressUpdatePayloadQueryDefinition queryDef) {
+                    startField("customerDefaultAddressUpdate");
+
+                    _queryBuilder.append("(customerAccessToken:");
+                    Query.appendQuotedString(_queryBuilder, customerAccessToken.toString());
+
+                    _queryBuilder.append(",addressId:");
+                    Query.appendQuotedString(_queryBuilder, addressId.toString());
+
+                    _queryBuilder.append(')');
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new CustomerDefaultAddressUpdatePayloadQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * Sends a reset password email to the customer, as the first step in the reset password process.
+                */
+                public MutationQuery customerRecover(String email, CustomerRecoverPayloadQueryDefinition queryDef) {
+                    startField("customerRecover");
+
+                    _queryBuilder.append("(email:");
+                    Query.appendQuotedString(_queryBuilder, email.toString());
+
+                    _queryBuilder.append(')');
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new CustomerRecoverPayloadQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * Resets a customer’s password with a token received from `CustomerRecover`.
+                */
+                public MutationQuery customerReset(ID id, CustomerResetInput input, CustomerResetPayloadQueryDefinition queryDef) {
+                    startField("customerReset");
+
+                    _queryBuilder.append("(id:");
+                    Query.appendQuotedString(_queryBuilder, id.toString());
+
+                    _queryBuilder.append(",input:");
+                    input.appendTo(_queryBuilder);
+
+                    _queryBuilder.append(')');
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new CustomerResetPayloadQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * Updates an existing customer.
+                */
+                public MutationQuery customerUpdate(String customerAccessToken, CustomerUpdateInput customer, CustomerUpdatePayloadQueryDefinition queryDef) {
+                    startField("customerUpdate");
+
+                    _queryBuilder.append("(customerAccessToken:");
+                    Query.appendQuotedString(_queryBuilder, customerAccessToken.toString());
+
+                    _queryBuilder.append(",customer:");
+                    customer.appendTo(_queryBuilder);
+
+                    _queryBuilder.append(')');
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new CustomerUpdatePayloadQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                public String toString() {
+                    return _queryBuilder.toString();
+                }
+            }
+
+            /**
+            * The schema’s entry-point for mutations. This acts as the public, top-level API from which all
+            * mutation queries must start.
+            */
+            public static class Mutation extends AbstractResponse<Mutation> {
+                public Mutation() {
+                }
+
+                public Mutation(JsonObject fields) throws SchemaViolationError {
+                    for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                        String key = field.getKey();
+                        String fieldName = getFieldName(key);
+                        switch (fieldName) {
+                            case "checkoutAttributesUpdate": {
+                                CheckoutAttributesUpdatePayload optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = new CheckoutAttributesUpdatePayload(jsonAsObject(field.getValue(), key));
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "checkoutCompleteFree": {
+                                CheckoutCompleteFreePayload optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = new CheckoutCompleteFreePayload(jsonAsObject(field.getValue(), key));
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "checkoutCompleteWithCreditCard": {
+                                CheckoutCompleteWithCreditCardPayload optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = new CheckoutCompleteWithCreditCardPayload(jsonAsObject(field.getValue(), key));
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "checkoutCompleteWithTokenizedPayment": {
+                                CheckoutCompleteWithTokenizedPaymentPayload optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = new CheckoutCompleteWithTokenizedPaymentPayload(jsonAsObject(field.getValue(), key));
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "checkoutCreate": {
+                                CheckoutCreatePayload optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = new CheckoutCreatePayload(jsonAsObject(field.getValue(), key));
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "checkoutCustomerAssociate": {
+                                CheckoutCustomerAssociatePayload optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = new CheckoutCustomerAssociatePayload(jsonAsObject(field.getValue(), key));
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "checkoutCustomerDisassociate": {
+                                CheckoutCustomerDisassociatePayload optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = new CheckoutCustomerDisassociatePayload(jsonAsObject(field.getValue(), key));
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "checkoutDiscountCodeApply": {
+                                CheckoutDiscountCodeApplyPayload optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = new CheckoutDiscountCodeApplyPayload(jsonAsObject(field.getValue(), key));
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "checkoutEmailUpdate": {
+                                CheckoutEmailUpdatePayload optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = new CheckoutEmailUpdatePayload(jsonAsObject(field.getValue(), key));
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "checkoutGiftCardApply": {
+                                CheckoutGiftCardApplyPayload optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = new CheckoutGiftCardApplyPayload(jsonAsObject(field.getValue(), key));
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "checkoutGiftCardRemove": {
+                                CheckoutGiftCardRemovePayload optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = new CheckoutGiftCardRemovePayload(jsonAsObject(field.getValue(), key));
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "checkoutLineItemsAdd": {
+                                CheckoutLineItemsAddPayload optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = new CheckoutLineItemsAddPayload(jsonAsObject(field.getValue(), key));
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "checkoutLineItemsRemove": {
+                                CheckoutLineItemsRemovePayload optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = new CheckoutLineItemsRemovePayload(jsonAsObject(field.getValue(), key));
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "checkoutLineItemsUpdate": {
+                                CheckoutLineItemsUpdatePayload optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = new CheckoutLineItemsUpdatePayload(jsonAsObject(field.getValue(), key));
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "checkoutShippingAddressUpdate": {
+                                CheckoutShippingAddressUpdatePayload optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = new CheckoutShippingAddressUpdatePayload(jsonAsObject(field.getValue(), key));
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "checkoutShippingLineUpdate": {
+                                CheckoutShippingLineUpdatePayload optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = new CheckoutShippingLineUpdatePayload(jsonAsObject(field.getValue(), key));
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "customerAccessTokenCreate": {
+                                CustomerAccessTokenCreatePayload optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = new CustomerAccessTokenCreatePayload(jsonAsObject(field.getValue(), key));
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "customerAccessTokenDelete": {
+                                CustomerAccessTokenDeletePayload optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = new CustomerAccessTokenDeletePayload(jsonAsObject(field.getValue(), key));
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "customerAccessTokenRenew": {
+                                CustomerAccessTokenRenewPayload optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = new CustomerAccessTokenRenewPayload(jsonAsObject(field.getValue(), key));
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "customerActivate": {
+                                CustomerActivatePayload optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = new CustomerActivatePayload(jsonAsObject(field.getValue(), key));
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "customerAddressCreate": {
+                                CustomerAddressCreatePayload optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = new CustomerAddressCreatePayload(jsonAsObject(field.getValue(), key));
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "customerAddressDelete": {
+                                CustomerAddressDeletePayload optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = new CustomerAddressDeletePayload(jsonAsObject(field.getValue(), key));
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "customerAddressUpdate": {
+                                CustomerAddressUpdatePayload optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = new CustomerAddressUpdatePayload(jsonAsObject(field.getValue(), key));
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "customerCreate": {
+                                CustomerCreatePayload optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = new CustomerCreatePayload(jsonAsObject(field.getValue(), key));
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "customerDefaultAddressUpdate": {
+                                CustomerDefaultAddressUpdatePayload optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = new CustomerDefaultAddressUpdatePayload(jsonAsObject(field.getValue(), key));
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "customerRecover": {
+                                CustomerRecoverPayload optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = new CustomerRecoverPayload(jsonAsObject(field.getValue(), key));
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "customerReset": {
+                                CustomerResetPayload optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = new CustomerResetPayload(jsonAsObject(field.getValue(), key));
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "customerUpdate": {
+                                CustomerUpdatePayload optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = new CustomerUpdatePayload(jsonAsObject(field.getValue(), key));
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "__typename": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+                                break;
+                            }
+                            default: {
+                                throw new SchemaViolationError(this, key, field.getValue());
+                            }
+                        }
+                    }
+                }
+
+                public String getGraphQlTypeName() {
+                    return "Mutation";
+                }
+
+                /**
+                * Updates the attributes of a checkout.
+                */
+
+                public CheckoutAttributesUpdatePayload getCheckoutAttributesUpdate() {
+                    return (CheckoutAttributesUpdatePayload) get("checkoutAttributesUpdate");
+                }
+
+                public Mutation setCheckoutAttributesUpdate(CheckoutAttributesUpdatePayload arg) {
+                    optimisticData.put(getKey("checkoutAttributesUpdate"), arg);
+                    return this;
+                }
+
+                public CheckoutCompleteFreePayload getCheckoutCompleteFree() {
+                    return (CheckoutCompleteFreePayload) get("checkoutCompleteFree");
+                }
+
+                public Mutation setCheckoutCompleteFree(CheckoutCompleteFreePayload arg) {
+                    optimisticData.put(getKey("checkoutCompleteFree"), arg);
+                    return this;
+                }
+
+                /**
+                * Completes a checkout using a credit card token from Shopify's Vault.
+                */
+
+                public CheckoutCompleteWithCreditCardPayload getCheckoutCompleteWithCreditCard() {
+                    return (CheckoutCompleteWithCreditCardPayload) get("checkoutCompleteWithCreditCard");
+                }
+
+                public Mutation setCheckoutCompleteWithCreditCard(CheckoutCompleteWithCreditCardPayload arg) {
+                    optimisticData.put(getKey("checkoutCompleteWithCreditCard"), arg);
+                    return this;
+                }
+
+                /**
+                * Completes a checkout with a tokenized payment.
+                */
+
+                public CheckoutCompleteWithTokenizedPaymentPayload getCheckoutCompleteWithTokenizedPayment() {
+                    return (CheckoutCompleteWithTokenizedPaymentPayload) get("checkoutCompleteWithTokenizedPayment");
+                }
+
+                public Mutation setCheckoutCompleteWithTokenizedPayment(CheckoutCompleteWithTokenizedPaymentPayload arg) {
+                    optimisticData.put(getKey("checkoutCompleteWithTokenizedPayment"), arg);
+                    return this;
+                }
+
+                /**
+                * Creates a new checkout.
+                */
+
+                public CheckoutCreatePayload getCheckoutCreate() {
+                    return (CheckoutCreatePayload) get("checkoutCreate");
+                }
+
+                public Mutation setCheckoutCreate(CheckoutCreatePayload arg) {
+                    optimisticData.put(getKey("checkoutCreate"), arg);
+                    return this;
+                }
+
+                /**
+                * Associates a customer to the checkout.
+                */
+
+                public CheckoutCustomerAssociatePayload getCheckoutCustomerAssociate() {
+                    return (CheckoutCustomerAssociatePayload) get("checkoutCustomerAssociate");
+                }
+
+                public Mutation setCheckoutCustomerAssociate(CheckoutCustomerAssociatePayload arg) {
+                    optimisticData.put(getKey("checkoutCustomerAssociate"), arg);
+                    return this;
+                }
+
+                /**
+                * Disassociates the current checkout customer from the checkout.
+                */
+
+                public CheckoutCustomerDisassociatePayload getCheckoutCustomerDisassociate() {
+                    return (CheckoutCustomerDisassociatePayload) get("checkoutCustomerDisassociate");
+                }
+
+                public Mutation setCheckoutCustomerDisassociate(CheckoutCustomerDisassociatePayload arg) {
+                    optimisticData.put(getKey("checkoutCustomerDisassociate"), arg);
+                    return this;
+                }
+
+                /**
+                * Applies a discount to an existing checkout using a discount code.
+                */
+
+                public CheckoutDiscountCodeApplyPayload getCheckoutDiscountCodeApply() {
+                    return (CheckoutDiscountCodeApplyPayload) get("checkoutDiscountCodeApply");
+                }
+
+                public Mutation setCheckoutDiscountCodeApply(CheckoutDiscountCodeApplyPayload arg) {
+                    optimisticData.put(getKey("checkoutDiscountCodeApply"), arg);
+                    return this;
+                }
+
+                /**
+                * Updates the email on an existing checkout.
+                */
+
+                public CheckoutEmailUpdatePayload getCheckoutEmailUpdate() {
+                    return (CheckoutEmailUpdatePayload) get("checkoutEmailUpdate");
+                }
+
+                public Mutation setCheckoutEmailUpdate(CheckoutEmailUpdatePayload arg) {
+                    optimisticData.put(getKey("checkoutEmailUpdate"), arg);
+                    return this;
+                }
+
+                /**
+                * Applies a gift card to an existing checkout using a gift card code.
+                */
+
+                public CheckoutGiftCardApplyPayload getCheckoutGiftCardApply() {
+                    return (CheckoutGiftCardApplyPayload) get("checkoutGiftCardApply");
+                }
+
+                public Mutation setCheckoutGiftCardApply(CheckoutGiftCardApplyPayload arg) {
+                    optimisticData.put(getKey("checkoutGiftCardApply"), arg);
+                    return this;
+                }
+
+                /**
+                * Removes an applied gift card from the checkout.
+                */
+
+                public CheckoutGiftCardRemovePayload getCheckoutGiftCardRemove() {
+                    return (CheckoutGiftCardRemovePayload) get("checkoutGiftCardRemove");
+                }
+
+                public Mutation setCheckoutGiftCardRemove(CheckoutGiftCardRemovePayload arg) {
+                    optimisticData.put(getKey("checkoutGiftCardRemove"), arg);
+                    return this;
+                }
+
+                /**
+                * Adds a list of line items to a checkout.
+                */
+
+                public CheckoutLineItemsAddPayload getCheckoutLineItemsAdd() {
+                    return (CheckoutLineItemsAddPayload) get("checkoutLineItemsAdd");
+                }
+
+                public Mutation setCheckoutLineItemsAdd(CheckoutLineItemsAddPayload arg) {
+                    optimisticData.put(getKey("checkoutLineItemsAdd"), arg);
+                    return this;
+                }
+
+                /**
+                * Removes line items from an existing checkout
+                */
+
+                public CheckoutLineItemsRemovePayload getCheckoutLineItemsRemove() {
+                    return (CheckoutLineItemsRemovePayload) get("checkoutLineItemsRemove");
+                }
+
+                public Mutation setCheckoutLineItemsRemove(CheckoutLineItemsRemovePayload arg) {
+                    optimisticData.put(getKey("checkoutLineItemsRemove"), arg);
+                    return this;
+                }
+
+                /**
+                * Updates line items on a checkout.
+                */
+
+                public CheckoutLineItemsUpdatePayload getCheckoutLineItemsUpdate() {
+                    return (CheckoutLineItemsUpdatePayload) get("checkoutLineItemsUpdate");
+                }
+
+                public Mutation setCheckoutLineItemsUpdate(CheckoutLineItemsUpdatePayload arg) {
+                    optimisticData.put(getKey("checkoutLineItemsUpdate"), arg);
+                    return this;
+                }
+
+                /**
+                * Updates the shipping address of an existing checkout.
+                */
+
+                public CheckoutShippingAddressUpdatePayload getCheckoutShippingAddressUpdate() {
+                    return (CheckoutShippingAddressUpdatePayload) get("checkoutShippingAddressUpdate");
+                }
+
+                public Mutation setCheckoutShippingAddressUpdate(CheckoutShippingAddressUpdatePayload arg) {
+                    optimisticData.put(getKey("checkoutShippingAddressUpdate"), arg);
+                    return this;
+                }
+
+                /**
+                * Updates the shipping lines on an existing checkout.
+                */
+
+                public CheckoutShippingLineUpdatePayload getCheckoutShippingLineUpdate() {
+                    return (CheckoutShippingLineUpdatePayload) get("checkoutShippingLineUpdate");
+                }
+
+                public Mutation setCheckoutShippingLineUpdate(CheckoutShippingLineUpdatePayload arg) {
+                    optimisticData.put(getKey("checkoutShippingLineUpdate"), arg);
+                    return this;
+                }
+
+                /**
+                * Creates a customer access token.
+                * The customer access token is required to modify the customer object in any way.
+                */
+
+                public CustomerAccessTokenCreatePayload getCustomerAccessTokenCreate() {
+                    return (CustomerAccessTokenCreatePayload) get("customerAccessTokenCreate");
+                }
+
+                public Mutation setCustomerAccessTokenCreate(CustomerAccessTokenCreatePayload arg) {
+                    optimisticData.put(getKey("customerAccessTokenCreate"), arg);
+                    return this;
+                }
+
+                /**
+                * Permanently destroys a customer access token.
+                */
+
+                public CustomerAccessTokenDeletePayload getCustomerAccessTokenDelete() {
+                    return (CustomerAccessTokenDeletePayload) get("customerAccessTokenDelete");
+                }
+
+                public Mutation setCustomerAccessTokenDelete(CustomerAccessTokenDeletePayload arg) {
+                    optimisticData.put(getKey("customerAccessTokenDelete"), arg);
+                    return this;
+                }
+
+                /**
+                * Renews a customer access token.
+                * Access token renewal must happen *before* a token expires.
+                * If a token has already expired, a new one should be created instead via `customerAccessTokenCreate`.
+                */
+
+                public CustomerAccessTokenRenewPayload getCustomerAccessTokenRenew() {
+                    return (CustomerAccessTokenRenewPayload) get("customerAccessTokenRenew");
+                }
+
+                public Mutation setCustomerAccessTokenRenew(CustomerAccessTokenRenewPayload arg) {
+                    optimisticData.put(getKey("customerAccessTokenRenew"), arg);
+                    return this;
+                }
+
+                /**
+                * Activates a customer.
+                */
+
+                public CustomerActivatePayload getCustomerActivate() {
+                    return (CustomerActivatePayload) get("customerActivate");
+                }
+
+                public Mutation setCustomerActivate(CustomerActivatePayload arg) {
+                    optimisticData.put(getKey("customerActivate"), arg);
+                    return this;
+                }
+
+                /**
+                * Creates a new address for a customer.
+                */
+
+                public CustomerAddressCreatePayload getCustomerAddressCreate() {
+                    return (CustomerAddressCreatePayload) get("customerAddressCreate");
+                }
+
+                public Mutation setCustomerAddressCreate(CustomerAddressCreatePayload arg) {
+                    optimisticData.put(getKey("customerAddressCreate"), arg);
+                    return this;
+                }
+
+                /**
+                * Permanently deletes the address of an existing customer.
+                */
+
+                public CustomerAddressDeletePayload getCustomerAddressDelete() {
+                    return (CustomerAddressDeletePayload) get("customerAddressDelete");
+                }
+
+                public Mutation setCustomerAddressDelete(CustomerAddressDeletePayload arg) {
+                    optimisticData.put(getKey("customerAddressDelete"), arg);
+                    return this;
+                }
+
+                /**
+                * Updates the address of an existing customer.
+                */
+
+                public CustomerAddressUpdatePayload getCustomerAddressUpdate() {
+                    return (CustomerAddressUpdatePayload) get("customerAddressUpdate");
+                }
+
+                public Mutation setCustomerAddressUpdate(CustomerAddressUpdatePayload arg) {
+                    optimisticData.put(getKey("customerAddressUpdate"), arg);
+                    return this;
+                }
+
+                /**
+                * Creates a new customer.
+                */
+
+                public CustomerCreatePayload getCustomerCreate() {
+                    return (CustomerCreatePayload) get("customerCreate");
+                }
+
+                public Mutation setCustomerCreate(CustomerCreatePayload arg) {
+                    optimisticData.put(getKey("customerCreate"), arg);
+                    return this;
+                }
+
+                /**
+                * Updates the default address of an existing customer.
+                */
+
+                public CustomerDefaultAddressUpdatePayload getCustomerDefaultAddressUpdate() {
+                    return (CustomerDefaultAddressUpdatePayload) get("customerDefaultAddressUpdate");
+                }
+
+                public Mutation setCustomerDefaultAddressUpdate(CustomerDefaultAddressUpdatePayload arg) {
+                    optimisticData.put(getKey("customerDefaultAddressUpdate"), arg);
+                    return this;
+                }
+
+                /**
+                * Sends a reset password email to the customer, as the first step in the reset password process.
+                */
+
+                public CustomerRecoverPayload getCustomerRecover() {
+                    return (CustomerRecoverPayload) get("customerRecover");
+                }
+
+                public Mutation setCustomerRecover(CustomerRecoverPayload arg) {
+                    optimisticData.put(getKey("customerRecover"), arg);
+                    return this;
+                }
+
+                /**
+                * Resets a customer’s password with a token received from `CustomerRecover`.
+                */
+
+                public CustomerResetPayload getCustomerReset() {
+                    return (CustomerResetPayload) get("customerReset");
+                }
+
+                public Mutation setCustomerReset(CustomerResetPayload arg) {
+                    optimisticData.put(getKey("customerReset"), arg);
+                    return this;
+                }
+
+                /**
+                * Updates an existing customer.
+                */
+
+                public CustomerUpdatePayload getCustomerUpdate() {
+                    return (CustomerUpdatePayload) get("customerUpdate");
+                }
+
+                public Mutation setCustomerUpdate(CustomerUpdatePayload arg) {
+                    optimisticData.put(getKey("customerUpdate"), arg);
+                    return this;
+                }
+
+                public boolean unwrapsToObject(String key) {
+                    switch (getFieldName(key)) {
+                        case "checkoutAttributesUpdate": return true;
+
+                        case "checkoutCompleteFree": return true;
+
+                        case "checkoutCompleteWithCreditCard": return true;
+
+                        case "checkoutCompleteWithTokenizedPayment": return true;
+
+                        case "checkoutCreate": return true;
+
+                        case "checkoutCustomerAssociate": return true;
+
+                        case "checkoutCustomerDisassociate": return true;
+
+                        case "checkoutDiscountCodeApply": return true;
+
+                        case "checkoutEmailUpdate": return true;
+
+                        case "checkoutGiftCardApply": return true;
+
+                        case "checkoutGiftCardRemove": return true;
+
+                        case "checkoutLineItemsAdd": return true;
+
+                        case "checkoutLineItemsRemove": return true;
+
+                        case "checkoutLineItemsUpdate": return true;
+
+                        case "checkoutShippingAddressUpdate": return true;
+
+                        case "checkoutShippingLineUpdate": return true;
+
+                        case "customerAccessTokenCreate": return true;
+
+                        case "customerAccessTokenDelete": return true;
+
+                        case "customerAccessTokenRenew": return true;
+
+                        case "customerActivate": return true;
+
+                        case "customerAddressCreate": return true;
+
+                        case "customerAddressDelete": return true;
+
+                        case "customerAddressUpdate": return true;
+
+                        case "customerCreate": return true;
+
+                        case "customerDefaultAddressUpdate": return true;
+
+                        case "customerRecover": return true;
+
+                        case "customerReset": return true;
+
+                        case "customerUpdate": return true;
+
+                        default: return false;
+                    }
+                }
+            }
+
+            public interface NodeQueryDefinition {
+                void define(NodeQuery _queryBuilder);
+            }
+
+            /**
+            * An object with an ID to support global identification.
+            */
+            public static class NodeQuery extends Query<NodeQuery> {
+                NodeQuery(StringBuilder _queryBuilder) {
+                    super(_queryBuilder);
+
+                    startField("__typename");
+                }
+
+                /**
+                * Globally unique identifier.
+                */
+                public NodeQuery id() {
+                    startField("id");
+
+                    return this;
+                }
+
+                public NodeQuery onAppliedGiftCard(AppliedGiftCardQueryDefinition queryDef) {
+                    startInlineFragment("AppliedGiftCard");
+                    queryDef.define(new AppliedGiftCardQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+                    return this;
+                }
+
+                public NodeQuery onArticle(ArticleQueryDefinition queryDef) {
+                    startInlineFragment("Article");
+                    queryDef.define(new ArticleQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+                    return this;
+                }
+
+                public NodeQuery onBlog(BlogQueryDefinition queryDef) {
+                    startInlineFragment("Blog");
+                    queryDef.define(new BlogQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+                    return this;
+                }
+
+                public NodeQuery onCheckout(CheckoutQueryDefinition queryDef) {
+                    startInlineFragment("Checkout");
+                    queryDef.define(new CheckoutQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+                    return this;
+                }
+
+                public NodeQuery onCheckoutLineItem(CheckoutLineItemQueryDefinition queryDef) {
+                    startInlineFragment("CheckoutLineItem");
+                    queryDef.define(new CheckoutLineItemQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+                    return this;
+                }
+
+                public NodeQuery onCollection(CollectionQueryDefinition queryDef) {
+                    startInlineFragment("Collection");
+                    queryDef.define(new CollectionQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+                    return this;
+                }
+
+                public NodeQuery onComment(CommentQueryDefinition queryDef) {
+                    startInlineFragment("Comment");
+                    queryDef.define(new CommentQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+                    return this;
+                }
+
+                public NodeQuery onMailingAddress(MailingAddressQueryDefinition queryDef) {
+                    startInlineFragment("MailingAddress");
+                    queryDef.define(new MailingAddressQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+                    return this;
+                }
+
+                public NodeQuery onOrder(OrderQueryDefinition queryDef) {
+                    startInlineFragment("Order");
+                    queryDef.define(new OrderQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+                    return this;
+                }
+
+                public NodeQuery onPayment(PaymentQueryDefinition queryDef) {
+                    startInlineFragment("Payment");
+                    queryDef.define(new PaymentQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+                    return this;
+                }
+
+                public NodeQuery onProduct(ProductQueryDefinition queryDef) {
+                    startInlineFragment("Product");
+                    queryDef.define(new ProductQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+                    return this;
+                }
+
+                public NodeQuery onProductOption(ProductOptionQueryDefinition queryDef) {
+                    startInlineFragment("ProductOption");
+                    queryDef.define(new ProductOptionQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+                    return this;
+                }
+
+                public NodeQuery onProductVariant(ProductVariantQueryDefinition queryDef) {
+                    startInlineFragment("ProductVariant");
+                    queryDef.define(new ProductVariantQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+                    return this;
+                }
+
+                public NodeQuery onShopPolicy(ShopPolicyQueryDefinition queryDef) {
+                    startInlineFragment("ShopPolicy");
+                    queryDef.define(new ShopPolicyQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+                    return this;
+                }
+            }
+
+            public interface Node extends com.shopify.graphql.support.Node {
+                String getGraphQlTypeName();
+
+                ID getId();
+            }
+
+            /**
+            * An object with an ID to support global identification.
+            */
+            public static class UnknownNode extends AbstractResponse<UnknownNode> implements Node {
+                public UnknownNode() {
+                }
+
+                public UnknownNode(JsonObject fields) throws SchemaViolationError {
+                    for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                        String key = field.getKey();
+                        String fieldName = getFieldName(key);
+                        switch (fieldName) {
+                            case "id": {
+                                responseData.put(key, new ID(jsonAsString(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "__typename": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+                                break;
+                            }
+                            default: {
+                                throw new SchemaViolationError(this, key, field.getValue());
+                            }
+                        }
+                    }
+                }
+
+                public static Node create(JsonObject fields) throws SchemaViolationError {
+                    String typeName = fields.getAsJsonPrimitive("__typename").getAsString();
+                    switch (typeName) {
+                        case "AppliedGiftCard": {
+                            return new AppliedGiftCard(fields);
                         }
 
-                        responseData.put(key, optional1);
+                        case "Article": {
+                            return new Article(fields);
+                        }
 
-                        break;
+                        case "Blog": {
+                            return new Blog(fields);
+                        }
+
+                        case "Checkout": {
+                            return new Checkout(fields);
+                        }
+
+                        case "CheckoutLineItem": {
+                            return new CheckoutLineItem(fields);
+                        }
+
+                        case "Collection": {
+                            return new Collection(fields);
+                        }
+
+                        case "Comment": {
+                            return new Comment(fields);
+                        }
+
+                        case "MailingAddress": {
+                            return new MailingAddress(fields);
+                        }
+
+                        case "Order": {
+                            return new Order(fields);
+                        }
+
+                        case "Payment": {
+                            return new Payment(fields);
+                        }
+
+                        case "Product": {
+                            return new Product(fields);
+                        }
+
+                        case "ProductOption": {
+                            return new ProductOption(fields);
+                        }
+
+                        case "ProductVariant": {
+                            return new ProductVariant(fields);
+                        }
+
+                        case "ShopPolicy": {
+                            return new ShopPolicy(fields);
+                        }
+
+                        default: {
+                            return new UnknownNode(fields);
+                        }
+                    }
+                }
+
+                public String getGraphQlTypeName() {
+                    return (String) get("__typename");
+                }
+
+                /**
+                * Globally unique identifier.
+                */
+
+                public ID getId() {
+                    return (ID) get("id");
+                }
+
+                public UnknownNode setId(ID arg) {
+                    optimisticData.put(getKey("id"), arg);
+                    return this;
+                }
+
+                public boolean unwrapsToObject(String key) {
+                    switch (getFieldName(key)) {
+                        case "id": return false;
+
+                        default: return false;
+                    }
+                }
+            }
+
+            public interface OrderQueryDefinition {
+                void define(OrderQuery _queryBuilder);
+            }
+
+            /**
+            * An order is a customer’s completed request to purchase one or more products from a shop. An order is
+            * created when a customer completes the checkout process, during which time they provides an email
+            * address, billing address and payment information.
+            */
+            public static class OrderQuery extends Query<OrderQuery> {
+                OrderQuery(StringBuilder _queryBuilder) {
+                    super(_queryBuilder);
+
+                    startField("id");
+                }
+
+                /**
+                * The code of the currency used for the payment.
+                */
+                public OrderQuery currencyCode() {
+                    startField("currencyCode");
+
+                    return this;
+                }
+
+                /**
+                * The locale code in which this specific order happened.
+                */
+                public OrderQuery customerLocale() {
+                    startField("customerLocale");
+
+                    return this;
+                }
+
+                /**
+                * The order’s URL for a customer.
+                */
+                public OrderQuery customerUrl() {
+                    startField("customerUrl");
+
+                    return this;
+                }
+
+                /**
+                * The customer's email address.
+                */
+                public OrderQuery email() {
+                    startField("email");
+
+                    return this;
+                }
+
+                public class LineItemsArguments extends Arguments {
+                    LineItemsArguments(StringBuilder _queryBuilder) {
+                        super(_queryBuilder, true);
                     }
 
-                    case "message": {
-                        responseData.put(key, jsonAsString(field.getValue(), key));
-
-                        break;
+                    /**
+                    * Returns up to the first `n` elements from the list.
+                    */
+                    public LineItemsArguments first(Integer value) {
+                        if (value != null) {
+                            startArgument("first");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
                     }
 
-                    case "__typename": {
-                        responseData.put(key, jsonAsString(field.getValue(), key));
-                        break;
+                    /**
+                    * Returns the elements that come after the specified cursor.
+                    */
+                    public LineItemsArguments after(String value) {
+                        if (value != null) {
+                            startArgument("after");
+                            Query.appendQuotedString(_queryBuilder, value.toString());
+                        }
+                        return this;
                     }
-                    default: {
-                        throw new SchemaViolationError(this, key, field.getValue());
+
+                    /**
+                    * Returns up to the last `n` elements from the list.
+                    */
+                    public LineItemsArguments last(Integer value) {
+                        if (value != null) {
+                            startArgument("last");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Returns the elements that come before the specified cursor.
+                    */
+                    public LineItemsArguments before(String value) {
+                        if (value != null) {
+                            startArgument("before");
+                            Query.appendQuotedString(_queryBuilder, value.toString());
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Reverse the order of the underlying list.
+                    */
+                    public LineItemsArguments reverse(Boolean value) {
+                        if (value != null) {
+                            startArgument("reverse");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+                }
+
+                public interface LineItemsArgumentsDefinition {
+                    void define(LineItemsArguments args);
+                }
+
+                /**
+                * List of the order’s line items.
+                */
+                public OrderQuery lineItems(OrderLineItemConnectionQueryDefinition queryDef) {
+                    return lineItems(args -> {}, queryDef);
+                }
+
+                /**
+                * List of the order’s line items.
+                */
+                public OrderQuery lineItems(LineItemsArgumentsDefinition argsDef, OrderLineItemConnectionQueryDefinition queryDef) {
+                    startField("lineItems");
+
+                    LineItemsArguments args = new LineItemsArguments(_queryBuilder);
+                    argsDef.define(args);
+                    LineItemsArguments.end(args);
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new OrderLineItemConnectionQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * A unique numeric identifier for the order for use by shop owner and customer.
+                */
+                public OrderQuery orderNumber() {
+                    startField("orderNumber");
+
+                    return this;
+                }
+
+                /**
+                * The customer's phone number.
+                */
+                public OrderQuery phone() {
+                    startField("phone");
+
+                    return this;
+                }
+
+                /**
+                * The date and time when the order was imported.
+                * This value can be set to dates in the past when importing from other systems.
+                * If no value is provided, it will be auto-generated based on current date and time.
+                */
+                public OrderQuery processedAt() {
+                    startField("processedAt");
+
+                    return this;
+                }
+
+                /**
+                * The address to where the order will be shipped.
+                */
+                public OrderQuery shippingAddress(MailingAddressQueryDefinition queryDef) {
+                    startField("shippingAddress");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new MailingAddressQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * Price of the order before shipping and taxes.
+                */
+                public OrderQuery subtotalPrice() {
+                    startField("subtotalPrice");
+
+                    return this;
+                }
+
+                /**
+                * The sum of all the prices of all the items in the order, taxes and discounts included (must be
+                * positive).
+                */
+                public OrderQuery totalPrice() {
+                    startField("totalPrice");
+
+                    return this;
+                }
+
+                /**
+                * The total amount that has been refunded.
+                */
+                public OrderQuery totalRefunded() {
+                    startField("totalRefunded");
+
+                    return this;
+                }
+
+                /**
+                * The total cost of shipping.
+                */
+                public OrderQuery totalShippingPrice() {
+                    startField("totalShippingPrice");
+
+                    return this;
+                }
+
+                /**
+                * The total cost of taxes.
+                */
+                public OrderQuery totalTax() {
+                    startField("totalTax");
+
+                    return this;
+                }
+            }
+
+            /**
+            * An order is a customer’s completed request to purchase one or more products from a shop. An order is
+            * created when a customer completes the checkout process, during which time they provides an email
+            * address, billing address and payment information.
+            */
+            public static class Order extends AbstractResponse<Order> implements Node {
+                public Order() {
+                }
+
+                public Order(JsonObject fields) throws SchemaViolationError {
+                    for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                        String key = field.getKey();
+                        String fieldName = getFieldName(key);
+                        switch (fieldName) {
+                            case "currencyCode": {
+                                responseData.put(key, CurrencyCode.fromGraphQl(jsonAsString(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "customerLocale": {
+                                String optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = jsonAsString(field.getValue(), key);
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "customerUrl": {
+                                String optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = jsonAsString(field.getValue(), key);
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "email": {
+                                String optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = jsonAsString(field.getValue(), key);
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "id": {
+                                responseData.put(key, new ID(jsonAsString(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "lineItems": {
+                                responseData.put(key, new OrderLineItemConnection(jsonAsObject(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "orderNumber": {
+                                responseData.put(key, jsonAsInteger(field.getValue(), key));
+
+                                break;
+                            }
+
+                            case "phone": {
+                                String optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = jsonAsString(field.getValue(), key);
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "processedAt": {
+                                responseData.put(key, Utils.parseDateTime(jsonAsString(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "shippingAddress": {
+                                MailingAddress optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = new MailingAddress(jsonAsObject(field.getValue(), key));
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "subtotalPrice": {
+                                BigDecimal optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = new BigDecimal(jsonAsString(field.getValue(), key));
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "totalPrice": {
+                                responseData.put(key, new BigDecimal(jsonAsString(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "totalRefunded": {
+                                responseData.put(key, new BigDecimal(jsonAsString(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "totalShippingPrice": {
+                                responseData.put(key, new BigDecimal(jsonAsString(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "totalTax": {
+                                BigDecimal optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = new BigDecimal(jsonAsString(field.getValue(), key));
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "__typename": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+                                break;
+                            }
+                            default: {
+                                throw new SchemaViolationError(this, key, field.getValue());
+                            }
+                        }
+                    }
+                }
+
+                public Order(ID id) {
+                    this();
+                    optimisticData.put("id", id);
+                }
+
+                public String getGraphQlTypeName() {
+                    return "Order";
+                }
+
+                /**
+                * The code of the currency used for the payment.
+                */
+
+                public CurrencyCode getCurrencyCode() {
+                    return (CurrencyCode) get("currencyCode");
+                }
+
+                public Order setCurrencyCode(CurrencyCode arg) {
+                    optimisticData.put(getKey("currencyCode"), arg);
+                    return this;
+                }
+
+                /**
+                * The locale code in which this specific order happened.
+                */
+
+                public String getCustomerLocale() {
+                    return (String) get("customerLocale");
+                }
+
+                public Order setCustomerLocale(String arg) {
+                    optimisticData.put(getKey("customerLocale"), arg);
+                    return this;
+                }
+
+                /**
+                * The order’s URL for a customer.
+                */
+
+                public String getCustomerUrl() {
+                    return (String) get("customerUrl");
+                }
+
+                public Order setCustomerUrl(String arg) {
+                    optimisticData.put(getKey("customerUrl"), arg);
+                    return this;
+                }
+
+                /**
+                * The customer's email address.
+                */
+
+                public String getEmail() {
+                    return (String) get("email");
+                }
+
+                public Order setEmail(String arg) {
+                    optimisticData.put(getKey("email"), arg);
+                    return this;
+                }
+
+                /**
+                * Globally unique identifier.
+                */
+
+                public ID getId() {
+                    return (ID) get("id");
+                }
+
+                /**
+                * List of the order’s line items.
+                */
+
+                public OrderLineItemConnection getLineItems() {
+                    return (OrderLineItemConnection) get("lineItems");
+                }
+
+                public Order setLineItems(OrderLineItemConnection arg) {
+                    optimisticData.put(getKey("lineItems"), arg);
+                    return this;
+                }
+
+                /**
+                * A unique numeric identifier for the order for use by shop owner and customer.
+                */
+
+                public Integer getOrderNumber() {
+                    return (Integer) get("orderNumber");
+                }
+
+                public Order setOrderNumber(Integer arg) {
+                    optimisticData.put(getKey("orderNumber"), arg);
+                    return this;
+                }
+
+                /**
+                * The customer's phone number.
+                */
+
+                public String getPhone() {
+                    return (String) get("phone");
+                }
+
+                public Order setPhone(String arg) {
+                    optimisticData.put(getKey("phone"), arg);
+                    return this;
+                }
+
+                /**
+                * The date and time when the order was imported.
+                * This value can be set to dates in the past when importing from other systems.
+                * If no value is provided, it will be auto-generated based on current date and time.
+                */
+
+                public DateTime getProcessedAt() {
+                    return (DateTime) get("processedAt");
+                }
+
+                public Order setProcessedAt(DateTime arg) {
+                    optimisticData.put(getKey("processedAt"), arg);
+                    return this;
+                }
+
+                /**
+                * The address to where the order will be shipped.
+                */
+
+                public MailingAddress getShippingAddress() {
+                    return (MailingAddress) get("shippingAddress");
+                }
+
+                public Order setShippingAddress(MailingAddress arg) {
+                    optimisticData.put(getKey("shippingAddress"), arg);
+                    return this;
+                }
+
+                /**
+                * Price of the order before shipping and taxes.
+                */
+
+                public BigDecimal getSubtotalPrice() {
+                    return (BigDecimal) get("subtotalPrice");
+                }
+
+                public Order setSubtotalPrice(BigDecimal arg) {
+                    optimisticData.put(getKey("subtotalPrice"), arg);
+                    return this;
+                }
+
+                /**
+                * The sum of all the prices of all the items in the order, taxes and discounts included (must be
+                * positive).
+                */
+
+                public BigDecimal getTotalPrice() {
+                    return (BigDecimal) get("totalPrice");
+                }
+
+                public Order setTotalPrice(BigDecimal arg) {
+                    optimisticData.put(getKey("totalPrice"), arg);
+                    return this;
+                }
+
+                /**
+                * The total amount that has been refunded.
+                */
+
+                public BigDecimal getTotalRefunded() {
+                    return (BigDecimal) get("totalRefunded");
+                }
+
+                public Order setTotalRefunded(BigDecimal arg) {
+                    optimisticData.put(getKey("totalRefunded"), arg);
+                    return this;
+                }
+
+                /**
+                * The total cost of shipping.
+                */
+
+                public BigDecimal getTotalShippingPrice() {
+                    return (BigDecimal) get("totalShippingPrice");
+                }
+
+                public Order setTotalShippingPrice(BigDecimal arg) {
+                    optimisticData.put(getKey("totalShippingPrice"), arg);
+                    return this;
+                }
+
+                /**
+                * The total cost of taxes.
+                */
+
+                public BigDecimal getTotalTax() {
+                    return (BigDecimal) get("totalTax");
+                }
+
+                public Order setTotalTax(BigDecimal arg) {
+                    optimisticData.put(getKey("totalTax"), arg);
+                    return this;
+                }
+
+                public boolean unwrapsToObject(String key) {
+                    switch (getFieldName(key)) {
+                        case "currencyCode": return false;
+
+                        case "customerLocale": return false;
+
+                        case "customerUrl": return false;
+
+                        case "email": return false;
+
+                        case "id": return false;
+
+                        case "lineItems": return true;
+
+                        case "orderNumber": return false;
+
+                        case "phone": return false;
+
+                        case "processedAt": return false;
+
+                        case "shippingAddress": return true;
+
+                        case "subtotalPrice": return false;
+
+                        case "totalPrice": return false;
+
+                        case "totalRefunded": return false;
+
+                        case "totalShippingPrice": return false;
+
+                        case "totalTax": return false;
+
+                        default: return false;
+                    }
+                }
+            }
+
+            public interface OrderConnectionQueryDefinition {
+                void define(OrderConnectionQuery _queryBuilder);
+            }
+
+            public static class OrderConnectionQuery extends Query<OrderConnectionQuery> {
+                OrderConnectionQuery(StringBuilder _queryBuilder) {
+                    super(_queryBuilder);
+                }
+
+                /**
+                * A list of edges.
+                */
+                public OrderConnectionQuery edges(OrderEdgeQueryDefinition queryDef) {
+                    startField("edges");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new OrderEdgeQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * Information to aid in pagination.
+                */
+                public OrderConnectionQuery pageInfo(PageInfoQueryDefinition queryDef) {
+                    startField("pageInfo");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new PageInfoQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+            }
+
+            public static class OrderConnection extends AbstractResponse<OrderConnection> {
+                public OrderConnection() {
+                }
+
+                public OrderConnection(JsonObject fields) throws SchemaViolationError {
+                    for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                        String key = field.getKey();
+                        String fieldName = getFieldName(key);
+                        switch (fieldName) {
+                            case "edges": {
+                                List<OrderEdge> list1 = new ArrayList<>();
+                                for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                                    list1.add(new OrderEdge(jsonAsObject(element1, key)));
+                                }
+
+                                responseData.put(key, list1);
+
+                                break;
+                            }
+
+                            case "pageInfo": {
+                                responseData.put(key, new PageInfo(jsonAsObject(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "__typename": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+                                break;
+                            }
+                            default: {
+                                throw new SchemaViolationError(this, key, field.getValue());
+                            }
+                        }
+                    }
+                }
+
+                public String getGraphQlTypeName() {
+                    return "OrderConnection";
+                }
+
+                /**
+                * A list of edges.
+                */
+
+                public List<OrderEdge> getEdges() {
+                    return (List<OrderEdge>) get("edges");
+                }
+
+                public OrderConnection setEdges(List<OrderEdge> arg) {
+                    optimisticData.put(getKey("edges"), arg);
+                    return this;
+                }
+
+                /**
+                * Information to aid in pagination.
+                */
+
+                public PageInfo getPageInfo() {
+                    return (PageInfo) get("pageInfo");
+                }
+
+                public OrderConnection setPageInfo(PageInfo arg) {
+                    optimisticData.put(getKey("pageInfo"), arg);
+                    return this;
+                }
+
+                public boolean unwrapsToObject(String key) {
+                    switch (getFieldName(key)) {
+                        case "edges": return true;
+
+                        case "pageInfo": return true;
+
+                        default: return false;
+                    }
+                }
+            }
+
+            public interface OrderEdgeQueryDefinition {
+                void define(OrderEdgeQuery _queryBuilder);
+            }
+
+            public static class OrderEdgeQuery extends Query<OrderEdgeQuery> {
+                OrderEdgeQuery(StringBuilder _queryBuilder) {
+                    super(_queryBuilder);
+                }
+
+                /**
+                * A cursor for use in pagination.
+                */
+                public OrderEdgeQuery cursor() {
+                    startField("cursor");
+
+                    return this;
+                }
+
+                /**
+                * The item at the end of OrderEdge.
+                */
+                public OrderEdgeQuery node(OrderQueryDefinition queryDef) {
+                    startField("node");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new OrderQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+            }
+
+            public static class OrderEdge extends AbstractResponse<OrderEdge> {
+                public OrderEdge() {
+                }
+
+                public OrderEdge(JsonObject fields) throws SchemaViolationError {
+                    for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                        String key = field.getKey();
+                        String fieldName = getFieldName(key);
+                        switch (fieldName) {
+                            case "cursor": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+
+                                break;
+                            }
+
+                            case "node": {
+                                responseData.put(key, new Order(jsonAsObject(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "__typename": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+                                break;
+                            }
+                            default: {
+                                throw new SchemaViolationError(this, key, field.getValue());
+                            }
+                        }
+                    }
+                }
+
+                public String getGraphQlTypeName() {
+                    return "OrderEdge";
+                }
+
+                /**
+                * A cursor for use in pagination.
+                */
+
+                public String getCursor() {
+                    return (String) get("cursor");
+                }
+
+                public OrderEdge setCursor(String arg) {
+                    optimisticData.put(getKey("cursor"), arg);
+                    return this;
+                }
+
+                /**
+                * The item at the end of OrderEdge.
+                */
+
+                public Order getNode() {
+                    return (Order) get("node");
+                }
+
+                public OrderEdge setNode(Order arg) {
+                    optimisticData.put(getKey("node"), arg);
+                    return this;
+                }
+
+                public boolean unwrapsToObject(String key) {
+                    switch (getFieldName(key)) {
+                        case "cursor": return false;
+
+                        case "node": return true;
+
+                        default: return false;
+                    }
+                }
+            }
+
+            public interface OrderLineItemQueryDefinition {
+                void define(OrderLineItemQuery _queryBuilder);
+            }
+
+            /**
+            * Represents a single line in an order. There is one line item for each distinct product variant.
+            */
+            public static class OrderLineItemQuery extends Query<OrderLineItemQuery> {
+                OrderLineItemQuery(StringBuilder _queryBuilder) {
+                    super(_queryBuilder);
+                }
+
+                /**
+                * List of custom attributes associated to the line item.
+                */
+                public OrderLineItemQuery customAttributes(AttributeQueryDefinition queryDef) {
+                    startField("customAttributes");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new AttributeQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * The number of products variants associated to the line item.
+                */
+                public OrderLineItemQuery quantity() {
+                    startField("quantity");
+
+                    return this;
+                }
+
+                /**
+                * The title of the product combined with title of the variant.
+                */
+                public OrderLineItemQuery title() {
+                    startField("title");
+
+                    return this;
+                }
+
+                /**
+                * The product variant object associated to the line item.
+                */
+                public OrderLineItemQuery variant(ProductVariantQueryDefinition queryDef) {
+                    startField("variant");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new ProductVariantQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+            }
+
+            /**
+            * Represents a single line in an order. There is one line item for each distinct product variant.
+            */
+            public static class OrderLineItem extends AbstractResponse<OrderLineItem> {
+                public OrderLineItem() {
+                }
+
+                public OrderLineItem(JsonObject fields) throws SchemaViolationError {
+                    for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                        String key = field.getKey();
+                        String fieldName = getFieldName(key);
+                        switch (fieldName) {
+                            case "customAttributes": {
+                                List<Attribute> list1 = new ArrayList<>();
+                                for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                                    list1.add(new Attribute(jsonAsObject(element1, key)));
+                                }
+
+                                responseData.put(key, list1);
+
+                                break;
+                            }
+
+                            case "quantity": {
+                                responseData.put(key, jsonAsInteger(field.getValue(), key));
+
+                                break;
+                            }
+
+                            case "title": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+
+                                break;
+                            }
+
+                            case "variant": {
+                                ProductVariant optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = new ProductVariant(jsonAsObject(field.getValue(), key));
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "__typename": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+                                break;
+                            }
+                            default: {
+                                throw new SchemaViolationError(this, key, field.getValue());
+                            }
+                        }
+                    }
+                }
+
+                public String getGraphQlTypeName() {
+                    return "OrderLineItem";
+                }
+
+                /**
+                * List of custom attributes associated to the line item.
+                */
+
+                public List<Attribute> getCustomAttributes() {
+                    return (List<Attribute>) get("customAttributes");
+                }
+
+                public OrderLineItem setCustomAttributes(List<Attribute> arg) {
+                    optimisticData.put(getKey("customAttributes"), arg);
+                    return this;
+                }
+
+                /**
+                * The number of products variants associated to the line item.
+                */
+
+                public Integer getQuantity() {
+                    return (Integer) get("quantity");
+                }
+
+                public OrderLineItem setQuantity(Integer arg) {
+                    optimisticData.put(getKey("quantity"), arg);
+                    return this;
+                }
+
+                /**
+                * The title of the product combined with title of the variant.
+                */
+
+                public String getTitle() {
+                    return (String) get("title");
+                }
+
+                public OrderLineItem setTitle(String arg) {
+                    optimisticData.put(getKey("title"), arg);
+                    return this;
+                }
+
+                /**
+                * The product variant object associated to the line item.
+                */
+
+                public ProductVariant getVariant() {
+                    return (ProductVariant) get("variant");
+                }
+
+                public OrderLineItem setVariant(ProductVariant arg) {
+                    optimisticData.put(getKey("variant"), arg);
+                    return this;
+                }
+
+                public boolean unwrapsToObject(String key) {
+                    switch (getFieldName(key)) {
+                        case "customAttributes": return true;
+
+                        case "quantity": return false;
+
+                        case "title": return false;
+
+                        case "variant": return true;
+
+                        default: return false;
+                    }
+                }
+            }
+
+            public interface OrderLineItemConnectionQueryDefinition {
+                void define(OrderLineItemConnectionQuery _queryBuilder);
+            }
+
+            public static class OrderLineItemConnectionQuery extends Query<OrderLineItemConnectionQuery> {
+                OrderLineItemConnectionQuery(StringBuilder _queryBuilder) {
+                    super(_queryBuilder);
+                }
+
+                /**
+                * A list of edges.
+                */
+                public OrderLineItemConnectionQuery edges(OrderLineItemEdgeQueryDefinition queryDef) {
+                    startField("edges");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new OrderLineItemEdgeQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * Information to aid in pagination.
+                */
+                public OrderLineItemConnectionQuery pageInfo(PageInfoQueryDefinition queryDef) {
+                    startField("pageInfo");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new PageInfoQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+            }
+
+            public static class OrderLineItemConnection extends AbstractResponse<OrderLineItemConnection> {
+                public OrderLineItemConnection() {
+                }
+
+                public OrderLineItemConnection(JsonObject fields) throws SchemaViolationError {
+                    for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                        String key = field.getKey();
+                        String fieldName = getFieldName(key);
+                        switch (fieldName) {
+                            case "edges": {
+                                List<OrderLineItemEdge> list1 = new ArrayList<>();
+                                for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                                    list1.add(new OrderLineItemEdge(jsonAsObject(element1, key)));
+                                }
+
+                                responseData.put(key, list1);
+
+                                break;
+                            }
+
+                            case "pageInfo": {
+                                responseData.put(key, new PageInfo(jsonAsObject(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "__typename": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+                                break;
+                            }
+                            default: {
+                                throw new SchemaViolationError(this, key, field.getValue());
+                            }
+                        }
+                    }
+                }
+
+                public String getGraphQlTypeName() {
+                    return "OrderLineItemConnection";
+                }
+
+                /**
+                * A list of edges.
+                */
+
+                public List<OrderLineItemEdge> getEdges() {
+                    return (List<OrderLineItemEdge>) get("edges");
+                }
+
+                public OrderLineItemConnection setEdges(List<OrderLineItemEdge> arg) {
+                    optimisticData.put(getKey("edges"), arg);
+                    return this;
+                }
+
+                /**
+                * Information to aid in pagination.
+                */
+
+                public PageInfo getPageInfo() {
+                    return (PageInfo) get("pageInfo");
+                }
+
+                public OrderLineItemConnection setPageInfo(PageInfo arg) {
+                    optimisticData.put(getKey("pageInfo"), arg);
+                    return this;
+                }
+
+                public boolean unwrapsToObject(String key) {
+                    switch (getFieldName(key)) {
+                        case "edges": return true;
+
+                        case "pageInfo": return true;
+
+                        default: return false;
+                    }
+                }
+            }
+
+            public interface OrderLineItemEdgeQueryDefinition {
+                void define(OrderLineItemEdgeQuery _queryBuilder);
+            }
+
+            public static class OrderLineItemEdgeQuery extends Query<OrderLineItemEdgeQuery> {
+                OrderLineItemEdgeQuery(StringBuilder _queryBuilder) {
+                    super(_queryBuilder);
+                }
+
+                /**
+                * A cursor for use in pagination.
+                */
+                public OrderLineItemEdgeQuery cursor() {
+                    startField("cursor");
+
+                    return this;
+                }
+
+                /**
+                * The item at the end of OrderLineItemEdge.
+                */
+                public OrderLineItemEdgeQuery node(OrderLineItemQueryDefinition queryDef) {
+                    startField("node");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new OrderLineItemQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+            }
+
+            public static class OrderLineItemEdge extends AbstractResponse<OrderLineItemEdge> {
+                public OrderLineItemEdge() {
+                }
+
+                public OrderLineItemEdge(JsonObject fields) throws SchemaViolationError {
+                    for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                        String key = field.getKey();
+                        String fieldName = getFieldName(key);
+                        switch (fieldName) {
+                            case "cursor": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+
+                                break;
+                            }
+
+                            case "node": {
+                                responseData.put(key, new OrderLineItem(jsonAsObject(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "__typename": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+                                break;
+                            }
+                            default: {
+                                throw new SchemaViolationError(this, key, field.getValue());
+                            }
+                        }
+                    }
+                }
+
+                public String getGraphQlTypeName() {
+                    return "OrderLineItemEdge";
+                }
+
+                /**
+                * A cursor for use in pagination.
+                */
+
+                public String getCursor() {
+                    return (String) get("cursor");
+                }
+
+                public OrderLineItemEdge setCursor(String arg) {
+                    optimisticData.put(getKey("cursor"), arg);
+                    return this;
+                }
+
+                /**
+                * The item at the end of OrderLineItemEdge.
+                */
+
+                public OrderLineItem getNode() {
+                    return (OrderLineItem) get("node");
+                }
+
+                public OrderLineItemEdge setNode(OrderLineItem arg) {
+                    optimisticData.put(getKey("node"), arg);
+                    return this;
+                }
+
+                public boolean unwrapsToObject(String key) {
+                    switch (getFieldName(key)) {
+                        case "cursor": return false;
+
+                        case "node": return true;
+
+                        default: return false;
+                    }
+                }
+            }
+
+            /**
+            * The set of valid sort keys for the orders query.
+            */
+            public enum OrderSortKeys {
+                ID,
+
+                PROCESSED_AT,
+
+                /**
+                * During a search (i.e. when the `query` parameter has been specified on the connection) this sorts
+                * the
+                * results by relevance to the search term(s). When no search query is specified, this sort key is not
+                * deterministic and should not be used.
+                */
+                RELEVANCE,
+
+                TOTAL_PRICE,
+
+                UNKNOWN_VALUE;
+
+                public static OrderSortKeys fromGraphQl(String value) {
+                    if (value == null) {
+                        return null;
+                    }
+
+                    switch (value) {
+                        case "ID": {
+                            return ID;
+                        }
+
+                        case "PROCESSED_AT": {
+                            return PROCESSED_AT;
+                        }
+
+                        case "RELEVANCE": {
+                            return RELEVANCE;
+                        }
+
+                        case "TOTAL_PRICE": {
+                            return TOTAL_PRICE;
+                        }
+
+                        default: {
+                            return UNKNOWN_VALUE;
+                        }
+                    }
+                }
+                public String toString() {
+                    switch (this) {
+                        case ID: {
+                            return "ID";
+                        }
+
+                        case PROCESSED_AT: {
+                            return "PROCESSED_AT";
+                        }
+
+                        case RELEVANCE: {
+                            return "RELEVANCE";
+                        }
+
+                        case TOTAL_PRICE: {
+                            return "TOTAL_PRICE";
+                        }
+
+                        default: {
+                            return "";
+                        }
+                    }
+                }
+            }
+
+            public interface PageInfoQueryDefinition {
+                void define(PageInfoQuery _queryBuilder);
+            }
+
+            /**
+            * Information about pagination in a connection.
+            */
+            public static class PageInfoQuery extends Query<PageInfoQuery> {
+                PageInfoQuery(StringBuilder _queryBuilder) {
+                    super(_queryBuilder);
+                }
+
+                /**
+                * Indicates if there are more pages to fetch.
+                */
+                public PageInfoQuery hasNextPage() {
+                    startField("hasNextPage");
+
+                    return this;
+                }
+
+                /**
+                * Indicates if there are any pages prior to the current page.
+                */
+                public PageInfoQuery hasPreviousPage() {
+                    startField("hasPreviousPage");
+
+                    return this;
+                }
+            }
+
+            /**
+            * Information about pagination in a connection.
+            */
+            public static class PageInfo extends AbstractResponse<PageInfo> {
+                public PageInfo() {
+                }
+
+                public PageInfo(JsonObject fields) throws SchemaViolationError {
+                    for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                        String key = field.getKey();
+                        String fieldName = getFieldName(key);
+                        switch (fieldName) {
+                            case "hasNextPage": {
+                                responseData.put(key, jsonAsBoolean(field.getValue(), key));
+
+                                break;
+                            }
+
+                            case "hasPreviousPage": {
+                                responseData.put(key, jsonAsBoolean(field.getValue(), key));
+
+                                break;
+                            }
+
+                            case "__typename": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+                                break;
+                            }
+                            default: {
+                                throw new SchemaViolationError(this, key, field.getValue());
+                            }
+                        }
+                    }
+                }
+
+                public String getGraphQlTypeName() {
+                    return "PageInfo";
+                }
+
+                /**
+                * Indicates if there are more pages to fetch.
+                */
+
+                public Boolean getHasNextPage() {
+                    return (Boolean) get("hasNextPage");
+                }
+
+                public PageInfo setHasNextPage(Boolean arg) {
+                    optimisticData.put(getKey("hasNextPage"), arg);
+                    return this;
+                }
+
+                /**
+                * Indicates if there are any pages prior to the current page.
+                */
+
+                public Boolean getHasPreviousPage() {
+                    return (Boolean) get("hasPreviousPage");
+                }
+
+                public PageInfo setHasPreviousPage(Boolean arg) {
+                    optimisticData.put(getKey("hasPreviousPage"), arg);
+                    return this;
+                }
+
+                public boolean unwrapsToObject(String key) {
+                    switch (getFieldName(key)) {
+                        case "hasNextPage": return false;
+
+                        case "hasPreviousPage": return false;
+
+                        default: return false;
+                    }
+                }
+            }
+
+            public interface PaymentQueryDefinition {
+                void define(PaymentQuery _queryBuilder);
+            }
+
+            /**
+            * A payment applied to a checkout.
+            */
+            public static class PaymentQuery extends Query<PaymentQuery> {
+                PaymentQuery(StringBuilder _queryBuilder) {
+                    super(_queryBuilder);
+
+                    startField("id");
+                }
+
+                /**
+                * The amount of the payment.
+                */
+                public PaymentQuery amount() {
+                    startField("amount");
+
+                    return this;
+                }
+
+                /**
+                * The billing address for the payment.
+                */
+                public PaymentQuery billingAddress(MailingAddressQueryDefinition queryDef) {
+                    startField("billingAddress");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new MailingAddressQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * The checkout to which the payment belongs.
+                */
+                public PaymentQuery checkout(CheckoutQueryDefinition queryDef) {
+                    startField("checkout");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new CheckoutQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * The credit card used for the payment in the case of direct payments.
+                */
+                public PaymentQuery creditCard(CreditCardQueryDefinition queryDef) {
+                    startField("creditCard");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new CreditCardQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * An message describing a processing error during asynchronous processing.
+                */
+                public PaymentQuery errorMessage() {
+                    startField("errorMessage");
+
+                    return this;
+                }
+
+                /**
+                * A client-side generated token to identify a payment and perform idempotent operations.
+                */
+                public PaymentQuery idempotencyKey() {
+                    startField("idempotencyKey");
+
+                    return this;
+                }
+
+                /**
+                * Whether or not the payment is still processing asynchronously.
+                */
+                public PaymentQuery ready() {
+                    startField("ready");
+
+                    return this;
+                }
+
+                /**
+                * A flag to indicate if the payment is to be done in test mode for gateways that support it.
+                */
+                public PaymentQuery test() {
+                    startField("test");
+
+                    return this;
+                }
+
+                /**
+                * The actual transaction recorded by Shopify after having processed the payment with the gateway.
+                */
+                public PaymentQuery transaction(TransactionQueryDefinition queryDef) {
+                    startField("transaction");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new TransactionQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+            }
+
+            /**
+            * A payment applied to a checkout.
+            */
+            public static class Payment extends AbstractResponse<Payment> implements Node {
+                public Payment() {
+                }
+
+                public Payment(JsonObject fields) throws SchemaViolationError {
+                    for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                        String key = field.getKey();
+                        String fieldName = getFieldName(key);
+                        switch (fieldName) {
+                            case "amount": {
+                                responseData.put(key, new BigDecimal(jsonAsString(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "billingAddress": {
+                                MailingAddress optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = new MailingAddress(jsonAsObject(field.getValue(), key));
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "checkout": {
+                                responseData.put(key, new Checkout(jsonAsObject(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "creditCard": {
+                                CreditCard optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = new CreditCard(jsonAsObject(field.getValue(), key));
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "errorMessage": {
+                                String optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = jsonAsString(field.getValue(), key);
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "id": {
+                                responseData.put(key, new ID(jsonAsString(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "idempotencyKey": {
+                                String optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = jsonAsString(field.getValue(), key);
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "ready": {
+                                responseData.put(key, jsonAsBoolean(field.getValue(), key));
+
+                                break;
+                            }
+
+                            case "test": {
+                                responseData.put(key, jsonAsBoolean(field.getValue(), key));
+
+                                break;
+                            }
+
+                            case "transaction": {
+                                Transaction optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = new Transaction(jsonAsObject(field.getValue(), key));
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "__typename": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+                                break;
+                            }
+                            default: {
+                                throw new SchemaViolationError(this, key, field.getValue());
+                            }
+                        }
+                    }
+                }
+
+                public Payment(ID id) {
+                    this();
+                    optimisticData.put("id", id);
+                }
+
+                public String getGraphQlTypeName() {
+                    return "Payment";
+                }
+
+                /**
+                * The amount of the payment.
+                */
+
+                public BigDecimal getAmount() {
+                    return (BigDecimal) get("amount");
+                }
+
+                public Payment setAmount(BigDecimal arg) {
+                    optimisticData.put(getKey("amount"), arg);
+                    return this;
+                }
+
+                /**
+                * The billing address for the payment.
+                */
+
+                public MailingAddress getBillingAddress() {
+                    return (MailingAddress) get("billingAddress");
+                }
+
+                public Payment setBillingAddress(MailingAddress arg) {
+                    optimisticData.put(getKey("billingAddress"), arg);
+                    return this;
+                }
+
+                /**
+                * The checkout to which the payment belongs.
+                */
+
+                public Checkout getCheckout() {
+                    return (Checkout) get("checkout");
+                }
+
+                public Payment setCheckout(Checkout arg) {
+                    optimisticData.put(getKey("checkout"), arg);
+                    return this;
+                }
+
+                /**
+                * The credit card used for the payment in the case of direct payments.
+                */
+
+                public CreditCard getCreditCard() {
+                    return (CreditCard) get("creditCard");
+                }
+
+                public Payment setCreditCard(CreditCard arg) {
+                    optimisticData.put(getKey("creditCard"), arg);
+                    return this;
+                }
+
+                /**
+                * An message describing a processing error during asynchronous processing.
+                */
+
+                public String getErrorMessage() {
+                    return (String) get("errorMessage");
+                }
+
+                public Payment setErrorMessage(String arg) {
+                    optimisticData.put(getKey("errorMessage"), arg);
+                    return this;
+                }
+
+                /**
+                * Globally unique identifier.
+                */
+
+                public ID getId() {
+                    return (ID) get("id");
+                }
+
+                /**
+                * A client-side generated token to identify a payment and perform idempotent operations.
+                */
+
+                public String getIdempotencyKey() {
+                    return (String) get("idempotencyKey");
+                }
+
+                public Payment setIdempotencyKey(String arg) {
+                    optimisticData.put(getKey("idempotencyKey"), arg);
+                    return this;
+                }
+
+                /**
+                * Whether or not the payment is still processing asynchronously.
+                */
+
+                public Boolean getReady() {
+                    return (Boolean) get("ready");
+                }
+
+                public Payment setReady(Boolean arg) {
+                    optimisticData.put(getKey("ready"), arg);
+                    return this;
+                }
+
+                /**
+                * A flag to indicate if the payment is to be done in test mode for gateways that support it.
+                */
+
+                public Boolean getTest() {
+                    return (Boolean) get("test");
+                }
+
+                public Payment setTest(Boolean arg) {
+                    optimisticData.put(getKey("test"), arg);
+                    return this;
+                }
+
+                /**
+                * The actual transaction recorded by Shopify after having processed the payment with the gateway.
+                */
+
+                public Transaction getTransaction() {
+                    return (Transaction) get("transaction");
+                }
+
+                public Payment setTransaction(Transaction arg) {
+                    optimisticData.put(getKey("transaction"), arg);
+                    return this;
+                }
+
+                public boolean unwrapsToObject(String key) {
+                    switch (getFieldName(key)) {
+                        case "amount": return false;
+
+                        case "billingAddress": return true;
+
+                        case "checkout": return true;
+
+                        case "creditCard": return true;
+
+                        case "errorMessage": return false;
+
+                        case "id": return false;
+
+                        case "idempotencyKey": return false;
+
+                        case "ready": return false;
+
+                        case "test": return false;
+
+                        case "transaction": return true;
+
+                        default: return false;
+                    }
+                }
+            }
+
+            public interface PaymentSettingsQueryDefinition {
+                void define(PaymentSettingsQuery _queryBuilder);
+            }
+
+            /**
+            * Settings related to payments.
+            */
+            public static class PaymentSettingsQuery extends Query<PaymentSettingsQuery> {
+                PaymentSettingsQuery(StringBuilder _queryBuilder) {
+                    super(_queryBuilder);
+                }
+
+                /**
+                * List of the card brands which the shop accepts.
+                */
+                public PaymentSettingsQuery acceptedCardBrands() {
+                    startField("acceptedCardBrands");
+
+                    return this;
+                }
+
+                /**
+                * The url pointing to the endpoint to vault credit cards.
+                */
+                public PaymentSettingsQuery cardVaultUrl() {
+                    startField("cardVaultUrl");
+
+                    return this;
+                }
+
+                /**
+                * The country where the shop is located.
+                */
+                public PaymentSettingsQuery countryCode() {
+                    startField("countryCode");
+
+                    return this;
+                }
+
+                /**
+                * The three-letter code for the currency that the shop accepts.
+                */
+                public PaymentSettingsQuery currencyCode() {
+                    startField("currencyCode");
+
+                    return this;
+                }
+
+                /**
+                * The shop’s Shopify Payments account id.
+                */
+                public PaymentSettingsQuery shopifyPaymentsAccountId() {
+                    startField("shopifyPaymentsAccountId");
+
+                    return this;
+                }
+
+                /**
+                * List of the digital wallets which the shop supports.
+                */
+                public PaymentSettingsQuery supportedDigitalWallets() {
+                    startField("supportedDigitalWallets");
+
+                    return this;
+                }
+            }
+
+            /**
+            * Settings related to payments.
+            */
+            public static class PaymentSettings extends AbstractResponse<PaymentSettings> {
+                public PaymentSettings() {
+                }
+
+                public PaymentSettings(JsonObject fields) throws SchemaViolationError {
+                    for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                        String key = field.getKey();
+                        String fieldName = getFieldName(key);
+                        switch (fieldName) {
+                            case "acceptedCardBrands": {
+                                List<CardBrand> list1 = new ArrayList<>();
+                                for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                                    list1.add(CardBrand.fromGraphQl(jsonAsString(element1, key)));
+                                }
+
+                                responseData.put(key, list1);
+
+                                break;
+                            }
+
+                            case "cardVaultUrl": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+
+                                break;
+                            }
+
+                            case "countryCode": {
+                                responseData.put(key, CountryCode.fromGraphQl(jsonAsString(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "currencyCode": {
+                                responseData.put(key, CurrencyCode.fromGraphQl(jsonAsString(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "shopifyPaymentsAccountId": {
+                                String optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = jsonAsString(field.getValue(), key);
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "supportedDigitalWallets": {
+                                List<DigitalWallet> list1 = new ArrayList<>();
+                                for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                                    list1.add(DigitalWallet.fromGraphQl(jsonAsString(element1, key)));
+                                }
+
+                                responseData.put(key, list1);
+
+                                break;
+                            }
+
+                            case "__typename": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+                                break;
+                            }
+                            default: {
+                                throw new SchemaViolationError(this, key, field.getValue());
+                            }
+                        }
+                    }
+                }
+
+                public String getGraphQlTypeName() {
+                    return "PaymentSettings";
+                }
+
+                /**
+                * List of the card brands which the shop accepts.
+                */
+
+                public List<CardBrand> getAcceptedCardBrands() {
+                    return (List<CardBrand>) get("acceptedCardBrands");
+                }
+
+                public PaymentSettings setAcceptedCardBrands(List<CardBrand> arg) {
+                    optimisticData.put(getKey("acceptedCardBrands"), arg);
+                    return this;
+                }
+
+                /**
+                * The url pointing to the endpoint to vault credit cards.
+                */
+
+                public String getCardVaultUrl() {
+                    return (String) get("cardVaultUrl");
+                }
+
+                public PaymentSettings setCardVaultUrl(String arg) {
+                    optimisticData.put(getKey("cardVaultUrl"), arg);
+                    return this;
+                }
+
+                /**
+                * The country where the shop is located.
+                */
+
+                public CountryCode getCountryCode() {
+                    return (CountryCode) get("countryCode");
+                }
+
+                public PaymentSettings setCountryCode(CountryCode arg) {
+                    optimisticData.put(getKey("countryCode"), arg);
+                    return this;
+                }
+
+                /**
+                * The three-letter code for the currency that the shop accepts.
+                */
+
+                public CurrencyCode getCurrencyCode() {
+                    return (CurrencyCode) get("currencyCode");
+                }
+
+                public PaymentSettings setCurrencyCode(CurrencyCode arg) {
+                    optimisticData.put(getKey("currencyCode"), arg);
+                    return this;
+                }
+
+                /**
+                * The shop’s Shopify Payments account id.
+                */
+
+                public String getShopifyPaymentsAccountId() {
+                    return (String) get("shopifyPaymentsAccountId");
+                }
+
+                public PaymentSettings setShopifyPaymentsAccountId(String arg) {
+                    optimisticData.put(getKey("shopifyPaymentsAccountId"), arg);
+                    return this;
+                }
+
+                /**
+                * List of the digital wallets which the shop supports.
+                */
+
+                public List<DigitalWallet> getSupportedDigitalWallets() {
+                    return (List<DigitalWallet>) get("supportedDigitalWallets");
+                }
+
+                public PaymentSettings setSupportedDigitalWallets(List<DigitalWallet> arg) {
+                    optimisticData.put(getKey("supportedDigitalWallets"), arg);
+                    return this;
+                }
+
+                public boolean unwrapsToObject(String key) {
+                    switch (getFieldName(key)) {
+                        case "acceptedCardBrands": return false;
+
+                        case "cardVaultUrl": return false;
+
+                        case "countryCode": return false;
+
+                        case "currencyCode": return false;
+
+                        case "shopifyPaymentsAccountId": return false;
+
+                        case "supportedDigitalWallets": return false;
+
+                        default: return false;
+                    }
+                }
+            }
+
+            public interface ProductQueryDefinition {
+                void define(ProductQuery _queryBuilder);
+            }
+
+            /**
+            * A product represents an individual item for sale in a Shopify store. Products are often physical,
+            * but they don't have to be.
+            * For example, a digital download (such as a movie, music or ebook file) also qualifies as a product,
+            * as do services (such as equipment rental, work for hire, customization of another product or an
+            * extended warranty).
+            */
+            public static class ProductQuery extends Query<ProductQuery> {
+                ProductQuery(StringBuilder _queryBuilder) {
+                    super(_queryBuilder);
+
+                    startField("id");
+                }
+
+                public class CollectionsArguments extends Arguments {
+                    CollectionsArguments(StringBuilder _queryBuilder) {
+                        super(_queryBuilder, true);
+                    }
+
+                    /**
+                    * Returns up to the first `n` elements from the list.
+                    */
+                    public CollectionsArguments first(Integer value) {
+                        if (value != null) {
+                            startArgument("first");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Returns the elements that come after the specified cursor.
+                    */
+                    public CollectionsArguments after(String value) {
+                        if (value != null) {
+                            startArgument("after");
+                            Query.appendQuotedString(_queryBuilder, value.toString());
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Returns up to the last `n` elements from the list.
+                    */
+                    public CollectionsArguments last(Integer value) {
+                        if (value != null) {
+                            startArgument("last");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Returns the elements that come before the specified cursor.
+                    */
+                    public CollectionsArguments before(String value) {
+                        if (value != null) {
+                            startArgument("before");
+                            Query.appendQuotedString(_queryBuilder, value.toString());
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Reverse the order of the underlying list.
+                    */
+                    public CollectionsArguments reverse(Boolean value) {
+                        if (value != null) {
+                            startArgument("reverse");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+                }
+
+                public interface CollectionsArgumentsDefinition {
+                    void define(CollectionsArguments args);
+                }
+
+                /**
+                * List of collections a product belongs to.
+                */
+                public ProductQuery collections(CollectionConnectionQueryDefinition queryDef) {
+                    return collections(args -> {}, queryDef);
+                }
+
+                /**
+                * List of collections a product belongs to.
+                */
+                public ProductQuery collections(CollectionsArgumentsDefinition argsDef, CollectionConnectionQueryDefinition queryDef) {
+                    startField("collections");
+
+                    CollectionsArguments args = new CollectionsArguments(_queryBuilder);
+                    argsDef.define(args);
+                    CollectionsArguments.end(args);
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new CollectionConnectionQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * The date and time when the product was created.
+                */
+                public ProductQuery createdAt() {
+                    startField("createdAt");
+
+                    return this;
+                }
+
+                public class DescriptionArguments extends Arguments {
+                    DescriptionArguments(StringBuilder _queryBuilder) {
+                        super(_queryBuilder, true);
+                    }
+
+                    /**
+                    * Truncates string after the given length.
+                    */
+                    public DescriptionArguments truncateAt(Integer value) {
+                        if (value != null) {
+                            startArgument("truncateAt");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+                }
+
+                public interface DescriptionArgumentsDefinition {
+                    void define(DescriptionArguments args);
+                }
+
+                /**
+                * Stripped description of the product, single line with HTML tags removed.
+                */
+                public ProductQuery description() {
+                    return description(args -> {});
+                }
+
+                /**
+                * Stripped description of the product, single line with HTML tags removed.
+                */
+                public ProductQuery description(DescriptionArgumentsDefinition argsDef) {
+                    startField("description");
+
+                    DescriptionArguments args = new DescriptionArguments(_queryBuilder);
+                    argsDef.define(args);
+                    DescriptionArguments.end(args);
+
+                    return this;
+                }
+
+                /**
+                * The description of the product, complete with HTML formatting.
+                */
+                public ProductQuery descriptionHtml() {
+                    startField("descriptionHtml");
+
+                    return this;
+                }
+
+                /**
+                * A human-friendly unique string for the Product automatically generated from its title.
+                * They are used by the Liquid templating language to refer to objects.
+                */
+                public ProductQuery handle() {
+                    startField("handle");
+
+                    return this;
+                }
+
+                public class ImagesArguments extends Arguments {
+                    ImagesArguments(StringBuilder _queryBuilder) {
+                        super(_queryBuilder, true);
+                    }
+
+                    /**
+                    * Returns up to the first `n` elements from the list.
+                    */
+                    public ImagesArguments first(Integer value) {
+                        if (value != null) {
+                            startArgument("first");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Returns the elements that come after the specified cursor.
+                    */
+                    public ImagesArguments after(String value) {
+                        if (value != null) {
+                            startArgument("after");
+                            Query.appendQuotedString(_queryBuilder, value.toString());
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Returns up to the last `n` elements from the list.
+                    */
+                    public ImagesArguments last(Integer value) {
+                        if (value != null) {
+                            startArgument("last");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Returns the elements that come before the specified cursor.
+                    */
+                    public ImagesArguments before(String value) {
+                        if (value != null) {
+                            startArgument("before");
+                            Query.appendQuotedString(_queryBuilder, value.toString());
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Reverse the order of the underlying list.
+                    */
+                    public ImagesArguments reverse(Boolean value) {
+                        if (value != null) {
+                            startArgument("reverse");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Sort the underlying list by the given key.
+                    */
+                    public ImagesArguments sortKey(ProductImageSortKeys value) {
+                        if (value != null) {
+                            startArgument("sortKey");
+                            _queryBuilder.append(value.toString());
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Image width in pixels between 1 and 2048. This argument is deprecated: Use `maxWidth` on
+                    * `Image.transformedSrc` instead.
+                    */
+                    public ImagesArguments maxWidth(Integer value) {
+                        if (value != null) {
+                            startArgument("maxWidth");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Image height in pixels between 1 and 2048. This argument is deprecated: Use `maxHeight` on
+                    * `Image.transformedSrc` instead.
+                    */
+                    public ImagesArguments maxHeight(Integer value) {
+                        if (value != null) {
+                            startArgument("maxHeight");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Crops the image according to the specified region. This argument is deprecated: Use `crop` on
+                    * `Image.transformedSrc` instead.
+                    */
+                    public ImagesArguments crop(CropRegion value) {
+                        if (value != null) {
+                            startArgument("crop");
+                            _queryBuilder.append(value.toString());
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Image size multiplier for high-resolution retina displays. Must be between 1 and 3. This argument is
+                    * deprecated: Use `scale` on `Image.transformedSrc` instead.
+                    */
+                    public ImagesArguments scale(Integer value) {
+                        if (value != null) {
+                            startArgument("scale");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+                }
+
+                public interface ImagesArgumentsDefinition {
+                    void define(ImagesArguments args);
+                }
+
+                /**
+                * List of images associated with the product.
+                */
+                public ProductQuery images(ImageConnectionQueryDefinition queryDef) {
+                    return images(args -> {}, queryDef);
+                }
+
+                /**
+                * List of images associated with the product.
+                */
+                public ProductQuery images(ImagesArgumentsDefinition argsDef, ImageConnectionQueryDefinition queryDef) {
+                    startField("images");
+
+                    ImagesArguments args = new ImagesArguments(_queryBuilder);
+                    argsDef.define(args);
+                    ImagesArguments.end(args);
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new ImageConnectionQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * The online store URL for the product.
+                * A value of `null` indicates that the product is not published to the Online Store sales channel.
+                */
+                public ProductQuery onlineStoreUrl() {
+                    startField("onlineStoreUrl");
+
+                    return this;
+                }
+
+                public class OptionsArguments extends Arguments {
+                    OptionsArguments(StringBuilder _queryBuilder) {
+                        super(_queryBuilder, true);
+                    }
+
+                    /**
+                    * Truncate the array result to this size
+                    */
+                    public OptionsArguments first(Integer value) {
+                        if (value != null) {
+                            startArgument("first");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+                }
+
+                public interface OptionsArgumentsDefinition {
+                    void define(OptionsArguments args);
+                }
+
+                /**
+                * List of custom product options (maximum of 3 per product).
+                */
+                public ProductQuery options(ProductOptionQueryDefinition queryDef) {
+                    return options(args -> {}, queryDef);
+                }
+
+                /**
+                * List of custom product options (maximum of 3 per product).
+                */
+                public ProductQuery options(OptionsArgumentsDefinition argsDef, ProductOptionQueryDefinition queryDef) {
+                    startField("options");
+
+                    OptionsArguments args = new OptionsArguments(_queryBuilder);
+                    argsDef.define(args);
+                    OptionsArguments.end(args);
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new ProductOptionQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * A categorization that a product can be tagged with, commonly used for filtering and searching.
+                */
+                public ProductQuery productType() {
+                    startField("productType");
+
+                    return this;
+                }
+
+                /**
+                * The date and time when the product was published to the channel.
+                */
+                public ProductQuery publishedAt() {
+                    startField("publishedAt");
+
+                    return this;
+                }
+
+                /**
+                * A categorization that a product can be tagged with, commonly used for filtering and searching.
+                * Each comma-separated tag has a character limit of 255.
+                */
+                public ProductQuery tags() {
+                    startField("tags");
+
+                    return this;
+                }
+
+                /**
+                * The product’s title.
+                */
+                public ProductQuery title() {
+                    startField("title");
+
+                    return this;
+                }
+
+                /**
+                * The date and time when the product was last modified.
+                */
+                public ProductQuery updatedAt() {
+                    startField("updatedAt");
+
+                    return this;
+                }
+
+                /**
+                * Find a product’s variant based on its selected options.
+                * This is useful for converting a user’s selection of product options into a single matching variant.
+                * If there is not a variant for the selected options, `null` will be returned.
+                */
+                public ProductQuery variantBySelectedOptions(List<SelectedOptionInput> selectedOptions, ProductVariantQueryDefinition queryDef) {
+                    startField("variantBySelectedOptions");
+
+                    _queryBuilder.append("(selectedOptions:");
+                    _queryBuilder.append('[');
+                    {
+                        String listSeperator1 = "";
+                        for (SelectedOptionInput item1 : selectedOptions) {
+                            _queryBuilder.append(listSeperator1);
+                            listSeperator1 = ",";
+                            item1.appendTo(_queryBuilder);
+                        }
+                    }
+                    _queryBuilder.append(']');
+
+                    _queryBuilder.append(')');
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new ProductVariantQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                public class VariantsArguments extends Arguments {
+                    VariantsArguments(StringBuilder _queryBuilder) {
+                        super(_queryBuilder, true);
+                    }
+
+                    /**
+                    * Returns up to the first `n` elements from the list.
+                    */
+                    public VariantsArguments first(Integer value) {
+                        if (value != null) {
+                            startArgument("first");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Returns the elements that come after the specified cursor.
+                    */
+                    public VariantsArguments after(String value) {
+                        if (value != null) {
+                            startArgument("after");
+                            Query.appendQuotedString(_queryBuilder, value.toString());
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Returns up to the last `n` elements from the list.
+                    */
+                    public VariantsArguments last(Integer value) {
+                        if (value != null) {
+                            startArgument("last");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Returns the elements that come before the specified cursor.
+                    */
+                    public VariantsArguments before(String value) {
+                        if (value != null) {
+                            startArgument("before");
+                            Query.appendQuotedString(_queryBuilder, value.toString());
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Reverse the order of the underlying list.
+                    */
+                    public VariantsArguments reverse(Boolean value) {
+                        if (value != null) {
+                            startArgument("reverse");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Sort the underlying list by the given key.
+                    */
+                    public VariantsArguments sortKey(ProductVariantSortKeys value) {
+                        if (value != null) {
+                            startArgument("sortKey");
+                            _queryBuilder.append(value.toString());
+                        }
+                        return this;
+                    }
+                }
+
+                public interface VariantsArgumentsDefinition {
+                    void define(VariantsArguments args);
+                }
+
+                /**
+                * List of the product’s variants.
+                */
+                public ProductQuery variants(ProductVariantConnectionQueryDefinition queryDef) {
+                    return variants(args -> {}, queryDef);
+                }
+
+                /**
+                * List of the product’s variants.
+                */
+                public ProductQuery variants(VariantsArgumentsDefinition argsDef, ProductVariantConnectionQueryDefinition queryDef) {
+                    startField("variants");
+
+                    VariantsArguments args = new VariantsArguments(_queryBuilder);
+                    argsDef.define(args);
+                    VariantsArguments.end(args);
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new ProductVariantConnectionQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * The product’s vendor name.
+                */
+                public ProductQuery vendor() {
+                    startField("vendor");
+
+                    return this;
+                }
+            }
+
+            /**
+            * A product represents an individual item for sale in a Shopify store. Products are often physical,
+            * but they don't have to be.
+            * For example, a digital download (such as a movie, music or ebook file) also qualifies as a product,
+            * as do services (such as equipment rental, work for hire, customization of another product or an
+            * extended warranty).
+            */
+            public static class Product extends AbstractResponse<Product> implements Node {
+                public Product() {
+                }
+
+                public Product(JsonObject fields) throws SchemaViolationError {
+                    for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                        String key = field.getKey();
+                        String fieldName = getFieldName(key);
+                        switch (fieldName) {
+                            case "collections": {
+                                responseData.put(key, new CollectionConnection(jsonAsObject(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "createdAt": {
+                                responseData.put(key, Utils.parseDateTime(jsonAsString(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "description": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+
+                                break;
+                            }
+
+                            case "descriptionHtml": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+
+                                break;
+                            }
+
+                            case "handle": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+
+                                break;
+                            }
+
+                            case "id": {
+                                responseData.put(key, new ID(jsonAsString(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "images": {
+                                responseData.put(key, new ImageConnection(jsonAsObject(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "onlineStoreUrl": {
+                                String optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = jsonAsString(field.getValue(), key);
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "options": {
+                                List<ProductOption> list1 = new ArrayList<>();
+                                for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                                    list1.add(new ProductOption(jsonAsObject(element1, key)));
+                                }
+
+                                responseData.put(key, list1);
+
+                                break;
+                            }
+
+                            case "productType": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+
+                                break;
+                            }
+
+                            case "publishedAt": {
+                                responseData.put(key, Utils.parseDateTime(jsonAsString(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "tags": {
+                                List<String> list1 = new ArrayList<>();
+                                for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                                    list1.add(jsonAsString(element1, key));
+                                }
+
+                                responseData.put(key, list1);
+
+                                break;
+                            }
+
+                            case "title": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+
+                                break;
+                            }
+
+                            case "updatedAt": {
+                                responseData.put(key, Utils.parseDateTime(jsonAsString(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "variantBySelectedOptions": {
+                                ProductVariant optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = new ProductVariant(jsonAsObject(field.getValue(), key));
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "variants": {
+                                responseData.put(key, new ProductVariantConnection(jsonAsObject(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "vendor": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+
+                                break;
+                            }
+
+                            case "__typename": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+                                break;
+                            }
+                            default: {
+                                throw new SchemaViolationError(this, key, field.getValue());
+                            }
+                        }
+                    }
+                }
+
+                public Product(ID id) {
+                    this();
+                    optimisticData.put("id", id);
+                }
+
+                public String getGraphQlTypeName() {
+                    return "Product";
+                }
+
+                /**
+                * List of collections a product belongs to.
+                */
+
+                public CollectionConnection getCollections() {
+                    return (CollectionConnection) get("collections");
+                }
+
+                public Product setCollections(CollectionConnection arg) {
+                    optimisticData.put(getKey("collections"), arg);
+                    return this;
+                }
+
+                /**
+                * The date and time when the product was created.
+                */
+
+                public DateTime getCreatedAt() {
+                    return (DateTime) get("createdAt");
+                }
+
+                public Product setCreatedAt(DateTime arg) {
+                    optimisticData.put(getKey("createdAt"), arg);
+                    return this;
+                }
+
+                /**
+                * Stripped description of the product, single line with HTML tags removed.
+                */
+
+                public String getDescription() {
+                    return (String) get("description");
+                }
+
+                public Product setDescription(String arg) {
+                    optimisticData.put(getKey("description"), arg);
+                    return this;
+                }
+
+                /**
+                * The description of the product, complete with HTML formatting.
+                */
+
+                public String getDescriptionHtml() {
+                    return (String) get("descriptionHtml");
+                }
+
+                public Product setDescriptionHtml(String arg) {
+                    optimisticData.put(getKey("descriptionHtml"), arg);
+                    return this;
+                }
+
+                /**
+                * A human-friendly unique string for the Product automatically generated from its title.
+                * They are used by the Liquid templating language to refer to objects.
+                */
+
+                public String getHandle() {
+                    return (String) get("handle");
+                }
+
+                public Product setHandle(String arg) {
+                    optimisticData.put(getKey("handle"), arg);
+                    return this;
+                }
+
+                /**
+                * Globally unique identifier.
+                */
+
+                public ID getId() {
+                    return (ID) get("id");
+                }
+
+                /**
+                * List of images associated with the product.
+                */
+
+                public ImageConnection getImages() {
+                    return (ImageConnection) get("images");
+                }
+
+                public Product setImages(ImageConnection arg) {
+                    optimisticData.put(getKey("images"), arg);
+                    return this;
+                }
+
+                /**
+                * The online store URL for the product.
+                * A value of `null` indicates that the product is not published to the Online Store sales channel.
+                */
+
+                public String getOnlineStoreUrl() {
+                    return (String) get("onlineStoreUrl");
+                }
+
+                public Product setOnlineStoreUrl(String arg) {
+                    optimisticData.put(getKey("onlineStoreUrl"), arg);
+                    return this;
+                }
+
+                /**
+                * List of custom product options (maximum of 3 per product).
+                */
+
+                public List<ProductOption> getOptions() {
+                    return (List<ProductOption>) get("options");
+                }
+
+                public Product setOptions(List<ProductOption> arg) {
+                    optimisticData.put(getKey("options"), arg);
+                    return this;
+                }
+
+                /**
+                * A categorization that a product can be tagged with, commonly used for filtering and searching.
+                */
+
+                public String getProductType() {
+                    return (String) get("productType");
+                }
+
+                public Product setProductType(String arg) {
+                    optimisticData.put(getKey("productType"), arg);
+                    return this;
+                }
+
+                /**
+                * The date and time when the product was published to the channel.
+                */
+
+                public DateTime getPublishedAt() {
+                    return (DateTime) get("publishedAt");
+                }
+
+                public Product setPublishedAt(DateTime arg) {
+                    optimisticData.put(getKey("publishedAt"), arg);
+                    return this;
+                }
+
+                /**
+                * A categorization that a product can be tagged with, commonly used for filtering and searching.
+                * Each comma-separated tag has a character limit of 255.
+                */
+
+                public List<String> getTags() {
+                    return (List<String>) get("tags");
+                }
+
+                public Product setTags(List<String> arg) {
+                    optimisticData.put(getKey("tags"), arg);
+                    return this;
+                }
+
+                /**
+                * The product’s title.
+                */
+
+                public String getTitle() {
+                    return (String) get("title");
+                }
+
+                public Product setTitle(String arg) {
+                    optimisticData.put(getKey("title"), arg);
+                    return this;
+                }
+
+                /**
+                * The date and time when the product was last modified.
+                */
+
+                public DateTime getUpdatedAt() {
+                    return (DateTime) get("updatedAt");
+                }
+
+                public Product setUpdatedAt(DateTime arg) {
+                    optimisticData.put(getKey("updatedAt"), arg);
+                    return this;
+                }
+
+                /**
+                * Find a product’s variant based on its selected options.
+                * This is useful for converting a user’s selection of product options into a single matching variant.
+                * If there is not a variant for the selected options, `null` will be returned.
+                */
+
+                public ProductVariant getVariantBySelectedOptions() {
+                    return (ProductVariant) get("variantBySelectedOptions");
+                }
+
+                public Product setVariantBySelectedOptions(ProductVariant arg) {
+                    optimisticData.put(getKey("variantBySelectedOptions"), arg);
+                    return this;
+                }
+
+                /**
+                * List of the product’s variants.
+                */
+
+                public ProductVariantConnection getVariants() {
+                    return (ProductVariantConnection) get("variants");
+                }
+
+                public Product setVariants(ProductVariantConnection arg) {
+                    optimisticData.put(getKey("variants"), arg);
+                    return this;
+                }
+
+                /**
+                * The product’s vendor name.
+                */
+
+                public String getVendor() {
+                    return (String) get("vendor");
+                }
+
+                public Product setVendor(String arg) {
+                    optimisticData.put(getKey("vendor"), arg);
+                    return this;
+                }
+
+                public boolean unwrapsToObject(String key) {
+                    switch (getFieldName(key)) {
+                        case "collections": return true;
+
+                        case "createdAt": return false;
+
+                        case "description": return false;
+
+                        case "descriptionHtml": return false;
+
+                        case "handle": return false;
+
+                        case "id": return false;
+
+                        case "images": return true;
+
+                        case "onlineStoreUrl": return false;
+
+                        case "options": return true;
+
+                        case "productType": return false;
+
+                        case "publishedAt": return false;
+
+                        case "tags": return false;
+
+                        case "title": return false;
+
+                        case "updatedAt": return false;
+
+                        case "variantBySelectedOptions": return true;
+
+                        case "variants": return true;
+
+                        case "vendor": return false;
+
+                        default: return false;
+                    }
+                }
+            }
+
+            /**
+            * The set of valid sort keys for the products query.
+            */
+            public enum ProductCollectionSortKeys {
+                BEST_SELLING,
+
+                COLLECTION_DEFAULT,
+
+                CREATED,
+
+                ID,
+
+                MANUAL,
+
+                PRICE,
+
+                /**
+                * During a search (i.e. when the `query` parameter has been specified on the connection) this sorts
+                * the
+                * results by relevance to the search term(s). When no search query is specified, this sort key is not
+                * deterministic and should not be used.
+                */
+                RELEVANCE,
+
+                TITLE,
+
+                UNKNOWN_VALUE;
+
+                public static ProductCollectionSortKeys fromGraphQl(String value) {
+                    if (value == null) {
+                        return null;
+                    }
+
+                    switch (value) {
+                        case "BEST_SELLING": {
+                            return BEST_SELLING;
+                        }
+
+                        case "COLLECTION_DEFAULT": {
+                            return COLLECTION_DEFAULT;
+                        }
+
+                        case "CREATED": {
+                            return CREATED;
+                        }
+
+                        case "ID": {
+                            return ID;
+                        }
+
+                        case "MANUAL": {
+                            return MANUAL;
+                        }
+
+                        case "PRICE": {
+                            return PRICE;
+                        }
+
+                        case "RELEVANCE": {
+                            return RELEVANCE;
+                        }
+
+                        case "TITLE": {
+                            return TITLE;
+                        }
+
+                        default: {
+                            return UNKNOWN_VALUE;
+                        }
+                    }
+                }
+                public String toString() {
+                    switch (this) {
+                        case BEST_SELLING: {
+                            return "BEST_SELLING";
+                        }
+
+                        case COLLECTION_DEFAULT: {
+                            return "COLLECTION_DEFAULT";
+                        }
+
+                        case CREATED: {
+                            return "CREATED";
+                        }
+
+                        case ID: {
+                            return "ID";
+                        }
+
+                        case MANUAL: {
+                            return "MANUAL";
+                        }
+
+                        case PRICE: {
+                            return "PRICE";
+                        }
+
+                        case RELEVANCE: {
+                            return "RELEVANCE";
+                        }
+
+                        case TITLE: {
+                            return "TITLE";
+                        }
+
+                        default: {
+                            return "";
+                        }
+                    }
+                }
+            }
+
+            public interface ProductConnectionQueryDefinition {
+                void define(ProductConnectionQuery _queryBuilder);
+            }
+
+            public static class ProductConnectionQuery extends Query<ProductConnectionQuery> {
+                ProductConnectionQuery(StringBuilder _queryBuilder) {
+                    super(_queryBuilder);
+                }
+
+                /**
+                * A list of edges.
+                */
+                public ProductConnectionQuery edges(ProductEdgeQueryDefinition queryDef) {
+                    startField("edges");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new ProductEdgeQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * Information to aid in pagination.
+                */
+                public ProductConnectionQuery pageInfo(PageInfoQueryDefinition queryDef) {
+                    startField("pageInfo");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new PageInfoQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+            }
+
+            public static class ProductConnection extends AbstractResponse<ProductConnection> {
+                public ProductConnection() {
+                }
+
+                public ProductConnection(JsonObject fields) throws SchemaViolationError {
+                    for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                        String key = field.getKey();
+                        String fieldName = getFieldName(key);
+                        switch (fieldName) {
+                            case "edges": {
+                                List<ProductEdge> list1 = new ArrayList<>();
+                                for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                                    list1.add(new ProductEdge(jsonAsObject(element1, key)));
+                                }
+
+                                responseData.put(key, list1);
+
+                                break;
+                            }
+
+                            case "pageInfo": {
+                                responseData.put(key, new PageInfo(jsonAsObject(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "__typename": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+                                break;
+                            }
+                            default: {
+                                throw new SchemaViolationError(this, key, field.getValue());
+                            }
+                        }
+                    }
+                }
+
+                public String getGraphQlTypeName() {
+                    return "ProductConnection";
+                }
+
+                /**
+                * A list of edges.
+                */
+
+                public List<ProductEdge> getEdges() {
+                    return (List<ProductEdge>) get("edges");
+                }
+
+                public ProductConnection setEdges(List<ProductEdge> arg) {
+                    optimisticData.put(getKey("edges"), arg);
+                    return this;
+                }
+
+                /**
+                * Information to aid in pagination.
+                */
+
+                public PageInfo getPageInfo() {
+                    return (PageInfo) get("pageInfo");
+                }
+
+                public ProductConnection setPageInfo(PageInfo arg) {
+                    optimisticData.put(getKey("pageInfo"), arg);
+                    return this;
+                }
+
+                public boolean unwrapsToObject(String key) {
+                    switch (getFieldName(key)) {
+                        case "edges": return true;
+
+                        case "pageInfo": return true;
+
+                        default: return false;
+                    }
+                }
+            }
+
+            public interface ProductEdgeQueryDefinition {
+                void define(ProductEdgeQuery _queryBuilder);
+            }
+
+            public static class ProductEdgeQuery extends Query<ProductEdgeQuery> {
+                ProductEdgeQuery(StringBuilder _queryBuilder) {
+                    super(_queryBuilder);
+                }
+
+                /**
+                * A cursor for use in pagination.
+                */
+                public ProductEdgeQuery cursor() {
+                    startField("cursor");
+
+                    return this;
+                }
+
+                /**
+                * The item at the end of ProductEdge.
+                */
+                public ProductEdgeQuery node(ProductQueryDefinition queryDef) {
+                    startField("node");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new ProductQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+            }
+
+            public static class ProductEdge extends AbstractResponse<ProductEdge> {
+                public ProductEdge() {
+                }
+
+                public ProductEdge(JsonObject fields) throws SchemaViolationError {
+                    for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                        String key = field.getKey();
+                        String fieldName = getFieldName(key);
+                        switch (fieldName) {
+                            case "cursor": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+
+                                break;
+                            }
+
+                            case "node": {
+                                responseData.put(key, new Product(jsonAsObject(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "__typename": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+                                break;
+                            }
+                            default: {
+                                throw new SchemaViolationError(this, key, field.getValue());
+                            }
+                        }
+                    }
+                }
+
+                public String getGraphQlTypeName() {
+                    return "ProductEdge";
+                }
+
+                /**
+                * A cursor for use in pagination.
+                */
+
+                public String getCursor() {
+                    return (String) get("cursor");
+                }
+
+                public ProductEdge setCursor(String arg) {
+                    optimisticData.put(getKey("cursor"), arg);
+                    return this;
+                }
+
+                /**
+                * The item at the end of ProductEdge.
+                */
+
+                public Product getNode() {
+                    return (Product) get("node");
+                }
+
+                public ProductEdge setNode(Product arg) {
+                    optimisticData.put(getKey("node"), arg);
+                    return this;
+                }
+
+                public boolean unwrapsToObject(String key) {
+                    switch (getFieldName(key)) {
+                        case "cursor": return false;
+
+                        case "node": return true;
+
+                        default: return false;
+                    }
+                }
+            }
+
+            /**
+            * The set of valid sort keys for the images query.
+            */
+            public enum ProductImageSortKeys {
+                CREATED_AT,
+
+                ID,
+
+                POSITION,
+
+                /**
+                * During a search (i.e. when the `query` parameter has been specified on the connection) this sorts
+                * the
+                * results by relevance to the search term(s). When no search query is specified, this sort key is not
+                * deterministic and should not be used.
+                */
+                RELEVANCE,
+
+                UNKNOWN_VALUE;
+
+                public static ProductImageSortKeys fromGraphQl(String value) {
+                    if (value == null) {
+                        return null;
+                    }
+
+                    switch (value) {
+                        case "CREATED_AT": {
+                            return CREATED_AT;
+                        }
+
+                        case "ID": {
+                            return ID;
+                        }
+
+                        case "POSITION": {
+                            return POSITION;
+                        }
+
+                        case "RELEVANCE": {
+                            return RELEVANCE;
+                        }
+
+                        default: {
+                            return UNKNOWN_VALUE;
+                        }
+                    }
+                }
+                public String toString() {
+                    switch (this) {
+                        case CREATED_AT: {
+                            return "CREATED_AT";
+                        }
+
+                        case ID: {
+                            return "ID";
+                        }
+
+                        case POSITION: {
+                            return "POSITION";
+                        }
+
+                        case RELEVANCE: {
+                            return "RELEVANCE";
+                        }
+
+                        default: {
+                            return "";
+                        }
+                    }
+                }
+            }
+
+            public interface ProductOptionQueryDefinition {
+                void define(ProductOptionQuery _queryBuilder);
+            }
+
+            /**
+            * Custom product property names like "Size", "Color", and "Material".
+            * Products are based on permutations of these options.
+            * A product may have a maximum of 3 options.
+            * 255 characters limit each.
+            */
+            public static class ProductOptionQuery extends Query<ProductOptionQuery> {
+                ProductOptionQuery(StringBuilder _queryBuilder) {
+                    super(_queryBuilder);
+
+                    startField("id");
+                }
+
+                /**
+                * The product option’s name.
+                */
+                public ProductOptionQuery name() {
+                    startField("name");
+
+                    return this;
+                }
+
+                /**
+                * The corresponding value to the product option name.
+                */
+                public ProductOptionQuery values() {
+                    startField("values");
+
+                    return this;
+                }
+            }
+
+            /**
+            * Custom product property names like "Size", "Color", and "Material".
+            * Products are based on permutations of these options.
+            * A product may have a maximum of 3 options.
+            * 255 characters limit each.
+            */
+            public static class ProductOption extends AbstractResponse<ProductOption> implements Node {
+                public ProductOption() {
+                }
+
+                public ProductOption(JsonObject fields) throws SchemaViolationError {
+                    for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                        String key = field.getKey();
+                        String fieldName = getFieldName(key);
+                        switch (fieldName) {
+                            case "id": {
+                                responseData.put(key, new ID(jsonAsString(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "name": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+
+                                break;
+                            }
+
+                            case "values": {
+                                List<String> list1 = new ArrayList<>();
+                                for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                                    list1.add(jsonAsString(element1, key));
+                                }
+
+                                responseData.put(key, list1);
+
+                                break;
+                            }
+
+                            case "__typename": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+                                break;
+                            }
+                            default: {
+                                throw new SchemaViolationError(this, key, field.getValue());
+                            }
+                        }
+                    }
+                }
+
+                public ProductOption(ID id) {
+                    this();
+                    optimisticData.put("id", id);
+                }
+
+                public String getGraphQlTypeName() {
+                    return "ProductOption";
+                }
+
+                /**
+                * Globally unique identifier.
+                */
+
+                public ID getId() {
+                    return (ID) get("id");
+                }
+
+                /**
+                * The product option’s name.
+                */
+
+                public String getName() {
+                    return (String) get("name");
+                }
+
+                public ProductOption setName(String arg) {
+                    optimisticData.put(getKey("name"), arg);
+                    return this;
+                }
+
+                /**
+                * The corresponding value to the product option name.
+                */
+
+                public List<String> getValues() {
+                    return (List<String>) get("values");
+                }
+
+                public ProductOption setValues(List<String> arg) {
+                    optimisticData.put(getKey("values"), arg);
+                    return this;
+                }
+
+                public boolean unwrapsToObject(String key) {
+                    switch (getFieldName(key)) {
+                        case "id": return false;
+
+                        case "name": return false;
+
+                        case "values": return false;
+
+                        default: return false;
+                    }
+                }
+            }
+
+            /**
+            * The set of valid sort keys for the products query.
+            */
+            public enum ProductSortKeys {
+                CREATED_AT,
+
+                ID,
+
+                PRODUCT_TYPE,
+
+                /**
+                * During a search (i.e. when the `query` parameter has been specified on the connection) this sorts
+                * the
+                * results by relevance to the search term(s). When no search query is specified, this sort key is not
+                * deterministic and should not be used.
+                */
+                RELEVANCE,
+
+                TITLE,
+
+                UPDATED_AT,
+
+                VENDOR,
+
+                UNKNOWN_VALUE;
+
+                public static ProductSortKeys fromGraphQl(String value) {
+                    if (value == null) {
+                        return null;
+                    }
+
+                    switch (value) {
+                        case "CREATED_AT": {
+                            return CREATED_AT;
+                        }
+
+                        case "ID": {
+                            return ID;
+                        }
+
+                        case "PRODUCT_TYPE": {
+                            return PRODUCT_TYPE;
+                        }
+
+                        case "RELEVANCE": {
+                            return RELEVANCE;
+                        }
+
+                        case "TITLE": {
+                            return TITLE;
+                        }
+
+                        case "UPDATED_AT": {
+                            return UPDATED_AT;
+                        }
+
+                        case "VENDOR": {
+                            return VENDOR;
+                        }
+
+                        default: {
+                            return UNKNOWN_VALUE;
+                        }
+                    }
+                }
+                public String toString() {
+                    switch (this) {
+                        case CREATED_AT: {
+                            return "CREATED_AT";
+                        }
+
+                        case ID: {
+                            return "ID";
+                        }
+
+                        case PRODUCT_TYPE: {
+                            return "PRODUCT_TYPE";
+                        }
+
+                        case RELEVANCE: {
+                            return "RELEVANCE";
+                        }
+
+                        case TITLE: {
+                            return "TITLE";
+                        }
+
+                        case UPDATED_AT: {
+                            return "UPDATED_AT";
+                        }
+
+                        case VENDOR: {
+                            return "VENDOR";
+                        }
+
+                        default: {
+                            return "";
+                        }
+                    }
+                }
+            }
+
+            public interface ProductVariantQueryDefinition {
+                void define(ProductVariantQuery _queryBuilder);
+            }
+
+            /**
+            * A product variant represents a different version of a product, such as differing sizes or differing
+            * colors.
+            */
+            public static class ProductVariantQuery extends Query<ProductVariantQuery> {
+                ProductVariantQuery(StringBuilder _queryBuilder) {
+                    super(_queryBuilder);
+
+                    startField("id");
+                }
+
+                /**
+                * Indicates if the product variant is in stock.
+                *
+                * @deprecated Use `availableForSale` instead
+                */
+                @Deprecated
+                public ProductVariantQuery available() {
+                    startField("available");
+
+                    return this;
+                }
+
+                /**
+                * Indicates if the product variant is available for sale.
+                */
+                public ProductVariantQuery availableForSale() {
+                    startField("availableForSale");
+
+                    return this;
+                }
+
+                /**
+                * The compare at price of the variant. This can be used to mark a variant as on sale, when
+                * `compareAtPrice` is higher than `price`.
+                */
+                public ProductVariantQuery compareAtPrice() {
+                    startField("compareAtPrice");
+
+                    return this;
+                }
+
+                public class ImageArguments extends Arguments {
+                    ImageArguments(StringBuilder _queryBuilder) {
+                        super(_queryBuilder, true);
+                    }
+
+                    /**
+                    * Image width in pixels between 1 and 2048. This argument is deprecated: Use `maxWidth` on
+                    * `Image.transformedSrc` instead.
+                    */
+                    public ImageArguments maxWidth(Integer value) {
+                        if (value != null) {
+                            startArgument("maxWidth");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Image height in pixels between 1 and 2048. This argument is deprecated: Use `maxHeight` on
+                    * `Image.transformedSrc` instead.
+                    */
+                    public ImageArguments maxHeight(Integer value) {
+                        if (value != null) {
+                            startArgument("maxHeight");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Crops the image according to the specified region. This argument is deprecated: Use `crop` on
+                    * `Image.transformedSrc` instead.
+                    */
+                    public ImageArguments crop(CropRegion value) {
+                        if (value != null) {
+                            startArgument("crop");
+                            _queryBuilder.append(value.toString());
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Image size multiplier for high-resolution retina displays. Must be between 1 and 3. This argument is
+                    * deprecated: Use `scale` on `Image.transformedSrc` instead.
+                    */
+                    public ImageArguments scale(Integer value) {
+                        if (value != null) {
+                            startArgument("scale");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+                }
+
+                public interface ImageArgumentsDefinition {
+                    void define(ImageArguments args);
+                }
+
+                /**
+                * Image associated with the product variant. This field falls back to the product image if no image is
+                * available.
+                */
+                public ProductVariantQuery image(ImageQueryDefinition queryDef) {
+                    return image(args -> {}, queryDef);
+                }
+
+                /**
+                * Image associated with the product variant. This field falls back to the product image if no image is
+                * available.
+                */
+                public ProductVariantQuery image(ImageArgumentsDefinition argsDef, ImageQueryDefinition queryDef) {
+                    startField("image");
+
+                    ImageArguments args = new ImageArguments(_queryBuilder);
+                    argsDef.define(args);
+                    ImageArguments.end(args);
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new ImageQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * The product variant’s price.
+                */
+                public ProductVariantQuery price() {
+                    startField("price");
+
+                    return this;
+                }
+
+                /**
+                * The product object that the product variant belongs to.
+                */
+                public ProductVariantQuery product(ProductQueryDefinition queryDef) {
+                    startField("product");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new ProductQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * List of product options applied to the variant.
+                */
+                public ProductVariantQuery selectedOptions(SelectedOptionQueryDefinition queryDef) {
+                    startField("selectedOptions");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new SelectedOptionQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * The SKU (Stock Keeping Unit) associated with the variant.
+                */
+                public ProductVariantQuery sku() {
+                    startField("sku");
+
+                    return this;
+                }
+
+                /**
+                * The product variant’s title.
+                */
+                public ProductVariantQuery title() {
+                    startField("title");
+
+                    return this;
+                }
+
+                /**
+                * The weight of the product variant in the unit system specified with `weight_unit`.
+                */
+                public ProductVariantQuery weight() {
+                    startField("weight");
+
+                    return this;
+                }
+
+                /**
+                * Unit of measurement for weight.
+                */
+                public ProductVariantQuery weightUnit() {
+                    startField("weightUnit");
+
+                    return this;
+                }
+            }
+
+            /**
+            * A product variant represents a different version of a product, such as differing sizes or differing
+            * colors.
+            */
+            public static class ProductVariant extends AbstractResponse<ProductVariant> implements Node {
+                public ProductVariant() {
+                }
+
+                public ProductVariant(JsonObject fields) throws SchemaViolationError {
+                    for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                        String key = field.getKey();
+                        String fieldName = getFieldName(key);
+                        switch (fieldName) {
+                            case "available": {
+                                Boolean optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = jsonAsBoolean(field.getValue(), key);
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "availableForSale": {
+                                responseData.put(key, jsonAsBoolean(field.getValue(), key));
+
+                                break;
+                            }
+
+                            case "compareAtPrice": {
+                                BigDecimal optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = new BigDecimal(jsonAsString(field.getValue(), key));
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "id": {
+                                responseData.put(key, new ID(jsonAsString(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "image": {
+                                Image optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = new Image(jsonAsObject(field.getValue(), key));
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "price": {
+                                responseData.put(key, new BigDecimal(jsonAsString(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "product": {
+                                responseData.put(key, new Product(jsonAsObject(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "selectedOptions": {
+                                List<SelectedOption> list1 = new ArrayList<>();
+                                for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                                    list1.add(new SelectedOption(jsonAsObject(element1, key)));
+                                }
+
+                                responseData.put(key, list1);
+
+                                break;
+                            }
+
+                            case "sku": {
+                                String optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = jsonAsString(field.getValue(), key);
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "title": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+
+                                break;
+                            }
+
+                            case "weight": {
+                                Double optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = jsonAsDouble(field.getValue(), key);
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "weightUnit": {
+                                responseData.put(key, WeightUnit.fromGraphQl(jsonAsString(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "__typename": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+                                break;
+                            }
+                            default: {
+                                throw new SchemaViolationError(this, key, field.getValue());
+                            }
+                        }
+                    }
+                }
+
+                public ProductVariant(ID id) {
+                    this();
+                    optimisticData.put("id", id);
+                }
+
+                public String getGraphQlTypeName() {
+                    return "ProductVariant";
+                }
+
+                /**
+                * Indicates if the product variant is in stock.
+                *
+                * @deprecated Use `availableForSale` instead
+                */
+
+                public Boolean getAvailable() {
+                    return (Boolean) get("available");
+                }
+
+                public ProductVariant setAvailable(Boolean arg) {
+                    optimisticData.put(getKey("available"), arg);
+                    return this;
+                }
+
+                /**
+                * Indicates if the product variant is available for sale.
+                */
+
+                public Boolean getAvailableForSale() {
+                    return (Boolean) get("availableForSale");
+                }
+
+                public ProductVariant setAvailableForSale(Boolean arg) {
+                    optimisticData.put(getKey("availableForSale"), arg);
+                    return this;
+                }
+
+                /**
+                * The compare at price of the variant. This can be used to mark a variant as on sale, when
+                * `compareAtPrice` is higher than `price`.
+                */
+
+                public BigDecimal getCompareAtPrice() {
+                    return (BigDecimal) get("compareAtPrice");
+                }
+
+                public ProductVariant setCompareAtPrice(BigDecimal arg) {
+                    optimisticData.put(getKey("compareAtPrice"), arg);
+                    return this;
+                }
+
+                /**
+                * Globally unique identifier.
+                */
+
+                public ID getId() {
+                    return (ID) get("id");
+                }
+
+                /**
+                * Image associated with the product variant. This field falls back to the product image if no image is
+                * available.
+                */
+
+                public Image getImage() {
+                    return (Image) get("image");
+                }
+
+                public ProductVariant setImage(Image arg) {
+                    optimisticData.put(getKey("image"), arg);
+                    return this;
+                }
+
+                /**
+                * The product variant’s price.
+                */
+
+                public BigDecimal getPrice() {
+                    return (BigDecimal) get("price");
+                }
+
+                public ProductVariant setPrice(BigDecimal arg) {
+                    optimisticData.put(getKey("price"), arg);
+                    return this;
+                }
+
+                /**
+                * The product object that the product variant belongs to.
+                */
+
+                public Product getProduct() {
+                    return (Product) get("product");
+                }
+
+                public ProductVariant setProduct(Product arg) {
+                    optimisticData.put(getKey("product"), arg);
+                    return this;
+                }
+
+                /**
+                * List of product options applied to the variant.
+                */
+
+                public List<SelectedOption> getSelectedOptions() {
+                    return (List<SelectedOption>) get("selectedOptions");
+                }
+
+                public ProductVariant setSelectedOptions(List<SelectedOption> arg) {
+                    optimisticData.put(getKey("selectedOptions"), arg);
+                    return this;
+                }
+
+                /**
+                * The SKU (Stock Keeping Unit) associated with the variant.
+                */
+
+                public String getSku() {
+                    return (String) get("sku");
+                }
+
+                public ProductVariant setSku(String arg) {
+                    optimisticData.put(getKey("sku"), arg);
+                    return this;
+                }
+
+                /**
+                * The product variant’s title.
+                */
+
+                public String getTitle() {
+                    return (String) get("title");
+                }
+
+                public ProductVariant setTitle(String arg) {
+                    optimisticData.put(getKey("title"), arg);
+                    return this;
+                }
+
+                /**
+                * The weight of the product variant in the unit system specified with `weight_unit`.
+                */
+
+                public Double getWeight() {
+                    return (Double) get("weight");
+                }
+
+                public ProductVariant setWeight(Double arg) {
+                    optimisticData.put(getKey("weight"), arg);
+                    return this;
+                }
+
+                /**
+                * Unit of measurement for weight.
+                */
+
+                public WeightUnit getWeightUnit() {
+                    return (WeightUnit) get("weightUnit");
+                }
+
+                public ProductVariant setWeightUnit(WeightUnit arg) {
+                    optimisticData.put(getKey("weightUnit"), arg);
+                    return this;
+                }
+
+                public boolean unwrapsToObject(String key) {
+                    switch (getFieldName(key)) {
+                        case "available": return false;
+
+                        case "availableForSale": return false;
+
+                        case "compareAtPrice": return false;
+
+                        case "id": return false;
+
+                        case "image": return true;
+
+                        case "price": return false;
+
+                        case "product": return true;
+
+                        case "selectedOptions": return true;
+
+                        case "sku": return false;
+
+                        case "title": return false;
+
+                        case "weight": return false;
+
+                        case "weightUnit": return false;
+
+                        default: return false;
+                    }
+                }
+            }
+
+            public interface ProductVariantConnectionQueryDefinition {
+                void define(ProductVariantConnectionQuery _queryBuilder);
+            }
+
+            public static class ProductVariantConnectionQuery extends Query<ProductVariantConnectionQuery> {
+                ProductVariantConnectionQuery(StringBuilder _queryBuilder) {
+                    super(_queryBuilder);
+                }
+
+                /**
+                * A list of edges.
+                */
+                public ProductVariantConnectionQuery edges(ProductVariantEdgeQueryDefinition queryDef) {
+                    startField("edges");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new ProductVariantEdgeQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * Information to aid in pagination.
+                */
+                public ProductVariantConnectionQuery pageInfo(PageInfoQueryDefinition queryDef) {
+                    startField("pageInfo");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new PageInfoQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+            }
+
+            public static class ProductVariantConnection extends AbstractResponse<ProductVariantConnection> {
+                public ProductVariantConnection() {
+                }
+
+                public ProductVariantConnection(JsonObject fields) throws SchemaViolationError {
+                    for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                        String key = field.getKey();
+                        String fieldName = getFieldName(key);
+                        switch (fieldName) {
+                            case "edges": {
+                                List<ProductVariantEdge> list1 = new ArrayList<>();
+                                for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                                    list1.add(new ProductVariantEdge(jsonAsObject(element1, key)));
+                                }
+
+                                responseData.put(key, list1);
+
+                                break;
+                            }
+
+                            case "pageInfo": {
+                                responseData.put(key, new PageInfo(jsonAsObject(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "__typename": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+                                break;
+                            }
+                            default: {
+                                throw new SchemaViolationError(this, key, field.getValue());
+                            }
+                        }
+                    }
+                }
+
+                public String getGraphQlTypeName() {
+                    return "ProductVariantConnection";
+                }
+
+                /**
+                * A list of edges.
+                */
+
+                public List<ProductVariantEdge> getEdges() {
+                    return (List<ProductVariantEdge>) get("edges");
+                }
+
+                public ProductVariantConnection setEdges(List<ProductVariantEdge> arg) {
+                    optimisticData.put(getKey("edges"), arg);
+                    return this;
+                }
+
+                /**
+                * Information to aid in pagination.
+                */
+
+                public PageInfo getPageInfo() {
+                    return (PageInfo) get("pageInfo");
+                }
+
+                public ProductVariantConnection setPageInfo(PageInfo arg) {
+                    optimisticData.put(getKey("pageInfo"), arg);
+                    return this;
+                }
+
+                public boolean unwrapsToObject(String key) {
+                    switch (getFieldName(key)) {
+                        case "edges": return true;
+
+                        case "pageInfo": return true;
+
+                        default: return false;
+                    }
+                }
+            }
+
+            public interface ProductVariantEdgeQueryDefinition {
+                void define(ProductVariantEdgeQuery _queryBuilder);
+            }
+
+            public static class ProductVariantEdgeQuery extends Query<ProductVariantEdgeQuery> {
+                ProductVariantEdgeQuery(StringBuilder _queryBuilder) {
+                    super(_queryBuilder);
+                }
+
+                /**
+                * A cursor for use in pagination.
+                */
+                public ProductVariantEdgeQuery cursor() {
+                    startField("cursor");
+
+                    return this;
+                }
+
+                /**
+                * The item at the end of ProductVariantEdge.
+                */
+                public ProductVariantEdgeQuery node(ProductVariantQueryDefinition queryDef) {
+                    startField("node");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new ProductVariantQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+            }
+
+            public static class ProductVariantEdge extends AbstractResponse<ProductVariantEdge> {
+                public ProductVariantEdge() {
+                }
+
+                public ProductVariantEdge(JsonObject fields) throws SchemaViolationError {
+                    for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                        String key = field.getKey();
+                        String fieldName = getFieldName(key);
+                        switch (fieldName) {
+                            case "cursor": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+
+                                break;
+                            }
+
+                            case "node": {
+                                responseData.put(key, new ProductVariant(jsonAsObject(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "__typename": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+                                break;
+                            }
+                            default: {
+                                throw new SchemaViolationError(this, key, field.getValue());
+                            }
+                        }
+                    }
+                }
+
+                public String getGraphQlTypeName() {
+                    return "ProductVariantEdge";
+                }
+
+                /**
+                * A cursor for use in pagination.
+                */
+
+                public String getCursor() {
+                    return (String) get("cursor");
+                }
+
+                public ProductVariantEdge setCursor(String arg) {
+                    optimisticData.put(getKey("cursor"), arg);
+                    return this;
+                }
+
+                /**
+                * The item at the end of ProductVariantEdge.
+                */
+
+                public ProductVariant getNode() {
+                    return (ProductVariant) get("node");
+                }
+
+                public ProductVariantEdge setNode(ProductVariant arg) {
+                    optimisticData.put(getKey("node"), arg);
+                    return this;
+                }
+
+                public boolean unwrapsToObject(String key) {
+                    switch (getFieldName(key)) {
+                        case "cursor": return false;
+
+                        case "node": return true;
+
+                        default: return false;
+                    }
+                }
+            }
+
+            /**
+            * The set of valid sort keys for the variants query.
+            */
+            public enum ProductVariantSortKeys {
+                ID,
+
+                POSITION,
+
+                /**
+                * During a search (i.e. when the `query` parameter has been specified on the connection) this sorts
+                * the
+                * results by relevance to the search term(s). When no search query is specified, this sort key is not
+                * deterministic and should not be used.
+                */
+                RELEVANCE,
+
+                SKU,
+
+                TITLE,
+
+                UNKNOWN_VALUE;
+
+                public static ProductVariantSortKeys fromGraphQl(String value) {
+                    if (value == null) {
+                        return null;
+                    }
+
+                    switch (value) {
+                        case "ID": {
+                            return ID;
+                        }
+
+                        case "POSITION": {
+                            return POSITION;
+                        }
+
+                        case "RELEVANCE": {
+                            return RELEVANCE;
+                        }
+
+                        case "SKU": {
+                            return SKU;
+                        }
+
+                        case "TITLE": {
+                            return TITLE;
+                        }
+
+                        default: {
+                            return UNKNOWN_VALUE;
+                        }
+                    }
+                }
+                public String toString() {
+                    switch (this) {
+                        case ID: {
+                            return "ID";
+                        }
+
+                        case POSITION: {
+                            return "POSITION";
+                        }
+
+                        case RELEVANCE: {
+                            return "RELEVANCE";
+                        }
+
+                        case SKU: {
+                            return "SKU";
+                        }
+
+                        case TITLE: {
+                            return "TITLE";
+                        }
+
+                        default: {
+                            return "";
+                        }
+                    }
+                }
+            }
+
+            public interface QueryRootQueryDefinition {
+                void define(QueryRootQuery _queryBuilder);
+            }
+
+            /**
+            * The schema’s entry-point for queries. This acts as the public, top-level API from which all queries
+            * must start.
+            */
+            public static class QueryRootQuery extends Query<QueryRootQuery> {
+                QueryRootQuery(StringBuilder _queryBuilder) {
+                    super(_queryBuilder);
+                }
+
+                public QueryRootQuery customer(String customerAccessToken, CustomerQueryDefinition queryDef) {
+                    startField("customer");
+
+                    _queryBuilder.append("(customerAccessToken:");
+                    Query.appendQuotedString(_queryBuilder, customerAccessToken.toString());
+
+                    _queryBuilder.append(')');
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new CustomerQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                public QueryRootQuery node(ID id, NodeQueryDefinition queryDef) {
+                    startField("node");
+
+                    _queryBuilder.append("(id:");
+                    Query.appendQuotedString(_queryBuilder, id.toString());
+
+                    _queryBuilder.append(')');
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new NodeQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                public QueryRootQuery nodes(List<ID> ids, NodeQueryDefinition queryDef) {
+                    startField("nodes");
+
+                    _queryBuilder.append("(ids:");
+                    _queryBuilder.append('[');
+                    {
+                        String listSeperator1 = "";
+                        for (ID item1 : ids) {
+                            _queryBuilder.append(listSeperator1);
+                            listSeperator1 = ",";
+                            Query.appendQuotedString(_queryBuilder, item1.toString());
+                        }
+                    }
+                    _queryBuilder.append(']');
+
+                    _queryBuilder.append(')');
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new NodeQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                public QueryRootQuery shop(ShopQueryDefinition queryDef) {
+                    startField("shop");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new ShopQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                public String toString() {
+                    return _queryBuilder.toString();
+                }
+            }
+
+            /**
+            * The schema’s entry-point for queries. This acts as the public, top-level API from which all queries
+            * must start.
+            */
+            public static class QueryRoot extends AbstractResponse<QueryRoot> {
+                public QueryRoot() {
+                }
+
+                public QueryRoot(JsonObject fields) throws SchemaViolationError {
+                    for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                        String key = field.getKey();
+                        String fieldName = getFieldName(key);
+                        switch (fieldName) {
+                            case "customer": {
+                                Customer optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = new Customer(jsonAsObject(field.getValue(), key));
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "node": {
+                                Node optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = UnknownNode.create(jsonAsObject(field.getValue(), key));
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "nodes": {
+                                List<Node> list1 = new ArrayList<>();
+                                for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                                    Node optional2 = null;
+                                    if (!element1.isJsonNull()) {
+                                        optional2 = UnknownNode.create(jsonAsObject(element1, key));
+                                    }
+
+                                    list1.add(optional2);
+                                }
+
+                                responseData.put(key, list1);
+
+                                break;
+                            }
+
+                            case "shop": {
+                                responseData.put(key, new Shop(jsonAsObject(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "__typename": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+                                break;
+                            }
+                            default: {
+                                throw new SchemaViolationError(this, key, field.getValue());
+                            }
+                        }
+                    }
+                }
+
+                public String getGraphQlTypeName() {
+                    return "QueryRoot";
+                }
+
+                public Customer getCustomer() {
+                    return (Customer) get("customer");
+                }
+
+                public QueryRoot setCustomer(Customer arg) {
+                    optimisticData.put(getKey("customer"), arg);
+                    return this;
+                }
+
+                public Node getNode() {
+                    return (Node) get("node");
+                }
+
+                public QueryRoot setNode(Node arg) {
+                    optimisticData.put(getKey("node"), arg);
+                    return this;
+                }
+
+                public List<Node> getNodes() {
+                    return (List<Node>) get("nodes");
+                }
+
+                public QueryRoot setNodes(List<Node> arg) {
+                    optimisticData.put(getKey("nodes"), arg);
+                    return this;
+                }
+
+                public Shop getShop() {
+                    return (Shop) get("shop");
+                }
+
+                public QueryRoot setShop(Shop arg) {
+                    optimisticData.put(getKey("shop"), arg);
+                    return this;
+                }
+
+                public boolean unwrapsToObject(String key) {
+                    switch (getFieldName(key)) {
+                        case "customer": return true;
+
+                        case "node": return false;
+
+                        case "nodes": return false;
+
+                        case "shop": return true;
+
+                        default: return false;
+                    }
+                }
+            }
+
+            public interface SelectedOptionQueryDefinition {
+                void define(SelectedOptionQuery _queryBuilder);
+            }
+
+            /**
+            * Custom properties that a shop owner can use to define product variants.
+            * Multiple options can exist. Options are represented as: option1, option2, option3, etc.
+            */
+            public static class SelectedOptionQuery extends Query<SelectedOptionQuery> {
+                SelectedOptionQuery(StringBuilder _queryBuilder) {
+                    super(_queryBuilder);
+                }
+
+                /**
+                * The product option’s name.
+                */
+                public SelectedOptionQuery name() {
+                    startField("name");
+
+                    return this;
+                }
+
+                /**
+                * The product option’s value.
+                */
+                public SelectedOptionQuery value() {
+                    startField("value");
+
+                    return this;
+                }
+            }
+
+            /**
+            * Custom properties that a shop owner can use to define product variants.
+            * Multiple options can exist. Options are represented as: option1, option2, option3, etc.
+            */
+            public static class SelectedOption extends AbstractResponse<SelectedOption> {
+                public SelectedOption() {
+                }
+
+                public SelectedOption(JsonObject fields) throws SchemaViolationError {
+                    for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                        String key = field.getKey();
+                        String fieldName = getFieldName(key);
+                        switch (fieldName) {
+                            case "name": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+
+                                break;
+                            }
+
+                            case "value": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+
+                                break;
+                            }
+
+                            case "__typename": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+                                break;
+                            }
+                            default: {
+                                throw new SchemaViolationError(this, key, field.getValue());
+                            }
+                        }
+                    }
+                }
+
+                public String getGraphQlTypeName() {
+                    return "SelectedOption";
+                }
+
+                /**
+                * The product option’s name.
+                */
+
+                public String getName() {
+                    return (String) get("name");
+                }
+
+                public SelectedOption setName(String arg) {
+                    optimisticData.put(getKey("name"), arg);
+                    return this;
+                }
+
+                /**
+                * The product option’s value.
+                */
+
+                public String getValue() {
+                    return (String) get("value");
+                }
+
+                public SelectedOption setValue(String arg) {
+                    optimisticData.put(getKey("value"), arg);
+                    return this;
+                }
+
+                public boolean unwrapsToObject(String key) {
+                    switch (getFieldName(key)) {
+                        case "name": return false;
+
+                        case "value": return false;
+
+                        default: return false;
+                    }
+                }
+            }
+
+            public static class SelectedOptionInput implements Serializable {
+                private String name;
+
+                private String value;
+
+                public SelectedOptionInput(String name, String value) {
+                    this.name = name;
+
+                    this.value = value;
+                }
+
+                public String getName() {
+                    return name;
+                }
+
+                public SelectedOptionInput setName(String name) {
+                    this.name = name;
+                    return this;
+                }
+
+                public String getValue() {
+                    return value;
+                }
+
+                public SelectedOptionInput setValue(String value) {
+                    this.value = value;
+                    return this;
+                }
+
+                public void appendTo(StringBuilder _queryBuilder) {
+                    String separator = "";
+                    _queryBuilder.append('{');
+
+                    _queryBuilder.append(separator);
+                    separator = ",";
+                    _queryBuilder.append("name:");
+                    Query.appendQuotedString(_queryBuilder, name.toString());
+
+                    _queryBuilder.append(separator);
+                    separator = ",";
+                    _queryBuilder.append("value:");
+                    Query.appendQuotedString(_queryBuilder, value.toString());
+
+                    _queryBuilder.append('}');
+                }
+            }
+
+            public interface ShippingRateQueryDefinition {
+                void define(ShippingRateQuery _queryBuilder);
+            }
+
+            /**
+            * A shipping rate to be applied to a checkout.
+            */
+            public static class ShippingRateQuery extends Query<ShippingRateQuery> {
+                ShippingRateQuery(StringBuilder _queryBuilder) {
+                    super(_queryBuilder);
+                }
+
+                /**
+                * Human-readable unique identifier for this shipping rate.
+                */
+                public ShippingRateQuery handle() {
+                    startField("handle");
+
+                    return this;
+                }
+
+                /**
+                * Price of this shipping rate.
+                */
+                public ShippingRateQuery price() {
+                    startField("price");
+
+                    return this;
+                }
+
+                /**
+                * Title of this shipping rate.
+                */
+                public ShippingRateQuery title() {
+                    startField("title");
+
+                    return this;
+                }
+            }
+
+            /**
+            * A shipping rate to be applied to a checkout.
+            */
+            public static class ShippingRate extends AbstractResponse<ShippingRate> {
+                public ShippingRate() {
+                }
+
+                public ShippingRate(JsonObject fields) throws SchemaViolationError {
+                    for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                        String key = field.getKey();
+                        String fieldName = getFieldName(key);
+                        switch (fieldName) {
+                            case "handle": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+
+                                break;
+                            }
+
+                            case "price": {
+                                responseData.put(key, new BigDecimal(jsonAsString(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "title": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+
+                                break;
+                            }
+
+                            case "__typename": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+                                break;
+                            }
+                            default: {
+                                throw new SchemaViolationError(this, key, field.getValue());
+                            }
+                        }
+                    }
+                }
+
+                public String getGraphQlTypeName() {
+                    return "ShippingRate";
+                }
+
+                /**
+                * Human-readable unique identifier for this shipping rate.
+                */
+
+                public String getHandle() {
+                    return (String) get("handle");
+                }
+
+                public ShippingRate setHandle(String arg) {
+                    optimisticData.put(getKey("handle"), arg);
+                    return this;
+                }
+
+                /**
+                * Price of this shipping rate.
+                */
+
+                public BigDecimal getPrice() {
+                    return (BigDecimal) get("price");
+                }
+
+                public ShippingRate setPrice(BigDecimal arg) {
+                    optimisticData.put(getKey("price"), arg);
+                    return this;
+                }
+
+                /**
+                * Title of this shipping rate.
+                */
+
+                public String getTitle() {
+                    return (String) get("title");
+                }
+
+                public ShippingRate setTitle(String arg) {
+                    optimisticData.put(getKey("title"), arg);
+                    return this;
+                }
+
+                public boolean unwrapsToObject(String key) {
+                    switch (getFieldName(key)) {
+                        case "handle": return false;
+
+                        case "price": return false;
+
+                        case "title": return false;
+
+                        default: return false;
+                    }
+                }
+            }
+
+            public interface ShopQueryDefinition {
+                void define(ShopQuery _queryBuilder);
+            }
+
+            /**
+            * Shop represents a collection of the general settings and information about the shop.
+            */
+            public static class ShopQuery extends Query<ShopQuery> {
+                ShopQuery(StringBuilder _queryBuilder) {
+                    super(_queryBuilder);
+                }
+
+                public class ArticlesArguments extends Arguments {
+                    ArticlesArguments(StringBuilder _queryBuilder) {
+                        super(_queryBuilder, true);
+                    }
+
+                    /**
+                    * Returns up to the first `n` elements from the list.
+                    */
+                    public ArticlesArguments first(Integer value) {
+                        if (value != null) {
+                            startArgument("first");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Returns the elements that come after the specified cursor.
+                    */
+                    public ArticlesArguments after(String value) {
+                        if (value != null) {
+                            startArgument("after");
+                            Query.appendQuotedString(_queryBuilder, value.toString());
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Returns up to the last `n` elements from the list.
+                    */
+                    public ArticlesArguments last(Integer value) {
+                        if (value != null) {
+                            startArgument("last");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Returns the elements that come before the specified cursor.
+                    */
+                    public ArticlesArguments before(String value) {
+                        if (value != null) {
+                            startArgument("before");
+                            Query.appendQuotedString(_queryBuilder, value.toString());
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Reverse the order of the underlying list.
+                    */
+                    public ArticlesArguments reverse(Boolean value) {
+                        if (value != null) {
+                            startArgument("reverse");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Sort the underlying list by the given key.
+                    */
+                    public ArticlesArguments sortKey(ArticleSortKeys value) {
+                        if (value != null) {
+                            startArgument("sortKey");
+                            _queryBuilder.append(value.toString());
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Supported filter parameters:
+                    * - `author`
+                    * - `updated_at`
+                    * - `created_at`
+                    * - `blog_title`
+                    * - `tag`
+                    */
+                    public ArticlesArguments query(String value) {
+                        if (value != null) {
+                            startArgument("query");
+                            Query.appendQuotedString(_queryBuilder, value.toString());
+                        }
+                        return this;
+                    }
+                }
+
+                public interface ArticlesArgumentsDefinition {
+                    void define(ArticlesArguments args);
+                }
+
+                /**
+                * List of the shop' articles.
+                */
+                public ShopQuery articles(ArticleConnectionQueryDefinition queryDef) {
+                    return articles(args -> {}, queryDef);
+                }
+
+                /**
+                * List of the shop' articles.
+                */
+                public ShopQuery articles(ArticlesArgumentsDefinition argsDef, ArticleConnectionQueryDefinition queryDef) {
+                    startField("articles");
+
+                    ArticlesArguments args = new ArticlesArguments(_queryBuilder);
+                    argsDef.define(args);
+                    ArticlesArguments.end(args);
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new ArticleConnectionQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                public class BlogsArguments extends Arguments {
+                    BlogsArguments(StringBuilder _queryBuilder) {
+                        super(_queryBuilder, true);
+                    }
+
+                    /**
+                    * Returns up to the first `n` elements from the list.
+                    */
+                    public BlogsArguments first(Integer value) {
+                        if (value != null) {
+                            startArgument("first");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Returns the elements that come after the specified cursor.
+                    */
+                    public BlogsArguments after(String value) {
+                        if (value != null) {
+                            startArgument("after");
+                            Query.appendQuotedString(_queryBuilder, value.toString());
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Returns up to the last `n` elements from the list.
+                    */
+                    public BlogsArguments last(Integer value) {
+                        if (value != null) {
+                            startArgument("last");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Returns the elements that come before the specified cursor.
+                    */
+                    public BlogsArguments before(String value) {
+                        if (value != null) {
+                            startArgument("before");
+                            Query.appendQuotedString(_queryBuilder, value.toString());
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Reverse the order of the underlying list.
+                    */
+                    public BlogsArguments reverse(Boolean value) {
+                        if (value != null) {
+                            startArgument("reverse");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Sort the underlying list by the given key.
+                    */
+                    public BlogsArguments sortKey(BlogSortKeys value) {
+                        if (value != null) {
+                            startArgument("sortKey");
+                            _queryBuilder.append(value.toString());
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Supported filter parameters:
+                    * - `handle`
+                    * - `title`
+                    * - `updated_at`
+                    * - `created_at`
+                    */
+                    public BlogsArguments query(String value) {
+                        if (value != null) {
+                            startArgument("query");
+                            Query.appendQuotedString(_queryBuilder, value.toString());
+                        }
+                        return this;
+                    }
+                }
+
+                public interface BlogsArgumentsDefinition {
+                    void define(BlogsArguments args);
+                }
+
+                /**
+                * List of the shop' blogs.
+                */
+                public ShopQuery blogs(BlogConnectionQueryDefinition queryDef) {
+                    return blogs(args -> {}, queryDef);
+                }
+
+                /**
+                * List of the shop' blogs.
+                */
+                public ShopQuery blogs(BlogsArgumentsDefinition argsDef, BlogConnectionQueryDefinition queryDef) {
+                    startField("blogs");
+
+                    BlogsArguments args = new BlogsArguments(_queryBuilder);
+                    argsDef.define(args);
+                    BlogsArguments.end(args);
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new BlogConnectionQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * The url pointing to the endpoint to vault credit cards.
+                *
+                * @deprecated Use `paymentSettings` instead
+                */
+                @Deprecated
+                public ShopQuery cardVaultUrl() {
+                    startField("cardVaultUrl");
+
+                    return this;
+                }
+
+                /**
+                * Find a collection by its handle.
+                */
+                public ShopQuery collectionByHandle(String handle, CollectionQueryDefinition queryDef) {
+                    startField("collectionByHandle");
+
+                    _queryBuilder.append("(handle:");
+                    Query.appendQuotedString(_queryBuilder, handle.toString());
+
+                    _queryBuilder.append(')');
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new CollectionQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                public class CollectionsArguments extends Arguments {
+                    CollectionsArguments(StringBuilder _queryBuilder) {
+                        super(_queryBuilder, true);
+                    }
+
+                    /**
+                    * Returns up to the first `n` elements from the list.
+                    */
+                    public CollectionsArguments first(Integer value) {
+                        if (value != null) {
+                            startArgument("first");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Returns the elements that come after the specified cursor.
+                    */
+                    public CollectionsArguments after(String value) {
+                        if (value != null) {
+                            startArgument("after");
+                            Query.appendQuotedString(_queryBuilder, value.toString());
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Returns up to the last `n` elements from the list.
+                    */
+                    public CollectionsArguments last(Integer value) {
+                        if (value != null) {
+                            startArgument("last");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Returns the elements that come before the specified cursor.
+                    */
+                    public CollectionsArguments before(String value) {
+                        if (value != null) {
+                            startArgument("before");
+                            Query.appendQuotedString(_queryBuilder, value.toString());
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Reverse the order of the underlying list.
+                    */
+                    public CollectionsArguments reverse(Boolean value) {
+                        if (value != null) {
+                            startArgument("reverse");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Sort the underlying list by the given key.
+                    */
+                    public CollectionsArguments sortKey(CollectionSortKeys value) {
+                        if (value != null) {
+                            startArgument("sortKey");
+                            _queryBuilder.append(value.toString());
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Supported filter parameters:
+                    * - `title`
+                    * - `collection_type`
+                    * - `updated_at`
+                    */
+                    public CollectionsArguments query(String value) {
+                        if (value != null) {
+                            startArgument("query");
+                            Query.appendQuotedString(_queryBuilder, value.toString());
+                        }
+                        return this;
+                    }
+                }
+
+                public interface CollectionsArgumentsDefinition {
+                    void define(CollectionsArguments args);
+                }
+
+                /**
+                * List of the shop’s collections.
+                */
+                public ShopQuery collections(CollectionConnectionQueryDefinition queryDef) {
+                    return collections(args -> {}, queryDef);
+                }
+
+                /**
+                * List of the shop’s collections.
+                */
+                public ShopQuery collections(CollectionsArgumentsDefinition argsDef, CollectionConnectionQueryDefinition queryDef) {
+                    startField("collections");
+
+                    CollectionsArguments args = new CollectionsArguments(_queryBuilder);
+                    argsDef.define(args);
+                    CollectionsArguments.end(args);
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new CollectionConnectionQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * The three-letter code for the currency that the shop accepts.
+                *
+                * @deprecated Use `paymentSettings` instead
+                */
+                @Deprecated
+                public ShopQuery currencyCode() {
+                    startField("currencyCode");
+
+                    return this;
+                }
+
+                /**
+                * A description of the shop.
+                */
+                public ShopQuery description() {
+                    startField("description");
+
+                    return this;
+                }
+
+                /**
+                * A string representing the way currency is formatted when the currency isn’t specified.
+                */
+                public ShopQuery moneyFormat() {
+                    startField("moneyFormat");
+
+                    return this;
+                }
+
+                /**
+                * The shop’s name.
+                */
+                public ShopQuery name() {
+                    startField("name");
+
+                    return this;
+                }
+
+                /**
+                * Settings related to payments.
+                */
+                public ShopQuery paymentSettings(PaymentSettingsQueryDefinition queryDef) {
+                    startField("paymentSettings");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new PaymentSettingsQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * The shop’s primary domain.
+                */
+                public ShopQuery primaryDomain(DomainQueryDefinition queryDef) {
+                    startField("primaryDomain");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new DomainQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * The shop’s privacy policy.
+                */
+                public ShopQuery privacyPolicy(ShopPolicyQueryDefinition queryDef) {
+                    startField("privacyPolicy");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new ShopPolicyQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * Find a product by its handle.
+                */
+                public ShopQuery productByHandle(String handle, ProductQueryDefinition queryDef) {
+                    startField("productByHandle");
+
+                    _queryBuilder.append("(handle:");
+                    Query.appendQuotedString(_queryBuilder, handle.toString());
+
+                    _queryBuilder.append(')');
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new ProductQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * List of the shop’s product types.
+                */
+                public ShopQuery productTypes(int first, StringConnectionQueryDefinition queryDef) {
+                    startField("productTypes");
+
+                    _queryBuilder.append("(first:");
+                    _queryBuilder.append(first);
+
+                    _queryBuilder.append(')');
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new StringConnectionQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                public class ProductsArguments extends Arguments {
+                    ProductsArguments(StringBuilder _queryBuilder) {
+                        super(_queryBuilder, true);
+                    }
+
+                    /**
+                    * Returns up to the first `n` elements from the list.
+                    */
+                    public ProductsArguments first(Integer value) {
+                        if (value != null) {
+                            startArgument("first");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Returns the elements that come after the specified cursor.
+                    */
+                    public ProductsArguments after(String value) {
+                        if (value != null) {
+                            startArgument("after");
+                            Query.appendQuotedString(_queryBuilder, value.toString());
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Returns up to the last `n` elements from the list.
+                    */
+                    public ProductsArguments last(Integer value) {
+                        if (value != null) {
+                            startArgument("last");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Returns the elements that come before the specified cursor.
+                    */
+                    public ProductsArguments before(String value) {
+                        if (value != null) {
+                            startArgument("before");
+                            Query.appendQuotedString(_queryBuilder, value.toString());
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Reverse the order of the underlying list.
+                    */
+                    public ProductsArguments reverse(Boolean value) {
+                        if (value != null) {
+                            startArgument("reverse");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Sort the underlying list by the given key.
+                    */
+                    public ProductsArguments sortKey(ProductSortKeys value) {
+                        if (value != null) {
+                            startArgument("sortKey");
+                            _queryBuilder.append(value.toString());
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Supported filter parameters:
+                    * - `title`
+                    * - `product_type`
+                    * - `vendor`
+                    * - `created_at`
+                    * - `updated_at`
+                    * - `tag`
+                    */
+                    public ProductsArguments query(String value) {
+                        if (value != null) {
+                            startArgument("query");
+                            Query.appendQuotedString(_queryBuilder, value.toString());
+                        }
+                        return this;
+                    }
+                }
+
+                public interface ProductsArgumentsDefinition {
+                    void define(ProductsArguments args);
+                }
+
+                /**
+                * List of the shop’s products.
+                */
+                public ShopQuery products(ProductConnectionQueryDefinition queryDef) {
+                    return products(args -> {}, queryDef);
+                }
+
+                /**
+                * List of the shop’s products.
+                */
+                public ShopQuery products(ProductsArgumentsDefinition argsDef, ProductConnectionQueryDefinition queryDef) {
+                    startField("products");
+
+                    ProductsArguments args = new ProductsArguments(_queryBuilder);
+                    argsDef.define(args);
+                    ProductsArguments.end(args);
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new ProductConnectionQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * The shop’s refund policy.
+                */
+                public ShopQuery refundPolicy(ShopPolicyQueryDefinition queryDef) {
+                    startField("refundPolicy");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new ShopPolicyQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * The shop’s Shopify Payments account id.
+                *
+                * @deprecated Use `paymentSettings` instead
+                */
+                @Deprecated
+                public ShopQuery shopifyPaymentsAccountId() {
+                    startField("shopifyPaymentsAccountId");
+
+                    return this;
+                }
+
+                /**
+                * The shop’s terms of service.
+                */
+                public ShopQuery termsOfService(ShopPolicyQueryDefinition queryDef) {
+                    startField("termsOfService");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new ShopPolicyQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+            }
+
+            /**
+            * Shop represents a collection of the general settings and information about the shop.
+            */
+            public static class Shop extends AbstractResponse<Shop> {
+                public Shop() {
+                }
+
+                public Shop(JsonObject fields) throws SchemaViolationError {
+                    for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                        String key = field.getKey();
+                        String fieldName = getFieldName(key);
+                        switch (fieldName) {
+                            case "articles": {
+                                responseData.put(key, new ArticleConnection(jsonAsObject(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "blogs": {
+                                responseData.put(key, new BlogConnection(jsonAsObject(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "cardVaultUrl": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+
+                                break;
+                            }
+
+                            case "collectionByHandle": {
+                                Collection optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = new Collection(jsonAsObject(field.getValue(), key));
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "collections": {
+                                responseData.put(key, new CollectionConnection(jsonAsObject(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "currencyCode": {
+                                responseData.put(key, CurrencyCode.fromGraphQl(jsonAsString(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "description": {
+                                String optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = jsonAsString(field.getValue(), key);
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "moneyFormat": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+
+                                break;
+                            }
+
+                            case "name": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+
+                                break;
+                            }
+
+                            case "paymentSettings": {
+                                responseData.put(key, new PaymentSettings(jsonAsObject(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "primaryDomain": {
+                                responseData.put(key, new Domain(jsonAsObject(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "privacyPolicy": {
+                                ShopPolicy optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = new ShopPolicy(jsonAsObject(field.getValue(), key));
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "productByHandle": {
+                                Product optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = new Product(jsonAsObject(field.getValue(), key));
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "productTypes": {
+                                responseData.put(key, new StringConnection(jsonAsObject(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "products": {
+                                responseData.put(key, new ProductConnection(jsonAsObject(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "refundPolicy": {
+                                ShopPolicy optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = new ShopPolicy(jsonAsObject(field.getValue(), key));
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "shopifyPaymentsAccountId": {
+                                String optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = jsonAsString(field.getValue(), key);
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "termsOfService": {
+                                ShopPolicy optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = new ShopPolicy(jsonAsObject(field.getValue(), key));
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "__typename": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+                                break;
+                            }
+                            default: {
+                                throw new SchemaViolationError(this, key, field.getValue());
+                            }
+                        }
+                    }
+                }
+
+                public String getGraphQlTypeName() {
+                    return "Shop";
+                }
+
+                /**
+                * List of the shop' articles.
+                */
+
+                public ArticleConnection getArticles() {
+                    return (ArticleConnection) get("articles");
+                }
+
+                public Shop setArticles(ArticleConnection arg) {
+                    optimisticData.put(getKey("articles"), arg);
+                    return this;
+                }
+
+                /**
+                * List of the shop' blogs.
+                */
+
+                public BlogConnection getBlogs() {
+                    return (BlogConnection) get("blogs");
+                }
+
+                public Shop setBlogs(BlogConnection arg) {
+                    optimisticData.put(getKey("blogs"), arg);
+                    return this;
+                }
+
+                /**
+                * The url pointing to the endpoint to vault credit cards.
+                *
+                * @deprecated Use `paymentSettings` instead
+                */
+
+                public String getCardVaultUrl() {
+                    return (String) get("cardVaultUrl");
+                }
+
+                public Shop setCardVaultUrl(String arg) {
+                    optimisticData.put(getKey("cardVaultUrl"), arg);
+                    return this;
+                }
+
+                /**
+                * Find a collection by its handle.
+                */
+
+                public Collection getCollectionByHandle() {
+                    return (Collection) get("collectionByHandle");
+                }
+
+                public Shop setCollectionByHandle(Collection arg) {
+                    optimisticData.put(getKey("collectionByHandle"), arg);
+                    return this;
+                }
+
+                /**
+                * List of the shop’s collections.
+                */
+
+                public CollectionConnection getCollections() {
+                    return (CollectionConnection) get("collections");
+                }
+
+                public Shop setCollections(CollectionConnection arg) {
+                    optimisticData.put(getKey("collections"), arg);
+                    return this;
+                }
+
+                /**
+                * The three-letter code for the currency that the shop accepts.
+                *
+                * @deprecated Use `paymentSettings` instead
+                */
+
+                public CurrencyCode getCurrencyCode() {
+                    return (CurrencyCode) get("currencyCode");
+                }
+
+                public Shop setCurrencyCode(CurrencyCode arg) {
+                    optimisticData.put(getKey("currencyCode"), arg);
+                    return this;
+                }
+
+                /**
+                * A description of the shop.
+                */
+
+                public String getDescription() {
+                    return (String) get("description");
+                }
+
+                public Shop setDescription(String arg) {
+                    optimisticData.put(getKey("description"), arg);
+                    return this;
+                }
+
+                /**
+                * A string representing the way currency is formatted when the currency isn’t specified.
+                */
+
+                public String getMoneyFormat() {
+                    return (String) get("moneyFormat");
+                }
+
+                public Shop setMoneyFormat(String arg) {
+                    optimisticData.put(getKey("moneyFormat"), arg);
+                    return this;
+                }
+
+                /**
+                * The shop’s name.
+                */
+
+                public String getName() {
+                    return (String) get("name");
+                }
+
+                public Shop setName(String arg) {
+                    optimisticData.put(getKey("name"), arg);
+                    return this;
+                }
+
+                /**
+                * Settings related to payments.
+                */
+
+                public PaymentSettings getPaymentSettings() {
+                    return (PaymentSettings) get("paymentSettings");
+                }
+
+                public Shop setPaymentSettings(PaymentSettings arg) {
+                    optimisticData.put(getKey("paymentSettings"), arg);
+                    return this;
+                }
+
+                /**
+                * The shop’s primary domain.
+                */
+
+                public Domain getPrimaryDomain() {
+                    return (Domain) get("primaryDomain");
+                }
+
+                public Shop setPrimaryDomain(Domain arg) {
+                    optimisticData.put(getKey("primaryDomain"), arg);
+                    return this;
+                }
+
+                /**
+                * The shop’s privacy policy.
+                */
+
+                public ShopPolicy getPrivacyPolicy() {
+                    return (ShopPolicy) get("privacyPolicy");
+                }
+
+                public Shop setPrivacyPolicy(ShopPolicy arg) {
+                    optimisticData.put(getKey("privacyPolicy"), arg);
+                    return this;
+                }
+
+                /**
+                * Find a product by its handle.
+                */
+
+                public Product getProductByHandle() {
+                    return (Product) get("productByHandle");
+                }
+
+                public Shop setProductByHandle(Product arg) {
+                    optimisticData.put(getKey("productByHandle"), arg);
+                    return this;
+                }
+
+                /**
+                * List of the shop’s product types.
+                */
+
+                public StringConnection getProductTypes() {
+                    return (StringConnection) get("productTypes");
+                }
+
+                public Shop setProductTypes(StringConnection arg) {
+                    optimisticData.put(getKey("productTypes"), arg);
+                    return this;
+                }
+
+                /**
+                * List of the shop’s products.
+                */
+
+                public ProductConnection getProducts() {
+                    return (ProductConnection) get("products");
+                }
+
+                public Shop setProducts(ProductConnection arg) {
+                    optimisticData.put(getKey("products"), arg);
+                    return this;
+                }
+
+                /**
+                * The shop’s refund policy.
+                */
+
+                public ShopPolicy getRefundPolicy() {
+                    return (ShopPolicy) get("refundPolicy");
+                }
+
+                public Shop setRefundPolicy(ShopPolicy arg) {
+                    optimisticData.put(getKey("refundPolicy"), arg);
+                    return this;
+                }
+
+                /**
+                * The shop’s Shopify Payments account id.
+                *
+                * @deprecated Use `paymentSettings` instead
+                */
+
+                public String getShopifyPaymentsAccountId() {
+                    return (String) get("shopifyPaymentsAccountId");
+                }
+
+                public Shop setShopifyPaymentsAccountId(String arg) {
+                    optimisticData.put(getKey("shopifyPaymentsAccountId"), arg);
+                    return this;
+                }
+
+                /**
+                * The shop’s terms of service.
+                */
+
+                public ShopPolicy getTermsOfService() {
+                    return (ShopPolicy) get("termsOfService");
+                }
+
+                public Shop setTermsOfService(ShopPolicy arg) {
+                    optimisticData.put(getKey("termsOfService"), arg);
+                    return this;
+                }
+
+                public boolean unwrapsToObject(String key) {
+                    switch (getFieldName(key)) {
+                        case "articles": return true;
+
+                        case "blogs": return true;
+
+                        case "cardVaultUrl": return false;
+
+                        case "collectionByHandle": return true;
+
+                        case "collections": return true;
+
+                        case "currencyCode": return false;
+
+                        case "description": return false;
+
+                        case "moneyFormat": return false;
+
+                        case "name": return false;
+
+                        case "paymentSettings": return true;
+
+                        case "primaryDomain": return true;
+
+                        case "privacyPolicy": return true;
+
+                        case "productByHandle": return true;
+
+                        case "productTypes": return true;
+
+                        case "products": return true;
+
+                        case "refundPolicy": return true;
+
+                        case "shopifyPaymentsAccountId": return false;
+
+                        case "termsOfService": return true;
+
+                        default: return false;
+                    }
+                }
+            }
+
+            public interface ShopPolicyQueryDefinition {
+                void define(ShopPolicyQuery _queryBuilder);
+            }
+
+            /**
+            * Policy that a merchant has configured for their store, such as their refund or privacy policy.
+            */
+            public static class ShopPolicyQuery extends Query<ShopPolicyQuery> {
+                ShopPolicyQuery(StringBuilder _queryBuilder) {
+                    super(_queryBuilder);
+
+                    startField("id");
+                }
+
+                /**
+                * Policy text, maximum size of 64kb.
+                */
+                public ShopPolicyQuery body() {
+                    startField("body");
+
+                    return this;
+                }
+
+                /**
+                * Policy’s title.
+                */
+                public ShopPolicyQuery title() {
+                    startField("title");
+
+                    return this;
+                }
+
+                /**
+                * Public URL to the policy.
+                */
+                public ShopPolicyQuery url() {
+                    startField("url");
+
+                    return this;
+                }
+            }
+
+            /**
+            * Policy that a merchant has configured for their store, such as their refund or privacy policy.
+            */
+            public static class ShopPolicy extends AbstractResponse<ShopPolicy> implements Node {
+                public ShopPolicy() {
+                }
+
+                public ShopPolicy(JsonObject fields) throws SchemaViolationError {
+                    for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                        String key = field.getKey();
+                        String fieldName = getFieldName(key);
+                        switch (fieldName) {
+                            case "body": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+
+                                break;
+                            }
+
+                            case "id": {
+                                responseData.put(key, new ID(jsonAsString(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "title": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+
+                                break;
+                            }
+
+                            case "url": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+
+                                break;
+                            }
+
+                            case "__typename": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+                                break;
+                            }
+                            default: {
+                                throw new SchemaViolationError(this, key, field.getValue());
+                            }
+                        }
+                    }
+                }
+
+                public ShopPolicy(ID id) {
+                    this();
+                    optimisticData.put("id", id);
+                }
+
+                public String getGraphQlTypeName() {
+                    return "ShopPolicy";
+                }
+
+                /**
+                * Policy text, maximum size of 64kb.
+                */
+
+                public String getBody() {
+                    return (String) get("body");
+                }
+
+                public ShopPolicy setBody(String arg) {
+                    optimisticData.put(getKey("body"), arg);
+                    return this;
+                }
+
+                /**
+                * Globally unique identifier.
+                */
+
+                public ID getId() {
+                    return (ID) get("id");
+                }
+
+                /**
+                * Policy’s title.
+                */
+
+                public String getTitle() {
+                    return (String) get("title");
+                }
+
+                public ShopPolicy setTitle(String arg) {
+                    optimisticData.put(getKey("title"), arg);
+                    return this;
+                }
+
+                /**
+                * Public URL to the policy.
+                */
+
+                public String getUrl() {
+                    return (String) get("url");
+                }
+
+                public ShopPolicy setUrl(String arg) {
+                    optimisticData.put(getKey("url"), arg);
+                    return this;
+                }
+
+                public boolean unwrapsToObject(String key) {
+                    switch (getFieldName(key)) {
+                        case "body": return false;
+
+                        case "id": return false;
+
+                        case "title": return false;
+
+                        case "url": return false;
+
+                        default: return false;
+                    }
+                }
+            }
+
+            public interface StringConnectionQueryDefinition {
+                void define(StringConnectionQuery _queryBuilder);
+            }
+
+            public static class StringConnectionQuery extends Query<StringConnectionQuery> {
+                StringConnectionQuery(StringBuilder _queryBuilder) {
+                    super(_queryBuilder);
+                }
+
+                /**
+                * A list of edges.
+                */
+                public StringConnectionQuery edges(StringEdgeQueryDefinition queryDef) {
+                    startField("edges");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new StringEdgeQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * Information to aid in pagination.
+                */
+                public StringConnectionQuery pageInfo(PageInfoQueryDefinition queryDef) {
+                    startField("pageInfo");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new PageInfoQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+            }
+
+            public static class StringConnection extends AbstractResponse<StringConnection> {
+                public StringConnection() {
+                }
+
+                public StringConnection(JsonObject fields) throws SchemaViolationError {
+                    for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                        String key = field.getKey();
+                        String fieldName = getFieldName(key);
+                        switch (fieldName) {
+                            case "edges": {
+                                List<StringEdge> list1 = new ArrayList<>();
+                                for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                                    list1.add(new StringEdge(jsonAsObject(element1, key)));
+                                }
+
+                                responseData.put(key, list1);
+
+                                break;
+                            }
+
+                            case "pageInfo": {
+                                responseData.put(key, new PageInfo(jsonAsObject(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "__typename": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+                                break;
+                            }
+                            default: {
+                                throw new SchemaViolationError(this, key, field.getValue());
+                            }
+                        }
+                    }
+                }
+
+                public String getGraphQlTypeName() {
+                    return "StringConnection";
+                }
+
+                /**
+                * A list of edges.
+                */
+
+                public List<StringEdge> getEdges() {
+                    return (List<StringEdge>) get("edges");
+                }
+
+                public StringConnection setEdges(List<StringEdge> arg) {
+                    optimisticData.put(getKey("edges"), arg);
+                    return this;
+                }
+
+                /**
+                * Information to aid in pagination.
+                */
+
+                public PageInfo getPageInfo() {
+                    return (PageInfo) get("pageInfo");
+                }
+
+                public StringConnection setPageInfo(PageInfo arg) {
+                    optimisticData.put(getKey("pageInfo"), arg);
+                    return this;
+                }
+
+                public boolean unwrapsToObject(String key) {
+                    switch (getFieldName(key)) {
+                        case "edges": return true;
+
+                        case "pageInfo": return true;
+
+                        default: return false;
+                    }
+                }
+            }
+
+            public interface StringEdgeQueryDefinition {
+                void define(StringEdgeQuery _queryBuilder);
+            }
+
+            public static class StringEdgeQuery extends Query<StringEdgeQuery> {
+                StringEdgeQuery(StringBuilder _queryBuilder) {
+                    super(_queryBuilder);
+                }
+
+                /**
+                * A cursor for use in pagination.
+                */
+                public StringEdgeQuery cursor() {
+                    startField("cursor");
+
+                    return this;
+                }
+
+                /**
+                * The item at the end of StringEdge.
+                */
+                public StringEdgeQuery node() {
+                    startField("node");
+
+                    return this;
+                }
+            }
+
+            public static class StringEdge extends AbstractResponse<StringEdge> {
+                public StringEdge() {
+                }
+
+                public StringEdge(JsonObject fields) throws SchemaViolationError {
+                    for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                        String key = field.getKey();
+                        String fieldName = getFieldName(key);
+                        switch (fieldName) {
+                            case "cursor": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+
+                                break;
+                            }
+
+                            case "node": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+
+                                break;
+                            }
+
+                            case "__typename": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+                                break;
+                            }
+                            default: {
+                                throw new SchemaViolationError(this, key, field.getValue());
+                            }
+                        }
+                    }
+                }
+
+                public String getGraphQlTypeName() {
+                    return "StringEdge";
+                }
+
+                /**
+                * A cursor for use in pagination.
+                */
+
+                public String getCursor() {
+                    return (String) get("cursor");
+                }
+
+                public StringEdge setCursor(String arg) {
+                    optimisticData.put(getKey("cursor"), arg);
+                    return this;
+                }
+
+                /**
+                * The item at the end of StringEdge.
+                */
+
+                public String getNode() {
+                    return (String) get("node");
+                }
+
+                public StringEdge setNode(String arg) {
+                    optimisticData.put(getKey("node"), arg);
+                    return this;
+                }
+
+                public boolean unwrapsToObject(String key) {
+                    switch (getFieldName(key)) {
+                        case "cursor": return false;
+
+                        case "node": return false;
+
+                        default: return false;
+                    }
+                }
+            }
+
+            public static class TokenizedPaymentInput implements Serializable {
+                private BigDecimal amount;
+
+                private String idempotencyKey;
+
+                private MailingAddressInput billingAddress;
+
+                private String type;
+
+                private String paymentData;
+
+                private Input<Boolean> test = Input.undefined();
+
+                private Input<String> identifier = Input.undefined();
+
+                public TokenizedPaymentInput(BigDecimal amount, String idempotencyKey, MailingAddressInput billingAddress, String type, String paymentData) {
+                    this.amount = amount;
+
+                    this.idempotencyKey = idempotencyKey;
+
+                    this.billingAddress = billingAddress;
+
+                    this.type = type;
+
+                    this.paymentData = paymentData;
+                }
+
+                public BigDecimal getAmount() {
+                    return amount;
+                }
+
+                public TokenizedPaymentInput setAmount(BigDecimal amount) {
+                    this.amount = amount;
+                    return this;
+                }
+
+                public String getIdempotencyKey() {
+                    return idempotencyKey;
+                }
+
+                public TokenizedPaymentInput setIdempotencyKey(String idempotencyKey) {
+                    this.idempotencyKey = idempotencyKey;
+                    return this;
+                }
+
+                public MailingAddressInput getBillingAddress() {
+                    return billingAddress;
+                }
+
+                public TokenizedPaymentInput setBillingAddress(MailingAddressInput billingAddress) {
+                    this.billingAddress = billingAddress;
+                    return this;
+                }
+
+                public String getType() {
+                    return type;
+                }
+
+                public TokenizedPaymentInput setType(String type) {
+                    this.type = type;
+                    return this;
+                }
+
+                public String getPaymentData() {
+                    return paymentData;
+                }
+
+                public TokenizedPaymentInput setPaymentData(String paymentData) {
+                    this.paymentData = paymentData;
+                    return this;
+                }
+
+                public Boolean getTest() {
+                    return test.getValue();
+                }
+
+                public Input<Boolean> getTestInput() {
+                    return test;
+                }
+
+                public TokenizedPaymentInput setTest(Boolean test) {
+                    this.test = Input.optional(test);
+                    return this;
+                }
+
+                public TokenizedPaymentInput setTestInput(Input<Boolean> test) {
+                    if (test == null) {
+                        throw new IllegalArgumentException("Input can not be null");
+                    }
+                    this.test = test;
+                    return this;
+                }
+
+                public String getIdentifier() {
+                    return identifier.getValue();
+                }
+
+                public Input<String> getIdentifierInput() {
+                    return identifier;
+                }
+
+                public TokenizedPaymentInput setIdentifier(String identifier) {
+                    this.identifier = Input.optional(identifier);
+                    return this;
+                }
+
+                public TokenizedPaymentInput setIdentifierInput(Input<String> identifier) {
+                    if (identifier == null) {
+                        throw new IllegalArgumentException("Input can not be null");
+                    }
+                    this.identifier = identifier;
+                    return this;
+                }
+
+                public void appendTo(StringBuilder _queryBuilder) {
+                    String separator = "";
+                    _queryBuilder.append('{');
+
+                    _queryBuilder.append(separator);
+                    separator = ",";
+                    _queryBuilder.append("amount:");
+                    Query.appendQuotedString(_queryBuilder, amount.toString());
+
+                    _queryBuilder.append(separator);
+                    separator = ",";
+                    _queryBuilder.append("idempotencyKey:");
+                    Query.appendQuotedString(_queryBuilder, idempotencyKey.toString());
+
+                    _queryBuilder.append(separator);
+                    separator = ",";
+                    _queryBuilder.append("billingAddress:");
+                    billingAddress.appendTo(_queryBuilder);
+
+                    _queryBuilder.append(separator);
+                    separator = ",";
+                    _queryBuilder.append("type:");
+                    Query.appendQuotedString(_queryBuilder, type.toString());
+
+                    _queryBuilder.append(separator);
+                    separator = ",";
+                    _queryBuilder.append("paymentData:");
+                    Query.appendQuotedString(_queryBuilder, paymentData.toString());
+
+                    if (this.test.isDefined()) {
+                        _queryBuilder.append(separator);
+                        separator = ",";
+                        _queryBuilder.append("test:");
+                        if (test.getValue() != null) {
+                            _queryBuilder.append(test.getValue());
+                        } else {
+                            _queryBuilder.append("null");
+                        }
+                    }
+
+                    if (this.identifier.isDefined()) {
+                        _queryBuilder.append(separator);
+                        separator = ",";
+                        _queryBuilder.append("identifier:");
+                        if (identifier.getValue() != null) {
+                            Query.appendQuotedString(_queryBuilder, identifier.getValue().toString());
+                        } else {
+                            _queryBuilder.append("null");
+                        }
+                    }
+
+                    _queryBuilder.append('}');
+                }
+            }
+
+            public interface TransactionQueryDefinition {
+                void define(TransactionQuery _queryBuilder);
+            }
+
+            /**
+            * An object representing exchange of money for a product or service.
+            */
+            public static class TransactionQuery extends Query<TransactionQuery> {
+                TransactionQuery(StringBuilder _queryBuilder) {
+                    super(_queryBuilder);
+                }
+
+                /**
+                * The amount of money that the transaction was for.
+                */
+                public TransactionQuery amount() {
+                    startField("amount");
+
+                    return this;
+                }
+
+                /**
+                * The kind of the transaction.
+                */
+                public TransactionQuery kind() {
+                    startField("kind");
+
+                    return this;
+                }
+
+                /**
+                * The status of the transaction
+                */
+                public TransactionQuery status() {
+                    startField("status");
+
+                    return this;
+                }
+
+                /**
+                * Whether the transaction was done in test mode or not
+                */
+                public TransactionQuery test() {
+                    startField("test");
+
+                    return this;
+                }
+            }
+
+            /**
+            * An object representing exchange of money for a product or service.
+            */
+            public static class Transaction extends AbstractResponse<Transaction> {
+                public Transaction() {
+                }
+
+                public Transaction(JsonObject fields) throws SchemaViolationError {
+                    for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                        String key = field.getKey();
+                        String fieldName = getFieldName(key);
+                        switch (fieldName) {
+                            case "amount": {
+                                responseData.put(key, new BigDecimal(jsonAsString(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "kind": {
+                                responseData.put(key, TransactionKind.fromGraphQl(jsonAsString(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "status": {
+                                responseData.put(key, TransactionStatus.fromGraphQl(jsonAsString(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "test": {
+                                responseData.put(key, jsonAsBoolean(field.getValue(), key));
+
+                                break;
+                            }
+
+                            case "__typename": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+                                break;
+                            }
+                            default: {
+                                throw new SchemaViolationError(this, key, field.getValue());
+                            }
+                        }
+                    }
+                }
+
+                public String getGraphQlTypeName() {
+                    return "Transaction";
+                }
+
+                /**
+                * The amount of money that the transaction was for.
+                */
+
+                public BigDecimal getAmount() {
+                    return (BigDecimal) get("amount");
+                }
+
+                public Transaction setAmount(BigDecimal arg) {
+                    optimisticData.put(getKey("amount"), arg);
+                    return this;
+                }
+
+                /**
+                * The kind of the transaction.
+                */
+
+                public TransactionKind getKind() {
+                    return (TransactionKind) get("kind");
+                }
+
+                public Transaction setKind(TransactionKind arg) {
+                    optimisticData.put(getKey("kind"), arg);
+                    return this;
+                }
+
+                /**
+                * The status of the transaction
+                */
+
+                public TransactionStatus getStatus() {
+                    return (TransactionStatus) get("status");
+                }
+
+                public Transaction setStatus(TransactionStatus arg) {
+                    optimisticData.put(getKey("status"), arg);
+                    return this;
+                }
+
+                /**
+                * Whether the transaction was done in test mode or not
+                */
+
+                public Boolean getTest() {
+                    return (Boolean) get("test");
+                }
+
+                public Transaction setTest(Boolean arg) {
+                    optimisticData.put(getKey("test"), arg);
+                    return this;
+                }
+
+                public boolean unwrapsToObject(String key) {
+                    switch (getFieldName(key)) {
+                        case "amount": return false;
+
+                        case "kind": return false;
+
+                        case "status": return false;
+
+                        case "test": return false;
+
+                        default: return false;
+                    }
+                }
+            }
+
+            public enum TransactionKind {
+                AUTHORIZATION,
+
+                CAPTURE,
+
+                CHANGE,
+
+                EMV_AUTHORIZATION,
+
+                SALE,
+
+                UNKNOWN_VALUE;
+
+                public static TransactionKind fromGraphQl(String value) {
+                    if (value == null) {
+                        return null;
+                    }
+
+                    switch (value) {
+                        case "AUTHORIZATION": {
+                            return AUTHORIZATION;
+                        }
+
+                        case "CAPTURE": {
+                            return CAPTURE;
+                        }
+
+                        case "CHANGE": {
+                            return CHANGE;
+                        }
+
+                        case "EMV_AUTHORIZATION": {
+                            return EMV_AUTHORIZATION;
+                        }
+
+                        case "SALE": {
+                            return SALE;
+                        }
+
+                        default: {
+                            return UNKNOWN_VALUE;
+                        }
+                    }
+                }
+                public String toString() {
+                    switch (this) {
+                        case AUTHORIZATION: {
+                            return "AUTHORIZATION";
+                        }
+
+                        case CAPTURE: {
+                            return "CAPTURE";
+                        }
+
+                        case CHANGE: {
+                            return "CHANGE";
+                        }
+
+                        case EMV_AUTHORIZATION: {
+                            return "EMV_AUTHORIZATION";
+                        }
+
+                        case SALE: {
+                            return "SALE";
+                        }
+
+                        default: {
+                            return "";
+                        }
+                    }
+                }
+            }
+
+            public enum TransactionStatus {
+                ERROR,
+
+                FAILURE,
+
+                PENDING,
+
+                SUCCESS,
+
+                UNKNOWN_VALUE;
+
+                public static TransactionStatus fromGraphQl(String value) {
+                    if (value == null) {
+                        return null;
+                    }
+
+                    switch (value) {
+                        case "ERROR": {
+                            return ERROR;
+                        }
+
+                        case "FAILURE": {
+                            return FAILURE;
+                        }
+
+                        case "PENDING": {
+                            return PENDING;
+                        }
+
+                        case "SUCCESS": {
+                            return SUCCESS;
+                        }
+
+                        default: {
+                            return UNKNOWN_VALUE;
+                        }
+                    }
+                }
+                public String toString() {
+                    switch (this) {
+                        case ERROR: {
+                            return "ERROR";
+                        }
+
+                        case FAILURE: {
+                            return "FAILURE";
+                        }
+
+                        case PENDING: {
+                            return "PENDING";
+                        }
+
+                        case SUCCESS: {
+                            return "SUCCESS";
+                        }
+
+                        default: {
+                            return "";
+                        }
+                    }
+                }
+            }
+
+            public interface UserErrorQueryDefinition {
+                void define(UserErrorQuery _queryBuilder);
+            }
+
+            /**
+            * Represents an error in the input of a mutation.
+            */
+            public static class UserErrorQuery extends Query<UserErrorQuery> {
+                UserErrorQuery(StringBuilder _queryBuilder) {
+                    super(_queryBuilder);
+                }
+
+                /**
+                * Path to input field which caused the error.
+                */
+                public UserErrorQuery field() {
+                    startField("field");
+
+                    return this;
+                }
+
+                /**
+                * The error message.
+                */
+                public UserErrorQuery message() {
+                    startField("message");
+
+                    return this;
+                }
+            }
+
+            /**
+            * Represents an error in the input of a mutation.
+            */
+            public static class UserError extends AbstractResponse<UserError> {
+                public UserError() {
+                }
+
+                public UserError(JsonObject fields) throws SchemaViolationError {
+                    for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                        String key = field.getKey();
+                        String fieldName = getFieldName(key);
+                        switch (fieldName) {
+                            case "field": {
+                                List<String> optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    List<String> list1 = new ArrayList<>();
+                                    for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                                        list1.add(jsonAsString(element1, key));
+                                    }
+
+                                    optional1 = list1;
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "message": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+
+                                break;
+                            }
+
+                            case "__typename": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+                                break;
+                            }
+                            default: {
+                                throw new SchemaViolationError(this, key, field.getValue());
+                            }
+                        }
+                    }
+                }
+
+                public String getGraphQlTypeName() {
+                    return "UserError";
+                }
+
+                /**
+                * Path to input field which caused the error.
+                */
+
+                public List<String> getField() {
+                    return (List<String>) get("field");
+                }
+
+                public UserError setField(List<String> arg) {
+                    optimisticData.put(getKey("field"), arg);
+                    return this;
+                }
+
+                /**
+                * The error message.
+                */
+
+                public String getMessage() {
+                    return (String) get("message");
+                }
+
+                public UserError setMessage(String arg) {
+                    optimisticData.put(getKey("message"), arg);
+                    return this;
+                }
+
+                public boolean unwrapsToObject(String key) {
+                    switch (getFieldName(key)) {
+                        case "field": return false;
+
+                        case "message": return false;
+
+                        default: return false;
+                    }
+                }
+            }
+
+            /**
+            * Units of measurement for weight.
+            */
+            public enum WeightUnit {
+                /**
+                * Metric system unit of mass
+                */
+                GRAMS,
+
+                /**
+                * 1 kilogram equals 1000 grams
+                */
+                KILOGRAMS,
+
+                /**
+                * Imperial system unit of mass
+                */
+                OUNCES,
+
+                /**
+                * 1 pound equals 16 ounces
+                */
+                POUNDS,
+
+                UNKNOWN_VALUE;
+
+                public static WeightUnit fromGraphQl(String value) {
+                    if (value == null) {
+                        return null;
+                    }
+
+                    switch (value) {
+                        case "GRAMS": {
+                            return GRAMS;
+                        }
+
+                        case "KILOGRAMS": {
+                            return KILOGRAMS;
+                        }
+
+                        case "OUNCES": {
+                            return OUNCES;
+                        }
+
+                        case "POUNDS": {
+                            return POUNDS;
+                        }
+
+                        default: {
+                            return UNKNOWN_VALUE;
+                        }
+                    }
+                }
+                public String toString() {
+                    switch (this) {
+                        case GRAMS: {
+                            return "GRAMS";
+                        }
+
+                        case KILOGRAMS: {
+                            return "KILOGRAMS";
+                        }
+
+                        case OUNCES: {
+                            return "OUNCES";
+                        }
+
+                        case POUNDS: {
+                            return "POUNDS";
+                        }
+
+                        default: {
+                            return "";
+                        }
                     }
                 }
             }
         }
-
-        public String getGraphQlTypeName() {
-            return "UserError";
-        }
-
-        /**
-        * Path to input field which caused the error.
-        */
-
-        public List<String> getField() {
-            return (List<String>) get("field");
-        }
-
-        public UserError setField(List<String> arg) {
-            optimisticData.put(getKey("field"), arg);
-            return this;
-        }
-
-        /**
-        * The error message.
-        */
-
-        public String getMessage() {
-            return (String) get("message");
-        }
-
-        public UserError setMessage(String arg) {
-            optimisticData.put(getKey("message"), arg);
-            return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "field": return false;
-
-                case "message": return false;
-
-                default: return false;
-            }
-        }
-    }
-
-    /**
-    * Units of measurements for weight.
-    */
-    public enum WeightUnit {
-        /**
-        * Metric system unit of mass
-        */
-        GRAMS,
-
-        /**
-        * 1 equals 1000 grams
-        */
-        KILOGRAMS,
-
-        /**
-        * Imperial system unit of mass
-        */
-        OUNCES,
-
-        /**
-        * 1 equals 16 ounces
-        */
-        POUNDS,
-
-        UNKNOWN_VALUE;
-
-        public static WeightUnit fromGraphQl(String value) {
-            if (value == null) {
-                return null;
-            }
-
-            switch (value) {
-                case "GRAMS": {
-                    return GRAMS;
-                }
-
-                case "KILOGRAMS": {
-                    return KILOGRAMS;
-                }
-
-                case "OUNCES": {
-                    return OUNCES;
-                }
-
-                case "POUNDS": {
-                    return POUNDS;
-                }
-
-                default: {
-                    return UNKNOWN_VALUE;
-                }
-            }
-        }
-        public String toString() {
-            switch (this) {
-                case GRAMS: {
-                    return "GRAMS";
-                }
-
-                case KILOGRAMS: {
-                    return "KILOGRAMS";
-                }
-
-                case OUNCES: {
-                    return "OUNCES";
-                }
-
-                case POUNDS: {
-                    return "POUNDS";
-                }
-
-                default: {
-                    return "";
-                }
-            }
-        }
-    }
-}

@@ -51,10 +51,10 @@ public final class ProductRepository {
     checkNotNull(query, "query == null");
     return rxApolloCall(apolloClient.query(query))
       .map(Optional::get)
-      .map(it -> it.collection.get())
-      .map(it -> it.asCollection.get())
-      .map(it -> it.productConnection)
-      .map(it -> it.productEdges)
+      .map(it -> it.collection().get())
+      .map(it -> ((CollectionProductPageQuery.AsCollection) it))
+      .map(CollectionProductPageQuery.AsCollection::productConnection)
+      .map(CollectionProductPageQuery.ProductConnection::productEdges)
       .subscribeOn(Schedulers.io());
   }
 
@@ -62,8 +62,8 @@ public final class ProductRepository {
     checkNotNull(query, "query == null");
     return rxApolloCall(apolloClient.query(query))
       .map(Optional::get)
-      .map(it -> it.node.get())
-      .map(it -> it.asProduct.get())
+      .map(it -> it.node().get())
+      .map(it -> ((ProductByIdQuery.AsProduct) it))
       .subscribeOn(Schedulers.io());
   }
 }

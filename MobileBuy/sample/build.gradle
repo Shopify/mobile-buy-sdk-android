@@ -1,14 +1,12 @@
 buildscript {
   dependencies {
     classpath dep.androidPlugin
-    classpath dep.retrolambda
     classpath dep.butterknifePlugin
     classpath dep.apolloPlugin
   }
 }
 
 apply plugin: 'com.android.application'
-apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'com.jakewharton.butterknife'
 apply plugin: 'com.apollographql.android'
 
@@ -22,6 +20,7 @@ android {
     targetSdkVersion androidConfig.targetSdkVersion
     versionCode 1
     versionName "1.0"
+    vectorDrawables.useSupportLibrary = true
   }
 
   compileOptions {
@@ -81,11 +80,15 @@ android {
     }
   }
 
+  flavorDimensions "whatever"
+
   productFlavors {
     shopify {
+      dimension "whatever"
     }
 
     xApollo {
+      dimension "whatever"
     }
   }
 
@@ -95,30 +98,32 @@ android {
 }
 
 dependencies {
-  compile dep.androidSupportDesign
-  compile dep.androidSupportV4
-  compile dep.androidSupportV7
-  compile dep.androidSupportAnnotations
-  compile dep.rxAndroid
-  compile dep.rxJava
-  compile dep.timber
-  compile dep.butterKnife
+  implementation dep.androidSupportDesign
+  implementation dep.androidSupportV4
+  implementation dep.androidSupportV7
+  implementation dep.androidSupportAnnotations
+  implementation dep.rxAndroid
+  implementation dep.rxJava
+  implementation dep.timber
+  implementation dep.butterKnife
   annotationProcessor dep.butterKnifeCompiler
-  compile(dep.fresco) {
+  implementation(dep.fresco) {
     exclude group: 'com.android.support'
   }
-  compile dep.constraintLayout
-  compile dep.rxrelay
-  compile dep.archRuntime
-  compile dep.archExt
+  implementation dep.constraintLayout
+  implementation dep.rxrelay
+  implementation dep.archRuntime
+  implementation dep.archExt
+  implementation dep.okhttp
+  implementation dep.playServicesWallet
   annotationProcessor dep.arcCompiler
 
-  compile project(':buy3-pay-support')
-  shopifyCompile project(':buy3')
+  implementation project(':buy3-pay-support')
+  shopifyImplementation project(':buy3')
 
-  xApolloCompile dep.apolloRuntime
-  xApolloCompile dep.okhttpLogging
-  xApolloCompile dep.apolloHttpCache
+  xApolloImplementation dep.apolloRuntime
+  xApolloImplementation dep.okhttpLogging
+  xApolloImplementation dep.apolloHttpCache
 }
 
 task downloadApolloSchema(type: DefaultTask, group: "GraphQL", description: "Download GraphQL store front API schema") {
@@ -128,7 +133,7 @@ task downloadApolloSchema(type: DefaultTask, group: "GraphQL", description: "Dow
     if (schemaFile.exists()) {
       schemaFile.delete()
     }
-    new URL('https://app.shopify.com/services/ping/storefront_graphql_schema').withInputStream { i ->
+    new URL('https://app.shopify.com/services/graphql/introspection/storefront?api_client_api_key=4a6c829ec3cb12ef9004bf8ed27adf12').withInputStream { i ->
       schemaFile.withOutputStream {
         it << i
       }
@@ -142,6 +147,5 @@ apollo {
   customTypeMapping['HTML'] = "String"
   customTypeMapping['Money'] = "java.math.BigDecimal"
   nullableValueType = "apolloOptional"
-  generateAccessors = false
   useSemanticNaming = false
 }

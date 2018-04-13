@@ -91,11 +91,11 @@ public final class RealCheckoutCompleteInteractor implements CheckoutCompleteInt
       .updateEmail(new CheckoutEmailUpdateQuery(checkoutId, email))
       .flatMap(it -> repository.complete(new CheckoutCompleteWithAndroidPayQuery(checkoutId, paymentInput)))
       .flatMap(it -> {
-        if (it.ready) {
+        if (it.ready()) {
           return Single.just(it);
         } else {
-          return repository.paymentById(new PaymentByIdQuery(it.id))
-            .flatMap(payment -> payment.ready ? Single.just(payment)
+          return repository.paymentById(new PaymentByIdQuery(it.id()))
+            .flatMap(payment -> payment.ready() ? Single.just(payment)
               : Single.error(new NotReadyException("Payment transaction is not finished")))
             .retryWhen(RxRetryHandler.exponentialBackoff(500, TimeUnit.MILLISECONDS, 1.2f)
               .maxRetries(10)

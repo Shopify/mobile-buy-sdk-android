@@ -23,7 +23,7 @@ public final class ShopRepository {
     checkNotNull(query, "query == null");
     return rxApolloCall(apolloClient.query(query))
       .map(Optional::get)
-      .map(it -> it.shop)
+      .map(ShopSettingsQuery.Data::shop)
       .subscribeOn(Schedulers.io());
   }
 }

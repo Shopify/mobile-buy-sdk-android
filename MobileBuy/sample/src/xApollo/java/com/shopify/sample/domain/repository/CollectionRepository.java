@@ -53,9 +53,9 @@ public final class CollectionRepository {
     checkNotNull(query, "query == null");
     return rxApolloCall(apolloClient.query(query))
       .map(Optional::get)
-      .map(it -> it.shop)
-      .map(it -> it.collectionConnection)
-      .map(it -> it.edges)
+      .map(CollectionPageWithProductsQuery.Data::shop)
+      .map(CollectionPageWithProductsQuery.Shop::collectionConnection)
+      .map(CollectionPageWithProductsQuery.CollectionConnection::edges)
       .subscribeOn(Schedulers.io());
   }
 }

@@ -1,24 +1,24 @@
 def versions = [
-    androidSupportVersion: '25.2.0',
+    androidSupportVersion: '27.0.0',
     okHttpVersion        : '3.6.0',
     playServicesVersion  : '9.8.0',
     jodaTimeVersion      : '2.9.9',
-    butterKnifeVersion   : '8.5.1',
-    apolloVersion        : '0.4.2',
-    archVersion          : '1.0.0-alpha1'
+    butterKnifeVersion   : '9.0.0-SNAPSHOT',
+    apolloVersion        : '0.4.4',
+    archVersion          : '1.0.0'
 ]
 
 ext.isCi = "true" == System.getenv('CI')
 
 ext.androidConfig = [
-    compileSdkVersion: 24,
-    buildToolsVersion: '25.0.2',
-    minSdkVersion    : 19,
+    compileSdkVersion: 26,
+    buildToolsVersion: '27.0.3',
+    minSdkVersion    : 21,
     targetSdkVersion : 24,
 ]
 
 ext.dep = [
-    androidPlugin            : "com.android.tools.build:gradle:2.3.0",
+    androidPlugin            : "com.android.tools.build:gradle:3.1.0",
     androidSupportAnnotations: "com.android.support:support-annotations:$versions.androidSupportVersion",
     androidSupportDesign     : "com.android.support:design:$versions.androidSupportVersion",
     androidSupportV4         : "com.android.support:support-v4:$versions.androidSupportVersion",
@@ -38,7 +38,6 @@ ext.dep = [
     butterKnife              : "com.jakewharton:butterknife:$versions.butterKnifeVersion",
     butterKnifeCompiler      : "com.jakewharton:butterknife-compiler:$versions.butterKnifeVersion",
     butterknifePlugin        : "com.jakewharton:butterknife-gradle-plugin:$versions.butterKnifeVersion",
-    retrolambda              : "me.tatarka:gradle-retrolambda:3.6.0",
     androidMavenGradlePlugin : "com.github.dcendents:android-maven-gradle-plugin:1.5",
     bintrayGradlePlugin      : "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.2",
     fresco                   : "com.facebook.fresco:fresco:0.14.1",

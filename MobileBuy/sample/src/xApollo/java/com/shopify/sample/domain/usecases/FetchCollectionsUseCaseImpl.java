@@ -54,8 +54,8 @@ public final class FetchCollectionsUseCaseImpl implements FetchCollectionsUseCas
 
     @Override
     public void onResponse(@Nonnull final Response<Optional<CollectionPageWithProductsQuery.Data>> response) {
-      final CollectionPageWithProductsQuery.Shop shop = response.data().get().shop;
-      List<Collection> collections = Converter.convertCollections(shop.collectionConnection);
+      final CollectionPageWithProductsQuery.Shop shop = response.data().get().shop();
+      List<Collection> collections = Converter.convertCollections(shop.collectionConnection());
       handler.post(() -> callback.onResponse(collections));
     }
 
