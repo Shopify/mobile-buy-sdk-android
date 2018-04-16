@@ -8,6 +8,7 @@ subprojects {
   buildscript {
     System.properties['com.android.build.gradle.overrideVersionCheck'] = 'true'
     repositories {
+      google()
       jcenter()
       maven { url "https://jitpack.io" }
       maven { url "https://oss.sonatype.org/content/repositories/snapshots" }

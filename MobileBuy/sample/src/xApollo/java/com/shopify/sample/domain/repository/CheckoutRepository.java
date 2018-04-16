@@ -61,126 +61,126 @@ public final class CheckoutRepository {
   public Single<CheckoutCreateFragment> create(@NonNull final CheckoutCreateQuery query) {
     checkNotNull(query, "query == null");
     return rxApolloCall(apolloClient.mutate(query))
-      .map(Optional::get)
-      .map(it -> it.checkoutCreate.get())
-      .flatMap(it -> {
-        if (it.userErrors.isEmpty()) {
-          return Single.just(it);
-        } else {
-          return Single.error(new UserError(mapItems(it.userErrors, error -> error.message)));
-        }
-      })
-      .map(it -> it.checkout.get())
-      .map(it -> it.fragments)
-      .map(it -> it.checkoutCreateFragment)
-      .subscribeOn(Schedulers.io());
+        .map(Optional::get)
+        .map(it -> it.checkoutCreate().get())
+        .flatMap(it -> {
+          if (it.userErrors().isEmpty()) {
+            return Single.just(it);
+          } else {
+            return Single.error(new UserError(mapItems(it.userErrors(), CheckoutCreateQuery.UserError::message)));
+          }
+        })
+        .map(it -> it.checkout().get())
+        .map(CheckoutCreateQuery.Checkout::fragments)
+        .map(CheckoutCreateQuery.Checkout.Fragments::checkoutCreateFragment)
+        .subscribeOn(Schedulers.io());
   }
 
   public Single<CheckoutFragment> updateShippingAddress(@NonNull final CheckoutShippingAddressUpdateQuery query) {
     checkNotNull(query, "query == null");
     return rxApolloCall(apolloClient.mutate(query))
-      .map(Optional::get)
-      .map(it -> it.checkoutShippingAddressUpdate.get())
-      .flatMap(it -> {
-        if (it.userErrors.isEmpty()) {
-          return Single.just(it);
-        } else {
-          return Single.error(new UserError(mapItems(it.userErrors, error -> error.message)));
-        }
-      })
-      .map(it -> it.checkout)
-      .map(it -> it.fragments)
-      .map(it -> it.checkoutFragment)
-      .subscribeOn(Schedulers.io());
+        .map(Optional::get)
+        .map(it -> it.checkoutShippingAddressUpdate().get())
+        .flatMap(it -> {
+          if (it.userErrors().isEmpty()) {
+            return Single.just(it);
+          } else {
+            return Single.error(new UserError(mapItems(it.userErrors(), CheckoutShippingAddressUpdateQuery.UserError::message)));
+          }
+        })
+        .map(CheckoutShippingAddressUpdateQuery.CheckoutShippingAddressUpdate::checkout)
+        .map(CheckoutShippingAddressUpdateQuery.Checkout::fragments)
+        .map(CheckoutShippingAddressUpdateQuery.Checkout.Fragments::checkoutFragment)
+        .subscribeOn(Schedulers.io());
   }
 
   public Single<CheckoutFragment> checkout(@NonNull final CheckoutByIdQuery query) {
     checkNotNull(query, "query == null");
     return rxApolloCall(apolloClient.query(query)
-      .httpCachePolicy(HttpCachePolicy.NETWORK_ONLY))
-      .map(Optional::get)
-      .map(it -> it.node.get())
-      .map(it -> it.fragments.checkoutFragment.get())
-      .subscribeOn(Schedulers.io());
+        .httpCachePolicy(HttpCachePolicy.NETWORK_ONLY))
+        .map(Optional::get)
+        .map(it -> it.node().get())
+        .map(it -> it.fragments().checkoutFragment().get())
+        .subscribeOn(Schedulers.io());
   }
 
   public Single<CheckoutShippingRatesFragment> shippingRates(@NonNull final CheckoutShippingRatesQuery query) {
     checkNotNull(query, "query == null");
     ApolloQueryCall<Optional<CheckoutShippingRatesQuery.Data>> call = apolloClient.query(query)
-      .httpCachePolicy(HttpCachePolicy.NETWORK_ONLY);
+        .httpCachePolicy(HttpCachePolicy.NETWORK_ONLY);
     return Single.fromCallable(call::clone)
-      .flatMap(RxUtil::rxApolloCall)
-      .map(Optional::get)
-      .map(it -> it.node.get())
-      .map(it -> it.asCheckout.get())
-      .map(it -> it.availableShippingRates.get())
-      .map(it -> it.fragments.checkoutShippingRatesFragment)
-      .subscribeOn(Schedulers.io());
+        .flatMap(RxUtil::rxApolloCall)
+        .map(Optional::get)
+        .map(it -> it.node().get())
+        .map(it -> (CheckoutShippingRatesQuery.AsCheckout) it)
+        .map(it -> it.availableShippingRates().get())
+        .map(it -> it.fragments().checkoutShippingRatesFragment())
+        .subscribeOn(Schedulers.io());
   }
 
   public Single<CheckoutFragment> updateShippingLine(@NonNull final CheckoutShippingLineUpdateQuery query) {
     checkNotNull(query, "query == null");
     return rxApolloCall(apolloClient.mutate(query))
-      .map(Optional::get)
-      .map(it -> it.checkoutShippingLineUpdate.get())
-      .flatMap(it -> {
-        if (it.userErrors.isEmpty()) {
-          return Single.just(it);
-        } else {
-          return Single.error(new UserError(mapItems(it.userErrors, error -> error.message)));
-        }
-      })
-      .map(it -> it.checkout.get())
-      .map(it -> it.fragments.checkoutFragment)
-      .subscribeOn(Schedulers.io());
+        .map(Optional::get)
+        .map(it -> it.checkoutShippingLineUpdate().get())
+        .flatMap(it -> {
+          if (it.userErrors().isEmpty()) {
+            return Single.just(it);
+          } else {
+            return Single.error(new UserError(mapItems(it.userErrors(), CheckoutShippingLineUpdateQuery.UserError::message)));
+          }
+        })
+        .map(it -> it.checkout().get())
+        .map(it -> it.fragments().checkoutFragment())
+        .subscribeOn(Schedulers.io());
   }
 
   public Single<CheckoutFragment> updateEmail(@NonNull final CheckoutEmailUpdateQuery query) {
     checkNotNull(query, "query == null");
     return rxApolloCall(apolloClient.mutate(query))
-      .map(Optional::get)
-      .map(it -> it.checkoutEmailUpdate.get())
-      .flatMap(it -> {
-        if (it.userErrors.isEmpty()) {
-          return Single.just(it);
-        } else {
-          return Single.error(new UserError(mapItems(it.userErrors, error -> error.message)));
-        }
-      })
-      .map(it -> it.checkout)
-      .map(it -> it.fragments)
-      .map(it -> it.checkoutFragment)
-      .subscribeOn(Schedulers.io());
+        .map(Optional::get)
+        .map(it -> it.checkoutEmailUpdate().get())
+        .flatMap(it -> {
+          if (it.userErrors().isEmpty()) {
+            return Single.just(it);
+          } else {
+            return Single.error(new UserError(mapItems(it.userErrors(), CheckoutEmailUpdateQuery.UserError::message)));
+          }
+        })
+        .map(CheckoutEmailUpdateQuery.CheckoutEmailUpdate::checkout)
+        .map(CheckoutEmailUpdateQuery.Checkout::fragments)
+        .map(CheckoutEmailUpdateQuery.Checkout.Fragments::checkoutFragment)
+        .subscribeOn(Schedulers.io());
   }
 
   public Single<PaymentFragment> complete(@NonNull final CheckoutCompleteWithAndroidPayQuery query) {
     checkNotNull(query, "query == null");
     return rxApolloCall(apolloClient.mutate(query))
-      .map(Optional::get)
-      .map(it -> it.checkoutCompleteWithTokenizedPayment.get())
-      .flatMap(it -> {
-        if (it.userErrors.isEmpty()) {
-          return Single.just(it);
-        } else {
-          return Single.error(new UserError(mapItems(it.userErrors, error -> error.message)));
-        }
-      })
-      .map(it -> it.payment.get())
-      .map(it -> it.fragments)
-      .map(it -> it.paymentFragment)
-      .subscribeOn(Schedulers.io());
+        .map(Optional::get)
+        .map(it -> it.checkoutCompleteWithTokenizedPayment().get())
+        .flatMap(it -> {
+          if (it.userErrors().isEmpty()) {
+            return Single.just(it);
+          } else {
+            return Single.error(new UserError(mapItems(it.userErrors(), CheckoutCompleteWithAndroidPayQuery.UserError::message)));
+          }
+        })
+        .map(it -> it.payment().get())
+        .map(CheckoutCompleteWithAndroidPayQuery.Payment::fragments)
+        .map(CheckoutCompleteWithAndroidPayQuery.Payment.Fragments::paymentFragment)
+        .subscribeOn(Schedulers.io());
   }
 
   public Single<PaymentFragment> paymentById(@NonNull final PaymentByIdQuery query) {
     checkNotNull(query, "query == null");
     ApolloQueryCall<Optional<PaymentByIdQuery.Data>> call = apolloClient.query(query)
-      .httpCachePolicy(HttpCachePolicy.NETWORK_ONLY);
+        .httpCachePolicy(HttpCachePolicy.NETWORK_ONLY);
     return Single.fromCallable(call::clone)
-      .flatMap(RxUtil::rxApolloCall)
-      .map(Optional::get)
-      .map(it -> it.node.get())
-      .map(it -> it.fragments)
-      .map(it -> it.paymentFragment.get())
-      .subscribeOn(Schedulers.io());
+        .flatMap(RxUtil::rxApolloCall)
+        .map(Optional::get)
+        .map(it -> it.node().get())
+        .map(PaymentByIdQuery.Node::fragments)
+        .map(it -> it.paymentFragment().get())
+        .subscribeOn(Schedulers.io());
   }
 }

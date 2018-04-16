@@ -221,6 +221,20 @@
               },
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "requiredAccess",
+              "description": null,
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
             }
           ],
           "inputFields": null,
@@ -412,6 +426,20 @@
                   "name": "String",
                   "ofType": null
                 }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "requiredAccess",
+              "description": null,
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
               },
               "isDeprecated": false,
               "deprecationReason": null
@@ -634,7 +662,7 @@
               "args": [
                 {
                   "name": "id",
-                  "description": null,
+                  "description": "The ID of the Node to return.",
                   "type": {
                     "kind": "NON_NULL",
                     "name": null,
@@ -661,7 +689,7 @@
               "args": [
                 {
                   "name": "ids",
-                  "description": null,
+                  "description": "The IDs of the Nodes to return.",
                   "type": {
                     "kind": "NON_NULL",
                     "name": null,
@@ -863,7 +891,7 @@
               "args": [
                 {
                   "name": "first",
-                  "description": null,
+                  "description": "Returns up to the first `n` elements from the list.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Int",
@@ -873,7 +901,7 @@
                 },
                 {
                   "name": "after",
-                  "description": null,
+                  "description": "Returns the elements that come after the specified cursor.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
@@ -883,7 +911,7 @@
                 },
                 {
                   "name": "last",
-                  "description": null,
+                  "description": "Returns up to the last `n` elements from the list.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Int",
@@ -893,7 +921,7 @@
                 },
                 {
                   "name": "before",
-                  "description": null,
+                  "description": "Returns the elements that come before the specified cursor.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
@@ -903,7 +931,7 @@
                 },
                 {
                   "name": "reverse",
-                  "description": null,
+                  "description": "Reverse the order of the underlying list.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Boolean",
@@ -1040,7 +1068,7 @@
               "args": [
                 {
                   "name": "first",
-                  "description": null,
+                  "description": "Returns up to the first `n` elements from the list.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Int",
@@ -1050,7 +1078,7 @@
                 },
                 {
                   "name": "after",
-                  "description": null,
+                  "description": "Returns the elements that come after the specified cursor.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
@@ -1060,7 +1088,7 @@
                 },
                 {
                   "name": "last",
-                  "description": null,
+                  "description": "Returns up to the last `n` elements from the list.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Int",
@@ -1070,7 +1098,7 @@
                 },
                 {
                   "name": "before",
-                  "description": null,
+                  "description": "Returns the elements that come before the specified cursor.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
@@ -1080,7 +1108,7 @@
                 },
                 {
                   "name": "reverse",
-                  "description": null,
+                  "description": "Reverse the order of the underlying list.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Boolean",
@@ -1090,7 +1118,7 @@
                 },
                 {
                   "name": "sortKey",
-                  "description": null,
+                  "description": "Sort the underlying list by the given key.",
                   "type": {
                     "kind": "ENUM",
                     "name": "OrderSortKeys",
@@ -1845,7 +1873,7 @@
               "args": [
                 {
                   "name": "first",
-                  "description": null,
+                  "description": "Returns up to the first `n` elements from the list.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Int",
@@ -1855,7 +1883,7 @@
                 },
                 {
                   "name": "after",
-                  "description": null,
+                  "description": "Returns the elements that come after the specified cursor.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
@@ -1865,7 +1893,7 @@
                 },
                 {
                   "name": "last",
-                  "description": null,
+                  "description": "Returns up to the last `n` elements from the list.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Int",
@@ -1875,7 +1903,7 @@
                 },
                 {
                   "name": "before",
-                  "description": null,
+                  "description": "Returns the elements that come before the specified cursor.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
@@ -1885,7 +1913,7 @@
                 },
                 {
                   "name": "reverse",
-                  "description": null,
+                  "description": "Reverse the order of the underlying list.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Boolean",
@@ -3120,6 +3148,65 @@
         },
         {
           "kind": "OBJECT",
+          "name": "MoneyV2",
+          "description": "A monetary value with currency.\n\nTo format currencies, combine this type's amount and currencyCode fields with your client's locale.\n\nFor example, in JavaScript you could use Intl.NumberFormat:\n\n```js\nnew Intl.NumberFormat(locale, {\n  style: 'currency',\n  currency: currencyCode\n}).format(amount);\n```\n\nOther formatting libraries include:\n\n* iOS - [NumberFormatter](https:\/\/developer.apple.com\/documentation\/foundation\/numberformatter)\n* Android - [NumberFormat](https:\/\/developer.android.com\/reference\/java\/text\/NumberFormat.html)\n* PHP - [NumberFormatter](http:\/\/php.net\/manual\/en\/class.numberformatter.php)\n\nFor a more general solution, the [Unicode CLDR number formatting database] is available with many implementations\n(such as [TwitterCldr](https:\/\/github.com\/twitter\/twitter-cldr-rb)).\n",
+          "fields": [
+            {
+              "name": "amount",
+              "description": "Decimal money amount.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Decimal",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "currencyCode",
+              "description": "Currency of the money.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "CurrencyCode",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+
+          ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "SCALAR",
+          "name": "Decimal",
+          "description": "A signed decimal number, which supports arbitrary precision and is serialized as a string.",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
           "name": "ProductVariant",
           "description": "A product variant represents a different version of a product, such as differing sizes or differing colors.",
           "fields": [
@@ -3189,11 +3276,11 @@
             },
             {
               "name": "image",
-              "description": "Image associated with the product variant.",
+              "description": "Image associated with the product variant. This field falls back to the product image if no image is available.",
               "args": [
                 {
                   "name": "maxWidth",
-                  "description": "Image width in pixels between 1 and 2048",
+                  "description": "Image width in pixels between 1 and 2048. This argument is deprecated: Use `maxWidth` on `Image.transformedSrc` instead.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Int",
@@ -3203,7 +3290,7 @@
                 },
                 {
                   "name": "maxHeight",
-                  "description": "Image height in pixels between 1 and 2048",
+                  "description": "Image height in pixels between 1 and 2048. This argument is deprecated: Use `maxHeight` on `Image.transformedSrc` instead.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Int",
@@ -3213,7 +3300,7 @@
                 },
                 {
                   "name": "crop",
-                  "description": "If specified, crop the image keeping the specified region",
+                  "description": "Crops the image according to the specified region. This argument is deprecated: Use `crop` on `Image.transformedSrc` instead.",
                   "type": {
                     "kind": "ENUM",
                     "name": "CropRegion",
@@ -3223,7 +3310,7 @@
                 },
                 {
                   "name": "scale",
-                  "description": "Image size multiplier retina displays. Must be between 1 and 3",
+                  "description": "Image size multiplier for high-resolution retina displays. Must be between 1 and 3. This argument is deprecated: Use `scale` on `Image.transformedSrc` instead.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Int",
@@ -3381,14 +3468,14 @@
         {
           "kind": "ENUM",
           "name": "WeightUnit",
-          "description": "Units of measurements for weight.",
+          "description": "Units of measurement for weight.",
           "fields": null,
           "inputFields": null,
           "interfaces": null,
           "enumValues": [
             {
               "name": "KILOGRAMS",
-              "description": "1 equals 1000 grams",
+              "description": "1 kilogram equals 1000 grams",
               "isDeprecated": false,
               "deprecationReason": null
             },
@@ -3400,7 +3487,7 @@
             },
             {
               "name": "POUNDS",
-              "description": "1 equals 16 ounces",
+              "description": "1 pound equals 16 ounces",
               "isDeprecated": false,
               "deprecationReason": null
             },
@@ -3447,10 +3534,95 @@
               "deprecationReason": null
             },
             {
+              "name": "originalSrc",
+              "description": "The location of the original (untransformed) image as a URL.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "URL",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "src",
               "description": "The location of the image as a URL.",
               "args": [
 
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "URL",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Previously an image had a single `src` field. This could either return the original image\nlocation or a URL that contained transformations such as sizing or scale.\n\nThese transformations were specified by arguments on the parent field.\n\nNow an image has two distinct URL fields: `originalSrc` and `transformedSrc`.\n\n* `originalSrc` - the original, untransformed image URL\n* `transformedSrc` - the image URL with transformations included\n\nTo migrate to the new fields, image transformations should be moved from the parent field to `transformedSrc`.\n\nBefore:\n```graphql\n{\n  shop {\n    productImages(maxWidth: 200, scale: 2) {\n      edges {\n        node {\n          src\n        }\n      }\n    }\n  }\n}\n```\n\nAfter:\n```graphql\n{\n  shop {\n    productImages {\n      edges {\n        node {\n          transformedSrc(maxWidth: 200, scale: 2)\n        }\n      }\n    }\n  }\n}\n```\n"
+            },
+            {
+              "name": "transformedSrc",
+              "description": "The location of the transformed image as a URL.\n\nAll transformation arguments are considered \"best-effort\". If they can be applied to an image, they will be.\nOtherwise any transformations which an image type does not support will be ignored.\n",
+              "args": [
+                {
+                  "name": "maxWidth",
+                  "description": "Image width in pixels between 1 and 5760.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "maxHeight",
+                  "description": "Image height in pixels between 1 and 5760.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "crop",
+                  "description": "Crops the image according to the specified region.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "CropRegion",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "scale",
+                  "description": "Image size multiplier for high-resolution retina displays. Must be between 1 and 3.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": "1"
+                },
+                {
+                  "name": "preferredContentType",
+                  "description": "Best effort conversion of image into content type (SVG -> PNG, Anything -> JGP, Anything -> WEBP are supported).",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "ImageContentType",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                }
               ],
               "type": {
                 "kind": "NON_NULL",
@@ -3514,6 +3686,35 @@
           "possibleTypes": null
         },
         {
+          "kind": "ENUM",
+          "name": "ImageContentType",
+          "description": "List of supported image content types.",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "PNG",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "JPG",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "WEBP",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
           "kind": "OBJECT",
           "name": "SelectedOption",
           "description": "Custom properties that a shop owner can use to define product variants.\nMultiple options can exist. Options are represented as: option1, option2, option3, etc.\n",
@@ -3565,7 +3766,7 @@
         {
           "kind": "OBJECT",
           "name": "Product",
-          "description": "A product represents an individual item for sale in a Shopify store. Products are often physical, but they don't have to be. \nFor example, a digital download (such as a movie, music or ebook file) also qualifies as a product, as do services (such as equipment rental, work for hire, customization of another product or an extended warranty).",
+          "description": "A product represents an individual item for sale in a Shopify store. Products are often physical, but they don't have to be.\nFor example, a digital download (such as a movie, music or ebook file) also qualifies as a product, as do services (such as equipment rental, work for hire, customization of another product or an extended warranty).",
           "fields": [
             {
               "name": "collections",
@@ -3573,7 +3774,7 @@
               "args": [
                 {
                   "name": "first",
-                  "description": null,
+                  "description": "Returns up to the first `n` elements from the list.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Int",
@@ -3583,7 +3784,7 @@
                 },
                 {
                   "name": "after",
-                  "description": null,
+                  "description": "Returns the elements that come after the specified cursor.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
@@ -3593,7 +3794,7 @@
                 },
                 {
                   "name": "last",
-                  "description": null,
+                  "description": "Returns up to the last `n` elements from the list.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Int",
@@ -3603,7 +3804,7 @@
                 },
                 {
                   "name": "before",
-                  "description": null,
+                  "description": "Returns the elements that come before the specified cursor.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
@@ -3613,7 +3814,7 @@
                 },
                 {
                   "name": "reverse",
-                  "description": null,
+                  "description": "Reverse the order of the underlying list.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Boolean",
@@ -3739,7 +3940,7 @@
               "args": [
                 {
                   "name": "first",
-                  "description": null,
+                  "description": "Returns up to the first `n` elements from the list.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Int",
@@ -3749,7 +3950,7 @@
                 },
                 {
                   "name": "after",
-                  "description": null,
+                  "description": "Returns the elements that come after the specified cursor.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
@@ -3759,7 +3960,7 @@
                 },
                 {
                   "name": "last",
-                  "description": null,
+                  "description": "Returns up to the last `n` elements from the list.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Int",
@@ -3769,7 +3970,7 @@
                 },
                 {
                   "name": "before",
-                  "description": null,
+                  "description": "Returns the elements that come before the specified cursor.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
@@ -3779,7 +3980,7 @@
                 },
                 {
                   "name": "reverse",
-                  "description": null,
+                  "description": "Reverse the order of the underlying list.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Boolean",
@@ -3789,7 +3990,7 @@
                 },
                 {
                   "name": "sortKey",
-                  "description": null,
+                  "description": "Sort the underlying list by the given key.",
                   "type": {
                     "kind": "ENUM",
                     "name": "ProductImageSortKeys",
@@ -3799,7 +4000,7 @@
                 },
                 {
                   "name": "maxWidth",
-                  "description": "Image width in pixels between 1 and 2048",
+                  "description": "Image width in pixels between 1 and 2048. This argument is deprecated: Use `maxWidth` on `Image.transformedSrc` instead.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Int",
@@ -3809,7 +4010,7 @@
                 },
                 {
                   "name": "maxHeight",
-                  "description": "Image height in pixels between 1 and 2048",
+                  "description": "Image height in pixels between 1 and 2048. This argument is deprecated: Use `maxHeight` on `Image.transformedSrc` instead.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Int",
@@ -3819,7 +4020,7 @@
                 },
                 {
                   "name": "crop",
-                  "description": "If specified, crop the image keeping the specified region",
+                  "description": "Crops the image according to the specified region. This argument is deprecated: Use `crop` on `Image.transformedSrc` instead.",
                   "type": {
                     "kind": "ENUM",
                     "name": "CropRegion",
@@ -3829,7 +4030,7 @@
                 },
                 {
                   "name": "scale",
-                  "description": "Image size multiplier retina displays. Must be between 1 and 3",
+                  "description": "Image size multiplier for high-resolution retina displays. Must be between 1 and 3. This argument is deprecated: Use `scale` on `Image.transformedSrc` instead.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Int",
@@ -4038,7 +4239,7 @@
               "args": [
                 {
                   "name": "first",
-                  "description": null,
+                  "description": "Returns up to the first `n` elements from the list.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Int",
@@ -4048,7 +4249,7 @@
                 },
                 {
                   "name": "after",
-                  "description": null,
+                  "description": "Returns the elements that come after the specified cursor.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
@@ -4058,7 +4259,7 @@
                 },
                 {
                   "name": "last",
-                  "description": null,
+                  "description": "Returns up to the last `n` elements from the list.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Int",
@@ -4068,7 +4269,7 @@
                 },
                 {
                   "name": "before",
-                  "description": null,
+                  "description": "Returns the elements that come before the specified cursor.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
@@ -4078,7 +4279,7 @@
                 },
                 {
                   "name": "reverse",
-                  "description": null,
+                  "description": "Reverse the order of the underlying list.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Boolean",
@@ -4088,7 +4289,7 @@
                 },
                 {
                   "name": "sortKey",
-                  "description": null,
+                  "description": "Sort the underlying list by the given key.",
                   "type": {
                     "kind": "ENUM",
                     "name": "ProductVariantSortKeys",
@@ -4337,7 +4538,7 @@
               "args": [
                 {
                   "name": "maxWidth",
-                  "description": "Image width in pixels between 1 and 2048",
+                  "description": "Image width in pixels between 1 and 2048. This argument is deprecated: Use `maxWidth` on `Image.transformedSrc` instead.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Int",
@@ -4347,7 +4548,7 @@
                 },
                 {
                   "name": "maxHeight",
-                  "description": "Image height in pixels between 1 and 2048",
+                  "description": "Image height in pixels between 1 and 2048. This argument is deprecated: Use `maxHeight` on `Image.transformedSrc` instead.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Int",
@@ -4357,7 +4558,7 @@
                 },
                 {
                   "name": "crop",
-                  "description": "If specified, crop the image keeping the specified region",
+                  "description": "Crops the image according to the specified region. This argument is deprecated: Use `crop` on `Image.transformedSrc` instead.",
                   "type": {
                     "kind": "ENUM",
                     "name": "CropRegion",
@@ -4367,7 +4568,7 @@
                 },
                 {
                   "name": "scale",
-                  "description": "Image size multiplier retina displays. Must be between 1 and 3",
+                  "description": "Image size multiplier for high-resolution retina displays. Must be between 1 and 3. This argument is deprecated: Use `scale` on `Image.transformedSrc` instead.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Int",
@@ -4390,7 +4591,7 @@
               "args": [
                 {
                   "name": "first",
-                  "description": null,
+                  "description": "Returns up to the first `n` elements from the list.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Int",
@@ -4400,7 +4601,7 @@
                 },
                 {
                   "name": "after",
-                  "description": null,
+                  "description": "Returns the elements that come after the specified cursor.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
@@ -4410,7 +4611,7 @@
                 },
                 {
                   "name": "last",
-                  "description": null,
+                  "description": "Returns up to the last `n` elements from the list.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Int",
@@ -4420,7 +4621,7 @@
                 },
                 {
                   "name": "before",
-                  "description": null,
+                  "description": "Returns the elements that come before the specified cursor.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
@@ -4430,7 +4631,7 @@
                 },
                 {
                   "name": "reverse",
-                  "description": null,
+                  "description": "Reverse the order of the underlying list.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Boolean",
@@ -4440,7 +4641,7 @@
                 },
                 {
                   "name": "sortKey",
-                  "description": null,
+                  "description": "Sort the underlying list by the given key.",
                   "type": {
                     "kind": "ENUM",
                     "name": "ProductCollectionSortKeys",
@@ -4677,7 +4878,7 @@
             },
             {
               "name": "RELEVANCE",
-              "description": null,
+              "description": "During a search (i.e. when the `query` parameter has been specified on the connection) this sorts the\nresults by relevance to the search term(s). When no search query is specified, this sort key is not\ndeterministic and should not be used.\n",
               "isDeprecated": false,
               "deprecationReason": null
             }
@@ -4818,7 +5019,7 @@
             },
             {
               "name": "RELEVANCE",
-              "description": null,
+              "description": "During a search (i.e. when the `query` parameter has been specified on the connection) this sorts the\nresults by relevance to the search term(s). When no search query is specified, this sort key is not\ndeterministic and should not be used.\n",
               "isDeprecated": false,
               "deprecationReason": null
             }
@@ -5083,7 +5284,7 @@
             },
             {
               "name": "RELEVANCE",
-              "description": null,
+              "description": "During a search (i.e. when the `query` parameter has been specified on the connection) this sorts the\nresults by relevance to the search term(s). When no search query is specified, this sort key is not\ndeterministic and should not be used.\n",
               "isDeprecated": false,
               "deprecationReason": null
             }
@@ -5163,7 +5364,7 @@
             },
             {
               "name": "RELEVANCE",
-              "description": null,
+              "description": "During a search (i.e. when the `query` parameter has been specified on the connection) this sorts the\nresults by relevance to the search term(s). When no search query is specified, this sort key is not\ndeterministic and should not be used.\n",
               "isDeprecated": false,
               "deprecationReason": null
             }
@@ -5181,7 +5382,7 @@
               "args": [
                 {
                   "name": "first",
-                  "description": null,
+                  "description": "Returns up to the first `n` elements from the list.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Int",
@@ -5191,7 +5392,7 @@
                 },
                 {
                   "name": "after",
-                  "description": null,
+                  "description": "Returns the elements that come after the specified cursor.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
@@ -5201,7 +5402,7 @@
                 },
                 {
                   "name": "last",
-                  "description": null,
+                  "description": "Returns up to the last `n` elements from the list.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Int",
@@ -5211,7 +5412,7 @@
                 },
                 {
                   "name": "before",
-                  "description": null,
+                  "description": "Returns the elements that come before the specified cursor.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
@@ -5221,7 +5422,7 @@
                 },
                 {
                   "name": "reverse",
-                  "description": null,
+                  "description": "Reverse the order of the underlying list.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Boolean",
@@ -5231,7 +5432,7 @@
                 },
                 {
                   "name": "sortKey",
-                  "description": null,
+                  "description": "Sort the underlying list by the given key.",
                   "type": {
                     "kind": "ENUM",
                     "name": "ArticleSortKeys",
@@ -5268,7 +5469,7 @@
               "args": [
                 {
                   "name": "first",
-                  "description": null,
+                  "description": "Returns up to the first `n` elements from the list.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Int",
@@ -5278,7 +5479,7 @@
                 },
                 {
                   "name": "after",
-                  "description": null,
+                  "description": "Returns the elements that come after the specified cursor.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
@@ -5288,7 +5489,7 @@
                 },
                 {
                   "name": "last",
-                  "description": null,
+                  "description": "Returns up to the last `n` elements from the list.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Int",
@@ -5298,7 +5499,7 @@
                 },
                 {
                   "name": "before",
-                  "description": null,
+                  "description": "Returns the elements that come before the specified cursor.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
@@ -5308,7 +5509,7 @@
                 },
                 {
                   "name": "reverse",
-                  "description": null,
+                  "description": "Reverse the order of the underlying list.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Boolean",
@@ -5318,7 +5519,7 @@
                 },
                 {
                   "name": "sortKey",
-                  "description": null,
+                  "description": "Sort the underlying list by the given key.",
                   "type": {
                     "kind": "ENUM",
                     "name": "BlogSortKeys",
@@ -5400,7 +5601,7 @@
               "args": [
                 {
                   "name": "first",
-                  "description": null,
+                  "description": "Returns up to the first `n` elements from the list.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Int",
@@ -5410,7 +5611,7 @@
                 },
                 {
                   "name": "after",
-                  "description": null,
+                  "description": "Returns the elements that come after the specified cursor.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
@@ -5420,7 +5621,7 @@
                 },
                 {
                   "name": "last",
-                  "description": null,
+                  "description": "Returns up to the last `n` elements from the list.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Int",
@@ -5430,7 +5631,7 @@
                 },
                 {
                   "name": "before",
-                  "description": null,
+                  "description": "Returns the elements that come before the specified cursor.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
@@ -5440,7 +5641,7 @@
                 },
                 {
                   "name": "reverse",
-                  "description": null,
+                  "description": "Reverse the order of the underlying list.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Boolean",
@@ -5450,7 +5651,7 @@
                 },
                 {
                   "name": "sortKey",
-                  "description": null,
+                  "description": "Sort the underlying list by the given key.",
                   "type": {
                     "kind": "ENUM",
                     "name": "CollectionSortKeys",
@@ -5663,7 +5864,7 @@
               "args": [
                 {
                   "name": "first",
-                  "description": null,
+                  "description": "Returns up to the first `n` elements from the list.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Int",
@@ -5673,7 +5874,7 @@
                 },
                 {
                   "name": "after",
-                  "description": null,
+                  "description": "Returns the elements that come after the specified cursor.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
@@ -5683,7 +5884,7 @@
                 },
                 {
                   "name": "last",
-                  "description": null,
+                  "description": "Returns up to the last `n` elements from the list.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Int",
@@ -5693,7 +5894,7 @@
                 },
                 {
                   "name": "before",
-                  "description": null,
+                  "description": "Returns the elements that come before the specified cursor.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
@@ -5703,7 +5904,7 @@
                 },
                 {
                   "name": "reverse",
-                  "description": null,
+                  "description": "Reverse the order of the underlying list.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Boolean",
@@ -5713,7 +5914,7 @@
                 },
                 {
                   "name": "sortKey",
-                  "description": null,
+                  "description": "Sort the underlying list by the given key.",
                   "type": {
                     "kind": "ENUM",
                     "name": "ProductSortKeys",
@@ -5936,26 +6137,14 @@
           "interfaces": null,
           "enumValues": [
             {
-              "name": "CA",
-              "description": "Canada",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "US",
-              "description": "United States",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "GB",
-              "description": "United Kingdom",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
               "name": "AF",
               "description": "Afghanistan",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "AX",
+              "description": "Aland Islands",
               "isDeprecated": false,
               "deprecationReason": null
             },
@@ -6110,8 +6299,20 @@
               "deprecationReason": null
             },
             {
+              "name": "BV",
+              "description": "Bouvet Island",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "BR",
               "description": "Brazil",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "IO",
+              "description": "British Indian Ocean Territory",
               "isDeprecated": false,
               "deprecationReason": null
             },
@@ -6128,8 +6329,14 @@
               "deprecationReason": null
             },
             {
-              "name": "NC",
-              "description": "New Caledonia",
+              "name": "BF",
+              "description": "Burkina Faso",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "BI",
+              "description": "Burundi",
               "isDeprecated": false,
               "deprecationReason": null
             },
@@ -6140,8 +6347,8 @@
               "deprecationReason": null
             },
             {
-              "name": "CM",
-              "description": "Republic of Cameroon",
+              "name": "CA",
+              "description": "Canada",
               "isDeprecated": false,
               "deprecationReason": null
             },
@@ -6158,6 +6365,18 @@
               "deprecationReason": null
             },
             {
+              "name": "CF",
+              "description": "Central African Republic",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "TD",
+              "description": "Chad",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "CL",
               "description": "Chile",
               "isDeprecated": false,
@@ -6166,6 +6385,18 @@
             {
               "name": "CN",
               "description": "China",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "CX",
+              "description": "Christmas Island",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "CC",
+              "description": "Cocos (Keeling) Islands",
               "isDeprecated": false,
               "deprecationReason": null
             },
@@ -6194,20 +6425,26 @@
               "deprecationReason": null
             },
             {
+              "name": "CK",
+              "description": "Cook Islands",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "CR",
               "description": "Costa Rica",
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
-              "name": "CI",
-              "description": "Côte d'Ivoire",
+              "name": "HR",
+              "description": "Croatia",
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
-              "name": "HR",
-              "description": "Croatia",
+              "name": "CU",
+              "description": "Cuba",
               "isDeprecated": false,
               "deprecationReason": null
             },
@@ -6230,8 +6467,20 @@
               "deprecationReason": null
             },
             {
+              "name": "CI",
+              "description": "Côte d'Ivoire",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "DK",
               "description": "Denmark",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "DJ",
+              "description": "Djibouti",
               "isDeprecated": false,
               "deprecationReason": null
             },
@@ -6266,6 +6515,18 @@
               "deprecationReason": null
             },
             {
+              "name": "GQ",
+              "description": "Equatorial Guinea",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "ER",
+              "description": "Eritrea",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "EE",
               "description": "Estonia",
               "isDeprecated": false,
@@ -6278,8 +6539,8 @@
               "deprecationReason": null
             },
             {
-              "name": "GQ",
-              "description": "Equatorial Guinea",
+              "name": "FK",
+              "description": "Falkland Islands (Malvinas)",
               "isDeprecated": false,
               "deprecationReason": null
             },
@@ -6308,8 +6569,20 @@
               "deprecationReason": null
             },
             {
+              "name": "GF",
+              "description": "French Guiana",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "PF",
               "description": "French Polynesia",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "TF",
+              "description": "French Southern Territories",
               "isDeprecated": false,
               "deprecationReason": null
             },
@@ -6386,6 +6659,18 @@
               "deprecationReason": null
             },
             {
+              "name": "GN",
+              "description": "Guinea",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "GW",
+              "description": "Guinea Bissau",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "GY",
               "description": "Guyana",
               "isDeprecated": false,
@@ -6394,6 +6679,18 @@
             {
               "name": "HT",
               "description": "Haiti",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "HM",
+              "description": "Heard Island And Mcdonald Islands",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "VA",
+              "description": "Holy See (Vatican City State)",
               "isDeprecated": false,
               "deprecationReason": null
             },
@@ -6430,6 +6727,18 @@
             {
               "name": "ID",
               "description": "Indonesia",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "IR",
+              "description": "Iran, Islamic Republic Of",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "IQ",
+              "description": "Iraq",
               "isDeprecated": false,
               "deprecationReason": null
             },
@@ -6494,6 +6803,18 @@
               "deprecationReason": null
             },
             {
+              "name": "KI",
+              "description": "Kiribati",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "KP",
+              "description": "Korea, Democratic People's Republic Of",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "XK",
               "description": "Kosovo",
               "isDeprecated": false,
@@ -6538,6 +6859,12 @@
             {
               "name": "LR",
               "description": "Liberia",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "LY",
+              "description": "Libyan Arab Jamahiriya",
               "isDeprecated": false,
               "deprecationReason": null
             },
@@ -6596,6 +6923,12 @@
               "deprecationReason": null
             },
             {
+              "name": "ML",
+              "description": "Mali",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "MT",
               "description": "Malta",
               "isDeprecated": false,
@@ -6604,6 +6937,12 @@
             {
               "name": "MQ",
               "description": "Martinique",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "MR",
+              "description": "Mauritania",
               "isDeprecated": false,
               "deprecationReason": null
             },
@@ -6650,6 +6989,12 @@
               "deprecationReason": null
             },
             {
+              "name": "MS",
+              "description": "Montserrat",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "MA",
               "description": "Morocco",
               "isDeprecated": false,
@@ -6674,8 +7019,20 @@
               "deprecationReason": null
             },
             {
+              "name": "NR",
+              "description": "Nauru",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "NP",
               "description": "Nepal",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "NL",
+              "description": "Netherlands",
               "isDeprecated": false,
               "deprecationReason": null
             },
@@ -6686,8 +7043,8 @@
               "deprecationReason": null
             },
             {
-              "name": "NL",
-              "description": "Netherlands",
+              "name": "NC",
+              "description": "New Caledonia",
               "isDeprecated": false,
               "deprecationReason": null
             },
@@ -6712,6 +7069,18 @@
             {
               "name": "NG",
               "description": "Nigeria",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "NU",
+              "description": "Niue",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "NF",
+              "description": "Norfolk Island",
               "isDeprecated": false,
               "deprecationReason": null
             },
@@ -6770,6 +7139,12 @@
               "deprecationReason": null
             },
             {
+              "name": "PN",
+              "description": "Pitcairn",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "PL",
               "description": "Poland",
               "isDeprecated": false,
@@ -6784,6 +7159,12 @@
             {
               "name": "QA",
               "description": "Qatar",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "CM",
+              "description": "Republic of Cameroon",
               "isDeprecated": false,
               "deprecationReason": null
             },
@@ -6812,6 +7193,18 @@
               "deprecationReason": null
             },
             {
+              "name": "BL",
+              "description": "Saint Barthélemy",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "SH",
+              "description": "Saint Helena",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "KN",
               "description": "Saint Kitts And Nevis",
               "isDeprecated": false,
@@ -6830,14 +7223,26 @@
               "deprecationReason": null
             },
             {
-              "name": "ST",
-              "description": "Sao Tome And Principe",
+              "name": "PM",
+              "description": "Saint Pierre And Miquelon",
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
               "name": "WS",
               "description": "Samoa",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "SM",
+              "description": "San Marino",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "ST",
+              "description": "Sao Tome And Principe",
               "isDeprecated": false,
               "deprecationReason": null
             },
@@ -6862,6 +7267,12 @@
             {
               "name": "SC",
               "description": "Seychelles",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "SL",
+              "description": "Sierra Leone",
               "isDeprecated": false,
               "deprecationReason": null
             },
@@ -6896,8 +7307,20 @@
               "deprecationReason": null
             },
             {
+              "name": "SO",
+              "description": "Somalia",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "ZA",
               "description": "South Africa",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "GS",
+              "description": "South Georgia And The South Sandwich Islands",
               "isDeprecated": false,
               "deprecationReason": null
             },
@@ -6944,6 +7367,12 @@
               "deprecationReason": null
             },
             {
+              "name": "SJ",
+              "description": "Svalbard And Jan Mayen",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "SZ",
               "description": "Swaziland",
               "isDeprecated": false,
@@ -6974,6 +7403,12 @@
               "deprecationReason": null
             },
             {
+              "name": "TJ",
+              "description": "Tajikistan",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "TZ",
               "description": "Tanzania, United Republic Of",
               "isDeprecated": false,
@@ -6982,6 +7417,30 @@
             {
               "name": "TH",
               "description": "Thailand",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "TL",
+              "description": "Timor Leste",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "TG",
+              "description": "Togo",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "TK",
+              "description": "Tokelau",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "TO",
+              "description": "Tonga",
               "isDeprecated": false,
               "deprecationReason": null
             },
@@ -7016,6 +7475,12 @@
               "deprecationReason": null
             },
             {
+              "name": "TV",
+              "description": "Tuvalu",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "UG",
               "description": "Uganda",
               "isDeprecated": false,
@@ -7030,6 +7495,24 @@
             {
               "name": "AE",
               "description": "United Arab Emirates",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "GB",
+              "description": "United Kingdom",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "US",
+              "description": "United States",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "UM",
+              "description": "United States Minor Outlying Islands",
               "isDeprecated": false,
               "deprecationReason": null
             },
@@ -7070,6 +7553,18 @@
               "deprecationReason": null
             },
             {
+              "name": "WF",
+              "description": "Wallis And Futuna",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "EH",
+              "description": "Western Sahara",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "YE",
               "description": "Yemen",
               "isDeprecated": false,
@@ -7084,300 +7579,6 @@
             {
               "name": "ZW",
               "description": "Zimbabwe",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "AX",
-              "description": "Aland Islands",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "BV",
-              "description": "Bouvet Island",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "IO",
-              "description": "British Indian Ocean Territory",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "BF",
-              "description": "Burkina Faso",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "BI",
-              "description": "Burundi",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "CF",
-              "description": "Central African Republic",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "TD",
-              "description": "Chad",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "CX",
-              "description": "Christmas Island",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "CC",
-              "description": "Cocos (Keeling) Islands",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "CK",
-              "description": "Cook Islands",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "CU",
-              "description": "Cuba",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "DJ",
-              "description": "Djibouti",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "ER",
-              "description": "Eritrea",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "FK",
-              "description": "Falkland Islands (Malvinas)",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "GF",
-              "description": "French Guiana",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "TF",
-              "description": "French Southern Territories",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "GN",
-              "description": "Guinea",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "GW",
-              "description": "Guinea Bissau",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "HM",
-              "description": "Heard Island And Mcdonald Islands",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "VA",
-              "description": "Holy See (Vatican City State)",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "IR",
-              "description": "Iran, Islamic Republic Of",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "IQ",
-              "description": "Iraq",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "KI",
-              "description": "Kiribati",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "KP",
-              "description": "Korea, Democratic People's Republic Of",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "LY",
-              "description": "Libyan Arab Jamahiriya",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "ML",
-              "description": "Mali",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "MR",
-              "description": "Mauritania",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "MS",
-              "description": "Montserrat",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "NR",
-              "description": "Nauru",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "NU",
-              "description": "Niue",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "NF",
-              "description": "Norfolk Island",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "PN",
-              "description": "Pitcairn",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "BL",
-              "description": "Saint Barthélemy",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "SH",
-              "description": "Saint Helena",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "PM",
-              "description": "Saint Pierre And Miquelon",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "SM",
-              "description": "San Marino",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "SL",
-              "description": "Sierra Leone",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "SO",
-              "description": "Somalia",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "GS",
-              "description": "South Georgia And The South Sandwich Islands",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "SJ",
-              "description": "Svalbard And Jan Mayen",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "TJ",
-              "description": "Tajikistan",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "TL",
-              "description": "Timor Leste",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "TG",
-              "description": "Togo",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "TK",
-              "description": "Tokelau",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "TO",
-              "description": "Tonga",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "TV",
-              "description": "Tuvalu",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "UM",
-              "description": "United States Minor Outlying Islands",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "WF",
-              "description": "Wallis And Futuna",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "EH",
-              "description": "Western Sahara",
               "isDeprecated": false,
               "deprecationReason": null
             }
@@ -7448,6 +7649,12 @@
             {
               "name": "ANDROID_PAY",
               "description": "Android Pay",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "GOOGLE_PAY",
+              "description": "Google Pay",
               "isDeprecated": false,
               "deprecationReason": null
             },
@@ -7733,7 +7940,7 @@
               "args": [
                 {
                   "name": "first",
-                  "description": null,
+                  "description": "Returns up to the first `n` elements from the list.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Int",
@@ -7743,7 +7950,7 @@
                 },
                 {
                   "name": "after",
-                  "description": null,
+                  "description": "Returns the elements that come after the specified cursor.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
@@ -7753,7 +7960,7 @@
                 },
                 {
                   "name": "last",
-                  "description": null,
+                  "description": "Returns up to the last `n` elements from the list.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Int",
@@ -7763,7 +7970,7 @@
                 },
                 {
                   "name": "before",
-                  "description": null,
+                  "description": "Returns the elements that come before the specified cursor.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
@@ -7773,7 +7980,7 @@
                 },
                 {
                   "name": "reverse",
-                  "description": null,
+                  "description": "Reverse the order of the underlying list.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Boolean",
@@ -8013,7 +8220,7 @@
               "args": [
                 {
                   "name": "first",
-                  "description": null,
+                  "description": "Returns up to the first `n` elements from the list.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Int",
@@ -8023,7 +8230,7 @@
                 },
                 {
                   "name": "after",
-                  "description": null,
+                  "description": "Returns the elements that come after the specified cursor.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
@@ -8033,7 +8240,7 @@
                 },
                 {
                   "name": "last",
-                  "description": null,
+                  "description": "Returns up to the last `n` elements from the list.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Int",
@@ -8043,7 +8250,7 @@
                 },
                 {
                   "name": "before",
-                  "description": null,
+                  "description": "Returns the elements that come before the specified cursor.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
@@ -8053,7 +8260,7 @@
                 },
                 {
                   "name": "reverse",
-                  "description": null,
+                  "description": "Reverse the order of the underlying list.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Boolean",
@@ -8180,7 +8387,7 @@
               "args": [
                 {
                   "name": "maxWidth",
-                  "description": "Image width in pixels between 1 and 2048",
+                  "description": "Image width in pixels between 1 and 2048. This argument is deprecated: Use `maxWidth` on `Image.transformedSrc` instead.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Int",
@@ -8190,7 +8397,7 @@
                 },
                 {
                   "name": "maxHeight",
-                  "description": "Image height in pixels between 1 and 2048",
+                  "description": "Image height in pixels between 1 and 2048. This argument is deprecated: Use `maxHeight` on `Image.transformedSrc` instead.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Int",
@@ -8200,7 +8407,7 @@
                 },
                 {
                   "name": "crop",
-                  "description": "If specified, crop the image keeping the specified region",
+                  "description": "Crops the image according to the specified region. This argument is deprecated: Use `crop` on `Image.transformedSrc` instead.",
                   "type": {
                     "kind": "ENUM",
                     "name": "CropRegion",
@@ -8210,7 +8417,7 @@
                 },
                 {
                   "name": "scale",
-                  "description": "Image size multiplier retina displays. Must be between 1 and 3",
+                  "description": "Image size multiplier for high-resolution retina displays. Must be between 1 and 3. This argument is deprecated: Use `scale` on `Image.transformedSrc` instead.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Int",
@@ -8699,7 +8906,7 @@
             },
             {
               "name": "RELEVANCE",
-              "description": null,
+              "description": "During a search (i.e. when the `query` parameter has been specified on the connection) this sorts the\nresults by relevance to the search term(s). When no search query is specified, this sort key is not\ndeterministic and should not be used.\n",
               "isDeprecated": false,
               "deprecationReason": null
             }
@@ -8746,7 +8953,7 @@
             },
             {
               "name": "RELEVANCE",
-              "description": null,
+              "description": "During a search (i.e. when the `query` parameter has been specified on the connection) this sorts the\nresults by relevance to the search term(s). When no search query is specified, this sort key is not\ndeterministic and should not be used.\n",
               "isDeprecated": false,
               "deprecationReason": null
             }
@@ -8781,7 +8988,7 @@
             },
             {
               "name": "RELEVANCE",
-              "description": null,
+              "description": "During a search (i.e. when the `query` parameter has been specified on the connection) this sorts the\nresults by relevance to the search term(s). When no search query is specified, this sort key is not\ndeterministic and should not be used.\n",
               "isDeprecated": false,
               "deprecationReason": null
             }
@@ -8834,7 +9041,7 @@
             },
             {
               "name": "RELEVANCE",
-              "description": null,
+              "description": "During a search (i.e. when the `query` parameter has been specified on the connection) this sorts the\nresults by relevance to the search term(s). When no search query is specified, this sort key is not\ndeterministic and should not be used.\n",
               "isDeprecated": false,
               "deprecationReason": null
             }
@@ -9646,7 +9853,7 @@
             },
             {
               "name": "customerAccessTokenRenew",
-              "description": "Renews a customer access token.",
+              "description": "Renews a customer access token.\n\nAccess token renewal must happen *before* a token expires.\nIf a token has already expired, a new one should be created instead via `customerAccessTokenCreate`.\n",
               "args": [
                 {
                   "name": "customerAccessToken",
@@ -10317,7 +10524,7 @@
               "args": [
                 {
                   "name": "first",
-                  "description": null,
+                  "description": "Returns up to the first `n` elements from the list.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Int",
@@ -10327,7 +10534,7 @@
                 },
                 {
                   "name": "after",
-                  "description": null,
+                  "description": "Returns the elements that come after the specified cursor.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
@@ -10337,7 +10544,7 @@
                 },
                 {
                   "name": "last",
-                  "description": null,
+                  "description": "Returns up to the last `n` elements from the list.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Int",
@@ -10347,7 +10554,7 @@
                 },
                 {
                   "name": "before",
-                  "description": null,
+                  "description": "Returns the elements that come before the specified cursor.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
@@ -10357,7 +10564,7 @@
                 },
                 {
                   "name": "reverse",
-                  "description": null,
+                  "description": "Reverse the order of the underlying list.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Boolean",
@@ -11102,7 +11309,7 @@
             },
             {
               "name": "allowPartialAddresses",
-              "description": "Allows setting partial addresses on a Checkout, skipping the full validation of attributes.\nThe required attributes are city, province, and country.\nFull validation of the addresses is still done at complete time.\n",
+              "description": "Allows setting partial addresses on a Checkout, skipping the full validation of attributes.\nThe required attributes are city, province, and country.\nFull validation of the addresses is still done at complete time.",
               "type": {
                 "kind": "SCALAR",
                 "name": "Boolean",
@@ -11123,7 +11330,7 @@
           "inputFields": [
             {
               "name": "key",
-              "description": null,
+              "description": "Key or name of the attribute.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -11137,7 +11344,7 @@
             },
             {
               "name": "value",
-              "description": null,
+              "description": "Value of the attribute.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -12228,7 +12435,7 @@
             },
             {
               "name": "allowPartialAddresses",
-              "description": "Allows setting partial addresses on a Checkout, skipping the full validation of attributes.\nThe required attributes are city, province, and country.\nFull validation of addresses is still done at complete time.\n",
+              "description": "Allows setting partial addresses on a Checkout, skipping the full validation of attributes.\nThe required attributes are city, province, and country.\nFull validation of addresses is still done at complete time.",
               "type": {
                 "kind": "SCALAR",
                 "name": "Boolean",
@@ -13290,7 +13497,7 @@
           "inputFields": [
             {
               "name": "activationToken",
-              "description": "The activation token required to activate the customer",
+              "description": "The activation token required to activate the customer.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -13810,6 +14017,20 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "Customer",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "customerAccessToken",
+              "description": "The newly created customer access token. If the customer's password is updated, all previous access tokens\n(including the one used to perform this mutation) become invalid, and a new token is generated.\n",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "CustomerAccessToken",
                 "ofType": null
               },
               "isDeprecated": false,

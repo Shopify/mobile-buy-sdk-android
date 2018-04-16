@@ -55,8 +55,8 @@ public final class FetchProductsUseCaseImpl implements FetchProductsUseCase {
 
     @Override
     public void onResponse(@Nonnull final Response<Optional<CollectionProductPageQuery.Data>> response) {
-      final Optional<CollectionProductPageQuery.Collection> collection = response.data().get().collection;
-      List<Product> products = Converter.convertProducts(collection.get().asCollection.get().productConnection);
+      final Optional<CollectionProductPageQuery.Collection> collection = response.data().get().collection();
+      List<Product> products = Converter.convertProducts(((CollectionProductPageQuery.AsCollection) collection.get()).productConnection());
       handler.post(() -> callback.onResponse(products));
     }
 

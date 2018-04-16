@@ -53,80 +53,80 @@ final class Converters {
 
   static List<Product> convertToProducts(final List<CollectionProductPageQuery.ProductEdge> productEdges) {
     return mapItems(productEdges, productEdge -> {
-      String productImageUrl = firstItem(productEdge.product.imageConnection.imageEdges,
-        imageEdge -> imageEdge != null ? imageEdge.image.src : null);
-      List<BigDecimal> prices = mapItems(productEdge.product.variantConnection.variantEdges,
-        variantEdge -> variantEdge.variant.price);
+      String productImageUrl = firstItem(productEdge.product().imageConnection().imageEdges(),
+        imageEdge -> imageEdge != null ? imageEdge.image().src() : null);
+      List<BigDecimal> prices = mapItems(productEdge.product().variantConnection().variantEdges(),
+        variantEdge -> variantEdge.variant().price());
       BigDecimal minPrice = minItem(prices, BigDecimal.ZERO, BigDecimal::compareTo);
-      return new Product(productEdge.product.id, productEdge.product.title, productImageUrl, minPrice, productEdge.cursor);
+      return new Product(productEdge.product().id(), productEdge.product().title(), productImageUrl, minPrice, productEdge.cursor());
     });
   }
 
   static ProductDetails convertToProductDetails(ProductByIdQuery.AsProduct product) {
-    List<String> images = mapItems(product.imageConnection.imageEdge, imageEdge -> imageEdge.image.src);
-    List<ProductDetails.Option> options = mapItems(product.options, option -> new ProductDetails.Option(option.id, option.name,
-      option.values));
-    List<ProductDetails.Variant> variants = mapItems(product.variantConnection.variantEdge,
+    List<String> images = mapItems(product.imageConnection().imageEdge(), imageEdge -> imageEdge.image().src());
+    List<ProductDetails.Option> options = mapItems(product.options(), option -> new ProductDetails.Option(option.id(), option.name(),
+      option.values()));
+    List<ProductDetails.Variant> variants = mapItems(product.variantConnection().variantEdge(),
       variantEdge -> {
-        List<ProductDetails.SelectedOption> selectedOptions = mapItems(variantEdge.variant.selectedOptions, selectedOption ->
-          new ProductDetails.SelectedOption(selectedOption.name, selectedOption.value));
-        return new ProductDetails.Variant(variantEdge.variant.id, variantEdge.variant.title, variantEdge.variant.availableForSale,
-          selectedOptions, variantEdge.variant.price);
+        List<ProductDetails.SelectedOption> selectedOptions = mapItems(variantEdge.variant().selectedOptions(), selectedOption ->
+          new ProductDetails.SelectedOption(selectedOption.name(), selectedOption.value()));
+        return new ProductDetails.Variant(variantEdge.variant().id(), variantEdge.variant().title(), variantEdge.variant().availableForSale(),
+          selectedOptions, variantEdge.variant().price());
       });
-    return new ProductDetails(product.id, product.title, product.descriptionHtml, product.tags, images, options, variants);
+    return new ProductDetails(product.id(), product.title(), product.descriptionHtml(), product.tags(), images, options, variants);
   }
 
   @SuppressWarnings("Convert2MethodRef") static List<Collection> convertToCollections(
     final List<CollectionPageWithProductsQuery.Edge> collectionEdges) {
     return mapItems(collectionEdges, collectionEdge -> {
-        String collectionImageUrl = collectionEdge.collection.image.transform(it -> it.src).or("");
-        return new Collection(collectionEdge.collection.id, collectionEdge.collection.title,
-          collectionEdge.collection.descriptionHtml, collectionImageUrl, collectionEdge.cursor,
-          mapItems(collectionEdge.collection.productConnection.edges, productEdge -> {
-            String productImageUrl = firstItem(productEdge.product.imageConnection.edges,
-              imageEdge -> imageEdge != null ? imageEdge.image.src : null);
-            List<BigDecimal> prices = mapItems(productEdge.product.variantConnection.variantEdge,
-              variantEdge -> variantEdge.variant.price);
+        String collectionImageUrl = collectionEdge.collection().image().transform(it -> it.src()).or("");
+        return new Collection(collectionEdge.collection().id(), collectionEdge.collection().title(),
+          collectionEdge.collection().descriptionHtml(), collectionImageUrl, collectionEdge.cursor(),
+          mapItems(collectionEdge.collection().productConnection().edges(), productEdge -> {
+            String productImageUrl = firstItem(productEdge.product().imageConnection().edges(),
+              imageEdge -> imageEdge != null ? imageEdge.image().src() : null);
+            List<BigDecimal> prices = mapItems(productEdge.product().variantConnection().variantEdge(),
+              variantEdge -> variantEdge.variant().price());
             BigDecimal minPrice = minItem(prices, BigDecimal.ZERO, BigDecimal::compareTo);
-            return new Product(productEdge.product.id, productEdge.product.title, productImageUrl, minPrice, productEdge.cursor);
+            return new Product(productEdge.product().id(), productEdge.product().title(), productImageUrl, minPrice, productEdge.cursor());
           }));
       }
     );
   }
 
   @SuppressWarnings("ConstantConditions") static Checkout convertToCheckout(final CheckoutFragment checkout) {
-    List<Checkout.LineItem> lineItems = mapItems(checkout.lineItemConnection.lineItemEdges, it ->
-      new Checkout.LineItem(it.lineItem.variant.get().id, it.lineItem.title, it.lineItem.quantity, it.lineItem.variant.get().price));
-    Checkout.ShippingRate shippingLine = checkout.shippingLine.transform(it -> new Checkout.ShippingRate(it.handle, it.price, it.title))
+    List<Checkout.LineItem> lineItems = mapItems(checkout.lineItemConnection().lineItemEdges(), it ->
+      new Checkout.LineItem(it.lineItem().variant().get().id(), it.lineItem().title(), (int) it.lineItem().quantity(), it.lineItem().variant().get().price()));
+    Checkout.ShippingRate shippingLine = checkout.shippingLine().transform(it -> new Checkout.ShippingRate(it.handle(), it.price(), it.title()))
       .orNull();
-    Checkout.ShippingRates shippingRates = checkout.availableShippingRates.map(it -> it.fragments.checkoutShippingRatesFragment)
+    Checkout.ShippingRates shippingRates = checkout.availableShippingRates().map(it -> it.fragments().checkoutShippingRatesFragment())
       .transform(Converters::convertToShippingRates).or(new Checkout.ShippingRates(false, emptyList()));
-    return new Checkout(checkout.id, checkout.webUrl, checkout.currencyCode.toString(), checkout.requiresShipping, lineItems, shippingRates,
-      shippingLine, checkout.totalTax, checkout.subtotalPrice, checkout.paymentDue);
+    return new Checkout(checkout.id(), checkout.webUrl(), checkout.currencyCode().toString(), checkout.requiresShipping(), lineItems, shippingRates,
+      shippingLine, checkout.totalTax(), checkout.subtotalPrice(), checkout.paymentDue());
   }
 
   @SuppressWarnings("ConstantConditions") static Checkout convertToCheckout(final CheckoutCreateFragment checkout) {
-    List<Checkout.LineItem> lineItems = mapItems(checkout.lineItemConnection.lineItemEdges, it ->
-      new Checkout.LineItem(it.lineItem.variant.get().id, it.lineItem.title, it.lineItem.quantity, it.lineItem.variant.get().price));
-    return new Checkout(checkout.id, checkout.webUrl, checkout.currencyCode.toString(), checkout.requiresShipping, lineItems,
-      new Checkout.ShippingRates(false, emptyList()), null, checkout.totalTax, checkout.subtotalPrice, checkout.paymentDue);
+    List<Checkout.LineItem> lineItems = mapItems(checkout.lineItemConnection().lineItemEdges(), it ->
+      new Checkout.LineItem(it.lineItem().variant().get().id(), it.lineItem().title(), (int) it.lineItem().quantity(), it.lineItem().variant().get().price()));
+    return new Checkout(checkout.id(), checkout.webUrl(), checkout.currencyCode().toString(), checkout.requiresShipping(), lineItems,
+      new Checkout.ShippingRates(false, emptyList()), null, checkout.totalTax(), checkout.subtotalPrice(), checkout.paymentDue());
   }
 
   static Checkout.ShippingRates convertToShippingRates(final CheckoutShippingRatesFragment availableShippingRates) {
-    List<Checkout.ShippingRate> shippingRates = mapItems(availableShippingRates.shippingRates.or(emptyList()),
-      it -> new Checkout.ShippingRate(it.handle, it.price, it.title));
-    return new Checkout.ShippingRates(availableShippingRates.ready, shippingRates);
+    List<Checkout.ShippingRate> shippingRates = mapItems(availableShippingRates.shippingRates().or(emptyList()),
+      it -> new Checkout.ShippingRate(it.handle(), it.price(), it.title()));
+    return new Checkout.ShippingRates(availableShippingRates.ready(), shippingRates);
   }
 
   static Payment convertToPayment(final PaymentFragment payment) {
-    return new Payment(payment.id, payment.errorMessage.orNull(), payment.ready);
+    return new Payment(payment.id(), payment.errorMessage().orNull(), payment.ready());
   }
 
   static ShopSettings convertToShopSettings(final ShopSettingsQuery.Shop shop) {
     return new ShopSettings(
-      shop.name,
-      new HashSet<>(mapItems(shop.paymentSettings.acceptedCardBrands, cardBrand -> CardNetworkType.findByName(cardBrand.name()))),
-      shop.paymentSettings.countryCode.name()
+      shop.name(),
+      new HashSet<>(mapItems(shop.paymentSettings().acceptedCardBrands(), cardBrand -> CardNetworkType.findByName(cardBrand.name()))),
+      shop.paymentSettings().countryCode().name()
     );
   }
 
