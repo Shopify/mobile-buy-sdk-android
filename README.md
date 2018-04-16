@@ -77,14 +77,12 @@ The Mobile Buy SDK makes it easy to create custom storefronts in your mobile app
 
 ## Installation [⤴](#table-of-contents)
 
-Mobile Buy SDK for Android is represented by runtime module that provides support to build and execute GraphQL queries, and an optional library to help with the Android Pay purchase flow.
+Mobile Buy SDK for Android is represented by runtime module that provides support to build and execute GraphQL queries.
 
 ##### Gradle:
 
 ```gradle
-compile 'com.shopify.mobilebuysdk:buy3:3.1.1'
-// optional library to help with Android Pay purchase flow
-compile 'com.shopify.mobilebuysdk:buy3-pay-support:1.0.2'
+compile 'com.shopify.mobilebuysdk:buy3:3.2.1'
 ```
 
 ##### or Maven:
@@ -93,13 +91,7 @@ compile 'com.shopify.mobilebuysdk:buy3-pay-support:1.0.2'
 <dependency>
   <groupId>com.shopify.mobilebuysdk</groupId>
   <artifactId>buy3</artifactId>
-  <version>3.1.1</version>
-</dependency>
-
-<dependency>
-  <groupId>com.shopify.mobilebuysdk</groupId>
-  <artifactId>buy3-pay-support</artifactId>
-  <version>1.0.2</version>
+  <version>3.2.1</version>
 </dependency>
 ```
 
@@ -693,6 +685,8 @@ cardClient.vault(creditCard, checkout.getVaultUrl()).enqueue(new CreditCardVault
 **IMPORTANT:** The credit card vaulting service does **not** provide any validation for submitted credit cards. As a result, submitting invalid credit card numbers or even missing fields will always yield a vault `token`. Any errors related to invalid credit card information will be surfaced only when the provided `token` is used to complete a checkout.
 
 ## Android Pay [⤴](#table-of-contents)
+
+**DEPRECATED. NOT SUPPORTED**
 
 Support for Android Pay is provided by the `com.shopify.mobilebuysdk:pay` extension library. It is a separate module from the Buy SDK that offers helper classes for supporting Android Pay in your application. It helps you with the Android Pay workflow by providing convenient helper functions and structures.
 
@@ -1406,6 +1400,8 @@ client.mutateGraph(query).enqueue(new GraphCall.Callback<Storefront.Mutation>() 
 ```
 
 ##### Android Pay checkout [⤴](#table-of-contents)
+
+**DEPRECATED. NOT SUPPORTED**
 
 The Buy SDK makes Android Pay integration easy with the provided `android-pay` module. Refer to the [Android Pay](#android-pay-) section on how to helper classes and obtain a payment token. With token in-hand, we can complete the checkout:
 
