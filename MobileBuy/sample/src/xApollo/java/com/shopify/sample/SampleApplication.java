@@ -1,13 +1,14 @@
 package com.shopify.sample;
 
-import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.apollographql.apollo.ApolloClient;
-import com.apollographql.apollo.CustomTypeAdapter;
+
 import com.apollographql.apollo.api.cache.http.HttpCachePolicy;
 import com.apollographql.apollo.cache.http.ApolloHttpCache;
 import com.apollographql.apollo.cache.http.DiskLruHttpCacheStore;
+import com.apollographql.apollo.response.CustomTypeAdapter;
+import com.apollographql.apollo.response.CustomTypeValue;
 import com.shopify.sample.domain.type.CustomType;
 import com.shopify.sample.domain.usecases.UseCases;
 import com.shopify.sample.domain.usecases.UseCasesImpl;
@@ -15,6 +16,8 @@ import com.shopify.sample.util.CallbackExecutors;
 
 import java.math.BigDecimal;
 import java.util.concurrent.TimeUnit;
+
+import javax.annotation.Nonnull;
 
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
@@ -74,13 +77,13 @@ public class SampleApplication extends BaseApplication {
       .httpCache(new ApolloHttpCache(new DiskLruHttpCacheStore(getCacheDir(), 1000 * 1024), null))
       .defaultHttpCachePolicy(HttpCachePolicy.CACHE_FIRST.expireAfter(20, TimeUnit.MINUTES))
       .addCustomTypeAdapter(CustomType.MONEY, new CustomTypeAdapter<BigDecimal>() {
-        @NonNull @Override public BigDecimal decode(@NonNull final String value) {
-          return new BigDecimal(value);
-        }
+          @Override public BigDecimal decode(@Nonnull CustomTypeValue value) {
+              return new BigDecimal(value.value.toString());
+          }
 
-        @NonNull @Override public String encode(@NonNull final BigDecimal value) {
-          return value.toString();
-        }
+          @Nonnull @Override public CustomTypeValue encode(@Nonnull BigDecimal value) {
+              return CustomTypeValue.fromRawValue(value);
+          }
       })
       .build();
   }

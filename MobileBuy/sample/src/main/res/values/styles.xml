@@ -8,7 +8,7 @@
         <item name="failureImageScaleType">fitCenter</item>
         <item name="placeholderImage">@drawable/shopify_drawee_place_holder</item>
         <item name="placeholderImageScaleType">fitXY</item>
-        <item name="android:foreground">?attr/selectableItemBackground</item>
+        <item name="android:foreground">?android:attr/selectableItemBackground</item>
     </style>
 
     <style name="AppTheme" parent="Theme.AppCompat">

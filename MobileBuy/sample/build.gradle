@@ -16,7 +16,7 @@ android {
 
   defaultConfig {
     applicationId "com.shopify.sample"
-    minSdkVersion androidConfig.minSdkVersion
+    minSdkVersion 21
     targetSdkVersion androidConfig.targetSdkVersion
     versionCode 1
     versionName "1.0"

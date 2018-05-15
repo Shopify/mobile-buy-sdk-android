@@ -56,7 +56,7 @@
         android:ellipsize="end"
         android:maxLines="3"
         android:textAppearance="@style/Shopify.SubTitleText.Inverse"
-        android:textColor="?attr/colorAccent"
+        android:textColor="?android:attr/colorAccent"
         app:layout_constraintLeft_toLeftOf="@+id/guideline"
         app:layout_constraintRight_toLeftOf="@+id/price"
         app:layout_constraintTop_toBottomOf="@+id/title"
@@ -72,7 +72,7 @@
         android:ellipsize="end"
         android:lines="1"
         android:textAppearance="@style/Shopify.SubTitleText.Inverse"
-        android:textColor="?attr/colorAccent"
+        android:textColor="?android:attr/colorAccent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="$50.99" />
@@ -99,7 +99,7 @@
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:background="@android:color/white"
-            android:foreground="?attr/selectableItemBackground"
+            android:foreground="?android:attr/selectableItemBackground"
             android:src="@drawable/variant_decrease" />
 
         <TextView
@@ -111,7 +111,7 @@
             android:gravity="center"
             android:maxLines="1"
             android:textAppearance="@style/Shopify.SubTitleText.Inverse"
-            android:textColor="?attr/colorAccent"
+            android:textColor="?android:attr/colorAccent"
             tools:text="100" />
 
         <ImageButton
@@ -120,7 +120,7 @@
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:background="@android:color/white"
-            android:foreground="?attr/selectableItemBackground"
+            android:foreground="?android:attr/selectableItemBackground"
 
             android:src="@drawable/variant_increase" />
 
@@ -142,7 +142,7 @@
         android:layout_width="0dp"
         android:layout_height="1dp"
         android:layout_marginStart="@dimen/default_padding_half"
-        android:background="?attr/colorAccent"
+        android:background="?android:attr/colorAccent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="@+id/guideline"
         app:layout_constraintRight_toRightOf="parent"

@@ -10,8 +10,8 @@
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
+        android:layout_height="?android:attr/actionBarSize"
+        android:background="?android:attr/colorPrimary"
         app:contentInsetStartWithNavigation="0dp" />
 
     <ScrollView
@@ -62,8 +62,8 @@
             android:layout_width="320dp"
             android:layout_height="48dp"
             android:layout_gravity="center"
-            android:background="?attr/colorAccent"
-            android:foreground="?attr/selectableItemBackground"
+            android:background="?android:attr/colorAccent"
+            android:foreground="?android:attr/selectableItemBackground"
             android:text="@string/checkout_confirm" />
     </FrameLayout>
 </LinearLayout>

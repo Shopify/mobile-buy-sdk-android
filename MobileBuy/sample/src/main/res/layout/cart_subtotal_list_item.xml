@@ -12,7 +12,7 @@
         android:id="@+id/divider"
         android:layout_width="200dp"
         android:layout_height="1dp"
-        android:background="?attr/colorAccent" />
+        android:background="?android:attr/colorAccent" />
 
     <TextView
         android:id="@+id/subtotal"

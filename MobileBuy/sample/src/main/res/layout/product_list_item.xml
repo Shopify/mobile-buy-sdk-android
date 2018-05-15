@@ -40,7 +40,7 @@
         android:paddingBottom="@dimen/default_padding_half"
         android:paddingLeft="@dimen/default_padding_half"
         android:paddingRight="@dimen/default_padding_half"
-        android:textColor="?attr/colorAccent"
+        android:textColor="?android:attr/colorAccent"
         android:textSize="@dimen/text_size"
         tools:text="50.99" />
 

@@ -23,7 +23,7 @@
         android:layout_marginTop="@dimen/default_padding_half"
         android:maxLines="1"
         android:textAppearance="@style/ExpandedTitleTextAppearance"
-        android:textColor="?attr/colorAccent"
+        android:textColor="?android:attr/colorAccent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/title1"

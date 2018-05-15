@@ -7682,6 +7682,11 @@ public class Storefront {
         BO,
 
         /**
+        * Bonaire, Sint Eustatius and Saba
+        */
+        BQ,
+
+        /**
         * Brazil
         */
         BR,
@@ -8866,6 +8871,10 @@ public class Storefront {
                     return BO;
                 }
 
+                case "BQ": {
+                    return BQ;
+                }
+
                 case "BR": {
                     return BR;
                 }
@@ -9835,6 +9844,10 @@ public class Storefront {
 
                 case BO: {
                     return "BO";
+                }
+
+                case BQ: {
+                    return "BQ";
                 }
 
                 case BR: {
@@ -11262,6 +11275,11 @@ public class Storefront {
         BHD,
 
         /**
+        * Burundian Franc (BIF)
+        */
+        BIF,
+
+        /**
         * Brunei Dollar (BND)
         */
         BND,
@@ -11944,6 +11962,10 @@ public class Storefront {
                     return BHD;
                 }
 
+                case "BIF": {
+                    return BIF;
+                }
+
                 case "BND": {
                     return BND;
                 }
@@ -12501,6 +12523,10 @@ public class Storefront {
 
                 case BHD: {
                     return "BHD";
+                }
+
+                case BIF: {
+                    return "BIF";
                 }
 
                 case BND: {
@@ -15806,6 +15832,153 @@ public class Storefront {
         }
     }
 
+    public interface DisplayableErrorQueryDefinition {
+        void define(DisplayableErrorQuery _queryBuilder);
+    }
+
+    /**
+    * Represents an error in the input of a mutation.
+    */
+    public static class DisplayableErrorQuery extends Query<DisplayableErrorQuery> {
+        DisplayableErrorQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+
+            startField("__typename");
+        }
+
+        /**
+        * Path to the input field which caused the error.
+        */
+        public DisplayableErrorQuery field() {
+            startField("field");
+
+            return this;
+        }
+
+        /**
+        * The error message.
+        */
+        public DisplayableErrorQuery message() {
+            startField("message");
+
+            return this;
+        }
+
+        public DisplayableErrorQuery onUserError(UserErrorQueryDefinition queryDef) {
+            startInlineFragment("UserError");
+            queryDef.define(new UserErrorQuery(_queryBuilder));
+            _queryBuilder.append('}');
+            return this;
+        }
+    }
+
+    public interface DisplayableError {
+        String getGraphQlTypeName();
+
+        List<String> getField();
+
+        String getMessage();
+    }
+
+    /**
+    * Represents an error in the input of a mutation.
+    */
+    public static class UnknownDisplayableError extends AbstractResponse<UnknownDisplayableError> implements DisplayableError {
+        public UnknownDisplayableError() {
+        }
+
+        public UnknownDisplayableError(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "field": {
+                        List<String> optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            List<String> list1 = new ArrayList<>();
+                            for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                                list1.add(jsonAsString(element1, key));
+                            }
+
+                            optional1 = list1;
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "message": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public static DisplayableError create(JsonObject fields) throws SchemaViolationError {
+            String typeName = fields.getAsJsonPrimitive("__typename").getAsString();
+            switch (typeName) {
+                case "UserError": {
+                    return new UserError(fields);
+                }
+
+                default: {
+                    return new UnknownDisplayableError(fields);
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return (String) get("__typename");
+        }
+
+        /**
+        * Path to the input field which caused the error.
+        */
+
+        public List<String> getField() {
+            return (List<String>) get("field");
+        }
+
+        public UnknownDisplayableError setField(List<String> arg) {
+            optimisticData.put(getKey("field"), arg);
+            return this;
+        }
+
+        /**
+        * The error message.
+        */
+
+        public String getMessage() {
+            return (String) get("message");
+        }
+
+        public UnknownDisplayableError setMessage(String arg) {
+            optimisticData.put(getKey("message"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "field": return false;
+
+                case "message": return false;
+
+                default: return false;
+            }
+        }
+    }
+
     public interface DomainQueryDefinition {
         void define(DomainQuery _queryBuilder);
     }
@@ -16660,9 +16833,22 @@ public class Storefront {
         /**
         * Two-letter country code.
         * For example, US.
+        *
+        * @deprecated Use `countryCodeV2` instead
         */
+        @Deprecated
         public MailingAddressQuery countryCode() {
             startField("countryCode");
+
+            return this;
+        }
+
+        /**
+        * Two-letter country code.
+        * For example, US.
+        */
+        public MailingAddressQuery countryCodeV2() {
+            startField("countryCodeV2");
 
             return this;
         }
@@ -16871,6 +17057,17 @@ public class Storefront {
                         String optional1 = null;
                         if (!field.getValue().isJsonNull()) {
                             optional1 = jsonAsString(field.getValue(), key);
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "countryCodeV2": {
+                        CountryCode optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = CountryCode.fromGraphQl(jsonAsString(field.getValue(), key));
                         }
 
                         responseData.put(key, optional1);
@@ -17093,6 +17290,8 @@ public class Storefront {
         /**
         * Two-letter country code.
         * For example, US.
+        *
+        * @deprecated Use `countryCodeV2` instead
         */
 
         public String getCountryCode() {
@@ -17101,6 +17300,20 @@ public class Storefront {
 
         public MailingAddress setCountryCode(String arg) {
             optimisticData.put(getKey("countryCode"), arg);
+            return this;
+        }
+
+        /**
+        * Two-letter country code.
+        * For example, US.
+        */
+
+        public CountryCode getCountryCodeV2() {
+            return (CountryCode) get("countryCodeV2");
+        }
+
+        public MailingAddress setCountryCodeV2(CountryCode arg) {
+            optimisticData.put(getKey("countryCodeV2"), arg);
             return this;
         }
 
@@ -17266,6 +17479,8 @@ public class Storefront {
                 case "country": return false;
 
                 case "countryCode": return false;
+
+                case "countryCodeV2": return false;
 
                 case "firstName": return false;
 
@@ -19658,7 +19873,7 @@ public class Storefront {
                 }
 
                 /**
-                * The order’s URL for a customer.
+                * The unique URL that the customer can use to access the order.
                 */
                 public OrderQuery customerUrl() {
                     startField("customerUrl");
@@ -19802,6 +20017,15 @@ public class Storefront {
                     _queryBuilder.append('{');
                     queryDef.define(new MailingAddressQuery(_queryBuilder));
                     _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * The unique URL for the order's status page.
+                */
+                public OrderQuery statusUrl() {
+                    startField("statusUrl");
 
                     return this;
                 }
@@ -19952,6 +20176,12 @@ public class Storefront {
                                 break;
                             }
 
+                            case "statusUrl": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+
+                                break;
+                            }
+
                             case "subtotalPrice": {
                                 BigDecimal optional1 = null;
                                 if (!field.getValue().isJsonNull()) {
@@ -20039,7 +20269,7 @@ public class Storefront {
                 }
 
                 /**
-                * The order’s URL for a customer.
+                * The unique URL that the customer can use to access the order.
                 */
 
                 public String getCustomerUrl() {
@@ -20140,6 +20370,19 @@ public class Storefront {
                 }
 
                 /**
+                * The unique URL for the order's status page.
+                */
+
+                public String getStatusUrl() {
+                    return (String) get("statusUrl");
+                }
+
+                public Order setStatusUrl(String arg) {
+                    optimisticData.put(getKey("statusUrl"), arg);
+                    return this;
+                }
+
+                /**
                 * Price of the order before shipping and taxes.
                 */
 
@@ -20226,6 +20469,8 @@ public class Storefront {
                         case "processedAt": return false;
 
                         case "shippingAddress": return true;
+
+                        case "statusUrl": return false;
 
                         case "subtotalPrice": return false;
 
@@ -22007,7 +22252,7 @@ public class Storefront {
                     }
 
                     /**
-                    * Truncate the array result to this size
+                    * Truncate the array result to this size.
                     */
                     public OptionsArguments first(Integer value) {
                         if (value != null) {
@@ -26589,7 +26834,7 @@ public class Storefront {
                 }
 
                 /**
-                * Path to input field which caused the error.
+                * Path to the input field which caused the error.
                 */
                 public UserErrorQuery field() {
                     startField("field");
@@ -26610,7 +26855,7 @@ public class Storefront {
             /**
             * Represents an error in the input of a mutation.
             */
-            public static class UserError extends AbstractResponse<UserError> {
+            public static class UserError extends AbstractResponse<UserError> implements DisplayableError {
                 public UserError() {
                 }
 
@@ -26657,7 +26902,7 @@ public class Storefront {
                 }
 
                 /**
-                * Path to input field which caused the error.
+                * Path to the input field which caused the error.
                 */
 
                 public List<String> getField() {

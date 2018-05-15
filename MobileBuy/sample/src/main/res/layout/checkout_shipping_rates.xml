@@ -47,7 +47,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/default_padding_half"
-        android:foreground="?attr/selectableItemBackground"
+        android:foreground="?android:attr/selectableItemBackground"
         android:text="@string/checkout_shipping_method_change"
         android:textAppearance="@style/WalletDetailsButton"
         app:layout_constraintRight_toRightOf="parent"
