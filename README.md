@@ -82,7 +82,7 @@ Mobile Buy SDK for Android is represented by runtime module that provides suppor
 ##### Gradle:
 
 ```gradle
-compile 'com.shopify.mobilebuysdk:buy3:3.2.1'
+compile 'com.shopify.mobilebuysdk:buy3:3.2.2'
 ```
 
 ##### or Maven:
@@ -91,7 +91,7 @@ compile 'com.shopify.mobilebuysdk:buy3:3.2.1'
 <dependency>
   <groupId>com.shopify.mobilebuysdk</groupId>
   <artifactId>buy3</artifactId>
-  <version>3.2.1</version>
+  <version>3.2.2</version>
 </dependency>
 ```
 
