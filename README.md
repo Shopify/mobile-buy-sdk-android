@@ -1232,7 +1232,9 @@ Since we'll need to update the checkout with additional information later, all w
 
 #### Updating a checkout [⤴](#table-of-contents)
 
-A customer's information may not be available when a checkout is created. The Buy SDK provides mutations for updating specific checkout fields that are required for completion: the `email` and `shippingAddress` fields.
+A customer's information might not be available when a checkout is created. The Buy SDK provides mutations for updating the specific checkout fields that are required for completion: the `email`, `shippingAddress` and  `shippingLine` fields.
+
+Note that if your checkout contains a line item that requires shipping, you must provide a shipping address and a shipping line as part of your checkout.
 
 ###### Updating email [⤴](#table-of-contents)
 
@@ -1281,6 +1283,10 @@ Storefront.MutationQuery query = Storefront.mutation((mutationQuery -> mutationQ
   )
 );
 ```
+
+###### Updating shipping line [⤴](#table-of-contents)
+
+Add Java Shipping line code example here
 
 #### Polling for shipping rates [⤴](#table-of-contents)
 
