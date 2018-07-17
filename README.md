@@ -660,19 +660,9 @@ The Buy SDK supports native checkout via GraphQL, which lets you complete a chec
 Like `GraphClient`, the `CardClient` manages your interactions with the card server that provides opaque credit card tokens. The tokens are used to complete checkouts. To vault credit cards using the `CardClient`, you will need to request a url for the cardserver from the shop config:
 
 ```java
-final Storefront.QueryRootQuery query = Storefront.query(new Storefront.QueryRootQueryDefinition() {
-  @Override public void define(Storefront.QueryRootQuery _queryBuilder) {
-    _queryBuilder.shop(new Storefront.ShopQueryDefinition() {
-      @Override public void define(Storefront.ShopQuery _queryBuilder) {
-        _queryBuilder.paymentSettings(new Storefront.PaymentSettingsQueryDefinition() {
-          @Override public void define(Storefront.PaymentSettingsQuery _queryBuilder) {
-            _queryBuilder.cardVaultUrl();
-          }
-        });
-      }
-    });
-  }
-});
+final Storefront.QueryRootQuery query = Storefront.query(q -> q.shop(shop ->
+    shop.paymentSettings(paymentSettings -> paymentSettings.cardVaultUrl())
+))
 ```
 
 After collecting the user's credit card information in a secure manner, create a credit card representation and submit a vault request:
