@@ -535,7 +535,7 @@ QueryGraphCall call = graphClient.queryGraph(query);
 call.enqueue(new GraphCall.Callback<Storefront.QueryRoot>() {
 
   @Override public void onResponse(GraphResponse<Storefront.QueryRoot> response) {
-  	...
+       ...
   }
 
   @Override public void onFailure(GraphError error) {
@@ -657,10 +657,18 @@ The Buy SDK supports native checkout via GraphQL, which lets you complete a chec
 
 ### Card Client [⤴](#table-of-contents)
 
-Like `GraphClient`, the `CardClient` manages your interactions with the card server that provides opaque credit card tokens. The tokens are used to complete checkouts. After collecting the user's credit card information in a secure manner, create a credit card representation and submit a vault request:
+Like `GraphClient`, the `CardClient` manages your interactions with the card server that provides opaque credit card tokens. The tokens are used to complete checkouts. To vault credit cards using the `CardClient`, you will need to request a url for the cardserver from the shop config:
 
 ```java
-StoreFront.Checkout checkout = ...;
+final Storefront.QueryRootQuery query = Storefront.query(q -> q.shop(shop ->
+    shop.paymentSettings(paymentSettings -> paymentSettings.cardVaultUrl())
+))
+```
+
+After collecting the user's credit card information in a secure manner, create a credit card representation and submit a vault request:
+
+```java
+String cardVaultUrl = ...;
 CardClient cardClient = ...;
 
 CreditCard creditCard = CreditCard.builder()
@@ -672,13 +680,13 @@ CreditCard creditCard = CreditCard.builder()
   .verificationCode("111")
   .build();
 
-cardClient.vault(creditCard, checkout.getVaultUrl()).enqueue(new CreditCardVaultCall.Callback() {
+cardClient.vault(creditCard, cardVaultUrl).enqueue(new CreditCardVaultCall.Callback() {
   @Override public void onResponse(@NonNull String token) {
     // proceed to complete checkout with token
   }
 
   @Override public void onFailure(@NonNull IOException error) {
-        // handle error
+    // handle error
   }
 });
 ```
