@@ -55,6 +55,7 @@ The Mobile Buy SDK makes it easy to create custom storefronts in your mobile app
       - [Creating a checkout](#checkout-)
       - [Updating a checkout](#updating-a-checkout-)
       - [Polling for shipping rates](#polling-for-shipping-rates-)
+      - [Updating shipping line](#updating-shipping-line-)
       - [Completing a checkout](#completing-a-checkout-)
           - [Web](#web-checkout-)
           - [Credit card](#credit-card-checkout-)
@@ -1284,10 +1285,6 @@ Storefront.MutationQuery query = Storefront.mutation((mutationQuery -> mutationQ
 );
 ```
 
-###### Updating shipping line [⤴](#table-of-contents)
-
-Add Java Shipping line code example here
-
 #### Polling for shipping rates [⤴](#table-of-contents)
 
 Available shipping rates are specific to a checkout since the cost to ship items depends on the quantity, weight, and other attributes of the items in the checkout. Shipping rates also require a checkout to have a valid `shippingAddress`, which can be updated using steps found in [updating a checkout](#updating-a-checkout-). Available shipping rates are a field on `Storefront.Checkout`, so given a `checkoutId` (that we kept a reference to earlier) we can query for shipping rates:
@@ -1339,6 +1336,16 @@ client.queryGraph(query).enqueue(
 ```
 
 The callback `onResponse` will be called only if `availableShippingRates.ready == true` or the retry count reaches 10.
+
+##### Updating shipping line [⤴](#table-of-contents)
+
+```java
+ID checkoutId = ...
+Storefront.ShippingRate shippingRate = ...
+Storefront.mutation(m -> m.checkoutShippingLineUpdate(checkoutId, shippingRate.getHandle(), update ->
+	update.userErrors(errors -> errors.field().message())
+))
+```
 
 #### Completing a checkout [⤴](#table-of-contents)
 
