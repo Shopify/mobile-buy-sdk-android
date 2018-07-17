@@ -55,6 +55,7 @@ The Mobile Buy SDK makes it easy to create custom storefronts in your mobile app
       - [Creating a checkout](#checkout-)
       - [Updating a checkout](#updating-a-checkout-)
       - [Polling for shipping rates](#polling-for-shipping-rates-)
+      - [Updating shipping line](#updating-shipping-line-)
       - [Completing a checkout](#completing-a-checkout-)
           - [Web](#web-checkout-)
           - [Credit card](#credit-card-checkout-)
@@ -1240,7 +1241,9 @@ Since we'll need to update the checkout with additional information later, all w
 
 #### Updating a checkout [⤴](#table-of-contents)
 
-A customer's information may not be available when a checkout is created. The Buy SDK provides mutations for updating specific checkout fields that are required for completion: the `email` and `shippingAddress` fields.
+A customer's information might not be available when a checkout is created. The Buy SDK provides mutations for updating the specific checkout fields that are required for completion: the `email`, `shippingAddress` and  `shippingLine` fields.
+
+Note that if your checkout contains a line item that requires shipping, you must provide a shipping address and a shipping line as part of your checkout.
 
 ###### Updating email [⤴](#table-of-contents)
 
@@ -1341,6 +1344,16 @@ client.queryGraph(query).enqueue(
 ```
 
 The callback `onResponse` will be called only if `availableShippingRates.ready == true` or the retry count reaches 10.
+
+##### Updating shipping line [⤴](#table-of-contents)
+
+```java
+ID checkoutId = ...
+Storefront.ShippingRate shippingRate = ...
+Storefront.mutation(m -> m.checkoutShippingLineUpdate(checkoutId, shippingRate.getHandle(), update ->
+	update.userErrors(errors -> errors.field().message())
+))
+```
 
 #### Completing a checkout [⤴](#table-of-contents)
 
