@@ -492,6 +492,15 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * A human-friendly unique string for the Article automatically generated from its title.
+        */
+        public ArticleQuery handle() {
+            startField("handle");
+
+            return this;
+        }
+
         public class ImageArguments extends Arguments {
             ImageArguments(StringBuilder _queryBuilder) {
                 super(_queryBuilder, true);
@@ -672,6 +681,12 @@ public class Storefront {
                         break;
                     }
 
+                    case "handle": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+
+                        break;
+                    }
+
                     case "id": {
                         responseData.put(key, new ID(jsonAsString(field.getValue(), key)));
 
@@ -830,6 +845,19 @@ public class Storefront {
         }
 
         /**
+        * A human-friendly unique string for the Article automatically generated from its title.
+        */
+
+        public String getHandle() {
+            return (String) get("handle");
+        }
+
+        public Article setHandle(String arg) {
+            optimisticData.put(getKey("handle"), arg);
+            return this;
+        }
+
+        /**
         * Globally unique identifier.
         */
 
@@ -917,6 +945,8 @@ public class Storefront {
                 case "excerpt": return false;
 
                 case "excerptHtml": return false;
+
+                case "handle": return false;
 
                 case "id": return false;
 
@@ -1827,6 +1857,15 @@ public class Storefront {
         }
 
         /**
+        * A human-friendly unique string for the Blog automatically generated from its title.
+        */
+        public BlogQuery handle() {
+            startField("handle");
+
+            return this;
+        }
+
+        /**
         * The blogs’s title.
         */
         public BlogQuery title() {
@@ -1856,6 +1895,12 @@ public class Storefront {
                 switch (fieldName) {
                     case "articles": {
                         responseData.put(key, new ArticleConnection(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "handle": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
 
                         break;
                     }
@@ -1912,6 +1957,19 @@ public class Storefront {
         }
 
         /**
+        * A human-friendly unique string for the Blog automatically generated from its title.
+        */
+
+        public String getHandle() {
+            return (String) get("handle");
+        }
+
+        public Blog setHandle(String arg) {
+            optimisticData.put(getKey("handle"), arg);
+            return this;
+        }
+
+        /**
         * Globally unique identifier.
         */
 
@@ -1948,6 +2006,8 @@ public class Storefront {
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "articles": return true;
+
+                case "handle": return false;
 
                 case "id": return false;
 
@@ -4640,6 +4700,125 @@ public class Storefront {
         }
 
         public CheckoutDiscountCodeApplyPayload setUserErrors(List<UserError> arg) {
+            optimisticData.put(getKey("userErrors"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "checkout": return true;
+
+                case "userErrors": return true;
+
+                default: return false;
+            }
+        }
+    }
+
+    public interface CheckoutDiscountCodeRemovePayloadQueryDefinition {
+        void define(CheckoutDiscountCodeRemovePayloadQuery _queryBuilder);
+    }
+
+    public static class CheckoutDiscountCodeRemovePayloadQuery extends Query<CheckoutDiscountCodeRemovePayloadQuery> {
+        CheckoutDiscountCodeRemovePayloadQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * The updated checkout object.
+        */
+        public CheckoutDiscountCodeRemovePayloadQuery checkout(CheckoutQueryDefinition queryDef) {
+            startField("checkout");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CheckoutQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        */
+        public CheckoutDiscountCodeRemovePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
+            startField("userErrors");
+
+            _queryBuilder.append('{');
+            queryDef.define(new UserErrorQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+    }
+
+    public static class CheckoutDiscountCodeRemovePayload extends AbstractResponse<CheckoutDiscountCodeRemovePayload> {
+        public CheckoutDiscountCodeRemovePayload() {
+        }
+
+        public CheckoutDiscountCodeRemovePayload(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "checkout": {
+                        Checkout optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new Checkout(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "userErrors": {
+                        List<UserError> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new UserError(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "CheckoutDiscountCodeRemovePayload";
+        }
+
+        /**
+        * The updated checkout object.
+        */
+
+        public Checkout getCheckout() {
+            return (Checkout) get("checkout");
+        }
+
+        public CheckoutDiscountCodeRemovePayload setCheckout(Checkout arg) {
+            optimisticData.put(getKey("checkout"), arg);
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        */
+
+        public List<UserError> getUserErrors() {
+            return (List<UserError>) get("userErrors");
+        }
+
+        public CheckoutDiscountCodeRemovePayload setUserErrors(List<UserError> arg) {
             optimisticData.put(getKey("userErrors"), arg);
             return this;
         }
@@ -11470,6 +11649,11 @@ public class Storefront {
         INR,
 
         /**
+        * Iraqi Dinar (IQD)
+        */
+        IQD,
+
+        /**
         * Icelandic Kronur (ISK)
         */
         ISK,
@@ -12118,6 +12302,10 @@ public class Storefront {
                     return INR;
                 }
 
+                case "IQD": {
+                    return IQD;
+                }
+
                 case "ISK": {
                     return ISK;
                 }
@@ -12679,6 +12867,10 @@ public class Storefront {
 
                 case INR: {
                     return "INR";
+                }
+
+                case IQD: {
+                    return "IQD";
                 }
 
                 case ISK: {
@@ -16977,7 +17169,7 @@ public class Storefront {
         }
 
         /**
-        * Zip/Postal Code.
+        * ZIP/Postal Code.
         */
         public MailingAddressQuery zip() {
             startField("zip");
@@ -17454,7 +17646,7 @@ public class Storefront {
         }
 
         /**
-        * Zip/Postal Code.
+        * ZIP/Postal Code.
         */
 
         public String getZip() {
@@ -18386,6 +18578,24 @@ public class Storefront {
                 }
 
                 /**
+                * Removes the applied discount from an existing checkout.
+                */
+                public MutationQuery checkoutDiscountCodeRemove(ID checkoutId, CheckoutDiscountCodeRemovePayloadQueryDefinition queryDef) {
+                    startField("checkoutDiscountCodeRemove");
+
+                    _queryBuilder.append("(checkoutId:");
+                    Query.appendQuotedString(_queryBuilder, checkoutId.toString());
+
+                    _queryBuilder.append(')');
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new CheckoutDiscountCodeRemovePayloadQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
                 * Updates the email on an existing checkout.
                 */
                 public MutationQuery checkoutEmailUpdate(ID checkoutId, String email, CheckoutEmailUpdatePayloadQueryDefinition queryDef) {
@@ -18929,6 +19139,17 @@ public class Storefront {
                                 break;
                             }
 
+                            case "checkoutDiscountCodeRemove": {
+                                CheckoutDiscountCodeRemovePayload optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = new CheckoutDiscountCodeRemovePayload(jsonAsObject(field.getValue(), key));
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
                             case "checkoutEmailUpdate": {
                                 CheckoutEmailUpdatePayload optional1 = null;
                                 if (!field.getValue().isJsonNull()) {
@@ -19265,6 +19486,19 @@ public class Storefront {
                 }
 
                 /**
+                * Removes the applied discount from an existing checkout.
+                */
+
+                public CheckoutDiscountCodeRemovePayload getCheckoutDiscountCodeRemove() {
+                    return (CheckoutDiscountCodeRemovePayload) get("checkoutDiscountCodeRemove");
+                }
+
+                public Mutation setCheckoutDiscountCodeRemove(CheckoutDiscountCodeRemovePayload arg) {
+                    optimisticData.put(getKey("checkoutDiscountCodeRemove"), arg);
+                    return this;
+                }
+
+                /**
                 * Updates the email on an existing checkout.
                 */
 
@@ -19544,6 +19778,8 @@ public class Storefront {
                         case "checkoutCustomerDisassociate": return true;
 
                         case "checkoutDiscountCodeApply": return true;
+
+                        case "checkoutDiscountCodeRemove": return true;
 
                         case "checkoutEmailUpdate": return true;
 
@@ -21930,6 +22166,15 @@ public class Storefront {
                     startField("id");
                 }
 
+                /**
+                * Indicates if at least one product variant is available for sale.
+                */
+                public ProductQuery availableForSale() {
+                    startField("availableForSale");
+
+                    return this;
+                }
+
                 public class CollectionsArguments extends Arguments {
                     CollectionsArguments(StringBuilder _queryBuilder) {
                         super(_queryBuilder, true);
@@ -22292,6 +22537,19 @@ public class Storefront {
                 }
 
                 /**
+                * The price range.
+                */
+                public ProductQuery priceRange(ProductPriceRangeQueryDefinition queryDef) {
+                    startField("priceRange");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new ProductPriceRangeQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
                 * A categorization that a product can be tagged with, commonly used for filtering and searching.
                 */
                 public ProductQuery productType() {
@@ -22492,6 +22750,12 @@ public class Storefront {
                         String key = field.getKey();
                         String fieldName = getFieldName(key);
                         switch (fieldName) {
+                            case "availableForSale": {
+                                responseData.put(key, jsonAsBoolean(field.getValue(), key));
+
+                                break;
+                            }
+
                             case "collections": {
                                 responseData.put(key, new CollectionConnection(jsonAsObject(field.getValue(), key)));
 
@@ -22552,6 +22816,12 @@ public class Storefront {
                                 }
 
                                 responseData.put(key, list1);
+
+                                break;
+                            }
+
+                            case "priceRange": {
+                                responseData.put(key, new ProductPriceRange(jsonAsObject(field.getValue(), key)));
 
                                 break;
                             }
@@ -22632,6 +22902,19 @@ public class Storefront {
 
                 public String getGraphQlTypeName() {
                     return "Product";
+                }
+
+                /**
+                * Indicates if at least one product variant is available for sale.
+                */
+
+                public Boolean getAvailableForSale() {
+                    return (Boolean) get("availableForSale");
+                }
+
+                public Product setAvailableForSale(Boolean arg) {
+                    optimisticData.put(getKey("availableForSale"), arg);
+                    return this;
                 }
 
                 /**
@@ -22749,6 +23032,19 @@ public class Storefront {
                 }
 
                 /**
+                * The price range.
+                */
+
+                public ProductPriceRange getPriceRange() {
+                    return (ProductPriceRange) get("priceRange");
+                }
+
+                public Product setPriceRange(ProductPriceRange arg) {
+                    optimisticData.put(getKey("priceRange"), arg);
+                    return this;
+                }
+
+                /**
                 * A categorization that a product can be tagged with, commonly used for filtering and searching.
                 */
 
@@ -22857,6 +23153,8 @@ public class Storefront {
 
                 public boolean unwrapsToObject(String key) {
                     switch (getFieldName(key)) {
+                        case "availableForSale": return false;
+
                         case "collections": return true;
 
                         case "createdAt": return false;
@@ -22874,6 +23172,8 @@ public class Storefront {
                         case "onlineStoreUrl": return false;
 
                         case "options": return true;
+
+                        case "priceRange": return true;
 
                         case "productType": return false;
 
@@ -23434,6 +23734,121 @@ public class Storefront {
                         case "name": return false;
 
                         case "values": return false;
+
+                        default: return false;
+                    }
+                }
+            }
+
+            public interface ProductPriceRangeQueryDefinition {
+                void define(ProductPriceRangeQuery _queryBuilder);
+            }
+
+            /**
+            * The price range of the product.
+            */
+            public static class ProductPriceRangeQuery extends Query<ProductPriceRangeQuery> {
+                ProductPriceRangeQuery(StringBuilder _queryBuilder) {
+                    super(_queryBuilder);
+                }
+
+                /**
+                * The highest variant's price.
+                */
+                public ProductPriceRangeQuery maxVariantPrice(MoneyV2QueryDefinition queryDef) {
+                    startField("maxVariantPrice");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new MoneyV2Query(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * The lowest variant's price.
+                */
+                public ProductPriceRangeQuery minVariantPrice(MoneyV2QueryDefinition queryDef) {
+                    startField("minVariantPrice");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new MoneyV2Query(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+            }
+
+            /**
+            * The price range of the product.
+            */
+            public static class ProductPriceRange extends AbstractResponse<ProductPriceRange> {
+                public ProductPriceRange() {
+                }
+
+                public ProductPriceRange(JsonObject fields) throws SchemaViolationError {
+                    for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                        String key = field.getKey();
+                        String fieldName = getFieldName(key);
+                        switch (fieldName) {
+                            case "maxVariantPrice": {
+                                responseData.put(key, new MoneyV2(jsonAsObject(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "minVariantPrice": {
+                                responseData.put(key, new MoneyV2(jsonAsObject(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "__typename": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+                                break;
+                            }
+                            default: {
+                                throw new SchemaViolationError(this, key, field.getValue());
+                            }
+                        }
+                    }
+                }
+
+                public String getGraphQlTypeName() {
+                    return "ProductPriceRange";
+                }
+
+                /**
+                * The highest variant's price.
+                */
+
+                public MoneyV2 getMaxVariantPrice() {
+                    return (MoneyV2) get("maxVariantPrice");
+                }
+
+                public ProductPriceRange setMaxVariantPrice(MoneyV2 arg) {
+                    optimisticData.put(getKey("maxVariantPrice"), arg);
+                    return this;
+                }
+
+                /**
+                * The lowest variant's price.
+                */
+
+                public MoneyV2 getMinVariantPrice() {
+                    return (MoneyV2) get("minVariantPrice");
+                }
+
+                public ProductPriceRange setMinVariantPrice(MoneyV2 arg) {
+                    optimisticData.put(getKey("minVariantPrice"), arg);
+                    return this;
+                }
+
+                public boolean unwrapsToObject(String key) {
+                    switch (getFieldName(key)) {
+                        case "maxVariantPrice": return true;
+
+                        case "minVariantPrice": return true;
 
                         default: return false;
                     }
@@ -25496,6 +25911,15 @@ public class Storefront {
                 }
 
                 /**
+                * Countries that the shop ships to.
+                */
+                public ShopQuery shipsToCountries() {
+                    startField("shipsToCountries");
+
+                    return this;
+                }
+
+                /**
                 * The shop’s Shopify Payments account id.
                 *
                 * @deprecated Use `paymentSettings` instead
@@ -25650,6 +26074,17 @@ public class Storefront {
                                 }
 
                                 responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "shipsToCountries": {
+                                List<CountryCode> list1 = new ArrayList<>();
+                                for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                                    list1.add(CountryCode.fromGraphQl(jsonAsString(element1, key)));
+                                }
+
+                                responseData.put(key, list1);
 
                                 break;
                             }
@@ -25904,6 +26339,19 @@ public class Storefront {
                 }
 
                 /**
+                * Countries that the shop ships to.
+                */
+
+                public List<CountryCode> getShipsToCountries() {
+                    return (List<CountryCode>) get("shipsToCountries");
+                }
+
+                public Shop setShipsToCountries(List<CountryCode> arg) {
+                    optimisticData.put(getKey("shipsToCountries"), arg);
+                    return this;
+                }
+
+                /**
                 * The shop’s Shopify Payments account id.
                 *
                 * @deprecated Use `paymentSettings` instead
@@ -25964,6 +26412,8 @@ public class Storefront {
                         case "products": return true;
 
                         case "refundPolicy": return true;
+
+                        case "shipsToCountries": return false;
 
                         case "shopifyPaymentsAccountId": return false;
 
