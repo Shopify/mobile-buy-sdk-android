@@ -2496,7 +2496,10 @@ public class Storefront {
 
         /**
         * The customer associated with the checkout.
+        *
+        * @deprecated This field will always return null. If you have an authentication token for the customer, you can use the `customer` field on the query root to retrieve it.
         */
+        @Deprecated
         public CheckoutQuery customer(CustomerQueryDefinition queryDef) {
             startField("customer");
 
@@ -3068,6 +3071,8 @@ public class Storefront {
 
         /**
         * The customer associated with the checkout.
+        *
+        * @deprecated This field will always return null. If you have an authentication token for the customer, you can use the `customer` field on the query root to retrieve it.
         */
 
         public Customer getCustomer() {
@@ -4396,6 +4401,19 @@ public class Storefront {
         }
 
         /**
+        * The associated customer object.
+        */
+        public CheckoutCustomerAssociatePayloadQuery customer(CustomerQueryDefinition queryDef) {
+            startField("customer");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CustomerQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
         * List of errors that occurred executing the mutation.
         */
         public CheckoutCustomerAssociatePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
@@ -4420,6 +4438,17 @@ public class Storefront {
                 switch (fieldName) {
                     case "checkout": {
                         responseData.put(key, new Checkout(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "customer": {
+                        Customer optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new Customer(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
 
                         break;
                     }
@@ -4464,6 +4493,19 @@ public class Storefront {
         }
 
         /**
+        * The associated customer object.
+        */
+
+        public Customer getCustomer() {
+            return (Customer) get("customer");
+        }
+
+        public CheckoutCustomerAssociatePayload setCustomer(Customer arg) {
+            optimisticData.put(getKey("customer"), arg);
+            return this;
+        }
+
+        /**
         * List of errors that occurred executing the mutation.
         */
 
@@ -4479,6 +4521,8 @@ public class Storefront {
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "checkout": return true;
+
+                case "customer": return true;
 
                 case "userErrors": return true;
 
@@ -5161,6 +5205,125 @@ public class Storefront {
         }
 
         public CheckoutGiftCardRemovePayload setUserErrors(List<UserError> arg) {
+            optimisticData.put(getKey("userErrors"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "checkout": return true;
+
+                case "userErrors": return true;
+
+                default: return false;
+            }
+        }
+    }
+
+    public interface CheckoutGiftCardsAppendPayloadQueryDefinition {
+        void define(CheckoutGiftCardsAppendPayloadQuery _queryBuilder);
+    }
+
+    public static class CheckoutGiftCardsAppendPayloadQuery extends Query<CheckoutGiftCardsAppendPayloadQuery> {
+        CheckoutGiftCardsAppendPayloadQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * The updated checkout object.
+        */
+        public CheckoutGiftCardsAppendPayloadQuery checkout(CheckoutQueryDefinition queryDef) {
+            startField("checkout");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CheckoutQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        */
+        public CheckoutGiftCardsAppendPayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
+            startField("userErrors");
+
+            _queryBuilder.append('{');
+            queryDef.define(new UserErrorQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+    }
+
+    public static class CheckoutGiftCardsAppendPayload extends AbstractResponse<CheckoutGiftCardsAppendPayload> {
+        public CheckoutGiftCardsAppendPayload() {
+        }
+
+        public CheckoutGiftCardsAppendPayload(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "checkout": {
+                        Checkout optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new Checkout(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "userErrors": {
+                        List<UserError> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new UserError(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "CheckoutGiftCardsAppendPayload";
+        }
+
+        /**
+        * The updated checkout object.
+        */
+
+        public Checkout getCheckout() {
+            return (Checkout) get("checkout");
+        }
+
+        public CheckoutGiftCardsAppendPayload setCheckout(Checkout arg) {
+            optimisticData.put(getKey("checkout"), arg);
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        */
+
+        public List<UserError> getUserErrors() {
+            return (List<UserError>) get("userErrors");
+        }
+
+        public CheckoutGiftCardsAppendPayload setUserErrors(List<UserError> arg) {
             optimisticData.put(getKey("userErrors"), arg);
             return this;
         }
@@ -14022,6 +14185,22 @@ public class Storefront {
         /**
         * List of errors that occurred executing the mutation.
         */
+        public CustomerAccessTokenCreatePayloadQuery customerUserErrors(CustomerUserErrorQueryDefinition queryDef) {
+            startField("customerUserErrors");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CustomerUserErrorQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        *
+        * @deprecated Use `customerUserErrors` instead
+        */
+        @Deprecated
         public CustomerAccessTokenCreatePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
 
@@ -14049,6 +14228,17 @@ public class Storefront {
                         }
 
                         responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "customerUserErrors": {
+                        List<CustomerUserError> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new CustomerUserError(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
 
                         break;
                     }
@@ -14096,6 +14286,21 @@ public class Storefront {
         * List of errors that occurred executing the mutation.
         */
 
+        public List<CustomerUserError> getCustomerUserErrors() {
+            return (List<CustomerUserError>) get("customerUserErrors");
+        }
+
+        public CustomerAccessTokenCreatePayload setCustomerUserErrors(List<CustomerUserError> arg) {
+            optimisticData.put(getKey("customerUserErrors"), arg);
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        *
+        * @deprecated Use `customerUserErrors` instead
+        */
+
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -14108,6 +14313,8 @@ public class Storefront {
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "customerAccessToken": return true;
+
+                case "customerUserErrors": return true;
 
                 case "userErrors": return true;
 
@@ -14455,6 +14662,19 @@ public class Storefront {
         }
 
         /**
+        * A newly created customer access token object for the customer.
+        */
+        public CustomerActivatePayloadQuery customerAccessToken(CustomerAccessTokenQueryDefinition queryDef) {
+            startField("customerAccessToken");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CustomerAccessTokenQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
         * List of errors that occurred executing the mutation.
         */
         public CustomerActivatePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
@@ -14481,6 +14701,17 @@ public class Storefront {
                         Customer optional1 = null;
                         if (!field.getValue().isJsonNull()) {
                             optional1 = new Customer(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "customerAccessToken": {
+                        CustomerAccessToken optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new CustomerAccessToken(jsonAsObject(field.getValue(), key));
                         }
 
                         responseData.put(key, optional1);
@@ -14528,6 +14759,19 @@ public class Storefront {
         }
 
         /**
+        * A newly created customer access token object for the customer.
+        */
+
+        public CustomerAccessToken getCustomerAccessToken() {
+            return (CustomerAccessToken) get("customerAccessToken");
+        }
+
+        public CustomerActivatePayload setCustomerAccessToken(CustomerAccessToken arg) {
+            optimisticData.put(getKey("customerAccessToken"), arg);
+            return this;
+        }
+
+        /**
         * List of errors that occurred executing the mutation.
         */
 
@@ -14543,6 +14787,8 @@ public class Storefront {
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "customer": return true;
+
+                case "customerAccessToken": return true;
 
                 case "userErrors": return true;
 
@@ -15325,6 +15571,45 @@ public class Storefront {
         }
     }
 
+    /**
+    * Possible error codes that could be returned by a customer mutation.
+    */
+    public enum CustomerErrorCode {
+        /**
+        * Customer is unidentified.
+        */
+        UNIDENTIFIED_CUSTOMER,
+
+        UNKNOWN_VALUE;
+
+        public static CustomerErrorCode fromGraphQl(String value) {
+            if (value == null) {
+                return null;
+            }
+
+            switch (value) {
+                case "UNIDENTIFIED_CUSTOMER": {
+                    return UNIDENTIFIED_CUSTOMER;
+                }
+
+                default: {
+                    return UNKNOWN_VALUE;
+                }
+            }
+        }
+        public String toString() {
+            switch (this) {
+                case UNIDENTIFIED_CUSTOMER: {
+                    return "UNIDENTIFIED_CUSTOMER";
+                }
+
+                default: {
+                    return "";
+                }
+            }
+        }
+    }
+
     public interface CustomerRecoverPayloadQueryDefinition {
         void define(CustomerRecoverPayloadQuery _queryBuilder);
     }
@@ -15946,6 +16231,158 @@ public class Storefront {
         }
     }
 
+    public interface CustomerUserErrorQueryDefinition {
+        void define(CustomerUserErrorQuery _queryBuilder);
+    }
+
+    /**
+    * Represents an error that happens during execution of a customer mutation.
+    */
+    public static class CustomerUserErrorQuery extends Query<CustomerUserErrorQuery> {
+        CustomerUserErrorQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * Error code to uniquely identify the error.
+        */
+        public CustomerUserErrorQuery code() {
+            startField("code");
+
+            return this;
+        }
+
+        /**
+        * Path to the input field which caused the error.
+        */
+        public CustomerUserErrorQuery field() {
+            startField("field");
+
+            return this;
+        }
+
+        /**
+        * The error message.
+        */
+        public CustomerUserErrorQuery message() {
+            startField("message");
+
+            return this;
+        }
+    }
+
+    /**
+    * Represents an error that happens during execution of a customer mutation.
+    */
+    public static class CustomerUserError extends AbstractResponse<CustomerUserError> implements DisplayableError {
+        public CustomerUserError() {
+        }
+
+        public CustomerUserError(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "code": {
+                        CustomerErrorCode optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = CustomerErrorCode.fromGraphQl(jsonAsString(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "field": {
+                        List<String> optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            List<String> list1 = new ArrayList<>();
+                            for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                                list1.add(jsonAsString(element1, key));
+                            }
+
+                            optional1 = list1;
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "message": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "CustomerUserError";
+        }
+
+        /**
+        * Error code to uniquely identify the error.
+        */
+
+        public CustomerErrorCode getCode() {
+            return (CustomerErrorCode) get("code");
+        }
+
+        public CustomerUserError setCode(CustomerErrorCode arg) {
+            optimisticData.put(getKey("code"), arg);
+            return this;
+        }
+
+        /**
+        * Path to the input field which caused the error.
+        */
+
+        public List<String> getField() {
+            return (List<String>) get("field");
+        }
+
+        public CustomerUserError setField(List<String> arg) {
+            optimisticData.put(getKey("field"), arg);
+            return this;
+        }
+
+        /**
+        * The error message.
+        */
+
+        public String getMessage() {
+            return (String) get("message");
+        }
+
+        public CustomerUserError setMessage(String arg) {
+            optimisticData.put(getKey("message"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "code": return false;
+
+                case "field": return false;
+
+                case "message": return false;
+
+                default: return false;
+            }
+        }
+    }
+
     /**
     * Digital wallet, such as Apple Pay, which can be used for accelerated checkouts.
     */
@@ -16056,6 +16493,13 @@ public class Storefront {
             return this;
         }
 
+        public DisplayableErrorQuery onCustomerUserError(CustomerUserErrorQueryDefinition queryDef) {
+            startInlineFragment("CustomerUserError");
+            queryDef.define(new CustomerUserErrorQuery(_queryBuilder));
+            _queryBuilder.append('}');
+            return this;
+        }
+
         public DisplayableErrorQuery onUserError(UserErrorQueryDefinition queryDef) {
             startInlineFragment("UserError");
             queryDef.define(new UserErrorQuery(_queryBuilder));
@@ -16120,6 +16564,10 @@ public class Storefront {
         public static DisplayableError create(JsonObject fields) throws SchemaViolationError {
             String typeName = fields.getAsJsonPrimitive("__typename").getAsString();
             switch (typeName) {
+                case "CustomerUserError": {
+                    return new CustomerUserError(fields);
+                }
+
                 case "UserError": {
                     return new UserError(fields);
                 }
@@ -16300,6 +16748,721 @@ public class Storefront {
                 case "host": return false;
 
                 case "sslEnabled": return false;
+
+                case "url": return false;
+
+                default: return false;
+            }
+        }
+    }
+
+    public interface FulfillmentQueryDefinition {
+        void define(FulfillmentQuery _queryBuilder);
+    }
+
+    /**
+    * Represents a single fulfillment in an order.
+    */
+    public static class FulfillmentQuery extends Query<FulfillmentQuery> {
+        FulfillmentQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        public class FulfillmentLineItemsArguments extends Arguments {
+            FulfillmentLineItemsArguments(StringBuilder _queryBuilder) {
+                super(_queryBuilder, true);
+            }
+
+            /**
+            * Returns up to the first `n` elements from the list.
+            */
+            public FulfillmentLineItemsArguments first(Integer value) {
+                if (value != null) {
+                    startArgument("first");
+                    _queryBuilder.append(value);
+                }
+                return this;
+            }
+
+            /**
+            * Returns the elements that come after the specified cursor.
+            */
+            public FulfillmentLineItemsArguments after(String value) {
+                if (value != null) {
+                    startArgument("after");
+                    Query.appendQuotedString(_queryBuilder, value.toString());
+                }
+                return this;
+            }
+
+            /**
+            * Returns up to the last `n` elements from the list.
+            */
+            public FulfillmentLineItemsArguments last(Integer value) {
+                if (value != null) {
+                    startArgument("last");
+                    _queryBuilder.append(value);
+                }
+                return this;
+            }
+
+            /**
+            * Returns the elements that come before the specified cursor.
+            */
+            public FulfillmentLineItemsArguments before(String value) {
+                if (value != null) {
+                    startArgument("before");
+                    Query.appendQuotedString(_queryBuilder, value.toString());
+                }
+                return this;
+            }
+
+            /**
+            * Reverse the order of the underlying list.
+            */
+            public FulfillmentLineItemsArguments reverse(Boolean value) {
+                if (value != null) {
+                    startArgument("reverse");
+                    _queryBuilder.append(value);
+                }
+                return this;
+            }
+        }
+
+        public interface FulfillmentLineItemsArgumentsDefinition {
+            void define(FulfillmentLineItemsArguments args);
+        }
+
+        /**
+        * List of the fulfillment's line items.
+        */
+        public FulfillmentQuery fulfillmentLineItems(FulfillmentLineItemConnectionQueryDefinition queryDef) {
+            return fulfillmentLineItems(args -> {}, queryDef);
+        }
+
+        /**
+        * List of the fulfillment's line items.
+        */
+        public FulfillmentQuery fulfillmentLineItems(FulfillmentLineItemsArgumentsDefinition argsDef, FulfillmentLineItemConnectionQueryDefinition queryDef) {
+            startField("fulfillmentLineItems");
+
+            FulfillmentLineItemsArguments args = new FulfillmentLineItemsArguments(_queryBuilder);
+            argsDef.define(args);
+            FulfillmentLineItemsArguments.end(args);
+
+            _queryBuilder.append('{');
+            queryDef.define(new FulfillmentLineItemConnectionQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * The name of the tracking company.
+        */
+        public FulfillmentQuery trackingCompany() {
+            startField("trackingCompany");
+
+            return this;
+        }
+
+        public class TrackingInfoArguments extends Arguments {
+            TrackingInfoArguments(StringBuilder _queryBuilder) {
+                super(_queryBuilder, true);
+            }
+
+            /**
+            * Truncate the array result to this size.
+            */
+            public TrackingInfoArguments first(Integer value) {
+                if (value != null) {
+                    startArgument("first");
+                    _queryBuilder.append(value);
+                }
+                return this;
+            }
+        }
+
+        public interface TrackingInfoArgumentsDefinition {
+            void define(TrackingInfoArguments args);
+        }
+
+        /**
+        * Tracking information associated with the fulfillment,
+        * such as the tracking number and tracking URL.
+        */
+        public FulfillmentQuery trackingInfo(FulfillmentTrackingInfoQueryDefinition queryDef) {
+            return trackingInfo(args -> {}, queryDef);
+        }
+
+        /**
+        * Tracking information associated with the fulfillment,
+        * such as the tracking number and tracking URL.
+        */
+        public FulfillmentQuery trackingInfo(TrackingInfoArgumentsDefinition argsDef, FulfillmentTrackingInfoQueryDefinition queryDef) {
+            startField("trackingInfo");
+
+            TrackingInfoArguments args = new TrackingInfoArguments(_queryBuilder);
+            argsDef.define(args);
+            TrackingInfoArguments.end(args);
+
+            _queryBuilder.append('{');
+            queryDef.define(new FulfillmentTrackingInfoQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+    }
+
+    /**
+    * Represents a single fulfillment in an order.
+    */
+    public static class Fulfillment extends AbstractResponse<Fulfillment> {
+        public Fulfillment() {
+        }
+
+        public Fulfillment(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "fulfillmentLineItems": {
+                        responseData.put(key, new FulfillmentLineItemConnection(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "trackingCompany": {
+                        String optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = jsonAsString(field.getValue(), key);
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "trackingInfo": {
+                        List<FulfillmentTrackingInfo> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new FulfillmentTrackingInfo(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "Fulfillment";
+        }
+
+        /**
+        * List of the fulfillment's line items.
+        */
+
+        public FulfillmentLineItemConnection getFulfillmentLineItems() {
+            return (FulfillmentLineItemConnection) get("fulfillmentLineItems");
+        }
+
+        public Fulfillment setFulfillmentLineItems(FulfillmentLineItemConnection arg) {
+            optimisticData.put(getKey("fulfillmentLineItems"), arg);
+            return this;
+        }
+
+        /**
+        * The name of the tracking company.
+        */
+
+        public String getTrackingCompany() {
+            return (String) get("trackingCompany");
+        }
+
+        public Fulfillment setTrackingCompany(String arg) {
+            optimisticData.put(getKey("trackingCompany"), arg);
+            return this;
+        }
+
+        /**
+        * Tracking information associated with the fulfillment,
+        * such as the tracking number and tracking URL.
+        */
+
+        public List<FulfillmentTrackingInfo> getTrackingInfo() {
+            return (List<FulfillmentTrackingInfo>) get("trackingInfo");
+        }
+
+        public Fulfillment setTrackingInfo(List<FulfillmentTrackingInfo> arg) {
+            optimisticData.put(getKey("trackingInfo"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "fulfillmentLineItems": return true;
+
+                case "trackingCompany": return false;
+
+                case "trackingInfo": return true;
+
+                default: return false;
+            }
+        }
+    }
+
+    public interface FulfillmentLineItemQueryDefinition {
+        void define(FulfillmentLineItemQuery _queryBuilder);
+    }
+
+    /**
+    * Represents a single line item in a fulfillment. There is at most one fulfillment line item for each
+    * order line item.
+    */
+    public static class FulfillmentLineItemQuery extends Query<FulfillmentLineItemQuery> {
+        FulfillmentLineItemQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * The associated order's line item.
+        */
+        public FulfillmentLineItemQuery lineItem(OrderLineItemQueryDefinition queryDef) {
+            startField("lineItem");
+
+            _queryBuilder.append('{');
+            queryDef.define(new OrderLineItemQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * The amount fulfilled in this fulfillment.
+        */
+        public FulfillmentLineItemQuery quantity() {
+            startField("quantity");
+
+            return this;
+        }
+    }
+
+    /**
+    * Represents a single line item in a fulfillment. There is at most one fulfillment line item for each
+    * order line item.
+    */
+    public static class FulfillmentLineItem extends AbstractResponse<FulfillmentLineItem> {
+        public FulfillmentLineItem() {
+        }
+
+        public FulfillmentLineItem(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "lineItem": {
+                        responseData.put(key, new OrderLineItem(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "quantity": {
+                        responseData.put(key, jsonAsInteger(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "FulfillmentLineItem";
+        }
+
+        /**
+        * The associated order's line item.
+        */
+
+        public OrderLineItem getLineItem() {
+            return (OrderLineItem) get("lineItem");
+        }
+
+        public FulfillmentLineItem setLineItem(OrderLineItem arg) {
+            optimisticData.put(getKey("lineItem"), arg);
+            return this;
+        }
+
+        /**
+        * The amount fulfilled in this fulfillment.
+        */
+
+        public Integer getQuantity() {
+            return (Integer) get("quantity");
+        }
+
+        public FulfillmentLineItem setQuantity(Integer arg) {
+            optimisticData.put(getKey("quantity"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "lineItem": return true;
+
+                case "quantity": return false;
+
+                default: return false;
+            }
+        }
+    }
+
+    public interface FulfillmentLineItemConnectionQueryDefinition {
+        void define(FulfillmentLineItemConnectionQuery _queryBuilder);
+    }
+
+    public static class FulfillmentLineItemConnectionQuery extends Query<FulfillmentLineItemConnectionQuery> {
+        FulfillmentLineItemConnectionQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * A list of edges.
+        */
+        public FulfillmentLineItemConnectionQuery edges(FulfillmentLineItemEdgeQueryDefinition queryDef) {
+            startField("edges");
+
+            _queryBuilder.append('{');
+            queryDef.define(new FulfillmentLineItemEdgeQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * Information to aid in pagination.
+        */
+        public FulfillmentLineItemConnectionQuery pageInfo(PageInfoQueryDefinition queryDef) {
+            startField("pageInfo");
+
+            _queryBuilder.append('{');
+            queryDef.define(new PageInfoQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+    }
+
+    public static class FulfillmentLineItemConnection extends AbstractResponse<FulfillmentLineItemConnection> {
+        public FulfillmentLineItemConnection() {
+        }
+
+        public FulfillmentLineItemConnection(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "edges": {
+                        List<FulfillmentLineItemEdge> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new FulfillmentLineItemEdge(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "pageInfo": {
+                        responseData.put(key, new PageInfo(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "FulfillmentLineItemConnection";
+        }
+
+        /**
+        * A list of edges.
+        */
+
+        public List<FulfillmentLineItemEdge> getEdges() {
+            return (List<FulfillmentLineItemEdge>) get("edges");
+        }
+
+        public FulfillmentLineItemConnection setEdges(List<FulfillmentLineItemEdge> arg) {
+            optimisticData.put(getKey("edges"), arg);
+            return this;
+        }
+
+        /**
+        * Information to aid in pagination.
+        */
+
+        public PageInfo getPageInfo() {
+            return (PageInfo) get("pageInfo");
+        }
+
+        public FulfillmentLineItemConnection setPageInfo(PageInfo arg) {
+            optimisticData.put(getKey("pageInfo"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "edges": return true;
+
+                case "pageInfo": return true;
+
+                default: return false;
+            }
+        }
+    }
+
+    public interface FulfillmentLineItemEdgeQueryDefinition {
+        void define(FulfillmentLineItemEdgeQuery _queryBuilder);
+    }
+
+    public static class FulfillmentLineItemEdgeQuery extends Query<FulfillmentLineItemEdgeQuery> {
+        FulfillmentLineItemEdgeQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * A cursor for use in pagination.
+        */
+        public FulfillmentLineItemEdgeQuery cursor() {
+            startField("cursor");
+
+            return this;
+        }
+
+        /**
+        * The item at the end of FulfillmentLineItemEdge.
+        */
+        public FulfillmentLineItemEdgeQuery node(FulfillmentLineItemQueryDefinition queryDef) {
+            startField("node");
+
+            _queryBuilder.append('{');
+            queryDef.define(new FulfillmentLineItemQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+    }
+
+    public static class FulfillmentLineItemEdge extends AbstractResponse<FulfillmentLineItemEdge> {
+        public FulfillmentLineItemEdge() {
+        }
+
+        public FulfillmentLineItemEdge(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "cursor": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "node": {
+                        responseData.put(key, new FulfillmentLineItem(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "FulfillmentLineItemEdge";
+        }
+
+        /**
+        * A cursor for use in pagination.
+        */
+
+        public String getCursor() {
+            return (String) get("cursor");
+        }
+
+        public FulfillmentLineItemEdge setCursor(String arg) {
+            optimisticData.put(getKey("cursor"), arg);
+            return this;
+        }
+
+        /**
+        * The item at the end of FulfillmentLineItemEdge.
+        */
+
+        public FulfillmentLineItem getNode() {
+            return (FulfillmentLineItem) get("node");
+        }
+
+        public FulfillmentLineItemEdge setNode(FulfillmentLineItem arg) {
+            optimisticData.put(getKey("node"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "cursor": return false;
+
+                case "node": return true;
+
+                default: return false;
+            }
+        }
+    }
+
+    public interface FulfillmentTrackingInfoQueryDefinition {
+        void define(FulfillmentTrackingInfoQuery _queryBuilder);
+    }
+
+    /**
+    * Tracking information associated with the fulfillment.
+    */
+    public static class FulfillmentTrackingInfoQuery extends Query<FulfillmentTrackingInfoQuery> {
+        FulfillmentTrackingInfoQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * The tracking number of the fulfillment.
+        */
+        public FulfillmentTrackingInfoQuery number() {
+            startField("number");
+
+            return this;
+        }
+
+        /**
+        * The URL to track the fulfillment.
+        */
+        public FulfillmentTrackingInfoQuery url() {
+            startField("url");
+
+            return this;
+        }
+    }
+
+    /**
+    * Tracking information associated with the fulfillment.
+    */
+    public static class FulfillmentTrackingInfo extends AbstractResponse<FulfillmentTrackingInfo> {
+        public FulfillmentTrackingInfo() {
+        }
+
+        public FulfillmentTrackingInfo(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "number": {
+                        String optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = jsonAsString(field.getValue(), key);
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "url": {
+                        String optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = jsonAsString(field.getValue(), key);
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "FulfillmentTrackingInfo";
+        }
+
+        /**
+        * The tracking number of the fulfillment.
+        */
+
+        public String getNumber() {
+            return (String) get("number");
+        }
+
+        public FulfillmentTrackingInfo setNumber(String arg) {
+            optimisticData.put(getKey("number"), arg);
+            return this;
+        }
+
+        /**
+        * The URL to track the fulfillment.
+        */
+
+        public String getUrl() {
+            return (String) get("url");
+        }
+
+        public FulfillmentTrackingInfo setUrl(String arg) {
+            optimisticData.put(getKey("url"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "number": return false;
 
                 case "url": return false;
 
@@ -16978,7 +18141,7 @@ public class Storefront {
         }
 
         /**
-        * Address line 1 (Street address/PO Box/Company name).
+        * The first line of the address. Typically the street address or PO Box number.
         */
         public MailingAddressQuery address1() {
             startField("address1");
@@ -16987,7 +18150,7 @@ public class Storefront {
         }
 
         /**
-        * Address line 2 (Apartment/Suite/Unit/Building).
+        * The second line of the address. Typically the number of the apartment, suite, or unit.
         */
         public MailingAddressQuery address2() {
             startField("address2");
@@ -16996,7 +18159,7 @@ public class Storefront {
         }
 
         /**
-        * City/District/Suburb/Town/Village.
+        * The name of the city, district, village, or town.
         */
         public MailingAddressQuery city() {
             startField("city");
@@ -17005,7 +18168,7 @@ public class Storefront {
         }
 
         /**
-        * Company/Organization/Government.
+        * The name of the customer's company or organization.
         */
         public MailingAddressQuery company() {
             startField("company");
@@ -17014,7 +18177,7 @@ public class Storefront {
         }
 
         /**
-        * State/County/Province/Region.
+        * The name of the country.
         */
         public MailingAddressQuery country() {
             startField("country");
@@ -17023,7 +18186,7 @@ public class Storefront {
         }
 
         /**
-        * Two-letter country code.
+        * The two-letter code for the country of the address.
         * For example, US.
         *
         * @deprecated Use `countryCodeV2` instead
@@ -17036,7 +18199,7 @@ public class Storefront {
         }
 
         /**
-        * Two-letter country code.
+        * The two-letter code for the country of the address.
         * For example, US.
         */
         public MailingAddressQuery countryCodeV2() {
@@ -17046,7 +18209,7 @@ public class Storefront {
         }
 
         /**
-        * First name of the customer.
+        * The first name of the customer.
         */
         public MailingAddressQuery firstName() {
             startField("firstName");
@@ -17059,6 +18222,9 @@ public class Storefront {
                 super(_queryBuilder, true);
             }
 
+            /**
+            * Whether to include the customer's name in the formatted address.
+            */
             public FormattedArguments withName(Boolean value) {
                 if (value != null) {
                     startArgument("withName");
@@ -17067,6 +18233,9 @@ public class Storefront {
                 return this;
             }
 
+            /**
+            * Whether to include the customer's company in the formatted address.
+            */
             public FormattedArguments withCompany(Boolean value) {
                 if (value != null) {
                     startArgument("withCompany");
@@ -17080,10 +18249,16 @@ public class Storefront {
             void define(FormattedArguments args);
         }
 
+        /**
+        * A formatted version of the address, customized by the provided arguments.
+        */
         public MailingAddressQuery formatted() {
             return formatted(args -> {});
         }
 
+        /**
+        * A formatted version of the address, customized by the provided arguments.
+        */
         public MailingAddressQuery formatted(FormattedArgumentsDefinition argsDef) {
             startField("formatted");
 
@@ -17095,7 +18270,7 @@ public class Storefront {
         }
 
         /**
-        * Comma-separated list of city, province, and country.
+        * A comma-separated list of the values for city, province, and country.
         */
         public MailingAddressQuery formattedArea() {
             startField("formattedArea");
@@ -17104,7 +18279,7 @@ public class Storefront {
         }
 
         /**
-        * Last name of the customer.
+        * The last name of the customer.
         */
         public MailingAddressQuery lastName() {
             startField("lastName");
@@ -17113,7 +18288,7 @@ public class Storefront {
         }
 
         /**
-        * Latitude coordinate of the customer address.
+        * The latitude coordinate of the customer address.
         */
         public MailingAddressQuery latitude() {
             startField("latitude");
@@ -17122,7 +18297,7 @@ public class Storefront {
         }
 
         /**
-        * Longitude coordinate of the customer address.
+        * The longitude coordinate of the customer address.
         */
         public MailingAddressQuery longitude() {
             startField("longitude");
@@ -17131,7 +18306,7 @@ public class Storefront {
         }
 
         /**
-        * Name of the customer, based on first name + last name.
+        * The full name of the customer, based on firstName and lastName.
         */
         public MailingAddressQuery name() {
             startField("name");
@@ -17140,7 +18315,7 @@ public class Storefront {
         }
 
         /**
-        * Unique phone number for the customer.
+        * A unique phone number for the customer.
         * Formatted using E.164 standard. For example, _+16135551111_.
         */
         public MailingAddressQuery phone() {
@@ -17150,7 +18325,7 @@ public class Storefront {
         }
 
         /**
-        * State/County/Province/Region.
+        * The region of the address, such as the province, state, or district.
         */
         public MailingAddressQuery province() {
             startField("province");
@@ -17159,7 +18334,7 @@ public class Storefront {
         }
 
         /**
-        * Two-letter province or state code.
+        * The two-letter code for the region.
         * For example, ON.
         */
         public MailingAddressQuery provinceCode() {
@@ -17169,7 +18344,7 @@ public class Storefront {
         }
 
         /**
-        * ZIP/Postal Code.
+        * The zip or postal code of the address.
         */
         public MailingAddressQuery zip() {
             startField("zip");
@@ -17415,7 +18590,7 @@ public class Storefront {
         }
 
         /**
-        * Address line 1 (Street address/PO Box/Company name).
+        * The first line of the address. Typically the street address or PO Box number.
         */
 
         public String getAddress1() {
@@ -17428,7 +18603,7 @@ public class Storefront {
         }
 
         /**
-        * Address line 2 (Apartment/Suite/Unit/Building).
+        * The second line of the address. Typically the number of the apartment, suite, or unit.
         */
 
         public String getAddress2() {
@@ -17441,7 +18616,7 @@ public class Storefront {
         }
 
         /**
-        * City/District/Suburb/Town/Village.
+        * The name of the city, district, village, or town.
         */
 
         public String getCity() {
@@ -17454,7 +18629,7 @@ public class Storefront {
         }
 
         /**
-        * Company/Organization/Government.
+        * The name of the customer's company or organization.
         */
 
         public String getCompany() {
@@ -17467,7 +18642,7 @@ public class Storefront {
         }
 
         /**
-        * State/County/Province/Region.
+        * The name of the country.
         */
 
         public String getCountry() {
@@ -17480,7 +18655,7 @@ public class Storefront {
         }
 
         /**
-        * Two-letter country code.
+        * The two-letter code for the country of the address.
         * For example, US.
         *
         * @deprecated Use `countryCodeV2` instead
@@ -17496,7 +18671,7 @@ public class Storefront {
         }
 
         /**
-        * Two-letter country code.
+        * The two-letter code for the country of the address.
         * For example, US.
         */
 
@@ -17510,7 +18685,7 @@ public class Storefront {
         }
 
         /**
-        * First name of the customer.
+        * The first name of the customer.
         */
 
         public String getFirstName() {
@@ -17522,6 +18697,10 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * A formatted version of the address, customized by the provided arguments.
+        */
+
         public List<String> getFormatted() {
             return (List<String>) get("formatted");
         }
@@ -17532,7 +18711,7 @@ public class Storefront {
         }
 
         /**
-        * Comma-separated list of city, province, and country.
+        * A comma-separated list of the values for city, province, and country.
         */
 
         public String getFormattedArea() {
@@ -17553,7 +18732,7 @@ public class Storefront {
         }
 
         /**
-        * Last name of the customer.
+        * The last name of the customer.
         */
 
         public String getLastName() {
@@ -17566,7 +18745,7 @@ public class Storefront {
         }
 
         /**
-        * Latitude coordinate of the customer address.
+        * The latitude coordinate of the customer address.
         */
 
         public Double getLatitude() {
@@ -17579,7 +18758,7 @@ public class Storefront {
         }
 
         /**
-        * Longitude coordinate of the customer address.
+        * The longitude coordinate of the customer address.
         */
 
         public Double getLongitude() {
@@ -17592,7 +18771,7 @@ public class Storefront {
         }
 
         /**
-        * Name of the customer, based on first name + last name.
+        * The full name of the customer, based on firstName and lastName.
         */
 
         public String getName() {
@@ -17605,7 +18784,7 @@ public class Storefront {
         }
 
         /**
-        * Unique phone number for the customer.
+        * A unique phone number for the customer.
         * Formatted using E.164 standard. For example, _+16135551111_.
         */
 
@@ -17619,7 +18798,7 @@ public class Storefront {
         }
 
         /**
-        * State/County/Province/Region.
+        * The region of the address, such as the province, state, or district.
         */
 
         public String getProvince() {
@@ -17632,7 +18811,7 @@ public class Storefront {
         }
 
         /**
-        * Two-letter province or state code.
+        * The two-letter code for the region.
         * For example, ON.
         */
 
@@ -17646,7 +18825,7 @@ public class Storefront {
         }
 
         /**
-        * ZIP/Postal Code.
+        * The zip or postal code of the address.
         */
 
         public String getZip() {
@@ -18617,8 +19796,12 @@ public class Storefront {
                 }
 
                 /**
-                * Applies a gift card to an existing checkout using a gift card code.
+                * Applies a gift card to an existing checkout using a gift card code. This will replace all currently
+                * applied gift cards.
+                *
+                * @deprecated Use `checkoutGiftCardsAppend` instead
                 */
+                @Deprecated
                 public MutationQuery checkoutGiftCardApply(String giftCardCode, ID checkoutId, CheckoutGiftCardApplyPayloadQueryDefinition queryDef) {
                     startField("checkoutGiftCardApply");
 
@@ -18653,6 +19836,36 @@ public class Storefront {
 
                     _queryBuilder.append('{');
                     queryDef.define(new CheckoutGiftCardRemovePayloadQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * Appends gift cards to an existing checkout.
+                */
+                public MutationQuery checkoutGiftCardsAppend(List<String> giftCardCodes, ID checkoutId, CheckoutGiftCardsAppendPayloadQueryDefinition queryDef) {
+                    startField("checkoutGiftCardsAppend");
+
+                    _queryBuilder.append("(giftCardCodes:");
+                    _queryBuilder.append('[');
+                    {
+                        String listSeperator1 = "";
+                        for (String item1 : giftCardCodes) {
+                            _queryBuilder.append(listSeperator1);
+                            listSeperator1 = ",";
+                            Query.appendQuotedString(_queryBuilder, item1.toString());
+                        }
+                    }
+                    _queryBuilder.append(']');
+
+                    _queryBuilder.append(",checkoutId:");
+                    Query.appendQuotedString(_queryBuilder, checkoutId.toString());
+
+                    _queryBuilder.append(')');
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new CheckoutGiftCardsAppendPayloadQuery(_queryBuilder));
                     _queryBuilder.append('}');
 
                     return this;
@@ -19183,6 +20396,17 @@ public class Storefront {
                                 break;
                             }
 
+                            case "checkoutGiftCardsAppend": {
+                                CheckoutGiftCardsAppendPayload optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = new CheckoutGiftCardsAppendPayload(jsonAsObject(field.getValue(), key));
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
                             case "checkoutLineItemsAdd": {
                                 CheckoutLineItemsAddPayload optional1 = null;
                                 if (!field.getValue().isJsonNull()) {
@@ -19512,7 +20736,10 @@ public class Storefront {
                 }
 
                 /**
-                * Applies a gift card to an existing checkout using a gift card code.
+                * Applies a gift card to an existing checkout using a gift card code. This will replace all currently
+                * applied gift cards.
+                *
+                * @deprecated Use `checkoutGiftCardsAppend` instead
                 */
 
                 public CheckoutGiftCardApplyPayload getCheckoutGiftCardApply() {
@@ -19534,6 +20761,19 @@ public class Storefront {
 
                 public Mutation setCheckoutGiftCardRemove(CheckoutGiftCardRemovePayload arg) {
                     optimisticData.put(getKey("checkoutGiftCardRemove"), arg);
+                    return this;
+                }
+
+                /**
+                * Appends gift cards to an existing checkout.
+                */
+
+                public CheckoutGiftCardsAppendPayload getCheckoutGiftCardsAppend() {
+                    return (CheckoutGiftCardsAppendPayload) get("checkoutGiftCardsAppend");
+                }
+
+                public Mutation setCheckoutGiftCardsAppend(CheckoutGiftCardsAppendPayload arg) {
+                    optimisticData.put(getKey("checkoutGiftCardsAppend"), arg);
                     return this;
                 }
 
@@ -19786,6 +21026,8 @@ public class Storefront {
                         case "checkoutGiftCardApply": return true;
 
                         case "checkoutGiftCardRemove": return true;
+
+                        case "checkoutGiftCardsAppend": return true;
 
                         case "checkoutLineItemsAdd": return true;
 
@@ -20275,6 +21517,51 @@ public class Storefront {
                     return this;
                 }
 
+                public class SuccessfulFulfillmentsArguments extends Arguments {
+                    SuccessfulFulfillmentsArguments(StringBuilder _queryBuilder) {
+                        super(_queryBuilder, true);
+                    }
+
+                    /**
+                    * Truncate the array result to this size.
+                    */
+                    public SuccessfulFulfillmentsArguments first(Integer value) {
+                        if (value != null) {
+                            startArgument("first");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+                }
+
+                public interface SuccessfulFulfillmentsArgumentsDefinition {
+                    void define(SuccessfulFulfillmentsArguments args);
+                }
+
+                /**
+                * List of the order’s successful fulfillments.
+                */
+                public OrderQuery successfulFulfillments(FulfillmentQueryDefinition queryDef) {
+                    return successfulFulfillments(args -> {}, queryDef);
+                }
+
+                /**
+                * List of the order’s successful fulfillments.
+                */
+                public OrderQuery successfulFulfillments(SuccessfulFulfillmentsArgumentsDefinition argsDef, FulfillmentQueryDefinition queryDef) {
+                    startField("successfulFulfillments");
+
+                    SuccessfulFulfillmentsArguments args = new SuccessfulFulfillmentsArguments(_queryBuilder);
+                    argsDef.define(args);
+                    SuccessfulFulfillmentsArguments.end(args);
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new FulfillmentQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
                 /**
                 * The sum of all the prices of all the items in the order, taxes and discounts included (must be
                 * positive).
@@ -20422,6 +21709,22 @@ public class Storefront {
                                 BigDecimal optional1 = null;
                                 if (!field.getValue().isJsonNull()) {
                                     optional1 = new BigDecimal(jsonAsString(field.getValue(), key));
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "successfulFulfillments": {
+                                List<Fulfillment> optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    List<Fulfillment> list1 = new ArrayList<>();
+                                    for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                                        list1.add(new Fulfillment(jsonAsObject(element1, key)));
+                                    }
+
+                                    optional1 = list1;
                                 }
 
                                 responseData.put(key, optional1);
@@ -20632,6 +21935,19 @@ public class Storefront {
                 }
 
                 /**
+                * List of the order’s successful fulfillments.
+                */
+
+                public List<Fulfillment> getSuccessfulFulfillments() {
+                    return (List<Fulfillment>) get("successfulFulfillments");
+                }
+
+                public Order setSuccessfulFulfillments(List<Fulfillment> arg) {
+                    optimisticData.put(getKey("successfulFulfillments"), arg);
+                    return this;
+                }
+
+                /**
                 * The sum of all the prices of all the items in the order, taxes and discounts included (must be
                 * positive).
                 */
@@ -20709,6 +22025,8 @@ public class Storefront {
                         case "statusUrl": return false;
 
                         case "subtotalPrice": return false;
+
+                        case "successfulFulfillments": return true;
 
                         case "totalPrice": return false;
 

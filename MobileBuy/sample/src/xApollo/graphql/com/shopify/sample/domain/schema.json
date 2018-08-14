@@ -611,7 +611,7 @@
           "fields": [
             {
               "name": "address1",
-              "description": "Address line 1 (Street address\/PO Box\/Company name).\n",
+              "description": "The first line of the address. Typically the street address or PO Box number.\n",
               "args": [
 
               ],
@@ -625,7 +625,7 @@
             },
             {
               "name": "address2",
-              "description": "Address line 2 (Apartment\/Suite\/Unit\/Building).\n",
+              "description": "The second line of the address. Typically the number of the apartment, suite, or unit.\n",
               "args": [
 
               ],
@@ -639,7 +639,7 @@
             },
             {
               "name": "city",
-              "description": "City\/District\/Suburb\/Town\/Village.\n",
+              "description": "The name of the city, district, village, or town.\n",
               "args": [
 
               ],
@@ -653,7 +653,7 @@
             },
             {
               "name": "company",
-              "description": "Company\/Organization\/Government.\n",
+              "description": "The name of the customer's company or organization.\n",
               "args": [
 
               ],
@@ -667,7 +667,7 @@
             },
             {
               "name": "country",
-              "description": "State\/County\/Province\/Region.\n",
+              "description": "The name of the country.\n",
               "args": [
 
               ],
@@ -681,7 +681,7 @@
             },
             {
               "name": "countryCode",
-              "description": "Two-letter country code.\n\nFor example, US.\n",
+              "description": "The two-letter code for the country of the address.\n\nFor example, US.\n",
               "args": [
 
               ],
@@ -695,7 +695,7 @@
             },
             {
               "name": "countryCodeV2",
-              "description": "Two-letter country code.\n\nFor example, US.\n",
+              "description": "The two-letter code for the country of the address.\n\nFor example, US.\n",
               "args": [
 
               ],
@@ -709,7 +709,7 @@
             },
             {
               "name": "firstName",
-              "description": "First name of the customer.",
+              "description": "The first name of the customer.",
               "args": [
 
               ],
@@ -723,11 +723,11 @@
             },
             {
               "name": "formatted",
-              "description": null,
+              "description": "A formatted version of the address, customized by the provided arguments.",
               "args": [
                 {
                   "name": "withName",
-                  "description": null,
+                  "description": "Whether to include the customer's name in the formatted address.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Boolean",
@@ -737,7 +737,7 @@
                 },
                 {
                   "name": "withCompany",
-                  "description": null,
+                  "description": "Whether to include the customer's company in the formatted address.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Boolean",
@@ -768,7 +768,7 @@
             },
             {
               "name": "formattedArea",
-              "description": "Comma-separated list of city, province, and country.",
+              "description": "A comma-separated list of the values for city, province, and country.",
               "args": [
 
               ],
@@ -800,7 +800,7 @@
             },
             {
               "name": "lastName",
-              "description": "Last name of the customer.",
+              "description": "The last name of the customer.",
               "args": [
 
               ],
@@ -814,7 +814,7 @@
             },
             {
               "name": "latitude",
-              "description": "Latitude coordinate of the customer address.",
+              "description": "The latitude coordinate of the customer address.",
               "args": [
 
               ],
@@ -828,7 +828,7 @@
             },
             {
               "name": "longitude",
-              "description": "Longitude coordinate of the customer address.",
+              "description": "The longitude coordinate of the customer address.",
               "args": [
 
               ],
@@ -842,7 +842,7 @@
             },
             {
               "name": "name",
-              "description": "Name of the customer, based on first name + last name.\n",
+              "description": "The full name of the customer, based on firstName and lastName.\n",
               "args": [
 
               ],
@@ -856,7 +856,7 @@
             },
             {
               "name": "phone",
-              "description": "Unique phone number for the customer.\n\nFormatted using E.164 standard. For example, _+16135551111_.\n",
+              "description": "A unique phone number for the customer.\n\nFormatted using E.164 standard. For example, _+16135551111_.\n",
               "args": [
 
               ],
@@ -870,7 +870,7 @@
             },
             {
               "name": "province",
-              "description": "State\/County\/Province\/Region.",
+              "description": "The region of the address, such as the province, state, or district.",
               "args": [
 
               ],
@@ -884,7 +884,7 @@
             },
             {
               "name": "provinceCode",
-              "description": "Two-letter province or state code.\n\nFor example, ON.\n",
+              "description": "The two-letter code for the region.\n\nFor example, ON.\n",
               "args": [
 
               ],
@@ -898,7 +898,7 @@
             },
             {
               "name": "zip",
-              "description": "ZIP\/Postal Code.",
+              "description": "The zip or postal code of the address.",
               "args": [
 
               ],
@@ -2908,6 +2908,37 @@
                 "kind": "SCALAR",
                 "name": "Money",
                 "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "successfulFulfillments",
+              "description": "List of the order’s successful fulfillments.",
+              "args": [
+                {
+                  "name": "first",
+                  "description": "Truncate the array result to this size.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "Fulfillment",
+                    "ofType": null
+                  }
+                }
               },
               "isDeprecated": false,
               "deprecationReason": null
@@ -6334,6 +6365,331 @@
           "possibleTypes": null
         },
         {
+          "kind": "OBJECT",
+          "name": "Fulfillment",
+          "description": "Represents a single fulfillment in an order.",
+          "fields": [
+            {
+              "name": "fulfillmentLineItems",
+              "description": "List of the fulfillment's line items.",
+              "args": [
+                {
+                  "name": "first",
+                  "description": "Returns up to the first `n` elements from the list.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "after",
+                  "description": "Returns the elements that come after the specified cursor.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "last",
+                  "description": "Returns up to the last `n` elements from the list.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "before",
+                  "description": "Returns the elements that come before the specified cursor.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reverse",
+                  "description": "Reverse the order of the underlying list.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": "false"
+                }
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "FulfillmentLineItemConnection",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "trackingCompany",
+              "description": "The name of the tracking company.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "trackingInfo",
+              "description": "Tracking information associated with the fulfillment,\nsuch as the tracking number and tracking URL.\n",
+              "args": [
+                {
+                  "name": "first",
+                  "description": "Truncate the array result to this size.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "OBJECT",
+                      "name": "FulfillmentTrackingInfo",
+                      "ofType": null
+                    }
+                  }
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+
+          ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "FulfillmentTrackingInfo",
+          "description": "Tracking information associated with the fulfillment.",
+          "fields": [
+            {
+              "name": "number",
+              "description": "The tracking number of the fulfillment.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "url",
+              "description": "The URL to track the fulfillment.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "URL",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+
+          ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "FulfillmentLineItemConnection",
+          "description": null,
+          "fields": [
+            {
+              "name": "edges",
+              "description": "A list of edges.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "OBJECT",
+                      "name": "FulfillmentLineItemEdge",
+                      "ofType": null
+                    }
+                  }
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "pageInfo",
+              "description": "Information to aid in pagination.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "PageInfo",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+
+          ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "FulfillmentLineItemEdge",
+          "description": null,
+          "fields": [
+            {
+              "name": "cursor",
+              "description": "A cursor for use in pagination.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "node",
+              "description": "The item at the end of FulfillmentLineItemEdge.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "FulfillmentLineItem",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+
+          ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "FulfillmentLineItem",
+          "description": "Represents a single line item in a fulfillment. There is at most one fulfillment line item for each order line item.",
+          "fields": [
+            {
+              "name": "lineItem",
+              "description": "The associated order's line item.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "OrderLineItem",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "quantity",
+              "description": "The amount fulfilled in this fulfillment.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+
+          ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
           "kind": "ENUM",
           "name": "OrderSortKeys",
           "description": "The set of valid sort keys for the orders query.",
@@ -9117,7 +9473,7 @@
             },
             {
               "name": "checkoutGiftCardApply",
-              "description": "Applies a gift card to an existing checkout using a gift card code.",
+              "description": "Applies a gift card to an existing checkout using a gift card code. This will replace all currently applied gift cards.",
               "args": [
                 {
                   "name": "giftCardCode",
@@ -9153,8 +9509,8 @@
                 "name": "CheckoutGiftCardApplyPayload",
                 "ofType": null
               },
-              "isDeprecated": false,
-              "deprecationReason": null
+              "isDeprecated": true,
+              "deprecationReason": "Use `checkoutGiftCardsAppend` instead"
             },
             {
               "name": "checkoutGiftCardRemove",
@@ -9192,6 +9548,55 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "CheckoutGiftCardRemovePayload",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "checkoutGiftCardsAppend",
+              "description": "Appends gift cards to an existing checkout.",
+              "args": [
+                {
+                  "name": "giftCardCodes",
+                  "description": "A list of gift card codes to append to the checkout.",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "LIST",
+                      "name": null,
+                      "ofType": {
+                        "kind": "NON_NULL",
+                        "name": null,
+                        "ofType": {
+                          "kind": "SCALAR",
+                          "name": "String",
+                          "ofType": null
+                        }
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "checkoutId",
+                  "description": "The ID of the checkout.",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "ID",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "CheckoutGiftCardsAppendPayload",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -10036,6 +10441,11 @@
           "possibleTypes": [
             {
               "kind": "OBJECT",
+              "name": "CustomerUserError",
+              "ofType": null
+            },
+            {
+              "kind": "OBJECT",
               "name": "UserError",
               "ofType": null
             }
@@ -10173,8 +10583,8 @@
                 "name": "Customer",
                 "ofType": null
               },
-              "isDeprecated": false,
-              "deprecationReason": null
+              "isDeprecated": true,
+              "deprecationReason": "This field will always return null. If you have an authentication token for the customer, you can use the `customer` field on the query root to retrieve it."
             },
             {
               "name": "email",
@@ -12219,6 +12629,20 @@
               "deprecationReason": null
             },
             {
+              "name": "customer",
+              "description": "The associated customer object.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "Customer",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "userErrors",
               "description": "List of errors that occurred executing the mutation.",
               "args": [
@@ -12552,6 +12976,59 @@
                   "name": "Checkout",
                   "ofType": null
                 }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "userErrors",
+              "description": "List of errors that occurred executing the mutation.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "OBJECT",
+                      "name": "UserError",
+                      "ofType": null
+                    }
+                  }
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+
+          ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "CheckoutGiftCardsAppendPayload",
+          "description": null,
+          "fields": [
+            {
+              "name": "checkout",
+              "description": "The updated checkout object.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "Checkout",
+                "ofType": null
               },
               "isDeprecated": false,
               "deprecationReason": null
@@ -12938,6 +13415,32 @@
               "deprecationReason": null
             },
             {
+              "name": "customerUserErrors",
+              "description": "List of errors that occurred executing the mutation.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "OBJECT",
+                      "name": "CustomerUserError",
+                      "ofType": null
+                    }
+                  }
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "userErrors",
               "description": "List of errors that occurred executing the mutation.",
               "args": [
@@ -12960,8 +13463,8 @@
                   }
                 }
               },
-              "isDeprecated": false,
-              "deprecationReason": null
+              "isDeprecated": true,
+              "deprecationReason": "Use `customerUserErrors` instead"
             }
           ],
           "inputFields": null,
@@ -12969,6 +13472,94 @@
 
           ],
           "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "CustomerUserError",
+          "description": "Represents an error that happens during execution of a customer mutation.",
+          "fields": [
+            {
+              "name": "code",
+              "description": "Error code to uniquely identify the error.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "ENUM",
+                "name": "CustomerErrorCode",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "field",
+              "description": "Path to the input field which caused the error.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "message",
+              "description": "The error message.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+            {
+              "kind": "INTERFACE",
+              "name": "DisplayableError",
+              "ofType": null
+            }
+          ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "CustomerErrorCode",
+          "description": "Possible error codes that could be returned by a customer mutation.",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "UNIDENTIFIED_CUSTOMER",
+              "description": "Customer is unidentified.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
           "possibleTypes": null
         },
         {
@@ -13193,6 +13784,20 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "Customer",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "customerAccessToken",
+              "description": "A newly created customer access token object for the customer.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "CustomerAccessToken",
                 "ofType": null
               },
               "isDeprecated": false,
