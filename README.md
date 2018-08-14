@@ -6,7 +6,7 @@
 
 # Mobile Buy SDK
 
-The Mobile Buy SDK makes it easy to create custom storefronts in your mobile app, where users can buy products using Android Pay or their credit card. The SDK connects to the Shopify platform using GraphQL, and supports a wide range of native storefront experiences.
+The Mobile Buy SDK makes it easy to create custom storefronts in your mobile app, where users can buy products using Google Pay or their credit card. The SDK connects to the Shopify platform using GraphQL, and supports a wide range of native storefront experiences.
 
 ## Table of contents
 
@@ -51,6 +51,7 @@ The Mobile Buy SDK makes it easy to create custom storefronts in your mobile app
       - [Completing a checkout](#completing-a-checkout-)
           - [Web](#web-checkout-)
           - [Credit card](#credit-card-checkout-)
+          - [Google Pay](#google-pay-checkout-)
       - [Polling for checkout completion](#polling-for-checkout-completion-)
   - [Customer Accounts](#customer-accounts-)
       - [Creating a customer](#creating-a-customer-)
@@ -1151,7 +1152,7 @@ After all required fields have been filled and the customer is ready to pay, you
 
 - [Web](#web-checkout-)
 - [Credit card](#credit-card-checkout-)
-- [Android Pay](#android-pay-checkout-)
+- [Google Pay](#google-pay-checkout-)
 
 ##### Web checkout [⤴](#table-of-contents)
 
@@ -1210,33 +1211,18 @@ client.mutateGraph(query).enqueue(new GraphCall.Callback<Storefront.Mutation>() 
 });
 ```
 
-##### Android Pay checkout [⤴](#table-of-contents)
+##### Google Pay checkout [⤴](#table-of-contents)
 
-**DEPRECATED. NOT SUPPORTED**
-
-The Buy SDK makes Android Pay integration easy with the provided `android-pay` module. Refer to the [Android Pay](#android-pay-) section on how to helper classes and obtain a payment token. With token in-hand, we can complete the checkout:
+With Google Pay token in-hand, we can complete the checkout:
 
 ```java
 GraphClient client = ...;
 ID checkoutId = ...;
-PaymentToken paymentToken = ...;
-PayAddress billingAddress = ...;
-PayCart payCart = ...;
 String idempotencyKey = UUID.randomUUID().toString();
+Storefront.MailingAddressInput billingAddressInput = ...;
 
-Storefront.MailingAddressInput mailingAddressInput = new Storefront.MailingAddressInput()
-  .setAddress1(billingAddress.address1)
-  .setAddress2(billingAddress.address2)
-  .setCity(billingAddress.city)
-  .setCountry(billingAddress.country)
-  .setFirstName(billingAddress.firstName)
-  .setLastName(billingAddress.lastName)
-  .setPhone(billingAddress.phone)
-  .setProvince(billingAddress.province)
-  .setZip(billingAddress.zip);
-
-Storefront.TokenizedPaymentInput input = new Storefront.TokenizedPaymentInput(payCart.totalPrice, idempotencyKey,
-  mailingAddressInput, paymentToken.token, "android_pay").setIdentifier(paymentToken.publicKeyHash);
+Storefront.TokenizedPaymentInput input = new Storefront.TokenizedPaymentInput(totalPrice, idempotencyKey,
+  billingAddressInput, "google_pay", googlePayToken).setIdentifier(paymentToken.publicKeyHash);
 
 Storefront.MutationQuery query = Storefront.mutation(mutationQuery -> mutationQuery
   .checkoutCompleteWithTokenizedPayment(checkoutId, input, payloadQuery -> payloadQuery
@@ -1256,11 +1242,11 @@ Storefront.MutationQuery query = Storefront.mutation(mutationQuery -> mutationQu
 
 client.mutateGraph(query).enqueue(new GraphCall.Callback<Storefront.Mutation>() {
   @Override public void onResponse(@NonNull final GraphResponse<Storefront.Mutation> response) {
-    if (!response.data().getCheckoutCompleteWithCreditCard().getUserErrors().isEmpty()) {
+    if (!response.data().getCheckoutCompleteWithTokenizedPayment().getUserErrors().isEmpty()) {
       // handle user friendly errors
     } else {
-      boolean checkoutReady = response.data().getCheckoutCompleteWithCreditCard().getCheckout().getReady();
-      boolean paymentReady = response.data().getCheckoutCompleteWithCreditCard().getPayment().getReady();
+      boolean checkoutReady = response.data().getCheckoutCompleteWithTokenizedPayment().getCheckout().getReady();
+      boolean paymentReady = response.data().getCheckoutCompleteWithTokenizedPayment().getPayment().getReady();
     }
   }
 
