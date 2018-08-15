@@ -4,7 +4,7 @@ def versions = [
     playServicesVersion  : '9.8.0',
     jodaTimeVersion      : '2.9.9',
     butterKnifeVersion   : '9.0.0-SNAPSHOT',
-    apolloVersion        : '1.0.0-alpha',
+    apolloVersion        : '1.0.1-SNAPSHOT',
     archVersion          : '1.0.0'
 ]
 

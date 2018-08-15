@@ -36,6 +36,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
@@ -47,6 +48,7 @@ import com.shopify.sample.view.cart.CartClickActionEvent;
 import com.shopify.sample.view.widget.image.ImageGalleryView;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -105,7 +107,7 @@ public final class ProductDetailsActivity extends AppCompatActivity implements L
 
     initViewModels(productId);
 
-    imageGalleryView.renderImages(Arrays.asList(productImageUrl));
+    imageGalleryView.renderImages(TextUtils.isEmpty(productImageUrl) ? Collections.emptyList() : Collections.singletonList(productImageUrl));
     swipeRefreshLayoutView.setOnRefreshListener(() -> productViewModel.refetch());
     productDescriptionView.renderProduct(productTitle, productPrice);
     productDescriptionView.setOnAddToCartClickListener(() -> productViewModel.addToCart());
