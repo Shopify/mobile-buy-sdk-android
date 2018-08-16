@@ -1036,6 +1036,8 @@ A customer's information might not be available when a checkout is created. The 
 
 Note that if your checkout contains a line item that requires shipping, you must provide a shipping address and a shipping line as part of your checkout.
 
+To obtain the handle required for updating a shipping line, you must first poll for shipping rates.
+
 ###### Updating email [⤴](#table-of-contents)
 
 ```java
@@ -1084,7 +1086,7 @@ Storefront.MutationQuery query = Storefront.mutation((mutationQuery -> mutationQ
 );
 ```
 
-#### Polling for shipping rates [⤴](#table-of-contents)
+##### Polling for shipping rates [⤴](#table-of-contents)
 
 Available shipping rates are specific to a checkout since the cost to ship items depends on the quantity, weight, and other attributes of the items in the checkout. Shipping rates also require a checkout to have a valid `shippingAddress`, which can be updated using steps found in [updating a checkout](#updating-a-checkout-). Available shipping rates are a field on `Storefront.Checkout`, so given a `checkoutId` (that we kept a reference to earlier) we can query for shipping rates:
 
