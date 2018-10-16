@@ -21,21 +21,19 @@
  *   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  *   THE SOFTWARE.
  */
+package com.shopify.buy3
 
-package com.shopify.buy3;
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.TimeUnit
+import java.util.concurrent.TimeoutException
 
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
+internal class NamedCountDownLatch(private val name: String, count: Int) : CountDownLatch(count) {
 
-final class Utils {
-  private static final String DATE_TIME_PATTERN = "yyyy-MM-dd'T'HH:mm:ssZ";
-  private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormat.forPattern(DATE_TIME_PATTERN);
-
-  static DateTime parseDateTime(String dateTime) {
-    return DateTime.parse(dateTime, DATE_TIME_FORMATTER);
-  }
-
-  private Utils() {
-  }
+    @Throws(InterruptedException::class, TimeoutException::class)
+    fun awaitOrThrowWithTimeout(timeout: Long, timeUnit: TimeUnit) {
+        this.await(timeout, timeUnit)
+        if (this.count != 0L) {
+            throw TimeoutException("Time expired before latch, $name count went to zero.")
+        }
+    }
 }

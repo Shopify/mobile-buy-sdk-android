@@ -26,8 +26,7 @@ package com.shopify.sample.domain.interactor;
 
 import android.support.annotation.NonNull;
 
-import com.shopify.buy3.GraphHttpError;
-import com.shopify.buy3.GraphNetworkError;
+import com.shopify.buy3.GraphError;
 import com.shopify.sample.SampleApplication;
 import com.shopify.sample.domain.model.Checkout;
 import com.shopify.sample.domain.repository.CheckoutRepository;
@@ -57,7 +56,7 @@ public final class RealCheckoutShippingRatesInteractor implements CheckoutShippi
       .retryWhen(RxRetryHandler
         .exponentialBackoff(500, TimeUnit.MILLISECONDS, 1.2f)
         .maxRetries(10)
-        .when(t -> t instanceof NotReadyException || t instanceof GraphHttpError || t instanceof GraphNetworkError)
+        .when(t -> t instanceof NotReadyException || t instanceof GraphError.HttpError || t instanceof GraphError.NetworkError)
         .build());
   }
 }

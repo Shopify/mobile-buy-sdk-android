@@ -21,21 +21,42 @@
  *   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  *   THE SOFTWARE.
  */
+package com.shopify.buy3.internal.cache
 
-package com.shopify.buy3;
+import okio.Sink
+import okio.Source
+import java.io.IOException
 
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
+internal interface ResponseCacheStore {
+    @Throws(IOException::class)
+    fun cacheRecord(cacheKey: String): ResponseCacheRecord?
 
-final class Utils {
-  private static final String DATE_TIME_PATTERN = "yyyy-MM-dd'T'HH:mm:ssZ";
-  private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormat.forPattern(DATE_TIME_PATTERN);
+    @Throws(IOException::class)
+    fun cacheRecordEditor(cacheKey: String): ResponseCacheRecordEditor?
 
-  static DateTime parseDateTime(String dateTime) {
-    return DateTime.parse(dateTime, DATE_TIME_FORMATTER);
-  }
+    @Throws(IOException::class)
+    fun remove(cacheKey: String)
 
-  private Utils() {
-  }
+    @Throws(IOException::class)
+    fun delete()
+}
+
+internal interface ResponseCacheRecord {
+    fun headerSource(): Source
+
+    fun bodySource(): Source
+
+    fun close()
+}
+
+internal interface ResponseCacheRecordEditor {
+    fun headerSink(): Sink
+
+    fun bodySink(): Sink
+
+    @Throws(IOException::class)
+    fun abort()
+
+    @Throws(IOException::class)
+    fun commit()
 }

@@ -21,21 +21,31 @@
  *   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  *   THE SOFTWARE.
  */
+package com.shopify.buy3
 
-package com.shopify.buy3;
+/**
+ * Credit Card information.
+ */
+class CreditCard constructor(
+    val number: String,
+    val firstName: String,
+    val lastName: String,
+    val expireMonth: String,
+    val expireYear: String,
+    val verificationCode: String
+) {
+    init {
+        number.checkNotBlank("number can't be empty")
+        firstName.checkNotBlank("firstName can't be empty")
+        lastName.checkNotBlank("lastName can't be empty")
+        expireMonth.checkNotBlank("expireMonth can't be empty")
+        expireYear.checkNotBlank("expireYear can't be empty")
+        verificationCode.checkNotBlank("expireYear can't be empty")
+    }
 
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
+    companion object
+}
 
-final class Utils {
-  private static final String DATE_TIME_PATTERN = "yyyy-MM-dd'T'HH:mm:ssZ";
-  private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormat.forPattern(DATE_TIME_PATTERN);
-
-  static DateTime parseDateTime(String dateTime) {
-    return DateTime.parse(dateTime, DATE_TIME_FORMATTER);
-  }
-
-  private Utils() {
-  }
+private fun String.checkNotBlank(message: String) {
+    if (isBlank()) throw IllegalArgumentException(message)
 }

@@ -21,21 +21,43 @@
  *   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  *   THE SOFTWARE.
  */
+package com.shopify.buy3
 
-package com.shopify.buy3;
+import okhttp3.internal.io.FileSystem
+import okio.Sink
+import okio.Source
+import java.io.File
 
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
+internal class NoFileSystem : FileSystem {
+    override fun source(file: File): Source {
+        throw UnsupportedOperationException()
+    }
 
-final class Utils {
-  private static final String DATE_TIME_PATTERN = "yyyy-MM-dd'T'HH:mm:ssZ";
-  private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormat.forPattern(DATE_TIME_PATTERN);
+    override fun sink(file: File): Sink {
+        throw UnsupportedOperationException()
+    }
 
-  static DateTime parseDateTime(String dateTime) {
-    return DateTime.parse(dateTime, DATE_TIME_FORMATTER);
-  }
+    override fun appendingSink(file: File): Sink {
+        throw UnsupportedOperationException()
+    }
 
-  private Utils() {
-  }
+    override fun delete(file: File) {
+        throw UnsupportedOperationException()
+    }
+
+    override fun exists(file: File): Boolean {
+        throw UnsupportedOperationException()
+    }
+
+    override fun size(file: File): Long {
+        throw UnsupportedOperationException()
+    }
+
+    override fun rename(from: File, to: File) {
+        throw UnsupportedOperationException()
+    }
+
+    override fun deleteContents(directory: File) {
+        throw UnsupportedOperationException()
+    }
 }

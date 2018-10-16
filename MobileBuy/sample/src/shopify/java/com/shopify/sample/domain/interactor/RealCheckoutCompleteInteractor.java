@@ -26,8 +26,7 @@ package com.shopify.sample.domain.interactor;
 
 import android.support.annotation.NonNull;
 
-import com.shopify.buy3.GraphHttpError;
-import com.shopify.buy3.GraphNetworkError;
+import com.shopify.buy3.GraphError;
 import com.shopify.buy3.Storefront;
 import com.shopify.buy3.pay.PayAddress;
 import com.shopify.buy3.pay.PayCart;
@@ -91,7 +90,7 @@ public final class RealCheckoutCompleteInteractor implements CheckoutCompleteInt
             .retryWhen(RxRetryHandler
               .exponentialBackoff(500, TimeUnit.MILLISECONDS, 1.2f)
               .maxRetries(10)
-              .when(t -> t instanceof NotReadyException || t instanceof GraphHttpError || t instanceof GraphNetworkError)
+              .when(t -> t instanceof NotReadyException || t instanceof GraphError.HttpError || t instanceof GraphError.NetworkError)
               .build());
         }
       })

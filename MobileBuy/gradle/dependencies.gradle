@@ -1,28 +1,33 @@
 def versions = [
-    androidSupportVersion: '27.0.0',
+    androidPlugin        : '3.2.0',
+    androidSupportVersion: '28.0.0',
     okHttpVersion        : '3.6.0',
-    playServicesVersion  : '9.8.0',
+    playServicesVersion  : '16.0.1',
     jodaTimeVersion      : '2.9.9',
-    butterKnifeVersion   : '9.0.0-SNAPSHOT',
+    butterKnifeVersion   : '9.0.0-rc1',
     apolloVersion        : '1.0.1-SNAPSHOT',
-    archVersion          : '1.0.0'
+    archVersion          : '1.1.1',
+    kotlin               : '1.2.70'
 ]
 
 ext.isCi = "true" == System.getenv('CI')
 
 ext.androidConfig = [
-    compileSdkVersion: 26,
-    buildToolsVersion: '27.0.3',
-    minSdkVersion    : 19,
-    targetSdkVersion : 24,
+    compileSdkVersion: 28,
+    buildToolsVersion: '28.0.2',
+    minSdkVersion    : 21
 ]
 
 ext.dep = [
-    androidPlugin            : "com.android.tools.build:gradle:3.1.0",
+    androidPlugin            : "com.android.tools.build:gradle:$versions.androidPlugin",
     androidSupportAnnotations: "com.android.support:support-annotations:$versions.androidSupportVersion",
     androidSupportDesign     : "com.android.support:design:$versions.androidSupportVersion",
     androidSupportV4         : "com.android.support:support-v4:$versions.androidSupportVersion",
     androidSupportV7         : "com.android.support:appcompat-v7:$versions.androidSupportVersion",
+
+    kotlinPlugin             : "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin",
+    kotlinStdLib             : "org.jetbrains.kotlin:kotlin-stdlib:$versions.kotlin",
+
     okhttp                   : "com.squareup.okhttp3:logging-interceptor:$versions.okHttpVersion",
     okhttpLogging            : "com.squareup.okhttp3:logging-interceptor:$versions.okHttpVersion",
     okhttpTestSupport        : "com.squareup.okhttp3:okhttp-testing-support:$versions.okHttpVersion",
@@ -31,10 +36,11 @@ ext.dep = [
     junit                    : "junit:junit:4.12",
     truth                    : "com.google.truth:truth:0.30",
     mockWebServer            : "com.squareup.okhttp3:mockwebserver:$versions.okHttpVersion",
-    mockitoCore              : "org.mockito:mockito-core:2.6.3",
+    mockitoCore              : "org.mockito:mockito-core:2.18.3",
+    mockitokotlin            : "com.nhaarman:mockito-kotlin-kt1.1:1.5.0",
     rxAndroid                : "io.reactivex.rxjava2:rxandroid:2.0.1",
     rxJava                   : "io.reactivex.rxjava2:rxjava:2.0.6",
-    timber                   : "com.jakewharton.timber:timber:4.5.1",
+    timber                   : "com.jakewharton.timber:timber:4.7.1",
     butterKnife              : "com.jakewharton:butterknife:$versions.butterKnifeVersion",
     butterKnifeCompiler      : "com.jakewharton:butterknife-compiler:$versions.butterKnifeVersion",
     butterknifePlugin        : "com.jakewharton:butterknife-gradle-plugin:$versions.butterKnifeVersion",
@@ -46,8 +52,6 @@ ext.dep = [
     apolloHttpCache          : "com.apollographql.apollo:apollo-http-cache:$versions.apolloVersion",
     constraintLayout         : "com.android.support.constraint:constraint-layout:1.0.2",
     rxrelay                  : "com.jakewharton.rxrelay2:rxrelay:2.0.0",
-    archRuntime              : "android.arch.lifecycle:runtime:$versions.archVersion",
-    archExt                  : "android.arch.lifecycle:extensions:$versions.archVersion",
-    arcCompiler              : "android.arch.lifecycle:compiler:$versions.archVersion",
+    archComponents           : "android.arch.lifecycle:extensions:$versions.archVersion",
     gson                     : "com.google.code.gson:gson:2.7"
 ]

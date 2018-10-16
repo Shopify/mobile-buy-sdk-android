@@ -98,7 +98,7 @@ public final class CheckoutRepository {
 
     GraphCall<Storefront.QueryRoot> call = graphClient.queryGraph(Storefront.query(
       root -> root.node(new ID(checkoutId), query)
-    )).cachePolicy(HttpCachePolicy.NETWORK_FIRST.expireAfter(5, TimeUnit.MINUTES));
+    )).cachePolicy(HttpCachePolicy.Default.NETWORK_FIRST.expireAfter(5, TimeUnit.MINUTES));
 
     return rxGraphQueryCall(call)
       .map(it -> (Storefront.Checkout) it.getNode())
@@ -112,7 +112,7 @@ public final class CheckoutRepository {
 
     GraphCall<Storefront.QueryRoot> call = graphClient.queryGraph(Storefront.query(
       root -> root.node(new ID(checkoutId), q -> q.onCheckout(query))
-    )).cachePolicy(HttpCachePolicy.NETWORK_ONLY);
+    )).cachePolicy(HttpCachePolicy.Default.NETWORK_ONLY);
 
     return Single.fromCallable(call::clone)
       .flatMap(RxUtil::rxGraphQueryCall)
@@ -201,7 +201,7 @@ public final class CheckoutRepository {
 
     GraphCall<Storefront.QueryRoot> call = graphClient.queryGraph(Storefront.query(
       root -> root.node(new ID(paymentId), query)
-    )).cachePolicy(HttpCachePolicy.NETWORK_ONLY);
+    )).cachePolicy(HttpCachePolicy.Default.NETWORK_ONLY);
 
     return Single.fromCallable(call::clone)
       .flatMap(RxUtil::rxGraphQueryCall)

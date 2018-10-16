@@ -25,24 +25,23 @@
 package com.shopify.sample;
 
 import android.text.TextUtils;
-
 import com.shopify.buy3.GraphClient;
 import com.shopify.buy3.HttpCachePolicy;
 import com.shopify.sample.domain.usecases.UseCases;
 import com.shopify.sample.domain.usecases.UseCasesImpl;
 import com.shopify.sample.util.CallbackExecutors;
-
-import java.util.concurrent.TimeUnit;
-
+import kotlin.Unit;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
+
+import java.util.concurrent.TimeUnit;
 
 public class SampleApplication extends BaseApplication {
 
   private static final String SHOP_PROPERTIES_INSTRUCTION =
-    "\n\tAdd your shop credentials to a shop.properties file in the main app folder (e.g. 'app/shop.properties')."
-      + "Include these keys:\n" + "\t\tSHOP_DOMAIN=<myshop>.myshopify.com\n"
-      + "\t\tAPI_KEY=0123456789abcdefghijklmnopqrstuvw\n";
+      "\n\tAdd your shop credentials to a shop.properties file in the main app folder (e.g. 'app/shop.properties')."
+          + "Include these keys:\n" + "\t\tSHOP_DOMAIN=<myshop>.myshopify.com\n"
+          + "\t\tAPI_KEY=0123456789abcdefghijklmnopqrstuvw\n";
 
   private static GraphClient graphClient;
 
@@ -64,25 +63,25 @@ public class SampleApplication extends BaseApplication {
     String shopUrl = BuildConfig.SHOP_DOMAIN;
     if (TextUtils.isEmpty(shopUrl)) {
       throw new IllegalArgumentException(SHOP_PROPERTIES_INSTRUCTION + "You must add 'SHOP_DOMAIN' entry in "
-        + "app/shop.properties, in the form '<myshop>.myshopify.com'");
+          + "app/shop.properties, in the form '<myshop>.myshopify.com'");
     }
 
     String shopifyApiKey = BuildConfig.API_KEY;
     if (TextUtils.isEmpty(shopifyApiKey)) {
       throw new IllegalArgumentException(SHOP_PROPERTIES_INSTRUCTION + "You must populate the 'API_KEY' entry in "
-        + "app/shop.properties");
+          + "app/shop.properties");
     }
 
     OkHttpClient httpClient = new OkHttpClient.Builder()
-      .addNetworkInterceptor(new HttpLoggingInterceptor().setLevel(BuildConfig.OKHTTP_LOG_LEVEL))
-      .build();
+        .addNetworkInterceptor(new HttpLoggingInterceptor().setLevel(BuildConfig.OKHTTP_LOG_LEVEL))
+        .build();
 
-    graphClient = GraphClient.builder(this)
-      .shopDomain(BuildConfig.SHOP_DOMAIN)
-      .accessToken(BuildConfig.API_KEY)
-      .httpClient(httpClient)
-      .httpCache(getCacheDir(), 1024 * 1024 * 10)
-      .defaultHttpCachePolicy(HttpCachePolicy.CACHE_FIRST.expireAfter(20, TimeUnit.MINUTES))
-      .build();
+    graphClient = GraphClient.Companion.build(this, BuildConfig.SHOP_DOMAIN, BuildConfig.API_KEY,
+        builder -> {
+          builder.withCustomOkHttpClient(httpClient);
+          builder.withHttpCache(getCacheDir(), 1024 * 1024 * 10,
+              HttpCachePolicy.Default.CACHE_FIRST.expireAfter(20, TimeUnit.MINUTES));
+          return Unit.INSTANCE;
+        });
   }
 }
