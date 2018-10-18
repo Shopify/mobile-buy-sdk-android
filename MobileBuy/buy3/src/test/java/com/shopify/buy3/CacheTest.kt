@@ -31,11 +31,9 @@ import com.shopify.buy3.internal.RealMutationGraphCall
 import com.shopify.buy3.internal.RealQueryGraphCall
 import com.shopify.buy3.internal.cache.DiskLruCacheStore
 import com.shopify.buy3.internal.cache.HTTP_CACHE_KEY_HEADER
-import com.shopify.buy3.internal.cache.HttpCache
 import com.shopify.buy3.internal.cache.cacheKey
 import com.shopify.graphql.support.ID
 import okhttp3.OkHttpClient
-import okhttp3.internal.io.FileSystem
 import okhttp3.internal.io.InMemoryFileSystem
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
@@ -86,12 +84,11 @@ class CacheTest {
             shopDomain = SHOP_DOMAIN,
             accessToken = ACCESS_TOKEN
         ) {
-            withCustomOkHttpClient(okHttpClient)
-            endpointUrl(server.url(SHOP_DOMAIN))
-            withHttpCache(
-                httpCache = HttpCache(DiskLruCacheStore(inMemoryFileSystem, File("/cache/"), Integer.MAX_VALUE.toLong())),
+            httpClient = okHttpClient
+            endpointUrl = server.url(SHOP_DOMAIN)
+            httpCache(DiskLruCacheStore(inMemoryFileSystem, File("/cache/"), Integer.MAX_VALUE.toLong())) {
                 defaultCachePolicy = HttpCachePolicy.Default.NETWORK_FIRST
-            )
+            }
         }
     }
 
@@ -310,12 +307,11 @@ class CacheTest {
             shopDomain = SHOP_DOMAIN,
             accessToken = ACCESS_TOKEN
         ) {
-            withCustomOkHttpClient(okHttpClient)
-            endpointUrl(server.url(SHOP_DOMAIN))
-            withHttpCache(
-                httpCache = HttpCache(DiskLruCacheStore(NoFileSystem(), File("/cache/"), Integer.MAX_VALUE.toLong())),
+            httpClient = okHttpClient
+            endpointUrl = server.url(SHOP_DOMAIN)
+            httpCache(DiskLruCacheStore(NoFileSystem(), File("/cache/"), Integer.MAX_VALUE.toLong())) {
                 defaultCachePolicy = HttpCachePolicy.Default.NETWORK_FIRST
-            )
+            }
         }
 
         server.enqueue(MockResponse().setChunkedBody(shopWithCollections, 32))
@@ -343,12 +339,11 @@ class CacheTest {
             shopDomain = SHOP_DOMAIN,
             accessToken = ACCESS_TOKEN
         ) {
-            withCustomOkHttpClient(okHttpClient)
-            endpointUrl(server.url(SHOP_DOMAIN))
-            withHttpCache(
-                httpCache = HttpCache(faultyCacheStore),
+            httpClient = okHttpClient
+            endpointUrl = server.url(SHOP_DOMAIN)
+            httpCache(faultyCacheStore) {
                 defaultCachePolicy = HttpCachePolicy.Default.NETWORK_FIRST
-            )
+            }
         }
 
         server.enqueue(MockResponse().setChunkedBody(shopWithCollections, 32))
@@ -380,12 +375,11 @@ class CacheTest {
             shopDomain = SHOP_DOMAIN,
             accessToken = ACCESS_TOKEN
         ) {
-            withCustomOkHttpClient(okHttpClient)
-            endpointUrl(server.url(SHOP_DOMAIN))
-            withHttpCache(
-                httpCache = HttpCache(faultyCacheStore),
+            httpClient = okHttpClient
+            endpointUrl = server.url(SHOP_DOMAIN)
+            httpCache(faultyCacheStore) {
                 defaultCachePolicy = HttpCachePolicy.Default.NETWORK_FIRST
-            )
+            }
         }
 
         server.enqueue(MockResponse().setChunkedBody(shopWithCollections, 32))

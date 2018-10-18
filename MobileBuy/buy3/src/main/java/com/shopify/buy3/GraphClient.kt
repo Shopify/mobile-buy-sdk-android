@@ -27,7 +27,9 @@ import android.content.Context
 import android.support.annotation.VisibleForTesting
 import com.shopify.buy3.internal.RealMutationGraphCall
 import com.shopify.buy3.internal.RealQueryGraphCall
+import com.shopify.buy3.internal.cache.DiskLruCacheStore
 import com.shopify.buy3.internal.cache.HttpCache
+import com.shopify.buy3.internal.cache.ResponseCacheStore
 import okhttp3.Call
 import okhttp3.HttpUrl
 import okhttp3.OkHttpClient
@@ -40,6 +42,9 @@ import java.util.concurrent.TimeUnit
 
 private val DEFAULT_HTTP_CONNECTION_TIME_OUT_MS = TimeUnit.SECONDS.toMillis(10)
 private val DEFAULT_HTTP_READ_WRITE_TIME_OUT_MS = TimeUnit.SECONDS.toMillis(20)
+
+@DslMarker
+annotation class GraphClientBuilder
 
 /**
  * Client for Shopify Storefront `GraphQL` API server.
@@ -110,14 +115,14 @@ class GraphClient private constructor(
          * @param shopDomain Shopify store domain URL (usually {@code {store name}.myshopify.com})
          * @param accessToken Shopify store access token obtained on your shop's admin page
          * @param configure function to configure optional parameters
-         * @return [GraphClient.Builder] client builder
+         * @return [GraphClient.Config] client builder
          */
         fun build(
             context: Context,
             shopDomain: String,
             accessToken: String,
-            configure: Builder.() -> Unit = {}
-        ): GraphClient = Builder.create(
+            configure: Config.() -> Unit = {}
+        ): GraphClient = Config.create(
             context = context,
             shopDomain = shopDomain,
             accessToken = accessToken,
@@ -128,17 +133,18 @@ class GraphClient private constructor(
     /**
      * Builds new [GraphClient] instance.
      */
-    class Builder private constructor(
+    @GraphClientBuilder
+    class Config private constructor(
         context: Context,
-        shopDomain: String,
+        private val shopDomain: String,
         private val accessToken: String
     ) {
         private val applicationName = context.packageName
-        private var endpointUrl = HttpUrl.parse("https://$shopDomain/api/graphql")
-        private var defaultHttpCachePolicy: HttpCachePolicy = HttpCachePolicy.Default.NETWORK_ONLY
-        private var okHttpClient: OkHttpClient? = null
-        private var dispatcher: ScheduledThreadPoolExecutor? = null
-        private var httpCache: HttpCache? = null
+        private var httpCacheConfig: HttpCacheConfig = HttpCacheConfig.NoCache
+        @VisibleForTesting
+        internal var dispatcher: ScheduledThreadPoolExecutor? = null
+        @VisibleForTesting
+        internal var endpointUrl = HttpUrl.parse("https://$shopDomain/api/graphql")
 
         init {
             shopDomain.checkNotBlank("shopDomain can't be empty")
@@ -146,52 +152,24 @@ class GraphClient private constructor(
         }
 
         /**
+         * [OkHttpClient] to be used as network layer for making HTTP requests.
+         */
+        var httpClient: OkHttpClient = defaultOkHttpClient()
+
+        /**
          * Enables http cache with provided storage settings.
          *
          * @param cacheFolder  a writable cache directory
-         * @param cacheMaxSizeBytes the maximum number of bytes this cache should use to store, must be > 0
-         * @param defaultCachePolicy to be used as default for all [QueryGraphCall] calls. By default [HttpCachePolicy.NETWORK_FIRST]
+         * @param configure function to configure optional parameters
          * @see HttpCache
          */
-        fun withHttpCache(
-            cacheFolder: File,
-            cacheMaxSizeBytes: Long,
-            defaultCachePolicy: HttpCachePolicy = HttpCachePolicy.Default.NETWORK_FIRST
-        ) {
-            if (cacheMaxSizeBytes <= 0) {
-                throw IllegalArgumentException("cacheMaxSizeBytes must be > 0")
-            }
-
-            val version = BuildConfig.VERSION_NAME
-            val tmp = (endpointUrl.toString() + "/" + version + "/" + accessToken).toByteArray(Charset.forName("UTF-8"))
-            val httpCacheFolder = File(cacheFolder, ByteString.of(*tmp).md5().hex())
-            httpCache = HttpCache(httpCacheFolder, cacheMaxSizeBytes)
-
-            this.defaultHttpCachePolicy = defaultCachePolicy
-        }
-
-        internal fun withHttpCache(httpCache: HttpCache, defaultCachePolicy: HttpCachePolicy = HttpCachePolicy.Default.NETWORK_FIRST) {
-            this.httpCache = httpCache
-            this.defaultHttpCachePolicy = defaultCachePolicy
-        }
-
-        /**
-         * Sets the custom [OkHttpClient] to be used as network layer for making HTTP requests.
-         *
-         * @param okHttpClient [OkHttpClient] client to be used
-         */
-        fun withCustomOkHttpClient(okHttpClient: OkHttpClient) {
-            this.okHttpClient = okHttpClient
+        fun httpCache(cacheFolder: File, configure: HttpCacheConfig.DiskLru.() -> Unit = {}) {
+            httpCacheConfig = HttpCacheConfig.DiskLru(cacheFolder).apply(configure)
         }
 
         @VisibleForTesting
-        internal fun withCustomDispatcher(dispatcher: ScheduledThreadPoolExecutor) {
-            this.dispatcher = dispatcher
-        }
-
-        @VisibleForTesting
-        internal fun endpointUrl(endpointUrl: HttpUrl) {
-            this.endpointUrl = endpointUrl
+        internal fun httpCache(cacheStore: ResponseCacheStore, configure: HttpCacheConfig.() -> Unit = {}) {
+            httpCacheConfig = HttpCacheConfig.CustomStore(cacheStore).apply(configure)
         }
 
         /**
@@ -200,54 +178,37 @@ class GraphClient private constructor(
          * @return configured [GraphClient]
          */
         fun build(): GraphClient {
+            val httpCache = httpCacheConfig.let { config ->
+                when (config) {
+                    is HttpCacheConfig.DiskLru -> {
+                        val version = BuildConfig.VERSION_NAME
+                        val tmp = (endpointUrl.toString() + "/" + version + "/" + accessToken).toByteArray(Charset.forName("UTF-8"))
+                        val httpCacheFolder = File(config.cacheFolder, ByteString.of(*tmp).md5().hex())
+                        HttpCache(
+                            cacheStore = DiskLruCacheStore(
+                                directory = httpCacheFolder,
+                                maxSize = config.cacheMaxSizeBytes
+                            )
+                        )
+
+                    }
+                    is HttpCacheConfig.CustomStore -> HttpCache(config.cacheStore)
+                    else -> null
+                }
+            }
+
+            val okHttpClient = httpClient.withSdkHeaderInterceptor(
+                applicationName = applicationName,
+                accessToken = accessToken
+            ).withHttpCacheInterceptor(httpCache)
+
             return GraphClient(
                 serverUrl = endpointUrl,
-                httpCallFactory = (okHttpClient ?: defaultOkHttpClient())
-                    .withSdkHeaderInterceptor(
-                        applicationName = applicationName,
-                        accessToken = accessToken
-                    )
-                    .withHttpCacheInterceptor(httpCache),
-                defaultHttpCachePolicy = defaultHttpCachePolicy,
+                httpCallFactory = okHttpClient,
+                defaultHttpCachePolicy = httpCacheConfig.defaultCachePolicy,
                 httpCache = httpCache,
                 dispatcher = dispatcher ?: defaultDispatcher()
             )
-        }
-
-        private fun defaultOkHttpClient(): OkHttpClient {
-            return OkHttpClient.Builder()
-                .connectTimeout(DEFAULT_HTTP_CONNECTION_TIME_OUT_MS, TimeUnit.MILLISECONDS)
-                .readTimeout(DEFAULT_HTTP_READ_WRITE_TIME_OUT_MS, TimeUnit.MILLISECONDS)
-                .writeTimeout(DEFAULT_HTTP_READ_WRITE_TIME_OUT_MS, TimeUnit.MILLISECONDS)
-                .build()
-        }
-
-        private fun OkHttpClient.withHttpCacheInterceptor(httpCache: HttpCache?): OkHttpClient {
-            return if (httpCache != null) {
-                newBuilder().addInterceptor(httpCache.httpInterceptor()).build()
-            } else {
-                this
-            }
-        }
-
-        private fun OkHttpClient.withSdkHeaderInterceptor(applicationName: String, accessToken: String): OkHttpClient {
-            return newBuilder().addInterceptor { chain ->
-                val original = chain.request()
-                val builder = original.newBuilder().method(original.method(), original.body())
-                builder.header("User-Agent", "Mobile Buy SDK Android/" + BuildConfig.VERSION_NAME + "/" + applicationName)
-                builder.header("X-SDK-Version", BuildConfig.VERSION_NAME)
-                builder.header("X-SDK-Variant", "android")
-                builder.header("X-Shopify-Storefront-Access-Token", accessToken)
-                chain.proceed(builder.build())
-            }.build()
-        }
-
-        private fun defaultDispatcher(): ScheduledThreadPoolExecutor {
-            return ScheduledThreadPoolExecutor(1) { runnable ->
-                Thread(runnable, "GraphClient Call Dispatcher")
-            }
-                .apply { setKeepAliveTime(1, TimeUnit.SECONDS) }
-                .apply { allowCoreThreadTimeOut(true) }
         }
 
         companion object {
@@ -255,9 +216,9 @@ class GraphClient private constructor(
                 context: Context,
                 shopDomain: String,
                 accessToken: String,
-                crossinline configure: Builder.() -> Unit
-            ): Builder {
-                return Builder(
+                crossinline configure: Config.() -> Unit
+            ): Config {
+                return Config(
                     context = context,
                     shopDomain = shopDomain,
                     accessToken = accessToken
@@ -265,6 +226,54 @@ class GraphClient private constructor(
             }
         }
     }
+}
+
+@GraphClientBuilder
+sealed class HttpCacheConfig {
+    /**
+     * Default cache policy to be used for all [QueryGraphCall] calls. By default [HttpCachePolicy.Default.NETWORK_FIRST]
+     */
+    var defaultCachePolicy: HttpCachePolicy = HttpCachePolicy.Default.NETWORK_FIRST
+
+    internal object NoCache : HttpCacheConfig()
+    internal class CustomStore(val cacheStore: ResponseCacheStore) : HttpCacheConfig()
+    class DiskLru(val cacheFolder: File, var cacheMaxSizeBytes: Long = Long.MAX_VALUE) : HttpCacheConfig()
+}
+
+private fun defaultOkHttpClient(): OkHttpClient {
+    return OkHttpClient.Builder()
+        .connectTimeout(DEFAULT_HTTP_CONNECTION_TIME_OUT_MS, TimeUnit.MILLISECONDS)
+        .readTimeout(DEFAULT_HTTP_READ_WRITE_TIME_OUT_MS, TimeUnit.MILLISECONDS)
+        .writeTimeout(DEFAULT_HTTP_READ_WRITE_TIME_OUT_MS, TimeUnit.MILLISECONDS)
+        .build()
+}
+
+private fun OkHttpClient.withHttpCacheInterceptor(httpCache: HttpCache?): OkHttpClient {
+    return if (httpCache != null) {
+        newBuilder().addInterceptor(httpCache.httpInterceptor()).build()
+    } else {
+        this
+    }
+}
+
+private fun OkHttpClient.withSdkHeaderInterceptor(applicationName: String, accessToken: String): OkHttpClient {
+    return newBuilder().addInterceptor { chain ->
+        val original = chain.request()
+        val builder = original.newBuilder().method(original.method(), original.body())
+        builder.header("User-Agent", "Mobile Buy SDK Android/" + BuildConfig.VERSION_NAME + "/" + applicationName)
+        builder.header("X-SDK-Version", BuildConfig.VERSION_NAME)
+        builder.header("X-SDK-Variant", "android")
+        builder.header("X-Shopify-Storefront-Access-Token", accessToken)
+        chain.proceed(builder.build())
+    }.build()
+}
+
+private fun defaultDispatcher(): ScheduledThreadPoolExecutor {
+    return ScheduledThreadPoolExecutor(1) { runnable ->
+        Thread(runnable, "GraphClient Call Dispatcher")
+    }
+        .apply { setKeepAliveTime(1, TimeUnit.SECONDS) }
+        .apply { allowCoreThreadTimeOut(true) }
 }
 
 private fun String.checkNotBlank(message: String) {

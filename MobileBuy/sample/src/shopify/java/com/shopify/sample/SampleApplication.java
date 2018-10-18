@@ -78,9 +78,12 @@ public class SampleApplication extends BaseApplication {
 
     graphClient = GraphClient.Companion.build(this, BuildConfig.SHOP_DOMAIN, BuildConfig.API_KEY,
         builder -> {
-          builder.withCustomOkHttpClient(httpClient);
-          builder.withHttpCache(getCacheDir(), 1024 * 1024 * 10,
-              HttpCachePolicy.Default.CACHE_FIRST.expireAfter(20, TimeUnit.MINUTES));
+          builder.setHttpClient(httpClient);
+          builder.httpCache(getCacheDir(), config -> {
+            config.setCacheMaxSizeBytes(1024 * 1024 * 10);
+            config.setDefaultCachePolicy(HttpCachePolicy.Default.CACHE_FIRST.expireAfter(20, TimeUnit.MINUTES));
+            return Unit.INSTANCE;
+          });
           return Unit.INSTANCE;
         });
   }

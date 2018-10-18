@@ -70,10 +70,8 @@ class RetryTest {
 
     @Before fun setUp() {
         doReturn(PACKAGE_NAME).whenever(mockContext).getPackageName()
-        val httpClient = OkHttpClient.Builder().build()
         graphClient = GraphClient.build(context = mockContext, shopDomain = "shopDomain", accessToken = "accessToken") {
-            withCustomOkHttpClient(httpClient)
-            endpointUrl(server.url("/"))
+            endpointUrl = server.url("/")
         }
     }
 

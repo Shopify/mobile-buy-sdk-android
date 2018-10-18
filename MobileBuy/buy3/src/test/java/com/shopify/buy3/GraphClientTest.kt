@@ -55,13 +55,13 @@ class GraphClientTest {
 
     @Before fun setUp() {
         doReturn(PACKAGE_NAME).whenever(mockContext).getPackageName()
-        val httpClient = OkHttpClient.Builder()
+        val okHttpClient = OkHttpClient.Builder()
             .connectTimeout(1, TimeUnit.SECONDS)
             .readTimeout(1, TimeUnit.SECONDS)
             .build()
         graphClient = GraphClient.build(context = mockContext, shopDomain = "shopDomain", accessToken = "accessToken") {
-            withCustomOkHttpClient(httpClient)
-            endpointUrl(server.url("/"))
+            httpClient = okHttpClient
+            endpointUrl = server.url("/")
         }
     }
 

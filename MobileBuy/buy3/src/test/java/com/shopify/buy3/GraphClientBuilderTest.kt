@@ -52,12 +52,12 @@ class GraphClientBuilderTest {
 
     @Test fun buildSuccessWithCustomOkHttpClient() {
         val networkInterceptor = HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BASIC)
-        val httpClient = OkHttpClient.Builder()
+        val okHttpClient = OkHttpClient.Builder()
             .addNetworkInterceptor(networkInterceptor)
             .build()
 
         val graphClient = GraphClient.build(context = mockContext, shopDomain = SHOP_DOMAIN, accessToken = ACCESS_TOKEN) {
-            withCustomOkHttpClient(httpClient)
+            httpClient = okHttpClient
         }
 
         with(graphClient) {
@@ -83,12 +83,16 @@ class GraphClientBuilderTest {
         checkForIllegalArgumentException { GraphClient.build(context = mockContext, shopDomain = SHOP_DOMAIN, accessToken = "") }
         checkForIllegalArgumentException {
             GraphClient.build(context = mockContext, shopDomain = SHOP_DOMAIN, accessToken = ACCESS_TOKEN) {
-                withHttpCache(cacheFolder = File(""), cacheMaxSizeBytes = 0)
+                httpCache(cacheFolder = File("")) {
+                    cacheMaxSizeBytes = 0
+                }
             }
         }
         checkForIllegalArgumentException {
             GraphClient.build(context = mockContext, shopDomain = SHOP_DOMAIN, accessToken = ACCESS_TOKEN) {
-                withHttpCache(cacheFolder = File(""), cacheMaxSizeBytes = -1)
+                httpCache(cacheFolder = File("")) {
+                    cacheMaxSizeBytes = -1
+                }
             }
         }
     }
