@@ -25,16 +25,14 @@
 package com.shopify.sample.domain.interactor;
 
 import android.support.annotation.NonNull;
-
 import com.apollographql.apollo.exception.ApolloHttpException;
 import com.apollographql.apollo.exception.ApolloNetworkException;
-import com.shopify.buy3.pay.PayAddress;
-import com.shopify.buy3.pay.PayCart;
-import com.shopify.buy3.pay.PaymentToken;
 import com.shopify.sample.SampleApplication;
 import com.shopify.sample.domain.CheckoutCompleteWithAndroidPayQuery;
 import com.shopify.sample.domain.CheckoutEmailUpdateQuery;
 import com.shopify.sample.domain.PaymentByIdQuery;
+import com.shopify.sample.domain.model.Address;
+import com.shopify.sample.domain.model.Cart;
 import com.shopify.sample.domain.model.Payment;
 import com.shopify.sample.domain.model.UserMessageError;
 import com.shopify.sample.domain.repository.CheckoutRepository;
@@ -43,10 +41,9 @@ import com.shopify.sample.domain.type.MailingAddressInput;
 import com.shopify.sample.domain.type.TokenizedPaymentInput;
 import com.shopify.sample.util.NotReadyException;
 import com.shopify.sample.util.RxRetryHandler;
+import io.reactivex.Single;
 
 import java.util.concurrent.TimeUnit;
-
-import io.reactivex.Single;
 
 import static com.shopify.sample.util.Util.checkNotBlank;
 import static com.shopify.sample.util.Util.checkNotNull;
@@ -58,8 +55,8 @@ public final class RealCheckoutCompleteInteractor implements CheckoutCompleteInt
     this.repository = new CheckoutRepository(SampleApplication.apolloClient());
   }
 
-  @Override public Single<Payment> execute(@NonNull final String checkoutId, @NonNull final PayCart payCart,
-    @NonNull final PaymentToken paymentToken, @NonNull final String email, @NonNull final PayAddress billingAddress) {
+  @Override public Single<Payment> execute(@NonNull final String checkoutId, @NonNull final Cart payCart,
+    @NonNull final String paymentToken, @NonNull final String email, @NonNull final Address billingAddress) {
     checkNotBlank(checkoutId, "checkoutId can't be empty");
     checkNotNull(payCart, "payCart == null");
     checkNotNull(paymentToken, "paymentToken == null");
@@ -79,11 +76,11 @@ public final class RealCheckoutCompleteInteractor implements CheckoutCompleteInt
       .build();
 
     TokenizedPaymentInput paymentInput = TokenizedPaymentInput.builder()
-      .amount(payCart.totalPrice)
-      .idempotencyKey(paymentToken.token)
+      .amount(payCart.totalPrice())
+      .idempotencyKey(paymentToken)
       .type("android_pay")
-      .paymentData(paymentToken.token)
-      .identifier(paymentToken.publicKeyHash)
+      .paymentData(paymentToken)
+      .identifier(paymentToken)
       .billingAddress(mailingAddressInput)
       .build();
 

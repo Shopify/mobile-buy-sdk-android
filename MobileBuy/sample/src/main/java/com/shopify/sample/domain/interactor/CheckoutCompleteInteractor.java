@@ -25,16 +25,12 @@
 package com.shopify.sample.domain.interactor;
 
 import android.support.annotation.NonNull;
-
-import com.shopify.buy3.pay.PayAddress;
-import com.shopify.buy3.pay.PayCart;
-import com.shopify.buy3.pay.PaymentToken;
+import com.shopify.sample.domain.model.Address;
+import com.shopify.sample.domain.model.Cart;
 import com.shopify.sample.domain.model.Payment;
-
 import io.reactivex.Single;
 
 public interface CheckoutCompleteInteractor {
-  Single<Payment> execute(@NonNull String checkoutId, @NonNull PayCart payCart, @NonNull PaymentToken paymentToken,
-    @NonNull String email, @NonNull PayAddress billingAddress);
-
+  Single<Payment> execute(@NonNull final String checkoutId, @NonNull final Cart payCart,
+                          @NonNull final String paymentToken, @NonNull final String email, @NonNull final Address billingAddress);
 }

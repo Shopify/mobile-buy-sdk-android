@@ -27,14 +27,8 @@ package com.shopify.sample.view.cart;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Transformations;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-
-import com.google.android.gms.wallet.MaskedWallet;
-import com.shopify.buy3.pay.PayCart;
-import com.shopify.buy3.pay.PayHelper;
 import com.shopify.sample.domain.interactor.CartWatchInteractor;
 import com.shopify.sample.domain.interactor.CheckoutCreateInteractor;
 import com.shopify.sample.domain.interactor.RealCartWatchInteractor;
@@ -45,14 +39,12 @@ import com.shopify.sample.domain.model.ShopSettings;
 import com.shopify.sample.util.WeakObserver;
 import com.shopify.sample.view.BaseViewModel;
 import com.shopify.sample.view.LifeCycleBoundCallback;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import timber.log.Timber;
 
 import java.math.BigDecimal;
 import java.util.List;
 
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import timber.log.Timber;
-
-import static com.shopify.sample.util.Util.fold;
 import static com.shopify.sample.util.Util.mapItems;
 
 @SuppressWarnings({"WeakerAccess", "FieldCanBeLocal"})
@@ -63,13 +55,13 @@ public final class RealCartViewModel extends BaseViewModel implements CartDetail
   private final CartWatchInteractor cartWatchInteractor = new RealCartWatchInteractor();
   private final CheckoutCreateInteractor checkoutCreateInteractor = new RealCheckoutCreateInteractor();
   private final LifeCycleBoundCallback<Checkout> webCheckoutCallback = new LifeCycleBoundCallback<>();
-  private final LifeCycleBoundCallback<PayCart> androidPayStartCheckoutCallback = new LifeCycleBoundCallback<>();
+  private final LifeCycleBoundCallback<Cart> androidPayStartCheckoutCallback = new LifeCycleBoundCallback<>();
   private final LifeCycleBoundCallback<AndroidPayCheckout> androidPayCheckoutCallback = new LifeCycleBoundCallback<>();
   private final MutableLiveData<Cart> cartLiveData = new MutableLiveData<>();
   private final MutableLiveData<Boolean> googleApiClientConnectionData = new MutableLiveData<>();
 
   private String checkoutId;
-  private PayCart payCart;
+//  private PayCart payCart;
   private ShopSettings shopSettings;
 
   public RealCartViewModel(ShopSettings shopSettings) {
@@ -112,27 +104,27 @@ public final class RealCartViewModel extends BaseViewModel implements CartDetail
     return androidPayCheckoutCallback;
   }
 
-  @Override public LifeCycleBoundCallback<PayCart> androidPayStartCheckoutCallback() {
+  @Override public LifeCycleBoundCallback<Cart> androidPayStartCheckoutCallback() {
     return androidPayStartCheckoutCallback;
   }
 
-  @Override public void handleMaskedWalletResponse(final int requestCode, final int resultCode, @Nullable final Intent data) {
-    PayHelper.handleWalletResponse(requestCode, resultCode, data, new PayHelper.WalletResponseHandler() {
-      @Override public void onWalletError(final int requestCode, final int errorCode) {
-        notifyUserError(REQUEST_ID_PREPARE_ANDROID_PAY, new RuntimeException("Failed to fetch masked wallet, errorCode: " +
-          errorCode), null);
-      }
-
-      @Override public void onMaskedWallet(final MaskedWallet maskedWallet) {
-        androidPayCheckoutCallback.notify(new AndroidPayCheckout(checkoutId, payCart, maskedWallet));
-      }
-    });
-  }
+//  @Override public void handleMaskedWalletResponse(final int requestCode, final int resultCode, @Nullable final Intent data) {
+//    PayHelper.handleWalletResponse(requestCode, resultCode, data, new PayHelper.WalletResponseHandler() {
+//      @Override public void onWalletError(final int requestCode, final int errorCode) {
+//        notifyUserError(REQUEST_ID_PREPARE_ANDROID_PAY, new RuntimeException("Failed to fetch masked wallet, errorCode: " +
+//          errorCode), null);
+//      }
+//
+//      @Override public void onMaskedWallet(final MaskedWallet maskedWallet) {
+//        androidPayCheckoutCallback.notify(new AndroidPayCheckout(checkoutId, payCart, maskedWallet));
+//      }
+//    });
+//  }
 
   @Override public Bundle saveState() {
     Bundle bundle = new Bundle();
     bundle.putString(STATE_KEY_CHECKOUT_ID, checkoutId);
-    bundle.putParcelable(STATE_KEY_PAY_CART, payCart);
+//    bundle.putParcelable(STATE_KEY_PAY_CART, payCart);
     return bundle;
   }
 
@@ -141,7 +133,7 @@ public final class RealCartViewModel extends BaseViewModel implements CartDetail
       return;
     }
     checkoutId = bundle.getString(STATE_KEY_CHECKOUT_ID);
-    payCart = bundle.getParcelable(STATE_KEY_PAY_CART);
+//    payCart = bundle.getParcelable(STATE_KEY_PAY_CART);
   }
 
   private void onCartUpdated(final Cart cart) {
@@ -177,7 +169,7 @@ public final class RealCartViewModel extends BaseViewModel implements CartDetail
     if (requestId == REQUEST_ID_CREATE_WEB_CHECKOUT) {
       webCheckoutCallback.notify(checkout);
     } else if (requestId == REQUEST_ID_CREATE_ANDROID_PAY_CHECKOUT) {
-      androidPayStartCheckoutCallback.notify(payCart = checkoutPayCart(checkout));
+//      androidPayStartCheckoutCallback.notify(payCart = checkoutPayCart(checkout));
     }
   }
 
@@ -188,17 +180,17 @@ public final class RealCartViewModel extends BaseViewModel implements CartDetail
     notifyUserError(requestId, t, null);
   }
 
-  private PayCart checkoutPayCart(final Checkout checkout) {
-    PayCart.Builder payCartBuilder = PayCart.builder()
-      .merchantName(shopSettings.name)
-      .currencyCode(checkout.currency)
-      .countryCode(shopSettings.countryCode)
-      .phoneNumberRequired(true)
-      .shippingAddressRequired(checkout.requiresShipping);
-
-    fold(payCartBuilder, checkout.lineItems, (accumulator, lineItem) ->
-      accumulator.addLineItem(lineItem.title, lineItem.quantity, lineItem.price));
-
-    return payCartBuilder.build();
-  }
+//  private PayCart checkoutPayCart(final Checkout checkout) {
+//    PayCart.Builder payCartBuilder = PayCart.builder()
+//      .merchantName(shopSettings.name)
+//      .currencyCode(checkout.currency)
+//      .countryCode(shopSettings.countryCode)
+//      .phoneNumberRequired(true)
+//      .shippingAddressRequired(checkout.requiresShipping);
+//
+//    fold(payCartBuilder, checkout.lineItems, (accumulator, lineItem) ->
+//      accumulator.addLineItem(lineItem.title, lineItem.quantity, lineItem.price));
+//
+//    return payCartBuilder.build();
+//  }
 }

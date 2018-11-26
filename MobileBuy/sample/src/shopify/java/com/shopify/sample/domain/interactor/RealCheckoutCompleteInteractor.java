@@ -28,10 +28,9 @@ import android.support.annotation.NonNull;
 
 import com.shopify.buy3.GraphError;
 import com.shopify.buy3.Storefront;
-import com.shopify.buy3.pay.PayAddress;
-import com.shopify.buy3.pay.PayCart;
-import com.shopify.buy3.pay.PaymentToken;
 import com.shopify.sample.SampleApplication;
+import com.shopify.sample.domain.model.Address;
+import com.shopify.sample.domain.model.Cart;
 import com.shopify.sample.domain.model.Payment;
 import com.shopify.sample.domain.model.UserMessageError;
 import com.shopify.sample.domain.repository.CheckoutRepository;
@@ -53,8 +52,8 @@ public final class RealCheckoutCompleteInteractor implements CheckoutCompleteInt
     repository = new CheckoutRepository(SampleApplication.graphClient());
   }
 
-  @Override public Single<Payment> execute(@NonNull final String checkoutId, @NonNull final PayCart payCart,
-    @NonNull final PaymentToken paymentToken, @NonNull final String email, @NonNull final PayAddress billingAddress) {
+  @Override public Single<Payment> execute(@NonNull final String checkoutId, @NonNull final Cart payCart,
+    @NonNull final String paymentToken, @NonNull final String email, @NonNull final Address billingAddress) {
     checkNotBlank(checkoutId, "checkoutId can't be empty");
     checkNotNull(payCart, "payCart == null");
     checkNotNull(paymentToken, "paymentToken == null");
@@ -72,8 +71,8 @@ public final class RealCheckoutCompleteInteractor implements CheckoutCompleteInt
       .setProvince(billingAddress.province)
       .setZip(billingAddress.zip);
 
-    Storefront.TokenizedPaymentInput paymentInput = new Storefront.TokenizedPaymentInput(payCart.totalPrice, paymentToken.token,
-      mailingAddressInput, "android_pay", paymentToken.token).setIdentifier(paymentToken.publicKeyHash);
+    Storefront.TokenizedPaymentInput paymentInput = new Storefront.TokenizedPaymentInput(payCart.totalPrice(), paymentToken,
+      mailingAddressInput, "android_pay", paymentToken).setIdentifier(paymentToken);
 
     return repository
       .updateEmail(checkoutId, email, it -> it.checkout(new CheckoutFragment()))

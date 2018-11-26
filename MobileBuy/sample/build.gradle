@@ -73,8 +73,6 @@ android {
 
       buildConfigField "String", "SHOP_DOMAIN", "\"" + shopDomain.toString() + "\""
       buildConfigField "String", "API_KEY", "\"" + apiKey.toString() + "\""
-      buildConfigField "String", "ANDROID_PAY_PUBLIC_KEY", "\"" + androidPayPublicKey.toString() + "\""
-      buildConfigField "int", "ANDROID_PAY_ENVIRONMENT", androidPayEnvironment
 
       debuggable = true
       minifyEnabled = false
@@ -115,10 +113,8 @@ dependencies {
   implementation dep.rxrelay
   implementation dep.archComponents
   implementation dep.okhttp
-  implementation dep.playServicesWallet
   implementation dep.kotlinStdLib
 
-  implementation project(':buy3-pay-support')
   shopifyImplementation project(':buy3')
 
   xApolloImplementation dep.apolloRuntime

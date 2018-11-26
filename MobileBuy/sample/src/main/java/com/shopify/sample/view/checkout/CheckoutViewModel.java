@@ -24,14 +24,6 @@
 
 package com.shopify.sample.view.checkout;
 
-import android.arch.lifecycle.LiveData;
-import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.wallet.MaskedWallet;
-import com.shopify.buy3.pay.PayCart;
 import com.shopify.sample.domain.model.Payment;
 import com.shopify.sample.view.LifeCycleBoundCallback;
 import com.shopify.sample.view.ViewModel;
@@ -45,13 +37,7 @@ public interface CheckoutViewModel extends ViewModel {
   int REQUEST_ID_CONFIRM_CHECKOUT = UUID.randomUUID().hashCode();
   int REQUEST_ID_COMPLETE_CHECKOUT = UUID.randomUUID().hashCode();
 
-  LiveData<PayCart> payCartLiveData();
-
-  void confirmCheckout(@NonNull GoogleApiClient googleApiClient);
-
-  void handleWalletResponse(int requestCode, int resultCode, @Nullable Intent data, @NonNull GoogleApiClient googleApiClient);
-
-  LiveData<MaskedWallet> maskedWalletLiveData();
+  void confirmCheckout();
 
   LifeCycleBoundCallback<Payment> successPaymentLiveData();
 

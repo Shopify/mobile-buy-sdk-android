@@ -24,12 +24,7 @@
 
 package com.shopify.sample.view.cart;
 
-import android.arch.lifecycle.Lifecycle;
-import android.arch.lifecycle.LifecycleRegistry;
-import android.arch.lifecycle.LifecycleRegistryOwner;
-import android.arch.lifecycle.ViewModel;
-import android.arch.lifecycle.ViewModelProvider;
-import android.arch.lifecycle.ViewModelProviders;
+import android.arch.lifecycle.*;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -39,13 +34,9 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.wallet.Wallet;
-import com.google.android.gms.wallet.WalletConstants;
-import com.shopify.buy3.pay.PayHelper;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import com.shopify.sample.BaseApplication;
-import com.shopify.sample.BuildConfig;
 import com.shopify.sample.R;
 import com.shopify.sample.domain.model.Checkout;
 import com.shopify.sample.domain.model.ShopSettings;
@@ -53,11 +44,7 @@ import com.shopify.sample.view.ProgressDialogHelper;
 import com.shopify.sample.view.ScreenRouter;
 import com.shopify.sample.view.checkout.CheckoutViewModel;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
-public final class CartActivity extends AppCompatActivity implements LifecycleRegistryOwner,
-  GoogleApiClient.ConnectionCallbacks {
+public final class CartActivity extends AppCompatActivity implements LifecycleRegistryOwner {
   @BindView(R.id.root) View rootView;
   @BindView(R.id.cart_header) CartHeaderView cartHeaderView;
   @BindView(R.id.cart_list) CartListView cartListView;
@@ -67,7 +54,7 @@ public final class CartActivity extends AppCompatActivity implements LifecycleRe
   private CartDetailsViewModel cartDetailsViewModel;
   private CartHeaderViewModel cartHeaderViewModel;
 
-  private GoogleApiClient googleApiClient;
+//  private GoogleApiClient googleApiClient;
   private ProgressDialogHelper progressDialogHelper;
 
   @Override public boolean onSupportNavigateUp() {
@@ -79,18 +66,18 @@ public final class CartActivity extends AppCompatActivity implements LifecycleRe
     return lifecycleRegistry;
   }
 
-  @Override public void onConnected(@Nullable final Bundle bundle) {
-    ShopSettings shopSettings = ((BaseApplication) getApplication()).shopSettings().getValue();
-    PayHelper.isReadyToPay(getApplicationContext(), googleApiClient, shopSettings.acceptedCardBrands, result -> {
-      if (lifecycleRegistry.getCurrentState().isAtLeast(Lifecycle.State.STARTED)) {
-        cartDetailsViewModel.onGoogleApiClientConnectionChanged(true);
-      }
-    });
-  }
+//  @Override public void onConnected(@Nullable final Bundle bundle) {
+//    ShopSettings shopSettings = ((BaseApplication) getApplication()).shopSettings().getValue();
+//    PayHelper.isReadyToPay(getApplicationContext(), googleApiClient, shopSettings.acceptedCardBrands, result -> {
+//      if (lifecycleRegistry.getCurrentState().isAtLeast(Lifecycle.State.STARTED)) {
+//        cartDetailsViewModel.onGoogleApiClientConnectionChanged(true);
+//      }
+//    });
+//  }
 
-  @Override public void onConnectionSuspended(final int i) {
-    cartDetailsViewModel.onGoogleApiClientConnectionChanged(false);
-  }
+//  @Override public void onConnectionSuspended(final int i) {
+//    cartDetailsViewModel.onGoogleApiClientConnectionChanged(false);
+//  }
 
   @SuppressWarnings("ConstantConditions") @Override protected void onCreate(@Nullable final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -105,7 +92,7 @@ public final class CartActivity extends AppCompatActivity implements LifecycleRe
     progressDialogHelper = new ProgressDialogHelper(this);
 
     initViewModels();
-    connectGoogleApiClient();
+//    connectGoogleApiClient();
 
     lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE);
   }
@@ -140,16 +127,16 @@ public final class CartActivity extends AppCompatActivity implements LifecycleRe
       progressDialogHelper = null;
     }
 
-    if (googleApiClient != null) {
-      googleApiClient.disconnect();
-      googleApiClient = null;
-    }
+//    if (googleApiClient != null) {
+//      googleApiClient.disconnect();
+//      googleApiClient = null;
+//    }
   }
 
-  @Override protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
-    super.onActivityResult(requestCode, resultCode, data);
-    cartDetailsViewModel.handleMaskedWalletResponse(requestCode, resultCode, data);
-  }
+//  @Override protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
+//    super.onActivityResult(requestCode, resultCode, data);
+//    cartDetailsViewModel.handleMaskedWalletResponse(requestCode, resultCode, data);
+//  }
 
   @Override protected void onSaveInstanceState(final Bundle outState) {
     super.onSaveInstanceState(outState);
@@ -183,13 +170,13 @@ public final class CartActivity extends AppCompatActivity implements LifecycleRe
     });
     cartDetailsViewModel.androidPayStartCheckoutCallback().observe(this.getLifecycle(), payCart -> {
       if (cartHeaderViewModel.googleApiClientConnectionData().getValue() == Boolean.TRUE && payCart != null) {
-        PayHelper.requestMaskedWallet(googleApiClient, payCart, BuildConfig.ANDROID_PAY_PUBLIC_KEY);
+//        PayHelper.requestMaskedWallet(googleApiClient, payCart, BuildConfig.ANDROID_PAY_PUBLIC_KEY);
       }
     });
     cartDetailsViewModel.androidPayCheckoutCallback().observe(this.getLifecycle(), confirmation -> {
       if (confirmation != null) {
-        ScreenRouter.route(this, new AndroidPayConfirmationClickActionEvent(confirmation.checkoutId, confirmation.payCart,
-          confirmation.maskedWallet));
+        ScreenRouter.route(this, new AndroidPayConfirmationClickActionEvent(confirmation.checkoutId, confirmation.payCart));
+//            , confirmation.maskedWallet));
       }
     });
     cartDetailsViewModel.progressLiveData().observe(this, progress -> {
@@ -257,16 +244,16 @@ public final class CartActivity extends AppCompatActivity implements LifecycleRe
     snackbar.show();
   }
 
-  private void connectGoogleApiClient() {
-    if (PayHelper.isAndroidPayEnabledInManifest(this)) {
-      googleApiClient = new GoogleApiClient.Builder(this)
-        .addApi(Wallet.API, new Wallet.WalletOptions.Builder()
-          .setEnvironment(BuildConfig.ANDROID_PAY_ENVIRONMENT)
-          .setTheme(WalletConstants.THEME_DARK)
-          .build())
-        .addConnectionCallbacks(this)
-        .build();
-      googleApiClient.connect();
-    }
-  }
+//  private void connectGoogleApiClient() {
+//    if (PayHelper.isAndroidPayEnabledInManifest(this)) {
+//      googleApiClient = new GoogleApiClient.Builder(this)
+//        .addApi(Wallet.API, new Wallet.WalletOptions.Builder()
+//          .setEnvironment(BuildConfig.ANDROID_PAY_ENVIRONMENT)
+//          .setTheme(WalletConstants.THEME_DARK)
+//          .build())
+//        .addConnectionCallbacks(this)
+//        .build();
+//      googleApiClient.connect();
+//    }
+//  }
 }
