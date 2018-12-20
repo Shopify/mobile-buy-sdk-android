@@ -25,7 +25,6 @@
 package com.shopify.sample.domain.interactor;
 
 import com.shopify.buy3.Storefront;
-import com.shopify.buy3.pay.CardNetworkType;
 import com.shopify.sample.domain.model.Checkout;
 import com.shopify.sample.domain.model.Collection;
 import com.shopify.sample.domain.model.Payment;
@@ -117,7 +116,7 @@ final class Converters {
   static ShopSettings convertToShopSettings(final Storefront.Shop shop) {
     return new ShopSettings(
       shop.getName(),
-      new HashSet<>(mapItems(shop.getPaymentSettings().getAcceptedCardBrands(), cardBrand -> CardNetworkType.findByName(cardBrand.name()))),
+//      new HashSet<>(mapItems(shop.getPaymentSettings().getAcceptedCardBrands(), cardBrand -> CardNetworkType.findByName(cardBrand.name()))),
       shop.getPaymentSettings().getCountryCode().name()
     );
   }
