@@ -27,9 +27,7 @@ package com.shopify.sample.view.cart;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-
-import com.google.android.gms.wallet.MaskedWallet;
-import com.shopify.buy3.pay.PayCart;
+import com.shopify.sample.domain.model.Cart;
 import com.shopify.sample.domain.model.Checkout;
 import com.shopify.sample.view.LifeCycleBoundCallback;
 import com.shopify.sample.view.ViewModel;
@@ -49,9 +47,9 @@ public interface CartDetailsViewModel extends ViewModel {
 
   LifeCycleBoundCallback<CartDetailsViewModel.AndroidPayCheckout> androidPayCheckoutCallback();
 
-  LifeCycleBoundCallback<PayCart> androidPayStartCheckoutCallback();
+  LifeCycleBoundCallback<Cart> androidPayStartCheckoutCallback();
 
-  void handleMaskedWalletResponse(int requestCode, int resultCode, @Nullable Intent data);
+//  void handleMaskedWalletResponse(int requestCode, int resultCode, @Nullable Intent data);
 
   Bundle saveState();
 
@@ -59,13 +57,11 @@ public interface CartDetailsViewModel extends ViewModel {
 
   final class AndroidPayCheckout {
     public final String checkoutId;
-    public final PayCart payCart;
-    public final MaskedWallet maskedWallet;
+    public final Cart payCart;
 
-    AndroidPayCheckout(final String checkoutId, final PayCart payCart, final MaskedWallet maskedWallet) {
+    AndroidPayCheckout(final String checkoutId, final Cart payCart) {
       this.checkoutId = checkoutId;
       this.payCart = payCart;
-      this.maskedWallet = maskedWallet;
     }
   }
 }

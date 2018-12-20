@@ -142,7 +142,7 @@ public abstract class BaseApplication extends Application {
   }
 
   private void fetchShopSettings() {
-    shopSettings.setValue(new ShopSettings("test", emptySet(), "US"));
+    shopSettings.setValue(new ShopSettings("test", "US"));
     new RealShopSettingInteractor()
       .execute()
       .observeOn(AndroidSchedulers.mainThread())

@@ -25,12 +25,10 @@
 package com.shopify.sample.domain.interactor;
 
 import android.support.annotation.NonNull;
-
-import com.shopify.buy3.pay.PayAddress;
+import com.shopify.sample.domain.model.Address;
 import com.shopify.sample.domain.model.Checkout;
-
 import io.reactivex.Single;
 
 public interface CheckoutShippingAddressUpdateInteractor {
-  Single<Checkout> execute(@NonNull String checkoutId, @NonNull PayAddress payAddress);
+  Single<Checkout> execute(@NonNull String checkoutId, @NonNull Address payAddress);
 }

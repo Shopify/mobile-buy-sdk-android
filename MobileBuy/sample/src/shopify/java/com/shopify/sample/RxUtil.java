@@ -25,13 +25,13 @@
 package com.shopify.sample;
 
 import com.shopify.buy3.GraphCall;
+import com.shopify.buy3.GraphCallResult;
 import com.shopify.buy3.GraphResponse;
 import com.shopify.buy3.Storefront;
 import com.shopify.graphql.support.AbstractResponse;
-
 import io.reactivex.Single;
 import io.reactivex.SingleTransformer;
-import io.reactivex.exceptions.Exceptions;
+import kotlin.Unit;
 
 import static com.shopify.sample.util.Util.fold;
 
@@ -40,35 +40,40 @@ public final class RxUtil {
   public static Single<Storefront.QueryRoot> rxGraphQueryCall(final GraphCall<Storefront.QueryRoot> call) {
     return Single.<GraphResponse<Storefront.QueryRoot>>create(emitter -> {
       emitter.setCancellable(call::cancel);
-      try {
-        emitter.onSuccess(call.execute());
-      } catch (Exception e) {
-        Exceptions.throwIfFatal(e);
-        emitter.onError(e);
-      }
+      call.enqueue(result -> {
+        if (result instanceof GraphCallResult.Success) {
+          emitter.onSuccess(((GraphCallResult.Success<Storefront.QueryRoot>) result).getResponse());
+        } else {
+          emitter.onError(((GraphCallResult.Failure) result).getError());
+        }
+        return Unit.INSTANCE;
+      });
     }).compose(queryResponseDataTransformer());
   }
 
   public static Single<Storefront.Mutation> rxGraphMutationCall(final GraphCall<Storefront.Mutation> call) {
     return Single.<GraphResponse<Storefront.Mutation>>create(emitter -> {
       emitter.setCancellable(call::cancel);
-      try {
-        emitter.onSuccess(call.execute());
-      } catch (Exception e) {
-        Exceptions.throwIfFatal(e);
-        emitter.onError(e);
-      }
+      call.enqueue(result -> {
+        if (result instanceof GraphCallResult.Success) {
+          emitter.onSuccess(((GraphCallResult.Success<Storefront.Mutation>) result).getResponse());
+        } else {
+          emitter.onError(((GraphCallResult.Failure) result).getError());
+        }
+        return Unit.INSTANCE;
+      });
     }).compose(queryResponseDataTransformer());
   }
 
   private static <T extends AbstractResponse<T>> SingleTransformer<GraphResponse<T>, T> queryResponseDataTransformer() {
     return upstream -> upstream.flatMap(response -> {
-      if (response.errors().isEmpty()) {
-        return Single.just(response.data());
-      } else {
-        String errorMessage = fold(new StringBuilder(), response.errors(),
-          (builder, error) -> builder.append(error.message()).append("\n")).toString();
+      if (response.getHasErrors()) {
+        String errorMessage = fold(new StringBuilder(), response.getErrors(),
+            (builder, error) -> builder.append(error.message()).append("\n")).toString();
         return Single.error(new RuntimeException(errorMessage));
+
+      } else {
+        return Single.just(response.getData());
       }
     });
   }

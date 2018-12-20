@@ -27,8 +27,8 @@ package com.shopify.sample.domain.interactor;
 import android.support.annotation.NonNull;
 
 import com.shopify.buy3.Storefront;
-import com.shopify.buy3.pay.PayAddress;
 import com.shopify.sample.SampleApplication;
+import com.shopify.sample.domain.model.Address;
 import com.shopify.sample.domain.model.Checkout;
 import com.shopify.sample.domain.model.UserMessageError;
 import com.shopify.sample.domain.repository.CheckoutRepository;
@@ -46,7 +46,7 @@ public final class RealCheckoutShippingAddressUpdateInteractor implements Checko
     repository = new CheckoutRepository(SampleApplication.graphClient());
   }
 
-  @Override public Single<Checkout> execute(@NonNull final String checkoutId, @NonNull final PayAddress address) {
+  @Override public Single<Checkout> execute(@NonNull final String checkoutId, @NonNull final Address address) {
     checkNotBlank(checkoutId, "checkoutId can't be empty");
     checkNotNull(address, "address == null");
 

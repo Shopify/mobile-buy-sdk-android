@@ -3,10 +3,12 @@ buildscript {
     classpath dep.androidPlugin
     classpath dep.androidMavenGradlePlugin
     classpath dep.bintrayGradlePlugin
+    classpath dep.kotlinPlugin
   }
 }
 
 apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
 apply plugin: 'maven'
 apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
@@ -27,7 +29,6 @@ android {
 
   defaultConfig {
     minSdkVersion androidConfig.minSdkVersion
-    targetSdkVersion androidConfig.targetSdkVersion
     versionName VERSION_NAME
     version VERSION_NAME
 
@@ -88,19 +89,15 @@ dependencies {
   implementation dep.androidSupportAnnotations
   implementation dep.jodaTime
   implementation dep.gson
+  implementation dep.kotlinStdLib
   implementation dep.timber
 
-  androidTestImplementation dep.mockitoCore
-  androidTestImplementation dep.mockWebServer
-  androidTestImplementation dep.truth
-  androidTestImplementation dep.okhttpTestSupport
-  androidTestImplementation 'com.android.support.test:runner:0.5'
-  androidTestImplementation 'com.android.support.test:rules:0.5'
-
   testImplementation dep.mockitoCore
+  testImplementation dep.mockitokotlin
   testImplementation dep.junit
   testImplementation dep.truth
   testImplementation dep.mockWebServer
+  testImplementation dep.okhttpTestSupport
 }
 
 /*

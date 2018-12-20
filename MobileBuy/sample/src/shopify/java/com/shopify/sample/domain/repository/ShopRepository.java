@@ -6,6 +6,7 @@ import com.shopify.buy3.GraphCall;
 import com.shopify.buy3.GraphClient;
 import com.shopify.buy3.Storefront;
 
+import com.shopify.sample.RxUtil;
 import io.reactivex.Single;
 import io.reactivex.schedulers.Schedulers;
 
@@ -20,13 +21,15 @@ public final class ShopRepository {
     this.graphClient = checkNotNull(graphClient, "graphClient == null");
   }
 
-  @NonNull public Single<Storefront.Shop> shopSettings(@NonNull final Storefront.ShopQueryDefinition query) {
+  @NonNull
+  public Single<Storefront.Shop> shopSettings(@NonNull final Storefront.ShopQueryDefinition query) {
     checkNotNull(query, "query == null");
     GraphCall<Storefront.QueryRoot> call = graphClient.queryGraph(Storefront.query(
-      root -> root.shop(query)
+        root -> root.shop(query)
     ));
-    return rxGraphQueryCall(call)
-      .map(Storefront.QueryRoot::getShop)
-      .subscribeOn(Schedulers.io());
+    return Single.fromCallable(call::clone)
+        .flatMap(RxUtil::rxGraphQueryCall)
+        .map(Storefront.QueryRoot::getShop)
+        .subscribeOn(Schedulers.io());
   }
 }
