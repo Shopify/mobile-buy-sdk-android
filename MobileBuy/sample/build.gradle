@@ -3,10 +3,12 @@ buildscript {
     classpath dep.androidPlugin
     classpath dep.butterknifePlugin
     classpath dep.apolloPlugin
+    classpath dep.kotlinPlugin
   }
 }
 
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
 apply plugin: 'com.jakewharton.butterknife'
 apply plugin: 'com.apollographql.android'
 
@@ -16,8 +18,7 @@ android {
 
   defaultConfig {
     applicationId "com.shopify.sample"
-    minSdkVersion 21
-    targetSdkVersion androidConfig.targetSdkVersion
+    minSdkVersion androidConfig.minSdkVersion
     versionCode 1
     versionName "1.0"
     vectorDrawables.useSupportLibrary = true
@@ -72,8 +73,6 @@ android {
 
       buildConfigField "String", "SHOP_DOMAIN", "\"" + shopDomain.toString() + "\""
       buildConfigField "String", "API_KEY", "\"" + apiKey.toString() + "\""
-      buildConfigField "String", "ANDROID_PAY_PUBLIC_KEY", "\"" + androidPayPublicKey.toString() + "\""
-      buildConfigField "int", "ANDROID_PAY_ENVIRONMENT", androidPayEnvironment
 
       debuggable = true
       minifyEnabled = false
@@ -112,13 +111,10 @@ dependencies {
   }
   implementation dep.constraintLayout
   implementation dep.rxrelay
-  implementation dep.archRuntime
-  implementation dep.archExt
+  implementation dep.archComponents
   implementation dep.okhttp
-  implementation dep.playServicesWallet
-  annotationProcessor dep.arcCompiler
+  implementation dep.kotlinStdLib
 
-  implementation project(':buy3-pay-support')
   shopifyImplementation project(':buy3')
 
   xApolloImplementation dep.apolloRuntime

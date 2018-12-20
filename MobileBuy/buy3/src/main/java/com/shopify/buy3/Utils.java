@@ -24,8 +24,6 @@
 
 package com.shopify.buy3;
 
-import android.support.annotation.Nullable;
-
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -36,19 +34,6 @@ final class Utils {
 
   static DateTime parseDateTime(String dateTime) {
     return DateTime.parse(dateTime, DATE_TIME_FORMATTER);
-  }
-
-  static <T> T checkNotNull(T reference, @Nullable Object errorMessage) {
-    if (reference == null) {
-      throw new NullPointerException(String.valueOf(errorMessage));
-    }
-    return reference;
-  }
-
-  public static String checkNotBlank(String reference, @Nullable Object errorMessage) {
-    if (reference == null) throw new NullPointerException(String.valueOf(errorMessage));
-    if (reference.isEmpty()) throw new IllegalArgumentException(String.valueOf(errorMessage));
-    return reference;
   }
 
   private Utils() {

@@ -24,7 +24,6 @@
 
 package com.shopify.sample.domain.interactor;
 
-import com.shopify.buy3.pay.CardNetworkType;
 import com.shopify.sample.domain.CollectionPageWithProductsQuery;
 import com.shopify.sample.domain.CollectionProductPageQuery;
 import com.shopify.sample.domain.ProductByIdQuery;
@@ -33,20 +32,12 @@ import com.shopify.sample.domain.fragment.CheckoutCreateFragment;
 import com.shopify.sample.domain.fragment.CheckoutFragment;
 import com.shopify.sample.domain.fragment.CheckoutShippingRatesFragment;
 import com.shopify.sample.domain.fragment.PaymentFragment;
-import com.shopify.sample.domain.model.Checkout;
-import com.shopify.sample.domain.model.Collection;
-import com.shopify.sample.domain.model.Payment;
-import com.shopify.sample.domain.model.Product;
-import com.shopify.sample.domain.model.ProductDetails;
-import com.shopify.sample.domain.model.ShopSettings;
+import com.shopify.sample.domain.model.*;
 
 import java.math.BigDecimal;
-import java.util.HashSet;
 import java.util.List;
 
-import static com.shopify.sample.util.Util.firstItem;
-import static com.shopify.sample.util.Util.mapItems;
-import static com.shopify.sample.util.Util.minItem;
+import static com.shopify.sample.util.Util.*;
 import static java.util.Collections.emptyList;
 
 final class Converters {
@@ -125,7 +116,7 @@ final class Converters {
   static ShopSettings convertToShopSettings(final ShopSettingsQuery.Shop shop) {
     return new ShopSettings(
       shop.name(),
-      new HashSet<>(mapItems(shop.paymentSettings().acceptedCardBrands(), cardBrand -> CardNetworkType.findByName(cardBrand.name()))),
+//      new HashSet<>(mapItems(shop.paymentSettings().acceptedCardBrands(), cardBrand -> CardNetworkType.findByName(cardBrand.name()))),
       shop.paymentSettings().countryCode().name()
     );
   }
