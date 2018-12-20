@@ -279,9 +279,25 @@ public class Storefront {
 
         /**
         * The article's author.
+        *
+        * @deprecated Use `authorV2` instead
         */
+        @Deprecated
         public ArticleQuery author(ArticleAuthorQueryDefinition queryDef) {
             startField("author");
+
+            _queryBuilder.append('{');
+            queryDef.define(new ArticleAuthorQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * The article's author.
+        */
+        public ArticleQuery authorV2(ArticleAuthorQueryDefinition queryDef) {
+            startField("authorV2");
 
             _queryBuilder.append('{');
             queryDef.define(new ArticleAuthorQuery(_queryBuilder));
@@ -635,6 +651,17 @@ public class Storefront {
                         break;
                     }
 
+                    case "authorV2": {
+                        ArticleAuthor optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new ArticleAuthor(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
                     case "blog": {
                         responseData.put(key, new Blog(jsonAsObject(field.getValue(), key)));
 
@@ -755,6 +782,8 @@ public class Storefront {
 
         /**
         * The article's author.
+        *
+        * @deprecated Use `authorV2` instead
         */
 
         public ArticleAuthor getAuthor() {
@@ -763,6 +792,19 @@ public class Storefront {
 
         public Article setAuthor(ArticleAuthor arg) {
             optimisticData.put(getKey("author"), arg);
+            return this;
+        }
+
+        /**
+        * The article's author.
+        */
+
+        public ArticleAuthor getAuthorV2() {
+            return (ArticleAuthor) get("authorV2");
+        }
+
+        public Article setAuthorV2(ArticleAuthor arg) {
+            optimisticData.put(getKey("authorV2"), arg);
             return this;
         }
 
@@ -934,6 +976,8 @@ public class Storefront {
             switch (getFieldName(key)) {
                 case "author": return true;
 
+                case "authorV2": return true;
+
                 case "blog": return true;
 
                 case "comments": return true;
@@ -1011,7 +1055,7 @@ public class Storefront {
         }
 
         /**
-        * The author's full name
+        * The author's full name.
         */
         public ArticleAuthorQuery name() {
             startField("name");
@@ -1132,7 +1176,7 @@ public class Storefront {
         }
 
         /**
-        * The author's full name
+        * The author's full name.
         */
 
         public String getName() {
@@ -1384,11 +1428,25 @@ public class Storefront {
     * The set of valid sort keys for the articles query.
     */
     public enum ArticleSortKeys {
+        /**
+        * Sort by the `author` value.
+        */
         AUTHOR,
 
+        /**
+        * Sort by the `blog_title` value.
+        */
         BLOG_TITLE,
 
+        /**
+        * Sort by the `id` value.
+        */
         ID,
+
+        /**
+        * Sort by the `published_at` value.
+        */
+        PUBLISHED_AT,
 
         /**
         * During a search (i.e. when the `query` parameter has been specified on the connection) this sorts
@@ -1398,8 +1456,14 @@ public class Storefront {
         */
         RELEVANCE,
 
+        /**
+        * Sort by the `title` value.
+        */
         TITLE,
 
+        /**
+        * Sort by the `updated_at` value.
+        */
         UPDATED_AT,
 
         UNKNOWN_VALUE;
@@ -1420,6 +1484,10 @@ public class Storefront {
 
                 case "ID": {
                     return ID;
+                }
+
+                case "PUBLISHED_AT": {
+                    return PUBLISHED_AT;
                 }
 
                 case "RELEVANCE": {
@@ -1451,6 +1519,10 @@ public class Storefront {
 
                 case ID: {
                     return "ID";
+                }
+
+                case PUBLISHED_AT: {
+                    return "PUBLISHED_AT";
                 }
 
                 case RELEVANCE: {
@@ -1631,6 +1703,207 @@ public class Storefront {
         }
     }
 
+    public interface AutomaticDiscountApplicationQueryDefinition {
+        void define(AutomaticDiscountApplicationQuery _queryBuilder);
+    }
+
+    /**
+    * Automatic discount applications capture the intentions of a discount that was automatically applied.
+    */
+    public static class AutomaticDiscountApplicationQuery extends Query<AutomaticDiscountApplicationQuery> {
+        AutomaticDiscountApplicationQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * The method by which the discount's value is allocated to its entitled items.
+        */
+        public AutomaticDiscountApplicationQuery allocationMethod() {
+            startField("allocationMethod");
+
+            return this;
+        }
+
+        /**
+        * Which lines of targetType that the discount is allocated over.
+        */
+        public AutomaticDiscountApplicationQuery targetSelection() {
+            startField("targetSelection");
+
+            return this;
+        }
+
+        /**
+        * The type of line that the discount is applicable towards.
+        */
+        public AutomaticDiscountApplicationQuery targetType() {
+            startField("targetType");
+
+            return this;
+        }
+
+        /**
+        * The title of the application.
+        */
+        public AutomaticDiscountApplicationQuery title() {
+            startField("title");
+
+            return this;
+        }
+
+        /**
+        * The value of the discount application.
+        */
+        public AutomaticDiscountApplicationQuery value(PricingValueQueryDefinition queryDef) {
+            startField("value");
+
+            _queryBuilder.append('{');
+            queryDef.define(new PricingValueQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+    }
+
+    /**
+    * Automatic discount applications capture the intentions of a discount that was automatically applied.
+    */
+    public static class AutomaticDiscountApplication extends AbstractResponse<AutomaticDiscountApplication> implements DiscountApplication {
+        public AutomaticDiscountApplication() {
+        }
+
+        public AutomaticDiscountApplication(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "allocationMethod": {
+                        responseData.put(key, DiscountApplicationAllocationMethod.fromGraphQl(jsonAsString(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "targetSelection": {
+                        responseData.put(key, DiscountApplicationTargetSelection.fromGraphQl(jsonAsString(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "targetType": {
+                        responseData.put(key, DiscountApplicationTargetType.fromGraphQl(jsonAsString(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "title": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "value": {
+                        responseData.put(key, UnknownPricingValue.create(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "AutomaticDiscountApplication";
+        }
+
+        /**
+        * The method by which the discount's value is allocated to its entitled items.
+        */
+
+        public DiscountApplicationAllocationMethod getAllocationMethod() {
+            return (DiscountApplicationAllocationMethod) get("allocationMethod");
+        }
+
+        public AutomaticDiscountApplication setAllocationMethod(DiscountApplicationAllocationMethod arg) {
+            optimisticData.put(getKey("allocationMethod"), arg);
+            return this;
+        }
+
+        /**
+        * Which lines of targetType that the discount is allocated over.
+        */
+
+        public DiscountApplicationTargetSelection getTargetSelection() {
+            return (DiscountApplicationTargetSelection) get("targetSelection");
+        }
+
+        public AutomaticDiscountApplication setTargetSelection(DiscountApplicationTargetSelection arg) {
+            optimisticData.put(getKey("targetSelection"), arg);
+            return this;
+        }
+
+        /**
+        * The type of line that the discount is applicable towards.
+        */
+
+        public DiscountApplicationTargetType getTargetType() {
+            return (DiscountApplicationTargetType) get("targetType");
+        }
+
+        public AutomaticDiscountApplication setTargetType(DiscountApplicationTargetType arg) {
+            optimisticData.put(getKey("targetType"), arg);
+            return this;
+        }
+
+        /**
+        * The title of the application.
+        */
+
+        public String getTitle() {
+            return (String) get("title");
+        }
+
+        public AutomaticDiscountApplication setTitle(String arg) {
+            optimisticData.put(getKey("title"), arg);
+            return this;
+        }
+
+        /**
+        * The value of the discount application.
+        */
+
+        public PricingValue getValue() {
+            return (PricingValue) get("value");
+        }
+
+        public AutomaticDiscountApplication setValue(PricingValue arg) {
+            optimisticData.put(getKey("value"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "allocationMethod": return false;
+
+                case "targetSelection": return false;
+
+                case "targetType": return false;
+
+                case "title": return false;
+
+                case "value": return false;
+
+                default: return false;
+            }
+        }
+    }
+
     public interface AvailableShippingRatesQueryDefinition {
         void define(AvailableShippingRatesQuery _queryBuilder);
     }
@@ -1767,6 +2040,24 @@ public class Storefront {
             startField("id");
         }
 
+        /**
+        * Find an article by its handle.
+        */
+        public BlogQuery articleByHandle(String handle, ArticleQueryDefinition queryDef) {
+            startField("articleByHandle");
+
+            _queryBuilder.append("(handle:");
+            Query.appendQuotedString(_queryBuilder, handle.toString());
+
+            _queryBuilder.append(')');
+
+            _queryBuilder.append('{');
+            queryDef.define(new ArticleQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
         public class ArticlesArguments extends Arguments {
             ArticlesArguments(StringBuilder _queryBuilder) {
                 super(_queryBuilder, true);
@@ -1857,6 +2148,19 @@ public class Storefront {
         }
 
         /**
+        * The authors who have contributed to the blog.
+        */
+        public BlogQuery authors(ArticleAuthorQueryDefinition queryDef) {
+            startField("authors");
+
+            _queryBuilder.append('{');
+            queryDef.define(new ArticleAuthorQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
         * A human-friendly unique string for the Blog automatically generated from its title.
         */
         public BlogQuery handle() {
@@ -1893,8 +2197,30 @@ public class Storefront {
                 String key = field.getKey();
                 String fieldName = getFieldName(key);
                 switch (fieldName) {
+                    case "articleByHandle": {
+                        Article optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new Article(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
                     case "articles": {
                         responseData.put(key, new ArticleConnection(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "authors": {
+                        List<ArticleAuthor> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new ArticleAuthor(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
 
                         break;
                     }
@@ -1944,6 +2270,19 @@ public class Storefront {
         }
 
         /**
+        * Find an article by its handle.
+        */
+
+        public Article getArticleByHandle() {
+            return (Article) get("articleByHandle");
+        }
+
+        public Blog setArticleByHandle(Article arg) {
+            optimisticData.put(getKey("articleByHandle"), arg);
+            return this;
+        }
+
+        /**
         * List of the blog's articles.
         */
 
@@ -1953,6 +2292,19 @@ public class Storefront {
 
         public Blog setArticles(ArticleConnection arg) {
             optimisticData.put(getKey("articles"), arg);
+            return this;
+        }
+
+        /**
+        * The authors who have contributed to the blog.
+        */
+
+        public List<ArticleAuthor> getAuthors() {
+            return (List<ArticleAuthor>) get("authors");
+        }
+
+        public Blog setAuthors(List<ArticleAuthor> arg) {
+            optimisticData.put(getKey("authors"), arg);
             return this;
         }
 
@@ -2005,7 +2357,11 @@ public class Storefront {
 
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
+                case "articleByHandle": return true;
+
                 case "articles": return true;
+
+                case "authors": return true;
 
                 case "handle": return false;
 
@@ -2243,8 +2599,14 @@ public class Storefront {
     * The set of valid sort keys for the blogs query.
     */
     public enum BlogSortKeys {
+        /**
+        * Sort by the `handle` value.
+        */
         HANDLE,
 
+        /**
+        * Sort by the `id` value.
+        */
         ID,
 
         /**
@@ -2255,6 +2617,9 @@ public class Storefront {
         */
         RELEVANCE,
 
+        /**
+        * Sort by the `title` value.
+        */
         TITLE,
 
         UNKNOWN_VALUE;
@@ -2510,6 +2875,95 @@ public class Storefront {
             return this;
         }
 
+        public class DiscountApplicationsArguments extends Arguments {
+            DiscountApplicationsArguments(StringBuilder _queryBuilder) {
+                super(_queryBuilder, true);
+            }
+
+            /**
+            * Returns up to the first `n` elements from the list.
+            */
+            public DiscountApplicationsArguments first(Integer value) {
+                if (value != null) {
+                    startArgument("first");
+                    _queryBuilder.append(value);
+                }
+                return this;
+            }
+
+            /**
+            * Returns the elements that come after the specified cursor.
+            */
+            public DiscountApplicationsArguments after(String value) {
+                if (value != null) {
+                    startArgument("after");
+                    Query.appendQuotedString(_queryBuilder, value.toString());
+                }
+                return this;
+            }
+
+            /**
+            * Returns up to the last `n` elements from the list.
+            */
+            public DiscountApplicationsArguments last(Integer value) {
+                if (value != null) {
+                    startArgument("last");
+                    _queryBuilder.append(value);
+                }
+                return this;
+            }
+
+            /**
+            * Returns the elements that come before the specified cursor.
+            */
+            public DiscountApplicationsArguments before(String value) {
+                if (value != null) {
+                    startArgument("before");
+                    Query.appendQuotedString(_queryBuilder, value.toString());
+                }
+                return this;
+            }
+
+            /**
+            * Reverse the order of the underlying list.
+            */
+            public DiscountApplicationsArguments reverse(Boolean value) {
+                if (value != null) {
+                    startArgument("reverse");
+                    _queryBuilder.append(value);
+                }
+                return this;
+            }
+        }
+
+        public interface DiscountApplicationsArgumentsDefinition {
+            void define(DiscountApplicationsArguments args);
+        }
+
+        /**
+        * Discounts that have been applied on the checkout.
+        */
+        public CheckoutQuery discountApplications(DiscountApplicationConnectionQueryDefinition queryDef) {
+            return discountApplications(args -> {}, queryDef);
+        }
+
+        /**
+        * Discounts that have been applied on the checkout.
+        */
+        public CheckoutQuery discountApplications(DiscountApplicationsArgumentsDefinition argsDef, DiscountApplicationConnectionQueryDefinition queryDef) {
+            startField("discountApplications");
+
+            DiscountApplicationsArguments args = new DiscountApplicationsArguments(_queryBuilder);
+            argsDef.define(args);
+            DiscountApplicationsArguments.end(args);
+
+            _queryBuilder.append('{');
+            queryDef.define(new DiscountApplicationConnectionQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
         /**
         * The email attached to this checkout.
         */
@@ -2680,6 +3134,19 @@ public class Storefront {
         }
 
         /**
+        * The discounts that have been allocated onto the shipping line by discount applications.
+        */
+        public CheckoutQuery shippingDiscountAllocations(DiscountAllocationQueryDefinition queryDef) {
+            startField("shippingDiscountAllocations");
+
+            _queryBuilder.append('{');
+            queryDef.define(new DiscountAllocationQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
         * Once a shipping rate is selected by the customer it is transitioned to a `shipping_line` object.
         */
         public CheckoutQuery shippingLine(ShippingRateQueryDefinition queryDef) {
@@ -2693,7 +3160,7 @@ public class Storefront {
         }
 
         /**
-        * Price of the checkout before shipping, taxes, and discounts.
+        * Price of the checkout before shipping and taxes.
         */
         public CheckoutQuery subtotalPrice() {
             startField("subtotalPrice");
@@ -2835,6 +3302,12 @@ public class Storefront {
                         break;
                     }
 
+                    case "discountApplications": {
+                        responseData.put(key, new DiscountApplicationConnection(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
                     case "email": {
                         String optional1 = null;
                         if (!field.getValue().isJsonNull()) {
@@ -2916,6 +3389,17 @@ public class Storefront {
                         }
 
                         responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "shippingDiscountAllocations": {
+                        List<DiscountAllocation> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new DiscountAllocation(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
 
                         break;
                     }
@@ -3085,6 +3569,19 @@ public class Storefront {
         }
 
         /**
+        * Discounts that have been applied on the checkout.
+        */
+
+        public DiscountApplicationConnection getDiscountApplications() {
+            return (DiscountApplicationConnection) get("discountApplications");
+        }
+
+        public Checkout setDiscountApplications(DiscountApplicationConnection arg) {
+            optimisticData.put(getKey("discountApplications"), arg);
+            return this;
+        }
+
+        /**
         * The email attached to this checkout.
         */
 
@@ -3209,6 +3706,19 @@ public class Storefront {
         }
 
         /**
+        * The discounts that have been allocated onto the shipping line by discount applications.
+        */
+
+        public List<DiscountAllocation> getShippingDiscountAllocations() {
+            return (List<DiscountAllocation>) get("shippingDiscountAllocations");
+        }
+
+        public Checkout setShippingDiscountAllocations(List<DiscountAllocation> arg) {
+            optimisticData.put(getKey("shippingDiscountAllocations"), arg);
+            return this;
+        }
+
+        /**
         * Once a shipping rate is selected by the customer it is transitioned to a `shipping_line` object.
         */
 
@@ -3222,7 +3732,7 @@ public class Storefront {
         }
 
         /**
-        * Price of the checkout before shipping, taxes, and discounts.
+        * Price of the checkout before shipping and taxes.
         */
 
         public BigDecimal getSubtotalPrice() {
@@ -3328,6 +3838,8 @@ public class Storefront {
 
                 case "customer": return true;
 
+                case "discountApplications": return true;
+
                 case "email": return false;
 
                 case "id": return false;
@@ -3347,6 +3859,8 @@ public class Storefront {
                 case "requiresShipping": return false;
 
                 case "shippingAddress": return true;
+
+                case "shippingDiscountAllocations": return true;
 
                 case "shippingLine": return true;
 
@@ -3493,6 +4007,9 @@ public class Storefront {
         void define(CheckoutAttributesUpdatePayloadQuery _queryBuilder);
     }
 
+    /**
+    * Return type for `checkoutAttributesUpdate` mutation.
+    */
     public static class CheckoutAttributesUpdatePayloadQuery extends Query<CheckoutAttributesUpdatePayloadQuery> {
         CheckoutAttributesUpdatePayloadQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
@@ -3525,6 +4042,9 @@ public class Storefront {
         }
     }
 
+    /**
+    * Return type for `checkoutAttributesUpdate` mutation.
+    */
     public static class CheckoutAttributesUpdatePayload extends AbstractResponse<CheckoutAttributesUpdatePayload> {
         public CheckoutAttributesUpdatePayload() {
         }
@@ -3603,10 +4123,302 @@ public class Storefront {
         }
     }
 
+    public static class CheckoutAttributesUpdateV2Input implements Serializable {
+        private Input<String> note = Input.undefined();
+
+        private Input<List<AttributeInput>> customAttributes = Input.undefined();
+
+        private Input<Boolean> allowPartialAddresses = Input.undefined();
+
+        public String getNote() {
+            return note.getValue();
+        }
+
+        public Input<String> getNoteInput() {
+            return note;
+        }
+
+        public CheckoutAttributesUpdateV2Input setNote(String note) {
+            this.note = Input.optional(note);
+            return this;
+        }
+
+        public CheckoutAttributesUpdateV2Input setNoteInput(Input<String> note) {
+            if (note == null) {
+                throw new IllegalArgumentException("Input can not be null");
+            }
+            this.note = note;
+            return this;
+        }
+
+        public List<AttributeInput> getCustomAttributes() {
+            return customAttributes.getValue();
+        }
+
+        public Input<List<AttributeInput>> getCustomAttributesInput() {
+            return customAttributes;
+        }
+
+        public CheckoutAttributesUpdateV2Input setCustomAttributes(List<AttributeInput> customAttributes) {
+            this.customAttributes = Input.optional(customAttributes);
+            return this;
+        }
+
+        public CheckoutAttributesUpdateV2Input setCustomAttributesInput(Input<List<AttributeInput>> customAttributes) {
+            if (customAttributes == null) {
+                throw new IllegalArgumentException("Input can not be null");
+            }
+            this.customAttributes = customAttributes;
+            return this;
+        }
+
+        public Boolean getAllowPartialAddresses() {
+            return allowPartialAddresses.getValue();
+        }
+
+        public Input<Boolean> getAllowPartialAddressesInput() {
+            return allowPartialAddresses;
+        }
+
+        public CheckoutAttributesUpdateV2Input setAllowPartialAddresses(Boolean allowPartialAddresses) {
+            this.allowPartialAddresses = Input.optional(allowPartialAddresses);
+            return this;
+        }
+
+        public CheckoutAttributesUpdateV2Input setAllowPartialAddressesInput(Input<Boolean> allowPartialAddresses) {
+            if (allowPartialAddresses == null) {
+                throw new IllegalArgumentException("Input can not be null");
+            }
+            this.allowPartialAddresses = allowPartialAddresses;
+            return this;
+        }
+
+        public void appendTo(StringBuilder _queryBuilder) {
+            String separator = "";
+            _queryBuilder.append('{');
+
+            if (this.note.isDefined()) {
+                _queryBuilder.append(separator);
+                separator = ",";
+                _queryBuilder.append("note:");
+                if (note.getValue() != null) {
+                    Query.appendQuotedString(_queryBuilder, note.getValue().toString());
+                } else {
+                    _queryBuilder.append("null");
+                }
+            }
+
+            if (this.customAttributes.isDefined()) {
+                _queryBuilder.append(separator);
+                separator = ",";
+                _queryBuilder.append("customAttributes:");
+                if (customAttributes.getValue() != null) {
+                    _queryBuilder.append('[');
+                    {
+                        String listSeperator1 = "";
+                        for (AttributeInput item1 : customAttributes.getValue()) {
+                            _queryBuilder.append(listSeperator1);
+                            listSeperator1 = ",";
+                            item1.appendTo(_queryBuilder);
+                        }
+                    }
+                    _queryBuilder.append(']');
+                } else {
+                    _queryBuilder.append("null");
+                }
+            }
+
+            if (this.allowPartialAddresses.isDefined()) {
+                _queryBuilder.append(separator);
+                separator = ",";
+                _queryBuilder.append("allowPartialAddresses:");
+                if (allowPartialAddresses.getValue() != null) {
+                    _queryBuilder.append(allowPartialAddresses.getValue());
+                } else {
+                    _queryBuilder.append("null");
+                }
+            }
+
+            _queryBuilder.append('}');
+        }
+    }
+
+    public interface CheckoutAttributesUpdateV2PayloadQueryDefinition {
+        void define(CheckoutAttributesUpdateV2PayloadQuery _queryBuilder);
+    }
+
+    /**
+    * Return type for `checkoutAttributesUpdateV2` mutation.
+    */
+    public static class CheckoutAttributesUpdateV2PayloadQuery extends Query<CheckoutAttributesUpdateV2PayloadQuery> {
+        CheckoutAttributesUpdateV2PayloadQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * The updated checkout object.
+        */
+        public CheckoutAttributesUpdateV2PayloadQuery checkout(CheckoutQueryDefinition queryDef) {
+            startField("checkout");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CheckoutQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        */
+        public CheckoutAttributesUpdateV2PayloadQuery checkoutUserErrors(CheckoutUserErrorQueryDefinition queryDef) {
+            startField("checkoutUserErrors");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CheckoutUserErrorQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        *
+        * @deprecated Use `checkoutUserErrors` instead
+        */
+        @Deprecated
+        public CheckoutAttributesUpdateV2PayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
+            startField("userErrors");
+
+            _queryBuilder.append('{');
+            queryDef.define(new UserErrorQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+    }
+
+    /**
+    * Return type for `checkoutAttributesUpdateV2` mutation.
+    */
+    public static class CheckoutAttributesUpdateV2Payload extends AbstractResponse<CheckoutAttributesUpdateV2Payload> {
+        public CheckoutAttributesUpdateV2Payload() {
+        }
+
+        public CheckoutAttributesUpdateV2Payload(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "checkout": {
+                        Checkout optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new Checkout(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "checkoutUserErrors": {
+                        List<CheckoutUserError> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new CheckoutUserError(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "userErrors": {
+                        List<UserError> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new UserError(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "CheckoutAttributesUpdateV2Payload";
+        }
+
+        /**
+        * The updated checkout object.
+        */
+
+        public Checkout getCheckout() {
+            return (Checkout) get("checkout");
+        }
+
+        public CheckoutAttributesUpdateV2Payload setCheckout(Checkout arg) {
+            optimisticData.put(getKey("checkout"), arg);
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        */
+
+        public List<CheckoutUserError> getCheckoutUserErrors() {
+            return (List<CheckoutUserError>) get("checkoutUserErrors");
+        }
+
+        public CheckoutAttributesUpdateV2Payload setCheckoutUserErrors(List<CheckoutUserError> arg) {
+            optimisticData.put(getKey("checkoutUserErrors"), arg);
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        *
+        * @deprecated Use `checkoutUserErrors` instead
+        */
+
+        public List<UserError> getUserErrors() {
+            return (List<UserError>) get("userErrors");
+        }
+
+        public CheckoutAttributesUpdateV2Payload setUserErrors(List<UserError> arg) {
+            optimisticData.put(getKey("userErrors"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "checkout": return true;
+
+                case "checkoutUserErrors": return true;
+
+                case "userErrors": return true;
+
+                default: return false;
+            }
+        }
+    }
+
     public interface CheckoutCompleteFreePayloadQueryDefinition {
         void define(CheckoutCompleteFreePayloadQuery _queryBuilder);
     }
 
+    /**
+    * Return type for `checkoutCompleteFree` mutation.
+    */
     public static class CheckoutCompleteFreePayloadQuery extends Query<CheckoutCompleteFreePayloadQuery> {
         CheckoutCompleteFreePayloadQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
@@ -3628,6 +4440,22 @@ public class Storefront {
         /**
         * List of errors that occurred executing the mutation.
         */
+        public CheckoutCompleteFreePayloadQuery checkoutUserErrors(CheckoutUserErrorQueryDefinition queryDef) {
+            startField("checkoutUserErrors");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CheckoutUserErrorQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        *
+        * @deprecated Use `checkoutUserErrors` instead
+        */
+        @Deprecated
         public CheckoutCompleteFreePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
 
@@ -3639,6 +4467,9 @@ public class Storefront {
         }
     }
 
+    /**
+    * Return type for `checkoutCompleteFree` mutation.
+    */
     public static class CheckoutCompleteFreePayload extends AbstractResponse<CheckoutCompleteFreePayload> {
         public CheckoutCompleteFreePayload() {
         }
@@ -3655,6 +4486,17 @@ public class Storefront {
                         }
 
                         responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "checkoutUserErrors": {
+                        List<CheckoutUserError> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new CheckoutUserError(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
 
                         break;
                     }
@@ -3702,6 +4544,21 @@ public class Storefront {
         * List of errors that occurred executing the mutation.
         */
 
+        public List<CheckoutUserError> getCheckoutUserErrors() {
+            return (List<CheckoutUserError>) get("checkoutUserErrors");
+        }
+
+        public CheckoutCompleteFreePayload setCheckoutUserErrors(List<CheckoutUserError> arg) {
+            optimisticData.put(getKey("checkoutUserErrors"), arg);
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        *
+        * @deprecated Use `checkoutUserErrors` instead
+        */
+
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -3715,6 +4572,8 @@ public class Storefront {
             switch (getFieldName(key)) {
                 case "checkout": return true;
 
+                case "checkoutUserErrors": return true;
+
                 case "userErrors": return true;
 
                 default: return false;
@@ -3726,6 +4585,9 @@ public class Storefront {
         void define(CheckoutCompleteWithCreditCardPayloadQuery _queryBuilder);
     }
 
+    /**
+    * Return type for `checkoutCompleteWithCreditCard` mutation.
+    */
     public static class CheckoutCompleteWithCreditCardPayloadQuery extends Query<CheckoutCompleteWithCreditCardPayloadQuery> {
         CheckoutCompleteWithCreditCardPayloadQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
@@ -3771,6 +4633,9 @@ public class Storefront {
         }
     }
 
+    /**
+    * Return type for `checkoutCompleteWithCreditCard` mutation.
+    */
     public static class CheckoutCompleteWithCreditCardPayload extends AbstractResponse<CheckoutCompleteWithCreditCardPayload> {
         public CheckoutCompleteWithCreditCardPayload() {
         }
@@ -3875,10 +4740,221 @@ public class Storefront {
         }
     }
 
+    public interface CheckoutCompleteWithCreditCardV2PayloadQueryDefinition {
+        void define(CheckoutCompleteWithCreditCardV2PayloadQuery _queryBuilder);
+    }
+
+    /**
+    * Return type for `checkoutCompleteWithCreditCardV2` mutation.
+    */
+    public static class CheckoutCompleteWithCreditCardV2PayloadQuery extends Query<CheckoutCompleteWithCreditCardV2PayloadQuery> {
+        CheckoutCompleteWithCreditCardV2PayloadQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * The checkout on which the payment was applied.
+        */
+        public CheckoutCompleteWithCreditCardV2PayloadQuery checkout(CheckoutQueryDefinition queryDef) {
+            startField("checkout");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CheckoutQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        */
+        public CheckoutCompleteWithCreditCardV2PayloadQuery checkoutUserErrors(CheckoutUserErrorQueryDefinition queryDef) {
+            startField("checkoutUserErrors");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CheckoutUserErrorQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * A representation of the attempted payment.
+        */
+        public CheckoutCompleteWithCreditCardV2PayloadQuery payment(PaymentQueryDefinition queryDef) {
+            startField("payment");
+
+            _queryBuilder.append('{');
+            queryDef.define(new PaymentQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        *
+        * @deprecated Use `checkoutUserErrors` instead
+        */
+        @Deprecated
+        public CheckoutCompleteWithCreditCardV2PayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
+            startField("userErrors");
+
+            _queryBuilder.append('{');
+            queryDef.define(new UserErrorQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+    }
+
+    /**
+    * Return type for `checkoutCompleteWithCreditCardV2` mutation.
+    */
+    public static class CheckoutCompleteWithCreditCardV2Payload extends AbstractResponse<CheckoutCompleteWithCreditCardV2Payload> {
+        public CheckoutCompleteWithCreditCardV2Payload() {
+        }
+
+        public CheckoutCompleteWithCreditCardV2Payload(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "checkout": {
+                        Checkout optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new Checkout(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "checkoutUserErrors": {
+                        List<CheckoutUserError> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new CheckoutUserError(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "payment": {
+                        Payment optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new Payment(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "userErrors": {
+                        List<UserError> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new UserError(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "CheckoutCompleteWithCreditCardV2Payload";
+        }
+
+        /**
+        * The checkout on which the payment was applied.
+        */
+
+        public Checkout getCheckout() {
+            return (Checkout) get("checkout");
+        }
+
+        public CheckoutCompleteWithCreditCardV2Payload setCheckout(Checkout arg) {
+            optimisticData.put(getKey("checkout"), arg);
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        */
+
+        public List<CheckoutUserError> getCheckoutUserErrors() {
+            return (List<CheckoutUserError>) get("checkoutUserErrors");
+        }
+
+        public CheckoutCompleteWithCreditCardV2Payload setCheckoutUserErrors(List<CheckoutUserError> arg) {
+            optimisticData.put(getKey("checkoutUserErrors"), arg);
+            return this;
+        }
+
+        /**
+        * A representation of the attempted payment.
+        */
+
+        public Payment getPayment() {
+            return (Payment) get("payment");
+        }
+
+        public CheckoutCompleteWithCreditCardV2Payload setPayment(Payment arg) {
+            optimisticData.put(getKey("payment"), arg);
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        *
+        * @deprecated Use `checkoutUserErrors` instead
+        */
+
+        public List<UserError> getUserErrors() {
+            return (List<UserError>) get("userErrors");
+        }
+
+        public CheckoutCompleteWithCreditCardV2Payload setUserErrors(List<UserError> arg) {
+            optimisticData.put(getKey("userErrors"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "checkout": return true;
+
+                case "checkoutUserErrors": return true;
+
+                case "payment": return true;
+
+                case "userErrors": return true;
+
+                default: return false;
+            }
+        }
+    }
+
     public interface CheckoutCompleteWithTokenizedPaymentPayloadQueryDefinition {
         void define(CheckoutCompleteWithTokenizedPaymentPayloadQuery _queryBuilder);
     }
 
+    /**
+    * Return type for `checkoutCompleteWithTokenizedPayment` mutation.
+    */
     public static class CheckoutCompleteWithTokenizedPaymentPayloadQuery extends Query<CheckoutCompleteWithTokenizedPaymentPayloadQuery> {
         CheckoutCompleteWithTokenizedPaymentPayloadQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
@@ -3924,6 +5000,9 @@ public class Storefront {
         }
     }
 
+    /**
+    * Return type for `checkoutCompleteWithTokenizedPayment` mutation.
+    */
     public static class CheckoutCompleteWithTokenizedPaymentPayload extends AbstractResponse<CheckoutCompleteWithTokenizedPaymentPayload> {
         public CheckoutCompleteWithTokenizedPaymentPayload() {
         }
@@ -4011,6 +5090,170 @@ public class Storefront {
         }
 
         public CheckoutCompleteWithTokenizedPaymentPayload setUserErrors(List<UserError> arg) {
+            optimisticData.put(getKey("userErrors"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "checkout": return true;
+
+                case "payment": return true;
+
+                case "userErrors": return true;
+
+                default: return false;
+            }
+        }
+    }
+
+    public interface CheckoutCompleteWithTokenizedPaymentV2PayloadQueryDefinition {
+        void define(CheckoutCompleteWithTokenizedPaymentV2PayloadQuery _queryBuilder);
+    }
+
+    /**
+    * Return type for `checkoutCompleteWithTokenizedPaymentV2` mutation.
+    */
+    public static class CheckoutCompleteWithTokenizedPaymentV2PayloadQuery extends Query<CheckoutCompleteWithTokenizedPaymentV2PayloadQuery> {
+        CheckoutCompleteWithTokenizedPaymentV2PayloadQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * The checkout on which the payment was applied.
+        */
+        public CheckoutCompleteWithTokenizedPaymentV2PayloadQuery checkout(CheckoutQueryDefinition queryDef) {
+            startField("checkout");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CheckoutQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * A representation of the attempted payment.
+        */
+        public CheckoutCompleteWithTokenizedPaymentV2PayloadQuery payment(PaymentQueryDefinition queryDef) {
+            startField("payment");
+
+            _queryBuilder.append('{');
+            queryDef.define(new PaymentQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        */
+        public CheckoutCompleteWithTokenizedPaymentV2PayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
+            startField("userErrors");
+
+            _queryBuilder.append('{');
+            queryDef.define(new UserErrorQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+    }
+
+    /**
+    * Return type for `checkoutCompleteWithTokenizedPaymentV2` mutation.
+    */
+    public static class CheckoutCompleteWithTokenizedPaymentV2Payload extends AbstractResponse<CheckoutCompleteWithTokenizedPaymentV2Payload> {
+        public CheckoutCompleteWithTokenizedPaymentV2Payload() {
+        }
+
+        public CheckoutCompleteWithTokenizedPaymentV2Payload(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "checkout": {
+                        Checkout optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new Checkout(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "payment": {
+                        Payment optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new Payment(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "userErrors": {
+                        List<UserError> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new UserError(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "CheckoutCompleteWithTokenizedPaymentV2Payload";
+        }
+
+        /**
+        * The checkout on which the payment was applied.
+        */
+
+        public Checkout getCheckout() {
+            return (Checkout) get("checkout");
+        }
+
+        public CheckoutCompleteWithTokenizedPaymentV2Payload setCheckout(Checkout arg) {
+            optimisticData.put(getKey("checkout"), arg);
+            return this;
+        }
+
+        /**
+        * A representation of the attempted payment.
+        */
+
+        public Payment getPayment() {
+            return (Payment) get("payment");
+        }
+
+        public CheckoutCompleteWithTokenizedPaymentV2Payload setPayment(Payment arg) {
+            optimisticData.put(getKey("payment"), arg);
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        */
+
+        public List<UserError> getUserErrors() {
+            return (List<UserError>) get("userErrors");
+        }
+
+        public CheckoutCompleteWithTokenizedPaymentV2Payload setUserErrors(List<UserError> arg) {
             optimisticData.put(getKey("userErrors"), arg);
             return this;
         }
@@ -4263,6 +5506,9 @@ public class Storefront {
         void define(CheckoutCreatePayloadQuery _queryBuilder);
     }
 
+    /**
+    * Return type for `checkoutCreate` mutation.
+    */
     public static class CheckoutCreatePayloadQuery extends Query<CheckoutCreatePayloadQuery> {
         CheckoutCreatePayloadQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
@@ -4284,6 +5530,22 @@ public class Storefront {
         /**
         * List of errors that occurred executing the mutation.
         */
+        public CheckoutCreatePayloadQuery checkoutUserErrors(CheckoutUserErrorQueryDefinition queryDef) {
+            startField("checkoutUserErrors");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CheckoutUserErrorQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        *
+        * @deprecated Use `checkoutUserErrors` instead
+        */
+        @Deprecated
         public CheckoutCreatePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
 
@@ -4295,6 +5557,9 @@ public class Storefront {
         }
     }
 
+    /**
+    * Return type for `checkoutCreate` mutation.
+    */
     public static class CheckoutCreatePayload extends AbstractResponse<CheckoutCreatePayload> {
         public CheckoutCreatePayload() {
         }
@@ -4311,6 +5576,17 @@ public class Storefront {
                         }
 
                         responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "checkoutUserErrors": {
+                        List<CheckoutUserError> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new CheckoutUserError(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
 
                         break;
                     }
@@ -4358,6 +5634,21 @@ public class Storefront {
         * List of errors that occurred executing the mutation.
         */
 
+        public List<CheckoutUserError> getCheckoutUserErrors() {
+            return (List<CheckoutUserError>) get("checkoutUserErrors");
+        }
+
+        public CheckoutCreatePayload setCheckoutUserErrors(List<CheckoutUserError> arg) {
+            optimisticData.put(getKey("checkoutUserErrors"), arg);
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        *
+        * @deprecated Use `checkoutUserErrors` instead
+        */
+
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -4371,6 +5662,8 @@ public class Storefront {
             switch (getFieldName(key)) {
                 case "checkout": return true;
 
+                case "checkoutUserErrors": return true;
+
                 case "userErrors": return true;
 
                 default: return false;
@@ -4382,6 +5675,9 @@ public class Storefront {
         void define(CheckoutCustomerAssociatePayloadQuery _queryBuilder);
     }
 
+    /**
+    * Return type for `checkoutCustomerAssociate` mutation.
+    */
     public static class CheckoutCustomerAssociatePayloadQuery extends Query<CheckoutCustomerAssociatePayloadQuery> {
         CheckoutCustomerAssociatePayloadQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
@@ -4427,6 +5723,9 @@ public class Storefront {
         }
     }
 
+    /**
+    * Return type for `checkoutCustomerAssociate` mutation.
+    */
     public static class CheckoutCustomerAssociatePayload extends AbstractResponse<CheckoutCustomerAssociatePayload> {
         public CheckoutCustomerAssociatePayload() {
         }
@@ -4531,10 +5830,221 @@ public class Storefront {
         }
     }
 
+    public interface CheckoutCustomerAssociateV2PayloadQueryDefinition {
+        void define(CheckoutCustomerAssociateV2PayloadQuery _queryBuilder);
+    }
+
+    /**
+    * Return type for `checkoutCustomerAssociateV2` mutation.
+    */
+    public static class CheckoutCustomerAssociateV2PayloadQuery extends Query<CheckoutCustomerAssociateV2PayloadQuery> {
+        CheckoutCustomerAssociateV2PayloadQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * The updated checkout object.
+        */
+        public CheckoutCustomerAssociateV2PayloadQuery checkout(CheckoutQueryDefinition queryDef) {
+            startField("checkout");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CheckoutQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        */
+        public CheckoutCustomerAssociateV2PayloadQuery checkoutUserErrors(CheckoutUserErrorQueryDefinition queryDef) {
+            startField("checkoutUserErrors");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CheckoutUserErrorQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * The associated customer object.
+        */
+        public CheckoutCustomerAssociateV2PayloadQuery customer(CustomerQueryDefinition queryDef) {
+            startField("customer");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CustomerQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        *
+        * @deprecated Use `checkoutUserErrors` instead
+        */
+        @Deprecated
+        public CheckoutCustomerAssociateV2PayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
+            startField("userErrors");
+
+            _queryBuilder.append('{');
+            queryDef.define(new UserErrorQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+    }
+
+    /**
+    * Return type for `checkoutCustomerAssociateV2` mutation.
+    */
+    public static class CheckoutCustomerAssociateV2Payload extends AbstractResponse<CheckoutCustomerAssociateV2Payload> {
+        public CheckoutCustomerAssociateV2Payload() {
+        }
+
+        public CheckoutCustomerAssociateV2Payload(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "checkout": {
+                        Checkout optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new Checkout(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "checkoutUserErrors": {
+                        List<CheckoutUserError> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new CheckoutUserError(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "customer": {
+                        Customer optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new Customer(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "userErrors": {
+                        List<UserError> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new UserError(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "CheckoutCustomerAssociateV2Payload";
+        }
+
+        /**
+        * The updated checkout object.
+        */
+
+        public Checkout getCheckout() {
+            return (Checkout) get("checkout");
+        }
+
+        public CheckoutCustomerAssociateV2Payload setCheckout(Checkout arg) {
+            optimisticData.put(getKey("checkout"), arg);
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        */
+
+        public List<CheckoutUserError> getCheckoutUserErrors() {
+            return (List<CheckoutUserError>) get("checkoutUserErrors");
+        }
+
+        public CheckoutCustomerAssociateV2Payload setCheckoutUserErrors(List<CheckoutUserError> arg) {
+            optimisticData.put(getKey("checkoutUserErrors"), arg);
+            return this;
+        }
+
+        /**
+        * The associated customer object.
+        */
+
+        public Customer getCustomer() {
+            return (Customer) get("customer");
+        }
+
+        public CheckoutCustomerAssociateV2Payload setCustomer(Customer arg) {
+            optimisticData.put(getKey("customer"), arg);
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        *
+        * @deprecated Use `checkoutUserErrors` instead
+        */
+
+        public List<UserError> getUserErrors() {
+            return (List<UserError>) get("userErrors");
+        }
+
+        public CheckoutCustomerAssociateV2Payload setUserErrors(List<UserError> arg) {
+            optimisticData.put(getKey("userErrors"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "checkout": return true;
+
+                case "checkoutUserErrors": return true;
+
+                case "customer": return true;
+
+                case "userErrors": return true;
+
+                default: return false;
+            }
+        }
+    }
+
     public interface CheckoutCustomerDisassociatePayloadQueryDefinition {
         void define(CheckoutCustomerDisassociatePayloadQuery _queryBuilder);
     }
 
+    /**
+    * Return type for `checkoutCustomerDisassociate` mutation.
+    */
     public static class CheckoutCustomerDisassociatePayloadQuery extends Query<CheckoutCustomerDisassociatePayloadQuery> {
         CheckoutCustomerDisassociatePayloadQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
@@ -4567,6 +6077,9 @@ public class Storefront {
         }
     }
 
+    /**
+    * Return type for `checkoutCustomerDisassociate` mutation.
+    */
     public static class CheckoutCustomerDisassociatePayload extends AbstractResponse<CheckoutCustomerDisassociatePayload> {
         public CheckoutCustomerDisassociatePayload() {
         }
@@ -4645,10 +6158,182 @@ public class Storefront {
         }
     }
 
+    public interface CheckoutCustomerDisassociateV2PayloadQueryDefinition {
+        void define(CheckoutCustomerDisassociateV2PayloadQuery _queryBuilder);
+    }
+
+    /**
+    * Return type for `checkoutCustomerDisassociateV2` mutation.
+    */
+    public static class CheckoutCustomerDisassociateV2PayloadQuery extends Query<CheckoutCustomerDisassociateV2PayloadQuery> {
+        CheckoutCustomerDisassociateV2PayloadQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * The updated checkout object.
+        */
+        public CheckoutCustomerDisassociateV2PayloadQuery checkout(CheckoutQueryDefinition queryDef) {
+            startField("checkout");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CheckoutQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        */
+        public CheckoutCustomerDisassociateV2PayloadQuery checkoutUserErrors(CheckoutUserErrorQueryDefinition queryDef) {
+            startField("checkoutUserErrors");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CheckoutUserErrorQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        *
+        * @deprecated Use `checkoutUserErrors` instead
+        */
+        @Deprecated
+        public CheckoutCustomerDisassociateV2PayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
+            startField("userErrors");
+
+            _queryBuilder.append('{');
+            queryDef.define(new UserErrorQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+    }
+
+    /**
+    * Return type for `checkoutCustomerDisassociateV2` mutation.
+    */
+    public static class CheckoutCustomerDisassociateV2Payload extends AbstractResponse<CheckoutCustomerDisassociateV2Payload> {
+        public CheckoutCustomerDisassociateV2Payload() {
+        }
+
+        public CheckoutCustomerDisassociateV2Payload(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "checkout": {
+                        Checkout optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new Checkout(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "checkoutUserErrors": {
+                        List<CheckoutUserError> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new CheckoutUserError(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "userErrors": {
+                        List<UserError> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new UserError(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "CheckoutCustomerDisassociateV2Payload";
+        }
+
+        /**
+        * The updated checkout object.
+        */
+
+        public Checkout getCheckout() {
+            return (Checkout) get("checkout");
+        }
+
+        public CheckoutCustomerDisassociateV2Payload setCheckout(Checkout arg) {
+            optimisticData.put(getKey("checkout"), arg);
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        */
+
+        public List<CheckoutUserError> getCheckoutUserErrors() {
+            return (List<CheckoutUserError>) get("checkoutUserErrors");
+        }
+
+        public CheckoutCustomerDisassociateV2Payload setCheckoutUserErrors(List<CheckoutUserError> arg) {
+            optimisticData.put(getKey("checkoutUserErrors"), arg);
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        *
+        * @deprecated Use `checkoutUserErrors` instead
+        */
+
+        public List<UserError> getUserErrors() {
+            return (List<UserError>) get("userErrors");
+        }
+
+        public CheckoutCustomerDisassociateV2Payload setUserErrors(List<UserError> arg) {
+            optimisticData.put(getKey("userErrors"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "checkout": return true;
+
+                case "checkoutUserErrors": return true;
+
+                case "userErrors": return true;
+
+                default: return false;
+            }
+        }
+    }
+
     public interface CheckoutDiscountCodeApplyPayloadQueryDefinition {
         void define(CheckoutDiscountCodeApplyPayloadQuery _queryBuilder);
     }
 
+    /**
+    * Return type for `checkoutDiscountCodeApply` mutation.
+    */
     public static class CheckoutDiscountCodeApplyPayloadQuery extends Query<CheckoutDiscountCodeApplyPayloadQuery> {
         CheckoutDiscountCodeApplyPayloadQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
@@ -4681,6 +6366,9 @@ public class Storefront {
         }
     }
 
+    /**
+    * Return type for `checkoutDiscountCodeApply` mutation.
+    */
     public static class CheckoutDiscountCodeApplyPayload extends AbstractResponse<CheckoutDiscountCodeApplyPayload> {
         public CheckoutDiscountCodeApplyPayload() {
         }
@@ -4759,10 +6447,182 @@ public class Storefront {
         }
     }
 
+    public interface CheckoutDiscountCodeApplyV2PayloadQueryDefinition {
+        void define(CheckoutDiscountCodeApplyV2PayloadQuery _queryBuilder);
+    }
+
+    /**
+    * Return type for `checkoutDiscountCodeApplyV2` mutation.
+    */
+    public static class CheckoutDiscountCodeApplyV2PayloadQuery extends Query<CheckoutDiscountCodeApplyV2PayloadQuery> {
+        CheckoutDiscountCodeApplyV2PayloadQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * The updated checkout object.
+        */
+        public CheckoutDiscountCodeApplyV2PayloadQuery checkout(CheckoutQueryDefinition queryDef) {
+            startField("checkout");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CheckoutQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        */
+        public CheckoutDiscountCodeApplyV2PayloadQuery checkoutUserErrors(CheckoutUserErrorQueryDefinition queryDef) {
+            startField("checkoutUserErrors");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CheckoutUserErrorQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        *
+        * @deprecated Use `checkoutUserErrors` instead
+        */
+        @Deprecated
+        public CheckoutDiscountCodeApplyV2PayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
+            startField("userErrors");
+
+            _queryBuilder.append('{');
+            queryDef.define(new UserErrorQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+    }
+
+    /**
+    * Return type for `checkoutDiscountCodeApplyV2` mutation.
+    */
+    public static class CheckoutDiscountCodeApplyV2Payload extends AbstractResponse<CheckoutDiscountCodeApplyV2Payload> {
+        public CheckoutDiscountCodeApplyV2Payload() {
+        }
+
+        public CheckoutDiscountCodeApplyV2Payload(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "checkout": {
+                        Checkout optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new Checkout(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "checkoutUserErrors": {
+                        List<CheckoutUserError> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new CheckoutUserError(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "userErrors": {
+                        List<UserError> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new UserError(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "CheckoutDiscountCodeApplyV2Payload";
+        }
+
+        /**
+        * The updated checkout object.
+        */
+
+        public Checkout getCheckout() {
+            return (Checkout) get("checkout");
+        }
+
+        public CheckoutDiscountCodeApplyV2Payload setCheckout(Checkout arg) {
+            optimisticData.put(getKey("checkout"), arg);
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        */
+
+        public List<CheckoutUserError> getCheckoutUserErrors() {
+            return (List<CheckoutUserError>) get("checkoutUserErrors");
+        }
+
+        public CheckoutDiscountCodeApplyV2Payload setCheckoutUserErrors(List<CheckoutUserError> arg) {
+            optimisticData.put(getKey("checkoutUserErrors"), arg);
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        *
+        * @deprecated Use `checkoutUserErrors` instead
+        */
+
+        public List<UserError> getUserErrors() {
+            return (List<UserError>) get("userErrors");
+        }
+
+        public CheckoutDiscountCodeApplyV2Payload setUserErrors(List<UserError> arg) {
+            optimisticData.put(getKey("userErrors"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "checkout": return true;
+
+                case "checkoutUserErrors": return true;
+
+                case "userErrors": return true;
+
+                default: return false;
+            }
+        }
+    }
+
     public interface CheckoutDiscountCodeRemovePayloadQueryDefinition {
         void define(CheckoutDiscountCodeRemovePayloadQuery _queryBuilder);
     }
 
+    /**
+    * Return type for `checkoutDiscountCodeRemove` mutation.
+    */
     public static class CheckoutDiscountCodeRemovePayloadQuery extends Query<CheckoutDiscountCodeRemovePayloadQuery> {
         CheckoutDiscountCodeRemovePayloadQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
@@ -4784,6 +6644,22 @@ public class Storefront {
         /**
         * List of errors that occurred executing the mutation.
         */
+        public CheckoutDiscountCodeRemovePayloadQuery checkoutUserErrors(CheckoutUserErrorQueryDefinition queryDef) {
+            startField("checkoutUserErrors");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CheckoutUserErrorQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        *
+        * @deprecated Use `checkoutUserErrors` instead
+        */
+        @Deprecated
         public CheckoutDiscountCodeRemovePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
 
@@ -4795,6 +6671,9 @@ public class Storefront {
         }
     }
 
+    /**
+    * Return type for `checkoutDiscountCodeRemove` mutation.
+    */
     public static class CheckoutDiscountCodeRemovePayload extends AbstractResponse<CheckoutDiscountCodeRemovePayload> {
         public CheckoutDiscountCodeRemovePayload() {
         }
@@ -4811,6 +6690,17 @@ public class Storefront {
                         }
 
                         responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "checkoutUserErrors": {
+                        List<CheckoutUserError> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new CheckoutUserError(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
 
                         break;
                     }
@@ -4858,6 +6748,21 @@ public class Storefront {
         * List of errors that occurred executing the mutation.
         */
 
+        public List<CheckoutUserError> getCheckoutUserErrors() {
+            return (List<CheckoutUserError>) get("checkoutUserErrors");
+        }
+
+        public CheckoutDiscountCodeRemovePayload setCheckoutUserErrors(List<CheckoutUserError> arg) {
+            optimisticData.put(getKey("checkoutUserErrors"), arg);
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        *
+        * @deprecated Use `checkoutUserErrors` instead
+        */
+
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -4871,6 +6776,8 @@ public class Storefront {
             switch (getFieldName(key)) {
                 case "checkout": return true;
 
+                case "checkoutUserErrors": return true;
+
                 case "userErrors": return true;
 
                 default: return false;
@@ -4882,6 +6789,9 @@ public class Storefront {
         void define(CheckoutEmailUpdatePayloadQuery _queryBuilder);
     }
 
+    /**
+    * Return type for `checkoutEmailUpdate` mutation.
+    */
     public static class CheckoutEmailUpdatePayloadQuery extends Query<CheckoutEmailUpdatePayloadQuery> {
         CheckoutEmailUpdatePayloadQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
@@ -4914,6 +6824,9 @@ public class Storefront {
         }
     }
 
+    /**
+    * Return type for `checkoutEmailUpdate` mutation.
+    */
     public static class CheckoutEmailUpdatePayload extends AbstractResponse<CheckoutEmailUpdatePayload> {
         public CheckoutEmailUpdatePayload() {
         }
@@ -4992,10 +6905,507 @@ public class Storefront {
         }
     }
 
+    public interface CheckoutEmailUpdateV2PayloadQueryDefinition {
+        void define(CheckoutEmailUpdateV2PayloadQuery _queryBuilder);
+    }
+
+    /**
+    * Return type for `checkoutEmailUpdateV2` mutation.
+    */
+    public static class CheckoutEmailUpdateV2PayloadQuery extends Query<CheckoutEmailUpdateV2PayloadQuery> {
+        CheckoutEmailUpdateV2PayloadQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * The checkout object with the updated email.
+        */
+        public CheckoutEmailUpdateV2PayloadQuery checkout(CheckoutQueryDefinition queryDef) {
+            startField("checkout");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CheckoutQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        */
+        public CheckoutEmailUpdateV2PayloadQuery checkoutUserErrors(CheckoutUserErrorQueryDefinition queryDef) {
+            startField("checkoutUserErrors");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CheckoutUserErrorQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        *
+        * @deprecated Use `checkoutUserErrors` instead
+        */
+        @Deprecated
+        public CheckoutEmailUpdateV2PayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
+            startField("userErrors");
+
+            _queryBuilder.append('{');
+            queryDef.define(new UserErrorQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+    }
+
+    /**
+    * Return type for `checkoutEmailUpdateV2` mutation.
+    */
+    public static class CheckoutEmailUpdateV2Payload extends AbstractResponse<CheckoutEmailUpdateV2Payload> {
+        public CheckoutEmailUpdateV2Payload() {
+        }
+
+        public CheckoutEmailUpdateV2Payload(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "checkout": {
+                        Checkout optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new Checkout(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "checkoutUserErrors": {
+                        List<CheckoutUserError> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new CheckoutUserError(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "userErrors": {
+                        List<UserError> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new UserError(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "CheckoutEmailUpdateV2Payload";
+        }
+
+        /**
+        * The checkout object with the updated email.
+        */
+
+        public Checkout getCheckout() {
+            return (Checkout) get("checkout");
+        }
+
+        public CheckoutEmailUpdateV2Payload setCheckout(Checkout arg) {
+            optimisticData.put(getKey("checkout"), arg);
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        */
+
+        public List<CheckoutUserError> getCheckoutUserErrors() {
+            return (List<CheckoutUserError>) get("checkoutUserErrors");
+        }
+
+        public CheckoutEmailUpdateV2Payload setCheckoutUserErrors(List<CheckoutUserError> arg) {
+            optimisticData.put(getKey("checkoutUserErrors"), arg);
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        *
+        * @deprecated Use `checkoutUserErrors` instead
+        */
+
+        public List<UserError> getUserErrors() {
+            return (List<UserError>) get("userErrors");
+        }
+
+        public CheckoutEmailUpdateV2Payload setUserErrors(List<UserError> arg) {
+            optimisticData.put(getKey("userErrors"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "checkout": return true;
+
+                case "checkoutUserErrors": return true;
+
+                case "userErrors": return true;
+
+                default: return false;
+            }
+        }
+    }
+
+    /**
+    * Possible error codes that could be returned by a checkout mutation.
+    */
+    public enum CheckoutErrorCode {
+        /**
+        * Checkout is already completed.
+        */
+        ALREADY_COMPLETED,
+
+        /**
+        * Input value is blank.
+        */
+        BLANK,
+
+        /**
+        * Cart does not meet discount requirements notice.
+        */
+        CART_DOES_NOT_MEET_DISCOUNT_REQUIREMENTS_NOTICE,
+
+        /**
+        * Customer already used once per customer discount notice.
+        */
+        CUSTOMER_ALREADY_USED_ONCE_PER_CUSTOMER_DISCOUNT_NOTICE,
+
+        /**
+        * Discount disabled.
+        */
+        DISCOUNT_DISABLED,
+
+        /**
+        * Discount expired.
+        */
+        DISCOUNT_EXPIRED,
+
+        /**
+        * Discount limit reached.
+        */
+        DISCOUNT_LIMIT_REACHED,
+
+        /**
+        * Discount not found.
+        */
+        DISCOUNT_NOT_FOUND,
+
+        /**
+        * Checkout is already completed.
+        */
+        EMPTY,
+
+        /**
+        * Gift card unusable.
+        */
+        GIFT_CARD_UNUSABLE,
+
+        /**
+        * Input value is invalid.
+        */
+        INVALID,
+
+        /**
+        * Input Zip is invalid for country and province provided.
+        */
+        INVALID_FOR_COUNTRY_AND_PROVINCE,
+
+        /**
+        * Invalid province in country.
+        */
+        INVALID_PROVINCE_IN_COUNTRY,
+
+        /**
+        * Invalid region in country.
+        */
+        INVALID_REGION_IN_COUNTRY,
+
+        /**
+        * Invalid state in country.
+        */
+        INVALID_STATE_IN_COUNTRY,
+
+        /**
+        * Input value should be less than maximum allowed value.
+        */
+        LESS_THAN,
+
+        /**
+        * Checkout is locked.
+        */
+        LOCKED,
+
+        /**
+        * Missing payment input.
+        */
+        MISSING_PAYMENT_INPUT,
+
+        /**
+        * Not enough in stock.
+        */
+        NOT_ENOUGH_IN_STOCK,
+
+        /**
+        * Input value is not supported.
+        */
+        NOT_SUPPORTED,
+
+        /**
+        * Input value is not present.
+        */
+        PRESENT,
+
+        /**
+        * Shipping rate expired.
+        */
+        SHIPPING_RATE_EXPIRED,
+
+        /**
+        * Input value is too long.
+        */
+        TOO_LONG,
+
+        UNKNOWN_VALUE;
+
+        public static CheckoutErrorCode fromGraphQl(String value) {
+            if (value == null) {
+                return null;
+            }
+
+            switch (value) {
+                case "ALREADY_COMPLETED": {
+                    return ALREADY_COMPLETED;
+                }
+
+                case "BLANK": {
+                    return BLANK;
+                }
+
+                case "CART_DOES_NOT_MEET_DISCOUNT_REQUIREMENTS_NOTICE": {
+                    return CART_DOES_NOT_MEET_DISCOUNT_REQUIREMENTS_NOTICE;
+                }
+
+                case "CUSTOMER_ALREADY_USED_ONCE_PER_CUSTOMER_DISCOUNT_NOTICE": {
+                    return CUSTOMER_ALREADY_USED_ONCE_PER_CUSTOMER_DISCOUNT_NOTICE;
+                }
+
+                case "DISCOUNT_DISABLED": {
+                    return DISCOUNT_DISABLED;
+                }
+
+                case "DISCOUNT_EXPIRED": {
+                    return DISCOUNT_EXPIRED;
+                }
+
+                case "DISCOUNT_LIMIT_REACHED": {
+                    return DISCOUNT_LIMIT_REACHED;
+                }
+
+                case "DISCOUNT_NOT_FOUND": {
+                    return DISCOUNT_NOT_FOUND;
+                }
+
+                case "EMPTY": {
+                    return EMPTY;
+                }
+
+                case "GIFT_CARD_UNUSABLE": {
+                    return GIFT_CARD_UNUSABLE;
+                }
+
+                case "INVALID": {
+                    return INVALID;
+                }
+
+                case "INVALID_FOR_COUNTRY_AND_PROVINCE": {
+                    return INVALID_FOR_COUNTRY_AND_PROVINCE;
+                }
+
+                case "INVALID_PROVINCE_IN_COUNTRY": {
+                    return INVALID_PROVINCE_IN_COUNTRY;
+                }
+
+                case "INVALID_REGION_IN_COUNTRY": {
+                    return INVALID_REGION_IN_COUNTRY;
+                }
+
+                case "INVALID_STATE_IN_COUNTRY": {
+                    return INVALID_STATE_IN_COUNTRY;
+                }
+
+                case "LESS_THAN": {
+                    return LESS_THAN;
+                }
+
+                case "LOCKED": {
+                    return LOCKED;
+                }
+
+                case "MISSING_PAYMENT_INPUT": {
+                    return MISSING_PAYMENT_INPUT;
+                }
+
+                case "NOT_ENOUGH_IN_STOCK": {
+                    return NOT_ENOUGH_IN_STOCK;
+                }
+
+                case "NOT_SUPPORTED": {
+                    return NOT_SUPPORTED;
+                }
+
+                case "PRESENT": {
+                    return PRESENT;
+                }
+
+                case "SHIPPING_RATE_EXPIRED": {
+                    return SHIPPING_RATE_EXPIRED;
+                }
+
+                case "TOO_LONG": {
+                    return TOO_LONG;
+                }
+
+                default: {
+                    return UNKNOWN_VALUE;
+                }
+            }
+        }
+        public String toString() {
+            switch (this) {
+                case ALREADY_COMPLETED: {
+                    return "ALREADY_COMPLETED";
+                }
+
+                case BLANK: {
+                    return "BLANK";
+                }
+
+                case CART_DOES_NOT_MEET_DISCOUNT_REQUIREMENTS_NOTICE: {
+                    return "CART_DOES_NOT_MEET_DISCOUNT_REQUIREMENTS_NOTICE";
+                }
+
+                case CUSTOMER_ALREADY_USED_ONCE_PER_CUSTOMER_DISCOUNT_NOTICE: {
+                    return "CUSTOMER_ALREADY_USED_ONCE_PER_CUSTOMER_DISCOUNT_NOTICE";
+                }
+
+                case DISCOUNT_DISABLED: {
+                    return "DISCOUNT_DISABLED";
+                }
+
+                case DISCOUNT_EXPIRED: {
+                    return "DISCOUNT_EXPIRED";
+                }
+
+                case DISCOUNT_LIMIT_REACHED: {
+                    return "DISCOUNT_LIMIT_REACHED";
+                }
+
+                case DISCOUNT_NOT_FOUND: {
+                    return "DISCOUNT_NOT_FOUND";
+                }
+
+                case EMPTY: {
+                    return "EMPTY";
+                }
+
+                case GIFT_CARD_UNUSABLE: {
+                    return "GIFT_CARD_UNUSABLE";
+                }
+
+                case INVALID: {
+                    return "INVALID";
+                }
+
+                case INVALID_FOR_COUNTRY_AND_PROVINCE: {
+                    return "INVALID_FOR_COUNTRY_AND_PROVINCE";
+                }
+
+                case INVALID_PROVINCE_IN_COUNTRY: {
+                    return "INVALID_PROVINCE_IN_COUNTRY";
+                }
+
+                case INVALID_REGION_IN_COUNTRY: {
+                    return "INVALID_REGION_IN_COUNTRY";
+                }
+
+                case INVALID_STATE_IN_COUNTRY: {
+                    return "INVALID_STATE_IN_COUNTRY";
+                }
+
+                case LESS_THAN: {
+                    return "LESS_THAN";
+                }
+
+                case LOCKED: {
+                    return "LOCKED";
+                }
+
+                case MISSING_PAYMENT_INPUT: {
+                    return "MISSING_PAYMENT_INPUT";
+                }
+
+                case NOT_ENOUGH_IN_STOCK: {
+                    return "NOT_ENOUGH_IN_STOCK";
+                }
+
+                case NOT_SUPPORTED: {
+                    return "NOT_SUPPORTED";
+                }
+
+                case PRESENT: {
+                    return "PRESENT";
+                }
+
+                case SHIPPING_RATE_EXPIRED: {
+                    return "SHIPPING_RATE_EXPIRED";
+                }
+
+                case TOO_LONG: {
+                    return "TOO_LONG";
+                }
+
+                default: {
+                    return "";
+                }
+            }
+        }
+    }
+
     public interface CheckoutGiftCardApplyPayloadQueryDefinition {
         void define(CheckoutGiftCardApplyPayloadQuery _queryBuilder);
     }
 
+    /**
+    * Return type for `checkoutGiftCardApply` mutation.
+    */
     public static class CheckoutGiftCardApplyPayloadQuery extends Query<CheckoutGiftCardApplyPayloadQuery> {
         CheckoutGiftCardApplyPayloadQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
@@ -5028,6 +7438,9 @@ public class Storefront {
         }
     }
 
+    /**
+    * Return type for `checkoutGiftCardApply` mutation.
+    */
     public static class CheckoutGiftCardApplyPayload extends AbstractResponse<CheckoutGiftCardApplyPayload> {
         public CheckoutGiftCardApplyPayload() {
         }
@@ -5110,6 +7523,9 @@ public class Storefront {
         void define(CheckoutGiftCardRemovePayloadQuery _queryBuilder);
     }
 
+    /**
+    * Return type for `checkoutGiftCardRemove` mutation.
+    */
     public static class CheckoutGiftCardRemovePayloadQuery extends Query<CheckoutGiftCardRemovePayloadQuery> {
         CheckoutGiftCardRemovePayloadQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
@@ -5142,6 +7558,9 @@ public class Storefront {
         }
     }
 
+    /**
+    * Return type for `checkoutGiftCardRemove` mutation.
+    */
     public static class CheckoutGiftCardRemovePayload extends AbstractResponse<CheckoutGiftCardRemovePayload> {
         public CheckoutGiftCardRemovePayload() {
         }
@@ -5220,10 +7639,138 @@ public class Storefront {
         }
     }
 
+    public interface CheckoutGiftCardRemoveV2PayloadQueryDefinition {
+        void define(CheckoutGiftCardRemoveV2PayloadQuery _queryBuilder);
+    }
+
+    /**
+    * Return type for `checkoutGiftCardRemoveV2` mutation.
+    */
+    public static class CheckoutGiftCardRemoveV2PayloadQuery extends Query<CheckoutGiftCardRemoveV2PayloadQuery> {
+        CheckoutGiftCardRemoveV2PayloadQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * The updated checkout object.
+        */
+        public CheckoutGiftCardRemoveV2PayloadQuery checkout(CheckoutQueryDefinition queryDef) {
+            startField("checkout");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CheckoutQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        */
+        public CheckoutGiftCardRemoveV2PayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
+            startField("userErrors");
+
+            _queryBuilder.append('{');
+            queryDef.define(new UserErrorQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+    }
+
+    /**
+    * Return type for `checkoutGiftCardRemoveV2` mutation.
+    */
+    public static class CheckoutGiftCardRemoveV2Payload extends AbstractResponse<CheckoutGiftCardRemoveV2Payload> {
+        public CheckoutGiftCardRemoveV2Payload() {
+        }
+
+        public CheckoutGiftCardRemoveV2Payload(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "checkout": {
+                        Checkout optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new Checkout(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "userErrors": {
+                        List<UserError> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new UserError(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "CheckoutGiftCardRemoveV2Payload";
+        }
+
+        /**
+        * The updated checkout object.
+        */
+
+        public Checkout getCheckout() {
+            return (Checkout) get("checkout");
+        }
+
+        public CheckoutGiftCardRemoveV2Payload setCheckout(Checkout arg) {
+            optimisticData.put(getKey("checkout"), arg);
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        */
+
+        public List<UserError> getUserErrors() {
+            return (List<UserError>) get("userErrors");
+        }
+
+        public CheckoutGiftCardRemoveV2Payload setUserErrors(List<UserError> arg) {
+            optimisticData.put(getKey("userErrors"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "checkout": return true;
+
+                case "userErrors": return true;
+
+                default: return false;
+            }
+        }
+    }
+
     public interface CheckoutGiftCardsAppendPayloadQueryDefinition {
         void define(CheckoutGiftCardsAppendPayloadQuery _queryBuilder);
     }
 
+    /**
+    * Return type for `checkoutGiftCardsAppend` mutation.
+    */
     public static class CheckoutGiftCardsAppendPayloadQuery extends Query<CheckoutGiftCardsAppendPayloadQuery> {
         CheckoutGiftCardsAppendPayloadQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
@@ -5256,6 +7803,9 @@ public class Storefront {
         }
     }
 
+    /**
+    * Return type for `checkoutGiftCardsAppend` mutation.
+    */
     public static class CheckoutGiftCardsAppendPayload extends AbstractResponse<CheckoutGiftCardsAppendPayload> {
         public CheckoutGiftCardsAppendPayload() {
         }
@@ -5367,6 +7917,19 @@ public class Storefront {
         }
 
         /**
+        * The discounts that have been allocated onto the checkout line item by discount applications.
+        */
+        public CheckoutLineItemQuery discountAllocations(DiscountAllocationQueryDefinition queryDef) {
+            startField("discountAllocations");
+
+            _queryBuilder.append('{');
+            queryDef.define(new DiscountAllocationQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
         * The quantity of the line item.
         */
         public CheckoutLineItemQuery quantity() {
@@ -5414,6 +7977,17 @@ public class Storefront {
                         List<Attribute> list1 = new ArrayList<>();
                         for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
                             list1.add(new Attribute(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "discountAllocations": {
+                        List<DiscountAllocation> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new DiscountAllocation(jsonAsObject(element1, key)));
                         }
 
                         responseData.put(key, list1);
@@ -5484,6 +8058,19 @@ public class Storefront {
         }
 
         /**
+        * The discounts that have been allocated onto the checkout line item by discount applications.
+        */
+
+        public List<DiscountAllocation> getDiscountAllocations() {
+            return (List<DiscountAllocation>) get("discountAllocations");
+        }
+
+        public CheckoutLineItem setDiscountAllocations(List<DiscountAllocation> arg) {
+            optimisticData.put(getKey("discountAllocations"), arg);
+            return this;
+        }
+
+        /**
         * Globally unique identifier.
         */
 
@@ -5533,6 +8120,8 @@ public class Storefront {
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "customAttributes": return true;
+
+                case "discountAllocations": return true;
 
                 case "id": return false;
 
@@ -6014,6 +8603,9 @@ public class Storefront {
         void define(CheckoutLineItemsAddPayloadQuery _queryBuilder);
     }
 
+    /**
+    * Return type for `checkoutLineItemsAdd` mutation.
+    */
     public static class CheckoutLineItemsAddPayloadQuery extends Query<CheckoutLineItemsAddPayloadQuery> {
         CheckoutLineItemsAddPayloadQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
@@ -6046,6 +8638,9 @@ public class Storefront {
         }
     }
 
+    /**
+    * Return type for `checkoutLineItemsAdd` mutation.
+    */
     public static class CheckoutLineItemsAddPayload extends AbstractResponse<CheckoutLineItemsAddPayload> {
         public CheckoutLineItemsAddPayload() {
         }
@@ -6133,6 +8728,9 @@ public class Storefront {
         void define(CheckoutLineItemsRemovePayloadQuery _queryBuilder);
     }
 
+    /**
+    * Return type for `checkoutLineItemsRemove` mutation.
+    */
     public static class CheckoutLineItemsRemovePayloadQuery extends Query<CheckoutLineItemsRemovePayloadQuery> {
         CheckoutLineItemsRemovePayloadQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
@@ -6162,6 +8760,9 @@ public class Storefront {
         }
     }
 
+    /**
+    * Return type for `checkoutLineItemsRemove` mutation.
+    */
     public static class CheckoutLineItemsRemovePayload extends AbstractResponse<CheckoutLineItemsRemovePayload> {
         public CheckoutLineItemsRemovePayload() {
         }
@@ -6241,10 +8842,138 @@ public class Storefront {
         }
     }
 
+    public interface CheckoutLineItemsReplacePayloadQueryDefinition {
+        void define(CheckoutLineItemsReplacePayloadQuery _queryBuilder);
+    }
+
+    /**
+    * Return type for `checkoutLineItemsReplace` mutation.
+    */
+    public static class CheckoutLineItemsReplacePayloadQuery extends Query<CheckoutLineItemsReplacePayloadQuery> {
+        CheckoutLineItemsReplacePayloadQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * The updated checkout object.
+        */
+        public CheckoutLineItemsReplacePayloadQuery checkout(CheckoutQueryDefinition queryDef) {
+            startField("checkout");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CheckoutQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        */
+        public CheckoutLineItemsReplacePayloadQuery userErrors(CheckoutUserErrorQueryDefinition queryDef) {
+            startField("userErrors");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CheckoutUserErrorQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+    }
+
+    /**
+    * Return type for `checkoutLineItemsReplace` mutation.
+    */
+    public static class CheckoutLineItemsReplacePayload extends AbstractResponse<CheckoutLineItemsReplacePayload> {
+        public CheckoutLineItemsReplacePayload() {
+        }
+
+        public CheckoutLineItemsReplacePayload(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "checkout": {
+                        Checkout optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new Checkout(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "userErrors": {
+                        List<CheckoutUserError> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new CheckoutUserError(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "CheckoutLineItemsReplacePayload";
+        }
+
+        /**
+        * The updated checkout object.
+        */
+
+        public Checkout getCheckout() {
+            return (Checkout) get("checkout");
+        }
+
+        public CheckoutLineItemsReplacePayload setCheckout(Checkout arg) {
+            optimisticData.put(getKey("checkout"), arg);
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        */
+
+        public List<CheckoutUserError> getUserErrors() {
+            return (List<CheckoutUserError>) get("userErrors");
+        }
+
+        public CheckoutLineItemsReplacePayload setUserErrors(List<CheckoutUserError> arg) {
+            optimisticData.put(getKey("userErrors"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "checkout": return true;
+
+                case "userErrors": return true;
+
+                default: return false;
+            }
+        }
+    }
+
     public interface CheckoutLineItemsUpdatePayloadQueryDefinition {
         void define(CheckoutLineItemsUpdatePayloadQuery _queryBuilder);
     }
 
+    /**
+    * Return type for `checkoutLineItemsUpdate` mutation.
+    */
     public static class CheckoutLineItemsUpdatePayloadQuery extends Query<CheckoutLineItemsUpdatePayloadQuery> {
         CheckoutLineItemsUpdatePayloadQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
@@ -6277,6 +9006,9 @@ public class Storefront {
         }
     }
 
+    /**
+    * Return type for `checkoutLineItemsUpdate` mutation.
+    */
     public static class CheckoutLineItemsUpdatePayload extends AbstractResponse<CheckoutLineItemsUpdatePayload> {
         public CheckoutLineItemsUpdatePayload() {
         }
@@ -6364,6 +9096,9 @@ public class Storefront {
         void define(CheckoutShippingAddressUpdatePayloadQuery _queryBuilder);
     }
 
+    /**
+    * Return type for `checkoutShippingAddressUpdate` mutation.
+    */
     public static class CheckoutShippingAddressUpdatePayloadQuery extends Query<CheckoutShippingAddressUpdatePayloadQuery> {
         CheckoutShippingAddressUpdatePayloadQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
@@ -6396,6 +9131,9 @@ public class Storefront {
         }
     }
 
+    /**
+    * Return type for `checkoutShippingAddressUpdate` mutation.
+    */
     public static class CheckoutShippingAddressUpdatePayload extends AbstractResponse<CheckoutShippingAddressUpdatePayload> {
         public CheckoutShippingAddressUpdatePayload() {
         }
@@ -6474,10 +9212,138 @@ public class Storefront {
         }
     }
 
+    public interface CheckoutShippingAddressUpdateV2PayloadQueryDefinition {
+        void define(CheckoutShippingAddressUpdateV2PayloadQuery _queryBuilder);
+    }
+
+    /**
+    * Return type for `checkoutShippingAddressUpdateV2` mutation.
+    */
+    public static class CheckoutShippingAddressUpdateV2PayloadQuery extends Query<CheckoutShippingAddressUpdateV2PayloadQuery> {
+        CheckoutShippingAddressUpdateV2PayloadQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * The updated checkout object.
+        */
+        public CheckoutShippingAddressUpdateV2PayloadQuery checkout(CheckoutQueryDefinition queryDef) {
+            startField("checkout");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CheckoutQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        */
+        public CheckoutShippingAddressUpdateV2PayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
+            startField("userErrors");
+
+            _queryBuilder.append('{');
+            queryDef.define(new UserErrorQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+    }
+
+    /**
+    * Return type for `checkoutShippingAddressUpdateV2` mutation.
+    */
+    public static class CheckoutShippingAddressUpdateV2Payload extends AbstractResponse<CheckoutShippingAddressUpdateV2Payload> {
+        public CheckoutShippingAddressUpdateV2Payload() {
+        }
+
+        public CheckoutShippingAddressUpdateV2Payload(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "checkout": {
+                        Checkout optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new Checkout(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "userErrors": {
+                        List<UserError> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new UserError(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "CheckoutShippingAddressUpdateV2Payload";
+        }
+
+        /**
+        * The updated checkout object.
+        */
+
+        public Checkout getCheckout() {
+            return (Checkout) get("checkout");
+        }
+
+        public CheckoutShippingAddressUpdateV2Payload setCheckout(Checkout arg) {
+            optimisticData.put(getKey("checkout"), arg);
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        */
+
+        public List<UserError> getUserErrors() {
+            return (List<UserError>) get("userErrors");
+        }
+
+        public CheckoutShippingAddressUpdateV2Payload setUserErrors(List<UserError> arg) {
+            optimisticData.put(getKey("userErrors"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "checkout": return true;
+
+                case "userErrors": return true;
+
+                default: return false;
+            }
+        }
+    }
+
     public interface CheckoutShippingLineUpdatePayloadQueryDefinition {
         void define(CheckoutShippingLineUpdatePayloadQuery _queryBuilder);
     }
 
+    /**
+    * Return type for `checkoutShippingLineUpdate` mutation.
+    */
     public static class CheckoutShippingLineUpdatePayloadQuery extends Query<CheckoutShippingLineUpdatePayloadQuery> {
         CheckoutShippingLineUpdatePayloadQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
@@ -6510,6 +9376,9 @@ public class Storefront {
         }
     }
 
+    /**
+    * Return type for `checkoutShippingLineUpdate` mutation.
+    */
     public static class CheckoutShippingLineUpdatePayload extends AbstractResponse<CheckoutShippingLineUpdatePayload> {
         public CheckoutShippingLineUpdatePayload() {
         }
@@ -6587,6 +9456,158 @@ public class Storefront {
                 case "checkout": return true;
 
                 case "userErrors": return true;
+
+                default: return false;
+            }
+        }
+    }
+
+    public interface CheckoutUserErrorQueryDefinition {
+        void define(CheckoutUserErrorQuery _queryBuilder);
+    }
+
+    /**
+    * Represents an error that happens during execution of a checkout mutation.
+    */
+    public static class CheckoutUserErrorQuery extends Query<CheckoutUserErrorQuery> {
+        CheckoutUserErrorQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * Error code to uniquely identify the error.
+        */
+        public CheckoutUserErrorQuery code() {
+            startField("code");
+
+            return this;
+        }
+
+        /**
+        * Path to the input field which caused the error.
+        */
+        public CheckoutUserErrorQuery field() {
+            startField("field");
+
+            return this;
+        }
+
+        /**
+        * The error message.
+        */
+        public CheckoutUserErrorQuery message() {
+            startField("message");
+
+            return this;
+        }
+    }
+
+    /**
+    * Represents an error that happens during execution of a checkout mutation.
+    */
+    public static class CheckoutUserError extends AbstractResponse<CheckoutUserError> implements DisplayableError {
+        public CheckoutUserError() {
+        }
+
+        public CheckoutUserError(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "code": {
+                        CheckoutErrorCode optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = CheckoutErrorCode.fromGraphQl(jsonAsString(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "field": {
+                        List<String> optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            List<String> list1 = new ArrayList<>();
+                            for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                                list1.add(jsonAsString(element1, key));
+                            }
+
+                            optional1 = list1;
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "message": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "CheckoutUserError";
+        }
+
+        /**
+        * Error code to uniquely identify the error.
+        */
+
+        public CheckoutErrorCode getCode() {
+            return (CheckoutErrorCode) get("code");
+        }
+
+        public CheckoutUserError setCode(CheckoutErrorCode arg) {
+            optimisticData.put(getKey("code"), arg);
+            return this;
+        }
+
+        /**
+        * Path to the input field which caused the error.
+        */
+
+        public List<String> getField() {
+            return (List<String>) get("field");
+        }
+
+        public CheckoutUserError setField(List<String> arg) {
+            optimisticData.put(getKey("field"), arg);
+            return this;
+        }
+
+        /**
+        * The error message.
+        */
+
+        public String getMessage() {
+            return (String) get("message");
+        }
+
+        public CheckoutUserError setMessage(String arg) {
+            optimisticData.put(getKey("message"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "code": return false;
+
+                case "field": return false;
+
+                case "message": return false;
 
                 default: return false;
             }
@@ -7301,6 +10322,9 @@ public class Storefront {
     * The set of valid sort keys for the collections query.
     */
     public enum CollectionSortKeys {
+        /**
+        * Sort by the `id` value.
+        */
         ID,
 
         /**
@@ -7311,8 +10335,14 @@ public class Storefront {
         */
         RELEVANCE,
 
+        /**
+        * Sort by the `title` value.
+        */
         TITLE,
 
+        /**
+        * Sort by the `updated_at` value.
+        */
         UPDATED_AT,
 
         UNKNOWN_VALUE;
@@ -7884,1212 +10914,1212 @@ public class Storefront {
     */
     public enum CountryCode {
         /**
-        * Andorra
+        * Andorra.
         */
         AD,
 
         /**
-        * United Arab Emirates
+        * United Arab Emirates.
         */
         AE,
 
         /**
-        * Afghanistan
+        * Afghanistan.
         */
         AF,
 
         /**
-        * Antigua And Barbuda
+        * Antigua And Barbuda.
         */
         AG,
 
         /**
-        * Anguilla
+        * Anguilla.
         */
         AI,
 
         /**
-        * Albania
+        * Albania.
         */
         AL,
 
         /**
-        * Armenia
+        * Armenia.
         */
         AM,
 
         /**
-        * Netherlands Antilles
+        * Netherlands Antilles.
         */
         AN,
 
         /**
-        * Angola
+        * Angola.
         */
         AO,
 
         /**
-        * Argentina
+        * Argentina.
         */
         AR,
 
         /**
-        * Austria
+        * Austria.
         */
         AT,
 
         /**
-        * Australia
+        * Australia.
         */
         AU,
 
         /**
-        * Aruba
+        * Aruba.
         */
         AW,
 
         /**
-        * Aland Islands
+        * Aland Islands.
         */
         AX,
 
         /**
-        * Azerbaijan
+        * Azerbaijan.
         */
         AZ,
 
         /**
-        * Bosnia And Herzegovina
+        * Bosnia And Herzegovina.
         */
         BA,
 
         /**
-        * Barbados
+        * Barbados.
         */
         BB,
 
         /**
-        * Bangladesh
+        * Bangladesh.
         */
         BD,
 
         /**
-        * Belgium
+        * Belgium.
         */
         BE,
 
         /**
-        * Burkina Faso
+        * Burkina Faso.
         */
         BF,
 
         /**
-        * Bulgaria
+        * Bulgaria.
         */
         BG,
 
         /**
-        * Bahrain
+        * Bahrain.
         */
         BH,
 
         /**
-        * Burundi
+        * Burundi.
         */
         BI,
 
         /**
-        * Benin
+        * Benin.
         */
         BJ,
 
         /**
-        * Saint Barthélemy
+        * Saint Barthélemy.
         */
         BL,
 
         /**
-        * Bermuda
+        * Bermuda.
         */
         BM,
 
         /**
-        * Brunei
+        * Brunei.
         */
         BN,
 
         /**
-        * Bolivia
+        * Bolivia.
         */
         BO,
 
         /**
-        * Bonaire, Sint Eustatius and Saba
+        * Bonaire, Sint Eustatius and Saba.
         */
         BQ,
 
         /**
-        * Brazil
+        * Brazil.
         */
         BR,
 
         /**
-        * Bahamas
+        * Bahamas.
         */
         BS,
 
         /**
-        * Bhutan
+        * Bhutan.
         */
         BT,
 
         /**
-        * Bouvet Island
+        * Bouvet Island.
         */
         BV,
 
         /**
-        * Botswana
+        * Botswana.
         */
         BW,
 
         /**
-        * Belarus
+        * Belarus.
         */
         BY,
 
         /**
-        * Belize
+        * Belize.
         */
         BZ,
 
         /**
-        * Canada
+        * Canada.
         */
         CA,
 
         /**
-        * Cocos (Keeling) Islands
+        * Cocos (Keeling) Islands.
         */
         CC,
 
         /**
-        * Congo, The Democratic Republic Of The
+        * Congo, The Democratic Republic Of The.
         */
         CD,
 
         /**
-        * Central African Republic
+        * Central African Republic.
         */
         CF,
 
         /**
-        * Congo
+        * Congo.
         */
         CG,
 
         /**
-        * Switzerland
+        * Switzerland.
         */
         CH,
 
         /**
-        * Côte d'Ivoire
+        * Côte d'Ivoire.
         */
         CI,
 
         /**
-        * Cook Islands
+        * Cook Islands.
         */
         CK,
 
         /**
-        * Chile
+        * Chile.
         */
         CL,
 
         /**
-        * Republic of Cameroon
+        * Republic of Cameroon.
         */
         CM,
 
         /**
-        * China
+        * China.
         */
         CN,
 
         /**
-        * Colombia
+        * Colombia.
         */
         CO,
 
         /**
-        * Costa Rica
+        * Costa Rica.
         */
         CR,
 
         /**
-        * Cuba
+        * Cuba.
         */
         CU,
 
         /**
-        * Cape Verde
+        * Cape Verde.
         */
         CV,
 
         /**
-        * Curaçao
+        * Curaçao.
         */
         CW,
 
         /**
-        * Christmas Island
+        * Christmas Island.
         */
         CX,
 
         /**
-        * Cyprus
+        * Cyprus.
         */
         CY,
 
         /**
-        * Czech Republic
+        * Czech Republic.
         */
         CZ,
 
         /**
-        * Germany
+        * Germany.
         */
         DE,
 
         /**
-        * Djibouti
+        * Djibouti.
         */
         DJ,
 
         /**
-        * Denmark
+        * Denmark.
         */
         DK,
 
         /**
-        * Dominica
+        * Dominica.
         */
         DM,
 
         /**
-        * Dominican Republic
+        * Dominican Republic.
         */
         DO,
 
         /**
-        * Algeria
+        * Algeria.
         */
         DZ,
 
         /**
-        * Ecuador
+        * Ecuador.
         */
         EC,
 
         /**
-        * Estonia
+        * Estonia.
         */
         EE,
 
         /**
-        * Egypt
+        * Egypt.
         */
         EG,
 
         /**
-        * Western Sahara
+        * Western Sahara.
         */
         EH,
 
         /**
-        * Eritrea
+        * Eritrea.
         */
         ER,
 
         /**
-        * Spain
+        * Spain.
         */
         ES,
 
         /**
-        * Ethiopia
+        * Ethiopia.
         */
         ET,
 
         /**
-        * Finland
+        * Finland.
         */
         FI,
 
         /**
-        * Fiji
+        * Fiji.
         */
         FJ,
 
         /**
-        * Falkland Islands (Malvinas)
+        * Falkland Islands (Malvinas).
         */
         FK,
 
         /**
-        * Faroe Islands
+        * Faroe Islands.
         */
         FO,
 
         /**
-        * France
+        * France.
         */
         FR,
 
         /**
-        * Gabon
+        * Gabon.
         */
         GA,
 
         /**
-        * United Kingdom
+        * United Kingdom.
         */
         GB,
 
         /**
-        * Grenada
+        * Grenada.
         */
         GD,
 
         /**
-        * Georgia
+        * Georgia.
         */
         GE,
 
         /**
-        * French Guiana
+        * French Guiana.
         */
         GF,
 
         /**
-        * Guernsey
+        * Guernsey.
         */
         GG,
 
         /**
-        * Ghana
+        * Ghana.
         */
         GH,
 
         /**
-        * Gibraltar
+        * Gibraltar.
         */
         GI,
 
         /**
-        * Greenland
+        * Greenland.
         */
         GL,
 
         /**
-        * Gambia
+        * Gambia.
         */
         GM,
 
         /**
-        * Guinea
+        * Guinea.
         */
         GN,
 
         /**
-        * Guadeloupe
+        * Guadeloupe.
         */
         GP,
 
         /**
-        * Equatorial Guinea
+        * Equatorial Guinea.
         */
         GQ,
 
         /**
-        * Greece
+        * Greece.
         */
         GR,
 
         /**
-        * South Georgia And The South Sandwich Islands
+        * South Georgia And The South Sandwich Islands.
         */
         GS,
 
         /**
-        * Guatemala
+        * Guatemala.
         */
         GT,
 
         /**
-        * Guinea Bissau
+        * Guinea Bissau.
         */
         GW,
 
         /**
-        * Guyana
+        * Guyana.
         */
         GY,
 
         /**
-        * Hong Kong
+        * Hong Kong.
         */
         HK,
 
         /**
-        * Heard Island And Mcdonald Islands
+        * Heard Island And Mcdonald Islands.
         */
         HM,
 
         /**
-        * Honduras
+        * Honduras.
         */
         HN,
 
         /**
-        * Croatia
+        * Croatia.
         */
         HR,
 
         /**
-        * Haiti
+        * Haiti.
         */
         HT,
 
         /**
-        * Hungary
+        * Hungary.
         */
         HU,
 
         /**
-        * Indonesia
+        * Indonesia.
         */
         ID,
 
         /**
-        * Ireland
+        * Ireland.
         */
         IE,
 
         /**
-        * Israel
+        * Israel.
         */
         IL,
 
         /**
-        * Isle Of Man
+        * Isle Of Man.
         */
         IM,
 
         /**
-        * India
+        * India.
         */
         IN,
 
         /**
-        * British Indian Ocean Territory
+        * British Indian Ocean Territory.
         */
         IO,
 
         /**
-        * Iraq
+        * Iraq.
         */
         IQ,
 
         /**
-        * Iran, Islamic Republic Of
+        * Iran, Islamic Republic Of.
         */
         IR,
 
         /**
-        * Iceland
+        * Iceland.
         */
         IS,
 
         /**
-        * Italy
+        * Italy.
         */
         IT,
 
         /**
-        * Jersey
+        * Jersey.
         */
         JE,
 
         /**
-        * Jamaica
+        * Jamaica.
         */
         JM,
 
         /**
-        * Jordan
+        * Jordan.
         */
         JO,
 
         /**
-        * Japan
+        * Japan.
         */
         JP,
 
         /**
-        * Kenya
+        * Kenya.
         */
         KE,
 
         /**
-        * Kyrgyzstan
+        * Kyrgyzstan.
         */
         KG,
 
         /**
-        * Cambodia
+        * Cambodia.
         */
         KH,
 
         /**
-        * Kiribati
+        * Kiribati.
         */
         KI,
 
         /**
-        * Comoros
+        * Comoros.
         */
         KM,
 
         /**
-        * Saint Kitts And Nevis
+        * Saint Kitts And Nevis.
         */
         KN,
 
         /**
-        * Korea, Democratic People's Republic Of
+        * Korea, Democratic People's Republic Of.
         */
         KP,
 
         /**
-        * South Korea
+        * South Korea.
         */
         KR,
 
         /**
-        * Kuwait
+        * Kuwait.
         */
         KW,
 
         /**
-        * Cayman Islands
+        * Cayman Islands.
         */
         KY,
 
         /**
-        * Kazakhstan
+        * Kazakhstan.
         */
         KZ,
 
         /**
-        * Lao People's Democratic Republic
+        * Lao People's Democratic Republic.
         */
         LA,
 
         /**
-        * Lebanon
+        * Lebanon.
         */
         LB,
 
         /**
-        * Saint Lucia
+        * Saint Lucia.
         */
         LC,
 
         /**
-        * Liechtenstein
+        * Liechtenstein.
         */
         LI,
 
         /**
-        * Sri Lanka
+        * Sri Lanka.
         */
         LK,
 
         /**
-        * Liberia
+        * Liberia.
         */
         LR,
 
         /**
-        * Lesotho
+        * Lesotho.
         */
         LS,
 
         /**
-        * Lithuania
+        * Lithuania.
         */
         LT,
 
         /**
-        * Luxembourg
+        * Luxembourg.
         */
         LU,
 
         /**
-        * Latvia
+        * Latvia.
         */
         LV,
 
         /**
-        * Libyan Arab Jamahiriya
+        * Libyan Arab Jamahiriya.
         */
         LY,
 
         /**
-        * Morocco
+        * Morocco.
         */
         MA,
 
         /**
-        * Monaco
+        * Monaco.
         */
         MC,
 
         /**
-        * Moldova, Republic of
+        * Moldova, Republic of.
         */
         MD,
 
         /**
-        * Montenegro
+        * Montenegro.
         */
         ME,
 
         /**
-        * Saint Martin
+        * Saint Martin.
         */
         MF,
 
         /**
-        * Madagascar
+        * Madagascar.
         */
         MG,
 
         /**
-        * Macedonia, Republic Of
+        * Macedonia, Republic Of.
         */
         MK,
 
         /**
-        * Mali
+        * Mali.
         */
         ML,
 
         /**
-        * Myanmar
+        * Myanmar.
         */
         MM,
 
         /**
-        * Mongolia
+        * Mongolia.
         */
         MN,
 
         /**
-        * Macao
+        * Macao.
         */
         MO,
 
         /**
-        * Martinique
+        * Martinique.
         */
         MQ,
 
         /**
-        * Mauritania
+        * Mauritania.
         */
         MR,
 
         /**
-        * Montserrat
+        * Montserrat.
         */
         MS,
 
         /**
-        * Malta
+        * Malta.
         */
         MT,
 
         /**
-        * Mauritius
+        * Mauritius.
         */
         MU,
 
         /**
-        * Maldives
+        * Maldives.
         */
         MV,
 
         /**
-        * Malawi
+        * Malawi.
         */
         MW,
 
         /**
-        * Mexico
+        * Mexico.
         */
         MX,
 
         /**
-        * Malaysia
+        * Malaysia.
         */
         MY,
 
         /**
-        * Mozambique
+        * Mozambique.
         */
         MZ,
 
         /**
-        * Namibia
+        * Namibia.
         */
         NA,
 
         /**
-        * New Caledonia
+        * New Caledonia.
         */
         NC,
 
         /**
-        * Niger
+        * Niger.
         */
         NE,
 
         /**
-        * Norfolk Island
+        * Norfolk Island.
         */
         NF,
 
         /**
-        * Nigeria
+        * Nigeria.
         */
         NG,
 
         /**
-        * Nicaragua
+        * Nicaragua.
         */
         NI,
 
         /**
-        * Netherlands
+        * Netherlands.
         */
         NL,
 
         /**
-        * Norway
+        * Norway.
         */
         NO,
 
         /**
-        * Nepal
+        * Nepal.
         */
         NP,
 
         /**
-        * Nauru
+        * Nauru.
         */
         NR,
 
         /**
-        * Niue
+        * Niue.
         */
         NU,
 
         /**
-        * New Zealand
+        * New Zealand.
         */
         NZ,
 
         /**
-        * Oman
+        * Oman.
         */
         OM,
 
         /**
-        * Panama
+        * Panama.
         */
         PA,
 
         /**
-        * Peru
+        * Peru.
         */
         PE,
 
         /**
-        * French Polynesia
+        * French Polynesia.
         */
         PF,
 
         /**
-        * Papua New Guinea
+        * Papua New Guinea.
         */
         PG,
 
         /**
-        * Philippines
+        * Philippines.
         */
         PH,
 
         /**
-        * Pakistan
+        * Pakistan.
         */
         PK,
 
         /**
-        * Poland
+        * Poland.
         */
         PL,
 
         /**
-        * Saint Pierre And Miquelon
+        * Saint Pierre And Miquelon.
         */
         PM,
 
         /**
-        * Pitcairn
+        * Pitcairn.
         */
         PN,
 
         /**
-        * Palestinian Territory, Occupied
+        * Palestinian Territory, Occupied.
         */
         PS,
 
         /**
-        * Portugal
+        * Portugal.
         */
         PT,
 
         /**
-        * Paraguay
+        * Paraguay.
         */
         PY,
 
         /**
-        * Qatar
+        * Qatar.
         */
         QA,
 
         /**
-        * Reunion
+        * Reunion.
         */
         RE,
 
         /**
-        * Romania
+        * Romania.
         */
         RO,
 
         /**
-        * Serbia
+        * Serbia.
         */
         RS,
 
         /**
-        * Russia
+        * Russia.
         */
         RU,
 
         /**
-        * Rwanda
+        * Rwanda.
         */
         RW,
 
         /**
-        * Saudi Arabia
+        * Saudi Arabia.
         */
         SA,
 
         /**
-        * Solomon Islands
+        * Solomon Islands.
         */
         SB,
 
         /**
-        * Seychelles
+        * Seychelles.
         */
         SC,
 
         /**
-        * Sudan
+        * Sudan.
         */
         SD,
 
         /**
-        * Sweden
+        * Sweden.
         */
         SE,
 
         /**
-        * Singapore
+        * Singapore.
         */
         SG,
 
         /**
-        * Saint Helena
+        * Saint Helena.
         */
         SH,
 
         /**
-        * Slovenia
+        * Slovenia.
         */
         SI,
 
         /**
-        * Svalbard And Jan Mayen
+        * Svalbard And Jan Mayen.
         */
         SJ,
 
         /**
-        * Slovakia
+        * Slovakia.
         */
         SK,
 
         /**
-        * Sierra Leone
+        * Sierra Leone.
         */
         SL,
 
         /**
-        * San Marino
+        * San Marino.
         */
         SM,
 
         /**
-        * Senegal
+        * Senegal.
         */
         SN,
 
         /**
-        * Somalia
+        * Somalia.
         */
         SO,
 
         /**
-        * Suriname
+        * Suriname.
         */
         SR,
 
         /**
-        * South Sudan
+        * South Sudan.
         */
         SS,
 
         /**
-        * Sao Tome And Principe
+        * Sao Tome And Principe.
         */
         ST,
 
         /**
-        * El Salvador
+        * El Salvador.
         */
         SV,
 
         /**
-        * Sint Maarten
+        * Sint Maarten.
         */
         SX,
 
         /**
-        * Syria
+        * Syria.
         */
         SY,
 
         /**
-        * Swaziland
+        * Swaziland.
         */
         SZ,
 
         /**
-        * Turks and Caicos Islands
+        * Turks and Caicos Islands.
         */
         TC,
 
         /**
-        * Chad
+        * Chad.
         */
         TD,
 
         /**
-        * French Southern Territories
+        * French Southern Territories.
         */
         TF,
 
         /**
-        * Togo
+        * Togo.
         */
         TG,
 
         /**
-        * Thailand
+        * Thailand.
         */
         TH,
 
         /**
-        * Tajikistan
+        * Tajikistan.
         */
         TJ,
 
         /**
-        * Tokelau
+        * Tokelau.
         */
         TK,
 
         /**
-        * Timor Leste
+        * Timor Leste.
         */
         TL,
 
         /**
-        * Turkmenistan
+        * Turkmenistan.
         */
         TM,
 
         /**
-        * Tunisia
+        * Tunisia.
         */
         TN,
 
         /**
-        * Tonga
+        * Tonga.
         */
         TO,
 
         /**
-        * Turkey
+        * Turkey.
         */
         TR,
 
         /**
-        * Trinidad and Tobago
+        * Trinidad and Tobago.
         */
         TT,
 
         /**
-        * Tuvalu
+        * Tuvalu.
         */
         TV,
 
         /**
-        * Taiwan
+        * Taiwan.
         */
         TW,
 
         /**
-        * Tanzania, United Republic Of
+        * Tanzania, United Republic Of.
         */
         TZ,
 
         /**
-        * Ukraine
+        * Ukraine.
         */
         UA,
 
         /**
-        * Uganda
+        * Uganda.
         */
         UG,
 
         /**
-        * United States Minor Outlying Islands
+        * United States Minor Outlying Islands.
         */
         UM,
 
         /**
-        * United States
+        * United States.
         */
         US,
 
         /**
-        * Uruguay
+        * Uruguay.
         */
         UY,
 
         /**
-        * Uzbekistan
+        * Uzbekistan.
         */
         UZ,
 
         /**
-        * Holy See (Vatican City State)
+        * Holy See (Vatican City State).
         */
         VA,
 
         /**
-        * St. Vincent
+        * St. Vincent.
         */
         VC,
 
         /**
-        * Venezuela
+        * Venezuela.
         */
         VE,
 
         /**
-        * Virgin Islands, British
+        * Virgin Islands, British.
         */
         VG,
 
         /**
-        * Vietnam
+        * Vietnam.
         */
         VN,
 
         /**
-        * Vanuatu
+        * Vanuatu.
         */
         VU,
 
         /**
-        * Wallis And Futuna
+        * Wallis And Futuna.
         */
         WF,
 
         /**
-        * Samoa
+        * Samoa.
         */
         WS,
 
         /**
-        * Kosovo
+        * Kosovo.
         */
         XK,
 
         /**
-        * Yemen
+        * Yemen.
         */
         YE,
 
         /**
-        * Mayotte
+        * Mayotte.
         */
         YT,
 
         /**
-        * South Africa
+        * South Africa.
         */
         ZA,
 
         /**
-        * Zambia
+        * Zambia.
         */
         ZM,
 
         /**
-        * Zimbabwe
+        * Zimbabwe.
         */
         ZW,
 
@@ -11446,6 +14476,123 @@ public class Storefront {
         }
     }
 
+    public static class CreditCardPaymentInputV2 implements Serializable {
+        private MoneyInput paymentAmount;
+
+        private String idempotencyKey;
+
+        private MailingAddressInput billingAddress;
+
+        private String vaultId;
+
+        private Input<Boolean> test = Input.undefined();
+
+        public CreditCardPaymentInputV2(MoneyInput paymentAmount, String idempotencyKey, MailingAddressInput billingAddress, String vaultId) {
+            this.paymentAmount = paymentAmount;
+
+            this.idempotencyKey = idempotencyKey;
+
+            this.billingAddress = billingAddress;
+
+            this.vaultId = vaultId;
+        }
+
+        public MoneyInput getPaymentAmount() {
+            return paymentAmount;
+        }
+
+        public CreditCardPaymentInputV2 setPaymentAmount(MoneyInput paymentAmount) {
+            this.paymentAmount = paymentAmount;
+            return this;
+        }
+
+        public String getIdempotencyKey() {
+            return idempotencyKey;
+        }
+
+        public CreditCardPaymentInputV2 setIdempotencyKey(String idempotencyKey) {
+            this.idempotencyKey = idempotencyKey;
+            return this;
+        }
+
+        public MailingAddressInput getBillingAddress() {
+            return billingAddress;
+        }
+
+        public CreditCardPaymentInputV2 setBillingAddress(MailingAddressInput billingAddress) {
+            this.billingAddress = billingAddress;
+            return this;
+        }
+
+        public String getVaultId() {
+            return vaultId;
+        }
+
+        public CreditCardPaymentInputV2 setVaultId(String vaultId) {
+            this.vaultId = vaultId;
+            return this;
+        }
+
+        public Boolean getTest() {
+            return test.getValue();
+        }
+
+        public Input<Boolean> getTestInput() {
+            return test;
+        }
+
+        public CreditCardPaymentInputV2 setTest(Boolean test) {
+            this.test = Input.optional(test);
+            return this;
+        }
+
+        public CreditCardPaymentInputV2 setTestInput(Input<Boolean> test) {
+            if (test == null) {
+                throw new IllegalArgumentException("Input can not be null");
+            }
+            this.test = test;
+            return this;
+        }
+
+        public void appendTo(StringBuilder _queryBuilder) {
+            String separator = "";
+            _queryBuilder.append('{');
+
+            _queryBuilder.append(separator);
+            separator = ",";
+            _queryBuilder.append("paymentAmount:");
+            paymentAmount.appendTo(_queryBuilder);
+
+            _queryBuilder.append(separator);
+            separator = ",";
+            _queryBuilder.append("idempotencyKey:");
+            Query.appendQuotedString(_queryBuilder, idempotencyKey.toString());
+
+            _queryBuilder.append(separator);
+            separator = ",";
+            _queryBuilder.append("billingAddress:");
+            billingAddress.appendTo(_queryBuilder);
+
+            _queryBuilder.append(separator);
+            separator = ",";
+            _queryBuilder.append("vaultId:");
+            Query.appendQuotedString(_queryBuilder, vaultId.toString());
+
+            if (this.test.isDefined()) {
+                _queryBuilder.append(separator);
+                separator = ",";
+                _queryBuilder.append("test:");
+                if (test.getValue() != null) {
+                    _queryBuilder.append(test.getValue());
+                } else {
+                    _queryBuilder.append("null");
+                }
+            }
+
+            _queryBuilder.append('}');
+        }
+    }
+
     /**
     * The part of the image that should remain after cropping.
     */
@@ -11542,702 +14689,702 @@ public class Storefront {
     */
     public enum CurrencyCode {
         /**
-        * United Arab Emirates Dirham (AED)
+        * United Arab Emirates Dirham (AED).
         */
         AED,
 
         /**
-        * Afghan Afghani (AFN)
+        * Afghan Afghani (AFN).
         */
         AFN,
 
         /**
-        * Albanian Lek (ALL)
+        * Albanian Lek (ALL).
         */
         ALL,
 
         /**
-        * Armenian Dram (AMD)
+        * Armenian Dram (AMD).
         */
         AMD,
 
         /**
-        * Netherlands Antillean Guilder
+        * Netherlands Antillean Guilder.
         */
         ANG,
 
         /**
-        * Angolan Kwanza (AOA)
+        * Angolan Kwanza (AOA).
         */
         AOA,
 
         /**
-        * Argentine Pesos (ARS)
+        * Argentine Pesos (ARS).
         */
         ARS,
 
         /**
-        * Australian Dollars (AUD)
+        * Australian Dollars (AUD).
         */
         AUD,
 
         /**
-        * Aruban Florin (AWG)
+        * Aruban Florin (AWG).
         */
         AWG,
 
         /**
-        * Azerbaijani Manat (AZN)
+        * Azerbaijani Manat (AZN).
         */
         AZN,
 
         /**
-        * Bosnia and Herzegovina Convertible Mark (BAM)
+        * Bosnia and Herzegovina Convertible Mark (BAM).
         */
         BAM,
 
         /**
-        * Barbadian Dollar (BBD)
+        * Barbadian Dollar (BBD).
         */
         BBD,
 
         /**
-        * Bangladesh Taka (BDT)
+        * Bangladesh Taka (BDT).
         */
         BDT,
 
         /**
-        * Bulgarian Lev (BGN)
+        * Bulgarian Lev (BGN).
         */
         BGN,
 
         /**
-        * Bahraini Dinar (BHD)
+        * Bahraini Dinar (BHD).
         */
         BHD,
 
         /**
-        * Burundian Franc (BIF)
+        * Burundian Franc (BIF).
         */
         BIF,
 
         /**
-        * Brunei Dollar (BND)
+        * Brunei Dollar (BND).
         */
         BND,
 
         /**
-        * Bolivian Boliviano (BOB)
+        * Bolivian Boliviano (BOB).
         */
         BOB,
 
         /**
-        * Brazilian Real (BRL)
+        * Brazilian Real (BRL).
         */
         BRL,
 
         /**
-        * Bahamian Dollar (BSD)
+        * Bahamian Dollar (BSD).
         */
         BSD,
 
         /**
-        * Bhutanese Ngultrum (BTN)
+        * Bhutanese Ngultrum (BTN).
         */
         BTN,
 
         /**
-        * Botswana Pula (BWP)
+        * Botswana Pula (BWP).
         */
         BWP,
 
         /**
-        * Belarusian Ruble (BYR)
+        * Belarusian Ruble (BYR).
         */
         BYR,
 
         /**
-        * Belize Dollar (BZD)
+        * Belize Dollar (BZD).
         */
         BZD,
 
         /**
-        * Canadian Dollars (CAD)
+        * Canadian Dollars (CAD).
         */
         CAD,
 
         /**
-        * Congolese franc (CDF)
+        * Congolese franc (CDF).
         */
         CDF,
 
         /**
-        * Swiss Francs (CHF)
+        * Swiss Francs (CHF).
         */
         CHF,
 
         /**
-        * Chilean Peso (CLP)
+        * Chilean Peso (CLP).
         */
         CLP,
 
         /**
-        * Chinese Yuan Renminbi (CNY)
+        * Chinese Yuan Renminbi (CNY).
         */
         CNY,
 
         /**
-        * Colombian Peso (COP)
+        * Colombian Peso (COP).
         */
         COP,
 
         /**
-        * Costa Rican Colones (CRC)
+        * Costa Rican Colones (CRC).
         */
         CRC,
 
         /**
-        * Cape Verdean escudo (CVE)
+        * Cape Verdean escudo (CVE).
         */
         CVE,
 
         /**
-        * Czech Koruny (CZK)
+        * Czech Koruny (CZK).
         */
         CZK,
 
         /**
-        * Danish Kroner (DKK)
+        * Danish Kroner (DKK).
         */
         DKK,
 
         /**
-        * Dominican Peso (DOP)
+        * Dominican Peso (DOP).
         */
         DOP,
 
         /**
-        * Algerian Dinar (DZD)
+        * Algerian Dinar (DZD).
         */
         DZD,
 
         /**
-        * Egyptian Pound (EGP)
+        * Egyptian Pound (EGP).
         */
         EGP,
 
         /**
-        * Ethiopian Birr (ETB)
+        * Ethiopian Birr (ETB).
         */
         ETB,
 
         /**
-        * Euro (EUR)
+        * Euro (EUR).
         */
         EUR,
 
         /**
-        * Fijian Dollars (FJD)
+        * Fijian Dollars (FJD).
         */
         FJD,
 
         /**
-        * United Kingdom Pounds (GBP)
+        * United Kingdom Pounds (GBP).
         */
         GBP,
 
         /**
-        * Georgian Lari (GEL)
+        * Georgian Lari (GEL).
         */
         GEL,
 
         /**
-        * Ghanaian Cedi (GHS)
+        * Ghanaian Cedi (GHS).
         */
         GHS,
 
         /**
-        * Gambian Dalasi (GMD)
+        * Gambian Dalasi (GMD).
         */
         GMD,
 
         /**
-        * Guatemalan Quetzal (GTQ)
+        * Guatemalan Quetzal (GTQ).
         */
         GTQ,
 
         /**
-        * Guyanese Dollar (GYD)
+        * Guyanese Dollar (GYD).
         */
         GYD,
 
         /**
-        * Hong Kong Dollars (HKD)
+        * Hong Kong Dollars (HKD).
         */
         HKD,
 
         /**
-        * Honduran Lempira (HNL)
+        * Honduran Lempira (HNL).
         */
         HNL,
 
         /**
-        * Croatian Kuna (HRK)
+        * Croatian Kuna (HRK).
         */
         HRK,
 
         /**
-        * Haitian Gourde (HTG)
+        * Haitian Gourde (HTG).
         */
         HTG,
 
         /**
-        * Hungarian Forint (HUF)
+        * Hungarian Forint (HUF).
         */
         HUF,
 
         /**
-        * Indonesian Rupiah (IDR)
+        * Indonesian Rupiah (IDR).
         */
         IDR,
 
         /**
-        * Israeli New Shekel (NIS)
+        * Israeli New Shekel (NIS).
         */
         ILS,
 
         /**
-        * Indian Rupees (INR)
+        * Indian Rupees (INR).
         */
         INR,
 
         /**
-        * Iraqi Dinar (IQD)
+        * Iraqi Dinar (IQD).
         */
         IQD,
 
         /**
-        * Icelandic Kronur (ISK)
+        * Icelandic Kronur (ISK).
         */
         ISK,
 
         /**
-        * Jersey Pound
+        * Jersey Pound.
         */
         JEP,
 
         /**
-        * Jamaican Dollars (JMD)
+        * Jamaican Dollars (JMD).
         */
         JMD,
 
         /**
-        * Jordanian Dinar (JOD)
+        * Jordanian Dinar (JOD).
         */
         JOD,
 
         /**
-        * Japanese Yen (JPY)
+        * Japanese Yen (JPY).
         */
         JPY,
 
         /**
-        * Kenyan Shilling (KES)
+        * Kenyan Shilling (KES).
         */
         KES,
 
         /**
-        * Kyrgyzstani Som (KGS)
+        * Kyrgyzstani Som (KGS).
         */
         KGS,
 
         /**
-        * Cambodian Riel
+        * Cambodian Riel.
         */
         KHR,
 
         /**
-        * Comorian Franc (KMF)
+        * Comorian Franc (KMF).
         */
         KMF,
 
         /**
-        * South Korean Won (KRW)
+        * South Korean Won (KRW).
         */
         KRW,
 
         /**
-        * Kuwaiti Dinar (KWD)
+        * Kuwaiti Dinar (KWD).
         */
         KWD,
 
         /**
-        * Cayman Dollars (KYD)
+        * Cayman Dollars (KYD).
         */
         KYD,
 
         /**
-        * Kazakhstani Tenge (KZT)
+        * Kazakhstani Tenge (KZT).
         */
         KZT,
 
         /**
-        * Laotian Kip (LAK)
+        * Laotian Kip (LAK).
         */
         LAK,
 
         /**
-        * Lebanese Pounds (LBP)
+        * Lebanese Pounds (LBP).
         */
         LBP,
 
         /**
-        * Sri Lankan Rupees (LKR)
+        * Sri Lankan Rupees (LKR).
         */
         LKR,
 
         /**
-        * Liberian Dollar (LRD)
+        * Liberian Dollar (LRD).
         */
         LRD,
 
         /**
-        * Lesotho Loti (LSL)
+        * Lesotho Loti (LSL).
         */
         LSL,
 
         /**
-        * Lithuanian Litai (LTL)
+        * Lithuanian Litai (LTL).
         */
         LTL,
 
         /**
-        * Latvian Lati (LVL)
+        * Latvian Lati (LVL).
         */
         LVL,
 
         /**
-        * Moroccan Dirham
+        * Moroccan Dirham.
         */
         MAD,
 
         /**
-        * Moldovan Leu (MDL)
+        * Moldovan Leu (MDL).
         */
         MDL,
 
         /**
-        * Malagasy Ariary (MGA)
+        * Malagasy Ariary (MGA).
         */
         MGA,
 
         /**
-        * Macedonia Denar (MKD)
+        * Macedonia Denar (MKD).
         */
         MKD,
 
         /**
-        * Burmese Kyat (MMK)
+        * Burmese Kyat (MMK).
         */
         MMK,
 
         /**
-        * Mongolian Tugrik
+        * Mongolian Tugrik.
         */
         MNT,
 
         /**
-        * Macanese Pataca (MOP)
+        * Macanese Pataca (MOP).
         */
         MOP,
 
         /**
-        * Mauritian Rupee (MUR)
+        * Mauritian Rupee (MUR).
         */
         MUR,
 
         /**
-        * Maldivian Rufiyaa (MVR)
+        * Maldivian Rufiyaa (MVR).
         */
         MVR,
 
         /**
-        * Malawian Kwacha (MWK)
+        * Malawian Kwacha (MWK).
         */
         MWK,
 
         /**
-        * Mexican Pesos (MXN)
+        * Mexican Pesos (MXN).
         */
         MXN,
 
         /**
-        * Malaysian Ringgits (MYR)
+        * Malaysian Ringgits (MYR).
         */
         MYR,
 
         /**
-        * Mozambican Metical
+        * Mozambican Metical.
         */
         MZN,
 
         /**
-        * Namibian Dollar
+        * Namibian Dollar.
         */
         NAD,
 
         /**
-        * Nigerian Naira (NGN)
+        * Nigerian Naira (NGN).
         */
         NGN,
 
         /**
-        * Nicaraguan Córdoba (NIO)
+        * Nicaraguan Córdoba (NIO).
         */
         NIO,
 
         /**
-        * Norwegian Kroner (NOK)
+        * Norwegian Kroner (NOK).
         */
         NOK,
 
         /**
-        * Nepalese Rupee (NPR)
+        * Nepalese Rupee (NPR).
         */
         NPR,
 
         /**
-        * New Zealand Dollars (NZD)
+        * New Zealand Dollars (NZD).
         */
         NZD,
 
         /**
-        * Omani Rial (OMR)
+        * Omani Rial (OMR).
         */
         OMR,
 
         /**
-        * Peruvian Nuevo Sol (PEN)
+        * Peruvian Nuevo Sol (PEN).
         */
         PEN,
 
         /**
-        * Papua New Guinean Kina (PGK)
+        * Papua New Guinean Kina (PGK).
         */
         PGK,
 
         /**
-        * Philippine Peso (PHP)
+        * Philippine Peso (PHP).
         */
         PHP,
 
         /**
-        * Pakistani Rupee (PKR)
+        * Pakistani Rupee (PKR).
         */
         PKR,
 
         /**
-        * Polish Zlotych (PLN)
+        * Polish Zlotych (PLN).
         */
         PLN,
 
         /**
-        * Paraguayan Guarani (PYG)
+        * Paraguayan Guarani (PYG).
         */
         PYG,
 
         /**
-        * Qatari Rial (QAR)
+        * Qatari Rial (QAR).
         */
         QAR,
 
         /**
-        * Romanian Lei (RON)
+        * Romanian Lei (RON).
         */
         RON,
 
         /**
-        * Serbian dinar (RSD)
+        * Serbian dinar (RSD).
         */
         RSD,
 
         /**
-        * Russian Rubles (RUB)
+        * Russian Rubles (RUB).
         */
         RUB,
 
         /**
-        * Rwandan Franc (RWF)
+        * Rwandan Franc (RWF).
         */
         RWF,
 
         /**
-        * Saudi Riyal (SAR)
+        * Saudi Riyal (SAR).
         */
         SAR,
 
         /**
-        * Solomon Islands Dollar (SBD)
+        * Solomon Islands Dollar (SBD).
         */
         SBD,
 
         /**
-        * Seychellois Rupee (SCR)
+        * Seychellois Rupee (SCR).
         */
         SCR,
 
         /**
-        * Sudanese Pound (SDG)
+        * Sudanese Pound (SDG).
         */
         SDG,
 
         /**
-        * Swedish Kronor (SEK)
+        * Swedish Kronor (SEK).
         */
         SEK,
 
         /**
-        * Singapore Dollars (SGD)
+        * Singapore Dollars (SGD).
         */
         SGD,
 
         /**
-        * Surinamese Dollar (SRD)
+        * Surinamese Dollar (SRD).
         */
         SRD,
 
         /**
-        * South Sudanese Pound (SSP)
+        * South Sudanese Pound (SSP).
         */
         SSP,
 
         /**
-        * Sao Tome And Principe Dobra (STD)
+        * Sao Tome And Principe Dobra (STD).
         */
         STD,
 
         /**
-        * Syrian Pound (SYP)
+        * Syrian Pound (SYP).
         */
         SYP,
 
         /**
-        * Swazi Lilangeni (SZL)
+        * Swazi Lilangeni (SZL).
         */
         SZL,
 
         /**
-        * Thai baht (THB)
+        * Thai baht (THB).
         */
         THB,
 
         /**
-        * Turkmenistani Manat (TMT)
+        * Turkmenistani Manat (TMT).
         */
         TMT,
 
         /**
-        * Tunisian Dinar (TND)
+        * Tunisian Dinar (TND).
         */
         TND,
 
         /**
-        * Turkish Lira (TRY)
+        * Turkish Lira (TRY).
         */
         TRY,
 
         /**
-        * Trinidad and Tobago Dollars (TTD)
+        * Trinidad and Tobago Dollars (TTD).
         */
         TTD,
 
         /**
-        * Taiwan Dollars (TWD)
+        * Taiwan Dollars (TWD).
         */
         TWD,
 
         /**
-        * Tanzanian Shilling (TZS)
+        * Tanzanian Shilling (TZS).
         */
         TZS,
 
         /**
-        * Ukrainian Hryvnia (UAH)
+        * Ukrainian Hryvnia (UAH).
         */
         UAH,
 
         /**
-        * Ugandan Shilling (UGX)
+        * Ugandan Shilling (UGX).
         */
         UGX,
 
         /**
-        * United States Dollars (USD)
+        * United States Dollars (USD).
         */
         USD,
 
         /**
-        * Uruguayan Pesos (UYU)
+        * Uruguayan Pesos (UYU).
         */
         UYU,
 
         /**
-        * Uzbekistan som (UZS)
+        * Uzbekistan som (UZS).
         */
         UZS,
 
         /**
-        * Venezuelan Bolivares (VEF)
+        * Venezuelan Bolivares (VEF).
         */
         VEF,
 
         /**
-        * Vietnamese đồng (VND)
+        * Vietnamese đồng (VND).
         */
         VND,
 
         /**
-        * Vanuatu Vatu (VUV)
+        * Vanuatu Vatu (VUV).
         */
         VUV,
 
         /**
-        * Samoan Tala (WST)
+        * Samoan Tala (WST).
         */
         WST,
 
         /**
-        * Central African CFA Franc (XAF)
+        * Central African CFA Franc (XAF).
         */
         XAF,
 
         /**
-        * East Caribbean Dollar (XCD)
+        * East Caribbean Dollar (XCD).
         */
         XCD,
 
         /**
-        * West African CFA franc (XOF)
+        * West African CFA franc (XOF).
         */
         XOF,
 
         /**
-        * CFP Franc (XPF)
+        * CFP Franc (XPF).
         */
         XPF,
 
         /**
-        * Yemeni Rial (YER)
+        * Yemeni Rial (YER).
         */
         YER,
 
         /**
-        * South African Rand (ZAR)
+        * South African Rand (ZAR).
         */
         ZAR,
 
         /**
-        * Zambian Kwacha (ZMW)
+        * Zambian Kwacha (ZMW).
         */
         ZMW,
 
@@ -13553,6 +16700,19 @@ public class Storefront {
         }
 
         /**
+        * The customer's most recently updated, incomplete checkout.
+        */
+        public CustomerQuery lastIncompleteCheckout(CheckoutQueryDefinition queryDef) {
+            startField("lastIncompleteCheckout");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CheckoutQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
         * The customer’s last name.
         */
         public CustomerQuery lastName() {
@@ -13635,6 +16795,7 @@ public class Storefront {
             /**
             * Supported filter parameters:
             * - `processed_at`
+            * See the detailed [search syntax](https://help.shopify.com/api/getting-started/search-syntax).
             */
             public OrdersArguments query(String value) {
                 if (value != null) {
@@ -13678,6 +16839,16 @@ public class Storefront {
         */
         public CustomerQuery phone() {
             startField("phone");
+
+            return this;
+        }
+
+        /**
+        * A list of tags assigned to the customer.
+        * Additional access scope required: unauthenticated_read_customer_tags.
+        */
+        public CustomerQuery tags() {
+            startField("tags");
 
             return this;
         }
@@ -13768,6 +16939,17 @@ public class Storefront {
                         break;
                     }
 
+                    case "lastIncompleteCheckout": {
+                        Checkout optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new Checkout(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
                     case "lastName": {
                         String optional1 = null;
                         if (!field.getValue().isJsonNull()) {
@@ -13792,6 +16974,17 @@ public class Storefront {
                         }
 
                         responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "tags": {
+                        List<String> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(jsonAsString(element1, key));
+                        }
+
+                        responseData.put(key, list1);
 
                         break;
                     }
@@ -13922,6 +17115,19 @@ public class Storefront {
         }
 
         /**
+        * The customer's most recently updated, incomplete checkout.
+        */
+
+        public Checkout getLastIncompleteCheckout() {
+            return (Checkout) get("lastIncompleteCheckout");
+        }
+
+        public Customer setLastIncompleteCheckout(Checkout arg) {
+            optimisticData.put(getKey("lastIncompleteCheckout"), arg);
+            return this;
+        }
+
+        /**
         * The customer’s last name.
         */
 
@@ -13961,6 +17167,20 @@ public class Storefront {
         }
 
         /**
+        * A list of tags assigned to the customer.
+        * Additional access scope required: unauthenticated_read_customer_tags.
+        */
+
+        public List<String> getTags() {
+            return (List<String>) get("tags");
+        }
+
+        public Customer setTags(List<String> arg) {
+            optimisticData.put(getKey("tags"), arg);
+            return this;
+        }
+
+        /**
         * The date and time when the customer information was updated.
         */
 
@@ -13991,11 +17211,15 @@ public class Storefront {
 
                 case "id": return false;
 
+                case "lastIncompleteCheckout": return true;
+
                 case "lastName": return false;
 
                 case "orders": return true;
 
                 case "phone": return false;
+
+                case "tags": return false;
 
                 case "updatedAt": return false;
 
@@ -14164,6 +17388,9 @@ public class Storefront {
         void define(CustomerAccessTokenCreatePayloadQuery _queryBuilder);
     }
 
+    /**
+    * Return type for `customerAccessTokenCreate` mutation.
+    */
     public static class CustomerAccessTokenCreatePayloadQuery extends Query<CustomerAccessTokenCreatePayloadQuery> {
         CustomerAccessTokenCreatePayloadQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
@@ -14212,6 +17439,9 @@ public class Storefront {
         }
     }
 
+    /**
+    * Return type for `customerAccessTokenCreate` mutation.
+    */
     public static class CustomerAccessTokenCreatePayload extends AbstractResponse<CustomerAccessTokenCreatePayload> {
         public CustomerAccessTokenCreatePayload() {
         }
@@ -14327,6 +17557,9 @@ public class Storefront {
         void define(CustomerAccessTokenDeletePayloadQuery _queryBuilder);
     }
 
+    /**
+    * Return type for `customerAccessTokenDelete` mutation.
+    */
     public static class CustomerAccessTokenDeletePayloadQuery extends Query<CustomerAccessTokenDeletePayloadQuery> {
         CustomerAccessTokenDeletePayloadQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
@@ -14364,6 +17597,9 @@ public class Storefront {
         }
     }
 
+    /**
+    * Return type for `customerAccessTokenDelete` mutation.
+    */
     public static class CustomerAccessTokenDeletePayload extends AbstractResponse<CustomerAccessTokenDeletePayload> {
         public CustomerAccessTokenDeletePayload() {
         }
@@ -14477,6 +17713,9 @@ public class Storefront {
         void define(CustomerAccessTokenRenewPayloadQuery _queryBuilder);
     }
 
+    /**
+    * Return type for `customerAccessTokenRenew` mutation.
+    */
     public static class CustomerAccessTokenRenewPayloadQuery extends Query<CustomerAccessTokenRenewPayloadQuery> {
         CustomerAccessTokenRenewPayloadQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
@@ -14509,6 +17748,9 @@ public class Storefront {
         }
     }
 
+    /**
+    * Return type for `customerAccessTokenRenew` mutation.
+    */
     public static class CustomerAccessTokenRenewPayload extends AbstractResponse<CustomerAccessTokenRenewPayload> {
         public CustomerAccessTokenRenewPayload() {
         }
@@ -14643,6 +17885,9 @@ public class Storefront {
         void define(CustomerActivatePayloadQuery _queryBuilder);
     }
 
+    /**
+    * Return type for `customerActivate` mutation.
+    */
     public static class CustomerActivatePayloadQuery extends Query<CustomerActivatePayloadQuery> {
         CustomerActivatePayloadQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
@@ -14677,6 +17922,22 @@ public class Storefront {
         /**
         * List of errors that occurred executing the mutation.
         */
+        public CustomerActivatePayloadQuery customerUserErrors(CustomerUserErrorQueryDefinition queryDef) {
+            startField("customerUserErrors");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CustomerUserErrorQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        *
+        * @deprecated Use `customerUserErrors` instead
+        */
+        @Deprecated
         public CustomerActivatePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
 
@@ -14688,6 +17949,9 @@ public class Storefront {
         }
     }
 
+    /**
+    * Return type for `customerActivate` mutation.
+    */
     public static class CustomerActivatePayload extends AbstractResponse<CustomerActivatePayload> {
         public CustomerActivatePayload() {
         }
@@ -14715,6 +17979,17 @@ public class Storefront {
                         }
 
                         responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "customerUserErrors": {
+                        List<CustomerUserError> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new CustomerUserError(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
 
                         break;
                     }
@@ -14775,6 +18050,21 @@ public class Storefront {
         * List of errors that occurred executing the mutation.
         */
 
+        public List<CustomerUserError> getCustomerUserErrors() {
+            return (List<CustomerUserError>) get("customerUserErrors");
+        }
+
+        public CustomerActivatePayload setCustomerUserErrors(List<CustomerUserError> arg) {
+            optimisticData.put(getKey("customerUserErrors"), arg);
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        *
+        * @deprecated Use `customerUserErrors` instead
+        */
+
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -14790,6 +18080,8 @@ public class Storefront {
 
                 case "customerAccessToken": return true;
 
+                case "customerUserErrors": return true;
+
                 case "userErrors": return true;
 
                 default: return false;
@@ -14801,6 +18093,9 @@ public class Storefront {
         void define(CustomerAddressCreatePayloadQuery _queryBuilder);
     }
 
+    /**
+    * Return type for `customerAddressCreate` mutation.
+    */
     public static class CustomerAddressCreatePayloadQuery extends Query<CustomerAddressCreatePayloadQuery> {
         CustomerAddressCreatePayloadQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
@@ -14822,6 +18117,22 @@ public class Storefront {
         /**
         * List of errors that occurred executing the mutation.
         */
+        public CustomerAddressCreatePayloadQuery customerUserErrors(CustomerUserErrorQueryDefinition queryDef) {
+            startField("customerUserErrors");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CustomerUserErrorQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        *
+        * @deprecated Use `customerUserErrors` instead
+        */
+        @Deprecated
         public CustomerAddressCreatePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
 
@@ -14833,6 +18144,9 @@ public class Storefront {
         }
     }
 
+    /**
+    * Return type for `customerAddressCreate` mutation.
+    */
     public static class CustomerAddressCreatePayload extends AbstractResponse<CustomerAddressCreatePayload> {
         public CustomerAddressCreatePayload() {
         }
@@ -14849,6 +18163,17 @@ public class Storefront {
                         }
 
                         responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "customerUserErrors": {
+                        List<CustomerUserError> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new CustomerUserError(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
 
                         break;
                     }
@@ -14896,6 +18221,21 @@ public class Storefront {
         * List of errors that occurred executing the mutation.
         */
 
+        public List<CustomerUserError> getCustomerUserErrors() {
+            return (List<CustomerUserError>) get("customerUserErrors");
+        }
+
+        public CustomerAddressCreatePayload setCustomerUserErrors(List<CustomerUserError> arg) {
+            optimisticData.put(getKey("customerUserErrors"), arg);
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        *
+        * @deprecated Use `customerUserErrors` instead
+        */
+
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -14909,6 +18249,8 @@ public class Storefront {
             switch (getFieldName(key)) {
                 case "customerAddress": return true;
 
+                case "customerUserErrors": return true;
+
                 case "userErrors": return true;
 
                 default: return false;
@@ -14920,9 +18262,25 @@ public class Storefront {
         void define(CustomerAddressDeletePayloadQuery _queryBuilder);
     }
 
+    /**
+    * Return type for `customerAddressDelete` mutation.
+    */
     public static class CustomerAddressDeletePayloadQuery extends Query<CustomerAddressDeletePayloadQuery> {
         CustomerAddressDeletePayloadQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        */
+        public CustomerAddressDeletePayloadQuery customerUserErrors(CustomerUserErrorQueryDefinition queryDef) {
+            startField("customerUserErrors");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CustomerUserErrorQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
         }
 
         /**
@@ -14936,7 +18294,10 @@ public class Storefront {
 
         /**
         * List of errors that occurred executing the mutation.
+        *
+        * @deprecated Use `customerUserErrors` instead
         */
+        @Deprecated
         public CustomerAddressDeletePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
 
@@ -14948,6 +18309,9 @@ public class Storefront {
         }
     }
 
+    /**
+    * Return type for `customerAddressDelete` mutation.
+    */
     public static class CustomerAddressDeletePayload extends AbstractResponse<CustomerAddressDeletePayload> {
         public CustomerAddressDeletePayload() {
         }
@@ -14957,6 +18321,17 @@ public class Storefront {
                 String key = field.getKey();
                 String fieldName = getFieldName(key);
                 switch (fieldName) {
+                    case "customerUserErrors": {
+                        List<CustomerUserError> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new CustomerUserError(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
                     case "deletedCustomerAddressId": {
                         String optional1 = null;
                         if (!field.getValue().isJsonNull()) {
@@ -14995,6 +18370,19 @@ public class Storefront {
         }
 
         /**
+        * List of errors that occurred executing the mutation.
+        */
+
+        public List<CustomerUserError> getCustomerUserErrors() {
+            return (List<CustomerUserError>) get("customerUserErrors");
+        }
+
+        public CustomerAddressDeletePayload setCustomerUserErrors(List<CustomerUserError> arg) {
+            optimisticData.put(getKey("customerUserErrors"), arg);
+            return this;
+        }
+
+        /**
         * ID of the deleted customer address.
         */
 
@@ -15009,6 +18397,8 @@ public class Storefront {
 
         /**
         * List of errors that occurred executing the mutation.
+        *
+        * @deprecated Use `customerUserErrors` instead
         */
 
         public List<UserError> getUserErrors() {
@@ -15022,6 +18412,8 @@ public class Storefront {
 
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
+                case "customerUserErrors": return true;
+
                 case "deletedCustomerAddressId": return false;
 
                 case "userErrors": return true;
@@ -15035,6 +18427,9 @@ public class Storefront {
         void define(CustomerAddressUpdatePayloadQuery _queryBuilder);
     }
 
+    /**
+    * Return type for `customerAddressUpdate` mutation.
+    */
     public static class CustomerAddressUpdatePayloadQuery extends Query<CustomerAddressUpdatePayloadQuery> {
         CustomerAddressUpdatePayloadQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
@@ -15056,6 +18451,22 @@ public class Storefront {
         /**
         * List of errors that occurred executing the mutation.
         */
+        public CustomerAddressUpdatePayloadQuery customerUserErrors(CustomerUserErrorQueryDefinition queryDef) {
+            startField("customerUserErrors");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CustomerUserErrorQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        *
+        * @deprecated Use `customerUserErrors` instead
+        */
+        @Deprecated
         public CustomerAddressUpdatePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
 
@@ -15067,6 +18478,9 @@ public class Storefront {
         }
     }
 
+    /**
+    * Return type for `customerAddressUpdate` mutation.
+    */
     public static class CustomerAddressUpdatePayload extends AbstractResponse<CustomerAddressUpdatePayload> {
         public CustomerAddressUpdatePayload() {
         }
@@ -15083,6 +18497,17 @@ public class Storefront {
                         }
 
                         responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "customerUserErrors": {
+                        List<CustomerUserError> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new CustomerUserError(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
 
                         break;
                     }
@@ -15130,6 +18555,21 @@ public class Storefront {
         * List of errors that occurred executing the mutation.
         */
 
+        public List<CustomerUserError> getCustomerUserErrors() {
+            return (List<CustomerUserError>) get("customerUserErrors");
+        }
+
+        public CustomerAddressUpdatePayload setCustomerUserErrors(List<CustomerUserError> arg) {
+            optimisticData.put(getKey("customerUserErrors"), arg);
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        *
+        * @deprecated Use `customerUserErrors` instead
+        */
+
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -15142,6 +18582,8 @@ public class Storefront {
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "customerAddress": return true;
+
+                case "customerUserErrors": return true;
 
                 case "userErrors": return true;
 
@@ -15337,6 +18779,9 @@ public class Storefront {
         void define(CustomerCreatePayloadQuery _queryBuilder);
     }
 
+    /**
+    * Return type for `customerCreate` mutation.
+    */
     public static class CustomerCreatePayloadQuery extends Query<CustomerCreatePayloadQuery> {
         CustomerCreatePayloadQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
@@ -15358,6 +18803,22 @@ public class Storefront {
         /**
         * List of errors that occurred executing the mutation.
         */
+        public CustomerCreatePayloadQuery customerUserErrors(CustomerUserErrorQueryDefinition queryDef) {
+            startField("customerUserErrors");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CustomerUserErrorQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        *
+        * @deprecated Use `customerUserErrors` instead
+        */
+        @Deprecated
         public CustomerCreatePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
 
@@ -15369,6 +18830,9 @@ public class Storefront {
         }
     }
 
+    /**
+    * Return type for `customerCreate` mutation.
+    */
     public static class CustomerCreatePayload extends AbstractResponse<CustomerCreatePayload> {
         public CustomerCreatePayload() {
         }
@@ -15385,6 +18849,17 @@ public class Storefront {
                         }
 
                         responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "customerUserErrors": {
+                        List<CustomerUserError> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new CustomerUserError(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
 
                         break;
                     }
@@ -15432,6 +18907,21 @@ public class Storefront {
         * List of errors that occurred executing the mutation.
         */
 
+        public List<CustomerUserError> getCustomerUserErrors() {
+            return (List<CustomerUserError>) get("customerUserErrors");
+        }
+
+        public CustomerCreatePayload setCustomerUserErrors(List<CustomerUserError> arg) {
+            optimisticData.put(getKey("customerUserErrors"), arg);
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        *
+        * @deprecated Use `customerUserErrors` instead
+        */
+
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -15445,6 +18935,8 @@ public class Storefront {
             switch (getFieldName(key)) {
                 case "customer": return true;
 
+                case "customerUserErrors": return true;
+
                 case "userErrors": return true;
 
                 default: return false;
@@ -15456,6 +18948,9 @@ public class Storefront {
         void define(CustomerDefaultAddressUpdatePayloadQuery _queryBuilder);
     }
 
+    /**
+    * Return type for `customerDefaultAddressUpdate` mutation.
+    */
     public static class CustomerDefaultAddressUpdatePayloadQuery extends Query<CustomerDefaultAddressUpdatePayloadQuery> {
         CustomerDefaultAddressUpdatePayloadQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
@@ -15477,6 +18972,22 @@ public class Storefront {
         /**
         * List of errors that occurred executing the mutation.
         */
+        public CustomerDefaultAddressUpdatePayloadQuery customerUserErrors(CustomerUserErrorQueryDefinition queryDef) {
+            startField("customerUserErrors");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CustomerUserErrorQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        *
+        * @deprecated Use `customerUserErrors` instead
+        */
+        @Deprecated
         public CustomerDefaultAddressUpdatePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
 
@@ -15488,6 +18999,9 @@ public class Storefront {
         }
     }
 
+    /**
+    * Return type for `customerDefaultAddressUpdate` mutation.
+    */
     public static class CustomerDefaultAddressUpdatePayload extends AbstractResponse<CustomerDefaultAddressUpdatePayload> {
         public CustomerDefaultAddressUpdatePayload() {
         }
@@ -15504,6 +19018,17 @@ public class Storefront {
                         }
 
                         responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "customerUserErrors": {
+                        List<CustomerUserError> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new CustomerUserError(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
 
                         break;
                     }
@@ -15551,6 +19076,21 @@ public class Storefront {
         * List of errors that occurred executing the mutation.
         */
 
+        public List<CustomerUserError> getCustomerUserErrors() {
+            return (List<CustomerUserError>) get("customerUserErrors");
+        }
+
+        public CustomerDefaultAddressUpdatePayload setCustomerUserErrors(List<CustomerUserError> arg) {
+            optimisticData.put(getKey("customerUserErrors"), arg);
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        *
+        * @deprecated Use `customerUserErrors` instead
+        */
+
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -15564,6 +19104,8 @@ public class Storefront {
             switch (getFieldName(key)) {
                 case "customer": return true;
 
+                case "customerUserErrors": return true;
+
                 case "userErrors": return true;
 
                 default: return false;
@@ -15576,7 +19118,67 @@ public class Storefront {
     */
     public enum CustomerErrorCode {
         /**
-        * Customer is unidentified.
+        * Customer already enabled.
+        */
+        ALREADY_ENABLED,
+
+        /**
+        * Input value is blank.
+        */
+        BLANK,
+
+        /**
+        * Input contains HTML tags.
+        */
+        CONTAINS_HTML_TAGS,
+
+        /**
+        * Input contains URL.
+        */
+        CONTAINS_URL,
+
+        /**
+        * Customer is disabled.
+        */
+        CUSTOMER_DISABLED,
+
+        /**
+        * Input value is invalid.
+        */
+        INVALID,
+
+        /**
+        * Address does not exist.
+        */
+        NOT_FOUND,
+
+        /**
+        * Input password starts or ends with whitespace.
+        */
+        PASSWORD_STARTS_OR_ENDS_WITH_WHITESPACE,
+
+        /**
+        * Input value is already taken.
+        */
+        TAKEN,
+
+        /**
+        * Invalid activation token.
+        */
+        TOKEN_INVALID,
+
+        /**
+        * Input value is too long.
+        */
+        TOO_LONG,
+
+        /**
+        * Input value is too short.
+        */
+        TOO_SHORT,
+
+        /**
+        * Unidentified customer.
         */
         UNIDENTIFIED_CUSTOMER,
 
@@ -15588,6 +19190,54 @@ public class Storefront {
             }
 
             switch (value) {
+                case "ALREADY_ENABLED": {
+                    return ALREADY_ENABLED;
+                }
+
+                case "BLANK": {
+                    return BLANK;
+                }
+
+                case "CONTAINS_HTML_TAGS": {
+                    return CONTAINS_HTML_TAGS;
+                }
+
+                case "CONTAINS_URL": {
+                    return CONTAINS_URL;
+                }
+
+                case "CUSTOMER_DISABLED": {
+                    return CUSTOMER_DISABLED;
+                }
+
+                case "INVALID": {
+                    return INVALID;
+                }
+
+                case "NOT_FOUND": {
+                    return NOT_FOUND;
+                }
+
+                case "PASSWORD_STARTS_OR_ENDS_WITH_WHITESPACE": {
+                    return PASSWORD_STARTS_OR_ENDS_WITH_WHITESPACE;
+                }
+
+                case "TAKEN": {
+                    return TAKEN;
+                }
+
+                case "TOKEN_INVALID": {
+                    return TOKEN_INVALID;
+                }
+
+                case "TOO_LONG": {
+                    return TOO_LONG;
+                }
+
+                case "TOO_SHORT": {
+                    return TOO_SHORT;
+                }
+
                 case "UNIDENTIFIED_CUSTOMER": {
                     return UNIDENTIFIED_CUSTOMER;
                 }
@@ -15599,6 +19249,54 @@ public class Storefront {
         }
         public String toString() {
             switch (this) {
+                case ALREADY_ENABLED: {
+                    return "ALREADY_ENABLED";
+                }
+
+                case BLANK: {
+                    return "BLANK";
+                }
+
+                case CONTAINS_HTML_TAGS: {
+                    return "CONTAINS_HTML_TAGS";
+                }
+
+                case CONTAINS_URL: {
+                    return "CONTAINS_URL";
+                }
+
+                case CUSTOMER_DISABLED: {
+                    return "CUSTOMER_DISABLED";
+                }
+
+                case INVALID: {
+                    return "INVALID";
+                }
+
+                case NOT_FOUND: {
+                    return "NOT_FOUND";
+                }
+
+                case PASSWORD_STARTS_OR_ENDS_WITH_WHITESPACE: {
+                    return "PASSWORD_STARTS_OR_ENDS_WITH_WHITESPACE";
+                }
+
+                case TAKEN: {
+                    return "TAKEN";
+                }
+
+                case TOKEN_INVALID: {
+                    return "TOKEN_INVALID";
+                }
+
+                case TOO_LONG: {
+                    return "TOO_LONG";
+                }
+
+                case TOO_SHORT: {
+                    return "TOO_SHORT";
+                }
+
                 case UNIDENTIFIED_CUSTOMER: {
                     return "UNIDENTIFIED_CUSTOMER";
                 }
@@ -15614,6 +19312,9 @@ public class Storefront {
         void define(CustomerRecoverPayloadQuery _queryBuilder);
     }
 
+    /**
+    * Return type for `customerRecover` mutation.
+    */
     public static class CustomerRecoverPayloadQuery extends Query<CustomerRecoverPayloadQuery> {
         CustomerRecoverPayloadQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
@@ -15622,6 +19323,22 @@ public class Storefront {
         /**
         * List of errors that occurred executing the mutation.
         */
+        public CustomerRecoverPayloadQuery customerUserErrors(CustomerUserErrorQueryDefinition queryDef) {
+            startField("customerUserErrors");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CustomerUserErrorQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        *
+        * @deprecated Use `customerUserErrors` instead
+        */
+        @Deprecated
         public CustomerRecoverPayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
 
@@ -15633,6 +19350,9 @@ public class Storefront {
         }
     }
 
+    /**
+    * Return type for `customerRecover` mutation.
+    */
     public static class CustomerRecoverPayload extends AbstractResponse<CustomerRecoverPayload> {
         public CustomerRecoverPayload() {
         }
@@ -15642,6 +19362,17 @@ public class Storefront {
                 String key = field.getKey();
                 String fieldName = getFieldName(key);
                 switch (fieldName) {
+                    case "customerUserErrors": {
+                        List<CustomerUserError> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new CustomerUserError(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
                     case "userErrors": {
                         List<UserError> list1 = new ArrayList<>();
                         for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
@@ -15672,6 +19403,21 @@ public class Storefront {
         * List of errors that occurred executing the mutation.
         */
 
+        public List<CustomerUserError> getCustomerUserErrors() {
+            return (List<CustomerUserError>) get("customerUserErrors");
+        }
+
+        public CustomerRecoverPayload setCustomerUserErrors(List<CustomerUserError> arg) {
+            optimisticData.put(getKey("customerUserErrors"), arg);
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        *
+        * @deprecated Use `customerUserErrors` instead
+        */
+
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -15683,6 +19429,216 @@ public class Storefront {
 
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
+                case "customerUserErrors": return true;
+
+                case "userErrors": return true;
+
+                default: return false;
+            }
+        }
+    }
+
+    public interface CustomerResetByUrlPayloadQueryDefinition {
+        void define(CustomerResetByUrlPayloadQuery _queryBuilder);
+    }
+
+    /**
+    * Return type for `customerResetByUrl` mutation.
+    */
+    public static class CustomerResetByUrlPayloadQuery extends Query<CustomerResetByUrlPayloadQuery> {
+        CustomerResetByUrlPayloadQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * The customer object which was reset.
+        */
+        public CustomerResetByUrlPayloadQuery customer(CustomerQueryDefinition queryDef) {
+            startField("customer");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CustomerQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * A newly created customer access token object for the customer.
+        */
+        public CustomerResetByUrlPayloadQuery customerAccessToken(CustomerAccessTokenQueryDefinition queryDef) {
+            startField("customerAccessToken");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CustomerAccessTokenQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        */
+        public CustomerResetByUrlPayloadQuery customerUserErrors(CustomerUserErrorQueryDefinition queryDef) {
+            startField("customerUserErrors");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CustomerUserErrorQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        *
+        * @deprecated Use `customerUserErrors` instead
+        */
+        @Deprecated
+        public CustomerResetByUrlPayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
+            startField("userErrors");
+
+            _queryBuilder.append('{');
+            queryDef.define(new UserErrorQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+    }
+
+    /**
+    * Return type for `customerResetByUrl` mutation.
+    */
+    public static class CustomerResetByUrlPayload extends AbstractResponse<CustomerResetByUrlPayload> {
+        public CustomerResetByUrlPayload() {
+        }
+
+        public CustomerResetByUrlPayload(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "customer": {
+                        Customer optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new Customer(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "customerAccessToken": {
+                        CustomerAccessToken optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new CustomerAccessToken(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "customerUserErrors": {
+                        List<CustomerUserError> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new CustomerUserError(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "userErrors": {
+                        List<UserError> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new UserError(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "CustomerResetByUrlPayload";
+        }
+
+        /**
+        * The customer object which was reset.
+        */
+
+        public Customer getCustomer() {
+            return (Customer) get("customer");
+        }
+
+        public CustomerResetByUrlPayload setCustomer(Customer arg) {
+            optimisticData.put(getKey("customer"), arg);
+            return this;
+        }
+
+        /**
+        * A newly created customer access token object for the customer.
+        */
+
+        public CustomerAccessToken getCustomerAccessToken() {
+            return (CustomerAccessToken) get("customerAccessToken");
+        }
+
+        public CustomerResetByUrlPayload setCustomerAccessToken(CustomerAccessToken arg) {
+            optimisticData.put(getKey("customerAccessToken"), arg);
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        */
+
+        public List<CustomerUserError> getCustomerUserErrors() {
+            return (List<CustomerUserError>) get("customerUserErrors");
+        }
+
+        public CustomerResetByUrlPayload setCustomerUserErrors(List<CustomerUserError> arg) {
+            optimisticData.put(getKey("customerUserErrors"), arg);
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        *
+        * @deprecated Use `customerUserErrors` instead
+        */
+
+        public List<UserError> getUserErrors() {
+            return (List<UserError>) get("userErrors");
+        }
+
+        public CustomerResetByUrlPayload setUserErrors(List<UserError> arg) {
+            optimisticData.put(getKey("userErrors"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "customer": return true;
+
+                case "customerAccessToken": return true;
+
+                case "customerUserErrors": return true;
+
                 case "userErrors": return true;
 
                 default: return false;
@@ -15741,6 +19697,9 @@ public class Storefront {
         void define(CustomerResetPayloadQuery _queryBuilder);
     }
 
+    /**
+    * Return type for `customerReset` mutation.
+    */
     public static class CustomerResetPayloadQuery extends Query<CustomerResetPayloadQuery> {
         CustomerResetPayloadQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
@@ -15760,8 +19719,37 @@ public class Storefront {
         }
 
         /**
+        * A newly created customer access token object for the customer.
+        */
+        public CustomerResetPayloadQuery customerAccessToken(CustomerAccessTokenQueryDefinition queryDef) {
+            startField("customerAccessToken");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CustomerAccessTokenQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
         * List of errors that occurred executing the mutation.
         */
+        public CustomerResetPayloadQuery customerUserErrors(CustomerUserErrorQueryDefinition queryDef) {
+            startField("customerUserErrors");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CustomerUserErrorQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        *
+        * @deprecated Use `customerUserErrors` instead
+        */
+        @Deprecated
         public CustomerResetPayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
 
@@ -15773,6 +19761,9 @@ public class Storefront {
         }
     }
 
+    /**
+    * Return type for `customerReset` mutation.
+    */
     public static class CustomerResetPayload extends AbstractResponse<CustomerResetPayload> {
         public CustomerResetPayload() {
         }
@@ -15789,6 +19780,28 @@ public class Storefront {
                         }
 
                         responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "customerAccessToken": {
+                        CustomerAccessToken optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new CustomerAccessToken(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "customerUserErrors": {
+                        List<CustomerUserError> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new CustomerUserError(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
 
                         break;
                     }
@@ -15833,7 +19846,35 @@ public class Storefront {
         }
 
         /**
+        * A newly created customer access token object for the customer.
+        */
+
+        public CustomerAccessToken getCustomerAccessToken() {
+            return (CustomerAccessToken) get("customerAccessToken");
+        }
+
+        public CustomerResetPayload setCustomerAccessToken(CustomerAccessToken arg) {
+            optimisticData.put(getKey("customerAccessToken"), arg);
+            return this;
+        }
+
+        /**
         * List of errors that occurred executing the mutation.
+        */
+
+        public List<CustomerUserError> getCustomerUserErrors() {
+            return (List<CustomerUserError>) get("customerUserErrors");
+        }
+
+        public CustomerResetPayload setCustomerUserErrors(List<CustomerUserError> arg) {
+            optimisticData.put(getKey("customerUserErrors"), arg);
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        *
+        * @deprecated Use `customerUserErrors` instead
         */
 
         public List<UserError> getUserErrors() {
@@ -15848,6 +19889,10 @@ public class Storefront {
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "customer": return true;
+
+                case "customerAccessToken": return true;
+
+                case "customerUserErrors": return true;
 
                 case "userErrors": return true;
 
@@ -16073,6 +20118,9 @@ public class Storefront {
         void define(CustomerUpdatePayloadQuery _queryBuilder);
     }
 
+    /**
+    * Return type for `customerUpdate` mutation.
+    */
     public static class CustomerUpdatePayloadQuery extends Query<CustomerUpdatePayloadQuery> {
         CustomerUpdatePayloadQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
@@ -16109,6 +20157,22 @@ public class Storefront {
         /**
         * List of errors that occurred executing the mutation.
         */
+        public CustomerUpdatePayloadQuery customerUserErrors(CustomerUserErrorQueryDefinition queryDef) {
+            startField("customerUserErrors");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CustomerUserErrorQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        *
+        * @deprecated Use `customerUserErrors` instead
+        */
+        @Deprecated
         public CustomerUpdatePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
 
@@ -16120,6 +20184,9 @@ public class Storefront {
         }
     }
 
+    /**
+    * Return type for `customerUpdate` mutation.
+    */
     public static class CustomerUpdatePayload extends AbstractResponse<CustomerUpdatePayload> {
         public CustomerUpdatePayload() {
         }
@@ -16147,6 +20214,17 @@ public class Storefront {
                         }
 
                         responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "customerUserErrors": {
+                        List<CustomerUserError> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new CustomerUserError(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
 
                         break;
                     }
@@ -16209,6 +20287,21 @@ public class Storefront {
         * List of errors that occurred executing the mutation.
         */
 
+        public List<CustomerUserError> getCustomerUserErrors() {
+            return (List<CustomerUserError>) get("customerUserErrors");
+        }
+
+        public CustomerUpdatePayload setCustomerUserErrors(List<CustomerUserError> arg) {
+            optimisticData.put(getKey("customerUserErrors"), arg);
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        *
+        * @deprecated Use `customerUserErrors` instead
+        */
+
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -16223,6 +20316,8 @@ public class Storefront {
                 case "customer": return true;
 
                 case "customerAccessToken": return true;
+
+                case "customerUserErrors": return true;
 
                 case "userErrors": return true;
 
@@ -16461,6 +20556,997 @@ public class Storefront {
         }
     }
 
+    public interface DiscountAllocationQueryDefinition {
+        void define(DiscountAllocationQuery _queryBuilder);
+    }
+
+    /**
+    * An amount discounting the line that has been allocated by a discount.
+    */
+    public static class DiscountAllocationQuery extends Query<DiscountAllocationQuery> {
+        DiscountAllocationQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * Amount of discount allocated.
+        */
+        public DiscountAllocationQuery allocatedAmount(MoneyV2QueryDefinition queryDef) {
+            startField("allocatedAmount");
+
+            _queryBuilder.append('{');
+            queryDef.define(new MoneyV2Query(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * The discount this allocated amount originated from.
+        */
+        public DiscountAllocationQuery discountApplication(DiscountApplicationQueryDefinition queryDef) {
+            startField("discountApplication");
+
+            _queryBuilder.append('{');
+            queryDef.define(new DiscountApplicationQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+    }
+
+    /**
+    * An amount discounting the line that has been allocated by a discount.
+    */
+    public static class DiscountAllocation extends AbstractResponse<DiscountAllocation> {
+        public DiscountAllocation() {
+        }
+
+        public DiscountAllocation(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "allocatedAmount": {
+                        responseData.put(key, new MoneyV2(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "discountApplication": {
+                        responseData.put(key, UnknownDiscountApplication.create(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "DiscountAllocation";
+        }
+
+        /**
+        * Amount of discount allocated.
+        */
+
+        public MoneyV2 getAllocatedAmount() {
+            return (MoneyV2) get("allocatedAmount");
+        }
+
+        public DiscountAllocation setAllocatedAmount(MoneyV2 arg) {
+            optimisticData.put(getKey("allocatedAmount"), arg);
+            return this;
+        }
+
+        /**
+        * The discount this allocated amount originated from.
+        */
+
+        public DiscountApplication getDiscountApplication() {
+            return (DiscountApplication) get("discountApplication");
+        }
+
+        public DiscountAllocation setDiscountApplication(DiscountApplication arg) {
+            optimisticData.put(getKey("discountApplication"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "allocatedAmount": return true;
+
+                case "discountApplication": return false;
+
+                default: return false;
+            }
+        }
+    }
+
+    public interface DiscountApplicationQueryDefinition {
+        void define(DiscountApplicationQuery _queryBuilder);
+    }
+
+    /**
+    * Discount applications capture the intentions of a discount source at
+    * the time of application.
+    */
+    public static class DiscountApplicationQuery extends Query<DiscountApplicationQuery> {
+        DiscountApplicationQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+
+            startField("__typename");
+        }
+
+        /**
+        * The method by which the discount's value is allocated to its entitled items.
+        */
+        public DiscountApplicationQuery allocationMethod() {
+            startField("allocationMethod");
+
+            return this;
+        }
+
+        /**
+        * Which lines of targetType that the discount is allocated over.
+        */
+        public DiscountApplicationQuery targetSelection() {
+            startField("targetSelection");
+
+            return this;
+        }
+
+        /**
+        * The type of line that the discount is applicable towards.
+        */
+        public DiscountApplicationQuery targetType() {
+            startField("targetType");
+
+            return this;
+        }
+
+        /**
+        * The value of the discount application.
+        */
+        public DiscountApplicationQuery value(PricingValueQueryDefinition queryDef) {
+            startField("value");
+
+            _queryBuilder.append('{');
+            queryDef.define(new PricingValueQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        public DiscountApplicationQuery onAutomaticDiscountApplication(AutomaticDiscountApplicationQueryDefinition queryDef) {
+            startInlineFragment("AutomaticDiscountApplication");
+            queryDef.define(new AutomaticDiscountApplicationQuery(_queryBuilder));
+            _queryBuilder.append('}');
+            return this;
+        }
+
+        public DiscountApplicationQuery onDiscountCodeApplication(DiscountCodeApplicationQueryDefinition queryDef) {
+            startInlineFragment("DiscountCodeApplication");
+            queryDef.define(new DiscountCodeApplicationQuery(_queryBuilder));
+            _queryBuilder.append('}');
+            return this;
+        }
+
+        public DiscountApplicationQuery onManualDiscountApplication(ManualDiscountApplicationQueryDefinition queryDef) {
+            startInlineFragment("ManualDiscountApplication");
+            queryDef.define(new ManualDiscountApplicationQuery(_queryBuilder));
+            _queryBuilder.append('}');
+            return this;
+        }
+
+        public DiscountApplicationQuery onScriptDiscountApplication(ScriptDiscountApplicationQueryDefinition queryDef) {
+            startInlineFragment("ScriptDiscountApplication");
+            queryDef.define(new ScriptDiscountApplicationQuery(_queryBuilder));
+            _queryBuilder.append('}');
+            return this;
+        }
+    }
+
+    public interface DiscountApplication {
+        String getGraphQlTypeName();
+
+        DiscountApplicationAllocationMethod getAllocationMethod();
+
+        DiscountApplicationTargetSelection getTargetSelection();
+
+        DiscountApplicationTargetType getTargetType();
+
+        PricingValue getValue();
+    }
+
+    /**
+    * Discount applications capture the intentions of a discount source at
+    * the time of application.
+    */
+    public static class UnknownDiscountApplication extends AbstractResponse<UnknownDiscountApplication> implements DiscountApplication {
+        public UnknownDiscountApplication() {
+        }
+
+        public UnknownDiscountApplication(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "allocationMethod": {
+                        responseData.put(key, DiscountApplicationAllocationMethod.fromGraphQl(jsonAsString(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "targetSelection": {
+                        responseData.put(key, DiscountApplicationTargetSelection.fromGraphQl(jsonAsString(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "targetType": {
+                        responseData.put(key, DiscountApplicationTargetType.fromGraphQl(jsonAsString(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "value": {
+                        responseData.put(key, UnknownPricingValue.create(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public static DiscountApplication create(JsonObject fields) throws SchemaViolationError {
+            String typeName = fields.getAsJsonPrimitive("__typename").getAsString();
+            switch (typeName) {
+                case "AutomaticDiscountApplication": {
+                    return new AutomaticDiscountApplication(fields);
+                }
+
+                case "DiscountCodeApplication": {
+                    return new DiscountCodeApplication(fields);
+                }
+
+                case "ManualDiscountApplication": {
+                    return new ManualDiscountApplication(fields);
+                }
+
+                case "ScriptDiscountApplication": {
+                    return new ScriptDiscountApplication(fields);
+                }
+
+                default: {
+                    return new UnknownDiscountApplication(fields);
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return (String) get("__typename");
+        }
+
+        /**
+        * The method by which the discount's value is allocated to its entitled items.
+        */
+
+        public DiscountApplicationAllocationMethod getAllocationMethod() {
+            return (DiscountApplicationAllocationMethod) get("allocationMethod");
+        }
+
+        public UnknownDiscountApplication setAllocationMethod(DiscountApplicationAllocationMethod arg) {
+            optimisticData.put(getKey("allocationMethod"), arg);
+            return this;
+        }
+
+        /**
+        * Which lines of targetType that the discount is allocated over.
+        */
+
+        public DiscountApplicationTargetSelection getTargetSelection() {
+            return (DiscountApplicationTargetSelection) get("targetSelection");
+        }
+
+        public UnknownDiscountApplication setTargetSelection(DiscountApplicationTargetSelection arg) {
+            optimisticData.put(getKey("targetSelection"), arg);
+            return this;
+        }
+
+        /**
+        * The type of line that the discount is applicable towards.
+        */
+
+        public DiscountApplicationTargetType getTargetType() {
+            return (DiscountApplicationTargetType) get("targetType");
+        }
+
+        public UnknownDiscountApplication setTargetType(DiscountApplicationTargetType arg) {
+            optimisticData.put(getKey("targetType"), arg);
+            return this;
+        }
+
+        /**
+        * The value of the discount application.
+        */
+
+        public PricingValue getValue() {
+            return (PricingValue) get("value");
+        }
+
+        public UnknownDiscountApplication setValue(PricingValue arg) {
+            optimisticData.put(getKey("value"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "allocationMethod": return false;
+
+                case "targetSelection": return false;
+
+                case "targetType": return false;
+
+                case "value": return false;
+
+                default: return false;
+            }
+        }
+    }
+
+    /**
+    * The method by which the discount's value is allocated onto its entitled lines.
+    */
+    public enum DiscountApplicationAllocationMethod {
+        /**
+        * The value is spread across all entitled lines.
+        */
+        ACROSS,
+
+        /**
+        * The value is applied onto every entitled line.
+        */
+        EACH,
+
+        /**
+        * The value is specifically applied onto a particular line.
+        */
+        ONE,
+
+        UNKNOWN_VALUE;
+
+        public static DiscountApplicationAllocationMethod fromGraphQl(String value) {
+            if (value == null) {
+                return null;
+            }
+
+            switch (value) {
+                case "ACROSS": {
+                    return ACROSS;
+                }
+
+                case "EACH": {
+                    return EACH;
+                }
+
+                case "ONE": {
+                    return ONE;
+                }
+
+                default: {
+                    return UNKNOWN_VALUE;
+                }
+            }
+        }
+        public String toString() {
+            switch (this) {
+                case ACROSS: {
+                    return "ACROSS";
+                }
+
+                case EACH: {
+                    return "EACH";
+                }
+
+                case ONE: {
+                    return "ONE";
+                }
+
+                default: {
+                    return "";
+                }
+            }
+        }
+    }
+
+    public interface DiscountApplicationConnectionQueryDefinition {
+        void define(DiscountApplicationConnectionQuery _queryBuilder);
+    }
+
+    public static class DiscountApplicationConnectionQuery extends Query<DiscountApplicationConnectionQuery> {
+        DiscountApplicationConnectionQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * A list of edges.
+        */
+        public DiscountApplicationConnectionQuery edges(DiscountApplicationEdgeQueryDefinition queryDef) {
+            startField("edges");
+
+            _queryBuilder.append('{');
+            queryDef.define(new DiscountApplicationEdgeQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * Information to aid in pagination.
+        */
+        public DiscountApplicationConnectionQuery pageInfo(PageInfoQueryDefinition queryDef) {
+            startField("pageInfo");
+
+            _queryBuilder.append('{');
+            queryDef.define(new PageInfoQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+    }
+
+    public static class DiscountApplicationConnection extends AbstractResponse<DiscountApplicationConnection> {
+        public DiscountApplicationConnection() {
+        }
+
+        public DiscountApplicationConnection(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "edges": {
+                        List<DiscountApplicationEdge> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new DiscountApplicationEdge(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "pageInfo": {
+                        responseData.put(key, new PageInfo(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "DiscountApplicationConnection";
+        }
+
+        /**
+        * A list of edges.
+        */
+
+        public List<DiscountApplicationEdge> getEdges() {
+            return (List<DiscountApplicationEdge>) get("edges");
+        }
+
+        public DiscountApplicationConnection setEdges(List<DiscountApplicationEdge> arg) {
+            optimisticData.put(getKey("edges"), arg);
+            return this;
+        }
+
+        /**
+        * Information to aid in pagination.
+        */
+
+        public PageInfo getPageInfo() {
+            return (PageInfo) get("pageInfo");
+        }
+
+        public DiscountApplicationConnection setPageInfo(PageInfo arg) {
+            optimisticData.put(getKey("pageInfo"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "edges": return true;
+
+                case "pageInfo": return true;
+
+                default: return false;
+            }
+        }
+    }
+
+    public interface DiscountApplicationEdgeQueryDefinition {
+        void define(DiscountApplicationEdgeQuery _queryBuilder);
+    }
+
+    public static class DiscountApplicationEdgeQuery extends Query<DiscountApplicationEdgeQuery> {
+        DiscountApplicationEdgeQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * A cursor for use in pagination.
+        */
+        public DiscountApplicationEdgeQuery cursor() {
+            startField("cursor");
+
+            return this;
+        }
+
+        /**
+        * The item at the end of DiscountApplicationEdge.
+        */
+        public DiscountApplicationEdgeQuery node(DiscountApplicationQueryDefinition queryDef) {
+            startField("node");
+
+            _queryBuilder.append('{');
+            queryDef.define(new DiscountApplicationQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+    }
+
+    public static class DiscountApplicationEdge extends AbstractResponse<DiscountApplicationEdge> {
+        public DiscountApplicationEdge() {
+        }
+
+        public DiscountApplicationEdge(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "cursor": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "node": {
+                        responseData.put(key, UnknownDiscountApplication.create(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "DiscountApplicationEdge";
+        }
+
+        /**
+        * A cursor for use in pagination.
+        */
+
+        public String getCursor() {
+            return (String) get("cursor");
+        }
+
+        public DiscountApplicationEdge setCursor(String arg) {
+            optimisticData.put(getKey("cursor"), arg);
+            return this;
+        }
+
+        /**
+        * The item at the end of DiscountApplicationEdge.
+        */
+
+        public DiscountApplication getNode() {
+            return (DiscountApplication) get("node");
+        }
+
+        public DiscountApplicationEdge setNode(DiscountApplication arg) {
+            optimisticData.put(getKey("node"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "cursor": return false;
+
+                case "node": return false;
+
+                default: return false;
+            }
+        }
+    }
+
+    /**
+    * Which lines on the order that the discount is allocated over, of the type
+    * defined by the Discount Application's target_type.
+    */
+    public enum DiscountApplicationTargetSelection {
+        /**
+        * The discount is allocated onto all the lines.
+        */
+        ALL,
+
+        /**
+        * The discount is allocated onto only the lines it is entitled for.
+        */
+        ENTITLED,
+
+        /**
+        * The discount is allocated onto explicitly chosen lines.
+        */
+        EXPLICIT,
+
+        UNKNOWN_VALUE;
+
+        public static DiscountApplicationTargetSelection fromGraphQl(String value) {
+            if (value == null) {
+                return null;
+            }
+
+            switch (value) {
+                case "ALL": {
+                    return ALL;
+                }
+
+                case "ENTITLED": {
+                    return ENTITLED;
+                }
+
+                case "EXPLICIT": {
+                    return EXPLICIT;
+                }
+
+                default: {
+                    return UNKNOWN_VALUE;
+                }
+            }
+        }
+        public String toString() {
+            switch (this) {
+                case ALL: {
+                    return "ALL";
+                }
+
+                case ENTITLED: {
+                    return "ENTITLED";
+                }
+
+                case EXPLICIT: {
+                    return "EXPLICIT";
+                }
+
+                default: {
+                    return "";
+                }
+            }
+        }
+    }
+
+    /**
+    * The type of line (i.e. line item or shipping line) on an order that the discount is applicable
+    * towards.
+    */
+    public enum DiscountApplicationTargetType {
+        /**
+        * The discount applies onto line items.
+        */
+        LINE_ITEM,
+
+        /**
+        * The discount applies onto shipping lines.
+        */
+        SHIPPING_LINE,
+
+        UNKNOWN_VALUE;
+
+        public static DiscountApplicationTargetType fromGraphQl(String value) {
+            if (value == null) {
+                return null;
+            }
+
+            switch (value) {
+                case "LINE_ITEM": {
+                    return LINE_ITEM;
+                }
+
+                case "SHIPPING_LINE": {
+                    return SHIPPING_LINE;
+                }
+
+                default: {
+                    return UNKNOWN_VALUE;
+                }
+            }
+        }
+        public String toString() {
+            switch (this) {
+                case LINE_ITEM: {
+                    return "LINE_ITEM";
+                }
+
+                case SHIPPING_LINE: {
+                    return "SHIPPING_LINE";
+                }
+
+                default: {
+                    return "";
+                }
+            }
+        }
+    }
+
+    public interface DiscountCodeApplicationQueryDefinition {
+        void define(DiscountCodeApplicationQuery _queryBuilder);
+    }
+
+    /**
+    * Discount code applications capture the intentions of a discount code at
+    * the time that it is applied.
+    */
+    public static class DiscountCodeApplicationQuery extends Query<DiscountCodeApplicationQuery> {
+        DiscountCodeApplicationQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * The method by which the discount's value is allocated to its entitled items.
+        */
+        public DiscountCodeApplicationQuery allocationMethod() {
+            startField("allocationMethod");
+
+            return this;
+        }
+
+        /**
+        * Specifies whether the discount code was applied successfully.
+        */
+        public DiscountCodeApplicationQuery applicable() {
+            startField("applicable");
+
+            return this;
+        }
+
+        /**
+        * The string identifying the discount code that was used at the time of application.
+        */
+        public DiscountCodeApplicationQuery code() {
+            startField("code");
+
+            return this;
+        }
+
+        /**
+        * Which lines of targetType that the discount is allocated over.
+        */
+        public DiscountCodeApplicationQuery targetSelection() {
+            startField("targetSelection");
+
+            return this;
+        }
+
+        /**
+        * The type of line that the discount is applicable towards.
+        */
+        public DiscountCodeApplicationQuery targetType() {
+            startField("targetType");
+
+            return this;
+        }
+
+        /**
+        * The value of the discount application.
+        */
+        public DiscountCodeApplicationQuery value(PricingValueQueryDefinition queryDef) {
+            startField("value");
+
+            _queryBuilder.append('{');
+            queryDef.define(new PricingValueQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+    }
+
+    /**
+    * Discount code applications capture the intentions of a discount code at
+    * the time that it is applied.
+    */
+    public static class DiscountCodeApplication extends AbstractResponse<DiscountCodeApplication> implements DiscountApplication {
+        public DiscountCodeApplication() {
+        }
+
+        public DiscountCodeApplication(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "allocationMethod": {
+                        responseData.put(key, DiscountApplicationAllocationMethod.fromGraphQl(jsonAsString(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "applicable": {
+                        responseData.put(key, jsonAsBoolean(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "code": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "targetSelection": {
+                        responseData.put(key, DiscountApplicationTargetSelection.fromGraphQl(jsonAsString(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "targetType": {
+                        responseData.put(key, DiscountApplicationTargetType.fromGraphQl(jsonAsString(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "value": {
+                        responseData.put(key, UnknownPricingValue.create(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "DiscountCodeApplication";
+        }
+
+        /**
+        * The method by which the discount's value is allocated to its entitled items.
+        */
+
+        public DiscountApplicationAllocationMethod getAllocationMethod() {
+            return (DiscountApplicationAllocationMethod) get("allocationMethod");
+        }
+
+        public DiscountCodeApplication setAllocationMethod(DiscountApplicationAllocationMethod arg) {
+            optimisticData.put(getKey("allocationMethod"), arg);
+            return this;
+        }
+
+        /**
+        * Specifies whether the discount code was applied successfully.
+        */
+
+        public Boolean getApplicable() {
+            return (Boolean) get("applicable");
+        }
+
+        public DiscountCodeApplication setApplicable(Boolean arg) {
+            optimisticData.put(getKey("applicable"), arg);
+            return this;
+        }
+
+        /**
+        * The string identifying the discount code that was used at the time of application.
+        */
+
+        public String getCode() {
+            return (String) get("code");
+        }
+
+        public DiscountCodeApplication setCode(String arg) {
+            optimisticData.put(getKey("code"), arg);
+            return this;
+        }
+
+        /**
+        * Which lines of targetType that the discount is allocated over.
+        */
+
+        public DiscountApplicationTargetSelection getTargetSelection() {
+            return (DiscountApplicationTargetSelection) get("targetSelection");
+        }
+
+        public DiscountCodeApplication setTargetSelection(DiscountApplicationTargetSelection arg) {
+            optimisticData.put(getKey("targetSelection"), arg);
+            return this;
+        }
+
+        /**
+        * The type of line that the discount is applicable towards.
+        */
+
+        public DiscountApplicationTargetType getTargetType() {
+            return (DiscountApplicationTargetType) get("targetType");
+        }
+
+        public DiscountCodeApplication setTargetType(DiscountApplicationTargetType arg) {
+            optimisticData.put(getKey("targetType"), arg);
+            return this;
+        }
+
+        /**
+        * The value of the discount application.
+        */
+
+        public PricingValue getValue() {
+            return (PricingValue) get("value");
+        }
+
+        public DiscountCodeApplication setValue(PricingValue arg) {
+            optimisticData.put(getKey("value"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "allocationMethod": return false;
+
+                case "applicable": return false;
+
+                case "code": return false;
+
+                case "targetSelection": return false;
+
+                case "targetType": return false;
+
+                case "value": return false;
+
+                default: return false;
+            }
+        }
+    }
+
     public interface DisplayableErrorQueryDefinition {
         void define(DisplayableErrorQuery _queryBuilder);
     }
@@ -16490,6 +21576,13 @@ public class Storefront {
         public DisplayableErrorQuery message() {
             startField("message");
 
+            return this;
+        }
+
+        public DisplayableErrorQuery onCheckoutUserError(CheckoutUserErrorQueryDefinition queryDef) {
+            startInlineFragment("CheckoutUserError");
+            queryDef.define(new CheckoutUserErrorQuery(_queryBuilder));
+            _queryBuilder.append('}');
             return this;
         }
 
@@ -16564,6 +21657,10 @@ public class Storefront {
         public static DisplayableError create(JsonObject fields) throws SchemaViolationError {
             String typeName = fields.getAsJsonPrimitive("__typename").getAsString();
             switch (typeName) {
+                case "CheckoutUserError": {
+                    return new CheckoutUserError(fields);
+                }
+
                 case "CustomerUserError": {
                     return new CustomerUserError(fields);
                 }
@@ -19450,6 +24547,289 @@ public class Storefront {
         }
     }
 
+    public interface ManualDiscountApplicationQueryDefinition {
+        void define(ManualDiscountApplicationQuery _queryBuilder);
+    }
+
+    /**
+    * Manual discount applications capture the intentions of a discount that was manually created.
+    */
+    public static class ManualDiscountApplicationQuery extends Query<ManualDiscountApplicationQuery> {
+        ManualDiscountApplicationQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * The method by which the discount's value is allocated to its entitled items.
+        */
+        public ManualDiscountApplicationQuery allocationMethod() {
+            startField("allocationMethod");
+
+            return this;
+        }
+
+        /**
+        * The description of the application.
+        */
+        public ManualDiscountApplicationQuery description() {
+            startField("description");
+
+            return this;
+        }
+
+        /**
+        * Which lines of targetType that the discount is allocated over.
+        */
+        public ManualDiscountApplicationQuery targetSelection() {
+            startField("targetSelection");
+
+            return this;
+        }
+
+        /**
+        * The type of line that the discount is applicable towards.
+        */
+        public ManualDiscountApplicationQuery targetType() {
+            startField("targetType");
+
+            return this;
+        }
+
+        /**
+        * The title of the application.
+        */
+        public ManualDiscountApplicationQuery title() {
+            startField("title");
+
+            return this;
+        }
+
+        /**
+        * The value of the discount application.
+        */
+        public ManualDiscountApplicationQuery value(PricingValueQueryDefinition queryDef) {
+            startField("value");
+
+            _queryBuilder.append('{');
+            queryDef.define(new PricingValueQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+    }
+
+    /**
+    * Manual discount applications capture the intentions of a discount that was manually created.
+    */
+    public static class ManualDiscountApplication extends AbstractResponse<ManualDiscountApplication> implements DiscountApplication {
+        public ManualDiscountApplication() {
+        }
+
+        public ManualDiscountApplication(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "allocationMethod": {
+                        responseData.put(key, DiscountApplicationAllocationMethod.fromGraphQl(jsonAsString(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "description": {
+                        String optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = jsonAsString(field.getValue(), key);
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "targetSelection": {
+                        responseData.put(key, DiscountApplicationTargetSelection.fromGraphQl(jsonAsString(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "targetType": {
+                        responseData.put(key, DiscountApplicationTargetType.fromGraphQl(jsonAsString(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "title": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "value": {
+                        responseData.put(key, UnknownPricingValue.create(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "ManualDiscountApplication";
+        }
+
+        /**
+        * The method by which the discount's value is allocated to its entitled items.
+        */
+
+        public DiscountApplicationAllocationMethod getAllocationMethod() {
+            return (DiscountApplicationAllocationMethod) get("allocationMethod");
+        }
+
+        public ManualDiscountApplication setAllocationMethod(DiscountApplicationAllocationMethod arg) {
+            optimisticData.put(getKey("allocationMethod"), arg);
+            return this;
+        }
+
+        /**
+        * The description of the application.
+        */
+
+        public String getDescription() {
+            return (String) get("description");
+        }
+
+        public ManualDiscountApplication setDescription(String arg) {
+            optimisticData.put(getKey("description"), arg);
+            return this;
+        }
+
+        /**
+        * Which lines of targetType that the discount is allocated over.
+        */
+
+        public DiscountApplicationTargetSelection getTargetSelection() {
+            return (DiscountApplicationTargetSelection) get("targetSelection");
+        }
+
+        public ManualDiscountApplication setTargetSelection(DiscountApplicationTargetSelection arg) {
+            optimisticData.put(getKey("targetSelection"), arg);
+            return this;
+        }
+
+        /**
+        * The type of line that the discount is applicable towards.
+        */
+
+        public DiscountApplicationTargetType getTargetType() {
+            return (DiscountApplicationTargetType) get("targetType");
+        }
+
+        public ManualDiscountApplication setTargetType(DiscountApplicationTargetType arg) {
+            optimisticData.put(getKey("targetType"), arg);
+            return this;
+        }
+
+        /**
+        * The title of the application.
+        */
+
+        public String getTitle() {
+            return (String) get("title");
+        }
+
+        public ManualDiscountApplication setTitle(String arg) {
+            optimisticData.put(getKey("title"), arg);
+            return this;
+        }
+
+        /**
+        * The value of the discount application.
+        */
+
+        public PricingValue getValue() {
+            return (PricingValue) get("value");
+        }
+
+        public ManualDiscountApplication setValue(PricingValue arg) {
+            optimisticData.put(getKey("value"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "allocationMethod": return false;
+
+                case "description": return false;
+
+                case "targetSelection": return false;
+
+                case "targetType": return false;
+
+                case "title": return false;
+
+                case "value": return false;
+
+                default: return false;
+            }
+        }
+    }
+
+    public static class MoneyInput implements Serializable {
+        private String amount;
+
+        private CurrencyCode currencyCode;
+
+        public MoneyInput(String amount, CurrencyCode currencyCode) {
+            this.amount = amount;
+
+            this.currencyCode = currencyCode;
+        }
+
+        public String getAmount() {
+            return amount;
+        }
+
+        public MoneyInput setAmount(String amount) {
+            this.amount = amount;
+            return this;
+        }
+
+        public CurrencyCode getCurrencyCode() {
+            return currencyCode;
+        }
+
+        public MoneyInput setCurrencyCode(CurrencyCode currencyCode) {
+            this.currencyCode = currencyCode;
+            return this;
+        }
+
+        public void appendTo(StringBuilder _queryBuilder) {
+            String separator = "";
+            _queryBuilder.append('{');
+
+            _queryBuilder.append(separator);
+            separator = ",";
+            _queryBuilder.append("amount:");
+            Query.appendQuotedString(_queryBuilder, amount.toString());
+
+            _queryBuilder.append(separator);
+            separator = ",";
+            _queryBuilder.append("currencyCode:");
+            _queryBuilder.append(currencyCode.toString());
+
+            _queryBuilder.append('}');
+        }
+    }
+
     public interface MoneyV2QueryDefinition {
         void define(MoneyV2Query _queryBuilder);
     }
@@ -19514,7 +24894,7 @@ public class Storefront {
             * implementations
             * (such as [TwitterCldr](https://github.com/twitter/twitter-cldr-rb)).
             */
-            public static class MoneyV2 extends AbstractResponse<MoneyV2> {
+            public static class MoneyV2 extends AbstractResponse<MoneyV2> implements PricingValue {
                 public MoneyV2() {
                 }
 
@@ -19602,7 +24982,10 @@ public class Storefront {
 
                 /**
                 * Updates the attributes of a checkout.
+                *
+                * @deprecated Use `checkoutAttributesUpdateV2` instead
                 */
+                @Deprecated
                 public MutationQuery checkoutAttributesUpdate(ID checkoutId, CheckoutAttributesUpdateInput input, CheckoutAttributesUpdatePayloadQueryDefinition queryDef) {
                     startField("checkoutAttributesUpdate");
 
@@ -19616,6 +24999,27 @@ public class Storefront {
 
                     _queryBuilder.append('{');
                     queryDef.define(new CheckoutAttributesUpdatePayloadQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * Updates the attributes of a checkout.
+                */
+                public MutationQuery checkoutAttributesUpdateV2(ID checkoutId, CheckoutAttributesUpdateV2Input input, CheckoutAttributesUpdateV2PayloadQueryDefinition queryDef) {
+                    startField("checkoutAttributesUpdateV2");
+
+                    _queryBuilder.append("(checkoutId:");
+                    Query.appendQuotedString(_queryBuilder, checkoutId.toString());
+
+                    _queryBuilder.append(",input:");
+                    input.appendTo(_queryBuilder);
+
+                    _queryBuilder.append(')');
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new CheckoutAttributesUpdateV2PayloadQuery(_queryBuilder));
                     _queryBuilder.append('}');
 
                     return this;
@@ -19638,7 +25042,10 @@ public class Storefront {
 
                 /**
                 * Completes a checkout using a credit card token from Shopify's Vault.
+                *
+                * @deprecated Use `checkoutCompleteWithCreditCardV2` instead
                 */
+                @Deprecated
                 public MutationQuery checkoutCompleteWithCreditCard(ID checkoutId, CreditCardPaymentInput payment, CheckoutCompleteWithCreditCardPayloadQueryDefinition queryDef) {
                     startField("checkoutCompleteWithCreditCard");
 
@@ -19658,8 +25065,32 @@ public class Storefront {
                 }
 
                 /**
-                * Completes a checkout with a tokenized payment.
+                * Completes a checkout using a credit card token from Shopify's Vault.
                 */
+                public MutationQuery checkoutCompleteWithCreditCardV2(ID checkoutId, CreditCardPaymentInputV2 payment, CheckoutCompleteWithCreditCardV2PayloadQueryDefinition queryDef) {
+                    startField("checkoutCompleteWithCreditCardV2");
+
+                    _queryBuilder.append("(checkoutId:");
+                    Query.appendQuotedString(_queryBuilder, checkoutId.toString());
+
+                    _queryBuilder.append(",payment:");
+                    payment.appendTo(_queryBuilder);
+
+                    _queryBuilder.append(')');
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new CheckoutCompleteWithCreditCardV2PayloadQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * Completes a checkout with a tokenized payment.
+                *
+                * @deprecated Use `checkoutCompleteWithTokenizedPaymentV2` instead
+                */
+                @Deprecated
                 public MutationQuery checkoutCompleteWithTokenizedPayment(ID checkoutId, TokenizedPaymentInput payment, CheckoutCompleteWithTokenizedPaymentPayloadQueryDefinition queryDef) {
                     startField("checkoutCompleteWithTokenizedPayment");
 
@@ -19673,6 +25104,27 @@ public class Storefront {
 
                     _queryBuilder.append('{');
                     queryDef.define(new CheckoutCompleteWithTokenizedPaymentPayloadQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * Completes a checkout with a tokenized payment.
+                */
+                public MutationQuery checkoutCompleteWithTokenizedPaymentV2(ID checkoutId, TokenizedPaymentInputV2 payment, CheckoutCompleteWithTokenizedPaymentV2PayloadQueryDefinition queryDef) {
+                    startField("checkoutCompleteWithTokenizedPaymentV2");
+
+                    _queryBuilder.append("(checkoutId:");
+                    Query.appendQuotedString(_queryBuilder, checkoutId.toString());
+
+                    _queryBuilder.append(",payment:");
+                    payment.appendTo(_queryBuilder);
+
+                    _queryBuilder.append(')');
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new CheckoutCompleteWithTokenizedPaymentV2PayloadQuery(_queryBuilder));
                     _queryBuilder.append('}');
 
                     return this;
@@ -19698,7 +25150,10 @@ public class Storefront {
 
                 /**
                 * Associates a customer to the checkout.
+                *
+                * @deprecated Use `checkoutCustomerAssociateV2` instead
                 */
+                @Deprecated
                 public MutationQuery checkoutCustomerAssociate(ID checkoutId, String customerAccessToken, CheckoutCustomerAssociatePayloadQueryDefinition queryDef) {
                     startField("checkoutCustomerAssociate");
 
@@ -19718,8 +25173,32 @@ public class Storefront {
                 }
 
                 /**
-                * Disassociates the current checkout customer from the checkout.
+                * Associates a customer to the checkout.
                 */
+                public MutationQuery checkoutCustomerAssociateV2(ID checkoutId, String customerAccessToken, CheckoutCustomerAssociateV2PayloadQueryDefinition queryDef) {
+                    startField("checkoutCustomerAssociateV2");
+
+                    _queryBuilder.append("(checkoutId:");
+                    Query.appendQuotedString(_queryBuilder, checkoutId.toString());
+
+                    _queryBuilder.append(",customerAccessToken:");
+                    Query.appendQuotedString(_queryBuilder, customerAccessToken.toString());
+
+                    _queryBuilder.append(')');
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new CheckoutCustomerAssociateV2PayloadQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * Disassociates the current checkout customer from the checkout.
+                *
+                * @deprecated Use `checkoutCustomerDisassociateV2` instead
+                */
+                @Deprecated
                 public MutationQuery checkoutCustomerDisassociate(ID checkoutId, CheckoutCustomerDisassociatePayloadQueryDefinition queryDef) {
                     startField("checkoutCustomerDisassociate");
 
@@ -19736,8 +25215,29 @@ public class Storefront {
                 }
 
                 /**
-                * Applies a discount to an existing checkout using a discount code.
+                * Disassociates the current checkout customer from the checkout.
                 */
+                public MutationQuery checkoutCustomerDisassociateV2(ID checkoutId, CheckoutCustomerDisassociateV2PayloadQueryDefinition queryDef) {
+                    startField("checkoutCustomerDisassociateV2");
+
+                    _queryBuilder.append("(checkoutId:");
+                    Query.appendQuotedString(_queryBuilder, checkoutId.toString());
+
+                    _queryBuilder.append(')');
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new CheckoutCustomerDisassociateV2PayloadQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * Applies a discount to an existing checkout using a discount code.
+                *
+                * @deprecated Use `checkoutDiscountCodeApplyV2` instead
+                */
+                @Deprecated
                 public MutationQuery checkoutDiscountCodeApply(String discountCode, ID checkoutId, CheckoutDiscountCodeApplyPayloadQueryDefinition queryDef) {
                     startField("checkoutDiscountCodeApply");
 
@@ -19751,6 +25251,27 @@ public class Storefront {
 
                     _queryBuilder.append('{');
                     queryDef.define(new CheckoutDiscountCodeApplyPayloadQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * Applies a discount to an existing checkout using a discount code.
+                */
+                public MutationQuery checkoutDiscountCodeApplyV2(String discountCode, ID checkoutId, CheckoutDiscountCodeApplyV2PayloadQueryDefinition queryDef) {
+                    startField("checkoutDiscountCodeApplyV2");
+
+                    _queryBuilder.append("(discountCode:");
+                    Query.appendQuotedString(_queryBuilder, discountCode.toString());
+
+                    _queryBuilder.append(",checkoutId:");
+                    Query.appendQuotedString(_queryBuilder, checkoutId.toString());
+
+                    _queryBuilder.append(')');
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new CheckoutDiscountCodeApplyV2PayloadQuery(_queryBuilder));
                     _queryBuilder.append('}');
 
                     return this;
@@ -19776,7 +25297,10 @@ public class Storefront {
 
                 /**
                 * Updates the email on an existing checkout.
+                *
+                * @deprecated Use `checkoutEmailUpdateV2` instead
                 */
+                @Deprecated
                 public MutationQuery checkoutEmailUpdate(ID checkoutId, String email, CheckoutEmailUpdatePayloadQueryDefinition queryDef) {
                     startField("checkoutEmailUpdate");
 
@@ -19790,6 +25314,27 @@ public class Storefront {
 
                     _queryBuilder.append('{');
                     queryDef.define(new CheckoutEmailUpdatePayloadQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * Updates the email on an existing checkout.
+                */
+                public MutationQuery checkoutEmailUpdateV2(ID checkoutId, String email, CheckoutEmailUpdateV2PayloadQueryDefinition queryDef) {
+                    startField("checkoutEmailUpdateV2");
+
+                    _queryBuilder.append("(checkoutId:");
+                    Query.appendQuotedString(_queryBuilder, checkoutId.toString());
+
+                    _queryBuilder.append(",email:");
+                    Query.appendQuotedString(_queryBuilder, email.toString());
+
+                    _queryBuilder.append(')');
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new CheckoutEmailUpdateV2PayloadQuery(_queryBuilder));
                     _queryBuilder.append('}');
 
                     return this;
@@ -19822,7 +25367,10 @@ public class Storefront {
 
                 /**
                 * Removes an applied gift card from the checkout.
+                *
+                * @deprecated Use `checkoutGiftCardRemoveV2` instead
                 */
+                @Deprecated
                 public MutationQuery checkoutGiftCardRemove(ID appliedGiftCardId, ID checkoutId, CheckoutGiftCardRemovePayloadQueryDefinition queryDef) {
                     startField("checkoutGiftCardRemove");
 
@@ -19836,6 +25384,27 @@ public class Storefront {
 
                     _queryBuilder.append('{');
                     queryDef.define(new CheckoutGiftCardRemovePayloadQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * Removes an applied gift card from the checkout.
+                */
+                public MutationQuery checkoutGiftCardRemoveV2(ID appliedGiftCardId, ID checkoutId, CheckoutGiftCardRemoveV2PayloadQueryDefinition queryDef) {
+                    startField("checkoutGiftCardRemoveV2");
+
+                    _queryBuilder.append("(appliedGiftCardId:");
+                    Query.appendQuotedString(_queryBuilder, appliedGiftCardId.toString());
+
+                    _queryBuilder.append(",checkoutId:");
+                    Query.appendQuotedString(_queryBuilder, checkoutId.toString());
+
+                    _queryBuilder.append(')');
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new CheckoutGiftCardRemoveV2PayloadQuery(_queryBuilder));
                     _queryBuilder.append('}');
 
                     return this;
@@ -19873,7 +25442,10 @@ public class Storefront {
 
                 /**
                 * Adds a list of line items to a checkout.
+                *
+                * @deprecated Use `checkoutLineItemsReplace` instead
                 */
+                @Deprecated
                 public MutationQuery checkoutLineItemsAdd(List<CheckoutLineItemInput> lineItems, ID checkoutId, CheckoutLineItemsAddPayloadQueryDefinition queryDef) {
                     startField("checkoutLineItemsAdd");
 
@@ -19903,7 +25475,10 @@ public class Storefront {
 
                 /**
                 * Removes line items from an existing checkout
+                *
+                * @deprecated Use `checkoutLineItemsReplace` instead
                 */
+                @Deprecated
                 public MutationQuery checkoutLineItemsRemove(ID checkoutId, List<ID> lineItemIds, CheckoutLineItemsRemovePayloadQueryDefinition queryDef) {
                     startField("checkoutLineItemsRemove");
 
@@ -19932,8 +25507,41 @@ public class Storefront {
                 }
 
                 /**
-                * Updates line items on a checkout.
+                * Sets a list of line items to a checkout.
                 */
+                public MutationQuery checkoutLineItemsReplace(List<CheckoutLineItemInput> lineItems, ID checkoutId, CheckoutLineItemsReplacePayloadQueryDefinition queryDef) {
+                    startField("checkoutLineItemsReplace");
+
+                    _queryBuilder.append("(lineItems:");
+                    _queryBuilder.append('[');
+                    {
+                        String listSeperator1 = "";
+                        for (CheckoutLineItemInput item1 : lineItems) {
+                            _queryBuilder.append(listSeperator1);
+                            listSeperator1 = ",";
+                            item1.appendTo(_queryBuilder);
+                        }
+                    }
+                    _queryBuilder.append(']');
+
+                    _queryBuilder.append(",checkoutId:");
+                    Query.appendQuotedString(_queryBuilder, checkoutId.toString());
+
+                    _queryBuilder.append(')');
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new CheckoutLineItemsReplacePayloadQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * Updates line items on a checkout.
+                *
+                * @deprecated Use `checkoutLineItemsReplace` instead
+                */
+                @Deprecated
                 public MutationQuery checkoutLineItemsUpdate(ID checkoutId, List<CheckoutLineItemUpdateInput> lineItems, CheckoutLineItemsUpdatePayloadQueryDefinition queryDef) {
                     startField("checkoutLineItemsUpdate");
 
@@ -19963,7 +25571,10 @@ public class Storefront {
 
                 /**
                 * Updates the shipping address of an existing checkout.
+                *
+                * @deprecated Use `checkoutShippingAddressUpdateV2` instead
                 */
+                @Deprecated
                 public MutationQuery checkoutShippingAddressUpdate(MailingAddressInput shippingAddress, ID checkoutId, CheckoutShippingAddressUpdatePayloadQueryDefinition queryDef) {
                     startField("checkoutShippingAddressUpdate");
 
@@ -19977,6 +25588,27 @@ public class Storefront {
 
                     _queryBuilder.append('{');
                     queryDef.define(new CheckoutShippingAddressUpdatePayloadQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * Updates the shipping address of an existing checkout.
+                */
+                public MutationQuery checkoutShippingAddressUpdateV2(MailingAddressInput shippingAddress, ID checkoutId, CheckoutShippingAddressUpdateV2PayloadQueryDefinition queryDef) {
+                    startField("checkoutShippingAddressUpdateV2");
+
+                    _queryBuilder.append("(shippingAddress:");
+                    shippingAddress.appendTo(_queryBuilder);
+
+                    _queryBuilder.append(",checkoutId:");
+                    Query.appendQuotedString(_queryBuilder, checkoutId.toString());
+
+                    _queryBuilder.append(')');
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new CheckoutShippingAddressUpdateV2PayloadQuery(_queryBuilder));
                     _queryBuilder.append('}');
 
                     return this;
@@ -20226,6 +25858,27 @@ public class Storefront {
                 }
 
                 /**
+                * Resets a customer’s password with the reset password url received from `CustomerRecover`.
+                */
+                public MutationQuery customerResetByUrl(String resetUrl, String password, CustomerResetByUrlPayloadQueryDefinition queryDef) {
+                    startField("customerResetByUrl");
+
+                    _queryBuilder.append("(resetUrl:");
+                    Query.appendQuotedString(_queryBuilder, resetUrl.toString());
+
+                    _queryBuilder.append(",password:");
+                    Query.appendQuotedString(_queryBuilder, password.toString());
+
+                    _queryBuilder.append(')');
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new CustomerResetByUrlPayloadQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
                 * Updates an existing customer.
                 */
                 public MutationQuery customerUpdate(String customerAccessToken, CustomerUpdateInput customer, CustomerUpdatePayloadQueryDefinition queryDef) {
@@ -20275,6 +25928,17 @@ public class Storefront {
                                 break;
                             }
 
+                            case "checkoutAttributesUpdateV2": {
+                                CheckoutAttributesUpdateV2Payload optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = new CheckoutAttributesUpdateV2Payload(jsonAsObject(field.getValue(), key));
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
                             case "checkoutCompleteFree": {
                                 CheckoutCompleteFreePayload optional1 = null;
                                 if (!field.getValue().isJsonNull()) {
@@ -20297,10 +25961,32 @@ public class Storefront {
                                 break;
                             }
 
+                            case "checkoutCompleteWithCreditCardV2": {
+                                CheckoutCompleteWithCreditCardV2Payload optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = new CheckoutCompleteWithCreditCardV2Payload(jsonAsObject(field.getValue(), key));
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
                             case "checkoutCompleteWithTokenizedPayment": {
                                 CheckoutCompleteWithTokenizedPaymentPayload optional1 = null;
                                 if (!field.getValue().isJsonNull()) {
                                     optional1 = new CheckoutCompleteWithTokenizedPaymentPayload(jsonAsObject(field.getValue(), key));
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "checkoutCompleteWithTokenizedPaymentV2": {
+                                CheckoutCompleteWithTokenizedPaymentV2Payload optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = new CheckoutCompleteWithTokenizedPaymentV2Payload(jsonAsObject(field.getValue(), key));
                                 }
 
                                 responseData.put(key, optional1);
@@ -20330,6 +26016,17 @@ public class Storefront {
                                 break;
                             }
 
+                            case "checkoutCustomerAssociateV2": {
+                                CheckoutCustomerAssociateV2Payload optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = new CheckoutCustomerAssociateV2Payload(jsonAsObject(field.getValue(), key));
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
                             case "checkoutCustomerDisassociate": {
                                 CheckoutCustomerDisassociatePayload optional1 = null;
                                 if (!field.getValue().isJsonNull()) {
@@ -20341,10 +26038,32 @@ public class Storefront {
                                 break;
                             }
 
+                            case "checkoutCustomerDisassociateV2": {
+                                CheckoutCustomerDisassociateV2Payload optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = new CheckoutCustomerDisassociateV2Payload(jsonAsObject(field.getValue(), key));
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
                             case "checkoutDiscountCodeApply": {
                                 CheckoutDiscountCodeApplyPayload optional1 = null;
                                 if (!field.getValue().isJsonNull()) {
                                     optional1 = new CheckoutDiscountCodeApplyPayload(jsonAsObject(field.getValue(), key));
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "checkoutDiscountCodeApplyV2": {
+                                CheckoutDiscountCodeApplyV2Payload optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = new CheckoutDiscountCodeApplyV2Payload(jsonAsObject(field.getValue(), key));
                                 }
 
                                 responseData.put(key, optional1);
@@ -20374,6 +26093,17 @@ public class Storefront {
                                 break;
                             }
 
+                            case "checkoutEmailUpdateV2": {
+                                CheckoutEmailUpdateV2Payload optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = new CheckoutEmailUpdateV2Payload(jsonAsObject(field.getValue(), key));
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
                             case "checkoutGiftCardApply": {
                                 CheckoutGiftCardApplyPayload optional1 = null;
                                 if (!field.getValue().isJsonNull()) {
@@ -20389,6 +26119,17 @@ public class Storefront {
                                 CheckoutGiftCardRemovePayload optional1 = null;
                                 if (!field.getValue().isJsonNull()) {
                                     optional1 = new CheckoutGiftCardRemovePayload(jsonAsObject(field.getValue(), key));
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "checkoutGiftCardRemoveV2": {
+                                CheckoutGiftCardRemoveV2Payload optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = new CheckoutGiftCardRemoveV2Payload(jsonAsObject(field.getValue(), key));
                                 }
 
                                 responseData.put(key, optional1);
@@ -20429,6 +26170,17 @@ public class Storefront {
                                 break;
                             }
 
+                            case "checkoutLineItemsReplace": {
+                                CheckoutLineItemsReplacePayload optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = new CheckoutLineItemsReplacePayload(jsonAsObject(field.getValue(), key));
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
                             case "checkoutLineItemsUpdate": {
                                 CheckoutLineItemsUpdatePayload optional1 = null;
                                 if (!field.getValue().isJsonNull()) {
@@ -20444,6 +26196,17 @@ public class Storefront {
                                 CheckoutShippingAddressUpdatePayload optional1 = null;
                                 if (!field.getValue().isJsonNull()) {
                                     optional1 = new CheckoutShippingAddressUpdatePayload(jsonAsObject(field.getValue(), key));
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "checkoutShippingAddressUpdateV2": {
+                                CheckoutShippingAddressUpdateV2Payload optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = new CheckoutShippingAddressUpdateV2Payload(jsonAsObject(field.getValue(), key));
                                 }
 
                                 responseData.put(key, optional1);
@@ -20583,6 +26346,17 @@ public class Storefront {
                                 break;
                             }
 
+                            case "customerResetByUrl": {
+                                CustomerResetByUrlPayload optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = new CustomerResetByUrlPayload(jsonAsObject(field.getValue(), key));
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
                             case "customerUpdate": {
                                 CustomerUpdatePayload optional1 = null;
                                 if (!field.getValue().isJsonNull()) {
@@ -20611,6 +26385,8 @@ public class Storefront {
 
                 /**
                 * Updates the attributes of a checkout.
+                *
+                * @deprecated Use `checkoutAttributesUpdateV2` instead
                 */
 
                 public CheckoutAttributesUpdatePayload getCheckoutAttributesUpdate() {
@@ -20619,6 +26395,19 @@ public class Storefront {
 
                 public Mutation setCheckoutAttributesUpdate(CheckoutAttributesUpdatePayload arg) {
                     optimisticData.put(getKey("checkoutAttributesUpdate"), arg);
+                    return this;
+                }
+
+                /**
+                * Updates the attributes of a checkout.
+                */
+
+                public CheckoutAttributesUpdateV2Payload getCheckoutAttributesUpdateV2() {
+                    return (CheckoutAttributesUpdateV2Payload) get("checkoutAttributesUpdateV2");
+                }
+
+                public Mutation setCheckoutAttributesUpdateV2(CheckoutAttributesUpdateV2Payload arg) {
+                    optimisticData.put(getKey("checkoutAttributesUpdateV2"), arg);
                     return this;
                 }
 
@@ -20633,6 +26422,8 @@ public class Storefront {
 
                 /**
                 * Completes a checkout using a credit card token from Shopify's Vault.
+                *
+                * @deprecated Use `checkoutCompleteWithCreditCardV2` instead
                 */
 
                 public CheckoutCompleteWithCreditCardPayload getCheckoutCompleteWithCreditCard() {
@@ -20645,7 +26436,22 @@ public class Storefront {
                 }
 
                 /**
+                * Completes a checkout using a credit card token from Shopify's Vault.
+                */
+
+                public CheckoutCompleteWithCreditCardV2Payload getCheckoutCompleteWithCreditCardV2() {
+                    return (CheckoutCompleteWithCreditCardV2Payload) get("checkoutCompleteWithCreditCardV2");
+                }
+
+                public Mutation setCheckoutCompleteWithCreditCardV2(CheckoutCompleteWithCreditCardV2Payload arg) {
+                    optimisticData.put(getKey("checkoutCompleteWithCreditCardV2"), arg);
+                    return this;
+                }
+
+                /**
                 * Completes a checkout with a tokenized payment.
+                *
+                * @deprecated Use `checkoutCompleteWithTokenizedPaymentV2` instead
                 */
 
                 public CheckoutCompleteWithTokenizedPaymentPayload getCheckoutCompleteWithTokenizedPayment() {
@@ -20654,6 +26460,19 @@ public class Storefront {
 
                 public Mutation setCheckoutCompleteWithTokenizedPayment(CheckoutCompleteWithTokenizedPaymentPayload arg) {
                     optimisticData.put(getKey("checkoutCompleteWithTokenizedPayment"), arg);
+                    return this;
+                }
+
+                /**
+                * Completes a checkout with a tokenized payment.
+                */
+
+                public CheckoutCompleteWithTokenizedPaymentV2Payload getCheckoutCompleteWithTokenizedPaymentV2() {
+                    return (CheckoutCompleteWithTokenizedPaymentV2Payload) get("checkoutCompleteWithTokenizedPaymentV2");
+                }
+
+                public Mutation setCheckoutCompleteWithTokenizedPaymentV2(CheckoutCompleteWithTokenizedPaymentV2Payload arg) {
+                    optimisticData.put(getKey("checkoutCompleteWithTokenizedPaymentV2"), arg);
                     return this;
                 }
 
@@ -20672,6 +26491,8 @@ public class Storefront {
 
                 /**
                 * Associates a customer to the checkout.
+                *
+                * @deprecated Use `checkoutCustomerAssociateV2` instead
                 */
 
                 public CheckoutCustomerAssociatePayload getCheckoutCustomerAssociate() {
@@ -20684,7 +26505,22 @@ public class Storefront {
                 }
 
                 /**
+                * Associates a customer to the checkout.
+                */
+
+                public CheckoutCustomerAssociateV2Payload getCheckoutCustomerAssociateV2() {
+                    return (CheckoutCustomerAssociateV2Payload) get("checkoutCustomerAssociateV2");
+                }
+
+                public Mutation setCheckoutCustomerAssociateV2(CheckoutCustomerAssociateV2Payload arg) {
+                    optimisticData.put(getKey("checkoutCustomerAssociateV2"), arg);
+                    return this;
+                }
+
+                /**
                 * Disassociates the current checkout customer from the checkout.
+                *
+                * @deprecated Use `checkoutCustomerDisassociateV2` instead
                 */
 
                 public CheckoutCustomerDisassociatePayload getCheckoutCustomerDisassociate() {
@@ -20697,7 +26533,22 @@ public class Storefront {
                 }
 
                 /**
+                * Disassociates the current checkout customer from the checkout.
+                */
+
+                public CheckoutCustomerDisassociateV2Payload getCheckoutCustomerDisassociateV2() {
+                    return (CheckoutCustomerDisassociateV2Payload) get("checkoutCustomerDisassociateV2");
+                }
+
+                public Mutation setCheckoutCustomerDisassociateV2(CheckoutCustomerDisassociateV2Payload arg) {
+                    optimisticData.put(getKey("checkoutCustomerDisassociateV2"), arg);
+                    return this;
+                }
+
+                /**
                 * Applies a discount to an existing checkout using a discount code.
+                *
+                * @deprecated Use `checkoutDiscountCodeApplyV2` instead
                 */
 
                 public CheckoutDiscountCodeApplyPayload getCheckoutDiscountCodeApply() {
@@ -20706,6 +26557,19 @@ public class Storefront {
 
                 public Mutation setCheckoutDiscountCodeApply(CheckoutDiscountCodeApplyPayload arg) {
                     optimisticData.put(getKey("checkoutDiscountCodeApply"), arg);
+                    return this;
+                }
+
+                /**
+                * Applies a discount to an existing checkout using a discount code.
+                */
+
+                public CheckoutDiscountCodeApplyV2Payload getCheckoutDiscountCodeApplyV2() {
+                    return (CheckoutDiscountCodeApplyV2Payload) get("checkoutDiscountCodeApplyV2");
+                }
+
+                public Mutation setCheckoutDiscountCodeApplyV2(CheckoutDiscountCodeApplyV2Payload arg) {
+                    optimisticData.put(getKey("checkoutDiscountCodeApplyV2"), arg);
                     return this;
                 }
 
@@ -20724,6 +26588,8 @@ public class Storefront {
 
                 /**
                 * Updates the email on an existing checkout.
+                *
+                * @deprecated Use `checkoutEmailUpdateV2` instead
                 */
 
                 public CheckoutEmailUpdatePayload getCheckoutEmailUpdate() {
@@ -20732,6 +26598,19 @@ public class Storefront {
 
                 public Mutation setCheckoutEmailUpdate(CheckoutEmailUpdatePayload arg) {
                     optimisticData.put(getKey("checkoutEmailUpdate"), arg);
+                    return this;
+                }
+
+                /**
+                * Updates the email on an existing checkout.
+                */
+
+                public CheckoutEmailUpdateV2Payload getCheckoutEmailUpdateV2() {
+                    return (CheckoutEmailUpdateV2Payload) get("checkoutEmailUpdateV2");
+                }
+
+                public Mutation setCheckoutEmailUpdateV2(CheckoutEmailUpdateV2Payload arg) {
+                    optimisticData.put(getKey("checkoutEmailUpdateV2"), arg);
                     return this;
                 }
 
@@ -20753,6 +26632,8 @@ public class Storefront {
 
                 /**
                 * Removes an applied gift card from the checkout.
+                *
+                * @deprecated Use `checkoutGiftCardRemoveV2` instead
                 */
 
                 public CheckoutGiftCardRemovePayload getCheckoutGiftCardRemove() {
@@ -20761,6 +26642,19 @@ public class Storefront {
 
                 public Mutation setCheckoutGiftCardRemove(CheckoutGiftCardRemovePayload arg) {
                     optimisticData.put(getKey("checkoutGiftCardRemove"), arg);
+                    return this;
+                }
+
+                /**
+                * Removes an applied gift card from the checkout.
+                */
+
+                public CheckoutGiftCardRemoveV2Payload getCheckoutGiftCardRemoveV2() {
+                    return (CheckoutGiftCardRemoveV2Payload) get("checkoutGiftCardRemoveV2");
+                }
+
+                public Mutation setCheckoutGiftCardRemoveV2(CheckoutGiftCardRemoveV2Payload arg) {
+                    optimisticData.put(getKey("checkoutGiftCardRemoveV2"), arg);
                     return this;
                 }
 
@@ -20779,6 +26673,8 @@ public class Storefront {
 
                 /**
                 * Adds a list of line items to a checkout.
+                *
+                * @deprecated Use `checkoutLineItemsReplace` instead
                 */
 
                 public CheckoutLineItemsAddPayload getCheckoutLineItemsAdd() {
@@ -20792,6 +26688,8 @@ public class Storefront {
 
                 /**
                 * Removes line items from an existing checkout
+                *
+                * @deprecated Use `checkoutLineItemsReplace` instead
                 */
 
                 public CheckoutLineItemsRemovePayload getCheckoutLineItemsRemove() {
@@ -20804,7 +26702,22 @@ public class Storefront {
                 }
 
                 /**
+                * Sets a list of line items to a checkout.
+                */
+
+                public CheckoutLineItemsReplacePayload getCheckoutLineItemsReplace() {
+                    return (CheckoutLineItemsReplacePayload) get("checkoutLineItemsReplace");
+                }
+
+                public Mutation setCheckoutLineItemsReplace(CheckoutLineItemsReplacePayload arg) {
+                    optimisticData.put(getKey("checkoutLineItemsReplace"), arg);
+                    return this;
+                }
+
+                /**
                 * Updates line items on a checkout.
+                *
+                * @deprecated Use `checkoutLineItemsReplace` instead
                 */
 
                 public CheckoutLineItemsUpdatePayload getCheckoutLineItemsUpdate() {
@@ -20818,6 +26731,8 @@ public class Storefront {
 
                 /**
                 * Updates the shipping address of an existing checkout.
+                *
+                * @deprecated Use `checkoutShippingAddressUpdateV2` instead
                 */
 
                 public CheckoutShippingAddressUpdatePayload getCheckoutShippingAddressUpdate() {
@@ -20826,6 +26741,19 @@ public class Storefront {
 
                 public Mutation setCheckoutShippingAddressUpdate(CheckoutShippingAddressUpdatePayload arg) {
                     optimisticData.put(getKey("checkoutShippingAddressUpdate"), arg);
+                    return this;
+                }
+
+                /**
+                * Updates the shipping address of an existing checkout.
+                */
+
+                public CheckoutShippingAddressUpdateV2Payload getCheckoutShippingAddressUpdateV2() {
+                    return (CheckoutShippingAddressUpdateV2Payload) get("checkoutShippingAddressUpdateV2");
+                }
+
+                public Mutation setCheckoutShippingAddressUpdateV2(CheckoutShippingAddressUpdateV2Payload arg) {
+                    optimisticData.put(getKey("checkoutShippingAddressUpdateV2"), arg);
                     return this;
                 }
 
@@ -20989,6 +26917,19 @@ public class Storefront {
                 }
 
                 /**
+                * Resets a customer’s password with the reset password url received from `CustomerRecover`.
+                */
+
+                public CustomerResetByUrlPayload getCustomerResetByUrl() {
+                    return (CustomerResetByUrlPayload) get("customerResetByUrl");
+                }
+
+                public Mutation setCustomerResetByUrl(CustomerResetByUrlPayload arg) {
+                    optimisticData.put(getKey("customerResetByUrl"), arg);
+                    return this;
+                }
+
+                /**
                 * Updates an existing customer.
                 */
 
@@ -21005,27 +26946,43 @@ public class Storefront {
                     switch (getFieldName(key)) {
                         case "checkoutAttributesUpdate": return true;
 
+                        case "checkoutAttributesUpdateV2": return true;
+
                         case "checkoutCompleteFree": return true;
 
                         case "checkoutCompleteWithCreditCard": return true;
 
+                        case "checkoutCompleteWithCreditCardV2": return true;
+
                         case "checkoutCompleteWithTokenizedPayment": return true;
+
+                        case "checkoutCompleteWithTokenizedPaymentV2": return true;
 
                         case "checkoutCreate": return true;
 
                         case "checkoutCustomerAssociate": return true;
 
+                        case "checkoutCustomerAssociateV2": return true;
+
                         case "checkoutCustomerDisassociate": return true;
 
+                        case "checkoutCustomerDisassociateV2": return true;
+
                         case "checkoutDiscountCodeApply": return true;
+
+                        case "checkoutDiscountCodeApplyV2": return true;
 
                         case "checkoutDiscountCodeRemove": return true;
 
                         case "checkoutEmailUpdate": return true;
 
+                        case "checkoutEmailUpdateV2": return true;
+
                         case "checkoutGiftCardApply": return true;
 
                         case "checkoutGiftCardRemove": return true;
+
+                        case "checkoutGiftCardRemoveV2": return true;
 
                         case "checkoutGiftCardsAppend": return true;
 
@@ -21033,9 +26990,13 @@ public class Storefront {
 
                         case "checkoutLineItemsRemove": return true;
 
+                        case "checkoutLineItemsReplace": return true;
+
                         case "checkoutLineItemsUpdate": return true;
 
                         case "checkoutShippingAddressUpdate": return true;
+
+                        case "checkoutShippingAddressUpdateV2": return true;
 
                         case "checkoutShippingLineUpdate": return true;
 
@@ -21060,6 +27021,8 @@ public class Storefront {
                         case "customerRecover": return true;
 
                         case "customerReset": return true;
+
+                        case "customerResetByUrl": return true;
 
                         case "customerUpdate": return true;
 
@@ -21150,6 +27113,13 @@ public class Storefront {
                 public NodeQuery onOrder(OrderQueryDefinition queryDef) {
                     startInlineFragment("Order");
                     queryDef.define(new OrderQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+                    return this;
+                }
+
+                public NodeQuery onPage(PageQueryDefinition queryDef) {
+                    startInlineFragment("Page");
+                    queryDef.define(new PageQuery(_queryBuilder));
                     _queryBuilder.append('}');
                     return this;
                 }
@@ -21264,6 +27234,10 @@ public class Storefront {
                             return new Order(fields);
                         }
 
+                        case "Page": {
+                            return new Page(fields);
+                        }
+
                         case "Payment": {
                             return new Payment(fields);
                         }
@@ -21355,6 +27329,95 @@ public class Storefront {
                 */
                 public OrderQuery customerUrl() {
                     startField("customerUrl");
+
+                    return this;
+                }
+
+                public class DiscountApplicationsArguments extends Arguments {
+                    DiscountApplicationsArguments(StringBuilder _queryBuilder) {
+                        super(_queryBuilder, true);
+                    }
+
+                    /**
+                    * Returns up to the first `n` elements from the list.
+                    */
+                    public DiscountApplicationsArguments first(Integer value) {
+                        if (value != null) {
+                            startArgument("first");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Returns the elements that come after the specified cursor.
+                    */
+                    public DiscountApplicationsArguments after(String value) {
+                        if (value != null) {
+                            startArgument("after");
+                            Query.appendQuotedString(_queryBuilder, value.toString());
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Returns up to the last `n` elements from the list.
+                    */
+                    public DiscountApplicationsArguments last(Integer value) {
+                        if (value != null) {
+                            startArgument("last");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Returns the elements that come before the specified cursor.
+                    */
+                    public DiscountApplicationsArguments before(String value) {
+                        if (value != null) {
+                            startArgument("before");
+                            Query.appendQuotedString(_queryBuilder, value.toString());
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Reverse the order of the underlying list.
+                    */
+                    public DiscountApplicationsArguments reverse(Boolean value) {
+                        if (value != null) {
+                            startArgument("reverse");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+                }
+
+                public interface DiscountApplicationsArgumentsDefinition {
+                    void define(DiscountApplicationsArguments args);
+                }
+
+                /**
+                * Discounts that have been applied on the order.
+                */
+                public OrderQuery discountApplications(DiscountApplicationConnectionQueryDefinition queryDef) {
+                    return discountApplications(args -> {}, queryDef);
+                }
+
+                /**
+                * Discounts that have been applied on the order.
+                */
+                public OrderQuery discountApplications(DiscountApplicationsArgumentsDefinition argsDef, DiscountApplicationConnectionQueryDefinition queryDef) {
+                    startField("discountApplications");
+
+                    DiscountApplicationsArguments args = new DiscountApplicationsArguments(_queryBuilder);
+                    argsDef.define(args);
+                    DiscountApplicationsArguments.end(args);
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new DiscountApplicationConnectionQuery(_queryBuilder));
+                    _queryBuilder.append('}');
 
                     return this;
                 }
@@ -21458,6 +27521,16 @@ public class Storefront {
                 }
 
                 /**
+                * Unique identifier for the order that appears on the order.
+                * For example, _#1000_ or _Store1001.
+                */
+                public OrderQuery name() {
+                    startField("name");
+
+                    return this;
+                }
+
+                /**
                 * A unique numeric identifier for the order for use by shop owner and customer.
                 */
                 public OrderQuery orderNumber() {
@@ -21494,6 +27567,19 @@ public class Storefront {
 
                     _queryBuilder.append('{');
                     queryDef.define(new MailingAddressQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * The discounts that have been allocated onto the shipping line by discount applications.
+                */
+                public OrderQuery shippingDiscountAllocations(DiscountAllocationQueryDefinition queryDef) {
+                    startField("shippingDiscountAllocations");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new DiscountAllocationQuery(_queryBuilder));
                     _queryBuilder.append('}');
 
                     return this;
@@ -21642,6 +27728,12 @@ public class Storefront {
                                 break;
                             }
 
+                            case "discountApplications": {
+                                responseData.put(key, new DiscountApplicationConnection(jsonAsObject(field.getValue(), key)));
+
+                                break;
+                            }
+
                             case "email": {
                                 String optional1 = null;
                                 if (!field.getValue().isJsonNull()) {
@@ -21661,6 +27753,12 @@ public class Storefront {
 
                             case "lineItems": {
                                 responseData.put(key, new OrderLineItemConnection(jsonAsObject(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "name": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
 
                                 break;
                             }
@@ -21695,6 +27793,17 @@ public class Storefront {
                                 }
 
                                 responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "shippingDiscountAllocations": {
+                                List<DiscountAllocation> list1 = new ArrayList<>();
+                                for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                                    list1.add(new DiscountAllocation(jsonAsObject(element1, key)));
+                                }
+
+                                responseData.put(key, list1);
 
                                 break;
                             }
@@ -21821,6 +27930,19 @@ public class Storefront {
                 }
 
                 /**
+                * Discounts that have been applied on the order.
+                */
+
+                public DiscountApplicationConnection getDiscountApplications() {
+                    return (DiscountApplicationConnection) get("discountApplications");
+                }
+
+                public Order setDiscountApplications(DiscountApplicationConnection arg) {
+                    optimisticData.put(getKey("discountApplications"), arg);
+                    return this;
+                }
+
+                /**
                 * The customer's email address.
                 */
 
@@ -21851,6 +27973,20 @@ public class Storefront {
 
                 public Order setLineItems(OrderLineItemConnection arg) {
                     optimisticData.put(getKey("lineItems"), arg);
+                    return this;
+                }
+
+                /**
+                * Unique identifier for the order that appears on the order.
+                * For example, _#1000_ or _Store1001.
+                */
+
+                public String getName() {
+                    return (String) get("name");
+                }
+
+                public Order setName(String arg) {
+                    optimisticData.put(getKey("name"), arg);
                     return this;
                 }
 
@@ -21905,6 +28041,19 @@ public class Storefront {
 
                 public Order setShippingAddress(MailingAddress arg) {
                     optimisticData.put(getKey("shippingAddress"), arg);
+                    return this;
+                }
+
+                /**
+                * The discounts that have been allocated onto the shipping line by discount applications.
+                */
+
+                public List<DiscountAllocation> getShippingDiscountAllocations() {
+                    return (List<DiscountAllocation>) get("shippingDiscountAllocations");
+                }
+
+                public Order setShippingDiscountAllocations(List<DiscountAllocation> arg) {
+                    optimisticData.put(getKey("shippingDiscountAllocations"), arg);
                     return this;
                 }
 
@@ -22008,11 +28157,15 @@ public class Storefront {
 
                         case "customerUrl": return false;
 
+                        case "discountApplications": return true;
+
                         case "email": return false;
 
                         case "id": return false;
 
                         case "lineItems": return true;
+
+                        case "name": return false;
 
                         case "orderNumber": return false;
 
@@ -22021,6 +28174,8 @@ public class Storefront {
                         case "processedAt": return false;
 
                         case "shippingAddress": return true;
+
+                        case "shippingDiscountAllocations": return true;
 
                         case "statusUrl": return false;
 
@@ -22286,6 +28441,19 @@ public class Storefront {
                 }
 
                 /**
+                * The discounts that have been allocated onto the order line item by discount applications.
+                */
+                public OrderLineItemQuery discountAllocations(DiscountAllocationQueryDefinition queryDef) {
+                    startField("discountAllocations");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new DiscountAllocationQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
                 * The number of products variants associated to the line item.
                 */
                 public OrderLineItemQuery quantity() {
@@ -22333,6 +28501,17 @@ public class Storefront {
                                 List<Attribute> list1 = new ArrayList<>();
                                 for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
                                     list1.add(new Attribute(jsonAsObject(element1, key)));
+                                }
+
+                                responseData.put(key, list1);
+
+                                break;
+                            }
+
+                            case "discountAllocations": {
+                                List<DiscountAllocation> list1 = new ArrayList<>();
+                                for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                                    list1.add(new DiscountAllocation(jsonAsObject(element1, key)));
                                 }
 
                                 responseData.put(key, list1);
@@ -22392,6 +28571,19 @@ public class Storefront {
                 }
 
                 /**
+                * The discounts that have been allocated onto the order line item by discount applications.
+                */
+
+                public List<DiscountAllocation> getDiscountAllocations() {
+                    return (List<DiscountAllocation>) get("discountAllocations");
+                }
+
+                public OrderLineItem setDiscountAllocations(List<DiscountAllocation> arg) {
+                    optimisticData.put(getKey("discountAllocations"), arg);
+                    return this;
+                }
+
+                /**
                 * The number of products variants associated to the line item.
                 */
 
@@ -22433,6 +28625,8 @@ public class Storefront {
                 public boolean unwrapsToObject(String key) {
                     switch (getFieldName(key)) {
                         case "customAttributes": return true;
+
+                        case "discountAllocations": return true;
 
                         case "quantity": return false;
 
@@ -22668,8 +28862,14 @@ public class Storefront {
             * The set of valid sort keys for the orders query.
             */
             public enum OrderSortKeys {
+                /**
+                * Sort by the `id` value.
+                */
                 ID,
 
+                /**
+                * Sort by the `processed_at` value.
+                */
                 PROCESSED_AT,
 
                 /**
@@ -22680,6 +28880,9 @@ public class Storefront {
                 */
                 RELEVANCE,
 
+                /**
+                * Sort by the `total_price` value.
+                */
                 TOTAL_PRICE,
 
                 UNKNOWN_VALUE;
@@ -22732,6 +28935,507 @@ public class Storefront {
                         default: {
                             return "";
                         }
+                    }
+                }
+            }
+
+            public interface PageQueryDefinition {
+                void define(PageQuery _queryBuilder);
+            }
+
+            /**
+            * Shopify merchants can create pages to hold static HTML content. Each Page object represents a custom
+            * page on the online store.
+            */
+            public static class PageQuery extends Query<PageQuery> {
+                PageQuery(StringBuilder _queryBuilder) {
+                    super(_queryBuilder);
+
+                    startField("id");
+                }
+
+                /**
+                * The description of the page, complete with HTML formatting.
+                */
+                public PageQuery body() {
+                    startField("body");
+
+                    return this;
+                }
+
+                /**
+                * Summary of the page body.
+                */
+                public PageQuery bodySummary() {
+                    startField("bodySummary");
+
+                    return this;
+                }
+
+                /**
+                * The timestamp of the page creation.
+                */
+                public PageQuery createdAt() {
+                    startField("createdAt");
+
+                    return this;
+                }
+
+                /**
+                * A human-friendly unique string for the page automatically generated from its title.
+                */
+                public PageQuery handle() {
+                    startField("handle");
+
+                    return this;
+                }
+
+                /**
+                * The title of the page.
+                */
+                public PageQuery title() {
+                    startField("title");
+
+                    return this;
+                }
+
+                /**
+                * The timestamp of the latest page update.
+                */
+                public PageQuery updatedAt() {
+                    startField("updatedAt");
+
+                    return this;
+                }
+
+                /**
+                * The url pointing to the page accessible from the web.
+                */
+                public PageQuery url() {
+                    startField("url");
+
+                    return this;
+                }
+            }
+
+            /**
+            * Shopify merchants can create pages to hold static HTML content. Each Page object represents a custom
+            * page on the online store.
+            */
+            public static class Page extends AbstractResponse<Page> implements Node {
+                public Page() {
+                }
+
+                public Page(JsonObject fields) throws SchemaViolationError {
+                    for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                        String key = field.getKey();
+                        String fieldName = getFieldName(key);
+                        switch (fieldName) {
+                            case "body": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+
+                                break;
+                            }
+
+                            case "bodySummary": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+
+                                break;
+                            }
+
+                            case "createdAt": {
+                                responseData.put(key, Utils.parseDateTime(jsonAsString(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "handle": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+
+                                break;
+                            }
+
+                            case "id": {
+                                responseData.put(key, new ID(jsonAsString(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "title": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+
+                                break;
+                            }
+
+                            case "updatedAt": {
+                                responseData.put(key, Utils.parseDateTime(jsonAsString(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "url": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+
+                                break;
+                            }
+
+                            case "__typename": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+                                break;
+                            }
+                            default: {
+                                throw new SchemaViolationError(this, key, field.getValue());
+                            }
+                        }
+                    }
+                }
+
+                public Page(ID id) {
+                    this();
+                    optimisticData.put("id", id);
+                }
+
+                public String getGraphQlTypeName() {
+                    return "Page";
+                }
+
+                /**
+                * The description of the page, complete with HTML formatting.
+                */
+
+                public String getBody() {
+                    return (String) get("body");
+                }
+
+                public Page setBody(String arg) {
+                    optimisticData.put(getKey("body"), arg);
+                    return this;
+                }
+
+                /**
+                * Summary of the page body.
+                */
+
+                public String getBodySummary() {
+                    return (String) get("bodySummary");
+                }
+
+                public Page setBodySummary(String arg) {
+                    optimisticData.put(getKey("bodySummary"), arg);
+                    return this;
+                }
+
+                /**
+                * The timestamp of the page creation.
+                */
+
+                public DateTime getCreatedAt() {
+                    return (DateTime) get("createdAt");
+                }
+
+                public Page setCreatedAt(DateTime arg) {
+                    optimisticData.put(getKey("createdAt"), arg);
+                    return this;
+                }
+
+                /**
+                * A human-friendly unique string for the page automatically generated from its title.
+                */
+
+                public String getHandle() {
+                    return (String) get("handle");
+                }
+
+                public Page setHandle(String arg) {
+                    optimisticData.put(getKey("handle"), arg);
+                    return this;
+                }
+
+                /**
+                * Globally unique identifier.
+                */
+
+                public ID getId() {
+                    return (ID) get("id");
+                }
+
+                /**
+                * The title of the page.
+                */
+
+                public String getTitle() {
+                    return (String) get("title");
+                }
+
+                public Page setTitle(String arg) {
+                    optimisticData.put(getKey("title"), arg);
+                    return this;
+                }
+
+                /**
+                * The timestamp of the latest page update.
+                */
+
+                public DateTime getUpdatedAt() {
+                    return (DateTime) get("updatedAt");
+                }
+
+                public Page setUpdatedAt(DateTime arg) {
+                    optimisticData.put(getKey("updatedAt"), arg);
+                    return this;
+                }
+
+                /**
+                * The url pointing to the page accessible from the web.
+                */
+
+                public String getUrl() {
+                    return (String) get("url");
+                }
+
+                public Page setUrl(String arg) {
+                    optimisticData.put(getKey("url"), arg);
+                    return this;
+                }
+
+                public boolean unwrapsToObject(String key) {
+                    switch (getFieldName(key)) {
+                        case "body": return false;
+
+                        case "bodySummary": return false;
+
+                        case "createdAt": return false;
+
+                        case "handle": return false;
+
+                        case "id": return false;
+
+                        case "title": return false;
+
+                        case "updatedAt": return false;
+
+                        case "url": return false;
+
+                        default: return false;
+                    }
+                }
+            }
+
+            public interface PageConnectionQueryDefinition {
+                void define(PageConnectionQuery _queryBuilder);
+            }
+
+            public static class PageConnectionQuery extends Query<PageConnectionQuery> {
+                PageConnectionQuery(StringBuilder _queryBuilder) {
+                    super(_queryBuilder);
+                }
+
+                /**
+                * A list of edges.
+                */
+                public PageConnectionQuery edges(PageEdgeQueryDefinition queryDef) {
+                    startField("edges");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new PageEdgeQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * Information to aid in pagination.
+                */
+                public PageConnectionQuery pageInfo(PageInfoQueryDefinition queryDef) {
+                    startField("pageInfo");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new PageInfoQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+            }
+
+            public static class PageConnection extends AbstractResponse<PageConnection> {
+                public PageConnection() {
+                }
+
+                public PageConnection(JsonObject fields) throws SchemaViolationError {
+                    for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                        String key = field.getKey();
+                        String fieldName = getFieldName(key);
+                        switch (fieldName) {
+                            case "edges": {
+                                List<PageEdge> list1 = new ArrayList<>();
+                                for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                                    list1.add(new PageEdge(jsonAsObject(element1, key)));
+                                }
+
+                                responseData.put(key, list1);
+
+                                break;
+                            }
+
+                            case "pageInfo": {
+                                responseData.put(key, new PageInfo(jsonAsObject(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "__typename": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+                                break;
+                            }
+                            default: {
+                                throw new SchemaViolationError(this, key, field.getValue());
+                            }
+                        }
+                    }
+                }
+
+                public String getGraphQlTypeName() {
+                    return "PageConnection";
+                }
+
+                /**
+                * A list of edges.
+                */
+
+                public List<PageEdge> getEdges() {
+                    return (List<PageEdge>) get("edges");
+                }
+
+                public PageConnection setEdges(List<PageEdge> arg) {
+                    optimisticData.put(getKey("edges"), arg);
+                    return this;
+                }
+
+                /**
+                * Information to aid in pagination.
+                */
+
+                public PageInfo getPageInfo() {
+                    return (PageInfo) get("pageInfo");
+                }
+
+                public PageConnection setPageInfo(PageInfo arg) {
+                    optimisticData.put(getKey("pageInfo"), arg);
+                    return this;
+                }
+
+                public boolean unwrapsToObject(String key) {
+                    switch (getFieldName(key)) {
+                        case "edges": return true;
+
+                        case "pageInfo": return true;
+
+                        default: return false;
+                    }
+                }
+            }
+
+            public interface PageEdgeQueryDefinition {
+                void define(PageEdgeQuery _queryBuilder);
+            }
+
+            public static class PageEdgeQuery extends Query<PageEdgeQuery> {
+                PageEdgeQuery(StringBuilder _queryBuilder) {
+                    super(_queryBuilder);
+                }
+
+                /**
+                * A cursor for use in pagination.
+                */
+                public PageEdgeQuery cursor() {
+                    startField("cursor");
+
+                    return this;
+                }
+
+                /**
+                * The item at the end of PageEdge.
+                */
+                public PageEdgeQuery node(PageQueryDefinition queryDef) {
+                    startField("node");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new PageQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+            }
+
+            public static class PageEdge extends AbstractResponse<PageEdge> {
+                public PageEdge() {
+                }
+
+                public PageEdge(JsonObject fields) throws SchemaViolationError {
+                    for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                        String key = field.getKey();
+                        String fieldName = getFieldName(key);
+                        switch (fieldName) {
+                            case "cursor": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+
+                                break;
+                            }
+
+                            case "node": {
+                                responseData.put(key, new Page(jsonAsObject(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "__typename": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+                                break;
+                            }
+                            default: {
+                                throw new SchemaViolationError(this, key, field.getValue());
+                            }
+                        }
+                    }
+                }
+
+                public String getGraphQlTypeName() {
+                    return "PageEdge";
+                }
+
+                /**
+                * A cursor for use in pagination.
+                */
+
+                public String getCursor() {
+                    return (String) get("cursor");
+                }
+
+                public PageEdge setCursor(String arg) {
+                    optimisticData.put(getKey("cursor"), arg);
+                    return this;
+                }
+
+                /**
+                * The item at the end of PageEdge.
+                */
+
+                public Page getNode() {
+                    return (Page) get("node");
+                }
+
+                public PageEdge setNode(Page arg) {
+                    optimisticData.put(getKey("node"), arg);
+                    return this;
+                }
+
+                public boolean unwrapsToObject(String key) {
+                    switch (getFieldName(key)) {
+                        case "cursor": return false;
+
+                        case "node": return true;
+
+                        default: return false;
                     }
                 }
             }
@@ -22839,6 +29543,87 @@ public class Storefront {
                         case "hasPreviousPage": return false;
 
                         default: return false;
+                    }
+                }
+            }
+
+            /**
+            * The set of valid sort keys for the pages query.
+            */
+            public enum PageSortKeys {
+                /**
+                * Sort by the `id` value.
+                */
+                ID,
+
+                /**
+                * During a search (i.e. when the `query` parameter has been specified on the connection) this sorts
+                * the
+                * results by relevance to the search term(s). When no search query is specified, this sort key is not
+                * deterministic and should not be used.
+                */
+                RELEVANCE,
+
+                /**
+                * Sort by the `title` value.
+                */
+                TITLE,
+
+                /**
+                * Sort by the `updated_at` value.
+                */
+                UPDATED_AT,
+
+                UNKNOWN_VALUE;
+
+                public static PageSortKeys fromGraphQl(String value) {
+                    if (value == null) {
+                        return null;
+                    }
+
+                    switch (value) {
+                        case "ID": {
+                            return ID;
+                        }
+
+                        case "RELEVANCE": {
+                            return RELEVANCE;
+                        }
+
+                        case "TITLE": {
+                            return TITLE;
+                        }
+
+                        case "UPDATED_AT": {
+                            return UPDATED_AT;
+                        }
+
+                        default: {
+                            return UNKNOWN_VALUE;
+                        }
+                    }
+                }
+                public String toString() {
+                    switch (this) {
+                        case ID: {
+                            return "ID";
+                        }
+
+                        case RELEVANCE: {
+                            return "RELEVANCE";
+                        }
+
+                        case TITLE: {
+                            return "TITLE";
+                        }
+
+                        case UPDATED_AT: {
+                            return "UPDATED_AT";
+                        }
+
+                        default: {
+                            return "";
+                        }
                     }
                 }
             }
@@ -23466,6 +30251,167 @@ public class Storefront {
                 }
             }
 
+            public interface PricingPercentageValueQueryDefinition {
+                void define(PricingPercentageValueQuery _queryBuilder);
+            }
+
+            /**
+            * The value of the percentage pricing object.
+            */
+            public static class PricingPercentageValueQuery extends Query<PricingPercentageValueQuery> {
+                PricingPercentageValueQuery(StringBuilder _queryBuilder) {
+                    super(_queryBuilder);
+                }
+
+                /**
+                * The percentage value of the object.
+                */
+                public PricingPercentageValueQuery percentage() {
+                    startField("percentage");
+
+                    return this;
+                }
+            }
+
+            /**
+            * The value of the percentage pricing object.
+            */
+            public static class PricingPercentageValue extends AbstractResponse<PricingPercentageValue> implements PricingValue {
+                public PricingPercentageValue() {
+                }
+
+                public PricingPercentageValue(JsonObject fields) throws SchemaViolationError {
+                    for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                        String key = field.getKey();
+                        String fieldName = getFieldName(key);
+                        switch (fieldName) {
+                            case "percentage": {
+                                responseData.put(key, jsonAsDouble(field.getValue(), key));
+
+                                break;
+                            }
+
+                            case "__typename": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+                                break;
+                            }
+                            default: {
+                                throw new SchemaViolationError(this, key, field.getValue());
+                            }
+                        }
+                    }
+                }
+
+                public String getGraphQlTypeName() {
+                    return "PricingPercentageValue";
+                }
+
+                /**
+                * The percentage value of the object.
+                */
+
+                public Double getPercentage() {
+                    return (Double) get("percentage");
+                }
+
+                public PricingPercentageValue setPercentage(Double arg) {
+                    optimisticData.put(getKey("percentage"), arg);
+                    return this;
+                }
+
+                public boolean unwrapsToObject(String key) {
+                    switch (getFieldName(key)) {
+                        case "percentage": return false;
+
+                        default: return false;
+                    }
+                }
+            }
+
+            public interface PricingValueQueryDefinition {
+                void define(PricingValueQuery _queryBuilder);
+            }
+
+            /**
+            * The value of the pricing object.
+            */
+            public static class PricingValueQuery extends Query<PricingValueQuery> {
+                PricingValueQuery(StringBuilder _queryBuilder) {
+                    super(_queryBuilder);
+
+                    startField("__typename");
+                }
+
+                public PricingValueQuery onMoneyV2(MoneyV2QueryDefinition queryDef) {
+                    startInlineFragment("MoneyV2");
+                    queryDef.define(new MoneyV2Query(_queryBuilder));
+                    _queryBuilder.append('}');
+                    return this;
+                }
+
+                public PricingValueQuery onPricingPercentageValue(PricingPercentageValueQueryDefinition queryDef) {
+                    startInlineFragment("PricingPercentageValue");
+                    queryDef.define(new PricingPercentageValueQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+                    return this;
+                }
+            }
+
+            public interface PricingValue {
+                String getGraphQlTypeName();
+            }
+
+            /**
+            * The value of the pricing object.
+            */
+            public static class UnknownPricingValue extends AbstractResponse<UnknownPricingValue> implements PricingValue {
+                public UnknownPricingValue() {
+                }
+
+                public UnknownPricingValue(JsonObject fields) throws SchemaViolationError {
+                    for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                        String key = field.getKey();
+                        String fieldName = getFieldName(key);
+                        switch (fieldName) {
+                            case "__typename": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+                                break;
+                            }
+                            default: {
+                                throw new SchemaViolationError(this, key, field.getValue());
+                            }
+                        }
+                    }
+                }
+
+                public static PricingValue create(JsonObject fields) throws SchemaViolationError {
+                    String typeName = fields.getAsJsonPrimitive("__typename").getAsString();
+                    switch (typeName) {
+                        case "MoneyV2": {
+                            return new MoneyV2(fields);
+                        }
+
+                        case "PricingPercentageValue": {
+                            return new PricingPercentageValue(fields);
+                        }
+
+                        default: {
+                            return new UnknownPricingValue(fields);
+                        }
+                    }
+                }
+
+                public String getGraphQlTypeName() {
+                    return (String) get("__typename");
+                }
+
+                public boolean unwrapsToObject(String key) {
+                    switch (getFieldName(key)) {
+                        default: return false;
+                    }
+                }
+            }
+
             public interface ProductQueryDefinition {
                 void define(ProductQuery _queryBuilder);
             }
@@ -23887,7 +30833,7 @@ public class Storefront {
 
                 /**
                 * A categorization that a product can be tagged with, commonly used for filtering and searching.
-                * Each comma-separated tag has a character limit of 255.
+                * Additional access scope required for private apps: unauthenticated_read_product_tags.
                 */
                 public ProductQuery tags() {
                     startField("tags");
@@ -24390,7 +31336,7 @@ public class Storefront {
 
                 /**
                 * A categorization that a product can be tagged with, commonly used for filtering and searching.
-                * Each comma-separated tag has a character limit of 255.
+                * Additional access scope required for private apps: unauthenticated_read_product_tags.
                 */
 
                 public List<String> getTags() {
@@ -24518,16 +31464,34 @@ public class Storefront {
             * The set of valid sort keys for the products query.
             */
             public enum ProductCollectionSortKeys {
+                /**
+                * Sort by the `best-selling` value.
+                */
                 BEST_SELLING,
 
+                /**
+                * Sort by the `collection-default` value.
+                */
                 COLLECTION_DEFAULT,
 
+                /**
+                * Sort by the `created` value.
+                */
                 CREATED,
 
+                /**
+                * Sort by the `id` value.
+                */
                 ID,
 
+                /**
+                * Sort by the `manual` value.
+                */
                 MANUAL,
 
+                /**
+                * Sort by the `price` value.
+                */
                 PRICE,
 
                 /**
@@ -24538,6 +31502,9 @@ public class Storefront {
                 */
                 RELEVANCE,
 
+                /**
+                * Sort by the `title` value.
+                */
                 TITLE,
 
                 UNKNOWN_VALUE;
@@ -24849,10 +31816,19 @@ public class Storefront {
             * The set of valid sort keys for the images query.
             */
             public enum ProductImageSortKeys {
+                /**
+                * Sort by the `created_at` value.
+                */
                 CREATED_AT,
 
+                /**
+                * Sort by the `id` value.
+                */
                 ID,
 
+                /**
+                * Sort by the `position` value.
+                */
                 POSITION,
 
                 /**
@@ -25177,10 +32153,29 @@ public class Storefront {
             * The set of valid sort keys for the products query.
             */
             public enum ProductSortKeys {
+                /**
+                * Sort by the `best_selling` value.
+                */
+                BEST_SELLING,
+
+                /**
+                * Sort by the `created_at` value.
+                */
                 CREATED_AT,
 
+                /**
+                * Sort by the `id` value.
+                */
                 ID,
 
+                /**
+                * Sort by the `price` value.
+                */
+                PRICE,
+
+                /**
+                * Sort by the `product_type` value.
+                */
                 PRODUCT_TYPE,
 
                 /**
@@ -25191,10 +32186,19 @@ public class Storefront {
                 */
                 RELEVANCE,
 
+                /**
+                * Sort by the `title` value.
+                */
                 TITLE,
 
+                /**
+                * Sort by the `updated_at` value.
+                */
                 UPDATED_AT,
 
+                /**
+                * Sort by the `vendor` value.
+                */
                 VENDOR,
 
                 UNKNOWN_VALUE;
@@ -25205,12 +32209,20 @@ public class Storefront {
                     }
 
                     switch (value) {
+                        case "BEST_SELLING": {
+                            return BEST_SELLING;
+                        }
+
                         case "CREATED_AT": {
                             return CREATED_AT;
                         }
 
                         case "ID": {
                             return ID;
+                        }
+
+                        case "PRICE": {
+                            return PRICE;
                         }
 
                         case "PRODUCT_TYPE": {
@@ -25240,12 +32252,20 @@ public class Storefront {
                 }
                 public String toString() {
                     switch (this) {
+                        case BEST_SELLING: {
+                            return "BEST_SELLING";
+                        }
+
                         case CREATED_AT: {
                             return "CREATED_AT";
                         }
 
                         case ID: {
                             return "ID";
+                        }
+
+                        case PRICE: {
+                            return "PRICE";
                         }
 
                         case PRODUCT_TYPE: {
@@ -25405,6 +32425,115 @@ public class Storefront {
                     return this;
                 }
 
+                public class PresentmentPricesArguments extends Arguments {
+                    PresentmentPricesArguments(StringBuilder _queryBuilder) {
+                        super(_queryBuilder, true);
+                    }
+
+                    /**
+                    * The presentment currencies prices should return in.
+                    */
+                    public PresentmentPricesArguments presentmentCurrencies(List<CurrencyCode> value) {
+                        if (value != null) {
+                            startArgument("presentmentCurrencies");
+                            _queryBuilder.append('[');
+                            {
+                                String listSeperator1 = "";
+                                for (CurrencyCode item1 : value) {
+                                    _queryBuilder.append(listSeperator1);
+                                    listSeperator1 = ",";
+                                    _queryBuilder.append(item1.toString());
+                                }
+                            }
+                            _queryBuilder.append(']');
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Returns up to the first `n` elements from the list.
+                    */
+                    public PresentmentPricesArguments first(Integer value) {
+                        if (value != null) {
+                            startArgument("first");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Returns the elements that come after the specified cursor.
+                    */
+                    public PresentmentPricesArguments after(String value) {
+                        if (value != null) {
+                            startArgument("after");
+                            Query.appendQuotedString(_queryBuilder, value.toString());
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Returns up to the last `n` elements from the list.
+                    */
+                    public PresentmentPricesArguments last(Integer value) {
+                        if (value != null) {
+                            startArgument("last");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Returns the elements that come before the specified cursor.
+                    */
+                    public PresentmentPricesArguments before(String value) {
+                        if (value != null) {
+                            startArgument("before");
+                            Query.appendQuotedString(_queryBuilder, value.toString());
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Reverse the order of the underlying list.
+                    */
+                    public PresentmentPricesArguments reverse(Boolean value) {
+                        if (value != null) {
+                            startArgument("reverse");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+                }
+
+                public interface PresentmentPricesArgumentsDefinition {
+                    void define(PresentmentPricesArguments args);
+                }
+
+                /**
+                * List of prices and compare-at prices in the presentment currencies for this shop.
+                */
+                public ProductVariantQuery presentmentPrices(ProductVariantPricePairConnectionQueryDefinition queryDef) {
+                    return presentmentPrices(args -> {}, queryDef);
+                }
+
+                /**
+                * List of prices and compare-at prices in the presentment currencies for this shop.
+                */
+                public ProductVariantQuery presentmentPrices(PresentmentPricesArgumentsDefinition argsDef, ProductVariantPricePairConnectionQueryDefinition queryDef) {
+                    startField("presentmentPrices");
+
+                    PresentmentPricesArguments args = new PresentmentPricesArguments(_queryBuilder);
+                    argsDef.define(args);
+                    PresentmentPricesArguments.end(args);
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new ProductVariantPricePairConnectionQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
                 /**
                 * The product variant’s price.
                 */
@@ -25441,7 +32570,7 @@ public class Storefront {
                 }
 
                 /**
-                * The SKU (Stock Keeping Unit) associated with the variant.
+                * The SKU (stock keeping unit) associated with the variant.
                 */
                 public ProductVariantQuery sku() {
                     startField("sku");
@@ -25531,6 +32660,12 @@ public class Storefront {
                                 }
 
                                 responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "presentmentPrices": {
+                                responseData.put(key, new ProductVariantPricePairConnection(jsonAsObject(field.getValue(), key)));
 
                                 break;
                             }
@@ -25677,6 +32812,19 @@ public class Storefront {
                 }
 
                 /**
+                * List of prices and compare-at prices in the presentment currencies for this shop.
+                */
+
+                public ProductVariantPricePairConnection getPresentmentPrices() {
+                    return (ProductVariantPricePairConnection) get("presentmentPrices");
+                }
+
+                public ProductVariant setPresentmentPrices(ProductVariantPricePairConnection arg) {
+                    optimisticData.put(getKey("presentmentPrices"), arg);
+                    return this;
+                }
+
+                /**
                 * The product variant’s price.
                 */
 
@@ -25716,7 +32864,7 @@ public class Storefront {
                 }
 
                 /**
-                * The SKU (Stock Keeping Unit) associated with the variant.
+                * The SKU (stock keeping unit) associated with the variant.
                 */
 
                 public String getSku() {
@@ -25778,6 +32926,8 @@ public class Storefront {
                         case "id": return false;
 
                         case "image": return true;
+
+                        case "presentmentPrices": return true;
 
                         case "price": return false;
 
@@ -26017,12 +33167,357 @@ public class Storefront {
                 }
             }
 
+            public interface ProductVariantPricePairQueryDefinition {
+                void define(ProductVariantPricePairQuery _queryBuilder);
+            }
+
+            /**
+            * The compare-at price and price of a variant sharing a currency.
+            */
+            public static class ProductVariantPricePairQuery extends Query<ProductVariantPricePairQuery> {
+                ProductVariantPricePairQuery(StringBuilder _queryBuilder) {
+                    super(_queryBuilder);
+                }
+
+                /**
+                * The compare-at price of the variant with associated currency.
+                */
+                public ProductVariantPricePairQuery compareAtPrice(MoneyV2QueryDefinition queryDef) {
+                    startField("compareAtPrice");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new MoneyV2Query(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * The price of the variant with associated currency.
+                */
+                public ProductVariantPricePairQuery price(MoneyV2QueryDefinition queryDef) {
+                    startField("price");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new MoneyV2Query(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+            }
+
+            /**
+            * The compare-at price and price of a variant sharing a currency.
+            */
+            public static class ProductVariantPricePair extends AbstractResponse<ProductVariantPricePair> {
+                public ProductVariantPricePair() {
+                }
+
+                public ProductVariantPricePair(JsonObject fields) throws SchemaViolationError {
+                    for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                        String key = field.getKey();
+                        String fieldName = getFieldName(key);
+                        switch (fieldName) {
+                            case "compareAtPrice": {
+                                MoneyV2 optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = new MoneyV2(jsonAsObject(field.getValue(), key));
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "price": {
+                                responseData.put(key, new MoneyV2(jsonAsObject(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "__typename": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+                                break;
+                            }
+                            default: {
+                                throw new SchemaViolationError(this, key, field.getValue());
+                            }
+                        }
+                    }
+                }
+
+                public String getGraphQlTypeName() {
+                    return "ProductVariantPricePair";
+                }
+
+                /**
+                * The compare-at price of the variant with associated currency.
+                */
+
+                public MoneyV2 getCompareAtPrice() {
+                    return (MoneyV2) get("compareAtPrice");
+                }
+
+                public ProductVariantPricePair setCompareAtPrice(MoneyV2 arg) {
+                    optimisticData.put(getKey("compareAtPrice"), arg);
+                    return this;
+                }
+
+                /**
+                * The price of the variant with associated currency.
+                */
+
+                public MoneyV2 getPrice() {
+                    return (MoneyV2) get("price");
+                }
+
+                public ProductVariantPricePair setPrice(MoneyV2 arg) {
+                    optimisticData.put(getKey("price"), arg);
+                    return this;
+                }
+
+                public boolean unwrapsToObject(String key) {
+                    switch (getFieldName(key)) {
+                        case "compareAtPrice": return true;
+
+                        case "price": return true;
+
+                        default: return false;
+                    }
+                }
+            }
+
+            public interface ProductVariantPricePairConnectionQueryDefinition {
+                void define(ProductVariantPricePairConnectionQuery _queryBuilder);
+            }
+
+            public static class ProductVariantPricePairConnectionQuery extends Query<ProductVariantPricePairConnectionQuery> {
+                ProductVariantPricePairConnectionQuery(StringBuilder _queryBuilder) {
+                    super(_queryBuilder);
+                }
+
+                /**
+                * A list of edges.
+                */
+                public ProductVariantPricePairConnectionQuery edges(ProductVariantPricePairEdgeQueryDefinition queryDef) {
+                    startField("edges");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new ProductVariantPricePairEdgeQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * Information to aid in pagination.
+                */
+                public ProductVariantPricePairConnectionQuery pageInfo(PageInfoQueryDefinition queryDef) {
+                    startField("pageInfo");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new PageInfoQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+            }
+
+            public static class ProductVariantPricePairConnection extends AbstractResponse<ProductVariantPricePairConnection> {
+                public ProductVariantPricePairConnection() {
+                }
+
+                public ProductVariantPricePairConnection(JsonObject fields) throws SchemaViolationError {
+                    for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                        String key = field.getKey();
+                        String fieldName = getFieldName(key);
+                        switch (fieldName) {
+                            case "edges": {
+                                List<ProductVariantPricePairEdge> list1 = new ArrayList<>();
+                                for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                                    list1.add(new ProductVariantPricePairEdge(jsonAsObject(element1, key)));
+                                }
+
+                                responseData.put(key, list1);
+
+                                break;
+                            }
+
+                            case "pageInfo": {
+                                responseData.put(key, new PageInfo(jsonAsObject(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "__typename": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+                                break;
+                            }
+                            default: {
+                                throw new SchemaViolationError(this, key, field.getValue());
+                            }
+                        }
+                    }
+                }
+
+                public String getGraphQlTypeName() {
+                    return "ProductVariantPricePairConnection";
+                }
+
+                /**
+                * A list of edges.
+                */
+
+                public List<ProductVariantPricePairEdge> getEdges() {
+                    return (List<ProductVariantPricePairEdge>) get("edges");
+                }
+
+                public ProductVariantPricePairConnection setEdges(List<ProductVariantPricePairEdge> arg) {
+                    optimisticData.put(getKey("edges"), arg);
+                    return this;
+                }
+
+                /**
+                * Information to aid in pagination.
+                */
+
+                public PageInfo getPageInfo() {
+                    return (PageInfo) get("pageInfo");
+                }
+
+                public ProductVariantPricePairConnection setPageInfo(PageInfo arg) {
+                    optimisticData.put(getKey("pageInfo"), arg);
+                    return this;
+                }
+
+                public boolean unwrapsToObject(String key) {
+                    switch (getFieldName(key)) {
+                        case "edges": return true;
+
+                        case "pageInfo": return true;
+
+                        default: return false;
+                    }
+                }
+            }
+
+            public interface ProductVariantPricePairEdgeQueryDefinition {
+                void define(ProductVariantPricePairEdgeQuery _queryBuilder);
+            }
+
+            public static class ProductVariantPricePairEdgeQuery extends Query<ProductVariantPricePairEdgeQuery> {
+                ProductVariantPricePairEdgeQuery(StringBuilder _queryBuilder) {
+                    super(_queryBuilder);
+                }
+
+                /**
+                * A cursor for use in pagination.
+                */
+                public ProductVariantPricePairEdgeQuery cursor() {
+                    startField("cursor");
+
+                    return this;
+                }
+
+                /**
+                * The item at the end of ProductVariantPricePairEdge.
+                */
+                public ProductVariantPricePairEdgeQuery node(ProductVariantPricePairQueryDefinition queryDef) {
+                    startField("node");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new ProductVariantPricePairQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+            }
+
+            public static class ProductVariantPricePairEdge extends AbstractResponse<ProductVariantPricePairEdge> {
+                public ProductVariantPricePairEdge() {
+                }
+
+                public ProductVariantPricePairEdge(JsonObject fields) throws SchemaViolationError {
+                    for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                        String key = field.getKey();
+                        String fieldName = getFieldName(key);
+                        switch (fieldName) {
+                            case "cursor": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+
+                                break;
+                            }
+
+                            case "node": {
+                                responseData.put(key, new ProductVariantPricePair(jsonAsObject(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "__typename": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+                                break;
+                            }
+                            default: {
+                                throw new SchemaViolationError(this, key, field.getValue());
+                            }
+                        }
+                    }
+                }
+
+                public String getGraphQlTypeName() {
+                    return "ProductVariantPricePairEdge";
+                }
+
+                /**
+                * A cursor for use in pagination.
+                */
+
+                public String getCursor() {
+                    return (String) get("cursor");
+                }
+
+                public ProductVariantPricePairEdge setCursor(String arg) {
+                    optimisticData.put(getKey("cursor"), arg);
+                    return this;
+                }
+
+                /**
+                * The item at the end of ProductVariantPricePairEdge.
+                */
+
+                public ProductVariantPricePair getNode() {
+                    return (ProductVariantPricePair) get("node");
+                }
+
+                public ProductVariantPricePairEdge setNode(ProductVariantPricePair arg) {
+                    optimisticData.put(getKey("node"), arg);
+                    return this;
+                }
+
+                public boolean unwrapsToObject(String key) {
+                    switch (getFieldName(key)) {
+                        case "cursor": return false;
+
+                        case "node": return true;
+
+                        default: return false;
+                    }
+                }
+            }
+
             /**
             * The set of valid sort keys for the variants query.
             */
             public enum ProductVariantSortKeys {
+                /**
+                * Sort by the `id` value.
+                */
                 ID,
 
+                /**
+                * Sort by the `position` value.
+                */
                 POSITION,
 
                 /**
@@ -26033,8 +33528,14 @@ public class Storefront {
                 */
                 RELEVANCE,
 
+                /**
+                * Sort by the `sku` value.
+                */
                 SKU,
 
+                /**
+                * Sort by the `title` value.
+                */
                 TITLE,
 
                 UNKNOWN_VALUE;
@@ -26112,6 +33613,390 @@ public class Storefront {
                     super(_queryBuilder);
                 }
 
+                public class ArticlesArguments extends Arguments {
+                    ArticlesArguments(StringBuilder _queryBuilder) {
+                        super(_queryBuilder, true);
+                    }
+
+                    /**
+                    * Returns up to the first `n` elements from the list.
+                    */
+                    public ArticlesArguments first(Integer value) {
+                        if (value != null) {
+                            startArgument("first");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Returns the elements that come after the specified cursor.
+                    */
+                    public ArticlesArguments after(String value) {
+                        if (value != null) {
+                            startArgument("after");
+                            Query.appendQuotedString(_queryBuilder, value.toString());
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Returns up to the last `n` elements from the list.
+                    */
+                    public ArticlesArguments last(Integer value) {
+                        if (value != null) {
+                            startArgument("last");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Returns the elements that come before the specified cursor.
+                    */
+                    public ArticlesArguments before(String value) {
+                        if (value != null) {
+                            startArgument("before");
+                            Query.appendQuotedString(_queryBuilder, value.toString());
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Reverse the order of the underlying list.
+                    */
+                    public ArticlesArguments reverse(Boolean value) {
+                        if (value != null) {
+                            startArgument("reverse");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Sort the underlying list by the given key.
+                    */
+                    public ArticlesArguments sortKey(ArticleSortKeys value) {
+                        if (value != null) {
+                            startArgument("sortKey");
+                            _queryBuilder.append(value.toString());
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Supported filter parameters:
+                    * - `author`
+                    * - `blog_title`
+                    * - `created_at`
+                    * - `tag`
+                    * - `updated_at`
+                    * See the detailed [search syntax](https://help.shopify.com/api/getting-started/search-syntax).
+                    */
+                    public ArticlesArguments query(String value) {
+                        if (value != null) {
+                            startArgument("query");
+                            Query.appendQuotedString(_queryBuilder, value.toString());
+                        }
+                        return this;
+                    }
+                }
+
+                public interface ArticlesArgumentsDefinition {
+                    void define(ArticlesArguments args);
+                }
+
+                /**
+                * List of the shop's articles.
+                */
+                public QueryRootQuery articles(ArticleConnectionQueryDefinition queryDef) {
+                    return articles(args -> {}, queryDef);
+                }
+
+                /**
+                * List of the shop's articles.
+                */
+                public QueryRootQuery articles(ArticlesArgumentsDefinition argsDef, ArticleConnectionQueryDefinition queryDef) {
+                    startField("articles");
+
+                    ArticlesArguments args = new ArticlesArguments(_queryBuilder);
+                    argsDef.define(args);
+                    ArticlesArguments.end(args);
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new ArticleConnectionQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * Find a blog by its handle.
+                */
+                public QueryRootQuery blogByHandle(String handle, BlogQueryDefinition queryDef) {
+                    startField("blogByHandle");
+
+                    _queryBuilder.append("(handle:");
+                    Query.appendQuotedString(_queryBuilder, handle.toString());
+
+                    _queryBuilder.append(')');
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new BlogQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                public class BlogsArguments extends Arguments {
+                    BlogsArguments(StringBuilder _queryBuilder) {
+                        super(_queryBuilder, true);
+                    }
+
+                    /**
+                    * Returns up to the first `n` elements from the list.
+                    */
+                    public BlogsArguments first(Integer value) {
+                        if (value != null) {
+                            startArgument("first");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Returns the elements that come after the specified cursor.
+                    */
+                    public BlogsArguments after(String value) {
+                        if (value != null) {
+                            startArgument("after");
+                            Query.appendQuotedString(_queryBuilder, value.toString());
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Returns up to the last `n` elements from the list.
+                    */
+                    public BlogsArguments last(Integer value) {
+                        if (value != null) {
+                            startArgument("last");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Returns the elements that come before the specified cursor.
+                    */
+                    public BlogsArguments before(String value) {
+                        if (value != null) {
+                            startArgument("before");
+                            Query.appendQuotedString(_queryBuilder, value.toString());
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Reverse the order of the underlying list.
+                    */
+                    public BlogsArguments reverse(Boolean value) {
+                        if (value != null) {
+                            startArgument("reverse");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Sort the underlying list by the given key.
+                    */
+                    public BlogsArguments sortKey(BlogSortKeys value) {
+                        if (value != null) {
+                            startArgument("sortKey");
+                            _queryBuilder.append(value.toString());
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Supported filter parameters:
+                    * - `created_at`
+                    * - `handle`
+                    * - `title`
+                    * - `updated_at`
+                    * See the detailed [search syntax](https://help.shopify.com/api/getting-started/search-syntax).
+                    */
+                    public BlogsArguments query(String value) {
+                        if (value != null) {
+                            startArgument("query");
+                            Query.appendQuotedString(_queryBuilder, value.toString());
+                        }
+                        return this;
+                    }
+                }
+
+                public interface BlogsArgumentsDefinition {
+                    void define(BlogsArguments args);
+                }
+
+                /**
+                * List of the shop's blogs.
+                */
+                public QueryRootQuery blogs(BlogConnectionQueryDefinition queryDef) {
+                    return blogs(args -> {}, queryDef);
+                }
+
+                /**
+                * List of the shop's blogs.
+                */
+                public QueryRootQuery blogs(BlogsArgumentsDefinition argsDef, BlogConnectionQueryDefinition queryDef) {
+                    startField("blogs");
+
+                    BlogsArguments args = new BlogsArguments(_queryBuilder);
+                    argsDef.define(args);
+                    BlogsArguments.end(args);
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new BlogConnectionQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * Find a collection by its handle.
+                */
+                public QueryRootQuery collectionByHandle(String handle, CollectionQueryDefinition queryDef) {
+                    startField("collectionByHandle");
+
+                    _queryBuilder.append("(handle:");
+                    Query.appendQuotedString(_queryBuilder, handle.toString());
+
+                    _queryBuilder.append(')');
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new CollectionQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                public class CollectionsArguments extends Arguments {
+                    CollectionsArguments(StringBuilder _queryBuilder) {
+                        super(_queryBuilder, true);
+                    }
+
+                    /**
+                    * Returns up to the first `n` elements from the list.
+                    */
+                    public CollectionsArguments first(Integer value) {
+                        if (value != null) {
+                            startArgument("first");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Returns the elements that come after the specified cursor.
+                    */
+                    public CollectionsArguments after(String value) {
+                        if (value != null) {
+                            startArgument("after");
+                            Query.appendQuotedString(_queryBuilder, value.toString());
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Returns up to the last `n` elements from the list.
+                    */
+                    public CollectionsArguments last(Integer value) {
+                        if (value != null) {
+                            startArgument("last");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Returns the elements that come before the specified cursor.
+                    */
+                    public CollectionsArguments before(String value) {
+                        if (value != null) {
+                            startArgument("before");
+                            Query.appendQuotedString(_queryBuilder, value.toString());
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Reverse the order of the underlying list.
+                    */
+                    public CollectionsArguments reverse(Boolean value) {
+                        if (value != null) {
+                            startArgument("reverse");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Sort the underlying list by the given key.
+                    */
+                    public CollectionsArguments sortKey(CollectionSortKeys value) {
+                        if (value != null) {
+                            startArgument("sortKey");
+                            _queryBuilder.append(value.toString());
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Supported filter parameters:
+                    * - `collection_type`
+                    * - `title`
+                    * - `updated_at`
+                    * See the detailed [search syntax](https://help.shopify.com/api/getting-started/search-syntax).
+                    */
+                    public CollectionsArguments query(String value) {
+                        if (value != null) {
+                            startArgument("query");
+                            Query.appendQuotedString(_queryBuilder, value.toString());
+                        }
+                        return this;
+                    }
+                }
+
+                public interface CollectionsArgumentsDefinition {
+                    void define(CollectionsArguments args);
+                }
+
+                /**
+                * List of the shop’s collections.
+                */
+                public QueryRootQuery collections(CollectionConnectionQueryDefinition queryDef) {
+                    return collections(args -> {}, queryDef);
+                }
+
+                /**
+                * List of the shop’s collections.
+                */
+                public QueryRootQuery collections(CollectionsArgumentsDefinition argsDef, CollectionConnectionQueryDefinition queryDef) {
+                    startField("collections");
+
+                    CollectionsArguments args = new CollectionsArguments(_queryBuilder);
+                    argsDef.define(args);
+                    CollectionsArguments.end(args);
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new CollectionConnectionQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
                 public QueryRootQuery customer(String customerAccessToken, CustomerQueryDefinition queryDef) {
                     startField("customer");
 
@@ -26166,6 +34051,314 @@ public class Storefront {
                     return this;
                 }
 
+                /**
+                * Find a page by its handle.
+                */
+                public QueryRootQuery pageByHandle(String handle, PageQueryDefinition queryDef) {
+                    startField("pageByHandle");
+
+                    _queryBuilder.append("(handle:");
+                    Query.appendQuotedString(_queryBuilder, handle.toString());
+
+                    _queryBuilder.append(')');
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new PageQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                public class PagesArguments extends Arguments {
+                    PagesArguments(StringBuilder _queryBuilder) {
+                        super(_queryBuilder, true);
+                    }
+
+                    /**
+                    * Returns up to the first `n` elements from the list.
+                    */
+                    public PagesArguments first(Integer value) {
+                        if (value != null) {
+                            startArgument("first");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Returns the elements that come after the specified cursor.
+                    */
+                    public PagesArguments after(String value) {
+                        if (value != null) {
+                            startArgument("after");
+                            Query.appendQuotedString(_queryBuilder, value.toString());
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Returns up to the last `n` elements from the list.
+                    */
+                    public PagesArguments last(Integer value) {
+                        if (value != null) {
+                            startArgument("last");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Returns the elements that come before the specified cursor.
+                    */
+                    public PagesArguments before(String value) {
+                        if (value != null) {
+                            startArgument("before");
+                            Query.appendQuotedString(_queryBuilder, value.toString());
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Reverse the order of the underlying list.
+                    */
+                    public PagesArguments reverse(Boolean value) {
+                        if (value != null) {
+                            startArgument("reverse");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Sort the underlying list by the given key.
+                    */
+                    public PagesArguments sortKey(PageSortKeys value) {
+                        if (value != null) {
+                            startArgument("sortKey");
+                            _queryBuilder.append(value.toString());
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Supported filter parameters:
+                    * - `created_at`
+                    * - `handle`
+                    * - `title`
+                    * - `updated_at`
+                    * See the detailed [search syntax](https://help.shopify.com/api/getting-started/search-syntax).
+                    */
+                    public PagesArguments query(String value) {
+                        if (value != null) {
+                            startArgument("query");
+                            Query.appendQuotedString(_queryBuilder, value.toString());
+                        }
+                        return this;
+                    }
+                }
+
+                public interface PagesArgumentsDefinition {
+                    void define(PagesArguments args);
+                }
+
+                /**
+                * List of the shop's pages.
+                */
+                public QueryRootQuery pages(PageConnectionQueryDefinition queryDef) {
+                    return pages(args -> {}, queryDef);
+                }
+
+                /**
+                * List of the shop's pages.
+                */
+                public QueryRootQuery pages(PagesArgumentsDefinition argsDef, PageConnectionQueryDefinition queryDef) {
+                    startField("pages");
+
+                    PagesArguments args = new PagesArguments(_queryBuilder);
+                    argsDef.define(args);
+                    PagesArguments.end(args);
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new PageConnectionQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * Find a product by its handle.
+                */
+                public QueryRootQuery productByHandle(String handle, ProductQueryDefinition queryDef) {
+                    startField("productByHandle");
+
+                    _queryBuilder.append("(handle:");
+                    Query.appendQuotedString(_queryBuilder, handle.toString());
+
+                    _queryBuilder.append(')');
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new ProductQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * Tags added to products.
+                * Additional access scope required: unauthenticated_read_product_tags.
+                */
+                public QueryRootQuery productTags(int first, StringConnectionQueryDefinition queryDef) {
+                    startField("productTags");
+
+                    _queryBuilder.append("(first:");
+                    _queryBuilder.append(first);
+
+                    _queryBuilder.append(')');
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new StringConnectionQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * List of the shop’s product types.
+                */
+                public QueryRootQuery productTypes(int first, StringConnectionQueryDefinition queryDef) {
+                    startField("productTypes");
+
+                    _queryBuilder.append("(first:");
+                    _queryBuilder.append(first);
+
+                    _queryBuilder.append(')');
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new StringConnectionQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                public class ProductsArguments extends Arguments {
+                    ProductsArguments(StringBuilder _queryBuilder) {
+                        super(_queryBuilder, true);
+                    }
+
+                    /**
+                    * Returns up to the first `n` elements from the list.
+                    */
+                    public ProductsArguments first(Integer value) {
+                        if (value != null) {
+                            startArgument("first");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Returns the elements that come after the specified cursor.
+                    */
+                    public ProductsArguments after(String value) {
+                        if (value != null) {
+                            startArgument("after");
+                            Query.appendQuotedString(_queryBuilder, value.toString());
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Returns up to the last `n` elements from the list.
+                    */
+                    public ProductsArguments last(Integer value) {
+                        if (value != null) {
+                            startArgument("last");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Returns the elements that come before the specified cursor.
+                    */
+                    public ProductsArguments before(String value) {
+                        if (value != null) {
+                            startArgument("before");
+                            Query.appendQuotedString(_queryBuilder, value.toString());
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Reverse the order of the underlying list.
+                    */
+                    public ProductsArguments reverse(Boolean value) {
+                        if (value != null) {
+                            startArgument("reverse");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Sort the underlying list by the given key.
+                    */
+                    public ProductsArguments sortKey(ProductSortKeys value) {
+                        if (value != null) {
+                            startArgument("sortKey");
+                            _queryBuilder.append(value.toString());
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Supported filter parameters:
+                    * - `created_at`
+                    * - `product_type`
+                    * - `tag`
+                    * - `title`
+                    * - `updated_at`
+                    * - `variants.price`
+                    * - `vendor`
+                    * See the detailed [search syntax](https://help.shopify.com/api/getting-started/search-syntax).
+                    */
+                    public ProductsArguments query(String value) {
+                        if (value != null) {
+                            startArgument("query");
+                            Query.appendQuotedString(_queryBuilder, value.toString());
+                        }
+                        return this;
+                    }
+                }
+
+                public interface ProductsArgumentsDefinition {
+                    void define(ProductsArguments args);
+                }
+
+                /**
+                * List of the shop’s products.
+                */
+                public QueryRootQuery products(ProductConnectionQueryDefinition queryDef) {
+                    return products(args -> {}, queryDef);
+                }
+
+                /**
+                * List of the shop’s products.
+                */
+                public QueryRootQuery products(ProductsArgumentsDefinition argsDef, ProductConnectionQueryDefinition queryDef) {
+                    startField("products");
+
+                    ProductsArguments args = new ProductsArguments(_queryBuilder);
+                    argsDef.define(args);
+                    ProductsArguments.end(args);
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new ProductConnectionQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
                 public QueryRootQuery shop(ShopQueryDefinition queryDef) {
                     startField("shop");
 
@@ -26194,6 +34387,46 @@ public class Storefront {
                         String key = field.getKey();
                         String fieldName = getFieldName(key);
                         switch (fieldName) {
+                            case "articles": {
+                                responseData.put(key, new ArticleConnection(jsonAsObject(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "blogByHandle": {
+                                Blog optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = new Blog(jsonAsObject(field.getValue(), key));
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "blogs": {
+                                responseData.put(key, new BlogConnection(jsonAsObject(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "collectionByHandle": {
+                                Collection optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = new Collection(jsonAsObject(field.getValue(), key));
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "collections": {
+                                responseData.put(key, new CollectionConnection(jsonAsObject(field.getValue(), key)));
+
+                                break;
+                            }
+
                             case "customer": {
                                 Customer optional1 = null;
                                 if (!field.getValue().isJsonNull()) {
@@ -26232,6 +34465,52 @@ public class Storefront {
                                 break;
                             }
 
+                            case "pageByHandle": {
+                                Page optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = new Page(jsonAsObject(field.getValue(), key));
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "pages": {
+                                responseData.put(key, new PageConnection(jsonAsObject(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "productByHandle": {
+                                Product optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = new Product(jsonAsObject(field.getValue(), key));
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "productTags": {
+                                responseData.put(key, new StringConnection(jsonAsObject(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "productTypes": {
+                                responseData.put(key, new StringConnection(jsonAsObject(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "products": {
+                                responseData.put(key, new ProductConnection(jsonAsObject(field.getValue(), key)));
+
+                                break;
+                            }
+
                             case "shop": {
                                 responseData.put(key, new Shop(jsonAsObject(field.getValue(), key)));
 
@@ -26251,6 +34530,71 @@ public class Storefront {
 
                 public String getGraphQlTypeName() {
                     return "QueryRoot";
+                }
+
+                /**
+                * List of the shop's articles.
+                */
+
+                public ArticleConnection getArticles() {
+                    return (ArticleConnection) get("articles");
+                }
+
+                public QueryRoot setArticles(ArticleConnection arg) {
+                    optimisticData.put(getKey("articles"), arg);
+                    return this;
+                }
+
+                /**
+                * Find a blog by its handle.
+                */
+
+                public Blog getBlogByHandle() {
+                    return (Blog) get("blogByHandle");
+                }
+
+                public QueryRoot setBlogByHandle(Blog arg) {
+                    optimisticData.put(getKey("blogByHandle"), arg);
+                    return this;
+                }
+
+                /**
+                * List of the shop's blogs.
+                */
+
+                public BlogConnection getBlogs() {
+                    return (BlogConnection) get("blogs");
+                }
+
+                public QueryRoot setBlogs(BlogConnection arg) {
+                    optimisticData.put(getKey("blogs"), arg);
+                    return this;
+                }
+
+                /**
+                * Find a collection by its handle.
+                */
+
+                public Collection getCollectionByHandle() {
+                    return (Collection) get("collectionByHandle");
+                }
+
+                public QueryRoot setCollectionByHandle(Collection arg) {
+                    optimisticData.put(getKey("collectionByHandle"), arg);
+                    return this;
+                }
+
+                /**
+                * List of the shop’s collections.
+                */
+
+                public CollectionConnection getCollections() {
+                    return (CollectionConnection) get("collections");
+                }
+
+                public QueryRoot setCollections(CollectionConnection arg) {
+                    optimisticData.put(getKey("collections"), arg);
+                    return this;
                 }
 
                 public Customer getCustomer() {
@@ -26280,6 +34624,85 @@ public class Storefront {
                     return this;
                 }
 
+                /**
+                * Find a page by its handle.
+                */
+
+                public Page getPageByHandle() {
+                    return (Page) get("pageByHandle");
+                }
+
+                public QueryRoot setPageByHandle(Page arg) {
+                    optimisticData.put(getKey("pageByHandle"), arg);
+                    return this;
+                }
+
+                /**
+                * List of the shop's pages.
+                */
+
+                public PageConnection getPages() {
+                    return (PageConnection) get("pages");
+                }
+
+                public QueryRoot setPages(PageConnection arg) {
+                    optimisticData.put(getKey("pages"), arg);
+                    return this;
+                }
+
+                /**
+                * Find a product by its handle.
+                */
+
+                public Product getProductByHandle() {
+                    return (Product) get("productByHandle");
+                }
+
+                public QueryRoot setProductByHandle(Product arg) {
+                    optimisticData.put(getKey("productByHandle"), arg);
+                    return this;
+                }
+
+                /**
+                * Tags added to products.
+                * Additional access scope required: unauthenticated_read_product_tags.
+                */
+
+                public StringConnection getProductTags() {
+                    return (StringConnection) get("productTags");
+                }
+
+                public QueryRoot setProductTags(StringConnection arg) {
+                    optimisticData.put(getKey("productTags"), arg);
+                    return this;
+                }
+
+                /**
+                * List of the shop’s product types.
+                */
+
+                public StringConnection getProductTypes() {
+                    return (StringConnection) get("productTypes");
+                }
+
+                public QueryRoot setProductTypes(StringConnection arg) {
+                    optimisticData.put(getKey("productTypes"), arg);
+                    return this;
+                }
+
+                /**
+                * List of the shop’s products.
+                */
+
+                public ProductConnection getProducts() {
+                    return (ProductConnection) get("products");
+                }
+
+                public QueryRoot setProducts(ProductConnection arg) {
+                    optimisticData.put(getKey("products"), arg);
+                    return this;
+                }
+
                 public Shop getShop() {
                     return (Shop) get("shop");
                 }
@@ -26291,13 +34714,238 @@ public class Storefront {
 
                 public boolean unwrapsToObject(String key) {
                     switch (getFieldName(key)) {
+                        case "articles": return true;
+
+                        case "blogByHandle": return true;
+
+                        case "blogs": return true;
+
+                        case "collectionByHandle": return true;
+
+                        case "collections": return true;
+
                         case "customer": return true;
 
                         case "node": return false;
 
                         case "nodes": return false;
 
+                        case "pageByHandle": return true;
+
+                        case "pages": return true;
+
+                        case "productByHandle": return true;
+
+                        case "productTags": return true;
+
+                        case "productTypes": return true;
+
+                        case "products": return true;
+
                         case "shop": return true;
+
+                        default: return false;
+                    }
+                }
+            }
+
+            public interface ScriptDiscountApplicationQueryDefinition {
+                void define(ScriptDiscountApplicationQuery _queryBuilder);
+            }
+
+            /**
+            * Script discount applications capture the intentions of a discount that
+            * was created by a Shopify Script.
+            */
+            public static class ScriptDiscountApplicationQuery extends Query<ScriptDiscountApplicationQuery> {
+                ScriptDiscountApplicationQuery(StringBuilder _queryBuilder) {
+                    super(_queryBuilder);
+                }
+
+                /**
+                * The method by which the discount's value is allocated to its entitled items.
+                */
+                public ScriptDiscountApplicationQuery allocationMethod() {
+                    startField("allocationMethod");
+
+                    return this;
+                }
+
+                /**
+                * The description of the application as defined by the Script.
+                */
+                public ScriptDiscountApplicationQuery description() {
+                    startField("description");
+
+                    return this;
+                }
+
+                /**
+                * Which lines of targetType that the discount is allocated over.
+                */
+                public ScriptDiscountApplicationQuery targetSelection() {
+                    startField("targetSelection");
+
+                    return this;
+                }
+
+                /**
+                * The type of line that the discount is applicable towards.
+                */
+                public ScriptDiscountApplicationQuery targetType() {
+                    startField("targetType");
+
+                    return this;
+                }
+
+                /**
+                * The value of the discount application.
+                */
+                public ScriptDiscountApplicationQuery value(PricingValueQueryDefinition queryDef) {
+                    startField("value");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new PricingValueQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+            }
+
+            /**
+            * Script discount applications capture the intentions of a discount that
+            * was created by a Shopify Script.
+            */
+            public static class ScriptDiscountApplication extends AbstractResponse<ScriptDiscountApplication> implements DiscountApplication {
+                public ScriptDiscountApplication() {
+                }
+
+                public ScriptDiscountApplication(JsonObject fields) throws SchemaViolationError {
+                    for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                        String key = field.getKey();
+                        String fieldName = getFieldName(key);
+                        switch (fieldName) {
+                            case "allocationMethod": {
+                                responseData.put(key, DiscountApplicationAllocationMethod.fromGraphQl(jsonAsString(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "description": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+
+                                break;
+                            }
+
+                            case "targetSelection": {
+                                responseData.put(key, DiscountApplicationTargetSelection.fromGraphQl(jsonAsString(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "targetType": {
+                                responseData.put(key, DiscountApplicationTargetType.fromGraphQl(jsonAsString(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "value": {
+                                responseData.put(key, UnknownPricingValue.create(jsonAsObject(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "__typename": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+                                break;
+                            }
+                            default: {
+                                throw new SchemaViolationError(this, key, field.getValue());
+                            }
+                        }
+                    }
+                }
+
+                public String getGraphQlTypeName() {
+                    return "ScriptDiscountApplication";
+                }
+
+                /**
+                * The method by which the discount's value is allocated to its entitled items.
+                */
+
+                public DiscountApplicationAllocationMethod getAllocationMethod() {
+                    return (DiscountApplicationAllocationMethod) get("allocationMethod");
+                }
+
+                public ScriptDiscountApplication setAllocationMethod(DiscountApplicationAllocationMethod arg) {
+                    optimisticData.put(getKey("allocationMethod"), arg);
+                    return this;
+                }
+
+                /**
+                * The description of the application as defined by the Script.
+                */
+
+                public String getDescription() {
+                    return (String) get("description");
+                }
+
+                public ScriptDiscountApplication setDescription(String arg) {
+                    optimisticData.put(getKey("description"), arg);
+                    return this;
+                }
+
+                /**
+                * Which lines of targetType that the discount is allocated over.
+                */
+
+                public DiscountApplicationTargetSelection getTargetSelection() {
+                    return (DiscountApplicationTargetSelection) get("targetSelection");
+                }
+
+                public ScriptDiscountApplication setTargetSelection(DiscountApplicationTargetSelection arg) {
+                    optimisticData.put(getKey("targetSelection"), arg);
+                    return this;
+                }
+
+                /**
+                * The type of line that the discount is applicable towards.
+                */
+
+                public DiscountApplicationTargetType getTargetType() {
+                    return (DiscountApplicationTargetType) get("targetType");
+                }
+
+                public ScriptDiscountApplication setTargetType(DiscountApplicationTargetType arg) {
+                    optimisticData.put(getKey("targetType"), arg);
+                    return this;
+                }
+
+                /**
+                * The value of the discount application.
+                */
+
+                public PricingValue getValue() {
+                    return (PricingValue) get("value");
+                }
+
+                public ScriptDiscountApplication setValue(PricingValue arg) {
+                    optimisticData.put(getKey("value"), arg);
+                    return this;
+                }
+
+                public boolean unwrapsToObject(String key) {
+                    switch (getFieldName(key)) {
+                        case "allocationMethod": return false;
+
+                        case "description": return false;
+
+                        case "targetSelection": return false;
+
+                        case "targetType": return false;
+
+                        case "value": return false;
 
                         default: return false;
                     }
@@ -26683,10 +35331,11 @@ public class Storefront {
                     /**
                     * Supported filter parameters:
                     * - `author`
-                    * - `updated_at`
-                    * - `created_at`
                     * - `blog_title`
+                    * - `created_at`
                     * - `tag`
+                    * - `updated_at`
+                    * See the detailed [search syntax](https://help.shopify.com/api/getting-started/search-syntax).
                     */
                     public ArticlesArguments query(String value) {
                         if (value != null) {
@@ -26703,6 +35352,8 @@ public class Storefront {
 
                 /**
                 * List of the shop' articles.
+                *
+                * @deprecated Use `QueryRoot.articles` instead.
                 */
                 public ShopQuery articles(ArticleConnectionQueryDefinition queryDef) {
                     return articles(args -> {}, queryDef);
@@ -26710,7 +35361,10 @@ public class Storefront {
 
                 /**
                 * List of the shop' articles.
+                *
+                * @deprecated Use `QueryRoot.articles` instead.
                 */
+                @Deprecated
                 public ShopQuery articles(ArticlesArgumentsDefinition argsDef, ArticleConnectionQueryDefinition queryDef) {
                     startField("articles");
 
@@ -26798,10 +35452,11 @@ public class Storefront {
 
                     /**
                     * Supported filter parameters:
+                    * - `created_at`
                     * - `handle`
                     * - `title`
                     * - `updated_at`
-                    * - `created_at`
+                    * See the detailed [search syntax](https://help.shopify.com/api/getting-started/search-syntax).
                     */
                     public BlogsArguments query(String value) {
                         if (value != null) {
@@ -26818,6 +35473,8 @@ public class Storefront {
 
                 /**
                 * List of the shop' blogs.
+                *
+                * @deprecated Use `QueryRoot.blogs` instead.
                 */
                 public ShopQuery blogs(BlogConnectionQueryDefinition queryDef) {
                     return blogs(args -> {}, queryDef);
@@ -26825,7 +35482,10 @@ public class Storefront {
 
                 /**
                 * List of the shop' blogs.
+                *
+                * @deprecated Use `QueryRoot.blogs` instead.
                 */
+                @Deprecated
                 public ShopQuery blogs(BlogsArgumentsDefinition argsDef, BlogConnectionQueryDefinition queryDef) {
                     startField("blogs");
 
@@ -26841,20 +35501,11 @@ public class Storefront {
                 }
 
                 /**
-                * The url pointing to the endpoint to vault credit cards.
+                * Find a collection by its handle.
                 *
-                * @deprecated Use `paymentSettings` instead
+                * @deprecated Use `QueryRoot.collectionByHandle` instead.
                 */
                 @Deprecated
-                public ShopQuery cardVaultUrl() {
-                    startField("cardVaultUrl");
-
-                    return this;
-                }
-
-                /**
-                * Find a collection by its handle.
-                */
                 public ShopQuery collectionByHandle(String handle, CollectionQueryDefinition queryDef) {
                     startField("collectionByHandle");
 
@@ -26943,9 +35594,10 @@ public class Storefront {
 
                     /**
                     * Supported filter parameters:
-                    * - `title`
                     * - `collection_type`
+                    * - `title`
                     * - `updated_at`
+                    * See the detailed [search syntax](https://help.shopify.com/api/getting-started/search-syntax).
                     */
                     public CollectionsArguments query(String value) {
                         if (value != null) {
@@ -26962,6 +35614,8 @@ public class Storefront {
 
                 /**
                 * List of the shop’s collections.
+                *
+                * @deprecated Use `QueryRoot.collections` instead.
                 */
                 public ShopQuery collections(CollectionConnectionQueryDefinition queryDef) {
                     return collections(args -> {}, queryDef);
@@ -26969,7 +35623,10 @@ public class Storefront {
 
                 /**
                 * List of the shop’s collections.
+                *
+                * @deprecated Use `QueryRoot.collections` instead.
                 */
+                @Deprecated
                 public ShopQuery collections(CollectionsArgumentsDefinition argsDef, CollectionConnectionQueryDefinition queryDef) {
                     startField("collections");
 
@@ -27064,7 +35721,10 @@ public class Storefront {
 
                 /**
                 * Find a product by its handle.
+                *
+                * @deprecated Use `QueryRoot.productByHandle` instead.
                 */
+                @Deprecated
                 public ShopQuery productByHandle(String handle, ProductQueryDefinition queryDef) {
                     startField("productByHandle");
 
@@ -27081,8 +35741,33 @@ public class Storefront {
                 }
 
                 /**
-                * List of the shop’s product types.
+                * Tags added to products.
+                * Additional access scope required: unauthenticated_read_product_tags.
+                *
+                * @deprecated Use `QueryRoot.productTags` instead.
                 */
+                @Deprecated
+                public ShopQuery productTags(int first, StringConnectionQueryDefinition queryDef) {
+                    startField("productTags");
+
+                    _queryBuilder.append("(first:");
+                    _queryBuilder.append(first);
+
+                    _queryBuilder.append(')');
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new StringConnectionQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * List of the shop’s product types.
+                *
+                * @deprecated Use `QueryRoot.productTypes` instead.
+                */
+                @Deprecated
                 public ShopQuery productTypes(int first, StringConnectionQueryDefinition queryDef) {
                     startField("productTypes");
 
@@ -27171,12 +35856,14 @@ public class Storefront {
 
                     /**
                     * Supported filter parameters:
-                    * - `title`
-                    * - `product_type`
-                    * - `vendor`
                     * - `created_at`
-                    * - `updated_at`
+                    * - `product_type`
                     * - `tag`
+                    * - `title`
+                    * - `updated_at`
+                    * - `variants.price`
+                    * - `vendor`
+                    * See the detailed [search syntax](https://help.shopify.com/api/getting-started/search-syntax).
                     */
                     public ProductsArguments query(String value) {
                         if (value != null) {
@@ -27193,6 +35880,8 @@ public class Storefront {
 
                 /**
                 * List of the shop’s products.
+                *
+                * @deprecated Use `QueryRoot.products` instead.
                 */
                 public ShopQuery products(ProductConnectionQueryDefinition queryDef) {
                     return products(args -> {}, queryDef);
@@ -27200,7 +35889,10 @@ public class Storefront {
 
                 /**
                 * List of the shop’s products.
+                *
+                * @deprecated Use `QueryRoot.products` instead.
                 */
+                @Deprecated
                 public ShopQuery products(ProductsArgumentsDefinition argsDef, ProductConnectionQueryDefinition queryDef) {
                     startField("products");
 
@@ -27287,12 +35979,6 @@ public class Storefront {
                                 break;
                             }
 
-                            case "cardVaultUrl": {
-                                responseData.put(key, jsonAsString(field.getValue(), key));
-
-                                break;
-                            }
-
                             case "collectionByHandle": {
                                 Collection optional1 = null;
                                 if (!field.getValue().isJsonNull()) {
@@ -27373,6 +36059,12 @@ public class Storefront {
                                 break;
                             }
 
+                            case "productTags": {
+                                responseData.put(key, new StringConnection(jsonAsObject(field.getValue(), key)));
+
+                                break;
+                            }
+
                             case "productTypes": {
                                 responseData.put(key, new StringConnection(jsonAsObject(field.getValue(), key)));
 
@@ -27446,6 +36138,8 @@ public class Storefront {
 
                 /**
                 * List of the shop' articles.
+                *
+                * @deprecated Use `QueryRoot.articles` instead.
                 */
 
                 public ArticleConnection getArticles() {
@@ -27459,6 +36153,8 @@ public class Storefront {
 
                 /**
                 * List of the shop' blogs.
+                *
+                * @deprecated Use `QueryRoot.blogs` instead.
                 */
 
                 public BlogConnection getBlogs() {
@@ -27471,22 +36167,9 @@ public class Storefront {
                 }
 
                 /**
-                * The url pointing to the endpoint to vault credit cards.
-                *
-                * @deprecated Use `paymentSettings` instead
-                */
-
-                public String getCardVaultUrl() {
-                    return (String) get("cardVaultUrl");
-                }
-
-                public Shop setCardVaultUrl(String arg) {
-                    optimisticData.put(getKey("cardVaultUrl"), arg);
-                    return this;
-                }
-
-                /**
                 * Find a collection by its handle.
+                *
+                * @deprecated Use `QueryRoot.collectionByHandle` instead.
                 */
 
                 public Collection getCollectionByHandle() {
@@ -27500,6 +36183,8 @@ public class Storefront {
 
                 /**
                 * List of the shop’s collections.
+                *
+                * @deprecated Use `QueryRoot.collections` instead.
                 */
 
                 public CollectionConnection getCollections() {
@@ -27606,6 +36291,8 @@ public class Storefront {
 
                 /**
                 * Find a product by its handle.
+                *
+                * @deprecated Use `QueryRoot.productByHandle` instead.
                 */
 
                 public Product getProductByHandle() {
@@ -27618,7 +36305,25 @@ public class Storefront {
                 }
 
                 /**
+                * Tags added to products.
+                * Additional access scope required: unauthenticated_read_product_tags.
+                *
+                * @deprecated Use `QueryRoot.productTags` instead.
+                */
+
+                public StringConnection getProductTags() {
+                    return (StringConnection) get("productTags");
+                }
+
+                public Shop setProductTags(StringConnection arg) {
+                    optimisticData.put(getKey("productTags"), arg);
+                    return this;
+                }
+
+                /**
                 * List of the shop’s product types.
+                *
+                * @deprecated Use `QueryRoot.productTypes` instead.
                 */
 
                 public StringConnection getProductTypes() {
@@ -27632,6 +36337,8 @@ public class Storefront {
 
                 /**
                 * List of the shop’s products.
+                *
+                * @deprecated Use `QueryRoot.products` instead.
                 */
 
                 public ProductConnection getProducts() {
@@ -27703,8 +36410,6 @@ public class Storefront {
 
                         case "blogs": return true;
 
-                        case "cardVaultUrl": return false;
-
                         case "collectionByHandle": return true;
 
                         case "collections": return true;
@@ -27724,6 +36429,8 @@ public class Storefront {
                         case "privacyPolicy": return true;
 
                         case "productByHandle": return true;
+
+                        case "productTags": return true;
 
                         case "productTypes": return true;
 
@@ -28286,6 +36993,175 @@ public class Storefront {
                 }
             }
 
+            public static class TokenizedPaymentInputV2 implements Serializable {
+                private MoneyInput paymentAmount;
+
+                private String idempotencyKey;
+
+                private MailingAddressInput billingAddress;
+
+                private String type;
+
+                private String paymentData;
+
+                private Input<Boolean> test = Input.undefined();
+
+                private Input<String> identifier = Input.undefined();
+
+                public TokenizedPaymentInputV2(MoneyInput paymentAmount, String idempotencyKey, MailingAddressInput billingAddress, String type, String paymentData) {
+                    this.paymentAmount = paymentAmount;
+
+                    this.idempotencyKey = idempotencyKey;
+
+                    this.billingAddress = billingAddress;
+
+                    this.type = type;
+
+                    this.paymentData = paymentData;
+                }
+
+                public MoneyInput getPaymentAmount() {
+                    return paymentAmount;
+                }
+
+                public TokenizedPaymentInputV2 setPaymentAmount(MoneyInput paymentAmount) {
+                    this.paymentAmount = paymentAmount;
+                    return this;
+                }
+
+                public String getIdempotencyKey() {
+                    return idempotencyKey;
+                }
+
+                public TokenizedPaymentInputV2 setIdempotencyKey(String idempotencyKey) {
+                    this.idempotencyKey = idempotencyKey;
+                    return this;
+                }
+
+                public MailingAddressInput getBillingAddress() {
+                    return billingAddress;
+                }
+
+                public TokenizedPaymentInputV2 setBillingAddress(MailingAddressInput billingAddress) {
+                    this.billingAddress = billingAddress;
+                    return this;
+                }
+
+                public String getType() {
+                    return type;
+                }
+
+                public TokenizedPaymentInputV2 setType(String type) {
+                    this.type = type;
+                    return this;
+                }
+
+                public String getPaymentData() {
+                    return paymentData;
+                }
+
+                public TokenizedPaymentInputV2 setPaymentData(String paymentData) {
+                    this.paymentData = paymentData;
+                    return this;
+                }
+
+                public Boolean getTest() {
+                    return test.getValue();
+                }
+
+                public Input<Boolean> getTestInput() {
+                    return test;
+                }
+
+                public TokenizedPaymentInputV2 setTest(Boolean test) {
+                    this.test = Input.optional(test);
+                    return this;
+                }
+
+                public TokenizedPaymentInputV2 setTestInput(Input<Boolean> test) {
+                    if (test == null) {
+                        throw new IllegalArgumentException("Input can not be null");
+                    }
+                    this.test = test;
+                    return this;
+                }
+
+                public String getIdentifier() {
+                    return identifier.getValue();
+                }
+
+                public Input<String> getIdentifierInput() {
+                    return identifier;
+                }
+
+                public TokenizedPaymentInputV2 setIdentifier(String identifier) {
+                    this.identifier = Input.optional(identifier);
+                    return this;
+                }
+
+                public TokenizedPaymentInputV2 setIdentifierInput(Input<String> identifier) {
+                    if (identifier == null) {
+                        throw new IllegalArgumentException("Input can not be null");
+                    }
+                    this.identifier = identifier;
+                    return this;
+                }
+
+                public void appendTo(StringBuilder _queryBuilder) {
+                    String separator = "";
+                    _queryBuilder.append('{');
+
+                    _queryBuilder.append(separator);
+                    separator = ",";
+                    _queryBuilder.append("paymentAmount:");
+                    paymentAmount.appendTo(_queryBuilder);
+
+                    _queryBuilder.append(separator);
+                    separator = ",";
+                    _queryBuilder.append("idempotencyKey:");
+                    Query.appendQuotedString(_queryBuilder, idempotencyKey.toString());
+
+                    _queryBuilder.append(separator);
+                    separator = ",";
+                    _queryBuilder.append("billingAddress:");
+                    billingAddress.appendTo(_queryBuilder);
+
+                    _queryBuilder.append(separator);
+                    separator = ",";
+                    _queryBuilder.append("type:");
+                    Query.appendQuotedString(_queryBuilder, type.toString());
+
+                    _queryBuilder.append(separator);
+                    separator = ",";
+                    _queryBuilder.append("paymentData:");
+                    Query.appendQuotedString(_queryBuilder, paymentData.toString());
+
+                    if (this.test.isDefined()) {
+                        _queryBuilder.append(separator);
+                        separator = ",";
+                        _queryBuilder.append("test:");
+                        if (test.getValue() != null) {
+                            _queryBuilder.append(test.getValue());
+                        } else {
+                            _queryBuilder.append("null");
+                        }
+                    }
+
+                    if (this.identifier.isDefined()) {
+                        _queryBuilder.append(separator);
+                        separator = ",";
+                        _queryBuilder.append("identifier:");
+                        if (identifier.getValue() != null) {
+                            Query.appendQuotedString(_queryBuilder, identifier.getValue().toString());
+                        } else {
+                            _queryBuilder.append("null");
+                        }
+                    }
+
+                    _queryBuilder.append('}');
+                }
+            }
+
             public interface TransactionQueryDefinition {
                 void define(TransactionQuery _queryBuilder);
             }
@@ -28711,22 +37587,22 @@ public class Storefront {
             */
             public enum WeightUnit {
                 /**
-                * Metric system unit of mass
+                * Metric system unit of mass.
                 */
                 GRAMS,
 
                 /**
-                * 1 kilogram equals 1000 grams
+                * 1 kilogram equals 1000 grams.
                 */
                 KILOGRAMS,
 
                 /**
-                * Imperial system unit of mass
+                * Imperial system unit of mass.
                 */
                 OUNCES,
 
                 /**
-                * 1 pound equals 16 ounces
+                * 1 pound equals 16 ounces.
                 */
                 POUNDS,
 

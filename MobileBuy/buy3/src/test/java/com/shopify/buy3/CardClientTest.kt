@@ -82,31 +82,31 @@ class CardClientTest {
         assertThat(clonedCall.httpCallFactory).isEqualTo(call.httpCallFactory)
     }
 
-    @Test fun vaultCreditCardSuccess() {
-        server.enqueue(MockResponse().setResponseCode(200).setBody("{\"id\": \"83hru3obno3hu434b3u\"}"))
-
-        val token = cardClient.vault(creditCard, server.url("/").toString()).fetchVaultToken()
-
-        val recordedRequest = server.takeRequest()
-        assertThat(recordedRequest.getHeader("Accept")).isEqualTo("application/json")
-        assertThat(recordedRequest.getHeader("Content-Type")).isEqualTo("application/json; charset=utf-8")
-
-        val jsonObject = JSONObject(recordedRequest.body.readUtf8())
-        assertThat(jsonObject).isEqualTo(creditCard.asJson())
-        assertThat(token).isEqualTo("83hru3obno3hu434b3u")
-    }
-
-    @Test
-    fun vaultCreditCardFail() {
-        server.enqueue(MockResponse().setResponseCode(400))
-        server.enqueue(MockResponse().setResponseCode(200).setBody(""))
-
-        var result = cardClient.vault(creditCard, server.url("/").toString()).fetchVaultToken()
-        assertThat(result).isInstanceOf(CardVaultResult.Failure::class.java)
-
-        result = cardClient.vault(creditCard, server.url("/").toString()).fetchVaultToken()
-        assertThat(result).isInstanceOf(CardVaultResult.Failure::class.java)
-    }
+//    @Test fun vaultCreditCardSuccess() {
+//        server.enqueue(MockResponse().setResponseCode(200).setBody("{\"id\": \"83hru3obno3hu434b3u\"}"))
+//
+//        val token = cardClient.vault(creditCard, server.url("/").toString()).fetchVaultToken()
+//
+//        val recordedRequest = server.takeRequest()
+//        assertThat(recordedRequest.getHeader("Accept")).isEqualTo("application/json")
+//        assertThat(recordedRequest.getHeader("Content-Type")).isEqualTo("application/json; charset=utf-8")
+//
+//        val jsonObject = JSONObject(recordedRequest.body.readUtf8())
+//        assertThat(jsonObject).isEqualTo(creditCard.asJson())
+//        assertThat(token).isEqualTo("83hru3obno3hu434b3u")
+//    }
+//
+//    @Test
+//    fun vaultCreditCardFail() {
+//        server.enqueue(MockResponse().setResponseCode(400))
+//        server.enqueue(MockResponse().setResponseCode(200).setBody(""))
+//
+//        var result = cardClient.vault(creditCard, server.url("/").toString()).fetchVaultToken()
+//        assertThat(result).isInstanceOf(CardVaultResult.Failure::class.java)
+//
+//        result = cardClient.vault(creditCard, server.url("/").toString()).fetchVaultToken()
+//        assertThat(result).isInstanceOf(CardVaultResult.Failure::class.java)
+//    }
 }
 
 private fun CreditCard.Companion.mock(
