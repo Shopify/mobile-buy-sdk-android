@@ -2117,6 +2117,34 @@ public class Storefront {
                 }
                 return this;
             }
+
+            /**
+            * Sort the underlying list by the given key.
+            */
+            public ArticlesArguments sortKey(ArticleSortKeys value) {
+                if (value != null) {
+                    startArgument("sortKey");
+                    _queryBuilder.append(value.toString());
+                }
+                return this;
+            }
+
+            /**
+            * Supported filter parameters:
+            * - `author`
+            * - `blog_title`
+            * - `created_at`
+            * - `tag`
+            * - `updated_at`
+            * See the detailed [search syntax](https://help.shopify.com/api/getting-started/search-syntax).
+            */
+            public ArticlesArguments query(String value) {
+                if (value != null) {
+                    startArgument("query");
+                    Query.appendQuotedString(_queryBuilder, value.toString());
+                }
+                return this;
+            }
         }
 
         public interface ArticlesArgumentsDefinition {
@@ -4031,6 +4059,22 @@ public class Storefront {
         /**
         * List of errors that occurred executing the mutation.
         */
+        public CheckoutAttributesUpdatePayloadQuery checkoutUserErrors(CheckoutUserErrorQueryDefinition queryDef) {
+            startField("checkoutUserErrors");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CheckoutUserErrorQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        *
+        * @deprecated Use `checkoutUserErrors` instead
+        */
+        @Deprecated
         public CheckoutAttributesUpdatePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
 
@@ -4056,6 +4100,17 @@ public class Storefront {
                 switch (fieldName) {
                     case "checkout": {
                         responseData.put(key, new Checkout(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "checkoutUserErrors": {
+                        List<CheckoutUserError> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new CheckoutUserError(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
 
                         break;
                     }
@@ -4103,6 +4158,21 @@ public class Storefront {
         * List of errors that occurred executing the mutation.
         */
 
+        public List<CheckoutUserError> getCheckoutUserErrors() {
+            return (List<CheckoutUserError>) get("checkoutUserErrors");
+        }
+
+        public CheckoutAttributesUpdatePayload setCheckoutUserErrors(List<CheckoutUserError> arg) {
+            optimisticData.put(getKey("checkoutUserErrors"), arg);
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        *
+        * @deprecated Use `checkoutUserErrors` instead
+        */
+
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -4115,6 +4185,8 @@ public class Storefront {
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "checkout": return true;
+
+                case "checkoutUserErrors": return true;
 
                 case "userErrors": return true;
 
@@ -4607,6 +4679,19 @@ public class Storefront {
         }
 
         /**
+        * List of errors that occurred executing the mutation.
+        */
+        public CheckoutCompleteWithCreditCardPayloadQuery checkoutUserErrors(CheckoutUserErrorQueryDefinition queryDef) {
+            startField("checkoutUserErrors");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CheckoutUserErrorQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
         * A representation of the attempted payment.
         */
         public CheckoutCompleteWithCreditCardPayloadQuery payment(PaymentQueryDefinition queryDef) {
@@ -4621,7 +4706,10 @@ public class Storefront {
 
         /**
         * List of errors that occurred executing the mutation.
+        *
+        * @deprecated Use `checkoutUserErrors` instead
         */
+        @Deprecated
         public CheckoutCompleteWithCreditCardPayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
 
@@ -4647,6 +4735,17 @@ public class Storefront {
                 switch (fieldName) {
                     case "checkout": {
                         responseData.put(key, new Checkout(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "checkoutUserErrors": {
+                        List<CheckoutUserError> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new CheckoutUserError(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
 
                         break;
                     }
@@ -4702,6 +4801,19 @@ public class Storefront {
         }
 
         /**
+        * List of errors that occurred executing the mutation.
+        */
+
+        public List<CheckoutUserError> getCheckoutUserErrors() {
+            return (List<CheckoutUserError>) get("checkoutUserErrors");
+        }
+
+        public CheckoutCompleteWithCreditCardPayload setCheckoutUserErrors(List<CheckoutUserError> arg) {
+            optimisticData.put(getKey("checkoutUserErrors"), arg);
+            return this;
+        }
+
+        /**
         * A representation of the attempted payment.
         */
 
@@ -4716,6 +4828,8 @@ public class Storefront {
 
         /**
         * List of errors that occurred executing the mutation.
+        *
+        * @deprecated Use `checkoutUserErrors` instead
         */
 
         public List<UserError> getUserErrors() {
@@ -4730,6 +4844,8 @@ public class Storefront {
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "checkout": return true;
+
+                case "checkoutUserErrors": return true;
 
                 case "payment": return true;
 
@@ -4974,6 +5090,19 @@ public class Storefront {
         }
 
         /**
+        * List of errors that occurred executing the mutation.
+        */
+        public CheckoutCompleteWithTokenizedPaymentPayloadQuery checkoutUserErrors(CheckoutUserErrorQueryDefinition queryDef) {
+            startField("checkoutUserErrors");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CheckoutUserErrorQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
         * A representation of the attempted payment.
         */
         public CheckoutCompleteWithTokenizedPaymentPayloadQuery payment(PaymentQueryDefinition queryDef) {
@@ -4988,7 +5117,10 @@ public class Storefront {
 
         /**
         * List of errors that occurred executing the mutation.
+        *
+        * @deprecated Use `checkoutUserErrors` instead
         */
+        @Deprecated
         public CheckoutCompleteWithTokenizedPaymentPayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
 
@@ -5014,6 +5146,17 @@ public class Storefront {
                 switch (fieldName) {
                     case "checkout": {
                         responseData.put(key, new Checkout(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "checkoutUserErrors": {
+                        List<CheckoutUserError> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new CheckoutUserError(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
 
                         break;
                     }
@@ -5069,6 +5212,19 @@ public class Storefront {
         }
 
         /**
+        * List of errors that occurred executing the mutation.
+        */
+
+        public List<CheckoutUserError> getCheckoutUserErrors() {
+            return (List<CheckoutUserError>) get("checkoutUserErrors");
+        }
+
+        public CheckoutCompleteWithTokenizedPaymentPayload setCheckoutUserErrors(List<CheckoutUserError> arg) {
+            optimisticData.put(getKey("checkoutUserErrors"), arg);
+            return this;
+        }
+
+        /**
         * A representation of the attempted payment.
         */
 
@@ -5083,6 +5239,8 @@ public class Storefront {
 
         /**
         * List of errors that occurred executing the mutation.
+        *
+        * @deprecated Use `checkoutUserErrors` instead
         */
 
         public List<UserError> getUserErrors() {
@@ -5097,6 +5255,8 @@ public class Storefront {
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "checkout": return true;
+
+                case "checkoutUserErrors": return true;
 
                 case "payment": return true;
 
@@ -5133,6 +5293,19 @@ public class Storefront {
         }
 
         /**
+        * List of errors that occurred executing the mutation.
+        */
+        public CheckoutCompleteWithTokenizedPaymentV2PayloadQuery checkoutUserErrors(CheckoutUserErrorQueryDefinition queryDef) {
+            startField("checkoutUserErrors");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CheckoutUserErrorQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
         * A representation of the attempted payment.
         */
         public CheckoutCompleteWithTokenizedPaymentV2PayloadQuery payment(PaymentQueryDefinition queryDef) {
@@ -5147,7 +5320,10 @@ public class Storefront {
 
         /**
         * List of errors that occurred executing the mutation.
+        *
+        * @deprecated Use `checkoutUserErrors` instead
         */
+        @Deprecated
         public CheckoutCompleteWithTokenizedPaymentV2PayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
 
@@ -5178,6 +5354,17 @@ public class Storefront {
                         }
 
                         responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "checkoutUserErrors": {
+                        List<CheckoutUserError> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new CheckoutUserError(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
 
                         break;
                     }
@@ -5233,6 +5420,19 @@ public class Storefront {
         }
 
         /**
+        * List of errors that occurred executing the mutation.
+        */
+
+        public List<CheckoutUserError> getCheckoutUserErrors() {
+            return (List<CheckoutUserError>) get("checkoutUserErrors");
+        }
+
+        public CheckoutCompleteWithTokenizedPaymentV2Payload setCheckoutUserErrors(List<CheckoutUserError> arg) {
+            optimisticData.put(getKey("checkoutUserErrors"), arg);
+            return this;
+        }
+
+        /**
         * A representation of the attempted payment.
         */
 
@@ -5247,6 +5447,8 @@ public class Storefront {
 
         /**
         * List of errors that occurred executing the mutation.
+        *
+        * @deprecated Use `checkoutUserErrors` instead
         */
 
         public List<UserError> getUserErrors() {
@@ -5261,6 +5463,8 @@ public class Storefront {
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "checkout": return true;
+
+                case "checkoutUserErrors": return true;
 
                 case "payment": return true;
 
@@ -6066,6 +6270,22 @@ public class Storefront {
         /**
         * List of errors that occurred executing the mutation.
         */
+        public CheckoutCustomerDisassociatePayloadQuery checkoutUserErrors(CheckoutUserErrorQueryDefinition queryDef) {
+            startField("checkoutUserErrors");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CheckoutUserErrorQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        *
+        * @deprecated Use `checkoutUserErrors` instead
+        */
+        @Deprecated
         public CheckoutCustomerDisassociatePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
 
@@ -6091,6 +6311,17 @@ public class Storefront {
                 switch (fieldName) {
                     case "checkout": {
                         responseData.put(key, new Checkout(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "checkoutUserErrors": {
+                        List<CheckoutUserError> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new CheckoutUserError(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
 
                         break;
                     }
@@ -6138,6 +6369,21 @@ public class Storefront {
         * List of errors that occurred executing the mutation.
         */
 
+        public List<CheckoutUserError> getCheckoutUserErrors() {
+            return (List<CheckoutUserError>) get("checkoutUserErrors");
+        }
+
+        public CheckoutCustomerDisassociatePayload setCheckoutUserErrors(List<CheckoutUserError> arg) {
+            optimisticData.put(getKey("checkoutUserErrors"), arg);
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        *
+        * @deprecated Use `checkoutUserErrors` instead
+        */
+
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -6150,6 +6396,8 @@ public class Storefront {
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "checkout": return true;
+
+                case "checkoutUserErrors": return true;
 
                 case "userErrors": return true;
 
@@ -6355,6 +6603,22 @@ public class Storefront {
         /**
         * List of errors that occurred executing the mutation.
         */
+        public CheckoutDiscountCodeApplyPayloadQuery checkoutUserErrors(CheckoutUserErrorQueryDefinition queryDef) {
+            startField("checkoutUserErrors");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CheckoutUserErrorQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        *
+        * @deprecated Use `checkoutUserErrors` instead
+        */
+        @Deprecated
         public CheckoutDiscountCodeApplyPayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
 
@@ -6380,6 +6644,17 @@ public class Storefront {
                 switch (fieldName) {
                     case "checkout": {
                         responseData.put(key, new Checkout(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "checkoutUserErrors": {
+                        List<CheckoutUserError> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new CheckoutUserError(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
 
                         break;
                     }
@@ -6427,6 +6702,21 @@ public class Storefront {
         * List of errors that occurred executing the mutation.
         */
 
+        public List<CheckoutUserError> getCheckoutUserErrors() {
+            return (List<CheckoutUserError>) get("checkoutUserErrors");
+        }
+
+        public CheckoutDiscountCodeApplyPayload setCheckoutUserErrors(List<CheckoutUserError> arg) {
+            optimisticData.put(getKey("checkoutUserErrors"), arg);
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        *
+        * @deprecated Use `checkoutUserErrors` instead
+        */
+
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -6439,6 +6729,8 @@ public class Storefront {
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "checkout": return true;
+
+                case "checkoutUserErrors": return true;
 
                 case "userErrors": return true;
 
@@ -6813,6 +7105,22 @@ public class Storefront {
         /**
         * List of errors that occurred executing the mutation.
         */
+        public CheckoutEmailUpdatePayloadQuery checkoutUserErrors(CheckoutUserErrorQueryDefinition queryDef) {
+            startField("checkoutUserErrors");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CheckoutUserErrorQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        *
+        * @deprecated Use `checkoutUserErrors` instead
+        */
+        @Deprecated
         public CheckoutEmailUpdatePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
 
@@ -6838,6 +7146,17 @@ public class Storefront {
                 switch (fieldName) {
                     case "checkout": {
                         responseData.put(key, new Checkout(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "checkoutUserErrors": {
+                        List<CheckoutUserError> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new CheckoutUserError(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
 
                         break;
                     }
@@ -6885,6 +7204,21 @@ public class Storefront {
         * List of errors that occurred executing the mutation.
         */
 
+        public List<CheckoutUserError> getCheckoutUserErrors() {
+            return (List<CheckoutUserError>) get("checkoutUserErrors");
+        }
+
+        public CheckoutEmailUpdatePayload setCheckoutUserErrors(List<CheckoutUserError> arg) {
+            optimisticData.put(getKey("checkoutUserErrors"), arg);
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        *
+        * @deprecated Use `checkoutUserErrors` instead
+        */
+
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -6897,6 +7231,8 @@ public class Storefront {
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "checkout": return true;
+
+                case "checkoutUserErrors": return true;
 
                 case "userErrors": return true;
 
@@ -7124,9 +7460,44 @@ public class Storefront {
         EMPTY,
 
         /**
-        * Gift card unusable.
+        * Gift card has already been applied.
+        */
+        GIFT_CARD_ALREADY_APPLIED,
+
+        /**
+        * Gift card code is invalid.
+        */
+        GIFT_CARD_CODE_INVALID,
+
+        /**
+        * Gift card currency does not match checkout currency.
+        */
+        GIFT_CARD_CURRENCY_MISMATCH,
+
+        /**
+        * Gift card is disabled.
+        */
+        GIFT_CARD_DISABLED,
+
+        /**
+        * Gift card is expired.
+        */
+        GIFT_CARD_EXPIRED,
+
+        /**
+        * Gift card was not found.
+        */
+        GIFT_CARD_NOT_FOUND,
+
+        /**
+        * Gift card cannot be applied to a checkout that contains a gift card.
         */
         GIFT_CARD_UNUSABLE,
+
+        /**
+        * Input value should be greater than or equal to minimum allowed value.
+        */
+        GREATER_THAN_OR_EQUAL_TO,
 
         /**
         * Input value is invalid.
@@ -7157,6 +7528,16 @@ public class Storefront {
         * Input value should be less than maximum allowed value.
         */
         LESS_THAN,
+
+        /**
+        * Input value should be less or equal to maximum allowed value.
+        */
+        LESS_THAN_OR_EQUAL_TO,
+
+        /**
+        * Line item was not found in checkout.
+        */
+        LINE_ITEM_NOT_FOUND,
 
         /**
         * Checkout is locked.
@@ -7237,8 +7618,36 @@ public class Storefront {
                     return EMPTY;
                 }
 
+                case "GIFT_CARD_ALREADY_APPLIED": {
+                    return GIFT_CARD_ALREADY_APPLIED;
+                }
+
+                case "GIFT_CARD_CODE_INVALID": {
+                    return GIFT_CARD_CODE_INVALID;
+                }
+
+                case "GIFT_CARD_CURRENCY_MISMATCH": {
+                    return GIFT_CARD_CURRENCY_MISMATCH;
+                }
+
+                case "GIFT_CARD_DISABLED": {
+                    return GIFT_CARD_DISABLED;
+                }
+
+                case "GIFT_CARD_EXPIRED": {
+                    return GIFT_CARD_EXPIRED;
+                }
+
+                case "GIFT_CARD_NOT_FOUND": {
+                    return GIFT_CARD_NOT_FOUND;
+                }
+
                 case "GIFT_CARD_UNUSABLE": {
                     return GIFT_CARD_UNUSABLE;
+                }
+
+                case "GREATER_THAN_OR_EQUAL_TO": {
+                    return GREATER_THAN_OR_EQUAL_TO;
                 }
 
                 case "INVALID": {
@@ -7263,6 +7672,14 @@ public class Storefront {
 
                 case "LESS_THAN": {
                     return LESS_THAN;
+                }
+
+                case "LESS_THAN_OR_EQUAL_TO": {
+                    return LESS_THAN_OR_EQUAL_TO;
+                }
+
+                case "LINE_ITEM_NOT_FOUND": {
+                    return LINE_ITEM_NOT_FOUND;
                 }
 
                 case "LOCKED": {
@@ -7336,8 +7753,36 @@ public class Storefront {
                     return "EMPTY";
                 }
 
+                case GIFT_CARD_ALREADY_APPLIED: {
+                    return "GIFT_CARD_ALREADY_APPLIED";
+                }
+
+                case GIFT_CARD_CODE_INVALID: {
+                    return "GIFT_CARD_CODE_INVALID";
+                }
+
+                case GIFT_CARD_CURRENCY_MISMATCH: {
+                    return "GIFT_CARD_CURRENCY_MISMATCH";
+                }
+
+                case GIFT_CARD_DISABLED: {
+                    return "GIFT_CARD_DISABLED";
+                }
+
+                case GIFT_CARD_EXPIRED: {
+                    return "GIFT_CARD_EXPIRED";
+                }
+
+                case GIFT_CARD_NOT_FOUND: {
+                    return "GIFT_CARD_NOT_FOUND";
+                }
+
                 case GIFT_CARD_UNUSABLE: {
                     return "GIFT_CARD_UNUSABLE";
+                }
+
+                case GREATER_THAN_OR_EQUAL_TO: {
+                    return "GREATER_THAN_OR_EQUAL_TO";
                 }
 
                 case INVALID: {
@@ -7362,6 +7807,14 @@ public class Storefront {
 
                 case LESS_THAN: {
                     return "LESS_THAN";
+                }
+
+                case LESS_THAN_OR_EQUAL_TO: {
+                    return "LESS_THAN_OR_EQUAL_TO";
+                }
+
+                case LINE_ITEM_NOT_FOUND: {
+                    return "LINE_ITEM_NOT_FOUND";
                 }
 
                 case LOCKED: {
@@ -7427,6 +7880,22 @@ public class Storefront {
         /**
         * List of errors that occurred executing the mutation.
         */
+        public CheckoutGiftCardApplyPayloadQuery checkoutUserErrors(CheckoutUserErrorQueryDefinition queryDef) {
+            startField("checkoutUserErrors");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CheckoutUserErrorQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        *
+        * @deprecated Use `checkoutUserErrors` instead
+        */
+        @Deprecated
         public CheckoutGiftCardApplyPayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
 
@@ -7452,6 +7921,17 @@ public class Storefront {
                 switch (fieldName) {
                     case "checkout": {
                         responseData.put(key, new Checkout(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "checkoutUserErrors": {
+                        List<CheckoutUserError> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new CheckoutUserError(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
 
                         break;
                     }
@@ -7499,6 +7979,21 @@ public class Storefront {
         * List of errors that occurred executing the mutation.
         */
 
+        public List<CheckoutUserError> getCheckoutUserErrors() {
+            return (List<CheckoutUserError>) get("checkoutUserErrors");
+        }
+
+        public CheckoutGiftCardApplyPayload setCheckoutUserErrors(List<CheckoutUserError> arg) {
+            optimisticData.put(getKey("checkoutUserErrors"), arg);
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        *
+        * @deprecated Use `checkoutUserErrors` instead
+        */
+
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -7511,6 +8006,8 @@ public class Storefront {
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "checkout": return true;
+
+                case "checkoutUserErrors": return true;
 
                 case "userErrors": return true;
 
@@ -7547,6 +8044,22 @@ public class Storefront {
         /**
         * List of errors that occurred executing the mutation.
         */
+        public CheckoutGiftCardRemovePayloadQuery checkoutUserErrors(CheckoutUserErrorQueryDefinition queryDef) {
+            startField("checkoutUserErrors");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CheckoutUserErrorQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        *
+        * @deprecated Use `checkoutUserErrors` instead
+        */
+        @Deprecated
         public CheckoutGiftCardRemovePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
 
@@ -7572,6 +8085,17 @@ public class Storefront {
                 switch (fieldName) {
                     case "checkout": {
                         responseData.put(key, new Checkout(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "checkoutUserErrors": {
+                        List<CheckoutUserError> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new CheckoutUserError(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
 
                         break;
                     }
@@ -7619,6 +8143,21 @@ public class Storefront {
         * List of errors that occurred executing the mutation.
         */
 
+        public List<CheckoutUserError> getCheckoutUserErrors() {
+            return (List<CheckoutUserError>) get("checkoutUserErrors");
+        }
+
+        public CheckoutGiftCardRemovePayload setCheckoutUserErrors(List<CheckoutUserError> arg) {
+            optimisticData.put(getKey("checkoutUserErrors"), arg);
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        *
+        * @deprecated Use `checkoutUserErrors` instead
+        */
+
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -7631,6 +8170,8 @@ public class Storefront {
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "checkout": return true;
+
+                case "checkoutUserErrors": return true;
 
                 case "userErrors": return true;
 
@@ -7667,6 +8208,22 @@ public class Storefront {
         /**
         * List of errors that occurred executing the mutation.
         */
+        public CheckoutGiftCardRemoveV2PayloadQuery checkoutUserErrors(CheckoutUserErrorQueryDefinition queryDef) {
+            startField("checkoutUserErrors");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CheckoutUserErrorQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        *
+        * @deprecated Use `checkoutUserErrors` instead
+        */
+        @Deprecated
         public CheckoutGiftCardRemoveV2PayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
 
@@ -7697,6 +8254,17 @@ public class Storefront {
                         }
 
                         responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "checkoutUserErrors": {
+                        List<CheckoutUserError> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new CheckoutUserError(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
 
                         break;
                     }
@@ -7744,6 +8312,21 @@ public class Storefront {
         * List of errors that occurred executing the mutation.
         */
 
+        public List<CheckoutUserError> getCheckoutUserErrors() {
+            return (List<CheckoutUserError>) get("checkoutUserErrors");
+        }
+
+        public CheckoutGiftCardRemoveV2Payload setCheckoutUserErrors(List<CheckoutUserError> arg) {
+            optimisticData.put(getKey("checkoutUserErrors"), arg);
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        *
+        * @deprecated Use `checkoutUserErrors` instead
+        */
+
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -7756,6 +8339,8 @@ public class Storefront {
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "checkout": return true;
+
+                case "checkoutUserErrors": return true;
 
                 case "userErrors": return true;
 
@@ -7792,6 +8377,22 @@ public class Storefront {
         /**
         * List of errors that occurred executing the mutation.
         */
+        public CheckoutGiftCardsAppendPayloadQuery checkoutUserErrors(CheckoutUserErrorQueryDefinition queryDef) {
+            startField("checkoutUserErrors");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CheckoutUserErrorQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        *
+        * @deprecated Use `checkoutUserErrors` instead
+        */
+        @Deprecated
         public CheckoutGiftCardsAppendPayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
 
@@ -7822,6 +8423,17 @@ public class Storefront {
                         }
 
                         responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "checkoutUserErrors": {
+                        List<CheckoutUserError> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new CheckoutUserError(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
 
                         break;
                     }
@@ -7869,6 +8481,21 @@ public class Storefront {
         * List of errors that occurred executing the mutation.
         */
 
+        public List<CheckoutUserError> getCheckoutUserErrors() {
+            return (List<CheckoutUserError>) get("checkoutUserErrors");
+        }
+
+        public CheckoutGiftCardsAppendPayload setCheckoutUserErrors(List<CheckoutUserError> arg) {
+            optimisticData.put(getKey("checkoutUserErrors"), arg);
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        *
+        * @deprecated Use `checkoutUserErrors` instead
+        */
+
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -7881,6 +8508,8 @@ public class Storefront {
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "checkout": return true;
+
+                case "checkoutUserErrors": return true;
 
                 case "userErrors": return true;
 
@@ -8627,6 +9256,22 @@ public class Storefront {
         /**
         * List of errors that occurred executing the mutation.
         */
+        public CheckoutLineItemsAddPayloadQuery checkoutUserErrors(CheckoutUserErrorQueryDefinition queryDef) {
+            startField("checkoutUserErrors");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CheckoutUserErrorQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        *
+        * @deprecated Use `checkoutUserErrors` instead
+        */
+        @Deprecated
         public CheckoutLineItemsAddPayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
 
@@ -8657,6 +9302,17 @@ public class Storefront {
                         }
 
                         responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "checkoutUserErrors": {
+                        List<CheckoutUserError> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new CheckoutUserError(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
 
                         break;
                     }
@@ -8704,6 +9360,21 @@ public class Storefront {
         * List of errors that occurred executing the mutation.
         */
 
+        public List<CheckoutUserError> getCheckoutUserErrors() {
+            return (List<CheckoutUserError>) get("checkoutUserErrors");
+        }
+
+        public CheckoutLineItemsAddPayload setCheckoutUserErrors(List<CheckoutUserError> arg) {
+            optimisticData.put(getKey("checkoutUserErrors"), arg);
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        *
+        * @deprecated Use `checkoutUserErrors` instead
+        */
+
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -8716,6 +9387,8 @@ public class Storefront {
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "checkout": return true;
+
+                case "checkoutUserErrors": return true;
 
                 case "userErrors": return true;
 
@@ -8749,6 +9422,22 @@ public class Storefront {
         /**
         * List of errors that occurred executing the mutation.
         */
+        public CheckoutLineItemsRemovePayloadQuery checkoutUserErrors(CheckoutUserErrorQueryDefinition queryDef) {
+            startField("checkoutUserErrors");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CheckoutUserErrorQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        *
+        * @deprecated Use `checkoutUserErrors` instead
+        */
+        @Deprecated
         public CheckoutLineItemsRemovePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
 
@@ -8779,6 +9468,17 @@ public class Storefront {
                         }
 
                         responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "checkoutUserErrors": {
+                        List<CheckoutUserError> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new CheckoutUserError(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
 
                         break;
                     }
@@ -8822,6 +9522,21 @@ public class Storefront {
         * List of errors that occurred executing the mutation.
         */
 
+        public List<CheckoutUserError> getCheckoutUserErrors() {
+            return (List<CheckoutUserError>) get("checkoutUserErrors");
+        }
+
+        public CheckoutLineItemsRemovePayload setCheckoutUserErrors(List<CheckoutUserError> arg) {
+            optimisticData.put(getKey("checkoutUserErrors"), arg);
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        *
+        * @deprecated Use `checkoutUserErrors` instead
+        */
+
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -8834,6 +9549,8 @@ public class Storefront {
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "checkout": return true;
+
+                case "checkoutUserErrors": return true;
 
                 case "userErrors": return true;
 
@@ -8995,6 +9712,22 @@ public class Storefront {
         /**
         * List of errors that occurred executing the mutation.
         */
+        public CheckoutLineItemsUpdatePayloadQuery checkoutUserErrors(CheckoutUserErrorQueryDefinition queryDef) {
+            startField("checkoutUserErrors");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CheckoutUserErrorQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        *
+        * @deprecated Use `checkoutUserErrors` instead
+        */
+        @Deprecated
         public CheckoutLineItemsUpdatePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
 
@@ -9025,6 +9758,17 @@ public class Storefront {
                         }
 
                         responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "checkoutUserErrors": {
+                        List<CheckoutUserError> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new CheckoutUserError(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
 
                         break;
                     }
@@ -9072,6 +9816,21 @@ public class Storefront {
         * List of errors that occurred executing the mutation.
         */
 
+        public List<CheckoutUserError> getCheckoutUserErrors() {
+            return (List<CheckoutUserError>) get("checkoutUserErrors");
+        }
+
+        public CheckoutLineItemsUpdatePayload setCheckoutUserErrors(List<CheckoutUserError> arg) {
+            optimisticData.put(getKey("checkoutUserErrors"), arg);
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        *
+        * @deprecated Use `checkoutUserErrors` instead
+        */
+
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -9084,6 +9843,8 @@ public class Storefront {
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "checkout": return true;
+
+                case "checkoutUserErrors": return true;
 
                 case "userErrors": return true;
 
@@ -9120,6 +9881,22 @@ public class Storefront {
         /**
         * List of errors that occurred executing the mutation.
         */
+        public CheckoutShippingAddressUpdatePayloadQuery checkoutUserErrors(CheckoutUserErrorQueryDefinition queryDef) {
+            startField("checkoutUserErrors");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CheckoutUserErrorQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        *
+        * @deprecated Use `checkoutUserErrors` instead
+        */
+        @Deprecated
         public CheckoutShippingAddressUpdatePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
 
@@ -9145,6 +9922,17 @@ public class Storefront {
                 switch (fieldName) {
                     case "checkout": {
                         responseData.put(key, new Checkout(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "checkoutUserErrors": {
+                        List<CheckoutUserError> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new CheckoutUserError(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
 
                         break;
                     }
@@ -9192,6 +9980,21 @@ public class Storefront {
         * List of errors that occurred executing the mutation.
         */
 
+        public List<CheckoutUserError> getCheckoutUserErrors() {
+            return (List<CheckoutUserError>) get("checkoutUserErrors");
+        }
+
+        public CheckoutShippingAddressUpdatePayload setCheckoutUserErrors(List<CheckoutUserError> arg) {
+            optimisticData.put(getKey("checkoutUserErrors"), arg);
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        *
+        * @deprecated Use `checkoutUserErrors` instead
+        */
+
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -9204,6 +10007,8 @@ public class Storefront {
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "checkout": return true;
+
+                case "checkoutUserErrors": return true;
 
                 case "userErrors": return true;
 
@@ -9240,6 +10045,22 @@ public class Storefront {
         /**
         * List of errors that occurred executing the mutation.
         */
+        public CheckoutShippingAddressUpdateV2PayloadQuery checkoutUserErrors(CheckoutUserErrorQueryDefinition queryDef) {
+            startField("checkoutUserErrors");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CheckoutUserErrorQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        *
+        * @deprecated Use `checkoutUserErrors` instead
+        */
+        @Deprecated
         public CheckoutShippingAddressUpdateV2PayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
 
@@ -9270,6 +10091,17 @@ public class Storefront {
                         }
 
                         responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "checkoutUserErrors": {
+                        List<CheckoutUserError> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new CheckoutUserError(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
 
                         break;
                     }
@@ -9317,6 +10149,21 @@ public class Storefront {
         * List of errors that occurred executing the mutation.
         */
 
+        public List<CheckoutUserError> getCheckoutUserErrors() {
+            return (List<CheckoutUserError>) get("checkoutUserErrors");
+        }
+
+        public CheckoutShippingAddressUpdateV2Payload setCheckoutUserErrors(List<CheckoutUserError> arg) {
+            optimisticData.put(getKey("checkoutUserErrors"), arg);
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        *
+        * @deprecated Use `checkoutUserErrors` instead
+        */
+
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -9329,6 +10176,8 @@ public class Storefront {
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "checkout": return true;
+
+                case "checkoutUserErrors": return true;
 
                 case "userErrors": return true;
 
@@ -9365,6 +10214,22 @@ public class Storefront {
         /**
         * List of errors that occurred executing the mutation.
         */
+        public CheckoutShippingLineUpdatePayloadQuery checkoutUserErrors(CheckoutUserErrorQueryDefinition queryDef) {
+            startField("checkoutUserErrors");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CheckoutUserErrorQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        *
+        * @deprecated Use `checkoutUserErrors` instead
+        */
+        @Deprecated
         public CheckoutShippingLineUpdatePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
             startField("userErrors");
 
@@ -9395,6 +10260,17 @@ public class Storefront {
                         }
 
                         responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "checkoutUserErrors": {
+                        List<CheckoutUserError> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new CheckoutUserError(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
 
                         break;
                     }
@@ -9442,6 +10318,21 @@ public class Storefront {
         * List of errors that occurred executing the mutation.
         */
 
+        public List<CheckoutUserError> getCheckoutUserErrors() {
+            return (List<CheckoutUserError>) get("checkoutUserErrors");
+        }
+
+        public CheckoutShippingLineUpdatePayload setCheckoutUserErrors(List<CheckoutUserError> arg) {
+            optimisticData.put(getKey("checkoutUserErrors"), arg);
+            return this;
+        }
+
+        /**
+        * List of errors that occurred executing the mutation.
+        *
+        * @deprecated Use `checkoutUserErrors` instead
+        */
+
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -9454,6 +10345,8 @@ public class Storefront {
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "checkout": return true;
+
+                case "checkoutUserErrors": return true;
 
                 case "userErrors": return true;
 
@@ -20483,22 +21376,22 @@ public class Storefront {
     */
     public enum DigitalWallet {
         /**
-        * Android Pay
+        * Android Pay.
         */
         ANDROID_PAY,
 
         /**
-        * Apple Pay
+        * Apple Pay.
         */
         APPLE_PAY,
 
         /**
-        * Google Pay
+        * Google Pay.
         */
         GOOGLE_PAY,
 
         /**
-        * Shopify Pay
+        * Shopify Pay.
         */
         SHOPIFY_PAY,
 
@@ -22599,7 +23492,9 @@ public class Storefront {
         }
 
         /**
-        * The location of the original (untransformed) image as a URL.
+        * The location of the original image as a URL.
+        * If there are any existing transformations in the original source URL, they will remain and not be
+        * stripped.
         */
         public ImageQuery originalSrc() {
             startField("originalSrc");
@@ -22617,8 +23512,8 @@ public class Storefront {
 
         Now an image has two distinct URL fields: `originalSrc` and `transformedSrc`.
 
-        * `originalSrc` - the original, untransformed image URL
-        * `transformedSrc` - the image URL with transformations included
+        * `originalSrc` - the original unmodified image URL
+        * `transformedSrc` - the image URL with the specified transformations included
 
         To migrate to the new fields, image transformations should be moved from the parent field to `transformedSrc`.
 
@@ -22847,7 +23742,9 @@ public class Storefront {
         }
 
         /**
-        * The location of the original (untransformed) image as a URL.
+        * The location of the original image as a URL.
+        * If there are any existing transformations in the original source URL, they will remain and not be
+        * stripped.
         */
 
         public String getOriginalSrc() {
@@ -22869,8 +23766,8 @@ public class Storefront {
 
         Now an image has two distinct URL fields: `originalSrc` and `transformedSrc`.
 
-        * `originalSrc` - the original, untransformed image URL
-        * `transformedSrc` - the image URL with transformations included
+        * `originalSrc` - the original unmodified image URL
+        * `transformedSrc` - the image URL with the specified transformations included
 
         To migrate to the new fields, image transformations should be moved from the parent field to `transformedSrc`.
 
@@ -34313,6 +35210,7 @@ public class Storefront {
 
                     /**
                     * Supported filter parameters:
+                    * - `available_for_sale`
                     * - `created_at`
                     * - `product_type`
                     * - `tag`
@@ -35856,6 +36754,7 @@ public class Storefront {
 
                     /**
                     * Supported filter parameters:
+                    * - `available_for_sale`
                     * - `created_at`
                     * - `product_type`
                     * - `tag`
@@ -36473,6 +37372,15 @@ public class Storefront {
                 }
 
                 /**
+                * Policy’s handle.
+                */
+                public ShopPolicyQuery handle() {
+                    startField("handle");
+
+                    return this;
+                }
+
+                /**
                 * Policy’s title.
                 */
                 public ShopPolicyQuery title() {
@@ -36504,6 +37412,12 @@ public class Storefront {
                         String fieldName = getFieldName(key);
                         switch (fieldName) {
                             case "body": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+
+                                break;
+                            }
+
+                            case "handle": {
                                 responseData.put(key, jsonAsString(field.getValue(), key));
 
                                 break;
@@ -36561,6 +37475,19 @@ public class Storefront {
                 }
 
                 /**
+                * Policy’s handle.
+                */
+
+                public String getHandle() {
+                    return (String) get("handle");
+                }
+
+                public ShopPolicy setHandle(String arg) {
+                    optimisticData.put(getKey("handle"), arg);
+                    return this;
+                }
+
+                /**
                 * Globally unique identifier.
                 */
 
@@ -36597,6 +37524,8 @@ public class Storefront {
                 public boolean unwrapsToObject(String key) {
                     switch (getFieldName(key)) {
                         case "body": return false;
+
+                        case "handle": return false;
 
                         case "id": return false;
 
