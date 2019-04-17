@@ -122,7 +122,10 @@ public class Storefront {
 
         /**
         * The amount that was used taken from the Gift Card by applying it.
+        *
+        * @deprecated Use `amountUsedV2` instead
         */
+        @Deprecated
         public AppliedGiftCardQuery amountUsed() {
             startField("amountUsed");
 
@@ -130,10 +133,39 @@ public class Storefront {
         }
 
         /**
-        * The amount left on the Gift Card.
+        * The amount that was used taken from the Gift Card by applying it.
         */
+        public AppliedGiftCardQuery amountUsedV2(MoneyV2QueryDefinition queryDef) {
+            startField("amountUsedV2");
+
+            _queryBuilder.append('{');
+            queryDef.define(new MoneyV2Query(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * The amount left on the Gift Card.
+        *
+        * @deprecated Use `balanceV2` instead
+        */
+        @Deprecated
         public AppliedGiftCardQuery balance() {
             startField("balance");
+
+            return this;
+        }
+
+        /**
+        * The amount left on the Gift Card.
+        */
+        public AppliedGiftCardQuery balanceV2(MoneyV2QueryDefinition queryDef) {
+            startField("balanceV2");
+
+            _queryBuilder.append('{');
+            queryDef.define(new MoneyV2Query(_queryBuilder));
+            _queryBuilder.append('}');
 
             return this;
         }
@@ -166,8 +198,20 @@ public class Storefront {
                         break;
                     }
 
+                    case "amountUsedV2": {
+                        responseData.put(key, new MoneyV2(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
                     case "balance": {
                         responseData.put(key, new BigDecimal(jsonAsString(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "balanceV2": {
+                        responseData.put(key, new MoneyV2(jsonAsObject(field.getValue(), key)));
 
                         break;
                     }
@@ -206,6 +250,8 @@ public class Storefront {
 
         /**
         * The amount that was used taken from the Gift Card by applying it.
+        *
+        * @deprecated Use `amountUsedV2` instead
         */
 
         public BigDecimal getAmountUsed() {
@@ -218,7 +264,22 @@ public class Storefront {
         }
 
         /**
+        * The amount that was used taken from the Gift Card by applying it.
+        */
+
+        public MoneyV2 getAmountUsedV2() {
+            return (MoneyV2) get("amountUsedV2");
+        }
+
+        public AppliedGiftCard setAmountUsedV2(MoneyV2 arg) {
+            optimisticData.put(getKey("amountUsedV2"), arg);
+            return this;
+        }
+
+        /**
         * The amount left on the Gift Card.
+        *
+        * @deprecated Use `balanceV2` instead
         */
 
         public BigDecimal getBalance() {
@@ -227,6 +288,19 @@ public class Storefront {
 
         public AppliedGiftCard setBalance(BigDecimal arg) {
             optimisticData.put(getKey("balance"), arg);
+            return this;
+        }
+
+        /**
+        * The amount left on the Gift Card.
+        */
+
+        public MoneyV2 getBalanceV2() {
+            return (MoneyV2) get("balanceV2");
+        }
+
+        public AppliedGiftCard setBalanceV2(MoneyV2 arg) {
+            optimisticData.put(getKey("balanceV2"), arg);
             return this;
         }
 
@@ -255,7 +329,11 @@ public class Storefront {
             switch (getFieldName(key)) {
                 case "amountUsed": return false;
 
+                case "amountUsedV2": return true;
+
                 case "balance": return false;
+
+                case "balanceV2": return true;
 
                 case "id": return false;
 
@@ -609,6 +687,19 @@ public class Storefront {
         }
 
         /**
+        * The article’s SEO information.
+        */
+        public ArticleQuery seo(SEOQueryDefinition queryDef) {
+            startField("seo");
+
+            _queryBuilder.append('{');
+            queryDef.define(new SEOQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
         * A categorization that a article can be tagged with.
         */
         public ArticleQuery tags() {
@@ -733,6 +824,17 @@ public class Storefront {
 
                     case "publishedAt": {
                         responseData.put(key, Utils.parseDateTime(jsonAsString(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "seo": {
+                        SEO optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new SEO(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
 
                         break;
                     }
@@ -934,6 +1036,19 @@ public class Storefront {
         }
 
         /**
+        * The article’s SEO information.
+        */
+
+        public SEO getSeo() {
+            return (SEO) get("seo");
+        }
+
+        public Article setSeo(SEO arg) {
+            optimisticData.put(getKey("seo"), arg);
+            return this;
+        }
+
+        /**
         * A categorization that a article can be tagged with.
         */
 
@@ -997,6 +1112,8 @@ public class Storefront {
                 case "image": return true;
 
                 case "publishedAt": return false;
+
+                case "seo": return true;
 
                 case "tags": return false;
 
@@ -3090,6 +3207,19 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * The sum of all the prices of all the items in the checkout. Taxes, shipping and discounts excluded.
+        */
+        public CheckoutQuery lineItemsSubtotalPrice(MoneyV2QueryDefinition queryDef) {
+            startField("lineItemsSubtotalPrice");
+
+            _queryBuilder.append('{');
+            queryDef.define(new MoneyV2Query(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
         public CheckoutQuery note() {
             startField("note");
 
@@ -3121,9 +3251,26 @@ public class Storefront {
         /**
         * The amount left to be paid. This is equal to the cost of the line items, taxes and shipping minus
         * discounts and gift cards.
+        *
+        * @deprecated Use `paymentDueV2` instead
         */
+        @Deprecated
         public CheckoutQuery paymentDue() {
             startField("paymentDue");
+
+            return this;
+        }
+
+        /**
+        * The amount left to be paid. This is equal to the cost of the line items, taxes and shipping minus
+        * discounts and gift cards.
+        */
+        public CheckoutQuery paymentDueV2(MoneyV2QueryDefinition queryDef) {
+            startField("paymentDueV2");
+
+            _queryBuilder.append('{');
+            queryDef.define(new MoneyV2Query(_queryBuilder));
+            _queryBuilder.append('}');
 
             return this;
         }
@@ -3189,9 +3336,25 @@ public class Storefront {
 
         /**
         * Price of the checkout before shipping and taxes.
+        *
+        * @deprecated Use `subtotalPriceV2` instead
         */
+        @Deprecated
         public CheckoutQuery subtotalPrice() {
             startField("subtotalPrice");
+
+            return this;
+        }
+
+        /**
+        * Price of the checkout before shipping and taxes.
+        */
+        public CheckoutQuery subtotalPriceV2(MoneyV2QueryDefinition queryDef) {
+            startField("subtotalPriceV2");
+
+            _queryBuilder.append('{');
+            queryDef.define(new MoneyV2Query(_queryBuilder));
+            _queryBuilder.append('}');
 
             return this;
         }
@@ -3216,7 +3379,10 @@ public class Storefront {
 
         /**
         * The sum of all the prices of all the items in the checkout, taxes and discounts included.
+        *
+        * @deprecated Use `totalPriceV2` instead
         */
+        @Deprecated
         public CheckoutQuery totalPrice() {
             startField("totalPrice");
 
@@ -3224,10 +3390,39 @@ public class Storefront {
         }
 
         /**
-        * The sum of all the taxes applied to the line items and shipping lines in the checkout.
+        * The sum of all the prices of all the items in the checkout, taxes and discounts included.
         */
+        public CheckoutQuery totalPriceV2(MoneyV2QueryDefinition queryDef) {
+            startField("totalPriceV2");
+
+            _queryBuilder.append('{');
+            queryDef.define(new MoneyV2Query(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * The sum of all the taxes applied to the line items and shipping lines in the checkout.
+        *
+        * @deprecated Use `totalTaxV2` instead
+        */
+        @Deprecated
         public CheckoutQuery totalTax() {
             startField("totalTax");
+
+            return this;
+        }
+
+        /**
+        * The sum of all the taxes applied to the line items and shipping lines in the checkout.
+        */
+        public CheckoutQuery totalTaxV2(MoneyV2QueryDefinition queryDef) {
+            startField("totalTaxV2");
+
+            _queryBuilder.append('{');
+            queryDef.define(new MoneyV2Query(_queryBuilder));
+            _queryBuilder.append('}');
 
             return this;
         }
@@ -3359,6 +3554,12 @@ public class Storefront {
                         break;
                     }
 
+                    case "lineItemsSubtotalPrice": {
+                        responseData.put(key, new MoneyV2(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
                     case "note": {
                         String optional1 = null;
                         if (!field.getValue().isJsonNull()) {
@@ -3394,6 +3595,12 @@ public class Storefront {
 
                     case "paymentDue": {
                         responseData.put(key, new BigDecimal(jsonAsString(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "paymentDueV2": {
+                        responseData.put(key, new MoneyV2(jsonAsObject(field.getValue(), key)));
 
                         break;
                     }
@@ -3449,6 +3656,12 @@ public class Storefront {
                         break;
                     }
 
+                    case "subtotalPriceV2": {
+                        responseData.put(key, new MoneyV2(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
                     case "taxExempt": {
                         responseData.put(key, jsonAsBoolean(field.getValue(), key));
 
@@ -3467,8 +3680,20 @@ public class Storefront {
                         break;
                     }
 
+                    case "totalPriceV2": {
+                        responseData.put(key, new MoneyV2(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
                     case "totalTax": {
                         responseData.put(key, new BigDecimal(jsonAsString(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "totalTaxV2": {
+                        responseData.put(key, new MoneyV2(jsonAsObject(field.getValue(), key)));
 
                         break;
                     }
@@ -3643,6 +3868,19 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * The sum of all the prices of all the items in the checkout. Taxes, shipping and discounts excluded.
+        */
+
+        public MoneyV2 getLineItemsSubtotalPrice() {
+            return (MoneyV2) get("lineItemsSubtotalPrice");
+        }
+
+        public Checkout setLineItemsSubtotalPrice(MoneyV2 arg) {
+            optimisticData.put(getKey("lineItemsSubtotalPrice"), arg);
+            return this;
+        }
+
         public String getNote() {
             return (String) get("note");
         }
@@ -3681,6 +3919,8 @@ public class Storefront {
         /**
         * The amount left to be paid. This is equal to the cost of the line items, taxes and shipping minus
         * discounts and gift cards.
+        *
+        * @deprecated Use `paymentDueV2` instead
         */
 
         public BigDecimal getPaymentDue() {
@@ -3689,6 +3929,20 @@ public class Storefront {
 
         public Checkout setPaymentDue(BigDecimal arg) {
             optimisticData.put(getKey("paymentDue"), arg);
+            return this;
+        }
+
+        /**
+        * The amount left to be paid. This is equal to the cost of the line items, taxes and shipping minus
+        * discounts and gift cards.
+        */
+
+        public MoneyV2 getPaymentDueV2() {
+            return (MoneyV2) get("paymentDueV2");
+        }
+
+        public Checkout setPaymentDueV2(MoneyV2 arg) {
+            optimisticData.put(getKey("paymentDueV2"), arg);
             return this;
         }
 
@@ -3761,6 +4015,8 @@ public class Storefront {
 
         /**
         * Price of the checkout before shipping and taxes.
+        *
+        * @deprecated Use `subtotalPriceV2` instead
         */
 
         public BigDecimal getSubtotalPrice() {
@@ -3769,6 +4025,19 @@ public class Storefront {
 
         public Checkout setSubtotalPrice(BigDecimal arg) {
             optimisticData.put(getKey("subtotalPrice"), arg);
+            return this;
+        }
+
+        /**
+        * Price of the checkout before shipping and taxes.
+        */
+
+        public MoneyV2 getSubtotalPriceV2() {
+            return (MoneyV2) get("subtotalPriceV2");
+        }
+
+        public Checkout setSubtotalPriceV2(MoneyV2 arg) {
+            optimisticData.put(getKey("subtotalPriceV2"), arg);
             return this;
         }
 
@@ -3800,6 +4069,8 @@ public class Storefront {
 
         /**
         * The sum of all the prices of all the items in the checkout, taxes and discounts included.
+        *
+        * @deprecated Use `totalPriceV2` instead
         */
 
         public BigDecimal getTotalPrice() {
@@ -3812,7 +4083,22 @@ public class Storefront {
         }
 
         /**
+        * The sum of all the prices of all the items in the checkout, taxes and discounts included.
+        */
+
+        public MoneyV2 getTotalPriceV2() {
+            return (MoneyV2) get("totalPriceV2");
+        }
+
+        public Checkout setTotalPriceV2(MoneyV2 arg) {
+            optimisticData.put(getKey("totalPriceV2"), arg);
+            return this;
+        }
+
+        /**
         * The sum of all the taxes applied to the line items and shipping lines in the checkout.
+        *
+        * @deprecated Use `totalTaxV2` instead
         */
 
         public BigDecimal getTotalTax() {
@@ -3821,6 +4107,19 @@ public class Storefront {
 
         public Checkout setTotalTax(BigDecimal arg) {
             optimisticData.put(getKey("totalTax"), arg);
+            return this;
+        }
+
+        /**
+        * The sum of all the taxes applied to the line items and shipping lines in the checkout.
+        */
+
+        public MoneyV2 getTotalTaxV2() {
+            return (MoneyV2) get("totalTaxV2");
+        }
+
+        public Checkout setTotalTaxV2(MoneyV2 arg) {
+            optimisticData.put(getKey("totalTaxV2"), arg);
             return this;
         }
 
@@ -3874,6 +4173,8 @@ public class Storefront {
 
                 case "lineItems": return true;
 
+                case "lineItemsSubtotalPrice": return true;
+
                 case "note": return false;
 
                 case "order": return true;
@@ -3881,6 +4182,8 @@ public class Storefront {
                 case "orderStatusUrl": return false;
 
                 case "paymentDue": return false;
+
+                case "paymentDueV2": return true;
 
                 case "ready": return false;
 
@@ -3894,13 +4197,19 @@ public class Storefront {
 
                 case "subtotalPrice": return false;
 
+                case "subtotalPriceV2": return true;
+
                 case "taxExempt": return false;
 
                 case "taxesIncluded": return false;
 
                 case "totalPrice": return false;
 
+                case "totalPriceV2": return true;
+
                 case "totalTax": return false;
+
+                case "totalTaxV2": return true;
 
                 case "updatedAt": return false;
 
@@ -5488,6 +5797,8 @@ public class Storefront {
 
         private Input<Boolean> allowPartialAddresses = Input.undefined();
 
+        private Input<CurrencyCode> presentmentCurrencyCode = Input.undefined();
+
         public String getEmail() {
             return email.getValue();
         }
@@ -5614,6 +5925,27 @@ public class Storefront {
             return this;
         }
 
+        public CurrencyCode getPresentmentCurrencyCode() {
+            return presentmentCurrencyCode.getValue();
+        }
+
+        public Input<CurrencyCode> getPresentmentCurrencyCodeInput() {
+            return presentmentCurrencyCode;
+        }
+
+        public CheckoutCreateInput setPresentmentCurrencyCode(CurrencyCode presentmentCurrencyCode) {
+            this.presentmentCurrencyCode = Input.optional(presentmentCurrencyCode);
+            return this;
+        }
+
+        public CheckoutCreateInput setPresentmentCurrencyCodeInput(Input<CurrencyCode> presentmentCurrencyCode) {
+            if (presentmentCurrencyCode == null) {
+                throw new IllegalArgumentException("Input can not be null");
+            }
+            this.presentmentCurrencyCode = presentmentCurrencyCode;
+            return this;
+        }
+
         public void appendTo(StringBuilder _queryBuilder) {
             String separator = "";
             _queryBuilder.append('{');
@@ -5697,6 +6029,17 @@ public class Storefront {
                 _queryBuilder.append("allowPartialAddresses:");
                 if (allowPartialAddresses.getValue() != null) {
                     _queryBuilder.append(allowPartialAddresses.getValue());
+                } else {
+                    _queryBuilder.append("null");
+                }
+            }
+
+            if (this.presentmentCurrencyCode.isDefined()) {
+                _queryBuilder.append(separator);
+                separator = ",";
+                _queryBuilder.append("presentmentCurrencyCode:");
+                if (presentmentCurrencyCode.getValue() != null) {
+                    _queryBuilder.append(presentmentCurrencyCode.getValue().toString());
                 } else {
                     _queryBuilder.append("null");
                 }
@@ -15662,6 +16005,11 @@ public class Storefront {
         BIF,
 
         /**
+        * Bermudian Dollar (BMD).
+        */
+        BMD,
+
+        /**
         * Brunei Dollar (BND).
         */
         BND,
@@ -16057,6 +16405,11 @@ public class Storefront {
         OMR,
 
         /**
+        * Panamian Balboa (PAB).
+        */
+        PAB,
+
+        /**
         * Peruvian Nuevo Sol (PEN).
         */
         PEN,
@@ -16351,6 +16704,10 @@ public class Storefront {
 
                 case "BIF": {
                     return BIF;
+                }
+
+                case "BMD": {
+                    return BMD;
                 }
 
                 case "BND": {
@@ -16669,6 +17026,10 @@ public class Storefront {
                     return OMR;
                 }
 
+                case "PAB": {
+                    return PAB;
+                }
+
                 case "PEN": {
                     return PEN;
                 }
@@ -16918,6 +17279,10 @@ public class Storefront {
 
                 case BIF: {
                     return "BIF";
+                }
+
+                case BMD: {
+                    return "BMD";
                 }
 
                 case BND: {
@@ -17234,6 +17599,10 @@ public class Storefront {
 
                 case OMR: {
                     return "OMR";
+                }
+
+                case PAB: {
+                    return "PAB";
                 }
 
                 case PEN: {
@@ -28493,9 +28862,25 @@ public class Storefront {
 
                 /**
                 * Price of the order before shipping and taxes.
+                *
+                * @deprecated Use `subtotalPriceV2` instead
                 */
+                @Deprecated
                 public OrderQuery subtotalPrice() {
                     startField("subtotalPrice");
+
+                    return this;
+                }
+
+                /**
+                * Price of the order before shipping and taxes.
+                */
+                public OrderQuery subtotalPriceV2(MoneyV2QueryDefinition queryDef) {
+                    startField("subtotalPriceV2");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new MoneyV2Query(_queryBuilder));
+                    _queryBuilder.append('}');
 
                     return this;
                 }
@@ -28548,7 +28933,10 @@ public class Storefront {
                 /**
                 * The sum of all the prices of all the items in the order, taxes and discounts included (must be
                 * positive).
+                *
+                * @deprecated Use `totalPriceV2` instead
                 */
+                @Deprecated
                 public OrderQuery totalPrice() {
                     startField("totalPrice");
 
@@ -28556,8 +28944,25 @@ public class Storefront {
                 }
 
                 /**
-                * The total amount that has been refunded.
+                * The sum of all the prices of all the items in the order, taxes and discounts included (must be
+                * positive).
                 */
+                public OrderQuery totalPriceV2(MoneyV2QueryDefinition queryDef) {
+                    startField("totalPriceV2");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new MoneyV2Query(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * The total amount that has been refunded.
+                *
+                * @deprecated Use `totalRefundedV2` instead
+                */
+                @Deprecated
                 public OrderQuery totalRefunded() {
                     startField("totalRefunded");
 
@@ -28565,8 +28970,24 @@ public class Storefront {
                 }
 
                 /**
-                * The total cost of shipping.
+                * The total amount that has been refunded.
                 */
+                public OrderQuery totalRefundedV2(MoneyV2QueryDefinition queryDef) {
+                    startField("totalRefundedV2");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new MoneyV2Query(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * The total cost of shipping.
+                *
+                * @deprecated Use `totalShippingPriceV2` instead
+                */
+                @Deprecated
                 public OrderQuery totalShippingPrice() {
                     startField("totalShippingPrice");
 
@@ -28574,10 +28995,39 @@ public class Storefront {
                 }
 
                 /**
-                * The total cost of taxes.
+                * The total cost of shipping.
                 */
+                public OrderQuery totalShippingPriceV2(MoneyV2QueryDefinition queryDef) {
+                    startField("totalShippingPriceV2");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new MoneyV2Query(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * The total cost of taxes.
+                *
+                * @deprecated Use `totalTaxV2` instead
+                */
+                @Deprecated
                 public OrderQuery totalTax() {
                     startField("totalTax");
+
+                    return this;
+                }
+
+                /**
+                * The total cost of taxes.
+                */
+                public OrderQuery totalTaxV2(MoneyV2QueryDefinition queryDef) {
+                    startField("totalTaxV2");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new MoneyV2Query(_queryBuilder));
+                    _queryBuilder.append('}');
 
                     return this;
                 }
@@ -28722,6 +29172,17 @@ public class Storefront {
                                 break;
                             }
 
+                            case "subtotalPriceV2": {
+                                MoneyV2 optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = new MoneyV2(jsonAsObject(field.getValue(), key));
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
                             case "successfulFulfillments": {
                                 List<Fulfillment> optional1 = null;
                                 if (!field.getValue().isJsonNull()) {
@@ -28744,8 +29205,20 @@ public class Storefront {
                                 break;
                             }
 
+                            case "totalPriceV2": {
+                                responseData.put(key, new MoneyV2(jsonAsObject(field.getValue(), key)));
+
+                                break;
+                            }
+
                             case "totalRefunded": {
                                 responseData.put(key, new BigDecimal(jsonAsString(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "totalRefundedV2": {
+                                responseData.put(key, new MoneyV2(jsonAsObject(field.getValue(), key)));
 
                                 break;
                             }
@@ -28756,10 +29229,27 @@ public class Storefront {
                                 break;
                             }
 
+                            case "totalShippingPriceV2": {
+                                responseData.put(key, new MoneyV2(jsonAsObject(field.getValue(), key)));
+
+                                break;
+                            }
+
                             case "totalTax": {
                                 BigDecimal optional1 = null;
                                 if (!field.getValue().isJsonNull()) {
                                     optional1 = new BigDecimal(jsonAsString(field.getValue(), key));
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "totalTaxV2": {
+                                MoneyV2 optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = new MoneyV2(jsonAsObject(field.getValue(), key));
                                 }
 
                                 responseData.put(key, optional1);
@@ -28969,6 +29459,8 @@ public class Storefront {
 
                 /**
                 * Price of the order before shipping and taxes.
+                *
+                * @deprecated Use `subtotalPriceV2` instead
                 */
 
                 public BigDecimal getSubtotalPrice() {
@@ -28977,6 +29469,19 @@ public class Storefront {
 
                 public Order setSubtotalPrice(BigDecimal arg) {
                     optimisticData.put(getKey("subtotalPrice"), arg);
+                    return this;
+                }
+
+                /**
+                * Price of the order before shipping and taxes.
+                */
+
+                public MoneyV2 getSubtotalPriceV2() {
+                    return (MoneyV2) get("subtotalPriceV2");
+                }
+
+                public Order setSubtotalPriceV2(MoneyV2 arg) {
+                    optimisticData.put(getKey("subtotalPriceV2"), arg);
                     return this;
                 }
 
@@ -28996,6 +29501,8 @@ public class Storefront {
                 /**
                 * The sum of all the prices of all the items in the order, taxes and discounts included (must be
                 * positive).
+                *
+                * @deprecated Use `totalPriceV2` instead
                 */
 
                 public BigDecimal getTotalPrice() {
@@ -29008,7 +29515,23 @@ public class Storefront {
                 }
 
                 /**
+                * The sum of all the prices of all the items in the order, taxes and discounts included (must be
+                * positive).
+                */
+
+                public MoneyV2 getTotalPriceV2() {
+                    return (MoneyV2) get("totalPriceV2");
+                }
+
+                public Order setTotalPriceV2(MoneyV2 arg) {
+                    optimisticData.put(getKey("totalPriceV2"), arg);
+                    return this;
+                }
+
+                /**
                 * The total amount that has been refunded.
+                *
+                * @deprecated Use `totalRefundedV2` instead
                 */
 
                 public BigDecimal getTotalRefunded() {
@@ -29021,7 +29544,22 @@ public class Storefront {
                 }
 
                 /**
+                * The total amount that has been refunded.
+                */
+
+                public MoneyV2 getTotalRefundedV2() {
+                    return (MoneyV2) get("totalRefundedV2");
+                }
+
+                public Order setTotalRefundedV2(MoneyV2 arg) {
+                    optimisticData.put(getKey("totalRefundedV2"), arg);
+                    return this;
+                }
+
+                /**
                 * The total cost of shipping.
+                *
+                * @deprecated Use `totalShippingPriceV2` instead
                 */
 
                 public BigDecimal getTotalShippingPrice() {
@@ -29034,7 +29572,22 @@ public class Storefront {
                 }
 
                 /**
+                * The total cost of shipping.
+                */
+
+                public MoneyV2 getTotalShippingPriceV2() {
+                    return (MoneyV2) get("totalShippingPriceV2");
+                }
+
+                public Order setTotalShippingPriceV2(MoneyV2 arg) {
+                    optimisticData.put(getKey("totalShippingPriceV2"), arg);
+                    return this;
+                }
+
+                /**
                 * The total cost of taxes.
+                *
+                * @deprecated Use `totalTaxV2` instead
                 */
 
                 public BigDecimal getTotalTax() {
@@ -29043,6 +29596,19 @@ public class Storefront {
 
                 public Order setTotalTax(BigDecimal arg) {
                     optimisticData.put(getKey("totalTax"), arg);
+                    return this;
+                }
+
+                /**
+                * The total cost of taxes.
+                */
+
+                public MoneyV2 getTotalTaxV2() {
+                    return (MoneyV2) get("totalTaxV2");
+                }
+
+                public Order setTotalTaxV2(MoneyV2 arg) {
+                    optimisticData.put(getKey("totalTaxV2"), arg);
                     return this;
                 }
 
@@ -29078,15 +29644,25 @@ public class Storefront {
 
                         case "subtotalPrice": return false;
 
+                        case "subtotalPriceV2": return true;
+
                         case "successfulFulfillments": return true;
 
                         case "totalPrice": return false;
 
+                        case "totalPriceV2": return true;
+
                         case "totalRefunded": return false;
+
+                        case "totalRefundedV2": return true;
 
                         case "totalShippingPrice": return false;
 
+                        case "totalShippingPriceV2": return true;
+
                         case "totalTax": return false;
+
+                        case "totalTaxV2": return true;
 
                         default: return false;
                     }
@@ -30946,10 +31522,20 @@ public class Storefront {
                 }
 
                 /**
-                * The three-letter code for the currency that the shop accepts.
+                * The three-letter code for the shop's primary currency.
                 */
                 public PaymentSettingsQuery currencyCode() {
                     startField("currencyCode");
+
+                    return this;
+                }
+
+                /**
+                * A list of enabled currencies (ISO 4217 format) that the shop accepts. Merchants can enable
+                * currencies from their Shopify Payments settings in the Shopify admin.
+                */
+                public PaymentSettingsQuery enabledPresentmentCurrencies() {
+                    startField("enabledPresentmentCurrencies");
 
                     return this;
                 }
@@ -31010,6 +31596,17 @@ public class Storefront {
 
                             case "currencyCode": {
                                 responseData.put(key, CurrencyCode.fromGraphQl(jsonAsString(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "enabledPresentmentCurrencies": {
+                                List<CurrencyCode> list1 = new ArrayList<>();
+                                for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                                    list1.add(CurrencyCode.fromGraphQl(jsonAsString(element1, key)));
+                                }
+
+                                responseData.put(key, list1);
 
                                 break;
                             }
@@ -31091,7 +31688,7 @@ public class Storefront {
                 }
 
                 /**
-                * The three-letter code for the currency that the shop accepts.
+                * The three-letter code for the shop's primary currency.
                 */
 
                 public CurrencyCode getCurrencyCode() {
@@ -31100,6 +31697,20 @@ public class Storefront {
 
                 public PaymentSettings setCurrencyCode(CurrencyCode arg) {
                     optimisticData.put(getKey("currencyCode"), arg);
+                    return this;
+                }
+
+                /**
+                * A list of enabled currencies (ISO 4217 format) that the shop accepts. Merchants can enable
+                * currencies from their Shopify Payments settings in the Shopify admin.
+                */
+
+                public List<CurrencyCode> getEnabledPresentmentCurrencies() {
+                    return (List<CurrencyCode>) get("enabledPresentmentCurrencies");
+                }
+
+                public PaymentSettings setEnabledPresentmentCurrencies(List<CurrencyCode> arg) {
+                    optimisticData.put(getKey("enabledPresentmentCurrencies"), arg);
                     return this;
                 }
 
@@ -31138,6 +31749,8 @@ public class Storefront {
                         case "countryCode": return false;
 
                         case "currencyCode": return false;
+
+                        case "enabledPresentmentCurrencies": return false;
 
                         case "shopifyPaymentsAccountId": return false;
 
@@ -31230,7 +31843,7 @@ public class Storefront {
             }
 
             /**
-            * The value of the pricing object.
+            * The price value (fixed or percentage) for a discount application.
             */
             public static class PricingValueQuery extends Query<PricingValueQuery> {
                 PricingValueQuery(StringBuilder _queryBuilder) {
@@ -31259,7 +31872,7 @@ public class Storefront {
             }
 
             /**
-            * The value of the pricing object.
+            * The price value (fixed or percentage) for a discount application.
             */
             public static class UnknownPricingValue extends AbstractResponse<UnknownPricingValue> implements PricingValue {
                 public UnknownPricingValue() {
@@ -33231,9 +33844,26 @@ public class Storefront {
                 /**
                 * The compare at price of the variant. This can be used to mark a variant as on sale, when
                 * `compareAtPrice` is higher than `price`.
+                *
+                * @deprecated Use `compareAtPriceV2` instead
                 */
+                @Deprecated
                 public ProductVariantQuery compareAtPrice() {
                     startField("compareAtPrice");
+
+                    return this;
+                }
+
+                /**
+                * The compare at price of the variant. This can be used to mark a variant as on sale, when
+                * `compareAtPriceV2` is higher than `priceV2`.
+                */
+                public ProductVariantQuery compareAtPriceV2(MoneyV2QueryDefinition queryDef) {
+                    startField("compareAtPriceV2");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new MoneyV2Query(_queryBuilder));
+                    _queryBuilder.append('}');
 
                     return this;
                 }
@@ -33433,9 +34063,25 @@ public class Storefront {
 
                 /**
                 * The product variant’s price.
+                *
+                * @deprecated Use `priceV2` instead
                 */
+                @Deprecated
                 public ProductVariantQuery price() {
                     startField("price");
+
+                    return this;
+                }
+
+                /**
+                * The product variant’s price.
+                */
+                public ProductVariantQuery priceV2(MoneyV2QueryDefinition queryDef) {
+                    startField("priceV2");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new MoneyV2Query(_queryBuilder));
+                    _queryBuilder.append('}');
 
                     return this;
                 }
@@ -33544,6 +34190,17 @@ public class Storefront {
                                 break;
                             }
 
+                            case "compareAtPriceV2": {
+                                MoneyV2 optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = new MoneyV2(jsonAsObject(field.getValue(), key));
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
                             case "id": {
                                 responseData.put(key, new ID(jsonAsString(field.getValue(), key)));
 
@@ -33569,6 +34226,12 @@ public class Storefront {
 
                             case "price": {
                                 responseData.put(key, new BigDecimal(jsonAsString(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "priceV2": {
+                                responseData.put(key, new MoneyV2(jsonAsObject(field.getValue(), key)));
 
                                 break;
                             }
@@ -33675,6 +34338,8 @@ public class Storefront {
                 /**
                 * The compare at price of the variant. This can be used to mark a variant as on sale, when
                 * `compareAtPrice` is higher than `price`.
+                *
+                * @deprecated Use `compareAtPriceV2` instead
                 */
 
                 public BigDecimal getCompareAtPrice() {
@@ -33683,6 +34348,20 @@ public class Storefront {
 
                 public ProductVariant setCompareAtPrice(BigDecimal arg) {
                     optimisticData.put(getKey("compareAtPrice"), arg);
+                    return this;
+                }
+
+                /**
+                * The compare at price of the variant. This can be used to mark a variant as on sale, when
+                * `compareAtPriceV2` is higher than `priceV2`.
+                */
+
+                public MoneyV2 getCompareAtPriceV2() {
+                    return (MoneyV2) get("compareAtPriceV2");
+                }
+
+                public ProductVariant setCompareAtPriceV2(MoneyV2 arg) {
+                    optimisticData.put(getKey("compareAtPriceV2"), arg);
                     return this;
                 }
 
@@ -33723,6 +34402,8 @@ public class Storefront {
 
                 /**
                 * The product variant’s price.
+                *
+                * @deprecated Use `priceV2` instead
                 */
 
                 public BigDecimal getPrice() {
@@ -33731,6 +34412,19 @@ public class Storefront {
 
                 public ProductVariant setPrice(BigDecimal arg) {
                     optimisticData.put(getKey("price"), arg);
+                    return this;
+                }
+
+                /**
+                * The product variant’s price.
+                */
+
+                public MoneyV2 getPriceV2() {
+                    return (MoneyV2) get("priceV2");
+                }
+
+                public ProductVariant setPriceV2(MoneyV2 arg) {
+                    optimisticData.put(getKey("priceV2"), arg);
                     return this;
                 }
 
@@ -33820,6 +34514,8 @@ public class Storefront {
 
                         case "compareAtPrice": return false;
 
+                        case "compareAtPriceV2": return true;
+
                         case "id": return false;
 
                         case "image": return true;
@@ -33827,6 +34523,8 @@ public class Storefront {
                         case "presentmentPrices": return true;
 
                         case "price": return false;
+
+                        case "priceV2": return true;
 
                         case "product": return true;
 
@@ -35647,6 +36345,123 @@ public class Storefront {
                 }
             }
 
+            public interface SEOQueryDefinition {
+                void define(SEOQuery _queryBuilder);
+            }
+
+            /**
+            * SEO information.
+            */
+            public static class SEOQuery extends Query<SEOQuery> {
+                SEOQuery(StringBuilder _queryBuilder) {
+                    super(_queryBuilder);
+                }
+
+                /**
+                * The meta description.
+                */
+                public SEOQuery description() {
+                    startField("description");
+
+                    return this;
+                }
+
+                /**
+                * The SEO title.
+                */
+                public SEOQuery title() {
+                    startField("title");
+
+                    return this;
+                }
+            }
+
+            /**
+            * SEO information.
+            */
+            public static class SEO extends AbstractResponse<SEO> {
+                public SEO() {
+                }
+
+                public SEO(JsonObject fields) throws SchemaViolationError {
+                    for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                        String key = field.getKey();
+                        String fieldName = getFieldName(key);
+                        switch (fieldName) {
+                            case "description": {
+                                String optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = jsonAsString(field.getValue(), key);
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "title": {
+                                String optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = jsonAsString(field.getValue(), key);
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "__typename": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+                                break;
+                            }
+                            default: {
+                                throw new SchemaViolationError(this, key, field.getValue());
+                            }
+                        }
+                    }
+                }
+
+                public String getGraphQlTypeName() {
+                    return "SEO";
+                }
+
+                /**
+                * The meta description.
+                */
+
+                public String getDescription() {
+                    return (String) get("description");
+                }
+
+                public SEO setDescription(String arg) {
+                    optimisticData.put(getKey("description"), arg);
+                    return this;
+                }
+
+                /**
+                * The SEO title.
+                */
+
+                public String getTitle() {
+                    return (String) get("title");
+                }
+
+                public SEO setTitle(String arg) {
+                    optimisticData.put(getKey("title"), arg);
+                    return this;
+                }
+
+                public boolean unwrapsToObject(String key) {
+                    switch (getFieldName(key)) {
+                        case "description": return false;
+
+                        case "title": return false;
+
+                        default: return false;
+                    }
+                }
+            }
+
             public interface ScriptDiscountApplicationQueryDefinition {
                 void define(ScriptDiscountApplicationQuery _queryBuilder);
             }
@@ -35671,7 +36486,10 @@ public class Storefront {
 
                 /**
                 * The description of the application as defined by the Script.
+                *
+                * @deprecated Use `title` instead
                 */
+                @Deprecated
                 public ScriptDiscountApplicationQuery description() {
                     startField("description");
 
@@ -35692,6 +36510,15 @@ public class Storefront {
                 */
                 public ScriptDiscountApplicationQuery targetType() {
                     startField("targetType");
+
+                    return this;
+                }
+
+                /**
+                * The title of the application as defined by the Script.
+                */
+                public ScriptDiscountApplicationQuery title() {
+                    startField("title");
 
                     return this;
                 }
@@ -35747,6 +36574,12 @@ public class Storefront {
                                 break;
                             }
 
+                            case "title": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+
+                                break;
+                            }
+
                             case "value": {
                                 responseData.put(key, UnknownPricingValue.create(jsonAsObject(field.getValue(), key)));
 
@@ -35783,6 +36616,8 @@ public class Storefront {
 
                 /**
                 * The description of the application as defined by the Script.
+                *
+                * @deprecated Use `title` instead
                 */
 
                 public String getDescription() {
@@ -35821,6 +36656,19 @@ public class Storefront {
                 }
 
                 /**
+                * The title of the application as defined by the Script.
+                */
+
+                public String getTitle() {
+                    return (String) get("title");
+                }
+
+                public ScriptDiscountApplication setTitle(String arg) {
+                    optimisticData.put(getKey("title"), arg);
+                    return this;
+                }
+
+                /**
                 * The value of the discount application.
                 */
 
@@ -35842,6 +36690,8 @@ public class Storefront {
                         case "targetSelection": return false;
 
                         case "targetType": return false;
+
+                        case "title": return false;
 
                         case "value": return false;
 
@@ -36029,9 +36879,25 @@ public class Storefront {
 
                 /**
                 * Price of this shipping rate.
+                *
+                * @deprecated Use `priceV2` instead
                 */
+                @Deprecated
                 public ShippingRateQuery price() {
                     startField("price");
+
+                    return this;
+                }
+
+                /**
+                * Price of this shipping rate.
+                */
+                public ShippingRateQuery priceV2(MoneyV2QueryDefinition queryDef) {
+                    startField("priceV2");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new MoneyV2Query(_queryBuilder));
+                    _queryBuilder.append('}');
 
                     return this;
                 }
@@ -36066,6 +36932,12 @@ public class Storefront {
 
                             case "price": {
                                 responseData.put(key, new BigDecimal(jsonAsString(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "priceV2": {
+                                responseData.put(key, new MoneyV2(jsonAsObject(field.getValue(), key)));
 
                                 break;
                             }
@@ -36106,6 +36978,8 @@ public class Storefront {
 
                 /**
                 * Price of this shipping rate.
+                *
+                * @deprecated Use `priceV2` instead
                 */
 
                 public BigDecimal getPrice() {
@@ -36114,6 +36988,19 @@ public class Storefront {
 
                 public ShippingRate setPrice(BigDecimal arg) {
                     optimisticData.put(getKey("price"), arg);
+                    return this;
+                }
+
+                /**
+                * Price of this shipping rate.
+                */
+
+                public MoneyV2 getPriceV2() {
+                    return (MoneyV2) get("priceV2");
+                }
+
+                public ShippingRate setPriceV2(MoneyV2 arg) {
+                    optimisticData.put(getKey("priceV2"), arg);
                     return this;
                 }
 
@@ -36135,6 +37022,8 @@ public class Storefront {
                         case "handle": return false;
 
                         case "price": return false;
+
+                        case "priceV2": return true;
 
                         case "title": return false;
 
@@ -38122,8 +39011,11 @@ public class Storefront {
                 }
 
                 /**
-                * The status of the transaction
+                * The status of the transaction.
+                *
+                * @deprecated Use `statusV2` instead
                 */
+                @Deprecated
                 public TransactionQuery status() {
                     startField("status");
 
@@ -38131,7 +39023,16 @@ public class Storefront {
                 }
 
                 /**
-                * Whether the transaction was done in test mode or not
+                * The status of the transaction.
+                */
+                public TransactionQuery statusV2() {
+                    startField("statusV2");
+
+                    return this;
+                }
+
+                /**
+                * Whether the transaction was done in test mode or not.
                 */
                 public TransactionQuery test() {
                     startField("test");
@@ -38166,6 +39067,17 @@ public class Storefront {
 
                             case "status": {
                                 responseData.put(key, TransactionStatus.fromGraphQl(jsonAsString(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "statusV2": {
+                                TransactionStatus optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = TransactionStatus.fromGraphQl(jsonAsString(field.getValue(), key));
+                                }
+
+                                responseData.put(key, optional1);
 
                                 break;
                             }
@@ -38218,7 +39130,9 @@ public class Storefront {
                 }
 
                 /**
-                * The status of the transaction
+                * The status of the transaction.
+                *
+                * @deprecated Use `statusV2` instead
                 */
 
                 public TransactionStatus getStatus() {
@@ -38231,7 +39145,20 @@ public class Storefront {
                 }
 
                 /**
-                * Whether the transaction was done in test mode or not
+                * The status of the transaction.
+                */
+
+                public TransactionStatus getStatusV2() {
+                    return (TransactionStatus) get("statusV2");
+                }
+
+                public Transaction setStatusV2(TransactionStatus arg) {
+                    optimisticData.put(getKey("statusV2"), arg);
+                    return this;
+                }
+
+                /**
+                * Whether the transaction was done in test mode or not.
                 */
 
                 public Boolean getTest() {
@@ -38250,6 +39177,8 @@ public class Storefront {
                         case "kind": return false;
 
                         case "status": return false;
+
+                        case "statusV2": return false;
 
                         case "test": return false;
 
