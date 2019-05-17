@@ -23830,6 +23830,262 @@ public class Storefront {
         }
     }
 
+    public interface HasMetafieldsQueryDefinition {
+        void define(HasMetafieldsQuery _queryBuilder);
+    }
+
+    /**
+    * Represents information about the metafields associated to the specified resource.
+    */
+    public static class HasMetafieldsQuery extends Query<HasMetafieldsQuery> {
+        HasMetafieldsQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+
+            startField("__typename");
+        }
+
+        /**
+        * The metafield associated with the resource.
+        */
+        public HasMetafieldsQuery metafield(String namespace, String key, MetafieldQueryDefinition queryDef) {
+            startField("metafield");
+
+            _queryBuilder.append("(namespace:");
+            Query.appendQuotedString(_queryBuilder, namespace.toString());
+
+            _queryBuilder.append(",key:");
+            Query.appendQuotedString(_queryBuilder, key.toString());
+
+            _queryBuilder.append(')');
+
+            _queryBuilder.append('{');
+            queryDef.define(new MetafieldQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        public class MetafieldsArguments extends Arguments {
+            MetafieldsArguments(StringBuilder _queryBuilder) {
+                super(_queryBuilder, true);
+            }
+
+            /**
+            * Container for a set of metafields (maximum of 20 characters).
+            */
+            public MetafieldsArguments namespace(String value) {
+                if (value != null) {
+                    startArgument("namespace");
+                    Query.appendQuotedString(_queryBuilder, value.toString());
+                }
+                return this;
+            }
+
+            /**
+            * Returns up to the first `n` elements from the list.
+            */
+            public MetafieldsArguments first(Integer value) {
+                if (value != null) {
+                    startArgument("first");
+                    _queryBuilder.append(value);
+                }
+                return this;
+            }
+
+            /**
+            * Returns the elements that come after the specified cursor.
+            */
+            public MetafieldsArguments after(String value) {
+                if (value != null) {
+                    startArgument("after");
+                    Query.appendQuotedString(_queryBuilder, value.toString());
+                }
+                return this;
+            }
+
+            /**
+            * Returns up to the last `n` elements from the list.
+            */
+            public MetafieldsArguments last(Integer value) {
+                if (value != null) {
+                    startArgument("last");
+                    _queryBuilder.append(value);
+                }
+                return this;
+            }
+
+            /**
+            * Returns the elements that come before the specified cursor.
+            */
+            public MetafieldsArguments before(String value) {
+                if (value != null) {
+                    startArgument("before");
+                    Query.appendQuotedString(_queryBuilder, value.toString());
+                }
+                return this;
+            }
+
+            /**
+            * Reverse the order of the underlying list.
+            */
+            public MetafieldsArguments reverse(Boolean value) {
+                if (value != null) {
+                    startArgument("reverse");
+                    _queryBuilder.append(value);
+                }
+                return this;
+            }
+        }
+
+        public interface MetafieldsArgumentsDefinition {
+            void define(MetafieldsArguments args);
+        }
+
+        /**
+        * A paginated list of metafields associated with the resource.
+        */
+        public HasMetafieldsQuery metafields(MetafieldConnectionQueryDefinition queryDef) {
+            return metafields(args -> {}, queryDef);
+        }
+
+        /**
+        * A paginated list of metafields associated with the resource.
+        */
+        public HasMetafieldsQuery metafields(MetafieldsArgumentsDefinition argsDef, MetafieldConnectionQueryDefinition queryDef) {
+            startField("metafields");
+
+            MetafieldsArguments args = new MetafieldsArguments(_queryBuilder);
+            argsDef.define(args);
+            MetafieldsArguments.end(args);
+
+            _queryBuilder.append('{');
+            queryDef.define(new MetafieldConnectionQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        public HasMetafieldsQuery onProduct(ProductQueryDefinition queryDef) {
+            startInlineFragment("Product");
+            queryDef.define(new ProductQuery(_queryBuilder));
+            _queryBuilder.append('}');
+            return this;
+        }
+
+        public HasMetafieldsQuery onProductVariant(ProductVariantQueryDefinition queryDef) {
+            startInlineFragment("ProductVariant");
+            queryDef.define(new ProductVariantQuery(_queryBuilder));
+            _queryBuilder.append('}');
+            return this;
+        }
+    }
+
+    public interface HasMetafields {
+        String getGraphQlTypeName();
+
+        Metafield getMetafield();
+
+        MetafieldConnection getMetafields();
+    }
+
+    /**
+    * Represents information about the metafields associated to the specified resource.
+    */
+    public static class UnknownHasMetafields extends AbstractResponse<UnknownHasMetafields> implements HasMetafields {
+        public UnknownHasMetafields() {
+        }
+
+        public UnknownHasMetafields(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "metafield": {
+                        Metafield optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new Metafield(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "metafields": {
+                        responseData.put(key, new MetafieldConnection(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public static HasMetafields create(JsonObject fields) throws SchemaViolationError {
+            String typeName = fields.getAsJsonPrimitive("__typename").getAsString();
+            switch (typeName) {
+                case "Product": {
+                    return new Product(fields);
+                }
+
+                case "ProductVariant": {
+                    return new ProductVariant(fields);
+                }
+
+                default: {
+                    return new UnknownHasMetafields(fields);
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return (String) get("__typename");
+        }
+
+        /**
+        * The metafield associated with the resource.
+        */
+
+        public Metafield getMetafield() {
+            return (Metafield) get("metafield");
+        }
+
+        public UnknownHasMetafields setMetafield(Metafield arg) {
+            optimisticData.put(getKey("metafield"), arg);
+            return this;
+        }
+
+        /**
+        * A paginated list of metafields associated with the resource.
+        */
+
+        public MetafieldConnection getMetafields() {
+            return (MetafieldConnection) get("metafields");
+        }
+
+        public UnknownHasMetafields setMetafields(MetafieldConnection arg) {
+            optimisticData.put(getKey("metafields"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "metafield": return true;
+
+                case "metafields": return true;
+
+                default: return false;
+            }
+        }
+    }
+
     public interface ImageQueryDefinition {
         void define(ImageQuery _queryBuilder);
     }
@@ -26045,6 +26301,637 @@ public class Storefront {
                 case "value": return false;
 
                 default: return false;
+            }
+        }
+    }
+
+    public interface MetafieldQueryDefinition {
+        void define(MetafieldQuery _queryBuilder);
+    }
+
+    /**
+    * Metafields represent custom metadata attached to a resource. Metafields can be sorted into
+    * namespaces and are
+    * comprised of keys, values, and value types.
+    */
+    public static class MetafieldQuery extends Query<MetafieldQuery> {
+        MetafieldQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+
+            startField("id");
+        }
+
+        /**
+        * The description of a metafield.
+        */
+        public MetafieldQuery description() {
+            startField("description");
+
+            return this;
+        }
+
+        /**
+        * The key name for a metafield.
+        */
+        public MetafieldQuery key() {
+            startField("key");
+
+            return this;
+        }
+
+        /**
+        * The namespace for a metafield.
+        */
+        public MetafieldQuery namespace() {
+            startField("namespace");
+
+            return this;
+        }
+
+        /**
+        * The parent object that the metafield belongs to.
+        */
+        public MetafieldQuery parentResource(MetafieldParentResourceQueryDefinition queryDef) {
+            startField("parentResource");
+
+            _queryBuilder.append('{');
+            queryDef.define(new MetafieldParentResourceQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * The value of a metafield.
+        */
+        public MetafieldQuery value() {
+            startField("value");
+
+            return this;
+        }
+
+        /**
+        * Represents the metafield value type.
+        */
+        public MetafieldQuery valueType() {
+            startField("valueType");
+
+            return this;
+        }
+    }
+
+    /**
+    * Metafields represent custom metadata attached to a resource. Metafields can be sorted into
+    * namespaces and are
+    * comprised of keys, values, and value types.
+    */
+    public static class Metafield extends AbstractResponse<Metafield> implements Node {
+        public Metafield() {
+        }
+
+        public Metafield(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "description": {
+                        String optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = jsonAsString(field.getValue(), key);
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "id": {
+                        responseData.put(key, new ID(jsonAsString(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "key": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "namespace": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "parentResource": {
+                        responseData.put(key, UnknownMetafieldParentResource.create(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "value": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "valueType": {
+                        responseData.put(key, MetafieldValueType.fromGraphQl(jsonAsString(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public Metafield(ID id) {
+            this();
+            optimisticData.put("id", id);
+        }
+
+        public String getGraphQlTypeName() {
+            return "Metafield";
+        }
+
+        /**
+        * The description of a metafield.
+        */
+
+        public String getDescription() {
+            return (String) get("description");
+        }
+
+        public Metafield setDescription(String arg) {
+            optimisticData.put(getKey("description"), arg);
+            return this;
+        }
+
+        /**
+        * Globally unique identifier.
+        */
+
+        public ID getId() {
+            return (ID) get("id");
+        }
+
+        /**
+        * The key name for a metafield.
+        */
+
+        public String getKey() {
+            return (String) get("key");
+        }
+
+        public Metafield setKey(String arg) {
+            optimisticData.put(getKey("key"), arg);
+            return this;
+        }
+
+        /**
+        * The namespace for a metafield.
+        */
+
+        public String getNamespace() {
+            return (String) get("namespace");
+        }
+
+        public Metafield setNamespace(String arg) {
+            optimisticData.put(getKey("namespace"), arg);
+            return this;
+        }
+
+        /**
+        * The parent object that the metafield belongs to.
+        */
+
+        public MetafieldParentResource getParentResource() {
+            return (MetafieldParentResource) get("parentResource");
+        }
+
+        public Metafield setParentResource(MetafieldParentResource arg) {
+            optimisticData.put(getKey("parentResource"), arg);
+            return this;
+        }
+
+        /**
+        * The value of a metafield.
+        */
+
+        public String getValue() {
+            return (String) get("value");
+        }
+
+        public Metafield setValue(String arg) {
+            optimisticData.put(getKey("value"), arg);
+            return this;
+        }
+
+        /**
+        * Represents the metafield value type.
+        */
+
+        public MetafieldValueType getValueType() {
+            return (MetafieldValueType) get("valueType");
+        }
+
+        public Metafield setValueType(MetafieldValueType arg) {
+            optimisticData.put(getKey("valueType"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "description": return false;
+
+                case "id": return false;
+
+                case "key": return false;
+
+                case "namespace": return false;
+
+                case "parentResource": return false;
+
+                case "value": return false;
+
+                case "valueType": return false;
+
+                default: return false;
+            }
+        }
+    }
+
+    public interface MetafieldConnectionQueryDefinition {
+        void define(MetafieldConnectionQuery _queryBuilder);
+    }
+
+    public static class MetafieldConnectionQuery extends Query<MetafieldConnectionQuery> {
+        MetafieldConnectionQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * A list of edges.
+        */
+        public MetafieldConnectionQuery edges(MetafieldEdgeQueryDefinition queryDef) {
+            startField("edges");
+
+            _queryBuilder.append('{');
+            queryDef.define(new MetafieldEdgeQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * Information to aid in pagination.
+        */
+        public MetafieldConnectionQuery pageInfo(PageInfoQueryDefinition queryDef) {
+            startField("pageInfo");
+
+            _queryBuilder.append('{');
+            queryDef.define(new PageInfoQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+    }
+
+    public static class MetafieldConnection extends AbstractResponse<MetafieldConnection> {
+        public MetafieldConnection() {
+        }
+
+        public MetafieldConnection(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "edges": {
+                        List<MetafieldEdge> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new MetafieldEdge(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "pageInfo": {
+                        responseData.put(key, new PageInfo(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "MetafieldConnection";
+        }
+
+        /**
+        * A list of edges.
+        */
+
+        public List<MetafieldEdge> getEdges() {
+            return (List<MetafieldEdge>) get("edges");
+        }
+
+        public MetafieldConnection setEdges(List<MetafieldEdge> arg) {
+            optimisticData.put(getKey("edges"), arg);
+            return this;
+        }
+
+        /**
+        * Information to aid in pagination.
+        */
+
+        public PageInfo getPageInfo() {
+            return (PageInfo) get("pageInfo");
+        }
+
+        public MetafieldConnection setPageInfo(PageInfo arg) {
+            optimisticData.put(getKey("pageInfo"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "edges": return true;
+
+                case "pageInfo": return true;
+
+                default: return false;
+            }
+        }
+    }
+
+    public interface MetafieldEdgeQueryDefinition {
+        void define(MetafieldEdgeQuery _queryBuilder);
+    }
+
+    public static class MetafieldEdgeQuery extends Query<MetafieldEdgeQuery> {
+        MetafieldEdgeQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * A cursor for use in pagination.
+        */
+        public MetafieldEdgeQuery cursor() {
+            startField("cursor");
+
+            return this;
+        }
+
+        /**
+        * The item at the end of MetafieldEdge.
+        */
+        public MetafieldEdgeQuery node(MetafieldQueryDefinition queryDef) {
+            startField("node");
+
+            _queryBuilder.append('{');
+            queryDef.define(new MetafieldQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+    }
+
+    public static class MetafieldEdge extends AbstractResponse<MetafieldEdge> {
+        public MetafieldEdge() {
+        }
+
+        public MetafieldEdge(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "cursor": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "node": {
+                        responseData.put(key, new Metafield(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "MetafieldEdge";
+        }
+
+        /**
+        * A cursor for use in pagination.
+        */
+
+        public String getCursor() {
+            return (String) get("cursor");
+        }
+
+        public MetafieldEdge setCursor(String arg) {
+            optimisticData.put(getKey("cursor"), arg);
+            return this;
+        }
+
+        /**
+        * The item at the end of MetafieldEdge.
+        */
+
+        public Metafield getNode() {
+            return (Metafield) get("node");
+        }
+
+        public MetafieldEdge setNode(Metafield arg) {
+            optimisticData.put(getKey("node"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "cursor": return false;
+
+                case "node": return true;
+
+                default: return false;
+            }
+        }
+    }
+
+    public interface MetafieldParentResourceQueryDefinition {
+        void define(MetafieldParentResourceQuery _queryBuilder);
+    }
+
+    /**
+    * A resource that the metafield belongs to.
+    */
+    public static class MetafieldParentResourceQuery extends Query<MetafieldParentResourceQuery> {
+        MetafieldParentResourceQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+
+            startField("__typename");
+        }
+
+        public MetafieldParentResourceQuery onProduct(ProductQueryDefinition queryDef) {
+            startInlineFragment("Product");
+            queryDef.define(new ProductQuery(_queryBuilder));
+            _queryBuilder.append('}');
+            return this;
+        }
+
+        public MetafieldParentResourceQuery onProductVariant(ProductVariantQueryDefinition queryDef) {
+            startInlineFragment("ProductVariant");
+            queryDef.define(new ProductVariantQuery(_queryBuilder));
+            _queryBuilder.append('}');
+            return this;
+        }
+    }
+
+    public interface MetafieldParentResource {
+        String getGraphQlTypeName();
+    }
+
+    /**
+    * A resource that the metafield belongs to.
+    */
+    public static class UnknownMetafieldParentResource extends AbstractResponse<UnknownMetafieldParentResource> implements MetafieldParentResource {
+        public UnknownMetafieldParentResource() {
+        }
+
+        public UnknownMetafieldParentResource(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public static MetafieldParentResource create(JsonObject fields) throws SchemaViolationError {
+            String typeName = fields.getAsJsonPrimitive("__typename").getAsString();
+            switch (typeName) {
+                case "Product": {
+                    return new Product(fields);
+                }
+
+                case "ProductVariant": {
+                    return new ProductVariant(fields);
+                }
+
+                default: {
+                    return new UnknownMetafieldParentResource(fields);
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return (String) get("__typename");
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                default: return false;
+            }
+        }
+    }
+
+    /**
+    * Metafield value types.
+    */
+    public enum MetafieldValueType {
+        /**
+        * An integer metafield.
+        */
+        INTEGER,
+
+        /**
+        * A json string metafield.
+        */
+        JSON_STRING,
+
+        /**
+        * A string metafield.
+        */
+        STRING,
+
+        UNKNOWN_VALUE;
+
+        public static MetafieldValueType fromGraphQl(String value) {
+            if (value == null) {
+                return null;
+            }
+
+            switch (value) {
+                case "INTEGER": {
+                    return INTEGER;
+                }
+
+                case "JSON_STRING": {
+                    return JSON_STRING;
+                }
+
+                case "STRING": {
+                    return STRING;
+                }
+
+                default: {
+                    return UNKNOWN_VALUE;
+                }
+            }
+        }
+        public String toString() {
+            switch (this) {
+                case INTEGER: {
+                    return "INTEGER";
+                }
+
+                case JSON_STRING: {
+                    return "JSON_STRING";
+                }
+
+                case STRING: {
+                    return "STRING";
+                }
+
+                default: {
+                    return "";
+                }
             }
         }
     }
@@ -28376,6 +29263,13 @@ public class Storefront {
                     return this;
                 }
 
+                public NodeQuery onMetafield(MetafieldQueryDefinition queryDef) {
+                    startInlineFragment("Metafield");
+                    queryDef.define(new MetafieldQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+                    return this;
+                }
+
                 public NodeQuery onOrder(OrderQueryDefinition queryDef) {
                     startInlineFragment("Order");
                     queryDef.define(new OrderQuery(_queryBuilder));
@@ -28494,6 +29388,10 @@ public class Storefront {
 
                         case "MailingAddress": {
                             return new MailingAddress(fields);
+                        }
+
+                        case "Metafield": {
+                            return new Metafield(fields);
                         }
 
                         case "Order": {
@@ -28806,7 +29704,7 @@ public class Storefront {
                 }
 
                 /**
-                * The customer's phone number.
+                * The customer's phone number for receiving SMS notifications.
                 */
                 public OrderQuery phone() {
                     startField("phone");
@@ -29391,7 +30289,7 @@ public class Storefront {
                 }
 
                 /**
-                * The customer's phone number.
+                * The customer's phone number for receiving SMS notifications.
                 */
 
                 public String getPhone() {
@@ -32256,6 +33154,127 @@ public class Storefront {
                 }
 
                 /**
+                * The metafield associated with the resource.
+                */
+                public ProductQuery metafield(String namespace, String key, MetafieldQueryDefinition queryDef) {
+                    startField("metafield");
+
+                    _queryBuilder.append("(namespace:");
+                    Query.appendQuotedString(_queryBuilder, namespace.toString());
+
+                    _queryBuilder.append(",key:");
+                    Query.appendQuotedString(_queryBuilder, key.toString());
+
+                    _queryBuilder.append(')');
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new MetafieldQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                public class MetafieldsArguments extends Arguments {
+                    MetafieldsArguments(StringBuilder _queryBuilder) {
+                        super(_queryBuilder, true);
+                    }
+
+                    /**
+                    * Container for a set of metafields (maximum of 20 characters).
+                    */
+                    public MetafieldsArguments namespace(String value) {
+                        if (value != null) {
+                            startArgument("namespace");
+                            Query.appendQuotedString(_queryBuilder, value.toString());
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Returns up to the first `n` elements from the list.
+                    */
+                    public MetafieldsArguments first(Integer value) {
+                        if (value != null) {
+                            startArgument("first");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Returns the elements that come after the specified cursor.
+                    */
+                    public MetafieldsArguments after(String value) {
+                        if (value != null) {
+                            startArgument("after");
+                            Query.appendQuotedString(_queryBuilder, value.toString());
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Returns up to the last `n` elements from the list.
+                    */
+                    public MetafieldsArguments last(Integer value) {
+                        if (value != null) {
+                            startArgument("last");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Returns the elements that come before the specified cursor.
+                    */
+                    public MetafieldsArguments before(String value) {
+                        if (value != null) {
+                            startArgument("before");
+                            Query.appendQuotedString(_queryBuilder, value.toString());
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Reverse the order of the underlying list.
+                    */
+                    public MetafieldsArguments reverse(Boolean value) {
+                        if (value != null) {
+                            startArgument("reverse");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+                }
+
+                public interface MetafieldsArgumentsDefinition {
+                    void define(MetafieldsArguments args);
+                }
+
+                /**
+                * A paginated list of metafields associated with the resource.
+                */
+                public ProductQuery metafields(MetafieldConnectionQueryDefinition queryDef) {
+                    return metafields(args -> {}, queryDef);
+                }
+
+                /**
+                * A paginated list of metafields associated with the resource.
+                */
+                public ProductQuery metafields(MetafieldsArgumentsDefinition argsDef, MetafieldConnectionQueryDefinition queryDef) {
+                    startField("metafields");
+
+                    MetafieldsArguments args = new MetafieldsArguments(_queryBuilder);
+                    argsDef.define(args);
+                    MetafieldsArguments.end(args);
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new MetafieldConnectionQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
                 * The online store URL for the product.
                 * A value of `null` indicates that the product is not published to the Online Store sales channel.
                 */
@@ -32515,7 +33534,7 @@ public class Storefront {
             * as do services (such as equipment rental, work for hire, customization of another product or an
             * extended warranty).
             */
-            public static class Product extends AbstractResponse<Product> implements Node {
+            public static class Product extends AbstractResponse<Product> implements HasMetafields, MetafieldParentResource, Node {
                 public Product() {
                 }
 
@@ -32568,6 +33587,23 @@ public class Storefront {
 
                             case "images": {
                                 responseData.put(key, new ImageConnection(jsonAsObject(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "metafield": {
+                                Metafield optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = new Metafield(jsonAsObject(field.getValue(), key));
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "metafields": {
+                                responseData.put(key, new MetafieldConnection(jsonAsObject(field.getValue(), key)));
 
                                 break;
                             }
@@ -32779,6 +33815,32 @@ public class Storefront {
                 }
 
                 /**
+                * The metafield associated with the resource.
+                */
+
+                public Metafield getMetafield() {
+                    return (Metafield) get("metafield");
+                }
+
+                public Product setMetafield(Metafield arg) {
+                    optimisticData.put(getKey("metafield"), arg);
+                    return this;
+                }
+
+                /**
+                * A paginated list of metafields associated with the resource.
+                */
+
+                public MetafieldConnection getMetafields() {
+                    return (MetafieldConnection) get("metafields");
+                }
+
+                public Product setMetafields(MetafieldConnection arg) {
+                    optimisticData.put(getKey("metafields"), arg);
+                    return this;
+                }
+
+                /**
                 * The online store URL for the product.
                 * A value of `null` indicates that the product is not published to the Online Store sales channel.
                 */
@@ -32942,6 +34004,10 @@ public class Storefront {
                         case "id": return false;
 
                         case "images": return true;
+
+                        case "metafield": return true;
+
+                        case "metafields": return true;
 
                         case "onlineStoreUrl": return false;
 
@@ -33952,6 +35018,127 @@ public class Storefront {
                     return this;
                 }
 
+                /**
+                * The metafield associated with the resource.
+                */
+                public ProductVariantQuery metafield(String namespace, String key, MetafieldQueryDefinition queryDef) {
+                    startField("metafield");
+
+                    _queryBuilder.append("(namespace:");
+                    Query.appendQuotedString(_queryBuilder, namespace.toString());
+
+                    _queryBuilder.append(",key:");
+                    Query.appendQuotedString(_queryBuilder, key.toString());
+
+                    _queryBuilder.append(')');
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new MetafieldQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                public class MetafieldsArguments extends Arguments {
+                    MetafieldsArguments(StringBuilder _queryBuilder) {
+                        super(_queryBuilder, true);
+                    }
+
+                    /**
+                    * Container for a set of metafields (maximum of 20 characters).
+                    */
+                    public MetafieldsArguments namespace(String value) {
+                        if (value != null) {
+                            startArgument("namespace");
+                            Query.appendQuotedString(_queryBuilder, value.toString());
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Returns up to the first `n` elements from the list.
+                    */
+                    public MetafieldsArguments first(Integer value) {
+                        if (value != null) {
+                            startArgument("first");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Returns the elements that come after the specified cursor.
+                    */
+                    public MetafieldsArguments after(String value) {
+                        if (value != null) {
+                            startArgument("after");
+                            Query.appendQuotedString(_queryBuilder, value.toString());
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Returns up to the last `n` elements from the list.
+                    */
+                    public MetafieldsArguments last(Integer value) {
+                        if (value != null) {
+                            startArgument("last");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Returns the elements that come before the specified cursor.
+                    */
+                    public MetafieldsArguments before(String value) {
+                        if (value != null) {
+                            startArgument("before");
+                            Query.appendQuotedString(_queryBuilder, value.toString());
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Reverse the order of the underlying list.
+                    */
+                    public MetafieldsArguments reverse(Boolean value) {
+                        if (value != null) {
+                            startArgument("reverse");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+                }
+
+                public interface MetafieldsArgumentsDefinition {
+                    void define(MetafieldsArguments args);
+                }
+
+                /**
+                * A paginated list of metafields associated with the resource.
+                */
+                public ProductVariantQuery metafields(MetafieldConnectionQueryDefinition queryDef) {
+                    return metafields(args -> {}, queryDef);
+                }
+
+                /**
+                * A paginated list of metafields associated with the resource.
+                */
+                public ProductVariantQuery metafields(MetafieldsArgumentsDefinition argsDef, MetafieldConnectionQueryDefinition queryDef) {
+                    startField("metafields");
+
+                    MetafieldsArguments args = new MetafieldsArguments(_queryBuilder);
+                    argsDef.define(args);
+                    MetafieldsArguments.end(args);
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new MetafieldConnectionQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
                 public class PresentmentPricesArguments extends Arguments {
                     PresentmentPricesArguments(StringBuilder _queryBuilder) {
                         super(_queryBuilder, true);
@@ -34153,7 +35340,7 @@ public class Storefront {
             * A product variant represents a different version of a product, such as differing sizes or differing
             * colors.
             */
-            public static class ProductVariant extends AbstractResponse<ProductVariant> implements Node {
+            public static class ProductVariant extends AbstractResponse<ProductVariant> implements HasMetafields, MetafieldParentResource, Node {
                 public ProductVariant() {
                 }
 
@@ -34214,6 +35401,23 @@ public class Storefront {
                                 }
 
                                 responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "metafield": {
+                                Metafield optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = new Metafield(jsonAsObject(field.getValue(), key));
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "metafields": {
+                                responseData.put(key, new MetafieldConnection(jsonAsObject(field.getValue(), key)));
 
                                 break;
                             }
@@ -34388,6 +35592,32 @@ public class Storefront {
                 }
 
                 /**
+                * The metafield associated with the resource.
+                */
+
+                public Metafield getMetafield() {
+                    return (Metafield) get("metafield");
+                }
+
+                public ProductVariant setMetafield(Metafield arg) {
+                    optimisticData.put(getKey("metafield"), arg);
+                    return this;
+                }
+
+                /**
+                * A paginated list of metafields associated with the resource.
+                */
+
+                public MetafieldConnection getMetafields() {
+                    return (MetafieldConnection) get("metafields");
+                }
+
+                public ProductVariant setMetafields(MetafieldConnection arg) {
+                    optimisticData.put(getKey("metafields"), arg);
+                    return this;
+                }
+
+                /**
                 * List of prices and compare-at prices in the presentment currencies for this shop.
                 */
 
@@ -34519,6 +35749,10 @@ public class Storefront {
                         case "id": return false;
 
                         case "image": return true;
+
+                        case "metafield": return true;
+
+                        case "metafields": return true;
 
                         case "presentmentPrices": return true;
 
@@ -35799,6 +37033,27 @@ public class Storefront {
                 }
 
                 /**
+                * Find recommended products related to a given `product_id`.
+                * To learn more about how recommendations are generated, see
+                * [*Showing product recommendations on product
+                * pages*](https://help.shopify.com/themes/development/recommended-products).
+                */
+                public QueryRootQuery productRecommendations(ID productId, ProductQueryDefinition queryDef) {
+                    startField("productRecommendations");
+
+                    _queryBuilder.append("(productId:");
+                    Query.appendQuotedString(_queryBuilder, productId.toString());
+
+                    _queryBuilder.append(')');
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new ProductQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
                 * Tags added to products.
                 * Additional access scope required: unauthenticated_read_product_tags.
                 */
@@ -36089,6 +37344,22 @@ public class Storefront {
                                 break;
                             }
 
+                            case "productRecommendations": {
+                                List<Product> optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    List<Product> list1 = new ArrayList<>();
+                                    for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                                        list1.add(new Product(jsonAsObject(element1, key)));
+                                    }
+
+                                    optional1 = list1;
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
                             case "productTags": {
                                 responseData.put(key, new StringConnection(jsonAsObject(field.getValue(), key)));
 
@@ -36260,6 +37531,22 @@ public class Storefront {
                 }
 
                 /**
+                * Find recommended products related to a given `product_id`.
+                * To learn more about how recommendations are generated, see
+                * [*Showing product recommendations on product
+                * pages*](https://help.shopify.com/themes/development/recommended-products).
+                */
+
+                public List<Product> getProductRecommendations() {
+                    return (List<Product>) get("productRecommendations");
+                }
+
+                public QueryRoot setProductRecommendations(List<Product> arg) {
+                    optimisticData.put(getKey("productRecommendations"), arg);
+                    return this;
+                }
+
+                /**
                 * Tags added to products.
                 * Additional access scope required: unauthenticated_read_product_tags.
                 */
@@ -36331,6 +37618,8 @@ public class Storefront {
                         case "pages": return true;
 
                         case "productByHandle": return true;
+
+                        case "productRecommendations": return true;
 
                         case "productTags": return true;
 
