@@ -121,7 +121,7 @@ public class Storefront {
         }
 
         /**
-        * The amount that was used taken from the Gift Card by applying it.
+        * The amount that was taken from the Gift Card by applying it.
         *
         * @deprecated Use `amountUsedV2` instead
         */
@@ -133,7 +133,7 @@ public class Storefront {
         }
 
         /**
-        * The amount that was used taken from the Gift Card by applying it.
+        * The amount that was taken from the Gift Card by applying it.
         */
         public AppliedGiftCardQuery amountUsedV2(MoneyV2QueryDefinition queryDef) {
             startField("amountUsedV2");
@@ -175,6 +175,19 @@ public class Storefront {
         */
         public AppliedGiftCardQuery lastCharacters() {
             startField("lastCharacters");
+
+            return this;
+        }
+
+        /**
+        * The amount that was applied to the checkout in its currency.
+        */
+        public AppliedGiftCardQuery presentmentAmountUsed(MoneyV2QueryDefinition queryDef) {
+            startField("presentmentAmountUsed");
+
+            _queryBuilder.append('{');
+            queryDef.define(new MoneyV2Query(_queryBuilder));
+            _queryBuilder.append('}');
 
             return this;
         }
@@ -228,6 +241,12 @@ public class Storefront {
                         break;
                     }
 
+                    case "presentmentAmountUsed": {
+                        responseData.put(key, new MoneyV2(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
                     case "__typename": {
                         responseData.put(key, jsonAsString(field.getValue(), key));
                         break;
@@ -249,7 +268,7 @@ public class Storefront {
         }
 
         /**
-        * The amount that was used taken from the Gift Card by applying it.
+        * The amount that was taken from the Gift Card by applying it.
         *
         * @deprecated Use `amountUsedV2` instead
         */
@@ -264,7 +283,7 @@ public class Storefront {
         }
 
         /**
-        * The amount that was used taken from the Gift Card by applying it.
+        * The amount that was taken from the Gift Card by applying it.
         */
 
         public MoneyV2 getAmountUsedV2() {
@@ -325,6 +344,19 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * The amount that was applied to the checkout in its currency.
+        */
+
+        public MoneyV2 getPresentmentAmountUsed() {
+            return (MoneyV2) get("presentmentAmountUsed");
+        }
+
+        public AppliedGiftCard setPresentmentAmountUsed(MoneyV2 arg) {
+            optimisticData.put(getKey("presentmentAmountUsed"), arg);
+            return this;
+        }
+
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "amountUsed": return false;
@@ -338,6 +370,8 @@ public class Storefront {
                 case "id": return false;
 
                 case "lastCharacters": return false;
+
+                case "presentmentAmountUsed": return true;
 
                 default: return false;
             }
@@ -32015,9 +32049,25 @@ public class Storefront {
 
                 /**
                 * The amount of the payment.
+                *
+                * @deprecated Use `amountV2` instead
                 */
+                @Deprecated
                 public PaymentQuery amount() {
                     startField("amount");
+
+                    return this;
+                }
+
+                /**
+                * The amount of the payment.
+                */
+                public PaymentQuery amountV2(MoneyV2QueryDefinition queryDef) {
+                    startField("amountV2");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new MoneyV2Query(_queryBuilder));
+                    _queryBuilder.append('}');
 
                     return this;
                 }
@@ -32129,6 +32179,12 @@ public class Storefront {
                                 break;
                             }
 
+                            case "amountV2": {
+                                responseData.put(key, new MoneyV2(jsonAsObject(field.getValue(), key)));
+
+                                break;
+                            }
+
                             case "billingAddress": {
                                 MailingAddress optional1 = null;
                                 if (!field.getValue().isJsonNull()) {
@@ -32230,6 +32286,8 @@ public class Storefront {
 
                 /**
                 * The amount of the payment.
+                *
+                * @deprecated Use `amountV2` instead
                 */
 
                 public BigDecimal getAmount() {
@@ -32238,6 +32296,19 @@ public class Storefront {
 
                 public Payment setAmount(BigDecimal arg) {
                     optimisticData.put(getKey("amount"), arg);
+                    return this;
+                }
+
+                /**
+                * The amount of the payment.
+                */
+
+                public MoneyV2 getAmountV2() {
+                    return (MoneyV2) get("amountV2");
+                }
+
+                public Payment setAmountV2(MoneyV2 arg) {
+                    optimisticData.put(getKey("amountV2"), arg);
                     return this;
                 }
 
@@ -32356,6 +32427,8 @@ public class Storefront {
                 public boolean unwrapsToObject(String key) {
                     switch (getFieldName(key)) {
                         case "amount": return false;
+
+                        case "amountV2": return true;
 
                         case "billingAddress": return true;
 
@@ -33329,6 +33402,115 @@ public class Storefront {
                     return this;
                 }
 
+                public class PresentmentPriceRangesArguments extends Arguments {
+                    PresentmentPriceRangesArguments(StringBuilder _queryBuilder) {
+                        super(_queryBuilder, true);
+                    }
+
+                    /**
+                    * Specifies the presentment currencies to return a price range in.
+                    */
+                    public PresentmentPriceRangesArguments presentmentCurrencies(List<CurrencyCode> value) {
+                        if (value != null) {
+                            startArgument("presentmentCurrencies");
+                            _queryBuilder.append('[');
+                            {
+                                String listSeperator1 = "";
+                                for (CurrencyCode item1 : value) {
+                                    _queryBuilder.append(listSeperator1);
+                                    listSeperator1 = ",";
+                                    _queryBuilder.append(item1.toString());
+                                }
+                            }
+                            _queryBuilder.append(']');
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Returns up to the first `n` elements from the list.
+                    */
+                    public PresentmentPriceRangesArguments first(Integer value) {
+                        if (value != null) {
+                            startArgument("first");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Returns the elements that come after the specified cursor.
+                    */
+                    public PresentmentPriceRangesArguments after(String value) {
+                        if (value != null) {
+                            startArgument("after");
+                            Query.appendQuotedString(_queryBuilder, value.toString());
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Returns up to the last `n` elements from the list.
+                    */
+                    public PresentmentPriceRangesArguments last(Integer value) {
+                        if (value != null) {
+                            startArgument("last");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Returns the elements that come before the specified cursor.
+                    */
+                    public PresentmentPriceRangesArguments before(String value) {
+                        if (value != null) {
+                            startArgument("before");
+                            Query.appendQuotedString(_queryBuilder, value.toString());
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Reverse the order of the underlying list.
+                    */
+                    public PresentmentPriceRangesArguments reverse(Boolean value) {
+                        if (value != null) {
+                            startArgument("reverse");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+                }
+
+                public interface PresentmentPriceRangesArgumentsDefinition {
+                    void define(PresentmentPriceRangesArguments args);
+                }
+
+                /**
+                * List of price ranges in the presentment currencies for this shop.
+                */
+                public ProductQuery presentmentPriceRanges(ProductPriceRangeConnectionQueryDefinition queryDef) {
+                    return presentmentPriceRanges(args -> {}, queryDef);
+                }
+
+                /**
+                * List of price ranges in the presentment currencies for this shop.
+                */
+                public ProductQuery presentmentPriceRanges(PresentmentPriceRangesArgumentsDefinition argsDef, ProductPriceRangeConnectionQueryDefinition queryDef) {
+                    startField("presentmentPriceRanges");
+
+                    PresentmentPriceRangesArguments args = new PresentmentPriceRangesArguments(_queryBuilder);
+                    argsDef.define(args);
+                    PresentmentPriceRangesArguments.end(args);
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new ProductPriceRangeConnectionQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
                 /**
                 * The price range.
                 */
@@ -33630,6 +33812,12 @@ public class Storefront {
                                 break;
                             }
 
+                            case "presentmentPriceRanges": {
+                                responseData.put(key, new ProductPriceRangeConnection(jsonAsObject(field.getValue(), key)));
+
+                                break;
+                            }
+
                             case "priceRange": {
                                 responseData.put(key, new ProductPriceRange(jsonAsObject(field.getValue(), key)));
 
@@ -33868,6 +34056,19 @@ public class Storefront {
                 }
 
                 /**
+                * List of price ranges in the presentment currencies for this shop.
+                */
+
+                public ProductPriceRangeConnection getPresentmentPriceRanges() {
+                    return (ProductPriceRangeConnection) get("presentmentPriceRanges");
+                }
+
+                public Product setPresentmentPriceRanges(ProductPriceRangeConnection arg) {
+                    optimisticData.put(getKey("presentmentPriceRanges"), arg);
+                    return this;
+                }
+
+                /**
                 * The price range.
                 */
 
@@ -34012,6 +34213,8 @@ public class Storefront {
                         case "onlineStoreUrl": return false;
 
                         case "options": return true;
+
+                        case "presentmentPriceRanges": return true;
 
                         case "priceRange": return true;
 
@@ -34719,6 +34922,225 @@ public class Storefront {
                         case "maxVariantPrice": return true;
 
                         case "minVariantPrice": return true;
+
+                        default: return false;
+                    }
+                }
+            }
+
+            public interface ProductPriceRangeConnectionQueryDefinition {
+                void define(ProductPriceRangeConnectionQuery _queryBuilder);
+            }
+
+            public static class ProductPriceRangeConnectionQuery extends Query<ProductPriceRangeConnectionQuery> {
+                ProductPriceRangeConnectionQuery(StringBuilder _queryBuilder) {
+                    super(_queryBuilder);
+                }
+
+                /**
+                * A list of edges.
+                */
+                public ProductPriceRangeConnectionQuery edges(ProductPriceRangeEdgeQueryDefinition queryDef) {
+                    startField("edges");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new ProductPriceRangeEdgeQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * Information to aid in pagination.
+                */
+                public ProductPriceRangeConnectionQuery pageInfo(PageInfoQueryDefinition queryDef) {
+                    startField("pageInfo");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new PageInfoQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+            }
+
+            public static class ProductPriceRangeConnection extends AbstractResponse<ProductPriceRangeConnection> {
+                public ProductPriceRangeConnection() {
+                }
+
+                public ProductPriceRangeConnection(JsonObject fields) throws SchemaViolationError {
+                    for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                        String key = field.getKey();
+                        String fieldName = getFieldName(key);
+                        switch (fieldName) {
+                            case "edges": {
+                                List<ProductPriceRangeEdge> list1 = new ArrayList<>();
+                                for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                                    list1.add(new ProductPriceRangeEdge(jsonAsObject(element1, key)));
+                                }
+
+                                responseData.put(key, list1);
+
+                                break;
+                            }
+
+                            case "pageInfo": {
+                                responseData.put(key, new PageInfo(jsonAsObject(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "__typename": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+                                break;
+                            }
+                            default: {
+                                throw new SchemaViolationError(this, key, field.getValue());
+                            }
+                        }
+                    }
+                }
+
+                public String getGraphQlTypeName() {
+                    return "ProductPriceRangeConnection";
+                }
+
+                /**
+                * A list of edges.
+                */
+
+                public List<ProductPriceRangeEdge> getEdges() {
+                    return (List<ProductPriceRangeEdge>) get("edges");
+                }
+
+                public ProductPriceRangeConnection setEdges(List<ProductPriceRangeEdge> arg) {
+                    optimisticData.put(getKey("edges"), arg);
+                    return this;
+                }
+
+                /**
+                * Information to aid in pagination.
+                */
+
+                public PageInfo getPageInfo() {
+                    return (PageInfo) get("pageInfo");
+                }
+
+                public ProductPriceRangeConnection setPageInfo(PageInfo arg) {
+                    optimisticData.put(getKey("pageInfo"), arg);
+                    return this;
+                }
+
+                public boolean unwrapsToObject(String key) {
+                    switch (getFieldName(key)) {
+                        case "edges": return true;
+
+                        case "pageInfo": return true;
+
+                        default: return false;
+                    }
+                }
+            }
+
+            public interface ProductPriceRangeEdgeQueryDefinition {
+                void define(ProductPriceRangeEdgeQuery _queryBuilder);
+            }
+
+            public static class ProductPriceRangeEdgeQuery extends Query<ProductPriceRangeEdgeQuery> {
+                ProductPriceRangeEdgeQuery(StringBuilder _queryBuilder) {
+                    super(_queryBuilder);
+                }
+
+                /**
+                * A cursor for use in pagination.
+                */
+                public ProductPriceRangeEdgeQuery cursor() {
+                    startField("cursor");
+
+                    return this;
+                }
+
+                /**
+                * The item at the end of ProductPriceRangeEdge.
+                */
+                public ProductPriceRangeEdgeQuery node(ProductPriceRangeQueryDefinition queryDef) {
+                    startField("node");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new ProductPriceRangeQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+            }
+
+            public static class ProductPriceRangeEdge extends AbstractResponse<ProductPriceRangeEdge> {
+                public ProductPriceRangeEdge() {
+                }
+
+                public ProductPriceRangeEdge(JsonObject fields) throws SchemaViolationError {
+                    for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                        String key = field.getKey();
+                        String fieldName = getFieldName(key);
+                        switch (fieldName) {
+                            case "cursor": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+
+                                break;
+                            }
+
+                            case "node": {
+                                responseData.put(key, new ProductPriceRange(jsonAsObject(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "__typename": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+                                break;
+                            }
+                            default: {
+                                throw new SchemaViolationError(this, key, field.getValue());
+                            }
+                        }
+                    }
+                }
+
+                public String getGraphQlTypeName() {
+                    return "ProductPriceRangeEdge";
+                }
+
+                /**
+                * A cursor for use in pagination.
+                */
+
+                public String getCursor() {
+                    return (String) get("cursor");
+                }
+
+                public ProductPriceRangeEdge setCursor(String arg) {
+                    optimisticData.put(getKey("cursor"), arg);
+                    return this;
+                }
+
+                /**
+                * The item at the end of ProductPriceRangeEdge.
+                */
+
+                public ProductPriceRange getNode() {
+                    return (ProductPriceRange) get("node");
+                }
+
+                public ProductPriceRangeEdge setNode(ProductPriceRange arg) {
+                    optimisticData.put(getKey("node"), arg);
+                    return this;
+                }
+
+                public boolean unwrapsToObject(String key) {
+                    switch (getFieldName(key)) {
+                        case "cursor": return false;
+
+                        case "node": return true;
 
                         default: return false;
                     }
@@ -40283,9 +40705,25 @@ public class Storefront {
 
                 /**
                 * The amount of money that the transaction was for.
+                *
+                * @deprecated Use `amountV2` instead
                 */
+                @Deprecated
                 public TransactionQuery amount() {
                     startField("amount");
+
+                    return this;
+                }
+
+                /**
+                * The amount of money that the transaction was for.
+                */
+                public TransactionQuery amountV2(MoneyV2QueryDefinition queryDef) {
+                    startField("amountV2");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new MoneyV2Query(_queryBuilder));
+                    _queryBuilder.append('}');
 
                     return this;
                 }
@@ -40348,6 +40786,12 @@ public class Storefront {
                                 break;
                             }
 
+                            case "amountV2": {
+                                responseData.put(key, new MoneyV2(jsonAsObject(field.getValue(), key)));
+
+                                break;
+                            }
+
                             case "kind": {
                                 responseData.put(key, TransactionKind.fromGraphQl(jsonAsString(field.getValue(), key)));
 
@@ -40394,6 +40838,8 @@ public class Storefront {
 
                 /**
                 * The amount of money that the transaction was for.
+                *
+                * @deprecated Use `amountV2` instead
                 */
 
                 public BigDecimal getAmount() {
@@ -40402,6 +40848,19 @@ public class Storefront {
 
                 public Transaction setAmount(BigDecimal arg) {
                     optimisticData.put(getKey("amount"), arg);
+                    return this;
+                }
+
+                /**
+                * The amount of money that the transaction was for.
+                */
+
+                public MoneyV2 getAmountV2() {
+                    return (MoneyV2) get("amountV2");
+                }
+
+                public Transaction setAmountV2(MoneyV2 arg) {
+                    optimisticData.put(getKey("amountV2"), arg);
                     return this;
                 }
 
@@ -40462,6 +40921,8 @@ public class Storefront {
                 public boolean unwrapsToObject(String key) {
                     switch (getFieldName(key)) {
                         case "amount": return false;
+
+                        case "amountV2": return true;
 
                         case "kind": return false;
 
