@@ -1540,7 +1540,7 @@ We welcome contributions. Please follow the steps in our [contributing guideline
 
 ## Help [⤴](#table-of-contents)
 
-For help, see the [iOS Buy SDK documentation](https://help.shopify.com/en/api/storefront-api/tools/ios-buy-sdk) or post questions on [our forum](https://ecommerce.shopify.com/c/shopify-apis-and-technology), in `Shopify APIs & SDKs` section.
+For help, see the [Android Buy SDK documentation](https://help.shopify.com/en/api/storefront-api/tools/android-buy-sdk) or post questions on [our forum](https://ecommerce.shopify.com/c/shopify-apis-and-technology), in `Shopify APIs & SDKs` section.
 
 ## License [⤴](#table-of-contents)
 
