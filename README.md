@@ -244,7 +244,7 @@ Accessing the aliased nodes is similar to a plain node:
 Storefront.QueryRoot response = ...;
 
 Storefront.Collection collection = (Storefront.Collection) response.withAlias("collection").getNode();
-Storefront.Product product = (Storefront.Product) response.withAlias("product").getNode();    
+Storefront.Product product = (Storefront.Product) response.withAlias("product").getNode();
 ```
 
 Learn more about [GraphQL aliases](http://graphql.org/learn/queries/#aliases).
@@ -1283,8 +1283,8 @@ Storefront.QueryRootQuery query = Storefront.query(rootQuery -> rootQuery
 client.queryGraph(query).enqueue(
   new GraphCall.Callback<Storefront.QueryRoot>() {
 	@Override public void onResponse(@NonNull GraphResponse<Storefront.QueryRoot> response) {
-     
-	     Storefront.Payment payment = (Storefront.Payment) response.data().getNode();	
+
+	     Storefront.Payment payment = (Storefront.Payment) response.data().getNode();
 
 	     if (payment.getErrorMessage() == null || payment.getErrorMessage().isEmpty()){
 		Storefront.Checkout checkout = payment.getCheckout();
@@ -1293,7 +1293,7 @@ client.queryGraph(query).enqueue(
 	     else{
 		String errorMessage = payment.getErrorMessage();
 	     }
-      
+
     }
     @Override public void onFailure(@NonNull GraphError error) {
     }
@@ -1540,7 +1540,7 @@ We welcome contributions. Please follow the steps in our [contributing guideline
 
 ## Help [⤴](#table-of-contents)
 
-For help, post questions on [our forum](https://ecommerce.shopify.com/c/shopify-apis-and-technology), in `Shopify APIs & SDKs` section.
+For help, see the [iOS Buy SDK documentation](https://help.shopify.com/en/api/storefront-api/tools/ios-buy-sdk) or post questions on [our forum](https://ecommerce.shopify.com/c/shopify-apis-and-technology), in `Shopify APIs & SDKs` section.
 
 ## License [⤴](#table-of-contents)
 
