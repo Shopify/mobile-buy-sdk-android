@@ -106,6 +106,145 @@ public class Storefront {
         }
     }
 
+    public interface ApiVersionQueryDefinition {
+        void define(ApiVersionQuery _queryBuilder);
+    }
+
+    /**
+    * A version of the API.
+    */
+    public static class ApiVersionQuery extends Query<ApiVersionQuery> {
+        ApiVersionQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * The human-readable name of the version.
+        */
+        public ApiVersionQuery displayName() {
+            startField("displayName");
+
+            return this;
+        }
+
+        /**
+        * The unique identifier of an ApiVersion. All supported API versions have a date-based (YYYY-MM) or
+        * `unstable` handle.
+        */
+        public ApiVersionQuery handle() {
+            startField("handle");
+
+            return this;
+        }
+
+        /**
+        * Whether the version is supported by Shopify.
+        */
+        public ApiVersionQuery supported() {
+            startField("supported");
+
+            return this;
+        }
+    }
+
+    /**
+    * A version of the API.
+    */
+    public static class ApiVersion extends AbstractResponse<ApiVersion> {
+        public ApiVersion() {
+        }
+
+        public ApiVersion(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "displayName": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "handle": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "supported": {
+                        responseData.put(key, jsonAsBoolean(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "ApiVersion";
+        }
+
+        /**
+        * The human-readable name of the version.
+        */
+
+        public String getDisplayName() {
+            return (String) get("displayName");
+        }
+
+        public ApiVersion setDisplayName(String arg) {
+            optimisticData.put(getKey("displayName"), arg);
+            return this;
+        }
+
+        /**
+        * The unique identifier of an ApiVersion. All supported API versions have a date-based (YYYY-MM) or
+        * `unstable` handle.
+        */
+
+        public String getHandle() {
+            return (String) get("handle");
+        }
+
+        public ApiVersion setHandle(String arg) {
+            optimisticData.put(getKey("handle"), arg);
+            return this;
+        }
+
+        /**
+        * Whether the version is supported by Shopify.
+        */
+
+        public Boolean getSupported() {
+            return (Boolean) get("supported");
+        }
+
+        public ApiVersion setSupported(Boolean arg) {
+            optimisticData.put(getKey("supported"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "displayName": return false;
+
+                case "handle": return false;
+
+                case "supported": return false;
+
+                default: return false;
+            }
+        }
+    }
+
     public interface AppliedGiftCardQueryDefinition {
         void define(AppliedGiftCardQuery _queryBuilder);
     }
@@ -7797,6 +7936,11 @@ public class Storefront {
         ALREADY_COMPLETED,
 
         /**
+        * Input email contains an invalid domain name.
+        */
+        BAD_DOMAIN,
+
+        /**
         * Input value is blank.
         */
         BLANK,
@@ -7852,6 +7996,11 @@ public class Storefront {
         GIFT_CARD_CURRENCY_MISMATCH,
 
         /**
+        * Gift card has no funds left.
+        */
+        GIFT_CARD_DEPLETED,
+
+        /**
         * Gift card is disabled.
         */
         GIFT_CARD_DISABLED,
@@ -7880,6 +8029,11 @@ public class Storefront {
         * Input value is invalid.
         */
         INVALID,
+
+        /**
+        * Input Zip is invalid for country provided.
+        */
+        INVALID_FOR_COUNTRY,
 
         /**
         * Input Zip is invalid for country and province provided.
@@ -7951,6 +8105,11 @@ public class Storefront {
         */
         TOO_LONG,
 
+        /**
+        * The amount of the payment does not match the value to be paid.
+        */
+        TOTAL_PRICE_MISMATCH,
+
         UNKNOWN_VALUE;
 
         public static CheckoutErrorCode fromGraphQl(String value) {
@@ -7961,6 +8120,10 @@ public class Storefront {
             switch (value) {
                 case "ALREADY_COMPLETED": {
                     return ALREADY_COMPLETED;
+                }
+
+                case "BAD_DOMAIN": {
+                    return BAD_DOMAIN;
                 }
 
                 case "BLANK": {
@@ -8007,6 +8170,10 @@ public class Storefront {
                     return GIFT_CARD_CURRENCY_MISMATCH;
                 }
 
+                case "GIFT_CARD_DEPLETED": {
+                    return GIFT_CARD_DEPLETED;
+                }
+
                 case "GIFT_CARD_DISABLED": {
                     return GIFT_CARD_DISABLED;
                 }
@@ -8029,6 +8196,10 @@ public class Storefront {
 
                 case "INVALID": {
                     return INVALID;
+                }
+
+                case "INVALID_FOR_COUNTRY": {
+                    return INVALID_FOR_COUNTRY;
                 }
 
                 case "INVALID_FOR_COUNTRY_AND_PROVINCE": {
@@ -8087,6 +8258,10 @@ public class Storefront {
                     return TOO_LONG;
                 }
 
+                case "TOTAL_PRICE_MISMATCH": {
+                    return TOTAL_PRICE_MISMATCH;
+                }
+
                 default: {
                     return UNKNOWN_VALUE;
                 }
@@ -8096,6 +8271,10 @@ public class Storefront {
             switch (this) {
                 case ALREADY_COMPLETED: {
                     return "ALREADY_COMPLETED";
+                }
+
+                case BAD_DOMAIN: {
+                    return "BAD_DOMAIN";
                 }
 
                 case BLANK: {
@@ -8142,6 +8321,10 @@ public class Storefront {
                     return "GIFT_CARD_CURRENCY_MISMATCH";
                 }
 
+                case GIFT_CARD_DEPLETED: {
+                    return "GIFT_CARD_DEPLETED";
+                }
+
                 case GIFT_CARD_DISABLED: {
                     return "GIFT_CARD_DISABLED";
                 }
@@ -8164,6 +8347,10 @@ public class Storefront {
 
                 case INVALID: {
                     return "INVALID";
+                }
+
+                case INVALID_FOR_COUNTRY: {
+                    return "INVALID_FOR_COUNTRY";
                 }
 
                 case INVALID_FOR_COUNTRY_AND_PROVINCE: {
@@ -8220,6 +8407,10 @@ public class Storefront {
 
                 case TOO_LONG: {
                     return "TOO_LONG";
+                }
+
+                case TOTAL_PRICE_MISMATCH: {
+                    return "TOTAL_PRICE_MISMATCH";
                 }
 
                 default: {
@@ -16075,7 +16266,10 @@ public class Storefront {
 
         /**
         * Belarusian Ruble (BYR).
+        *
+        * @deprecated `BYR` is deprecated. Use `BYN` available from version `2019-10` onwards instead.
         */
+        @Deprecated
         BYR,
 
         /**
@@ -16768,10 +16962,6 @@ public class Storefront {
                     return BWP;
                 }
 
-                case "BYR": {
-                    return BYR;
-                }
-
                 case "BZD": {
                     return BZD;
                 }
@@ -17341,10 +17531,6 @@ public class Storefront {
 
                 case BWP: {
                     return "BWP";
-                }
-
-                case BYR: {
-                    return "BYR";
                 }
 
                 case BZD: {
@@ -32912,7 +33098,7 @@ public class Storefront {
                 }
 
                 /**
-                * Indicates if at least one product variant is available for sale.
+                * Whether the product is available on the Online Store channel and in stock.
                 */
                 public ProductQuery availableForSale() {
                     startField("availableForSale");
@@ -33903,7 +34089,7 @@ public class Storefront {
                 }
 
                 /**
-                * Indicates if at least one product variant is available for sale.
+                * Whether the product is available on the Online Store channel and in stock.
                 */
 
                 public Boolean getAvailableForSale() {
@@ -35709,6 +35895,16 @@ public class Storefront {
                 }
 
                 /**
+                * Whether a customer needs to provide a shipping address when placing an order for the product
+                * variant.
+                */
+                public ProductVariantQuery requiresShipping() {
+                    startField("requiresShipping");
+
+                    return this;
+                }
+
+                /**
                 * List of product options applied to the variant.
                 */
                 public ProductVariantQuery selectedOptions(SelectedOptionQueryDefinition queryDef) {
@@ -35864,6 +36060,12 @@ public class Storefront {
 
                             case "product": {
                                 responseData.put(key, new Product(jsonAsObject(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "requiresShipping": {
+                                responseData.put(key, jsonAsBoolean(field.getValue(), key));
 
                                 break;
                             }
@@ -36094,6 +36296,20 @@ public class Storefront {
                 }
 
                 /**
+                * Whether a customer needs to provide a shipping address when placing an order for the product
+                * variant.
+                */
+
+                public Boolean getRequiresShipping() {
+                    return (Boolean) get("requiresShipping");
+                }
+
+                public ProductVariant setRequiresShipping(Boolean arg) {
+                    optimisticData.put(getKey("requiresShipping"), arg);
+                    return this;
+                }
+
+                /**
                 * List of product options applied to the variant.
                 */
 
@@ -36183,6 +36399,8 @@ public class Storefront {
                         case "priceV2": return true;
 
                         case "product": return true;
+
+                        case "requiresShipping": return false;
 
                         case "selectedOptions": return true;
 
@@ -37495,7 +37713,7 @@ public class Storefront {
                 }
 
                 /**
-                * List of the shop’s product types.
+                * List of product types for the shop's products that are published to your app.
                 */
                 public QueryRootQuery productTypes(int first, StringConnectionQueryDefinition queryDef) {
                     startField("productTypes");
@@ -37627,6 +37845,20 @@ public class Storefront {
 
                     _queryBuilder.append('{');
                     queryDef.define(new ProductConnectionQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * The list of public Storefront API versions, including supported, release candidate and unstable
+                * versions.
+                */
+                public QueryRootQuery publicApiVersions(ApiVersionQueryDefinition queryDef) {
+                    startField("publicApiVersions");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new ApiVersionQuery(_queryBuilder));
                     _queryBuilder.append('}');
 
                     return this;
@@ -37796,6 +38028,17 @@ public class Storefront {
 
                             case "products": {
                                 responseData.put(key, new ProductConnection(jsonAsObject(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "publicApiVersions": {
+                                List<ApiVersion> list1 = new ArrayList<>();
+                                for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                                    list1.add(new ApiVersion(jsonAsObject(element1, key)));
+                                }
+
+                                responseData.put(key, list1);
 
                                 break;
                             }
@@ -37983,7 +38226,7 @@ public class Storefront {
                 }
 
                 /**
-                * List of the shop’s product types.
+                * List of product types for the shop's products that are published to your app.
                 */
 
                 public StringConnection getProductTypes() {
@@ -38005,6 +38248,20 @@ public class Storefront {
 
                 public QueryRoot setProducts(ProductConnection arg) {
                     optimisticData.put(getKey("products"), arg);
+                    return this;
+                }
+
+                /**
+                * The list of public Storefront API versions, including supported, release candidate and unstable
+                * versions.
+                */
+
+                public List<ApiVersion> getPublicApiVersions() {
+                    return (List<ApiVersion>) get("publicApiVersions");
+                }
+
+                public QueryRoot setPublicApiVersions(List<ApiVersion> arg) {
+                    optimisticData.put(getKey("publicApiVersions"), arg);
                     return this;
                 }
 
@@ -38048,6 +38305,8 @@ public class Storefront {
                         case "productTypes": return true;
 
                         case "products": return true;
+
+                        case "publicApiVersions": return true;
 
                         case "shop": return true;
 
