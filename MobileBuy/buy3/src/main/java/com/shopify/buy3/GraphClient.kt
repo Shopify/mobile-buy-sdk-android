@@ -42,6 +42,7 @@ import java.util.concurrent.TimeUnit
 
 private val DEFAULT_HTTP_CONNECTION_TIME_OUT_MS = TimeUnit.SECONDS.toMillis(10)
 private val DEFAULT_HTTP_READ_WRITE_TIME_OUT_MS = TimeUnit.SECONDS.toMillis(20)
+private val STOREFRONT_API_VERSION = "2019-07"
 
 @DslMarker
 annotation class GraphClientBuilder
@@ -144,7 +145,7 @@ class GraphClient private constructor(
         @VisibleForTesting
         internal var dispatcher: ScheduledThreadPoolExecutor? = null
         @VisibleForTesting
-        internal var endpointUrl = HttpUrl.parse("https://$shopDomain/api/graphql")
+        internal var endpointUrl = HttpUrl.parse("https://$shopDomain/api/$STOREFRONT_API_VERSION/graphql")
 
         init {
             shopDomain.checkNotBlank("shopDomain can't be empty")

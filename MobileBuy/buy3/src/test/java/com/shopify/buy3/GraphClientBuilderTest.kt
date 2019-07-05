@@ -40,7 +40,8 @@ import java.io.File
 private const val PACKAGE_NAME = "com.shopify.buy3.test"
 private const val SHOP_DOMAIN = "shopDomain"
 private const val ACCESS_TOKEN = "access_token"
-private val ENDPOINT_URL = HttpUrl.parse(String.format("https://%s/api/graphql", SHOP_DOMAIN))
+private const val STOREFRONT_API_VERSION = "2019-07"
+private val ENDPOINT_URL = HttpUrl.parse(String.format("https://%s/api/%s/graphql", SHOP_DOMAIN, STOREFRONT_API_VERSION))
 
 @RunWith(MockitoJUnitRunner::class)
 class GraphClientBuilderTest {
