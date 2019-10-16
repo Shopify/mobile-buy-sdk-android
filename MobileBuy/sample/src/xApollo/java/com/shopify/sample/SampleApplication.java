@@ -73,7 +73,7 @@ public class SampleApplication extends BaseApplication {
 
     apolloClient = ApolloClient.builder()
       .okHttpClient(httpClient)
-      .serverUrl(HttpUrl.parse("https://" + shopUrl + "/api/2019-07/graphql"))
+      .serverUrl(HttpUrl.parse("https://" + shopUrl + "/api/2019-10/graphql"))
       .httpCache(new ApolloHttpCache(new DiskLruHttpCacheStore(getCacheDir(), 1000 * 1024), null))
       .defaultHttpCachePolicy(HttpCachePolicy.CACHE_FIRST.expireAfter(20, TimeUnit.MINUTES))
       .addCustomTypeAdapter(CustomType.MONEY, new CustomTypeAdapter<BigDecimal>() {
