@@ -3449,9 +3449,10 @@ public class Storefront {
         }
 
         /**
-        * Whether or not the Checkout is ready and can be completed. Checkouts may have asynchronous
-        * operations that can take time to finish. If you want to complete a checkout or ensure all the fields
-        * are populated and up to date, polling is required until the value is true. 
+        * Whether or not the Checkout is ready and can be completed. Checkouts may
+        * have asynchronous operations that can take time to finish. If you want
+        * to complete a checkout or ensure all the fields are populated and up to
+        * date, polling is required until the value is true.
         */
         public CheckoutQuery ready() {
             startField("ready");
@@ -4120,9 +4121,10 @@ public class Storefront {
         }
 
         /**
-        * Whether or not the Checkout is ready and can be completed. Checkouts may have asynchronous
-        * operations that can take time to finish. If you want to complete a checkout or ensure all the fields
-        * are populated and up to date, polling is required until the value is true. 
+        * Whether or not the Checkout is ready and can be completed. Checkouts may
+        * have asynchronous operations that can take time to finish. If you want
+        * to complete a checkout or ensure all the fields are populated and up to
+        * date, polling is required until the value is true.
         */
 
         public Boolean getReady() {
@@ -13070,7 +13072,7 @@ public class Storefront {
         MG,
 
         /**
-        * Macedonia, Republic Of.
+        * North Macedonia.
         */
         MK,
 
@@ -13400,7 +13402,7 @@ public class Storefront {
         SY,
 
         /**
-        * Swaziland.
+        * Eswatini.
         */
         SZ,
 
@@ -16323,6 +16325,11 @@ public class Storefront {
         CZK,
 
         /**
+        * Djiboutian Franc (DJF).
+        */
+        DJF,
+
+        /**
         * Danish Kroner (DKK).
         */
         DKK,
@@ -16378,6 +16385,11 @@ public class Storefront {
         GMD,
 
         /**
+        * Guinean Franc (GNF).
+        */
+        GNF,
+
+        /**
         * Guatemalan Quetzal (GTQ).
         */
         GTQ,
@@ -16431,6 +16443,11 @@ public class Storefront {
         * Iraqi Dinar (IQD).
         */
         IQD,
+
+        /**
+        * Iranian Rial (IRR).
+        */
+        IRR,
 
         /**
         * Icelandic Kronur (ISK).
@@ -16531,6 +16548,11 @@ public class Storefront {
         * Latvian Lati (LVL).
         */
         LVL,
+
+        /**
+        * Libyan Dinar (LYD).
+        */
+        LYD,
 
         /**
         * Moroccan Dirham.
@@ -16723,6 +16745,11 @@ public class Storefront {
         SGD,
 
         /**
+        * Sierra Leonean Leone (SLL).
+        */
+        SLL,
+
+        /**
         * Surinamese Dollar (SRD).
         */
         SRD,
@@ -16753,6 +16780,11 @@ public class Storefront {
         THB,
 
         /**
+        * Tajikistani Somoni (TJS).
+        */
+        TJS,
+
+        /**
         * Turkmenistani Manat (TMT).
         */
         TMT,
@@ -16761,6 +16793,11 @@ public class Storefront {
         * Tunisian Dinar (TND).
         */
         TND,
+
+        /**
+        * Tongan Pa'anga (TOP).
+        */
+        TOP,
 
         /**
         * Turkish Lira (TRY).
@@ -17002,6 +17039,10 @@ public class Storefront {
                     return CZK;
                 }
 
+                case "DJF": {
+                    return DJF;
+                }
+
                 case "DKK": {
                     return DKK;
                 }
@@ -17046,6 +17087,10 @@ public class Storefront {
                     return GMD;
                 }
 
+                case "GNF": {
+                    return GNF;
+                }
+
                 case "GTQ": {
                     return GTQ;
                 }
@@ -17088,6 +17133,10 @@ public class Storefront {
 
                 case "IQD": {
                     return IQD;
+                }
+
+                case "IRR": {
+                    return IRR;
                 }
 
                 case "ISK": {
@@ -17168,6 +17217,10 @@ public class Storefront {
 
                 case "LVL": {
                     return LVL;
+                }
+
+                case "LYD": {
+                    return LYD;
                 }
 
                 case "MAD": {
@@ -17322,6 +17375,10 @@ public class Storefront {
                     return SGD;
                 }
 
+                case "SLL": {
+                    return SLL;
+                }
+
                 case "SRD": {
                     return SRD;
                 }
@@ -17346,12 +17403,20 @@ public class Storefront {
                     return THB;
                 }
 
+                case "TJS": {
+                    return TJS;
+                }
+
                 case "TMT": {
                     return TMT;
                 }
 
                 case "TND": {
                     return TND;
+                }
+
+                case "TOP": {
+                    return TOP;
                 }
 
                 case "TRY": {
@@ -17573,6 +17638,10 @@ public class Storefront {
                     return "CZK";
                 }
 
+                case DJF: {
+                    return "DJF";
+                }
+
                 case DKK: {
                     return "DKK";
                 }
@@ -17617,6 +17686,10 @@ public class Storefront {
                     return "GMD";
                 }
 
+                case GNF: {
+                    return "GNF";
+                }
+
                 case GTQ: {
                     return "GTQ";
                 }
@@ -17659,6 +17732,10 @@ public class Storefront {
 
                 case IQD: {
                     return "IQD";
+                }
+
+                case IRR: {
+                    return "IRR";
                 }
 
                 case ISK: {
@@ -17739,6 +17816,10 @@ public class Storefront {
 
                 case LVL: {
                     return "LVL";
+                }
+
+                case LYD: {
+                    return "LYD";
                 }
 
                 case MAD: {
@@ -17893,6 +17974,10 @@ public class Storefront {
                     return "SGD";
                 }
 
+                case SLL: {
+                    return "SLL";
+                }
+
                 case SRD: {
                     return "SRD";
                 }
@@ -17917,12 +18002,20 @@ public class Storefront {
                     return "THB";
                 }
 
+                case TJS: {
+                    return "TJS";
+                }
+
                 case TMT: {
                     return "TMT";
                 }
 
                 case TND: {
                     return "TND";
+                }
+
+                case TOP: {
+                    return "TOP";
                 }
 
                 case TRY: {
@@ -27398,6 +27491,10 @@ public class Storefront {
                     return this;
                 }
 
+                /**
+                * Completes a checkout without providing payment information. You can use this mutation for free items
+                * or items whose purchase price is covered by a gift card.
+                */
                 public MutationQuery checkoutCompleteFree(ID checkoutId, CheckoutCompleteFreePayloadQueryDefinition queryDef) {
                     startField("checkoutCompleteFree");
 
@@ -27438,7 +27535,10 @@ public class Storefront {
                 }
 
                 /**
-                * Completes a checkout using a credit card token from Shopify's Vault.
+                * Completes a checkout using a credit card token from Shopify's card vault. Before you can complete
+                * checkouts using CheckoutCompleteWithCreditCardV2, you need to  [_request payment
+                * processing_](https://help.shopify.com/api/guides/sales-channel-sdk/getting-started#request-payment-p
+                * rocessing).
                 */
                 public MutationQuery checkoutCompleteWithCreditCardV2(ID checkoutId, CreditCardPaymentInputV2 payment, CheckoutCompleteWithCreditCardV2PayloadQueryDefinition queryDef) {
                     startField("checkoutCompleteWithCreditCardV2");
@@ -28784,6 +28884,11 @@ public class Storefront {
                     return this;
                 }
 
+                /**
+                * Completes a checkout without providing payment information. You can use this mutation for free items
+                * or items whose purchase price is covered by a gift card.
+                */
+
                 public CheckoutCompleteFreePayload getCheckoutCompleteFree() {
                     return (CheckoutCompleteFreePayload) get("checkoutCompleteFree");
                 }
@@ -28809,7 +28914,10 @@ public class Storefront {
                 }
 
                 /**
-                * Completes a checkout using a credit card token from Shopify's Vault.
+                * Completes a checkout using a credit card token from Shopify's card vault. Before you can complete
+                * checkouts using CheckoutCompleteWithCreditCardV2, you need to  [_request payment
+                * processing_](https://help.shopify.com/api/guides/sales-channel-sdk/getting-started#request-payment-p
+                * rocessing).
                 */
 
                 public CheckoutCompleteWithCreditCardV2Payload getCheckoutCompleteWithCreditCardV2() {
@@ -32298,7 +32406,7 @@ public class Storefront {
                 }
 
                 /**
-                * An message describing a processing error during asynchronous processing.
+                * A message describing a processing error during asynchronous processing.
                 */
                 public PaymentQuery errorMessage() {
                     startField("errorMessage");
@@ -32311,6 +32419,15 @@ public class Storefront {
                 */
                 public PaymentQuery idempotencyKey() {
                     startField("idempotencyKey");
+
+                    return this;
+                }
+
+                /**
+                * The URL where the customer needs to be redirected so they can complete the 3D Secure payment flow.
+                */
+                public PaymentQuery nextActionUrl() {
+                    startField("nextActionUrl");
 
                     return this;
                 }
@@ -32417,6 +32534,17 @@ public class Storefront {
                             }
 
                             case "idempotencyKey": {
+                                String optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = jsonAsString(field.getValue(), key);
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "nextActionUrl": {
                                 String optional1 = null;
                                 if (!field.getValue().isJsonNull()) {
                                     optional1 = jsonAsString(field.getValue(), key);
@@ -32538,7 +32666,7 @@ public class Storefront {
                 }
 
                 /**
-                * An message describing a processing error during asynchronous processing.
+                * A message describing a processing error during asynchronous processing.
                 */
 
                 public String getErrorMessage() {
@@ -32568,6 +32696,19 @@ public class Storefront {
 
                 public Payment setIdempotencyKey(String arg) {
                     optimisticData.put(getKey("idempotencyKey"), arg);
+                    return this;
+                }
+
+                /**
+                * The URL where the customer needs to be redirected so they can complete the 3D Secure payment flow.
+                */
+
+                public String getNextActionUrl() {
+                    return (String) get("nextActionUrl");
+                }
+
+                public Payment setNextActionUrl(String arg) {
+                    optimisticData.put(getKey("nextActionUrl"), arg);
                     return this;
                 }
 
@@ -32627,6 +32768,8 @@ public class Storefront {
                         case "id": return false;
 
                         case "idempotencyKey": return false;
+
+                        case "nextActionUrl": return false;
 
                         case "ready": return false;
 
@@ -33098,7 +33241,7 @@ public class Storefront {
                 }
 
                 /**
-                * Whether the product is available on the Online Store channel and in stock.
+                * Indicates if at least one product variant is available for sale.
                 */
                 public ProductQuery availableForSale() {
                     startField("availableForSale");
@@ -34089,7 +34232,7 @@ public class Storefront {
                 }
 
                 /**
-                * Whether the product is available on the Online Store channel and in stock.
+                * Indicates if at least one product variant is available for sale.
                 */
 
                 public Boolean getAvailableForSale() {
