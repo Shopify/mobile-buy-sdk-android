@@ -1310,6 +1310,12 @@ client.queryGraph(query).enqueue(
 
 Again, just like when [polling for available shipping rates](#polling-for-shipping-rates-), we need to create a `RetryHandler` to provide a condition upon which to retry the request. In this case, we're asserting that the `Storefront.Payment` is `false` an continue retrying the request if it is.
 
+**Support for 3D Secure:**
+
+If you are located in an area impacted by [PSD2](https://help.shopify.com/en/api/guides/3d-secure), then you need to implement 3D Secure payment processing into your app. To implement 3D Secure, Shopify has added the `next_action` property to the `Payment` resource. This property returns a URL that you can use to redirect the customer to for 3D secure authentication. To complete the redirect your app needs to implement a WebView interface. Your app also needs to poll the checkout until the payment is complete and the `ready` field on the `Payment` resource returns `true`.
+
+For a detailed guide, see [*Authenticating payments with 3D Secure*](https://help.shopify.com/en/api/guides/3d-secure).
+
 ## Customer Accounts [⤴](#table-of-contents)
 
 Using the Buy SDK, you can build custom storefronts that let your customers create accounts, browse previously completed orders, and manage their information. Since most customer-related actions modify states on the server, they are performed using various `mutation` requests. Let's take a look at a few examples.
