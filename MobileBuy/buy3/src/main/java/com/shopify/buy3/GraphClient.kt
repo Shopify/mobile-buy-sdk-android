@@ -42,7 +42,7 @@ import java.util.concurrent.TimeUnit
 
 private val DEFAULT_HTTP_CONNECTION_TIME_OUT_MS = TimeUnit.SECONDS.toMillis(10)
 private val DEFAULT_HTTP_READ_WRITE_TIME_OUT_MS = TimeUnit.SECONDS.toMillis(20)
-private val STOREFRONT_API_VERSION = "2019-10"
+private val STOREFRONT_API_VERSION = "2020-01"
 
 @DslMarker
 annotation class GraphClientBuilder
@@ -119,16 +119,30 @@ class GraphClient private constructor(
          * @return [GraphClient.Config] client builder
          */
         fun build(
-            context: Context,
-            shopDomain: String,
-            accessToken: String,
-            configure: Config.() -> Unit = {}
+                context: Context,
+                shopDomain: String,
+                accessToken: String,
+                configure: Config.() -> Unit = {},
+                locale: String? = null
         ): GraphClient = Config.create(
             context = context,
             shopDomain = shopDomain,
             accessToken = accessToken,
             configure = configure
-        ).build()
+        ).build(locale)
+
+        fun build(
+                context: Context,
+                shopDomain: String,
+                accessToken: String,
+                configure: Config.() -> Unit = {}
+        ): GraphClient = build(
+            context = context,
+            shopDomain = shopDomain,
+            accessToken = accessToken,
+            configure = configure,
+            locale = null
+        )
     }
 
     /**
@@ -178,12 +192,12 @@ class GraphClient private constructor(
          *
          * @return configured [GraphClient]
          */
-        fun build(): GraphClient {
+        fun build(locale: String?): GraphClient {
             val httpCache = httpCacheConfig.let { config ->
                 when (config) {
                     is HttpCacheConfig.DiskLru -> {
                         val version = BuildConfig.VERSION_NAME
-                        val tmp = (endpointUrl.toString() + "/" + version + "/" + accessToken).toByteArray(Charset.forName("UTF-8"))
+                        val tmp = (endpointUrl.toString() + "/" + version + "/" + accessToken + "/" + locale).toByteArray(Charset.forName("UTF-8"))
                         val httpCacheFolder = File(config.cacheFolder, ByteString.of(*tmp).md5().hex())
                         HttpCache(
                             cacheStore = DiskLruCacheStore(
@@ -199,8 +213,9 @@ class GraphClient private constructor(
             }
 
             val okHttpClient = httpClient.withSdkHeaderInterceptor(
-                applicationName = applicationName,
-                accessToken = accessToken
+                    applicationName = applicationName,
+                    accessToken = accessToken,
+                    locale = locale
             ).withHttpCacheInterceptor(httpCache)
 
             return GraphClient(
@@ -257,7 +272,7 @@ private fun OkHttpClient.withHttpCacheInterceptor(httpCache: HttpCache?): OkHttp
     }
 }
 
-private fun OkHttpClient.withSdkHeaderInterceptor(applicationName: String, accessToken: String): OkHttpClient {
+private fun OkHttpClient.withSdkHeaderInterceptor(applicationName: String, accessToken: String, locale: String?): OkHttpClient {
     return newBuilder().addInterceptor { chain ->
         val original = chain.request()
         val builder = original.newBuilder().method(original.method(), original.body())
@@ -265,6 +280,9 @@ private fun OkHttpClient.withSdkHeaderInterceptor(applicationName: String, acces
         builder.header("X-SDK-Version", BuildConfig.VERSION_NAME)
         builder.header("X-SDK-Variant", "android")
         builder.header("X-Shopify-Storefront-Access-Token", accessToken)
+        if (locale!= null) {
+            builder.header("Accept-Language", locale.toString())
+        }
         chain.proceed(builder.build())
     }.build()
 }
