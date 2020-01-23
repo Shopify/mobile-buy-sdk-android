@@ -40,7 +40,7 @@ import java.io.File
 private const val PACKAGE_NAME = "com.shopify.buy3.test"
 private const val SHOP_DOMAIN = "shopDomain"
 private const val ACCESS_TOKEN = "access_token"
-private const val STOREFRONT_API_VERSION = "2019-10"
+private const val STOREFRONT_API_VERSION = "2020-01"
 private val ENDPOINT_URL = HttpUrl.parse(String.format("https://%s/api/%s/graphql", SHOP_DOMAIN, STOREFRONT_API_VERSION))
 
 @RunWith(MockitoJUnitRunner::class)
@@ -57,9 +57,9 @@ class GraphClientBuilderTest {
             .addNetworkInterceptor(networkInterceptor)
             .build()
 
-        val graphClient = GraphClient.build(context = mockContext, shopDomain = SHOP_DOMAIN, accessToken = ACCESS_TOKEN) {
+        val graphClient = GraphClient.build(context = mockContext, shopDomain = SHOP_DOMAIN, accessToken = ACCESS_TOKEN, configure = {
             httpClient = okHttpClient
-        }
+        })
 
         with(graphClient) {
             assertThat(serverUrl).isEqualTo(ENDPOINT_URL)
@@ -83,18 +83,18 @@ class GraphClientBuilderTest {
         checkForIllegalArgumentException { GraphClient.build(context = mockContext, shopDomain = "", accessToken = ACCESS_TOKEN) }
         checkForIllegalArgumentException { GraphClient.build(context = mockContext, shopDomain = SHOP_DOMAIN, accessToken = "") }
         checkForIllegalArgumentException {
-            GraphClient.build(context = mockContext, shopDomain = SHOP_DOMAIN, accessToken = ACCESS_TOKEN) {
+            GraphClient.build(context = mockContext, shopDomain = SHOP_DOMAIN, accessToken = ACCESS_TOKEN, configure = {
                 httpCache(cacheFolder = File("")) {
                     cacheMaxSizeBytes = 0
                 }
-            }
+            })
         }
         checkForIllegalArgumentException {
-            GraphClient.build(context = mockContext, shopDomain = SHOP_DOMAIN, accessToken = ACCESS_TOKEN) {
+            GraphClient.build(context = mockContext, shopDomain = SHOP_DOMAIN, accessToken = ACCESS_TOKEN, configure = {
                 httpCache(cacheFolder = File("")) {
                     cacheMaxSizeBytes = -1
                 }
-            }
+            })
         }
     }
 }

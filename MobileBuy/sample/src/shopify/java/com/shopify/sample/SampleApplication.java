@@ -85,6 +85,6 @@ public class SampleApplication extends BaseApplication {
             return Unit.INSTANCE;
           });
           return Unit.INSTANCE;
-        });
+        }, BuildConfig.DEFAULT_LOCALE);
   }
 }

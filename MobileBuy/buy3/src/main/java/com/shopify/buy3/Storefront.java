@@ -260,7 +260,7 @@ public class Storefront {
         }
 
         /**
-        * The amount that was taken from the Gift Card by applying it.
+        * The amount that was taken from the gift card by applying it.
         *
         * @deprecated Use `amountUsedV2` instead
         */
@@ -272,7 +272,7 @@ public class Storefront {
         }
 
         /**
-        * The amount that was taken from the Gift Card by applying it.
+        * The amount that was taken from the gift card by applying it.
         */
         public AppliedGiftCardQuery amountUsedV2(MoneyV2QueryDefinition queryDef) {
             startField("amountUsedV2");
@@ -285,7 +285,7 @@ public class Storefront {
         }
 
         /**
-        * The amount left on the Gift Card.
+        * The amount left on the gift card.
         *
         * @deprecated Use `balanceV2` instead
         */
@@ -297,7 +297,7 @@ public class Storefront {
         }
 
         /**
-        * The amount left on the Gift Card.
+        * The amount left on the gift card.
         */
         public AppliedGiftCardQuery balanceV2(MoneyV2QueryDefinition queryDef) {
             startField("balanceV2");
@@ -310,7 +310,7 @@ public class Storefront {
         }
 
         /**
-        * The last characters of the Gift Card code
+        * The last characters of the gift card.
         */
         public AppliedGiftCardQuery lastCharacters() {
             startField("lastCharacters");
@@ -407,7 +407,7 @@ public class Storefront {
         }
 
         /**
-        * The amount that was taken from the Gift Card by applying it.
+        * The amount that was taken from the gift card by applying it.
         *
         * @deprecated Use `amountUsedV2` instead
         */
@@ -422,7 +422,7 @@ public class Storefront {
         }
 
         /**
-        * The amount that was taken from the Gift Card by applying it.
+        * The amount that was taken from the gift card by applying it.
         */
 
         public MoneyV2 getAmountUsedV2() {
@@ -435,7 +435,7 @@ public class Storefront {
         }
 
         /**
-        * The amount left on the Gift Card.
+        * The amount left on the gift card.
         *
         * @deprecated Use `balanceV2` instead
         */
@@ -450,7 +450,7 @@ public class Storefront {
         }
 
         /**
-        * The amount left on the Gift Card.
+        * The amount left on the gift card.
         */
 
         public MoneyV2 getBalanceV2() {
@@ -471,7 +471,7 @@ public class Storefront {
         }
 
         /**
-        * The last characters of the Gift Card code
+        * The last characters of the gift card.
         */
 
         public String getLastCharacters() {
@@ -521,6 +521,9 @@ public class Storefront {
         void define(ArticleQuery _queryBuilder);
     }
 
+    /**
+    * An article in an online store blog.
+    */
     public static class ArticleQuery extends Query<ArticleQuery> {
         ArticleQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
@@ -900,6 +903,9 @@ public class Storefront {
         }
     }
 
+    /**
+    * An article in an online store blog.
+    */
     public static class Article extends AbstractResponse<Article> implements Node {
         public Article() {
         }
@@ -1303,6 +1309,9 @@ public class Storefront {
         void define(ArticleAuthorQuery _queryBuilder);
     }
 
+    /**
+    * The author of an article.
+    */
     public static class ArticleAuthorQuery extends Query<ArticleAuthorQuery> {
         ArticleAuthorQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
@@ -1354,6 +1363,9 @@ public class Storefront {
         }
     }
 
+    /**
+    * The author of an article.
+    */
     public static class ArticleAuthor extends AbstractResponse<ArticleAuthor> {
         public ArticleAuthor() {
         }
@@ -2323,6 +2335,9 @@ public class Storefront {
         void define(BlogQuery _queryBuilder);
     }
 
+    /**
+    * An online store blog.
+    */
     public static class BlogQuery extends Query<BlogQuery> {
         BlogQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
@@ -2506,6 +2521,9 @@ public class Storefront {
         }
     }
 
+    /**
+    * An online store blog.
+    */
     public static class Blog extends AbstractResponse<Blog> implements Node {
         public Blog() {
         }
@@ -3112,6 +3130,9 @@ public class Storefront {
             startField("id");
         }
 
+        /**
+        * The gift cards used on the checkout.
+        */
         public CheckoutQuery appliedGiftCards(AppliedGiftCardQueryDefinition queryDef) {
             startField("appliedGiftCards");
 
@@ -3393,6 +3414,9 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * The note associated with the checkout.
+        */
         public CheckoutQuery note() {
             startField("note");
 
@@ -3904,6 +3928,10 @@ public class Storefront {
             return "Checkout";
         }
 
+        /**
+        * The gift cards used on the checkout.
+        */
+
         public List<AppliedGiftCard> getAppliedGiftCards() {
             return (List<AppliedGiftCard>) get("appliedGiftCards");
         }
@@ -4054,6 +4082,10 @@ public class Storefront {
             optimisticData.put(getKey("lineItemsSubtotalPrice"), arg);
             return this;
         }
+
+        /**
+        * The note associated with the checkout.
+        */
 
         public String getNote() {
             return (String) get("note");
@@ -8112,6 +8144,11 @@ public class Storefront {
         */
         TOTAL_PRICE_MISMATCH,
 
+        /**
+        * Unable to apply discount.
+        */
+        UNABLE_TO_APPLY,
+
         UNKNOWN_VALUE;
 
         public static CheckoutErrorCode fromGraphQl(String value) {
@@ -8264,6 +8301,10 @@ public class Storefront {
                     return TOTAL_PRICE_MISMATCH;
                 }
 
+                case "UNABLE_TO_APPLY": {
+                    return UNABLE_TO_APPLY;
+                }
+
                 default: {
                     return UNKNOWN_VALUE;
                 }
@@ -8413,6 +8454,10 @@ public class Storefront {
 
                 case TOTAL_PRICE_MISMATCH: {
                     return "TOTAL_PRICE_MISMATCH";
+                }
+
+                case UNABLE_TO_APPLY: {
+                    return "UNABLE_TO_APPLY";
                 }
 
                 default: {
@@ -9979,6 +10024,9 @@ public class Storefront {
             super(_queryBuilder);
         }
 
+        /**
+        * The updated checkout object.
+        */
         public CheckoutLineItemsRemovePayloadQuery checkout(CheckoutQueryDefinition queryDef) {
             startField("checkout");
 
@@ -10078,6 +10126,10 @@ public class Storefront {
         public String getGraphQlTypeName() {
             return "CheckoutLineItemsRemovePayload";
         }
+
+        /**
+        * The updated checkout object.
+        */
 
         public Checkout getCheckout() {
             return (Checkout) get("checkout");
@@ -11866,6 +11918,9 @@ public class Storefront {
         void define(CommentQuery _queryBuilder);
     }
 
+    /**
+    * A comment on an article.
+    */
     public static class CommentQuery extends Query<CommentQuery> {
         CommentQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
@@ -11937,6 +11992,9 @@ public class Storefront {
         }
     }
 
+    /**
+    * A comment on an article.
+    */
     public static class Comment extends AbstractResponse<Comment> implements Node {
         public Comment() {
         }
@@ -12056,6 +12114,9 @@ public class Storefront {
         void define(CommentAuthorQuery _queryBuilder);
     }
 
+    /**
+    * The author of a comment.
+    */
     public static class CommentAuthorQuery extends Query<CommentAuthorQuery> {
         CommentAuthorQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
@@ -12080,6 +12141,9 @@ public class Storefront {
         }
     }
 
+    /**
+    * The author of a comment.
+    */
     public static class CommentAuthor extends AbstractResponse<CommentAuthor> {
         public CommentAuthor() {
         }
@@ -12517,7 +12581,7 @@ public class Storefront {
         BO,
 
         /**
-        * Bonaire, Sint Eustatius and Saba.
+        * Caribbean Netherlands.
         */
         BQ,
 
@@ -15556,42 +15620,63 @@ public class Storefront {
             super(_queryBuilder);
         }
 
+        /**
+        * The brand of the credit card.
+        */
         public CreditCardQuery brand() {
             startField("brand");
 
             return this;
         }
 
+        /**
+        * The expiry month of the credit card.
+        */
         public CreditCardQuery expiryMonth() {
             startField("expiryMonth");
 
             return this;
         }
 
+        /**
+        * The expiry year of the credit card.
+        */
         public CreditCardQuery expiryYear() {
             startField("expiryYear");
 
             return this;
         }
 
+        /**
+        * The credit card's BIN number.
+        */
         public CreditCardQuery firstDigits() {
             startField("firstDigits");
 
             return this;
         }
 
+        /**
+        * The first name of the card holder.
+        */
         public CreditCardQuery firstName() {
             startField("firstName");
 
             return this;
         }
 
+        /**
+        * The last 4 digits of the credit card.
+        */
         public CreditCardQuery lastDigits() {
             startField("lastDigits");
 
             return this;
         }
 
+        /**
+        * The last name of the card holder.
+        */
         public CreditCardQuery lastName() {
             startField("lastName");
 
@@ -15599,7 +15684,7 @@ public class Storefront {
         }
 
         /**
-        * Masked credit card number with only the last 4 digits displayed
+        * The masked credit card number with only the last 4 digits displayed.
         */
         public CreditCardQuery maskedNumber() {
             startField("maskedNumber");
@@ -15723,6 +15808,10 @@ public class Storefront {
             return "CreditCard";
         }
 
+        /**
+        * The brand of the credit card.
+        */
+
         public String getBrand() {
             return (String) get("brand");
         }
@@ -15731,6 +15820,10 @@ public class Storefront {
             optimisticData.put(getKey("brand"), arg);
             return this;
         }
+
+        /**
+        * The expiry month of the credit card.
+        */
 
         public Integer getExpiryMonth() {
             return (Integer) get("expiryMonth");
@@ -15741,6 +15834,10 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * The expiry year of the credit card.
+        */
+
         public Integer getExpiryYear() {
             return (Integer) get("expiryYear");
         }
@@ -15749,6 +15846,10 @@ public class Storefront {
             optimisticData.put(getKey("expiryYear"), arg);
             return this;
         }
+
+        /**
+        * The credit card's BIN number.
+        */
 
         public String getFirstDigits() {
             return (String) get("firstDigits");
@@ -15759,6 +15860,10 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * The first name of the card holder.
+        */
+
         public String getFirstName() {
             return (String) get("firstName");
         }
@@ -15768,6 +15873,10 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * The last 4 digits of the credit card.
+        */
+
         public String getLastDigits() {
             return (String) get("lastDigits");
         }
@@ -15776,6 +15885,10 @@ public class Storefront {
             optimisticData.put(getKey("lastDigits"), arg);
             return this;
         }
+
+        /**
+        * The last name of the card holder.
+        */
 
         public String getLastName() {
             return (String) get("lastName");
@@ -15787,7 +15900,7 @@ public class Storefront {
         }
 
         /**
-        * Masked credit card number with only the last 4 digits displayed
+        * The masked credit card number with only the last 4 digits displayed.
         */
 
         public String getMaskedNumber() {
@@ -16148,7 +16261,7 @@ public class Storefront {
     }
 
     /**
-    * Currency codes
+    * Currency codes.
     */
     public enum CurrencyCode {
         /**
@@ -16365,6 +16478,11 @@ public class Storefront {
         FJD,
 
         /**
+        * Falkland Islands Pounds (FKP).
+        */
+        FKP,
+
+        /**
         * United Kingdom Pounds (GBP).
         */
         GBP,
@@ -16378,6 +16496,11 @@ public class Storefront {
         * Ghanaian Cedi (GHS).
         */
         GHS,
+
+        /**
+        * Gibraltar Pounds (GIP).
+        */
+        GIP,
 
         /**
         * Gambian Dalasi (GMD).
@@ -16745,6 +16868,11 @@ public class Storefront {
         SGD,
 
         /**
+        * Saint Helena Pounds (SHP).
+        */
+        SHP,
+
+        /**
         * Sierra Leonean Leone (SLL).
         */
         SLL,
@@ -17071,6 +17199,10 @@ public class Storefront {
                     return FJD;
                 }
 
+                case "FKP": {
+                    return FKP;
+                }
+
                 case "GBP": {
                     return GBP;
                 }
@@ -17081,6 +17213,10 @@ public class Storefront {
 
                 case "GHS": {
                     return GHS;
+                }
+
+                case "GIP": {
+                    return GIP;
                 }
 
                 case "GMD": {
@@ -17373,6 +17509,10 @@ public class Storefront {
 
                 case "SGD": {
                     return SGD;
+                }
+
+                case "SHP": {
+                    return SHP;
                 }
 
                 case "SLL": {
@@ -17670,6 +17810,10 @@ public class Storefront {
                     return "FJD";
                 }
 
+                case FKP: {
+                    return "FKP";
+                }
+
                 case GBP: {
                     return "GBP";
                 }
@@ -17680,6 +17824,10 @@ public class Storefront {
 
                 case GHS: {
                     return "GHS";
+                }
+
+                case GIP: {
+                    return "GIP";
                 }
 
                 case GMD: {
@@ -17972,6 +18120,10 @@ public class Storefront {
 
                 case SGD: {
                     return "SGD";
+                }
+
+                case SHP: {
+                    return "SHP";
                 }
 
                 case SLL: {
@@ -23428,6 +23580,210 @@ public class Storefront {
         }
     }
 
+    public interface ExternalVideoQueryDefinition {
+        void define(ExternalVideoQuery _queryBuilder);
+    }
+
+    /**
+    * Represents a video hosted outside of Shopify.
+    */
+    public static class ExternalVideoQuery extends Query<ExternalVideoQuery> {
+        ExternalVideoQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+
+            startField("id");
+        }
+
+        /**
+        * A word or phrase to share the nature or contents of a media.
+        */
+        public ExternalVideoQuery alt() {
+            startField("alt");
+
+            return this;
+        }
+
+        /**
+        * The URL.
+        */
+        public ExternalVideoQuery embeddedUrl() {
+            startField("embeddedUrl");
+
+            return this;
+        }
+
+        /**
+        * The media content type.
+        */
+        public ExternalVideoQuery mediaContentType() {
+            startField("mediaContentType");
+
+            return this;
+        }
+
+        /**
+        * The preview image for the media.
+        */
+        public ExternalVideoQuery previewImage(ImageQueryDefinition queryDef) {
+            startField("previewImage");
+
+            _queryBuilder.append('{');
+            queryDef.define(new ImageQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+    }
+
+    /**
+    * Represents a video hosted outside of Shopify.
+    */
+    public static class ExternalVideo extends AbstractResponse<ExternalVideo> implements Media, Node {
+        public ExternalVideo() {
+        }
+
+        public ExternalVideo(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "alt": {
+                        String optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = jsonAsString(field.getValue(), key);
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "embeddedUrl": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "id": {
+                        responseData.put(key, new ID(jsonAsString(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "mediaContentType": {
+                        responseData.put(key, MediaContentType.fromGraphQl(jsonAsString(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "previewImage": {
+                        Image optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new Image(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public ExternalVideo(ID id) {
+            this();
+            optimisticData.put("id", id);
+        }
+
+        public String getGraphQlTypeName() {
+            return "ExternalVideo";
+        }
+
+        /**
+        * A word or phrase to share the nature or contents of a media.
+        */
+
+        public String getAlt() {
+            return (String) get("alt");
+        }
+
+        public ExternalVideo setAlt(String arg) {
+            optimisticData.put(getKey("alt"), arg);
+            return this;
+        }
+
+        /**
+        * The URL.
+        */
+
+        public String getEmbeddedUrl() {
+            return (String) get("embeddedUrl");
+        }
+
+        public ExternalVideo setEmbeddedUrl(String arg) {
+            optimisticData.put(getKey("embeddedUrl"), arg);
+            return this;
+        }
+
+        /**
+        * Globally unique identifier.
+        */
+
+        public ID getId() {
+            return (ID) get("id");
+        }
+
+        /**
+        * The media content type.
+        */
+
+        public MediaContentType getMediaContentType() {
+            return (MediaContentType) get("mediaContentType");
+        }
+
+        public ExternalVideo setMediaContentType(MediaContentType arg) {
+            optimisticData.put(getKey("mediaContentType"), arg);
+            return this;
+        }
+
+        /**
+        * The preview image for the media.
+        */
+
+        public Image getPreviewImage() {
+            return (Image) get("previewImage");
+        }
+
+        public ExternalVideo setPreviewImage(Image arg) {
+            optimisticData.put(getKey("previewImage"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "alt": return false;
+
+                case "embeddedUrl": return false;
+
+                case "id": return false;
+
+                case "mediaContentType": return false;
+
+                case "previewImage": return true;
+
+                default: return false;
+            }
+        }
+    }
+
     public interface FulfillmentQueryDefinition {
         void define(FulfillmentQuery _queryBuilder);
     }
@@ -26618,6 +26974,732 @@ public class Storefront {
         }
     }
 
+    public interface MediaQueryDefinition {
+        void define(MediaQuery _queryBuilder);
+    }
+
+    /**
+    * Represents a media interface.
+    */
+    public static class MediaQuery extends Query<MediaQuery> {
+        MediaQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+
+            startField("__typename");
+        }
+
+        /**
+        * A word or phrase to share the nature or contents of a media.
+        */
+        public MediaQuery alt() {
+            startField("alt");
+
+            return this;
+        }
+
+        /**
+        * The media content type.
+        */
+        public MediaQuery mediaContentType() {
+            startField("mediaContentType");
+
+            return this;
+        }
+
+        /**
+        * The preview image for the media.
+        */
+        public MediaQuery previewImage(ImageQueryDefinition queryDef) {
+            startField("previewImage");
+
+            _queryBuilder.append('{');
+            queryDef.define(new ImageQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        public MediaQuery onExternalVideo(ExternalVideoQueryDefinition queryDef) {
+            startInlineFragment("ExternalVideo");
+            queryDef.define(new ExternalVideoQuery(_queryBuilder));
+            _queryBuilder.append('}');
+            return this;
+        }
+
+        public MediaQuery onMediaImage(MediaImageQueryDefinition queryDef) {
+            startInlineFragment("MediaImage");
+            queryDef.define(new MediaImageQuery(_queryBuilder));
+            _queryBuilder.append('}');
+            return this;
+        }
+
+        public MediaQuery onModel3d(Model3dQueryDefinition queryDef) {
+            startInlineFragment("Model3d");
+            queryDef.define(new Model3dQuery(_queryBuilder));
+            _queryBuilder.append('}');
+            return this;
+        }
+
+        public MediaQuery onVideo(VideoQueryDefinition queryDef) {
+            startInlineFragment("Video");
+            queryDef.define(new VideoQuery(_queryBuilder));
+            _queryBuilder.append('}');
+            return this;
+        }
+    }
+
+    public interface Media {
+        String getGraphQlTypeName();
+
+        String getAlt();
+
+        MediaContentType getMediaContentType();
+
+        Image getPreviewImage();
+    }
+
+    /**
+    * Represents a media interface.
+    */
+    public static class UnknownMedia extends AbstractResponse<UnknownMedia> implements Media {
+        public UnknownMedia() {
+        }
+
+        public UnknownMedia(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "alt": {
+                        String optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = jsonAsString(field.getValue(), key);
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "mediaContentType": {
+                        responseData.put(key, MediaContentType.fromGraphQl(jsonAsString(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "previewImage": {
+                        Image optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new Image(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public static Media create(JsonObject fields) throws SchemaViolationError {
+            String typeName = fields.getAsJsonPrimitive("__typename").getAsString();
+            switch (typeName) {
+                case "ExternalVideo": {
+                    return new ExternalVideo(fields);
+                }
+
+                case "MediaImage": {
+                    return new MediaImage(fields);
+                }
+
+                case "Model3d": {
+                    return new Model3d(fields);
+                }
+
+                case "Video": {
+                    return new Video(fields);
+                }
+
+                default: {
+                    return new UnknownMedia(fields);
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return (String) get("__typename");
+        }
+
+        /**
+        * A word or phrase to share the nature or contents of a media.
+        */
+
+        public String getAlt() {
+            return (String) get("alt");
+        }
+
+        public UnknownMedia setAlt(String arg) {
+            optimisticData.put(getKey("alt"), arg);
+            return this;
+        }
+
+        /**
+        * The media content type.
+        */
+
+        public MediaContentType getMediaContentType() {
+            return (MediaContentType) get("mediaContentType");
+        }
+
+        public UnknownMedia setMediaContentType(MediaContentType arg) {
+            optimisticData.put(getKey("mediaContentType"), arg);
+            return this;
+        }
+
+        /**
+        * The preview image for the media.
+        */
+
+        public Image getPreviewImage() {
+            return (Image) get("previewImage");
+        }
+
+        public UnknownMedia setPreviewImage(Image arg) {
+            optimisticData.put(getKey("previewImage"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "alt": return false;
+
+                case "mediaContentType": return false;
+
+                case "previewImage": return true;
+
+                default: return false;
+            }
+        }
+    }
+
+    public interface MediaConnectionQueryDefinition {
+        void define(MediaConnectionQuery _queryBuilder);
+    }
+
+    public static class MediaConnectionQuery extends Query<MediaConnectionQuery> {
+        MediaConnectionQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * A list of edges.
+        */
+        public MediaConnectionQuery edges(MediaEdgeQueryDefinition queryDef) {
+            startField("edges");
+
+            _queryBuilder.append('{');
+            queryDef.define(new MediaEdgeQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * Information to aid in pagination.
+        */
+        public MediaConnectionQuery pageInfo(PageInfoQueryDefinition queryDef) {
+            startField("pageInfo");
+
+            _queryBuilder.append('{');
+            queryDef.define(new PageInfoQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+    }
+
+    public static class MediaConnection extends AbstractResponse<MediaConnection> {
+        public MediaConnection() {
+        }
+
+        public MediaConnection(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "edges": {
+                        List<MediaEdge> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new MediaEdge(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "pageInfo": {
+                        responseData.put(key, new PageInfo(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "MediaConnection";
+        }
+
+        /**
+        * A list of edges.
+        */
+
+        public List<MediaEdge> getEdges() {
+            return (List<MediaEdge>) get("edges");
+        }
+
+        public MediaConnection setEdges(List<MediaEdge> arg) {
+            optimisticData.put(getKey("edges"), arg);
+            return this;
+        }
+
+        /**
+        * Information to aid in pagination.
+        */
+
+        public PageInfo getPageInfo() {
+            return (PageInfo) get("pageInfo");
+        }
+
+        public MediaConnection setPageInfo(PageInfo arg) {
+            optimisticData.put(getKey("pageInfo"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "edges": return true;
+
+                case "pageInfo": return true;
+
+                default: return false;
+            }
+        }
+    }
+
+    /**
+    * The possible content types for a media object.
+    */
+    public enum MediaContentType {
+        /**
+        * An externally hosted video.
+        */
+        EXTERNAL_VIDEO,
+
+        /**
+        * A Shopify hosted image.
+        */
+        IMAGE,
+
+        /**
+        * A 3d model.
+        */
+        MODEL_3D,
+
+        /**
+        * A Shopify hosted video.
+        */
+        VIDEO,
+
+        UNKNOWN_VALUE;
+
+        public static MediaContentType fromGraphQl(String value) {
+            if (value == null) {
+                return null;
+            }
+
+            switch (value) {
+                case "EXTERNAL_VIDEO": {
+                    return EXTERNAL_VIDEO;
+                }
+
+                case "IMAGE": {
+                    return IMAGE;
+                }
+
+                case "MODEL_3D": {
+                    return MODEL_3D;
+                }
+
+                case "VIDEO": {
+                    return VIDEO;
+                }
+
+                default: {
+                    return UNKNOWN_VALUE;
+                }
+            }
+        }
+        public String toString() {
+            switch (this) {
+                case EXTERNAL_VIDEO: {
+                    return "EXTERNAL_VIDEO";
+                }
+
+                case IMAGE: {
+                    return "IMAGE";
+                }
+
+                case MODEL_3D: {
+                    return "MODEL_3D";
+                }
+
+                case VIDEO: {
+                    return "VIDEO";
+                }
+
+                default: {
+                    return "";
+                }
+            }
+        }
+    }
+
+    public interface MediaEdgeQueryDefinition {
+        void define(MediaEdgeQuery _queryBuilder);
+    }
+
+    public static class MediaEdgeQuery extends Query<MediaEdgeQuery> {
+        MediaEdgeQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * A cursor for use in pagination.
+        */
+        public MediaEdgeQuery cursor() {
+            startField("cursor");
+
+            return this;
+        }
+
+        /**
+        * The item at the end of MediaEdge.
+        */
+        public MediaEdgeQuery node(MediaQueryDefinition queryDef) {
+            startField("node");
+
+            _queryBuilder.append('{');
+            queryDef.define(new MediaQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+    }
+
+    public static class MediaEdge extends AbstractResponse<MediaEdge> {
+        public MediaEdge() {
+        }
+
+        public MediaEdge(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "cursor": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "node": {
+                        responseData.put(key, UnknownMedia.create(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "MediaEdge";
+        }
+
+        /**
+        * A cursor for use in pagination.
+        */
+
+        public String getCursor() {
+            return (String) get("cursor");
+        }
+
+        public MediaEdge setCursor(String arg) {
+            optimisticData.put(getKey("cursor"), arg);
+            return this;
+        }
+
+        /**
+        * The item at the end of MediaEdge.
+        */
+
+        public Media getNode() {
+            return (Media) get("node");
+        }
+
+        public MediaEdge setNode(Media arg) {
+            optimisticData.put(getKey("node"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "cursor": return false;
+
+                case "node": return false;
+
+                default: return false;
+            }
+        }
+    }
+
+    public interface MediaImageQueryDefinition {
+        void define(MediaImageQuery _queryBuilder);
+    }
+
+    /**
+    * Represents a Shopify hosted image.
+    */
+    public static class MediaImageQuery extends Query<MediaImageQuery> {
+        MediaImageQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+
+            startField("id");
+        }
+
+        /**
+        * A word or phrase to share the nature or contents of a media.
+        */
+        public MediaImageQuery alt() {
+            startField("alt");
+
+            return this;
+        }
+
+        /**
+        * The image for the media.
+        */
+        public MediaImageQuery image(ImageQueryDefinition queryDef) {
+            startField("image");
+
+            _queryBuilder.append('{');
+            queryDef.define(new ImageQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * The media content type.
+        */
+        public MediaImageQuery mediaContentType() {
+            startField("mediaContentType");
+
+            return this;
+        }
+
+        /**
+        * The preview image for the media.
+        */
+        public MediaImageQuery previewImage(ImageQueryDefinition queryDef) {
+            startField("previewImage");
+
+            _queryBuilder.append('{');
+            queryDef.define(new ImageQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+    }
+
+    /**
+    * Represents a Shopify hosted image.
+    */
+    public static class MediaImage extends AbstractResponse<MediaImage> implements Media, Node {
+        public MediaImage() {
+        }
+
+        public MediaImage(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "alt": {
+                        String optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = jsonAsString(field.getValue(), key);
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "id": {
+                        responseData.put(key, new ID(jsonAsString(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "image": {
+                        Image optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new Image(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "mediaContentType": {
+                        responseData.put(key, MediaContentType.fromGraphQl(jsonAsString(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "previewImage": {
+                        Image optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new Image(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public MediaImage(ID id) {
+            this();
+            optimisticData.put("id", id);
+        }
+
+        public String getGraphQlTypeName() {
+            return "MediaImage";
+        }
+
+        /**
+        * A word or phrase to share the nature or contents of a media.
+        */
+
+        public String getAlt() {
+            return (String) get("alt");
+        }
+
+        public MediaImage setAlt(String arg) {
+            optimisticData.put(getKey("alt"), arg);
+            return this;
+        }
+
+        /**
+        * Globally unique identifier.
+        */
+
+        public ID getId() {
+            return (ID) get("id");
+        }
+
+        /**
+        * The image for the media.
+        */
+
+        public Image getImage() {
+            return (Image) get("image");
+        }
+
+        public MediaImage setImage(Image arg) {
+            optimisticData.put(getKey("image"), arg);
+            return this;
+        }
+
+        /**
+        * The media content type.
+        */
+
+        public MediaContentType getMediaContentType() {
+            return (MediaContentType) get("mediaContentType");
+        }
+
+        public MediaImage setMediaContentType(MediaContentType arg) {
+            optimisticData.put(getKey("mediaContentType"), arg);
+            return this;
+        }
+
+        /**
+        * The preview image for the media.
+        */
+
+        public Image getPreviewImage() {
+            return (Image) get("previewImage");
+        }
+
+        public MediaImage setPreviewImage(Image arg) {
+            optimisticData.put(getKey("previewImage"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "alt": return false;
+
+                case "id": return false;
+
+                case "image": return true;
+
+                case "mediaContentType": return false;
+
+                case "previewImage": return true;
+
+                default: return false;
+            }
+        }
+    }
+
     public interface MetafieldQueryDefinition {
         void define(MetafieldQuery _queryBuilder);
     }
@@ -27249,6 +28331,386 @@ public class Storefront {
         }
     }
 
+    public interface Model3dQueryDefinition {
+        void define(Model3dQuery _queryBuilder);
+    }
+
+    /**
+    * Represents a Shopify hosted 3D model.
+    */
+    public static class Model3dQuery extends Query<Model3dQuery> {
+        Model3dQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+
+            startField("id");
+        }
+
+        /**
+        * A word or phrase to share the nature or contents of a media.
+        */
+        public Model3dQuery alt() {
+            startField("alt");
+
+            return this;
+        }
+
+        /**
+        * The media content type.
+        */
+        public Model3dQuery mediaContentType() {
+            startField("mediaContentType");
+
+            return this;
+        }
+
+        /**
+        * The preview image for the media.
+        */
+        public Model3dQuery previewImage(ImageQueryDefinition queryDef) {
+            startField("previewImage");
+
+            _queryBuilder.append('{');
+            queryDef.define(new ImageQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * The sources for a 3d model.
+        */
+        public Model3dQuery sources(Model3dSourceQueryDefinition queryDef) {
+            startField("sources");
+
+            _queryBuilder.append('{');
+            queryDef.define(new Model3dSourceQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+    }
+
+    /**
+    * Represents a Shopify hosted 3D model.
+    */
+    public static class Model3d extends AbstractResponse<Model3d> implements Media, Node {
+        public Model3d() {
+        }
+
+        public Model3d(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "alt": {
+                        String optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = jsonAsString(field.getValue(), key);
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "id": {
+                        responseData.put(key, new ID(jsonAsString(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "mediaContentType": {
+                        responseData.put(key, MediaContentType.fromGraphQl(jsonAsString(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "previewImage": {
+                        Image optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new Image(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "sources": {
+                        List<Model3dSource> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new Model3dSource(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public Model3d(ID id) {
+            this();
+            optimisticData.put("id", id);
+        }
+
+        public String getGraphQlTypeName() {
+            return "Model3d";
+        }
+
+        /**
+        * A word or phrase to share the nature or contents of a media.
+        */
+
+        public String getAlt() {
+            return (String) get("alt");
+        }
+
+        public Model3d setAlt(String arg) {
+            optimisticData.put(getKey("alt"), arg);
+            return this;
+        }
+
+        /**
+        * Globally unique identifier.
+        */
+
+        public ID getId() {
+            return (ID) get("id");
+        }
+
+        /**
+        * The media content type.
+        */
+
+        public MediaContentType getMediaContentType() {
+            return (MediaContentType) get("mediaContentType");
+        }
+
+        public Model3d setMediaContentType(MediaContentType arg) {
+            optimisticData.put(getKey("mediaContentType"), arg);
+            return this;
+        }
+
+        /**
+        * The preview image for the media.
+        */
+
+        public Image getPreviewImage() {
+            return (Image) get("previewImage");
+        }
+
+        public Model3d setPreviewImage(Image arg) {
+            optimisticData.put(getKey("previewImage"), arg);
+            return this;
+        }
+
+        /**
+        * The sources for a 3d model.
+        */
+
+        public List<Model3dSource> getSources() {
+            return (List<Model3dSource>) get("sources");
+        }
+
+        public Model3d setSources(List<Model3dSource> arg) {
+            optimisticData.put(getKey("sources"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "alt": return false;
+
+                case "id": return false;
+
+                case "mediaContentType": return false;
+
+                case "previewImage": return true;
+
+                case "sources": return true;
+
+                default: return false;
+            }
+        }
+    }
+
+    public interface Model3dSourceQueryDefinition {
+        void define(Model3dSourceQuery _queryBuilder);
+    }
+
+    /**
+    * Represents a source for a Shopify hosted 3d model.
+    */
+    public static class Model3dSourceQuery extends Query<Model3dSourceQuery> {
+        Model3dSourceQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * The filesize of the 3d model.
+        */
+        public Model3dSourceQuery filesize() {
+            startField("filesize");
+
+            return this;
+        }
+
+        /**
+        * The format of the 3d model.
+        */
+        public Model3dSourceQuery format() {
+            startField("format");
+
+            return this;
+        }
+
+        /**
+        * The MIME type of the 3d model.
+        */
+        public Model3dSourceQuery mimeType() {
+            startField("mimeType");
+
+            return this;
+        }
+
+        /**
+        * The URL of the 3d model.
+        */
+        public Model3dSourceQuery url() {
+            startField("url");
+
+            return this;
+        }
+    }
+
+    /**
+    * Represents a source for a Shopify hosted 3d model.
+    */
+    public static class Model3dSource extends AbstractResponse<Model3dSource> {
+        public Model3dSource() {
+        }
+
+        public Model3dSource(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "filesize": {
+                        responseData.put(key, jsonAsInteger(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "format": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "mimeType": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "url": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "Model3dSource";
+        }
+
+        /**
+        * The filesize of the 3d model.
+        */
+
+        public Integer getFilesize() {
+            return (Integer) get("filesize");
+        }
+
+        public Model3dSource setFilesize(Integer arg) {
+            optimisticData.put(getKey("filesize"), arg);
+            return this;
+        }
+
+        /**
+        * The format of the 3d model.
+        */
+
+        public String getFormat() {
+            return (String) get("format");
+        }
+
+        public Model3dSource setFormat(String arg) {
+            optimisticData.put(getKey("format"), arg);
+            return this;
+        }
+
+        /**
+        * The MIME type of the 3d model.
+        */
+
+        public String getMimeType() {
+            return (String) get("mimeType");
+        }
+
+        public Model3dSource setMimeType(String arg) {
+            optimisticData.put(getKey("mimeType"), arg);
+            return this;
+        }
+
+        /**
+        * The URL of the 3d model.
+        */
+
+        public String getUrl() {
+            return (String) get("url");
+        }
+
+        public Model3dSource setUrl(String arg) {
+            optimisticData.put(getKey("url"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "filesize": return false;
+
+                case "format": return false;
+
+                case "mimeType": return false;
+
+                case "url": return false;
+
+                default: return false;
+            }
+        }
+    }
+
     public static class MoneyInput implements Serializable {
         private String amount;
 
@@ -27427,6 +28889,225 @@ public class Storefront {
                         case "amount": return false;
 
                         case "currencyCode": return false;
+
+                        default: return false;
+                    }
+                }
+            }
+
+            public interface MoneyV2ConnectionQueryDefinition {
+                void define(MoneyV2ConnectionQuery _queryBuilder);
+            }
+
+            public static class MoneyV2ConnectionQuery extends Query<MoneyV2ConnectionQuery> {
+                MoneyV2ConnectionQuery(StringBuilder _queryBuilder) {
+                    super(_queryBuilder);
+                }
+
+                /**
+                * A list of edges.
+                */
+                public MoneyV2ConnectionQuery edges(MoneyV2EdgeQueryDefinition queryDef) {
+                    startField("edges");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new MoneyV2EdgeQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * Information to aid in pagination.
+                */
+                public MoneyV2ConnectionQuery pageInfo(PageInfoQueryDefinition queryDef) {
+                    startField("pageInfo");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new PageInfoQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+            }
+
+            public static class MoneyV2Connection extends AbstractResponse<MoneyV2Connection> {
+                public MoneyV2Connection() {
+                }
+
+                public MoneyV2Connection(JsonObject fields) throws SchemaViolationError {
+                    for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                        String key = field.getKey();
+                        String fieldName = getFieldName(key);
+                        switch (fieldName) {
+                            case "edges": {
+                                List<MoneyV2Edge> list1 = new ArrayList<>();
+                                for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                                    list1.add(new MoneyV2Edge(jsonAsObject(element1, key)));
+                                }
+
+                                responseData.put(key, list1);
+
+                                break;
+                            }
+
+                            case "pageInfo": {
+                                responseData.put(key, new PageInfo(jsonAsObject(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "__typename": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+                                break;
+                            }
+                            default: {
+                                throw new SchemaViolationError(this, key, field.getValue());
+                            }
+                        }
+                    }
+                }
+
+                public String getGraphQlTypeName() {
+                    return "MoneyV2Connection";
+                }
+
+                /**
+                * A list of edges.
+                */
+
+                public List<MoneyV2Edge> getEdges() {
+                    return (List<MoneyV2Edge>) get("edges");
+                }
+
+                public MoneyV2Connection setEdges(List<MoneyV2Edge> arg) {
+                    optimisticData.put(getKey("edges"), arg);
+                    return this;
+                }
+
+                /**
+                * Information to aid in pagination.
+                */
+
+                public PageInfo getPageInfo() {
+                    return (PageInfo) get("pageInfo");
+                }
+
+                public MoneyV2Connection setPageInfo(PageInfo arg) {
+                    optimisticData.put(getKey("pageInfo"), arg);
+                    return this;
+                }
+
+                public boolean unwrapsToObject(String key) {
+                    switch (getFieldName(key)) {
+                        case "edges": return true;
+
+                        case "pageInfo": return true;
+
+                        default: return false;
+                    }
+                }
+            }
+
+            public interface MoneyV2EdgeQueryDefinition {
+                void define(MoneyV2EdgeQuery _queryBuilder);
+            }
+
+            public static class MoneyV2EdgeQuery extends Query<MoneyV2EdgeQuery> {
+                MoneyV2EdgeQuery(StringBuilder _queryBuilder) {
+                    super(_queryBuilder);
+                }
+
+                /**
+                * A cursor for use in pagination.
+                */
+                public MoneyV2EdgeQuery cursor() {
+                    startField("cursor");
+
+                    return this;
+                }
+
+                /**
+                * The item at the end of MoneyV2Edge.
+                */
+                public MoneyV2EdgeQuery node(MoneyV2QueryDefinition queryDef) {
+                    startField("node");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new MoneyV2Query(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+            }
+
+            public static class MoneyV2Edge extends AbstractResponse<MoneyV2Edge> {
+                public MoneyV2Edge() {
+                }
+
+                public MoneyV2Edge(JsonObject fields) throws SchemaViolationError {
+                    for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                        String key = field.getKey();
+                        String fieldName = getFieldName(key);
+                        switch (fieldName) {
+                            case "cursor": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+
+                                break;
+                            }
+
+                            case "node": {
+                                responseData.put(key, new MoneyV2(jsonAsObject(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "__typename": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+                                break;
+                            }
+                            default: {
+                                throw new SchemaViolationError(this, key, field.getValue());
+                            }
+                        }
+                    }
+                }
+
+                public String getGraphQlTypeName() {
+                    return "MoneyV2Edge";
+                }
+
+                /**
+                * A cursor for use in pagination.
+                */
+
+                public String getCursor() {
+                    return (String) get("cursor");
+                }
+
+                public MoneyV2Edge setCursor(String arg) {
+                    optimisticData.put(getKey("cursor"), arg);
+                    return this;
+                }
+
+                /**
+                * The item at the end of MoneyV2Edge.
+                */
+
+                public MoneyV2 getNode() {
+                    return (MoneyV2) get("node");
+                }
+
+                public MoneyV2Edge setNode(MoneyV2 arg) {
+                    optimisticData.put(getKey("node"), arg);
+                    return this;
+                }
+
+                public boolean unwrapsToObject(String key) {
+                    switch (getFieldName(key)) {
+                        case "cursor": return false;
+
+                        case "node": return true;
 
                         default: return false;
                     }
@@ -27947,7 +29628,7 @@ public class Storefront {
                 }
 
                 /**
-                * Removes line items from an existing checkout
+                * Removes line items from an existing checkout.
                 *
                 * @deprecated Use `checkoutLineItemsReplace` instead
                 */
@@ -29168,7 +30849,7 @@ public class Storefront {
                 }
 
                 /**
-                * Removes line items from an existing checkout
+                * Removes line items from an existing checkout.
                 *
                 * @deprecated Use `checkoutLineItemsReplace` instead
                 */
@@ -29584,6 +31265,13 @@ public class Storefront {
                     return this;
                 }
 
+                public NodeQuery onExternalVideo(ExternalVideoQueryDefinition queryDef) {
+                    startInlineFragment("ExternalVideo");
+                    queryDef.define(new ExternalVideoQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+                    return this;
+                }
+
                 public NodeQuery onMailingAddress(MailingAddressQueryDefinition queryDef) {
                     startInlineFragment("MailingAddress");
                     queryDef.define(new MailingAddressQuery(_queryBuilder));
@@ -29591,9 +31279,23 @@ public class Storefront {
                     return this;
                 }
 
+                public NodeQuery onMediaImage(MediaImageQueryDefinition queryDef) {
+                    startInlineFragment("MediaImage");
+                    queryDef.define(new MediaImageQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+                    return this;
+                }
+
                 public NodeQuery onMetafield(MetafieldQueryDefinition queryDef) {
                     startInlineFragment("Metafield");
                     queryDef.define(new MetafieldQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+                    return this;
+                }
+
+                public NodeQuery onModel3d(Model3dQueryDefinition queryDef) {
+                    startInlineFragment("Model3d");
+                    queryDef.define(new Model3dQuery(_queryBuilder));
                     _queryBuilder.append('}');
                     return this;
                 }
@@ -29643,6 +31345,13 @@ public class Storefront {
                 public NodeQuery onShopPolicy(ShopPolicyQueryDefinition queryDef) {
                     startInlineFragment("ShopPolicy");
                     queryDef.define(new ShopPolicyQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+                    return this;
+                }
+
+                public NodeQuery onVideo(VideoQueryDefinition queryDef) {
+                    startInlineFragment("Video");
+                    queryDef.define(new VideoQuery(_queryBuilder));
                     _queryBuilder.append('}');
                     return this;
                 }
@@ -29714,12 +31423,24 @@ public class Storefront {
                             return new Comment(fields);
                         }
 
+                        case "ExternalVideo": {
+                            return new ExternalVideo(fields);
+                        }
+
                         case "MailingAddress": {
                             return new MailingAddress(fields);
                         }
 
+                        case "MediaImage": {
+                            return new MediaImage(fields);
+                        }
+
                         case "Metafield": {
                             return new Metafield(fields);
+                        }
+
+                        case "Model3d": {
+                            return new Model3d(fields);
                         }
 
                         case "Order": {
@@ -29748,6 +31469,10 @@ public class Storefront {
 
                         case "ShopPolicy": {
                             return new ShopPolicy(fields);
+                        }
+
+                        case "Video": {
+                            return new Video(fields);
                         }
 
                         default: {
@@ -33555,6 +35280,95 @@ public class Storefront {
                     return this;
                 }
 
+                public class MediaArguments extends Arguments {
+                    MediaArguments(StringBuilder _queryBuilder) {
+                        super(_queryBuilder, true);
+                    }
+
+                    /**
+                    * Returns up to the first `n` elements from the list.
+                    */
+                    public MediaArguments first(Integer value) {
+                        if (value != null) {
+                            startArgument("first");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Returns the elements that come after the specified cursor.
+                    */
+                    public MediaArguments after(String value) {
+                        if (value != null) {
+                            startArgument("after");
+                            Query.appendQuotedString(_queryBuilder, value.toString());
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Returns up to the last `n` elements from the list.
+                    */
+                    public MediaArguments last(Integer value) {
+                        if (value != null) {
+                            startArgument("last");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Returns the elements that come before the specified cursor.
+                    */
+                    public MediaArguments before(String value) {
+                        if (value != null) {
+                            startArgument("before");
+                            Query.appendQuotedString(_queryBuilder, value.toString());
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Reverse the order of the underlying list.
+                    */
+                    public MediaArguments reverse(Boolean value) {
+                        if (value != null) {
+                            startArgument("reverse");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+                }
+
+                public interface MediaArgumentsDefinition {
+                    void define(MediaArguments args);
+                }
+
+                /**
+                * The media associated with the product.
+                */
+                public ProductQuery media(MediaConnectionQueryDefinition queryDef) {
+                    return media(args -> {}, queryDef);
+                }
+
+                /**
+                * The media associated with the product.
+                */
+                public ProductQuery media(MediaArgumentsDefinition argsDef, MediaConnectionQueryDefinition queryDef) {
+                    startField("media");
+
+                    MediaArguments args = new MediaArguments(_queryBuilder);
+                    argsDef.define(args);
+                    MediaArguments.end(args);
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new MediaConnectionQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
                 /**
                 * The metafield associated with the resource.
                 */
@@ -34102,6 +35916,12 @@ public class Storefront {
                                 break;
                             }
 
+                            case "media": {
+                                responseData.put(key, new MediaConnection(jsonAsObject(field.getValue(), key)));
+
+                                break;
+                            }
+
                             case "metafield": {
                                 Metafield optional1 = null;
                                 if (!field.getValue().isJsonNull()) {
@@ -34332,6 +36152,19 @@ public class Storefront {
                 }
 
                 /**
+                * The media associated with the product.
+                */
+
+                public MediaConnection getMedia() {
+                    return (MediaConnection) get("media");
+                }
+
+                public Product setMedia(MediaConnection arg) {
+                    optimisticData.put(getKey("media"), arg);
+                    return this;
+                }
+
+                /**
                 * The metafield associated with the resource.
                 */
 
@@ -34534,6 +36367,8 @@ public class Storefront {
                         case "id": return false;
 
                         case "images": return true;
+
+                        case "media": return true;
 
                         case "metafield": return true;
 
@@ -35999,6 +37834,115 @@ public class Storefront {
                     return this;
                 }
 
+                public class PresentmentUnitPricesArguments extends Arguments {
+                    PresentmentUnitPricesArguments(StringBuilder _queryBuilder) {
+                        super(_queryBuilder, true);
+                    }
+
+                    /**
+                    * Specify the currencies in which to return presentment unit prices.
+                    */
+                    public PresentmentUnitPricesArguments presentmentCurrencies(List<CurrencyCode> value) {
+                        if (value != null) {
+                            startArgument("presentmentCurrencies");
+                            _queryBuilder.append('[');
+                            {
+                                String listSeperator1 = "";
+                                for (CurrencyCode item1 : value) {
+                                    _queryBuilder.append(listSeperator1);
+                                    listSeperator1 = ",";
+                                    _queryBuilder.append(item1.toString());
+                                }
+                            }
+                            _queryBuilder.append(']');
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Returns up to the first `n` elements from the list.
+                    */
+                    public PresentmentUnitPricesArguments first(Integer value) {
+                        if (value != null) {
+                            startArgument("first");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Returns the elements that come after the specified cursor.
+                    */
+                    public PresentmentUnitPricesArguments after(String value) {
+                        if (value != null) {
+                            startArgument("after");
+                            Query.appendQuotedString(_queryBuilder, value.toString());
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Returns up to the last `n` elements from the list.
+                    */
+                    public PresentmentUnitPricesArguments last(Integer value) {
+                        if (value != null) {
+                            startArgument("last");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Returns the elements that come before the specified cursor.
+                    */
+                    public PresentmentUnitPricesArguments before(String value) {
+                        if (value != null) {
+                            startArgument("before");
+                            Query.appendQuotedString(_queryBuilder, value.toString());
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Reverse the order of the underlying list.
+                    */
+                    public PresentmentUnitPricesArguments reverse(Boolean value) {
+                        if (value != null) {
+                            startArgument("reverse");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+                }
+
+                public interface PresentmentUnitPricesArgumentsDefinition {
+                    void define(PresentmentUnitPricesArguments args);
+                }
+
+                /**
+                * List of unit prices in the presentment currencies for this shop.
+                */
+                public ProductVariantQuery presentmentUnitPrices(MoneyV2ConnectionQueryDefinition queryDef) {
+                    return presentmentUnitPrices(args -> {}, queryDef);
+                }
+
+                /**
+                * List of unit prices in the presentment currencies for this shop.
+                */
+                public ProductVariantQuery presentmentUnitPrices(PresentmentUnitPricesArgumentsDefinition argsDef, MoneyV2ConnectionQueryDefinition queryDef) {
+                    startField("presentmentUnitPrices");
+
+                    PresentmentUnitPricesArguments args = new PresentmentUnitPricesArguments(_queryBuilder);
+                    argsDef.define(args);
+                    PresentmentUnitPricesArguments.end(args);
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new MoneyV2ConnectionQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
                 /**
                 * The product variant’s price.
                 *
@@ -36074,6 +38018,32 @@ public class Storefront {
                 */
                 public ProductVariantQuery title() {
                     startField("title");
+
+                    return this;
+                }
+
+                /**
+                * The unit price value for the variant based on the variant's measurement.
+                */
+                public ProductVariantQuery unitPrice(MoneyV2QueryDefinition queryDef) {
+                    startField("unitPrice");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new MoneyV2Query(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * The unit price measurement for the variant.
+                */
+                public ProductVariantQuery unitPriceMeasurement(UnitPriceMeasurementQueryDefinition queryDef) {
+                    startField("unitPriceMeasurement");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new UnitPriceMeasurementQuery(_queryBuilder));
+                    _queryBuilder.append('}');
 
                     return this;
                 }
@@ -36189,6 +38159,12 @@ public class Storefront {
                                 break;
                             }
 
+                            case "presentmentUnitPrices": {
+                                responseData.put(key, new MoneyV2Connection(jsonAsObject(field.getValue(), key)));
+
+                                break;
+                            }
+
                             case "price": {
                                 responseData.put(key, new BigDecimal(jsonAsString(field.getValue(), key)));
 
@@ -36237,6 +38213,28 @@ public class Storefront {
 
                             case "title": {
                                 responseData.put(key, jsonAsString(field.getValue(), key));
+
+                                break;
+                            }
+
+                            case "unitPrice": {
+                                MoneyV2 optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = new MoneyV2(jsonAsObject(field.getValue(), key));
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "unitPriceMeasurement": {
+                                UnitPriceMeasurement optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = new UnitPriceMeasurement(jsonAsObject(field.getValue(), key));
+                                }
+
+                                responseData.put(key, optional1);
 
                                 break;
                             }
@@ -36398,6 +38396,19 @@ public class Storefront {
                 }
 
                 /**
+                * List of unit prices in the presentment currencies for this shop.
+                */
+
+                public MoneyV2Connection getPresentmentUnitPrices() {
+                    return (MoneyV2Connection) get("presentmentUnitPrices");
+                }
+
+                public ProductVariant setPresentmentUnitPrices(MoneyV2Connection arg) {
+                    optimisticData.put(getKey("presentmentUnitPrices"), arg);
+                    return this;
+                }
+
+                /**
                 * The product variant’s price.
                 *
                 * @deprecated Use `priceV2` instead
@@ -36492,6 +38503,32 @@ public class Storefront {
                 }
 
                 /**
+                * The unit price value for the variant based on the variant's measurement.
+                */
+
+                public MoneyV2 getUnitPrice() {
+                    return (MoneyV2) get("unitPrice");
+                }
+
+                public ProductVariant setUnitPrice(MoneyV2 arg) {
+                    optimisticData.put(getKey("unitPrice"), arg);
+                    return this;
+                }
+
+                /**
+                * The unit price measurement for the variant.
+                */
+
+                public UnitPriceMeasurement getUnitPriceMeasurement() {
+                    return (UnitPriceMeasurement) get("unitPriceMeasurement");
+                }
+
+                public ProductVariant setUnitPriceMeasurement(UnitPriceMeasurement arg) {
+                    optimisticData.put(getKey("unitPriceMeasurement"), arg);
+                    return this;
+                }
+
+                /**
                 * The weight of the product variant in the unit system specified with `weight_unit`.
                 */
 
@@ -36537,6 +38574,8 @@ public class Storefront {
 
                         case "presentmentPrices": return true;
 
+                        case "presentmentUnitPrices": return true;
+
                         case "price": return false;
 
                         case "priceV2": return true;
@@ -36550,6 +38589,10 @@ public class Storefront {
                         case "sku": return false;
 
                         case "title": return false;
+
+                        case "unitPrice": return true;
+
+                        case "unitPriceMeasurement": return true;
 
                         case "weight": return false;
 
@@ -37609,6 +39652,9 @@ public class Storefront {
                     return this;
                 }
 
+                /**
+                * Find a customer by its access token.
+                */
                 public QueryRootQuery customer(String customerAccessToken, CustomerQueryDefinition queryDef) {
                     startField("customer");
 
@@ -38007,6 +40053,9 @@ public class Storefront {
                     return this;
                 }
 
+                /**
+                * The shop associated with the storefront access token.
+                */
                 public QueryRootQuery shop(ShopQueryDefinition queryDef) {
                     startField("shop");
 
@@ -38272,6 +40321,10 @@ public class Storefront {
                     return this;
                 }
 
+                /**
+                * Find a customer by its access token.
+                */
+
                 public Customer getCustomer() {
                     return (Customer) get("customer");
                 }
@@ -38407,6 +40460,10 @@ public class Storefront {
                     optimisticData.put(getKey("publicApiVersions"), arg);
                     return this;
                 }
+
+                /**
+                * The shop associated with the storefront access token.
+                */
 
                 public Shop getShop() {
                     return (Shop) get("shop");
@@ -40931,24 +42988,24 @@ public class Storefront {
 
                 private MailingAddressInput billingAddress;
 
-                private String type;
-
                 private String paymentData;
+
+                private String type;
 
                 private Input<Boolean> test = Input.undefined();
 
                 private Input<String> identifier = Input.undefined();
 
-                public TokenizedPaymentInputV2(MoneyInput paymentAmount, String idempotencyKey, MailingAddressInput billingAddress, String type, String paymentData) {
+                public TokenizedPaymentInputV2(MoneyInput paymentAmount, String idempotencyKey, MailingAddressInput billingAddress, String paymentData, String type) {
                     this.paymentAmount = paymentAmount;
 
                     this.idempotencyKey = idempotencyKey;
 
                     this.billingAddress = billingAddress;
 
-                    this.type = type;
-
                     this.paymentData = paymentData;
+
+                    this.type = type;
                 }
 
                 public MoneyInput getPaymentAmount() {
@@ -40978,21 +43035,21 @@ public class Storefront {
                     return this;
                 }
 
-                public String getType() {
-                    return type;
-                }
-
-                public TokenizedPaymentInputV2 setType(String type) {
-                    this.type = type;
-                    return this;
-                }
-
                 public String getPaymentData() {
                     return paymentData;
                 }
 
                 public TokenizedPaymentInputV2 setPaymentData(String paymentData) {
                     this.paymentData = paymentData;
+                    return this;
+                }
+
+                public String getType() {
+                    return type;
+                }
+
+                public TokenizedPaymentInputV2 setType(String type) {
+                    this.type = type;
                     return this;
                 }
 
@@ -41059,13 +43116,13 @@ public class Storefront {
 
                     _queryBuilder.append(separator);
                     separator = ",";
-                    _queryBuilder.append("type:");
-                    Query.appendQuotedString(_queryBuilder, type.toString());
+                    _queryBuilder.append("paymentData:");
+                    Query.appendQuotedString(_queryBuilder, paymentData.toString());
 
                     _queryBuilder.append(separator);
                     separator = ",";
-                    _queryBuilder.append("paymentData:");
-                    Query.appendQuotedString(_queryBuilder, paymentData.toString());
+                    _queryBuilder.append("type:");
+                    Query.appendQuotedString(_queryBuilder, type.toString());
 
                     if (this.test.isDefined()) {
                         _queryBuilder.append(separator);
@@ -41475,6 +43532,465 @@ public class Storefront {
                 }
             }
 
+            public interface UnitPriceMeasurementQueryDefinition {
+                void define(UnitPriceMeasurementQuery _queryBuilder);
+            }
+
+            /**
+            * The measurement used to calculate a unit price for a product variant (e.g. $9.99 / 100ml).
+            */
+            public static class UnitPriceMeasurementQuery extends Query<UnitPriceMeasurementQuery> {
+                UnitPriceMeasurementQuery(StringBuilder _queryBuilder) {
+                    super(_queryBuilder);
+                }
+
+                /**
+                * The type of unit of measurement for the unit price measurement.
+                */
+                public UnitPriceMeasurementQuery measuredType() {
+                    startField("measuredType");
+
+                    return this;
+                }
+
+                /**
+                * The quantity unit for the unit price measurement.
+                */
+                public UnitPriceMeasurementQuery quantityUnit() {
+                    startField("quantityUnit");
+
+                    return this;
+                }
+
+                /**
+                * The quantity value for the unit price measurement.
+                */
+                public UnitPriceMeasurementQuery quantityValue() {
+                    startField("quantityValue");
+
+                    return this;
+                }
+
+                /**
+                * The reference unit for the unit price measurement.
+                */
+                public UnitPriceMeasurementQuery referenceUnit() {
+                    startField("referenceUnit");
+
+                    return this;
+                }
+
+                /**
+                * The reference value for the unit price measurement.
+                */
+                public UnitPriceMeasurementQuery referenceValue() {
+                    startField("referenceValue");
+
+                    return this;
+                }
+            }
+
+            /**
+            * The measurement used to calculate a unit price for a product variant (e.g. $9.99 / 100ml).
+            */
+            public static class UnitPriceMeasurement extends AbstractResponse<UnitPriceMeasurement> {
+                public UnitPriceMeasurement() {
+                }
+
+                public UnitPriceMeasurement(JsonObject fields) throws SchemaViolationError {
+                    for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                        String key = field.getKey();
+                        String fieldName = getFieldName(key);
+                        switch (fieldName) {
+                            case "measuredType": {
+                                UnitPriceMeasurementMeasuredType optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = UnitPriceMeasurementMeasuredType.fromGraphQl(jsonAsString(field.getValue(), key));
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "quantityUnit": {
+                                UnitPriceMeasurementMeasuredUnit optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = UnitPriceMeasurementMeasuredUnit.fromGraphQl(jsonAsString(field.getValue(), key));
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "quantityValue": {
+                                responseData.put(key, jsonAsDouble(field.getValue(), key));
+
+                                break;
+                            }
+
+                            case "referenceUnit": {
+                                UnitPriceMeasurementMeasuredUnit optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = UnitPriceMeasurementMeasuredUnit.fromGraphQl(jsonAsString(field.getValue(), key));
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "referenceValue": {
+                                responseData.put(key, jsonAsInteger(field.getValue(), key));
+
+                                break;
+                            }
+
+                            case "__typename": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+                                break;
+                            }
+                            default: {
+                                throw new SchemaViolationError(this, key, field.getValue());
+                            }
+                        }
+                    }
+                }
+
+                public String getGraphQlTypeName() {
+                    return "UnitPriceMeasurement";
+                }
+
+                /**
+                * The type of unit of measurement for the unit price measurement.
+                */
+
+                public UnitPriceMeasurementMeasuredType getMeasuredType() {
+                    return (UnitPriceMeasurementMeasuredType) get("measuredType");
+                }
+
+                public UnitPriceMeasurement setMeasuredType(UnitPriceMeasurementMeasuredType arg) {
+                    optimisticData.put(getKey("measuredType"), arg);
+                    return this;
+                }
+
+                /**
+                * The quantity unit for the unit price measurement.
+                */
+
+                public UnitPriceMeasurementMeasuredUnit getQuantityUnit() {
+                    return (UnitPriceMeasurementMeasuredUnit) get("quantityUnit");
+                }
+
+                public UnitPriceMeasurement setQuantityUnit(UnitPriceMeasurementMeasuredUnit arg) {
+                    optimisticData.put(getKey("quantityUnit"), arg);
+                    return this;
+                }
+
+                /**
+                * The quantity value for the unit price measurement.
+                */
+
+                public Double getQuantityValue() {
+                    return (Double) get("quantityValue");
+                }
+
+                public UnitPriceMeasurement setQuantityValue(Double arg) {
+                    optimisticData.put(getKey("quantityValue"), arg);
+                    return this;
+                }
+
+                /**
+                * The reference unit for the unit price measurement.
+                */
+
+                public UnitPriceMeasurementMeasuredUnit getReferenceUnit() {
+                    return (UnitPriceMeasurementMeasuredUnit) get("referenceUnit");
+                }
+
+                public UnitPriceMeasurement setReferenceUnit(UnitPriceMeasurementMeasuredUnit arg) {
+                    optimisticData.put(getKey("referenceUnit"), arg);
+                    return this;
+                }
+
+                /**
+                * The reference value for the unit price measurement.
+                */
+
+                public Integer getReferenceValue() {
+                    return (Integer) get("referenceValue");
+                }
+
+                public UnitPriceMeasurement setReferenceValue(Integer arg) {
+                    optimisticData.put(getKey("referenceValue"), arg);
+                    return this;
+                }
+
+                public boolean unwrapsToObject(String key) {
+                    switch (getFieldName(key)) {
+                        case "measuredType": return false;
+
+                        case "quantityUnit": return false;
+
+                        case "quantityValue": return false;
+
+                        case "referenceUnit": return false;
+
+                        case "referenceValue": return false;
+
+                        default: return false;
+                    }
+                }
+            }
+
+            /**
+            * The accepted types of unit of measurement.
+            */
+            public enum UnitPriceMeasurementMeasuredType {
+                /**
+                * Unit of measurements representing areas.
+                */
+                AREA,
+
+                /**
+                * Unit of measurements representing lengths.
+                */
+                LENGTH,
+
+                /**
+                * Unit of measurements representing volumes.
+                */
+                VOLUME,
+
+                /**
+                * Unit of measurements representing weights.
+                */
+                WEIGHT,
+
+                UNKNOWN_VALUE;
+
+                public static UnitPriceMeasurementMeasuredType fromGraphQl(String value) {
+                    if (value == null) {
+                        return null;
+                    }
+
+                    switch (value) {
+                        case "AREA": {
+                            return AREA;
+                        }
+
+                        case "LENGTH": {
+                            return LENGTH;
+                        }
+
+                        case "VOLUME": {
+                            return VOLUME;
+                        }
+
+                        case "WEIGHT": {
+                            return WEIGHT;
+                        }
+
+                        default: {
+                            return UNKNOWN_VALUE;
+                        }
+                    }
+                }
+                public String toString() {
+                    switch (this) {
+                        case AREA: {
+                            return "AREA";
+                        }
+
+                        case LENGTH: {
+                            return "LENGTH";
+                        }
+
+                        case VOLUME: {
+                            return "VOLUME";
+                        }
+
+                        case WEIGHT: {
+                            return "WEIGHT";
+                        }
+
+                        default: {
+                            return "";
+                        }
+                    }
+                }
+            }
+
+            /**
+            * The valid units of measurement for a unit price measurement.
+            */
+            public enum UnitPriceMeasurementMeasuredUnit {
+                /**
+                * 100 centiliters equals 1 liter.
+                */
+                CL,
+
+                /**
+                * 100 centimeters equals 1 meter.
+                */
+                CM,
+
+                /**
+                * Metric system unit of weight.
+                */
+                G,
+
+                /**
+                * 1 kilogram equals 1000 grams.
+                */
+                KG,
+
+                /**
+                * Metric system unit of volume.
+                */
+                L,
+
+                /**
+                * Metric system unit of length.
+                */
+                M,
+
+                /**
+                * Metric system unit of area.
+                */
+                M2,
+
+                /**
+                * 1 cubic meter equals 1000 liters.
+                */
+                M3,
+
+                /**
+                * 1000 milligrams equals 1 gram.
+                */
+                MG,
+
+                /**
+                * 1000 milliliters equals 1 liter.
+                */
+                ML,
+
+                /**
+                * 1000 millimeters equals 1 meter.
+                */
+                MM,
+
+                UNKNOWN_VALUE;
+
+                public static UnitPriceMeasurementMeasuredUnit fromGraphQl(String value) {
+                    if (value == null) {
+                        return null;
+                    }
+
+                    switch (value) {
+                        case "CL": {
+                            return CL;
+                        }
+
+                        case "CM": {
+                            return CM;
+                        }
+
+                        case "G": {
+                            return G;
+                        }
+
+                        case "KG": {
+                            return KG;
+                        }
+
+                        case "L": {
+                            return L;
+                        }
+
+                        case "M": {
+                            return M;
+                        }
+
+                        case "M2": {
+                            return M2;
+                        }
+
+                        case "M3": {
+                            return M3;
+                        }
+
+                        case "MG": {
+                            return MG;
+                        }
+
+                        case "ML": {
+                            return ML;
+                        }
+
+                        case "MM": {
+                            return MM;
+                        }
+
+                        default: {
+                            return UNKNOWN_VALUE;
+                        }
+                    }
+                }
+                public String toString() {
+                    switch (this) {
+                        case CL: {
+                            return "CL";
+                        }
+
+                        case CM: {
+                            return "CM";
+                        }
+
+                        case G: {
+                            return "G";
+                        }
+
+                        case KG: {
+                            return "KG";
+                        }
+
+                        case L: {
+                            return "L";
+                        }
+
+                        case M: {
+                            return "M";
+                        }
+
+                        case M2: {
+                            return "M2";
+                        }
+
+                        case M3: {
+                            return "M3";
+                        }
+
+                        case MG: {
+                            return "MG";
+                        }
+
+                        case ML: {
+                            return "ML";
+                        }
+
+                        case MM: {
+                            return "MM";
+                        }
+
+                        default: {
+                            return "";
+                        }
+                    }
+                }
+            }
+
             public interface UserErrorQueryDefinition {
                 void define(UserErrorQuery _queryBuilder);
             }
@@ -41586,6 +44102,416 @@ public class Storefront {
                         case "field": return false;
 
                         case "message": return false;
+
+                        default: return false;
+                    }
+                }
+            }
+
+            public interface VideoQueryDefinition {
+                void define(VideoQuery _queryBuilder);
+            }
+
+            /**
+            * Represents a Shopify hosted video.
+            */
+            public static class VideoQuery extends Query<VideoQuery> {
+                VideoQuery(StringBuilder _queryBuilder) {
+                    super(_queryBuilder);
+
+                    startField("id");
+                }
+
+                /**
+                * A word or phrase to share the nature or contents of a media.
+                */
+                public VideoQuery alt() {
+                    startField("alt");
+
+                    return this;
+                }
+
+                /**
+                * The media content type.
+                */
+                public VideoQuery mediaContentType() {
+                    startField("mediaContentType");
+
+                    return this;
+                }
+
+                /**
+                * The preview image for the media.
+                */
+                public VideoQuery previewImage(ImageQueryDefinition queryDef) {
+                    startField("previewImage");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new ImageQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * The sources for a video.
+                */
+                public VideoQuery sources(VideoSourceQueryDefinition queryDef) {
+                    startField("sources");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new VideoSourceQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+            }
+
+            /**
+            * Represents a Shopify hosted video.
+            */
+            public static class Video extends AbstractResponse<Video> implements Media, Node {
+                public Video() {
+                }
+
+                public Video(JsonObject fields) throws SchemaViolationError {
+                    for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                        String key = field.getKey();
+                        String fieldName = getFieldName(key);
+                        switch (fieldName) {
+                            case "alt": {
+                                String optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = jsonAsString(field.getValue(), key);
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "id": {
+                                responseData.put(key, new ID(jsonAsString(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "mediaContentType": {
+                                responseData.put(key, MediaContentType.fromGraphQl(jsonAsString(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "previewImage": {
+                                Image optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = new Image(jsonAsObject(field.getValue(), key));
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "sources": {
+                                List<VideoSource> list1 = new ArrayList<>();
+                                for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                                    list1.add(new VideoSource(jsonAsObject(element1, key)));
+                                }
+
+                                responseData.put(key, list1);
+
+                                break;
+                            }
+
+                            case "__typename": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+                                break;
+                            }
+                            default: {
+                                throw new SchemaViolationError(this, key, field.getValue());
+                            }
+                        }
+                    }
+                }
+
+                public Video(ID id) {
+                    this();
+                    optimisticData.put("id", id);
+                }
+
+                public String getGraphQlTypeName() {
+                    return "Video";
+                }
+
+                /**
+                * A word or phrase to share the nature or contents of a media.
+                */
+
+                public String getAlt() {
+                    return (String) get("alt");
+                }
+
+                public Video setAlt(String arg) {
+                    optimisticData.put(getKey("alt"), arg);
+                    return this;
+                }
+
+                /**
+                * Globally unique identifier.
+                */
+
+                public ID getId() {
+                    return (ID) get("id");
+                }
+
+                /**
+                * The media content type.
+                */
+
+                public MediaContentType getMediaContentType() {
+                    return (MediaContentType) get("mediaContentType");
+                }
+
+                public Video setMediaContentType(MediaContentType arg) {
+                    optimisticData.put(getKey("mediaContentType"), arg);
+                    return this;
+                }
+
+                /**
+                * The preview image for the media.
+                */
+
+                public Image getPreviewImage() {
+                    return (Image) get("previewImage");
+                }
+
+                public Video setPreviewImage(Image arg) {
+                    optimisticData.put(getKey("previewImage"), arg);
+                    return this;
+                }
+
+                /**
+                * The sources for a video.
+                */
+
+                public List<VideoSource> getSources() {
+                    return (List<VideoSource>) get("sources");
+                }
+
+                public Video setSources(List<VideoSource> arg) {
+                    optimisticData.put(getKey("sources"), arg);
+                    return this;
+                }
+
+                public boolean unwrapsToObject(String key) {
+                    switch (getFieldName(key)) {
+                        case "alt": return false;
+
+                        case "id": return false;
+
+                        case "mediaContentType": return false;
+
+                        case "previewImage": return true;
+
+                        case "sources": return true;
+
+                        default: return false;
+                    }
+                }
+            }
+
+            public interface VideoSourceQueryDefinition {
+                void define(VideoSourceQuery _queryBuilder);
+            }
+
+            /**
+            * Represents a source for a Shopify hosted video.
+            */
+            public static class VideoSourceQuery extends Query<VideoSourceQuery> {
+                VideoSourceQuery(StringBuilder _queryBuilder) {
+                    super(_queryBuilder);
+                }
+
+                /**
+                * The format of the video source.
+                */
+                public VideoSourceQuery format() {
+                    startField("format");
+
+                    return this;
+                }
+
+                /**
+                * The height of the video.
+                */
+                public VideoSourceQuery height() {
+                    startField("height");
+
+                    return this;
+                }
+
+                /**
+                * The video MIME type.
+                */
+                public VideoSourceQuery mimeType() {
+                    startField("mimeType");
+
+                    return this;
+                }
+
+                /**
+                * The URL of the video.
+                */
+                public VideoSourceQuery url() {
+                    startField("url");
+
+                    return this;
+                }
+
+                /**
+                * The width of the video.
+                */
+                public VideoSourceQuery width() {
+                    startField("width");
+
+                    return this;
+                }
+            }
+
+            /**
+            * Represents a source for a Shopify hosted video.
+            */
+            public static class VideoSource extends AbstractResponse<VideoSource> {
+                public VideoSource() {
+                }
+
+                public VideoSource(JsonObject fields) throws SchemaViolationError {
+                    for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                        String key = field.getKey();
+                        String fieldName = getFieldName(key);
+                        switch (fieldName) {
+                            case "format": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+
+                                break;
+                            }
+
+                            case "height": {
+                                responseData.put(key, jsonAsInteger(field.getValue(), key));
+
+                                break;
+                            }
+
+                            case "mimeType": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+
+                                break;
+                            }
+
+                            case "url": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+
+                                break;
+                            }
+
+                            case "width": {
+                                responseData.put(key, jsonAsInteger(field.getValue(), key));
+
+                                break;
+                            }
+
+                            case "__typename": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+                                break;
+                            }
+                            default: {
+                                throw new SchemaViolationError(this, key, field.getValue());
+                            }
+                        }
+                    }
+                }
+
+                public String getGraphQlTypeName() {
+                    return "VideoSource";
+                }
+
+                /**
+                * The format of the video source.
+                */
+
+                public String getFormat() {
+                    return (String) get("format");
+                }
+
+                public VideoSource setFormat(String arg) {
+                    optimisticData.put(getKey("format"), arg);
+                    return this;
+                }
+
+                /**
+                * The height of the video.
+                */
+
+                public Integer getHeight() {
+                    return (Integer) get("height");
+                }
+
+                public VideoSource setHeight(Integer arg) {
+                    optimisticData.put(getKey("height"), arg);
+                    return this;
+                }
+
+                /**
+                * The video MIME type.
+                */
+
+                public String getMimeType() {
+                    return (String) get("mimeType");
+                }
+
+                public VideoSource setMimeType(String arg) {
+                    optimisticData.put(getKey("mimeType"), arg);
+                    return this;
+                }
+
+                /**
+                * The URL of the video.
+                */
+
+                public String getUrl() {
+                    return (String) get("url");
+                }
+
+                public VideoSource setUrl(String arg) {
+                    optimisticData.put(getKey("url"), arg);
+                    return this;
+                }
+
+                /**
+                * The width of the video.
+                */
+
+                public Integer getWidth() {
+                    return (Integer) get("width");
+                }
+
+                public VideoSource setWidth(Integer arg) {
+                    optimisticData.put(getKey("width"), arg);
+                    return this;
+                }
+
+                public boolean unwrapsToObject(String key) {
+                    switch (getFieldName(key)) {
+                        case "format": return false;
+
+                        case "height": return false;
+
+                        case "mimeType": return false;
+
+                        case "url": return false;
+
+                        case "width": return false;
 
                         default: return false;
                     }

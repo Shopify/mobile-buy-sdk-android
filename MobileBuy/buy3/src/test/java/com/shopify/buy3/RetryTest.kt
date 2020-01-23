@@ -27,7 +27,6 @@ import android.content.Context
 import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockito_kotlin.doReturn
 import com.nhaarman.mockito_kotlin.whenever
-import okhttp3.OkHttpClient
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.intellij.lang.annotations.Language
@@ -70,9 +69,9 @@ class RetryTest {
 
     @Before fun setUp() {
         doReturn(PACKAGE_NAME).whenever(mockContext).getPackageName()
-        graphClient = GraphClient.build(context = mockContext, shopDomain = "shopDomain", accessToken = "accessToken") {
+        graphClient = GraphClient.build(context = mockContext, shopDomain = "shopDomain", accessToken = "accessToken", configure = {
             endpointUrl = server.url("/")
-        }
+        })
     }
 
     @Test

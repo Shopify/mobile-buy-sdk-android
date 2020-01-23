@@ -39,12 +39,14 @@ android {
       def apiKey
       def androidPayPublicKey
       def androidPayEnvironment
+      def locale
 
       // get the shop setting from the environment if there any
       shopDomain = System.getenv("SHOP_DOMAIN")
       apiKey = System.getenv("API_KEY")
       androidPayPublicKey = System.getenv("ANDROID_PAY_PUBLIC_KEY")
       androidPayEnvironment = System.getenv("ANDROID_PAY_ENVIRONMENT")
+      locale = System.getenv("DEFAULT_LOCALE") ?: null
 
       // pull the store properties from the local file if it exists.  Environment variables take precedence
       def shopProperties = new Properties();
@@ -56,6 +58,7 @@ android {
         apiKey = apiKey ?: shopProperties["API_KEY"]
         androidPayPublicKey = androidPayPublicKey ?: shopProperties["ANDROID_PAY_PUBLIC_KEY"]
         androidPayEnvironment = androidPayEnvironment ?: shopProperties["ANDROID_PAY_ENVIRONMENT"]
+        locale = shopProperties["DEFAULT_LOCALE"] ?: locale
       }
 
       if (!shopDomain) {
@@ -73,6 +76,7 @@ android {
 
       buildConfigField "String", "SHOP_DOMAIN", "\"" + shopDomain.toString() + "\""
       buildConfigField "String", "API_KEY", "\"" + apiKey.toString() + "\""
+      buildConfigField "String", "DEFAULT_LOCALE", "\"" + locale.toString() + "\""
 
       debuggable = true
       minifyEnabled = false

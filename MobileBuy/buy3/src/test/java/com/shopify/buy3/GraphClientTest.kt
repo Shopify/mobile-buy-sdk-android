@@ -59,10 +59,10 @@ class GraphClientTest {
             .connectTimeout(1, TimeUnit.SECONDS)
             .readTimeout(1, TimeUnit.SECONDS)
             .build()
-        graphClient = GraphClient.build(context = mockContext, shopDomain = "shopDomain", accessToken = "accessToken") {
+        graphClient = GraphClient.build(context = mockContext, shopDomain = "shopDomain", accessToken = "accessToken", configure = {
             httpClient = okHttpClient
             endpointUrl = server.url("/")
-        }
+        })
     }
 
     @Test fun httpRequestHeaders() {
@@ -84,6 +84,28 @@ class GraphClientTest {
 
     @Test fun graphResponse() {
         server.enqueueShopNameResponse()
+
+        val result = graphClient.fetchShopName()
+        assertThat(result).isInstanceOf(GraphCallResult.Success::class.java)
+        with(result as GraphCallResult.Success) {
+            assertThat(response.data!!.shop.name).isEqualTo("MyShop")
+            assertThat(response.errors).isEmpty()
+            assertThat(response.hasErrors).isFalse()
+        }
+    }
+
+    @Test fun graphResponseWithLocale() {
+        server.enqueueShopNameResponse()
+
+        val okHttpClient = OkHttpClient.Builder()
+                .connectTimeout(1, TimeUnit.SECONDS)
+                .readTimeout(1, TimeUnit.SECONDS)
+                .build()
+
+        graphClient = GraphClient.build(context = mockContext, shopDomain = "shopDomain", accessToken = "accessToken", configure = {
+            httpClient = okHttpClient
+            endpointUrl = server.url("/")
+        }, locale = "fr")
 
         val result = graphClient.fetchShopName()
         assertThat(result).isInstanceOf(GraphCallResult.Success::class.java)
