@@ -75,7 +75,7 @@ Mobile Buy SDK for Android is represented by runtime module that provides suppor
 ##### Gradle:
 
 ```gradle
-compile 'com.shopify.mobilebuysdk:buy3:3.2.3'
+implementation 'com.shopify.mobilebuysdk:buy3:3.2.3'
 ```
 
 ##### or Maven:
