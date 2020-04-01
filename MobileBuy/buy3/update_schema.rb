@@ -16,9 +16,17 @@ OptionParser.new do |opts|
 end.parse!
 
 shared_storefront_api_key = "4a6c829ec3cb12ef9004bf8ed27adf12"
-storefront_api_version = '2020-01'
-endpoint = URI("https://app.shopify.com/services/graphql/introspection/storefront?api_client_api_key=#{shared_storefront_api_key}&api_version=#{storefront_api_version}")
-body = Net::HTTP.get(endpoint)
+storefront_api_version = ARGV[0]
+
+abort("Error: API Version not specified") if storefront_api_version.nil? or storefront_api_version.empty?
+
+url = "https://app.shopify.com/services/graphql/introspection/storefront?api_client_api_key=#{shared_storefront_api_key}&api_version=#{storefront_api_version}"
+uri = URI(url)
+
+response = Net::HTTP.get_response(uri)
+abort("Error fetching details for the api version #{storefront_api_version}") unless response.kind_of? Net::HTTPSuccess
+body = response.body
+
 schema = GraphQLSchema.new(JSON.parse(body))
 custom_scalars = [
   GraphQLJavaGen::Scalar.new(
@@ -40,5 +48,6 @@ GraphQLJavaGen.new(
   package_name: "com.shopify.buy3",
   nest_under: 'Storefront',
   custom_scalars: custom_scalars,
-  include_deprecated: true
+  include_deprecated: true,
+  version: storefront_api_version
 ).save(target_filename)

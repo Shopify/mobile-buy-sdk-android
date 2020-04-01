@@ -42,7 +42,7 @@ import java.util.concurrent.TimeUnit
 
 private val DEFAULT_HTTP_CONNECTION_TIME_OUT_MS = TimeUnit.SECONDS.toMillis(10)
 private val DEFAULT_HTTP_READ_WRITE_TIME_OUT_MS = TimeUnit.SECONDS.toMillis(20)
-private val STOREFRONT_API_VERSION = "2020-01"
+private const val STOREFRONT_API_VERSION = Storefront.API_VERSION
 
 @DslMarker
 annotation class GraphClientBuilder
