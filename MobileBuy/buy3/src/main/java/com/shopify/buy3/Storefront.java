@@ -26,6 +26,8 @@ import java.util.List;
 import java.util.Map;
 
 public class Storefront {
+    public static final String API_VERSION = "2020-01";
+
     public static QueryRootQuery query(QueryRootQueryDefinition queryDef) {
         StringBuilder queryString = new StringBuilder("{");
         QueryRootQuery query = new QueryRootQuery(queryString);
@@ -1727,7 +1729,7 @@ public class Storefront {
     }
 
     /**
-    * The set of valid sort keys for the articles query.
+    * The set of valid sort keys for the Article query.
     */
     public enum ArticleSortKeys {
         /**
@@ -2932,7 +2934,7 @@ public class Storefront {
     }
 
     /**
-    * The set of valid sort keys for the blogs query.
+    * The set of valid sort keys for the Blog query.
     */
     public enum BlogSortKeys {
         /**
@@ -11834,7 +11836,7 @@ public class Storefront {
     }
 
     /**
-    * The set of valid sort keys for the collections query.
+    * The set of valid sort keys for the Collection query.
     */
     public enum CollectionSortKeys {
         /**
@@ -16174,27 +16176,27 @@ public class Storefront {
     */
     public enum CropRegion {
         /**
-        * Keep the bottom of the image
+        * Keep the bottom of the image.
         */
         BOTTOM,
 
         /**
-        * Keep the center of the image
+        * Keep the center of the image.
         */
         CENTER,
 
         /**
-        * Keep the left of the image
+        * Keep the left of the image.
         */
         LEFT,
 
         /**
-        * Keep the right of the image
+        * Keep the right of the image.
         */
         RIGHT,
 
         /**
-        * Keep the top of the image
+        * Keep the top of the image.
         */
         TOP,
 
@@ -25257,10 +25259,19 @@ public class Storefront {
     * List of supported image content types.
     */
     public enum ImageContentType {
+        /**
+        * A JPG image.
+        */
         JPG,
 
+        /**
+        * A PNG image.
+        */
         PNG,
 
+        /**
+        * A WEBP image.
+        */
         WEBP,
 
         UNKNOWN_VALUE;
@@ -29265,7 +29276,10 @@ public class Storefront {
 
                 /**
                 * Completes a checkout with a tokenized payment.
+                *
+                * @deprecated Use `checkoutCompleteWithTokenizedPaymentV3` instead
                 */
+                @Deprecated
                 public MutationQuery checkoutCompleteWithTokenizedPaymentV2(ID checkoutId, TokenizedPaymentInputV2 payment, CheckoutCompleteWithTokenizedPaymentV2PayloadQueryDefinition queryDef) {
                     startField("checkoutCompleteWithTokenizedPaymentV2");
 
@@ -30627,6 +30641,8 @@ public class Storefront {
 
                 /**
                 * Completes a checkout with a tokenized payment.
+                *
+                * @deprecated Use `checkoutCompleteWithTokenizedPaymentV3` instead
                 */
 
                 public CheckoutCompleteWithTokenizedPaymentV2Payload getCheckoutCompleteWithTokenizedPaymentV2() {
@@ -33283,7 +33299,7 @@ public class Storefront {
             }
 
             /**
-            * The set of valid sort keys for the orders query.
+            * The set of valid sort keys for the Order query.
             */
             public enum OrderSortKeys {
                 /**
@@ -33972,7 +33988,7 @@ public class Storefront {
             }
 
             /**
-            * The set of valid sort keys for the pages query.
+            * The set of valid sort keys for the Page query.
             */
             public enum PageSortKeys {
                 /**
@@ -36404,7 +36420,7 @@ public class Storefront {
             }
 
             /**
-            * The set of valid sort keys for the products query.
+            * The set of valid sort keys for the ProductCollection query.
             */
             public enum ProductCollectionSortKeys {
                 /**
@@ -36756,7 +36772,7 @@ public class Storefront {
             }
 
             /**
-            * The set of valid sort keys for the images query.
+            * The set of valid sort keys for the ProductImage query.
             */
             public enum ProductImageSortKeys {
                 /**
@@ -37312,7 +37328,7 @@ public class Storefront {
             }
 
             /**
-            * The set of valid sort keys for the products query.
+            * The set of valid sort keys for the Product query.
             */
             public enum ProductSortKeys {
                 /**
@@ -39162,7 +39178,7 @@ public class Storefront {
             }
 
             /**
-            * The set of valid sort keys for the variants query.
+            * The set of valid sort keys for the ProductVariant query.
             */
             public enum ProductVariantSortKeys {
                 /**
