@@ -20,14 +20,12 @@ storefront_api_version = ARGV[0]
 
 abort("Error: API Version not specified") if storefront_api_version.nil? or storefront_api_version.empty?
 
-url = "https://app.shopify.com/services/graphql/introspection/storefront?api_client_api_key=#{shared_storefront_api_key}&api_version=#{storefront_api_version}"
-uri = URI(url)
+uri = URI("https://app.shopify.com/services/graphql/introspection/storefront?api_client_api_key=#{shared_storefront_api_key}&api_version=#{storefront_api_version}")
 
 response = Net::HTTP.get_response(uri)
 abort("Error fetching details for the api version #{storefront_api_version}") unless response.kind_of? Net::HTTPSuccess
-body = response.body
 
-schema = GraphQLSchema.new(JSON.parse(body))
+schema = GraphQLSchema.new(JSON.parse(response.body))
 custom_scalars = [
   GraphQLJavaGen::Scalar.new(
     type_name: 'Money',
