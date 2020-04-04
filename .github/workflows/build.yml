@@ -37,7 +37,7 @@ jobs:
 
     - uses: actions/checkout@master
       with:
-        ref: 'update-schema-and-deploy-workflow'
+        ref: 'develop' # This should change to master after 2020-04
 
     - name: Update git submodules
       run: git submodule update --init --recursive
