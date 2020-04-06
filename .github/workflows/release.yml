@@ -41,11 +41,11 @@ jobs:
             body: "Release notes:\n - https://shopify.dev/concepts/about-apis/versioning/release-notes/" + api_version,
             tag_name: 'x.x.x',
             target_commitish: 'master',
-            draft: true, # TODO this should be false in production
+            draft: true
             prerelease: false,
           })
           
-    - name: Push to cocoapods
+    - name: Push to BinTray
       working-directory: ./MobileBuy
       env:
         BINTRAY_USER: ${{ secrets.BINTRAY_USER }}
