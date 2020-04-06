@@ -45,7 +45,7 @@ jobs:
     - name: Install bundler
       run: |
         gem install bundler
-        BUNDLE_GEMFILE="MobileBuy/buy3/Gemfile" bundle install --jobs 4 --retry 3 --verbose
+        BUNDLE_GEMFILE="MobileBuy/buy3/Gemfile" bundle install --verbose
 
     - name: Build new SDK version
       working-directory: ./MobileBuy/buy3
