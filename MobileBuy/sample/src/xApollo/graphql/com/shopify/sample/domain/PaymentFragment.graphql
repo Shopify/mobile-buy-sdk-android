@@ -1,5 +1,0 @@
-fragment PaymentFragment on Payment {
-  id
-  errorMessage
-  ready
-}

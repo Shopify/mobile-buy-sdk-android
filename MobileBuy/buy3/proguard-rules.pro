@@ -18,5 +18,6 @@
 
 -dontwarn retrofit2.**
 -keep class retrofit2.** { *; }
+-keep class com.shopify.buy.model.** { *; }
 -keepattributes Signature
 -keepattributes Exceptions

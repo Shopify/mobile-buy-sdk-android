@@ -4,6 +4,8 @@ buildscript {
     classpath dep.androidMavenGradlePlugin
     classpath dep.bintrayGradlePlugin
     classpath dep.kotlinPlugin
+    classpath dep.graphqlSupport
+
   }
 }
 
@@ -91,6 +93,7 @@ dependencies {
   implementation dep.gson
   implementation dep.kotlinStdLib
   implementation dep.timber
+  implementation dep.graphqlSupport
 
   testImplementation dep.mockitoCore
   testImplementation dep.mockitokotlin

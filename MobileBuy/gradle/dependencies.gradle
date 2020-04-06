@@ -50,5 +50,6 @@ ext.dep = [
     constraintLayout         : "com.android.support.constraint:constraint-layout:1.0.2",
     rxrelay                  : "com.jakewharton.rxrelay2:rxrelay:2.0.0",
     archComponents           : "android.arch.lifecycle:extensions:$versions.archVersion",
-    gson                     : "com.google.code.gson:gson:2.7"
+    gson                     : "com.google.code.gson:gson:2.8.6",
+    graphqlSupport           : "com.shopify.graphql.support:support:0.1.1"
 ]

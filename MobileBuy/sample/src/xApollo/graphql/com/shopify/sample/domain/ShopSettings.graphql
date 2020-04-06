@@ -1,9 +1,0 @@
-query ShopSettingsQuery {
-  shop {
-    name
-    paymentSettings {
-      acceptedCardBrands
-      countryCode
-    }
-  }
-}
