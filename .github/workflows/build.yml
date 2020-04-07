@@ -40,7 +40,9 @@ jobs:
         ref: 'develop' # This should change to master after 2020-04
 
     - name: Update git submodules
-      run: git submodule update --init --recursive
+      run: |
+        git config --list | egrep ^submodule
+        git submodule update --init --recursive
 
     - name: Install bundler
       run: |
