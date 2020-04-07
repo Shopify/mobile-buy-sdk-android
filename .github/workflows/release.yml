@@ -36,11 +36,12 @@ jobs:
           github.repos.createRelease({
             owner: context.repo.owner,
             repo: context.repo.repo,
-            name: "ADD VERSION"
-            body: "Release notes:\n - https://shopify.dev/concepts/about-apis/versioning/release-notes/" + api_version,
+            name: "X.X.X"
+            body: "Release notes:" +
+              "\n- https://shopify.dev/concepts/about-apis/versioning/release-notes/" + api_version + "#storefront-api-changes",
             tag_name: 'x.x.x',
             target_commitish: 'master',
-            draft: true
+            draft: true,
             prerelease: false,
           })
           
