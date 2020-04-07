@@ -39,10 +39,12 @@ jobs:
       with:
         ref: 'develop' # This should change to master after 2020-04
 
-    - name: Checkout submodules
-      uses: srt32/git-actions@v0.0.3
+    - name: Checkout submodule
+      uses: actions/checkout@v2.0.0
       with:
-        args: git submodule update --init --recursive
+        repository: https://github.com/Shopify/graphql_java_gen.git
+        path: MobileBuy/libs/graphql_java_gen
+        ref: 'master'
 
     - name: Install bundler
       run: |
