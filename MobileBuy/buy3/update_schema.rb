@@ -20,9 +20,9 @@ storefront_api_version = ARGV[0]
 
 abort("Error: API Version not specified") if storefront_api_version.nil? or storefront_api_version.empty?
 
-puts storefront_api_version
+p storefront_api_version
 url = "https://app.shopify.com/services/graphql/introspection/storefront?api_client_api_key=#{shared_storefront_api_key}&api_version=#{storefront_api_version}"
-puts url
+p url
 uri = URI(url)
 
 
