@@ -55,4 +55,4 @@ jobs:
         set -eo pipefail
         echo "bintray.user=$BINTRAY_USER" >> local.properties
         echo "bintray.apikey=$BINTRAY_KEY" >> local.properties
-        ./gradlew clean :buy3:bintrayUpload
+        ./gradlew :buy3:bintrayUpload
