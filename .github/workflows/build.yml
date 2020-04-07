@@ -40,9 +40,9 @@ jobs:
         ref: 'develop' # This should change to master after 2020-04
 
     - name: Checkout submodules
-      uses: textbook/git-checkout-submodule-action@master
+      uses: srt32/git-actions@v0.0.3
       with:
-        remote: true
+        args: git submodule update --init --recursive
 
     - name: Install bundler
       run: |
