@@ -29,7 +29,6 @@ jobs:
       uses: actions/github-script@0.9.0
       with:
         script: |
-          // Get the current date
           const today = new Date();
           const yyyy = today.getFullYear();
           const mm = String(today.getMonth() + 1).padStart(2, '0');

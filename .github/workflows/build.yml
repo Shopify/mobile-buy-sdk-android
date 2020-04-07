@@ -39,8 +39,12 @@ jobs:
       with:
         ref: 'develop' # This should change to master after 2020-04
 
-    - name: Update git submodules
-      run: git submodule update --init --recursive
+    - name: Checkout submodule
+      uses: actions/checkout@v2.0.0
+      with:
+        repository: Shopify/graphql_java_gen
+        path: MobileBuy/libs/graphql_java_gen
+        ref: 'master'
 
     - name: Install bundler
       run: |
@@ -48,10 +52,10 @@ jobs:
         BUNDLE_GEMFILE="MobileBuy/buy3/Gemfile" bundle install --verbose
 
     - name: Build new SDK version
-      working-directory: ./MobileBuy/buy3
+      working-directory: MobileBuy/buy3
       run: |
         echo "Generating schema for $API_VERSION"
-        ./update_schema.rb $API_VERSION
+        ./update_schema.rb "$API_VERSION"
 
     - name: Create and reset release branch
       run: git checkout -B "$API_VERSION-auto-generated" # -B will reset branch if it exists
@@ -65,13 +69,11 @@ jobs:
     - uses: actions/github-script@0.9.0
       with:
         script: |
-          // Get the current date
           const today = new Date();
           const yyyy = today.getFullYear();
           const mm = String(today.getMonth() + 1).padStart(2, '0');
           const api_version = yyyy + '-' + mm
 
-          // create a pull request
           github.pulls.create({
             owner: context.repo.owner,
             repo: context.repo.repo,
