@@ -37,7 +37,7 @@ jobs:
 
     - uses: actions/checkout@master
       with:
-        ref: 'develop' # This should change to master after 2020-04
+        ref: 'fix-release-script' # This should change to master after 2020-04
 
     - name: Checkout submodule
       uses: actions/checkout@v2.0.0
