@@ -40,9 +40,7 @@ jobs:
         ref: 'develop' # This should change to master after 2020-04
 
     - name: Update git submodules
-      run: | 
-        git submodule deinit -f .
-        git submodule update --init --recursive
+      run: git submodule update --init --recursive
 
     - name: Install bundler
       run: |
