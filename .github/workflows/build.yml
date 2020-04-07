@@ -1,0 +1,82 @@
+name: Build SDK for latest API version
+
+on: 
+  pull_request:
+    branches:
+      - master
+  schedule:
+    # Run on midnight UTC on the first of jan/apr/jul/oct
+    # API is released 1PM EDT/EST
+    - cron: '59 23 1 1/3 *'
+
+jobs:
+  build:
+
+    runs-on: macOS-latest
+
+    steps:
+    - name: Get API Version
+      id: version
+      run: |
+        API_VERSION="$(date +'%Y-%m')"
+        echo "::set-env name=API_VERSION::$API_VERSION"
+
+    - uses: actions/checkout@v2
+    - name: Set up Ruby 2.6
+      uses: actions/setup-ruby@v1
+      with:
+        version: 2.6.x
+
+    - uses: actions/checkout@v2
+    - name: Set up JDK 1.8
+      uses: actions/setup-java@v1
+      with:
+        java-version: 1.8
+        server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
+        settings-path: ${{ github.workspace }} # location for the settings.xml file
+
+    - uses: actions/checkout@master
+      with:
+        ref: 'develop' # This should change to master after 2020-04
+
+    - name: Update git submodules
+      run: git submodule update --init --recursive
+
+    - name: Install bundler
+      run: |
+        gem install bundler
+        BUNDLE_GEMFILE="MobileBuy/buy3/Gemfile" bundle install --verbose
+
+    - name: Build new SDK version
+      working-directory: ./MobileBuy/buy3
+      run: |
+        echo "Generating schema for $API_VERSION"
+        ./update_schema.rb $API_VERSION
+
+    - name: Create and reset release branch
+      run: git checkout -B "$API_VERSION-auto-generated" # -B will reset branch if it exists
+
+    - name: Stage and push generated files
+      run: |
+        git add .
+        git commit -m "Update schema (auto-generated)"
+        git push --set-upstream --force origin "$API_VERSION-auto-generated"
+
+    - uses: actions/github-script@0.9.0
+      with:
+        script: |
+          // Get the current date
+          const today = new Date();
+          const yyyy = today.getFullYear();
+          const mm = String(today.getMonth() + 1).padStart(2, '0');
+          const api_version = yyyy + '-' + mm
+
+          // create a pull request
+          github.pulls.create({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            title: 'Update schema (auto-generated)',
+            head: api_version + '-auto-generated',
+            base: 'master',
+            body: "Release notes:\n - https://shopify.dev/concepts/about-apis/versioning/release-notes/" + api_version
+          })
