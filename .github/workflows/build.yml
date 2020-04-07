@@ -41,7 +41,7 @@ jobs:
 
     - name: Update git submodules
       run: |
-        git config --list | grep submodule
+        git submodule sync
         git submodule update --init --recursive
 
     - name: Install bundler
