@@ -80,5 +80,15 @@ jobs:
             title: 'Update schema (auto-generated)',
             head: api_version + '-auto-generated',
             base: 'master',
-            body: "Release notes:\n - https://shopify.dev/concepts/about-apis/versioning/release-notes/" + api_version
+            body: ""Release notes:" + 
+              "\n- https://shopify.dev/concepts/about-apis/versioning/release-notes/" + api_version + "#storefront-api-changes" +
+              "\n" +
+              "\n**Steps to release:**" +
+              "\n- [ ] Make sure tests are passing" +
+              "\n- [ ] Navigate to the [Shopify Android bintray website](https://bintray.com/beta/#/shopify/shopify-android?tab=overview) and check that the latest version has been uploaded." +
+              "\n- [ ] Create a new Release on github:
+                    * Navigate to the Releases tab
+                    * Draft a new release with the version set to the new version + release notes
+                    * Publish Release
+                    * Check that the latest release is updated in the README"
           })

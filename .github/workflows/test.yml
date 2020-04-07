@@ -1,0 +1,49 @@
+name: Run tests
+
+on: 
+  pull_request
+
+jobs:
+  build:
+
+    runs-on: macOS-latest
+
+    steps:
+    - name: Get API Version
+      id: version
+      run: |
+        API_VERSION="$(date +'%Y-%m')"
+        echo "::set-env name=API_VERSION::$API_VERSION"
+
+    - uses: actions/checkout@v2
+    - name: Set up Ruby 2.6
+      uses: actions/setup-ruby@v1
+      with:
+        version: 2.6.x
+
+    - uses: actions/checkout@v2
+    - name: Set up JDK 1.8
+      uses: actions/setup-java@v1
+      with:
+        java-version: 1.8
+        server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
+        settings-path: ${{ github.workspace }} # location for the settings.xml file
+
+    - uses: actions/checkout@master
+      with:
+        ref: 'develop' # This should change to master after 2020-04
+
+    - name: Checkout submodule
+      uses: actions/checkout@v2.0.0
+      with:
+        repository: Shopify/graphql_java_gen
+        path: MobileBuy/libs/graphql_java_gen
+        ref: 'master'
+
+    - name: Install bundler
+      run: |
+        gem install bundler
+        BUNDLE_GEMFILE="MobileBuy/buy3/Gemfile" bundle install --verbose
+
+    - name: Run Test
+      run: ./gradlew clean build connectedCheck -PdisablePreDex --console=plain
