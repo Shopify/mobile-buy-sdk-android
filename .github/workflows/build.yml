@@ -52,10 +52,10 @@ jobs:
         BUNDLE_GEMFILE="MobileBuy/buy3/Gemfile" bundle install --verbose
 
     - name: Build new SDK version
-      working-directory: ./MobileBuy/buy3
+      working-directory: MobileBuy/buy3
       run: |
         echo "Generating schema for $API_VERSION"
-        ruby update_schema.rb "$API_VERSION"
+        ./update_schema.rb "$API_VERSION"
 
     - name: Create and reset release branch
       run: git checkout -B "$API_VERSION-auto-generated" # -B will reset branch if it exists
