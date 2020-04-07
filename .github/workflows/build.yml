@@ -41,7 +41,8 @@ jobs:
 
     - name: Update git submodules
       run: |
-        git submodule sync
+        git rm --cached MobileBuy/libs/graphql_java_gen
+        rm -Rf .git/MobileBuy/libs/graphql_java_gen
         git submodule update --init --recursive
 
     - name: Install bundler
