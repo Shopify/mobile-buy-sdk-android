@@ -1,4 +1,4 @@
-name: Deploy to Cocoapods
+name: Deploy to BinTray
 
 on:
   release:

@@ -19,7 +19,7 @@ jobs:
     - name: Set up Ruby 2.6
       uses: actions/setup-ruby@v1
       with:
-        version: 2.6.x
+        ruby-version: '2.6'
 
     - uses: actions/checkout@v2
     - name: Set up JDK 1.8
@@ -31,7 +31,7 @@ jobs:
 
     - uses: actions/checkout@master
       with:
-        ref: 'develop' # This should change to master after 2020-04
+        ref: 'master' # This should change to master after 2020-04
 
     - name: Checkout submodule
       uses: actions/checkout@v2.0.0
