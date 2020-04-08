@@ -46,4 +46,5 @@ jobs:
         BUNDLE_GEMFILE="MobileBuy/buy3/Gemfile" bundle install --verbose
 
     - name: Run Test
+      working-directory: MobileBuy
       run: ./gradlew clean build connectedCheck -PdisablePreDex --console=plain
