@@ -29,7 +29,6 @@ jobs:
       uses: actions/github-script@0.9.0
       with:
         script: |
-          // Get the current date
           const today = new Date();
           const yyyy = today.getFullYear();
           const mm = String(today.getMonth() + 1).padStart(2, '0');
@@ -45,14 +44,3 @@ jobs:
             draft: true,
             prerelease: false,
           })
-          
-    - name: Push to BinTray
-      working-directory: ./MobileBuy
-      env:
-        BINTRAY_USER: ${{ secrets.BINTRAY_USER }}
-        BINTRAY_KEY: ${{ secrets.BINTRAY_KEY }}
-      run: |
-        set -eo pipefail
-        echo "bintray.user=$BINTRAY_USER" >> local.properties
-        echo "bintray.apikey=$BINTRAY_KEY" >> local.properties
-        ./gradlew clean :buy3:bintrayUpload
