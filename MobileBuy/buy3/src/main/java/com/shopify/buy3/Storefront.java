@@ -9,16 +9,18 @@ import com.google.gson.JsonObject;
 import com.shopify.graphql.support.AbstractResponse;
 import com.shopify.graphql.support.Arguments;
 import com.shopify.graphql.support.Error;
-import com.shopify.graphql.support.ID;
-import com.shopify.graphql.support.Input;
 import com.shopify.graphql.support.Query;
 import com.shopify.graphql.support.SchemaViolationError;
 import com.shopify.graphql.support.TopLevelResponse;
+import com.shopify.graphql.support.Input;
+
+import com.shopify.graphql.support.ID;
+
+import java.math.BigDecimal;
 
 import org.joda.time.DateTime;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -2441,7 +2443,8 @@ public class Storefront {
             * - `created_at`
             * - `tag`
             * - `updated_at`
-            * See the detailed [search syntax](https://help.shopify.com/api/getting-started/search-syntax).
+            * See the detailed [search syntax](https://help.shopify.com/api/getting-started/search-syntax)
+            * for more information about using filters.
             */
             public ArticlesArguments query(String value) {
                 if (value != null) {
@@ -18769,7 +18772,8 @@ public class Storefront {
             /**
             * Supported filter parameters:
             * - `processed_at`
-            * See the detailed [search syntax](https://help.shopify.com/api/getting-started/search-syntax).
+            * See the detailed [search syntax](https://help.shopify.com/api/getting-started/search-syntax)
+            * for more information about using filters.
             */
             public OrdersArguments query(String value) {
                 if (value != null) {
@@ -41068,7 +41072,8 @@ public class Storefront {
                     * - `created_at`
                     * - `tag`
                     * - `updated_at`
-                    * See the detailed [search syntax](https://help.shopify.com/api/getting-started/search-syntax).
+                    * See the detailed [search syntax](https://help.shopify.com/api/getting-started/search-syntax)
+                    * for more information about using filters.
                     */
                     public ArticlesArguments query(String value) {
                         if (value != null) {
@@ -41202,7 +41207,8 @@ public class Storefront {
                     * - `handle`
                     * - `title`
                     * - `updated_at`
-                    * See the detailed [search syntax](https://help.shopify.com/api/getting-started/search-syntax).
+                    * See the detailed [search syntax](https://help.shopify.com/api/getting-started/search-syntax)
+                    * for more information about using filters.
                     */
                     public BlogsArguments query(String value) {
                         if (value != null) {
@@ -41335,7 +41341,8 @@ public class Storefront {
                     * - `collection_type`
                     * - `title`
                     * - `updated_at`
-                    * See the detailed [search syntax](https://help.shopify.com/api/getting-started/search-syntax).
+                    * See the detailed [search syntax](https://help.shopify.com/api/getting-started/search-syntax)
+                    * for more information about using filters.
                     */
                     public CollectionsArguments query(String value) {
                         if (value != null) {
@@ -41526,7 +41533,8 @@ public class Storefront {
                     * - `handle`
                     * - `title`
                     * - `updated_at`
-                    * See the detailed [search syntax](https://help.shopify.com/api/getting-started/search-syntax).
+                    * See the detailed [search syntax](https://help.shopify.com/api/getting-started/search-syntax)
+                    * for more information about using filters.
                     */
                     public PagesArguments query(String value) {
                         if (value != null) {
@@ -41722,7 +41730,8 @@ public class Storefront {
                     * - `updated_at`
                     * - `variants.price`
                     * - `vendor`
-                    * See the detailed [search syntax](https://help.shopify.com/api/getting-started/search-syntax).
+                    * See the detailed [search syntax](https://help.shopify.com/api/getting-started/search-syntax)
+                    * for more information about using filters.
                     */
                     public ProductsArguments query(String value) {
                         if (value != null) {
@@ -43014,7 +43023,8 @@ public class Storefront {
                     * - `created_at`
                     * - `tag`
                     * - `updated_at`
-                    * See the detailed [search syntax](https://help.shopify.com/api/getting-started/search-syntax).
+                    * See the detailed [search syntax](https://help.shopify.com/api/getting-started/search-syntax)
+                    * for more information about using filters.
                     */
                     public ArticlesArguments query(String value) {
                         if (value != null) {
@@ -43135,7 +43145,8 @@ public class Storefront {
                     * - `handle`
                     * - `title`
                     * - `updated_at`
-                    * See the detailed [search syntax](https://help.shopify.com/api/getting-started/search-syntax).
+                    * See the detailed [search syntax](https://help.shopify.com/api/getting-started/search-syntax)
+                    * for more information about using filters.
                     */
                     public BlogsArguments query(String value) {
                         if (value != null) {
@@ -43276,7 +43287,8 @@ public class Storefront {
                     * - `collection_type`
                     * - `title`
                     * - `updated_at`
-                    * See the detailed [search syntax](https://help.shopify.com/api/getting-started/search-syntax).
+                    * See the detailed [search syntax](https://help.shopify.com/api/getting-started/search-syntax)
+                    * for more information about using filters.
                     */
                     public CollectionsArguments query(String value) {
                         if (value != null) {
@@ -43543,7 +43555,8 @@ public class Storefront {
                     * - `updated_at`
                     * - `variants.price`
                     * - `vendor`
-                    * See the detailed [search syntax](https://help.shopify.com/api/getting-started/search-syntax).
+                    * See the detailed [search syntax](https://help.shopify.com/api/getting-started/search-syntax)
+                    * for more information about using filters.
                     */
                     public ProductsArguments query(String value) {
                         if (value != null) {
