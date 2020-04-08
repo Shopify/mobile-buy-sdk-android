@@ -1,8 +1,0 @@
-fragment CheckoutShippingRatesFragment on AvailableShippingRates {
-  ready
-  shippingRates {
-    handle
-    price
-    title
-  }
-}

@@ -1,5 +1,0 @@
-query CheckoutByIdQuery($checkoutId: ID!) {
-  node(id: $checkoutId) {
-    ...CheckoutFragment
-  }
-}

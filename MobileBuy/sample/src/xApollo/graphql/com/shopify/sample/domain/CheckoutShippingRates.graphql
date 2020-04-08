@@ -1,9 +1,0 @@
-query CheckoutShippingRatesQuery($checkoutId: ID!) {
-  node(id: $checkoutId) {
-    ... on Checkout {
-      availableShippingRates {
-        ... CheckoutShippingRatesFragment
-      }
-    }
-  }
-}

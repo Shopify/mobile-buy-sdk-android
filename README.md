@@ -1538,7 +1538,7 @@ mutation {
 
 ## Sample application [⤴](#table-of-contents)
 
-The Buy SDK includes a comprehensive sample application that covers the SDK's most common use cases. It's built on best practices and our recommended `ViewModel` architecture. You can use it as a template, a starting point, or a place to cherrypick components as needed. Check out the [Sample readme](/MobileBuy/sample/) for more details.
+To help get started, have a look at the [Storefront Sample android app](https://github.com/Shopify/mobile-buy-android-sample). It covers the most common use cases of the SDK and how to integrate with it. You can also use the [Storefront sample android app](https://github.com/Shopify/mobile-buy-android-sample) as a template, a starting point, or a place to cherrypick components as needed. Check out the [sample app's readme](https://github.com/Shopify/mobile-buy-android-sample) for more details.
 
 ## Contributions [⤴](#table-of-contents)
 
