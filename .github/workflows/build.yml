@@ -77,5 +77,11 @@ jobs:
             title: 'Update schema (auto-generated)',
             head: api_version + '-auto-generated',
             base: 'master',
-            body: "Release notes:\n - https://shopify.dev/concepts/about-apis/versioning/release-notes/" + api_version
-          })
+            body: "Release notes:" +
+              "\n- https://shopify.dev/concepts/about-apis/versioning/release-notes/" + api_version + "#storefront-api-changes" +
+              "\n" +
+              "\n**Steps to release:**" +
+              "\n- [ ] Make sure tests are passing" +
+              "\n- [ ] Set the SDK version number in [`gradle.properties`](https://github.com/Shopify/mobile-buy-sdk-android/blob/" + api_version + "-auto-generated/MobileBuy/buy3/gradle.properties#L1)" +
+              "\n- [ ] After merging this PR, remember to update the automatically created [draft release](https://github.com/Shopify/mobile-buy-sdk-android/releases) with the same version number"
+            })
