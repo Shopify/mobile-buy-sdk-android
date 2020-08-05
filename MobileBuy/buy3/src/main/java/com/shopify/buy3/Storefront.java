@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 public class Storefront {
-    public static final String API_VERSION = "2020-04";
+    public static final String API_VERSION = "2020-07";
 
     public static QueryRootQuery query(QueryRootQueryDefinition queryDef) {
         StringBuilder queryString = new StringBuilder("{");
@@ -8201,6 +8201,11 @@ public class Storefront {
         CUSTOMER_ALREADY_USED_ONCE_PER_CUSTOMER_DISCOUNT_NOTICE,
 
         /**
+        * Discount already applied.
+        */
+        DISCOUNT_ALREADY_APPLIED,
+
+        /**
         * Discount disabled.
         */
         DISCOUNT_DISABLED,
@@ -8388,6 +8393,10 @@ public class Storefront {
                     return CUSTOMER_ALREADY_USED_ONCE_PER_CUSTOMER_DISCOUNT_NOTICE;
                 }
 
+                case "DISCOUNT_ALREADY_APPLIED": {
+                    return DISCOUNT_ALREADY_APPLIED;
+                }
+
                 case "DISCOUNT_DISABLED": {
                     return DISCOUNT_DISABLED;
                 }
@@ -8541,6 +8550,10 @@ public class Storefront {
 
                 case CUSTOMER_ALREADY_USED_ONCE_PER_CUSTOMER_DISCOUNT_NOTICE: {
                     return "CUSTOMER_ALREADY_USED_ONCE_PER_CUSTOMER_DISCOUNT_NOTICE";
+                }
+
+                case DISCOUNT_ALREADY_APPLIED: {
+                    return "DISCOUNT_ALREADY_APPLIED";
                 }
 
                 case DISCOUNT_DISABLED: {
@@ -12706,7 +12719,7 @@ public class Storefront {
         AF,
 
         /**
-        * Antigua And Barbuda.
+        * Antigua & Barbuda.
         */
         AG,
 
@@ -12756,7 +12769,7 @@ public class Storefront {
         AW,
 
         /**
-        * Aland Islands.
+        * Åland Islands.
         */
         AX,
 
@@ -12766,7 +12779,7 @@ public class Storefront {
         AZ,
 
         /**
-        * Bosnia And Herzegovina.
+        * Bosnia & Herzegovina.
         */
         BA,
 
@@ -12811,7 +12824,7 @@ public class Storefront {
         BJ,
 
         /**
-        * Saint Barthélemy.
+        * St. Barthélemy.
         */
         BL,
 
@@ -12881,7 +12894,7 @@ public class Storefront {
         CC,
 
         /**
-        * Congo, The Democratic Republic Of The.
+        * Congo - Kinshasa.
         */
         CD,
 
@@ -12891,7 +12904,7 @@ public class Storefront {
         CF,
 
         /**
-        * Congo.
+        * Congo - Brazzaville.
         */
         CG,
 
@@ -12901,7 +12914,7 @@ public class Storefront {
         CH,
 
         /**
-        * Côte d'Ivoire.
+        * Côte d’Ivoire.
         */
         CI,
 
@@ -12916,7 +12929,7 @@ public class Storefront {
         CL,
 
         /**
-        * Republic of Cameroon.
+        * Cameroon.
         */
         CM,
 
@@ -12961,7 +12974,7 @@ public class Storefront {
         CY,
 
         /**
-        * Czech Republic.
+        * Czechia.
         */
         CZ,
 
@@ -13041,7 +13054,7 @@ public class Storefront {
         FJ,
 
         /**
-        * Falkland Islands (Malvinas).
+        * Falkland Islands.
         */
         FK,
 
@@ -13126,7 +13139,7 @@ public class Storefront {
         GR,
 
         /**
-        * South Georgia And The South Sandwich Islands.
+        * South Georgia & South Sandwich Islands.
         */
         GS,
 
@@ -13136,7 +13149,7 @@ public class Storefront {
         GT,
 
         /**
-        * Guinea Bissau.
+        * Guinea-Bissau.
         */
         GW,
 
@@ -13146,12 +13159,12 @@ public class Storefront {
         GY,
 
         /**
-        * Hong Kong.
+        * Hong Kong SAR China.
         */
         HK,
 
         /**
-        * Heard Island And Mcdonald Islands.
+        * Heard & McDonald Islands.
         */
         HM,
 
@@ -13191,7 +13204,7 @@ public class Storefront {
         IL,
 
         /**
-        * Isle Of Man.
+        * Isle of Man.
         */
         IM,
 
@@ -13211,7 +13224,7 @@ public class Storefront {
         IQ,
 
         /**
-        * Iran, Islamic Republic Of.
+        * Iran.
         */
         IR,
 
@@ -13271,12 +13284,12 @@ public class Storefront {
         KM,
 
         /**
-        * Saint Kitts And Nevis.
+        * St. Kitts & Nevis.
         */
         KN,
 
         /**
-        * Korea, Democratic People's Republic Of.
+        * North Korea.
         */
         KP,
 
@@ -13301,7 +13314,7 @@ public class Storefront {
         KZ,
 
         /**
-        * Lao People's Democratic Republic.
+        * Laos.
         */
         LA,
 
@@ -13311,7 +13324,7 @@ public class Storefront {
         LB,
 
         /**
-        * Saint Lucia.
+        * St. Lucia.
         */
         LC,
 
@@ -13351,7 +13364,7 @@ public class Storefront {
         LV,
 
         /**
-        * Libyan Arab Jamahiriya.
+        * Libya.
         */
         LY,
 
@@ -13366,7 +13379,7 @@ public class Storefront {
         MC,
 
         /**
-        * Moldova, Republic of.
+        * Moldova.
         */
         MD,
 
@@ -13376,7 +13389,7 @@ public class Storefront {
         ME,
 
         /**
-        * Saint Martin.
+        * St. Martin.
         */
         MF,
 
@@ -13396,7 +13409,7 @@ public class Storefront {
         ML,
 
         /**
-        * Myanmar.
+        * Myanmar (Burma).
         */
         MM,
 
@@ -13406,7 +13419,7 @@ public class Storefront {
         MN,
 
         /**
-        * Macao.
+        * Macao SAR China.
         */
         MO,
 
@@ -13561,17 +13574,17 @@ public class Storefront {
         PL,
 
         /**
-        * Saint Pierre And Miquelon.
+        * St. Pierre & Miquelon.
         */
         PM,
 
         /**
-        * Pitcairn.
+        * Pitcairn Islands.
         */
         PN,
 
         /**
-        * Palestinian Territory, Occupied.
+        * Palestinian Territories.
         */
         PS,
 
@@ -13591,7 +13604,7 @@ public class Storefront {
         QA,
 
         /**
-        * Reunion.
+        * Réunion.
         */
         RE,
 
@@ -13646,7 +13659,7 @@ public class Storefront {
         SG,
 
         /**
-        * Saint Helena.
+        * St. Helena.
         */
         SH,
 
@@ -13656,7 +13669,7 @@ public class Storefront {
         SI,
 
         /**
-        * Svalbard And Jan Mayen.
+        * Svalbard & Jan Mayen.
         */
         SJ,
 
@@ -13696,7 +13709,7 @@ public class Storefront {
         SS,
 
         /**
-        * Sao Tome And Principe.
+        * São Tomé & Príncipe.
         */
         ST,
 
@@ -13721,7 +13734,7 @@ public class Storefront {
         SZ,
 
         /**
-        * Turks and Caicos Islands.
+        * Turks & Caicos Islands.
         */
         TC,
 
@@ -13756,7 +13769,7 @@ public class Storefront {
         TK,
 
         /**
-        * Timor Leste.
+        * Timor-Leste.
         */
         TL,
 
@@ -13781,7 +13794,7 @@ public class Storefront {
         TR,
 
         /**
-        * Trinidad and Tobago.
+        * Trinidad & Tobago.
         */
         TT,
 
@@ -13796,7 +13809,7 @@ public class Storefront {
         TW,
 
         /**
-        * Tanzania, United Republic Of.
+        * Tanzania.
         */
         TZ,
 
@@ -13811,7 +13824,7 @@ public class Storefront {
         UG,
 
         /**
-        * United States Minor Outlying Islands.
+        * U.S. Outlying Islands.
         */
         UM,
 
@@ -13831,12 +13844,12 @@ public class Storefront {
         UZ,
 
         /**
-        * Holy See (Vatican City State).
+        * Vatican City.
         */
         VA,
 
         /**
-        * St. Vincent.
+        * St. Vincent & Grenadines.
         */
         VC,
 
@@ -13846,7 +13859,7 @@ public class Storefront {
         VE,
 
         /**
-        * Virgin Islands, British.
+        * British Virgin Islands.
         */
         VG,
 
@@ -13861,7 +13874,7 @@ public class Storefront {
         VU,
 
         /**
-        * Wallis And Futuna.
+        * Wallis & Futuna.
         */
         WF,
 
@@ -18822,7 +18835,7 @@ public class Storefront {
         }
 
         /**
-        * A list of tags assigned to the customer.
+        * A comma separated list of tags that have been added to the customer.
         * Additional access scope required: unauthenticated_read_customer_tags.
         */
         public CustomerQuery tags() {
@@ -19145,7 +19158,7 @@ public class Storefront {
         }
 
         /**
-        * A list of tags assigned to the customer.
+        * A comma separated list of tags that have been added to the customer.
         * Additional access scope required: unauthenticated_read_customer_tags.
         */
 
@@ -23220,7 +23233,10 @@ public class Storefront {
 
         /**
         * The value is specifically applied onto a particular line.
+        *
+        * @deprecated Use ACROSS instead.
         */
+        @Deprecated
         ONE,
 
         UNKNOWN_VALUE;
@@ -23239,10 +23255,6 @@ public class Storefront {
                     return EACH;
                 }
 
-                case "ONE": {
-                    return ONE;
-                }
-
                 default: {
                     return UNKNOWN_VALUE;
                 }
@@ -23256,10 +23268,6 @@ public class Storefront {
 
                 case EACH: {
                     return "EACH";
-                }
-
-                case ONE: {
-                    return "ONE";
                 }
 
                 default: {
@@ -37291,7 +37299,7 @@ public class Storefront {
                 }
 
                 /**
-                * A categorization that a product can be tagged with, commonly used for filtering and searching.
+                * A comma separated list of tags that have been added to the product.
                 * Additional access scope required for private apps: unauthenticated_read_product_tags.
                 */
                 public ProductQuery tags() {
@@ -37914,7 +37922,7 @@ public class Storefront {
                 }
 
                 /**
-                * A categorization that a product can be tagged with, commonly used for filtering and searching.
+                * A comma separated list of tags that have been added to the product.
                 * Additional access scope required for private apps: unauthenticated_read_product_tags.
                 */
 
@@ -39182,7 +39190,7 @@ public class Storefront {
                 }
 
                 /**
-                * Whether the product variant is available for sale but currently out of stock.
+                * Whether a product is out of stock but still available for purchase (used for backorders).
                 */
                 public ProductVariantQuery currentlyNotInStock() {
                     startField("currentlyNotInStock");
@@ -40031,7 +40039,7 @@ public class Storefront {
                 }
 
                 /**
-                * Whether the product variant is available for sale but currently out of stock.
+                * Whether a product is out of stock but still available for purchase (used for backorders).
                 */
 
                 public Boolean getCurrentlyNotInStock() {
@@ -43432,7 +43440,7 @@ public class Storefront {
                 }
 
                 /**
-                * Tags added to products.
+                * A comma separated list of tags that have been added to products.
                 * Additional access scope required: unauthenticated_read_product_tags.
                 *
                 * @deprecated Use `QueryRoot.productTags` instead.
@@ -43998,7 +44006,7 @@ public class Storefront {
                 }
 
                 /**
-                * Tags added to products.
+                * A comma separated list of tags that have been added to products.
                 * Additional access scope required: unauthenticated_read_product_tags.
                 *
                 * @deprecated Use `QueryRoot.productTags` instead.
