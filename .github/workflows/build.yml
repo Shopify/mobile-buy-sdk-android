@@ -1,6 +1,7 @@
 name: Build SDK for latest API version
 
 on: 
+  workflow_dispatch:
   schedule:
     # Run on midnight UTC on the first of jan/apr/jul/oct
     # API is released 1PM EDT/EST
