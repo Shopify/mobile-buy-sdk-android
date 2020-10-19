@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 public class Storefront {
-    public static final String API_VERSION = "2020-07";
+    public static final String API_VERSION = "2020-10";
 
     public static QueryRootQuery query(QueryRootQueryDefinition queryDef) {
         StringBuilder queryString = new StringBuilder("{");
@@ -3405,7 +3405,8 @@ public class Storefront {
         }
 
         /**
-        * The sum of all the prices of all the items in the checkout. Taxes, shipping and discounts excluded.
+        * The sum of all the prices of all the items in the checkout. Duties, taxes, shipping and discounts
+        * excluded.
         */
         public CheckoutQuery lineItemsSubtotalPrice(MoneyV2QueryDefinition queryDef) {
             startField("lineItemsSubtotalPrice");
@@ -3462,8 +3463,8 @@ public class Storefront {
         }
 
         /**
-        * The amount left to be paid. This is equal to the cost of the line items, taxes and shipping minus
-        * discounts and gift cards.
+        * The amount left to be paid. This is equal to the cost of the line items, duties, taxes and shipping
+        * minus discounts and gift cards.
         */
         public CheckoutQuery paymentDueV2(MoneyV2QueryDefinition queryDef) {
             startField("paymentDueV2");
@@ -3548,7 +3549,7 @@ public class Storefront {
         }
 
         /**
-        * Price of the checkout before shipping and taxes.
+        * Price of the checkout before duties, shipping and taxes.
         */
         public CheckoutQuery subtotalPriceV2(MoneyV2QueryDefinition queryDef) {
             startField("subtotalPriceV2");
@@ -3591,7 +3592,7 @@ public class Storefront {
         }
 
         /**
-        * The sum of all the prices of all the items in the checkout, taxes and discounts included.
+        * The sum of all the prices of all the items in the checkout, duties, taxes and discounts included.
         */
         public CheckoutQuery totalPriceV2(MoneyV2QueryDefinition queryDef) {
             startField("totalPriceV2");
@@ -4074,7 +4075,8 @@ public class Storefront {
         }
 
         /**
-        * The sum of all the prices of all the items in the checkout. Taxes, shipping and discounts excluded.
+        * The sum of all the prices of all the items in the checkout. Duties, taxes, shipping and discounts
+        * excluded.
         */
 
         public MoneyV2 getLineItemsSubtotalPrice() {
@@ -4142,8 +4144,8 @@ public class Storefront {
         }
 
         /**
-        * The amount left to be paid. This is equal to the cost of the line items, taxes and shipping minus
-        * discounts and gift cards.
+        * The amount left to be paid. This is equal to the cost of the line items, duties, taxes and shipping
+        * minus discounts and gift cards.
         */
 
         public MoneyV2 getPaymentDueV2() {
@@ -4239,7 +4241,7 @@ public class Storefront {
         }
 
         /**
-        * Price of the checkout before shipping and taxes.
+        * Price of the checkout before duties, shipping and taxes.
         */
 
         public MoneyV2 getSubtotalPriceV2() {
@@ -4293,7 +4295,7 @@ public class Storefront {
         }
 
         /**
-        * The sum of all the prices of all the items in the checkout, taxes and discounts included.
+        * The sum of all the prices of all the items in the checkout, duties, taxes and discounts included.
         */
 
         public MoneyV2 getTotalPriceV2() {
@@ -8172,7 +8174,7 @@ public class Storefront {
     }
 
     /**
-    * Possible error codes that could be returned by a checkout mutation.
+    * Possible error codes that could be returned by CheckoutUserError.
     */
     public enum CheckoutErrorCode {
         /**
@@ -16726,6 +16728,11 @@ public class Storefront {
         EGP,
 
         /**
+        * Eritrean Nakfa (ERN).
+        */
+        ERN,
+
+        /**
         * Ethiopian Birr (ETB).
         */
         ETB,
@@ -16876,6 +16883,11 @@ public class Storefront {
         KHR,
 
         /**
+        * Kiribati Dollar (KID).
+        */
+        KID,
+
+        /**
         * Comorian Franc (KMF).
         */
         KMF,
@@ -16974,6 +16986,11 @@ public class Storefront {
         * Macanese Pataca (MOP).
         */
         MOP,
+
+        /**
+        * Mauritanian Ouguiya (MRU).
+        */
+        MRU,
 
         /**
         * Mauritian Rupee (MUR).
@@ -17141,6 +17158,11 @@ public class Storefront {
         SLL,
 
         /**
+        * Somali Shilling (SOS).
+        */
+        SOS,
+
+        /**
         * Surinamese Dollar (SRD).
         */
         SRD,
@@ -17237,8 +17259,16 @@ public class Storefront {
 
         /**
         * Venezuelan Bolivares (VEF).
+        *
+        * @deprecated `VEF` is deprecated. Use `VES` available from version `2020-10` onwards instead.
         */
+        @Deprecated
         VEF,
+
+        /**
+        * Venezuelan Bolivares (VES).
+        */
+        VES,
 
         /**
         * Vietnamese đồng (VND).
@@ -17450,6 +17480,10 @@ public class Storefront {
                     return EGP;
                 }
 
+                case "ERN": {
+                    return ERN;
+                }
+
                 case "ETB": {
                     return ETB;
                 }
@@ -17570,6 +17604,10 @@ public class Storefront {
                     return KHR;
                 }
 
+                case "KID": {
+                    return KID;
+                }
+
                 case "KMF": {
                     return KMF;
                 }
@@ -17648,6 +17686,10 @@ public class Storefront {
 
                 case "MOP": {
                     return MOP;
+                }
+
+                case "MRU": {
+                    return MRU;
                 }
 
                 case "MUR": {
@@ -17782,6 +17824,10 @@ public class Storefront {
                     return SLL;
                 }
 
+                case "SOS": {
+                    return SOS;
+                }
+
                 case "SRD": {
                     return SRD;
                 }
@@ -17858,8 +17904,8 @@ public class Storefront {
                     return UZS;
                 }
 
-                case "VEF": {
-                    return VEF;
+                case "VES": {
+                    return VES;
                 }
 
                 case "VND": {
@@ -18061,6 +18107,10 @@ public class Storefront {
                     return "EGP";
                 }
 
+                case ERN: {
+                    return "ERN";
+                }
+
                 case ETB: {
                     return "ETB";
                 }
@@ -18181,6 +18231,10 @@ public class Storefront {
                     return "KHR";
                 }
 
+                case KID: {
+                    return "KID";
+                }
+
                 case KMF: {
                     return "KMF";
                 }
@@ -18259,6 +18313,10 @@ public class Storefront {
 
                 case MOP: {
                     return "MOP";
+                }
+
+                case MRU: {
+                    return "MRU";
                 }
 
                 case MUR: {
@@ -18393,6 +18451,10 @@ public class Storefront {
                     return "SLL";
                 }
 
+                case SOS: {
+                    return "SOS";
+                }
+
                 case SRD: {
                     return "SRD";
                 }
@@ -18469,8 +18531,8 @@ public class Storefront {
                     return "UZS";
                 }
 
-                case VEF: {
-                    return "VEF";
+                case VES: {
+                    return "VES";
                 }
 
                 case VND: {
@@ -21394,7 +21456,7 @@ public class Storefront {
     }
 
     /**
-    * Possible error codes that could be returned by a customer mutation.
+    * Possible error codes that could be returned by CustomerUserError.
     */
     public enum CustomerErrorCode {
         /**
@@ -30263,10 +30325,7 @@ public class Storefront {
 
                 /**
                 * Adds a list of line items to a checkout.
-                *
-                * @deprecated Use `checkoutLineItemsReplace` instead
                 */
-                @Deprecated
                 public MutationQuery checkoutLineItemsAdd(List<CheckoutLineItemInput> lineItems, ID checkoutId, CheckoutLineItemsAddPayloadQueryDefinition queryDef) {
                     startField("checkoutLineItemsAdd");
 
@@ -30296,10 +30355,7 @@ public class Storefront {
 
                 /**
                 * Removes line items from an existing checkout.
-                *
-                * @deprecated Use `checkoutLineItemsReplace` instead
                 */
-                @Deprecated
                 public MutationQuery checkoutLineItemsRemove(ID checkoutId, List<ID> lineItemIds, CheckoutLineItemsRemovePayloadQueryDefinition queryDef) {
                     startField("checkoutLineItemsRemove");
 
@@ -30359,10 +30415,7 @@ public class Storefront {
 
                 /**
                 * Updates line items on a checkout.
-                *
-                * @deprecated Use `checkoutLineItemsReplace` instead
                 */
-                @Deprecated
                 public MutationQuery checkoutLineItemsUpdate(ID checkoutId, List<CheckoutLineItemUpdateInput> lineItems, CheckoutLineItemsUpdatePayloadQueryDefinition queryDef) {
                     startField("checkoutLineItemsUpdate");
 
@@ -31591,8 +31644,6 @@ public class Storefront {
 
                 /**
                 * Adds a list of line items to a checkout.
-                *
-                * @deprecated Use `checkoutLineItemsReplace` instead
                 */
 
                 public CheckoutLineItemsAddPayload getCheckoutLineItemsAdd() {
@@ -31606,8 +31657,6 @@ public class Storefront {
 
                 /**
                 * Removes line items from an existing checkout.
-                *
-                * @deprecated Use `checkoutLineItemsReplace` instead
                 */
 
                 public CheckoutLineItemsRemovePayload getCheckoutLineItemsRemove() {
@@ -31634,8 +31683,6 @@ public class Storefront {
 
                 /**
                 * Updates line items on a checkout.
-                *
-                * @deprecated Use `checkoutLineItemsReplace` instead
                 */
 
                 public CheckoutLineItemsUpdatePayload getCheckoutLineItemsUpdate() {
@@ -32342,8 +32389,8 @@ public class Storefront {
 
                 /**
                 * The subtotal of line items and their discounts, excluding line items that have been removed. Does
-                * not contain order-level discounts, shipping costs, or shipping discounts. Taxes are not included
-                * unless the order is a taxes-included order.
+                * not contain order-level discounts, duties, shipping costs, or shipping discounts. Taxes are not
+                * included unless the order is a taxes-included order.
                 */
                 public OrderQuery currentSubtotalPrice(MoneyV2QueryDefinition queryDef) {
                     startField("currentSubtotalPrice");
@@ -32356,8 +32403,8 @@ public class Storefront {
                 }
 
                 /**
-                * The total amount of the order, including taxes and discounts, minus amounts for line items that have
-                * been removed.
+                * The total amount of the order, including duties, taxes and discounts, minus amounts for line items
+                * that have been removed.
                 */
                 public OrderQuery currentTotalPrice(MoneyV2QueryDefinition queryDef) {
                     startField("currentTotalPrice");
@@ -32714,7 +32761,7 @@ public class Storefront {
                 }
 
                 /**
-                * Price of the order before shipping and taxes.
+                * Price of the order before duties, shipping and taxes.
                 */
                 public OrderQuery subtotalPriceV2(MoneyV2QueryDefinition queryDef) {
                     startField("subtotalPriceV2");
@@ -32785,8 +32832,8 @@ public class Storefront {
                 }
 
                 /**
-                * The sum of all the prices of all the items in the order, taxes and discounts included (must be
-                * positive).
+                * The sum of all the prices of all the items in the order, duties, taxes and discounts included (must
+                * be positive).
                 */
                 public OrderQuery totalPriceV2(MoneyV2QueryDefinition queryDef) {
                     startField("totalPriceV2");
@@ -33228,8 +33275,8 @@ public class Storefront {
 
                 /**
                 * The subtotal of line items and their discounts, excluding line items that have been removed. Does
-                * not contain order-level discounts, shipping costs, or shipping discounts. Taxes are not included
-                * unless the order is a taxes-included order.
+                * not contain order-level discounts, duties, shipping costs, or shipping discounts. Taxes are not
+                * included unless the order is a taxes-included order.
                 */
 
                 public MoneyV2 getCurrentSubtotalPrice() {
@@ -33242,8 +33289,8 @@ public class Storefront {
                 }
 
                 /**
-                * The total amount of the order, including taxes and discounts, minus amounts for line items that have
-                * been removed.
+                * The total amount of the order, including duties, taxes and discounts, minus amounts for line items
+                * that have been removed.
                 */
 
                 public MoneyV2 getCurrentTotalPrice() {
@@ -33503,7 +33550,7 @@ public class Storefront {
                 }
 
                 /**
-                * Price of the order before shipping and taxes.
+                * Price of the order before duties, shipping and taxes.
                 */
 
                 public MoneyV2 getSubtotalPriceV2() {
@@ -33545,8 +33592,8 @@ public class Storefront {
                 }
 
                 /**
-                * The sum of all the prices of all the items in the order, taxes and discounts included (must be
-                * positive).
+                * The sum of all the prices of all the items in the order, duties, taxes and discounts included (must
+                * be positive).
                 */
 
                 public MoneyV2 getTotalPriceV2() {
@@ -43622,6 +43669,19 @@ public class Storefront {
                 }
 
                 /**
+                * The shop’s shipping policy.
+                */
+                public ShopQuery shippingPolicy(ShopPolicyQueryDefinition queryDef) {
+                    startField("shippingPolicy");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new ShopPolicyQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
                 * Countries that the shop ships to.
                 */
                 public ShopQuery shipsToCountries() {
@@ -43779,6 +43839,17 @@ public class Storefront {
                             }
 
                             case "refundPolicy": {
+                                ShopPolicy optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = new ShopPolicy(jsonAsObject(field.getValue(), key));
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "shippingPolicy": {
                                 ShopPolicy optional1 = null;
                                 if (!field.getValue().isJsonNull()) {
                                     optional1 = new ShopPolicy(jsonAsObject(field.getValue(), key));
@@ -44065,6 +44136,19 @@ public class Storefront {
                 }
 
                 /**
+                * The shop’s shipping policy.
+                */
+
+                public ShopPolicy getShippingPolicy() {
+                    return (ShopPolicy) get("shippingPolicy");
+                }
+
+                public Shop setShippingPolicy(ShopPolicy arg) {
+                    optimisticData.put(getKey("shippingPolicy"), arg);
+                    return this;
+                }
+
+                /**
                 * Countries that the shop ships to.
                 */
 
@@ -44138,6 +44222,8 @@ public class Storefront {
                         case "products": return true;
 
                         case "refundPolicy": return true;
+
+                        case "shippingPolicy": return true;
 
                         case "shipsToCountries": return false;
 
