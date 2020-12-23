@@ -294,6 +294,22 @@ GraphClient.builder(this)
   .build()
 ```
 
+**Kotlin**
+```kotlin
+val okHttpClient = OkHttpClient.Builder()
+            .addNetworkInterceptor(HttpLoggingInterceptor().setLevel(BuildConfig.OKHTTP_LOG_LEVEL))
+            .build()
+
+GraphClient.build(context, BuildConfig.SHOP_DOMAIN, BuildConfig.API_KEY) {
+                this.httpClient = okHttpClient
+                httpCache(context.cacheDir, configure = {
+                  cacheMaxSizeBytes = 1024 * 1024 * 10
+                defaultCachePolicy = CACHE_FIRST.expireAfter(20, TimeUnit.MINUTES)
+          })
+}
+```
+
+
 GraphQL specifies two types of operations: queries and mutations. The `GraphClient` exposes these as two type-safe operations, while also offering some conveniences for retrying and polling in each.
 
 ### Queries [⤴](#table-of-contents)
