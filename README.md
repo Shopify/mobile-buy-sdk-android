@@ -247,6 +247,22 @@ Storefront.query(rootQueryBuilder ->
 );
 ```
 
+**Kotlin**
+```kotlin
+ val query = Storefront.query { query ->
+            query.node(ID("NkZmFzZGZhc"), { nodeQuery ->
+                nodeQuery.onCollection { collectionQuery ->
+                    collectionQuery.withAlias("collection").title().description()
+                }
+            }).node(ID("GZhc2Rm"), { nodeQuery ->
+                nodeQuery.onCollection { collectionQuery ->
+                    collectionQuery.withAlias("product").title().description()
+                }
+            })
+        }
+```
+
+
 Accessing the aliased nodes is similar to a plain node:
 
 ```java
