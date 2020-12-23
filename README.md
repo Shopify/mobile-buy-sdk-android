@@ -350,6 +350,7 @@ call.enqueue(new GraphCall.Callback<Storefront.QueryRoot>() {
 });
 ```
 
+**Kotlin**
 ```kotlin
 val graphClient = .... 
 
@@ -429,6 +430,46 @@ call.enqueue(new GraphCall.Callback<Storefront.Mutation>() {
     Log.e(TAG, "Failed to execute query", error);
   }
 });
+```
+
+**Kotlin**
+```kotlin
+val input = CustomerResetInput("c29tZSB0b2tlbiB2YWx1ZQ", "abc123")
+        val query = mutation { rootQuery: MutationQuery ->
+            rootQuery
+                .customerReset(
+                    ID("YSBjdXN0b21lciBpZA"), input
+                ) { payloadQuery: CustomerResetPayloadQuery ->
+                    payloadQuery
+                        .customer { customerQuery: CustomerQuery ->
+                            customerQuery
+                                .firstName()
+                                .lastName()
+                        }
+                        .customerUserErrors { userErrorQuery: CustomerUserErrorQuery ->
+                            userErrorQuery
+                                .field()
+                                .message()
+                        }
+                }
+        }
+
+        val call: MutationGraphCall = graphClient.mutateGraph(query)
+
+        call.enqueue { result -> 
+            if (result is GraphCallResult.Failure) {
+                Log.e(TAG, "Failed to execute query", result.error)
+            } else if (result is GraphCallResult.Success) {
+                if (result.response.data!!.getCustomerReset().getUserErrors().isEmpty()) {
+                    val firstName: String =
+                        result.response.data!!.getCustomerReset().getCustomer().getFirstName()
+                    val lastName: String =
+                        result.response.data!!.getCustomerReset().getCustomer().getLastName()
+                } else {
+                    Log.e(TAG, "Failed to reset customer")
+                }
+            }
+        }
 ```
 
 A mutation will often rely on some kind of user input. Although you should always validate user input before posting a mutation, there are never guarantees when it comes to dynamic data. For this reason, you should always request the `userErrors` field on mutations (where available) to provide useful feedback in your UI regarding any issues that were encountered in the mutation query. These errors can include anything from `Invalid email address` to `Password is too short`.
