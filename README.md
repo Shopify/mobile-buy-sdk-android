@@ -350,6 +350,29 @@ call.enqueue(new GraphCall.Callback<Storefront.QueryRoot>() {
 });
 ```
 
+```kotlin
+val graphClient = .... 
+
+val query = Storefront.query { query ->
+        query.shop { shopQuery ->
+            shopQuery.name()
+        }
+}
+
+graphClient.queryGraph(query)
+            .enqueue {
+                loaderVisibility = true
+                when(it) {
+                    is GraphCallResult.Failure -> {
+                        Log.e(TAG, "Failed to execute", it.error)
+                    }
+
+                    is GraphCallResult.Success -> {
+                        val name = it.response.data!!.shop.name
+                    }
+                }
+}
+```
 Learn more about [GraphQL queries](http://graphql.org/learn/queries/).
 
 ### Mutations [⤴](#table-of-contents)
