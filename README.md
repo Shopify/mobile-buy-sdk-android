@@ -124,6 +124,15 @@ QueryRootQuery query = Storefront.query(new Storefront.QueryRootQueryDefinition(
 })
 ```
 
+**Kotlin**
+```kotlin
+val query = Storefront.query { query ->
+    query.shop { shop -> 
+        shop.name()
+    }
+}
+```
+
 In this example:
 
 -  `Storefront.query` is the entry point for building GraphQL queries.
