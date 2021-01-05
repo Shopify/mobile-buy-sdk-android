@@ -13,7 +13,7 @@ jobs:
       id: version
       run: |
         API_VERSION="$(date +'%Y-%m')"
-        echo "::set-env name=API_VERSION::$API_VERSION"
+        echo "API_VERSION=$API_VERSION" >> $GITHUB_ENV
 
     - uses: actions/checkout@v2
     - name: Set up Ruby 2.6
