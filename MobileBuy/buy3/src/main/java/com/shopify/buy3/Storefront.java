@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 public class Storefront {
-    public static final String API_VERSION = "2020-10";
+    public static final String API_VERSION = "2021-01";
 
     public static QueryRootQuery query(QueryRootQueryDefinition queryDef) {
         StringBuilder queryString = new StringBuilder("{");
@@ -1513,6 +1513,9 @@ public class Storefront {
         void define(ArticleConnectionQuery _queryBuilder);
     }
 
+    /**
+    * An auto-generated type for paginating through multiple Articles.
+    */
     public static class ArticleConnectionQuery extends Query<ArticleConnectionQuery> {
         ArticleConnectionQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
@@ -1545,6 +1548,9 @@ public class Storefront {
         }
     }
 
+    /**
+    * An auto-generated type for paginating through multiple Articles.
+    */
     public static class ArticleConnection extends AbstractResponse<ArticleConnection> {
         public ArticleConnection() {
         }
@@ -1627,6 +1633,9 @@ public class Storefront {
         void define(ArticleEdgeQuery _queryBuilder);
     }
 
+    /**
+    * An auto-generated type which holds one Article and a cursor during pagination.
+    */
     public static class ArticleEdgeQuery extends Query<ArticleEdgeQuery> {
         ArticleEdgeQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
@@ -1655,6 +1664,9 @@ public class Storefront {
         }
     }
 
+    /**
+    * An auto-generated type which holds one Article and a cursor during pagination.
+    */
     public static class ArticleEdge extends AbstractResponse<ArticleEdge> {
         public ArticleEdge() {
         }
@@ -2506,6 +2518,19 @@ public class Storefront {
         }
 
         /**
+        * The blog's SEO information.
+        */
+        public BlogQuery seo(SEOQueryDefinition queryDef) {
+            startField("seo");
+
+            _queryBuilder.append('{');
+            queryDef.define(new SEOQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
         * The blogs’s title.
         */
         public BlogQuery title() {
@@ -2572,6 +2597,17 @@ public class Storefront {
 
                     case "id": {
                         responseData.put(key, new ID(jsonAsString(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "seo": {
+                        SEO optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new SEO(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
 
                         break;
                     }
@@ -2669,6 +2705,19 @@ public class Storefront {
         }
 
         /**
+        * The blog's SEO information.
+        */
+
+        public SEO getSeo() {
+            return (SEO) get("seo");
+        }
+
+        public Blog setSeo(SEO arg) {
+            optimisticData.put(getKey("seo"), arg);
+            return this;
+        }
+
+        /**
         * The blogs’s title.
         */
 
@@ -2706,6 +2755,8 @@ public class Storefront {
 
                 case "id": return false;
 
+                case "seo": return true;
+
                 case "title": return false;
 
                 case "url": return false;
@@ -2719,6 +2770,9 @@ public class Storefront {
         void define(BlogConnectionQuery _queryBuilder);
     }
 
+    /**
+    * An auto-generated type for paginating through multiple Blogs.
+    */
     public static class BlogConnectionQuery extends Query<BlogConnectionQuery> {
         BlogConnectionQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
@@ -2751,6 +2805,9 @@ public class Storefront {
         }
     }
 
+    /**
+    * An auto-generated type for paginating through multiple Blogs.
+    */
     public static class BlogConnection extends AbstractResponse<BlogConnection> {
         public BlogConnection() {
         }
@@ -2833,6 +2890,9 @@ public class Storefront {
         void define(BlogEdgeQuery _queryBuilder);
     }
 
+    /**
+    * An auto-generated type which holds one Blog and a cursor during pagination.
+    */
     public static class BlogEdgeQuery extends Query<BlogEdgeQuery> {
         BlogEdgeQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
@@ -2861,6 +2921,9 @@ public class Storefront {
         }
     }
 
+    /**
+    * An auto-generated type which holds one Blog and a cursor during pagination.
+    */
     public static class BlogEdge extends AbstractResponse<BlogEdge> {
         public BlogEdge() {
         }
@@ -9649,6 +9712,9 @@ public class Storefront {
         void define(CheckoutLineItemConnectionQuery _queryBuilder);
     }
 
+    /**
+    * An auto-generated type for paginating through multiple CheckoutLineItems.
+    */
     public static class CheckoutLineItemConnectionQuery extends Query<CheckoutLineItemConnectionQuery> {
         CheckoutLineItemConnectionQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
@@ -9681,6 +9747,9 @@ public class Storefront {
         }
     }
 
+    /**
+    * An auto-generated type for paginating through multiple CheckoutLineItems.
+    */
     public static class CheckoutLineItemConnection extends AbstractResponse<CheckoutLineItemConnection> {
         public CheckoutLineItemConnection() {
         }
@@ -9763,6 +9832,9 @@ public class Storefront {
         void define(CheckoutLineItemEdgeQuery _queryBuilder);
     }
 
+    /**
+    * An auto-generated type which holds one CheckoutLineItem and a cursor during pagination.
+    */
     public static class CheckoutLineItemEdgeQuery extends Query<CheckoutLineItemEdgeQuery> {
         CheckoutLineItemEdgeQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
@@ -9791,6 +9863,9 @@ public class Storefront {
         }
     }
 
+    /**
+    * An auto-generated type which holds one CheckoutLineItem and a cursor during pagination.
+    */
     public static class CheckoutLineItemEdge extends AbstractResponse<CheckoutLineItemEdge> {
         public CheckoutLineItemEdge() {
         }
@@ -11883,6 +11958,9 @@ public class Storefront {
         void define(CollectionConnectionQuery _queryBuilder);
     }
 
+    /**
+    * An auto-generated type for paginating through multiple Collections.
+    */
     public static class CollectionConnectionQuery extends Query<CollectionConnectionQuery> {
         CollectionConnectionQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
@@ -11915,6 +11993,9 @@ public class Storefront {
         }
     }
 
+    /**
+    * An auto-generated type for paginating through multiple Collections.
+    */
     public static class CollectionConnection extends AbstractResponse<CollectionConnection> {
         public CollectionConnection() {
         }
@@ -11997,6 +12078,9 @@ public class Storefront {
         void define(CollectionEdgeQuery _queryBuilder);
     }
 
+    /**
+    * An auto-generated type which holds one Collection and a cursor during pagination.
+    */
     public static class CollectionEdgeQuery extends Query<CollectionEdgeQuery> {
         CollectionEdgeQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
@@ -12025,6 +12109,9 @@ public class Storefront {
         }
     }
 
+    /**
+    * An auto-generated type which holds one Collection and a cursor during pagination.
+    */
     public static class CollectionEdge extends AbstractResponse<CollectionEdge> {
         public CollectionEdge() {
         }
@@ -12486,6 +12573,9 @@ public class Storefront {
         void define(CommentConnectionQuery _queryBuilder);
     }
 
+    /**
+    * An auto-generated type for paginating through multiple Comments.
+    */
     public static class CommentConnectionQuery extends Query<CommentConnectionQuery> {
         CommentConnectionQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
@@ -12518,6 +12608,9 @@ public class Storefront {
         }
     }
 
+    /**
+    * An auto-generated type for paginating through multiple Comments.
+    */
     public static class CommentConnection extends AbstractResponse<CommentConnection> {
         public CommentConnection() {
         }
@@ -12600,6 +12693,9 @@ public class Storefront {
         void define(CommentEdgeQuery _queryBuilder);
     }
 
+    /**
+    * An auto-generated type which holds one Comment and a cursor during pagination.
+    */
     public static class CommentEdgeQuery extends Query<CommentEdgeQuery> {
         CommentEdgeQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
@@ -12628,6 +12724,9 @@ public class Storefront {
         }
     }
 
+    /**
+    * An auto-generated type which holds one Comment and a cursor during pagination.
+    */
     public static class CommentEdge extends AbstractResponse<CommentEdge> {
         public CommentEdge() {
         }
@@ -13161,7 +13260,7 @@ public class Storefront {
         GY,
 
         /**
-        * Hong Kong SAR China.
+        * Hong Kong SAR.
         */
         HK,
 
@@ -13421,7 +13520,7 @@ public class Storefront {
         MN,
 
         /**
-        * Macao SAR China.
+        * Macao SAR.
         */
         MO,
 
@@ -16645,9 +16744,14 @@ public class Storefront {
         BWP,
 
         /**
+        * Belarusian Ruble (BYN).
+        */
+        BYN,
+
+        /**
         * Belarusian Ruble (BYR).
         *
-        * @deprecated `BYR` is deprecated. Use `BYN` available from version `2019-10` onwards instead.
+        * @deprecated `BYR` is deprecated. Use `BYN` available from version `2021-01` onwards instead.
         */
         @Deprecated
         BYR,
@@ -17420,6 +17524,10 @@ public class Storefront {
                     return BWP;
                 }
 
+                case "BYN": {
+                    return BYN;
+                }
+
                 case "BZD": {
                     return BZD;
                 }
@@ -18045,6 +18153,10 @@ public class Storefront {
 
                 case BWP: {
                     return "BWP";
+                }
+
+                case BYN: {
+                    return "BYN";
                 }
 
                 case BZD: {
@@ -23343,6 +23455,9 @@ public class Storefront {
         void define(DiscountApplicationConnectionQuery _queryBuilder);
     }
 
+    /**
+    * An auto-generated type for paginating through multiple DiscountApplications.
+    */
     public static class DiscountApplicationConnectionQuery extends Query<DiscountApplicationConnectionQuery> {
         DiscountApplicationConnectionQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
@@ -23375,6 +23490,9 @@ public class Storefront {
         }
     }
 
+    /**
+    * An auto-generated type for paginating through multiple DiscountApplications.
+    */
     public static class DiscountApplicationConnection extends AbstractResponse<DiscountApplicationConnection> {
         public DiscountApplicationConnection() {
         }
@@ -23457,6 +23575,9 @@ public class Storefront {
         void define(DiscountApplicationEdgeQuery _queryBuilder);
     }
 
+    /**
+    * An auto-generated type which holds one DiscountApplication and a cursor during pagination.
+    */
     public static class DiscountApplicationEdgeQuery extends Query<DiscountApplicationEdgeQuery> {
         DiscountApplicationEdgeQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
@@ -23485,6 +23606,9 @@ public class Storefront {
         }
     }
 
+    /**
+    * An auto-generated type which holds one DiscountApplication and a cursor during pagination.
+    */
     public static class DiscountApplicationEdge extends AbstractResponse<DiscountApplicationEdge> {
         public DiscountApplicationEdge() {
         }
@@ -24803,6 +24927,9 @@ public class Storefront {
         void define(FulfillmentLineItemConnectionQuery _queryBuilder);
     }
 
+    /**
+    * An auto-generated type for paginating through multiple FulfillmentLineItems.
+    */
     public static class FulfillmentLineItemConnectionQuery extends Query<FulfillmentLineItemConnectionQuery> {
         FulfillmentLineItemConnectionQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
@@ -24835,6 +24962,9 @@ public class Storefront {
         }
     }
 
+    /**
+    * An auto-generated type for paginating through multiple FulfillmentLineItems.
+    */
     public static class FulfillmentLineItemConnection extends AbstractResponse<FulfillmentLineItemConnection> {
         public FulfillmentLineItemConnection() {
         }
@@ -24917,6 +25047,9 @@ public class Storefront {
         void define(FulfillmentLineItemEdgeQuery _queryBuilder);
     }
 
+    /**
+    * An auto-generated type which holds one FulfillmentLineItem and a cursor during pagination.
+    */
     public static class FulfillmentLineItemEdgeQuery extends Query<FulfillmentLineItemEdgeQuery> {
         FulfillmentLineItemEdgeQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
@@ -24945,6 +25078,9 @@ public class Storefront {
         }
     }
 
+    /**
+    * An auto-generated type which holds one FulfillmentLineItem and a cursor during pagination.
+    */
     public static class FulfillmentLineItemEdge extends AbstractResponse<FulfillmentLineItemEdge> {
         public FulfillmentLineItemEdge() {
         }
@@ -25413,6 +25549,15 @@ public class Storefront {
         }
 
         /**
+        * The original height of the image in pixels. Returns `null` if the image is not hosted by Shopify.
+        */
+        public ImageQuery height() {
+            startField("height");
+
+            return this;
+        }
+
+        /**
         * A unique identifier for the image.
         */
         public ImageQuery id() {
@@ -25576,6 +25721,15 @@ public class Storefront {
 
             return this;
         }
+
+        /**
+        * The original width of the image in pixels. Returns `null` if the image is not hosted by Shopify.
+        */
+        public ImageQuery width() {
+            startField("width");
+
+            return this;
+        }
     }
 
     /**
@@ -25594,6 +25748,17 @@ public class Storefront {
                         String optional1 = null;
                         if (!field.getValue().isJsonNull()) {
                             optional1 = jsonAsString(field.getValue(), key);
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "height": {
+                        Integer optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = jsonAsInteger(field.getValue(), key);
                         }
 
                         responseData.put(key, optional1);
@@ -25630,6 +25795,17 @@ public class Storefront {
                         break;
                     }
 
+                    case "width": {
+                        Integer optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = jsonAsInteger(field.getValue(), key);
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
                     case "__typename": {
                         responseData.put(key, jsonAsString(field.getValue(), key));
                         break;
@@ -25655,6 +25831,19 @@ public class Storefront {
 
         public Image setAltText(String arg) {
             optimisticData.put(getKey("altText"), arg);
+            return this;
+        }
+
+        /**
+        * The original height of the image in pixels. Returns `null` if the image is not hosted by Shopify.
+        */
+
+        public Integer getHeight() {
+            return (Integer) get("height");
+        }
+
+        public Image setHeight(Integer arg) {
+            optimisticData.put(getKey("height"), arg);
             return this;
         }
 
@@ -25758,9 +25947,24 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * The original width of the image in pixels. Returns `null` if the image is not hosted by Shopify.
+        */
+
+        public Integer getWidth() {
+            return (Integer) get("width");
+        }
+
+        public Image setWidth(Integer arg) {
+            optimisticData.put(getKey("width"), arg);
+            return this;
+        }
+
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "altText": return false;
+
+                case "height": return false;
 
                 case "id": return false;
 
@@ -25769,6 +25973,8 @@ public class Storefront {
                 case "src": return false;
 
                 case "transformedSrc": return false;
+
+                case "width": return false;
 
                 default: return false;
             }
@@ -25779,6 +25985,9 @@ public class Storefront {
         void define(ImageConnectionQuery _queryBuilder);
     }
 
+    /**
+    * An auto-generated type for paginating through multiple Images.
+    */
     public static class ImageConnectionQuery extends Query<ImageConnectionQuery> {
         ImageConnectionQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
@@ -25811,6 +26020,9 @@ public class Storefront {
         }
     }
 
+    /**
+    * An auto-generated type for paginating through multiple Images.
+    */
     public static class ImageConnection extends AbstractResponse<ImageConnection> {
         public ImageConnection() {
         }
@@ -25958,6 +26170,9 @@ public class Storefront {
         void define(ImageEdgeQuery _queryBuilder);
     }
 
+    /**
+    * An auto-generated type which holds one Image and a cursor during pagination.
+    */
     public static class ImageEdgeQuery extends Query<ImageEdgeQuery> {
         ImageEdgeQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
@@ -25986,6 +26201,9 @@ public class Storefront {
         }
     }
 
+    /**
+    * An auto-generated type which holds one Image and a cursor during pagination.
+    */
     public static class ImageEdge extends AbstractResponse<ImageEdge> {
         public ImageEdge() {
         }
@@ -26819,6 +27037,9 @@ public class Storefront {
         void define(MailingAddressConnectionQuery _queryBuilder);
     }
 
+    /**
+    * An auto-generated type for paginating through multiple MailingAddresses.
+    */
     public static class MailingAddressConnectionQuery extends Query<MailingAddressConnectionQuery> {
         MailingAddressConnectionQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
@@ -26851,6 +27072,9 @@ public class Storefront {
         }
     }
 
+    /**
+    * An auto-generated type for paginating through multiple MailingAddresses.
+    */
     public static class MailingAddressConnection extends AbstractResponse<MailingAddressConnection> {
         public MailingAddressConnection() {
         }
@@ -26933,6 +27157,9 @@ public class Storefront {
         void define(MailingAddressEdgeQuery _queryBuilder);
     }
 
+    /**
+    * An auto-generated type which holds one MailingAddress and a cursor during pagination.
+    */
     public static class MailingAddressEdgeQuery extends Query<MailingAddressEdgeQuery> {
         MailingAddressEdgeQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
@@ -26961,6 +27188,9 @@ public class Storefront {
         }
     }
 
+    /**
+    * An auto-generated type which holds one MailingAddress and a cursor during pagination.
+    */
     public static class MailingAddressEdge extends AbstractResponse<MailingAddressEdge> {
         public MailingAddressEdge() {
         }
@@ -27839,6 +28069,9 @@ public class Storefront {
         void define(MediaConnectionQuery _queryBuilder);
     }
 
+    /**
+    * An auto-generated type for paginating through multiple Media.
+    */
     public static class MediaConnectionQuery extends Query<MediaConnectionQuery> {
         MediaConnectionQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
@@ -27871,6 +28104,9 @@ public class Storefront {
         }
     }
 
+    /**
+    * An auto-generated type for paginating through multiple Media.
+    */
     public static class MediaConnection extends AbstractResponse<MediaConnection> {
         public MediaConnection() {
         }
@@ -28031,6 +28267,9 @@ public class Storefront {
         void define(MediaEdgeQuery _queryBuilder);
     }
 
+    /**
+    * An auto-generated type which holds one Media and a cursor during pagination.
+    */
     public static class MediaEdgeQuery extends Query<MediaEdgeQuery> {
         MediaEdgeQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
@@ -28059,6 +28298,9 @@ public class Storefront {
         }
     }
 
+    /**
+    * An auto-generated type which holds one Media and a cursor during pagination.
+    */
     public static class MediaEdge extends AbstractResponse<MediaEdge> {
         public MediaEdge() {
         }
@@ -28672,6 +28914,9 @@ public class Storefront {
         void define(MetafieldConnectionQuery _queryBuilder);
     }
 
+    /**
+    * An auto-generated type for paginating through multiple Metafields.
+    */
     public static class MetafieldConnectionQuery extends Query<MetafieldConnectionQuery> {
         MetafieldConnectionQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
@@ -28704,6 +28949,9 @@ public class Storefront {
         }
     }
 
+    /**
+    * An auto-generated type for paginating through multiple Metafields.
+    */
     public static class MetafieldConnection extends AbstractResponse<MetafieldConnection> {
         public MetafieldConnection() {
         }
@@ -28786,6 +29034,9 @@ public class Storefront {
         void define(MetafieldEdgeQuery _queryBuilder);
     }
 
+    /**
+    * An auto-generated type which holds one Metafield and a cursor during pagination.
+    */
     public static class MetafieldEdgeQuery extends Query<MetafieldEdgeQuery> {
         MetafieldEdgeQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
@@ -28814,6 +29065,9 @@ public class Storefront {
         }
     }
 
+    /**
+    * An auto-generated type which holds one Metafield and a cursor during pagination.
+    */
     public static class MetafieldEdge extends AbstractResponse<MetafieldEdge> {
         public MetafieldEdge() {
         }
@@ -29604,6 +29858,9 @@ public class Storefront {
                 void define(MoneyV2ConnectionQuery _queryBuilder);
             }
 
+            /**
+            * An auto-generated type for paginating through multiple MoneyV2s.
+            */
             public static class MoneyV2ConnectionQuery extends Query<MoneyV2ConnectionQuery> {
                 MoneyV2ConnectionQuery(StringBuilder _queryBuilder) {
                     super(_queryBuilder);
@@ -29636,6 +29893,9 @@ public class Storefront {
                 }
             }
 
+            /**
+            * An auto-generated type for paginating through multiple MoneyV2s.
+            */
             public static class MoneyV2Connection extends AbstractResponse<MoneyV2Connection> {
                 public MoneyV2Connection() {
                 }
@@ -29718,6 +29978,9 @@ public class Storefront {
                 void define(MoneyV2EdgeQuery _queryBuilder);
             }
 
+            /**
+            * An auto-generated type which holds one MoneyV2 and a cursor during pagination.
+            */
             public static class MoneyV2EdgeQuery extends Query<MoneyV2EdgeQuery> {
                 MoneyV2EdgeQuery(StringBuilder _queryBuilder) {
                     super(_queryBuilder);
@@ -29746,6 +30009,9 @@ public class Storefront {
                 }
             }
 
+            /**
+            * An auto-generated type which holds one MoneyV2 and a cursor during pagination.
+            */
             public static class MoneyV2Edge extends AbstractResponse<MoneyV2Edge> {
                 public MoneyV2Edge() {
                 }
@@ -33859,6 +34125,9 @@ public class Storefront {
                 void define(OrderConnectionQuery _queryBuilder);
             }
 
+            /**
+            * An auto-generated type for paginating through multiple Orders.
+            */
             public static class OrderConnectionQuery extends Query<OrderConnectionQuery> {
                 OrderConnectionQuery(StringBuilder _queryBuilder) {
                     super(_queryBuilder);
@@ -33891,6 +34160,9 @@ public class Storefront {
                 }
             }
 
+            /**
+            * An auto-generated type for paginating through multiple Orders.
+            */
             public static class OrderConnection extends AbstractResponse<OrderConnection> {
                 public OrderConnection() {
                 }
@@ -33973,6 +34245,9 @@ public class Storefront {
                 void define(OrderEdgeQuery _queryBuilder);
             }
 
+            /**
+            * An auto-generated type which holds one Order and a cursor during pagination.
+            */
             public static class OrderEdgeQuery extends Query<OrderEdgeQuery> {
                 OrderEdgeQuery(StringBuilder _queryBuilder) {
                     super(_queryBuilder);
@@ -34001,6 +34276,9 @@ public class Storefront {
                 }
             }
 
+            /**
+            * An auto-generated type which holds one Order and a cursor during pagination.
+            */
             public static class OrderEdge extends AbstractResponse<OrderEdge> {
                 public OrderEdge() {
                 }
@@ -34226,6 +34504,11 @@ public class Storefront {
                 RESTOCKED,
 
                 /**
+                * Displayed as **Scheduled**.
+                */
+                SCHEDULED,
+
+                /**
                 * Displayed as **Unfulfilled**.
                 */
                 UNFULFILLED,
@@ -34262,6 +34545,10 @@ public class Storefront {
                             return RESTOCKED;
                         }
 
+                        case "SCHEDULED": {
+                            return SCHEDULED;
+                        }
+
                         case "UNFULFILLED": {
                             return UNFULFILLED;
                         }
@@ -34295,6 +34582,10 @@ public class Storefront {
 
                         case RESTOCKED: {
                             return "RESTOCKED";
+                        }
+
+                        case SCHEDULED: {
+                            return "SCHEDULED";
                         }
 
                         case UNFULFILLED: {
@@ -34636,6 +34927,9 @@ public class Storefront {
                 void define(OrderLineItemConnectionQuery _queryBuilder);
             }
 
+            /**
+            * An auto-generated type for paginating through multiple OrderLineItems.
+            */
             public static class OrderLineItemConnectionQuery extends Query<OrderLineItemConnectionQuery> {
                 OrderLineItemConnectionQuery(StringBuilder _queryBuilder) {
                     super(_queryBuilder);
@@ -34668,6 +34962,9 @@ public class Storefront {
                 }
             }
 
+            /**
+            * An auto-generated type for paginating through multiple OrderLineItems.
+            */
             public static class OrderLineItemConnection extends AbstractResponse<OrderLineItemConnection> {
                 public OrderLineItemConnection() {
                 }
@@ -34750,6 +35047,9 @@ public class Storefront {
                 void define(OrderLineItemEdgeQuery _queryBuilder);
             }
 
+            /**
+            * An auto-generated type which holds one OrderLineItem and a cursor during pagination.
+            */
             public static class OrderLineItemEdgeQuery extends Query<OrderLineItemEdgeQuery> {
                 OrderLineItemEdgeQuery(StringBuilder _queryBuilder) {
                     super(_queryBuilder);
@@ -34778,6 +35078,9 @@ public class Storefront {
                 }
             }
 
+            /**
+            * An auto-generated type which holds one OrderLineItem and a cursor during pagination.
+            */
             public static class OrderLineItemEdge extends AbstractResponse<OrderLineItemEdge> {
                 public OrderLineItemEdge() {
                 }
@@ -34984,6 +35287,19 @@ public class Storefront {
                 }
 
                 /**
+                * The page's SEO information.
+                */
+                public PageQuery seo(SEOQueryDefinition queryDef) {
+                    startField("seo");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new SEOQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
                 * The title of the page.
                 */
                 public PageQuery title() {
@@ -35050,6 +35366,17 @@ public class Storefront {
 
                             case "id": {
                                 responseData.put(key, new ID(jsonAsString(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "seo": {
+                                SEO optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = new SEO(jsonAsObject(field.getValue(), key));
+                                }
+
+                                responseData.put(key, optional1);
 
                                 break;
                             }
@@ -35153,6 +35480,19 @@ public class Storefront {
                 }
 
                 /**
+                * The page's SEO information.
+                */
+
+                public SEO getSeo() {
+                    return (SEO) get("seo");
+                }
+
+                public Page setSeo(SEO arg) {
+                    optimisticData.put(getKey("seo"), arg);
+                    return this;
+                }
+
+                /**
                 * The title of the page.
                 */
 
@@ -35203,6 +35543,8 @@ public class Storefront {
 
                         case "id": return false;
 
+                        case "seo": return true;
+
                         case "title": return false;
 
                         case "updatedAt": return false;
@@ -35218,6 +35560,9 @@ public class Storefront {
                 void define(PageConnectionQuery _queryBuilder);
             }
 
+            /**
+            * An auto-generated type for paginating through multiple Pages.
+            */
             public static class PageConnectionQuery extends Query<PageConnectionQuery> {
                 PageConnectionQuery(StringBuilder _queryBuilder) {
                     super(_queryBuilder);
@@ -35250,6 +35595,9 @@ public class Storefront {
                 }
             }
 
+            /**
+            * An auto-generated type for paginating through multiple Pages.
+            */
             public static class PageConnection extends AbstractResponse<PageConnection> {
                 public PageConnection() {
                 }
@@ -35332,6 +35680,9 @@ public class Storefront {
                 void define(PageEdgeQuery _queryBuilder);
             }
 
+            /**
+            * An auto-generated type which holds one Page and a cursor during pagination.
+            */
             public static class PageEdgeQuery extends Query<PageEdgeQuery> {
                 PageEdgeQuery(StringBuilder _queryBuilder) {
                     super(_queryBuilder);
@@ -35360,6 +35711,9 @@ public class Storefront {
                 }
             }
 
+            /**
+            * An auto-generated type which holds one Page and a cursor during pagination.
+            */
             public static class PageEdge extends AbstractResponse<PageEdge> {
                 public PageEdge() {
                 }
@@ -36999,6 +37353,17 @@ public class Storefront {
                         }
                         return this;
                     }
+
+                    /**
+                    * Sort the underlying list by the given key.
+                    */
+                    public MediaArguments sortKey(ProductMediaSortKeys value) {
+                        if (value != null) {
+                            startArgument("sortKey");
+                            _queryBuilder.append(value.toString());
+                        }
+                        return this;
+                    }
                 }
 
                 public interface MediaArgumentsDefinition {
@@ -37182,14 +37547,14 @@ public class Storefront {
                 }
 
                 /**
-                * List of custom product options (maximum of 3 per product).
+                * List of product options.
                 */
                 public ProductQuery options(ProductOptionQueryDefinition queryDef) {
                     return options(args -> {}, queryDef);
                 }
 
                 /**
-                * List of custom product options (maximum of 3 per product).
+                * List of product options.
                 */
                 public ProductQuery options(OptionsArgumentsDefinition argsDef, ProductOptionQueryDefinition queryDef) {
                     startField("options");
@@ -37341,6 +37706,19 @@ public class Storefront {
                 */
                 public ProductQuery publishedAt() {
                     startField("publishedAt");
+
+                    return this;
+                }
+
+                /**
+                * The product's SEO information.
+                */
+                public ProductQuery seo(SEOQueryDefinition queryDef) {
+                    startField("seo");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new SEOQuery(_queryBuilder));
+                    _queryBuilder.append('}');
 
                     return this;
                 }
@@ -37660,6 +38038,12 @@ public class Storefront {
                                 break;
                             }
 
+                            case "seo": {
+                                responseData.put(key, new SEO(jsonAsObject(field.getValue(), key)));
+
+                                break;
+                            }
+
                             case "tags": {
                                 List<String> list1 = new ArrayList<>();
                                 for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
@@ -37904,7 +38288,7 @@ public class Storefront {
                 }
 
                 /**
-                * List of custom product options (maximum of 3 per product).
+                * List of product options.
                 */
 
                 public List<ProductOption> getOptions() {
@@ -37965,6 +38349,19 @@ public class Storefront {
 
                 public Product setPublishedAt(DateTime arg) {
                     optimisticData.put(getKey("publishedAt"), arg);
+                    return this;
+                }
+
+                /**
+                * The product's SEO information.
+                */
+
+                public SEO getSeo() {
+                    return (SEO) get("seo");
+                }
+
+                public Product setSeo(SEO arg) {
+                    optimisticData.put(getKey("seo"), arg);
                     return this;
                 }
 
@@ -38099,6 +38496,8 @@ public class Storefront {
                         case "productType": return false;
 
                         case "publishedAt": return false;
+
+                        case "seo": return true;
 
                         case "tags": return false;
 
@@ -38256,6 +38655,9 @@ public class Storefront {
                 void define(ProductConnectionQuery _queryBuilder);
             }
 
+            /**
+            * An auto-generated type for paginating through multiple Products.
+            */
             public static class ProductConnectionQuery extends Query<ProductConnectionQuery> {
                 ProductConnectionQuery(StringBuilder _queryBuilder) {
                     super(_queryBuilder);
@@ -38288,6 +38690,9 @@ public class Storefront {
                 }
             }
 
+            /**
+            * An auto-generated type for paginating through multiple Products.
+            */
             public static class ProductConnection extends AbstractResponse<ProductConnection> {
                 public ProductConnection() {
                 }
@@ -38370,6 +38775,9 @@ public class Storefront {
                 void define(ProductEdgeQuery _queryBuilder);
             }
 
+            /**
+            * An auto-generated type which holds one Product and a cursor during pagination.
+            */
             public static class ProductEdgeQuery extends Query<ProductEdgeQuery> {
                 ProductEdgeQuery(StringBuilder _queryBuilder) {
                     super(_queryBuilder);
@@ -38398,6 +38806,9 @@ public class Storefront {
                 }
             }
 
+            /**
+            * An auto-generated type which holds one Product and a cursor during pagination.
+            */
             public static class ProductEdge extends AbstractResponse<ProductEdge> {
                 public ProductEdge() {
                 }
@@ -38552,14 +38963,81 @@ public class Storefront {
                 }
             }
 
+            /**
+            * The set of valid sort keys for the ProductMedia query.
+            */
+            public enum ProductMediaSortKeys {
+                /**
+                * Sort by the `id` value.
+                */
+                ID,
+
+                /**
+                * Sort by the `position` value.
+                */
+                POSITION,
+
+                /**
+                * During a search (i.e. when the `query` parameter has been specified on the connection) this sorts
+                * the
+                * results by relevance to the search term(s). When no search query is specified, this sort key is not
+                * deterministic and should not be used.
+                */
+                RELEVANCE,
+
+                UNKNOWN_VALUE;
+
+                public static ProductMediaSortKeys fromGraphQl(String value) {
+                    if (value == null) {
+                        return null;
+                    }
+
+                    switch (value) {
+                        case "ID": {
+                            return ID;
+                        }
+
+                        case "POSITION": {
+                            return POSITION;
+                        }
+
+                        case "RELEVANCE": {
+                            return RELEVANCE;
+                        }
+
+                        default: {
+                            return UNKNOWN_VALUE;
+                        }
+                    }
+                }
+                public String toString() {
+                    switch (this) {
+                        case ID: {
+                            return "ID";
+                        }
+
+                        case POSITION: {
+                            return "POSITION";
+                        }
+
+                        case RELEVANCE: {
+                            return "RELEVANCE";
+                        }
+
+                        default: {
+                            return "";
+                        }
+                    }
+                }
+            }
+
             public interface ProductOptionQueryDefinition {
                 void define(ProductOptionQuery _queryBuilder);
             }
 
             /**
-            * Custom product property names like "Size", "Color", and "Material".
-            * Products are based on permutations of these options.
-            * A product may have a maximum of 3 options.
+            * Product property names like "Size", "Color", and "Material" that the customers can select.
+            * Variants are selected based on permutations of these options.
             * 255 characters limit each.
             */
             public static class ProductOptionQuery extends Query<ProductOptionQuery> {
@@ -38589,9 +39067,8 @@ public class Storefront {
             }
 
             /**
-            * Custom product property names like "Size", "Color", and "Material".
-            * Products are based on permutations of these options.
-            * A product may have a maximum of 3 options.
+            * Product property names like "Size", "Color", and "Material" that the customers can select.
+            * Variants are selected based on permutations of these options.
             * 255 characters limit each.
             */
             public static class ProductOption extends AbstractResponse<ProductOption> implements Node {
@@ -38812,6 +39289,9 @@ public class Storefront {
                 void define(ProductPriceRangeConnectionQuery _queryBuilder);
             }
 
+            /**
+            * An auto-generated type for paginating through multiple ProductPriceRanges.
+            */
             public static class ProductPriceRangeConnectionQuery extends Query<ProductPriceRangeConnectionQuery> {
                 ProductPriceRangeConnectionQuery(StringBuilder _queryBuilder) {
                     super(_queryBuilder);
@@ -38844,6 +39324,9 @@ public class Storefront {
                 }
             }
 
+            /**
+            * An auto-generated type for paginating through multiple ProductPriceRanges.
+            */
             public static class ProductPriceRangeConnection extends AbstractResponse<ProductPriceRangeConnection> {
                 public ProductPriceRangeConnection() {
                 }
@@ -38926,6 +39409,9 @@ public class Storefront {
                 void define(ProductPriceRangeEdgeQuery _queryBuilder);
             }
 
+            /**
+            * An auto-generated type which holds one ProductPriceRange and a cursor during pagination.
+            */
             public static class ProductPriceRangeEdgeQuery extends Query<ProductPriceRangeEdgeQuery> {
                 ProductPriceRangeEdgeQuery(StringBuilder _queryBuilder) {
                     super(_queryBuilder);
@@ -38954,6 +39440,9 @@ public class Storefront {
                 }
             }
 
+            /**
+            * An auto-generated type which holds one ProductPriceRange and a cursor during pagination.
+            */
             public static class ProductPriceRangeEdge extends AbstractResponse<ProductPriceRangeEdge> {
                 public ProductPriceRangeEdge() {
                 }
@@ -40388,6 +40877,9 @@ public class Storefront {
                 void define(ProductVariantConnectionQuery _queryBuilder);
             }
 
+            /**
+            * An auto-generated type for paginating through multiple ProductVariants.
+            */
             public static class ProductVariantConnectionQuery extends Query<ProductVariantConnectionQuery> {
                 ProductVariantConnectionQuery(StringBuilder _queryBuilder) {
                     super(_queryBuilder);
@@ -40420,6 +40912,9 @@ public class Storefront {
                 }
             }
 
+            /**
+            * An auto-generated type for paginating through multiple ProductVariants.
+            */
             public static class ProductVariantConnection extends AbstractResponse<ProductVariantConnection> {
                 public ProductVariantConnection() {
                 }
@@ -40502,6 +40997,9 @@ public class Storefront {
                 void define(ProductVariantEdgeQuery _queryBuilder);
             }
 
+            /**
+            * An auto-generated type which holds one ProductVariant and a cursor during pagination.
+            */
             public static class ProductVariantEdgeQuery extends Query<ProductVariantEdgeQuery> {
                 ProductVariantEdgeQuery(StringBuilder _queryBuilder) {
                     super(_queryBuilder);
@@ -40530,6 +41028,9 @@ public class Storefront {
                 }
             }
 
+            /**
+            * An auto-generated type which holds one ProductVariant and a cursor during pagination.
+            */
             public static class ProductVariantEdge extends AbstractResponse<ProductVariantEdge> {
                 public ProductVariantEdge() {
                 }
@@ -40727,6 +41228,9 @@ public class Storefront {
                 void define(ProductVariantPricePairConnectionQuery _queryBuilder);
             }
 
+            /**
+            * An auto-generated type for paginating through multiple ProductVariantPricePairs.
+            */
             public static class ProductVariantPricePairConnectionQuery extends Query<ProductVariantPricePairConnectionQuery> {
                 ProductVariantPricePairConnectionQuery(StringBuilder _queryBuilder) {
                     super(_queryBuilder);
@@ -40759,6 +41263,9 @@ public class Storefront {
                 }
             }
 
+            /**
+            * An auto-generated type for paginating through multiple ProductVariantPricePairs.
+            */
             public static class ProductVariantPricePairConnection extends AbstractResponse<ProductVariantPricePairConnection> {
                 public ProductVariantPricePairConnection() {
                 }
@@ -40841,6 +41348,9 @@ public class Storefront {
                 void define(ProductVariantPricePairEdgeQuery _queryBuilder);
             }
 
+            /**
+            * An auto-generated type which holds one ProductVariantPricePair and a cursor during pagination.
+            */
             public static class ProductVariantPricePairEdgeQuery extends Query<ProductVariantPricePairEdgeQuery> {
                 ProductVariantPricePairEdgeQuery(StringBuilder _queryBuilder) {
                     super(_queryBuilder);
@@ -40869,6 +41379,9 @@ public class Storefront {
                 }
             }
 
+            /**
+            * An auto-generated type which holds one ProductVariantPricePair and a cursor during pagination.
+            */
             public static class ProductVariantPricePairEdge extends AbstractResponse<ProductVariantPricePairEdge> {
                 public ProductVariantPricePairEdge() {
                 }
@@ -42661,8 +43174,8 @@ public class Storefront {
             }
 
             /**
-            * Custom properties that a shop owner can use to define product variants.
-            * Multiple options can exist. Options are represented as: option1, option2, option3, etc.
+            * Properties used by customers to select a product variant.
+            * Products can have multiple options, like different sizes or colors.
             */
             public static class SelectedOptionQuery extends Query<SelectedOptionQuery> {
                 SelectedOptionQuery(StringBuilder _queryBuilder) {
@@ -42689,8 +43202,8 @@ public class Storefront {
             }
 
             /**
-            * Custom properties that a shop owner can use to define product variants.
-            * Multiple options can exist. Options are represented as: option1, option2, option3, etc.
+            * Properties used by customers to select a product variant.
+            * Products can have multiple options, like different sizes or colors.
             */
             public static class SelectedOption extends AbstractResponse<SelectedOption> {
                 public SelectedOption() {
@@ -43487,7 +44000,7 @@ public class Storefront {
                 }
 
                 /**
-                * A comma separated list of tags that have been added to products.
+                * A list of tags that have been added to products.
                 * Additional access scope required: unauthenticated_read_product_tags.
                 *
                 * @deprecated Use `QueryRoot.productTags` instead.
@@ -44077,7 +44590,7 @@ public class Storefront {
                 }
 
                 /**
-                * A comma separated list of tags that have been added to products.
+                * A list of tags that have been added to products.
                 * Additional access scope required: unauthenticated_read_product_tags.
                 *
                 * @deprecated Use `QueryRoot.productTags` instead.
@@ -44430,6 +44943,9 @@ public class Storefront {
                 void define(StringConnectionQuery _queryBuilder);
             }
 
+            /**
+            * An auto-generated type for paginating through multiple Strings.
+            */
             public static class StringConnectionQuery extends Query<StringConnectionQuery> {
                 StringConnectionQuery(StringBuilder _queryBuilder) {
                     super(_queryBuilder);
@@ -44462,6 +44978,9 @@ public class Storefront {
                 }
             }
 
+            /**
+            * An auto-generated type for paginating through multiple Strings.
+            */
             public static class StringConnection extends AbstractResponse<StringConnection> {
                 public StringConnection() {
                 }
@@ -44544,6 +45063,9 @@ public class Storefront {
                 void define(StringEdgeQuery _queryBuilder);
             }
 
+            /**
+            * An auto-generated type which holds one String and a cursor during pagination.
+            */
             public static class StringEdgeQuery extends Query<StringEdgeQuery> {
                 StringEdgeQuery(StringBuilder _queryBuilder) {
                     super(_queryBuilder);
@@ -44568,6 +45090,9 @@ public class Storefront {
                 }
             }
 
+            /**
+            * An auto-generated type which holds one String and a cursor during pagination.
+            */
             public static class StringEdge extends AbstractResponse<StringEdge> {
                 public StringEdge() {
                 }
