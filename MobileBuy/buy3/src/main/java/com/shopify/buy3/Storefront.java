@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 public class Storefront {
-    public static final String API_VERSION = "2021-01";
+    public static final String API_VERSION = "2021-04";
 
     public static QueryRootQuery query(QueryRootQueryDefinition queryDef) {
         StringBuilder queryString = new StringBuilder("{");
@@ -3083,32 +3083,32 @@ public class Storefront {
     */
     public enum CardBrand {
         /**
-        * American Express
+        * American Express.
         */
         AMERICAN_EXPRESS,
 
         /**
-        * Diners Club
+        * Diners Club.
         */
         DINERS_CLUB,
 
         /**
-        * Discover
+        * Discover.
         */
         DISCOVER,
 
         /**
-        * JCB
+        * JCB.
         */
         JCB,
 
         /**
-        * Mastercard
+        * Mastercard.
         */
         MASTERCARD,
 
         /**
-        * Visa
+        * Visa.
         */
         VISA,
 
@@ -3643,6 +3643,19 @@ public class Storefront {
         }
 
         /**
+        * The sum of all the duties applied to the line items in the checkout.
+        */
+        public CheckoutQuery totalDuties(MoneyV2QueryDefinition queryDef) {
+            startField("totalDuties");
+
+            _queryBuilder.append('{');
+            queryDef.define(new MoneyV2Query(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
         * The sum of all the prices of all the items in the checkout, taxes and discounts included.
         *
         * @deprecated Use `totalPriceV2` instead
@@ -3935,6 +3948,17 @@ public class Storefront {
 
                     case "taxesIncluded": {
                         responseData.put(key, jsonAsBoolean(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "totalDuties": {
+                        MoneyV2 optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new MoneyV2(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
 
                         break;
                     }
@@ -4343,6 +4367,19 @@ public class Storefront {
         }
 
         /**
+        * The sum of all the duties applied to the line items in the checkout.
+        */
+
+        public MoneyV2 getTotalDuties() {
+            return (MoneyV2) get("totalDuties");
+        }
+
+        public Checkout setTotalDuties(MoneyV2 arg) {
+            optimisticData.put(getKey("totalDuties"), arg);
+            return this;
+        }
+
+        /**
         * The sum of all the prices of all the items in the checkout, taxes and discounts included.
         *
         * @deprecated Use `totalPriceV2` instead
@@ -4477,6 +4514,8 @@ public class Storefront {
                 case "taxExempt": return false;
 
                 case "taxesIncluded": return false;
+
+                case "totalDuties": return true;
 
                 case "totalPrice": return false;
 
@@ -12805,6 +12844,11 @@ public class Storefront {
     */
     public enum CountryCode {
         /**
+        * Ascension Island.
+        */
+        AC,
+
+        /**
         * Andorra.
         */
         AD,
@@ -13835,6 +13879,11 @@ public class Storefront {
         SZ,
 
         /**
+        * Tristan da Cunha.
+        */
+        TA,
+
+        /**
         * Turks & Caicos Islands.
         */
         TC,
@@ -14014,6 +14063,11 @@ public class Storefront {
         */
         ZW,
 
+        /**
+        * Unknown Region.
+        */
+        ZZ,
+
         UNKNOWN_VALUE;
 
         public static CountryCode fromGraphQl(String value) {
@@ -14022,6 +14076,10 @@ public class Storefront {
             }
 
             switch (value) {
+                case "AC": {
+                    return AC;
+                }
+
                 case "AD": {
                     return AD;
                 }
@@ -14846,6 +14904,10 @@ public class Storefront {
                     return SZ;
                 }
 
+                case "TA": {
+                    return TA;
+                }
+
                 case "TC": {
                     return TC;
                 }
@@ -14990,6 +15052,10 @@ public class Storefront {
                     return ZW;
                 }
 
+                case "ZZ": {
+                    return ZZ;
+                }
+
                 default: {
                     return UNKNOWN_VALUE;
                 }
@@ -14997,6 +15063,10 @@ public class Storefront {
         }
         public String toString() {
             switch (this) {
+                case AC: {
+                    return "AC";
+                }
+
                 case AD: {
                     return "AD";
                 }
@@ -15821,6 +15891,10 @@ public class Storefront {
                     return "SZ";
                 }
 
+                case TA: {
+                    return "TA";
+                }
+
                 case TC: {
                     return "TC";
                 }
@@ -15963,6 +16037,10 @@ public class Storefront {
 
                 case ZW: {
                     return "ZW";
+                }
+
+                case ZZ: {
+                    return "ZZ";
                 }
 
                 default: {
@@ -24373,6 +24451,15 @@ public class Storefront {
         }
 
         /**
+        * The host of the external video.
+        */
+        public ExternalVideoQuery host() {
+            startField("host");
+
+            return this;
+        }
+
+        /**
         * The media content type.
         */
         public ExternalVideoQuery mediaContentType() {
@@ -24420,6 +24507,12 @@ public class Storefront {
 
                     case "embeddedUrl": {
                         responseData.put(key, jsonAsString(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "host": {
+                        responseData.put(key, MediaHost.fromGraphQl(jsonAsString(field.getValue(), key)));
 
                         break;
                     }
@@ -24494,6 +24587,19 @@ public class Storefront {
         }
 
         /**
+        * The host of the external video.
+        */
+
+        public MediaHost getHost() {
+            return (MediaHost) get("host");
+        }
+
+        public ExternalVideo setHost(MediaHost arg) {
+            optimisticData.put(getKey("host"), arg);
+            return this;
+        }
+
+        /**
         * Globally unique identifier.
         */
 
@@ -24532,6 +24638,8 @@ public class Storefront {
                 case "alt": return false;
 
                 case "embeddedUrl": return false;
+
+                case "host": return false;
 
                 case "id": return false;
 
@@ -28370,6 +28478,58 @@ public class Storefront {
                 case "node": return false;
 
                 default: return false;
+            }
+        }
+    }
+
+    /**
+    * Host for a Media Resource.
+    */
+    public enum MediaHost {
+        /**
+        * Host for Vimeo embedded videos.
+        */
+        VIMEO,
+
+        /**
+        * Host for YouTube embedded videos.
+        */
+        YOUTUBE,
+
+        UNKNOWN_VALUE;
+
+        public static MediaHost fromGraphQl(String value) {
+            if (value == null) {
+                return null;
+            }
+
+            switch (value) {
+                case "VIMEO": {
+                    return VIMEO;
+                }
+
+                case "YOUTUBE": {
+                    return YOUTUBE;
+                }
+
+                default: {
+                    return UNKNOWN_VALUE;
+                }
+            }
+        }
+        public String toString() {
+            switch (this) {
+                case VIMEO: {
+                    return "VIMEO";
+                }
+
+                case YOUTUBE: {
+                    return "YOUTUBE";
+                }
+
+                default: {
+                    return "";
+                }
             }
         }
     }
@@ -32627,7 +32787,7 @@ public class Storefront {
                 }
 
                 /**
-                * Represents the reason for the order's cancellation. Returns null if the order wasn't canceled.
+                * The reason for the order's cancellation. Returns `null` if the order wasn't canceled.
                 */
                 public OrderQuery cancelReason() {
                     startField("cancelReason");
@@ -32660,6 +32820,19 @@ public class Storefront {
                 */
                 public OrderQuery currentSubtotalPrice(MoneyV2QueryDefinition queryDef) {
                     startField("currentSubtotalPrice");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new MoneyV2Query(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * The total cost of duties for the order, including refunds.
+                */
+                public OrderQuery currentTotalDuties(MoneyV2QueryDefinition queryDef) {
+                    startField("currentTotalDuties");
 
                     _queryBuilder.append('{');
                     queryDef.define(new MoneyV2Query(_queryBuilder));
@@ -32942,6 +33115,19 @@ public class Storefront {
                 */
                 public OrderQuery orderNumber() {
                     startField("orderNumber");
+
+                    return this;
+                }
+
+                /**
+                * The total cost of duties charged at checkout.
+                */
+                public OrderQuery originalTotalDuties(MoneyV2QueryDefinition queryDef) {
+                    startField("originalTotalDuties");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new MoneyV2Query(_queryBuilder));
+                    _queryBuilder.append('}');
 
                     return this;
                 }
@@ -33235,6 +33421,17 @@ public class Storefront {
                                 break;
                             }
 
+                            case "currentTotalDuties": {
+                                MoneyV2 optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = new MoneyV2(jsonAsObject(field.getValue(), key));
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
                             case "currentTotalPrice": {
                                 responseData.put(key, new MoneyV2(jsonAsObject(field.getValue(), key)));
 
@@ -33329,6 +33526,17 @@ public class Storefront {
 
                             case "orderNumber": {
                                 responseData.put(key, jsonAsInteger(field.getValue(), key));
+
+                                break;
+                            }
+
+                            case "originalTotalDuties": {
+                                MoneyV2 optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = new MoneyV2(jsonAsObject(field.getValue(), key));
+                                }
+
+                                responseData.put(key, optional1);
 
                                 break;
                             }
@@ -33501,7 +33709,7 @@ public class Storefront {
                 }
 
                 /**
-                * Represents the reason for the order's cancellation. Returns null if the order wasn't canceled.
+                * The reason for the order's cancellation. Returns `null` if the order wasn't canceled.
                 */
 
                 public OrderCancelReason getCancelReason() {
@@ -33551,6 +33759,19 @@ public class Storefront {
 
                 public Order setCurrentSubtotalPrice(MoneyV2 arg) {
                     optimisticData.put(getKey("currentSubtotalPrice"), arg);
+                    return this;
+                }
+
+                /**
+                * The total cost of duties for the order, including refunds.
+                */
+
+                public MoneyV2 getCurrentTotalDuties() {
+                    return (MoneyV2) get("currentTotalDuties");
+                }
+
+                public Order setCurrentTotalDuties(MoneyV2 arg) {
+                    optimisticData.put(getKey("currentTotalDuties"), arg);
                     return this;
                 }
 
@@ -33717,6 +33938,19 @@ public class Storefront {
 
                 public Order setOrderNumber(Integer arg) {
                     optimisticData.put(getKey("orderNumber"), arg);
+                    return this;
+                }
+
+                /**
+                * The total cost of duties charged at checkout.
+                */
+
+                public MoneyV2 getOriginalTotalDuties() {
+                    return (MoneyV2) get("originalTotalDuties");
+                }
+
+                public Order setOriginalTotalDuties(MoneyV2 arg) {
+                    optimisticData.put(getKey("originalTotalDuties"), arg);
                     return this;
                 }
 
@@ -33965,6 +34199,8 @@ public class Storefront {
 
                         case "currentSubtotalPrice": return true;
 
+                        case "currentTotalDuties": return true;
+
                         case "currentTotalPrice": return true;
 
                         case "currentTotalTax": return true;
@@ -33990,6 +34226,8 @@ public class Storefront {
                         case "name": return false;
 
                         case "orderNumber": return false;
+
+                        case "originalTotalDuties": return true;
 
                         case "originalTotalPrice": return true;
 
@@ -36064,6 +36302,8 @@ public class Storefront {
 
                 /**
                 * A client-side generated token to identify a payment and perform idempotent operations.
+                * For more information, refer to
+                * [Idempotent requests](https://shopify.dev/concepts/about-apis/idempotent-requests).
                 */
                 public PaymentQuery idempotencyKey() {
                     startField("idempotencyKey");
@@ -36336,6 +36576,8 @@ public class Storefront {
 
                 /**
                 * A client-side generated token to identify a payment and perform idempotent operations.
+                * For more information, refer to
+                * [Idempotent requests](https://shopify.dev/concepts/about-apis/idempotent-requests).
                 */
 
                 public String getIdempotencyKey() {
@@ -37753,6 +37995,9 @@ public class Storefront {
 
                 /**
                 * The date and time when the product was last modified.
+                * A product's `updatedAt` value can change for different reasons. For example, if an order
+                * is placed for a product that has inventory tracking set up, then the inventory adjustment
+                * is counted as an update.
                 */
                 public ProductQuery updatedAt() {
                     startField("updatedAt");
@@ -38407,6 +38652,9 @@ public class Storefront {
 
                 /**
                 * The date and time when the product was last modified.
+                * A product's `updatedAt` value can change for different reasons. For example, if an order
+                * is placed for a product that has inventory tracking set up, then the inventory adjustment
+                * is counted as an update.
                 */
 
                 public DateTime getUpdatedAt() {
@@ -41967,6 +42215,9 @@ public class Storefront {
                     return this;
                 }
 
+                /**
+                * Returns a specific node by ID.
+                */
                 public QueryRootQuery node(ID id, NodeQueryDefinition queryDef) {
                     startField("node");
 
@@ -41982,6 +42233,9 @@ public class Storefront {
                     return this;
                 }
 
+                /**
+                * Returns the list of nodes with the given IDs.
+                */
                 public QueryRootQuery nodes(List<ID> ids, NodeQueryDefinition queryDef) {
                     startField("nodes");
 
@@ -42633,6 +42887,10 @@ public class Storefront {
                     return this;
                 }
 
+                /**
+                * Returns a specific node by ID.
+                */
+
                 public Node getNode() {
                     return (Node) get("node");
                 }
@@ -42641,6 +42899,10 @@ public class Storefront {
                     optimisticData.put(getKey("node"), arg);
                     return this;
                 }
+
+                /**
+                * Returns the list of nodes with the given IDs.
+                */
 
                 public List<Node> getNodes() {
                     return (List<Node>) get("nodes");
@@ -45919,15 +46181,34 @@ public class Storefront {
                 }
             }
 
+            /**
+            * The different kinds of order transactions.
+            */
             public enum TransactionKind {
+                /**
+                * An amount reserved against the cardholder's funding source.
+                * Money does not change hands until the authorization is captured.
+                */
                 AUTHORIZATION,
 
+                /**
+                * A transfer of the money that was reserved during the authorization stage.
+                */
                 CAPTURE,
 
+                /**
+                * Money returned to the customer when they have paid too much.
+                */
                 CHANGE,
 
+                /**
+                * An authorization for a payment taken with an EMV credit card reader.
+                */
                 EMV_AUTHORIZATION,
 
+                /**
+                * An authorization and capture performed together in a single step.
+                */
                 SALE,
 
                 UNKNOWN_VALUE;
@@ -45992,13 +46273,28 @@ public class Storefront {
                 }
             }
 
+            /**
+            * Transaction statuses describe the status of a transaction.
+            */
             public enum TransactionStatus {
+                /**
+                * There was an error while processing the transaction.
+                */
                 ERROR,
 
+                /**
+                * The transaction failed.
+                */
                 FAILURE,
 
+                /**
+                * The transaction is pending.
+                */
                 PENDING,
 
+                /**
+                * The transaction succeeded.
+                */
                 SUCCESS,
 
                 UNKNOWN_VALUE;
