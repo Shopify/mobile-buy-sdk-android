@@ -42,7 +42,6 @@ ext.dep = [
     butterKnifeCompiler      : "com.jakewharton:butterknife-compiler:$versions.butterKnifeVersion",
     butterknifePlugin        : "com.jakewharton:butterknife-gradle-plugin:$versions.butterKnifeVersion",
     androidMavenGradlePlugin : "com.github.dcendents:android-maven-gradle-plugin:1.5",
-    bintrayGradlePlugin      : "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.2",
     fresco                   : "com.facebook.fresco:fresco:0.14.1",
     apolloPlugin             : "com.apollographql.apollo:apollo-gradle-plugin:$versions.apolloVersion",
     apolloRuntime            : "com.apollographql.apollo:apollo-runtime:$versions.apolloVersion",

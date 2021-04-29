@@ -2,7 +2,6 @@ buildscript {
   dependencies {
     classpath dep.androidPlugin
     classpath dep.androidMavenGradlePlugin
-    classpath dep.bintrayGradlePlugin
     classpath dep.kotlinPlugin
     classpath dep.graphqlSupport
 
@@ -13,8 +12,8 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'maven'
 apply plugin: 'com.github.dcendents.android-maven'
-apply plugin: 'com.jfrog.bintray'
 apply plugin: 'maven-publish'
+apply plugin: 'signing'
 
 android {
   compileSdkVersion androidConfig.compileSdkVersion
@@ -86,6 +85,8 @@ android {
   }
 }
 
+archivesBaseName = POM_ARTIFACT_ID
+
 dependencies {
   implementation dep.okhttp
   implementation dep.androidSupportAnnotations
@@ -152,28 +153,6 @@ if (localProperties.exists()) {
   properties.load(localProperties.newDataInputStream())
 }
 
-group = POM_GROUP_ID
-
-bintray {
-  user = properties.getProperty("bintray.user")
-  key = properties.getProperty("bintray.apikey")
-
-  configurations = ['archives']
-  pkg {
-    userOrg = POM_DEVELOPER_NAME
-    repo = POM_REPO
-    name = POM_NAME
-    desc = POM_DESCRIPTION
-    websiteUrl = POM_WEB_URL
-    vcsUrl = POM_DEVELOPER_URL
-    licenses = [POM_LICENSE]
-    publish = true
-    publicDownloadNumbers = true
-    version {
-      desc = POM_DESCRIPTION
-    }
-  }
-}
 
 //task updateSchema(type: DefaultTask, group: "GraphQL", description: "Download GraphQL store front API schema and run generation script") {
 //  doLast {
@@ -196,3 +175,57 @@ tasks.withType(Checkstyle) {
   exclude '**/Storefront.java'
 }
 
+signing {
+  required { gradle.taskGraph.hasTask("uploadArchives") }
+  def signingKeyId = findProperty("signingKeyId")
+  def signingKey = findProperty("signingKey")
+  def signingPassword = findProperty("signingPassword")
+  useInMemoryPgpKeys(signingKeyId, signingKey, signingPassword)
+  sign configurations.archives
+}
+
+uploadArchives {
+  repositories {
+    mavenDeployer {
+      beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+      repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+        authentication(userName: System.getenv("OSSRH_USERNAME"), password: System.getenv("OSSRH_PASSWORD"))
+      }
+
+      snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+        authentication(userName: System.getenv("OSSRH_USERNAME"), password: System.getenv("OSSRH_PASSWORD"))
+      }
+
+      pom {
+        project {
+          groupId POM_GROUP_ID
+          artifactId POM_ARTIFACT_ID
+
+          name POM_LIBRARY_NAME
+          description POM_DESCRIPTION
+          url POM_WEB_URL
+
+          developers {
+            developer {
+              name 'Shopify Inc.'
+            }
+          }
+
+          licenses {
+            license {
+              name POM_LICENSE
+              url POM_LICENSE_URL
+            }
+          }
+
+          scm {
+            connection = POM_DEVELOPER_URL
+            developerConnection = POM_DEVELOPER_URL
+            url = POM_DEVELOPER_URL
+          }
+        }
+      }
+    }
+  }
+}
