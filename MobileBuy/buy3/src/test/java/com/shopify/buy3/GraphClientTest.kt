@@ -74,8 +74,8 @@ class GraphClientTest {
 
         with(server.takeRequest()) {
             assertThat(headers["Accept"]).isEqualTo("application/json")
-            assertThat(headers["User-Agent"]).isEqualTo("Mobile Buy SDK Android/${BuildConfig.VERSION_NAME}/$PACKAGE_NAME")
-            assertThat(headers["X-SDK-Version"]).isEqualTo(BuildConfig.VERSION_NAME)
+            assertThat(headers["User-Agent"]).isEqualTo("Mobile Buy SDK Android/${BuildConfig.BUY_SDK_VERSION}/$PACKAGE_NAME")
+            assertThat(headers["X-SDK-Version"]).isEqualTo(BuildConfig.BUY_SDK_VERSION)
             assertThat(headers["X-SDK-Variant"]).isEqualTo("android")
             assertThat(headers["X-Shopify-Storefront-Access-Token"]).isEqualTo("accessToken")
             assertThat(this.body.readUtf8()).isEqualTo("{shop{name}}")
