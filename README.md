@@ -46,6 +46,7 @@ The Mobile Buy SDK makes it easy to create custom storefronts in your mobile app
   - [Checkout](#checkout-)
       - [Creating a checkout](#checkout-)
       - [Updating a checkout](#updating-a-checkout-)
+      - [Polling for checkout readiness](#polling-for-checkout-readiness-)
       - [Polling for shipping rates](#polling-for-shipping-rates-)
       - [Updating shipping line](#updating-shipping-line-)
       - [Completing a checkout](#completing-a-checkout-)
@@ -1085,6 +1086,64 @@ Storefront.MutationQuery query = Storefront.mutation((mutationQuery -> mutationQ
   )
 );
 ```
+
+##### Polling for checkout readiness [⤴](#table-of-contents)
+
+Checkouts may have asynchronous operations that can take time to finish. If you want to complete a checkout or ensure all the fields are populated and up to date, polling is required until the `ready` value is `true`. Fields that are populated asynchronously include duties and taxes.
+
+All asynchronous computations are completed and the checkout is updated accordingly once the `checkout.ready` flag is `true`. 
+This flag should be checked (and polled if it is `false`) after every update to the checkout to ensure there are no asynchronous processes running that could affect the fields of the checkout. 
+Common examples would be after updating the shipping address or adjusting the line items of a checkout.
+
+```java
+Storefront.QueryRootQuery query = Storefront.query(rootQuery -> rootQuery
+  .node(checkoutId, nodeQuery -> nodeQuery
+    .onCheckout(checkoutQuery -> checkoutQuery
+      .ready() // <- Indicates that all fields are up to date after asynchronous operations completed.
+      .totalDuties(totalDuties -> totalDuties
+        .amount()
+        .currencyCode()
+      )
+      .totalTaxV2(totalTax -> totalTax
+        .amount()
+        .currencyCode()
+      )
+      .totalPriceV2(totalPrice -> totalPrice
+        .amount()
+        .currencyCode()
+      )
+    )
+  )
+);
+```
+
+It is your application's responsibility to continue retrying this query until `checkout.ready == true`. The Buy SDK has [built-in support for retrying requests](#retry-), so we'll create a retry handler and perform the query:
+
+```java
+GraphClient client = ...;
+Storefront.QueryRootQuery query = ...;
+...
+
+client.queryGraph(query).enqueue(
+      new GraphCall.Callback<Storefront.QueryRoot>() {
+        @Override public void onResponse(@NonNull final GraphResponse<Storefront.QueryRoot> response) {
+          Storefront.Checkout checkout = (Storefront.Checkout) response.data().getNode();
+        }
+
+        @Override public void onFailure(@NonNull final GraphError error) {
+        }
+      },
+      null,
+      RetryHandler.exponentialBackoff(800, TimeUnit.MILLISECONDS, 1.2f)
+        .whenResponse(
+          response -> ((Storefront.Checkout) response.data().getNode()).getReady() == false
+        )
+        .maxCount(10)
+        .build()
+    );
+```
+
+The callback `onResponse` will be called only if `checkout.ready == true` or the retry count reaches 10.
 
 ##### Polling for shipping rates [⤴](#table-of-contents)
 
