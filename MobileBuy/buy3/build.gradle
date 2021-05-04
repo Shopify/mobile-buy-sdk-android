@@ -82,6 +82,7 @@ android {
 }
 
 archivesBaseName = POM_ARTIFACT_ID
+version = VERSION_NAME
 
 dependencies {
   implementation dep.okhttp
