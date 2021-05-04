@@ -35,7 +35,7 @@ jobs:
           
     - name: Publish Package
       working-directory: ./MobileBuy
-      run: ./gradlew uploadArchives
+      run: ./gradlew buy3:uploadArchives
       env:
         OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
         OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}

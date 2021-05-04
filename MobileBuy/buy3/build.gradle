@@ -1,7 +1,6 @@
 buildscript {
   dependencies {
     classpath dep.androidPlugin
-    classpath dep.androidMavenGradlePlugin
     classpath dep.kotlinPlugin
     classpath dep.graphqlSupport
 
@@ -11,13 +10,10 @@ buildscript {
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'maven'
-apply plugin: 'com.github.dcendents.android-maven'
-apply plugin: 'maven-publish'
 apply plugin: 'signing'
 
 android {
   compileSdkVersion androidConfig.compileSdkVersion
-  buildToolsVersion androidConfig.buildToolsVersion
 
   compileOptions {
     sourceCompatibility JavaVersion.VERSION_1_8
@@ -30,8 +26,8 @@ android {
 
   defaultConfig {
     minSdkVersion androidConfig.minSdkVersion
-    versionName VERSION_NAME
-    version VERSION_NAME
+
+    buildConfigField "String", "BUY_SDK_VERSION", "\"$VERSION_NAME\""
 
     testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
   }
@@ -104,48 +100,6 @@ dependencies {
   testImplementation dep.okhttpTestSupport
 }
 
-/*
-Great guide for publishing to JCenter:
-http://inthecheesefactory.com/blog/how-to-upload-library-to-jcenter-maven-central-as-dependency/en
-
-Also search for 'userOrg' here (we need this to publish to the Shopify organization on Bintray):
-https://github.com/bintray/gradle-bintray-plugin
-
-Steps:
-gradlew install
-gradlew bintrayUpload
-*/
-install {
-  repositories.mavenInstaller {
-    // This generates POM.xml with proper parameters
-    pom {
-      project {
-        packaging POM_PACKAGING
-        groupId POM_GROUP_ID
-        artifactId POM_ARTIFACT_ID
-
-        // Add your description here
-        name POM_LIBRARY_NAME
-        description POM_DESCRIPTION
-        url POM_WEB_URL
-
-        // Set your license
-        licenses {
-          license {
-            name POM_LICENSE
-            url POM_LICENSE_URL
-          }
-        }
-
-        scm {
-          connection POM_DEVELOPER_URL
-          developerConnection POM_DEVELOPER_URL
-          url POM_WEB_URL
-        }
-      }
-    }
-  }
-}
 
 File localProperties = project.rootProject.file('local.properties')
 Properties properties = new Properties()

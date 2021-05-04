@@ -1,5 +1,5 @@
 def versions = [
-    androidPlugin        : '3.3.0',
+    androidPlugin        : '4.1.3',
     androidSupportVersion: '28.0.0',
     okHttpVersion        : '3.7.0',
     playServicesVersion  : '16.0.1',
@@ -14,7 +14,6 @@ ext.isCi = "true" == System.getenv('CI')
 
 ext.androidConfig = [
     compileSdkVersion: 28,
-    buildToolsVersion: '28.0.3',
     minSdkVersion    : 21
 ]
 
@@ -41,7 +40,6 @@ ext.dep = [
     butterKnife              : "com.jakewharton:butterknife:$versions.butterKnifeVersion",
     butterKnifeCompiler      : "com.jakewharton:butterknife-compiler:$versions.butterKnifeVersion",
     butterknifePlugin        : "com.jakewharton:butterknife-gradle-plugin:$versions.butterKnifeVersion",
-    androidMavenGradlePlugin : "com.github.dcendents:android-maven-gradle-plugin:1.5",
     fresco                   : "com.facebook.fresco:fresco:0.14.1",
     apolloPlugin             : "com.apollographql.apollo:apollo-gradle-plugin:$versions.apolloVersion",
     apolloRuntime            : "com.apollographql.apollo:apollo-runtime:$versions.apolloVersion",
