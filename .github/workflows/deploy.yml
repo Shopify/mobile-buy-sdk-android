@@ -1,41 +1,39 @@
-name: Deploy to BinTray
+name: Deploy to Maven Central
 
 on:
   release:
     types:
       - published
-      
+
 jobs:
   build:
+    environment:
+      name: Central Repository Deployment
+
     runs-on: ubuntu-latest
     
     steps:
     
-    - uses: actions/checkout@master
+    - uses: actions/checkout@v2
       with:
         ref: 'master'
     
-    - uses: actions/setup-ruby@v1
+    - uses: ruby/setup-ruby@v1
       with:
-        ruby-version: '2.6' 
+        ruby-version: 2.6
 
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
     - name: set up JDK 1.8
       uses: actions/setup-java@v1
       with:
         java-version: 1.8
-
-    - name: Sync Submodules
-      run: git submodule sync --recursive && git submodule update --recursive --init
           
-    - name: Push to BinTray
+    - name: Publish Package
       working-directory: ./MobileBuy
+      run: ./gradlew buy3:uploadArchives
       env:
-        BINTRAY_USER: ${{ secrets.BINTRAY_USER }}
-        BINTRAY_KEY: ${{ secrets.BINTRAY_KEY }}
-      run: |
-        set -eo pipefail
-        echo "bintray.user=$BINTRAY_USER" >> local.properties
-        echo "bintray.apikey=$BINTRAY_KEY" >> local.properties
-        ./gradlew :buy3:bintrayUpload
-
+        OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+        OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+        ORG_GRADLE_PROJECT_signingKeyId: ${{ secrets.OSSRH_GPG_SECRET_KEY_ID }}
+        ORG_GRADLE_PROJECT_signingKey: ${{ secrets.OSSRH_GPG_SECRET_KEY }}
+        ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.OSSRH_GPG_SECRET_KEY_PASSWORD }}
