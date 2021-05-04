@@ -12,26 +12,26 @@ on:
 
 jobs:
   build:
-    runs-on: macOS-latest
+    environment:
+      name: Central Repository Deployment
+
+    runs-on: macos-latest
     
     steps:
     
-    - uses: actions/checkout@master
+    - uses: actions/checkout@v2
       with:
         ref: 'migration-to-jfrog'
     
-    - uses: actions/setup-ruby@v1
+    - uses: ruby/setup-ruby@v1
       with:
-        ruby-version: '2.6' 
+        ruby-version: 2.6
 
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
     - name: set up JDK 1.8
       uses: actions/setup-java@v1
       with:
         java-version: 1.8
-
-    - name: Sync Submodules
-      run: git submodule sync --recursive && git submodule update --recursive --init
           
     - name: Publish Package
       working-directory: ./MobileBuy
