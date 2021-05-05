@@ -195,7 +195,7 @@ class GraphClient private constructor(
             val httpCache = httpCacheConfig.let { config ->
                 when (config) {
                     is HttpCacheConfig.DiskLru -> {
-                        val version = BuildConfig.VERSION_NAME
+                        val version = BuildConfig.BUY_SDK_VERSION
                         val tmp = (endpointUrl.toString() + "/" + version + "/" + accessToken + "/" + locale).toByteArray(Charset.forName("UTF-8"))
                         val httpCacheFolder = File(config.cacheFolder, ByteString.of(*tmp).md5().hex())
                         HttpCache(
@@ -275,8 +275,8 @@ private fun OkHttpClient.withSdkHeaderInterceptor(applicationName: String, acces
     return newBuilder().addInterceptor { chain ->
         val original = chain.request()
         val builder = original.newBuilder().method(original.method(), original.body())
-        builder.header("User-Agent", "Mobile Buy SDK Android/" + BuildConfig.VERSION_NAME + "/" + applicationName)
-        builder.header("X-SDK-Version", BuildConfig.VERSION_NAME)
+        builder.header("User-Agent", "Mobile Buy SDK Android/" + BuildConfig.BUY_SDK_VERSION + "/" + applicationName)
+        builder.header("X-SDK-Version", BuildConfig.BUY_SDK_VERSION)
         builder.header("X-SDK-Variant", "android")
         builder.header("X-Shopify-Storefront-Access-Token", accessToken)
         if (locale!= null) {
