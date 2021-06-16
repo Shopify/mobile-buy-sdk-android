@@ -8,6 +8,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.shopify.graphql.support.AbstractResponse;
 import com.shopify.graphql.support.Arguments;
+import com.shopify.graphql.support.Directive;
 import com.shopify.graphql.support.Error;
 import com.shopify.graphql.support.Query;
 import com.shopify.graphql.support.SchemaViolationError;
@@ -21,15 +22,21 @@ import java.math.BigDecimal;
 import org.joda.time.DateTime;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Storefront {
     public static final String API_VERSION = "2021-04";
 
     public static QueryRootQuery query(QueryRootQueryDefinition queryDef) {
-        StringBuilder queryString = new StringBuilder("{");
+        return query(Collections.emptyList(), queryDef);
+    }
+
+    public static QueryRootQuery query(List<Directive> directives, QueryRootQueryDefinition queryDef) {
+        StringBuilder queryString = new StringBuilder("query");
+        for (Directive directive : directives) {
+            queryString.append(" " + directive.toString());
+        }
+        queryString.append(" {");
         QueryRootQuery query = new QueryRootQuery(queryString);
         queryDef.define(query);
         queryString.append('}');
@@ -69,7 +76,15 @@ public class Storefront {
     }
 
     public static MutationQuery mutation(MutationQueryDefinition queryDef) {
-        StringBuilder queryString = new StringBuilder("mutation{");
+        return mutation(Collections.emptyList(), queryDef);
+    }
+
+    public static MutationQuery mutation(List<Directive> directives, MutationQueryDefinition queryDef) {
+        StringBuilder queryString = new StringBuilder("mutation");
+        for (Directive directive : directives) {
+            queryString.append(" " + directive.toString());
+        }
+        queryString.append(" {");
         MutationQuery query = new MutationQuery(queryString);
         queryDef.define(query);
         queryString.append('}');
