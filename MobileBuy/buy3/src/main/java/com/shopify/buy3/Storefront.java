@@ -25,7 +25,7 @@ import java.io.Serializable;
 import java.util.*;
 
 public class Storefront {
-    public static final String API_VERSION = "2021-04";
+    public static final String API_VERSION = "2021-07";
 
     public static QueryRootQuery query(QueryRootQueryDefinition queryDef) {
         return query(Collections.emptyList(), queryDef);
@@ -123,6 +123,41 @@ public class Storefront {
         }
     }
 
+    /**
+    * Contextualizes data based on the additional information provided by the directive. For example, you
+    * can use the `@inContext(country: CA)` directive to query the price of a product in a storefront
+    * within the context of Canada.
+    */
+    public static class InContextDirective extends Directive {
+        public CountryCode country;
+
+        public ID preferredLocationId;
+
+        public InContextDirective() {
+            super("inContext");
+        }
+
+        @Override
+        public String toString() {
+            StringBuilder _queryBuilder = new StringBuilder(super.toString());
+            _queryBuilder.append("(");
+
+            if (country != null) {
+                _queryBuilder.append("country:");
+                _queryBuilder.append(country.toString());
+            }
+
+            if (preferredLocationId != null) {
+                _queryBuilder.append(", ");
+                _queryBuilder.append("preferredLocationId:");
+                Query.appendQuotedString(_queryBuilder, preferredLocationId.toString());
+            }
+
+            _queryBuilder.append(")");
+            return _queryBuilder.toString();
+        }
+    }
+
     public interface ApiVersionQueryDefinition {
         void define(ApiVersionQuery _queryBuilder);
     }
@@ -155,7 +190,10 @@ public class Storefront {
         }
 
         /**
-        * Whether the version is supported by Shopify.
+        * Whether the version is actively supported by Shopify. Supported API versions are guaranteed to be
+        * stable. Unsupported API versions include unstable, release candidate, and end-of-life versions that
+        * are marked as unsupported. For more information, refer to
+        * [Versioning](https://shopify.dev/concepts/about-apis/versioning).
         */
         public ApiVersionQuery supported() {
             startField("supported");
@@ -237,7 +275,10 @@ public class Storefront {
         }
 
         /**
-        * Whether the version is supported by Shopify.
+        * Whether the version is actively supported by Shopify. Supported API versions are guaranteed to be
+        * stable. Unsupported API versions include unstable, release candidate, and end-of-life versions that
+        * are marked as unsupported. For more information, refer to
+        * [Versioning](https://shopify.dev/concepts/about-apis/versioning).
         */
 
         public Boolean getSupported() {
@@ -871,6 +912,127 @@ public class Storefront {
         }
 
         /**
+        * Returns a metafield found by namespace and key.
+        */
+        public ArticleQuery metafield(String namespace, String key, MetafieldQueryDefinition queryDef) {
+            startField("metafield");
+
+            _queryBuilder.append("(namespace:");
+            Query.appendQuotedString(_queryBuilder, namespace.toString());
+
+            _queryBuilder.append(",key:");
+            Query.appendQuotedString(_queryBuilder, key.toString());
+
+            _queryBuilder.append(')');
+
+            _queryBuilder.append('{');
+            queryDef.define(new MetafieldQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        public class MetafieldsArguments extends Arguments {
+            MetafieldsArguments(StringBuilder _queryBuilder) {
+                super(_queryBuilder, true);
+            }
+
+            /**
+            * Container for a set of metafields (maximum of 20 characters).
+            */
+            public MetafieldsArguments namespace(String value) {
+                if (value != null) {
+                    startArgument("namespace");
+                    Query.appendQuotedString(_queryBuilder, value.toString());
+                }
+                return this;
+            }
+
+            /**
+            * Returns up to the first `n` elements from the list.
+            */
+            public MetafieldsArguments first(Integer value) {
+                if (value != null) {
+                    startArgument("first");
+                    _queryBuilder.append(value);
+                }
+                return this;
+            }
+
+            /**
+            * Returns the elements that come after the specified cursor.
+            */
+            public MetafieldsArguments after(String value) {
+                if (value != null) {
+                    startArgument("after");
+                    Query.appendQuotedString(_queryBuilder, value.toString());
+                }
+                return this;
+            }
+
+            /**
+            * Returns up to the last `n` elements from the list.
+            */
+            public MetafieldsArguments last(Integer value) {
+                if (value != null) {
+                    startArgument("last");
+                    _queryBuilder.append(value);
+                }
+                return this;
+            }
+
+            /**
+            * Returns the elements that come before the specified cursor.
+            */
+            public MetafieldsArguments before(String value) {
+                if (value != null) {
+                    startArgument("before");
+                    Query.appendQuotedString(_queryBuilder, value.toString());
+                }
+                return this;
+            }
+
+            /**
+            * Reverse the order of the underlying list.
+            */
+            public MetafieldsArguments reverse(Boolean value) {
+                if (value != null) {
+                    startArgument("reverse");
+                    _queryBuilder.append(value);
+                }
+                return this;
+            }
+        }
+
+        public interface MetafieldsArgumentsDefinition {
+            void define(MetafieldsArguments args);
+        }
+
+        /**
+        * A paginated list of metafields associated with the resource.
+        */
+        public ArticleQuery metafields(MetafieldConnectionQueryDefinition queryDef) {
+            return metafields(args -> {}, queryDef);
+        }
+
+        /**
+        * A paginated list of metafields associated with the resource.
+        */
+        public ArticleQuery metafields(MetafieldsArgumentsDefinition argsDef, MetafieldConnectionQueryDefinition queryDef) {
+            startField("metafields");
+
+            MetafieldsArguments args = new MetafieldsArguments(_queryBuilder);
+            argsDef.define(args);
+            MetafieldsArguments.end(args);
+
+            _queryBuilder.append('{');
+            queryDef.define(new MetafieldConnectionQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
         * The date and time when the article was published.
         */
         public ArticleQuery publishedAt() {
@@ -923,7 +1085,7 @@ public class Storefront {
     /**
     * An article in an online store blog.
     */
-    public static class Article extends AbstractResponse<Article> implements Node {
+    public static class Article extends AbstractResponse<Article> implements HasMetafields, MetafieldParentResource, Node {
         public Article() {
         }
 
@@ -1014,6 +1176,23 @@ public class Storefront {
                         }
 
                         responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "metafield": {
+                        Metafield optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new Metafield(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "metafields": {
+                        responseData.put(key, new MetafieldConnection(jsonAsObject(field.getValue(), key)));
 
                         break;
                     }
@@ -1219,6 +1398,32 @@ public class Storefront {
         }
 
         /**
+        * Returns a metafield found by namespace and key.
+        */
+
+        public Metafield getMetafield() {
+            return (Metafield) get("metafield");
+        }
+
+        public Article setMetafield(Metafield arg) {
+            optimisticData.put(getKey("metafield"), arg);
+            return this;
+        }
+
+        /**
+        * A paginated list of metafields associated with the resource.
+        */
+
+        public MetafieldConnection getMetafields() {
+            return (MetafieldConnection) get("metafields");
+        }
+
+        public Article setMetafields(MetafieldConnection arg) {
+            optimisticData.put(getKey("metafields"), arg);
+            return this;
+        }
+
+        /**
         * The date and time when the article was published.
         */
 
@@ -1306,6 +1511,10 @@ public class Storefront {
                 case "id": return false;
 
                 case "image": return true;
+
+                case "metafield": return true;
+
+                case "metafields": return true;
 
                 case "publishedAt": return false;
 
@@ -2533,6 +2742,127 @@ public class Storefront {
         }
 
         /**
+        * Returns a metafield found by namespace and key.
+        */
+        public BlogQuery metafield(String namespace, String key, MetafieldQueryDefinition queryDef) {
+            startField("metafield");
+
+            _queryBuilder.append("(namespace:");
+            Query.appendQuotedString(_queryBuilder, namespace.toString());
+
+            _queryBuilder.append(",key:");
+            Query.appendQuotedString(_queryBuilder, key.toString());
+
+            _queryBuilder.append(')');
+
+            _queryBuilder.append('{');
+            queryDef.define(new MetafieldQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        public class MetafieldsArguments extends Arguments {
+            MetafieldsArguments(StringBuilder _queryBuilder) {
+                super(_queryBuilder, true);
+            }
+
+            /**
+            * Container for a set of metafields (maximum of 20 characters).
+            */
+            public MetafieldsArguments namespace(String value) {
+                if (value != null) {
+                    startArgument("namespace");
+                    Query.appendQuotedString(_queryBuilder, value.toString());
+                }
+                return this;
+            }
+
+            /**
+            * Returns up to the first `n` elements from the list.
+            */
+            public MetafieldsArguments first(Integer value) {
+                if (value != null) {
+                    startArgument("first");
+                    _queryBuilder.append(value);
+                }
+                return this;
+            }
+
+            /**
+            * Returns the elements that come after the specified cursor.
+            */
+            public MetafieldsArguments after(String value) {
+                if (value != null) {
+                    startArgument("after");
+                    Query.appendQuotedString(_queryBuilder, value.toString());
+                }
+                return this;
+            }
+
+            /**
+            * Returns up to the last `n` elements from the list.
+            */
+            public MetafieldsArguments last(Integer value) {
+                if (value != null) {
+                    startArgument("last");
+                    _queryBuilder.append(value);
+                }
+                return this;
+            }
+
+            /**
+            * Returns the elements that come before the specified cursor.
+            */
+            public MetafieldsArguments before(String value) {
+                if (value != null) {
+                    startArgument("before");
+                    Query.appendQuotedString(_queryBuilder, value.toString());
+                }
+                return this;
+            }
+
+            /**
+            * Reverse the order of the underlying list.
+            */
+            public MetafieldsArguments reverse(Boolean value) {
+                if (value != null) {
+                    startArgument("reverse");
+                    _queryBuilder.append(value);
+                }
+                return this;
+            }
+        }
+
+        public interface MetafieldsArgumentsDefinition {
+            void define(MetafieldsArguments args);
+        }
+
+        /**
+        * A paginated list of metafields associated with the resource.
+        */
+        public BlogQuery metafields(MetafieldConnectionQueryDefinition queryDef) {
+            return metafields(args -> {}, queryDef);
+        }
+
+        /**
+        * A paginated list of metafields associated with the resource.
+        */
+        public BlogQuery metafields(MetafieldsArgumentsDefinition argsDef, MetafieldConnectionQueryDefinition queryDef) {
+            startField("metafields");
+
+            MetafieldsArguments args = new MetafieldsArguments(_queryBuilder);
+            argsDef.define(args);
+            MetafieldsArguments.end(args);
+
+            _queryBuilder.append('{');
+            queryDef.define(new MetafieldConnectionQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
         * The blog's SEO information.
         */
         public BlogQuery seo(SEOQueryDefinition queryDef) {
@@ -2567,7 +2897,7 @@ public class Storefront {
     /**
     * An online store blog.
     */
-    public static class Blog extends AbstractResponse<Blog> implements Node {
+    public static class Blog extends AbstractResponse<Blog> implements HasMetafields, MetafieldParentResource, Node {
         public Blog() {
         }
 
@@ -2612,6 +2942,23 @@ public class Storefront {
 
                     case "id": {
                         responseData.put(key, new ID(jsonAsString(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "metafield": {
+                        Metafield optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new Metafield(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "metafields": {
+                        responseData.put(key, new MetafieldConnection(jsonAsObject(field.getValue(), key)));
 
                         break;
                     }
@@ -2720,6 +3067,32 @@ public class Storefront {
         }
 
         /**
+        * Returns a metafield found by namespace and key.
+        */
+
+        public Metafield getMetafield() {
+            return (Metafield) get("metafield");
+        }
+
+        public Blog setMetafield(Metafield arg) {
+            optimisticData.put(getKey("metafield"), arg);
+            return this;
+        }
+
+        /**
+        * A paginated list of metafields associated with the resource.
+        */
+
+        public MetafieldConnection getMetafields() {
+            return (MetafieldConnection) get("metafields");
+        }
+
+        public Blog setMetafields(MetafieldConnection arg) {
+            optimisticData.put(getKey("metafields"), arg);
+            return this;
+        }
+
+        /**
         * The blog's SEO information.
         */
 
@@ -2769,6 +3142,10 @@ public class Storefront {
                 case "handle": return false;
 
                 case "id": return false;
+
+                case "metafield": return true;
+
+                case "metafields": return true;
 
                 case "seo": return true;
 
@@ -3234,6 +3611,19 @@ public class Storefront {
 
             _queryBuilder.append('{');
             queryDef.define(new AvailableShippingRatesQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * The identity of the customer associated with the checkout.
+        */
+        public CheckoutQuery buyerIdentity(CheckoutBuyerIdentityQueryDefinition queryDef) {
+            startField("buyerIdentity");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CheckoutBuyerIdentityQuery(_queryBuilder));
             _queryBuilder.append('}');
 
             return this;
@@ -3773,6 +4163,12 @@ public class Storefront {
                         break;
                     }
 
+                    case "buyerIdentity": {
+                        responseData.put(key, new CheckoutBuyerIdentity(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
                     case "completedAt": {
                         DateTime optional1 = null;
                         if (!field.getValue().isJsonNull()) {
@@ -4059,6 +4455,19 @@ public class Storefront {
 
         public Checkout setAvailableShippingRates(AvailableShippingRates arg) {
             optimisticData.put(getKey("availableShippingRates"), arg);
+            return this;
+        }
+
+        /**
+        * The identity of the customer associated with the checkout.
+        */
+
+        public CheckoutBuyerIdentity getBuyerIdentity() {
+            return (CheckoutBuyerIdentity) get("buyerIdentity");
+        }
+
+        public Checkout setBuyerIdentity(CheckoutBuyerIdentity arg) {
+            optimisticData.put(getKey("buyerIdentity"), arg);
             return this;
         }
 
@@ -4481,6 +4890,8 @@ public class Storefront {
                 case "appliedGiftCards": return true;
 
                 case "availableShippingRates": return true;
+
+                case "buyerIdentity": return true;
 
                 case "completedAt": return false;
 
@@ -5119,6 +5530,117 @@ public class Storefront {
 
                 default: return false;
             }
+        }
+    }
+
+    public interface CheckoutBuyerIdentityQueryDefinition {
+        void define(CheckoutBuyerIdentityQuery _queryBuilder);
+    }
+
+    /**
+    * The identity of the customer associated with the checkout.
+    */
+    public static class CheckoutBuyerIdentityQuery extends Query<CheckoutBuyerIdentityQuery> {
+        CheckoutBuyerIdentityQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * The country code for the checkout. For example, `CA`.
+        */
+        public CheckoutBuyerIdentityQuery countryCode() {
+            startField("countryCode");
+
+            return this;
+        }
+    }
+
+    /**
+    * The identity of the customer associated with the checkout.
+    */
+    public static class CheckoutBuyerIdentity extends AbstractResponse<CheckoutBuyerIdentity> {
+        public CheckoutBuyerIdentity() {
+        }
+
+        public CheckoutBuyerIdentity(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "countryCode": {
+                        CountryCode optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = CountryCode.fromGraphQl(jsonAsString(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "CheckoutBuyerIdentity";
+        }
+
+        /**
+        * The country code for the checkout. For example, `CA`.
+        */
+
+        public CountryCode getCountryCode() {
+            return (CountryCode) get("countryCode");
+        }
+
+        public CheckoutBuyerIdentity setCountryCode(CountryCode arg) {
+            optimisticData.put(getKey("countryCode"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "countryCode": return false;
+
+                default: return false;
+            }
+        }
+    }
+
+    public static class CheckoutBuyerIdentityInput implements Serializable {
+        private CountryCode countryCode;
+
+        public CheckoutBuyerIdentityInput(CountryCode countryCode) {
+            this.countryCode = countryCode;
+        }
+
+        public CountryCode getCountryCode() {
+            return countryCode;
+        }
+
+        public CheckoutBuyerIdentityInput setCountryCode(CountryCode countryCode) {
+            this.countryCode = countryCode;
+            return this;
+        }
+
+        public void appendTo(StringBuilder _queryBuilder) {
+            String separator = "";
+            _queryBuilder.append('{');
+
+            _queryBuilder.append(separator);
+            separator = ",";
+            _queryBuilder.append("countryCode:");
+            _queryBuilder.append(countryCode.toString());
+
+            _queryBuilder.append('}');
         }
     }
 
@@ -6336,6 +6858,8 @@ public class Storefront {
 
         private Input<CurrencyCode> presentmentCurrencyCode = Input.undefined();
 
+        private Input<CheckoutBuyerIdentityInput> buyerIdentity = Input.undefined();
+
         public String getEmail() {
             return email.getValue();
         }
@@ -6483,6 +7007,27 @@ public class Storefront {
             return this;
         }
 
+        public CheckoutBuyerIdentityInput getBuyerIdentity() {
+            return buyerIdentity.getValue();
+        }
+
+        public Input<CheckoutBuyerIdentityInput> getBuyerIdentityInput() {
+            return buyerIdentity;
+        }
+
+        public CheckoutCreateInput setBuyerIdentity(CheckoutBuyerIdentityInput buyerIdentity) {
+            this.buyerIdentity = Input.optional(buyerIdentity);
+            return this;
+        }
+
+        public CheckoutCreateInput setBuyerIdentityInput(Input<CheckoutBuyerIdentityInput> buyerIdentity) {
+            if (buyerIdentity == null) {
+                throw new IllegalArgumentException("Input can not be null");
+            }
+            this.buyerIdentity = buyerIdentity;
+            return this;
+        }
+
         public void appendTo(StringBuilder _queryBuilder) {
             String separator = "";
             _queryBuilder.append('{');
@@ -6582,6 +7127,17 @@ public class Storefront {
                 }
             }
 
+            if (this.buyerIdentity.isDefined()) {
+                _queryBuilder.append(separator);
+                separator = ",";
+                _queryBuilder.append("buyerIdentity:");
+                if (buyerIdentity.getValue() != null) {
+                    buyerIdentity.getValue().appendTo(_queryBuilder);
+                } else {
+                    _queryBuilder.append("null");
+                }
+            }
+
             _queryBuilder.append('}');
         }
     }
@@ -6620,6 +7176,15 @@ public class Storefront {
             _queryBuilder.append('{');
             queryDef.define(new CheckoutUserErrorQuery(_queryBuilder));
             _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * The checkout queue token.
+        */
+        public CheckoutCreatePayloadQuery queueToken() {
+            startField("queueToken");
 
             return this;
         }
@@ -6671,6 +7236,17 @@ public class Storefront {
                         }
 
                         responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "queueToken": {
+                        String optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = jsonAsString(field.getValue(), key);
+                        }
+
+                        responseData.put(key, optional1);
 
                         break;
                     }
@@ -6728,6 +7304,19 @@ public class Storefront {
         }
 
         /**
+        * The checkout queue token.
+        */
+
+        public String getQueueToken() {
+            return (String) get("queueToken");
+        }
+
+        public CheckoutCreatePayload setQueueToken(String arg) {
+            optimisticData.put(getKey("queueToken"), arg);
+            return this;
+        }
+
+        /**
         * List of errors that occurred executing the mutation.
         *
         * @deprecated Use `checkoutUserErrors` instead
@@ -6747,6 +7336,8 @@ public class Storefront {
                 case "checkout": return true;
 
                 case "checkoutUserErrors": return true;
+
+                case "queueToken": return false;
 
                 case "userErrors": return true;
 
@@ -8350,6 +8941,11 @@ public class Storefront {
         EMPTY,
 
         /**
+        * Queue token has expired.
+        */
+        EXPIRED_QUEUE_TOKEN,
+
+        /**
         * Gift card has already been applied.
         */
         GIFT_CARD_ALREADY_APPLIED,
@@ -8400,6 +8996,11 @@ public class Storefront {
         INVALID,
 
         /**
+        * Cannot specify country and presentment currency code.
+        */
+        INVALID_COUNTRY_AND_CURRENCY,
+
+        /**
         * Input Zip is invalid for country provided.
         */
         INVALID_FOR_COUNTRY,
@@ -8413,6 +9014,11 @@ public class Storefront {
         * Invalid province in country.
         */
         INVALID_PROVINCE_IN_COUNTRY,
+
+        /**
+        * Queue token is invalid.
+        */
+        INVALID_QUEUE_TOKEN,
 
         /**
         * Invalid region in country.
@@ -8460,7 +9066,7 @@ public class Storefront {
         NOT_SUPPORTED,
 
         /**
-        * Input value is not present.
+        * Input value must be blank.
         */
         PRESENT,
 
@@ -8468,6 +9074,11 @@ public class Storefront {
         * Shipping rate expired.
         */
         SHIPPING_RATE_EXPIRED,
+
+        /**
+        * Throttled during checkout.
+        */
+        THROTTLED_DURING_CHECKOUT,
 
         /**
         * Input value is too long.
@@ -8536,6 +9147,10 @@ public class Storefront {
                     return EMPTY;
                 }
 
+                case "EXPIRED_QUEUE_TOKEN": {
+                    return EXPIRED_QUEUE_TOKEN;
+                }
+
                 case "GIFT_CARD_ALREADY_APPLIED": {
                     return GIFT_CARD_ALREADY_APPLIED;
                 }
@@ -8576,6 +9191,10 @@ public class Storefront {
                     return INVALID;
                 }
 
+                case "INVALID_COUNTRY_AND_CURRENCY": {
+                    return INVALID_COUNTRY_AND_CURRENCY;
+                }
+
                 case "INVALID_FOR_COUNTRY": {
                     return INVALID_FOR_COUNTRY;
                 }
@@ -8586,6 +9205,10 @@ public class Storefront {
 
                 case "INVALID_PROVINCE_IN_COUNTRY": {
                     return INVALID_PROVINCE_IN_COUNTRY;
+                }
+
+                case "INVALID_QUEUE_TOKEN": {
+                    return INVALID_QUEUE_TOKEN;
                 }
 
                 case "INVALID_REGION_IN_COUNTRY": {
@@ -8630,6 +9253,10 @@ public class Storefront {
 
                 case "SHIPPING_RATE_EXPIRED": {
                     return SHIPPING_RATE_EXPIRED;
+                }
+
+                case "THROTTLED_DURING_CHECKOUT": {
+                    return THROTTLED_DURING_CHECKOUT;
                 }
 
                 case "TOO_LONG": {
@@ -8695,6 +9322,10 @@ public class Storefront {
                     return "EMPTY";
                 }
 
+                case EXPIRED_QUEUE_TOKEN: {
+                    return "EXPIRED_QUEUE_TOKEN";
+                }
+
                 case GIFT_CARD_ALREADY_APPLIED: {
                     return "GIFT_CARD_ALREADY_APPLIED";
                 }
@@ -8735,6 +9366,10 @@ public class Storefront {
                     return "INVALID";
                 }
 
+                case INVALID_COUNTRY_AND_CURRENCY: {
+                    return "INVALID_COUNTRY_AND_CURRENCY";
+                }
+
                 case INVALID_FOR_COUNTRY: {
                     return "INVALID_FOR_COUNTRY";
                 }
@@ -8745,6 +9380,10 @@ public class Storefront {
 
                 case INVALID_PROVINCE_IN_COUNTRY: {
                     return "INVALID_PROVINCE_IN_COUNTRY";
+                }
+
+                case INVALID_QUEUE_TOKEN: {
+                    return "INVALID_QUEUE_TOKEN";
                 }
 
                 case INVALID_REGION_IN_COUNTRY: {
@@ -8789,6 +9428,10 @@ public class Storefront {
 
                 case SHIPPING_RATE_EXPIRED: {
                     return "SHIPPING_RATE_EXPIRED";
+                }
+
+                case THROTTLED_DURING_CHECKOUT: {
+                    return "THROTTLED_DURING_CHECKOUT";
                 }
 
                 case TOO_LONG: {
@@ -11680,6 +12323,127 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * Returns a metafield found by namespace and key.
+        */
+        public CollectionQuery metafield(String namespace, String key, MetafieldQueryDefinition queryDef) {
+            startField("metafield");
+
+            _queryBuilder.append("(namespace:");
+            Query.appendQuotedString(_queryBuilder, namespace.toString());
+
+            _queryBuilder.append(",key:");
+            Query.appendQuotedString(_queryBuilder, key.toString());
+
+            _queryBuilder.append(')');
+
+            _queryBuilder.append('{');
+            queryDef.define(new MetafieldQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        public class MetafieldsArguments extends Arguments {
+            MetafieldsArguments(StringBuilder _queryBuilder) {
+                super(_queryBuilder, true);
+            }
+
+            /**
+            * Container for a set of metafields (maximum of 20 characters).
+            */
+            public MetafieldsArguments namespace(String value) {
+                if (value != null) {
+                    startArgument("namespace");
+                    Query.appendQuotedString(_queryBuilder, value.toString());
+                }
+                return this;
+            }
+
+            /**
+            * Returns up to the first `n` elements from the list.
+            */
+            public MetafieldsArguments first(Integer value) {
+                if (value != null) {
+                    startArgument("first");
+                    _queryBuilder.append(value);
+                }
+                return this;
+            }
+
+            /**
+            * Returns the elements that come after the specified cursor.
+            */
+            public MetafieldsArguments after(String value) {
+                if (value != null) {
+                    startArgument("after");
+                    Query.appendQuotedString(_queryBuilder, value.toString());
+                }
+                return this;
+            }
+
+            /**
+            * Returns up to the last `n` elements from the list.
+            */
+            public MetafieldsArguments last(Integer value) {
+                if (value != null) {
+                    startArgument("last");
+                    _queryBuilder.append(value);
+                }
+                return this;
+            }
+
+            /**
+            * Returns the elements that come before the specified cursor.
+            */
+            public MetafieldsArguments before(String value) {
+                if (value != null) {
+                    startArgument("before");
+                    Query.appendQuotedString(_queryBuilder, value.toString());
+                }
+                return this;
+            }
+
+            /**
+            * Reverse the order of the underlying list.
+            */
+            public MetafieldsArguments reverse(Boolean value) {
+                if (value != null) {
+                    startArgument("reverse");
+                    _queryBuilder.append(value);
+                }
+                return this;
+            }
+        }
+
+        public interface MetafieldsArgumentsDefinition {
+            void define(MetafieldsArguments args);
+        }
+
+        /**
+        * A paginated list of metafields associated with the resource.
+        */
+        public CollectionQuery metafields(MetafieldConnectionQueryDefinition queryDef) {
+            return metafields(args -> {}, queryDef);
+        }
+
+        /**
+        * A paginated list of metafields associated with the resource.
+        */
+        public CollectionQuery metafields(MetafieldsArgumentsDefinition argsDef, MetafieldConnectionQueryDefinition queryDef) {
+            startField("metafields");
+
+            MetafieldsArguments args = new MetafieldsArguments(_queryBuilder);
+            argsDef.define(args);
+            MetafieldsArguments.end(args);
+
+            _queryBuilder.append('{');
+            queryDef.define(new MetafieldConnectionQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
         public class ProductsArguments extends Arguments {
             ProductsArguments(StringBuilder _queryBuilder) {
                 super(_queryBuilder, true);
@@ -11803,7 +12567,7 @@ public class Storefront {
     * A collection represents a grouping of products that a shop owner can create to organize them or make
     * their shops easier to browse.
     */
-    public static class Collection extends AbstractResponse<Collection> implements Node {
+    public static class Collection extends AbstractResponse<Collection> implements HasMetafields, MetafieldParentResource, Node {
         public Collection() {
         }
 
@@ -11843,6 +12607,23 @@ public class Storefront {
                         }
 
                         responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "metafield": {
+                        Metafield optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new Metafield(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "metafields": {
+                        responseData.put(key, new MetafieldConnection(jsonAsObject(field.getValue(), key)));
 
                         break;
                     }
@@ -11947,6 +12728,32 @@ public class Storefront {
         }
 
         /**
+        * Returns a metafield found by namespace and key.
+        */
+
+        public Metafield getMetafield() {
+            return (Metafield) get("metafield");
+        }
+
+        public Collection setMetafield(Metafield arg) {
+            optimisticData.put(getKey("metafield"), arg);
+            return this;
+        }
+
+        /**
+        * A paginated list of metafields associated with the resource.
+        */
+
+        public MetafieldConnection getMetafields() {
+            return (MetafieldConnection) get("metafields");
+        }
+
+        public Collection setMetafields(MetafieldConnection arg) {
+            optimisticData.put(getKey("metafields"), arg);
+            return this;
+        }
+
+        /**
         * List of products in the collection.
         */
 
@@ -11996,6 +12803,10 @@ public class Storefront {
                 case "id": return false;
 
                 case "image": return true;
+
+                case "metafield": return true;
+
+                case "metafields": return true;
 
                 case "products": return true;
 
@@ -12848,6 +13659,177 @@ public class Storefront {
                 case "cursor": return false;
 
                 case "node": return true;
+
+                default: return false;
+            }
+        }
+    }
+
+    public interface CountryQueryDefinition {
+        void define(CountryQuery _queryBuilder);
+    }
+
+    /**
+    * A country.
+    */
+    public static class CountryQuery extends Query<CountryQuery> {
+        CountryQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * The currency of the country.
+        */
+        public CountryQuery currency(CurrencyQueryDefinition queryDef) {
+            startField("currency");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CurrencyQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * The ISO code of the country.
+        */
+        public CountryQuery isoCode() {
+            startField("isoCode");
+
+            return this;
+        }
+
+        /**
+        * The name of the country.
+        */
+        public CountryQuery name() {
+            startField("name");
+
+            return this;
+        }
+
+        /**
+        * The unit system used in the country.
+        */
+        public CountryQuery unitSystem() {
+            startField("unitSystem");
+
+            return this;
+        }
+    }
+
+    /**
+    * A country.
+    */
+    public static class Country extends AbstractResponse<Country> {
+        public Country() {
+        }
+
+        public Country(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "currency": {
+                        responseData.put(key, new Currency(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "isoCode": {
+                        responseData.put(key, CountryCode.fromGraphQl(jsonAsString(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "name": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "unitSystem": {
+                        responseData.put(key, UnitSystem.fromGraphQl(jsonAsString(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "Country";
+        }
+
+        /**
+        * The currency of the country.
+        */
+
+        public Currency getCurrency() {
+            return (Currency) get("currency");
+        }
+
+        public Country setCurrency(Currency arg) {
+            optimisticData.put(getKey("currency"), arg);
+            return this;
+        }
+
+        /**
+        * The ISO code of the country.
+        */
+
+        public CountryCode getIsoCode() {
+            return (CountryCode) get("isoCode");
+        }
+
+        public Country setIsoCode(CountryCode arg) {
+            optimisticData.put(getKey("isoCode"), arg);
+            return this;
+        }
+
+        /**
+        * The name of the country.
+        */
+
+        public String getName() {
+            return (String) get("name");
+        }
+
+        public Country setName(String arg) {
+            optimisticData.put(getKey("name"), arg);
+            return this;
+        }
+
+        /**
+        * The unit system used in the country.
+        */
+
+        public UnitSystem getUnitSystem() {
+            return (UnitSystem) get("unitSystem");
+        }
+
+        public Country setUnitSystem(UnitSystem arg) {
+            optimisticData.put(getKey("unitSystem"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "currency": return true;
+
+                case "isoCode": return false;
+
+                case "name": return false;
+
+                case "unitSystem": return false;
 
                 default: return false;
             }
@@ -16717,6 +17699,143 @@ public class Storefront {
         }
     }
 
+    public interface CurrencyQueryDefinition {
+        void define(CurrencyQuery _queryBuilder);
+    }
+
+    /**
+    * A currency.
+    */
+    public static class CurrencyQuery extends Query<CurrencyQuery> {
+        CurrencyQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * The ISO code of the currency.
+        */
+        public CurrencyQuery isoCode() {
+            startField("isoCode");
+
+            return this;
+        }
+
+        /**
+        * The name of the currency.
+        */
+        public CurrencyQuery name() {
+            startField("name");
+
+            return this;
+        }
+
+        /**
+        * The symbol of the currency.
+        */
+        public CurrencyQuery symbol() {
+            startField("symbol");
+
+            return this;
+        }
+    }
+
+    /**
+    * A currency.
+    */
+    public static class Currency extends AbstractResponse<Currency> {
+        public Currency() {
+        }
+
+        public Currency(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "isoCode": {
+                        responseData.put(key, CurrencyCode.fromGraphQl(jsonAsString(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "name": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "symbol": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "Currency";
+        }
+
+        /**
+        * The ISO code of the currency.
+        */
+
+        public CurrencyCode getIsoCode() {
+            return (CurrencyCode) get("isoCode");
+        }
+
+        public Currency setIsoCode(CurrencyCode arg) {
+            optimisticData.put(getKey("isoCode"), arg);
+            return this;
+        }
+
+        /**
+        * The name of the currency.
+        */
+
+        public String getName() {
+            return (String) get("name");
+        }
+
+        public Currency setName(String arg) {
+            optimisticData.put(getKey("name"), arg);
+            return this;
+        }
+
+        /**
+        * The symbol of the currency.
+        */
+
+        public String getSymbol() {
+            return (String) get("symbol");
+        }
+
+        public Currency setSymbol(String arg) {
+            optimisticData.put(getKey("symbol"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "isoCode": return false;
+
+                case "name": return false;
+
+                case "symbol": return false;
+
+                default: return false;
+            }
+        }
+    }
+
     /**
     * Currency codes.
     */
@@ -17503,6 +18622,11 @@ public class Storefront {
         XPF,
 
         /**
+        * Unrecognized currency.
+        */
+        XXX,
+
+        /**
         * Yemeni Rial (YER).
         */
         YER,
@@ -18137,6 +19261,10 @@ public class Storefront {
                     return XPF;
                 }
 
+                case "XXX": {
+                    return XXX;
+                }
+
                 case "YER": {
                     return YER;
                 }
@@ -18768,6 +19896,10 @@ public class Storefront {
                     return "XPF";
                 }
 
+                case XXX: {
+                    return "XXX";
+                }
+
                 case YER: {
                     return "YER";
                 }
@@ -18978,6 +20110,127 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * Returns a metafield found by namespace and key.
+        */
+        public CustomerQuery metafield(String namespace, String key, MetafieldQueryDefinition queryDef) {
+            startField("metafield");
+
+            _queryBuilder.append("(namespace:");
+            Query.appendQuotedString(_queryBuilder, namespace.toString());
+
+            _queryBuilder.append(",key:");
+            Query.appendQuotedString(_queryBuilder, key.toString());
+
+            _queryBuilder.append(')');
+
+            _queryBuilder.append('{');
+            queryDef.define(new MetafieldQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        public class MetafieldsArguments extends Arguments {
+            MetafieldsArguments(StringBuilder _queryBuilder) {
+                super(_queryBuilder, true);
+            }
+
+            /**
+            * Container for a set of metafields (maximum of 20 characters).
+            */
+            public MetafieldsArguments namespace(String value) {
+                if (value != null) {
+                    startArgument("namespace");
+                    Query.appendQuotedString(_queryBuilder, value.toString());
+                }
+                return this;
+            }
+
+            /**
+            * Returns up to the first `n` elements from the list.
+            */
+            public MetafieldsArguments first(Integer value) {
+                if (value != null) {
+                    startArgument("first");
+                    _queryBuilder.append(value);
+                }
+                return this;
+            }
+
+            /**
+            * Returns the elements that come after the specified cursor.
+            */
+            public MetafieldsArguments after(String value) {
+                if (value != null) {
+                    startArgument("after");
+                    Query.appendQuotedString(_queryBuilder, value.toString());
+                }
+                return this;
+            }
+
+            /**
+            * Returns up to the last `n` elements from the list.
+            */
+            public MetafieldsArguments last(Integer value) {
+                if (value != null) {
+                    startArgument("last");
+                    _queryBuilder.append(value);
+                }
+                return this;
+            }
+
+            /**
+            * Returns the elements that come before the specified cursor.
+            */
+            public MetafieldsArguments before(String value) {
+                if (value != null) {
+                    startArgument("before");
+                    Query.appendQuotedString(_queryBuilder, value.toString());
+                }
+                return this;
+            }
+
+            /**
+            * Reverse the order of the underlying list.
+            */
+            public MetafieldsArguments reverse(Boolean value) {
+                if (value != null) {
+                    startArgument("reverse");
+                    _queryBuilder.append(value);
+                }
+                return this;
+            }
+        }
+
+        public interface MetafieldsArgumentsDefinition {
+            void define(MetafieldsArguments args);
+        }
+
+        /**
+        * A paginated list of metafields associated with the resource.
+        */
+        public CustomerQuery metafields(MetafieldConnectionQueryDefinition queryDef) {
+            return metafields(args -> {}, queryDef);
+        }
+
+        /**
+        * A paginated list of metafields associated with the resource.
+        */
+        public CustomerQuery metafields(MetafieldsArgumentsDefinition argsDef, MetafieldConnectionQueryDefinition queryDef) {
+            startField("metafields");
+
+            MetafieldsArguments args = new MetafieldsArguments(_queryBuilder);
+            argsDef.define(args);
+            MetafieldsArguments.end(args);
+
+            _queryBuilder.append('{');
+            queryDef.define(new MetafieldConnectionQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
         public class OrdersArguments extends Arguments {
             OrdersArguments(StringBuilder _queryBuilder) {
                 super(_queryBuilder, true);
@@ -19125,7 +20378,7 @@ public class Storefront {
     * A customer represents a customer account with the shop. Customer accounts store contact information
     * for the customer, saving logged-in customers the trouble of having to provide it at every checkout.
     */
-    public static class Customer extends AbstractResponse<Customer> {
+    public static class Customer extends AbstractResponse<Customer> implements HasMetafields, MetafieldParentResource {
         public Customer() {
         }
 
@@ -19215,6 +20468,23 @@ public class Storefront {
                         }
 
                         responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "metafield": {
+                        Metafield optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new Metafield(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "metafields": {
+                        responseData.put(key, new MetafieldConnection(jsonAsObject(field.getValue(), key)));
 
                         break;
                     }
@@ -19399,6 +20669,32 @@ public class Storefront {
         }
 
         /**
+        * Returns a metafield found by namespace and key.
+        */
+
+        public Metafield getMetafield() {
+            return (Metafield) get("metafield");
+        }
+
+        public Customer setMetafield(Metafield arg) {
+            optimisticData.put(getKey("metafield"), arg);
+            return this;
+        }
+
+        /**
+        * A paginated list of metafields associated with the resource.
+        */
+
+        public MetafieldConnection getMetafields() {
+            return (MetafieldConnection) get("metafields");
+        }
+
+        public Customer setMetafields(MetafieldConnection arg) {
+            optimisticData.put(getKey("metafields"), arg);
+            return this;
+        }
+
+        /**
         * The orders associated with the customer.
         */
 
@@ -19472,6 +20768,10 @@ public class Storefront {
                 case "lastIncompleteCheckout": return true;
 
                 case "lastName": return false;
+
+                case "metafield": return true;
+
+                case "metafields": return true;
 
                 case "orders": return true;
 
@@ -25394,6 +26694,53 @@ public class Storefront {
         }
     }
 
+    public static class GeoCoordinateInput implements Serializable {
+        private double latitude;
+
+        private double longitude;
+
+        public GeoCoordinateInput(double latitude, double longitude) {
+            this.latitude = latitude;
+
+            this.longitude = longitude;
+        }
+
+        public double getLatitude() {
+            return latitude;
+        }
+
+        public GeoCoordinateInput setLatitude(double latitude) {
+            this.latitude = latitude;
+            return this;
+        }
+
+        public double getLongitude() {
+            return longitude;
+        }
+
+        public GeoCoordinateInput setLongitude(double longitude) {
+            this.longitude = longitude;
+            return this;
+        }
+
+        public void appendTo(StringBuilder _queryBuilder) {
+            String separator = "";
+            _queryBuilder.append('{');
+
+            _queryBuilder.append(separator);
+            separator = ",";
+            _queryBuilder.append("latitude:");
+            _queryBuilder.append(latitude);
+
+            _queryBuilder.append(separator);
+            separator = ",";
+            _queryBuilder.append("longitude:");
+            _queryBuilder.append(longitude);
+
+            _queryBuilder.append('}');
+        }
+    }
+
     public interface HasMetafieldsQueryDefinition {
         void define(HasMetafieldsQuery _queryBuilder);
     }
@@ -25409,7 +26756,7 @@ public class Storefront {
         }
 
         /**
-        * The metafield associated with the resource.
+        * Returns a metafield found by namespace and key.
         */
         public HasMetafieldsQuery metafield(String namespace, String key, MetafieldQueryDefinition queryDef) {
             startField("metafield");
@@ -25529,6 +26876,48 @@ public class Storefront {
             return this;
         }
 
+        public HasMetafieldsQuery onArticle(ArticleQueryDefinition queryDef) {
+            startInlineFragment("Article");
+            queryDef.define(new ArticleQuery(_queryBuilder));
+            _queryBuilder.append('}');
+            return this;
+        }
+
+        public HasMetafieldsQuery onBlog(BlogQueryDefinition queryDef) {
+            startInlineFragment("Blog");
+            queryDef.define(new BlogQuery(_queryBuilder));
+            _queryBuilder.append('}');
+            return this;
+        }
+
+        public HasMetafieldsQuery onCollection(CollectionQueryDefinition queryDef) {
+            startInlineFragment("Collection");
+            queryDef.define(new CollectionQuery(_queryBuilder));
+            _queryBuilder.append('}');
+            return this;
+        }
+
+        public HasMetafieldsQuery onCustomer(CustomerQueryDefinition queryDef) {
+            startInlineFragment("Customer");
+            queryDef.define(new CustomerQuery(_queryBuilder));
+            _queryBuilder.append('}');
+            return this;
+        }
+
+        public HasMetafieldsQuery onOrder(OrderQueryDefinition queryDef) {
+            startInlineFragment("Order");
+            queryDef.define(new OrderQuery(_queryBuilder));
+            _queryBuilder.append('}');
+            return this;
+        }
+
+        public HasMetafieldsQuery onPage(PageQueryDefinition queryDef) {
+            startInlineFragment("Page");
+            queryDef.define(new PageQuery(_queryBuilder));
+            _queryBuilder.append('}');
+            return this;
+        }
+
         public HasMetafieldsQuery onProduct(ProductQueryDefinition queryDef) {
             startInlineFragment("Product");
             queryDef.define(new ProductQuery(_queryBuilder));
@@ -25539,6 +26928,13 @@ public class Storefront {
         public HasMetafieldsQuery onProductVariant(ProductVariantQueryDefinition queryDef) {
             startInlineFragment("ProductVariant");
             queryDef.define(new ProductVariantQuery(_queryBuilder));
+            _queryBuilder.append('}');
+            return this;
+        }
+
+        public HasMetafieldsQuery onShop(ShopQueryDefinition queryDef) {
+            startInlineFragment("Shop");
+            queryDef.define(new ShopQuery(_queryBuilder));
             _queryBuilder.append('}');
             return this;
         }
@@ -25595,12 +26991,40 @@ public class Storefront {
         public static HasMetafields create(JsonObject fields) throws SchemaViolationError {
             String typeName = fields.getAsJsonPrimitive("__typename").getAsString();
             switch (typeName) {
+                case "Article": {
+                    return new Article(fields);
+                }
+
+                case "Blog": {
+                    return new Blog(fields);
+                }
+
+                case "Collection": {
+                    return new Collection(fields);
+                }
+
+                case "Customer": {
+                    return new Customer(fields);
+                }
+
+                case "Order": {
+                    return new Order(fields);
+                }
+
+                case "Page": {
+                    return new Page(fields);
+                }
+
                 case "Product": {
                     return new Product(fields);
                 }
 
                 case "ProductVariant": {
                     return new ProductVariant(fields);
+                }
+
+                case "Shop": {
+                    return new Shop(fields);
                 }
 
                 default: {
@@ -25614,7 +27038,7 @@ public class Storefront {
         }
 
         /**
-        * The metafield associated with the resource.
+        * Returns a metafield found by namespace and key.
         */
 
         public Metafield getMetafield() {
@@ -26396,6 +27820,1038 @@ public class Storefront {
                 case "node": return true;
 
                 default: return false;
+            }
+        }
+    }
+
+    public interface LocalizationQueryDefinition {
+        void define(LocalizationQuery _queryBuilder);
+    }
+
+    /**
+    * Information about the localized experiences configured for the shop.
+    */
+    public static class LocalizationQuery extends Query<LocalizationQuery> {
+        LocalizationQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * List of countries with enabled localized experiences.
+        */
+        public LocalizationQuery availableCountries(CountryQueryDefinition queryDef) {
+            startField("availableCountries");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CountryQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * The country of the active localized experience. Use the `@inContext` directive to change this value.
+        */
+        public LocalizationQuery country(CountryQueryDefinition queryDef) {
+            startField("country");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CountryQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+    }
+
+    /**
+    * Information about the localized experiences configured for the shop.
+    */
+    public static class Localization extends AbstractResponse<Localization> {
+        public Localization() {
+        }
+
+        public Localization(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "availableCountries": {
+                        List<Country> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new Country(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "country": {
+                        responseData.put(key, new Country(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "Localization";
+        }
+
+        /**
+        * List of countries with enabled localized experiences.
+        */
+
+        public List<Country> getAvailableCountries() {
+            return (List<Country>) get("availableCountries");
+        }
+
+        public Localization setAvailableCountries(List<Country> arg) {
+            optimisticData.put(getKey("availableCountries"), arg);
+            return this;
+        }
+
+        /**
+        * The country of the active localized experience. Use the `@inContext` directive to change this value.
+        */
+
+        public Country getCountry() {
+            return (Country) get("country");
+        }
+
+        public Localization setCountry(Country arg) {
+            optimisticData.put(getKey("country"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "availableCountries": return true;
+
+                case "country": return true;
+
+                default: return false;
+            }
+        }
+    }
+
+    public interface LocationQueryDefinition {
+        void define(LocationQuery _queryBuilder);
+    }
+
+    /**
+    * Represents a location where product inventory is held.
+    */
+    public static class LocationQuery extends Query<LocationQuery> {
+        LocationQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+
+            startField("id");
+        }
+
+        /**
+        * The address of the location.
+        */
+        public LocationQuery address(LocationAddressQueryDefinition queryDef) {
+            startField("address");
+
+            _queryBuilder.append('{');
+            queryDef.define(new LocationAddressQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * The name of the location.
+        */
+        public LocationQuery name() {
+            startField("name");
+
+            return this;
+        }
+    }
+
+    /**
+    * Represents a location where product inventory is held.
+    */
+    public static class Location extends AbstractResponse<Location> implements Node {
+        public Location() {
+        }
+
+        public Location(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "address": {
+                        responseData.put(key, new LocationAddress(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "id": {
+                        responseData.put(key, new ID(jsonAsString(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "name": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public Location(ID id) {
+            this();
+            optimisticData.put("id", id);
+        }
+
+        public String getGraphQlTypeName() {
+            return "Location";
+        }
+
+        /**
+        * The address of the location.
+        */
+
+        public LocationAddress getAddress() {
+            return (LocationAddress) get("address");
+        }
+
+        public Location setAddress(LocationAddress arg) {
+            optimisticData.put(getKey("address"), arg);
+            return this;
+        }
+
+        /**
+        * Globally unique identifier.
+        */
+
+        public ID getId() {
+            return (ID) get("id");
+        }
+
+        /**
+        * The name of the location.
+        */
+
+        public String getName() {
+            return (String) get("name");
+        }
+
+        public Location setName(String arg) {
+            optimisticData.put(getKey("name"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "address": return true;
+
+                case "id": return false;
+
+                case "name": return false;
+
+                default: return false;
+            }
+        }
+    }
+
+    public interface LocationAddressQueryDefinition {
+        void define(LocationAddressQuery _queryBuilder);
+    }
+
+    /**
+    * Represents the address of the location.
+    */
+    public static class LocationAddressQuery extends Query<LocationAddressQuery> {
+        LocationAddressQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * The first line of the address for the location.
+        */
+        public LocationAddressQuery address1() {
+            startField("address1");
+
+            return this;
+        }
+
+        /**
+        * The second line of the address for the location.
+        */
+        public LocationAddressQuery address2() {
+            startField("address2");
+
+            return this;
+        }
+
+        /**
+        * The city of the location.
+        */
+        public LocationAddressQuery city() {
+            startField("city");
+
+            return this;
+        }
+
+        /**
+        * The country of the location.
+        */
+        public LocationAddressQuery country() {
+            startField("country");
+
+            return this;
+        }
+
+        /**
+        * The two-letter country code of the location.
+        */
+        public LocationAddressQuery countryCode() {
+            startField("countryCode");
+
+            return this;
+        }
+
+        /**
+        * A formatted version of the location address.
+        */
+        public LocationAddressQuery formatted() {
+            startField("formatted");
+
+            return this;
+        }
+
+        /**
+        * The latitude coordinates of the location.
+        */
+        public LocationAddressQuery latitude() {
+            startField("latitude");
+
+            return this;
+        }
+
+        /**
+        * The longitude coordinates of the location.
+        */
+        public LocationAddressQuery longitude() {
+            startField("longitude");
+
+            return this;
+        }
+
+        /**
+        * The phone number of the location.
+        */
+        public LocationAddressQuery phone() {
+            startField("phone");
+
+            return this;
+        }
+
+        /**
+        * The province of the location.
+        */
+        public LocationAddressQuery province() {
+            startField("province");
+
+            return this;
+        }
+
+        /**
+        * The code for the region of the address, such as the province, state, or district.
+        * For example QC for Quebec, Canada.
+        */
+        public LocationAddressQuery provinceCode() {
+            startField("provinceCode");
+
+            return this;
+        }
+
+        /**
+        * The ZIP code of the location.
+        */
+        public LocationAddressQuery zip() {
+            startField("zip");
+
+            return this;
+        }
+    }
+
+    /**
+    * Represents the address of the location.
+    */
+    public static class LocationAddress extends AbstractResponse<LocationAddress> {
+        public LocationAddress() {
+        }
+
+        public LocationAddress(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "address1": {
+                        String optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = jsonAsString(field.getValue(), key);
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "address2": {
+                        String optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = jsonAsString(field.getValue(), key);
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "city": {
+                        String optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = jsonAsString(field.getValue(), key);
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "country": {
+                        String optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = jsonAsString(field.getValue(), key);
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "countryCode": {
+                        String optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = jsonAsString(field.getValue(), key);
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "formatted": {
+                        List<String> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(jsonAsString(element1, key));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "latitude": {
+                        Double optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = jsonAsDouble(field.getValue(), key);
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "longitude": {
+                        Double optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = jsonAsDouble(field.getValue(), key);
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "phone": {
+                        String optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = jsonAsString(field.getValue(), key);
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "province": {
+                        String optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = jsonAsString(field.getValue(), key);
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "provinceCode": {
+                        String optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = jsonAsString(field.getValue(), key);
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "zip": {
+                        String optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = jsonAsString(field.getValue(), key);
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "LocationAddress";
+        }
+
+        /**
+        * The first line of the address for the location.
+        */
+
+        public String getAddress1() {
+            return (String) get("address1");
+        }
+
+        public LocationAddress setAddress1(String arg) {
+            optimisticData.put(getKey("address1"), arg);
+            return this;
+        }
+
+        /**
+        * The second line of the address for the location.
+        */
+
+        public String getAddress2() {
+            return (String) get("address2");
+        }
+
+        public LocationAddress setAddress2(String arg) {
+            optimisticData.put(getKey("address2"), arg);
+            return this;
+        }
+
+        /**
+        * The city of the location.
+        */
+
+        public String getCity() {
+            return (String) get("city");
+        }
+
+        public LocationAddress setCity(String arg) {
+            optimisticData.put(getKey("city"), arg);
+            return this;
+        }
+
+        /**
+        * The country of the location.
+        */
+
+        public String getCountry() {
+            return (String) get("country");
+        }
+
+        public LocationAddress setCountry(String arg) {
+            optimisticData.put(getKey("country"), arg);
+            return this;
+        }
+
+        /**
+        * The two-letter country code of the location.
+        */
+
+        public String getCountryCode() {
+            return (String) get("countryCode");
+        }
+
+        public LocationAddress setCountryCode(String arg) {
+            optimisticData.put(getKey("countryCode"), arg);
+            return this;
+        }
+
+        /**
+        * A formatted version of the location address.
+        */
+
+        public List<String> getFormatted() {
+            return (List<String>) get("formatted");
+        }
+
+        public LocationAddress setFormatted(List<String> arg) {
+            optimisticData.put(getKey("formatted"), arg);
+            return this;
+        }
+
+        /**
+        * The latitude coordinates of the location.
+        */
+
+        public Double getLatitude() {
+            return (Double) get("latitude");
+        }
+
+        public LocationAddress setLatitude(Double arg) {
+            optimisticData.put(getKey("latitude"), arg);
+            return this;
+        }
+
+        /**
+        * The longitude coordinates of the location.
+        */
+
+        public Double getLongitude() {
+            return (Double) get("longitude");
+        }
+
+        public LocationAddress setLongitude(Double arg) {
+            optimisticData.put(getKey("longitude"), arg);
+            return this;
+        }
+
+        /**
+        * The phone number of the location.
+        */
+
+        public String getPhone() {
+            return (String) get("phone");
+        }
+
+        public LocationAddress setPhone(String arg) {
+            optimisticData.put(getKey("phone"), arg);
+            return this;
+        }
+
+        /**
+        * The province of the location.
+        */
+
+        public String getProvince() {
+            return (String) get("province");
+        }
+
+        public LocationAddress setProvince(String arg) {
+            optimisticData.put(getKey("province"), arg);
+            return this;
+        }
+
+        /**
+        * The code for the region of the address, such as the province, state, or district.
+        * For example QC for Quebec, Canada.
+        */
+
+        public String getProvinceCode() {
+            return (String) get("provinceCode");
+        }
+
+        public LocationAddress setProvinceCode(String arg) {
+            optimisticData.put(getKey("provinceCode"), arg);
+            return this;
+        }
+
+        /**
+        * The ZIP code of the location.
+        */
+
+        public String getZip() {
+            return (String) get("zip");
+        }
+
+        public LocationAddress setZip(String arg) {
+            optimisticData.put(getKey("zip"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "address1": return false;
+
+                case "address2": return false;
+
+                case "city": return false;
+
+                case "country": return false;
+
+                case "countryCode": return false;
+
+                case "formatted": return false;
+
+                case "latitude": return false;
+
+                case "longitude": return false;
+
+                case "phone": return false;
+
+                case "province": return false;
+
+                case "provinceCode": return false;
+
+                case "zip": return false;
+
+                default: return false;
+            }
+        }
+    }
+
+    public interface LocationConnectionQueryDefinition {
+        void define(LocationConnectionQuery _queryBuilder);
+    }
+
+    /**
+    * An auto-generated type for paginating through multiple Locations.
+    */
+    public static class LocationConnectionQuery extends Query<LocationConnectionQuery> {
+        LocationConnectionQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * A list of edges.
+        */
+        public LocationConnectionQuery edges(LocationEdgeQueryDefinition queryDef) {
+            startField("edges");
+
+            _queryBuilder.append('{');
+            queryDef.define(new LocationEdgeQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * Information to aid in pagination.
+        */
+        public LocationConnectionQuery pageInfo(PageInfoQueryDefinition queryDef) {
+            startField("pageInfo");
+
+            _queryBuilder.append('{');
+            queryDef.define(new PageInfoQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+    }
+
+    /**
+    * An auto-generated type for paginating through multiple Locations.
+    */
+    public static class LocationConnection extends AbstractResponse<LocationConnection> {
+        public LocationConnection() {
+        }
+
+        public LocationConnection(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "edges": {
+                        List<LocationEdge> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new LocationEdge(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "pageInfo": {
+                        responseData.put(key, new PageInfo(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "LocationConnection";
+        }
+
+        /**
+        * A list of edges.
+        */
+
+        public List<LocationEdge> getEdges() {
+            return (List<LocationEdge>) get("edges");
+        }
+
+        public LocationConnection setEdges(List<LocationEdge> arg) {
+            optimisticData.put(getKey("edges"), arg);
+            return this;
+        }
+
+        /**
+        * Information to aid in pagination.
+        */
+
+        public PageInfo getPageInfo() {
+            return (PageInfo) get("pageInfo");
+        }
+
+        public LocationConnection setPageInfo(PageInfo arg) {
+            optimisticData.put(getKey("pageInfo"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "edges": return true;
+
+                case "pageInfo": return true;
+
+                default: return false;
+            }
+        }
+    }
+
+    public interface LocationEdgeQueryDefinition {
+        void define(LocationEdgeQuery _queryBuilder);
+    }
+
+    /**
+    * An auto-generated type which holds one Location and a cursor during pagination.
+    */
+    public static class LocationEdgeQuery extends Query<LocationEdgeQuery> {
+        LocationEdgeQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * A cursor for use in pagination.
+        */
+        public LocationEdgeQuery cursor() {
+            startField("cursor");
+
+            return this;
+        }
+
+        /**
+        * The item at the end of LocationEdge.
+        */
+        public LocationEdgeQuery node(LocationQueryDefinition queryDef) {
+            startField("node");
+
+            _queryBuilder.append('{');
+            queryDef.define(new LocationQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+    }
+
+    /**
+    * An auto-generated type which holds one Location and a cursor during pagination.
+    */
+    public static class LocationEdge extends AbstractResponse<LocationEdge> {
+        public LocationEdge() {
+        }
+
+        public LocationEdge(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "cursor": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "node": {
+                        responseData.put(key, new Location(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "LocationEdge";
+        }
+
+        /**
+        * A cursor for use in pagination.
+        */
+
+        public String getCursor() {
+            return (String) get("cursor");
+        }
+
+        public LocationEdge setCursor(String arg) {
+            optimisticData.put(getKey("cursor"), arg);
+            return this;
+        }
+
+        /**
+        * The item at the end of LocationEdge.
+        */
+
+        public Location getNode() {
+            return (Location) get("node");
+        }
+
+        public LocationEdge setNode(Location arg) {
+            optimisticData.put(getKey("node"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "cursor": return false;
+
+                case "node": return true;
+
+                default: return false;
+            }
+        }
+    }
+
+    /**
+    * The set of valid sort keys for the Location query.
+    */
+    public enum LocationSortKeys {
+        /**
+        * Sort by the `city` value.
+        */
+        CITY,
+
+        /**
+        * Sort by the `distance` value.
+        */
+        DISTANCE,
+
+        /**
+        * Sort by the `id` value.
+        */
+        ID,
+
+        /**
+        * Sort by the `name` value.
+        */
+        NAME,
+
+        UNKNOWN_VALUE;
+
+        public static LocationSortKeys fromGraphQl(String value) {
+            if (value == null) {
+                return null;
+            }
+
+            switch (value) {
+                case "CITY": {
+                    return CITY;
+                }
+
+                case "DISTANCE": {
+                    return DISTANCE;
+                }
+
+                case "ID": {
+                    return ID;
+                }
+
+                case "NAME": {
+                    return NAME;
+                }
+
+                default: {
+                    return UNKNOWN_VALUE;
+                }
+            }
+        }
+        public String toString() {
+            switch (this) {
+                case CITY: {
+                    return "CITY";
+                }
+
+                case DISTANCE: {
+                    return "DISTANCE";
+                }
+
+                case ID: {
+                    return "ID";
+                }
+
+                case NAME: {
+                    return "NAME";
+                }
+
+                default: {
+                    return "";
+                }
             }
         }
     }
@@ -28828,6 +31284,15 @@ public class Storefront {
         }
 
         /**
+        * The type name of the metafield.
+        */
+        public MetafieldQuery type() {
+            startField("type");
+
+            return this;
+        }
+
+        /**
         * The date and time when the storefront metafield was updated.
         */
         public MetafieldQuery updatedAt() {
@@ -28847,7 +31312,10 @@ public class Storefront {
 
         /**
         * Represents the metafield value type.
+        *
+        * @deprecated `valueType` is deprecated and replaced by `type` in API version 2021-07.
         */
+        @Deprecated
         public MetafieldQuery valueType() {
             startField("valueType");
 
@@ -28906,6 +31374,12 @@ public class Storefront {
 
                     case "parentResource": {
                         responseData.put(key, UnknownMetafieldParentResource.create(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "type": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
 
                         break;
                     }
@@ -29022,6 +31496,19 @@ public class Storefront {
         }
 
         /**
+        * The type name of the metafield.
+        */
+
+        public String getType() {
+            return (String) get("type");
+        }
+
+        public Metafield setType(String arg) {
+            optimisticData.put(getKey("type"), arg);
+            return this;
+        }
+
+        /**
         * The date and time when the storefront metafield was updated.
         */
 
@@ -29049,6 +31536,8 @@ public class Storefront {
 
         /**
         * Represents the metafield value type.
+        *
+        * @deprecated `valueType` is deprecated and replaced by `type` in API version 2021-07.
         */
 
         public MetafieldValueType getValueType() {
@@ -29073,6 +31562,8 @@ public class Storefront {
                 case "namespace": return false;
 
                 case "parentResource": return false;
+
+                case "type": return false;
 
                 case "updatedAt": return false;
 
@@ -29330,6 +31821,48 @@ public class Storefront {
             startField("__typename");
         }
 
+        public MetafieldParentResourceQuery onArticle(ArticleQueryDefinition queryDef) {
+            startInlineFragment("Article");
+            queryDef.define(new ArticleQuery(_queryBuilder));
+            _queryBuilder.append('}');
+            return this;
+        }
+
+        public MetafieldParentResourceQuery onBlog(BlogQueryDefinition queryDef) {
+            startInlineFragment("Blog");
+            queryDef.define(new BlogQuery(_queryBuilder));
+            _queryBuilder.append('}');
+            return this;
+        }
+
+        public MetafieldParentResourceQuery onCollection(CollectionQueryDefinition queryDef) {
+            startInlineFragment("Collection");
+            queryDef.define(new CollectionQuery(_queryBuilder));
+            _queryBuilder.append('}');
+            return this;
+        }
+
+        public MetafieldParentResourceQuery onCustomer(CustomerQueryDefinition queryDef) {
+            startInlineFragment("Customer");
+            queryDef.define(new CustomerQuery(_queryBuilder));
+            _queryBuilder.append('}');
+            return this;
+        }
+
+        public MetafieldParentResourceQuery onOrder(OrderQueryDefinition queryDef) {
+            startInlineFragment("Order");
+            queryDef.define(new OrderQuery(_queryBuilder));
+            _queryBuilder.append('}');
+            return this;
+        }
+
+        public MetafieldParentResourceQuery onPage(PageQueryDefinition queryDef) {
+            startInlineFragment("Page");
+            queryDef.define(new PageQuery(_queryBuilder));
+            _queryBuilder.append('}');
+            return this;
+        }
+
         public MetafieldParentResourceQuery onProduct(ProductQueryDefinition queryDef) {
             startInlineFragment("Product");
             queryDef.define(new ProductQuery(_queryBuilder));
@@ -29340,6 +31873,13 @@ public class Storefront {
         public MetafieldParentResourceQuery onProductVariant(ProductVariantQueryDefinition queryDef) {
             startInlineFragment("ProductVariant");
             queryDef.define(new ProductVariantQuery(_queryBuilder));
+            _queryBuilder.append('}');
+            return this;
+        }
+
+        public MetafieldParentResourceQuery onShop(ShopQueryDefinition queryDef) {
+            startInlineFragment("Shop");
+            queryDef.define(new ShopQuery(_queryBuilder));
             _queryBuilder.append('}');
             return this;
         }
@@ -29375,12 +31915,40 @@ public class Storefront {
         public static MetafieldParentResource create(JsonObject fields) throws SchemaViolationError {
             String typeName = fields.getAsJsonPrimitive("__typename").getAsString();
             switch (typeName) {
+                case "Article": {
+                    return new Article(fields);
+                }
+
+                case "Blog": {
+                    return new Blog(fields);
+                }
+
+                case "Collection": {
+                    return new Collection(fields);
+                }
+
+                case "Customer": {
+                    return new Customer(fields);
+                }
+
+                case "Order": {
+                    return new Order(fields);
+                }
+
+                case "Page": {
+                    return new Page(fields);
+                }
+
                 case "Product": {
                     return new Product(fields);
                 }
 
                 case "ProductVariant": {
                     return new ProductVariant(fields);
+                }
+
+                case "Shop": {
+                    return new Shop(fields);
                 }
 
                 default: {
@@ -30454,14 +33022,44 @@ public class Storefront {
                     return this;
                 }
 
+                public class CheckoutCreateArguments extends Arguments {
+                    CheckoutCreateArguments(StringBuilder _queryBuilder) {
+                        super(_queryBuilder, false);
+                    }
+
+                    /**
+                    * The checkout queue token.
+                    */
+                    public CheckoutCreateArguments queueToken(String value) {
+                        if (value != null) {
+                            startArgument("queueToken");
+                            Query.appendQuotedString(_queryBuilder, value.toString());
+                        }
+                        return this;
+                    }
+                }
+
+                public interface CheckoutCreateArgumentsDefinition {
+                    void define(CheckoutCreateArguments args);
+                }
+
                 /**
                 * Creates a new checkout.
                 */
                 public MutationQuery checkoutCreate(CheckoutCreateInput input, CheckoutCreatePayloadQueryDefinition queryDef) {
+                    return checkoutCreate(input, args -> {}, queryDef);
+                }
+
+                /**
+                * Creates a new checkout.
+                */
+                public MutationQuery checkoutCreate(CheckoutCreateInput input, CheckoutCreateArgumentsDefinition argsDef, CheckoutCreatePayloadQueryDefinition queryDef) {
                     startField("checkoutCreate");
 
                     _queryBuilder.append("(input:");
                     input.appendTo(_queryBuilder);
+
+                    argsDef.define(new CheckoutCreateArguments(_queryBuilder));
 
                     _queryBuilder.append(')');
 
@@ -32550,6 +35148,13 @@ public class Storefront {
                     return this;
                 }
 
+                public NodeQuery onLocation(LocationQueryDefinition queryDef) {
+                    startInlineFragment("Location");
+                    queryDef.define(new LocationQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+                    return this;
+                }
+
                 public NodeQuery onMailingAddress(MailingAddressQueryDefinition queryDef) {
                     startInlineFragment("MailingAddress");
                     queryDef.define(new MailingAddressQuery(_queryBuilder));
@@ -32703,6 +35308,10 @@ public class Storefront {
 
                         case "ExternalVideo": {
                             return new ExternalVideo(fields);
+                        }
+
+                        case "Location": {
+                            return new Location(fields);
                         }
 
                         case "MailingAddress": {
@@ -33116,6 +35725,127 @@ public class Storefront {
                 }
 
                 /**
+                * Returns a metafield found by namespace and key.
+                */
+                public OrderQuery metafield(String namespace, String key, MetafieldQueryDefinition queryDef) {
+                    startField("metafield");
+
+                    _queryBuilder.append("(namespace:");
+                    Query.appendQuotedString(_queryBuilder, namespace.toString());
+
+                    _queryBuilder.append(",key:");
+                    Query.appendQuotedString(_queryBuilder, key.toString());
+
+                    _queryBuilder.append(')');
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new MetafieldQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                public class MetafieldsArguments extends Arguments {
+                    MetafieldsArguments(StringBuilder _queryBuilder) {
+                        super(_queryBuilder, true);
+                    }
+
+                    /**
+                    * Container for a set of metafields (maximum of 20 characters).
+                    */
+                    public MetafieldsArguments namespace(String value) {
+                        if (value != null) {
+                            startArgument("namespace");
+                            Query.appendQuotedString(_queryBuilder, value.toString());
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Returns up to the first `n` elements from the list.
+                    */
+                    public MetafieldsArguments first(Integer value) {
+                        if (value != null) {
+                            startArgument("first");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Returns the elements that come after the specified cursor.
+                    */
+                    public MetafieldsArguments after(String value) {
+                        if (value != null) {
+                            startArgument("after");
+                            Query.appendQuotedString(_queryBuilder, value.toString());
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Returns up to the last `n` elements from the list.
+                    */
+                    public MetafieldsArguments last(Integer value) {
+                        if (value != null) {
+                            startArgument("last");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Returns the elements that come before the specified cursor.
+                    */
+                    public MetafieldsArguments before(String value) {
+                        if (value != null) {
+                            startArgument("before");
+                            Query.appendQuotedString(_queryBuilder, value.toString());
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Reverse the order of the underlying list.
+                    */
+                    public MetafieldsArguments reverse(Boolean value) {
+                        if (value != null) {
+                            startArgument("reverse");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+                }
+
+                public interface MetafieldsArgumentsDefinition {
+                    void define(MetafieldsArguments args);
+                }
+
+                /**
+                * A paginated list of metafields associated with the resource.
+                */
+                public OrderQuery metafields(MetafieldConnectionQueryDefinition queryDef) {
+                    return metafields(args -> {}, queryDef);
+                }
+
+                /**
+                * A paginated list of metafields associated with the resource.
+                */
+                public OrderQuery metafields(MetafieldsArgumentsDefinition argsDef, MetafieldConnectionQueryDefinition queryDef) {
+                    startField("metafields");
+
+                    MetafieldsArguments args = new MetafieldsArguments(_queryBuilder);
+                    argsDef.define(args);
+                    MetafieldsArguments.end(args);
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new MetafieldConnectionQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
                 * Unique identifier for the order that appears on the order.
                 * For example, _#1000_ or _Store1001.
                 */
@@ -33393,7 +36123,7 @@ public class Storefront {
             * created when a customer completes the checkout process, during which time they provides an email
             * address, billing address and payment information.
             */
-            public static class Order extends AbstractResponse<Order> implements Node {
+            public static class Order extends AbstractResponse<Order> implements HasMetafields, MetafieldParentResource, Node {
                 public Order() {
                 }
 
@@ -33529,6 +36259,23 @@ public class Storefront {
 
                             case "lineItems": {
                                 responseData.put(key, new OrderLineItemConnection(jsonAsObject(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "metafield": {
+                                Metafield optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = new Metafield(jsonAsObject(field.getValue(), key));
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "metafields": {
+                                responseData.put(key, new MetafieldConnection(jsonAsObject(field.getValue(), key)));
 
                                 break;
                             }
@@ -33930,6 +36677,32 @@ public class Storefront {
                 }
 
                 /**
+                * Returns a metafield found by namespace and key.
+                */
+
+                public Metafield getMetafield() {
+                    return (Metafield) get("metafield");
+                }
+
+                public Order setMetafield(Metafield arg) {
+                    optimisticData.put(getKey("metafield"), arg);
+                    return this;
+                }
+
+                /**
+                * A paginated list of metafields associated with the resource.
+                */
+
+                public MetafieldConnection getMetafields() {
+                    return (MetafieldConnection) get("metafields");
+                }
+
+                public Order setMetafields(MetafieldConnection arg) {
+                    optimisticData.put(getKey("metafields"), arg);
+                    return this;
+                }
+
+                /**
                 * Unique identifier for the order that appears on the order.
                 * For example, _#1000_ or _Store1001.
                 */
@@ -34237,6 +37010,10 @@ public class Storefront {
                         case "id": return false;
 
                         case "lineItems": return true;
+
+                        case "metafield": return true;
+
+                        case "metafields": return true;
 
                         case "name": return false;
 
@@ -34737,6 +37514,11 @@ public class Storefront {
                 IN_PROGRESS,
 
                 /**
+                * Displayed as **On hold**.
+                */
+                ON_HOLD,
+
+                /**
                 * Displayed as **Open**.
                 */
                 OPEN,
@@ -34782,6 +37564,10 @@ public class Storefront {
                             return IN_PROGRESS;
                         }
 
+                        case "ON_HOLD": {
+                            return ON_HOLD;
+                        }
+
                         case "OPEN": {
                             return OPEN;
                         }
@@ -34819,6 +37605,10 @@ public class Storefront {
 
                         case IN_PROGRESS: {
                             return "IN_PROGRESS";
+                        }
+
+                        case ON_HOLD: {
+                            return "ON_HOLD";
                         }
 
                         case OPEN: {
@@ -35540,6 +38330,127 @@ public class Storefront {
                 }
 
                 /**
+                * Returns a metafield found by namespace and key.
+                */
+                public PageQuery metafield(String namespace, String key, MetafieldQueryDefinition queryDef) {
+                    startField("metafield");
+
+                    _queryBuilder.append("(namespace:");
+                    Query.appendQuotedString(_queryBuilder, namespace.toString());
+
+                    _queryBuilder.append(",key:");
+                    Query.appendQuotedString(_queryBuilder, key.toString());
+
+                    _queryBuilder.append(')');
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new MetafieldQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                public class MetafieldsArguments extends Arguments {
+                    MetafieldsArguments(StringBuilder _queryBuilder) {
+                        super(_queryBuilder, true);
+                    }
+
+                    /**
+                    * Container for a set of metafields (maximum of 20 characters).
+                    */
+                    public MetafieldsArguments namespace(String value) {
+                        if (value != null) {
+                            startArgument("namespace");
+                            Query.appendQuotedString(_queryBuilder, value.toString());
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Returns up to the first `n` elements from the list.
+                    */
+                    public MetafieldsArguments first(Integer value) {
+                        if (value != null) {
+                            startArgument("first");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Returns the elements that come after the specified cursor.
+                    */
+                    public MetafieldsArguments after(String value) {
+                        if (value != null) {
+                            startArgument("after");
+                            Query.appendQuotedString(_queryBuilder, value.toString());
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Returns up to the last `n` elements from the list.
+                    */
+                    public MetafieldsArguments last(Integer value) {
+                        if (value != null) {
+                            startArgument("last");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Returns the elements that come before the specified cursor.
+                    */
+                    public MetafieldsArguments before(String value) {
+                        if (value != null) {
+                            startArgument("before");
+                            Query.appendQuotedString(_queryBuilder, value.toString());
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Reverse the order of the underlying list.
+                    */
+                    public MetafieldsArguments reverse(Boolean value) {
+                        if (value != null) {
+                            startArgument("reverse");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+                }
+
+                public interface MetafieldsArgumentsDefinition {
+                    void define(MetafieldsArguments args);
+                }
+
+                /**
+                * A paginated list of metafields associated with the resource.
+                */
+                public PageQuery metafields(MetafieldConnectionQueryDefinition queryDef) {
+                    return metafields(args -> {}, queryDef);
+                }
+
+                /**
+                * A paginated list of metafields associated with the resource.
+                */
+                public PageQuery metafields(MetafieldsArgumentsDefinition argsDef, MetafieldConnectionQueryDefinition queryDef) {
+                    startField("metafields");
+
+                    MetafieldsArguments args = new MetafieldsArguments(_queryBuilder);
+                    argsDef.define(args);
+                    MetafieldsArguments.end(args);
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new MetafieldConnectionQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
                 * The page's SEO information.
                 */
                 public PageQuery seo(SEOQueryDefinition queryDef) {
@@ -35584,7 +38495,7 @@ public class Storefront {
             * Shopify merchants can create pages to hold static HTML content. Each Page object represents a custom
             * page on the online store.
             */
-            public static class Page extends AbstractResponse<Page> implements Node {
+            public static class Page extends AbstractResponse<Page> implements HasMetafields, MetafieldParentResource, Node {
                 public Page() {
                 }
 
@@ -35619,6 +38530,23 @@ public class Storefront {
 
                             case "id": {
                                 responseData.put(key, new ID(jsonAsString(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "metafield": {
+                                Metafield optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = new Metafield(jsonAsObject(field.getValue(), key));
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "metafields": {
+                                responseData.put(key, new MetafieldConnection(jsonAsObject(field.getValue(), key)));
 
                                 break;
                             }
@@ -35733,6 +38661,32 @@ public class Storefront {
                 }
 
                 /**
+                * Returns a metafield found by namespace and key.
+                */
+
+                public Metafield getMetafield() {
+                    return (Metafield) get("metafield");
+                }
+
+                public Page setMetafield(Metafield arg) {
+                    optimisticData.put(getKey("metafield"), arg);
+                    return this;
+                }
+
+                /**
+                * A paginated list of metafields associated with the resource.
+                */
+
+                public MetafieldConnection getMetafields() {
+                    return (MetafieldConnection) get("metafields");
+                }
+
+                public Page setMetafields(MetafieldConnection arg) {
+                    optimisticData.put(getKey("metafields"), arg);
+                    return this;
+                }
+
+                /**
                 * The page's SEO information.
                 */
 
@@ -35795,6 +38749,10 @@ public class Storefront {
                         case "handle": return false;
 
                         case "id": return false;
+
+                        case "metafield": return true;
+
+                        case "metafields": return true;
 
                         case "seo": return true;
 
@@ -37652,7 +40610,7 @@ public class Storefront {
                 }
 
                 /**
-                * The metafield associated with the resource.
+                * Returns a metafield found by namespace and key.
                 */
                 public ProductQuery metafield(String namespace, String key, MetafieldQueryDefinition queryDef) {
                     startField("metafield");
@@ -37963,6 +40921,108 @@ public class Storefront {
                 */
                 public ProductQuery publishedAt() {
                     startField("publishedAt");
+
+                    return this;
+                }
+
+                /**
+                * Whether the product can only be purchased with a selling plan.
+                */
+                public ProductQuery requiresSellingPlan() {
+                    startField("requiresSellingPlan");
+
+                    return this;
+                }
+
+                public class SellingPlanGroupsArguments extends Arguments {
+                    SellingPlanGroupsArguments(StringBuilder _queryBuilder) {
+                        super(_queryBuilder, true);
+                    }
+
+                    /**
+                    * Returns up to the first `n` elements from the list.
+                    */
+                    public SellingPlanGroupsArguments first(Integer value) {
+                        if (value != null) {
+                            startArgument("first");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Returns the elements that come after the specified cursor.
+                    */
+                    public SellingPlanGroupsArguments after(String value) {
+                        if (value != null) {
+                            startArgument("after");
+                            Query.appendQuotedString(_queryBuilder, value.toString());
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Returns up to the last `n` elements from the list.
+                    */
+                    public SellingPlanGroupsArguments last(Integer value) {
+                        if (value != null) {
+                            startArgument("last");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Returns the elements that come before the specified cursor.
+                    */
+                    public SellingPlanGroupsArguments before(String value) {
+                        if (value != null) {
+                            startArgument("before");
+                            Query.appendQuotedString(_queryBuilder, value.toString());
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Reverse the order of the underlying list.
+                    */
+                    public SellingPlanGroupsArguments reverse(Boolean value) {
+                        if (value != null) {
+                            startArgument("reverse");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+                }
+
+                public interface SellingPlanGroupsArgumentsDefinition {
+                    void define(SellingPlanGroupsArguments args);
+                }
+
+                /**
+                * A list of a product's available selling plan groups. A selling plan group represents a selling
+                * method. For example, 'Subscribe and save' is a selling method where customers pay for goods or
+                * services per delivery. A selling plan group contains individual selling plans.
+                */
+                public ProductQuery sellingPlanGroups(SellingPlanGroupConnectionQueryDefinition queryDef) {
+                    return sellingPlanGroups(args -> {}, queryDef);
+                }
+
+                /**
+                * A list of a product's available selling plan groups. A selling plan group represents a selling
+                * method. For example, 'Subscribe and save' is a selling method where customers pay for goods or
+                * services per delivery. A selling plan group contains individual selling plans.
+                */
+                public ProductQuery sellingPlanGroups(SellingPlanGroupsArgumentsDefinition argsDef, SellingPlanGroupConnectionQueryDefinition queryDef) {
+                    startField("sellingPlanGroups");
+
+                    SellingPlanGroupsArguments args = new SellingPlanGroupsArguments(_queryBuilder);
+                    argsDef.define(args);
+                    SellingPlanGroupsArguments.end(args);
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new SellingPlanGroupConnectionQuery(_queryBuilder));
+                    _queryBuilder.append('}');
 
                     return this;
                 }
@@ -38298,6 +41358,18 @@ public class Storefront {
                                 break;
                             }
 
+                            case "requiresSellingPlan": {
+                                responseData.put(key, jsonAsBoolean(field.getValue(), key));
+
+                                break;
+                            }
+
+                            case "sellingPlanGroups": {
+                                responseData.put(key, new SellingPlanGroupConnection(jsonAsObject(field.getValue(), key)));
+
+                                break;
+                            }
+
                             case "seo": {
                                 responseData.put(key, new SEO(jsonAsObject(field.getValue(), key)));
 
@@ -38508,7 +41580,7 @@ public class Storefront {
                 }
 
                 /**
-                * The metafield associated with the resource.
+                * Returns a metafield found by namespace and key.
                 */
 
                 public Metafield getMetafield() {
@@ -38609,6 +41681,34 @@ public class Storefront {
 
                 public Product setPublishedAt(DateTime arg) {
                     optimisticData.put(getKey("publishedAt"), arg);
+                    return this;
+                }
+
+                /**
+                * Whether the product can only be purchased with a selling plan.
+                */
+
+                public Boolean getRequiresSellingPlan() {
+                    return (Boolean) get("requiresSellingPlan");
+                }
+
+                public Product setRequiresSellingPlan(Boolean arg) {
+                    optimisticData.put(getKey("requiresSellingPlan"), arg);
+                    return this;
+                }
+
+                /**
+                * A list of a product's available selling plan groups. A selling plan group represents a selling
+                * method. For example, 'Subscribe and save' is a selling method where customers pay for goods or
+                * services per delivery. A selling plan group contains individual selling plans.
+                */
+
+                public SellingPlanGroupConnection getSellingPlanGroups() {
+                    return (SellingPlanGroupConnection) get("sellingPlanGroups");
+                }
+
+                public Product setSellingPlanGroups(SellingPlanGroupConnection arg) {
+                    optimisticData.put(getKey("sellingPlanGroups"), arg);
                     return this;
                 }
 
@@ -38759,6 +41859,10 @@ public class Storefront {
                         case "productType": return false;
 
                         case "publishedAt": return false;
+
+                        case "requiresSellingPlan": return false;
+
+                        case "sellingPlanGroups": return true;
 
                         case "seo": return true;
 
@@ -40082,7 +43186,7 @@ public class Storefront {
                 }
 
                 /**
-                * The metafield associated with the resource.
+                * Returns a metafield found by namespace and key.
                 */
                 public ProductVariantQuery metafield(String namespace, String key, MetafieldQueryDefinition queryDef) {
                     startField("metafield");
@@ -40490,11 +43594,191 @@ public class Storefront {
                     return this;
                 }
 
+                public class SellingPlanAllocationsArguments extends Arguments {
+                    SellingPlanAllocationsArguments(StringBuilder _queryBuilder) {
+                        super(_queryBuilder, true);
+                    }
+
+                    /**
+                    * Returns up to the first `n` elements from the list.
+                    */
+                    public SellingPlanAllocationsArguments first(Integer value) {
+                        if (value != null) {
+                            startArgument("first");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Returns the elements that come after the specified cursor.
+                    */
+                    public SellingPlanAllocationsArguments after(String value) {
+                        if (value != null) {
+                            startArgument("after");
+                            Query.appendQuotedString(_queryBuilder, value.toString());
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Returns up to the last `n` elements from the list.
+                    */
+                    public SellingPlanAllocationsArguments last(Integer value) {
+                        if (value != null) {
+                            startArgument("last");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Returns the elements that come before the specified cursor.
+                    */
+                    public SellingPlanAllocationsArguments before(String value) {
+                        if (value != null) {
+                            startArgument("before");
+                            Query.appendQuotedString(_queryBuilder, value.toString());
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Reverse the order of the underlying list.
+                    */
+                    public SellingPlanAllocationsArguments reverse(Boolean value) {
+                        if (value != null) {
+                            startArgument("reverse");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+                }
+
+                public interface SellingPlanAllocationsArgumentsDefinition {
+                    void define(SellingPlanAllocationsArguments args);
+                }
+
+                /**
+                * Represents an association between a variant and a selling plan. Selling plan allocations describe
+                * which selling plans are available for each variant, and what their impact is on pricing.
+                */
+                public ProductVariantQuery sellingPlanAllocations(SellingPlanAllocationConnectionQueryDefinition queryDef) {
+                    return sellingPlanAllocations(args -> {}, queryDef);
+                }
+
+                /**
+                * Represents an association between a variant and a selling plan. Selling plan allocations describe
+                * which selling plans are available for each variant, and what their impact is on pricing.
+                */
+                public ProductVariantQuery sellingPlanAllocations(SellingPlanAllocationsArgumentsDefinition argsDef, SellingPlanAllocationConnectionQueryDefinition queryDef) {
+                    startField("sellingPlanAllocations");
+
+                    SellingPlanAllocationsArguments args = new SellingPlanAllocationsArguments(_queryBuilder);
+                    argsDef.define(args);
+                    SellingPlanAllocationsArguments.end(args);
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new SellingPlanAllocationConnectionQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
                 /**
                 * The SKU (stock keeping unit) associated with the variant.
                 */
                 public ProductVariantQuery sku() {
                     startField("sku");
+
+                    return this;
+                }
+
+                public class StoreAvailabilityArguments extends Arguments {
+                    StoreAvailabilityArguments(StringBuilder _queryBuilder) {
+                        super(_queryBuilder, true);
+                    }
+
+                    /**
+                    * Returns up to the first `n` elements from the list.
+                    */
+                    public StoreAvailabilityArguments first(Integer value) {
+                        if (value != null) {
+                            startArgument("first");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Returns the elements that come after the specified cursor.
+                    */
+                    public StoreAvailabilityArguments after(String value) {
+                        if (value != null) {
+                            startArgument("after");
+                            Query.appendQuotedString(_queryBuilder, value.toString());
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Returns up to the last `n` elements from the list.
+                    */
+                    public StoreAvailabilityArguments last(Integer value) {
+                        if (value != null) {
+                            startArgument("last");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Returns the elements that come before the specified cursor.
+                    */
+                    public StoreAvailabilityArguments before(String value) {
+                        if (value != null) {
+                            startArgument("before");
+                            Query.appendQuotedString(_queryBuilder, value.toString());
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Reverse the order of the underlying list.
+                    */
+                    public StoreAvailabilityArguments reverse(Boolean value) {
+                        if (value != null) {
+                            startArgument("reverse");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+                }
+
+                public interface StoreAvailabilityArgumentsDefinition {
+                    void define(StoreAvailabilityArguments args);
+                }
+
+                /**
+                * The in-store pickup availability of this variant by location.
+                */
+                public ProductVariantQuery storeAvailability(StoreAvailabilityConnectionQueryDefinition queryDef) {
+                    return storeAvailability(args -> {}, queryDef);
+                }
+
+                /**
+                * The in-store pickup availability of this variant by location.
+                */
+                public ProductVariantQuery storeAvailability(StoreAvailabilityArgumentsDefinition argsDef, StoreAvailabilityConnectionQueryDefinition queryDef) {
+                    startField("storeAvailability");
+
+                    StoreAvailabilityArguments args = new StoreAvailabilityArguments(_queryBuilder);
+                    argsDef.define(args);
+                    StoreAvailabilityArguments.end(args);
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new StoreAvailabilityConnectionQuery(_queryBuilder));
+                    _queryBuilder.append('}');
 
                     return this;
                 }
@@ -40703,6 +43987,12 @@ public class Storefront {
                                 break;
                             }
 
+                            case "sellingPlanAllocations": {
+                                responseData.put(key, new SellingPlanAllocationConnection(jsonAsObject(field.getValue(), key)));
+
+                                break;
+                            }
+
                             case "sku": {
                                 String optional1 = null;
                                 if (!field.getValue().isJsonNull()) {
@@ -40710,6 +44000,12 @@ public class Storefront {
                                 }
 
                                 responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "storeAvailability": {
+                                responseData.put(key, new StoreAvailabilityConnection(jsonAsObject(field.getValue(), key)));
 
                                 break;
                             }
@@ -40873,7 +44169,7 @@ public class Storefront {
                 }
 
                 /**
-                * The metafield associated with the resource.
+                * Returns a metafield found by namespace and key.
                 */
 
                 public Metafield getMetafield() {
@@ -41006,6 +44302,20 @@ public class Storefront {
                 }
 
                 /**
+                * Represents an association between a variant and a selling plan. Selling plan allocations describe
+                * which selling plans are available for each variant, and what their impact is on pricing.
+                */
+
+                public SellingPlanAllocationConnection getSellingPlanAllocations() {
+                    return (SellingPlanAllocationConnection) get("sellingPlanAllocations");
+                }
+
+                public ProductVariant setSellingPlanAllocations(SellingPlanAllocationConnection arg) {
+                    optimisticData.put(getKey("sellingPlanAllocations"), arg);
+                    return this;
+                }
+
+                /**
                 * The SKU (stock keeping unit) associated with the variant.
                 */
 
@@ -41015,6 +44325,19 @@ public class Storefront {
 
                 public ProductVariant setSku(String arg) {
                     optimisticData.put(getKey("sku"), arg);
+                    return this;
+                }
+
+                /**
+                * The in-store pickup availability of this variant by location.
+                */
+
+                public StoreAvailabilityConnection getStoreAvailability() {
+                    return (StoreAvailabilityConnection) get("storeAvailability");
+                }
+
+                public ProductVariant setStoreAvailability(StoreAvailabilityConnection arg) {
+                    optimisticData.put(getKey("storeAvailability"), arg);
                     return this;
                 }
 
@@ -41119,7 +44442,11 @@ public class Storefront {
 
                         case "selectedOptions": return true;
 
+                        case "sellingPlanAllocations": return true;
+
                         case "sku": return false;
+
+                        case "storeAvailability": return true;
 
                         case "title": return false;
 
@@ -42231,6 +45558,132 @@ public class Storefront {
                 }
 
                 /**
+                * Returns the localized experiences configured for the shop.
+                */
+                public QueryRootQuery localization(LocalizationQueryDefinition queryDef) {
+                    startField("localization");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new LocalizationQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                public class LocationsArguments extends Arguments {
+                    LocationsArguments(StringBuilder _queryBuilder) {
+                        super(_queryBuilder, true);
+                    }
+
+                    /**
+                    * Returns up to the first `n` elements from the list.
+                    */
+                    public LocationsArguments first(Integer value) {
+                        if (value != null) {
+                            startArgument("first");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Returns the elements that come after the specified cursor.
+                    */
+                    public LocationsArguments after(String value) {
+                        if (value != null) {
+                            startArgument("after");
+                            Query.appendQuotedString(_queryBuilder, value.toString());
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Returns up to the last `n` elements from the list.
+                    */
+                    public LocationsArguments last(Integer value) {
+                        if (value != null) {
+                            startArgument("last");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Returns the elements that come before the specified cursor.
+                    */
+                    public LocationsArguments before(String value) {
+                        if (value != null) {
+                            startArgument("before");
+                            Query.appendQuotedString(_queryBuilder, value.toString());
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Reverse the order of the underlying list.
+                    */
+                    public LocationsArguments reverse(Boolean value) {
+                        if (value != null) {
+                            startArgument("reverse");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Sort the underlying list by the given key.
+                    */
+                    public LocationsArguments sortKey(LocationSortKeys value) {
+                        if (value != null) {
+                            startArgument("sortKey");
+                            _queryBuilder.append(value.toString());
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Used to sort results based on proximity to the provided location.
+                    */
+                    public LocationsArguments near(GeoCoordinateInput value) {
+                        if (value != null) {
+                            startArgument("near");
+                            value.appendTo(_queryBuilder);
+                        }
+                        return this;
+                    }
+                }
+
+                public interface LocationsArgumentsDefinition {
+                    void define(LocationsArguments args);
+                }
+
+                /**
+                * List of the shop's locations that support in-store pickup.
+                * When sorting by distance, you must specify a location via the `near` argument.
+                */
+                public QueryRootQuery locations(LocationConnectionQueryDefinition queryDef) {
+                    return locations(args -> {}, queryDef);
+                }
+
+                /**
+                * List of the shop's locations that support in-store pickup.
+                * When sorting by distance, you must specify a location via the `near` argument.
+                */
+                public QueryRootQuery locations(LocationsArgumentsDefinition argsDef, LocationConnectionQueryDefinition queryDef) {
+                    startField("locations");
+
+                    LocationsArguments args = new LocationsArguments(_queryBuilder);
+                    argsDef.define(args);
+                    LocationsArguments.end(args);
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new LocationConnectionQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
                 * Returns a specific node by ID.
                 */
                 public QueryRootQuery node(ID id, NodeQueryDefinition queryDef) {
@@ -42703,6 +46156,18 @@ public class Storefront {
                                 break;
                             }
 
+                            case "localization": {
+                                responseData.put(key, new Localization(jsonAsObject(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "locations": {
+                                responseData.put(key, new LocationConnection(jsonAsObject(field.getValue(), key)));
+
+                                break;
+                            }
+
                             case "node": {
                                 Node optional1 = null;
                                 if (!field.getValue().isJsonNull()) {
@@ -42903,6 +46368,33 @@ public class Storefront {
                 }
 
                 /**
+                * Returns the localized experiences configured for the shop.
+                */
+
+                public Localization getLocalization() {
+                    return (Localization) get("localization");
+                }
+
+                public QueryRoot setLocalization(Localization arg) {
+                    optimisticData.put(getKey("localization"), arg);
+                    return this;
+                }
+
+                /**
+                * List of the shop's locations that support in-store pickup.
+                * When sorting by distance, you must specify a location via the `near` argument.
+                */
+
+                public LocationConnection getLocations() {
+                    return (LocationConnection) get("locations");
+                }
+
+                public QueryRoot setLocations(LocationConnection arg) {
+                    optimisticData.put(getKey("locations"), arg);
+                    return this;
+                }
+
+                /**
                 * Returns a specific node by ID.
                 */
 
@@ -43063,6 +46555,10 @@ public class Storefront {
                         case "collections": return true;
 
                         case "customer": return true;
+
+                        case "localization": return true;
+
+                        case "locations": return true;
 
                         case "node": return false;
 
@@ -43599,6 +47095,2247 @@ public class Storefront {
                     Query.appendQuotedString(_queryBuilder, value.toString());
 
                     _queryBuilder.append('}');
+                }
+            }
+
+            public interface SellingPlanQueryDefinition {
+                void define(SellingPlanQuery _queryBuilder);
+            }
+
+            /**
+            * Represents how products and variants can be sold and purchased.
+            */
+            public static class SellingPlanQuery extends Query<SellingPlanQuery> {
+                SellingPlanQuery(StringBuilder _queryBuilder) {
+                    super(_queryBuilder);
+                }
+
+                /**
+                * The description of the selling plan.
+                */
+                public SellingPlanQuery description() {
+                    startField("description");
+
+                    return this;
+                }
+
+                /**
+                * A globally unique identifier.
+                */
+                public SellingPlanQuery id() {
+                    startField("id");
+
+                    return this;
+                }
+
+                /**
+                * The name of the selling plan. For example, '6 weeks of prepaid granola, delivered weekly'.
+                */
+                public SellingPlanQuery name() {
+                    startField("name");
+
+                    return this;
+                }
+
+                /**
+                * Represents the selling plan options available in the drop-down list in the storefront. For example,
+                * 'Delivery every week' or 'Delivery every 2 weeks' specifies the delivery frequency options for the
+                * product.
+                */
+                public SellingPlanQuery options(SellingPlanOptionQueryDefinition queryDef) {
+                    startField("options");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new SellingPlanOptionQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * Represents how a selling plan affects pricing when a variant is purchased with a selling plan.
+                */
+                public SellingPlanQuery priceAdjustments(SellingPlanPriceAdjustmentQueryDefinition queryDef) {
+                    startField("priceAdjustments");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new SellingPlanPriceAdjustmentQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * Whether purchasing the selling plan will result in multiple deliveries.
+                */
+                public SellingPlanQuery recurringDeliveries() {
+                    startField("recurringDeliveries");
+
+                    return this;
+                }
+            }
+
+            /**
+            * Represents how products and variants can be sold and purchased.
+            */
+            public static class SellingPlan extends AbstractResponse<SellingPlan> {
+                public SellingPlan() {
+                }
+
+                public SellingPlan(JsonObject fields) throws SchemaViolationError {
+                    for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                        String key = field.getKey();
+                        String fieldName = getFieldName(key);
+                        switch (fieldName) {
+                            case "description": {
+                                String optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = jsonAsString(field.getValue(), key);
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "id": {
+                                responseData.put(key, new ID(jsonAsString(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "name": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+
+                                break;
+                            }
+
+                            case "options": {
+                                List<SellingPlanOption> list1 = new ArrayList<>();
+                                for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                                    list1.add(new SellingPlanOption(jsonAsObject(element1, key)));
+                                }
+
+                                responseData.put(key, list1);
+
+                                break;
+                            }
+
+                            case "priceAdjustments": {
+                                List<SellingPlanPriceAdjustment> list1 = new ArrayList<>();
+                                for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                                    list1.add(new SellingPlanPriceAdjustment(jsonAsObject(element1, key)));
+                                }
+
+                                responseData.put(key, list1);
+
+                                break;
+                            }
+
+                            case "recurringDeliveries": {
+                                responseData.put(key, jsonAsBoolean(field.getValue(), key));
+
+                                break;
+                            }
+
+                            case "__typename": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+                                break;
+                            }
+                            default: {
+                                throw new SchemaViolationError(this, key, field.getValue());
+                            }
+                        }
+                    }
+                }
+
+                public String getGraphQlTypeName() {
+                    return "SellingPlan";
+                }
+
+                /**
+                * The description of the selling plan.
+                */
+
+                public String getDescription() {
+                    return (String) get("description");
+                }
+
+                public SellingPlan setDescription(String arg) {
+                    optimisticData.put(getKey("description"), arg);
+                    return this;
+                }
+
+                /**
+                * A globally unique identifier.
+                */
+
+                public ID getId() {
+                    return (ID) get("id");
+                }
+
+                public SellingPlan setId(ID arg) {
+                    optimisticData.put(getKey("id"), arg);
+                    return this;
+                }
+
+                /**
+                * The name of the selling plan. For example, '6 weeks of prepaid granola, delivered weekly'.
+                */
+
+                public String getName() {
+                    return (String) get("name");
+                }
+
+                public SellingPlan setName(String arg) {
+                    optimisticData.put(getKey("name"), arg);
+                    return this;
+                }
+
+                /**
+                * Represents the selling plan options available in the drop-down list in the storefront. For example,
+                * 'Delivery every week' or 'Delivery every 2 weeks' specifies the delivery frequency options for the
+                * product.
+                */
+
+                public List<SellingPlanOption> getOptions() {
+                    return (List<SellingPlanOption>) get("options");
+                }
+
+                public SellingPlan setOptions(List<SellingPlanOption> arg) {
+                    optimisticData.put(getKey("options"), arg);
+                    return this;
+                }
+
+                /**
+                * Represents how a selling plan affects pricing when a variant is purchased with a selling plan.
+                */
+
+                public List<SellingPlanPriceAdjustment> getPriceAdjustments() {
+                    return (List<SellingPlanPriceAdjustment>) get("priceAdjustments");
+                }
+
+                public SellingPlan setPriceAdjustments(List<SellingPlanPriceAdjustment> arg) {
+                    optimisticData.put(getKey("priceAdjustments"), arg);
+                    return this;
+                }
+
+                /**
+                * Whether purchasing the selling plan will result in multiple deliveries.
+                */
+
+                public Boolean getRecurringDeliveries() {
+                    return (Boolean) get("recurringDeliveries");
+                }
+
+                public SellingPlan setRecurringDeliveries(Boolean arg) {
+                    optimisticData.put(getKey("recurringDeliveries"), arg);
+                    return this;
+                }
+
+                public boolean unwrapsToObject(String key) {
+                    switch (getFieldName(key)) {
+                        case "description": return false;
+
+                        case "id": return false;
+
+                        case "name": return false;
+
+                        case "options": return true;
+
+                        case "priceAdjustments": return true;
+
+                        case "recurringDeliveries": return false;
+
+                        default: return false;
+                    }
+                }
+            }
+
+            public interface SellingPlanAllocationQueryDefinition {
+                void define(SellingPlanAllocationQuery _queryBuilder);
+            }
+
+            /**
+            * Represents an association between a variant and a selling plan. Selling plan allocations describe
+            * the options offered for each variant, and the price of the variant when purchased with a selling
+            * plan.
+            */
+            public static class SellingPlanAllocationQuery extends Query<SellingPlanAllocationQuery> {
+                SellingPlanAllocationQuery(StringBuilder _queryBuilder) {
+                    super(_queryBuilder);
+                }
+
+                /**
+                * A list of price adjustments, with a maximum of two. When there are two, the first price adjustment
+                * goes into effect at the time of purchase, while the second one starts after a certain number of
+                * orders.
+                */
+                public SellingPlanAllocationQuery priceAdjustments(SellingPlanAllocationPriceAdjustmentQueryDefinition queryDef) {
+                    startField("priceAdjustments");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new SellingPlanAllocationPriceAdjustmentQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * A representation of how products and variants can be sold and purchased. For example, an individual
+                * selling plan could be '6 weeks of prepaid granola, delivered weekly'.
+                */
+                public SellingPlanAllocationQuery sellingPlan(SellingPlanQueryDefinition queryDef) {
+                    startField("sellingPlan");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new SellingPlanQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+            }
+
+            /**
+            * Represents an association between a variant and a selling plan. Selling plan allocations describe
+            * the options offered for each variant, and the price of the variant when purchased with a selling
+            * plan.
+            */
+            public static class SellingPlanAllocation extends AbstractResponse<SellingPlanAllocation> {
+                public SellingPlanAllocation() {
+                }
+
+                public SellingPlanAllocation(JsonObject fields) throws SchemaViolationError {
+                    for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                        String key = field.getKey();
+                        String fieldName = getFieldName(key);
+                        switch (fieldName) {
+                            case "priceAdjustments": {
+                                List<SellingPlanAllocationPriceAdjustment> list1 = new ArrayList<>();
+                                for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                                    list1.add(new SellingPlanAllocationPriceAdjustment(jsonAsObject(element1, key)));
+                                }
+
+                                responseData.put(key, list1);
+
+                                break;
+                            }
+
+                            case "sellingPlan": {
+                                responseData.put(key, new SellingPlan(jsonAsObject(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "__typename": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+                                break;
+                            }
+                            default: {
+                                throw new SchemaViolationError(this, key, field.getValue());
+                            }
+                        }
+                    }
+                }
+
+                public String getGraphQlTypeName() {
+                    return "SellingPlanAllocation";
+                }
+
+                /**
+                * A list of price adjustments, with a maximum of two. When there are two, the first price adjustment
+                * goes into effect at the time of purchase, while the second one starts after a certain number of
+                * orders.
+                */
+
+                public List<SellingPlanAllocationPriceAdjustment> getPriceAdjustments() {
+                    return (List<SellingPlanAllocationPriceAdjustment>) get("priceAdjustments");
+                }
+
+                public SellingPlanAllocation setPriceAdjustments(List<SellingPlanAllocationPriceAdjustment> arg) {
+                    optimisticData.put(getKey("priceAdjustments"), arg);
+                    return this;
+                }
+
+                /**
+                * A representation of how products and variants can be sold and purchased. For example, an individual
+                * selling plan could be '6 weeks of prepaid granola, delivered weekly'.
+                */
+
+                public SellingPlan getSellingPlan() {
+                    return (SellingPlan) get("sellingPlan");
+                }
+
+                public SellingPlanAllocation setSellingPlan(SellingPlan arg) {
+                    optimisticData.put(getKey("sellingPlan"), arg);
+                    return this;
+                }
+
+                public boolean unwrapsToObject(String key) {
+                    switch (getFieldName(key)) {
+                        case "priceAdjustments": return true;
+
+                        case "sellingPlan": return true;
+
+                        default: return false;
+                    }
+                }
+            }
+
+            public interface SellingPlanAllocationConnectionQueryDefinition {
+                void define(SellingPlanAllocationConnectionQuery _queryBuilder);
+            }
+
+            /**
+            * An auto-generated type for paginating through multiple SellingPlanAllocations.
+            */
+            public static class SellingPlanAllocationConnectionQuery extends Query<SellingPlanAllocationConnectionQuery> {
+                SellingPlanAllocationConnectionQuery(StringBuilder _queryBuilder) {
+                    super(_queryBuilder);
+                }
+
+                /**
+                * A list of edges.
+                */
+                public SellingPlanAllocationConnectionQuery edges(SellingPlanAllocationEdgeQueryDefinition queryDef) {
+                    startField("edges");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new SellingPlanAllocationEdgeQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * Information to aid in pagination.
+                */
+                public SellingPlanAllocationConnectionQuery pageInfo(PageInfoQueryDefinition queryDef) {
+                    startField("pageInfo");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new PageInfoQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+            }
+
+            /**
+            * An auto-generated type for paginating through multiple SellingPlanAllocations.
+            */
+            public static class SellingPlanAllocationConnection extends AbstractResponse<SellingPlanAllocationConnection> {
+                public SellingPlanAllocationConnection() {
+                }
+
+                public SellingPlanAllocationConnection(JsonObject fields) throws SchemaViolationError {
+                    for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                        String key = field.getKey();
+                        String fieldName = getFieldName(key);
+                        switch (fieldName) {
+                            case "edges": {
+                                List<SellingPlanAllocationEdge> list1 = new ArrayList<>();
+                                for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                                    list1.add(new SellingPlanAllocationEdge(jsonAsObject(element1, key)));
+                                }
+
+                                responseData.put(key, list1);
+
+                                break;
+                            }
+
+                            case "pageInfo": {
+                                responseData.put(key, new PageInfo(jsonAsObject(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "__typename": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+                                break;
+                            }
+                            default: {
+                                throw new SchemaViolationError(this, key, field.getValue());
+                            }
+                        }
+                    }
+                }
+
+                public String getGraphQlTypeName() {
+                    return "SellingPlanAllocationConnection";
+                }
+
+                /**
+                * A list of edges.
+                */
+
+                public List<SellingPlanAllocationEdge> getEdges() {
+                    return (List<SellingPlanAllocationEdge>) get("edges");
+                }
+
+                public SellingPlanAllocationConnection setEdges(List<SellingPlanAllocationEdge> arg) {
+                    optimisticData.put(getKey("edges"), arg);
+                    return this;
+                }
+
+                /**
+                * Information to aid in pagination.
+                */
+
+                public PageInfo getPageInfo() {
+                    return (PageInfo) get("pageInfo");
+                }
+
+                public SellingPlanAllocationConnection setPageInfo(PageInfo arg) {
+                    optimisticData.put(getKey("pageInfo"), arg);
+                    return this;
+                }
+
+                public boolean unwrapsToObject(String key) {
+                    switch (getFieldName(key)) {
+                        case "edges": return true;
+
+                        case "pageInfo": return true;
+
+                        default: return false;
+                    }
+                }
+            }
+
+            public interface SellingPlanAllocationEdgeQueryDefinition {
+                void define(SellingPlanAllocationEdgeQuery _queryBuilder);
+            }
+
+            /**
+            * An auto-generated type which holds one SellingPlanAllocation and a cursor during pagination.
+            */
+            public static class SellingPlanAllocationEdgeQuery extends Query<SellingPlanAllocationEdgeQuery> {
+                SellingPlanAllocationEdgeQuery(StringBuilder _queryBuilder) {
+                    super(_queryBuilder);
+                }
+
+                /**
+                * A cursor for use in pagination.
+                */
+                public SellingPlanAllocationEdgeQuery cursor() {
+                    startField("cursor");
+
+                    return this;
+                }
+
+                /**
+                * The item at the end of SellingPlanAllocationEdge.
+                */
+                public SellingPlanAllocationEdgeQuery node(SellingPlanAllocationQueryDefinition queryDef) {
+                    startField("node");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new SellingPlanAllocationQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+            }
+
+            /**
+            * An auto-generated type which holds one SellingPlanAllocation and a cursor during pagination.
+            */
+            public static class SellingPlanAllocationEdge extends AbstractResponse<SellingPlanAllocationEdge> {
+                public SellingPlanAllocationEdge() {
+                }
+
+                public SellingPlanAllocationEdge(JsonObject fields) throws SchemaViolationError {
+                    for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                        String key = field.getKey();
+                        String fieldName = getFieldName(key);
+                        switch (fieldName) {
+                            case "cursor": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+
+                                break;
+                            }
+
+                            case "node": {
+                                responseData.put(key, new SellingPlanAllocation(jsonAsObject(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "__typename": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+                                break;
+                            }
+                            default: {
+                                throw new SchemaViolationError(this, key, field.getValue());
+                            }
+                        }
+                    }
+                }
+
+                public String getGraphQlTypeName() {
+                    return "SellingPlanAllocationEdge";
+                }
+
+                /**
+                * A cursor for use in pagination.
+                */
+
+                public String getCursor() {
+                    return (String) get("cursor");
+                }
+
+                public SellingPlanAllocationEdge setCursor(String arg) {
+                    optimisticData.put(getKey("cursor"), arg);
+                    return this;
+                }
+
+                /**
+                * The item at the end of SellingPlanAllocationEdge.
+                */
+
+                public SellingPlanAllocation getNode() {
+                    return (SellingPlanAllocation) get("node");
+                }
+
+                public SellingPlanAllocationEdge setNode(SellingPlanAllocation arg) {
+                    optimisticData.put(getKey("node"), arg);
+                    return this;
+                }
+
+                public boolean unwrapsToObject(String key) {
+                    switch (getFieldName(key)) {
+                        case "cursor": return false;
+
+                        case "node": return true;
+
+                        default: return false;
+                    }
+                }
+            }
+
+            public interface SellingPlanAllocationPriceAdjustmentQueryDefinition {
+                void define(SellingPlanAllocationPriceAdjustmentQuery _queryBuilder);
+            }
+
+            /**
+            * The resulting prices for variants when they're purchased with a specific selling plan.
+            */
+            public static class SellingPlanAllocationPriceAdjustmentQuery extends Query<SellingPlanAllocationPriceAdjustmentQuery> {
+                SellingPlanAllocationPriceAdjustmentQuery(StringBuilder _queryBuilder) {
+                    super(_queryBuilder);
+                }
+
+                /**
+                * The price of the variant when it's purchased without a selling plan for the same number of
+                * deliveries. For example, if a customer purchases 6 deliveries of $10.00 granola separately, then the
+                * price is 6 x $10.00 = $60.00.
+                */
+                public SellingPlanAllocationPriceAdjustmentQuery compareAtPrice(MoneyV2QueryDefinition queryDef) {
+                    startField("compareAtPrice");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new MoneyV2Query(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * The effective price for a single delivery. For example, for a prepaid subscription plan that
+                * includes 6 deliveries at the price of $48.00, the per delivery price is $8.00.
+                */
+                public SellingPlanAllocationPriceAdjustmentQuery perDeliveryPrice(MoneyV2QueryDefinition queryDef) {
+                    startField("perDeliveryPrice");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new MoneyV2Query(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * The price of the variant when it's purchased with a selling plan For example, for a prepaid
+                * subscription plan that includes 6 deliveries of $10.00 granola, where the customer gets 20% off, the
+                * price is 6 x $10.00 x 0.80 = $48.00.
+                */
+                public SellingPlanAllocationPriceAdjustmentQuery price(MoneyV2QueryDefinition queryDef) {
+                    startField("price");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new MoneyV2Query(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * The resulting price per unit for the variant associated with the selling plan. If the variant isn't
+                * sold by quantity or measurement, then this field returns `null`.
+                */
+                public SellingPlanAllocationPriceAdjustmentQuery unitPrice(MoneyV2QueryDefinition queryDef) {
+                    startField("unitPrice");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new MoneyV2Query(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+            }
+
+            /**
+            * The resulting prices for variants when they're purchased with a specific selling plan.
+            */
+            public static class SellingPlanAllocationPriceAdjustment extends AbstractResponse<SellingPlanAllocationPriceAdjustment> {
+                public SellingPlanAllocationPriceAdjustment() {
+                }
+
+                public SellingPlanAllocationPriceAdjustment(JsonObject fields) throws SchemaViolationError {
+                    for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                        String key = field.getKey();
+                        String fieldName = getFieldName(key);
+                        switch (fieldName) {
+                            case "compareAtPrice": {
+                                responseData.put(key, new MoneyV2(jsonAsObject(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "perDeliveryPrice": {
+                                responseData.put(key, new MoneyV2(jsonAsObject(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "price": {
+                                responseData.put(key, new MoneyV2(jsonAsObject(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "unitPrice": {
+                                MoneyV2 optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = new MoneyV2(jsonAsObject(field.getValue(), key));
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "__typename": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+                                break;
+                            }
+                            default: {
+                                throw new SchemaViolationError(this, key, field.getValue());
+                            }
+                        }
+                    }
+                }
+
+                public String getGraphQlTypeName() {
+                    return "SellingPlanAllocationPriceAdjustment";
+                }
+
+                /**
+                * The price of the variant when it's purchased without a selling plan for the same number of
+                * deliveries. For example, if a customer purchases 6 deliveries of $10.00 granola separately, then the
+                * price is 6 x $10.00 = $60.00.
+                */
+
+                public MoneyV2 getCompareAtPrice() {
+                    return (MoneyV2) get("compareAtPrice");
+                }
+
+                public SellingPlanAllocationPriceAdjustment setCompareAtPrice(MoneyV2 arg) {
+                    optimisticData.put(getKey("compareAtPrice"), arg);
+                    return this;
+                }
+
+                /**
+                * The effective price for a single delivery. For example, for a prepaid subscription plan that
+                * includes 6 deliveries at the price of $48.00, the per delivery price is $8.00.
+                */
+
+                public MoneyV2 getPerDeliveryPrice() {
+                    return (MoneyV2) get("perDeliveryPrice");
+                }
+
+                public SellingPlanAllocationPriceAdjustment setPerDeliveryPrice(MoneyV2 arg) {
+                    optimisticData.put(getKey("perDeliveryPrice"), arg);
+                    return this;
+                }
+
+                /**
+                * The price of the variant when it's purchased with a selling plan For example, for a prepaid
+                * subscription plan that includes 6 deliveries of $10.00 granola, where the customer gets 20% off, the
+                * price is 6 x $10.00 x 0.80 = $48.00.
+                */
+
+                public MoneyV2 getPrice() {
+                    return (MoneyV2) get("price");
+                }
+
+                public SellingPlanAllocationPriceAdjustment setPrice(MoneyV2 arg) {
+                    optimisticData.put(getKey("price"), arg);
+                    return this;
+                }
+
+                /**
+                * The resulting price per unit for the variant associated with the selling plan. If the variant isn't
+                * sold by quantity or measurement, then this field returns `null`.
+                */
+
+                public MoneyV2 getUnitPrice() {
+                    return (MoneyV2) get("unitPrice");
+                }
+
+                public SellingPlanAllocationPriceAdjustment setUnitPrice(MoneyV2 arg) {
+                    optimisticData.put(getKey("unitPrice"), arg);
+                    return this;
+                }
+
+                public boolean unwrapsToObject(String key) {
+                    switch (getFieldName(key)) {
+                        case "compareAtPrice": return true;
+
+                        case "perDeliveryPrice": return true;
+
+                        case "price": return true;
+
+                        case "unitPrice": return true;
+
+                        default: return false;
+                    }
+                }
+            }
+
+            public interface SellingPlanConnectionQueryDefinition {
+                void define(SellingPlanConnectionQuery _queryBuilder);
+            }
+
+            /**
+            * An auto-generated type for paginating through multiple SellingPlans.
+            */
+            public static class SellingPlanConnectionQuery extends Query<SellingPlanConnectionQuery> {
+                SellingPlanConnectionQuery(StringBuilder _queryBuilder) {
+                    super(_queryBuilder);
+                }
+
+                /**
+                * A list of edges.
+                */
+                public SellingPlanConnectionQuery edges(SellingPlanEdgeQueryDefinition queryDef) {
+                    startField("edges");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new SellingPlanEdgeQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * Information to aid in pagination.
+                */
+                public SellingPlanConnectionQuery pageInfo(PageInfoQueryDefinition queryDef) {
+                    startField("pageInfo");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new PageInfoQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+            }
+
+            /**
+            * An auto-generated type for paginating through multiple SellingPlans.
+            */
+            public static class SellingPlanConnection extends AbstractResponse<SellingPlanConnection> {
+                public SellingPlanConnection() {
+                }
+
+                public SellingPlanConnection(JsonObject fields) throws SchemaViolationError {
+                    for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                        String key = field.getKey();
+                        String fieldName = getFieldName(key);
+                        switch (fieldName) {
+                            case "edges": {
+                                List<SellingPlanEdge> list1 = new ArrayList<>();
+                                for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                                    list1.add(new SellingPlanEdge(jsonAsObject(element1, key)));
+                                }
+
+                                responseData.put(key, list1);
+
+                                break;
+                            }
+
+                            case "pageInfo": {
+                                responseData.put(key, new PageInfo(jsonAsObject(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "__typename": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+                                break;
+                            }
+                            default: {
+                                throw new SchemaViolationError(this, key, field.getValue());
+                            }
+                        }
+                    }
+                }
+
+                public String getGraphQlTypeName() {
+                    return "SellingPlanConnection";
+                }
+
+                /**
+                * A list of edges.
+                */
+
+                public List<SellingPlanEdge> getEdges() {
+                    return (List<SellingPlanEdge>) get("edges");
+                }
+
+                public SellingPlanConnection setEdges(List<SellingPlanEdge> arg) {
+                    optimisticData.put(getKey("edges"), arg);
+                    return this;
+                }
+
+                /**
+                * Information to aid in pagination.
+                */
+
+                public PageInfo getPageInfo() {
+                    return (PageInfo) get("pageInfo");
+                }
+
+                public SellingPlanConnection setPageInfo(PageInfo arg) {
+                    optimisticData.put(getKey("pageInfo"), arg);
+                    return this;
+                }
+
+                public boolean unwrapsToObject(String key) {
+                    switch (getFieldName(key)) {
+                        case "edges": return true;
+
+                        case "pageInfo": return true;
+
+                        default: return false;
+                    }
+                }
+            }
+
+            public interface SellingPlanEdgeQueryDefinition {
+                void define(SellingPlanEdgeQuery _queryBuilder);
+            }
+
+            /**
+            * An auto-generated type which holds one SellingPlan and a cursor during pagination.
+            */
+            public static class SellingPlanEdgeQuery extends Query<SellingPlanEdgeQuery> {
+                SellingPlanEdgeQuery(StringBuilder _queryBuilder) {
+                    super(_queryBuilder);
+                }
+
+                /**
+                * A cursor for use in pagination.
+                */
+                public SellingPlanEdgeQuery cursor() {
+                    startField("cursor");
+
+                    return this;
+                }
+
+                /**
+                * The item at the end of SellingPlanEdge.
+                */
+                public SellingPlanEdgeQuery node(SellingPlanQueryDefinition queryDef) {
+                    startField("node");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new SellingPlanQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+            }
+
+            /**
+            * An auto-generated type which holds one SellingPlan and a cursor during pagination.
+            */
+            public static class SellingPlanEdge extends AbstractResponse<SellingPlanEdge> {
+                public SellingPlanEdge() {
+                }
+
+                public SellingPlanEdge(JsonObject fields) throws SchemaViolationError {
+                    for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                        String key = field.getKey();
+                        String fieldName = getFieldName(key);
+                        switch (fieldName) {
+                            case "cursor": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+
+                                break;
+                            }
+
+                            case "node": {
+                                responseData.put(key, new SellingPlan(jsonAsObject(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "__typename": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+                                break;
+                            }
+                            default: {
+                                throw new SchemaViolationError(this, key, field.getValue());
+                            }
+                        }
+                    }
+                }
+
+                public String getGraphQlTypeName() {
+                    return "SellingPlanEdge";
+                }
+
+                /**
+                * A cursor for use in pagination.
+                */
+
+                public String getCursor() {
+                    return (String) get("cursor");
+                }
+
+                public SellingPlanEdge setCursor(String arg) {
+                    optimisticData.put(getKey("cursor"), arg);
+                    return this;
+                }
+
+                /**
+                * The item at the end of SellingPlanEdge.
+                */
+
+                public SellingPlan getNode() {
+                    return (SellingPlan) get("node");
+                }
+
+                public SellingPlanEdge setNode(SellingPlan arg) {
+                    optimisticData.put(getKey("node"), arg);
+                    return this;
+                }
+
+                public boolean unwrapsToObject(String key) {
+                    switch (getFieldName(key)) {
+                        case "cursor": return false;
+
+                        case "node": return true;
+
+                        default: return false;
+                    }
+                }
+            }
+
+            public interface SellingPlanFixedAmountPriceAdjustmentQueryDefinition {
+                void define(SellingPlanFixedAmountPriceAdjustmentQuery _queryBuilder);
+            }
+
+            /**
+            * A fixed amount that's deducted from the original variant price. For example, $10.00 off.
+            */
+            public static class SellingPlanFixedAmountPriceAdjustmentQuery extends Query<SellingPlanFixedAmountPriceAdjustmentQuery> {
+                SellingPlanFixedAmountPriceAdjustmentQuery(StringBuilder _queryBuilder) {
+                    super(_queryBuilder);
+                }
+
+                /**
+                * The money value of the price adjustment.
+                */
+                public SellingPlanFixedAmountPriceAdjustmentQuery adjustmentAmount(MoneyV2QueryDefinition queryDef) {
+                    startField("adjustmentAmount");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new MoneyV2Query(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+            }
+
+            /**
+            * A fixed amount that's deducted from the original variant price. For example, $10.00 off.
+            */
+            public static class SellingPlanFixedAmountPriceAdjustment extends AbstractResponse<SellingPlanFixedAmountPriceAdjustment> implements SellingPlanPriceAdjustmentValue {
+                public SellingPlanFixedAmountPriceAdjustment() {
+                }
+
+                public SellingPlanFixedAmountPriceAdjustment(JsonObject fields) throws SchemaViolationError {
+                    for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                        String key = field.getKey();
+                        String fieldName = getFieldName(key);
+                        switch (fieldName) {
+                            case "adjustmentAmount": {
+                                responseData.put(key, new MoneyV2(jsonAsObject(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "__typename": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+                                break;
+                            }
+                            default: {
+                                throw new SchemaViolationError(this, key, field.getValue());
+                            }
+                        }
+                    }
+                }
+
+                public String getGraphQlTypeName() {
+                    return "SellingPlanFixedAmountPriceAdjustment";
+                }
+
+                /**
+                * The money value of the price adjustment.
+                */
+
+                public MoneyV2 getAdjustmentAmount() {
+                    return (MoneyV2) get("adjustmentAmount");
+                }
+
+                public SellingPlanFixedAmountPriceAdjustment setAdjustmentAmount(MoneyV2 arg) {
+                    optimisticData.put(getKey("adjustmentAmount"), arg);
+                    return this;
+                }
+
+                public boolean unwrapsToObject(String key) {
+                    switch (getFieldName(key)) {
+                        case "adjustmentAmount": return true;
+
+                        default: return false;
+                    }
+                }
+            }
+
+            public interface SellingPlanFixedPriceAdjustmentQueryDefinition {
+                void define(SellingPlanFixedPriceAdjustmentQuery _queryBuilder);
+            }
+
+            /**
+            * A fixed price adjustment for a variant that's purchased with a selling plan.
+            */
+            public static class SellingPlanFixedPriceAdjustmentQuery extends Query<SellingPlanFixedPriceAdjustmentQuery> {
+                SellingPlanFixedPriceAdjustmentQuery(StringBuilder _queryBuilder) {
+                    super(_queryBuilder);
+                }
+
+                /**
+                * A new price of the variant when it's purchased with the selling plan.
+                */
+                public SellingPlanFixedPriceAdjustmentQuery price(MoneyV2QueryDefinition queryDef) {
+                    startField("price");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new MoneyV2Query(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+            }
+
+            /**
+            * A fixed price adjustment for a variant that's purchased with a selling plan.
+            */
+            public static class SellingPlanFixedPriceAdjustment extends AbstractResponse<SellingPlanFixedPriceAdjustment> implements SellingPlanPriceAdjustmentValue {
+                public SellingPlanFixedPriceAdjustment() {
+                }
+
+                public SellingPlanFixedPriceAdjustment(JsonObject fields) throws SchemaViolationError {
+                    for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                        String key = field.getKey();
+                        String fieldName = getFieldName(key);
+                        switch (fieldName) {
+                            case "price": {
+                                responseData.put(key, new MoneyV2(jsonAsObject(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "__typename": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+                                break;
+                            }
+                            default: {
+                                throw new SchemaViolationError(this, key, field.getValue());
+                            }
+                        }
+                    }
+                }
+
+                public String getGraphQlTypeName() {
+                    return "SellingPlanFixedPriceAdjustment";
+                }
+
+                /**
+                * A new price of the variant when it's purchased with the selling plan.
+                */
+
+                public MoneyV2 getPrice() {
+                    return (MoneyV2) get("price");
+                }
+
+                public SellingPlanFixedPriceAdjustment setPrice(MoneyV2 arg) {
+                    optimisticData.put(getKey("price"), arg);
+                    return this;
+                }
+
+                public boolean unwrapsToObject(String key) {
+                    switch (getFieldName(key)) {
+                        case "price": return true;
+
+                        default: return false;
+                    }
+                }
+            }
+
+            public interface SellingPlanGroupQueryDefinition {
+                void define(SellingPlanGroupQuery _queryBuilder);
+            }
+
+            /**
+            * Represents a selling method. For example, 'Subscribe and save' is a selling method where customers
+            * pay for goods or services per delivery. A selling plan group contains individual selling plans.
+            */
+            public static class SellingPlanGroupQuery extends Query<SellingPlanGroupQuery> {
+                SellingPlanGroupQuery(StringBuilder _queryBuilder) {
+                    super(_queryBuilder);
+                }
+
+                /**
+                * A display friendly name for the app that created the selling plan group.
+                */
+                public SellingPlanGroupQuery appName() {
+                    startField("appName");
+
+                    return this;
+                }
+
+                /**
+                * The name of the selling plan group.
+                */
+                public SellingPlanGroupQuery name() {
+                    startField("name");
+
+                    return this;
+                }
+
+                /**
+                * Represents the selling plan options available in the drop-down list in the storefront. For example,
+                * 'Delivery every week' or 'Delivery every 2 weeks' specifies the delivery frequency options for the
+                * product.
+                */
+                public SellingPlanGroupQuery options(SellingPlanGroupOptionQueryDefinition queryDef) {
+                    startField("options");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new SellingPlanGroupOptionQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                public class SellingPlansArguments extends Arguments {
+                    SellingPlansArguments(StringBuilder _queryBuilder) {
+                        super(_queryBuilder, true);
+                    }
+
+                    /**
+                    * Returns up to the first `n` elements from the list.
+                    */
+                    public SellingPlansArguments first(Integer value) {
+                        if (value != null) {
+                            startArgument("first");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Returns the elements that come after the specified cursor.
+                    */
+                    public SellingPlansArguments after(String value) {
+                        if (value != null) {
+                            startArgument("after");
+                            Query.appendQuotedString(_queryBuilder, value.toString());
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Returns up to the last `n` elements from the list.
+                    */
+                    public SellingPlansArguments last(Integer value) {
+                        if (value != null) {
+                            startArgument("last");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Returns the elements that come before the specified cursor.
+                    */
+                    public SellingPlansArguments before(String value) {
+                        if (value != null) {
+                            startArgument("before");
+                            Query.appendQuotedString(_queryBuilder, value.toString());
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Reverse the order of the underlying list.
+                    */
+                    public SellingPlansArguments reverse(Boolean value) {
+                        if (value != null) {
+                            startArgument("reverse");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+                }
+
+                public interface SellingPlansArgumentsDefinition {
+                    void define(SellingPlansArguments args);
+                }
+
+                /**
+                * A list of selling plans in a selling plan group. A selling plan is a representation of how products
+                * and variants can be sold and purchased. For example, an individual selling plan could be '6 weeks of
+                * prepaid granola, delivered weekly'.
+                */
+                public SellingPlanGroupQuery sellingPlans(SellingPlanConnectionQueryDefinition queryDef) {
+                    return sellingPlans(args -> {}, queryDef);
+                }
+
+                /**
+                * A list of selling plans in a selling plan group. A selling plan is a representation of how products
+                * and variants can be sold and purchased. For example, an individual selling plan could be '6 weeks of
+                * prepaid granola, delivered weekly'.
+                */
+                public SellingPlanGroupQuery sellingPlans(SellingPlansArgumentsDefinition argsDef, SellingPlanConnectionQueryDefinition queryDef) {
+                    startField("sellingPlans");
+
+                    SellingPlansArguments args = new SellingPlansArguments(_queryBuilder);
+                    argsDef.define(args);
+                    SellingPlansArguments.end(args);
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new SellingPlanConnectionQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+            }
+
+            /**
+            * Represents a selling method. For example, 'Subscribe and save' is a selling method where customers
+            * pay for goods or services per delivery. A selling plan group contains individual selling plans.
+            */
+            public static class SellingPlanGroup extends AbstractResponse<SellingPlanGroup> {
+                public SellingPlanGroup() {
+                }
+
+                public SellingPlanGroup(JsonObject fields) throws SchemaViolationError {
+                    for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                        String key = field.getKey();
+                        String fieldName = getFieldName(key);
+                        switch (fieldName) {
+                            case "appName": {
+                                String optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = jsonAsString(field.getValue(), key);
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "name": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+
+                                break;
+                            }
+
+                            case "options": {
+                                List<SellingPlanGroupOption> list1 = new ArrayList<>();
+                                for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                                    list1.add(new SellingPlanGroupOption(jsonAsObject(element1, key)));
+                                }
+
+                                responseData.put(key, list1);
+
+                                break;
+                            }
+
+                            case "sellingPlans": {
+                                responseData.put(key, new SellingPlanConnection(jsonAsObject(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "__typename": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+                                break;
+                            }
+                            default: {
+                                throw new SchemaViolationError(this, key, field.getValue());
+                            }
+                        }
+                    }
+                }
+
+                public String getGraphQlTypeName() {
+                    return "SellingPlanGroup";
+                }
+
+                /**
+                * A display friendly name for the app that created the selling plan group.
+                */
+
+                public String getAppName() {
+                    return (String) get("appName");
+                }
+
+                public SellingPlanGroup setAppName(String arg) {
+                    optimisticData.put(getKey("appName"), arg);
+                    return this;
+                }
+
+                /**
+                * The name of the selling plan group.
+                */
+
+                public String getName() {
+                    return (String) get("name");
+                }
+
+                public SellingPlanGroup setName(String arg) {
+                    optimisticData.put(getKey("name"), arg);
+                    return this;
+                }
+
+                /**
+                * Represents the selling plan options available in the drop-down list in the storefront. For example,
+                * 'Delivery every week' or 'Delivery every 2 weeks' specifies the delivery frequency options for the
+                * product.
+                */
+
+                public List<SellingPlanGroupOption> getOptions() {
+                    return (List<SellingPlanGroupOption>) get("options");
+                }
+
+                public SellingPlanGroup setOptions(List<SellingPlanGroupOption> arg) {
+                    optimisticData.put(getKey("options"), arg);
+                    return this;
+                }
+
+                /**
+                * A list of selling plans in a selling plan group. A selling plan is a representation of how products
+                * and variants can be sold and purchased. For example, an individual selling plan could be '6 weeks of
+                * prepaid granola, delivered weekly'.
+                */
+
+                public SellingPlanConnection getSellingPlans() {
+                    return (SellingPlanConnection) get("sellingPlans");
+                }
+
+                public SellingPlanGroup setSellingPlans(SellingPlanConnection arg) {
+                    optimisticData.put(getKey("sellingPlans"), arg);
+                    return this;
+                }
+
+                public boolean unwrapsToObject(String key) {
+                    switch (getFieldName(key)) {
+                        case "appName": return false;
+
+                        case "name": return false;
+
+                        case "options": return true;
+
+                        case "sellingPlans": return true;
+
+                        default: return false;
+                    }
+                }
+            }
+
+            public interface SellingPlanGroupConnectionQueryDefinition {
+                void define(SellingPlanGroupConnectionQuery _queryBuilder);
+            }
+
+            /**
+            * An auto-generated type for paginating through multiple SellingPlanGroups.
+            */
+            public static class SellingPlanGroupConnectionQuery extends Query<SellingPlanGroupConnectionQuery> {
+                SellingPlanGroupConnectionQuery(StringBuilder _queryBuilder) {
+                    super(_queryBuilder);
+                }
+
+                /**
+                * A list of edges.
+                */
+                public SellingPlanGroupConnectionQuery edges(SellingPlanGroupEdgeQueryDefinition queryDef) {
+                    startField("edges");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new SellingPlanGroupEdgeQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * Information to aid in pagination.
+                */
+                public SellingPlanGroupConnectionQuery pageInfo(PageInfoQueryDefinition queryDef) {
+                    startField("pageInfo");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new PageInfoQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+            }
+
+            /**
+            * An auto-generated type for paginating through multiple SellingPlanGroups.
+            */
+            public static class SellingPlanGroupConnection extends AbstractResponse<SellingPlanGroupConnection> {
+                public SellingPlanGroupConnection() {
+                }
+
+                public SellingPlanGroupConnection(JsonObject fields) throws SchemaViolationError {
+                    for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                        String key = field.getKey();
+                        String fieldName = getFieldName(key);
+                        switch (fieldName) {
+                            case "edges": {
+                                List<SellingPlanGroupEdge> list1 = new ArrayList<>();
+                                for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                                    list1.add(new SellingPlanGroupEdge(jsonAsObject(element1, key)));
+                                }
+
+                                responseData.put(key, list1);
+
+                                break;
+                            }
+
+                            case "pageInfo": {
+                                responseData.put(key, new PageInfo(jsonAsObject(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "__typename": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+                                break;
+                            }
+                            default: {
+                                throw new SchemaViolationError(this, key, field.getValue());
+                            }
+                        }
+                    }
+                }
+
+                public String getGraphQlTypeName() {
+                    return "SellingPlanGroupConnection";
+                }
+
+                /**
+                * A list of edges.
+                */
+
+                public List<SellingPlanGroupEdge> getEdges() {
+                    return (List<SellingPlanGroupEdge>) get("edges");
+                }
+
+                public SellingPlanGroupConnection setEdges(List<SellingPlanGroupEdge> arg) {
+                    optimisticData.put(getKey("edges"), arg);
+                    return this;
+                }
+
+                /**
+                * Information to aid in pagination.
+                */
+
+                public PageInfo getPageInfo() {
+                    return (PageInfo) get("pageInfo");
+                }
+
+                public SellingPlanGroupConnection setPageInfo(PageInfo arg) {
+                    optimisticData.put(getKey("pageInfo"), arg);
+                    return this;
+                }
+
+                public boolean unwrapsToObject(String key) {
+                    switch (getFieldName(key)) {
+                        case "edges": return true;
+
+                        case "pageInfo": return true;
+
+                        default: return false;
+                    }
+                }
+            }
+
+            public interface SellingPlanGroupEdgeQueryDefinition {
+                void define(SellingPlanGroupEdgeQuery _queryBuilder);
+            }
+
+            /**
+            * An auto-generated type which holds one SellingPlanGroup and a cursor during pagination.
+            */
+            public static class SellingPlanGroupEdgeQuery extends Query<SellingPlanGroupEdgeQuery> {
+                SellingPlanGroupEdgeQuery(StringBuilder _queryBuilder) {
+                    super(_queryBuilder);
+                }
+
+                /**
+                * A cursor for use in pagination.
+                */
+                public SellingPlanGroupEdgeQuery cursor() {
+                    startField("cursor");
+
+                    return this;
+                }
+
+                /**
+                * The item at the end of SellingPlanGroupEdge.
+                */
+                public SellingPlanGroupEdgeQuery node(SellingPlanGroupQueryDefinition queryDef) {
+                    startField("node");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new SellingPlanGroupQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+            }
+
+            /**
+            * An auto-generated type which holds one SellingPlanGroup and a cursor during pagination.
+            */
+            public static class SellingPlanGroupEdge extends AbstractResponse<SellingPlanGroupEdge> {
+                public SellingPlanGroupEdge() {
+                }
+
+                public SellingPlanGroupEdge(JsonObject fields) throws SchemaViolationError {
+                    for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                        String key = field.getKey();
+                        String fieldName = getFieldName(key);
+                        switch (fieldName) {
+                            case "cursor": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+
+                                break;
+                            }
+
+                            case "node": {
+                                responseData.put(key, new SellingPlanGroup(jsonAsObject(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "__typename": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+                                break;
+                            }
+                            default: {
+                                throw new SchemaViolationError(this, key, field.getValue());
+                            }
+                        }
+                    }
+                }
+
+                public String getGraphQlTypeName() {
+                    return "SellingPlanGroupEdge";
+                }
+
+                /**
+                * A cursor for use in pagination.
+                */
+
+                public String getCursor() {
+                    return (String) get("cursor");
+                }
+
+                public SellingPlanGroupEdge setCursor(String arg) {
+                    optimisticData.put(getKey("cursor"), arg);
+                    return this;
+                }
+
+                /**
+                * The item at the end of SellingPlanGroupEdge.
+                */
+
+                public SellingPlanGroup getNode() {
+                    return (SellingPlanGroup) get("node");
+                }
+
+                public SellingPlanGroupEdge setNode(SellingPlanGroup arg) {
+                    optimisticData.put(getKey("node"), arg);
+                    return this;
+                }
+
+                public boolean unwrapsToObject(String key) {
+                    switch (getFieldName(key)) {
+                        case "cursor": return false;
+
+                        case "node": return true;
+
+                        default: return false;
+                    }
+                }
+            }
+
+            public interface SellingPlanGroupOptionQueryDefinition {
+                void define(SellingPlanGroupOptionQuery _queryBuilder);
+            }
+
+            /**
+            * Represents an option on a selling plan group that's available in the drop-down list in the
+            * storefront.
+            */
+            public static class SellingPlanGroupOptionQuery extends Query<SellingPlanGroupOptionQuery> {
+                SellingPlanGroupOptionQuery(StringBuilder _queryBuilder) {
+                    super(_queryBuilder);
+                }
+
+                /**
+                * The name of the option. For example, 'Delivery every'.
+                */
+                public SellingPlanGroupOptionQuery name() {
+                    startField("name");
+
+                    return this;
+                }
+
+                /**
+                * The values for the options specified by the selling plans in the selling plan group. For example, '1
+                * week', '2 weeks', '3 weeks'.
+                */
+                public SellingPlanGroupOptionQuery values() {
+                    startField("values");
+
+                    return this;
+                }
+            }
+
+            /**
+            * Represents an option on a selling plan group that's available in the drop-down list in the
+            * storefront.
+            */
+            public static class SellingPlanGroupOption extends AbstractResponse<SellingPlanGroupOption> {
+                public SellingPlanGroupOption() {
+                }
+
+                public SellingPlanGroupOption(JsonObject fields) throws SchemaViolationError {
+                    for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                        String key = field.getKey();
+                        String fieldName = getFieldName(key);
+                        switch (fieldName) {
+                            case "name": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+
+                                break;
+                            }
+
+                            case "values": {
+                                List<String> list1 = new ArrayList<>();
+                                for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                                    list1.add(jsonAsString(element1, key));
+                                }
+
+                                responseData.put(key, list1);
+
+                                break;
+                            }
+
+                            case "__typename": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+                                break;
+                            }
+                            default: {
+                                throw new SchemaViolationError(this, key, field.getValue());
+                            }
+                        }
+                    }
+                }
+
+                public String getGraphQlTypeName() {
+                    return "SellingPlanGroupOption";
+                }
+
+                /**
+                * The name of the option. For example, 'Delivery every'.
+                */
+
+                public String getName() {
+                    return (String) get("name");
+                }
+
+                public SellingPlanGroupOption setName(String arg) {
+                    optimisticData.put(getKey("name"), arg);
+                    return this;
+                }
+
+                /**
+                * The values for the options specified by the selling plans in the selling plan group. For example, '1
+                * week', '2 weeks', '3 weeks'.
+                */
+
+                public List<String> getValues() {
+                    return (List<String>) get("values");
+                }
+
+                public SellingPlanGroupOption setValues(List<String> arg) {
+                    optimisticData.put(getKey("values"), arg);
+                    return this;
+                }
+
+                public boolean unwrapsToObject(String key) {
+                    switch (getFieldName(key)) {
+                        case "name": return false;
+
+                        case "values": return false;
+
+                        default: return false;
+                    }
+                }
+            }
+
+            public interface SellingPlanOptionQueryDefinition {
+                void define(SellingPlanOptionQuery _queryBuilder);
+            }
+
+            /**
+            * An option provided by a Selling Plan.
+            */
+            public static class SellingPlanOptionQuery extends Query<SellingPlanOptionQuery> {
+                SellingPlanOptionQuery(StringBuilder _queryBuilder) {
+                    super(_queryBuilder);
+                }
+
+                /**
+                * The name of the option (ie "Delivery every").
+                */
+                public SellingPlanOptionQuery name() {
+                    startField("name");
+
+                    return this;
+                }
+
+                /**
+                * The value of the option (ie "Month").
+                */
+                public SellingPlanOptionQuery value() {
+                    startField("value");
+
+                    return this;
+                }
+            }
+
+            /**
+            * An option provided by a Selling Plan.
+            */
+            public static class SellingPlanOption extends AbstractResponse<SellingPlanOption> {
+                public SellingPlanOption() {
+                }
+
+                public SellingPlanOption(JsonObject fields) throws SchemaViolationError {
+                    for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                        String key = field.getKey();
+                        String fieldName = getFieldName(key);
+                        switch (fieldName) {
+                            case "name": {
+                                String optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = jsonAsString(field.getValue(), key);
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "value": {
+                                String optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = jsonAsString(field.getValue(), key);
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "__typename": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+                                break;
+                            }
+                            default: {
+                                throw new SchemaViolationError(this, key, field.getValue());
+                            }
+                        }
+                    }
+                }
+
+                public String getGraphQlTypeName() {
+                    return "SellingPlanOption";
+                }
+
+                /**
+                * The name of the option (ie "Delivery every").
+                */
+
+                public String getName() {
+                    return (String) get("name");
+                }
+
+                public SellingPlanOption setName(String arg) {
+                    optimisticData.put(getKey("name"), arg);
+                    return this;
+                }
+
+                /**
+                * The value of the option (ie "Month").
+                */
+
+                public String getValue() {
+                    return (String) get("value");
+                }
+
+                public SellingPlanOption setValue(String arg) {
+                    optimisticData.put(getKey("value"), arg);
+                    return this;
+                }
+
+                public boolean unwrapsToObject(String key) {
+                    switch (getFieldName(key)) {
+                        case "name": return false;
+
+                        case "value": return false;
+
+                        default: return false;
+                    }
+                }
+            }
+
+            public interface SellingPlanPercentagePriceAdjustmentQueryDefinition {
+                void define(SellingPlanPercentagePriceAdjustmentQuery _queryBuilder);
+            }
+
+            /**
+            * A percentage amount that's deducted from the original variant price. For example, 10% off.
+            */
+            public static class SellingPlanPercentagePriceAdjustmentQuery extends Query<SellingPlanPercentagePriceAdjustmentQuery> {
+                SellingPlanPercentagePriceAdjustmentQuery(StringBuilder _queryBuilder) {
+                    super(_queryBuilder);
+                }
+
+                /**
+                * The percentage value of the price adjustment.
+                */
+                public SellingPlanPercentagePriceAdjustmentQuery adjustmentPercentage() {
+                    startField("adjustmentPercentage");
+
+                    return this;
+                }
+            }
+
+            /**
+            * A percentage amount that's deducted from the original variant price. For example, 10% off.
+            */
+            public static class SellingPlanPercentagePriceAdjustment extends AbstractResponse<SellingPlanPercentagePriceAdjustment> implements SellingPlanPriceAdjustmentValue {
+                public SellingPlanPercentagePriceAdjustment() {
+                }
+
+                public SellingPlanPercentagePriceAdjustment(JsonObject fields) throws SchemaViolationError {
+                    for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                        String key = field.getKey();
+                        String fieldName = getFieldName(key);
+                        switch (fieldName) {
+                            case "adjustmentPercentage": {
+                                responseData.put(key, jsonAsInteger(field.getValue(), key));
+
+                                break;
+                            }
+
+                            case "__typename": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+                                break;
+                            }
+                            default: {
+                                throw new SchemaViolationError(this, key, field.getValue());
+                            }
+                        }
+                    }
+                }
+
+                public String getGraphQlTypeName() {
+                    return "SellingPlanPercentagePriceAdjustment";
+                }
+
+                /**
+                * The percentage value of the price adjustment.
+                */
+
+                public Integer getAdjustmentPercentage() {
+                    return (Integer) get("adjustmentPercentage");
+                }
+
+                public SellingPlanPercentagePriceAdjustment setAdjustmentPercentage(Integer arg) {
+                    optimisticData.put(getKey("adjustmentPercentage"), arg);
+                    return this;
+                }
+
+                public boolean unwrapsToObject(String key) {
+                    switch (getFieldName(key)) {
+                        case "adjustmentPercentage": return false;
+
+                        default: return false;
+                    }
+                }
+            }
+
+            public interface SellingPlanPriceAdjustmentQueryDefinition {
+                void define(SellingPlanPriceAdjustmentQuery _queryBuilder);
+            }
+
+            /**
+            * Represents by how much the price of a variant associated with a selling plan is adjusted. Each
+            * variant can have up to two price adjustments.
+            */
+            public static class SellingPlanPriceAdjustmentQuery extends Query<SellingPlanPriceAdjustmentQuery> {
+                SellingPlanPriceAdjustmentQuery(StringBuilder _queryBuilder) {
+                    super(_queryBuilder);
+                }
+
+                /**
+                * The type of price adjustment. An adjustment value can have one of three types: percentage, amount
+                * off, or a new price.
+                */
+                public SellingPlanPriceAdjustmentQuery adjustmentValue(SellingPlanPriceAdjustmentValueQueryDefinition queryDef) {
+                    startField("adjustmentValue");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new SellingPlanPriceAdjustmentValueQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * The number of orders that the price adjustment applies to If the price adjustment always applies,
+                * then this field is `null`.
+                */
+                public SellingPlanPriceAdjustmentQuery orderCount() {
+                    startField("orderCount");
+
+                    return this;
+                }
+            }
+
+            /**
+            * Represents by how much the price of a variant associated with a selling plan is adjusted. Each
+            * variant can have up to two price adjustments.
+            */
+            public static class SellingPlanPriceAdjustment extends AbstractResponse<SellingPlanPriceAdjustment> {
+                public SellingPlanPriceAdjustment() {
+                }
+
+                public SellingPlanPriceAdjustment(JsonObject fields) throws SchemaViolationError {
+                    for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                        String key = field.getKey();
+                        String fieldName = getFieldName(key);
+                        switch (fieldName) {
+                            case "adjustmentValue": {
+                                responseData.put(key, UnknownSellingPlanPriceAdjustmentValue.create(jsonAsObject(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "orderCount": {
+                                Integer optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = jsonAsInteger(field.getValue(), key);
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "__typename": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+                                break;
+                            }
+                            default: {
+                                throw new SchemaViolationError(this, key, field.getValue());
+                            }
+                        }
+                    }
+                }
+
+                public String getGraphQlTypeName() {
+                    return "SellingPlanPriceAdjustment";
+                }
+
+                /**
+                * The type of price adjustment. An adjustment value can have one of three types: percentage, amount
+                * off, or a new price.
+                */
+
+                public SellingPlanPriceAdjustmentValue getAdjustmentValue() {
+                    return (SellingPlanPriceAdjustmentValue) get("adjustmentValue");
+                }
+
+                public SellingPlanPriceAdjustment setAdjustmentValue(SellingPlanPriceAdjustmentValue arg) {
+                    optimisticData.put(getKey("adjustmentValue"), arg);
+                    return this;
+                }
+
+                /**
+                * The number of orders that the price adjustment applies to If the price adjustment always applies,
+                * then this field is `null`.
+                */
+
+                public Integer getOrderCount() {
+                    return (Integer) get("orderCount");
+                }
+
+                public SellingPlanPriceAdjustment setOrderCount(Integer arg) {
+                    optimisticData.put(getKey("orderCount"), arg);
+                    return this;
+                }
+
+                public boolean unwrapsToObject(String key) {
+                    switch (getFieldName(key)) {
+                        case "adjustmentValue": return false;
+
+                        case "orderCount": return false;
+
+                        default: return false;
+                    }
+                }
+            }
+
+            public interface SellingPlanPriceAdjustmentValueQueryDefinition {
+                void define(SellingPlanPriceAdjustmentValueQuery _queryBuilder);
+            }
+
+            /**
+            * Represents by how much the price of a variant associated with a selling plan is adjusted. Each
+            * variant can have up to two price adjustments.
+            */
+            public static class SellingPlanPriceAdjustmentValueQuery extends Query<SellingPlanPriceAdjustmentValueQuery> {
+                SellingPlanPriceAdjustmentValueQuery(StringBuilder _queryBuilder) {
+                    super(_queryBuilder);
+
+                    startField("__typename");
+                }
+
+                public SellingPlanPriceAdjustmentValueQuery onSellingPlanFixedAmountPriceAdjustment(SellingPlanFixedAmountPriceAdjustmentQueryDefinition queryDef) {
+                    startInlineFragment("SellingPlanFixedAmountPriceAdjustment");
+                    queryDef.define(new SellingPlanFixedAmountPriceAdjustmentQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+                    return this;
+                }
+
+                public SellingPlanPriceAdjustmentValueQuery onSellingPlanFixedPriceAdjustment(SellingPlanFixedPriceAdjustmentQueryDefinition queryDef) {
+                    startInlineFragment("SellingPlanFixedPriceAdjustment");
+                    queryDef.define(new SellingPlanFixedPriceAdjustmentQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+                    return this;
+                }
+
+                public SellingPlanPriceAdjustmentValueQuery onSellingPlanPercentagePriceAdjustment(SellingPlanPercentagePriceAdjustmentQueryDefinition queryDef) {
+                    startInlineFragment("SellingPlanPercentagePriceAdjustment");
+                    queryDef.define(new SellingPlanPercentagePriceAdjustmentQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+                    return this;
+                }
+            }
+
+            public interface SellingPlanPriceAdjustmentValue {
+                String getGraphQlTypeName();
+            }
+
+            /**
+            * Represents by how much the price of a variant associated with a selling plan is adjusted. Each
+            * variant can have up to two price adjustments.
+            */
+            public static class UnknownSellingPlanPriceAdjustmentValue extends AbstractResponse<UnknownSellingPlanPriceAdjustmentValue> implements SellingPlanPriceAdjustmentValue {
+                public UnknownSellingPlanPriceAdjustmentValue() {
+                }
+
+                public UnknownSellingPlanPriceAdjustmentValue(JsonObject fields) throws SchemaViolationError {
+                    for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                        String key = field.getKey();
+                        String fieldName = getFieldName(key);
+                        switch (fieldName) {
+                            case "__typename": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+                                break;
+                            }
+                            default: {
+                                throw new SchemaViolationError(this, key, field.getValue());
+                            }
+                        }
+                    }
+                }
+
+                public static SellingPlanPriceAdjustmentValue create(JsonObject fields) throws SchemaViolationError {
+                    String typeName = fields.getAsJsonPrimitive("__typename").getAsString();
+                    switch (typeName) {
+                        case "SellingPlanFixedAmountPriceAdjustment": {
+                            return new SellingPlanFixedAmountPriceAdjustment(fields);
+                        }
+
+                        case "SellingPlanFixedPriceAdjustment": {
+                            return new SellingPlanFixedPriceAdjustment(fields);
+                        }
+
+                        case "SellingPlanPercentagePriceAdjustment": {
+                            return new SellingPlanPercentagePriceAdjustment(fields);
+                        }
+
+                        default: {
+                            return new UnknownSellingPlanPriceAdjustmentValue(fields);
+                        }
+                    }
+                }
+
+                public String getGraphQlTypeName() {
+                    return (String) get("__typename");
+                }
+
+                public boolean unwrapsToObject(String key) {
+                    switch (getFieldName(key)) {
+                        default: return false;
+                    }
                 }
             }
 
@@ -44199,6 +49936,127 @@ public class Storefront {
                 }
 
                 /**
+                * Returns a metafield found by namespace and key.
+                */
+                public ShopQuery metafield(String namespace, String key, MetafieldQueryDefinition queryDef) {
+                    startField("metafield");
+
+                    _queryBuilder.append("(namespace:");
+                    Query.appendQuotedString(_queryBuilder, namespace.toString());
+
+                    _queryBuilder.append(",key:");
+                    Query.appendQuotedString(_queryBuilder, key.toString());
+
+                    _queryBuilder.append(')');
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new MetafieldQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                public class MetafieldsArguments extends Arguments {
+                    MetafieldsArguments(StringBuilder _queryBuilder) {
+                        super(_queryBuilder, true);
+                    }
+
+                    /**
+                    * Container for a set of metafields (maximum of 20 characters).
+                    */
+                    public MetafieldsArguments namespace(String value) {
+                        if (value != null) {
+                            startArgument("namespace");
+                            Query.appendQuotedString(_queryBuilder, value.toString());
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Returns up to the first `n` elements from the list.
+                    */
+                    public MetafieldsArguments first(Integer value) {
+                        if (value != null) {
+                            startArgument("first");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Returns the elements that come after the specified cursor.
+                    */
+                    public MetafieldsArguments after(String value) {
+                        if (value != null) {
+                            startArgument("after");
+                            Query.appendQuotedString(_queryBuilder, value.toString());
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Returns up to the last `n` elements from the list.
+                    */
+                    public MetafieldsArguments last(Integer value) {
+                        if (value != null) {
+                            startArgument("last");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Returns the elements that come before the specified cursor.
+                    */
+                    public MetafieldsArguments before(String value) {
+                        if (value != null) {
+                            startArgument("before");
+                            Query.appendQuotedString(_queryBuilder, value.toString());
+                        }
+                        return this;
+                    }
+
+                    /**
+                    * Reverse the order of the underlying list.
+                    */
+                    public MetafieldsArguments reverse(Boolean value) {
+                        if (value != null) {
+                            startArgument("reverse");
+                            _queryBuilder.append(value);
+                        }
+                        return this;
+                    }
+                }
+
+                public interface MetafieldsArgumentsDefinition {
+                    void define(MetafieldsArguments args);
+                }
+
+                /**
+                * A paginated list of metafields associated with the resource.
+                */
+                public ShopQuery metafields(MetafieldConnectionQueryDefinition queryDef) {
+                    return metafields(args -> {}, queryDef);
+                }
+
+                /**
+                * A paginated list of metafields associated with the resource.
+                */
+                public ShopQuery metafields(MetafieldsArgumentsDefinition argsDef, MetafieldConnectionQueryDefinition queryDef) {
+                    startField("metafields");
+
+                    MetafieldsArguments args = new MetafieldsArguments(_queryBuilder);
+                    argsDef.define(args);
+                    MetafieldsArguments.end(args);
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new MetafieldConnectionQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
                 * A string representing the way currency is formatted when the currency isn’t specified.
                 */
                 public ShopQuery moneyFormat() {
@@ -44509,7 +50367,7 @@ public class Storefront {
             /**
             * Shop represents a collection of the general settings and information about the shop.
             */
-            public static class Shop extends AbstractResponse<Shop> {
+            public static class Shop extends AbstractResponse<Shop> implements HasMetafields, MetafieldParentResource {
                 public Shop() {
                 }
 
@@ -44560,6 +50418,23 @@ public class Storefront {
                                 }
 
                                 responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "metafield": {
+                                Metafield optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = new Metafield(jsonAsObject(field.getValue(), key));
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "metafields": {
+                                responseData.put(key, new MetafieldConnection(jsonAsObject(field.getValue(), key)));
 
                                 break;
                             }
@@ -44787,6 +50662,32 @@ public class Storefront {
                 }
 
                 /**
+                * Returns a metafield found by namespace and key.
+                */
+
+                public Metafield getMetafield() {
+                    return (Metafield) get("metafield");
+                }
+
+                public Shop setMetafield(Metafield arg) {
+                    optimisticData.put(getKey("metafield"), arg);
+                    return this;
+                }
+
+                /**
+                * A paginated list of metafields associated with the resource.
+                */
+
+                public MetafieldConnection getMetafields() {
+                    return (MetafieldConnection) get("metafields");
+                }
+
+                public Shop setMetafields(MetafieldConnection arg) {
+                    optimisticData.put(getKey("metafields"), arg);
+                    return this;
+                }
+
+                /**
                 * A string representing the way currency is formatted when the currency isn’t specified.
                 */
 
@@ -44992,6 +50893,10 @@ public class Storefront {
                         case "currencyCode": return false;
 
                         case "description": return false;
+
+                        case "metafield": return true;
+
+                        case "metafields": return true;
 
                         case "moneyFormat": return false;
 
@@ -45210,6 +51115,380 @@ public class Storefront {
                         case "title": return false;
 
                         case "url": return false;
+
+                        default: return false;
+                    }
+                }
+            }
+
+            public interface StoreAvailabilityQueryDefinition {
+                void define(StoreAvailabilityQuery _queryBuilder);
+            }
+
+            /**
+            * Describes the availability of a product variant at a particular location.
+            */
+            public static class StoreAvailabilityQuery extends Query<StoreAvailabilityQuery> {
+                StoreAvailabilityQuery(StringBuilder _queryBuilder) {
+                    super(_queryBuilder);
+                }
+
+                /**
+                * Whether or not this product variant is in-stock at this location.
+                */
+                public StoreAvailabilityQuery available() {
+                    startField("available");
+
+                    return this;
+                }
+
+                /**
+                * The location where this product variant is stocked at.
+                */
+                public StoreAvailabilityQuery location(LocationQueryDefinition queryDef) {
+                    startField("location");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new LocationQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * Returns the estimated amount of time it takes for pickup to be ready (Example: Usually ready in 24
+                * hours).
+                */
+                public StoreAvailabilityQuery pickUpTime() {
+                    startField("pickUpTime");
+
+                    return this;
+                }
+            }
+
+            /**
+            * Describes the availability of a product variant at a particular location.
+            */
+            public static class StoreAvailability extends AbstractResponse<StoreAvailability> {
+                public StoreAvailability() {
+                }
+
+                public StoreAvailability(JsonObject fields) throws SchemaViolationError {
+                    for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                        String key = field.getKey();
+                        String fieldName = getFieldName(key);
+                        switch (fieldName) {
+                            case "available": {
+                                responseData.put(key, jsonAsBoolean(field.getValue(), key));
+
+                                break;
+                            }
+
+                            case "location": {
+                                responseData.put(key, new Location(jsonAsObject(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "pickUpTime": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+
+                                break;
+                            }
+
+                            case "__typename": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+                                break;
+                            }
+                            default: {
+                                throw new SchemaViolationError(this, key, field.getValue());
+                            }
+                        }
+                    }
+                }
+
+                public String getGraphQlTypeName() {
+                    return "StoreAvailability";
+                }
+
+                /**
+                * Whether or not this product variant is in-stock at this location.
+                */
+
+                public Boolean getAvailable() {
+                    return (Boolean) get("available");
+                }
+
+                public StoreAvailability setAvailable(Boolean arg) {
+                    optimisticData.put(getKey("available"), arg);
+                    return this;
+                }
+
+                /**
+                * The location where this product variant is stocked at.
+                */
+
+                public Location getLocation() {
+                    return (Location) get("location");
+                }
+
+                public StoreAvailability setLocation(Location arg) {
+                    optimisticData.put(getKey("location"), arg);
+                    return this;
+                }
+
+                /**
+                * Returns the estimated amount of time it takes for pickup to be ready (Example: Usually ready in 24
+                * hours).
+                */
+
+                public String getPickUpTime() {
+                    return (String) get("pickUpTime");
+                }
+
+                public StoreAvailability setPickUpTime(String arg) {
+                    optimisticData.put(getKey("pickUpTime"), arg);
+                    return this;
+                }
+
+                public boolean unwrapsToObject(String key) {
+                    switch (getFieldName(key)) {
+                        case "available": return false;
+
+                        case "location": return true;
+
+                        case "pickUpTime": return false;
+
+                        default: return false;
+                    }
+                }
+            }
+
+            public interface StoreAvailabilityConnectionQueryDefinition {
+                void define(StoreAvailabilityConnectionQuery _queryBuilder);
+            }
+
+            /**
+            * An auto-generated type for paginating through multiple StoreAvailabilities.
+            */
+            public static class StoreAvailabilityConnectionQuery extends Query<StoreAvailabilityConnectionQuery> {
+                StoreAvailabilityConnectionQuery(StringBuilder _queryBuilder) {
+                    super(_queryBuilder);
+                }
+
+                /**
+                * A list of edges.
+                */
+                public StoreAvailabilityConnectionQuery edges(StoreAvailabilityEdgeQueryDefinition queryDef) {
+                    startField("edges");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new StoreAvailabilityEdgeQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * Information to aid in pagination.
+                */
+                public StoreAvailabilityConnectionQuery pageInfo(PageInfoQueryDefinition queryDef) {
+                    startField("pageInfo");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new PageInfoQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+            }
+
+            /**
+            * An auto-generated type for paginating through multiple StoreAvailabilities.
+            */
+            public static class StoreAvailabilityConnection extends AbstractResponse<StoreAvailabilityConnection> {
+                public StoreAvailabilityConnection() {
+                }
+
+                public StoreAvailabilityConnection(JsonObject fields) throws SchemaViolationError {
+                    for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                        String key = field.getKey();
+                        String fieldName = getFieldName(key);
+                        switch (fieldName) {
+                            case "edges": {
+                                List<StoreAvailabilityEdge> list1 = new ArrayList<>();
+                                for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                                    list1.add(new StoreAvailabilityEdge(jsonAsObject(element1, key)));
+                                }
+
+                                responseData.put(key, list1);
+
+                                break;
+                            }
+
+                            case "pageInfo": {
+                                responseData.put(key, new PageInfo(jsonAsObject(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "__typename": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+                                break;
+                            }
+                            default: {
+                                throw new SchemaViolationError(this, key, field.getValue());
+                            }
+                        }
+                    }
+                }
+
+                public String getGraphQlTypeName() {
+                    return "StoreAvailabilityConnection";
+                }
+
+                /**
+                * A list of edges.
+                */
+
+                public List<StoreAvailabilityEdge> getEdges() {
+                    return (List<StoreAvailabilityEdge>) get("edges");
+                }
+
+                public StoreAvailabilityConnection setEdges(List<StoreAvailabilityEdge> arg) {
+                    optimisticData.put(getKey("edges"), arg);
+                    return this;
+                }
+
+                /**
+                * Information to aid in pagination.
+                */
+
+                public PageInfo getPageInfo() {
+                    return (PageInfo) get("pageInfo");
+                }
+
+                public StoreAvailabilityConnection setPageInfo(PageInfo arg) {
+                    optimisticData.put(getKey("pageInfo"), arg);
+                    return this;
+                }
+
+                public boolean unwrapsToObject(String key) {
+                    switch (getFieldName(key)) {
+                        case "edges": return true;
+
+                        case "pageInfo": return true;
+
+                        default: return false;
+                    }
+                }
+            }
+
+            public interface StoreAvailabilityEdgeQueryDefinition {
+                void define(StoreAvailabilityEdgeQuery _queryBuilder);
+            }
+
+            /**
+            * An auto-generated type which holds one StoreAvailability and a cursor during pagination.
+            */
+            public static class StoreAvailabilityEdgeQuery extends Query<StoreAvailabilityEdgeQuery> {
+                StoreAvailabilityEdgeQuery(StringBuilder _queryBuilder) {
+                    super(_queryBuilder);
+                }
+
+                /**
+                * A cursor for use in pagination.
+                */
+                public StoreAvailabilityEdgeQuery cursor() {
+                    startField("cursor");
+
+                    return this;
+                }
+
+                /**
+                * The item at the end of StoreAvailabilityEdge.
+                */
+                public StoreAvailabilityEdgeQuery node(StoreAvailabilityQueryDefinition queryDef) {
+                    startField("node");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new StoreAvailabilityQuery(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+            }
+
+            /**
+            * An auto-generated type which holds one StoreAvailability and a cursor during pagination.
+            */
+            public static class StoreAvailabilityEdge extends AbstractResponse<StoreAvailabilityEdge> {
+                public StoreAvailabilityEdge() {
+                }
+
+                public StoreAvailabilityEdge(JsonObject fields) throws SchemaViolationError {
+                    for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                        String key = field.getKey();
+                        String fieldName = getFieldName(key);
+                        switch (fieldName) {
+                            case "cursor": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+
+                                break;
+                            }
+
+                            case "node": {
+                                responseData.put(key, new StoreAvailability(jsonAsObject(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "__typename": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+                                break;
+                            }
+                            default: {
+                                throw new SchemaViolationError(this, key, field.getValue());
+                            }
+                        }
+                    }
+                }
+
+                public String getGraphQlTypeName() {
+                    return "StoreAvailabilityEdge";
+                }
+
+                /**
+                * A cursor for use in pagination.
+                */
+
+                public String getCursor() {
+                    return (String) get("cursor");
+                }
+
+                public StoreAvailabilityEdge setCursor(String arg) {
+                    optimisticData.put(getKey("cursor"), arg);
+                    return this;
+                }
+
+                /**
+                * The item at the end of StoreAvailabilityEdge.
+                */
+
+                public StoreAvailability getNode() {
+                    return (StoreAvailability) get("node");
+                }
+
+                public StoreAvailabilityEdge setNode(StoreAvailability arg) {
+                    optimisticData.put(getKey("node"), arg);
+                    return this;
+                }
+
+                public boolean unwrapsToObject(String key) {
+                    switch (getFieldName(key)) {
+                        case "cursor": return false;
+
+                        case "node": return true;
 
                         default: return false;
                     }
@@ -46816,6 +53095,58 @@ public class Storefront {
 
                         case MM: {
                             return "MM";
+                        }
+
+                        default: {
+                            return "";
+                        }
+                    }
+                }
+            }
+
+            /**
+            * Systems of weights and measures.
+            */
+            public enum UnitSystem {
+                /**
+                * Imperial system of weights and measures.
+                */
+                IMPERIAL_SYSTEM,
+
+                /**
+                * Metric system of weights and measures.
+                */
+                METRIC_SYSTEM,
+
+                UNKNOWN_VALUE;
+
+                public static UnitSystem fromGraphQl(String value) {
+                    if (value == null) {
+                        return null;
+                    }
+
+                    switch (value) {
+                        case "IMPERIAL_SYSTEM": {
+                            return IMPERIAL_SYSTEM;
+                        }
+
+                        case "METRIC_SYSTEM": {
+                            return METRIC_SYSTEM;
+                        }
+
+                        default: {
+                            return UNKNOWN_VALUE;
+                        }
+                    }
+                }
+                public String toString() {
+                    switch (this) {
+                        case IMPERIAL_SYSTEM: {
+                            return "IMPERIAL_SYSTEM";
+                        }
+
+                        case METRIC_SYSTEM: {
+                            return "METRIC_SYSTEM";
                         }
 
                         default: {
