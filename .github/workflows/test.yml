@@ -13,6 +13,11 @@ jobs:
           API_VERSION="$(date +'%Y-%m')"
           echo "API_VERSION=$API_VERSION" >> $GITHUB_ENV
 
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+        with:
+          submodules: true
+
       - name: Install Ruby
         uses: ruby/setup-ruby@v1
 
@@ -23,12 +28,7 @@ jobs:
           server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
           settings-path: ${{ github.workspace }} # location for the settings.xml file
 
-      - name: Fetch sources
-        uses: actions/checkout@v2
-        with:
-          submodules: true
-
-      - name: Install bundler
+      - name: Install Bundler
         run: |
           gem install bundler
           BUNDLE_GEMFILE="MobileBuy/buy3/Gemfile" bundle install --verbose
