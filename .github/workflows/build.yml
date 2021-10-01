@@ -70,7 +70,7 @@ jobs:
               head: api_version + '-auto-generated',
               base: 'master',
               body: "Release notes:" +
-                "\n- https://shopify.dev/concepts/about-apis/versioning/release-notes/" + api_version + "#storefront-api-changes" +
+                "\n- https://shopify.dev/api/release-notes/" + api_version + "#graphql-storefront-api-changes" +
                 "\n" +
                 "\n**Steps to release:**" +
                 "\n- [ ] Make sure tests are passing" +
