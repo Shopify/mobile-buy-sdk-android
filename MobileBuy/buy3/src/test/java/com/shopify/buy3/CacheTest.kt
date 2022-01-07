@@ -445,16 +445,7 @@ private class ShopWithCollectionsQuery : Storefront.QueryRootQueryDefinition {
         root.shop { shop ->
             shop
                 .name()
-                .currencyCode()
                 .description()
-                .collections({ it.first(10) }, { collectionConnection ->
-                    collectionConnection
-                        .edges { collectionEdge ->
-                            collectionEdge
-                                .cursor()
-                                .node { it.title() }
-                        }
-                })
         }
     }
 }
@@ -464,26 +455,7 @@ private class ShopWithCollectionsQuery : Storefront.QueryRootQueryDefinition {
       "data": {
         "shop": {
           "name": "Greats Clone",
-          "currencyCode": "USD",
-          "description": "A description ",
-          "collections": {
-            "edges": [
-              {
-                "cursor": "eyJsYXN0X2lkIjoxNDg3ODQ0NTEsImxhc3RfdmFsdWUiOiIxNDg3ODQ0NTEifQ==",
-                "node": {
-                  "id": "Z2lkOi8vc2hvcGlmeS9Db2xsZWN0aW9uLzE0ODc4NDQ1MQ==",
-                  "title": "Frontpage"
-                }
-              },
-              {
-                "cursor": "eyJsYXN0X2lkIjoxNDg4MTc3MzEsImxhc3RfdmFsdWUiOiIxNDg4MTc3MzEifQ==",
-                "node": {
-                  "id": "Z2lkOi8vc2hvcGlmeS9Db2xsZWN0aW9uLzE0ODgxNzczMQ==",
-                  "title": "The Rosen"
-                }
-              }
-            ]
-          }
+          "description": "A description "
         }
       }
     }
@@ -494,26 +466,7 @@ private class ShopWithCollectionsQuery : Storefront.QueryRootQueryDefinition {
       "data": {
         "shop": {
           "name": "Greats Clone",
-          "currencyCode": "USD",
-          "description": "UPDATED VERSION ",
-          "collections": {
-            "edges": [
-              {
-                "cursor": "eyJsYXN0X2lkIjoxNDg3ODQ0NTEsImxhc3RfdmFsdWUiOiIxNDg3ODQ0NTEifQ==",
-                "node": {
-                  "id": "Z2lkOi8vc2hvcGlmeS9Db2xsZWN0aW9uLzE0ODc4NDQ1MQ==",
-                  "title": "Frontpage Updated"
-                }
-              },
-              {
-                "cursor": "eyJsYXN0X2lkIjoxNDg4MTc3MzEsImxhc3RfdmFsdWUiOiIxNDg4MTc3MzEifQ==",
-                "node": {
-                  "id": "Z2lkOi8vc2hvcGlmeS9Db2xsZWN0aW9uLzE0ODgxNzczMQ==",
-                  "title": "The Rosen Updated"
-                }
-              }
-            ]
-          }
+          "description": "UPDATED VERSION "
         }
       }
     }
