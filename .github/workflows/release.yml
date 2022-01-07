@@ -26,7 +26,7 @@ jobs:
               name: `X.X.X [${api_version}]`,
               body: notes,
               tag_name: 'x.x.x',
-              target_commitish: 'master',
+              target_commitish: 'main',
               draft: true,
               prerelease: false,
             })

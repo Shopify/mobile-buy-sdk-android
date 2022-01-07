@@ -68,7 +68,7 @@ jobs:
               repo: context.repo.repo,
               title: 'Update schema (auto-generated)',
               head: api_version + '-auto-generated',
-              base: 'master',
+              base: 'main',
               body: "Release notes:" +
                 "\n- https://shopify.dev/api/release-notes/" + api_version + "#graphql-storefront-api-changes" +
                 "\n" +
