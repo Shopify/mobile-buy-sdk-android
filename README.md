@@ -1,6 +1,6 @@
 ![Mobile Buy SDK](https://cloud.githubusercontent.com/assets/5244861/26374751/6895a582-3fd4-11e7-80c4-2c1632262d66.png)
 
-[![Build](https://github.com/Shopify/mobile-buy-sdk-android/workflows/Test/badge.svg)](https://github.com/Shopify/mobile-buy-sdk-android/actions/workflows/test.yml)
+[![Tests](https://github.com/Shopify/mobile-buy-sdk-android/actions/workflows/test.yml/badge.svg)](https://github.com/Shopify/mobile-buy-sdk-android/actions/workflows/test.yml)
 [![GitHub license](https://img.shields.io/badge/license-MIT-lightgrey.svg)](https://github.com/Shopify/mobile-buy-sdk-ios/blob/main/LICENSE)
 [![GitHub release](https://img.shields.io/github/release/shopify/mobile-buy-sdk-android.svg)](https://github.com/Shopify/mobile-buy-sdk-android/releases)
 
