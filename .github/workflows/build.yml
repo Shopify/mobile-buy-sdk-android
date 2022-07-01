@@ -62,7 +62,7 @@ jobs:
             github.pulls.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              title: "Update Schema to `${api_version}` Release",
+              title: "Update Schema to `" + api_version + "` Release",
               head: api_version + '-auto-generated',
               base: 'main',
               body: "Release notes:" +
