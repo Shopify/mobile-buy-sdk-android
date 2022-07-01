@@ -2,10 +2,6 @@ name: Build SDK for latest API version
 
 on:
   workflow_dispatch:
-  schedule:
-    # Run on midnight UTC on the first of jan/apr/jul/oct
-    # API is released 1PM EDT/EST
-    - cron: "59 23 1 1/3 *"
 
 jobs:
   build:
@@ -66,7 +62,7 @@ jobs:
             github.pulls.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              title: 'Update schema (auto-generated)',
+              title: "Update Schema to `${api_version}` Release",
               head: api_version + '-auto-generated',
               base: 'main',
               body: "Release notes:" +
