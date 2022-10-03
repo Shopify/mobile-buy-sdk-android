@@ -25,7 +25,7 @@ import java.io.Serializable;
 import java.util.*;
 
 public class Storefront {
-    public static final String API_VERSION = "2022-07";
+    public static final String API_VERSION = "2022-10";
 
     public static QueryRootQuery query(QueryRootQueryDefinition queryDef) {
         return query(Collections.emptyList(), queryDef);
@@ -126,8 +126,8 @@ public class Storefront {
     /**
     * Contextualizes data based on the additional information provided by the directive. For example, you
     * can use the `@inContext(country: CA)` directive to [query a product's
-    * price](https://shopify.dev/api/examples/international-pricing#query-product-prices) in a storefront
-    * within the context of Canada.
+    * price](https://shopify.dev/custom-storefronts/internationalization/international-pricing) in a
+    * storefront within the context of Canada.
     */
     public static class InContextDirective extends Directive {
         public CountryCode country;
@@ -332,19 +332,23 @@ public class Storefront {
 
         /**
         * The amount that was taken from the gift card by applying it.
-        *
-        * @deprecated Use `amountUsedV2` instead
         */
-        @Deprecated
-        public AppliedGiftCardQuery amountUsed() {
+        public AppliedGiftCardQuery amountUsed(MoneyV2QueryDefinition queryDef) {
             startField("amountUsed");
+
+            _queryBuilder.append('{');
+            queryDef.define(new MoneyV2Query(_queryBuilder));
+            _queryBuilder.append('}');
 
             return this;
         }
 
         /**
         * The amount that was taken from the gift card by applying it.
+        *
+        * @deprecated Use `amountUsed` instead.
         */
+        @Deprecated
         public AppliedGiftCardQuery amountUsedV2(MoneyV2QueryDefinition queryDef) {
             startField("amountUsedV2");
 
@@ -357,19 +361,23 @@ public class Storefront {
 
         /**
         * The amount left on the gift card.
-        *
-        * @deprecated Use `balanceV2` instead
         */
-        @Deprecated
-        public AppliedGiftCardQuery balance() {
+        public AppliedGiftCardQuery balance(MoneyV2QueryDefinition queryDef) {
             startField("balance");
+
+            _queryBuilder.append('{');
+            queryDef.define(new MoneyV2Query(_queryBuilder));
+            _queryBuilder.append('}');
 
             return this;
         }
 
         /**
         * The amount left on the gift card.
+        *
+        * @deprecated Use `balance` instead.
         */
+        @Deprecated
         public AppliedGiftCardQuery balanceV2(MoneyV2QueryDefinition queryDef) {
             startField("balanceV2");
 
@@ -416,7 +424,7 @@ public class Storefront {
                 String fieldName = getFieldName(key);
                 switch (fieldName) {
                     case "amountUsed": {
-                        responseData.put(key, new BigDecimal(jsonAsString(field.getValue(), key)));
+                        responseData.put(key, new MoneyV2(jsonAsObject(field.getValue(), key)));
 
                         break;
                     }
@@ -428,7 +436,7 @@ public class Storefront {
                     }
 
                     case "balance": {
-                        responseData.put(key, new BigDecimal(jsonAsString(field.getValue(), key)));
+                        responseData.put(key, new MoneyV2(jsonAsObject(field.getValue(), key)));
 
                         break;
                     }
@@ -479,21 +487,21 @@ public class Storefront {
 
         /**
         * The amount that was taken from the gift card by applying it.
-        *
-        * @deprecated Use `amountUsedV2` instead
         */
 
-        public BigDecimal getAmountUsed() {
-            return (BigDecimal) get("amountUsed");
+        public MoneyV2 getAmountUsed() {
+            return (MoneyV2) get("amountUsed");
         }
 
-        public AppliedGiftCard setAmountUsed(BigDecimal arg) {
+        public AppliedGiftCard setAmountUsed(MoneyV2 arg) {
             optimisticData.put(getKey("amountUsed"), arg);
             return this;
         }
 
         /**
         * The amount that was taken from the gift card by applying it.
+        *
+        * @deprecated Use `amountUsed` instead.
         */
 
         public MoneyV2 getAmountUsedV2() {
@@ -507,21 +515,21 @@ public class Storefront {
 
         /**
         * The amount left on the gift card.
-        *
-        * @deprecated Use `balanceV2` instead
         */
 
-        public BigDecimal getBalance() {
-            return (BigDecimal) get("balance");
+        public MoneyV2 getBalance() {
+            return (MoneyV2) get("balance");
         }
 
-        public AppliedGiftCard setBalance(BigDecimal arg) {
+        public AppliedGiftCard setBalance(MoneyV2 arg) {
             optimisticData.put(getKey("balance"), arg);
             return this;
         }
 
         /**
         * The amount left on the gift card.
+        *
+        * @deprecated Use `balance` instead.
         */
 
         public MoneyV2 getBalanceV2() {
@@ -569,11 +577,11 @@ public class Storefront {
 
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "amountUsed": return false;
+                case "amountUsed": return true;
 
                 case "amountUsedV2": return true;
 
-                case "balance": return false;
+                case "balance": return true;
 
                 case "balanceV2": return true;
 
@@ -605,7 +613,7 @@ public class Storefront {
         /**
         * The article's author.
         *
-        * @deprecated Use `authorV2` instead
+        * @deprecated Use `authorV2` instead.
         */
         @Deprecated
         public ArticleQuery author(ArticleAuthorQueryDefinition queryDef) {
@@ -1147,7 +1155,7 @@ public class Storefront {
         /**
         * The article's author.
         *
-        * @deprecated Use `authorV2` instead
+        * @deprecated Use `authorV2` instead.
         */
 
         public ArticleAuthor getAuthor() {
@@ -3377,6 +3385,516 @@ public class Storefront {
         }
     }
 
+    public interface BrandQueryDefinition {
+        void define(BrandQuery _queryBuilder);
+    }
+
+    /**
+    * The store's branding configuration.
+    */
+    public static class BrandQuery extends Query<BrandQuery> {
+        BrandQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * The colors of the store's brand.
+        */
+        public BrandQuery colors(BrandColorsQueryDefinition queryDef) {
+            startField("colors");
+
+            _queryBuilder.append('{');
+            queryDef.define(new BrandColorsQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * The store's cover image.
+        */
+        public BrandQuery coverImage(MediaImageQueryDefinition queryDef) {
+            startField("coverImage");
+
+            _queryBuilder.append('{');
+            queryDef.define(new MediaImageQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * The store's default logo.
+        */
+        public BrandQuery logo(MediaImageQueryDefinition queryDef) {
+            startField("logo");
+
+            _queryBuilder.append('{');
+            queryDef.define(new MediaImageQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * The store's short description.
+        */
+        public BrandQuery shortDescription() {
+            startField("shortDescription");
+
+            return this;
+        }
+
+        /**
+        * The store's slogan.
+        */
+        public BrandQuery slogan() {
+            startField("slogan");
+
+            return this;
+        }
+
+        /**
+        * The store's preferred logo for square UI elements.
+        */
+        public BrandQuery squareLogo(MediaImageQueryDefinition queryDef) {
+            startField("squareLogo");
+
+            _queryBuilder.append('{');
+            queryDef.define(new MediaImageQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+    }
+
+    /**
+    * The store's branding configuration.
+    */
+    public static class Brand extends AbstractResponse<Brand> {
+        public Brand() {
+        }
+
+        public Brand(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "colors": {
+                        responseData.put(key, new BrandColors(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "coverImage": {
+                        MediaImage optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new MediaImage(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "logo": {
+                        MediaImage optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new MediaImage(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "shortDescription": {
+                        String optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = jsonAsString(field.getValue(), key);
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "slogan": {
+                        String optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = jsonAsString(field.getValue(), key);
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "squareLogo": {
+                        MediaImage optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new MediaImage(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "Brand";
+        }
+
+        /**
+        * The colors of the store's brand.
+        */
+
+        public BrandColors getColors() {
+            return (BrandColors) get("colors");
+        }
+
+        public Brand setColors(BrandColors arg) {
+            optimisticData.put(getKey("colors"), arg);
+            return this;
+        }
+
+        /**
+        * The store's cover image.
+        */
+
+        public MediaImage getCoverImage() {
+            return (MediaImage) get("coverImage");
+        }
+
+        public Brand setCoverImage(MediaImage arg) {
+            optimisticData.put(getKey("coverImage"), arg);
+            return this;
+        }
+
+        /**
+        * The store's default logo.
+        */
+
+        public MediaImage getLogo() {
+            return (MediaImage) get("logo");
+        }
+
+        public Brand setLogo(MediaImage arg) {
+            optimisticData.put(getKey("logo"), arg);
+            return this;
+        }
+
+        /**
+        * The store's short description.
+        */
+
+        public String getShortDescription() {
+            return (String) get("shortDescription");
+        }
+
+        public Brand setShortDescription(String arg) {
+            optimisticData.put(getKey("shortDescription"), arg);
+            return this;
+        }
+
+        /**
+        * The store's slogan.
+        */
+
+        public String getSlogan() {
+            return (String) get("slogan");
+        }
+
+        public Brand setSlogan(String arg) {
+            optimisticData.put(getKey("slogan"), arg);
+            return this;
+        }
+
+        /**
+        * The store's preferred logo for square UI elements.
+        */
+
+        public MediaImage getSquareLogo() {
+            return (MediaImage) get("squareLogo");
+        }
+
+        public Brand setSquareLogo(MediaImage arg) {
+            optimisticData.put(getKey("squareLogo"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "colors": return true;
+
+                case "coverImage": return true;
+
+                case "logo": return true;
+
+                case "shortDescription": return false;
+
+                case "slogan": return false;
+
+                case "squareLogo": return true;
+
+                default: return false;
+            }
+        }
+    }
+
+    public interface BrandColorGroupQueryDefinition {
+        void define(BrandColorGroupQuery _queryBuilder);
+    }
+
+    /**
+    * A group of related colors for the shop's brand.
+    */
+    public static class BrandColorGroupQuery extends Query<BrandColorGroupQuery> {
+        BrandColorGroupQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * The background color.
+        */
+        public BrandColorGroupQuery background() {
+            startField("background");
+
+            return this;
+        }
+
+        /**
+        * The foreground color.
+        */
+        public BrandColorGroupQuery foreground() {
+            startField("foreground");
+
+            return this;
+        }
+    }
+
+    /**
+    * A group of related colors for the shop's brand.
+    */
+    public static class BrandColorGroup extends AbstractResponse<BrandColorGroup> {
+        public BrandColorGroup() {
+        }
+
+        public BrandColorGroup(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "background": {
+                        String optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = jsonAsString(field.getValue(), key);
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "foreground": {
+                        String optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = jsonAsString(field.getValue(), key);
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "BrandColorGroup";
+        }
+
+        /**
+        * The background color.
+        */
+
+        public String getBackground() {
+            return (String) get("background");
+        }
+
+        public BrandColorGroup setBackground(String arg) {
+            optimisticData.put(getKey("background"), arg);
+            return this;
+        }
+
+        /**
+        * The foreground color.
+        */
+
+        public String getForeground() {
+            return (String) get("foreground");
+        }
+
+        public BrandColorGroup setForeground(String arg) {
+            optimisticData.put(getKey("foreground"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "background": return false;
+
+                case "foreground": return false;
+
+                default: return false;
+            }
+        }
+    }
+
+    public interface BrandColorsQueryDefinition {
+        void define(BrandColorsQuery _queryBuilder);
+    }
+
+    /**
+    * The colors of the shop's brand.
+    */
+    public static class BrandColorsQuery extends Query<BrandColorsQuery> {
+        BrandColorsQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * The shop's primary brand colors.
+        */
+        public BrandColorsQuery primary(BrandColorGroupQueryDefinition queryDef) {
+            startField("primary");
+
+            _queryBuilder.append('{');
+            queryDef.define(new BrandColorGroupQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * The shop's secondary brand colors.
+        */
+        public BrandColorsQuery secondary(BrandColorGroupQueryDefinition queryDef) {
+            startField("secondary");
+
+            _queryBuilder.append('{');
+            queryDef.define(new BrandColorGroupQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+    }
+
+    /**
+    * The colors of the shop's brand.
+    */
+    public static class BrandColors extends AbstractResponse<BrandColors> {
+        public BrandColors() {
+        }
+
+        public BrandColors(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "primary": {
+                        List<BrandColorGroup> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new BrandColorGroup(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "secondary": {
+                        List<BrandColorGroup> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new BrandColorGroup(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "BrandColors";
+        }
+
+        /**
+        * The shop's primary brand colors.
+        */
+
+        public List<BrandColorGroup> getPrimary() {
+            return (List<BrandColorGroup>) get("primary");
+        }
+
+        public BrandColors setPrimary(List<BrandColorGroup> arg) {
+            optimisticData.put(getKey("primary"), arg);
+            return this;
+        }
+
+        /**
+        * The shop's secondary brand colors.
+        */
+
+        public List<BrandColorGroup> getSecondary() {
+            return (List<BrandColorGroup>) get("secondary");
+        }
+
+        public BrandColors setSecondary(List<BrandColorGroup> arg) {
+            optimisticData.put(getKey("secondary"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "primary": return true;
+
+                case "secondary": return true;
+
+                default: return false;
+            }
+        }
+    }
+
     /**
     * Card brand, such as Visa or Mastercard, which can be used for payments.
     */
@@ -3486,9 +4004,11 @@ public class Storefront {
     }
 
     /**
-    * A cart represents the merchandise that a buyer intends to purchase, and the estimated cost
-    * associated with the cart. To learn how to interact with a cart during a customer's session, refer to
-    * [Manage a cart with the Storefront API](https://shopify.dev/api/examples/cart).
+    * A cart represents the merchandise that a buyer intends to purchase,
+    * and the estimated cost associated with the cart. Learn how to
+    * [interact with a
+    * cart](https://shopify.dev/custom-storefronts/internationalization/international-pricing)
+    * during a customer's session.
     */
     public static class CartQuery extends Query<CartQuery> {
         CartQuery(StringBuilder _queryBuilder) {
@@ -3553,7 +4073,8 @@ public class Storefront {
         /**
         * The estimated costs that the buyer will pay at checkout. The costs are subject to change and changes
         * will be reflected at checkout. The `cost` field uses the `buyerIdentity` field to determine
-        * [international pricing](https://shopify.dev/api/examples/international-pricing#create-a-cart).
+        * [international
+        * pricing](https://shopify.dev/custom-storefronts/internationalization/international-pricing).
         */
         public CartQuery cost(CartCostQueryDefinition queryDef) {
             startField("cost");
@@ -3640,14 +4161,16 @@ public class Storefront {
         }
 
         /**
-        * The delivery groups available for the cart, based on the default address of the logged-in customer.
+        * The delivery groups available for the cart, based on the buyer identity default
+        * delivery address preference or the default address of the logged-in customer.
         */
         public CartQuery deliveryGroups(CartDeliveryGroupConnectionQueryDefinition queryDef) {
             return deliveryGroups(args -> {}, queryDef);
         }
 
         /**
-        * The delivery groups available for the cart, based on the default address of the logged-in customer.
+        * The delivery groups available for the cart, based on the buyer identity default
+        * delivery address preference or the default address of the logged-in customer.
         */
         public CartQuery deliveryGroups(DeliveryGroupsArgumentsDefinition argsDef, CartDeliveryGroupConnectionQueryDefinition queryDef) {
             startField("deliveryGroups");
@@ -3690,12 +4213,13 @@ public class Storefront {
         }
 
         /**
-        * The estimated costs that the buyer will pay at checkout. The estimated costs are subject to change
-        * and changes will be reflected at checkout. The `estimatedCost` field uses the `buyerIdentity` field
-        * to determine [international
-        * pricing](https://shopify.dev/api/examples/international-pricing#create-a-cart).
+        * The estimated costs that the buyer will pay at checkout.
+        * The estimated costs are subject to change and changes will be reflected at checkout.
+        * The `estimatedCost` field uses the `buyerIdentity` field to determine
+        * [international
+        * pricing](https://shopify.dev/custom-storefronts/internationalization/international-pricing).
         *
-        * @deprecated Use `cost` instead
+        * @deprecated Use `cost` instead.
         */
         @Deprecated
         public CartQuery estimatedCost(CartEstimatedCostQueryDefinition queryDef) {
@@ -3827,9 +4351,11 @@ public class Storefront {
     }
 
     /**
-    * A cart represents the merchandise that a buyer intends to purchase, and the estimated cost
-    * associated with the cart. To learn how to interact with a cart during a customer's session, refer to
-    * [Manage a cart with the Storefront API](https://shopify.dev/api/examples/cart).
+    * A cart represents the merchandise that a buyer intends to purchase,
+    * and the estimated cost associated with the cart. Learn how to
+    * [interact with a
+    * cart](https://shopify.dev/custom-storefronts/internationalization/international-pricing)
+    * during a customer's session.
     */
     public static class Cart extends AbstractResponse<Cart> implements Node {
         public Cart() {
@@ -4030,7 +4556,8 @@ public class Storefront {
         /**
         * The estimated costs that the buyer will pay at checkout. The costs are subject to change and changes
         * will be reflected at checkout. The `cost` field uses the `buyerIdentity` field to determine
-        * [international pricing](https://shopify.dev/api/examples/international-pricing#create-a-cart).
+        * [international
+        * pricing](https://shopify.dev/custom-storefronts/internationalization/international-pricing).
         */
 
         public CartCost getCost() {
@@ -4056,7 +4583,8 @@ public class Storefront {
         }
 
         /**
-        * The delivery groups available for the cart, based on the default address of the logged-in customer.
+        * The delivery groups available for the cart, based on the buyer identity default
+        * delivery address preference or the default address of the logged-in customer.
         */
 
         public CartDeliveryGroupConnection getDeliveryGroups() {
@@ -4095,12 +4623,13 @@ public class Storefront {
         }
 
         /**
-        * The estimated costs that the buyer will pay at checkout. The estimated costs are subject to change
-        * and changes will be reflected at checkout. The `estimatedCost` field uses the `buyerIdentity` field
-        * to determine [international
-        * pricing](https://shopify.dev/api/examples/international-pricing#create-a-cart).
+        * The estimated costs that the buyer will pay at checkout.
+        * The estimated costs are subject to change and changes will be reflected at checkout.
+        * The `estimatedCost` field uses the `buyerIdentity` field to determine
+        * [international
+        * pricing](https://shopify.dev/custom-storefronts/internationalization/international-pricing).
         *
-        * @deprecated Use `cost` instead
+        * @deprecated Use `cost` instead.
         */
 
         public CartEstimatedCost getEstimatedCost() {
@@ -4481,6 +5010,21 @@ public class Storefront {
         }
 
         /**
+        * An ordered set of delivery addresses tied to the buyer that is interacting with the cart.
+        * The rank of the preferences is determined by the order of the addresses in the array. Preferences
+        * can be used to populate relevant fields in the checkout flow.
+        */
+        public CartBuyerIdentityQuery deliveryAddressPreferences(DeliveryAddressQueryDefinition queryDef) {
+            startField("deliveryAddressPreferences");
+
+            _queryBuilder.append('{');
+            queryDef.define(new DeliveryAddressQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
         * The email address of the buyer that is interacting with the cart.
         */
         public CartBuyerIdentityQuery email() {
@@ -4529,6 +5073,17 @@ public class Storefront {
                         }
 
                         responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "deliveryAddressPreferences": {
+                        List<DeliveryAddress> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(UnknownDeliveryAddress.create(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
 
                         break;
                     }
@@ -4597,6 +5152,21 @@ public class Storefront {
         }
 
         /**
+        * An ordered set of delivery addresses tied to the buyer that is interacting with the cart.
+        * The rank of the preferences is determined by the order of the addresses in the array. Preferences
+        * can be used to populate relevant fields in the checkout flow.
+        */
+
+        public List<DeliveryAddress> getDeliveryAddressPreferences() {
+            return (List<DeliveryAddress>) get("deliveryAddressPreferences");
+        }
+
+        public CartBuyerIdentity setDeliveryAddressPreferences(List<DeliveryAddress> arg) {
+            optimisticData.put(getKey("deliveryAddressPreferences"), arg);
+            return this;
+        }
+
+        /**
         * The email address of the buyer that is interacting with the cart.
         */
 
@@ -4628,6 +5198,8 @@ public class Storefront {
 
                 case "customer": return true;
 
+                case "deliveryAddressPreferences": return false;
+
                 case "email": return false;
 
                 case "phone": return false;
@@ -4645,6 +5217,8 @@ public class Storefront {
         private Input<CountryCode> countryCode = Input.undefined();
 
         private Input<String> customerAccessToken = Input.undefined();
+
+        private Input<List<DeliveryAddressInput>> deliveryAddressPreferences = Input.undefined();
 
         public String getEmail() {
             return email.getValue();
@@ -4730,6 +5304,27 @@ public class Storefront {
             return this;
         }
 
+        public List<DeliveryAddressInput> getDeliveryAddressPreferences() {
+            return deliveryAddressPreferences.getValue();
+        }
+
+        public Input<List<DeliveryAddressInput>> getDeliveryAddressPreferencesInput() {
+            return deliveryAddressPreferences;
+        }
+
+        public CartBuyerIdentityInput setDeliveryAddressPreferences(List<DeliveryAddressInput> deliveryAddressPreferences) {
+            this.deliveryAddressPreferences = Input.optional(deliveryAddressPreferences);
+            return this;
+        }
+
+        public CartBuyerIdentityInput setDeliveryAddressPreferencesInput(Input<List<DeliveryAddressInput>> deliveryAddressPreferences) {
+            if (deliveryAddressPreferences == null) {
+                throw new IllegalArgumentException("Input can not be null");
+            }
+            this.deliveryAddressPreferences = deliveryAddressPreferences;
+            return this;
+        }
+
         public void appendTo(StringBuilder _queryBuilder) {
             String separator = "";
             _queryBuilder.append('{');
@@ -4773,6 +5368,26 @@ public class Storefront {
                 _queryBuilder.append("customerAccessToken:");
                 if (customerAccessToken.getValue() != null) {
                     Query.appendQuotedString(_queryBuilder, customerAccessToken.getValue().toString());
+                } else {
+                    _queryBuilder.append("null");
+                }
+            }
+
+            if (this.deliveryAddressPreferences.isDefined()) {
+                _queryBuilder.append(separator);
+                separator = ",";
+                _queryBuilder.append("deliveryAddressPreferences:");
+                if (deliveryAddressPreferences.getValue() != null) {
+                    _queryBuilder.append('[');
+                    {
+                        String listSeperator1 = "";
+                        for (DeliveryAddressInput item1 : deliveryAddressPreferences.getValue()) {
+                            _queryBuilder.append(listSeperator1);
+                            listSeperator1 = ",";
+                            item1.appendTo(_queryBuilder);
+                        }
+                    }
+                    _queryBuilder.append(']');
                 } else {
                     _queryBuilder.append("null");
                 }
@@ -5024,9 +5639,11 @@ public class Storefront {
 
     /**
     * The costs that the buyer will pay at checkout.
-    * It uses [`CartBuyerIdentity`](https://shopify.dev/api/storefront/reference/cart/cartbuyeridentity)
-    * to determine
-    * [international pricing](https://shopify.dev/api/examples/international-pricing#create-a-cart).
+    * The cart cost uses
+    * [`CartBuyerIdentity`](https://shopify.dev/api/storefront/reference/cart/cartbuyeridentity) to
+    * determine
+    * [international
+    * pricing](https://shopify.dev/custom-storefronts/internationalization/international-pricing).
     */
     public static class CartCostQuery extends Query<CartCostQuery> {
         CartCostQuery(StringBuilder _queryBuilder) {
@@ -5036,7 +5653,7 @@ public class Storefront {
         /**
         * The estimated amount, before taxes and discounts, for the customer to pay at checkout. The checkout
         * charge amount doesn't include any deferred payments that'll be paid at a later date. If the cart has
-        * no deferred payments, the checkout charge amount is equivalent to subtotalAmount.
+        * no deferred payments, then the checkout charge amount is equivalent to `subtotalAmount`.
         */
         public CartCostQuery checkoutChargeAmount(MoneyV2QueryDefinition queryDef) {
             startField("checkoutChargeAmount");
@@ -5062,7 +5679,7 @@ public class Storefront {
         }
 
         /**
-        * Whether or not the subtotal amount is estimated.
+        * Whether the subtotal amount is estimated.
         */
         public CartCostQuery subtotalAmountEstimated() {
             startField("subtotalAmountEstimated");
@@ -5084,7 +5701,7 @@ public class Storefront {
         }
 
         /**
-        * Whether or not the total amount is estimated.
+        * Whether the total amount is estimated.
         */
         public CartCostQuery totalAmountEstimated() {
             startField("totalAmountEstimated");
@@ -5106,7 +5723,7 @@ public class Storefront {
         }
 
         /**
-        * Whether or not the total duty amount is estimated.
+        * Whether the total duty amount is estimated.
         */
         public CartCostQuery totalDutyAmountEstimated() {
             startField("totalDutyAmountEstimated");
@@ -5128,7 +5745,7 @@ public class Storefront {
         }
 
         /**
-        * Whether or not the total tax amount is estimated.
+        * Whether the total tax amount is estimated.
         */
         public CartCostQuery totalTaxAmountEstimated() {
             startField("totalTaxAmountEstimated");
@@ -5139,9 +5756,11 @@ public class Storefront {
 
     /**
     * The costs that the buyer will pay at checkout.
-    * It uses [`CartBuyerIdentity`](https://shopify.dev/api/storefront/reference/cart/cartbuyeridentity)
-    * to determine
-    * [international pricing](https://shopify.dev/api/examples/international-pricing#create-a-cart).
+    * The cart cost uses
+    * [`CartBuyerIdentity`](https://shopify.dev/api/storefront/reference/cart/cartbuyeridentity) to
+    * determine
+    * [international
+    * pricing](https://shopify.dev/custom-storefronts/internationalization/international-pricing).
     */
     public static class CartCost extends AbstractResponse<CartCost> {
         public CartCost() {
@@ -5234,7 +5853,7 @@ public class Storefront {
         /**
         * The estimated amount, before taxes and discounts, for the customer to pay at checkout. The checkout
         * charge amount doesn't include any deferred payments that'll be paid at a later date. If the cart has
-        * no deferred payments, the checkout charge amount is equivalent to subtotalAmount.
+        * no deferred payments, then the checkout charge amount is equivalent to `subtotalAmount`.
         */
 
         public MoneyV2 getCheckoutChargeAmount() {
@@ -5260,7 +5879,7 @@ public class Storefront {
         }
 
         /**
-        * Whether or not the subtotal amount is estimated.
+        * Whether the subtotal amount is estimated.
         */
 
         public Boolean getSubtotalAmountEstimated() {
@@ -5286,7 +5905,7 @@ public class Storefront {
         }
 
         /**
-        * Whether or not the total amount is estimated.
+        * Whether the total amount is estimated.
         */
 
         public Boolean getTotalAmountEstimated() {
@@ -5312,7 +5931,7 @@ public class Storefront {
         }
 
         /**
-        * Whether or not the total duty amount is estimated.
+        * Whether the total duty amount is estimated.
         */
 
         public Boolean getTotalDutyAmountEstimated() {
@@ -5338,7 +5957,7 @@ public class Storefront {
         }
 
         /**
-        * Whether or not the total tax amount is estimated.
+        * Whether the total tax amount is estimated.
         */
 
         public Boolean getTotalTaxAmountEstimated() {
@@ -5747,6 +6366,19 @@ public class Storefront {
 
             return this;
         }
+
+        /**
+        * The selected delivery option for the delivery group.
+        */
+        public CartDeliveryGroupQuery selectedDeliveryOption(CartDeliveryOptionQueryDefinition queryDef) {
+            startField("selectedDeliveryOption");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CartDeliveryOptionQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
     }
 
     /**
@@ -5787,6 +6419,17 @@ public class Storefront {
 
                     case "id": {
                         responseData.put(key, new ID(jsonAsString(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "selectedDeliveryOption": {
+                        CartDeliveryOption optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new CartDeliveryOption(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
 
                         break;
                     }
@@ -5858,6 +6501,19 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * The selected delivery option for the delivery group.
+        */
+
+        public CartDeliveryOption getSelectedDeliveryOption() {
+            return (CartDeliveryOption) get("selectedDeliveryOption");
+        }
+
+        public CartDeliveryGroup setSelectedDeliveryOption(CartDeliveryOption arg) {
+            optimisticData.put(getKey("selectedDeliveryOption"), arg);
+            return this;
+        }
+
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "cartLines": return true;
@@ -5867,6 +6523,8 @@ public class Storefront {
                 case "deliveryOptions": return true;
 
                 case "id": return false;
+
+                case "selectedDeliveryOption": return true;
 
                 default: return false;
             }
@@ -6196,6 +6854,15 @@ public class Storefront {
         }
 
         /**
+        * The unique identifier of the delivery option.
+        */
+        public CartDeliveryOptionQuery handle() {
+            startField("handle");
+
+            return this;
+        }
+
+        /**
         * The title of the delivery option.
         */
         public CartDeliveryOptionQuery title() {
@@ -6247,6 +6914,12 @@ public class Storefront {
 
                     case "estimatedCost": {
                         responseData.put(key, new MoneyV2(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "handle": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
 
                         break;
                     }
@@ -6330,6 +7003,19 @@ public class Storefront {
         }
 
         /**
+        * The unique identifier of the delivery option.
+        */
+
+        public String getHandle() {
+            return (String) get("handle");
+        }
+
+        public CartDeliveryOption setHandle(String arg) {
+            optimisticData.put(getKey("handle"), arg);
+            return this;
+        }
+
+        /**
         * The title of the delivery option.
         */
 
@@ -6351,6 +7037,8 @@ public class Storefront {
                 case "description": return false;
 
                 case "estimatedCost": return true;
+
+                case "handle": return false;
 
                 case "title": return false;
 
@@ -6819,9 +7507,11 @@ public class Storefront {
 
     /**
     * The estimated costs that the buyer will pay at checkout.
-    * It uses [`CartBuyerIdentity`](https://shopify.dev/api/storefront/reference/cart/cartbuyeridentity)
+    * The estimated cost uses
+    * [`CartBuyerIdentity`](https://shopify.dev/api/storefront/reference/cart/cartbuyeridentity)
     * to determine
-    * [international pricing](https://shopify.dev/api/examples/international-pricing#create-a-cart).
+    * [international
+    * pricing](https://shopify.dev/custom-storefronts/internationalization/international-pricing).
     */
     public static class CartEstimatedCostQuery extends Query<CartEstimatedCostQuery> {
         CartEstimatedCostQuery(StringBuilder _queryBuilder) {
@@ -6898,9 +7588,11 @@ public class Storefront {
 
     /**
     * The estimated costs that the buyer will pay at checkout.
-    * It uses [`CartBuyerIdentity`](https://shopify.dev/api/storefront/reference/cart/cartbuyeridentity)
+    * The estimated cost uses
+    * [`CartBuyerIdentity`](https://shopify.dev/api/storefront/reference/cart/cartbuyeridentity)
     * to determine
-    * [international pricing](https://shopify.dev/api/examples/international-pricing#create-a-cart).
+    * [international
+    * pricing](https://shopify.dev/custom-storefronts/internationalization/international-pricing).
     */
     public static class CartEstimatedCost extends AbstractResponse<CartEstimatedCost> {
         public CartEstimatedCost() {
@@ -7332,7 +8024,7 @@ public class Storefront {
         * The estimated cost of the merchandise that the buyer will pay for at checkout. The estimated costs
         * are subject to change and changes will be reflected at checkout.
         *
-        * @deprecated Use `cost` instead
+        * @deprecated Use `cost` instead.
         */
         @Deprecated
         public CartLineQuery estimatedCost(CartLineEstimatedCostQueryDefinition queryDef) {
@@ -7545,7 +8237,7 @@ public class Storefront {
         * The estimated cost of the merchandise that the buyer will pay for at checkout. The estimated costs
         * are subject to change and changes will be reflected at checkout.
         *
-        * @deprecated Use `cost` instead
+        * @deprecated Use `cost` instead.
         */
 
         public CartLineEstimatedCost getEstimatedCost() {
@@ -9090,6 +9782,178 @@ public class Storefront {
         }
     }
 
+    public static class CartSelectedDeliveryOptionInput implements Serializable {
+        private ID deliveryGroupId;
+
+        private String deliveryOptionHandle;
+
+        public CartSelectedDeliveryOptionInput(ID deliveryGroupId, String deliveryOptionHandle) {
+            this.deliveryGroupId = deliveryGroupId;
+
+            this.deliveryOptionHandle = deliveryOptionHandle;
+        }
+
+        public ID getDeliveryGroupId() {
+            return deliveryGroupId;
+        }
+
+        public CartSelectedDeliveryOptionInput setDeliveryGroupId(ID deliveryGroupId) {
+            this.deliveryGroupId = deliveryGroupId;
+            return this;
+        }
+
+        public String getDeliveryOptionHandle() {
+            return deliveryOptionHandle;
+        }
+
+        public CartSelectedDeliveryOptionInput setDeliveryOptionHandle(String deliveryOptionHandle) {
+            this.deliveryOptionHandle = deliveryOptionHandle;
+            return this;
+        }
+
+        public void appendTo(StringBuilder _queryBuilder) {
+            String separator = "";
+            _queryBuilder.append('{');
+
+            _queryBuilder.append(separator);
+            separator = ",";
+            _queryBuilder.append("deliveryGroupId:");
+            Query.appendQuotedString(_queryBuilder, deliveryGroupId.toString());
+
+            _queryBuilder.append(separator);
+            separator = ",";
+            _queryBuilder.append("deliveryOptionHandle:");
+            Query.appendQuotedString(_queryBuilder, deliveryOptionHandle.toString());
+
+            _queryBuilder.append('}');
+        }
+    }
+
+    public interface CartSelectedDeliveryOptionsUpdatePayloadQueryDefinition {
+        void define(CartSelectedDeliveryOptionsUpdatePayloadQuery _queryBuilder);
+    }
+
+    /**
+    * Return type for `cartSelectedDeliveryOptionsUpdate` mutation.
+    */
+    public static class CartSelectedDeliveryOptionsUpdatePayloadQuery extends Query<CartSelectedDeliveryOptionsUpdatePayloadQuery> {
+        CartSelectedDeliveryOptionsUpdatePayloadQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * The updated cart.
+        */
+        public CartSelectedDeliveryOptionsUpdatePayloadQuery cart(CartQueryDefinition queryDef) {
+            startField("cart");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CartQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * The list of errors that occurred from executing the mutation.
+        */
+        public CartSelectedDeliveryOptionsUpdatePayloadQuery userErrors(CartUserErrorQueryDefinition queryDef) {
+            startField("userErrors");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CartUserErrorQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+    }
+
+    /**
+    * Return type for `cartSelectedDeliveryOptionsUpdate` mutation.
+    */
+    public static class CartSelectedDeliveryOptionsUpdatePayload extends AbstractResponse<CartSelectedDeliveryOptionsUpdatePayload> {
+        public CartSelectedDeliveryOptionsUpdatePayload() {
+        }
+
+        public CartSelectedDeliveryOptionsUpdatePayload(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "cart": {
+                        Cart optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new Cart(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "userErrors": {
+                        List<CartUserError> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new CartUserError(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "CartSelectedDeliveryOptionsUpdatePayload";
+        }
+
+        /**
+        * The updated cart.
+        */
+
+        public Cart getCart() {
+            return (Cart) get("cart");
+        }
+
+        public CartSelectedDeliveryOptionsUpdatePayload setCart(Cart arg) {
+            optimisticData.put(getKey("cart"), arg);
+            return this;
+        }
+
+        /**
+        * The list of errors that occurred from executing the mutation.
+        */
+
+        public List<CartUserError> getUserErrors() {
+            return (List<CartUserError>) get("userErrors");
+        }
+
+        public CartSelectedDeliveryOptionsUpdatePayload setUserErrors(List<CartUserError> arg) {
+            optimisticData.put(getKey("userErrors"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "cart": return true;
+
+                case "userErrors": return true;
+
+                default: return false;
+            }
+        }
+    }
+
     public interface CartUserErrorQueryDefinition {
         void define(CartUserErrorQuery _queryBuilder);
     }
@@ -9570,22 +10434,26 @@ public class Storefront {
         }
 
         /**
-        * The amount left to be paid. This is equal to the cost of the line items, taxes and shipping minus
+        * The amount left to be paid. This is equal to the cost of the line items, taxes, and shipping, minus
         * discounts and gift cards.
-        *
-        * @deprecated Use `paymentDueV2` instead
         */
-        @Deprecated
-        public CheckoutQuery paymentDue() {
+        public CheckoutQuery paymentDue(MoneyV2QueryDefinition queryDef) {
             startField("paymentDue");
+
+            _queryBuilder.append('{');
+            queryDef.define(new MoneyV2Query(_queryBuilder));
+            _queryBuilder.append('}');
 
             return this;
         }
 
         /**
-        * The amount left to be paid. This is equal to the cost of the line items, duties, taxes and shipping
-        * minus discounts and gift cards.
+        * The amount left to be paid. This is equal to the cost of the line items, duties, taxes, and
+        * shipping, minus discounts and gift cards.
+        *
+        * @deprecated Use `paymentDue` instead.
         */
+        @Deprecated
         public CheckoutQuery paymentDueV2(MoneyV2QueryDefinition queryDef) {
             startField("paymentDueV2");
 
@@ -9657,20 +10525,24 @@ public class Storefront {
         }
 
         /**
-        * Price of the checkout before shipping and taxes.
-        *
-        * @deprecated Use `subtotalPriceV2` instead
+        * The price at checkout before shipping and taxes.
         */
-        @Deprecated
-        public CheckoutQuery subtotalPrice() {
+        public CheckoutQuery subtotalPrice(MoneyV2QueryDefinition queryDef) {
             startField("subtotalPrice");
+
+            _queryBuilder.append('{');
+            queryDef.define(new MoneyV2Query(_queryBuilder));
+            _queryBuilder.append('}');
 
             return this;
         }
 
         /**
-        * Price of the checkout before duties, shipping and taxes.
+        * The price at checkout before duties, shipping, and taxes.
+        *
+        * @deprecated Use `subtotalPrice` instead.
         */
+        @Deprecated
         public CheckoutQuery subtotalPriceV2(MoneyV2QueryDefinition queryDef) {
             startField("subtotalPriceV2");
 
@@ -9713,20 +10585,24 @@ public class Storefront {
         }
 
         /**
-        * The sum of all the prices of all the items in the checkout, taxes and discounts included.
-        *
-        * @deprecated Use `totalPriceV2` instead
+        * The sum of all the prices of all the items in the checkout, including taxes and duties.
         */
-        @Deprecated
-        public CheckoutQuery totalPrice() {
+        public CheckoutQuery totalPrice(MoneyV2QueryDefinition queryDef) {
             startField("totalPrice");
+
+            _queryBuilder.append('{');
+            queryDef.define(new MoneyV2Query(_queryBuilder));
+            _queryBuilder.append('}');
 
             return this;
         }
 
         /**
-        * The sum of all the prices of all the items in the checkout, duties, taxes and discounts included.
+        * The sum of all the prices of all the items in the checkout, including taxes and duties.
+        *
+        * @deprecated Use `totalPrice` instead.
         */
+        @Deprecated
         public CheckoutQuery totalPriceV2(MoneyV2QueryDefinition queryDef) {
             startField("totalPriceV2");
 
@@ -9739,19 +10615,23 @@ public class Storefront {
 
         /**
         * The sum of all the taxes applied to the line items and shipping lines in the checkout.
-        *
-        * @deprecated Use `totalTaxV2` instead
         */
-        @Deprecated
-        public CheckoutQuery totalTax() {
+        public CheckoutQuery totalTax(MoneyV2QueryDefinition queryDef) {
             startField("totalTax");
+
+            _queryBuilder.append('{');
+            queryDef.define(new MoneyV2Query(_queryBuilder));
+            _queryBuilder.append('}');
 
             return this;
         }
 
         /**
         * The sum of all the taxes applied to the line items and shipping lines in the checkout.
+        *
+        * @deprecated Use `totalTax` instead.
         */
+        @Deprecated
         public CheckoutQuery totalTaxV2(MoneyV2QueryDefinition queryDef) {
             startField("totalTaxV2");
 
@@ -9924,7 +10804,7 @@ public class Storefront {
                     }
 
                     case "paymentDue": {
-                        responseData.put(key, new BigDecimal(jsonAsString(field.getValue(), key)));
+                        responseData.put(key, new MoneyV2(jsonAsObject(field.getValue(), key)));
 
                         break;
                     }
@@ -9981,7 +10861,7 @@ public class Storefront {
                     }
 
                     case "subtotalPrice": {
-                        responseData.put(key, new BigDecimal(jsonAsString(field.getValue(), key)));
+                        responseData.put(key, new MoneyV2(jsonAsObject(field.getValue(), key)));
 
                         break;
                     }
@@ -10016,7 +10896,7 @@ public class Storefront {
                     }
 
                     case "totalPrice": {
-                        responseData.put(key, new BigDecimal(jsonAsString(field.getValue(), key)));
+                        responseData.put(key, new MoneyV2(jsonAsObject(field.getValue(), key)));
 
                         break;
                     }
@@ -10028,7 +10908,7 @@ public class Storefront {
                     }
 
                     case "totalTax": {
-                        responseData.put(key, new BigDecimal(jsonAsString(field.getValue(), key)));
+                        responseData.put(key, new MoneyV2(jsonAsObject(field.getValue(), key)));
 
                         break;
                     }
@@ -10265,24 +11145,24 @@ public class Storefront {
         }
 
         /**
-        * The amount left to be paid. This is equal to the cost of the line items, taxes and shipping minus
+        * The amount left to be paid. This is equal to the cost of the line items, taxes, and shipping, minus
         * discounts and gift cards.
-        *
-        * @deprecated Use `paymentDueV2` instead
         */
 
-        public BigDecimal getPaymentDue() {
-            return (BigDecimal) get("paymentDue");
+        public MoneyV2 getPaymentDue() {
+            return (MoneyV2) get("paymentDue");
         }
 
-        public Checkout setPaymentDue(BigDecimal arg) {
+        public Checkout setPaymentDue(MoneyV2 arg) {
             optimisticData.put(getKey("paymentDue"), arg);
             return this;
         }
 
         /**
-        * The amount left to be paid. This is equal to the cost of the line items, duties, taxes and shipping
-        * minus discounts and gift cards.
+        * The amount left to be paid. This is equal to the cost of the line items, duties, taxes, and
+        * shipping, minus discounts and gift cards.
+        *
+        * @deprecated Use `paymentDue` instead.
         */
 
         public MoneyV2 getPaymentDueV2() {
@@ -10363,22 +11243,22 @@ public class Storefront {
         }
 
         /**
-        * Price of the checkout before shipping and taxes.
-        *
-        * @deprecated Use `subtotalPriceV2` instead
+        * The price at checkout before shipping and taxes.
         */
 
-        public BigDecimal getSubtotalPrice() {
-            return (BigDecimal) get("subtotalPrice");
+        public MoneyV2 getSubtotalPrice() {
+            return (MoneyV2) get("subtotalPrice");
         }
 
-        public Checkout setSubtotalPrice(BigDecimal arg) {
+        public Checkout setSubtotalPrice(MoneyV2 arg) {
             optimisticData.put(getKey("subtotalPrice"), arg);
             return this;
         }
 
         /**
-        * Price of the checkout before duties, shipping and taxes.
+        * The price at checkout before duties, shipping, and taxes.
+        *
+        * @deprecated Use `subtotalPrice` instead.
         */
 
         public MoneyV2 getSubtotalPriceV2() {
@@ -10430,22 +11310,22 @@ public class Storefront {
         }
 
         /**
-        * The sum of all the prices of all the items in the checkout, taxes and discounts included.
-        *
-        * @deprecated Use `totalPriceV2` instead
+        * The sum of all the prices of all the items in the checkout, including taxes and duties.
         */
 
-        public BigDecimal getTotalPrice() {
-            return (BigDecimal) get("totalPrice");
+        public MoneyV2 getTotalPrice() {
+            return (MoneyV2) get("totalPrice");
         }
 
-        public Checkout setTotalPrice(BigDecimal arg) {
+        public Checkout setTotalPrice(MoneyV2 arg) {
             optimisticData.put(getKey("totalPrice"), arg);
             return this;
         }
 
         /**
-        * The sum of all the prices of all the items in the checkout, duties, taxes and discounts included.
+        * The sum of all the prices of all the items in the checkout, including taxes and duties.
+        *
+        * @deprecated Use `totalPrice` instead.
         */
 
         public MoneyV2 getTotalPriceV2() {
@@ -10459,21 +11339,21 @@ public class Storefront {
 
         /**
         * The sum of all the taxes applied to the line items and shipping lines in the checkout.
-        *
-        * @deprecated Use `totalTaxV2` instead
         */
 
-        public BigDecimal getTotalTax() {
-            return (BigDecimal) get("totalTax");
+        public MoneyV2 getTotalTax() {
+            return (MoneyV2) get("totalTax");
         }
 
-        public Checkout setTotalTax(BigDecimal arg) {
+        public Checkout setTotalTax(MoneyV2 arg) {
             optimisticData.put(getKey("totalTax"), arg);
             return this;
         }
 
         /**
         * The sum of all the taxes applied to the line items and shipping lines in the checkout.
+        *
+        * @deprecated Use `totalTax` instead.
         */
 
         public MoneyV2 getTotalTaxV2() {
@@ -10543,7 +11423,7 @@ public class Storefront {
 
                 case "orderStatusUrl": return false;
 
-                case "paymentDue": return false;
+                case "paymentDue": return true;
 
                 case "paymentDueV2": return true;
 
@@ -10557,7 +11437,7 @@ public class Storefront {
 
                 case "shippingLine": return true;
 
-                case "subtotalPrice": return false;
+                case "subtotalPrice": return true;
 
                 case "subtotalPriceV2": return true;
 
@@ -10567,11 +11447,11 @@ public class Storefront {
 
                 case "totalDuties": return true;
 
-                case "totalPrice": return false;
+                case "totalPrice": return true;
 
                 case "totalPriceV2": return true;
 
-                case "totalTax": return false;
+                case "totalTax": return true;
 
                 case "totalTaxV2": return true;
 
@@ -10745,7 +11625,7 @@ public class Storefront {
         /**
         * The list of errors that occurred from executing the mutation.
         *
-        * @deprecated Use `checkoutUserErrors` instead
+        * @deprecated Use `checkoutUserErrors` instead.
         */
         @Deprecated
         public CheckoutAttributesUpdateV2PayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
@@ -10848,7 +11728,7 @@ public class Storefront {
         /**
         * The list of errors that occurred from executing the mutation.
         *
-        * @deprecated Use `checkoutUserErrors` instead
+        * @deprecated Use `checkoutUserErrors` instead.
         */
 
         public List<UserError> getUserErrors() {
@@ -11025,7 +11905,7 @@ public class Storefront {
         /**
         * The list of errors that occurred from executing the mutation.
         *
-        * @deprecated Use `checkoutUserErrors` instead
+        * @deprecated Use `checkoutUserErrors` instead.
         */
         @Deprecated
         public CheckoutCompleteFreePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
@@ -11128,7 +12008,7 @@ public class Storefront {
         /**
         * The list of errors that occurred from executing the mutation.
         *
-        * @deprecated Use `checkoutUserErrors` instead
+        * @deprecated Use `checkoutUserErrors` instead.
         */
 
         public List<UserError> getUserErrors() {
@@ -11207,7 +12087,7 @@ public class Storefront {
         /**
         * The list of errors that occurred from executing the mutation.
         *
-        * @deprecated Use `checkoutUserErrors` instead
+        * @deprecated Use `checkoutUserErrors` instead.
         */
         @Deprecated
         public CheckoutCompleteWithCreditCardV2PayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
@@ -11334,7 +12214,7 @@ public class Storefront {
         /**
         * The list of errors that occurred from executing the mutation.
         *
-        * @deprecated Use `checkoutUserErrors` instead
+        * @deprecated Use `checkoutUserErrors` instead.
         */
 
         public List<UserError> getUserErrors() {
@@ -11415,7 +12295,7 @@ public class Storefront {
         /**
         * The list of errors that occurred from executing the mutation.
         *
-        * @deprecated Use `checkoutUserErrors` instead
+        * @deprecated Use `checkoutUserErrors` instead.
         */
         @Deprecated
         public CheckoutCompleteWithTokenizedPaymentV3PayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
@@ -11542,7 +12422,7 @@ public class Storefront {
         /**
         * The list of errors that occurred from executing the mutation.
         *
-        * @deprecated Use `checkoutUserErrors` instead
+        * @deprecated Use `checkoutUserErrors` instead.
         */
 
         public List<UserError> getUserErrors() {
@@ -11918,7 +12798,7 @@ public class Storefront {
         /**
         * The list of errors that occurred from executing the mutation.
         *
-        * @deprecated Use `checkoutUserErrors` instead
+        * @deprecated Use `checkoutUserErrors` instead.
         */
         @Deprecated
         public CheckoutCreatePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
@@ -12045,7 +12925,7 @@ public class Storefront {
         /**
         * The list of errors that occurred from executing the mutation.
         *
-        * @deprecated Use `checkoutUserErrors` instead
+        * @deprecated Use `checkoutUserErrors` instead.
         */
 
         public List<UserError> getUserErrors() {
@@ -12126,7 +13006,7 @@ public class Storefront {
         /**
         * The list of errors that occurred from executing the mutation.
         *
-        * @deprecated Use `checkoutUserErrors` instead
+        * @deprecated Use `checkoutUserErrors` instead.
         */
         @Deprecated
         public CheckoutCustomerAssociateV2PayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
@@ -12253,7 +13133,7 @@ public class Storefront {
         /**
         * The list of errors that occurred from executing the mutation.
         *
-        * @deprecated Use `checkoutUserErrors` instead
+        * @deprecated Use `checkoutUserErrors` instead.
         */
 
         public List<UserError> getUserErrors() {
@@ -12321,7 +13201,7 @@ public class Storefront {
         /**
         * The list of errors that occurred from executing the mutation.
         *
-        * @deprecated Use `checkoutUserErrors` instead
+        * @deprecated Use `checkoutUserErrors` instead.
         */
         @Deprecated
         public CheckoutCustomerDisassociateV2PayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
@@ -12424,7 +13304,7 @@ public class Storefront {
         /**
         * The list of errors that occurred from executing the mutation.
         *
-        * @deprecated Use `checkoutUserErrors` instead
+        * @deprecated Use `checkoutUserErrors` instead.
         */
 
         public List<UserError> getUserErrors() {
@@ -12490,7 +13370,7 @@ public class Storefront {
         /**
         * The list of errors that occurred from executing the mutation.
         *
-        * @deprecated Use `checkoutUserErrors` instead
+        * @deprecated Use `checkoutUserErrors` instead.
         */
         @Deprecated
         public CheckoutDiscountCodeApplyV2PayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
@@ -12593,7 +13473,7 @@ public class Storefront {
         /**
         * The list of errors that occurred from executing the mutation.
         *
-        * @deprecated Use `checkoutUserErrors` instead
+        * @deprecated Use `checkoutUserErrors` instead.
         */
 
         public List<UserError> getUserErrors() {
@@ -12659,7 +13539,7 @@ public class Storefront {
         /**
         * The list of errors that occurred from executing the mutation.
         *
-        * @deprecated Use `checkoutUserErrors` instead
+        * @deprecated Use `checkoutUserErrors` instead.
         */
         @Deprecated
         public CheckoutDiscountCodeRemovePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
@@ -12762,7 +13642,7 @@ public class Storefront {
         /**
         * The list of errors that occurred from executing the mutation.
         *
-        * @deprecated Use `checkoutUserErrors` instead
+        * @deprecated Use `checkoutUserErrors` instead.
         */
 
         public List<UserError> getUserErrors() {
@@ -12828,7 +13708,7 @@ public class Storefront {
         /**
         * The list of errors that occurred from executing the mutation.
         *
-        * @deprecated Use `checkoutUserErrors` instead
+        * @deprecated Use `checkoutUserErrors` instead.
         */
         @Deprecated
         public CheckoutEmailUpdateV2PayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
@@ -12931,7 +13811,7 @@ public class Storefront {
         /**
         * The list of errors that occurred from executing the mutation.
         *
-        * @deprecated Use `checkoutUserErrors` instead
+        * @deprecated Use `checkoutUserErrors` instead.
         */
 
         public List<UserError> getUserErrors() {
@@ -13066,6 +13946,11 @@ public class Storefront {
         GREATER_THAN_OR_EQUAL_TO,
 
         /**
+        * Higher value discount applied.
+        */
+        HIGHER_VALUE_DISCOUNT_APPLIED,
+
+        /**
         * The input value is invalid.
         */
         INVALID,
@@ -13124,6 +14009,11 @@ public class Storefront {
         * Checkout is locked.
         */
         LOCKED,
+
+        /**
+        * Maximum number of discount codes limit reached.
+        */
+        MAXIMUM_DISCOUNT_CODE_LIMIT_REACHED,
 
         /**
         * Missing payment input.
@@ -13262,6 +14152,10 @@ public class Storefront {
                     return GREATER_THAN_OR_EQUAL_TO;
                 }
 
+                case "HIGHER_VALUE_DISCOUNT_APPLIED": {
+                    return HIGHER_VALUE_DISCOUNT_APPLIED;
+                }
+
                 case "INVALID": {
                     return INVALID;
                 }
@@ -13308,6 +14202,10 @@ public class Storefront {
 
                 case "LOCKED": {
                     return LOCKED;
+                }
+
+                case "MAXIMUM_DISCOUNT_CODE_LIMIT_REACHED": {
+                    return MAXIMUM_DISCOUNT_CODE_LIMIT_REACHED;
                 }
 
                 case "MISSING_PAYMENT_INPUT": {
@@ -13437,6 +14335,10 @@ public class Storefront {
                     return "GREATER_THAN_OR_EQUAL_TO";
                 }
 
+                case HIGHER_VALUE_DISCOUNT_APPLIED: {
+                    return "HIGHER_VALUE_DISCOUNT_APPLIED";
+                }
+
                 case INVALID: {
                     return "INVALID";
                 }
@@ -13483,6 +14385,10 @@ public class Storefront {
 
                 case LOCKED: {
                     return "LOCKED";
+                }
+
+                case MAXIMUM_DISCOUNT_CODE_LIMIT_REACHED: {
+                    return "MAXIMUM_DISCOUNT_CODE_LIMIT_REACHED";
                 }
 
                 case MISSING_PAYMENT_INPUT: {
@@ -13569,7 +14475,7 @@ public class Storefront {
         /**
         * The list of errors that occurred from executing the mutation.
         *
-        * @deprecated Use `checkoutUserErrors` instead
+        * @deprecated Use `checkoutUserErrors` instead.
         */
         @Deprecated
         public CheckoutGiftCardRemoveV2PayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
@@ -13672,7 +14578,7 @@ public class Storefront {
         /**
         * The list of errors that occurred from executing the mutation.
         *
-        * @deprecated Use `checkoutUserErrors` instead
+        * @deprecated Use `checkoutUserErrors` instead.
         */
 
         public List<UserError> getUserErrors() {
@@ -13738,7 +14644,7 @@ public class Storefront {
         /**
         * The list of errors that occurred from executing the mutation.
         *
-        * @deprecated Use `checkoutUserErrors` instead
+        * @deprecated Use `checkoutUserErrors` instead.
         */
         @Deprecated
         public CheckoutGiftCardsAppendPayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
@@ -13841,7 +14747,7 @@ public class Storefront {
         /**
         * The list of errors that occurred from executing the mutation.
         *
-        * @deprecated Use `checkoutUserErrors` instead
+        * @deprecated Use `checkoutUserErrors` instead.
         */
 
         public List<UserError> getUserErrors() {
@@ -14707,7 +15613,7 @@ public class Storefront {
         /**
         * The list of errors that occurred from executing the mutation.
         *
-        * @deprecated Use `checkoutUserErrors` instead
+        * @deprecated Use `checkoutUserErrors` instead.
         */
         @Deprecated
         public CheckoutLineItemsAddPayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
@@ -14810,7 +15716,7 @@ public class Storefront {
         /**
         * The list of errors that occurred from executing the mutation.
         *
-        * @deprecated Use `checkoutUserErrors` instead
+        * @deprecated Use `checkoutUserErrors` instead.
         */
 
         public List<UserError> getUserErrors() {
@@ -14876,7 +15782,7 @@ public class Storefront {
         /**
         * The list of errors that occurred from executing the mutation.
         *
-        * @deprecated Use `checkoutUserErrors` instead
+        * @deprecated Use `checkoutUserErrors` instead.
         */
         @Deprecated
         public CheckoutLineItemsRemovePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
@@ -14979,7 +15885,7 @@ public class Storefront {
         /**
         * The list of errors that occurred from executing the mutation.
         *
-        * @deprecated Use `checkoutUserErrors` instead
+        * @deprecated Use `checkoutUserErrors` instead.
         */
 
         public List<UserError> getUserErrors() {
@@ -15170,7 +16076,7 @@ public class Storefront {
         /**
         * The list of errors that occurred from executing the mutation.
         *
-        * @deprecated Use `checkoutUserErrors` instead
+        * @deprecated Use `checkoutUserErrors` instead.
         */
         @Deprecated
         public CheckoutLineItemsUpdatePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
@@ -15273,7 +16179,7 @@ public class Storefront {
         /**
         * The list of errors that occurred from executing the mutation.
         *
-        * @deprecated Use `checkoutUserErrors` instead
+        * @deprecated Use `checkoutUserErrors` instead.
         */
 
         public List<UserError> getUserErrors() {
@@ -15339,7 +16245,7 @@ public class Storefront {
         /**
         * The list of errors that occurred from executing the mutation.
         *
-        * @deprecated Use `checkoutUserErrors` instead
+        * @deprecated Use `checkoutUserErrors` instead.
         */
         @Deprecated
         public CheckoutShippingAddressUpdateV2PayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
@@ -15442,7 +16348,7 @@ public class Storefront {
         /**
         * The list of errors that occurred from executing the mutation.
         *
-        * @deprecated Use `checkoutUserErrors` instead
+        * @deprecated Use `checkoutUserErrors` instead.
         */
 
         public List<UserError> getUserErrors() {
@@ -15508,7 +16414,7 @@ public class Storefront {
         /**
         * The list of errors that occurred from executing the mutation.
         *
-        * @deprecated Use `checkoutUserErrors` instead
+        * @deprecated Use `checkoutUserErrors` instead.
         */
         @Deprecated
         public CheckoutShippingLineUpdatePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
@@ -15611,7 +16517,7 @@ public class Storefront {
         /**
         * The list of errors that occurred from executing the mutation.
         *
-        * @deprecated Use `checkoutUserErrors` instead
+        * @deprecated Use `checkoutUserErrors` instead.
         */
 
         public List<UserError> getUserErrors() {
@@ -16090,7 +16996,7 @@ public class Storefront {
     * A collection represents a grouping of products that a shop owner can create to organize them or make
     * their shops easier to browse.
     */
-    public static class Collection extends AbstractResponse<Collection> implements HasMetafields, MetafieldParentResource, Node, OnlineStorePublishable {
+    public static class Collection extends AbstractResponse<Collection> implements HasMetafields, MetafieldParentResource, MetafieldReference, Node, OnlineStorePublishable {
         public Collection() {
         }
 
@@ -23766,6 +24672,15 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * The number of orders that the customer has made at the store in their lifetime.
+        */
+        public CustomerQuery numberOfOrders() {
+            startField("numberOfOrders");
+
+            return this;
+        }
+
         public class OrdersArguments extends Arguments {
             OrdersArguments(StringBuilder _queryBuilder) {
                 super(_queryBuilder, true);
@@ -24034,6 +24949,12 @@ public class Storefront {
                         break;
                     }
 
+                    case "numberOfOrders": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+
+                        break;
+                    }
+
                     case "orders": {
                         responseData.put(key, new OrderConnection(jsonAsObject(field.getValue(), key)));
 
@@ -24240,6 +25161,19 @@ public class Storefront {
         }
 
         /**
+        * The number of orders that the customer has made at the store in their lifetime.
+        */
+
+        public String getNumberOfOrders() {
+            return (String) get("numberOfOrders");
+        }
+
+        public Customer setNumberOfOrders(String arg) {
+            optimisticData.put(getKey("numberOfOrders"), arg);
+            return this;
+        }
+
+        /**
         * The orders associated with the customer.
         */
 
@@ -24317,6 +25251,8 @@ public class Storefront {
                 case "metafield": return true;
 
                 case "metafields": return true;
+
+                case "numberOfOrders": return false;
 
                 case "orders": return true;
 
@@ -24528,7 +25464,7 @@ public class Storefront {
         /**
         * The list of errors that occurred from executing the mutation.
         *
-        * @deprecated Use `customerUserErrors` instead
+        * @deprecated Use `customerUserErrors` instead.
         */
         @Deprecated
         public CustomerAccessTokenCreatePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
@@ -24631,7 +25567,7 @@ public class Storefront {
         /**
         * The list of errors that occurred from executing the mutation.
         *
-        * @deprecated Use `customerUserErrors` instead
+        * @deprecated Use `customerUserErrors` instead.
         */
 
         public List<UserError> getUserErrors() {
@@ -25327,7 +26263,7 @@ public class Storefront {
         /**
         * The list of errors that occurred from executing the mutation.
         *
-        * @deprecated Use `customerUserErrors` instead
+        * @deprecated Use `customerUserErrors` instead.
         */
         @Deprecated
         public CustomerActivatePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
@@ -25454,7 +26390,7 @@ public class Storefront {
         /**
         * The list of errors that occurred from executing the mutation.
         *
-        * @deprecated Use `customerUserErrors` instead
+        * @deprecated Use `customerUserErrors` instead.
         */
 
         public List<UserError> getUserErrors() {
@@ -25522,7 +26458,7 @@ public class Storefront {
         /**
         * The list of errors that occurred from executing the mutation.
         *
-        * @deprecated Use `customerUserErrors` instead
+        * @deprecated Use `customerUserErrors` instead.
         */
         @Deprecated
         public CustomerAddressCreatePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
@@ -25625,7 +26561,7 @@ public class Storefront {
         /**
         * The list of errors that occurred from executing the mutation.
         *
-        * @deprecated Use `customerUserErrors` instead
+        * @deprecated Use `customerUserErrors` instead.
         */
 
         public List<UserError> getUserErrors() {
@@ -25687,7 +26623,7 @@ public class Storefront {
         /**
         * The list of errors that occurred from executing the mutation.
         *
-        * @deprecated Use `customerUserErrors` instead
+        * @deprecated Use `customerUserErrors` instead.
         */
         @Deprecated
         public CustomerAddressDeletePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
@@ -25790,7 +26726,7 @@ public class Storefront {
         /**
         * The list of errors that occurred from executing the mutation.
         *
-        * @deprecated Use `customerUserErrors` instead
+        * @deprecated Use `customerUserErrors` instead.
         */
 
         public List<UserError> getUserErrors() {
@@ -25856,7 +26792,7 @@ public class Storefront {
         /**
         * The list of errors that occurred from executing the mutation.
         *
-        * @deprecated Use `customerUserErrors` instead
+        * @deprecated Use `customerUserErrors` instead.
         */
         @Deprecated
         public CustomerAddressUpdatePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
@@ -25959,7 +26895,7 @@ public class Storefront {
         /**
         * The list of errors that occurred from executing the mutation.
         *
-        * @deprecated Use `customerUserErrors` instead
+        * @deprecated Use `customerUserErrors` instead.
         */
 
         public List<UserError> getUserErrors() {
@@ -26208,7 +27144,7 @@ public class Storefront {
         /**
         * The list of errors that occurred from executing the mutation.
         *
-        * @deprecated Use `customerUserErrors` instead
+        * @deprecated Use `customerUserErrors` instead.
         */
         @Deprecated
         public CustomerCreatePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
@@ -26311,7 +27247,7 @@ public class Storefront {
         /**
         * The list of errors that occurred from executing the mutation.
         *
-        * @deprecated Use `customerUserErrors` instead
+        * @deprecated Use `customerUserErrors` instead.
         */
 
         public List<UserError> getUserErrors() {
@@ -26377,7 +27313,7 @@ public class Storefront {
         /**
         * The list of errors that occurred from executing the mutation.
         *
-        * @deprecated Use `customerUserErrors` instead
+        * @deprecated Use `customerUserErrors` instead.
         */
         @Deprecated
         public CustomerDefaultAddressUpdatePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
@@ -26480,7 +27416,7 @@ public class Storefront {
         /**
         * The list of errors that occurred from executing the mutation.
         *
-        * @deprecated Use `customerUserErrors` instead
+        * @deprecated Use `customerUserErrors` instead.
         */
 
         public List<UserError> getUserErrors() {
@@ -26754,7 +27690,7 @@ public class Storefront {
         /**
         * The list of errors that occurred from executing the mutation.
         *
-        * @deprecated Use `customerUserErrors` instead
+        * @deprecated Use `customerUserErrors` instead.
         */
         @Deprecated
         public CustomerRecoverPayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
@@ -26833,7 +27769,7 @@ public class Storefront {
         /**
         * The list of errors that occurred from executing the mutation.
         *
-        * @deprecated Use `customerUserErrors` instead
+        * @deprecated Use `customerUserErrors` instead.
         */
 
         public List<UserError> getUserErrors() {
@@ -26910,7 +27846,7 @@ public class Storefront {
         /**
         * The list of errors that occurred from executing the mutation.
         *
-        * @deprecated Use `customerUserErrors` instead
+        * @deprecated Use `customerUserErrors` instead.
         */
         @Deprecated
         public CustomerResetByUrlPayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
@@ -27037,7 +27973,7 @@ public class Storefront {
         /**
         * The list of errors that occurred from executing the mutation.
         *
-        * @deprecated Use `customerUserErrors` instead
+        * @deprecated Use `customerUserErrors` instead.
         */
 
         public List<UserError> getUserErrors() {
@@ -27165,7 +28101,7 @@ public class Storefront {
         /**
         * The list of errors that occurred from executing the mutation.
         *
-        * @deprecated Use `customerUserErrors` instead
+        * @deprecated Use `customerUserErrors` instead.
         */
         @Deprecated
         public CustomerResetPayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
@@ -27292,7 +28228,7 @@ public class Storefront {
         /**
         * The list of errors that occurred from executing the mutation.
         *
-        * @deprecated Use `customerUserErrors` instead
+        * @deprecated Use `customerUserErrors` instead.
         */
 
         public List<UserError> getUserErrors() {
@@ -27588,7 +28524,7 @@ public class Storefront {
         /**
         * The list of errors that occurred from executing the mutation.
         *
-        * @deprecated Use `customerUserErrors` instead
+        * @deprecated Use `customerUserErrors` instead.
         */
         @Deprecated
         public CustomerUpdatePayloadQuery userErrors(UserErrorQueryDefinition queryDef) {
@@ -27717,7 +28653,7 @@ public class Storefront {
         /**
         * The list of errors that occurred from executing the mutation.
         *
-        * @deprecated Use `customerUserErrors` instead
+        * @deprecated Use `customerUserErrors` instead.
         */
 
         public List<UserError> getUserErrors() {
@@ -27893,6 +28829,122 @@ public class Storefront {
 
                 default: return false;
             }
+        }
+    }
+
+    public interface DeliveryAddressQueryDefinition {
+        void define(DeliveryAddressQuery _queryBuilder);
+    }
+
+    /**
+    * A delivery address of the buyer that is interacting with the cart.
+    */
+    public static class DeliveryAddressQuery extends Query<DeliveryAddressQuery> {
+        DeliveryAddressQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+
+            startField("__typename");
+        }
+
+        public DeliveryAddressQuery onMailingAddress(MailingAddressQueryDefinition queryDef) {
+            startInlineFragment("MailingAddress");
+            queryDef.define(new MailingAddressQuery(_queryBuilder));
+            _queryBuilder.append('}');
+            return this;
+        }
+    }
+
+    public interface DeliveryAddress {
+        String getGraphQlTypeName();
+    }
+
+    /**
+    * A delivery address of the buyer that is interacting with the cart.
+    */
+    public static class UnknownDeliveryAddress extends AbstractResponse<UnknownDeliveryAddress> implements DeliveryAddress {
+        public UnknownDeliveryAddress() {
+        }
+
+        public UnknownDeliveryAddress(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public static DeliveryAddress create(JsonObject fields) throws SchemaViolationError {
+            String typeName = fields.getAsJsonPrimitive("__typename").getAsString();
+            switch (typeName) {
+                case "MailingAddress": {
+                    return new MailingAddress(fields);
+                }
+
+                default: {
+                    return new UnknownDeliveryAddress(fields);
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return (String) get("__typename");
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                default: return false;
+            }
+        }
+    }
+
+    public static class DeliveryAddressInput implements Serializable {
+        private Input<MailingAddressInput> deliveryAddress = Input.undefined();
+
+        public MailingAddressInput getDeliveryAddress() {
+            return deliveryAddress.getValue();
+        }
+
+        public Input<MailingAddressInput> getDeliveryAddressInput() {
+            return deliveryAddress;
+        }
+
+        public DeliveryAddressInput setDeliveryAddress(MailingAddressInput deliveryAddress) {
+            this.deliveryAddress = Input.optional(deliveryAddress);
+            return this;
+        }
+
+        public DeliveryAddressInput setDeliveryAddressInput(Input<MailingAddressInput> deliveryAddress) {
+            if (deliveryAddress == null) {
+                throw new IllegalArgumentException("Input can not be null");
+            }
+            this.deliveryAddress = deliveryAddress;
+            return this;
+        }
+
+        public void appendTo(StringBuilder _queryBuilder) {
+            String separator = "";
+            _queryBuilder.append('{');
+
+            if (this.deliveryAddress.isDefined()) {
+                _queryBuilder.append(separator);
+                separator = ",";
+                _queryBuilder.append("deliveryAddress:");
+                if (deliveryAddress.getValue() != null) {
+                    deliveryAddress.getValue().appendTo(_queryBuilder);
+                } else {
+                    _queryBuilder.append("null");
+                }
+            }
+
+            _queryBuilder.append('}');
         }
     }
 
@@ -29471,7 +30523,7 @@ public class Storefront {
         /**
         * The URL.
         *
-        * @deprecated Use `originUrl` instead
+        * @deprecated Use `originUrl` instead.
         */
         @Deprecated
         public ExternalVideoQuery embeddedUrl() {
@@ -29640,7 +30692,7 @@ public class Storefront {
         /**
         * The URL.
         *
-        * @deprecated Use `originUrl` instead
+        * @deprecated Use `originUrl` instead.
         */
 
         public String getEmbeddedUrl() {
@@ -29914,7 +30966,7 @@ public class Storefront {
     /**
     * The type of data that the filter group represents.
     * For more information, refer to [Filter products in a collection with the Storefront API]
-    * (https://shopify.dev/api/examples/filter-products).
+    * (https://shopify.dev/custom-storefronts/products-collections/filter-products).
     */
     public enum FilterType {
         /**
@@ -31576,7 +32628,7 @@ public class Storefront {
         * If there are any existing transformations in the original source URL, they will remain and not be
         * stripped.
         *
-        * @deprecated Use `url` instead
+        * @deprecated Use `url` instead.
         */
         @Deprecated
         public ImageQuery originalSrc() {
@@ -31588,7 +32640,7 @@ public class Storefront {
         /**
         * The location of the image as a URL.
         *
-        * @deprecated Use `url` instead
+        * @deprecated Use `url` instead.
         */
         @Deprecated
         public ImageQuery src() {
@@ -31896,7 +32948,7 @@ public class Storefront {
         * If there are any existing transformations in the original source URL, they will remain and not be
         * stripped.
         *
-        * @deprecated Use `url` instead
+        * @deprecated Use `url` instead.
         */
 
         public String getOriginalSrc() {
@@ -31911,7 +32963,7 @@ public class Storefront {
         /**
         * The location of the image as a URL.
         *
-        * @deprecated Use `url` instead
+        * @deprecated Use `url` instead.
         */
 
         public String getSrc() {
@@ -33014,7 +34066,7 @@ public class Storefront {
         MG,
 
         /**
-        * Maori.
+        * Māori.
         */
         MI,
 
@@ -35663,7 +36715,7 @@ public class Storefront {
         * The two-letter code for the country of the address.
         * For example, US.
         *
-        * @deprecated Use `countryCodeV2` instead
+        * @deprecated Use `countryCodeV2` instead.
         */
         @Deprecated
         public MailingAddressQuery countryCode() {
@@ -35830,7 +36882,7 @@ public class Storefront {
     /**
     * Represents a mailing address for customers and shipping.
     */
-    public static class MailingAddress extends AbstractResponse<MailingAddress> implements Node {
+    public static class MailingAddress extends AbstractResponse<MailingAddress> implements DeliveryAddress, Node {
         public MailingAddress() {
         }
 
@@ -36132,7 +37184,7 @@ public class Storefront {
         * The two-letter code for the country of the address.
         * For example, US.
         *
-        * @deprecated Use `countryCodeV2` instead
+        * @deprecated Use `countryCodeV2` instead.
         */
 
         public String getCountryCode() {
@@ -38833,6 +39885,84 @@ public class Storefront {
             return this;
         }
 
+        public class ReferencesArguments extends Arguments {
+            ReferencesArguments(StringBuilder _queryBuilder) {
+                super(_queryBuilder, true);
+            }
+
+            /**
+            * Returns up to the first `n` elements from the list.
+            */
+            public ReferencesArguments first(Integer value) {
+                if (value != null) {
+                    startArgument("first");
+                    _queryBuilder.append(value);
+                }
+                return this;
+            }
+
+            /**
+            * Returns the elements that come after the specified cursor.
+            */
+            public ReferencesArguments after(String value) {
+                if (value != null) {
+                    startArgument("after");
+                    Query.appendQuotedString(_queryBuilder, value.toString());
+                }
+                return this;
+            }
+
+            /**
+            * Returns up to the last `n` elements from the list.
+            */
+            public ReferencesArguments last(Integer value) {
+                if (value != null) {
+                    startArgument("last");
+                    _queryBuilder.append(value);
+                }
+                return this;
+            }
+
+            /**
+            * Returns the elements that come before the specified cursor.
+            */
+            public ReferencesArguments before(String value) {
+                if (value != null) {
+                    startArgument("before");
+                    Query.appendQuotedString(_queryBuilder, value.toString());
+                }
+                return this;
+            }
+        }
+
+        public interface ReferencesArgumentsDefinition {
+            void define(ReferencesArguments args);
+        }
+
+        /**
+        * A list of reference objects if the metafield's type is a resource reference list.
+        */
+        public MetafieldQuery references(MetafieldReferenceConnectionQueryDefinition queryDef) {
+            return references(args -> {}, queryDef);
+        }
+
+        /**
+        * A list of reference objects if the metafield's type is a resource reference list.
+        */
+        public MetafieldQuery references(ReferencesArgumentsDefinition argsDef, MetafieldReferenceConnectionQueryDefinition queryDef) {
+            startField("references");
+
+            ReferencesArguments args = new ReferencesArguments(_queryBuilder);
+            argsDef.define(args);
+            ReferencesArguments.end(args);
+
+            _queryBuilder.append('{');
+            queryDef.define(new MetafieldReferenceConnectionQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
         /**
         * The type name of the metafield.
         * See the list of [supported types](https://shopify.dev/apps/metafields/definitions/types).
@@ -38921,6 +40051,17 @@ public class Storefront {
                         MetafieldReference optional1 = null;
                         if (!field.getValue().isJsonNull()) {
                             optional1 = UnknownMetafieldReference.create(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "references": {
+                        MetafieldReferenceConnection optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new MetafieldReferenceConnection(jsonAsObject(field.getValue(), key));
                         }
 
                         responseData.put(key, optional1);
@@ -39053,6 +40194,19 @@ public class Storefront {
         }
 
         /**
+        * A list of reference objects if the metafield's type is a resource reference list.
+        */
+
+        public MetafieldReferenceConnection getReferences() {
+            return (MetafieldReferenceConnection) get("references");
+        }
+
+        public Metafield setReferences(MetafieldReferenceConnection arg) {
+            optimisticData.put(getKey("references"), arg);
+            return this;
+        }
+
+        /**
         * The type name of the metafield.
         * See the list of [supported types](https://shopify.dev/apps/metafields/definitions/types).
         */
@@ -39107,6 +40261,8 @@ public class Storefront {
                 case "parentResource": return false;
 
                 case "reference": return false;
+
+                case "references": return true;
 
                 case "type": return false;
 
@@ -39359,6 +40515,13 @@ public class Storefront {
             startField("__typename");
         }
 
+        public MetafieldReferenceQuery onCollection(CollectionQueryDefinition queryDef) {
+            startInlineFragment("Collection");
+            queryDef.define(new CollectionQuery(_queryBuilder));
+            _queryBuilder.append('}');
+            return this;
+        }
+
         public MetafieldReferenceQuery onGenericFile(GenericFileQueryDefinition queryDef) {
             startInlineFragment("GenericFile");
             queryDef.define(new GenericFileQuery(_queryBuilder));
@@ -39432,6 +40595,10 @@ public class Storefront {
         public static MetafieldReference create(JsonObject fields) throws SchemaViolationError {
             String typeName = fields.getAsJsonPrimitive("__typename").getAsString();
             switch (typeName) {
+                case "Collection": {
+                    return new Collection(fields);
+                }
+
                 case "GenericFile": {
                     return new GenericFile(fields);
                 }
@@ -39468,6 +40635,276 @@ public class Storefront {
 
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
+                default: return false;
+            }
+        }
+    }
+
+    public interface MetafieldReferenceConnectionQueryDefinition {
+        void define(MetafieldReferenceConnectionQuery _queryBuilder);
+    }
+
+    /**
+    * An auto-generated type for paginating through multiple MetafieldReferences.
+    */
+    public static class MetafieldReferenceConnectionQuery extends Query<MetafieldReferenceConnectionQuery> {
+        MetafieldReferenceConnectionQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * A list of edges.
+        */
+        public MetafieldReferenceConnectionQuery edges(MetafieldReferenceEdgeQueryDefinition queryDef) {
+            startField("edges");
+
+            _queryBuilder.append('{');
+            queryDef.define(new MetafieldReferenceEdgeQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * A list of the nodes contained in MetafieldReferenceEdge.
+        */
+        public MetafieldReferenceConnectionQuery nodes(MetafieldReferenceQueryDefinition queryDef) {
+            startField("nodes");
+
+            _queryBuilder.append('{');
+            queryDef.define(new MetafieldReferenceQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * Information to aid in pagination.
+        */
+        public MetafieldReferenceConnectionQuery pageInfo(PageInfoQueryDefinition queryDef) {
+            startField("pageInfo");
+
+            _queryBuilder.append('{');
+            queryDef.define(new PageInfoQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+    }
+
+    /**
+    * An auto-generated type for paginating through multiple MetafieldReferences.
+    */
+    public static class MetafieldReferenceConnection extends AbstractResponse<MetafieldReferenceConnection> {
+        public MetafieldReferenceConnection() {
+        }
+
+        public MetafieldReferenceConnection(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "edges": {
+                        List<MetafieldReferenceEdge> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new MetafieldReferenceEdge(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "nodes": {
+                        List<MetafieldReference> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(UnknownMetafieldReference.create(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "pageInfo": {
+                        responseData.put(key, new PageInfo(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "MetafieldReferenceConnection";
+        }
+
+        /**
+        * A list of edges.
+        */
+
+        public List<MetafieldReferenceEdge> getEdges() {
+            return (List<MetafieldReferenceEdge>) get("edges");
+        }
+
+        public MetafieldReferenceConnection setEdges(List<MetafieldReferenceEdge> arg) {
+            optimisticData.put(getKey("edges"), arg);
+            return this;
+        }
+
+        /**
+        * A list of the nodes contained in MetafieldReferenceEdge.
+        */
+
+        public List<MetafieldReference> getNodes() {
+            return (List<MetafieldReference>) get("nodes");
+        }
+
+        public MetafieldReferenceConnection setNodes(List<MetafieldReference> arg) {
+            optimisticData.put(getKey("nodes"), arg);
+            return this;
+        }
+
+        /**
+        * Information to aid in pagination.
+        */
+
+        public PageInfo getPageInfo() {
+            return (PageInfo) get("pageInfo");
+        }
+
+        public MetafieldReferenceConnection setPageInfo(PageInfo arg) {
+            optimisticData.put(getKey("pageInfo"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "edges": return true;
+
+                case "nodes": return false;
+
+                case "pageInfo": return true;
+
+                default: return false;
+            }
+        }
+    }
+
+    public interface MetafieldReferenceEdgeQueryDefinition {
+        void define(MetafieldReferenceEdgeQuery _queryBuilder);
+    }
+
+    /**
+    * An auto-generated type which holds one MetafieldReference and a cursor during pagination.
+    */
+    public static class MetafieldReferenceEdgeQuery extends Query<MetafieldReferenceEdgeQuery> {
+        MetafieldReferenceEdgeQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * A cursor for use in pagination.
+        */
+        public MetafieldReferenceEdgeQuery cursor() {
+            startField("cursor");
+
+            return this;
+        }
+
+        /**
+        * The item at the end of MetafieldReferenceEdge.
+        */
+        public MetafieldReferenceEdgeQuery node(MetafieldReferenceQueryDefinition queryDef) {
+            startField("node");
+
+            _queryBuilder.append('{');
+            queryDef.define(new MetafieldReferenceQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+    }
+
+    /**
+    * An auto-generated type which holds one MetafieldReference and a cursor during pagination.
+    */
+    public static class MetafieldReferenceEdge extends AbstractResponse<MetafieldReferenceEdge> {
+        public MetafieldReferenceEdge() {
+        }
+
+        public MetafieldReferenceEdge(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "cursor": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "node": {
+                        responseData.put(key, UnknownMetafieldReference.create(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "MetafieldReferenceEdge";
+        }
+
+        /**
+        * A cursor for use in pagination.
+        */
+
+        public String getCursor() {
+            return (String) get("cursor");
+        }
+
+        public MetafieldReferenceEdge setCursor(String arg) {
+            optimisticData.put(getKey("cursor"), arg);
+            return this;
+        }
+
+        /**
+        * The item at the end of MetafieldReferenceEdge.
+        */
+
+        public MetafieldReference getNode() {
+            return (MetafieldReference) get("node");
+        }
+
+        public MetafieldReferenceEdge setNode(MetafieldReference arg) {
+            optimisticData.put(getKey("node"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "cursor": return false;
+
+                case "node": return false;
+
                 default: return false;
             }
         }
@@ -40053,7 +41490,8 @@ public class Storefront {
         /**
         * Updates customer information associated with a cart.
         * Buyer identity is used to determine
-        * [international pricing](https://shopify.dev/api/examples/international-pricing#create-a-checkout)
+        * [international
+        * pricing](https://shopify.dev/custom-storefronts/internationalization/international-pricing)
         * and should match the customer's shipping address.
         */
         public MutationQuery cartBuyerIdentityUpdate(ID cartId, CartBuyerIdentityInput buyerIdentity, CartBuyerIdentityUpdatePayloadQueryDefinition queryDef) {
@@ -40309,6 +41747,36 @@ public class Storefront {
 
             _queryBuilder.append('{');
             queryDef.define(new CartNoteUpdatePayloadQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * Update the selected delivery options for a delivery group.
+        */
+        public MutationQuery cartSelectedDeliveryOptionsUpdate(ID cartId, List<CartSelectedDeliveryOptionInput> selectedDeliveryOptions, CartSelectedDeliveryOptionsUpdatePayloadQueryDefinition queryDef) {
+            startField("cartSelectedDeliveryOptionsUpdate");
+
+            _queryBuilder.append("(cartId:");
+            Query.appendQuotedString(_queryBuilder, cartId.toString());
+
+            _queryBuilder.append(",selectedDeliveryOptions:");
+            _queryBuilder.append('[');
+            {
+                String listSeperator1 = "";
+                for (CartSelectedDeliveryOptionInput item1 : selectedDeliveryOptions) {
+                    _queryBuilder.append(listSeperator1);
+                    listSeperator1 = ",";
+                    item1.appendTo(_queryBuilder);
+                }
+            }
+            _queryBuilder.append(']');
+
+            _queryBuilder.append(')');
+
+            _queryBuilder.append('{');
+            queryDef.define(new CartSelectedDeliveryOptionsUpdatePayloadQuery(_queryBuilder));
             _queryBuilder.append('}');
 
             return this;
@@ -40778,9 +42246,10 @@ public class Storefront {
         }
 
         /**
-        * Creates a customer access token using a multipass token instead of email and password.
-        * A customer record is created if customer does not exist. If a customer record already
-        * exists but the record is disabled, then it's enabled.
+        * Creates a customer access token using a
+        * [multipass token](https://shopify.dev/api/multipass) instead of email and
+        * password. A customer record is created if the customer doesn't exist. If a customer
+        * record already exists but the record is disabled, then the customer record is enabled.
         */
         public MutationQuery customerAccessTokenCreateWithMultipass(String multipassToken, CustomerAccessTokenCreateWithMultipassPayloadQueryDefinition queryDef) {
             startField("customerAccessTokenCreateWithMultipass");
@@ -40983,7 +42452,11 @@ public class Storefront {
         }
 
         /**
-        * Sends a reset password email to the customer, as the first step in the reset password process.
+        * "Sends a reset password email to the customer. The reset password email contains a reset password
+        * URL and token that you can pass to the
+        * [`customerResetByUrl`](https://shopify.dev/api/storefront/latest/mutations/customerResetByUrl) or
+        * [`customerReset`](https://shopify.dev/api/storefront/latest/mutations/customerReset) mutation to
+        * reset the customer password."
         */
         public MutationQuery customerRecover(String email, CustomerRecoverPayloadQueryDefinition queryDef) {
             startField("customerRecover");
@@ -41001,7 +42474,9 @@ public class Storefront {
         }
 
         /**
-        * Resets a customer’s password with a token received from `CustomerRecover`.
+        * "Resets a customer’s password with the token received from a reset password email. You can send a
+        * reset password email with the
+        * [`customerRecover`](https://shopify.dev/api/storefront/latest/mutations/customerRecover) mutation."
         */
         public MutationQuery customerReset(ID id, CustomerResetInput input, CustomerResetPayloadQueryDefinition queryDef) {
             startField("customerReset");
@@ -41022,7 +42497,9 @@ public class Storefront {
         }
 
         /**
-        * Resets a customer’s password with the reset password url received from `CustomerRecover`.
+        * "Resets a customer’s password with the reset password URL received from a reset password email. You
+        * can send a reset password email with the
+        * [`customerRecover`](https://shopify.dev/api/storefront/latest/mutations/customerRecover) mutation."
         */
         public MutationQuery customerResetByUrl(String resetUrl, String password, CustomerResetByUrlPayloadQueryDefinition queryDef) {
             startField("customerResetByUrl");
@@ -41162,6 +42639,17 @@ public class Storefront {
                         CartNoteUpdatePayload optional1 = null;
                         if (!field.getValue().isJsonNull()) {
                             optional1 = new CartNoteUpdatePayload(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "cartSelectedDeliveryOptionsUpdate": {
+                        CartSelectedDeliveryOptionsUpdatePayload optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new CartSelectedDeliveryOptionsUpdatePayload(jsonAsObject(field.getValue(), key));
                         }
 
                         responseData.put(key, optional1);
@@ -41563,7 +43051,8 @@ public class Storefront {
         /**
         * Updates customer information associated with a cart.
         * Buyer identity is used to determine
-        * [international pricing](https://shopify.dev/api/examples/international-pricing#create-a-checkout)
+        * [international
+        * pricing](https://shopify.dev/custom-storefronts/internationalization/international-pricing)
         * and should match the customer's shipping address.
         */
 
@@ -41651,6 +43140,19 @@ public class Storefront {
 
         public Mutation setCartNoteUpdate(CartNoteUpdatePayload arg) {
             optimisticData.put(getKey("cartNoteUpdate"), arg);
+            return this;
+        }
+
+        /**
+        * Update the selected delivery options for a delivery group.
+        */
+
+        public CartSelectedDeliveryOptionsUpdatePayload getCartSelectedDeliveryOptionsUpdate() {
+            return (CartSelectedDeliveryOptionsUpdatePayload) get("cartSelectedDeliveryOptionsUpdate");
+        }
+
+        public Mutation setCartSelectedDeliveryOptionsUpdate(CartSelectedDeliveryOptionsUpdatePayload arg) {
+            optimisticData.put(getKey("cartSelectedDeliveryOptionsUpdate"), arg);
             return this;
         }
 
@@ -41906,9 +43408,10 @@ public class Storefront {
         }
 
         /**
-        * Creates a customer access token using a multipass token instead of email and password.
-        * A customer record is created if customer does not exist. If a customer record already
-        * exists but the record is disabled, then it's enabled.
+        * Creates a customer access token using a
+        * [multipass token](https://shopify.dev/api/multipass) instead of email and
+        * password. A customer record is created if the customer doesn't exist. If a customer
+        * record already exists but the record is disabled, then the customer record is enabled.
         */
 
         public CustomerAccessTokenCreateWithMultipassPayload getCustomerAccessTokenCreateWithMultipass() {
@@ -42040,7 +43543,11 @@ public class Storefront {
         }
 
         /**
-        * Sends a reset password email to the customer, as the first step in the reset password process.
+        * "Sends a reset password email to the customer. The reset password email contains a reset password
+        * URL and token that you can pass to the
+        * [`customerResetByUrl`](https://shopify.dev/api/storefront/latest/mutations/customerResetByUrl) or
+        * [`customerReset`](https://shopify.dev/api/storefront/latest/mutations/customerReset) mutation to
+        * reset the customer password."
         */
 
         public CustomerRecoverPayload getCustomerRecover() {
@@ -42053,7 +43560,9 @@ public class Storefront {
         }
 
         /**
-        * Resets a customer’s password with a token received from `CustomerRecover`.
+        * "Resets a customer’s password with the token received from a reset password email. You can send a
+        * reset password email with the
+        * [`customerRecover`](https://shopify.dev/api/storefront/latest/mutations/customerRecover) mutation."
         */
 
         public CustomerResetPayload getCustomerReset() {
@@ -42066,7 +43575,9 @@ public class Storefront {
         }
 
         /**
-        * Resets a customer’s password with the reset password url received from `CustomerRecover`.
+        * "Resets a customer’s password with the reset password URL received from a reset password email. You
+        * can send a reset password email with the
+        * [`customerRecover`](https://shopify.dev/api/storefront/latest/mutations/customerRecover) mutation."
         */
 
         public CustomerResetByUrlPayload getCustomerResetByUrl() {
@@ -42108,6 +43619,8 @@ public class Storefront {
                 case "cartLinesUpdate": return true;
 
                 case "cartNoteUpdate": return true;
+
+                case "cartSelectedDeliveryOptionsUpdate": return true;
 
                 case "checkoutAttributesUpdateV2": return true;
 
@@ -43224,19 +44737,23 @@ public class Storefront {
 
         /**
         * Price of the order before shipping and taxes.
-        *
-        * @deprecated Use `subtotalPriceV2` instead
         */
-        @Deprecated
-        public OrderQuery subtotalPrice() {
+        public OrderQuery subtotalPrice(MoneyV2QueryDefinition queryDef) {
             startField("subtotalPrice");
+
+            _queryBuilder.append('{');
+            queryDef.define(new MoneyV2Query(_queryBuilder));
+            _queryBuilder.append('}');
 
             return this;
         }
 
         /**
         * Price of the order before duties, shipping and taxes.
+        *
+        * @deprecated Use `subtotalPrice` instead.
         */
+        @Deprecated
         public OrderQuery subtotalPriceV2(MoneyV2QueryDefinition queryDef) {
             startField("subtotalPriceV2");
 
@@ -43293,14 +44810,15 @@ public class Storefront {
         }
 
         /**
-        * The sum of all the prices of all the items in the order, taxes and discounts included (must be
-        * positive).
-        *
-        * @deprecated Use `totalPriceV2` instead
+        * The sum of all the prices of all the items in the order, duties, taxes and discounts included (must
+        * be positive).
         */
-        @Deprecated
-        public OrderQuery totalPrice() {
+        public OrderQuery totalPrice(MoneyV2QueryDefinition queryDef) {
             startField("totalPrice");
+
+            _queryBuilder.append('{');
+            queryDef.define(new MoneyV2Query(_queryBuilder));
+            _queryBuilder.append('}');
 
             return this;
         }
@@ -43308,7 +44826,10 @@ public class Storefront {
         /**
         * The sum of all the prices of all the items in the order, duties, taxes and discounts included (must
         * be positive).
+        *
+        * @deprecated Use `totalPrice` instead.
         */
+        @Deprecated
         public OrderQuery totalPriceV2(MoneyV2QueryDefinition queryDef) {
             startField("totalPriceV2");
 
@@ -43321,19 +44842,23 @@ public class Storefront {
 
         /**
         * The total amount that has been refunded.
-        *
-        * @deprecated Use `totalRefundedV2` instead
         */
-        @Deprecated
-        public OrderQuery totalRefunded() {
+        public OrderQuery totalRefunded(MoneyV2QueryDefinition queryDef) {
             startField("totalRefunded");
+
+            _queryBuilder.append('{');
+            queryDef.define(new MoneyV2Query(_queryBuilder));
+            _queryBuilder.append('}');
 
             return this;
         }
 
         /**
         * The total amount that has been refunded.
+        *
+        * @deprecated Use `totalRefunded` instead.
         */
+        @Deprecated
         public OrderQuery totalRefundedV2(MoneyV2QueryDefinition queryDef) {
             startField("totalRefundedV2");
 
@@ -43346,19 +44871,23 @@ public class Storefront {
 
         /**
         * The total cost of shipping.
-        *
-        * @deprecated Use `totalShippingPriceV2` instead
         */
-        @Deprecated
-        public OrderQuery totalShippingPrice() {
+        public OrderQuery totalShippingPrice(MoneyV2QueryDefinition queryDef) {
             startField("totalShippingPrice");
+
+            _queryBuilder.append('{');
+            queryDef.define(new MoneyV2Query(_queryBuilder));
+            _queryBuilder.append('}');
 
             return this;
         }
 
         /**
         * The total cost of shipping.
+        *
+        * @deprecated Use `totalShippingPrice` instead.
         */
+        @Deprecated
         public OrderQuery totalShippingPriceV2(MoneyV2QueryDefinition queryDef) {
             startField("totalShippingPriceV2");
 
@@ -43371,19 +44900,23 @@ public class Storefront {
 
         /**
         * The total cost of taxes.
-        *
-        * @deprecated Use `totalTaxV2` instead
         */
-        @Deprecated
-        public OrderQuery totalTax() {
+        public OrderQuery totalTax(MoneyV2QueryDefinition queryDef) {
             startField("totalTax");
+
+            _queryBuilder.append('{');
+            queryDef.define(new MoneyV2Query(_queryBuilder));
+            _queryBuilder.append('}');
 
             return this;
         }
 
         /**
         * The total cost of taxes.
+        *
+        * @deprecated Use `totalTax` instead.
         */
+        @Deprecated
         public OrderQuery totalTaxV2(MoneyV2QueryDefinition queryDef) {
             startField("totalTaxV2");
 
@@ -43642,9 +45175,9 @@ public class Storefront {
                     }
 
                     case "subtotalPrice": {
-                        BigDecimal optional1 = null;
+                        MoneyV2 optional1 = null;
                         if (!field.getValue().isJsonNull()) {
-                            optional1 = new BigDecimal(jsonAsString(field.getValue(), key));
+                            optional1 = new MoneyV2(jsonAsObject(field.getValue(), key));
                         }
 
                         responseData.put(key, optional1);
@@ -43680,7 +45213,7 @@ public class Storefront {
                     }
 
                     case "totalPrice": {
-                        responseData.put(key, new BigDecimal(jsonAsString(field.getValue(), key)));
+                        responseData.put(key, new MoneyV2(jsonAsObject(field.getValue(), key)));
 
                         break;
                     }
@@ -43692,7 +45225,7 @@ public class Storefront {
                     }
 
                     case "totalRefunded": {
-                        responseData.put(key, new BigDecimal(jsonAsString(field.getValue(), key)));
+                        responseData.put(key, new MoneyV2(jsonAsObject(field.getValue(), key)));
 
                         break;
                     }
@@ -43704,7 +45237,7 @@ public class Storefront {
                     }
 
                     case "totalShippingPrice": {
-                        responseData.put(key, new BigDecimal(jsonAsString(field.getValue(), key)));
+                        responseData.put(key, new MoneyV2(jsonAsObject(field.getValue(), key)));
 
                         break;
                     }
@@ -43716,9 +45249,9 @@ public class Storefront {
                     }
 
                     case "totalTax": {
-                        BigDecimal optional1 = null;
+                        MoneyV2 optional1 = null;
                         if (!field.getValue().isJsonNull()) {
-                            optional1 = new BigDecimal(jsonAsString(field.getValue(), key));
+                            optional1 = new MoneyV2(jsonAsObject(field.getValue(), key));
                         }
 
                         responseData.put(key, optional1);
@@ -44111,21 +45644,21 @@ public class Storefront {
 
         /**
         * Price of the order before shipping and taxes.
-        *
-        * @deprecated Use `subtotalPriceV2` instead
         */
 
-        public BigDecimal getSubtotalPrice() {
-            return (BigDecimal) get("subtotalPrice");
+        public MoneyV2 getSubtotalPrice() {
+            return (MoneyV2) get("subtotalPrice");
         }
 
-        public Order setSubtotalPrice(BigDecimal arg) {
+        public Order setSubtotalPrice(MoneyV2 arg) {
             optimisticData.put(getKey("subtotalPrice"), arg);
             return this;
         }
 
         /**
         * Price of the order before duties, shipping and taxes.
+        *
+        * @deprecated Use `subtotalPrice` instead.
         */
 
         public MoneyV2 getSubtotalPriceV2() {
@@ -44151,17 +45684,15 @@ public class Storefront {
         }
 
         /**
-        * The sum of all the prices of all the items in the order, taxes and discounts included (must be
-        * positive).
-        *
-        * @deprecated Use `totalPriceV2` instead
+        * The sum of all the prices of all the items in the order, duties, taxes and discounts included (must
+        * be positive).
         */
 
-        public BigDecimal getTotalPrice() {
-            return (BigDecimal) get("totalPrice");
+        public MoneyV2 getTotalPrice() {
+            return (MoneyV2) get("totalPrice");
         }
 
-        public Order setTotalPrice(BigDecimal arg) {
+        public Order setTotalPrice(MoneyV2 arg) {
             optimisticData.put(getKey("totalPrice"), arg);
             return this;
         }
@@ -44169,6 +45700,8 @@ public class Storefront {
         /**
         * The sum of all the prices of all the items in the order, duties, taxes and discounts included (must
         * be positive).
+        *
+        * @deprecated Use `totalPrice` instead.
         */
 
         public MoneyV2 getTotalPriceV2() {
@@ -44182,21 +45715,21 @@ public class Storefront {
 
         /**
         * The total amount that has been refunded.
-        *
-        * @deprecated Use `totalRefundedV2` instead
         */
 
-        public BigDecimal getTotalRefunded() {
-            return (BigDecimal) get("totalRefunded");
+        public MoneyV2 getTotalRefunded() {
+            return (MoneyV2) get("totalRefunded");
         }
 
-        public Order setTotalRefunded(BigDecimal arg) {
+        public Order setTotalRefunded(MoneyV2 arg) {
             optimisticData.put(getKey("totalRefunded"), arg);
             return this;
         }
 
         /**
         * The total amount that has been refunded.
+        *
+        * @deprecated Use `totalRefunded` instead.
         */
 
         public MoneyV2 getTotalRefundedV2() {
@@ -44210,21 +45743,21 @@ public class Storefront {
 
         /**
         * The total cost of shipping.
-        *
-        * @deprecated Use `totalShippingPriceV2` instead
         */
 
-        public BigDecimal getTotalShippingPrice() {
-            return (BigDecimal) get("totalShippingPrice");
+        public MoneyV2 getTotalShippingPrice() {
+            return (MoneyV2) get("totalShippingPrice");
         }
 
-        public Order setTotalShippingPrice(BigDecimal arg) {
+        public Order setTotalShippingPrice(MoneyV2 arg) {
             optimisticData.put(getKey("totalShippingPrice"), arg);
             return this;
         }
 
         /**
         * The total cost of shipping.
+        *
+        * @deprecated Use `totalShippingPrice` instead.
         */
 
         public MoneyV2 getTotalShippingPriceV2() {
@@ -44238,21 +45771,21 @@ public class Storefront {
 
         /**
         * The total cost of taxes.
-        *
-        * @deprecated Use `totalTaxV2` instead
         */
 
-        public BigDecimal getTotalTax() {
-            return (BigDecimal) get("totalTax");
+        public MoneyV2 getTotalTax() {
+            return (MoneyV2) get("totalTax");
         }
 
-        public Order setTotalTax(BigDecimal arg) {
+        public Order setTotalTax(MoneyV2 arg) {
             optimisticData.put(getKey("totalTax"), arg);
             return this;
         }
 
         /**
         * The total cost of taxes.
+        *
+        * @deprecated Use `totalTax` instead.
         */
 
         public MoneyV2 getTotalTaxV2() {
@@ -44320,25 +45853,25 @@ public class Storefront {
 
                 case "statusUrl": return false;
 
-                case "subtotalPrice": return false;
+                case "subtotalPrice": return true;
 
                 case "subtotalPriceV2": return true;
 
                 case "successfulFulfillments": return true;
 
-                case "totalPrice": return false;
+                case "totalPrice": return true;
 
                 case "totalPriceV2": return true;
 
-                case "totalRefunded": return false;
+                case "totalRefunded": return true;
 
                 case "totalRefundedV2": return true;
 
-                case "totalShippingPrice": return false;
+                case "totalShippingPrice": return true;
 
                 case "totalShippingPriceV2": return true;
 
-                case "totalTax": return false;
+                case "totalTax": return true;
 
                 case "totalTaxV2": return true;
 
@@ -44488,6 +46021,15 @@ public class Storefront {
 
             return this;
         }
+
+        /**
+        * The total count of Orders.
+        */
+        public OrderConnectionQuery totalCount() {
+            startField("totalCount");
+
+            return this;
+        }
     }
 
     /**
@@ -44526,6 +46068,12 @@ public class Storefront {
 
                     case "pageInfo": {
                         responseData.put(key, new PageInfo(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "totalCount": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
 
                         break;
                     }
@@ -44584,6 +46132,19 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * The total count of Orders.
+        */
+
+        public String getTotalCount() {
+            return (String) get("totalCount");
+        }
+
+        public OrderConnection setTotalCount(String arg) {
+            optimisticData.put(getKey("totalCount"), arg);
+            return this;
+        }
+
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "edges": return true;
@@ -44591,6 +46152,8 @@ public class Storefront {
                 case "nodes": return true;
 
                 case "pageInfo": return true;
+
+                case "totalCount": return false;
 
                 default: return false;
             }
@@ -46623,19 +48186,23 @@ public class Storefront {
 
         /**
         * The amount of the payment.
-        *
-        * @deprecated Use `amountV2` instead
         */
-        @Deprecated
-        public PaymentQuery amount() {
+        public PaymentQuery amount(MoneyV2QueryDefinition queryDef) {
             startField("amount");
+
+            _queryBuilder.append('{');
+            queryDef.define(new MoneyV2Query(_queryBuilder));
+            _queryBuilder.append('}');
 
             return this;
         }
 
         /**
         * The amount of the payment.
+        *
+        * @deprecated Use `amount` instead.
         */
+        @Deprecated
         public PaymentQuery amountV2(MoneyV2QueryDefinition queryDef) {
             startField("amountV2");
 
@@ -46759,7 +48326,7 @@ public class Storefront {
                 String fieldName = getFieldName(key);
                 switch (fieldName) {
                     case "amount": {
-                        responseData.put(key, new BigDecimal(jsonAsString(field.getValue(), key)));
+                        responseData.put(key, new MoneyV2(jsonAsObject(field.getValue(), key)));
 
                         break;
                     }
@@ -46882,21 +48449,21 @@ public class Storefront {
 
         /**
         * The amount of the payment.
-        *
-        * @deprecated Use `amountV2` instead
         */
 
-        public BigDecimal getAmount() {
-            return (BigDecimal) get("amount");
+        public MoneyV2 getAmount() {
+            return (MoneyV2) get("amount");
         }
 
-        public Payment setAmount(BigDecimal arg) {
+        public Payment setAmount(MoneyV2 arg) {
             optimisticData.put(getKey("amount"), arg);
             return this;
         }
 
         /**
         * The amount of the payment.
+        *
+        * @deprecated Use `amount` instead.
         */
 
         public MoneyV2 getAmountV2() {
@@ -47037,7 +48604,7 @@ public class Storefront {
 
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "amount": return false;
+                case "amount": return true;
 
                 case "amountV2": return true;
 
@@ -47986,6 +49553,15 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * Whether the product is a gift card.
+        */
+        public ProductQuery isGiftCard() {
+            startField("isGiftCard");
+
+            return this;
+        }
+
         public class MediaArguments extends Arguments {
             MediaArguments(StringBuilder _queryBuilder) {
                 super(_queryBuilder, true);
@@ -48595,6 +50171,12 @@ public class Storefront {
                         break;
                     }
 
+                    case "isGiftCard": {
+                        responseData.put(key, jsonAsBoolean(field.getValue(), key));
+
+                        break;
+                    }
+
                     case "media": {
                         responseData.put(key, new MediaConnection(jsonAsObject(field.getValue(), key)));
 
@@ -48891,6 +50473,19 @@ public class Storefront {
         }
 
         /**
+        * Whether the product is a gift card.
+        */
+
+        public Boolean getIsGiftCard() {
+            return (Boolean) get("isGiftCard");
+        }
+
+        public Product setIsGiftCard(Boolean arg) {
+            optimisticData.put(getKey("isGiftCard"), arg);
+            return this;
+        }
+
+        /**
         * The media associated with the product.
         */
 
@@ -49154,6 +50749,8 @@ public class Storefront {
                 case "id": return false;
 
                 case "images": return true;
+
+                case "isGiftCard": return false;
 
                 case "media": return true;
 
@@ -50462,12 +52059,13 @@ public class Storefront {
         /**
         * The compare at price of the variant. This can be used to mark a variant as on sale, when
         * `compareAtPrice` is higher than `price`.
-        *
-        * @deprecated Use `compareAtPriceV2` instead
         */
-        @Deprecated
-        public ProductVariantQuery compareAtPrice() {
+        public ProductVariantQuery compareAtPrice(MoneyV2QueryDefinition queryDef) {
             startField("compareAtPrice");
+
+            _queryBuilder.append('{');
+            queryDef.define(new MoneyV2Query(_queryBuilder));
+            _queryBuilder.append('}');
 
             return this;
         }
@@ -50475,7 +52073,10 @@ public class Storefront {
         /**
         * The compare at price of the variant. This can be used to mark a variant as on sale, when
         * `compareAtPriceV2` is higher than `priceV2`.
+        *
+        * @deprecated Use `compareAtPrice` instead.
         */
+        @Deprecated
         public ProductVariantQuery compareAtPriceV2(MoneyV2QueryDefinition queryDef) {
             startField("compareAtPriceV2");
 
@@ -50559,19 +52160,23 @@ public class Storefront {
 
         /**
         * The product variant’s price.
-        *
-        * @deprecated Use `priceV2` instead
         */
-        @Deprecated
-        public ProductVariantQuery price() {
+        public ProductVariantQuery price(MoneyV2QueryDefinition queryDef) {
             startField("price");
+
+            _queryBuilder.append('{');
+            queryDef.define(new MoneyV2Query(_queryBuilder));
+            _queryBuilder.append('}');
 
             return this;
         }
 
         /**
         * The product variant’s price.
+        *
+        * @deprecated Use `price` instead.
         */
+        @Deprecated
         public ProductVariantQuery priceV2(MoneyV2QueryDefinition queryDef) {
             startField("priceV2");
 
@@ -50901,9 +52506,9 @@ public class Storefront {
                     }
 
                     case "compareAtPrice": {
-                        BigDecimal optional1 = null;
+                        MoneyV2 optional1 = null;
                         if (!field.getValue().isJsonNull()) {
-                            optional1 = new BigDecimal(jsonAsString(field.getValue(), key));
+                            optional1 = new MoneyV2(jsonAsObject(field.getValue(), key));
                         }
 
                         responseData.put(key, optional1);
@@ -50973,7 +52578,7 @@ public class Storefront {
                     }
 
                     case "price": {
-                        responseData.put(key, new BigDecimal(jsonAsString(field.getValue(), key)));
+                        responseData.put(key, new MoneyV2(jsonAsObject(field.getValue(), key)));
 
                         break;
                     }
@@ -51135,15 +52740,13 @@ public class Storefront {
         /**
         * The compare at price of the variant. This can be used to mark a variant as on sale, when
         * `compareAtPrice` is higher than `price`.
-        *
-        * @deprecated Use `compareAtPriceV2` instead
         */
 
-        public BigDecimal getCompareAtPrice() {
-            return (BigDecimal) get("compareAtPrice");
+        public MoneyV2 getCompareAtPrice() {
+            return (MoneyV2) get("compareAtPrice");
         }
 
-        public ProductVariant setCompareAtPrice(BigDecimal arg) {
+        public ProductVariant setCompareAtPrice(MoneyV2 arg) {
             optimisticData.put(getKey("compareAtPrice"), arg);
             return this;
         }
@@ -51151,6 +52754,8 @@ public class Storefront {
         /**
         * The compare at price of the variant. This can be used to mark a variant as on sale, when
         * `compareAtPriceV2` is higher than `priceV2`.
+        *
+        * @deprecated Use `compareAtPrice` instead.
         */
 
         public MoneyV2 getCompareAtPriceV2() {
@@ -51225,21 +52830,21 @@ public class Storefront {
 
         /**
         * The product variant’s price.
-        *
-        * @deprecated Use `priceV2` instead
         */
 
-        public BigDecimal getPrice() {
-            return (BigDecimal) get("price");
+        public MoneyV2 getPrice() {
+            return (MoneyV2) get("price");
         }
 
-        public ProductVariant setPrice(BigDecimal arg) {
+        public ProductVariant setPrice(MoneyV2 arg) {
             optimisticData.put(getKey("price"), arg);
             return this;
         }
 
         /**
         * The product variant’s price.
+        *
+        * @deprecated Use `price` instead.
         */
 
         public MoneyV2 getPriceV2() {
@@ -51415,7 +53020,7 @@ public class Storefront {
 
                 case "barcode": return false;
 
-                case "compareAtPrice": return false;
+                case "compareAtPrice": return true;
 
                 case "compareAtPriceV2": return true;
 
@@ -51429,7 +53034,7 @@ public class Storefront {
 
                 case "metafields": return true;
 
-                case "price": return false;
+                case "price": return true;
 
                 case "priceV2": return true;
 
@@ -52015,7 +53620,7 @@ public class Storefront {
         /**
         * Find a blog by its handle.
         *
-        * @deprecated Use `blog` instead
+        * @deprecated Use `blog` instead.
         */
         @Deprecated
         public QueryRootQuery blogByHandle(String handle, BlogQueryDefinition queryDef) {
@@ -52151,7 +53756,8 @@ public class Storefront {
         }
 
         /**
-        * Find a cart by its ID.
+        * Retrieve a cart by its ID. For more information, refer to
+        * [Manage a cart with the Storefront API](https://shopify.dev/custom-storefronts/cart/manage).
         */
         public QueryRootQuery cart(ID id, CartQueryDefinition queryDef) {
             startField("cart");
@@ -52227,7 +53833,7 @@ public class Storefront {
         /**
         * Find a collection by its handle.
         *
-        * @deprecated Use `collection` instead
+        * @deprecated Use `collection` instead.
         */
         @Deprecated
         public QueryRootQuery collectionByHandle(String handle, CollectionQueryDefinition queryDef) {
@@ -52627,7 +54233,7 @@ public class Storefront {
         /**
         * Find a page by its handle.
         *
-        * @deprecated Use `page` instead
+        * @deprecated Use `page` instead.
         */
         @Deprecated
         public QueryRootQuery pageByHandle(String handle, PageQueryDefinition queryDef) {
@@ -52821,7 +54427,7 @@ public class Storefront {
         /**
         * Find a product by its handle.
         *
-        * @deprecated Use `product` instead
+        * @deprecated Use `product` instead.
         */
         @Deprecated
         public QueryRootQuery productByHandle(String handle, ProductQueryDefinition queryDef) {
@@ -53438,7 +55044,7 @@ public class Storefront {
         /**
         * Find a blog by its handle.
         *
-        * @deprecated Use `blog` instead
+        * @deprecated Use `blog` instead.
         */
 
         public Blog getBlogByHandle() {
@@ -53464,7 +55070,8 @@ public class Storefront {
         }
 
         /**
-        * Find a cart by its ID.
+        * Retrieve a cart by its ID. For more information, refer to
+        * [Manage a cart with the Storefront API](https://shopify.dev/custom-storefronts/cart/manage).
         */
 
         public Cart getCart() {
@@ -53492,7 +55099,7 @@ public class Storefront {
         /**
         * Find a collection by its handle.
         *
-        * @deprecated Use `collection` instead
+        * @deprecated Use `collection` instead.
         */
 
         public Collection getCollectionByHandle() {
@@ -53612,7 +55219,7 @@ public class Storefront {
         /**
         * Find a page by its handle.
         *
-        * @deprecated Use `page` instead
+        * @deprecated Use `page` instead.
         */
 
         public Page getPageByHandle() {
@@ -53653,7 +55260,7 @@ public class Storefront {
         /**
         * Find a product by its handle.
         *
-        * @deprecated Use `product` instead
+        * @deprecated Use `product` instead.
         */
 
         public Product getProductByHandle() {
@@ -54351,6 +55958,10 @@ public class Storefront {
         /**
         * The selling plan options available in the drop-down list in the storefront. For example, 'Delivery
         * every week' or 'Delivery every 2 weeks' specifies the delivery frequency options for the product.
+        * Individual selling plans contribute their options to the associated selling plan group. For example,
+        * a selling plan group might have an option called `option1: Delivery every`. One selling plan in that
+        * group could contribute `option1: 2 weeks` with the pricing for that option, and another selling plan
+        * could contribute `option1: 4 weeks`, with different pricing.
         */
         public SellingPlanQuery options(SellingPlanOptionQueryDefinition queryDef) {
             startField("options");
@@ -54524,6 +56135,10 @@ public class Storefront {
         /**
         * The selling plan options available in the drop-down list in the storefront. For example, 'Delivery
         * every week' or 'Delivery every 2 weeks' specifies the delivery frequency options for the product.
+        * Individual selling plans contribute their options to the associated selling plan group. For example,
+        * a selling plan group might have an option called `option1: Delivery every`. One selling plan in that
+        * group could contribute `option1: 2 weeks` with the pricing for that option, and another selling plan
+        * could contribute `option1: 4 weeks`, with different pricing.
         */
 
         public List<SellingPlanOption> getOptions() {
@@ -56558,6 +58173,10 @@ public class Storefront {
     /**
     * Represents an option on a selling plan group that's available in the drop-down list in the
     * storefront.
+    * Individual selling plans contribute their options to the associated selling plan group. For example,
+    * a selling plan group might have an option called `option1: Delivery every`. One selling plan in that
+    * group could contribute `option1: 2 weeks` with the pricing for that option, and another selling plan
+    * could contribute `option1: 4 weeks`, with different pricing.
     */
     public static class SellingPlanGroupOptionQuery extends Query<SellingPlanGroupOptionQuery> {
         SellingPlanGroupOptionQuery(StringBuilder _queryBuilder) {
@@ -56587,6 +58206,10 @@ public class Storefront {
     /**
     * Represents an option on a selling plan group that's available in the drop-down list in the
     * storefront.
+    * Individual selling plans contribute their options to the associated selling plan group. For example,
+    * a selling plan group might have an option called `option1: Delivery every`. One selling plan in that
+    * group could contribute `option1: 2 weeks` with the pricing for that option, and another selling plan
+    * could contribute `option1: 4 weeks`, with different pricing.
     */
     public static class SellingPlanGroupOption extends AbstractResponse<SellingPlanGroupOption> {
         public SellingPlanGroupOption() {
@@ -56867,7 +58490,11 @@ public class Storefront {
 
     /**
     * Represents by how much the price of a variant associated with a selling plan is adjusted. Each
-    * variant can have up to two price adjustments.
+    * variant can have up to two price adjustments. If a variant has multiple price adjustments, then the
+    * first price adjustment applies when the variant is initially purchased. The second price adjustment
+    * applies after a certain number of orders (specified by the `orderCount` field) are made. If a
+    * selling plan doesn't have any price adjustments, then the unadjusted price of the variant is the
+    * effective price.
     */
     public static class SellingPlanPriceAdjustmentQuery extends Query<SellingPlanPriceAdjustmentQuery> {
         SellingPlanPriceAdjustmentQuery(StringBuilder _queryBuilder) {
@@ -56889,7 +58516,7 @@ public class Storefront {
         }
 
         /**
-        * The number of orders that the price adjustment applies to If the price adjustment always applies,
+        * The number of orders that the price adjustment applies to. If the price adjustment always applies,
         * then this field is `null`.
         */
         public SellingPlanPriceAdjustmentQuery orderCount() {
@@ -56901,7 +58528,11 @@ public class Storefront {
 
     /**
     * Represents by how much the price of a variant associated with a selling plan is adjusted. Each
-    * variant can have up to two price adjustments.
+    * variant can have up to two price adjustments. If a variant has multiple price adjustments, then the
+    * first price adjustment applies when the variant is initially purchased. The second price adjustment
+    * applies after a certain number of orders (specified by the `orderCount` field) are made. If a
+    * selling plan doesn't have any price adjustments, then the unadjusted price of the variant is the
+    * effective price.
     */
     public static class SellingPlanPriceAdjustment extends AbstractResponse<SellingPlanPriceAdjustment> {
         public SellingPlanPriceAdjustment() {
@@ -56959,7 +58590,7 @@ public class Storefront {
         }
 
         /**
-        * The number of orders that the price adjustment applies to If the price adjustment always applies,
+        * The number of orders that the price adjustment applies to. If the price adjustment always applies,
         * then this field is `null`.
         */
 
@@ -57103,19 +58734,23 @@ public class Storefront {
 
         /**
         * Price of this shipping rate.
-        *
-        * @deprecated Use `priceV2` instead
         */
-        @Deprecated
-        public ShippingRateQuery price() {
+        public ShippingRateQuery price(MoneyV2QueryDefinition queryDef) {
             startField("price");
+
+            _queryBuilder.append('{');
+            queryDef.define(new MoneyV2Query(_queryBuilder));
+            _queryBuilder.append('}');
 
             return this;
         }
 
         /**
         * Price of this shipping rate.
+        *
+        * @deprecated Use `price` instead.
         */
+        @Deprecated
         public ShippingRateQuery priceV2(MoneyV2QueryDefinition queryDef) {
             startField("priceV2");
 
@@ -57155,7 +58790,7 @@ public class Storefront {
                     }
 
                     case "price": {
-                        responseData.put(key, new BigDecimal(jsonAsString(field.getValue(), key)));
+                        responseData.put(key, new MoneyV2(jsonAsObject(field.getValue(), key)));
 
                         break;
                     }
@@ -57202,21 +58837,21 @@ public class Storefront {
 
         /**
         * Price of this shipping rate.
-        *
-        * @deprecated Use `priceV2` instead
         */
 
-        public BigDecimal getPrice() {
-            return (BigDecimal) get("price");
+        public MoneyV2 getPrice() {
+            return (MoneyV2) get("price");
         }
 
-        public ShippingRate setPrice(BigDecimal arg) {
+        public ShippingRate setPrice(MoneyV2 arg) {
             optimisticData.put(getKey("price"), arg);
             return this;
         }
 
         /**
         * Price of this shipping rate.
+        *
+        * @deprecated Use `price` instead.
         */
 
         public MoneyV2 getPriceV2() {
@@ -57245,7 +58880,7 @@ public class Storefront {
             switch (getFieldName(key)) {
                 case "handle": return false;
 
-                case "price": return false;
+                case "price": return true;
 
                 case "priceV2": return true;
 
@@ -57268,6 +58903,19 @@ public class Storefront {
             super(_queryBuilder);
 
             startField("id");
+        }
+
+        /**
+        * The shop's branding configuration.
+        */
+        public ShopQuery brand(BrandQueryDefinition queryDef) {
+            startField("brand");
+
+            _queryBuilder.append('{');
+            queryDef.define(new BrandQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
         }
 
         /**
@@ -57359,7 +59007,7 @@ public class Storefront {
         }
 
         /**
-        * The shop’s primary domain.
+        * The primary domain of the shop’s Online Store.
         */
         public ShopQuery primaryDomain(DomainQueryDefinition queryDef) {
             startField("primaryDomain");
@@ -57458,6 +59106,17 @@ public class Storefront {
                 String key = field.getKey();
                 String fieldName = getFieldName(key);
                 switch (fieldName) {
+                    case "brand": {
+                        Brand optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new Brand(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
                     case "description": {
                         String optional1 = null;
                         if (!field.getValue().isJsonNull()) {
@@ -57613,6 +59272,19 @@ public class Storefront {
         }
 
         /**
+        * The shop's branding configuration.
+        */
+
+        public Brand getBrand() {
+            return (Brand) get("brand");
+        }
+
+        public Shop setBrand(Brand arg) {
+            optimisticData.put(getKey("brand"), arg);
+            return this;
+        }
+
+        /**
         * A description of the shop.
         */
 
@@ -57699,7 +59371,7 @@ public class Storefront {
         }
 
         /**
-        * The shop’s primary domain.
+        * The primary domain of the shop’s Online Store.
         */
 
         public Domain getPrimaryDomain() {
@@ -57791,6 +59463,8 @@ public class Storefront {
 
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
+                case "brand": return true;
+
                 case "description": return false;
 
                 case "id": return false;
@@ -59049,19 +60723,23 @@ public class Storefront {
 
         /**
         * The amount of money that the transaction was for.
-        *
-        * @deprecated Use `amountV2` instead
         */
-        @Deprecated
-        public TransactionQuery amount() {
+        public TransactionQuery amount(MoneyV2QueryDefinition queryDef) {
             startField("amount");
+
+            _queryBuilder.append('{');
+            queryDef.define(new MoneyV2Query(_queryBuilder));
+            _queryBuilder.append('}');
 
             return this;
         }
 
         /**
         * The amount of money that the transaction was for.
+        *
+        * @deprecated Use `amount` instead.
         */
+        @Deprecated
         public TransactionQuery amountV2(MoneyV2QueryDefinition queryDef) {
             startField("amountV2");
 
@@ -59084,7 +60762,7 @@ public class Storefront {
         /**
         * The status of the transaction.
         *
-        * @deprecated Use `statusV2` instead
+        * @deprecated Use `statusV2` instead.
         */
         @Deprecated
         public TransactionQuery status() {
@@ -59125,7 +60803,7 @@ public class Storefront {
                 String fieldName = getFieldName(key);
                 switch (fieldName) {
                     case "amount": {
-                        responseData.put(key, new BigDecimal(jsonAsString(field.getValue(), key)));
+                        responseData.put(key, new MoneyV2(jsonAsObject(field.getValue(), key)));
 
                         break;
                     }
@@ -59182,21 +60860,21 @@ public class Storefront {
 
         /**
         * The amount of money that the transaction was for.
-        *
-        * @deprecated Use `amountV2` instead
         */
 
-        public BigDecimal getAmount() {
-            return (BigDecimal) get("amount");
+        public MoneyV2 getAmount() {
+            return (MoneyV2) get("amount");
         }
 
-        public Transaction setAmount(BigDecimal arg) {
+        public Transaction setAmount(MoneyV2 arg) {
             optimisticData.put(getKey("amount"), arg);
             return this;
         }
 
         /**
         * The amount of money that the transaction was for.
+        *
+        * @deprecated Use `amount` instead.
         */
 
         public MoneyV2 getAmountV2() {
@@ -59224,7 +60902,7 @@ public class Storefront {
         /**
         * The status of the transaction.
         *
-        * @deprecated Use `statusV2` instead
+        * @deprecated Use `statusV2` instead.
         */
 
         public TransactionStatus getStatus() {
@@ -59264,7 +60942,7 @@ public class Storefront {
 
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "amount": return false;
+                case "amount": return true;
 
                 case "amountV2": return true;
 
