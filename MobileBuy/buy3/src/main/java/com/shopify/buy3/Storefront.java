@@ -25,7 +25,7 @@ import java.io.Serializable;
 import java.util.*;
 
 public class Storefront {
-    public static final String API_VERSION = "2022-10";
+    public static final String API_VERSION = "2023-01";
 
     public static QueryRootQuery query(QueryRootQueryDefinition queryDef) {
         return query(Collections.emptyList(), queryDef);
@@ -13871,6 +13871,11 @@ public class Storefront {
         DISCOUNT_ALREADY_APPLIED,
 
         /**
+        * Discount code isn't working right now. Please contact us for help.
+        */
+        DISCOUNT_CODE_APPLICATION_FAILED,
+
+        /**
         * Discount disabled.
         */
         DISCOUNT_DISABLED,
@@ -14092,6 +14097,10 @@ public class Storefront {
                     return DISCOUNT_ALREADY_APPLIED;
                 }
 
+                case "DISCOUNT_CODE_APPLICATION_FAILED": {
+                    return DISCOUNT_CODE_APPLICATION_FAILED;
+                }
+
                 case "DISCOUNT_DISABLED": {
                     return DISCOUNT_DISABLED;
                 }
@@ -14273,6 +14282,10 @@ public class Storefront {
 
                 case DISCOUNT_ALREADY_APPLIED: {
                     return "DISCOUNT_ALREADY_APPLIED";
+                }
+
+                case DISCOUNT_CODE_APPLICATION_FAILED: {
+                    return "DISCOUNT_CODE_APPLICATION_FAILED";
                 }
 
                 case DISCOUNT_DISABLED: {
@@ -40536,6 +40549,13 @@ public class Storefront {
             return this;
         }
 
+        public MetafieldReferenceQuery onMetaobject(MetaobjectQueryDefinition queryDef) {
+            startInlineFragment("Metaobject");
+            queryDef.define(new MetaobjectQuery(_queryBuilder));
+            _queryBuilder.append('}');
+            return this;
+        }
+
         public MetafieldReferenceQuery onPage(PageQueryDefinition queryDef) {
             startInlineFragment("Page");
             queryDef.define(new PageQuery(_queryBuilder));
@@ -40605,6 +40625,10 @@ public class Storefront {
 
                 case "MediaImage": {
                     return new MediaImage(fields);
+                }
+
+                case "Metaobject": {
+                    return new Metaobject(fields);
                 }
 
                 case "Page": {
@@ -40907,6 +40931,855 @@ public class Storefront {
 
                 default: return false;
             }
+        }
+    }
+
+    public interface MetaobjectQueryDefinition {
+        void define(MetaobjectQuery _queryBuilder);
+    }
+
+    /**
+    * An instance of a user-defined model based on a MetaobjectDefinition.
+    */
+    public static class MetaobjectQuery extends Query<MetaobjectQuery> {
+        MetaobjectQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+
+            startField("id");
+        }
+
+        /**
+        * Accesses a field of the object by key.
+        */
+        public MetaobjectQuery field(String key, MetaobjectFieldQueryDefinition queryDef) {
+            startField("field");
+
+            _queryBuilder.append("(key:");
+            Query.appendQuotedString(_queryBuilder, key.toString());
+
+            _queryBuilder.append(')');
+
+            _queryBuilder.append('{');
+            queryDef.define(new MetaobjectFieldQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * All object fields with defined values.
+        * Omitted object keys can be assumed null, and no guarantees are made about field order.
+        */
+        public MetaobjectQuery fields(MetaobjectFieldQueryDefinition queryDef) {
+            startField("fields");
+
+            _queryBuilder.append('{');
+            queryDef.define(new MetaobjectFieldQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * The unique handle of the metaobject. Useful as a custom ID.
+        */
+        public MetaobjectQuery handle() {
+            startField("handle");
+
+            return this;
+        }
+
+        /**
+        * The type of the metaobject. Defines the namespace of its associated metafields.
+        */
+        public MetaobjectQuery type() {
+            startField("type");
+
+            return this;
+        }
+
+        /**
+        * The date and time when the metaobject was last updated.
+        */
+        public MetaobjectQuery updatedAt() {
+            startField("updatedAt");
+
+            return this;
+        }
+    }
+
+    /**
+    * An instance of a user-defined model based on a MetaobjectDefinition.
+    */
+    public static class Metaobject extends AbstractResponse<Metaobject> implements MetafieldReference, Node {
+        public Metaobject() {
+        }
+
+        public Metaobject(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "field": {
+                        MetaobjectField optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new MetaobjectField(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "fields": {
+                        List<MetaobjectField> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new MetaobjectField(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "handle": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "id": {
+                        responseData.put(key, new ID(jsonAsString(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "type": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "updatedAt": {
+                        responseData.put(key, Utils.parseDateTime(jsonAsString(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public Metaobject(ID id) {
+            this();
+            optimisticData.put("id", id);
+        }
+
+        public String getGraphQlTypeName() {
+            return "Metaobject";
+        }
+
+        /**
+        * Accesses a field of the object by key.
+        */
+
+        public MetaobjectField getField() {
+            return (MetaobjectField) get("field");
+        }
+
+        public Metaobject setField(MetaobjectField arg) {
+            optimisticData.put(getKey("field"), arg);
+            return this;
+        }
+
+        /**
+        * All object fields with defined values.
+        * Omitted object keys can be assumed null, and no guarantees are made about field order.
+        */
+
+        public List<MetaobjectField> getFields() {
+            return (List<MetaobjectField>) get("fields");
+        }
+
+        public Metaobject setFields(List<MetaobjectField> arg) {
+            optimisticData.put(getKey("fields"), arg);
+            return this;
+        }
+
+        /**
+        * The unique handle of the metaobject. Useful as a custom ID.
+        */
+
+        public String getHandle() {
+            return (String) get("handle");
+        }
+
+        public Metaobject setHandle(String arg) {
+            optimisticData.put(getKey("handle"), arg);
+            return this;
+        }
+
+        /**
+        * A globally-unique identifier.
+        */
+
+        public ID getId() {
+            return (ID) get("id");
+        }
+
+        /**
+        * The type of the metaobject. Defines the namespace of its associated metafields.
+        */
+
+        public String getType() {
+            return (String) get("type");
+        }
+
+        public Metaobject setType(String arg) {
+            optimisticData.put(getKey("type"), arg);
+            return this;
+        }
+
+        /**
+        * The date and time when the metaobject was last updated.
+        */
+
+        public DateTime getUpdatedAt() {
+            return (DateTime) get("updatedAt");
+        }
+
+        public Metaobject setUpdatedAt(DateTime arg) {
+            optimisticData.put(getKey("updatedAt"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "field": return true;
+
+                case "fields": return true;
+
+                case "handle": return false;
+
+                case "id": return false;
+
+                case "type": return false;
+
+                case "updatedAt": return false;
+
+                default: return false;
+            }
+        }
+    }
+
+    public interface MetaobjectConnectionQueryDefinition {
+        void define(MetaobjectConnectionQuery _queryBuilder);
+    }
+
+    /**
+    * An auto-generated type for paginating through multiple Metaobjects.
+    */
+    public static class MetaobjectConnectionQuery extends Query<MetaobjectConnectionQuery> {
+        MetaobjectConnectionQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * A list of edges.
+        */
+        public MetaobjectConnectionQuery edges(MetaobjectEdgeQueryDefinition queryDef) {
+            startField("edges");
+
+            _queryBuilder.append('{');
+            queryDef.define(new MetaobjectEdgeQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * A list of the nodes contained in MetaobjectEdge.
+        */
+        public MetaobjectConnectionQuery nodes(MetaobjectQueryDefinition queryDef) {
+            startField("nodes");
+
+            _queryBuilder.append('{');
+            queryDef.define(new MetaobjectQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * Information to aid in pagination.
+        */
+        public MetaobjectConnectionQuery pageInfo(PageInfoQueryDefinition queryDef) {
+            startField("pageInfo");
+
+            _queryBuilder.append('{');
+            queryDef.define(new PageInfoQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+    }
+
+    /**
+    * An auto-generated type for paginating through multiple Metaobjects.
+    */
+    public static class MetaobjectConnection extends AbstractResponse<MetaobjectConnection> {
+        public MetaobjectConnection() {
+        }
+
+        public MetaobjectConnection(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "edges": {
+                        List<MetaobjectEdge> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new MetaobjectEdge(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "nodes": {
+                        List<Metaobject> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new Metaobject(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "pageInfo": {
+                        responseData.put(key, new PageInfo(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "MetaobjectConnection";
+        }
+
+        /**
+        * A list of edges.
+        */
+
+        public List<MetaobjectEdge> getEdges() {
+            return (List<MetaobjectEdge>) get("edges");
+        }
+
+        public MetaobjectConnection setEdges(List<MetaobjectEdge> arg) {
+            optimisticData.put(getKey("edges"), arg);
+            return this;
+        }
+
+        /**
+        * A list of the nodes contained in MetaobjectEdge.
+        */
+
+        public List<Metaobject> getNodes() {
+            return (List<Metaobject>) get("nodes");
+        }
+
+        public MetaobjectConnection setNodes(List<Metaobject> arg) {
+            optimisticData.put(getKey("nodes"), arg);
+            return this;
+        }
+
+        /**
+        * Information to aid in pagination.
+        */
+
+        public PageInfo getPageInfo() {
+            return (PageInfo) get("pageInfo");
+        }
+
+        public MetaobjectConnection setPageInfo(PageInfo arg) {
+            optimisticData.put(getKey("pageInfo"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "edges": return true;
+
+                case "nodes": return true;
+
+                case "pageInfo": return true;
+
+                default: return false;
+            }
+        }
+    }
+
+    public interface MetaobjectEdgeQueryDefinition {
+        void define(MetaobjectEdgeQuery _queryBuilder);
+    }
+
+    /**
+    * An auto-generated type which holds one Metaobject and a cursor during pagination.
+    */
+    public static class MetaobjectEdgeQuery extends Query<MetaobjectEdgeQuery> {
+        MetaobjectEdgeQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * A cursor for use in pagination.
+        */
+        public MetaobjectEdgeQuery cursor() {
+            startField("cursor");
+
+            return this;
+        }
+
+        /**
+        * The item at the end of MetaobjectEdge.
+        */
+        public MetaobjectEdgeQuery node(MetaobjectQueryDefinition queryDef) {
+            startField("node");
+
+            _queryBuilder.append('{');
+            queryDef.define(new MetaobjectQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+    }
+
+    /**
+    * An auto-generated type which holds one Metaobject and a cursor during pagination.
+    */
+    public static class MetaobjectEdge extends AbstractResponse<MetaobjectEdge> {
+        public MetaobjectEdge() {
+        }
+
+        public MetaobjectEdge(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "cursor": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "node": {
+                        responseData.put(key, new Metaobject(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "MetaobjectEdge";
+        }
+
+        /**
+        * A cursor for use in pagination.
+        */
+
+        public String getCursor() {
+            return (String) get("cursor");
+        }
+
+        public MetaobjectEdge setCursor(String arg) {
+            optimisticData.put(getKey("cursor"), arg);
+            return this;
+        }
+
+        /**
+        * The item at the end of MetaobjectEdge.
+        */
+
+        public Metaobject getNode() {
+            return (Metaobject) get("node");
+        }
+
+        public MetaobjectEdge setNode(Metaobject arg) {
+            optimisticData.put(getKey("node"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "cursor": return false;
+
+                case "node": return true;
+
+                default: return false;
+            }
+        }
+    }
+
+    public interface MetaobjectFieldQueryDefinition {
+        void define(MetaobjectFieldQuery _queryBuilder);
+    }
+
+    /**
+    * Provides the value of a Metaobject field.
+    */
+    public static class MetaobjectFieldQuery extends Query<MetaobjectFieldQuery> {
+        MetaobjectFieldQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * The field key.
+        */
+        public MetaobjectFieldQuery key() {
+            startField("key");
+
+            return this;
+        }
+
+        /**
+        * A referenced object if the field type is a resource reference.
+        */
+        public MetaobjectFieldQuery reference(MetafieldReferenceQueryDefinition queryDef) {
+            startField("reference");
+
+            _queryBuilder.append('{');
+            queryDef.define(new MetafieldReferenceQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        public class ReferencesArguments extends Arguments {
+            ReferencesArguments(StringBuilder _queryBuilder) {
+                super(_queryBuilder, true);
+            }
+
+            /**
+            * Returns up to the first `n` elements from the list.
+            */
+            public ReferencesArguments first(Integer value) {
+                if (value != null) {
+                    startArgument("first");
+                    _queryBuilder.append(value);
+                }
+                return this;
+            }
+
+            /**
+            * Returns the elements that come after the specified cursor.
+            */
+            public ReferencesArguments after(String value) {
+                if (value != null) {
+                    startArgument("after");
+                    Query.appendQuotedString(_queryBuilder, value.toString());
+                }
+                return this;
+            }
+
+            /**
+            * Returns up to the last `n` elements from the list.
+            */
+            public ReferencesArguments last(Integer value) {
+                if (value != null) {
+                    startArgument("last");
+                    _queryBuilder.append(value);
+                }
+                return this;
+            }
+
+            /**
+            * Returns the elements that come before the specified cursor.
+            */
+            public ReferencesArguments before(String value) {
+                if (value != null) {
+                    startArgument("before");
+                    Query.appendQuotedString(_queryBuilder, value.toString());
+                }
+                return this;
+            }
+        }
+
+        public interface ReferencesArgumentsDefinition {
+            void define(ReferencesArguments args);
+        }
+
+        /**
+        * A list of referenced objects if the field type is a resource reference list.
+        */
+        public MetaobjectFieldQuery references(MetafieldReferenceConnectionQueryDefinition queryDef) {
+            return references(args -> {}, queryDef);
+        }
+
+        /**
+        * A list of referenced objects if the field type is a resource reference list.
+        */
+        public MetaobjectFieldQuery references(ReferencesArgumentsDefinition argsDef, MetafieldReferenceConnectionQueryDefinition queryDef) {
+            startField("references");
+
+            ReferencesArguments args = new ReferencesArguments(_queryBuilder);
+            argsDef.define(args);
+            ReferencesArguments.end(args);
+
+            _queryBuilder.append('{');
+            queryDef.define(new MetafieldReferenceConnectionQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * The type name of the field.
+        * See the list of [supported types](https://shopify.dev/apps/metafields/definitions/types).
+        */
+        public MetaobjectFieldQuery type() {
+            startField("type");
+
+            return this;
+        }
+
+        /**
+        * The field value.
+        */
+        public MetaobjectFieldQuery value() {
+            startField("value");
+
+            return this;
+        }
+    }
+
+    /**
+    * Provides the value of a Metaobject field.
+    */
+    public static class MetaobjectField extends AbstractResponse<MetaobjectField> {
+        public MetaobjectField() {
+        }
+
+        public MetaobjectField(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "key": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "reference": {
+                        MetafieldReference optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = UnknownMetafieldReference.create(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "references": {
+                        MetafieldReferenceConnection optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new MetafieldReferenceConnection(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "type": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "value": {
+                        String optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = jsonAsString(field.getValue(), key);
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "MetaobjectField";
+        }
+
+        /**
+        * The field key.
+        */
+
+        public String getKey() {
+            return (String) get("key");
+        }
+
+        public MetaobjectField setKey(String arg) {
+            optimisticData.put(getKey("key"), arg);
+            return this;
+        }
+
+        /**
+        * A referenced object if the field type is a resource reference.
+        */
+
+        public MetafieldReference getReference() {
+            return (MetafieldReference) get("reference");
+        }
+
+        public MetaobjectField setReference(MetafieldReference arg) {
+            optimisticData.put(getKey("reference"), arg);
+            return this;
+        }
+
+        /**
+        * A list of referenced objects if the field type is a resource reference list.
+        */
+
+        public MetafieldReferenceConnection getReferences() {
+            return (MetafieldReferenceConnection) get("references");
+        }
+
+        public MetaobjectField setReferences(MetafieldReferenceConnection arg) {
+            optimisticData.put(getKey("references"), arg);
+            return this;
+        }
+
+        /**
+        * The type name of the field.
+        * See the list of [supported types](https://shopify.dev/apps/metafields/definitions/types).
+        */
+
+        public String getType() {
+            return (String) get("type");
+        }
+
+        public MetaobjectField setType(String arg) {
+            optimisticData.put(getKey("type"), arg);
+            return this;
+        }
+
+        /**
+        * The field value.
+        */
+
+        public String getValue() {
+            return (String) get("value");
+        }
+
+        public MetaobjectField setValue(String arg) {
+            optimisticData.put(getKey("value"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "key": return false;
+
+                case "reference": return false;
+
+                case "references": return true;
+
+                case "type": return false;
+
+                case "value": return false;
+
+                default: return false;
+            }
+        }
+    }
+
+    public static class MetaobjectHandleInput implements Serializable {
+        private String handle;
+
+        private String type;
+
+        public MetaobjectHandleInput(String handle, String type) {
+            this.handle = handle;
+
+            this.type = type;
+        }
+
+        public String getHandle() {
+            return handle;
+        }
+
+        public MetaobjectHandleInput setHandle(String handle) {
+            this.handle = handle;
+            return this;
+        }
+
+        public String getType() {
+            return type;
+        }
+
+        public MetaobjectHandleInput setType(String type) {
+            this.type = type;
+            return this;
+        }
+
+        public void appendTo(StringBuilder _queryBuilder) {
+            String separator = "";
+            _queryBuilder.append('{');
+
+            _queryBuilder.append(separator);
+            separator = ",";
+            _queryBuilder.append("handle:");
+            Query.appendQuotedString(_queryBuilder, handle.toString());
+
+            _queryBuilder.append(separator);
+            separator = ",";
+            _queryBuilder.append("type:");
+            Query.appendQuotedString(_queryBuilder, type.toString());
+
+            _queryBuilder.append('}');
         }
     }
 
@@ -42452,11 +43325,20 @@ public class Storefront {
         }
 
         /**
-        * "Sends a reset password email to the customer. The reset password email contains a reset password
-        * URL and token that you can pass to the
-        * [`customerResetByUrl`](https://shopify.dev/api/storefront/latest/mutations/customerResetByUrl) or
+        * Sends a reset password email to the customer. The reset password
+        * email contains a reset password URL and token that you can pass to
+        * the [`customerResetByUrl`](https://shopify.dev/api/storefront/latest/mutations/customerResetByUrl)
+        * or
         * [`customerReset`](https://shopify.dev/api/storefront/latest/mutations/customerReset) mutation to
-        * reset the customer password."
+        * reset the
+        * customer password.
+        * This mutation is throttled by IP. With authenticated access,
+        * you can provide a
+        * [`Shopify-Storefront-Buyer-IP`](https://shopify.dev/api/usage/authentication#optional-ip-header)
+        * instead of the request IP.
+        * Make sure that the value provided to `Shopify-Storefront-Buyer-IP` is trusted. Unthrottled access to
+        * this
+        * mutation presents a security risk.
         */
         public MutationQuery customerRecover(String email, CustomerRecoverPayloadQueryDefinition queryDef) {
             startField("customerRecover");
@@ -43543,11 +44425,20 @@ public class Storefront {
         }
 
         /**
-        * "Sends a reset password email to the customer. The reset password email contains a reset password
-        * URL and token that you can pass to the
-        * [`customerResetByUrl`](https://shopify.dev/api/storefront/latest/mutations/customerResetByUrl) or
+        * Sends a reset password email to the customer. The reset password
+        * email contains a reset password URL and token that you can pass to
+        * the [`customerResetByUrl`](https://shopify.dev/api/storefront/latest/mutations/customerResetByUrl)
+        * or
         * [`customerReset`](https://shopify.dev/api/storefront/latest/mutations/customerReset) mutation to
-        * reset the customer password."
+        * reset the
+        * customer password.
+        * This mutation is throttled by IP. With authenticated access,
+        * you can provide a
+        * [`Shopify-Storefront-Buyer-IP`](https://shopify.dev/api/usage/authentication#optional-ip-header)
+        * instead of the request IP.
+        * Make sure that the value provided to `Shopify-Storefront-Buyer-IP` is trusted. Unthrottled access to
+        * this
+        * mutation presents a security risk.
         */
 
         public CustomerRecoverPayload getCustomerRecover() {
@@ -43838,6 +44729,13 @@ public class Storefront {
             return this;
         }
 
+        public NodeQuery onMetaobject(MetaobjectQueryDefinition queryDef) {
+            startInlineFragment("Metaobject");
+            queryDef.define(new MetaobjectQuery(_queryBuilder));
+            _queryBuilder.append('}');
+            return this;
+        }
+
         public NodeQuery onModel3d(Model3dQueryDefinition queryDef) {
             startInlineFragment("Model3d");
             queryDef.define(new Model3dQuery(_queryBuilder));
@@ -44023,6 +44921,10 @@ public class Storefront {
 
                 case "Metafield": {
                     return new Metafield(fields);
+                }
+
+                case "Metaobject": {
+                    return new Metaobject(fields);
                 }
 
                 case "Model3d": {
@@ -44350,6 +45252,19 @@ public class Storefront {
 
             _queryBuilder.append('{');
             queryDef.define(new MoneyV2Query(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * A list of the custom attributes added to the order.
+        */
+        public OrderQuery customAttributes(AttributeQueryDefinition queryDef) {
+            startField("customAttributes");
+
+            _queryBuilder.append('{');
+            queryDef.define(new AttributeQuery(_queryBuilder));
             _queryBuilder.append('}');
 
             return this;
@@ -44999,6 +45914,17 @@ public class Storefront {
                         break;
                     }
 
+                    case "customAttributes": {
+                        List<Attribute> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new Attribute(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
                     case "customerLocale": {
                         String optional1 = null;
                         if (!field.getValue().isJsonNull()) {
@@ -45381,6 +46307,19 @@ public class Storefront {
 
         public Order setCurrentTotalTax(MoneyV2 arg) {
             optimisticData.put(getKey("currentTotalTax"), arg);
+            return this;
+        }
+
+        /**
+        * A list of the custom attributes added to the order.
+        */
+
+        public List<Attribute> getCustomAttributes() {
+            return (List<Attribute>) get("customAttributes");
+        }
+
+        public Order setCustomAttributes(List<Attribute> arg) {
+            optimisticData.put(getKey("customAttributes"), arg);
             return this;
         }
 
@@ -45812,6 +46751,8 @@ public class Storefront {
                 case "currentTotalPrice": return true;
 
                 case "currentTotalTax": return true;
+
+                case "customAttributes": return true;
 
                 case "customerLocale": return false;
 
@@ -51248,6 +52189,8 @@ public class Storefront {
 
         private Input<MetafieldFilter> variantMetafield = Input.undefined();
 
+        private Input<String> tag = Input.undefined();
+
         public Boolean getAvailable() {
             return available.getValue();
         }
@@ -51395,6 +52338,27 @@ public class Storefront {
             return this;
         }
 
+        public String getTag() {
+            return tag.getValue();
+        }
+
+        public Input<String> getTagInput() {
+            return tag;
+        }
+
+        public ProductFilter setTag(String tag) {
+            this.tag = Input.optional(tag);
+            return this;
+        }
+
+        public ProductFilter setTagInput(Input<String> tag) {
+            if (tag == null) {
+                throw new IllegalArgumentException("Input can not be null");
+            }
+            this.tag = tag;
+            return this;
+        }
+
         public void appendTo(StringBuilder _queryBuilder) {
             String separator = "";
             _queryBuilder.append('{');
@@ -51471,6 +52435,17 @@ public class Storefront {
                 _queryBuilder.append("variantMetafield:");
                 if (variantMetafield.getValue() != null) {
                     variantMetafield.getValue().appendTo(_queryBuilder);
+                } else {
+                    _queryBuilder.append("null");
+                }
+            }
+
+            if (this.tag.isDefined()) {
+                _queryBuilder.append(separator);
+                separator = ",";
+                _queryBuilder.append("tag:");
+                if (tag.getValue() != null) {
+                    Query.appendQuotedString(_queryBuilder, tag.getValue().toString());
                 } else {
                     _queryBuilder.append("null");
                 }
@@ -52388,6 +53363,17 @@ public class Storefront {
                 if (value != null) {
                     startArgument("reverse");
                     _queryBuilder.append(value);
+                }
+                return this;
+            }
+
+            /**
+            * Used to sort results based on proximity to the provided location.
+            */
+            public StoreAvailabilityArguments near(GeoCoordinateInput value) {
+                if (value != null) {
+                    startArgument("near");
+                    value.appendTo(_queryBuilder);
                 }
                 return this;
             }
@@ -54129,6 +55115,165 @@ public class Storefront {
             return this;
         }
 
+        public class MetaobjectArguments extends Arguments {
+            MetaobjectArguments(StringBuilder _queryBuilder) {
+                super(_queryBuilder, true);
+            }
+
+            /**
+            * The ID of the metaobject.
+            */
+            public MetaobjectArguments id(ID value) {
+                if (value != null) {
+                    startArgument("id");
+                    Query.appendQuotedString(_queryBuilder, value.toString());
+                }
+                return this;
+            }
+
+            /**
+            * The handle and type of the metaobject.
+            */
+            public MetaobjectArguments handle(MetaobjectHandleInput value) {
+                if (value != null) {
+                    startArgument("handle");
+                    value.appendTo(_queryBuilder);
+                }
+                return this;
+            }
+        }
+
+        public interface MetaobjectArgumentsDefinition {
+            void define(MetaobjectArguments args);
+        }
+
+        /**
+        * Fetch a specific Metaobject by one of its unique identifiers.
+        */
+        public QueryRootQuery metaobject(MetaobjectQueryDefinition queryDef) {
+            return metaobject(args -> {}, queryDef);
+        }
+
+        /**
+        * Fetch a specific Metaobject by one of its unique identifiers.
+        */
+        public QueryRootQuery metaobject(MetaobjectArgumentsDefinition argsDef, MetaobjectQueryDefinition queryDef) {
+            startField("metaobject");
+
+            MetaobjectArguments args = new MetaobjectArguments(_queryBuilder);
+            argsDef.define(args);
+            MetaobjectArguments.end(args);
+
+            _queryBuilder.append('{');
+            queryDef.define(new MetaobjectQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        public class MetaobjectsArguments extends Arguments {
+            MetaobjectsArguments(StringBuilder _queryBuilder) {
+                super(_queryBuilder, false);
+            }
+
+            /**
+            * The key of a field to sort with. Supports "id" and "updated_at".
+            */
+            public MetaobjectsArguments sortKey(String value) {
+                if (value != null) {
+                    startArgument("sortKey");
+                    Query.appendQuotedString(_queryBuilder, value.toString());
+                }
+                return this;
+            }
+
+            /**
+            * Returns up to the first `n` elements from the list.
+            */
+            public MetaobjectsArguments first(Integer value) {
+                if (value != null) {
+                    startArgument("first");
+                    _queryBuilder.append(value);
+                }
+                return this;
+            }
+
+            /**
+            * Returns the elements that come after the specified cursor.
+            */
+            public MetaobjectsArguments after(String value) {
+                if (value != null) {
+                    startArgument("after");
+                    Query.appendQuotedString(_queryBuilder, value.toString());
+                }
+                return this;
+            }
+
+            /**
+            * Returns up to the last `n` elements from the list.
+            */
+            public MetaobjectsArguments last(Integer value) {
+                if (value != null) {
+                    startArgument("last");
+                    _queryBuilder.append(value);
+                }
+                return this;
+            }
+
+            /**
+            * Returns the elements that come before the specified cursor.
+            */
+            public MetaobjectsArguments before(String value) {
+                if (value != null) {
+                    startArgument("before");
+                    Query.appendQuotedString(_queryBuilder, value.toString());
+                }
+                return this;
+            }
+
+            /**
+            * Reverse the order of the underlying list.
+            */
+            public MetaobjectsArguments reverse(Boolean value) {
+                if (value != null) {
+                    startArgument("reverse");
+                    _queryBuilder.append(value);
+                }
+                return this;
+            }
+        }
+
+        public interface MetaobjectsArgumentsDefinition {
+            void define(MetaobjectsArguments args);
+        }
+
+        /**
+        * All active metaobjects for the shop.
+        */
+        public QueryRootQuery metaobjects(String type, MetaobjectConnectionQueryDefinition queryDef) {
+            return metaobjects(type, args -> {}, queryDef);
+        }
+
+        /**
+        * All active metaobjects for the shop.
+        */
+        public QueryRootQuery metaobjects(String type, MetaobjectsArgumentsDefinition argsDef, MetaobjectConnectionQueryDefinition queryDef) {
+            startField("metaobjects");
+
+            _queryBuilder.append("(type:");
+            Query.appendQuotedString(_queryBuilder, type.toString());
+
+            argsDef.define(new MetaobjectsArguments(_queryBuilder));
+
+            _queryBuilder.append(')');
+
+            _queryBuilder.append('{');
+            queryDef.define(new MetaobjectConnectionQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
         /**
         * Returns a specific node by ID.
         */
@@ -54711,6 +55856,22 @@ public class Storefront {
                 }
                 return this;
             }
+
+            /**
+            * Supported filter parameters:
+            * - `created_at`
+            * - `path`
+            * - `target`
+            * See the detailed [search syntax](https://shopify.dev/api/usage/search-syntax)
+            * for more information about using filters.
+            */
+            public UrlRedirectsArguments query(String value) {
+                if (value != null) {
+                    startArgument("query");
+                    Query.appendQuotedString(_queryBuilder, value.toString());
+                }
+                return this;
+            }
         }
 
         public interface UrlRedirectsArgumentsDefinition {
@@ -54862,6 +56023,23 @@ public class Storefront {
                         }
 
                         responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "metaobject": {
+                        Metaobject optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new Metaobject(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "metaobjects": {
+                        responseData.put(key, new MetaobjectConnection(jsonAsObject(field.getValue(), key)));
 
                         break;
                     }
@@ -55178,6 +56356,32 @@ public class Storefront {
         }
 
         /**
+        * Fetch a specific Metaobject by one of its unique identifiers.
+        */
+
+        public Metaobject getMetaobject() {
+            return (Metaobject) get("metaobject");
+        }
+
+        public QueryRoot setMetaobject(Metaobject arg) {
+            optimisticData.put(getKey("metaobject"), arg);
+            return this;
+        }
+
+        /**
+        * All active metaobjects for the shop.
+        */
+
+        public MetaobjectConnection getMetaobjects() {
+            return (MetaobjectConnection) get("metaobjects");
+        }
+
+        public QueryRoot setMetaobjects(MetaobjectConnection arg) {
+            optimisticData.put(getKey("metaobjects"), arg);
+            return this;
+        }
+
+        /**
         * Returns a specific node by ID.
         */
 
@@ -55393,6 +56597,10 @@ public class Storefront {
                 case "locations": return true;
 
                 case "menu": return true;
+
+                case "metaobject": return true;
+
+                case "metaobjects": return true;
 
                 case "node": return false;
 
