@@ -25,7 +25,7 @@ import java.io.Serializable;
 import java.util.*;
 
 public class Storefront {
-    public static final String API_VERSION = "2023-01";
+    public static final String API_VERSION = "2023-04";
 
     public static QueryRootQuery query(QueryRootQueryDefinition queryDef) {
         return query(Collections.emptyList(), queryDef);
@@ -313,6 +313,240 @@ public class Storefront {
 
                 default: return false;
             }
+        }
+    }
+
+    public static class ApplePayWalletContentInput implements Serializable {
+        private MailingAddressInput billingAddress;
+
+        private String data;
+
+        private ApplePayWalletHeaderInput header;
+
+        private String signature;
+
+        private String version;
+
+        private Input<String> lastDigits = Input.undefined();
+
+        public ApplePayWalletContentInput(MailingAddressInput billingAddress, String data, ApplePayWalletHeaderInput header, String signature, String version) {
+            this.billingAddress = billingAddress;
+
+            this.data = data;
+
+            this.header = header;
+
+            this.signature = signature;
+
+            this.version = version;
+        }
+
+        public MailingAddressInput getBillingAddress() {
+            return billingAddress;
+        }
+
+        public ApplePayWalletContentInput setBillingAddress(MailingAddressInput billingAddress) {
+            this.billingAddress = billingAddress;
+            return this;
+        }
+
+        public String getData() {
+            return data;
+        }
+
+        public ApplePayWalletContentInput setData(String data) {
+            this.data = data;
+            return this;
+        }
+
+        public ApplePayWalletHeaderInput getHeader() {
+            return header;
+        }
+
+        public ApplePayWalletContentInput setHeader(ApplePayWalletHeaderInput header) {
+            this.header = header;
+            return this;
+        }
+
+        public String getSignature() {
+            return signature;
+        }
+
+        public ApplePayWalletContentInput setSignature(String signature) {
+            this.signature = signature;
+            return this;
+        }
+
+        public String getVersion() {
+            return version;
+        }
+
+        public ApplePayWalletContentInput setVersion(String version) {
+            this.version = version;
+            return this;
+        }
+
+        public String getLastDigits() {
+            return lastDigits.getValue();
+        }
+
+        public Input<String> getLastDigitsInput() {
+            return lastDigits;
+        }
+
+        public ApplePayWalletContentInput setLastDigits(String lastDigits) {
+            this.lastDigits = Input.optional(lastDigits);
+            return this;
+        }
+
+        public ApplePayWalletContentInput setLastDigitsInput(Input<String> lastDigits) {
+            if (lastDigits == null) {
+                throw new IllegalArgumentException("Input can not be null");
+            }
+            this.lastDigits = lastDigits;
+            return this;
+        }
+
+        public void appendTo(StringBuilder _queryBuilder) {
+            String separator = "";
+            _queryBuilder.append('{');
+
+            _queryBuilder.append(separator);
+            separator = ",";
+            _queryBuilder.append("billingAddress:");
+            billingAddress.appendTo(_queryBuilder);
+
+            _queryBuilder.append(separator);
+            separator = ",";
+            _queryBuilder.append("data:");
+            Query.appendQuotedString(_queryBuilder, data.toString());
+
+            _queryBuilder.append(separator);
+            separator = ",";
+            _queryBuilder.append("header:");
+            header.appendTo(_queryBuilder);
+
+            _queryBuilder.append(separator);
+            separator = ",";
+            _queryBuilder.append("signature:");
+            Query.appendQuotedString(_queryBuilder, signature.toString());
+
+            _queryBuilder.append(separator);
+            separator = ",";
+            _queryBuilder.append("version:");
+            Query.appendQuotedString(_queryBuilder, version.toString());
+
+            if (this.lastDigits.isDefined()) {
+                _queryBuilder.append(separator);
+                separator = ",";
+                _queryBuilder.append("lastDigits:");
+                if (lastDigits.getValue() != null) {
+                    Query.appendQuotedString(_queryBuilder, lastDigits.getValue().toString());
+                } else {
+                    _queryBuilder.append("null");
+                }
+            }
+
+            _queryBuilder.append('}');
+        }
+    }
+
+    public static class ApplePayWalletHeaderInput implements Serializable {
+        private String ephemeralPublicKey;
+
+        private String publicKeyHash;
+
+        private String transactionId;
+
+        private Input<String> applicationData = Input.undefined();
+
+        public ApplePayWalletHeaderInput(String ephemeralPublicKey, String publicKeyHash, String transactionId) {
+            this.ephemeralPublicKey = ephemeralPublicKey;
+
+            this.publicKeyHash = publicKeyHash;
+
+            this.transactionId = transactionId;
+        }
+
+        public String getEphemeralPublicKey() {
+            return ephemeralPublicKey;
+        }
+
+        public ApplePayWalletHeaderInput setEphemeralPublicKey(String ephemeralPublicKey) {
+            this.ephemeralPublicKey = ephemeralPublicKey;
+            return this;
+        }
+
+        public String getPublicKeyHash() {
+            return publicKeyHash;
+        }
+
+        public ApplePayWalletHeaderInput setPublicKeyHash(String publicKeyHash) {
+            this.publicKeyHash = publicKeyHash;
+            return this;
+        }
+
+        public String getTransactionId() {
+            return transactionId;
+        }
+
+        public ApplePayWalletHeaderInput setTransactionId(String transactionId) {
+            this.transactionId = transactionId;
+            return this;
+        }
+
+        public String getApplicationData() {
+            return applicationData.getValue();
+        }
+
+        public Input<String> getApplicationDataInput() {
+            return applicationData;
+        }
+
+        public ApplePayWalletHeaderInput setApplicationData(String applicationData) {
+            this.applicationData = Input.optional(applicationData);
+            return this;
+        }
+
+        public ApplePayWalletHeaderInput setApplicationDataInput(Input<String> applicationData) {
+            if (applicationData == null) {
+                throw new IllegalArgumentException("Input can not be null");
+            }
+            this.applicationData = applicationData;
+            return this;
+        }
+
+        public void appendTo(StringBuilder _queryBuilder) {
+            String separator = "";
+            _queryBuilder.append('{');
+
+            _queryBuilder.append(separator);
+            separator = ",";
+            _queryBuilder.append("ephemeralPublicKey:");
+            Query.appendQuotedString(_queryBuilder, ephemeralPublicKey.toString());
+
+            _queryBuilder.append(separator);
+            separator = ",";
+            _queryBuilder.append("publicKeyHash:");
+            Query.appendQuotedString(_queryBuilder, publicKeyHash.toString());
+
+            _queryBuilder.append(separator);
+            separator = ",";
+            _queryBuilder.append("transactionId:");
+            Query.appendQuotedString(_queryBuilder, transactionId.toString());
+
+            if (this.applicationData.isDefined()) {
+                _queryBuilder.append(separator);
+                separator = ",";
+                _queryBuilder.append("applicationData:");
+                if (applicationData.getValue() != null) {
+                    Query.appendQuotedString(_queryBuilder, applicationData.getValue().toString());
+                } else {
+                    _queryBuilder.append("null");
+                }
+            }
+
+            _queryBuilder.append('}');
         }
     }
 
@@ -2502,6 +2736,701 @@ public class Storefront {
         }
     }
 
+    public interface BaseCartLineQueryDefinition {
+        void define(BaseCartLineQuery _queryBuilder);
+    }
+
+    /**
+    * Represents a cart line common fields.
+    */
+    public static class BaseCartLineQuery extends Query<BaseCartLineQuery> {
+        BaseCartLineQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+
+            startField("__typename");
+        }
+
+        /**
+        * An attribute associated with the cart line.
+        */
+        public BaseCartLineQuery attribute(String key, AttributeQueryDefinition queryDef) {
+            startField("attribute");
+
+            _queryBuilder.append("(key:");
+            Query.appendQuotedString(_queryBuilder, key.toString());
+
+            _queryBuilder.append(')');
+
+            _queryBuilder.append('{');
+            queryDef.define(new AttributeQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * The attributes associated with the cart line. Attributes are represented as key-value pairs.
+        */
+        public BaseCartLineQuery attributes(AttributeQueryDefinition queryDef) {
+            startField("attributes");
+
+            _queryBuilder.append('{');
+            queryDef.define(new AttributeQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * The cost of the merchandise that the buyer will pay for at checkout. The costs are subject to change
+        * and changes will be reflected at checkout.
+        */
+        public BaseCartLineQuery cost(CartLineCostQueryDefinition queryDef) {
+            startField("cost");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CartLineCostQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * The discounts that have been applied to the cart line.
+        */
+        public BaseCartLineQuery discountAllocations(CartDiscountAllocationQueryDefinition queryDef) {
+            startField("discountAllocations");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CartDiscountAllocationQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * The estimated cost of the merchandise that the buyer will pay for at checkout. The estimated costs
+        * are subject to change and changes will be reflected at checkout.
+        *
+        * @deprecated Use `cost` instead.
+        */
+        @Deprecated
+        public BaseCartLineQuery estimatedCost(CartLineEstimatedCostQueryDefinition queryDef) {
+            startField("estimatedCost");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CartLineEstimatedCostQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * A globally-unique identifier.
+        */
+        public BaseCartLineQuery id() {
+            startField("id");
+
+            return this;
+        }
+
+        /**
+        * The merchandise that the buyer intends to purchase.
+        */
+        public BaseCartLineQuery merchandise(MerchandiseQueryDefinition queryDef) {
+            startField("merchandise");
+
+            _queryBuilder.append('{');
+            queryDef.define(new MerchandiseQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * The quantity of the merchandise that the customer intends to purchase.
+        */
+        public BaseCartLineQuery quantity() {
+            startField("quantity");
+
+            return this;
+        }
+
+        /**
+        * The selling plan associated with the cart line and the effect that each selling plan has on variants
+        * when they're purchased.
+        */
+        public BaseCartLineQuery sellingPlanAllocation(SellingPlanAllocationQueryDefinition queryDef) {
+            startField("sellingPlanAllocation");
+
+            _queryBuilder.append('{');
+            queryDef.define(new SellingPlanAllocationQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        public BaseCartLineQuery onCartLine(CartLineQueryDefinition queryDef) {
+            startInlineFragment("CartLine");
+            queryDef.define(new CartLineQuery(_queryBuilder));
+            _queryBuilder.append('}');
+            return this;
+        }
+    }
+
+    public interface BaseCartLine {
+        String getGraphQlTypeName();
+
+        Attribute getAttribute();
+
+        List<Attribute> getAttributes();
+
+        CartLineCost getCost();
+
+        List<CartDiscountAllocation> getDiscountAllocations();
+
+        CartLineEstimatedCost getEstimatedCost();
+
+        ID getId();
+
+        Merchandise getMerchandise();
+
+        Integer getQuantity();
+
+        SellingPlanAllocation getSellingPlanAllocation();
+    }
+
+    /**
+    * Represents a cart line common fields.
+    */
+    public static class UnknownBaseCartLine extends AbstractResponse<UnknownBaseCartLine> implements BaseCartLine {
+        public UnknownBaseCartLine() {
+        }
+
+        public UnknownBaseCartLine(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "attribute": {
+                        Attribute optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new Attribute(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "attributes": {
+                        List<Attribute> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new Attribute(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "cost": {
+                        responseData.put(key, new CartLineCost(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "discountAllocations": {
+                        List<CartDiscountAllocation> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(UnknownCartDiscountAllocation.create(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "estimatedCost": {
+                        responseData.put(key, new CartLineEstimatedCost(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "id": {
+                        responseData.put(key, new ID(jsonAsString(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "merchandise": {
+                        responseData.put(key, UnknownMerchandise.create(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "quantity": {
+                        responseData.put(key, jsonAsInteger(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "sellingPlanAllocation": {
+                        SellingPlanAllocation optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new SellingPlanAllocation(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public static BaseCartLine create(JsonObject fields) throws SchemaViolationError {
+            String typeName = fields.getAsJsonPrimitive("__typename").getAsString();
+            switch (typeName) {
+                case "CartLine": {
+                    return new CartLine(fields);
+                }
+
+                default: {
+                    return new UnknownBaseCartLine(fields);
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return (String) get("__typename");
+        }
+
+        /**
+        * An attribute associated with the cart line.
+        */
+
+        public Attribute getAttribute() {
+            return (Attribute) get("attribute");
+        }
+
+        public UnknownBaseCartLine setAttribute(Attribute arg) {
+            optimisticData.put(getKey("attribute"), arg);
+            return this;
+        }
+
+        /**
+        * The attributes associated with the cart line. Attributes are represented as key-value pairs.
+        */
+
+        public List<Attribute> getAttributes() {
+            return (List<Attribute>) get("attributes");
+        }
+
+        public UnknownBaseCartLine setAttributes(List<Attribute> arg) {
+            optimisticData.put(getKey("attributes"), arg);
+            return this;
+        }
+
+        /**
+        * The cost of the merchandise that the buyer will pay for at checkout. The costs are subject to change
+        * and changes will be reflected at checkout.
+        */
+
+        public CartLineCost getCost() {
+            return (CartLineCost) get("cost");
+        }
+
+        public UnknownBaseCartLine setCost(CartLineCost arg) {
+            optimisticData.put(getKey("cost"), arg);
+            return this;
+        }
+
+        /**
+        * The discounts that have been applied to the cart line.
+        */
+
+        public List<CartDiscountAllocation> getDiscountAllocations() {
+            return (List<CartDiscountAllocation>) get("discountAllocations");
+        }
+
+        public UnknownBaseCartLine setDiscountAllocations(List<CartDiscountAllocation> arg) {
+            optimisticData.put(getKey("discountAllocations"), arg);
+            return this;
+        }
+
+        /**
+        * The estimated cost of the merchandise that the buyer will pay for at checkout. The estimated costs
+        * are subject to change and changes will be reflected at checkout.
+        *
+        * @deprecated Use `cost` instead.
+        */
+
+        public CartLineEstimatedCost getEstimatedCost() {
+            return (CartLineEstimatedCost) get("estimatedCost");
+        }
+
+        public UnknownBaseCartLine setEstimatedCost(CartLineEstimatedCost arg) {
+            optimisticData.put(getKey("estimatedCost"), arg);
+            return this;
+        }
+
+        /**
+        * A globally-unique identifier.
+        */
+
+        public ID getId() {
+            return (ID) get("id");
+        }
+
+        public UnknownBaseCartLine setId(ID arg) {
+            optimisticData.put(getKey("id"), arg);
+            return this;
+        }
+
+        /**
+        * The merchandise that the buyer intends to purchase.
+        */
+
+        public Merchandise getMerchandise() {
+            return (Merchandise) get("merchandise");
+        }
+
+        public UnknownBaseCartLine setMerchandise(Merchandise arg) {
+            optimisticData.put(getKey("merchandise"), arg);
+            return this;
+        }
+
+        /**
+        * The quantity of the merchandise that the customer intends to purchase.
+        */
+
+        public Integer getQuantity() {
+            return (Integer) get("quantity");
+        }
+
+        public UnknownBaseCartLine setQuantity(Integer arg) {
+            optimisticData.put(getKey("quantity"), arg);
+            return this;
+        }
+
+        /**
+        * The selling plan associated with the cart line and the effect that each selling plan has on variants
+        * when they're purchased.
+        */
+
+        public SellingPlanAllocation getSellingPlanAllocation() {
+            return (SellingPlanAllocation) get("sellingPlanAllocation");
+        }
+
+        public UnknownBaseCartLine setSellingPlanAllocation(SellingPlanAllocation arg) {
+            optimisticData.put(getKey("sellingPlanAllocation"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "attribute": return true;
+
+                case "attributes": return true;
+
+                case "cost": return true;
+
+                case "discountAllocations": return false;
+
+                case "estimatedCost": return true;
+
+                case "id": return false;
+
+                case "merchandise": return false;
+
+                case "quantity": return false;
+
+                case "sellingPlanAllocation": return true;
+
+                default: return false;
+            }
+        }
+    }
+
+    public interface BaseCartLineConnectionQueryDefinition {
+        void define(BaseCartLineConnectionQuery _queryBuilder);
+    }
+
+    /**
+    * An auto-generated type for paginating through multiple BaseCartLines.
+    */
+    public static class BaseCartLineConnectionQuery extends Query<BaseCartLineConnectionQuery> {
+        BaseCartLineConnectionQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * A list of edges.
+        */
+        public BaseCartLineConnectionQuery edges(BaseCartLineEdgeQueryDefinition queryDef) {
+            startField("edges");
+
+            _queryBuilder.append('{');
+            queryDef.define(new BaseCartLineEdgeQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * A list of the nodes contained in BaseCartLineEdge.
+        */
+        public BaseCartLineConnectionQuery nodes(BaseCartLineQueryDefinition queryDef) {
+            startField("nodes");
+
+            _queryBuilder.append('{');
+            queryDef.define(new BaseCartLineQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * Information to aid in pagination.
+        */
+        public BaseCartLineConnectionQuery pageInfo(PageInfoQueryDefinition queryDef) {
+            startField("pageInfo");
+
+            _queryBuilder.append('{');
+            queryDef.define(new PageInfoQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+    }
+
+    /**
+    * An auto-generated type for paginating through multiple BaseCartLines.
+    */
+    public static class BaseCartLineConnection extends AbstractResponse<BaseCartLineConnection> {
+        public BaseCartLineConnection() {
+        }
+
+        public BaseCartLineConnection(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "edges": {
+                        List<BaseCartLineEdge> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new BaseCartLineEdge(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "nodes": {
+                        List<BaseCartLine> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(UnknownBaseCartLine.create(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "pageInfo": {
+                        responseData.put(key, new PageInfo(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "BaseCartLineConnection";
+        }
+
+        /**
+        * A list of edges.
+        */
+
+        public List<BaseCartLineEdge> getEdges() {
+            return (List<BaseCartLineEdge>) get("edges");
+        }
+
+        public BaseCartLineConnection setEdges(List<BaseCartLineEdge> arg) {
+            optimisticData.put(getKey("edges"), arg);
+            return this;
+        }
+
+        /**
+        * A list of the nodes contained in BaseCartLineEdge.
+        */
+
+        public List<BaseCartLine> getNodes() {
+            return (List<BaseCartLine>) get("nodes");
+        }
+
+        public BaseCartLineConnection setNodes(List<BaseCartLine> arg) {
+            optimisticData.put(getKey("nodes"), arg);
+            return this;
+        }
+
+        /**
+        * Information to aid in pagination.
+        */
+
+        public PageInfo getPageInfo() {
+            return (PageInfo) get("pageInfo");
+        }
+
+        public BaseCartLineConnection setPageInfo(PageInfo arg) {
+            optimisticData.put(getKey("pageInfo"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "edges": return true;
+
+                case "nodes": return false;
+
+                case "pageInfo": return true;
+
+                default: return false;
+            }
+        }
+    }
+
+    public interface BaseCartLineEdgeQueryDefinition {
+        void define(BaseCartLineEdgeQuery _queryBuilder);
+    }
+
+    /**
+    * An auto-generated type which holds one BaseCartLine and a cursor during pagination.
+    */
+    public static class BaseCartLineEdgeQuery extends Query<BaseCartLineEdgeQuery> {
+        BaseCartLineEdgeQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * A cursor for use in pagination.
+        */
+        public BaseCartLineEdgeQuery cursor() {
+            startField("cursor");
+
+            return this;
+        }
+
+        /**
+        * The item at the end of BaseCartLineEdge.
+        */
+        public BaseCartLineEdgeQuery node(BaseCartLineQueryDefinition queryDef) {
+            startField("node");
+
+            _queryBuilder.append('{');
+            queryDef.define(new BaseCartLineQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+    }
+
+    /**
+    * An auto-generated type which holds one BaseCartLine and a cursor during pagination.
+    */
+    public static class BaseCartLineEdge extends AbstractResponse<BaseCartLineEdge> {
+        public BaseCartLineEdge() {
+        }
+
+        public BaseCartLineEdge(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "cursor": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "node": {
+                        responseData.put(key, UnknownBaseCartLine.create(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "BaseCartLineEdge";
+        }
+
+        /**
+        * A cursor for use in pagination.
+        */
+
+        public String getCursor() {
+            return (String) get("cursor");
+        }
+
+        public BaseCartLineEdge setCursor(String arg) {
+            optimisticData.put(getKey("cursor"), arg);
+            return this;
+        }
+
+        /**
+        * The item at the end of BaseCartLineEdge.
+        */
+
+        public BaseCartLine getNode() {
+            return (BaseCartLine) get("node");
+        }
+
+        public BaseCartLineEdge setNode(BaseCartLine arg) {
+            optimisticData.put(getKey("node"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "cursor": return false;
+
+                case "node": return false;
+
+                default: return false;
+            }
+        }
+    }
+
     public interface BlogQueryDefinition {
         void define(BlogQuery _queryBuilder);
     }
@@ -4300,14 +5229,14 @@ public class Storefront {
         /**
         * A list of lines containing information about the items the customer intends to purchase.
         */
-        public CartQuery lines(CartLineConnectionQueryDefinition queryDef) {
+        public CartQuery lines(BaseCartLineConnectionQueryDefinition queryDef) {
             return lines(args -> {}, queryDef);
         }
 
         /**
         * A list of lines containing information about the items the customer intends to purchase.
         */
-        public CartQuery lines(LinesArgumentsDefinition argsDef, CartLineConnectionQueryDefinition queryDef) {
+        public CartQuery lines(LinesArgumentsDefinition argsDef, BaseCartLineConnectionQueryDefinition queryDef) {
             startField("lines");
 
             LinesArguments args = new LinesArguments(_queryBuilder);
@@ -4315,7 +5244,55 @@ public class Storefront {
             LinesArguments.end(args);
 
             _queryBuilder.append('{');
-            queryDef.define(new CartLineConnectionQuery(_queryBuilder));
+            queryDef.define(new BaseCartLineConnectionQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * Returns a metafield found by namespace and key.
+        */
+        public CartQuery metafield(String namespace, String key, MetafieldQueryDefinition queryDef) {
+            startField("metafield");
+
+            _queryBuilder.append("(namespace:");
+            Query.appendQuotedString(_queryBuilder, namespace.toString());
+
+            _queryBuilder.append(",key:");
+            Query.appendQuotedString(_queryBuilder, key.toString());
+
+            _queryBuilder.append(')');
+
+            _queryBuilder.append('{');
+            queryDef.define(new MetafieldQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * The metafields associated with the resource matching the supplied list of namespaces and keys.
+        */
+        public CartQuery metafields(List<HasMetafieldsIdentifier> identifiers, MetafieldQueryDefinition queryDef) {
+            startField("metafields");
+
+            _queryBuilder.append("(identifiers:");
+            _queryBuilder.append('[');
+            {
+                String listSeperator1 = "";
+                for (HasMetafieldsIdentifier item1 : identifiers) {
+                    _queryBuilder.append(listSeperator1);
+                    listSeperator1 = ",";
+                    item1.appendTo(_queryBuilder);
+                }
+            }
+            _queryBuilder.append(']');
+
+            _queryBuilder.append(')');
+
+            _queryBuilder.append('{');
+            queryDef.define(new MetafieldQuery(_queryBuilder));
             _queryBuilder.append('}');
 
             return this;
@@ -4357,7 +5334,7 @@ public class Storefront {
     * cart](https://shopify.dev/custom-storefronts/internationalization/international-pricing)
     * during a customer's session.
     */
-    public static class Cart extends AbstractResponse<Cart> implements Node {
+    public static class Cart extends AbstractResponse<Cart> implements HasMetafields, MetafieldParentResource, Node {
         public Cart() {
         }
 
@@ -4453,7 +5430,34 @@ public class Storefront {
                     }
 
                     case "lines": {
-                        responseData.put(key, new CartLineConnection(jsonAsObject(field.getValue(), key)));
+                        responseData.put(key, new BaseCartLineConnection(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "metafield": {
+                        Metafield optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new Metafield(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "metafields": {
+                        List<Metafield> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            Metafield optional2 = null;
+                            if (!element1.isJsonNull()) {
+                                optional2 = new Metafield(jsonAsObject(element1, key));
+                            }
+
+                            list1.add(optional2);
+                        }
+
+                        responseData.put(key, list1);
 
                         break;
                     }
@@ -4653,12 +5657,38 @@ public class Storefront {
         * A list of lines containing information about the items the customer intends to purchase.
         */
 
-        public CartLineConnection getLines() {
-            return (CartLineConnection) get("lines");
+        public BaseCartLineConnection getLines() {
+            return (BaseCartLineConnection) get("lines");
         }
 
-        public Cart setLines(CartLineConnection arg) {
+        public Cart setLines(BaseCartLineConnection arg) {
             optimisticData.put(getKey("lines"), arg);
+            return this;
+        }
+
+        /**
+        * Returns a metafield found by namespace and key.
+        */
+
+        public Metafield getMetafield() {
+            return (Metafield) get("metafield");
+        }
+
+        public Cart setMetafield(Metafield arg) {
+            optimisticData.put(getKey("metafield"), arg);
+            return this;
+        }
+
+        /**
+        * The metafields associated with the resource matching the supplied list of namespaces and keys.
+        */
+
+        public List<Metafield> getMetafields() {
+            return (List<Metafield>) get("metafields");
+        }
+
+        public Cart setMetafields(List<Metafield> arg) {
+            optimisticData.put(getKey("metafields"), arg);
             return this;
         }
 
@@ -4727,6 +5757,10 @@ public class Storefront {
                 case "id": return false;
 
                 case "lines": return true;
+
+                case "metafield": return true;
+
+                case "metafields": return true;
 
                 case "note": return false;
 
@@ -5041,6 +6075,16 @@ public class Storefront {
 
             return this;
         }
+
+        /**
+        * A set of wallet preferences tied to the buyer that is interacting with the cart.
+        * Preferences can be used to populate relevant payment fields in the checkout flow.
+        */
+        public CartBuyerIdentityQuery walletPreferences() {
+            startField("walletPreferences");
+
+            return this;
+        }
     }
 
     /**
@@ -5106,6 +6150,17 @@ public class Storefront {
                         }
 
                         responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "walletPreferences": {
+                        List<String> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(jsonAsString(element1, key));
+                        }
+
+                        responseData.put(key, list1);
 
                         break;
                     }
@@ -5192,6 +6247,20 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * A set of wallet preferences tied to the buyer that is interacting with the cart.
+        * Preferences can be used to populate relevant payment fields in the checkout flow.
+        */
+
+        public List<String> getWalletPreferences() {
+            return (List<String>) get("walletPreferences");
+        }
+
+        public CartBuyerIdentity setWalletPreferences(List<String> arg) {
+            optimisticData.put(getKey("walletPreferences"), arg);
+            return this;
+        }
+
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "countryCode": return false;
@@ -5203,6 +6272,8 @@ public class Storefront {
                 case "email": return false;
 
                 case "phone": return false;
+
+                case "walletPreferences": return false;
 
                 default: return false;
             }
@@ -5219,6 +6290,8 @@ public class Storefront {
         private Input<String> customerAccessToken = Input.undefined();
 
         private Input<List<DeliveryAddressInput>> deliveryAddressPreferences = Input.undefined();
+
+        private Input<List<String>> walletPreferences = Input.undefined();
 
         public String getEmail() {
             return email.getValue();
@@ -5325,6 +6398,27 @@ public class Storefront {
             return this;
         }
 
+        public List<String> getWalletPreferences() {
+            return walletPreferences.getValue();
+        }
+
+        public Input<List<String>> getWalletPreferencesInput() {
+            return walletPreferences;
+        }
+
+        public CartBuyerIdentityInput setWalletPreferences(List<String> walletPreferences) {
+            this.walletPreferences = Input.optional(walletPreferences);
+            return this;
+        }
+
+        public CartBuyerIdentityInput setWalletPreferencesInput(Input<List<String>> walletPreferences) {
+            if (walletPreferences == null) {
+                throw new IllegalArgumentException("Input can not be null");
+            }
+            this.walletPreferences = walletPreferences;
+            return this;
+        }
+
         public void appendTo(StringBuilder _queryBuilder) {
             String separator = "";
             _queryBuilder.append('{');
@@ -5385,6 +6479,26 @@ public class Storefront {
                             _queryBuilder.append(listSeperator1);
                             listSeperator1 = ",";
                             item1.appendTo(_queryBuilder);
+                        }
+                    }
+                    _queryBuilder.append(']');
+                } else {
+                    _queryBuilder.append("null");
+                }
+            }
+
+            if (this.walletPreferences.isDefined()) {
+                _queryBuilder.append(separator);
+                separator = ",";
+                _queryBuilder.append("walletPreferences:");
+                if (walletPreferences.getValue() != null) {
+                    _queryBuilder.append('[');
+                    {
+                        String listSeperator1 = "";
+                        for (String item1 : walletPreferences.getValue()) {
+                            _queryBuilder.append(listSeperator1);
+                            listSeperator1 = ",";
+                            Query.appendQuotedString(_queryBuilder, item1.toString());
                         }
                     }
                     _queryBuilder.append(']');
@@ -5627,6 +6741,696 @@ public class Storefront {
                 case "code": return false;
 
                 case "discountedAmount": return true;
+
+                default: return false;
+            }
+        }
+    }
+
+    public interface CartCompletionActionQueryDefinition {
+        void define(CartCompletionActionQuery _queryBuilder);
+    }
+
+    /**
+    * The completion action to checkout a cart.
+    */
+    public static class CartCompletionActionQuery extends Query<CartCompletionActionQuery> {
+        CartCompletionActionQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+
+            startField("__typename");
+        }
+
+        public CartCompletionActionQuery onCompletePaymentChallenge(CompletePaymentChallengeQueryDefinition queryDef) {
+            startInlineFragment("CompletePaymentChallenge");
+            queryDef.define(new CompletePaymentChallengeQuery(_queryBuilder));
+            _queryBuilder.append('}');
+            return this;
+        }
+    }
+
+    public interface CartCompletionAction {
+        String getGraphQlTypeName();
+    }
+
+    /**
+    * The completion action to checkout a cart.
+    */
+    public static class UnknownCartCompletionAction extends AbstractResponse<UnknownCartCompletionAction> implements CartCompletionAction {
+        public UnknownCartCompletionAction() {
+        }
+
+        public UnknownCartCompletionAction(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public static CartCompletionAction create(JsonObject fields) throws SchemaViolationError {
+            String typeName = fields.getAsJsonPrimitive("__typename").getAsString();
+            switch (typeName) {
+                case "CompletePaymentChallenge": {
+                    return new CompletePaymentChallenge(fields);
+                }
+
+                default: {
+                    return new UnknownCartCompletionAction(fields);
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return (String) get("__typename");
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                default: return false;
+            }
+        }
+    }
+
+    public interface CartCompletionActionRequiredQueryDefinition {
+        void define(CartCompletionActionRequiredQuery _queryBuilder);
+    }
+
+    /**
+    * The required completion action to checkout a cart.
+    */
+    public static class CartCompletionActionRequiredQuery extends Query<CartCompletionActionRequiredQuery> {
+        CartCompletionActionRequiredQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * The action required to complete the cart completion attempt.
+        */
+        public CartCompletionActionRequiredQuery action(CartCompletionActionQueryDefinition queryDef) {
+            startField("action");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CartCompletionActionQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * The ID of the cart completion attempt.
+        */
+        public CartCompletionActionRequiredQuery id() {
+            startField("id");
+
+            return this;
+        }
+    }
+
+    /**
+    * The required completion action to checkout a cart.
+    */
+    public static class CartCompletionActionRequired extends AbstractResponse<CartCompletionActionRequired> implements CartCompletionAttemptResult {
+        public CartCompletionActionRequired() {
+        }
+
+        public CartCompletionActionRequired(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "action": {
+                        CartCompletionAction optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = UnknownCartCompletionAction.create(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "id": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "CartCompletionActionRequired";
+        }
+
+        /**
+        * The action required to complete the cart completion attempt.
+        */
+
+        public CartCompletionAction getAction() {
+            return (CartCompletionAction) get("action");
+        }
+
+        public CartCompletionActionRequired setAction(CartCompletionAction arg) {
+            optimisticData.put(getKey("action"), arg);
+            return this;
+        }
+
+        /**
+        * The ID of the cart completion attempt.
+        */
+
+        public String getId() {
+            return (String) get("id");
+        }
+
+        public CartCompletionActionRequired setId(String arg) {
+            optimisticData.put(getKey("id"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "action": return false;
+
+                case "id": return false;
+
+                default: return false;
+            }
+        }
+    }
+
+    public interface CartCompletionAttemptResultQueryDefinition {
+        void define(CartCompletionAttemptResultQuery _queryBuilder);
+    }
+
+    /**
+    * The result of a cart completion attempt.
+    */
+    public static class CartCompletionAttemptResultQuery extends Query<CartCompletionAttemptResultQuery> {
+        CartCompletionAttemptResultQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+
+            startField("__typename");
+        }
+
+        public CartCompletionAttemptResultQuery onCartCompletionActionRequired(CartCompletionActionRequiredQueryDefinition queryDef) {
+            startInlineFragment("CartCompletionActionRequired");
+            queryDef.define(new CartCompletionActionRequiredQuery(_queryBuilder));
+            _queryBuilder.append('}');
+            return this;
+        }
+
+        public CartCompletionAttemptResultQuery onCartCompletionFailed(CartCompletionFailedQueryDefinition queryDef) {
+            startInlineFragment("CartCompletionFailed");
+            queryDef.define(new CartCompletionFailedQuery(_queryBuilder));
+            _queryBuilder.append('}');
+            return this;
+        }
+
+        public CartCompletionAttemptResultQuery onCartCompletionProcessing(CartCompletionProcessingQueryDefinition queryDef) {
+            startInlineFragment("CartCompletionProcessing");
+            queryDef.define(new CartCompletionProcessingQuery(_queryBuilder));
+            _queryBuilder.append('}');
+            return this;
+        }
+
+        public CartCompletionAttemptResultQuery onCartCompletionSuccess(CartCompletionSuccessQueryDefinition queryDef) {
+            startInlineFragment("CartCompletionSuccess");
+            queryDef.define(new CartCompletionSuccessQuery(_queryBuilder));
+            _queryBuilder.append('}');
+            return this;
+        }
+    }
+
+    public interface CartCompletionAttemptResult {
+        String getGraphQlTypeName();
+    }
+
+    /**
+    * The result of a cart completion attempt.
+    */
+    public static class UnknownCartCompletionAttemptResult extends AbstractResponse<UnknownCartCompletionAttemptResult> implements CartCompletionAttemptResult {
+        public UnknownCartCompletionAttemptResult() {
+        }
+
+        public UnknownCartCompletionAttemptResult(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public static CartCompletionAttemptResult create(JsonObject fields) throws SchemaViolationError {
+            String typeName = fields.getAsJsonPrimitive("__typename").getAsString();
+            switch (typeName) {
+                case "CartCompletionActionRequired": {
+                    return new CartCompletionActionRequired(fields);
+                }
+
+                case "CartCompletionFailed": {
+                    return new CartCompletionFailed(fields);
+                }
+
+                case "CartCompletionProcessing": {
+                    return new CartCompletionProcessing(fields);
+                }
+
+                case "CartCompletionSuccess": {
+                    return new CartCompletionSuccess(fields);
+                }
+
+                default: {
+                    return new UnknownCartCompletionAttemptResult(fields);
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return (String) get("__typename");
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                default: return false;
+            }
+        }
+    }
+
+    public interface CartCompletionFailedQueryDefinition {
+        void define(CartCompletionFailedQuery _queryBuilder);
+    }
+
+    /**
+    * A failed completion to checkout a cart.
+    */
+    public static class CartCompletionFailedQuery extends Query<CartCompletionFailedQuery> {
+        CartCompletionFailedQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * The errors that caused the checkout to fail.
+        */
+        public CartCompletionFailedQuery errors(CompletionErrorQueryDefinition queryDef) {
+            startField("errors");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CompletionErrorQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * The ID of the cart completion attempt.
+        */
+        public CartCompletionFailedQuery id() {
+            startField("id");
+
+            return this;
+        }
+    }
+
+    /**
+    * A failed completion to checkout a cart.
+    */
+    public static class CartCompletionFailed extends AbstractResponse<CartCompletionFailed> implements CartCompletionAttemptResult {
+        public CartCompletionFailed() {
+        }
+
+        public CartCompletionFailed(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "errors": {
+                        List<CompletionError> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new CompletionError(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "id": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "CartCompletionFailed";
+        }
+
+        /**
+        * The errors that caused the checkout to fail.
+        */
+
+        public List<CompletionError> getErrors() {
+            return (List<CompletionError>) get("errors");
+        }
+
+        public CartCompletionFailed setErrors(List<CompletionError> arg) {
+            optimisticData.put(getKey("errors"), arg);
+            return this;
+        }
+
+        /**
+        * The ID of the cart completion attempt.
+        */
+
+        public String getId() {
+            return (String) get("id");
+        }
+
+        public CartCompletionFailed setId(String arg) {
+            optimisticData.put(getKey("id"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "errors": return true;
+
+                case "id": return false;
+
+                default: return false;
+            }
+        }
+    }
+
+    public interface CartCompletionProcessingQueryDefinition {
+        void define(CartCompletionProcessingQuery _queryBuilder);
+    }
+
+    /**
+    * A cart checkout completion that's still processing.
+    */
+    public static class CartCompletionProcessingQuery extends Query<CartCompletionProcessingQuery> {
+        CartCompletionProcessingQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * The ID of the cart completion attempt.
+        */
+        public CartCompletionProcessingQuery id() {
+            startField("id");
+
+            return this;
+        }
+
+        /**
+        * The number of milliseconds to wait before polling again.
+        */
+        public CartCompletionProcessingQuery pollDelay() {
+            startField("pollDelay");
+
+            return this;
+        }
+    }
+
+    /**
+    * A cart checkout completion that's still processing.
+    */
+    public static class CartCompletionProcessing extends AbstractResponse<CartCompletionProcessing> implements CartCompletionAttemptResult {
+        public CartCompletionProcessing() {
+        }
+
+        public CartCompletionProcessing(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "id": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "pollDelay": {
+                        responseData.put(key, jsonAsInteger(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "CartCompletionProcessing";
+        }
+
+        /**
+        * The ID of the cart completion attempt.
+        */
+
+        public String getId() {
+            return (String) get("id");
+        }
+
+        public CartCompletionProcessing setId(String arg) {
+            optimisticData.put(getKey("id"), arg);
+            return this;
+        }
+
+        /**
+        * The number of milliseconds to wait before polling again.
+        */
+
+        public Integer getPollDelay() {
+            return (Integer) get("pollDelay");
+        }
+
+        public CartCompletionProcessing setPollDelay(Integer arg) {
+            optimisticData.put(getKey("pollDelay"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "id": return false;
+
+                case "pollDelay": return false;
+
+                default: return false;
+            }
+        }
+    }
+
+    public interface CartCompletionSuccessQueryDefinition {
+        void define(CartCompletionSuccessQuery _queryBuilder);
+    }
+
+    /**
+    * A successful completion to checkout a cart and a created order.
+    */
+    public static class CartCompletionSuccessQuery extends Query<CartCompletionSuccessQuery> {
+        CartCompletionSuccessQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * The date and time when the job completed.
+        */
+        public CartCompletionSuccessQuery completedAt() {
+            startField("completedAt");
+
+            return this;
+        }
+
+        /**
+        * The ID of the cart completion attempt.
+        */
+        public CartCompletionSuccessQuery id() {
+            startField("id");
+
+            return this;
+        }
+
+        /**
+        * The ID of the order that's created in Shopify.
+        */
+        public CartCompletionSuccessQuery orderId() {
+            startField("orderId");
+
+            return this;
+        }
+
+        /**
+        * The URL of the order confirmation in Shopify.
+        */
+        public CartCompletionSuccessQuery orderUrl() {
+            startField("orderUrl");
+
+            return this;
+        }
+    }
+
+    /**
+    * A successful completion to checkout a cart and a created order.
+    */
+    public static class CartCompletionSuccess extends AbstractResponse<CartCompletionSuccess> implements CartCompletionAttemptResult {
+        public CartCompletionSuccess() {
+        }
+
+        public CartCompletionSuccess(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "completedAt": {
+                        DateTime optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = Utils.parseDateTime(jsonAsString(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "id": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "orderId": {
+                        responseData.put(key, new ID(jsonAsString(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "orderUrl": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "CartCompletionSuccess";
+        }
+
+        /**
+        * The date and time when the job completed.
+        */
+
+        public DateTime getCompletedAt() {
+            return (DateTime) get("completedAt");
+        }
+
+        public CartCompletionSuccess setCompletedAt(DateTime arg) {
+            optimisticData.put(getKey("completedAt"), arg);
+            return this;
+        }
+
+        /**
+        * The ID of the cart completion attempt.
+        */
+
+        public String getId() {
+            return (String) get("id");
+        }
+
+        public CartCompletionSuccess setId(String arg) {
+            optimisticData.put(getKey("id"), arg);
+            return this;
+        }
+
+        /**
+        * The ID of the order that's created in Shopify.
+        */
+
+        public ID getOrderId() {
+            return (ID) get("orderId");
+        }
+
+        public CartCompletionSuccess setOrderId(ID arg) {
+            optimisticData.put(getKey("orderId"), arg);
+            return this;
+        }
+
+        /**
+        * The URL of the order confirmation in Shopify.
+        */
+
+        public String getOrderUrl() {
+            return (String) get("orderUrl");
+        }
+
+        public CartCompletionSuccess setOrderUrl(String arg) {
+            optimisticData.put(getKey("orderUrl"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "completedAt": return false;
+
+                case "id": return false;
+
+                case "orderId": return false;
+
+                case "orderUrl": return false;
 
                 default: return false;
             }
@@ -6311,14 +8115,14 @@ public class Storefront {
         /**
         * A list of cart lines for the delivery group.
         */
-        public CartDeliveryGroupQuery cartLines(CartLineConnectionQueryDefinition queryDef) {
+        public CartDeliveryGroupQuery cartLines(BaseCartLineConnectionQueryDefinition queryDef) {
             return cartLines(args -> {}, queryDef);
         }
 
         /**
         * A list of cart lines for the delivery group.
         */
-        public CartDeliveryGroupQuery cartLines(CartLinesArgumentsDefinition argsDef, CartLineConnectionQueryDefinition queryDef) {
+        public CartDeliveryGroupQuery cartLines(CartLinesArgumentsDefinition argsDef, BaseCartLineConnectionQueryDefinition queryDef) {
             startField("cartLines");
 
             CartLinesArguments args = new CartLinesArguments(_queryBuilder);
@@ -6326,7 +8130,7 @@ public class Storefront {
             CartLinesArguments.end(args);
 
             _queryBuilder.append('{');
-            queryDef.define(new CartLineConnectionQuery(_queryBuilder));
+            queryDef.define(new BaseCartLineConnectionQuery(_queryBuilder));
             _queryBuilder.append('}');
 
             return this;
@@ -6395,7 +8199,7 @@ public class Storefront {
                 String fieldName = getFieldName(key);
                 switch (fieldName) {
                     case "cartLines": {
-                        responseData.put(key, new CartLineConnection(jsonAsObject(field.getValue(), key)));
+                        responseData.put(key, new BaseCartLineConnection(jsonAsObject(field.getValue(), key)));
 
                         break;
                     }
@@ -6453,11 +8257,11 @@ public class Storefront {
         * A list of cart lines for the delivery group.
         */
 
-        public CartLineConnection getCartLines() {
-            return (CartLineConnection) get("cartLines");
+        public BaseCartLineConnection getCartLines() {
+            return (BaseCartLineConnection) get("cartLines");
         }
 
-        public CartDeliveryGroup setCartLines(CartLineConnection arg) {
+        public CartDeliveryGroup setCartLines(BaseCartLineConnection arg) {
             optimisticData.put(getKey("cartLines"), arg);
             return this;
         }
@@ -7047,6 +8851,53 @@ public class Storefront {
         }
     }
 
+    public static class CartDirectPaymentMethodInput implements Serializable {
+        private MailingAddressInput billingAddress;
+
+        private String sessionId;
+
+        public CartDirectPaymentMethodInput(MailingAddressInput billingAddress, String sessionId) {
+            this.billingAddress = billingAddress;
+
+            this.sessionId = sessionId;
+        }
+
+        public MailingAddressInput getBillingAddress() {
+            return billingAddress;
+        }
+
+        public CartDirectPaymentMethodInput setBillingAddress(MailingAddressInput billingAddress) {
+            this.billingAddress = billingAddress;
+            return this;
+        }
+
+        public String getSessionId() {
+            return sessionId;
+        }
+
+        public CartDirectPaymentMethodInput setSessionId(String sessionId) {
+            this.sessionId = sessionId;
+            return this;
+        }
+
+        public void appendTo(StringBuilder _queryBuilder) {
+            String separator = "";
+            _queryBuilder.append('{');
+
+            _queryBuilder.append(separator);
+            separator = ",";
+            _queryBuilder.append("billingAddress:");
+            billingAddress.appendTo(_queryBuilder);
+
+            _queryBuilder.append(separator);
+            separator = ",";
+            _queryBuilder.append("sessionId:");
+            Query.appendQuotedString(_queryBuilder, sessionId.toString());
+
+            _queryBuilder.append('}');
+        }
+    }
+
     public interface CartDiscountAllocationQueryDefinition {
         void define(CartDiscountAllocationQuery _queryBuilder);
     }
@@ -7420,9 +9271,34 @@ public class Storefront {
         INVALID,
 
         /**
+        * Delivery group was not found in cart.
+        */
+        INVALID_DELIVERY_GROUP,
+
+        /**
+        * Delivery option was not valid.
+        */
+        INVALID_DELIVERY_OPTION,
+
+        /**
         * Merchandise line was not found in cart.
         */
         INVALID_MERCHANDISE_LINE,
+
+        /**
+        * The metafields were not valid.
+        */
+        INVALID_METAFIELDS,
+
+        /**
+        * The payment wasn't valid.
+        */
+        INVALID_PAYMENT,
+
+        /**
+        * Cannot update payment on an empty cart
+        */
+        INVALID_PAYMENT_EMPTY_CART,
 
         /**
         * The input value should be less than the maximum value allowed.
@@ -7439,6 +9315,11 @@ public class Storefront {
         */
         MISSING_NOTE,
 
+        /**
+        * The payment method is not supported.
+        */
+        PAYMENT_METHOD_NOT_SUPPORTED,
+
         UNKNOWN_VALUE;
 
         public static CartErrorCode fromGraphQl(String value) {
@@ -7451,8 +9332,28 @@ public class Storefront {
                     return INVALID;
                 }
 
+                case "INVALID_DELIVERY_GROUP": {
+                    return INVALID_DELIVERY_GROUP;
+                }
+
+                case "INVALID_DELIVERY_OPTION": {
+                    return INVALID_DELIVERY_OPTION;
+                }
+
                 case "INVALID_MERCHANDISE_LINE": {
                     return INVALID_MERCHANDISE_LINE;
+                }
+
+                case "INVALID_METAFIELDS": {
+                    return INVALID_METAFIELDS;
+                }
+
+                case "INVALID_PAYMENT": {
+                    return INVALID_PAYMENT;
+                }
+
+                case "INVALID_PAYMENT_EMPTY_CART": {
+                    return INVALID_PAYMENT_EMPTY_CART;
                 }
 
                 case "LESS_THAN": {
@@ -7467,6 +9368,10 @@ public class Storefront {
                     return MISSING_NOTE;
                 }
 
+                case "PAYMENT_METHOD_NOT_SUPPORTED": {
+                    return PAYMENT_METHOD_NOT_SUPPORTED;
+                }
+
                 default: {
                     return UNKNOWN_VALUE;
                 }
@@ -7478,8 +9383,28 @@ public class Storefront {
                     return "INVALID";
                 }
 
+                case INVALID_DELIVERY_GROUP: {
+                    return "INVALID_DELIVERY_GROUP";
+                }
+
+                case INVALID_DELIVERY_OPTION: {
+                    return "INVALID_DELIVERY_OPTION";
+                }
+
                 case INVALID_MERCHANDISE_LINE: {
                     return "INVALID_MERCHANDISE_LINE";
+                }
+
+                case INVALID_METAFIELDS: {
+                    return "INVALID_METAFIELDS";
+                }
+
+                case INVALID_PAYMENT: {
+                    return "INVALID_PAYMENT";
+                }
+
+                case INVALID_PAYMENT_EMPTY_CART: {
+                    return "INVALID_PAYMENT_EMPTY_CART";
                 }
 
                 case LESS_THAN: {
@@ -7492,6 +9417,10 @@ public class Storefront {
 
                 case MISSING_NOTE: {
                     return "MISSING_NOTE";
+                }
+
+                case PAYMENT_METHOD_NOT_SUPPORTED: {
+                    return "PAYMENT_METHOD_NOT_SUPPORTED";
                 }
 
                 default: {
@@ -7742,6 +9671,35 @@ public class Storefront {
         }
     }
 
+    public static class CartFreePaymentMethodInput implements Serializable {
+        private MailingAddressInput billingAddress;
+
+        public CartFreePaymentMethodInput(MailingAddressInput billingAddress) {
+            this.billingAddress = billingAddress;
+        }
+
+        public MailingAddressInput getBillingAddress() {
+            return billingAddress;
+        }
+
+        public CartFreePaymentMethodInput setBillingAddress(MailingAddressInput billingAddress) {
+            this.billingAddress = billingAddress;
+            return this;
+        }
+
+        public void appendTo(StringBuilder _queryBuilder) {
+            String separator = "";
+            _queryBuilder.append('{');
+
+            _queryBuilder.append(separator);
+            separator = ",";
+            _queryBuilder.append("billingAddress:");
+            billingAddress.appendTo(_queryBuilder);
+
+            _queryBuilder.append('}');
+        }
+    }
+
     public static class CartInput implements Serializable {
         private Input<List<AttributeInput>> attributes = Input.undefined();
 
@@ -7752,6 +9710,8 @@ public class Storefront {
         private Input<String> note = Input.undefined();
 
         private Input<CartBuyerIdentityInput> buyerIdentity = Input.undefined();
+
+        private Input<List<CartInputMetafieldInput>> metafields = Input.undefined();
 
         public List<AttributeInput> getAttributes() {
             return attributes.getValue();
@@ -7858,6 +9818,27 @@ public class Storefront {
             return this;
         }
 
+        public List<CartInputMetafieldInput> getMetafields() {
+            return metafields.getValue();
+        }
+
+        public Input<List<CartInputMetafieldInput>> getMetafieldsInput() {
+            return metafields;
+        }
+
+        public CartInput setMetafields(List<CartInputMetafieldInput> metafields) {
+            this.metafields = Input.optional(metafields);
+            return this;
+        }
+
+        public CartInput setMetafieldsInput(Input<List<CartInputMetafieldInput>> metafields) {
+            if (metafields == null) {
+                throw new IllegalArgumentException("Input can not be null");
+            }
+            this.metafields = metafields;
+            return this;
+        }
+
         public void appendTo(StringBuilder _queryBuilder) {
             String separator = "";
             _queryBuilder.append('{');
@@ -7943,6 +9924,91 @@ public class Storefront {
                     _queryBuilder.append("null");
                 }
             }
+
+            if (this.metafields.isDefined()) {
+                _queryBuilder.append(separator);
+                separator = ",";
+                _queryBuilder.append("metafields:");
+                if (metafields.getValue() != null) {
+                    _queryBuilder.append('[');
+                    {
+                        String listSeperator1 = "";
+                        for (CartInputMetafieldInput item1 : metafields.getValue()) {
+                            _queryBuilder.append(listSeperator1);
+                            listSeperator1 = ",";
+                            item1.appendTo(_queryBuilder);
+                        }
+                    }
+                    _queryBuilder.append(']');
+                } else {
+                    _queryBuilder.append("null");
+                }
+            }
+
+            _queryBuilder.append('}');
+        }
+    }
+
+    public static class CartInputMetafieldInput implements Serializable {
+        private String key;
+
+        private String value;
+
+        private String type;
+
+        public CartInputMetafieldInput(String key, String value, String type) {
+            this.key = key;
+
+            this.value = value;
+
+            this.type = type;
+        }
+
+        public String getKey() {
+            return key;
+        }
+
+        public CartInputMetafieldInput setKey(String key) {
+            this.key = key;
+            return this;
+        }
+
+        public String getValue() {
+            return value;
+        }
+
+        public CartInputMetafieldInput setValue(String value) {
+            this.value = value;
+            return this;
+        }
+
+        public String getType() {
+            return type;
+        }
+
+        public CartInputMetafieldInput setType(String type) {
+            this.type = type;
+            return this;
+        }
+
+        public void appendTo(StringBuilder _queryBuilder) {
+            String separator = "";
+            _queryBuilder.append('{');
+
+            _queryBuilder.append(separator);
+            separator = ",";
+            _queryBuilder.append("key:");
+            Query.appendQuotedString(_queryBuilder, key.toString());
+
+            _queryBuilder.append(separator);
+            separator = ",";
+            _queryBuilder.append("value:");
+            Query.appendQuotedString(_queryBuilder, value.toString());
+
+            _queryBuilder.append(separator);
+            separator = ",";
+            _queryBuilder.append("type:");
+            Query.appendQuotedString(_queryBuilder, type.toString());
 
             _queryBuilder.append('}');
         }
@@ -8077,7 +10143,7 @@ public class Storefront {
     /**
     * Represents information about the merchandise in the cart.
     */
-    public static class CartLine extends AbstractResponse<CartLine> implements Node {
+    public static class CartLine extends AbstractResponse<CartLine> implements BaseCartLine, Node {
         public CartLine() {
         }
 
@@ -8322,165 +10388,6 @@ public class Storefront {
         }
     }
 
-    public interface CartLineConnectionQueryDefinition {
-        void define(CartLineConnectionQuery _queryBuilder);
-    }
-
-    /**
-    * An auto-generated type for paginating through multiple CartLines.
-    */
-    public static class CartLineConnectionQuery extends Query<CartLineConnectionQuery> {
-        CartLineConnectionQuery(StringBuilder _queryBuilder) {
-            super(_queryBuilder);
-        }
-
-        /**
-        * A list of edges.
-        */
-        public CartLineConnectionQuery edges(CartLineEdgeQueryDefinition queryDef) {
-            startField("edges");
-
-            _queryBuilder.append('{');
-            queryDef.define(new CartLineEdgeQuery(_queryBuilder));
-            _queryBuilder.append('}');
-
-            return this;
-        }
-
-        /**
-        * A list of the nodes contained in CartLineEdge.
-        */
-        public CartLineConnectionQuery nodes(CartLineQueryDefinition queryDef) {
-            startField("nodes");
-
-            _queryBuilder.append('{');
-            queryDef.define(new CartLineQuery(_queryBuilder));
-            _queryBuilder.append('}');
-
-            return this;
-        }
-
-        /**
-        * Information to aid in pagination.
-        */
-        public CartLineConnectionQuery pageInfo(PageInfoQueryDefinition queryDef) {
-            startField("pageInfo");
-
-            _queryBuilder.append('{');
-            queryDef.define(new PageInfoQuery(_queryBuilder));
-            _queryBuilder.append('}');
-
-            return this;
-        }
-    }
-
-    /**
-    * An auto-generated type for paginating through multiple CartLines.
-    */
-    public static class CartLineConnection extends AbstractResponse<CartLineConnection> {
-        public CartLineConnection() {
-        }
-
-        public CartLineConnection(JsonObject fields) throws SchemaViolationError {
-            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
-                String key = field.getKey();
-                String fieldName = getFieldName(key);
-                switch (fieldName) {
-                    case "edges": {
-                        List<CartLineEdge> list1 = new ArrayList<>();
-                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
-                            list1.add(new CartLineEdge(jsonAsObject(element1, key)));
-                        }
-
-                        responseData.put(key, list1);
-
-                        break;
-                    }
-
-                    case "nodes": {
-                        List<CartLine> list1 = new ArrayList<>();
-                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
-                            list1.add(new CartLine(jsonAsObject(element1, key)));
-                        }
-
-                        responseData.put(key, list1);
-
-                        break;
-                    }
-
-                    case "pageInfo": {
-                        responseData.put(key, new PageInfo(jsonAsObject(field.getValue(), key)));
-
-                        break;
-                    }
-
-                    case "__typename": {
-                        responseData.put(key, jsonAsString(field.getValue(), key));
-                        break;
-                    }
-                    default: {
-                        throw new SchemaViolationError(this, key, field.getValue());
-                    }
-                }
-            }
-        }
-
-        public String getGraphQlTypeName() {
-            return "CartLineConnection";
-        }
-
-        /**
-        * A list of edges.
-        */
-
-        public List<CartLineEdge> getEdges() {
-            return (List<CartLineEdge>) get("edges");
-        }
-
-        public CartLineConnection setEdges(List<CartLineEdge> arg) {
-            optimisticData.put(getKey("edges"), arg);
-            return this;
-        }
-
-        /**
-        * A list of the nodes contained in CartLineEdge.
-        */
-
-        public List<CartLine> getNodes() {
-            return (List<CartLine>) get("nodes");
-        }
-
-        public CartLineConnection setNodes(List<CartLine> arg) {
-            optimisticData.put(getKey("nodes"), arg);
-            return this;
-        }
-
-        /**
-        * Information to aid in pagination.
-        */
-
-        public PageInfo getPageInfo() {
-            return (PageInfo) get("pageInfo");
-        }
-
-        public CartLineConnection setPageInfo(PageInfo arg) {
-            optimisticData.put(getKey("pageInfo"), arg);
-            return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "edges": return true;
-
-                case "nodes": return true;
-
-                case "pageInfo": return true;
-
-                default: return false;
-            }
-        }
-    }
-
     public interface CartLineCostQueryDefinition {
         void define(CartLineCostQuery _queryBuilder);
     }
@@ -8663,117 +10570,6 @@ public class Storefront {
                 case "subtotalAmount": return true;
 
                 case "totalAmount": return true;
-
-                default: return false;
-            }
-        }
-    }
-
-    public interface CartLineEdgeQueryDefinition {
-        void define(CartLineEdgeQuery _queryBuilder);
-    }
-
-    /**
-    * An auto-generated type which holds one CartLine and a cursor during pagination.
-    */
-    public static class CartLineEdgeQuery extends Query<CartLineEdgeQuery> {
-        CartLineEdgeQuery(StringBuilder _queryBuilder) {
-            super(_queryBuilder);
-        }
-
-        /**
-        * A cursor for use in pagination.
-        */
-        public CartLineEdgeQuery cursor() {
-            startField("cursor");
-
-            return this;
-        }
-
-        /**
-        * The item at the end of CartLineEdge.
-        */
-        public CartLineEdgeQuery node(CartLineQueryDefinition queryDef) {
-            startField("node");
-
-            _queryBuilder.append('{');
-            queryDef.define(new CartLineQuery(_queryBuilder));
-            _queryBuilder.append('}');
-
-            return this;
-        }
-    }
-
-    /**
-    * An auto-generated type which holds one CartLine and a cursor during pagination.
-    */
-    public static class CartLineEdge extends AbstractResponse<CartLineEdge> {
-        public CartLineEdge() {
-        }
-
-        public CartLineEdge(JsonObject fields) throws SchemaViolationError {
-            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
-                String key = field.getKey();
-                String fieldName = getFieldName(key);
-                switch (fieldName) {
-                    case "cursor": {
-                        responseData.put(key, jsonAsString(field.getValue(), key));
-
-                        break;
-                    }
-
-                    case "node": {
-                        responseData.put(key, new CartLine(jsonAsObject(field.getValue(), key)));
-
-                        break;
-                    }
-
-                    case "__typename": {
-                        responseData.put(key, jsonAsString(field.getValue(), key));
-                        break;
-                    }
-                    default: {
-                        throw new SchemaViolationError(this, key, field.getValue());
-                    }
-                }
-            }
-        }
-
-        public String getGraphQlTypeName() {
-            return "CartLineEdge";
-        }
-
-        /**
-        * A cursor for use in pagination.
-        */
-
-        public String getCursor() {
-            return (String) get("cursor");
-        }
-
-        public CartLineEdge setCursor(String arg) {
-            optimisticData.put(getKey("cursor"), arg);
-            return this;
-        }
-
-        /**
-        * The item at the end of CartLineEdge.
-        */
-
-        public CartLine getNode() {
-            return (CartLine) get("node");
-        }
-
-        public CartLineEdge setNode(CartLine arg) {
-            optimisticData.put(getKey("node"), arg);
-            return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "cursor": return false;
-
-                case "node": return true;
 
                 default: return false;
             }
@@ -9657,6 +11453,387 @@ public class Storefront {
         }
     }
 
+    public static class CartMetafieldDeleteInput implements Serializable {
+        private ID ownerId;
+
+        private String key;
+
+        public CartMetafieldDeleteInput(ID ownerId, String key) {
+            this.ownerId = ownerId;
+
+            this.key = key;
+        }
+
+        public ID getOwnerId() {
+            return ownerId;
+        }
+
+        public CartMetafieldDeleteInput setOwnerId(ID ownerId) {
+            this.ownerId = ownerId;
+            return this;
+        }
+
+        public String getKey() {
+            return key;
+        }
+
+        public CartMetafieldDeleteInput setKey(String key) {
+            this.key = key;
+            return this;
+        }
+
+        public void appendTo(StringBuilder _queryBuilder) {
+            String separator = "";
+            _queryBuilder.append('{');
+
+            _queryBuilder.append(separator);
+            separator = ",";
+            _queryBuilder.append("ownerId:");
+            Query.appendQuotedString(_queryBuilder, ownerId.toString());
+
+            _queryBuilder.append(separator);
+            separator = ",";
+            _queryBuilder.append("key:");
+            Query.appendQuotedString(_queryBuilder, key.toString());
+
+            _queryBuilder.append('}');
+        }
+    }
+
+    public interface CartMetafieldDeletePayloadQueryDefinition {
+        void define(CartMetafieldDeletePayloadQuery _queryBuilder);
+    }
+
+    /**
+    * Return type for `cartMetafieldDelete` mutation.
+    */
+    public static class CartMetafieldDeletePayloadQuery extends Query<CartMetafieldDeletePayloadQuery> {
+        CartMetafieldDeletePayloadQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * The ID of the deleted cart metafield.
+        */
+        public CartMetafieldDeletePayloadQuery deletedId() {
+            startField("deletedId");
+
+            return this;
+        }
+
+        /**
+        * The list of errors that occurred from executing the mutation.
+        */
+        public CartMetafieldDeletePayloadQuery userErrors(MetafieldDeleteUserErrorQueryDefinition queryDef) {
+            startField("userErrors");
+
+            _queryBuilder.append('{');
+            queryDef.define(new MetafieldDeleteUserErrorQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+    }
+
+    /**
+    * Return type for `cartMetafieldDelete` mutation.
+    */
+    public static class CartMetafieldDeletePayload extends AbstractResponse<CartMetafieldDeletePayload> {
+        public CartMetafieldDeletePayload() {
+        }
+
+        public CartMetafieldDeletePayload(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "deletedId": {
+                        ID optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new ID(jsonAsString(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "userErrors": {
+                        List<MetafieldDeleteUserError> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new MetafieldDeleteUserError(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "CartMetafieldDeletePayload";
+        }
+
+        /**
+        * The ID of the deleted cart metafield.
+        */
+
+        public ID getDeletedId() {
+            return (ID) get("deletedId");
+        }
+
+        public CartMetafieldDeletePayload setDeletedId(ID arg) {
+            optimisticData.put(getKey("deletedId"), arg);
+            return this;
+        }
+
+        /**
+        * The list of errors that occurred from executing the mutation.
+        */
+
+        public List<MetafieldDeleteUserError> getUserErrors() {
+            return (List<MetafieldDeleteUserError>) get("userErrors");
+        }
+
+        public CartMetafieldDeletePayload setUserErrors(List<MetafieldDeleteUserError> arg) {
+            optimisticData.put(getKey("userErrors"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "deletedId": return false;
+
+                case "userErrors": return true;
+
+                default: return false;
+            }
+        }
+    }
+
+    public static class CartMetafieldsSetInput implements Serializable {
+        private ID ownerId;
+
+        private String key;
+
+        private String value;
+
+        private String type;
+
+        public CartMetafieldsSetInput(ID ownerId, String key, String value, String type) {
+            this.ownerId = ownerId;
+
+            this.key = key;
+
+            this.value = value;
+
+            this.type = type;
+        }
+
+        public ID getOwnerId() {
+            return ownerId;
+        }
+
+        public CartMetafieldsSetInput setOwnerId(ID ownerId) {
+            this.ownerId = ownerId;
+            return this;
+        }
+
+        public String getKey() {
+            return key;
+        }
+
+        public CartMetafieldsSetInput setKey(String key) {
+            this.key = key;
+            return this;
+        }
+
+        public String getValue() {
+            return value;
+        }
+
+        public CartMetafieldsSetInput setValue(String value) {
+            this.value = value;
+            return this;
+        }
+
+        public String getType() {
+            return type;
+        }
+
+        public CartMetafieldsSetInput setType(String type) {
+            this.type = type;
+            return this;
+        }
+
+        public void appendTo(StringBuilder _queryBuilder) {
+            String separator = "";
+            _queryBuilder.append('{');
+
+            _queryBuilder.append(separator);
+            separator = ",";
+            _queryBuilder.append("ownerId:");
+            Query.appendQuotedString(_queryBuilder, ownerId.toString());
+
+            _queryBuilder.append(separator);
+            separator = ",";
+            _queryBuilder.append("key:");
+            Query.appendQuotedString(_queryBuilder, key.toString());
+
+            _queryBuilder.append(separator);
+            separator = ",";
+            _queryBuilder.append("value:");
+            Query.appendQuotedString(_queryBuilder, value.toString());
+
+            _queryBuilder.append(separator);
+            separator = ",";
+            _queryBuilder.append("type:");
+            Query.appendQuotedString(_queryBuilder, type.toString());
+
+            _queryBuilder.append('}');
+        }
+    }
+
+    public interface CartMetafieldsSetPayloadQueryDefinition {
+        void define(CartMetafieldsSetPayloadQuery _queryBuilder);
+    }
+
+    /**
+    * Return type for `cartMetafieldsSet` mutation.
+    */
+    public static class CartMetafieldsSetPayloadQuery extends Query<CartMetafieldsSetPayloadQuery> {
+        CartMetafieldsSetPayloadQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * The list of cart metafields that were set.
+        */
+        public CartMetafieldsSetPayloadQuery metafields(MetafieldQueryDefinition queryDef) {
+            startField("metafields");
+
+            _queryBuilder.append('{');
+            queryDef.define(new MetafieldQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * The list of errors that occurred from executing the mutation.
+        */
+        public CartMetafieldsSetPayloadQuery userErrors(MetafieldsSetUserErrorQueryDefinition queryDef) {
+            startField("userErrors");
+
+            _queryBuilder.append('{');
+            queryDef.define(new MetafieldsSetUserErrorQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+    }
+
+    /**
+    * Return type for `cartMetafieldsSet` mutation.
+    */
+    public static class CartMetafieldsSetPayload extends AbstractResponse<CartMetafieldsSetPayload> {
+        public CartMetafieldsSetPayload() {
+        }
+
+        public CartMetafieldsSetPayload(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "metafields": {
+                        List<Metafield> optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            List<Metafield> list1 = new ArrayList<>();
+                            for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                                list1.add(new Metafield(jsonAsObject(element1, key)));
+                            }
+
+                            optional1 = list1;
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "userErrors": {
+                        List<MetafieldsSetUserError> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new MetafieldsSetUserError(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "CartMetafieldsSetPayload";
+        }
+
+        /**
+        * The list of cart metafields that were set.
+        */
+
+        public List<Metafield> getMetafields() {
+            return (List<Metafield>) get("metafields");
+        }
+
+        public CartMetafieldsSetPayload setMetafields(List<Metafield> arg) {
+            optimisticData.put(getKey("metafields"), arg);
+            return this;
+        }
+
+        /**
+        * The list of errors that occurred from executing the mutation.
+        */
+
+        public List<MetafieldsSetUserError> getUserErrors() {
+            return (List<MetafieldsSetUserError>) get("userErrors");
+        }
+
+        public CartMetafieldsSetPayload setUserErrors(List<MetafieldsSetUserError> arg) {
+            optimisticData.put(getKey("userErrors"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "metafields": return true;
+
+                case "userErrors": return true;
+
+                default: return false;
+            }
+        }
+    }
+
     public interface CartNoteUpdatePayloadQueryDefinition {
         void define(CartNoteUpdatePayloadQuery _queryBuilder);
     }
@@ -9767,6 +11944,296 @@ public class Storefront {
         }
 
         public CartNoteUpdatePayload setUserErrors(List<CartUserError> arg) {
+            optimisticData.put(getKey("userErrors"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "cart": return true;
+
+                case "userErrors": return true;
+
+                default: return false;
+            }
+        }
+    }
+
+    public static class CartPaymentInput implements Serializable {
+        private MoneyInput amount;
+
+        private Input<String> sourceIdentifier = Input.undefined();
+
+        private Input<CartFreePaymentMethodInput> freePaymentMethod = Input.undefined();
+
+        private Input<CartDirectPaymentMethodInput> directPaymentMethod = Input.undefined();
+
+        private Input<CartWalletPaymentMethodInput> walletPaymentMethod = Input.undefined();
+
+        public CartPaymentInput(MoneyInput amount) {
+            this.amount = amount;
+        }
+
+        public MoneyInput getAmount() {
+            return amount;
+        }
+
+        public CartPaymentInput setAmount(MoneyInput amount) {
+            this.amount = amount;
+            return this;
+        }
+
+        public String getSourceIdentifier() {
+            return sourceIdentifier.getValue();
+        }
+
+        public Input<String> getSourceIdentifierInput() {
+            return sourceIdentifier;
+        }
+
+        public CartPaymentInput setSourceIdentifier(String sourceIdentifier) {
+            this.sourceIdentifier = Input.optional(sourceIdentifier);
+            return this;
+        }
+
+        public CartPaymentInput setSourceIdentifierInput(Input<String> sourceIdentifier) {
+            if (sourceIdentifier == null) {
+                throw new IllegalArgumentException("Input can not be null");
+            }
+            this.sourceIdentifier = sourceIdentifier;
+            return this;
+        }
+
+        public CartFreePaymentMethodInput getFreePaymentMethod() {
+            return freePaymentMethod.getValue();
+        }
+
+        public Input<CartFreePaymentMethodInput> getFreePaymentMethodInput() {
+            return freePaymentMethod;
+        }
+
+        public CartPaymentInput setFreePaymentMethod(CartFreePaymentMethodInput freePaymentMethod) {
+            this.freePaymentMethod = Input.optional(freePaymentMethod);
+            return this;
+        }
+
+        public CartPaymentInput setFreePaymentMethodInput(Input<CartFreePaymentMethodInput> freePaymentMethod) {
+            if (freePaymentMethod == null) {
+                throw new IllegalArgumentException("Input can not be null");
+            }
+            this.freePaymentMethod = freePaymentMethod;
+            return this;
+        }
+
+        public CartDirectPaymentMethodInput getDirectPaymentMethod() {
+            return directPaymentMethod.getValue();
+        }
+
+        public Input<CartDirectPaymentMethodInput> getDirectPaymentMethodInput() {
+            return directPaymentMethod;
+        }
+
+        public CartPaymentInput setDirectPaymentMethod(CartDirectPaymentMethodInput directPaymentMethod) {
+            this.directPaymentMethod = Input.optional(directPaymentMethod);
+            return this;
+        }
+
+        public CartPaymentInput setDirectPaymentMethodInput(Input<CartDirectPaymentMethodInput> directPaymentMethod) {
+            if (directPaymentMethod == null) {
+                throw new IllegalArgumentException("Input can not be null");
+            }
+            this.directPaymentMethod = directPaymentMethod;
+            return this;
+        }
+
+        public CartWalletPaymentMethodInput getWalletPaymentMethod() {
+            return walletPaymentMethod.getValue();
+        }
+
+        public Input<CartWalletPaymentMethodInput> getWalletPaymentMethodInput() {
+            return walletPaymentMethod;
+        }
+
+        public CartPaymentInput setWalletPaymentMethod(CartWalletPaymentMethodInput walletPaymentMethod) {
+            this.walletPaymentMethod = Input.optional(walletPaymentMethod);
+            return this;
+        }
+
+        public CartPaymentInput setWalletPaymentMethodInput(Input<CartWalletPaymentMethodInput> walletPaymentMethod) {
+            if (walletPaymentMethod == null) {
+                throw new IllegalArgumentException("Input can not be null");
+            }
+            this.walletPaymentMethod = walletPaymentMethod;
+            return this;
+        }
+
+        public void appendTo(StringBuilder _queryBuilder) {
+            String separator = "";
+            _queryBuilder.append('{');
+
+            _queryBuilder.append(separator);
+            separator = ",";
+            _queryBuilder.append("amount:");
+            amount.appendTo(_queryBuilder);
+
+            if (this.sourceIdentifier.isDefined()) {
+                _queryBuilder.append(separator);
+                separator = ",";
+                _queryBuilder.append("sourceIdentifier:");
+                if (sourceIdentifier.getValue() != null) {
+                    Query.appendQuotedString(_queryBuilder, sourceIdentifier.getValue().toString());
+                } else {
+                    _queryBuilder.append("null");
+                }
+            }
+
+            if (this.freePaymentMethod.isDefined()) {
+                _queryBuilder.append(separator);
+                separator = ",";
+                _queryBuilder.append("freePaymentMethod:");
+                if (freePaymentMethod.getValue() != null) {
+                    freePaymentMethod.getValue().appendTo(_queryBuilder);
+                } else {
+                    _queryBuilder.append("null");
+                }
+            }
+
+            if (this.directPaymentMethod.isDefined()) {
+                _queryBuilder.append(separator);
+                separator = ",";
+                _queryBuilder.append("directPaymentMethod:");
+                if (directPaymentMethod.getValue() != null) {
+                    directPaymentMethod.getValue().appendTo(_queryBuilder);
+                } else {
+                    _queryBuilder.append("null");
+                }
+            }
+
+            if (this.walletPaymentMethod.isDefined()) {
+                _queryBuilder.append(separator);
+                separator = ",";
+                _queryBuilder.append("walletPaymentMethod:");
+                if (walletPaymentMethod.getValue() != null) {
+                    walletPaymentMethod.getValue().appendTo(_queryBuilder);
+                } else {
+                    _queryBuilder.append("null");
+                }
+            }
+
+            _queryBuilder.append('}');
+        }
+    }
+
+    public interface CartPaymentUpdatePayloadQueryDefinition {
+        void define(CartPaymentUpdatePayloadQuery _queryBuilder);
+    }
+
+    /**
+    * Return type for `cartPaymentUpdate` mutation.
+    */
+    public static class CartPaymentUpdatePayloadQuery extends Query<CartPaymentUpdatePayloadQuery> {
+        CartPaymentUpdatePayloadQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * The updated cart.
+        */
+        public CartPaymentUpdatePayloadQuery cart(CartQueryDefinition queryDef) {
+            startField("cart");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CartQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * The list of errors that occurred from executing the mutation.
+        */
+        public CartPaymentUpdatePayloadQuery userErrors(CartUserErrorQueryDefinition queryDef) {
+            startField("userErrors");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CartUserErrorQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+    }
+
+    /**
+    * Return type for `cartPaymentUpdate` mutation.
+    */
+    public static class CartPaymentUpdatePayload extends AbstractResponse<CartPaymentUpdatePayload> {
+        public CartPaymentUpdatePayload() {
+        }
+
+        public CartPaymentUpdatePayload(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "cart": {
+                        Cart optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new Cart(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "userErrors": {
+                        List<CartUserError> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new CartUserError(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "CartPaymentUpdatePayload";
+        }
+
+        /**
+        * The updated cart.
+        */
+
+        public Cart getCart() {
+            return (Cart) get("cart");
+        }
+
+        public CartPaymentUpdatePayload setCart(Cart arg) {
+            optimisticData.put(getKey("cart"), arg);
+            return this;
+        }
+
+        /**
+        * The list of errors that occurred from executing the mutation.
+        */
+
+        public List<CartUserError> getUserErrors() {
+            return (List<CartUserError>) get("userErrors");
+        }
+
+        public CartPaymentUpdatePayload setUserErrors(List<CartUserError> arg) {
             optimisticData.put(getKey("userErrors"), arg);
             return this;
         }
@@ -9954,6 +12421,237 @@ public class Storefront {
         }
     }
 
+    public interface CartSubmitForCompletionPayloadQueryDefinition {
+        void define(CartSubmitForCompletionPayloadQuery _queryBuilder);
+    }
+
+    /**
+    * Return type for `cartSubmitForCompletion` mutation.
+    */
+    public static class CartSubmitForCompletionPayloadQuery extends Query<CartSubmitForCompletionPayloadQuery> {
+        CartSubmitForCompletionPayloadQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * The result of cart submission for completion.
+        */
+        public CartSubmitForCompletionPayloadQuery result(CartSubmitForCompletionResultQueryDefinition queryDef) {
+            startField("result");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CartSubmitForCompletionResultQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * The list of errors that occurred from executing the mutation.
+        */
+        public CartSubmitForCompletionPayloadQuery userErrors(CartUserErrorQueryDefinition queryDef) {
+            startField("userErrors");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CartUserErrorQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+    }
+
+    /**
+    * Return type for `cartSubmitForCompletion` mutation.
+    */
+    public static class CartSubmitForCompletionPayload extends AbstractResponse<CartSubmitForCompletionPayload> {
+        public CartSubmitForCompletionPayload() {
+        }
+
+        public CartSubmitForCompletionPayload(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "result": {
+                        CartSubmitForCompletionResult optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = UnknownCartSubmitForCompletionResult.create(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "userErrors": {
+                        List<CartUserError> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new CartUserError(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "CartSubmitForCompletionPayload";
+        }
+
+        /**
+        * The result of cart submission for completion.
+        */
+
+        public CartSubmitForCompletionResult getResult() {
+            return (CartSubmitForCompletionResult) get("result");
+        }
+
+        public CartSubmitForCompletionPayload setResult(CartSubmitForCompletionResult arg) {
+            optimisticData.put(getKey("result"), arg);
+            return this;
+        }
+
+        /**
+        * The list of errors that occurred from executing the mutation.
+        */
+
+        public List<CartUserError> getUserErrors() {
+            return (List<CartUserError>) get("userErrors");
+        }
+
+        public CartSubmitForCompletionPayload setUserErrors(List<CartUserError> arg) {
+            optimisticData.put(getKey("userErrors"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "result": return false;
+
+                case "userErrors": return true;
+
+                default: return false;
+            }
+        }
+    }
+
+    public interface CartSubmitForCompletionResultQueryDefinition {
+        void define(CartSubmitForCompletionResultQuery _queryBuilder);
+    }
+
+    /**
+    * The result of cart submit completion.
+    */
+    public static class CartSubmitForCompletionResultQuery extends Query<CartSubmitForCompletionResultQuery> {
+        CartSubmitForCompletionResultQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+
+            startField("__typename");
+        }
+
+        public CartSubmitForCompletionResultQuery onSubmitAlreadyAccepted(SubmitAlreadyAcceptedQueryDefinition queryDef) {
+            startInlineFragment("SubmitAlreadyAccepted");
+            queryDef.define(new SubmitAlreadyAcceptedQuery(_queryBuilder));
+            _queryBuilder.append('}');
+            return this;
+        }
+
+        public CartSubmitForCompletionResultQuery onSubmitFailed(SubmitFailedQueryDefinition queryDef) {
+            startInlineFragment("SubmitFailed");
+            queryDef.define(new SubmitFailedQuery(_queryBuilder));
+            _queryBuilder.append('}');
+            return this;
+        }
+
+        public CartSubmitForCompletionResultQuery onSubmitSuccess(SubmitSuccessQueryDefinition queryDef) {
+            startInlineFragment("SubmitSuccess");
+            queryDef.define(new SubmitSuccessQuery(_queryBuilder));
+            _queryBuilder.append('}');
+            return this;
+        }
+
+        public CartSubmitForCompletionResultQuery onSubmitThrottled(SubmitThrottledQueryDefinition queryDef) {
+            startInlineFragment("SubmitThrottled");
+            queryDef.define(new SubmitThrottledQuery(_queryBuilder));
+            _queryBuilder.append('}');
+            return this;
+        }
+    }
+
+    public interface CartSubmitForCompletionResult {
+        String getGraphQlTypeName();
+    }
+
+    /**
+    * The result of cart submit completion.
+    */
+    public static class UnknownCartSubmitForCompletionResult extends AbstractResponse<UnknownCartSubmitForCompletionResult> implements CartSubmitForCompletionResult {
+        public UnknownCartSubmitForCompletionResult() {
+        }
+
+        public UnknownCartSubmitForCompletionResult(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public static CartSubmitForCompletionResult create(JsonObject fields) throws SchemaViolationError {
+            String typeName = fields.getAsJsonPrimitive("__typename").getAsString();
+            switch (typeName) {
+                case "SubmitAlreadyAccepted": {
+                    return new SubmitAlreadyAccepted(fields);
+                }
+
+                case "SubmitFailed": {
+                    return new SubmitFailed(fields);
+                }
+
+                case "SubmitSuccess": {
+                    return new SubmitSuccess(fields);
+                }
+
+                case "SubmitThrottled": {
+                    return new SubmitThrottled(fields);
+                }
+
+                default: {
+                    return new UnknownCartSubmitForCompletionResult(fields);
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return (String) get("__typename");
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                default: return false;
+            }
+        }
+    }
+
     public interface CartUserErrorQueryDefinition {
         void define(CartUserErrorQuery _queryBuilder);
     }
@@ -10103,6 +12801,83 @@ public class Storefront {
 
                 default: return false;
             }
+        }
+    }
+
+    public static class CartWalletPaymentMethodInput implements Serializable {
+        private Input<ApplePayWalletContentInput> applePayWalletContent = Input.undefined();
+
+        private Input<ShopPayWalletContentInput> shopPayWalletContent = Input.undefined();
+
+        public ApplePayWalletContentInput getApplePayWalletContent() {
+            return applePayWalletContent.getValue();
+        }
+
+        public Input<ApplePayWalletContentInput> getApplePayWalletContentInput() {
+            return applePayWalletContent;
+        }
+
+        public CartWalletPaymentMethodInput setApplePayWalletContent(ApplePayWalletContentInput applePayWalletContent) {
+            this.applePayWalletContent = Input.optional(applePayWalletContent);
+            return this;
+        }
+
+        public CartWalletPaymentMethodInput setApplePayWalletContentInput(Input<ApplePayWalletContentInput> applePayWalletContent) {
+            if (applePayWalletContent == null) {
+                throw new IllegalArgumentException("Input can not be null");
+            }
+            this.applePayWalletContent = applePayWalletContent;
+            return this;
+        }
+
+        public ShopPayWalletContentInput getShopPayWalletContent() {
+            return shopPayWalletContent.getValue();
+        }
+
+        public Input<ShopPayWalletContentInput> getShopPayWalletContentInput() {
+            return shopPayWalletContent;
+        }
+
+        public CartWalletPaymentMethodInput setShopPayWalletContent(ShopPayWalletContentInput shopPayWalletContent) {
+            this.shopPayWalletContent = Input.optional(shopPayWalletContent);
+            return this;
+        }
+
+        public CartWalletPaymentMethodInput setShopPayWalletContentInput(Input<ShopPayWalletContentInput> shopPayWalletContent) {
+            if (shopPayWalletContent == null) {
+                throw new IllegalArgumentException("Input can not be null");
+            }
+            this.shopPayWalletContent = shopPayWalletContent;
+            return this;
+        }
+
+        public void appendTo(StringBuilder _queryBuilder) {
+            String separator = "";
+            _queryBuilder.append('{');
+
+            if (this.applePayWalletContent.isDefined()) {
+                _queryBuilder.append(separator);
+                separator = ",";
+                _queryBuilder.append("applePayWalletContent:");
+                if (applePayWalletContent.getValue() != null) {
+                    applePayWalletContent.getValue().appendTo(_queryBuilder);
+                } else {
+                    _queryBuilder.append("null");
+                }
+            }
+
+            if (this.shopPayWalletContent.isDefined()) {
+                _queryBuilder.append(separator);
+                separator = ",";
+                _queryBuilder.append("shopPayWalletContent:");
+                if (shopPayWalletContent.getValue() != null) {
+                    shopPayWalletContent.getValue().appendTo(_queryBuilder);
+                } else {
+                    _queryBuilder.append("null");
+                }
+            }
+
+            _queryBuilder.append('}');
         }
     }
 
@@ -14041,6 +16816,11 @@ public class Storefront {
         PRESENT,
 
         /**
+        * Product is not published for this customer.
+        */
+        PRODUCT_NOT_AVAILABLE,
+
+        /**
         * Shipping rate expired.
         */
         SHIPPING_RATE_EXPIRED,
@@ -14233,6 +17013,10 @@ public class Storefront {
                     return PRESENT;
                 }
 
+                case "PRODUCT_NOT_AVAILABLE": {
+                    return PRODUCT_NOT_AVAILABLE;
+                }
+
                 case "SHIPPING_RATE_EXPIRED": {
                     return SHIPPING_RATE_EXPIRED;
                 }
@@ -14418,6 +17202,10 @@ public class Storefront {
 
                 case PRESENT: {
                     return "PRESENT";
+                }
+
+                case PRODUCT_NOT_AVAILABLE: {
+                    return "PRODUCT_NOT_AVAILABLE";
                 }
 
                 case SHIPPING_RATE_EXPIRED: {
@@ -18241,6 +21029,356 @@ public class Storefront {
         }
     }
 
+    public interface CompletePaymentChallengeQueryDefinition {
+        void define(CompletePaymentChallengeQuery _queryBuilder);
+    }
+
+    /**
+    * The action for the 3DS payment redirect.
+    */
+    public static class CompletePaymentChallengeQuery extends Query<CompletePaymentChallengeQuery> {
+        CompletePaymentChallengeQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * The URL for the 3DS payment redirect.
+        */
+        public CompletePaymentChallengeQuery redirectUrl() {
+            startField("redirectUrl");
+
+            return this;
+        }
+    }
+
+    /**
+    * The action for the 3DS payment redirect.
+    */
+    public static class CompletePaymentChallenge extends AbstractResponse<CompletePaymentChallenge> implements CartCompletionAction {
+        public CompletePaymentChallenge() {
+        }
+
+        public CompletePaymentChallenge(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "redirectUrl": {
+                        String optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = jsonAsString(field.getValue(), key);
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "CompletePaymentChallenge";
+        }
+
+        /**
+        * The URL for the 3DS payment redirect.
+        */
+
+        public String getRedirectUrl() {
+            return (String) get("redirectUrl");
+        }
+
+        public CompletePaymentChallenge setRedirectUrl(String arg) {
+            optimisticData.put(getKey("redirectUrl"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "redirectUrl": return false;
+
+                default: return false;
+            }
+        }
+    }
+
+    public interface CompletionErrorQueryDefinition {
+        void define(CompletionErrorQuery _queryBuilder);
+    }
+
+    /**
+    * An error that occurred during a cart completion attempt.
+    */
+    public static class CompletionErrorQuery extends Query<CompletionErrorQuery> {
+        CompletionErrorQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * The error code.
+        */
+        public CompletionErrorQuery code() {
+            startField("code");
+
+            return this;
+        }
+
+        /**
+        * The error message.
+        */
+        public CompletionErrorQuery message() {
+            startField("message");
+
+            return this;
+        }
+    }
+
+    /**
+    * An error that occurred during a cart completion attempt.
+    */
+    public static class CompletionError extends AbstractResponse<CompletionError> {
+        public CompletionError() {
+        }
+
+        public CompletionError(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "code": {
+                        responseData.put(key, CompletionErrorCode.fromGraphQl(jsonAsString(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "message": {
+                        String optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = jsonAsString(field.getValue(), key);
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "CompletionError";
+        }
+
+        /**
+        * The error code.
+        */
+
+        public CompletionErrorCode getCode() {
+            return (CompletionErrorCode) get("code");
+        }
+
+        public CompletionError setCode(CompletionErrorCode arg) {
+            optimisticData.put(getKey("code"), arg);
+            return this;
+        }
+
+        /**
+        * The error message.
+        */
+
+        public String getMessage() {
+            return (String) get("message");
+        }
+
+        public CompletionError setMessage(String arg) {
+            optimisticData.put(getKey("message"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "code": return false;
+
+                case "message": return false;
+
+                default: return false;
+            }
+        }
+    }
+
+    /**
+    * The code of the error that occurred during a cart completion attempt.
+    */
+    public enum CompletionErrorCode {
+        ERROR,
+
+        INVENTORY_RESERVATION_ERROR,
+
+        PAYMENT_AMOUNT_TOO_SMALL,
+
+        PAYMENT_CALL_ISSUER,
+
+        PAYMENT_CARD_DECLINED,
+
+        PAYMENT_ERROR,
+
+        PAYMENT_GATEWAY_NOT_ENABLED_ERROR,
+
+        PAYMENT_INSUFFICIENT_FUNDS,
+
+        PAYMENT_INVALID_BILLING_ADDRESS,
+
+        PAYMENT_INVALID_CREDIT_CARD,
+
+        PAYMENT_INVALID_CURRENCY,
+
+        PAYMENT_INVALID_PAYMENT_METHOD,
+
+        PAYMENT_TRANSIENT_ERROR,
+
+        UNKNOWN_VALUE;
+
+        public static CompletionErrorCode fromGraphQl(String value) {
+            if (value == null) {
+                return null;
+            }
+
+            switch (value) {
+                case "ERROR": {
+                    return ERROR;
+                }
+
+                case "INVENTORY_RESERVATION_ERROR": {
+                    return INVENTORY_RESERVATION_ERROR;
+                }
+
+                case "PAYMENT_AMOUNT_TOO_SMALL": {
+                    return PAYMENT_AMOUNT_TOO_SMALL;
+                }
+
+                case "PAYMENT_CALL_ISSUER": {
+                    return PAYMENT_CALL_ISSUER;
+                }
+
+                case "PAYMENT_CARD_DECLINED": {
+                    return PAYMENT_CARD_DECLINED;
+                }
+
+                case "PAYMENT_ERROR": {
+                    return PAYMENT_ERROR;
+                }
+
+                case "PAYMENT_GATEWAY_NOT_ENABLED_ERROR": {
+                    return PAYMENT_GATEWAY_NOT_ENABLED_ERROR;
+                }
+
+                case "PAYMENT_INSUFFICIENT_FUNDS": {
+                    return PAYMENT_INSUFFICIENT_FUNDS;
+                }
+
+                case "PAYMENT_INVALID_BILLING_ADDRESS": {
+                    return PAYMENT_INVALID_BILLING_ADDRESS;
+                }
+
+                case "PAYMENT_INVALID_CREDIT_CARD": {
+                    return PAYMENT_INVALID_CREDIT_CARD;
+                }
+
+                case "PAYMENT_INVALID_CURRENCY": {
+                    return PAYMENT_INVALID_CURRENCY;
+                }
+
+                case "PAYMENT_INVALID_PAYMENT_METHOD": {
+                    return PAYMENT_INVALID_PAYMENT_METHOD;
+                }
+
+                case "PAYMENT_TRANSIENT_ERROR": {
+                    return PAYMENT_TRANSIENT_ERROR;
+                }
+
+                default: {
+                    return UNKNOWN_VALUE;
+                }
+            }
+        }
+        public String toString() {
+            switch (this) {
+                case ERROR: {
+                    return "ERROR";
+                }
+
+                case INVENTORY_RESERVATION_ERROR: {
+                    return "INVENTORY_RESERVATION_ERROR";
+                }
+
+                case PAYMENT_AMOUNT_TOO_SMALL: {
+                    return "PAYMENT_AMOUNT_TOO_SMALL";
+                }
+
+                case PAYMENT_CALL_ISSUER: {
+                    return "PAYMENT_CALL_ISSUER";
+                }
+
+                case PAYMENT_CARD_DECLINED: {
+                    return "PAYMENT_CARD_DECLINED";
+                }
+
+                case PAYMENT_ERROR: {
+                    return "PAYMENT_ERROR";
+                }
+
+                case PAYMENT_GATEWAY_NOT_ENABLED_ERROR: {
+                    return "PAYMENT_GATEWAY_NOT_ENABLED_ERROR";
+                }
+
+                case PAYMENT_INSUFFICIENT_FUNDS: {
+                    return "PAYMENT_INSUFFICIENT_FUNDS";
+                }
+
+                case PAYMENT_INVALID_BILLING_ADDRESS: {
+                    return "PAYMENT_INVALID_BILLING_ADDRESS";
+                }
+
+                case PAYMENT_INVALID_CREDIT_CARD: {
+                    return "PAYMENT_INVALID_CREDIT_CARD";
+                }
+
+                case PAYMENT_INVALID_CURRENCY: {
+                    return "PAYMENT_INVALID_CURRENCY";
+                }
+
+                case PAYMENT_INVALID_PAYMENT_METHOD: {
+                    return "PAYMENT_INVALID_PAYMENT_METHOD";
+                }
+
+                case PAYMENT_TRANSIENT_ERROR: {
+                    return "PAYMENT_TRANSIENT_ERROR";
+                }
+
+                default: {
+                    return "";
+                }
+            }
+        }
+    }
+
     public interface CountryQueryDefinition {
         void define(CountryQuery _queryBuilder);
     }
@@ -18284,6 +21422,19 @@ public class Storefront {
         */
         public CountryQuery isoCode() {
             startField("isoCode");
+
+            return this;
+        }
+
+        /**
+        * The market that includes this country.
+        */
+        public CountryQuery market(MarketQueryDefinition queryDef) {
+            startField("market");
+
+            _queryBuilder.append('{');
+            queryDef.define(new MarketQuery(_queryBuilder));
+            _queryBuilder.append('}');
 
             return this;
         }
@@ -18338,6 +21489,17 @@ public class Storefront {
 
                     case "isoCode": {
                         responseData.put(key, CountryCode.fromGraphQl(jsonAsString(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "market": {
+                        Market optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new Market(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
 
                         break;
                     }
@@ -18409,6 +21571,19 @@ public class Storefront {
         }
 
         /**
+        * The market that includes this country.
+        */
+
+        public Market getMarket() {
+            return (Market) get("market");
+        }
+
+        public Country setMarket(Market arg) {
+            optimisticData.put(getKey("market"), arg);
+            return this;
+        }
+
+        /**
         * The name of the country.
         */
 
@@ -18441,6 +21616,8 @@ public class Storefront {
                 case "currency": return true;
 
                 case "isoCode": return false;
+
+                case "market": return true;
 
                 case "name": return false;
 
@@ -28921,6 +32098,8 @@ public class Storefront {
     public static class DeliveryAddressInput implements Serializable {
         private Input<MailingAddressInput> deliveryAddress = Input.undefined();
 
+        private Input<ID> customerAddressId = Input.undefined();
+
         public MailingAddressInput getDeliveryAddress() {
             return deliveryAddress.getValue();
         }
@@ -28942,6 +32121,27 @@ public class Storefront {
             return this;
         }
 
+        public ID getCustomerAddressId() {
+            return customerAddressId.getValue();
+        }
+
+        public Input<ID> getCustomerAddressIdInput() {
+            return customerAddressId;
+        }
+
+        public DeliveryAddressInput setCustomerAddressId(ID customerAddressId) {
+            this.customerAddressId = Input.optional(customerAddressId);
+            return this;
+        }
+
+        public DeliveryAddressInput setCustomerAddressIdInput(Input<ID> customerAddressId) {
+            if (customerAddressId == null) {
+                throw new IllegalArgumentException("Input can not be null");
+            }
+            this.customerAddressId = customerAddressId;
+            return this;
+        }
+
         public void appendTo(StringBuilder _queryBuilder) {
             String separator = "";
             _queryBuilder.append('{');
@@ -28952,6 +32152,17 @@ public class Storefront {
                 _queryBuilder.append("deliveryAddress:");
                 if (deliveryAddress.getValue() != null) {
                     deliveryAddress.getValue().appendTo(_queryBuilder);
+                } else {
+                    _queryBuilder.append("null");
+                }
+            }
+
+            if (this.customerAddressId.isDefined()) {
+                _queryBuilder.append(separator);
+                separator = ",";
+                _queryBuilder.append("customerAddressId:");
+                if (customerAddressId.getValue() != null) {
+                    Query.appendQuotedString(_queryBuilder, customerAddressId.getValue().toString());
                 } else {
                     _queryBuilder.append("null");
                 }
@@ -30237,6 +33448,20 @@ public class Storefront {
             return this;
         }
 
+        public DisplayableErrorQuery onMetafieldDeleteUserError(MetafieldDeleteUserErrorQueryDefinition queryDef) {
+            startInlineFragment("MetafieldDeleteUserError");
+            queryDef.define(new MetafieldDeleteUserErrorQuery(_queryBuilder));
+            _queryBuilder.append('}');
+            return this;
+        }
+
+        public DisplayableErrorQuery onMetafieldsSetUserError(MetafieldsSetUserErrorQueryDefinition queryDef) {
+            startInlineFragment("MetafieldsSetUserError");
+            queryDef.define(new MetafieldsSetUserErrorQuery(_queryBuilder));
+            _queryBuilder.append('}');
+            return this;
+        }
+
         public DisplayableErrorQuery onUserError(UserErrorQueryDefinition queryDef) {
             startInlineFragment("UserError");
             queryDef.define(new UserErrorQuery(_queryBuilder));
@@ -30311,6 +33536,14 @@ public class Storefront {
 
                 case "CustomerUserError": {
                     return new CustomerUserError(fields);
+                }
+
+                case "MetafieldDeleteUserError": {
+                    return new MetafieldDeleteUserError(fields);
+                }
+
+                case "MetafieldsSetUserError": {
+                    return new MetafieldsSetUserError(fields);
                 }
 
                 case "UserError": {
@@ -30573,6 +33806,19 @@ public class Storefront {
         }
 
         /**
+        * The presentation for a media.
+        */
+        public ExternalVideoQuery presentation(MediaPresentationQueryDefinition queryDef) {
+            startField("presentation");
+
+            _queryBuilder.append('{');
+            queryDef.define(new MediaPresentationQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
         * The preview image for the media.
         */
         public ExternalVideoQuery previewImage(ImageQueryDefinition queryDef) {
@@ -30641,6 +33887,17 @@ public class Storefront {
 
                     case "originUrl": {
                         responseData.put(key, jsonAsString(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "presentation": {
+                        MediaPresentation optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new MediaPresentation(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
 
                         break;
                     }
@@ -30765,6 +34022,19 @@ public class Storefront {
         }
 
         /**
+        * The presentation for a media.
+        */
+
+        public MediaPresentation getPresentation() {
+            return (MediaPresentation) get("presentation");
+        }
+
+        public ExternalVideo setPresentation(MediaPresentation arg) {
+            optimisticData.put(getKey("presentation"), arg);
+            return this;
+        }
+
+        /**
         * The preview image for the media.
         */
 
@@ -30792,6 +34062,8 @@ public class Storefront {
                 case "mediaContentType": return false;
 
                 case "originUrl": return false;
+
+                case "presentation": return true;
 
                 case "previewImage": return true;
 
@@ -32356,6 +35628,13 @@ public class Storefront {
             return this;
         }
 
+        public HasMetafieldsQuery onCart(CartQueryDefinition queryDef) {
+            startInlineFragment("Cart");
+            queryDef.define(new CartQuery(_queryBuilder));
+            _queryBuilder.append('}');
+            return this;
+        }
+
         public HasMetafieldsQuery onCollection(CollectionQueryDefinition queryDef) {
             startInlineFragment("Collection");
             queryDef.define(new CollectionQuery(_queryBuilder));
@@ -32366,6 +35645,20 @@ public class Storefront {
         public HasMetafieldsQuery onCustomer(CustomerQueryDefinition queryDef) {
             startInlineFragment("Customer");
             queryDef.define(new CustomerQuery(_queryBuilder));
+            _queryBuilder.append('}');
+            return this;
+        }
+
+        public HasMetafieldsQuery onLocation(LocationQueryDefinition queryDef) {
+            startInlineFragment("Location");
+            queryDef.define(new LocationQuery(_queryBuilder));
+            _queryBuilder.append('}');
+            return this;
+        }
+
+        public HasMetafieldsQuery onMarket(MarketQueryDefinition queryDef) {
+            startInlineFragment("Market");
+            queryDef.define(new MarketQuery(_queryBuilder));
             _queryBuilder.append('}');
             return this;
         }
@@ -32475,12 +35768,24 @@ public class Storefront {
                     return new Blog(fields);
                 }
 
+                case "Cart": {
+                    return new Cart(fields);
+                }
+
                 case "Collection": {
                     return new Collection(fields);
                 }
 
                 case "Customer": {
                     return new Customer(fields);
+                }
+
+                case "Location": {
+                    return new Location(fields);
+                }
+
+                case "Market": {
+                    return new Market(fields);
                 }
 
                 case "Order": {
@@ -35585,6 +38890,20 @@ public class Storefront {
 
             return this;
         }
+
+        /**
+        * The market including the country of the active localized experience. Use the `@inContext` directive
+        * to change this value.
+        */
+        public LocalizationQuery market(MarketQueryDefinition queryDef) {
+            startField("market");
+
+            _queryBuilder.append('{');
+            queryDef.define(new MarketQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
     }
 
     /**
@@ -35629,6 +38948,12 @@ public class Storefront {
 
                     case "language": {
                         responseData.put(key, new Language(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "market": {
+                        responseData.put(key, new Market(jsonAsObject(field.getValue(), key)));
 
                         break;
                     }
@@ -35701,6 +39026,20 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * The market including the country of the active localized experience. Use the `@inContext` directive
+        * to change this value.
+        */
+
+        public Market getMarket() {
+            return (Market) get("market");
+        }
+
+        public Localization setMarket(Market arg) {
+            optimisticData.put(getKey("market"), arg);
+            return this;
+        }
+
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "availableCountries": return true;
@@ -35710,6 +39049,8 @@ public class Storefront {
                 case "country": return true;
 
                 case "language": return true;
+
+                case "market": return true;
 
                 default: return false;
             }
@@ -35744,6 +39085,54 @@ public class Storefront {
         }
 
         /**
+        * Returns a metafield found by namespace and key.
+        */
+        public LocationQuery metafield(String namespace, String key, MetafieldQueryDefinition queryDef) {
+            startField("metafield");
+
+            _queryBuilder.append("(namespace:");
+            Query.appendQuotedString(_queryBuilder, namespace.toString());
+
+            _queryBuilder.append(",key:");
+            Query.appendQuotedString(_queryBuilder, key.toString());
+
+            _queryBuilder.append(')');
+
+            _queryBuilder.append('{');
+            queryDef.define(new MetafieldQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * The metafields associated with the resource matching the supplied list of namespaces and keys.
+        */
+        public LocationQuery metafields(List<HasMetafieldsIdentifier> identifiers, MetafieldQueryDefinition queryDef) {
+            startField("metafields");
+
+            _queryBuilder.append("(identifiers:");
+            _queryBuilder.append('[');
+            {
+                String listSeperator1 = "";
+                for (HasMetafieldsIdentifier item1 : identifiers) {
+                    _queryBuilder.append(listSeperator1);
+                    listSeperator1 = ",";
+                    item1.appendTo(_queryBuilder);
+                }
+            }
+            _queryBuilder.append(']');
+
+            _queryBuilder.append(')');
+
+            _queryBuilder.append('{');
+            queryDef.define(new MetafieldQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
         * The name of the location.
         */
         public LocationQuery name() {
@@ -35756,7 +39145,7 @@ public class Storefront {
     /**
     * Represents a location where product inventory is held.
     */
-    public static class Location extends AbstractResponse<Location> implements Node {
+    public static class Location extends AbstractResponse<Location> implements HasMetafields, MetafieldParentResource, Node {
         public Location() {
         }
 
@@ -35773,6 +39162,33 @@ public class Storefront {
 
                     case "id": {
                         responseData.put(key, new ID(jsonAsString(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "metafield": {
+                        Metafield optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new Metafield(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "metafields": {
+                        List<Metafield> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            Metafield optional2 = null;
+                            if (!element1.isJsonNull()) {
+                                optional2 = new Metafield(jsonAsObject(element1, key));
+                            }
+
+                            list1.add(optional2);
+                        }
+
+                        responseData.put(key, list1);
 
                         break;
                     }
@@ -35825,6 +39241,32 @@ public class Storefront {
         }
 
         /**
+        * Returns a metafield found by namespace and key.
+        */
+
+        public Metafield getMetafield() {
+            return (Metafield) get("metafield");
+        }
+
+        public Location setMetafield(Metafield arg) {
+            optimisticData.put(getKey("metafield"), arg);
+            return this;
+        }
+
+        /**
+        * The metafields associated with the resource matching the supplied list of namespaces and keys.
+        */
+
+        public List<Metafield> getMetafields() {
+            return (List<Metafield>) get("metafields");
+        }
+
+        public Location setMetafields(List<Metafield> arg) {
+            optimisticData.put(getKey("metafields"), arg);
+            return this;
+        }
+
+        /**
         * The name of the location.
         */
 
@@ -35842,6 +39284,10 @@ public class Storefront {
                 case "address": return true;
 
                 case "id": return false;
+
+                case "metafield": return true;
+
+                case "metafields": return true;
 
                 case "name": return false;
 
@@ -38276,6 +41722,213 @@ public class Storefront {
         }
     }
 
+    public interface MarketQueryDefinition {
+        void define(MarketQuery _queryBuilder);
+    }
+
+    /**
+    * A group of one or more regions of the world that a merchant is targeting for sales. To learn more
+    * about markets, refer to [the Shopify Markets conceptual overview](/docs/apps/markets).
+    */
+    public static class MarketQuery extends Query<MarketQuery> {
+        MarketQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+
+            startField("id");
+        }
+
+        /**
+        * A human-readable unique string for the market automatically generated from its title.
+        */
+        public MarketQuery handle() {
+            startField("handle");
+
+            return this;
+        }
+
+        /**
+        * Returns a metafield found by namespace and key.
+        */
+        public MarketQuery metafield(String namespace, String key, MetafieldQueryDefinition queryDef) {
+            startField("metafield");
+
+            _queryBuilder.append("(namespace:");
+            Query.appendQuotedString(_queryBuilder, namespace.toString());
+
+            _queryBuilder.append(",key:");
+            Query.appendQuotedString(_queryBuilder, key.toString());
+
+            _queryBuilder.append(')');
+
+            _queryBuilder.append('{');
+            queryDef.define(new MetafieldQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * The metafields associated with the resource matching the supplied list of namespaces and keys.
+        */
+        public MarketQuery metafields(List<HasMetafieldsIdentifier> identifiers, MetafieldQueryDefinition queryDef) {
+            startField("metafields");
+
+            _queryBuilder.append("(identifiers:");
+            _queryBuilder.append('[');
+            {
+                String listSeperator1 = "";
+                for (HasMetafieldsIdentifier item1 : identifiers) {
+                    _queryBuilder.append(listSeperator1);
+                    listSeperator1 = ",";
+                    item1.appendTo(_queryBuilder);
+                }
+            }
+            _queryBuilder.append(']');
+
+            _queryBuilder.append(')');
+
+            _queryBuilder.append('{');
+            queryDef.define(new MetafieldQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+    }
+
+    /**
+    * A group of one or more regions of the world that a merchant is targeting for sales. To learn more
+    * about markets, refer to [the Shopify Markets conceptual overview](/docs/apps/markets).
+    */
+    public static class Market extends AbstractResponse<Market> implements HasMetafields, MetafieldParentResource, Node {
+        public Market() {
+        }
+
+        public Market(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "handle": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "id": {
+                        responseData.put(key, new ID(jsonAsString(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "metafield": {
+                        Metafield optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new Metafield(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "metafields": {
+                        List<Metafield> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            Metafield optional2 = null;
+                            if (!element1.isJsonNull()) {
+                                optional2 = new Metafield(jsonAsObject(element1, key));
+                            }
+
+                            list1.add(optional2);
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public Market(ID id) {
+            this();
+            optimisticData.put("id", id);
+        }
+
+        public String getGraphQlTypeName() {
+            return "Market";
+        }
+
+        /**
+        * A human-readable unique string for the market automatically generated from its title.
+        */
+
+        public String getHandle() {
+            return (String) get("handle");
+        }
+
+        public Market setHandle(String arg) {
+            optimisticData.put(getKey("handle"), arg);
+            return this;
+        }
+
+        /**
+        * A globally-unique identifier.
+        */
+
+        public ID getId() {
+            return (ID) get("id");
+        }
+
+        /**
+        * Returns a metafield found by namespace and key.
+        */
+
+        public Metafield getMetafield() {
+            return (Metafield) get("metafield");
+        }
+
+        public Market setMetafield(Metafield arg) {
+            optimisticData.put(getKey("metafield"), arg);
+            return this;
+        }
+
+        /**
+        * The metafields associated with the resource matching the supplied list of namespaces and keys.
+        */
+
+        public List<Metafield> getMetafields() {
+            return (List<Metafield>) get("metafields");
+        }
+
+        public Market setMetafields(List<Metafield> arg) {
+            optimisticData.put(getKey("metafields"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "handle": return false;
+
+                case "id": return false;
+
+                case "metafield": return true;
+
+                case "metafields": return true;
+
+                default: return false;
+            }
+        }
+    }
+
     public interface MediaQueryDefinition {
         void define(MediaQuery _queryBuilder);
     }
@@ -38304,6 +41957,19 @@ public class Storefront {
         */
         public MediaQuery mediaContentType() {
             startField("mediaContentType");
+
+            return this;
+        }
+
+        /**
+        * The presentation for a media.
+        */
+        public MediaQuery presentation(MediaPresentationQueryDefinition queryDef) {
+            startField("presentation");
+
+            _queryBuilder.append('{');
+            queryDef.define(new MediaPresentationQuery(_queryBuilder));
+            _queryBuilder.append('}');
 
             return this;
         }
@@ -38357,6 +42023,8 @@ public class Storefront {
 
         MediaContentType getMediaContentType();
 
+        MediaPresentation getPresentation();
+
         Image getPreviewImage();
     }
 
@@ -38385,6 +42053,17 @@ public class Storefront {
 
                     case "mediaContentType": {
                         responseData.put(key, MediaContentType.fromGraphQl(jsonAsString(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "presentation": {
+                        MediaPresentation optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new MediaPresentation(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
 
                         break;
                     }
@@ -38467,6 +42146,19 @@ public class Storefront {
         }
 
         /**
+        * The presentation for a media.
+        */
+
+        public MediaPresentation getPresentation() {
+            return (MediaPresentation) get("presentation");
+        }
+
+        public UnknownMedia setPresentation(MediaPresentation arg) {
+            optimisticData.put(getKey("presentation"), arg);
+            return this;
+        }
+
+        /**
         * The preview image for the media.
         */
 
@@ -38484,6 +42176,8 @@ public class Storefront {
                 case "alt": return false;
 
                 case "mediaContentType": return false;
+
+                case "presentation": return true;
 
                 case "previewImage": return true;
 
@@ -38938,6 +42632,19 @@ public class Storefront {
         }
 
         /**
+        * The presentation for a media.
+        */
+        public MediaImageQuery presentation(MediaPresentationQueryDefinition queryDef) {
+            startField("presentation");
+
+            _queryBuilder.append('{');
+            queryDef.define(new MediaPresentationQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
         * The preview image for the media.
         */
         public MediaImageQuery previewImage(ImageQueryDefinition queryDef) {
@@ -38993,6 +42700,17 @@ public class Storefront {
 
                     case "mediaContentType": {
                         responseData.put(key, MediaContentType.fromGraphQl(jsonAsString(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "presentation": {
+                        MediaPresentation optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new MediaPresentation(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
 
                         break;
                     }
@@ -39076,6 +42794,19 @@ public class Storefront {
         }
 
         /**
+        * The presentation for a media.
+        */
+
+        public MediaPresentation getPresentation() {
+            return (MediaPresentation) get("presentation");
+        }
+
+        public MediaImage setPresentation(MediaPresentation arg) {
+            optimisticData.put(getKey("presentation"), arg);
+            return this;
+        }
+
+        /**
         * The preview image for the media.
         */
 
@@ -39098,9 +42829,173 @@ public class Storefront {
 
                 case "mediaContentType": return false;
 
+                case "presentation": return true;
+
                 case "previewImage": return true;
 
                 default: return false;
+            }
+        }
+    }
+
+    public interface MediaPresentationQueryDefinition {
+        void define(MediaPresentationQuery _queryBuilder);
+    }
+
+    /**
+    * A media presentation.
+    */
+    public static class MediaPresentationQuery extends Query<MediaPresentationQuery> {
+        MediaPresentationQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+
+            startField("id");
+        }
+
+        /**
+        * A JSON object representing a presentation view.
+        */
+        public MediaPresentationQuery asJson(MediaPresentationFormat format) {
+            startField("asJson");
+
+            _queryBuilder.append("(format:");
+            _queryBuilder.append(format.toString());
+
+            _queryBuilder.append(')');
+
+            return this;
+        }
+    }
+
+    /**
+    * A media presentation.
+    */
+    public static class MediaPresentation extends AbstractResponse<MediaPresentation> implements Node {
+        public MediaPresentation() {
+        }
+
+        public MediaPresentation(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "asJson": {
+                        String optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = jsonAsString(field.getValue(), key);
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "id": {
+                        responseData.put(key, new ID(jsonAsString(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public MediaPresentation(ID id) {
+            this();
+            optimisticData.put("id", id);
+        }
+
+        public String getGraphQlTypeName() {
+            return "MediaPresentation";
+        }
+
+        /**
+        * A JSON object representing a presentation view.
+        */
+
+        public String getAsJson() {
+            return (String) get("asJson");
+        }
+
+        public MediaPresentation setAsJson(String arg) {
+            optimisticData.put(getKey("asJson"), arg);
+            return this;
+        }
+
+        /**
+        * A globally-unique identifier.
+        */
+
+        public ID getId() {
+            return (ID) get("id");
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "asJson": return false;
+
+                case "id": return false;
+
+                default: return false;
+            }
+        }
+    }
+
+    /**
+    * The possible formats for a media presentation.
+    */
+    public enum MediaPresentationFormat {
+        /**
+        * A media image presentation.
+        */
+        IMAGE,
+
+        /**
+        * A model viewer presentation.
+        */
+        MODEL_VIEWER,
+
+        UNKNOWN_VALUE;
+
+        public static MediaPresentationFormat fromGraphQl(String value) {
+            if (value == null) {
+                return null;
+            }
+
+            switch (value) {
+                case "IMAGE": {
+                    return IMAGE;
+                }
+
+                case "MODEL_VIEWER": {
+                    return MODEL_VIEWER;
+                }
+
+                default: {
+                    return UNKNOWN_VALUE;
+                }
+            }
+        }
+        public String toString() {
+            switch (this) {
+                case IMAGE: {
+                    return "IMAGE";
+                }
+
+                case MODEL_VIEWER: {
+                    return "MODEL_VIEWER";
+                }
+
+                default: {
+                    return "";
+                }
             }
         }
     }
@@ -40288,6 +44183,210 @@ public class Storefront {
         }
     }
 
+    /**
+    * Possible error codes that can be returned by `MetafieldDeleteUserError`.
+    */
+    public enum MetafieldDeleteErrorCode {
+        /**
+        * The owner ID is invalid.
+        */
+        INVALID_OWNER,
+
+        /**
+        * Metafield not found.
+        */
+        METAFIELD_DOES_NOT_EXIST,
+
+        UNKNOWN_VALUE;
+
+        public static MetafieldDeleteErrorCode fromGraphQl(String value) {
+            if (value == null) {
+                return null;
+            }
+
+            switch (value) {
+                case "INVALID_OWNER": {
+                    return INVALID_OWNER;
+                }
+
+                case "METAFIELD_DOES_NOT_EXIST": {
+                    return METAFIELD_DOES_NOT_EXIST;
+                }
+
+                default: {
+                    return UNKNOWN_VALUE;
+                }
+            }
+        }
+        public String toString() {
+            switch (this) {
+                case INVALID_OWNER: {
+                    return "INVALID_OWNER";
+                }
+
+                case METAFIELD_DOES_NOT_EXIST: {
+                    return "METAFIELD_DOES_NOT_EXIST";
+                }
+
+                default: {
+                    return "";
+                }
+            }
+        }
+    }
+
+    public interface MetafieldDeleteUserErrorQueryDefinition {
+        void define(MetafieldDeleteUserErrorQuery _queryBuilder);
+    }
+
+    /**
+    * An error that occurs during the execution of cart metafield deletion.
+    */
+    public static class MetafieldDeleteUserErrorQuery extends Query<MetafieldDeleteUserErrorQuery> {
+        MetafieldDeleteUserErrorQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * The error code.
+        */
+        public MetafieldDeleteUserErrorQuery code() {
+            startField("code");
+
+            return this;
+        }
+
+        /**
+        * The path to the input field that caused the error.
+        */
+        public MetafieldDeleteUserErrorQuery field() {
+            startField("field");
+
+            return this;
+        }
+
+        /**
+        * The error message.
+        */
+        public MetafieldDeleteUserErrorQuery message() {
+            startField("message");
+
+            return this;
+        }
+    }
+
+    /**
+    * An error that occurs during the execution of cart metafield deletion.
+    */
+    public static class MetafieldDeleteUserError extends AbstractResponse<MetafieldDeleteUserError> implements DisplayableError {
+        public MetafieldDeleteUserError() {
+        }
+
+        public MetafieldDeleteUserError(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "code": {
+                        MetafieldDeleteErrorCode optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = MetafieldDeleteErrorCode.fromGraphQl(jsonAsString(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "field": {
+                        List<String> optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            List<String> list1 = new ArrayList<>();
+                            for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                                list1.add(jsonAsString(element1, key));
+                            }
+
+                            optional1 = list1;
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "message": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "MetafieldDeleteUserError";
+        }
+
+        /**
+        * The error code.
+        */
+
+        public MetafieldDeleteErrorCode getCode() {
+            return (MetafieldDeleteErrorCode) get("code");
+        }
+
+        public MetafieldDeleteUserError setCode(MetafieldDeleteErrorCode arg) {
+            optimisticData.put(getKey("code"), arg);
+            return this;
+        }
+
+        /**
+        * The path to the input field that caused the error.
+        */
+
+        public List<String> getField() {
+            return (List<String>) get("field");
+        }
+
+        public MetafieldDeleteUserError setField(List<String> arg) {
+            optimisticData.put(getKey("field"), arg);
+            return this;
+        }
+
+        /**
+        * The error message.
+        */
+
+        public String getMessage() {
+            return (String) get("message");
+        }
+
+        public MetafieldDeleteUserError setMessage(String arg) {
+            optimisticData.put(getKey("message"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "code": return false;
+
+                case "field": return false;
+
+                case "message": return false;
+
+                default: return false;
+            }
+        }
+    }
+
     public static class MetafieldFilter implements Serializable {
         private String namespace;
 
@@ -40381,6 +44480,13 @@ public class Storefront {
             return this;
         }
 
+        public MetafieldParentResourceQuery onCart(CartQueryDefinition queryDef) {
+            startInlineFragment("Cart");
+            queryDef.define(new CartQuery(_queryBuilder));
+            _queryBuilder.append('}');
+            return this;
+        }
+
         public MetafieldParentResourceQuery onCollection(CollectionQueryDefinition queryDef) {
             startInlineFragment("Collection");
             queryDef.define(new CollectionQuery(_queryBuilder));
@@ -40391,6 +44497,20 @@ public class Storefront {
         public MetafieldParentResourceQuery onCustomer(CustomerQueryDefinition queryDef) {
             startInlineFragment("Customer");
             queryDef.define(new CustomerQuery(_queryBuilder));
+            _queryBuilder.append('}');
+            return this;
+        }
+
+        public MetafieldParentResourceQuery onLocation(LocationQueryDefinition queryDef) {
+            startInlineFragment("Location");
+            queryDef.define(new LocationQuery(_queryBuilder));
+            _queryBuilder.append('}');
+            return this;
+        }
+
+        public MetafieldParentResourceQuery onMarket(MarketQueryDefinition queryDef) {
+            startInlineFragment("Market");
+            queryDef.define(new MarketQuery(_queryBuilder));
             _queryBuilder.append('}');
             return this;
         }
@@ -40469,12 +44589,24 @@ public class Storefront {
                     return new Blog(fields);
                 }
 
+                case "Cart": {
+                    return new Cart(fields);
+                }
+
                 case "Collection": {
                     return new Collection(fields);
                 }
 
                 case "Customer": {
                     return new Customer(fields);
+                }
+
+                case "Location": {
+                    return new Location(fields);
+                }
+
+                case "Market": {
+                    return new Market(fields);
                 }
 
                 case "Order": {
@@ -40930,6 +45062,336 @@ public class Storefront {
                 case "node": return false;
 
                 default: return false;
+            }
+        }
+    }
+
+    public interface MetafieldsSetUserErrorQueryDefinition {
+        void define(MetafieldsSetUserErrorQuery _queryBuilder);
+    }
+
+    /**
+    * An error that occurs during the execution of `MetafieldsSet`.
+    */
+    public static class MetafieldsSetUserErrorQuery extends Query<MetafieldsSetUserErrorQuery> {
+        MetafieldsSetUserErrorQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * The error code.
+        */
+        public MetafieldsSetUserErrorQuery code() {
+            startField("code");
+
+            return this;
+        }
+
+        /**
+        * The index of the array element that's causing the error.
+        */
+        public MetafieldsSetUserErrorQuery elementIndex() {
+            startField("elementIndex");
+
+            return this;
+        }
+
+        /**
+        * The path to the input field that caused the error.
+        */
+        public MetafieldsSetUserErrorQuery field() {
+            startField("field");
+
+            return this;
+        }
+
+        /**
+        * The error message.
+        */
+        public MetafieldsSetUserErrorQuery message() {
+            startField("message");
+
+            return this;
+        }
+    }
+
+    /**
+    * An error that occurs during the execution of `MetafieldsSet`.
+    */
+    public static class MetafieldsSetUserError extends AbstractResponse<MetafieldsSetUserError> implements DisplayableError {
+        public MetafieldsSetUserError() {
+        }
+
+        public MetafieldsSetUserError(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "code": {
+                        MetafieldsSetUserErrorCode optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = MetafieldsSetUserErrorCode.fromGraphQl(jsonAsString(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "elementIndex": {
+                        Integer optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = jsonAsInteger(field.getValue(), key);
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "field": {
+                        List<String> optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            List<String> list1 = new ArrayList<>();
+                            for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                                list1.add(jsonAsString(element1, key));
+                            }
+
+                            optional1 = list1;
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "message": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "MetafieldsSetUserError";
+        }
+
+        /**
+        * The error code.
+        */
+
+        public MetafieldsSetUserErrorCode getCode() {
+            return (MetafieldsSetUserErrorCode) get("code");
+        }
+
+        public MetafieldsSetUserError setCode(MetafieldsSetUserErrorCode arg) {
+            optimisticData.put(getKey("code"), arg);
+            return this;
+        }
+
+        /**
+        * The index of the array element that's causing the error.
+        */
+
+        public Integer getElementIndex() {
+            return (Integer) get("elementIndex");
+        }
+
+        public MetafieldsSetUserError setElementIndex(Integer arg) {
+            optimisticData.put(getKey("elementIndex"), arg);
+            return this;
+        }
+
+        /**
+        * The path to the input field that caused the error.
+        */
+
+        public List<String> getField() {
+            return (List<String>) get("field");
+        }
+
+        public MetafieldsSetUserError setField(List<String> arg) {
+            optimisticData.put(getKey("field"), arg);
+            return this;
+        }
+
+        /**
+        * The error message.
+        */
+
+        public String getMessage() {
+            return (String) get("message");
+        }
+
+        public MetafieldsSetUserError setMessage(String arg) {
+            optimisticData.put(getKey("message"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "code": return false;
+
+                case "elementIndex": return false;
+
+                case "field": return false;
+
+                case "message": return false;
+
+                default: return false;
+            }
+        }
+    }
+
+    /**
+    * Possible error codes that can be returned by `MetafieldsSetUserError`.
+    */
+    public enum MetafieldsSetUserErrorCode {
+        /**
+        * The input value is blank.
+        */
+        BLANK,
+
+        /**
+        * The input value isn't included in the list.
+        */
+        INCLUSION,
+
+        /**
+        * The owner ID is invalid.
+        */
+        INVALID_OWNER,
+
+        /**
+        * The type is invalid.
+        */
+        INVALID_TYPE,
+
+        /**
+        * The value is invalid for metafield type or for definition options.
+        */
+        INVALID_VALUE,
+
+        /**
+        * The input value should be less than or equal to the maximum value allowed.
+        */
+        LESS_THAN_OR_EQUAL_TO,
+
+        /**
+        * The input value needs to be blank.
+        */
+        PRESENT,
+
+        /**
+        * The input value is too long.
+        */
+        TOO_LONG,
+
+        /**
+        * The input value is too short.
+        */
+        TOO_SHORT,
+
+        UNKNOWN_VALUE;
+
+        public static MetafieldsSetUserErrorCode fromGraphQl(String value) {
+            if (value == null) {
+                return null;
+            }
+
+            switch (value) {
+                case "BLANK": {
+                    return BLANK;
+                }
+
+                case "INCLUSION": {
+                    return INCLUSION;
+                }
+
+                case "INVALID_OWNER": {
+                    return INVALID_OWNER;
+                }
+
+                case "INVALID_TYPE": {
+                    return INVALID_TYPE;
+                }
+
+                case "INVALID_VALUE": {
+                    return INVALID_VALUE;
+                }
+
+                case "LESS_THAN_OR_EQUAL_TO": {
+                    return LESS_THAN_OR_EQUAL_TO;
+                }
+
+                case "PRESENT": {
+                    return PRESENT;
+                }
+
+                case "TOO_LONG": {
+                    return TOO_LONG;
+                }
+
+                case "TOO_SHORT": {
+                    return TOO_SHORT;
+                }
+
+                default: {
+                    return UNKNOWN_VALUE;
+                }
+            }
+        }
+        public String toString() {
+            switch (this) {
+                case BLANK: {
+                    return "BLANK";
+                }
+
+                case INCLUSION: {
+                    return "INCLUSION";
+                }
+
+                case INVALID_OWNER: {
+                    return "INVALID_OWNER";
+                }
+
+                case INVALID_TYPE: {
+                    return "INVALID_TYPE";
+                }
+
+                case INVALID_VALUE: {
+                    return "INVALID_VALUE";
+                }
+
+                case LESS_THAN_OR_EQUAL_TO: {
+                    return "LESS_THAN_OR_EQUAL_TO";
+                }
+
+                case PRESENT: {
+                    return "PRESENT";
+                }
+
+                case TOO_LONG: {
+                    return "TOO_LONG";
+                }
+
+                case TOO_SHORT: {
+                    return "TOO_SHORT";
+                }
+
+                default: {
+                    return "";
+                }
             }
         }
     }
@@ -41816,6 +46278,19 @@ public class Storefront {
         }
 
         /**
+        * The presentation for a media.
+        */
+        public Model3dQuery presentation(MediaPresentationQueryDefinition queryDef) {
+            startField("presentation");
+
+            _queryBuilder.append('{');
+            queryDef.define(new MediaPresentationQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
         * The preview image for the media.
         */
         public Model3dQuery previewImage(ImageQueryDefinition queryDef) {
@@ -41873,6 +46348,17 @@ public class Storefront {
 
                     case "mediaContentType": {
                         responseData.put(key, MediaContentType.fromGraphQl(jsonAsString(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "presentation": {
+                        MediaPresentation optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new MediaPresentation(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
 
                         break;
                     }
@@ -41954,6 +46440,19 @@ public class Storefront {
         }
 
         /**
+        * The presentation for a media.
+        */
+
+        public MediaPresentation getPresentation() {
+            return (MediaPresentation) get("presentation");
+        }
+
+        public Model3d setPresentation(MediaPresentation arg) {
+            optimisticData.put(getKey("presentation"), arg);
+            return this;
+        }
+
+        /**
         * The preview image for the media.
         */
 
@@ -41986,6 +46485,8 @@ public class Storefront {
                 case "id": return false;
 
                 case "mediaContentType": return false;
+
+                case "presentation": return true;
 
                 case "previewImage": return true;
 
@@ -42577,6 +47078,53 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * Deletes a cart metafield.
+        */
+        public MutationQuery cartMetafieldDelete(CartMetafieldDeleteInput input, CartMetafieldDeletePayloadQueryDefinition queryDef) {
+            startField("cartMetafieldDelete");
+
+            _queryBuilder.append("(input:");
+            input.appendTo(_queryBuilder);
+
+            _queryBuilder.append(')');
+
+            _queryBuilder.append('{');
+            queryDef.define(new CartMetafieldDeletePayloadQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * Sets cart metafield values. Cart metafield values will be set regardless if they were previously
+        * created or not.
+        * Allows a maximum of 25 cart metafields to be set at a time.
+        */
+        public MutationQuery cartMetafieldsSet(List<CartMetafieldsSetInput> metafields, CartMetafieldsSetPayloadQueryDefinition queryDef) {
+            startField("cartMetafieldsSet");
+
+            _queryBuilder.append("(metafields:");
+            _queryBuilder.append('[');
+            {
+                String listSeperator1 = "";
+                for (CartMetafieldsSetInput item1 : metafields) {
+                    _queryBuilder.append(listSeperator1);
+                    listSeperator1 = ",";
+                    item1.appendTo(_queryBuilder);
+                }
+            }
+            _queryBuilder.append(']');
+
+            _queryBuilder.append(')');
+
+            _queryBuilder.append('{');
+            queryDef.define(new CartMetafieldsSetPayloadQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
         public class CartNoteUpdateArguments extends Arguments {
             CartNoteUpdateArguments(StringBuilder _queryBuilder) {
                 super(_queryBuilder, false);
@@ -42626,6 +47174,27 @@ public class Storefront {
         }
 
         /**
+        * Update the customer's payment method that will be used to checkout.
+        */
+        public MutationQuery cartPaymentUpdate(ID cartId, CartPaymentInput payment, CartPaymentUpdatePayloadQueryDefinition queryDef) {
+            startField("cartPaymentUpdate");
+
+            _queryBuilder.append("(cartId:");
+            Query.appendQuotedString(_queryBuilder, cartId.toString());
+
+            _queryBuilder.append(",payment:");
+            payment.appendTo(_queryBuilder);
+
+            _queryBuilder.append(')');
+
+            _queryBuilder.append('{');
+            queryDef.define(new CartPaymentUpdatePayloadQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
         * Update the selected delivery options for a delivery group.
         */
         public MutationQuery cartSelectedDeliveryOptionsUpdate(ID cartId, List<CartSelectedDeliveryOptionInput> selectedDeliveryOptions, CartSelectedDeliveryOptionsUpdatePayloadQueryDefinition queryDef) {
@@ -42650,6 +47219,27 @@ public class Storefront {
 
             _queryBuilder.append('{');
             queryDef.define(new CartSelectedDeliveryOptionsUpdatePayloadQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * Submit the cart for checkout completion.
+        */
+        public MutationQuery cartSubmitForCompletion(ID cartId, String attemptToken, CartSubmitForCompletionPayloadQueryDefinition queryDef) {
+            startField("cartSubmitForCompletion");
+
+            _queryBuilder.append("(cartId:");
+            Query.appendQuotedString(_queryBuilder, cartId.toString());
+
+            _queryBuilder.append(",attemptToken:");
+            Query.appendQuotedString(_queryBuilder, attemptToken.toString());
+
+            _queryBuilder.append(')');
+
+            _queryBuilder.append('{');
+            queryDef.define(new CartSubmitForCompletionPayloadQuery(_queryBuilder));
             _queryBuilder.append('}');
 
             return this;
@@ -43517,6 +48107,28 @@ public class Storefront {
                         break;
                     }
 
+                    case "cartMetafieldDelete": {
+                        CartMetafieldDeletePayload optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new CartMetafieldDeletePayload(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "cartMetafieldsSet": {
+                        CartMetafieldsSetPayload optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new CartMetafieldsSetPayload(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
                     case "cartNoteUpdate": {
                         CartNoteUpdatePayload optional1 = null;
                         if (!field.getValue().isJsonNull()) {
@@ -43528,10 +48140,32 @@ public class Storefront {
                         break;
                     }
 
+                    case "cartPaymentUpdate": {
+                        CartPaymentUpdatePayload optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new CartPaymentUpdatePayload(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
                     case "cartSelectedDeliveryOptionsUpdate": {
                         CartSelectedDeliveryOptionsUpdatePayload optional1 = null;
                         if (!field.getValue().isJsonNull()) {
                             optional1 = new CartSelectedDeliveryOptionsUpdatePayload(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "cartSubmitForCompletion": {
+                        CartSubmitForCompletionPayload optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new CartSubmitForCompletionPayload(jsonAsObject(field.getValue(), key));
                         }
 
                         responseData.put(key, optional1);
@@ -44013,6 +48647,34 @@ public class Storefront {
         }
 
         /**
+        * Deletes a cart metafield.
+        */
+
+        public CartMetafieldDeletePayload getCartMetafieldDelete() {
+            return (CartMetafieldDeletePayload) get("cartMetafieldDelete");
+        }
+
+        public Mutation setCartMetafieldDelete(CartMetafieldDeletePayload arg) {
+            optimisticData.put(getKey("cartMetafieldDelete"), arg);
+            return this;
+        }
+
+        /**
+        * Sets cart metafield values. Cart metafield values will be set regardless if they were previously
+        * created or not.
+        * Allows a maximum of 25 cart metafields to be set at a time.
+        */
+
+        public CartMetafieldsSetPayload getCartMetafieldsSet() {
+            return (CartMetafieldsSetPayload) get("cartMetafieldsSet");
+        }
+
+        public Mutation setCartMetafieldsSet(CartMetafieldsSetPayload arg) {
+            optimisticData.put(getKey("cartMetafieldsSet"), arg);
+            return this;
+        }
+
+        /**
         * Updates the note on the cart.
         */
 
@@ -44026,6 +48688,19 @@ public class Storefront {
         }
 
         /**
+        * Update the customer's payment method that will be used to checkout.
+        */
+
+        public CartPaymentUpdatePayload getCartPaymentUpdate() {
+            return (CartPaymentUpdatePayload) get("cartPaymentUpdate");
+        }
+
+        public Mutation setCartPaymentUpdate(CartPaymentUpdatePayload arg) {
+            optimisticData.put(getKey("cartPaymentUpdate"), arg);
+            return this;
+        }
+
+        /**
         * Update the selected delivery options for a delivery group.
         */
 
@@ -44035,6 +48710,19 @@ public class Storefront {
 
         public Mutation setCartSelectedDeliveryOptionsUpdate(CartSelectedDeliveryOptionsUpdatePayload arg) {
             optimisticData.put(getKey("cartSelectedDeliveryOptionsUpdate"), arg);
+            return this;
+        }
+
+        /**
+        * Submit the cart for checkout completion.
+        */
+
+        public CartSubmitForCompletionPayload getCartSubmitForCompletion() {
+            return (CartSubmitForCompletionPayload) get("cartSubmitForCompletion");
+        }
+
+        public Mutation setCartSubmitForCompletion(CartSubmitForCompletionPayload arg) {
+            optimisticData.put(getKey("cartSubmitForCompletion"), arg);
             return this;
         }
 
@@ -44509,9 +49197,17 @@ public class Storefront {
 
                 case "cartLinesUpdate": return true;
 
+                case "cartMetafieldDelete": return true;
+
+                case "cartMetafieldsSet": return true;
+
                 case "cartNoteUpdate": return true;
 
+                case "cartPaymentUpdate": return true;
+
                 case "cartSelectedDeliveryOptionsUpdate": return true;
+
+                case "cartSubmitForCompletion": return true;
 
                 case "checkoutAttributesUpdateV2": return true;
 
@@ -44701,9 +49397,23 @@ public class Storefront {
             return this;
         }
 
+        public NodeQuery onMarket(MarketQueryDefinition queryDef) {
+            startInlineFragment("Market");
+            queryDef.define(new MarketQuery(_queryBuilder));
+            _queryBuilder.append('}');
+            return this;
+        }
+
         public NodeQuery onMediaImage(MediaImageQueryDefinition queryDef) {
             startInlineFragment("MediaImage");
             queryDef.define(new MediaImageQuery(_queryBuilder));
+            _queryBuilder.append('}');
+            return this;
+        }
+
+        public NodeQuery onMediaPresentation(MediaPresentationQueryDefinition queryDef) {
+            startInlineFragment("MediaPresentation");
+            queryDef.define(new MediaPresentationQuery(_queryBuilder));
             _queryBuilder.append('}');
             return this;
         }
@@ -44907,8 +49617,16 @@ public class Storefront {
                     return new MailingAddress(fields);
                 }
 
+                case "Market": {
+                    return new Market(fields);
+                }
+
                 case "MediaImage": {
                     return new MediaImage(fields);
+                }
+
+                case "MediaPresentation": {
+                    return new MediaPresentation(fields);
                 }
 
                 case "Menu": {
@@ -45173,6 +49891,19 @@ public class Storefront {
             super(_queryBuilder);
 
             startField("id");
+        }
+
+        /**
+        * The address associated with the payment method.
+        */
+        public OrderQuery billingAddress(MailingAddressQueryDefinition queryDef) {
+            startField("billingAddress");
+
+            _queryBuilder.append('{');
+            queryDef.define(new MailingAddressQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
         }
 
         /**
@@ -45857,6 +50588,17 @@ public class Storefront {
                 String key = field.getKey();
                 String fieldName = getFieldName(key);
                 switch (fieldName) {
+                    case "billingAddress": {
+                        MailingAddress optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new MailingAddress(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
                     case "cancelReason": {
                         OrderCancelReason optional1 = null;
                         if (!field.getValue().isJsonNull()) {
@@ -46214,6 +50956,19 @@ public class Storefront {
 
         public String getGraphQlTypeName() {
             return "Order";
+        }
+
+        /**
+        * The address associated with the payment method.
+        */
+
+        public MailingAddress getBillingAddress() {
+            return (MailingAddress) get("billingAddress");
+        }
+
+        public Order setBillingAddress(MailingAddress arg) {
+            optimisticData.put(getKey("billingAddress"), arg);
+            return this;
         }
 
         /**
@@ -46738,6 +51493,8 @@ public class Storefront {
 
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
+                case "billingAddress": return true;
+
                 case "cancelReason": return false;
 
                 case "canceledAt": return false;
@@ -48860,6 +53617,8 @@ public class Storefront {
     /**
     * Returns information about pagination in a connection, in accordance with the
     * [Relay specification](https://relay.dev/graphql/connections.htm#sec-undefined.PageInfo).
+    * For more information, please read our [GraphQL Pagination Usage
+    * Guide](https://shopify.dev/api/usage/pagination-graphql).
     */
     public static class PageInfoQuery extends Query<PageInfoQuery> {
         PageInfoQuery(StringBuilder _queryBuilder) {
@@ -48906,6 +53665,8 @@ public class Storefront {
     /**
     * Returns information about pagination in a connection, in accordance with the
     * [Relay specification](https://relay.dev/graphql/connections.htm#sec-undefined.PageInfo).
+    * For more information, please read our [GraphQL Pagination Usage
+    * Guide](https://shopify.dev/api/usage/pagination-graphql).
     */
     public static class PageInfo extends AbstractResponse<PageInfo> {
         public PageInfo() {
@@ -52855,6 +57616,62 @@ public class Storefront {
     }
 
     /**
+    * The recommendation intent that is used to generate product recommendations.
+    * You can use intent to generate product recommendations according to different strategies.
+    */
+    public enum ProductRecommendationIntent {
+        /**
+        * Offer customers products that are complementary to a product for which recommendations are to be
+        * fetched. An example is add-on products that display in a Pair it with section.
+        */
+        COMPLEMENTARY,
+
+        /**
+        * Offer customers a mix of products that are similar or complementary to a product for which
+        * recommendations are to be fetched. An example is substitutable products that display in a You may
+        * also like section.
+        */
+        RELATED,
+
+        UNKNOWN_VALUE;
+
+        public static ProductRecommendationIntent fromGraphQl(String value) {
+            if (value == null) {
+                return null;
+            }
+
+            switch (value) {
+                case "COMPLEMENTARY": {
+                    return COMPLEMENTARY;
+                }
+
+                case "RELATED": {
+                    return RELATED;
+                }
+
+                default: {
+                    return UNKNOWN_VALUE;
+                }
+            }
+        }
+        public String toString() {
+            switch (this) {
+                case COMPLEMENTARY: {
+                    return "COMPLEMENTARY";
+                }
+
+                case RELATED: {
+                    return "RELATED";
+                }
+
+                default: {
+                    return "";
+                }
+            }
+        }
+    }
+
+    /**
     * The set of valid sort keys for the Product query.
     */
     public enum ProductSortKeys {
@@ -54428,6 +59245,24 @@ public class Storefront {
             super(_queryBuilder);
         }
 
+        /**
+        * Fetch a specific Article by its ID.
+        */
+        public QueryRootQuery article(ID id, ArticleQueryDefinition queryDef) {
+            startField("article");
+
+            _queryBuilder.append("(id:");
+            Query.appendQuotedString(_queryBuilder, id.toString());
+
+            _queryBuilder.append(')');
+
+            _queryBuilder.append('{');
+            queryDef.define(new ArticleQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
         public class ArticlesArguments extends Arguments {
             ArticlesArguments(StringBuilder _queryBuilder) {
                 super(_queryBuilder, true);
@@ -54755,6 +59590,24 @@ public class Storefront {
 
             _queryBuilder.append('{');
             queryDef.define(new CartQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * A poll for the status of the cart checkout completion and order creation.
+        */
+        public QueryRootQuery cartCompletionAttempt(String attemptId, CartCompletionAttemptResultQueryDefinition queryDef) {
+            startField("cartCompletionAttempt");
+
+            _queryBuilder.append("(attemptId:");
+            Query.appendQuotedString(_queryBuilder, attemptId.toString());
+
+            _queryBuilder.append(')');
+
+            _queryBuilder.append('{');
+            queryDef.define(new CartCompletionAttemptResultQuery(_queryBuilder));
             _queryBuilder.append('}');
 
             return this;
@@ -55590,6 +60443,29 @@ public class Storefront {
             return this;
         }
 
+        public class ProductRecommendationsArguments extends Arguments {
+            ProductRecommendationsArguments(StringBuilder _queryBuilder) {
+                super(_queryBuilder, false);
+            }
+
+            /**
+            * The recommendation intent that is used to generate product recommendations. You can use intent to
+            * generate product recommendations on various pages across the channels, according to different
+            * strategies.
+            */
+            public ProductRecommendationsArguments intent(ProductRecommendationIntent value) {
+                if (value != null) {
+                    startArgument("intent");
+                    _queryBuilder.append(value.toString());
+                }
+                return this;
+            }
+        }
+
+        public interface ProductRecommendationsArgumentsDefinition {
+            void define(ProductRecommendationsArguments args);
+        }
+
         /**
         * Find recommended products related to a given `product_id`.
         * To learn more about how recommendations are generated, see
@@ -55597,10 +60473,22 @@ public class Storefront {
         * pages*](https://help.shopify.com/themes/development/recommended-products).
         */
         public QueryRootQuery productRecommendations(ID productId, ProductQueryDefinition queryDef) {
+            return productRecommendations(productId, args -> {}, queryDef);
+        }
+
+        /**
+        * Find recommended products related to a given `product_id`.
+        * To learn more about how recommendations are generated, see
+        * [*Showing product recommendations on product
+        * pages*](https://help.shopify.com/themes/development/recommended-products).
+        */
+        public QueryRootQuery productRecommendations(ID productId, ProductRecommendationsArgumentsDefinition argsDef, ProductQueryDefinition queryDef) {
             startField("productRecommendations");
 
             _queryBuilder.append("(productId:");
             Query.appendQuotedString(_queryBuilder, productId.toString());
+
+            argsDef.define(new ProductRecommendationsArguments(_queryBuilder));
 
             _queryBuilder.append(')');
 
@@ -55920,6 +60808,17 @@ public class Storefront {
                 String key = field.getKey();
                 String fieldName = getFieldName(key);
                 switch (fieldName) {
+                    case "article": {
+                        Article optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new Article(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
                     case "articles": {
                         responseData.put(key, new ArticleConnection(jsonAsObject(field.getValue(), key)));
 
@@ -55958,6 +60857,17 @@ public class Storefront {
                         Cart optional1 = null;
                         if (!field.getValue().isJsonNull()) {
                             optional1 = new Cart(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "cartCompletionAttempt": {
+                        CartCompletionAttemptResult optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = UnknownCartCompletionAttemptResult.create(jsonAsObject(field.getValue(), key));
                         }
 
                         responseData.put(key, optional1);
@@ -56194,6 +61104,19 @@ public class Storefront {
         }
 
         /**
+        * Fetch a specific Article by its ID.
+        */
+
+        public Article getArticle() {
+            return (Article) get("article");
+        }
+
+        public QueryRoot setArticle(Article arg) {
+            optimisticData.put(getKey("article"), arg);
+            return this;
+        }
+
+        /**
         * List of the shop's articles.
         */
 
@@ -56258,6 +61181,19 @@ public class Storefront {
 
         public QueryRoot setCart(Cart arg) {
             optimisticData.put(getKey("cart"), arg);
+            return this;
+        }
+
+        /**
+        * A poll for the status of the cart checkout completion and order creation.
+        */
+
+        public CartCompletionAttemptResult getCartCompletionAttempt() {
+            return (CartCompletionAttemptResult) get("cartCompletionAttempt");
+        }
+
+        public QueryRoot setCartCompletionAttempt(CartCompletionAttemptResult arg) {
+            optimisticData.put(getKey("cartCompletionAttempt"), arg);
             return this;
         }
 
@@ -56574,6 +61510,8 @@ public class Storefront {
 
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
+                case "article": return true;
+
                 case "articles": return true;
 
                 case "blog": return true;
@@ -56583,6 +61521,8 @@ public class Storefront {
                 case "blogs": return true;
 
                 case "cart": return true;
+
+                case "cartCompletionAttempt": return false;
 
                 case "collection": return true;
 
@@ -60706,6 +65646,53 @@ public class Storefront {
         }
     }
 
+    public static class ShopPayWalletContentInput implements Serializable {
+        private MailingAddressInput billingAddress;
+
+        private String sessionToken;
+
+        public ShopPayWalletContentInput(MailingAddressInput billingAddress, String sessionToken) {
+            this.billingAddress = billingAddress;
+
+            this.sessionToken = sessionToken;
+        }
+
+        public MailingAddressInput getBillingAddress() {
+            return billingAddress;
+        }
+
+        public ShopPayWalletContentInput setBillingAddress(MailingAddressInput billingAddress) {
+            this.billingAddress = billingAddress;
+            return this;
+        }
+
+        public String getSessionToken() {
+            return sessionToken;
+        }
+
+        public ShopPayWalletContentInput setSessionToken(String sessionToken) {
+            this.sessionToken = sessionToken;
+            return this;
+        }
+
+        public void appendTo(StringBuilder _queryBuilder) {
+            String separator = "";
+            _queryBuilder.append('{');
+
+            _queryBuilder.append(separator);
+            separator = ",";
+            _queryBuilder.append("billingAddress:");
+            billingAddress.appendTo(_queryBuilder);
+
+            _queryBuilder.append(separator);
+            separator = ",";
+            _queryBuilder.append("sessionToken:");
+            Query.appendQuotedString(_queryBuilder, sessionToken.toString());
+
+            _queryBuilder.append('}');
+        }
+    }
+
     public interface ShopPolicyQueryDefinition {
         void define(ShopPolicyQuery _queryBuilder);
     }
@@ -61742,6 +66729,1432 @@ public class Storefront {
                 case "cursor": return false;
 
                 case "node": return false;
+
+                default: return false;
+            }
+        }
+    }
+
+    public interface SubmissionErrorQueryDefinition {
+        void define(SubmissionErrorQuery _queryBuilder);
+    }
+
+    /**
+    * An error that occurred during cart submit for completion.
+    */
+    public static class SubmissionErrorQuery extends Query<SubmissionErrorQuery> {
+        SubmissionErrorQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * The error code.
+        */
+        public SubmissionErrorQuery code() {
+            startField("code");
+
+            return this;
+        }
+
+        /**
+        * The error message.
+        */
+        public SubmissionErrorQuery message() {
+            startField("message");
+
+            return this;
+        }
+    }
+
+    /**
+    * An error that occurred during cart submit for completion.
+    */
+    public static class SubmissionError extends AbstractResponse<SubmissionError> {
+        public SubmissionError() {
+        }
+
+        public SubmissionError(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "code": {
+                        responseData.put(key, SubmissionErrorCode.fromGraphQl(jsonAsString(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "message": {
+                        String optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = jsonAsString(field.getValue(), key);
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "SubmissionError";
+        }
+
+        /**
+        * The error code.
+        */
+
+        public SubmissionErrorCode getCode() {
+            return (SubmissionErrorCode) get("code");
+        }
+
+        public SubmissionError setCode(SubmissionErrorCode arg) {
+            optimisticData.put(getKey("code"), arg);
+            return this;
+        }
+
+        /**
+        * The error message.
+        */
+
+        public String getMessage() {
+            return (String) get("message");
+        }
+
+        public SubmissionError setMessage(String arg) {
+            optimisticData.put(getKey("message"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "code": return false;
+
+                case "message": return false;
+
+                default: return false;
+            }
+        }
+    }
+
+    /**
+    * The code of the error that occurred during cart submit for completion.
+    */
+    public enum SubmissionErrorCode {
+        BUYER_IDENTITY_EMAIL_IS_INVALID,
+
+        BUYER_IDENTITY_EMAIL_REQUIRED,
+
+        BUYER_IDENTITY_PHONE_IS_INVALID,
+
+        DELIVERY_ADDRESS1_INVALID,
+
+        DELIVERY_ADDRESS1_REQUIRED,
+
+        DELIVERY_ADDRESS1_TOO_LONG,
+
+        DELIVERY_ADDRESS2_INVALID,
+
+        DELIVERY_ADDRESS2_REQUIRED,
+
+        DELIVERY_ADDRESS2_TOO_LONG,
+
+        DELIVERY_ADDRESS_REQUIRED,
+
+        DELIVERY_CITY_INVALID,
+
+        DELIVERY_CITY_REQUIRED,
+
+        DELIVERY_CITY_TOO_LONG,
+
+        DELIVERY_COMPANY_INVALID,
+
+        DELIVERY_COMPANY_REQUIRED,
+
+        DELIVERY_COMPANY_TOO_LONG,
+
+        DELIVERY_COUNTRY_REQUIRED,
+
+        DELIVERY_FIRST_NAME_INVALID,
+
+        DELIVERY_FIRST_NAME_REQUIRED,
+
+        DELIVERY_FIRST_NAME_TOO_LONG,
+
+        DELIVERY_INVALID_POSTAL_CODE_FOR_COUNTRY,
+
+        DELIVERY_INVALID_POSTAL_CODE_FOR_ZONE,
+
+        DELIVERY_LAST_NAME_INVALID,
+
+        DELIVERY_LAST_NAME_REQUIRED,
+
+        DELIVERY_LAST_NAME_TOO_LONG,
+
+        DELIVERY_NO_DELIVERY_AVAILABLE,
+
+        DELIVERY_NO_DELIVERY_AVAILABLE_FOR_MERCHANDISE_LINE,
+
+        DELIVERY_OPTIONS_PHONE_NUMBER_INVALID,
+
+        DELIVERY_OPTIONS_PHONE_NUMBER_REQUIRED,
+
+        DELIVERY_PHONE_NUMBER_INVALID,
+
+        DELIVERY_PHONE_NUMBER_REQUIRED,
+
+        DELIVERY_POSTAL_CODE_INVALID,
+
+        DELIVERY_POSTAL_CODE_REQUIRED,
+
+        DELIVERY_ZONE_NOT_FOUND,
+
+        DELIVERY_ZONE_REQUIRED_FOR_COUNTRY,
+
+        ERROR,
+
+        MERCHANDISE_LINE_LIMIT_REACHED,
+
+        MERCHANDISE_NOT_APPLICABLE,
+
+        MERCHANDISE_NOT_ENOUGH_STOCK_AVAILABLE,
+
+        MERCHANDISE_OUT_OF_STOCK,
+
+        MERCHANDISE_PRODUCT_NOT_PUBLISHED,
+
+        NO_DELIVERY_GROUP_SELECTED,
+
+        PAYMENTS_ADDRESS1_INVALID,
+
+        PAYMENTS_ADDRESS1_REQUIRED,
+
+        PAYMENTS_ADDRESS1_TOO_LONG,
+
+        PAYMENTS_ADDRESS2_INVALID,
+
+        PAYMENTS_ADDRESS2_REQUIRED,
+
+        PAYMENTS_ADDRESS2_TOO_LONG,
+
+        PAYMENTS_BILLING_ADDRESS_ZONE_NOT_FOUND,
+
+        PAYMENTS_BILLING_ADDRESS_ZONE_REQUIRED_FOR_COUNTRY,
+
+        PAYMENTS_CITY_INVALID,
+
+        PAYMENTS_CITY_REQUIRED,
+
+        PAYMENTS_CITY_TOO_LONG,
+
+        PAYMENTS_COMPANY_INVALID,
+
+        PAYMENTS_COMPANY_REQUIRED,
+
+        PAYMENTS_COMPANY_TOO_LONG,
+
+        PAYMENTS_COUNTRY_REQUIRED,
+
+        PAYMENTS_CREDIT_CARD_BASE_EXPIRED,
+
+        PAYMENTS_CREDIT_CARD_BASE_GATEWAY_NOT_SUPPORTED,
+
+        PAYMENTS_CREDIT_CARD_BASE_INVALID_START_DATE_OR_ISSUE_NUMBER_FOR_DEBIT,
+
+        PAYMENTS_CREDIT_CARD_BRAND_NOT_SUPPORTED,
+
+        PAYMENTS_CREDIT_CARD_FIRST_NAME_BLANK,
+
+        PAYMENTS_CREDIT_CARD_GENERIC,
+
+        PAYMENTS_CREDIT_CARD_LAST_NAME_BLANK,
+
+        PAYMENTS_CREDIT_CARD_MONTH_INCLUSION,
+
+        PAYMENTS_CREDIT_CARD_NAME_INVALID,
+
+        PAYMENTS_CREDIT_CARD_NUMBER_INVALID,
+
+        PAYMENTS_CREDIT_CARD_NUMBER_INVALID_FORMAT,
+
+        PAYMENTS_CREDIT_CARD_SESSION_ID,
+
+        PAYMENTS_CREDIT_CARD_VERIFICATION_VALUE_BLANK,
+
+        PAYMENTS_CREDIT_CARD_VERIFICATION_VALUE_INVALID_FOR_CARD_TYPE,
+
+        PAYMENTS_CREDIT_CARD_YEAR_EXPIRED,
+
+        PAYMENTS_CREDIT_CARD_YEAR_INVALID_EXPIRY_YEAR,
+
+        PAYMENTS_FIRST_NAME_INVALID,
+
+        PAYMENTS_FIRST_NAME_REQUIRED,
+
+        PAYMENTS_FIRST_NAME_TOO_LONG,
+
+        PAYMENTS_INVALID_POSTAL_CODE_FOR_COUNTRY,
+
+        PAYMENTS_INVALID_POSTAL_CODE_FOR_ZONE,
+
+        PAYMENTS_LAST_NAME_INVALID,
+
+        PAYMENTS_LAST_NAME_REQUIRED,
+
+        PAYMENTS_LAST_NAME_TOO_LONG,
+
+        PAYMENTS_METHOD_REQUIRED,
+
+        PAYMENTS_METHOD_UNAVAILABLE,
+
+        PAYMENTS_PHONE_NUMBER_INVALID,
+
+        PAYMENTS_PHONE_NUMBER_REQUIRED,
+
+        PAYMENTS_POSTAL_CODE_INVALID,
+
+        PAYMENTS_POSTAL_CODE_REQUIRED,
+
+        PAYMENTS_SHOPIFY_PAYMENTS_REQUIRED,
+
+        PAYMENTS_UNACCEPTABLE_PAYMENT_AMOUNT,
+
+        PAYMENTS_WALLET_CONTENT_MISSING,
+
+        TAXES_DELIVERY_GROUP_ID_NOT_FOUND,
+
+        TAXES_LINE_ID_NOT_FOUND,
+
+        TAXES_MUST_BE_DEFINED,
+
+        UNKNOWN_VALUE;
+
+        public static SubmissionErrorCode fromGraphQl(String value) {
+            if (value == null) {
+                return null;
+            }
+
+            switch (value) {
+                case "BUYER_IDENTITY_EMAIL_IS_INVALID": {
+                    return BUYER_IDENTITY_EMAIL_IS_INVALID;
+                }
+
+                case "BUYER_IDENTITY_EMAIL_REQUIRED": {
+                    return BUYER_IDENTITY_EMAIL_REQUIRED;
+                }
+
+                case "BUYER_IDENTITY_PHONE_IS_INVALID": {
+                    return BUYER_IDENTITY_PHONE_IS_INVALID;
+                }
+
+                case "DELIVERY_ADDRESS1_INVALID": {
+                    return DELIVERY_ADDRESS1_INVALID;
+                }
+
+                case "DELIVERY_ADDRESS1_REQUIRED": {
+                    return DELIVERY_ADDRESS1_REQUIRED;
+                }
+
+                case "DELIVERY_ADDRESS1_TOO_LONG": {
+                    return DELIVERY_ADDRESS1_TOO_LONG;
+                }
+
+                case "DELIVERY_ADDRESS2_INVALID": {
+                    return DELIVERY_ADDRESS2_INVALID;
+                }
+
+                case "DELIVERY_ADDRESS2_REQUIRED": {
+                    return DELIVERY_ADDRESS2_REQUIRED;
+                }
+
+                case "DELIVERY_ADDRESS2_TOO_LONG": {
+                    return DELIVERY_ADDRESS2_TOO_LONG;
+                }
+
+                case "DELIVERY_ADDRESS_REQUIRED": {
+                    return DELIVERY_ADDRESS_REQUIRED;
+                }
+
+                case "DELIVERY_CITY_INVALID": {
+                    return DELIVERY_CITY_INVALID;
+                }
+
+                case "DELIVERY_CITY_REQUIRED": {
+                    return DELIVERY_CITY_REQUIRED;
+                }
+
+                case "DELIVERY_CITY_TOO_LONG": {
+                    return DELIVERY_CITY_TOO_LONG;
+                }
+
+                case "DELIVERY_COMPANY_INVALID": {
+                    return DELIVERY_COMPANY_INVALID;
+                }
+
+                case "DELIVERY_COMPANY_REQUIRED": {
+                    return DELIVERY_COMPANY_REQUIRED;
+                }
+
+                case "DELIVERY_COMPANY_TOO_LONG": {
+                    return DELIVERY_COMPANY_TOO_LONG;
+                }
+
+                case "DELIVERY_COUNTRY_REQUIRED": {
+                    return DELIVERY_COUNTRY_REQUIRED;
+                }
+
+                case "DELIVERY_FIRST_NAME_INVALID": {
+                    return DELIVERY_FIRST_NAME_INVALID;
+                }
+
+                case "DELIVERY_FIRST_NAME_REQUIRED": {
+                    return DELIVERY_FIRST_NAME_REQUIRED;
+                }
+
+                case "DELIVERY_FIRST_NAME_TOO_LONG": {
+                    return DELIVERY_FIRST_NAME_TOO_LONG;
+                }
+
+                case "DELIVERY_INVALID_POSTAL_CODE_FOR_COUNTRY": {
+                    return DELIVERY_INVALID_POSTAL_CODE_FOR_COUNTRY;
+                }
+
+                case "DELIVERY_INVALID_POSTAL_CODE_FOR_ZONE": {
+                    return DELIVERY_INVALID_POSTAL_CODE_FOR_ZONE;
+                }
+
+                case "DELIVERY_LAST_NAME_INVALID": {
+                    return DELIVERY_LAST_NAME_INVALID;
+                }
+
+                case "DELIVERY_LAST_NAME_REQUIRED": {
+                    return DELIVERY_LAST_NAME_REQUIRED;
+                }
+
+                case "DELIVERY_LAST_NAME_TOO_LONG": {
+                    return DELIVERY_LAST_NAME_TOO_LONG;
+                }
+
+                case "DELIVERY_NO_DELIVERY_AVAILABLE": {
+                    return DELIVERY_NO_DELIVERY_AVAILABLE;
+                }
+
+                case "DELIVERY_NO_DELIVERY_AVAILABLE_FOR_MERCHANDISE_LINE": {
+                    return DELIVERY_NO_DELIVERY_AVAILABLE_FOR_MERCHANDISE_LINE;
+                }
+
+                case "DELIVERY_OPTIONS_PHONE_NUMBER_INVALID": {
+                    return DELIVERY_OPTIONS_PHONE_NUMBER_INVALID;
+                }
+
+                case "DELIVERY_OPTIONS_PHONE_NUMBER_REQUIRED": {
+                    return DELIVERY_OPTIONS_PHONE_NUMBER_REQUIRED;
+                }
+
+                case "DELIVERY_PHONE_NUMBER_INVALID": {
+                    return DELIVERY_PHONE_NUMBER_INVALID;
+                }
+
+                case "DELIVERY_PHONE_NUMBER_REQUIRED": {
+                    return DELIVERY_PHONE_NUMBER_REQUIRED;
+                }
+
+                case "DELIVERY_POSTAL_CODE_INVALID": {
+                    return DELIVERY_POSTAL_CODE_INVALID;
+                }
+
+                case "DELIVERY_POSTAL_CODE_REQUIRED": {
+                    return DELIVERY_POSTAL_CODE_REQUIRED;
+                }
+
+                case "DELIVERY_ZONE_NOT_FOUND": {
+                    return DELIVERY_ZONE_NOT_FOUND;
+                }
+
+                case "DELIVERY_ZONE_REQUIRED_FOR_COUNTRY": {
+                    return DELIVERY_ZONE_REQUIRED_FOR_COUNTRY;
+                }
+
+                case "ERROR": {
+                    return ERROR;
+                }
+
+                case "MERCHANDISE_LINE_LIMIT_REACHED": {
+                    return MERCHANDISE_LINE_LIMIT_REACHED;
+                }
+
+                case "MERCHANDISE_NOT_APPLICABLE": {
+                    return MERCHANDISE_NOT_APPLICABLE;
+                }
+
+                case "MERCHANDISE_NOT_ENOUGH_STOCK_AVAILABLE": {
+                    return MERCHANDISE_NOT_ENOUGH_STOCK_AVAILABLE;
+                }
+
+                case "MERCHANDISE_OUT_OF_STOCK": {
+                    return MERCHANDISE_OUT_OF_STOCK;
+                }
+
+                case "MERCHANDISE_PRODUCT_NOT_PUBLISHED": {
+                    return MERCHANDISE_PRODUCT_NOT_PUBLISHED;
+                }
+
+                case "NO_DELIVERY_GROUP_SELECTED": {
+                    return NO_DELIVERY_GROUP_SELECTED;
+                }
+
+                case "PAYMENTS_ADDRESS1_INVALID": {
+                    return PAYMENTS_ADDRESS1_INVALID;
+                }
+
+                case "PAYMENTS_ADDRESS1_REQUIRED": {
+                    return PAYMENTS_ADDRESS1_REQUIRED;
+                }
+
+                case "PAYMENTS_ADDRESS1_TOO_LONG": {
+                    return PAYMENTS_ADDRESS1_TOO_LONG;
+                }
+
+                case "PAYMENTS_ADDRESS2_INVALID": {
+                    return PAYMENTS_ADDRESS2_INVALID;
+                }
+
+                case "PAYMENTS_ADDRESS2_REQUIRED": {
+                    return PAYMENTS_ADDRESS2_REQUIRED;
+                }
+
+                case "PAYMENTS_ADDRESS2_TOO_LONG": {
+                    return PAYMENTS_ADDRESS2_TOO_LONG;
+                }
+
+                case "PAYMENTS_BILLING_ADDRESS_ZONE_NOT_FOUND": {
+                    return PAYMENTS_BILLING_ADDRESS_ZONE_NOT_FOUND;
+                }
+
+                case "PAYMENTS_BILLING_ADDRESS_ZONE_REQUIRED_FOR_COUNTRY": {
+                    return PAYMENTS_BILLING_ADDRESS_ZONE_REQUIRED_FOR_COUNTRY;
+                }
+
+                case "PAYMENTS_CITY_INVALID": {
+                    return PAYMENTS_CITY_INVALID;
+                }
+
+                case "PAYMENTS_CITY_REQUIRED": {
+                    return PAYMENTS_CITY_REQUIRED;
+                }
+
+                case "PAYMENTS_CITY_TOO_LONG": {
+                    return PAYMENTS_CITY_TOO_LONG;
+                }
+
+                case "PAYMENTS_COMPANY_INVALID": {
+                    return PAYMENTS_COMPANY_INVALID;
+                }
+
+                case "PAYMENTS_COMPANY_REQUIRED": {
+                    return PAYMENTS_COMPANY_REQUIRED;
+                }
+
+                case "PAYMENTS_COMPANY_TOO_LONG": {
+                    return PAYMENTS_COMPANY_TOO_LONG;
+                }
+
+                case "PAYMENTS_COUNTRY_REQUIRED": {
+                    return PAYMENTS_COUNTRY_REQUIRED;
+                }
+
+                case "PAYMENTS_CREDIT_CARD_BASE_EXPIRED": {
+                    return PAYMENTS_CREDIT_CARD_BASE_EXPIRED;
+                }
+
+                case "PAYMENTS_CREDIT_CARD_BASE_GATEWAY_NOT_SUPPORTED": {
+                    return PAYMENTS_CREDIT_CARD_BASE_GATEWAY_NOT_SUPPORTED;
+                }
+
+                case "PAYMENTS_CREDIT_CARD_BASE_INVALID_START_DATE_OR_ISSUE_NUMBER_FOR_DEBIT": {
+                    return PAYMENTS_CREDIT_CARD_BASE_INVALID_START_DATE_OR_ISSUE_NUMBER_FOR_DEBIT;
+                }
+
+                case "PAYMENTS_CREDIT_CARD_BRAND_NOT_SUPPORTED": {
+                    return PAYMENTS_CREDIT_CARD_BRAND_NOT_SUPPORTED;
+                }
+
+                case "PAYMENTS_CREDIT_CARD_FIRST_NAME_BLANK": {
+                    return PAYMENTS_CREDIT_CARD_FIRST_NAME_BLANK;
+                }
+
+                case "PAYMENTS_CREDIT_CARD_GENERIC": {
+                    return PAYMENTS_CREDIT_CARD_GENERIC;
+                }
+
+                case "PAYMENTS_CREDIT_CARD_LAST_NAME_BLANK": {
+                    return PAYMENTS_CREDIT_CARD_LAST_NAME_BLANK;
+                }
+
+                case "PAYMENTS_CREDIT_CARD_MONTH_INCLUSION": {
+                    return PAYMENTS_CREDIT_CARD_MONTH_INCLUSION;
+                }
+
+                case "PAYMENTS_CREDIT_CARD_NAME_INVALID": {
+                    return PAYMENTS_CREDIT_CARD_NAME_INVALID;
+                }
+
+                case "PAYMENTS_CREDIT_CARD_NUMBER_INVALID": {
+                    return PAYMENTS_CREDIT_CARD_NUMBER_INVALID;
+                }
+
+                case "PAYMENTS_CREDIT_CARD_NUMBER_INVALID_FORMAT": {
+                    return PAYMENTS_CREDIT_CARD_NUMBER_INVALID_FORMAT;
+                }
+
+                case "PAYMENTS_CREDIT_CARD_SESSION_ID": {
+                    return PAYMENTS_CREDIT_CARD_SESSION_ID;
+                }
+
+                case "PAYMENTS_CREDIT_CARD_VERIFICATION_VALUE_BLANK": {
+                    return PAYMENTS_CREDIT_CARD_VERIFICATION_VALUE_BLANK;
+                }
+
+                case "PAYMENTS_CREDIT_CARD_VERIFICATION_VALUE_INVALID_FOR_CARD_TYPE": {
+                    return PAYMENTS_CREDIT_CARD_VERIFICATION_VALUE_INVALID_FOR_CARD_TYPE;
+                }
+
+                case "PAYMENTS_CREDIT_CARD_YEAR_EXPIRED": {
+                    return PAYMENTS_CREDIT_CARD_YEAR_EXPIRED;
+                }
+
+                case "PAYMENTS_CREDIT_CARD_YEAR_INVALID_EXPIRY_YEAR": {
+                    return PAYMENTS_CREDIT_CARD_YEAR_INVALID_EXPIRY_YEAR;
+                }
+
+                case "PAYMENTS_FIRST_NAME_INVALID": {
+                    return PAYMENTS_FIRST_NAME_INVALID;
+                }
+
+                case "PAYMENTS_FIRST_NAME_REQUIRED": {
+                    return PAYMENTS_FIRST_NAME_REQUIRED;
+                }
+
+                case "PAYMENTS_FIRST_NAME_TOO_LONG": {
+                    return PAYMENTS_FIRST_NAME_TOO_LONG;
+                }
+
+                case "PAYMENTS_INVALID_POSTAL_CODE_FOR_COUNTRY": {
+                    return PAYMENTS_INVALID_POSTAL_CODE_FOR_COUNTRY;
+                }
+
+                case "PAYMENTS_INVALID_POSTAL_CODE_FOR_ZONE": {
+                    return PAYMENTS_INVALID_POSTAL_CODE_FOR_ZONE;
+                }
+
+                case "PAYMENTS_LAST_NAME_INVALID": {
+                    return PAYMENTS_LAST_NAME_INVALID;
+                }
+
+                case "PAYMENTS_LAST_NAME_REQUIRED": {
+                    return PAYMENTS_LAST_NAME_REQUIRED;
+                }
+
+                case "PAYMENTS_LAST_NAME_TOO_LONG": {
+                    return PAYMENTS_LAST_NAME_TOO_LONG;
+                }
+
+                case "PAYMENTS_METHOD_REQUIRED": {
+                    return PAYMENTS_METHOD_REQUIRED;
+                }
+
+                case "PAYMENTS_METHOD_UNAVAILABLE": {
+                    return PAYMENTS_METHOD_UNAVAILABLE;
+                }
+
+                case "PAYMENTS_PHONE_NUMBER_INVALID": {
+                    return PAYMENTS_PHONE_NUMBER_INVALID;
+                }
+
+                case "PAYMENTS_PHONE_NUMBER_REQUIRED": {
+                    return PAYMENTS_PHONE_NUMBER_REQUIRED;
+                }
+
+                case "PAYMENTS_POSTAL_CODE_INVALID": {
+                    return PAYMENTS_POSTAL_CODE_INVALID;
+                }
+
+                case "PAYMENTS_POSTAL_CODE_REQUIRED": {
+                    return PAYMENTS_POSTAL_CODE_REQUIRED;
+                }
+
+                case "PAYMENTS_SHOPIFY_PAYMENTS_REQUIRED": {
+                    return PAYMENTS_SHOPIFY_PAYMENTS_REQUIRED;
+                }
+
+                case "PAYMENTS_UNACCEPTABLE_PAYMENT_AMOUNT": {
+                    return PAYMENTS_UNACCEPTABLE_PAYMENT_AMOUNT;
+                }
+
+                case "PAYMENTS_WALLET_CONTENT_MISSING": {
+                    return PAYMENTS_WALLET_CONTENT_MISSING;
+                }
+
+                case "TAXES_DELIVERY_GROUP_ID_NOT_FOUND": {
+                    return TAXES_DELIVERY_GROUP_ID_NOT_FOUND;
+                }
+
+                case "TAXES_LINE_ID_NOT_FOUND": {
+                    return TAXES_LINE_ID_NOT_FOUND;
+                }
+
+                case "TAXES_MUST_BE_DEFINED": {
+                    return TAXES_MUST_BE_DEFINED;
+                }
+
+                default: {
+                    return UNKNOWN_VALUE;
+                }
+            }
+        }
+        public String toString() {
+            switch (this) {
+                case BUYER_IDENTITY_EMAIL_IS_INVALID: {
+                    return "BUYER_IDENTITY_EMAIL_IS_INVALID";
+                }
+
+                case BUYER_IDENTITY_EMAIL_REQUIRED: {
+                    return "BUYER_IDENTITY_EMAIL_REQUIRED";
+                }
+
+                case BUYER_IDENTITY_PHONE_IS_INVALID: {
+                    return "BUYER_IDENTITY_PHONE_IS_INVALID";
+                }
+
+                case DELIVERY_ADDRESS1_INVALID: {
+                    return "DELIVERY_ADDRESS1_INVALID";
+                }
+
+                case DELIVERY_ADDRESS1_REQUIRED: {
+                    return "DELIVERY_ADDRESS1_REQUIRED";
+                }
+
+                case DELIVERY_ADDRESS1_TOO_LONG: {
+                    return "DELIVERY_ADDRESS1_TOO_LONG";
+                }
+
+                case DELIVERY_ADDRESS2_INVALID: {
+                    return "DELIVERY_ADDRESS2_INVALID";
+                }
+
+                case DELIVERY_ADDRESS2_REQUIRED: {
+                    return "DELIVERY_ADDRESS2_REQUIRED";
+                }
+
+                case DELIVERY_ADDRESS2_TOO_LONG: {
+                    return "DELIVERY_ADDRESS2_TOO_LONG";
+                }
+
+                case DELIVERY_ADDRESS_REQUIRED: {
+                    return "DELIVERY_ADDRESS_REQUIRED";
+                }
+
+                case DELIVERY_CITY_INVALID: {
+                    return "DELIVERY_CITY_INVALID";
+                }
+
+                case DELIVERY_CITY_REQUIRED: {
+                    return "DELIVERY_CITY_REQUIRED";
+                }
+
+                case DELIVERY_CITY_TOO_LONG: {
+                    return "DELIVERY_CITY_TOO_LONG";
+                }
+
+                case DELIVERY_COMPANY_INVALID: {
+                    return "DELIVERY_COMPANY_INVALID";
+                }
+
+                case DELIVERY_COMPANY_REQUIRED: {
+                    return "DELIVERY_COMPANY_REQUIRED";
+                }
+
+                case DELIVERY_COMPANY_TOO_LONG: {
+                    return "DELIVERY_COMPANY_TOO_LONG";
+                }
+
+                case DELIVERY_COUNTRY_REQUIRED: {
+                    return "DELIVERY_COUNTRY_REQUIRED";
+                }
+
+                case DELIVERY_FIRST_NAME_INVALID: {
+                    return "DELIVERY_FIRST_NAME_INVALID";
+                }
+
+                case DELIVERY_FIRST_NAME_REQUIRED: {
+                    return "DELIVERY_FIRST_NAME_REQUIRED";
+                }
+
+                case DELIVERY_FIRST_NAME_TOO_LONG: {
+                    return "DELIVERY_FIRST_NAME_TOO_LONG";
+                }
+
+                case DELIVERY_INVALID_POSTAL_CODE_FOR_COUNTRY: {
+                    return "DELIVERY_INVALID_POSTAL_CODE_FOR_COUNTRY";
+                }
+
+                case DELIVERY_INVALID_POSTAL_CODE_FOR_ZONE: {
+                    return "DELIVERY_INVALID_POSTAL_CODE_FOR_ZONE";
+                }
+
+                case DELIVERY_LAST_NAME_INVALID: {
+                    return "DELIVERY_LAST_NAME_INVALID";
+                }
+
+                case DELIVERY_LAST_NAME_REQUIRED: {
+                    return "DELIVERY_LAST_NAME_REQUIRED";
+                }
+
+                case DELIVERY_LAST_NAME_TOO_LONG: {
+                    return "DELIVERY_LAST_NAME_TOO_LONG";
+                }
+
+                case DELIVERY_NO_DELIVERY_AVAILABLE: {
+                    return "DELIVERY_NO_DELIVERY_AVAILABLE";
+                }
+
+                case DELIVERY_NO_DELIVERY_AVAILABLE_FOR_MERCHANDISE_LINE: {
+                    return "DELIVERY_NO_DELIVERY_AVAILABLE_FOR_MERCHANDISE_LINE";
+                }
+
+                case DELIVERY_OPTIONS_PHONE_NUMBER_INVALID: {
+                    return "DELIVERY_OPTIONS_PHONE_NUMBER_INVALID";
+                }
+
+                case DELIVERY_OPTIONS_PHONE_NUMBER_REQUIRED: {
+                    return "DELIVERY_OPTIONS_PHONE_NUMBER_REQUIRED";
+                }
+
+                case DELIVERY_PHONE_NUMBER_INVALID: {
+                    return "DELIVERY_PHONE_NUMBER_INVALID";
+                }
+
+                case DELIVERY_PHONE_NUMBER_REQUIRED: {
+                    return "DELIVERY_PHONE_NUMBER_REQUIRED";
+                }
+
+                case DELIVERY_POSTAL_CODE_INVALID: {
+                    return "DELIVERY_POSTAL_CODE_INVALID";
+                }
+
+                case DELIVERY_POSTAL_CODE_REQUIRED: {
+                    return "DELIVERY_POSTAL_CODE_REQUIRED";
+                }
+
+                case DELIVERY_ZONE_NOT_FOUND: {
+                    return "DELIVERY_ZONE_NOT_FOUND";
+                }
+
+                case DELIVERY_ZONE_REQUIRED_FOR_COUNTRY: {
+                    return "DELIVERY_ZONE_REQUIRED_FOR_COUNTRY";
+                }
+
+                case ERROR: {
+                    return "ERROR";
+                }
+
+                case MERCHANDISE_LINE_LIMIT_REACHED: {
+                    return "MERCHANDISE_LINE_LIMIT_REACHED";
+                }
+
+                case MERCHANDISE_NOT_APPLICABLE: {
+                    return "MERCHANDISE_NOT_APPLICABLE";
+                }
+
+                case MERCHANDISE_NOT_ENOUGH_STOCK_AVAILABLE: {
+                    return "MERCHANDISE_NOT_ENOUGH_STOCK_AVAILABLE";
+                }
+
+                case MERCHANDISE_OUT_OF_STOCK: {
+                    return "MERCHANDISE_OUT_OF_STOCK";
+                }
+
+                case MERCHANDISE_PRODUCT_NOT_PUBLISHED: {
+                    return "MERCHANDISE_PRODUCT_NOT_PUBLISHED";
+                }
+
+                case NO_DELIVERY_GROUP_SELECTED: {
+                    return "NO_DELIVERY_GROUP_SELECTED";
+                }
+
+                case PAYMENTS_ADDRESS1_INVALID: {
+                    return "PAYMENTS_ADDRESS1_INVALID";
+                }
+
+                case PAYMENTS_ADDRESS1_REQUIRED: {
+                    return "PAYMENTS_ADDRESS1_REQUIRED";
+                }
+
+                case PAYMENTS_ADDRESS1_TOO_LONG: {
+                    return "PAYMENTS_ADDRESS1_TOO_LONG";
+                }
+
+                case PAYMENTS_ADDRESS2_INVALID: {
+                    return "PAYMENTS_ADDRESS2_INVALID";
+                }
+
+                case PAYMENTS_ADDRESS2_REQUIRED: {
+                    return "PAYMENTS_ADDRESS2_REQUIRED";
+                }
+
+                case PAYMENTS_ADDRESS2_TOO_LONG: {
+                    return "PAYMENTS_ADDRESS2_TOO_LONG";
+                }
+
+                case PAYMENTS_BILLING_ADDRESS_ZONE_NOT_FOUND: {
+                    return "PAYMENTS_BILLING_ADDRESS_ZONE_NOT_FOUND";
+                }
+
+                case PAYMENTS_BILLING_ADDRESS_ZONE_REQUIRED_FOR_COUNTRY: {
+                    return "PAYMENTS_BILLING_ADDRESS_ZONE_REQUIRED_FOR_COUNTRY";
+                }
+
+                case PAYMENTS_CITY_INVALID: {
+                    return "PAYMENTS_CITY_INVALID";
+                }
+
+                case PAYMENTS_CITY_REQUIRED: {
+                    return "PAYMENTS_CITY_REQUIRED";
+                }
+
+                case PAYMENTS_CITY_TOO_LONG: {
+                    return "PAYMENTS_CITY_TOO_LONG";
+                }
+
+                case PAYMENTS_COMPANY_INVALID: {
+                    return "PAYMENTS_COMPANY_INVALID";
+                }
+
+                case PAYMENTS_COMPANY_REQUIRED: {
+                    return "PAYMENTS_COMPANY_REQUIRED";
+                }
+
+                case PAYMENTS_COMPANY_TOO_LONG: {
+                    return "PAYMENTS_COMPANY_TOO_LONG";
+                }
+
+                case PAYMENTS_COUNTRY_REQUIRED: {
+                    return "PAYMENTS_COUNTRY_REQUIRED";
+                }
+
+                case PAYMENTS_CREDIT_CARD_BASE_EXPIRED: {
+                    return "PAYMENTS_CREDIT_CARD_BASE_EXPIRED";
+                }
+
+                case PAYMENTS_CREDIT_CARD_BASE_GATEWAY_NOT_SUPPORTED: {
+                    return "PAYMENTS_CREDIT_CARD_BASE_GATEWAY_NOT_SUPPORTED";
+                }
+
+                case PAYMENTS_CREDIT_CARD_BASE_INVALID_START_DATE_OR_ISSUE_NUMBER_FOR_DEBIT: {
+                    return "PAYMENTS_CREDIT_CARD_BASE_INVALID_START_DATE_OR_ISSUE_NUMBER_FOR_DEBIT";
+                }
+
+                case PAYMENTS_CREDIT_CARD_BRAND_NOT_SUPPORTED: {
+                    return "PAYMENTS_CREDIT_CARD_BRAND_NOT_SUPPORTED";
+                }
+
+                case PAYMENTS_CREDIT_CARD_FIRST_NAME_BLANK: {
+                    return "PAYMENTS_CREDIT_CARD_FIRST_NAME_BLANK";
+                }
+
+                case PAYMENTS_CREDIT_CARD_GENERIC: {
+                    return "PAYMENTS_CREDIT_CARD_GENERIC";
+                }
+
+                case PAYMENTS_CREDIT_CARD_LAST_NAME_BLANK: {
+                    return "PAYMENTS_CREDIT_CARD_LAST_NAME_BLANK";
+                }
+
+                case PAYMENTS_CREDIT_CARD_MONTH_INCLUSION: {
+                    return "PAYMENTS_CREDIT_CARD_MONTH_INCLUSION";
+                }
+
+                case PAYMENTS_CREDIT_CARD_NAME_INVALID: {
+                    return "PAYMENTS_CREDIT_CARD_NAME_INVALID";
+                }
+
+                case PAYMENTS_CREDIT_CARD_NUMBER_INVALID: {
+                    return "PAYMENTS_CREDIT_CARD_NUMBER_INVALID";
+                }
+
+                case PAYMENTS_CREDIT_CARD_NUMBER_INVALID_FORMAT: {
+                    return "PAYMENTS_CREDIT_CARD_NUMBER_INVALID_FORMAT";
+                }
+
+                case PAYMENTS_CREDIT_CARD_SESSION_ID: {
+                    return "PAYMENTS_CREDIT_CARD_SESSION_ID";
+                }
+
+                case PAYMENTS_CREDIT_CARD_VERIFICATION_VALUE_BLANK: {
+                    return "PAYMENTS_CREDIT_CARD_VERIFICATION_VALUE_BLANK";
+                }
+
+                case PAYMENTS_CREDIT_CARD_VERIFICATION_VALUE_INVALID_FOR_CARD_TYPE: {
+                    return "PAYMENTS_CREDIT_CARD_VERIFICATION_VALUE_INVALID_FOR_CARD_TYPE";
+                }
+
+                case PAYMENTS_CREDIT_CARD_YEAR_EXPIRED: {
+                    return "PAYMENTS_CREDIT_CARD_YEAR_EXPIRED";
+                }
+
+                case PAYMENTS_CREDIT_CARD_YEAR_INVALID_EXPIRY_YEAR: {
+                    return "PAYMENTS_CREDIT_CARD_YEAR_INVALID_EXPIRY_YEAR";
+                }
+
+                case PAYMENTS_FIRST_NAME_INVALID: {
+                    return "PAYMENTS_FIRST_NAME_INVALID";
+                }
+
+                case PAYMENTS_FIRST_NAME_REQUIRED: {
+                    return "PAYMENTS_FIRST_NAME_REQUIRED";
+                }
+
+                case PAYMENTS_FIRST_NAME_TOO_LONG: {
+                    return "PAYMENTS_FIRST_NAME_TOO_LONG";
+                }
+
+                case PAYMENTS_INVALID_POSTAL_CODE_FOR_COUNTRY: {
+                    return "PAYMENTS_INVALID_POSTAL_CODE_FOR_COUNTRY";
+                }
+
+                case PAYMENTS_INVALID_POSTAL_CODE_FOR_ZONE: {
+                    return "PAYMENTS_INVALID_POSTAL_CODE_FOR_ZONE";
+                }
+
+                case PAYMENTS_LAST_NAME_INVALID: {
+                    return "PAYMENTS_LAST_NAME_INVALID";
+                }
+
+                case PAYMENTS_LAST_NAME_REQUIRED: {
+                    return "PAYMENTS_LAST_NAME_REQUIRED";
+                }
+
+                case PAYMENTS_LAST_NAME_TOO_LONG: {
+                    return "PAYMENTS_LAST_NAME_TOO_LONG";
+                }
+
+                case PAYMENTS_METHOD_REQUIRED: {
+                    return "PAYMENTS_METHOD_REQUIRED";
+                }
+
+                case PAYMENTS_METHOD_UNAVAILABLE: {
+                    return "PAYMENTS_METHOD_UNAVAILABLE";
+                }
+
+                case PAYMENTS_PHONE_NUMBER_INVALID: {
+                    return "PAYMENTS_PHONE_NUMBER_INVALID";
+                }
+
+                case PAYMENTS_PHONE_NUMBER_REQUIRED: {
+                    return "PAYMENTS_PHONE_NUMBER_REQUIRED";
+                }
+
+                case PAYMENTS_POSTAL_CODE_INVALID: {
+                    return "PAYMENTS_POSTAL_CODE_INVALID";
+                }
+
+                case PAYMENTS_POSTAL_CODE_REQUIRED: {
+                    return "PAYMENTS_POSTAL_CODE_REQUIRED";
+                }
+
+                case PAYMENTS_SHOPIFY_PAYMENTS_REQUIRED: {
+                    return "PAYMENTS_SHOPIFY_PAYMENTS_REQUIRED";
+                }
+
+                case PAYMENTS_UNACCEPTABLE_PAYMENT_AMOUNT: {
+                    return "PAYMENTS_UNACCEPTABLE_PAYMENT_AMOUNT";
+                }
+
+                case PAYMENTS_WALLET_CONTENT_MISSING: {
+                    return "PAYMENTS_WALLET_CONTENT_MISSING";
+                }
+
+                case TAXES_DELIVERY_GROUP_ID_NOT_FOUND: {
+                    return "TAXES_DELIVERY_GROUP_ID_NOT_FOUND";
+                }
+
+                case TAXES_LINE_ID_NOT_FOUND: {
+                    return "TAXES_LINE_ID_NOT_FOUND";
+                }
+
+                case TAXES_MUST_BE_DEFINED: {
+                    return "TAXES_MUST_BE_DEFINED";
+                }
+
+                default: {
+                    return "";
+                }
+            }
+        }
+    }
+
+    public interface SubmitAlreadyAcceptedQueryDefinition {
+        void define(SubmitAlreadyAcceptedQuery _queryBuilder);
+    }
+
+    /**
+    * Cart submit for checkout completion is successful.
+    */
+    public static class SubmitAlreadyAcceptedQuery extends Query<SubmitAlreadyAcceptedQuery> {
+        SubmitAlreadyAcceptedQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * The id of the cart completion attempt that will be used for polling for the result.
+        */
+        public SubmitAlreadyAcceptedQuery attemptId() {
+            startField("attemptId");
+
+            return this;
+        }
+    }
+
+    /**
+    * Cart submit for checkout completion is successful.
+    */
+    public static class SubmitAlreadyAccepted extends AbstractResponse<SubmitAlreadyAccepted> implements CartSubmitForCompletionResult {
+        public SubmitAlreadyAccepted() {
+        }
+
+        public SubmitAlreadyAccepted(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "attemptId": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "SubmitAlreadyAccepted";
+        }
+
+        /**
+        * The id of the cart completion attempt that will be used for polling for the result.
+        */
+
+        public String getAttemptId() {
+            return (String) get("attemptId");
+        }
+
+        public SubmitAlreadyAccepted setAttemptId(String arg) {
+            optimisticData.put(getKey("attemptId"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "attemptId": return false;
+
+                default: return false;
+            }
+        }
+    }
+
+    public interface SubmitFailedQueryDefinition {
+        void define(SubmitFailedQuery _queryBuilder);
+    }
+
+    /**
+    * Cart submit for checkout completion failed.
+    */
+    public static class SubmitFailedQuery extends Query<SubmitFailedQuery> {
+        SubmitFailedQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * The URL of the checkout for the cart.
+        */
+        public SubmitFailedQuery checkoutUrl() {
+            startField("checkoutUrl");
+
+            return this;
+        }
+
+        /**
+        * The list of errors that occurred from executing the mutation.
+        */
+        public SubmitFailedQuery errors(SubmissionErrorQueryDefinition queryDef) {
+            startField("errors");
+
+            _queryBuilder.append('{');
+            queryDef.define(new SubmissionErrorQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+    }
+
+    /**
+    * Cart submit for checkout completion failed.
+    */
+    public static class SubmitFailed extends AbstractResponse<SubmitFailed> implements CartSubmitForCompletionResult {
+        public SubmitFailed() {
+        }
+
+        public SubmitFailed(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "checkoutUrl": {
+                        String optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = jsonAsString(field.getValue(), key);
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "errors": {
+                        List<SubmissionError> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new SubmissionError(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "SubmitFailed";
+        }
+
+        /**
+        * The URL of the checkout for the cart.
+        */
+
+        public String getCheckoutUrl() {
+            return (String) get("checkoutUrl");
+        }
+
+        public SubmitFailed setCheckoutUrl(String arg) {
+            optimisticData.put(getKey("checkoutUrl"), arg);
+            return this;
+        }
+
+        /**
+        * The list of errors that occurred from executing the mutation.
+        */
+
+        public List<SubmissionError> getErrors() {
+            return (List<SubmissionError>) get("errors");
+        }
+
+        public SubmitFailed setErrors(List<SubmissionError> arg) {
+            optimisticData.put(getKey("errors"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "checkoutUrl": return false;
+
+                case "errors": return true;
+
+                default: return false;
+            }
+        }
+    }
+
+    public interface SubmitSuccessQueryDefinition {
+        void define(SubmitSuccessQuery _queryBuilder);
+    }
+
+    /**
+    * Cart submit for checkout completion is already accepted.
+    */
+    public static class SubmitSuccessQuery extends Query<SubmitSuccessQuery> {
+        SubmitSuccessQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * The id of the cart completion attempt that will be used for polling for the result.
+        */
+        public SubmitSuccessQuery attemptId() {
+            startField("attemptId");
+
+            return this;
+        }
+    }
+
+    /**
+    * Cart submit for checkout completion is already accepted.
+    */
+    public static class SubmitSuccess extends AbstractResponse<SubmitSuccess> implements CartSubmitForCompletionResult {
+        public SubmitSuccess() {
+        }
+
+        public SubmitSuccess(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "attemptId": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "SubmitSuccess";
+        }
+
+        /**
+        * The id of the cart completion attempt that will be used for polling for the result.
+        */
+
+        public String getAttemptId() {
+            return (String) get("attemptId");
+        }
+
+        public SubmitSuccess setAttemptId(String arg) {
+            optimisticData.put(getKey("attemptId"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "attemptId": return false;
+
+                default: return false;
+            }
+        }
+    }
+
+    public interface SubmitThrottledQueryDefinition {
+        void define(SubmitThrottledQuery _queryBuilder);
+    }
+
+    /**
+    * Cart submit for checkout completion is throttled.
+    */
+    public static class SubmitThrottledQuery extends Query<SubmitThrottledQuery> {
+        SubmitThrottledQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * UTC date time string that indicates the time after which clients should make their next
+        * poll request. Any poll requests sent before this time will be ignored. Use this value to schedule
+        * the
+        * next poll request.
+        */
+        public SubmitThrottledQuery pollAfter() {
+            startField("pollAfter");
+
+            return this;
+        }
+    }
+
+    /**
+    * Cart submit for checkout completion is throttled.
+    */
+    public static class SubmitThrottled extends AbstractResponse<SubmitThrottled> implements CartSubmitForCompletionResult {
+        public SubmitThrottled() {
+        }
+
+        public SubmitThrottled(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "pollAfter": {
+                        responseData.put(key, Utils.parseDateTime(jsonAsString(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "SubmitThrottled";
+        }
+
+        /**
+        * UTC date time string that indicates the time after which clients should make their next
+        * poll request. Any poll requests sent before this time will be ignored. Use this value to schedule
+        * the
+        * next poll request.
+        */
+
+        public DateTime getPollAfter() {
+            return (DateTime) get("pollAfter");
+        }
+
+        public SubmitThrottled setPollAfter(DateTime arg) {
+            optimisticData.put(getKey("pollAfter"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "pollAfter": return false;
 
                 default: return false;
             }
@@ -63447,6 +69860,19 @@ public class Storefront {
         }
 
         /**
+        * The presentation for a media.
+        */
+        public VideoQuery presentation(MediaPresentationQueryDefinition queryDef) {
+            startField("presentation");
+
+            _queryBuilder.append('{');
+            queryDef.define(new MediaPresentationQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
         * The preview image for the media.
         */
         public VideoQuery previewImage(ImageQueryDefinition queryDef) {
@@ -63504,6 +69930,17 @@ public class Storefront {
 
                     case "mediaContentType": {
                         responseData.put(key, MediaContentType.fromGraphQl(jsonAsString(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "presentation": {
+                        MediaPresentation optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new MediaPresentation(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
 
                         break;
                     }
@@ -63585,6 +70022,19 @@ public class Storefront {
         }
 
         /**
+        * The presentation for a media.
+        */
+
+        public MediaPresentation getPresentation() {
+            return (MediaPresentation) get("presentation");
+        }
+
+        public Video setPresentation(MediaPresentation arg) {
+            optimisticData.put(getKey("presentation"), arg);
+            return this;
+        }
+
+        /**
         * The preview image for the media.
         */
 
@@ -63617,6 +70067,8 @@ public class Storefront {
                 case "id": return false;
 
                 case "mediaContentType": return false;
+
+                case "presentation": return true;
 
                 case "previewImage": return true;
 
