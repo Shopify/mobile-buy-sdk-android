@@ -3,13 +3,12 @@ buildscript {
     classpath dep.androidPlugin
     classpath dep.kotlinPlugin
     classpath dep.graphqlSupport
-
   }
 }
 
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-apply plugin: 'maven'
+//apply plugin: 'maven'
 apply plugin: 'signing'
 
 android {
@@ -139,48 +138,48 @@ signing {
   sign configurations.archives
 }
 
-afterEvaluate { project ->
-  uploadArchives {
-    repositories {
-      mavenDeployer {
-        beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-
-        repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-          authentication(userName: System.getenv("OSSRH_USERNAME"), password: System.getenv("OSSRH_PASSWORD"))
-        }
-
-        snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
-          authentication(userName: System.getenv("OSSRH_USERNAME"), password: System.getenv("OSSRH_PASSWORD"))
-        }
-        
-      pom.project {
-          groupId POM_GROUP_ID
-          artifactId POM_ARTIFACT_ID
-
-          name POM_LIBRARY_NAME
-          description POM_DESCRIPTION
-          url POM_WEB_URL
-
-          developers {
-            developer {
-              name 'Shopify Inc.'
-            }
-          }
-
-          licenses {
-            license {
-              name POM_LICENSE
-              url POM_LICENSE_URL
-            }
-          }
-
-          scm {
-            connection = POM_DEVELOPER_URL
-            developerConnection = POM_DEVELOPER_URL
-            url = POM_DEVELOPER_URL
-          }
-        }
-      }  
-    }
-  }
-}
+//afterEvaluate { project ->
+//  uploadArchives {
+//    repositories {
+//      mavenDeployer {
+//        beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+//
+//        repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+//          authentication(userName: System.getenv("OSSRH_USERNAME"), password: System.getenv("OSSRH_PASSWORD"))
+//        }
+//
+//        snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+//          authentication(userName: System.getenv("OSSRH_USERNAME"), password: System.getenv("OSSRH_PASSWORD"))
+//        }
+//
+//      pom.project {
+//          groupId POM_GROUP_ID
+//          artifactId POM_ARTIFACT_ID
+//
+//          name POM_LIBRARY_NAME
+//          description POM_DESCRIPTION
+//          url POM_WEB_URL
+//
+//          developers {
+//            developer {
+//              name 'Shopify Inc.'
+//            }
+//          }
+//
+//          licenses {
+//            license {
+//              name POM_LICENSE
+//              url POM_LICENSE_URL
+//            }
+//          }
+//
+//          scm {
+//            connection = POM_DEVELOPER_URL
+//            developerConnection = POM_DEVELOPER_URL
+//            url = POM_DEVELOPER_URL
+//          }
+//        }
+//      }
+//    }
+//  }
+//}

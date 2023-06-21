@@ -7,7 +7,7 @@ def versions = [
     butterKnifeVersion   : '9.0.0',
     apolloVersion        : '1.0.0',
     archVersion          : '1.1.1',
-    kotlin               : '1.3.30',
+    kotlin               : '1.8.0',
     graphQlSupport       : '0.2.1'
 ]
 

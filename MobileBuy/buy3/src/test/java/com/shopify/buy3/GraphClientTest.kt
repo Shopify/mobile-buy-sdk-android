@@ -78,7 +78,7 @@ class GraphClientTest {
             assertThat(headers["X-SDK-Version"]).isEqualTo(BuildConfig.BUY_SDK_VERSION)
             assertThat(headers["X-SDK-Variant"]).isEqualTo("android")
             assertThat(headers["X-Shopify-Storefront-Access-Token"]).isEqualTo("accessToken")
-            assertThat(this.body.readUtf8()).isEqualTo("query {shop{id,name}}")
+            assertThat(this.body.readUtf8()).isEqualTo("{shop{id,name}}")
         }
     }
 
