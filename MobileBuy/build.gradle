@@ -1,10 +1,6 @@
 subprojects {
   def projectName = it.name
 
-  if (projectName != "graphql-java-support") {
-    apply from: "../gradle/dependencies.gradle"
-  }
-
   buildscript {
     System.properties['com.android.build.gradle.overrideVersionCheck'] = 'true'
     repositories {
@@ -21,27 +17,26 @@ subprojects {
     maven { url 'https://maven.google.com' }
   }
 
-  if (projectName != "graphql-java-support") {
-    apply plugin: 'checkstyle'
+  apply from: "../gradle/dependencies.gradle"
+  apply plugin: 'checkstyle'
 
-    checkstyle {
-      toolVersion = "5.9"
-      configFile rootProject.file('checkstyle.xml')
-      configProperties = ['checkstyle.cache.file': rootProject.file('build/checkstyle.cache')]
-      ignoreFailures false
-      showViolations true
-    }
+  checkstyle {
+    toolVersion = "5.9"
+    configFile rootProject.file('checkstyle.xml')
+    configProperties = ['checkstyle.cache.file': rootProject.file('build/checkstyle.cache')]
+    ignoreFailures false
+    showViolations true
+  }
 
-    task checkstyle(type: Checkstyle) {
-      source 'src/main/java'
-      include '**/*.java'
-      classpath = files()
-    }
+  task checkstyle(type: Checkstyle) {
+    source 'src/main/java'
+    include '**/*.java'
+    classpath = files()
+  }
 
-    afterEvaluate {
-      if (project.tasks.findByName('check')) {
-        check.dependsOn('checkstyle')
-      }
+  afterEvaluate {
+    if (project.tasks.findByName('check')) {
+      check.dependsOn('checkstyle')
     }
   }
 }
@@ -50,9 +45,9 @@ project.ext.preDexLibs = !project.hasProperty('disablePreDex')
 
 subprojects {
   project.plugins.whenPluginAdded { plugin ->
-    if ("com.android.build.gradle.AppPlugin".equals(plugin.class.name)) {
+    if ("com.android.build.gradle.AppPlugin" == plugin.class.name) {
       project.android.dexOptions.preDexLibraries = rootProject.ext.preDexLibs
-    } else if ("com.android.build.gradle.LibraryPlugin".equals(plugin.class.name)) {
+    } else if ("com.android.build.gradle.LibraryPlugin" == plugin.class.name) {
       project.android.dexOptions.preDexLibraries = rootProject.ext.preDexLibs
     }
   }

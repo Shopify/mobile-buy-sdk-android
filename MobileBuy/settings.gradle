@@ -1,2 +1,1 @@
-include ':buy3', ':graphql-java-support'
-project(':graphql-java-support').projectDir = new File('./libs/graphql_java_gen/support')
+include ':buy3'

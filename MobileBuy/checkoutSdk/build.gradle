@@ -1,0 +1,85 @@
+plugins {
+    id 'maven-publish'
+    id 'com.android.library'
+    id 'org.jetbrains.kotlin.android'
+    id 'org.jetbrains.kotlin.plugin.serialization'
+}
+
+def resolveEnvVarValue(name, defaultValue) {
+    def rawValue = providers.environmentVariable(name).getOrElse("")
+    return rawValue ? rawValue : defaultValue
+}
+
+def versionName = resolveEnvVarValue("MOBILE_CHECKOUT_SDK_VERSION", "0.0.0")
+
+android {
+    namespace 'com.shopify.checkout'
+    compileSdk 32
+
+    defaultConfig {
+        minSdk 21
+        targetSdk 32
+        versionCode 1
+        versionName
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField "String", "SDK_VERSION", "\"$versionName\""
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+
+    publishing {
+        singleVariant("release") {}
+    }
+}
+
+dependencies {
+    // Tests
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'org.robolectric:robolectric:4.9'
+    testImplementation 'org.mockito:mockito-core:4.+'
+    testImplementation "org.mockito:mockito-inline:4.+"
+    testImplementation "org.mockito.kotlin:mockito-kotlin:4.+"
+    testImplementation "org.mockito:mockito-android:+"
+    testImplementation "io.github.serpro69:kotlin-faker:1.14.0"
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+
+    //Implementation
+    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0'
+}
+
+publishing {
+    publications {
+        release(MavenPublication) {
+            groupId 'com.shopify'
+            artifactId 'checkout'
+            version versionName
+
+            afterEvaluate {
+                from components.release
+            }
+        }
+    }
+
+    repositories {
+        maven {
+            url "$buildDir/repo"
+        }
+    }
+}
