@@ -11,8 +11,10 @@ apply plugin: 'kotlin-android'
 //apply plugin: 'maven'
 apply plugin: 'signing'
 
+
 android {
   compileSdkVersion androidConfig.compileSdkVersion
+//  useAndroidX=true
 
   compileOptions {
     sourceCompatibility JavaVersion.VERSION_1_8
@@ -56,7 +58,8 @@ android {
         failOnError false
         source = android.sourceSets.main.java.sourceFiles
         classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
-        classpath += configurations.compile
+        configurations.implementation.setCanBeResolved(true)
+        classpath += configurations.implementation
       }
 
       task javadocJar(type: Jar, dependsOn: javadoc) {
