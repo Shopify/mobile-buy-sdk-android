@@ -8,13 +8,11 @@ buildscript {
 
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-//apply plugin: 'maven'
 apply plugin: 'signing'
 
 
 android {
   compileSdkVersion androidConfig.compileSdkVersion
-//  useAndroidX=true
 
   compileOptions {
     sourceCompatibility JavaVersion.VERSION_1_8
@@ -48,7 +46,7 @@ android {
       }
     }
 
-    if (variant.name.equals('release')) {
+    if (variant.name == 'release') {
       task sourcesJar(type: Jar) {
         from android.sourceSets.main.java.srcDirs
         classifier = 'sources'

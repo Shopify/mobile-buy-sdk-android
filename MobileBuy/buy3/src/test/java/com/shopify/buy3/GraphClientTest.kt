@@ -196,10 +196,10 @@ class GraphClientTest {
             latch.countDown()
         }
 
-        latch.await(1, TimeUnit.SECONDS)
+        latch.await(5, TimeUnit.MILLISECONDS)
         call.cancel()
 
-        latch.awaitOrThrowWithTimeout(1, TimeUnit.SECONDS)
+        latch.awaitOrThrowWithTimeout(5, TimeUnit.SECONDS)
 
         assertThat(result.get()).isInstanceOf(GraphCallResult.Failure::class.java)
         with(result.get() as GraphCallResult.Failure) {

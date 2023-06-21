@@ -5,8 +5,6 @@ plugins {
   id 'org.jetbrains.kotlin.plugin.serialization' version '1.8.0' apply false
 }
 subprojects {
-  def projectName = it.name
-
   buildscript {
     System.properties['com.android.build.gradle.overrideVersionCheck'] = 'true'
     repositories {
@@ -46,19 +44,6 @@ subprojects {
   afterEvaluate {
     if (project.tasks.findByName('check')) {
       check.dependsOn('checkstyle')
-    }
-  }
-}
-
-// TODO we can likely remove all the dex configs
-project.ext.preDexLibs = !project.hasProperty('disablePreDex')
-
-subprojects {
-  project.plugins.whenPluginAdded { plugin ->
-    if ("com.android.build.gradle.AppPlugin" == plugin.class.name) {
-      project.android.dexOptions.preDexLibraries = rootProject.ext.preDexLibs
-    } else if ("com.android.build.gradle.LibraryPlugin" == plugin.class.name) {
-      project.android.dexOptions.preDexLibraries = rootProject.ext.preDexLibs
     }
   }
 }
