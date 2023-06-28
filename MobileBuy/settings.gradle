@@ -1,5 +1,3 @@
-
-//TODO it feels clumsy to declare plugin management in settings.gradle when plugins are declared in build.gradle
 pluginManagement {
   repositories {
     google()
