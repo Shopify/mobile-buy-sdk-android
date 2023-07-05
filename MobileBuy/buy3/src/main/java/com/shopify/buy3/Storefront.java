@@ -25,7 +25,7 @@ import java.io.Serializable;
 import java.util.*;
 
 public class Storefront {
-    public static final String API_VERSION = "2023-04";
+    public static final String API_VERSION = "2023-07";
 
     public static QueryRootQuery query(QueryRootQueryDefinition queryDef) {
         return query(Collections.emptyList(), queryDef);
@@ -776,7 +776,7 @@ public class Storefront {
         }
 
         /**
-        * A globally-unique identifier.
+        * A globally-unique ID.
         */
 
         public ID getId() {
@@ -1194,12 +1194,22 @@ public class Storefront {
 
             return this;
         }
+
+        /**
+        * A URL parameters to be added to a page URL when it is linked from a GraphQL result. This allows for
+        * tracking the origin of the traffic.
+        */
+        public ArticleQuery trackingParameters() {
+            startField("trackingParameters");
+
+            return this;
+        }
     }
 
     /**
     * An article in an online store blog.
     */
-    public static class Article extends AbstractResponse<Article> implements HasMetafields, MetafieldParentResource, Node, OnlineStorePublishable {
+    public static class Article extends AbstractResponse<Article> implements HasMetafields, MenuItemResource, MetafieldParentResource, Node, OnlineStorePublishable, SearchResultItem, Trackable {
         public Article() {
         }
 
@@ -1366,6 +1376,17 @@ public class Storefront {
                         break;
                     }
 
+                    case "trackingParameters": {
+                        String optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = jsonAsString(field.getValue(), key);
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
                     case "__typename": {
                         responseData.put(key, jsonAsString(field.getValue(), key));
                         break;
@@ -1506,7 +1527,7 @@ public class Storefront {
         }
 
         /**
-        * A globally-unique identifier.
+        * A globally-unique ID.
         */
 
         public ID getId() {
@@ -1618,6 +1639,20 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * A URL parameters to be added to a page URL when it is linked from a GraphQL result. This allows for
+        * tracking the origin of the traffic.
+        */
+
+        public String getTrackingParameters() {
+            return (String) get("trackingParameters");
+        }
+
+        public Article setTrackingParameters(String arg) {
+            optimisticData.put(getKey("trackingParameters"), arg);
+            return this;
+        }
+
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "author": return true;
@@ -1655,6 +1690,8 @@ public class Storefront {
                 case "tags": return false;
 
                 case "title": return false;
+
+                case "trackingParameters": return false;
 
                 default: return false;
             }
@@ -2826,7 +2863,7 @@ public class Storefront {
         }
 
         /**
-        * A globally-unique identifier.
+        * A globally-unique ID.
         */
         public BaseCartLineQuery id() {
             startField("id");
@@ -2873,6 +2910,13 @@ public class Storefront {
         public BaseCartLineQuery onCartLine(CartLineQueryDefinition queryDef) {
             startInlineFragment("CartLine");
             queryDef.define(new CartLineQuery(_queryBuilder));
+            _queryBuilder.append('}');
+            return this;
+        }
+
+        public BaseCartLineQuery onComponentizableCartLine(ComponentizableCartLineQueryDefinition queryDef) {
+            startInlineFragment("ComponentizableCartLine");
+            queryDef.define(new ComponentizableCartLineQuery(_queryBuilder));
             _queryBuilder.append('}');
             return this;
         }
@@ -3004,6 +3048,10 @@ public class Storefront {
                     return new CartLine(fields);
                 }
 
+                case "ComponentizableCartLine": {
+                    return new ComponentizableCartLine(fields);
+                }
+
                 default: {
                     return new UnknownBaseCartLine(fields);
                 }
@@ -3084,7 +3132,7 @@ public class Storefront {
         }
 
         /**
-        * A globally-unique identifier.
+        * A globally-unique ID.
         */
 
         public ID getId() {
@@ -3688,7 +3736,7 @@ public class Storefront {
     /**
     * An online store blog.
     */
-    public static class Blog extends AbstractResponse<Blog> implements HasMetafields, MetafieldParentResource, Node, OnlineStorePublishable {
+    public static class Blog extends AbstractResponse<Blog> implements HasMetafields, MenuItemResource, MetafieldParentResource, Node, OnlineStorePublishable {
         public Blog() {
         }
 
@@ -3865,7 +3913,7 @@ public class Storefront {
         }
 
         /**
-        * A globally-unique identifier.
+        * A globally-unique ID.
         */
 
         public ID getId() {
@@ -4319,7 +4367,8 @@ public class Storefront {
     }
 
     /**
-    * The store's branding configuration.
+    * The store's [branding
+    * configuration](https://help.shopify.com/en/manual/promoting-marketing/managing-brand-assets).
     */
     public static class BrandQuery extends Query<BrandQuery> {
         BrandQuery(StringBuilder _queryBuilder) {
@@ -4398,7 +4447,8 @@ public class Storefront {
     }
 
     /**
-    * The store's branding configuration.
+    * The store's [branding
+    * configuration](https://help.shopify.com/en/manual/promoting-marketing/managing-brand-assets).
     */
     public static class Brand extends AbstractResponse<Brand> {
         public Brand() {
@@ -5646,7 +5696,7 @@ public class Storefront {
         }
 
         /**
-        * A globally-unique identifier.
+        * A globally-unique ID.
         */
 
         public ID getId() {
@@ -6632,6 +6682,46 @@ public class Storefront {
                 case "userErrors": return true;
 
                 default: return false;
+            }
+        }
+    }
+
+    /**
+    * Represents how credit card details are provided for a direct payment.
+    */
+    public enum CartCardSource {
+        /**
+        * The credit card was provided by a third party and vaulted on their system.
+        * Using this value requires a separate permission from Shopify.
+        */
+        SAVED_CREDIT_CARD,
+
+        UNKNOWN_VALUE;
+
+        public static CartCardSource fromGraphQl(String value) {
+            if (value == null) {
+                return null;
+            }
+
+            switch (value) {
+                case "SAVED_CREDIT_CARD": {
+                    return SAVED_CREDIT_CARD;
+                }
+
+                default: {
+                    return UNKNOWN_VALUE;
+                }
+            }
+        }
+        public String toString() {
+            switch (this) {
+                case SAVED_CREDIT_CARD: {
+                    return "SAVED_CREDIT_CARD";
+                }
+
+                default: {
+                    return "";
+                }
             }
         }
     }
@@ -8856,6 +8946,8 @@ public class Storefront {
 
         private String sessionId;
 
+        private Input<CartCardSource> cardSource = Input.undefined();
+
         public CartDirectPaymentMethodInput(MailingAddressInput billingAddress, String sessionId) {
             this.billingAddress = billingAddress;
 
@@ -8880,6 +8972,27 @@ public class Storefront {
             return this;
         }
 
+        public CartCardSource getCardSource() {
+            return cardSource.getValue();
+        }
+
+        public Input<CartCardSource> getCardSourceInput() {
+            return cardSource;
+        }
+
+        public CartDirectPaymentMethodInput setCardSource(CartCardSource cardSource) {
+            this.cardSource = Input.optional(cardSource);
+            return this;
+        }
+
+        public CartDirectPaymentMethodInput setCardSourceInput(Input<CartCardSource> cardSource) {
+            if (cardSource == null) {
+                throw new IllegalArgumentException("Input can not be null");
+            }
+            this.cardSource = cardSource;
+            return this;
+        }
+
         public void appendTo(StringBuilder _queryBuilder) {
             String separator = "";
             _queryBuilder.append('{');
@@ -8893,6 +9006,17 @@ public class Storefront {
             separator = ",";
             _queryBuilder.append("sessionId:");
             Query.appendQuotedString(_queryBuilder, sessionId.toString());
+
+            if (this.cardSource.isDefined()) {
+                _queryBuilder.append(separator);
+                separator = ",";
+                _queryBuilder.append("cardSource:");
+                if (cardSource.getValue() != null) {
+                    _queryBuilder.append(cardSource.getValue().toString());
+                } else {
+                    _queryBuilder.append("null");
+                }
+            }
 
             _queryBuilder.append('}');
         }
@@ -10316,7 +10440,7 @@ public class Storefront {
         }
 
         /**
-        * A globally-unique identifier.
+        * A globally-unique ID.
         */
 
         public ID getId() {
@@ -13846,7 +13970,7 @@ public class Storefront {
         }
 
         /**
-        * A globally-unique identifier.
+        * A globally-unique ID.
         */
 
         public ID getId() {
@@ -17779,7 +17903,7 @@ public class Storefront {
         }
 
         /**
-        * A globally-unique identifier.
+        * A globally-unique ID.
         */
 
         public ID getId() {
@@ -19784,6 +19908,16 @@ public class Storefront {
         }
 
         /**
+        * A URL parameters to be added to a page URL when it is linked from a GraphQL result. This allows for
+        * tracking the origin of the traffic.
+        */
+        public CollectionQuery trackingParameters() {
+            startField("trackingParameters");
+
+            return this;
+        }
+
+        /**
         * The date and time when the collection was last modified.
         */
         public CollectionQuery updatedAt() {
@@ -19797,7 +19931,7 @@ public class Storefront {
     * A collection represents a grouping of products that a shop owner can create to organize them or make
     * their shops easier to browse.
     */
-    public static class Collection extends AbstractResponse<Collection> implements HasMetafields, MetafieldParentResource, MetafieldReference, Node, OnlineStorePublishable {
+    public static class Collection extends AbstractResponse<Collection> implements HasMetafields, MenuItemResource, MetafieldParentResource, MetafieldReference, Node, OnlineStorePublishable, Trackable {
         public Collection() {
         }
 
@@ -19897,6 +20031,17 @@ public class Storefront {
                         break;
                     }
 
+                    case "trackingParameters": {
+                        String optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = jsonAsString(field.getValue(), key);
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
                     case "updatedAt": {
                         responseData.put(key, Utils.parseDateTime(jsonAsString(field.getValue(), key)));
 
@@ -19964,7 +20109,7 @@ public class Storefront {
         }
 
         /**
-        * A globally-unique identifier.
+        * A globally-unique ID.
         */
 
         public ID getId() {
@@ -20064,6 +20209,20 @@ public class Storefront {
         }
 
         /**
+        * A URL parameters to be added to a page URL when it is linked from a GraphQL result. This allows for
+        * tracking the origin of the traffic.
+        */
+
+        public String getTrackingParameters() {
+            return (String) get("trackingParameters");
+        }
+
+        public Collection setTrackingParameters(String arg) {
+            optimisticData.put(getKey("trackingParameters"), arg);
+            return this;
+        }
+
+        /**
         * The date and time when the collection was last modified.
         */
 
@@ -20099,6 +20258,8 @@ public class Storefront {
                 case "seo": return true;
 
                 case "title": return false;
+
+                case "trackingParameters": return false;
 
                 case "updatedAt": return false;
 
@@ -20157,6 +20318,15 @@ public class Storefront {
 
             return this;
         }
+
+        /**
+        * The total count of Collections.
+        */
+        public CollectionConnectionQuery totalCount() {
+            startField("totalCount");
+
+            return this;
+        }
     }
 
     /**
@@ -20195,6 +20365,12 @@ public class Storefront {
 
                     case "pageInfo": {
                         responseData.put(key, new PageInfo(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "totalCount": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
 
                         break;
                     }
@@ -20253,6 +20429,19 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * The total count of Collections.
+        */
+
+        public String getTotalCount() {
+            return (String) get("totalCount");
+        }
+
+        public CollectionConnection setTotalCount(String arg) {
+            optimisticData.put(getKey("totalCount"), arg);
+            return this;
+        }
+
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "edges": return true;
@@ -20260,6 +20449,8 @@ public class Storefront {
                 case "nodes": return true;
 
                 case "pageInfo": return true;
+
+                case "totalCount": return false;
 
                 default: return false;
             }
@@ -20630,7 +20821,7 @@ public class Storefront {
         }
 
         /**
-        * A globally-unique identifier.
+        * A globally-unique ID.
         */
 
         public ID getId() {
@@ -21375,6 +21566,419 @@ public class Storefront {
                 default: {
                     return "";
                 }
+            }
+        }
+    }
+
+    public interface ComponentizableCartLineQueryDefinition {
+        void define(ComponentizableCartLineQuery _queryBuilder);
+    }
+
+    /**
+    * Represents information about the grouped merchandise in the cart.
+    */
+    public static class ComponentizableCartLineQuery extends Query<ComponentizableCartLineQuery> {
+        ComponentizableCartLineQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+
+            startField("id");
+        }
+
+        /**
+        * An attribute associated with the cart line.
+        */
+        public ComponentizableCartLineQuery attribute(String key, AttributeQueryDefinition queryDef) {
+            startField("attribute");
+
+            _queryBuilder.append("(key:");
+            Query.appendQuotedString(_queryBuilder, key.toString());
+
+            _queryBuilder.append(')');
+
+            _queryBuilder.append('{');
+            queryDef.define(new AttributeQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * The attributes associated with the cart line. Attributes are represented as key-value pairs.
+        */
+        public ComponentizableCartLineQuery attributes(AttributeQueryDefinition queryDef) {
+            startField("attributes");
+
+            _queryBuilder.append('{');
+            queryDef.define(new AttributeQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * The cost of the merchandise that the buyer will pay for at checkout. The costs are subject to change
+        * and changes will be reflected at checkout.
+        */
+        public ComponentizableCartLineQuery cost(CartLineCostQueryDefinition queryDef) {
+            startField("cost");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CartLineCostQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * The discounts that have been applied to the cart line.
+        */
+        public ComponentizableCartLineQuery discountAllocations(CartDiscountAllocationQueryDefinition queryDef) {
+            startField("discountAllocations");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CartDiscountAllocationQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * The estimated cost of the merchandise that the buyer will pay for at checkout. The estimated costs
+        * are subject to change and changes will be reflected at checkout.
+        *
+        * @deprecated Use `cost` instead.
+        */
+        @Deprecated
+        public ComponentizableCartLineQuery estimatedCost(CartLineEstimatedCostQueryDefinition queryDef) {
+            startField("estimatedCost");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CartLineEstimatedCostQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * The components of the line item.
+        */
+        public ComponentizableCartLineQuery lineComponents(CartLineQueryDefinition queryDef) {
+            startField("lineComponents");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CartLineQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * The merchandise that the buyer intends to purchase.
+        */
+        public ComponentizableCartLineQuery merchandise(MerchandiseQueryDefinition queryDef) {
+            startField("merchandise");
+
+            _queryBuilder.append('{');
+            queryDef.define(new MerchandiseQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * The quantity of the merchandise that the customer intends to purchase.
+        */
+        public ComponentizableCartLineQuery quantity() {
+            startField("quantity");
+
+            return this;
+        }
+
+        /**
+        * The selling plan associated with the cart line and the effect that each selling plan has on variants
+        * when they're purchased.
+        */
+        public ComponentizableCartLineQuery sellingPlanAllocation(SellingPlanAllocationQueryDefinition queryDef) {
+            startField("sellingPlanAllocation");
+
+            _queryBuilder.append('{');
+            queryDef.define(new SellingPlanAllocationQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+    }
+
+    /**
+    * Represents information about the grouped merchandise in the cart.
+    */
+    public static class ComponentizableCartLine extends AbstractResponse<ComponentizableCartLine> implements BaseCartLine, Node {
+        public ComponentizableCartLine() {
+        }
+
+        public ComponentizableCartLine(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "attribute": {
+                        Attribute optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new Attribute(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "attributes": {
+                        List<Attribute> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new Attribute(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "cost": {
+                        responseData.put(key, new CartLineCost(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "discountAllocations": {
+                        List<CartDiscountAllocation> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(UnknownCartDiscountAllocation.create(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "estimatedCost": {
+                        responseData.put(key, new CartLineEstimatedCost(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "id": {
+                        responseData.put(key, new ID(jsonAsString(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "lineComponents": {
+                        List<CartLine> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new CartLine(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "merchandise": {
+                        responseData.put(key, UnknownMerchandise.create(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "quantity": {
+                        responseData.put(key, jsonAsInteger(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "sellingPlanAllocation": {
+                        SellingPlanAllocation optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new SellingPlanAllocation(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public ComponentizableCartLine(ID id) {
+            this();
+            optimisticData.put("id", id);
+        }
+
+        public String getGraphQlTypeName() {
+            return "ComponentizableCartLine";
+        }
+
+        /**
+        * An attribute associated with the cart line.
+        */
+
+        public Attribute getAttribute() {
+            return (Attribute) get("attribute");
+        }
+
+        public ComponentizableCartLine setAttribute(Attribute arg) {
+            optimisticData.put(getKey("attribute"), arg);
+            return this;
+        }
+
+        /**
+        * The attributes associated with the cart line. Attributes are represented as key-value pairs.
+        */
+
+        public List<Attribute> getAttributes() {
+            return (List<Attribute>) get("attributes");
+        }
+
+        public ComponentizableCartLine setAttributes(List<Attribute> arg) {
+            optimisticData.put(getKey("attributes"), arg);
+            return this;
+        }
+
+        /**
+        * The cost of the merchandise that the buyer will pay for at checkout. The costs are subject to change
+        * and changes will be reflected at checkout.
+        */
+
+        public CartLineCost getCost() {
+            return (CartLineCost) get("cost");
+        }
+
+        public ComponentizableCartLine setCost(CartLineCost arg) {
+            optimisticData.put(getKey("cost"), arg);
+            return this;
+        }
+
+        /**
+        * The discounts that have been applied to the cart line.
+        */
+
+        public List<CartDiscountAllocation> getDiscountAllocations() {
+            return (List<CartDiscountAllocation>) get("discountAllocations");
+        }
+
+        public ComponentizableCartLine setDiscountAllocations(List<CartDiscountAllocation> arg) {
+            optimisticData.put(getKey("discountAllocations"), arg);
+            return this;
+        }
+
+        /**
+        * The estimated cost of the merchandise that the buyer will pay for at checkout. The estimated costs
+        * are subject to change and changes will be reflected at checkout.
+        *
+        * @deprecated Use `cost` instead.
+        */
+
+        public CartLineEstimatedCost getEstimatedCost() {
+            return (CartLineEstimatedCost) get("estimatedCost");
+        }
+
+        public ComponentizableCartLine setEstimatedCost(CartLineEstimatedCost arg) {
+            optimisticData.put(getKey("estimatedCost"), arg);
+            return this;
+        }
+
+        /**
+        * A globally-unique ID.
+        */
+
+        public ID getId() {
+            return (ID) get("id");
+        }
+
+        /**
+        * The components of the line item.
+        */
+
+        public List<CartLine> getLineComponents() {
+            return (List<CartLine>) get("lineComponents");
+        }
+
+        public ComponentizableCartLine setLineComponents(List<CartLine> arg) {
+            optimisticData.put(getKey("lineComponents"), arg);
+            return this;
+        }
+
+        /**
+        * The merchandise that the buyer intends to purchase.
+        */
+
+        public Merchandise getMerchandise() {
+            return (Merchandise) get("merchandise");
+        }
+
+        public ComponentizableCartLine setMerchandise(Merchandise arg) {
+            optimisticData.put(getKey("merchandise"), arg);
+            return this;
+        }
+
+        /**
+        * The quantity of the merchandise that the customer intends to purchase.
+        */
+
+        public Integer getQuantity() {
+            return (Integer) get("quantity");
+        }
+
+        public ComponentizableCartLine setQuantity(Integer arg) {
+            optimisticData.put(getKey("quantity"), arg);
+            return this;
+        }
+
+        /**
+        * The selling plan associated with the cart line and the effect that each selling plan has on variants
+        * when they're purchased.
+        */
+
+        public SellingPlanAllocation getSellingPlanAllocation() {
+            return (SellingPlanAllocation) get("sellingPlanAllocation");
+        }
+
+        public ComponentizableCartLine setSellingPlanAllocation(SellingPlanAllocation arg) {
+            optimisticData.put(getKey("sellingPlanAllocation"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "attribute": return true;
+
+                case "attributes": return true;
+
+                case "cost": return true;
+
+                case "discountAllocations": return false;
+
+                case "estimatedCost": return true;
+
+                case "id": return false;
+
+                case "lineComponents": return true;
+
+                case "merchandise": return false;
+
+                case "quantity": return false;
+
+                case "sellingPlanAllocation": return true;
+
+                default: return false;
             }
         }
     }
@@ -27784,7 +28388,7 @@ public class Storefront {
         }
 
         /**
-        * A unique identifier for the customer.
+        * A unique ID for the customer.
         */
         public CustomerQuery id() {
             startField("id");
@@ -28286,7 +28890,7 @@ public class Storefront {
         }
 
         /**
-        * A unique identifier for the customer.
+        * A unique ID for the customer.
         */
 
         public ID getId() {
@@ -33988,7 +34592,7 @@ public class Storefront {
         }
 
         /**
-        * A globally-unique identifier.
+        * A globally-unique ID.
         */
 
         public ID getId() {
@@ -35427,7 +36031,7 @@ public class Storefront {
         }
 
         /**
-        * A globally-unique identifier.
+        * A globally-unique ID.
         */
 
         public ID getId() {
@@ -35933,7 +36537,7 @@ public class Storefront {
         }
 
         /**
-        * A unique identifier for the image.
+        * A unique ID for the image.
         */
         public ImageQuery id() {
             startField("id");
@@ -36249,7 +36853,7 @@ public class Storefront {
         }
 
         /**
-        * A unique identifier for the image.
+        * A unique ID for the image.
         */
 
         public ID getId() {
@@ -39233,7 +39837,7 @@ public class Storefront {
         }
 
         /**
-        * A globally-unique identifier.
+        * A globally-unique ID.
         */
 
         public ID getId() {
@@ -40709,7 +41313,7 @@ public class Storefront {
         }
 
         /**
-        * A globally-unique identifier.
+        * A globally-unique ID.
         */
 
         public ID getId() {
@@ -41881,7 +42485,7 @@ public class Storefront {
         }
 
         /**
-        * A globally-unique identifier.
+        * A globally-unique ID.
         */
 
         public ID getId() {
@@ -41948,6 +42552,15 @@ public class Storefront {
         */
         public MediaQuery alt() {
             startField("alt");
+
+            return this;
+        }
+
+        /**
+        * A globally-unique ID.
+        */
+        public MediaQuery id() {
+            startField("id");
 
             return this;
         }
@@ -42021,6 +42634,8 @@ public class Storefront {
 
         String getAlt();
 
+        ID getId();
+
         MediaContentType getMediaContentType();
 
         MediaPresentation getPresentation();
@@ -42047,6 +42662,12 @@ public class Storefront {
                         }
 
                         responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "id": {
+                        responseData.put(key, new ID(jsonAsString(field.getValue(), key)));
 
                         break;
                     }
@@ -42133,6 +42754,19 @@ public class Storefront {
         }
 
         /**
+        * A globally-unique ID.
+        */
+
+        public ID getId() {
+            return (ID) get("id");
+        }
+
+        public UnknownMedia setId(ID arg) {
+            optimisticData.put(getKey("id"), arg);
+            return this;
+        }
+
+        /**
         * The media content type.
         */
 
@@ -42174,6 +42808,8 @@ public class Storefront {
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "alt": return false;
+
+                case "id": return false;
 
                 case "mediaContentType": return false;
 
@@ -42760,7 +43396,7 @@ public class Storefront {
         }
 
         /**
-        * A globally-unique identifier.
+        * A globally-unique ID.
         */
 
         public ID getId() {
@@ -42930,7 +43566,7 @@ public class Storefront {
         }
 
         /**
-        * A globally-unique identifier.
+        * A globally-unique ID.
         */
 
         public ID getId() {
@@ -43005,7 +43641,9 @@ public class Storefront {
     }
 
     /**
-    * A menu used for navigation within a storefront.
+    * A [navigation menu](https://help.shopify.com/manual/online-store/menus-and-links) representing a
+    * hierarchy
+    * of hyperlinks (items).
     */
     public static class MenuQuery extends Query<MenuQuery> {
         MenuQuery(StringBuilder _queryBuilder) {
@@ -43056,7 +43694,9 @@ public class Storefront {
     }
 
     /**
-    * A menu used for navigation within a storefront.
+    * A [navigation menu](https://help.shopify.com/manual/online-store/menus-and-links) representing a
+    * hierarchy
+    * of hyperlinks (items).
     */
     public static class Menu extends AbstractResponse<Menu> implements Node {
         public Menu() {
@@ -43136,7 +43776,7 @@ public class Storefront {
         }
 
         /**
-        * A globally-unique identifier.
+        * A globally-unique ID.
         */
 
         public ID getId() {
@@ -43227,6 +43867,19 @@ public class Storefront {
         }
 
         /**
+        * The linked resource.
+        */
+        public MenuItemQuery resource(MenuItemResourceQueryDefinition queryDef) {
+            startField("resource");
+
+            _queryBuilder.append('{');
+            queryDef.define(new MenuItemResourceQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
         * The ID of the linked resource.
         */
         public MenuItemQuery resourceId() {
@@ -43301,6 +43954,17 @@ public class Storefront {
                         break;
                     }
 
+                    case "resource": {
+                        MenuItemResource optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = UnknownMenuItemResource.create(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
                     case "resourceId": {
                         ID optional1 = null;
                         if (!field.getValue().isJsonNull()) {
@@ -43367,7 +44031,7 @@ public class Storefront {
         }
 
         /**
-        * A globally-unique identifier.
+        * A globally-unique ID.
         */
 
         public ID getId() {
@@ -43384,6 +44048,19 @@ public class Storefront {
 
         public MenuItem setItems(List<MenuItem> arg) {
             optimisticData.put(getKey("items"), arg);
+            return this;
+        }
+
+        /**
+        * The linked resource.
+        */
+
+        public MenuItemResource getResource() {
+            return (MenuItemResource) get("resource");
+        }
+
+        public MenuItem setResource(MenuItemResource arg) {
+            optimisticData.put(getKey("resource"), arg);
             return this;
         }
 
@@ -43458,6 +44135,8 @@ public class Storefront {
 
                 case "items": return true;
 
+                case "resource": return false;
+
                 case "resourceId": return false;
 
                 case "tags": return false;
@@ -43468,6 +44147,134 @@ public class Storefront {
 
                 case "url": return false;
 
+                default: return false;
+            }
+        }
+    }
+
+    public interface MenuItemResourceQueryDefinition {
+        void define(MenuItemResourceQuery _queryBuilder);
+    }
+
+    /**
+    * The list of possible resources a `MenuItem` can reference.
+    */
+    public static class MenuItemResourceQuery extends Query<MenuItemResourceQuery> {
+        MenuItemResourceQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+
+            startField("__typename");
+        }
+
+        public MenuItemResourceQuery onArticle(ArticleQueryDefinition queryDef) {
+            startInlineFragment("Article");
+            queryDef.define(new ArticleQuery(_queryBuilder));
+            _queryBuilder.append('}');
+            return this;
+        }
+
+        public MenuItemResourceQuery onBlog(BlogQueryDefinition queryDef) {
+            startInlineFragment("Blog");
+            queryDef.define(new BlogQuery(_queryBuilder));
+            _queryBuilder.append('}');
+            return this;
+        }
+
+        public MenuItemResourceQuery onCollection(CollectionQueryDefinition queryDef) {
+            startInlineFragment("Collection");
+            queryDef.define(new CollectionQuery(_queryBuilder));
+            _queryBuilder.append('}');
+            return this;
+        }
+
+        public MenuItemResourceQuery onPage(PageQueryDefinition queryDef) {
+            startInlineFragment("Page");
+            queryDef.define(new PageQuery(_queryBuilder));
+            _queryBuilder.append('}');
+            return this;
+        }
+
+        public MenuItemResourceQuery onProduct(ProductQueryDefinition queryDef) {
+            startInlineFragment("Product");
+            queryDef.define(new ProductQuery(_queryBuilder));
+            _queryBuilder.append('}');
+            return this;
+        }
+
+        public MenuItemResourceQuery onShopPolicy(ShopPolicyQueryDefinition queryDef) {
+            startInlineFragment("ShopPolicy");
+            queryDef.define(new ShopPolicyQuery(_queryBuilder));
+            _queryBuilder.append('}');
+            return this;
+        }
+    }
+
+    public interface MenuItemResource {
+        String getGraphQlTypeName();
+    }
+
+    /**
+    * The list of possible resources a `MenuItem` can reference.
+    */
+    public static class UnknownMenuItemResource extends AbstractResponse<UnknownMenuItemResource> implements MenuItemResource {
+        public UnknownMenuItemResource() {
+        }
+
+        public UnknownMenuItemResource(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public static MenuItemResource create(JsonObject fields) throws SchemaViolationError {
+            String typeName = fields.getAsJsonPrimitive("__typename").getAsString();
+            switch (typeName) {
+                case "Article": {
+                    return new Article(fields);
+                }
+
+                case "Blog": {
+                    return new Blog(fields);
+                }
+
+                case "Collection": {
+                    return new Collection(fields);
+                }
+
+                case "Page": {
+                    return new Page(fields);
+                }
+
+                case "Product": {
+                    return new Product(fields);
+                }
+
+                case "ShopPolicy": {
+                    return new ShopPolicy(fields);
+                }
+
+                default: {
+                    return new UnknownMenuItemResource(fields);
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return (String) get("__typename");
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
                 default: return false;
             }
         }
@@ -43750,7 +44557,7 @@ public class Storefront {
         }
 
         /**
-        * The key name for a metafield.
+        * The unique identifier for the metafield within its namespace.
         */
         public MetafieldQuery key() {
             startField("key");
@@ -43759,7 +44566,7 @@ public class Storefront {
         }
 
         /**
-        * The namespace for a metafield.
+        * The container for a group of metafields that the metafield is associated with.
         */
         public MetafieldQuery namespace() {
             startField("namespace");
@@ -43768,7 +44575,7 @@ public class Storefront {
         }
 
         /**
-        * The parent object that the metafield belongs to.
+        * The type of resource that the metafield is attached to.
         */
         public MetafieldQuery parentResource(MetafieldParentResourceQueryDefinition queryDef) {
             startField("parentResource");
@@ -43781,7 +44588,7 @@ public class Storefront {
         }
 
         /**
-        * Returns a reference object if the metafield definition's type is a resource reference.
+        * Returns a reference object if the metafield's type is a resource reference.
         */
         public MetafieldQuery reference(MetafieldReferenceQueryDefinition queryDef) {
             startField("reference");
@@ -43873,7 +44680,7 @@ public class Storefront {
 
         /**
         * The type name of the metafield.
-        * See the list of [supported types](https://shopify.dev/apps/metafields/definitions/types).
+        * Refer to the list of [supported types](https://shopify.dev/apps/metafields/definitions/types).
         */
         public MetafieldQuery type() {
             startField("type");
@@ -43882,7 +44689,7 @@ public class Storefront {
         }
 
         /**
-        * The date and time when the storefront metafield was updated.
+        * The date and time when the metafield was last updated.
         */
         public MetafieldQuery updatedAt() {
             startField("updatedAt");
@@ -43891,7 +44698,7 @@ public class Storefront {
         }
 
         /**
-        * The value of a metafield.
+        * The data stored in the metafield. Always stored as a string, regardless of the metafield's type.
         */
         public MetafieldQuery value() {
             startField("value");
@@ -44042,7 +44849,7 @@ public class Storefront {
         }
 
         /**
-        * A globally-unique identifier.
+        * A globally-unique ID.
         */
 
         public ID getId() {
@@ -44050,7 +44857,7 @@ public class Storefront {
         }
 
         /**
-        * The key name for a metafield.
+        * The unique identifier for the metafield within its namespace.
         */
 
         public String getKey() {
@@ -44063,7 +44870,7 @@ public class Storefront {
         }
 
         /**
-        * The namespace for a metafield.
+        * The container for a group of metafields that the metafield is associated with.
         */
 
         public String getNamespace() {
@@ -44076,7 +44883,7 @@ public class Storefront {
         }
 
         /**
-        * The parent object that the metafield belongs to.
+        * The type of resource that the metafield is attached to.
         */
 
         public MetafieldParentResource getParentResource() {
@@ -44089,7 +44896,7 @@ public class Storefront {
         }
 
         /**
-        * Returns a reference object if the metafield definition's type is a resource reference.
+        * Returns a reference object if the metafield's type is a resource reference.
         */
 
         public MetafieldReference getReference() {
@@ -44116,7 +44923,7 @@ public class Storefront {
 
         /**
         * The type name of the metafield.
-        * See the list of [supported types](https://shopify.dev/apps/metafields/definitions/types).
+        * Refer to the list of [supported types](https://shopify.dev/apps/metafields/definitions/types).
         */
 
         public String getType() {
@@ -44129,7 +44936,7 @@ public class Storefront {
         }
 
         /**
-        * The date and time when the storefront metafield was updated.
+        * The date and time when the metafield was last updated.
         */
 
         public DateTime getUpdatedAt() {
@@ -44142,7 +44949,7 @@ public class Storefront {
         }
 
         /**
-        * The value of a metafield.
+        * The data stored in the metafield. Always stored as a string, regardless of the metafield's type.
         */
 
         public String getValue() {
@@ -45589,7 +46396,7 @@ public class Storefront {
         }
 
         /**
-        * A globally-unique identifier.
+        * A globally-unique ID.
         */
 
         public ID getId() {
@@ -46419,7 +47226,7 @@ public class Storefront {
         }
 
         /**
-        * A globally-unique identifier.
+        * A globally-unique ID.
         */
 
         public ID getId() {
@@ -49298,7 +50105,7 @@ public class Storefront {
         }
 
         /**
-        * A globally-unique identifier.
+        * A globally-unique ID.
         */
         public NodeQuery id() {
             startField("id");
@@ -49365,6 +50172,13 @@ public class Storefront {
         public NodeQuery onComment(CommentQueryDefinition queryDef) {
             startInlineFragment("Comment");
             queryDef.define(new CommentQuery(_queryBuilder));
+            _queryBuilder.append('}');
+            return this;
+        }
+
+        public NodeQuery onComponentizableCartLine(ComponentizableCartLineQueryDefinition queryDef) {
+            startInlineFragment("ComponentizableCartLine");
+            queryDef.define(new ComponentizableCartLineQuery(_queryBuilder));
             _queryBuilder.append('}');
             return this;
         }
@@ -49601,6 +50415,10 @@ public class Storefront {
                     return new Comment(fields);
                 }
 
+                case "ComponentizableCartLine": {
+                    return new ComponentizableCartLine(fields);
+                }
+
                 case "ExternalVideo": {
                     return new ExternalVideo(fields);
                 }
@@ -49700,7 +50518,7 @@ public class Storefront {
         }
 
         /**
-        * A globally-unique identifier.
+        * A globally-unique ID.
         */
 
         public ID getId() {
@@ -51170,7 +51988,7 @@ public class Storefront {
         }
 
         /**
-        * A globally-unique identifier.
+        * A globally-unique ID.
         */
 
         public ID getId() {
@@ -53039,6 +53857,16 @@ public class Storefront {
         }
 
         /**
+        * A URL parameters to be added to a page URL when it is linked from a GraphQL result. This allows for
+        * tracking the origin of the traffic.
+        */
+        public PageQuery trackingParameters() {
+            startField("trackingParameters");
+
+            return this;
+        }
+
+        /**
         * The timestamp of the latest page update.
         */
         public PageQuery updatedAt() {
@@ -53052,7 +53880,7 @@ public class Storefront {
     * Shopify merchants can create pages to hold static HTML content. Each Page object represents a custom
     * page on the online store.
     */
-    public static class Page extends AbstractResponse<Page> implements HasMetafields, MetafieldParentResource, MetafieldReference, Node, OnlineStorePublishable {
+    public static class Page extends AbstractResponse<Page> implements HasMetafields, MenuItemResource, MetafieldParentResource, MetafieldReference, Node, OnlineStorePublishable, SearchResultItem, Trackable {
         public Page() {
         }
 
@@ -53146,6 +53974,17 @@ public class Storefront {
                         break;
                     }
 
+                    case "trackingParameters": {
+                        String optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = jsonAsString(field.getValue(), key);
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
                     case "updatedAt": {
                         responseData.put(key, Utils.parseDateTime(jsonAsString(field.getValue(), key)));
 
@@ -53225,7 +54064,7 @@ public class Storefront {
         }
 
         /**
-        * A globally-unique identifier.
+        * A globally-unique ID.
         */
 
         public ID getId() {
@@ -53299,6 +54138,20 @@ public class Storefront {
         }
 
         /**
+        * A URL parameters to be added to a page URL when it is linked from a GraphQL result. This allows for
+        * tracking the origin of the traffic.
+        */
+
+        public String getTrackingParameters() {
+            return (String) get("trackingParameters");
+        }
+
+        public Page setTrackingParameters(String arg) {
+            optimisticData.put(getKey("trackingParameters"), arg);
+            return this;
+        }
+
+        /**
         * The timestamp of the latest page update.
         */
 
@@ -53332,6 +54185,8 @@ public class Storefront {
                 case "seo": return true;
 
                 case "title": return false;
+
+                case "trackingParameters": return false;
 
                 case "updatedAt": return false;
 
@@ -54230,7 +55085,7 @@ public class Storefront {
         }
 
         /**
-        * A globally-unique identifier.
+        * A globally-unique ID.
         */
 
         public ID getId() {
@@ -54394,7 +55249,7 @@ public class Storefront {
         }
 
         /**
-        * The shop’s Shopify Payments account id.
+        * The shop’s Shopify Payments account ID.
         */
         public PaymentSettingsQuery shopifyPaymentsAccountId() {
             startField("shopifyPaymentsAccountId");
@@ -54568,7 +55423,7 @@ public class Storefront {
         }
 
         /**
-        * The shop’s Shopify Payments account id.
+        * The shop’s Shopify Payments account ID.
         */
 
         public String getShopifyPaymentsAccountId() {
@@ -54696,6 +55551,395 @@ public class Storefront {
 
                 case VAULT: {
                     return "VAULT";
+                }
+
+                default: {
+                    return "";
+                }
+            }
+        }
+    }
+
+    /**
+    * Decides the distribution of results.
+    */
+    public enum PredictiveSearchLimitScope {
+        /**
+        * Return results up to limit across all types.
+        */
+        ALL,
+
+        /**
+        * Return results up to limit per type.
+        */
+        EACH,
+
+        UNKNOWN_VALUE;
+
+        public static PredictiveSearchLimitScope fromGraphQl(String value) {
+            if (value == null) {
+                return null;
+            }
+
+            switch (value) {
+                case "ALL": {
+                    return ALL;
+                }
+
+                case "EACH": {
+                    return EACH;
+                }
+
+                default: {
+                    return UNKNOWN_VALUE;
+                }
+            }
+        }
+        public String toString() {
+            switch (this) {
+                case ALL: {
+                    return "ALL";
+                }
+
+                case EACH: {
+                    return "EACH";
+                }
+
+                default: {
+                    return "";
+                }
+            }
+        }
+    }
+
+    public interface PredictiveSearchResultQueryDefinition {
+        void define(PredictiveSearchResultQuery _queryBuilder);
+    }
+
+    /**
+    * A predictive search result represents a list of products, collections, pages, articles, and query
+    * suggestions
+    * that matches the predictive search query.
+    */
+    public static class PredictiveSearchResultQuery extends Query<PredictiveSearchResultQuery> {
+        PredictiveSearchResultQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * The articles that match the search query.
+        */
+        public PredictiveSearchResultQuery articles(ArticleQueryDefinition queryDef) {
+            startField("articles");
+
+            _queryBuilder.append('{');
+            queryDef.define(new ArticleQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * The articles that match the search query.
+        */
+        public PredictiveSearchResultQuery collections(CollectionQueryDefinition queryDef) {
+            startField("collections");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CollectionQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * The pages that match the search query.
+        */
+        public PredictiveSearchResultQuery pages(PageQueryDefinition queryDef) {
+            startField("pages");
+
+            _queryBuilder.append('{');
+            queryDef.define(new PageQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * The products that match the search query.
+        */
+        public PredictiveSearchResultQuery products(ProductQueryDefinition queryDef) {
+            startField("products");
+
+            _queryBuilder.append('{');
+            queryDef.define(new ProductQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * The query suggestions that are relevant to the search query.
+        */
+        public PredictiveSearchResultQuery queries(SearchQuerySuggestionQueryDefinition queryDef) {
+            startField("queries");
+
+            _queryBuilder.append('{');
+            queryDef.define(new SearchQuerySuggestionQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+    }
+
+    /**
+    * A predictive search result represents a list of products, collections, pages, articles, and query
+    * suggestions
+    * that matches the predictive search query.
+    */
+    public static class PredictiveSearchResult extends AbstractResponse<PredictiveSearchResult> {
+        public PredictiveSearchResult() {
+        }
+
+        public PredictiveSearchResult(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "articles": {
+                        List<Article> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new Article(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "collections": {
+                        List<Collection> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new Collection(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "pages": {
+                        List<Page> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new Page(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "products": {
+                        List<Product> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new Product(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "queries": {
+                        List<SearchQuerySuggestion> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new SearchQuerySuggestion(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "PredictiveSearchResult";
+        }
+
+        /**
+        * The articles that match the search query.
+        */
+
+        public List<Article> getArticles() {
+            return (List<Article>) get("articles");
+        }
+
+        public PredictiveSearchResult setArticles(List<Article> arg) {
+            optimisticData.put(getKey("articles"), arg);
+            return this;
+        }
+
+        /**
+        * The articles that match the search query.
+        */
+
+        public List<Collection> getCollections() {
+            return (List<Collection>) get("collections");
+        }
+
+        public PredictiveSearchResult setCollections(List<Collection> arg) {
+            optimisticData.put(getKey("collections"), arg);
+            return this;
+        }
+
+        /**
+        * The pages that match the search query.
+        */
+
+        public List<Page> getPages() {
+            return (List<Page>) get("pages");
+        }
+
+        public PredictiveSearchResult setPages(List<Page> arg) {
+            optimisticData.put(getKey("pages"), arg);
+            return this;
+        }
+
+        /**
+        * The products that match the search query.
+        */
+
+        public List<Product> getProducts() {
+            return (List<Product>) get("products");
+        }
+
+        public PredictiveSearchResult setProducts(List<Product> arg) {
+            optimisticData.put(getKey("products"), arg);
+            return this;
+        }
+
+        /**
+        * The query suggestions that are relevant to the search query.
+        */
+
+        public List<SearchQuerySuggestion> getQueries() {
+            return (List<SearchQuerySuggestion>) get("queries");
+        }
+
+        public PredictiveSearchResult setQueries(List<SearchQuerySuggestion> arg) {
+            optimisticData.put(getKey("queries"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "articles": return true;
+
+                case "collections": return true;
+
+                case "pages": return true;
+
+                case "products": return true;
+
+                case "queries": return true;
+
+                default: return false;
+            }
+        }
+    }
+
+    /**
+    * The types of search items to perform predictive search on.
+    */
+    public enum PredictiveSearchType {
+        /**
+        * Returns matching articles.
+        */
+        ARTICLE,
+
+        /**
+        * Returns matching collections.
+        */
+        COLLECTION,
+
+        /**
+        * Returns matching pages.
+        */
+        PAGE,
+
+        /**
+        * Returns matching products.
+        */
+        PRODUCT,
+
+        /**
+        * Returns matching query strings.
+        */
+        QUERY,
+
+        UNKNOWN_VALUE;
+
+        public static PredictiveSearchType fromGraphQl(String value) {
+            if (value == null) {
+                return null;
+            }
+
+            switch (value) {
+                case "ARTICLE": {
+                    return ARTICLE;
+                }
+
+                case "COLLECTION": {
+                    return COLLECTION;
+                }
+
+                case "PAGE": {
+                    return PAGE;
+                }
+
+                case "PRODUCT": {
+                    return PRODUCT;
+                }
+
+                case "QUERY": {
+                    return QUERY;
+                }
+
+                default: {
+                    return UNKNOWN_VALUE;
+                }
+            }
+        }
+        public String toString() {
+            switch (this) {
+                case ARTICLE: {
+                    return "ARTICLE";
+                }
+
+                case COLLECTION: {
+                    return "COLLECTION";
+                }
+
+                case PAGE: {
+                    return "PAGE";
+                }
+
+                case PRODUCT: {
+                    return "PRODUCT";
+                }
+
+                case QUERY: {
+                    return "QUERY";
                 }
 
                 default: {
@@ -55642,6 +56886,16 @@ public class Storefront {
         }
 
         /**
+        * A URL parameters to be added to a page URL when it is linked from a GraphQL result. This allows for
+        * tracking the origin of the traffic.
+        */
+        public ProductQuery trackingParameters() {
+            startField("trackingParameters");
+
+            return this;
+        }
+
+        /**
         * The date and time when the product was last modified.
         * A product's `updatedAt` value can change for different reasons. For example, if an order
         * is placed for a product that has inventory tracking set up, then the inventory adjustment
@@ -55799,7 +57053,7 @@ public class Storefront {
     * as do services (such as equipment rental, work for hire, customization of another product or an
     * extended warranty).
     */
-    public static class Product extends AbstractResponse<Product> implements HasMetafields, MetafieldParentResource, MetafieldReference, Node, OnlineStorePublishable {
+    public static class Product extends AbstractResponse<Product> implements HasMetafields, MenuItemResource, MetafieldParentResource, MetafieldReference, Node, OnlineStorePublishable, SearchResultItem, Trackable {
         public Product() {
         }
 
@@ -55998,6 +57252,17 @@ public class Storefront {
                         break;
                     }
 
+                    case "trackingParameters": {
+                        String optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = jsonAsString(field.getValue(), key);
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
                     case "updatedAt": {
                         responseData.put(key, Utils.parseDateTime(jsonAsString(field.getValue(), key)));
 
@@ -56154,7 +57419,7 @@ public class Storefront {
         }
 
         /**
-        * A globally-unique identifier.
+        * A globally-unique ID.
         */
 
         public ID getId() {
@@ -56374,6 +57639,20 @@ public class Storefront {
         }
 
         /**
+        * A URL parameters to be added to a page URL when it is linked from a GraphQL result. This allows for
+        * tracking the origin of the traffic.
+        */
+
+        public String getTrackingParameters() {
+            return (String) get("trackingParameters");
+        }
+
+        public Product setTrackingParameters(String arg) {
+            optimisticData.put(getKey("trackingParameters"), arg);
+            return this;
+        }
+
+        /**
         * The date and time when the product was last modified.
         * A product's `updatedAt` value can change for different reasons. For example, if an order
         * is placed for a product that has inventory tracking set up, then the inventory adjustment
@@ -56481,6 +57760,8 @@ public class Storefront {
                 case "title": return false;
 
                 case "totalInventory": return false;
+
+                case "trackingParameters": return false;
 
                 case "updatedAt": return false;
 
@@ -57454,7 +58735,7 @@ public class Storefront {
         }
 
         /**
-        * A globally-unique identifier.
+        * A globally-unique ID.
         */
 
         public ID getId() {
@@ -58584,7 +59865,7 @@ public class Storefront {
         }
 
         /**
-        * A globally-unique identifier.
+        * A globally-unique ID.
         */
 
         public ID getId() {
@@ -59807,7 +61088,9 @@ public class Storefront {
         }
 
         /**
-        * Find a customer by its access token.
+        * The customer associated with the given access token. Tokens are obtained by using the
+        * [`customerAccessTokenCreate`
+        * mutation](https://shopify.dev/docs/api/storefront/latest/mutations/customerAccessTokenCreate).
         */
         public QueryRootQuery customer(String customerAccessToken, CustomerQueryDefinition queryDef) {
             startField("customer");
@@ -59951,7 +61234,8 @@ public class Storefront {
         }
 
         /**
-        * A storefront menu.
+        * Retrieve a [navigation menu](https://help.shopify.com/manual/online-store/menus-and-links) by its
+        * handle.
         */
         public QueryRootQuery menu(String handle, MenuQueryDefinition queryDef) {
             startField("menu");
@@ -60366,6 +61650,119 @@ public class Storefront {
             return this;
         }
 
+        public class PredictiveSearchArguments extends Arguments {
+            PredictiveSearchArguments(StringBuilder _queryBuilder) {
+                super(_queryBuilder, false);
+            }
+
+            /**
+            * Limits the number of results based on `limit_scope`. The value can range from 1 to 10, and the
+            * default is 10.
+            */
+            public PredictiveSearchArguments limit(Integer value) {
+                if (value != null) {
+                    startArgument("limit");
+                    _queryBuilder.append(value);
+                }
+                return this;
+            }
+
+            /**
+            * Decides the distribution of results.
+            */
+            public PredictiveSearchArguments limitScope(PredictiveSearchLimitScope value) {
+                if (value != null) {
+                    startArgument("limitScope");
+                    _queryBuilder.append(value.toString());
+                }
+                return this;
+            }
+
+            /**
+            * Specifies the list of resource fields to use for search. The default fields searched on are TITLE,
+            * PRODUCT_TYPE, VARIANT_TITLE, and VENDOR. For the best search experience, you should search on the
+            * default field set.
+            */
+            public PredictiveSearchArguments searchableFields(List<SearchableField> value) {
+                if (value != null) {
+                    startArgument("searchableFields");
+                    _queryBuilder.append('[');
+                    {
+                        String listSeperator1 = "";
+                        for (SearchableField item1 : value) {
+                            _queryBuilder.append(listSeperator1);
+                            listSeperator1 = ",";
+                            _queryBuilder.append(item1.toString());
+                        }
+                    }
+                    _queryBuilder.append(']');
+                }
+                return this;
+            }
+
+            /**
+            * The types of resources to search for.
+            */
+            public PredictiveSearchArguments types(List<PredictiveSearchType> value) {
+                if (value != null) {
+                    startArgument("types");
+                    _queryBuilder.append('[');
+                    {
+                        String listSeperator1 = "";
+                        for (PredictiveSearchType item1 : value) {
+                            _queryBuilder.append(listSeperator1);
+                            listSeperator1 = ",";
+                            _queryBuilder.append(item1.toString());
+                        }
+                    }
+                    _queryBuilder.append(']');
+                }
+                return this;
+            }
+
+            /**
+            * Specifies how unavailable products are displayed in the search results.
+            */
+            public PredictiveSearchArguments unavailableProducts(SearchUnavailableProductsType value) {
+                if (value != null) {
+                    startArgument("unavailableProducts");
+                    _queryBuilder.append(value.toString());
+                }
+                return this;
+            }
+        }
+
+        public interface PredictiveSearchArgumentsDefinition {
+            void define(PredictiveSearchArguments args);
+        }
+
+        /**
+        * List of the predictive search results.
+        */
+        public QueryRootQuery predictiveSearch(String query, PredictiveSearchResultQueryDefinition queryDef) {
+            return predictiveSearch(query, args -> {}, queryDef);
+        }
+
+        /**
+        * List of the predictive search results.
+        */
+        public QueryRootQuery predictiveSearch(String query, PredictiveSearchArgumentsDefinition argsDef, PredictiveSearchResultQueryDefinition queryDef) {
+            startField("predictiveSearch");
+
+            _queryBuilder.append("(query:");
+            Query.appendQuotedString(_queryBuilder, query.toString());
+
+            argsDef.define(new PredictiveSearchArguments(_queryBuilder));
+
+            _queryBuilder.append(')');
+
+            _queryBuilder.append('{');
+            queryDef.define(new PredictiveSearchResultQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
         public class ProductArguments extends Arguments {
             ProductArguments(StringBuilder _queryBuilder) {
                 super(_queryBuilder, true);
@@ -60667,6 +62064,171 @@ public class Storefront {
 
             _queryBuilder.append('{');
             queryDef.define(new ApiVersionQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        public class SearchArguments extends Arguments {
+            SearchArguments(StringBuilder _queryBuilder) {
+                super(_queryBuilder, false);
+            }
+
+            /**
+            * Specifies whether to perform a partial word match on the last search term.
+            */
+            public SearchArguments prefix(SearchPrefixQueryType value) {
+                if (value != null) {
+                    startArgument("prefix");
+                    _queryBuilder.append(value.toString());
+                }
+                return this;
+            }
+
+            /**
+            * Returns a subset of products matching all product filters.
+            */
+            public SearchArguments productFilters(List<ProductFilter> value) {
+                if (value != null) {
+                    startArgument("productFilters");
+                    _queryBuilder.append('[');
+                    {
+                        String listSeperator1 = "";
+                        for (ProductFilter item1 : value) {
+                            _queryBuilder.append(listSeperator1);
+                            listSeperator1 = ",";
+                            item1.appendTo(_queryBuilder);
+                        }
+                    }
+                    _queryBuilder.append(']');
+                }
+                return this;
+            }
+
+            /**
+            * Reverse the order of the underlying list.
+            */
+            public SearchArguments reverse(Boolean value) {
+                if (value != null) {
+                    startArgument("reverse");
+                    _queryBuilder.append(value);
+                }
+                return this;
+            }
+
+            /**
+            * Sort the underlying list by the given key.
+            */
+            public SearchArguments sortKey(SearchSortKeys value) {
+                if (value != null) {
+                    startArgument("sortKey");
+                    _queryBuilder.append(value.toString());
+                }
+                return this;
+            }
+
+            /**
+            * The types of resrouces to search for.
+            */
+            public SearchArguments types(List<SearchType> value) {
+                if (value != null) {
+                    startArgument("types");
+                    _queryBuilder.append('[');
+                    {
+                        String listSeperator1 = "";
+                        for (SearchType item1 : value) {
+                            _queryBuilder.append(listSeperator1);
+                            listSeperator1 = ",";
+                            _queryBuilder.append(item1.toString());
+                        }
+                    }
+                    _queryBuilder.append(']');
+                }
+                return this;
+            }
+
+            /**
+            * Specifies how unavailable products are displayed in the search results.
+            */
+            public SearchArguments unavailableProducts(SearchUnavailableProductsType value) {
+                if (value != null) {
+                    startArgument("unavailableProducts");
+                    _queryBuilder.append(value.toString());
+                }
+                return this;
+            }
+
+            /**
+            * Returns up to the first `n` elements from the list.
+            */
+            public SearchArguments first(Integer value) {
+                if (value != null) {
+                    startArgument("first");
+                    _queryBuilder.append(value);
+                }
+                return this;
+            }
+
+            /**
+            * Returns the elements that come after the specified cursor.
+            */
+            public SearchArguments after(String value) {
+                if (value != null) {
+                    startArgument("after");
+                    Query.appendQuotedString(_queryBuilder, value.toString());
+                }
+                return this;
+            }
+
+            /**
+            * Returns up to the last `n` elements from the list.
+            */
+            public SearchArguments last(Integer value) {
+                if (value != null) {
+                    startArgument("last");
+                    _queryBuilder.append(value);
+                }
+                return this;
+            }
+
+            /**
+            * Returns the elements that come before the specified cursor.
+            */
+            public SearchArguments before(String value) {
+                if (value != null) {
+                    startArgument("before");
+                    Query.appendQuotedString(_queryBuilder, value.toString());
+                }
+                return this;
+            }
+        }
+
+        public interface SearchArgumentsDefinition {
+            void define(SearchArguments args);
+        }
+
+        /**
+        * List of the search results.
+        */
+        public QueryRootQuery search(String query, SearchResultItemConnectionQueryDefinition queryDef) {
+            return search(query, args -> {}, queryDef);
+        }
+
+        /**
+        * List of the search results.
+        */
+        public QueryRootQuery search(String query, SearchArgumentsDefinition argsDef, SearchResultItemConnectionQueryDefinition queryDef) {
+            startField("search");
+
+            _queryBuilder.append("(query:");
+            Query.appendQuotedString(_queryBuilder, query.toString());
+
+            argsDef.define(new SearchArguments(_queryBuilder));
+
+            _queryBuilder.append(')');
+
+            _queryBuilder.append('{');
+            queryDef.define(new SearchResultItemConnectionQuery(_queryBuilder));
             _queryBuilder.append('}');
 
             return this;
@@ -61009,6 +62571,17 @@ public class Storefront {
                         break;
                     }
 
+                    case "predictiveSearch": {
+                        PredictiveSearchResult optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new PredictiveSearchResult(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
                     case "product": {
                         Product optional1 = null;
                         if (!field.getValue().isJsonNull()) {
@@ -61072,6 +62645,12 @@ public class Storefront {
                         }
 
                         responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "search": {
+                        responseData.put(key, new SearchResultItemConnection(jsonAsObject(field.getValue(), key)));
 
                         break;
                     }
@@ -61239,7 +62818,9 @@ public class Storefront {
         }
 
         /**
-        * Find a customer by its access token.
+        * The customer associated with the given access token. Tokens are obtained by using the
+        * [`customerAccessTokenCreate`
+        * mutation](https://shopify.dev/docs/api/storefront/latest/mutations/customerAccessTokenCreate).
         */
 
         public Customer getCustomer() {
@@ -61279,7 +62860,8 @@ public class Storefront {
         }
 
         /**
-        * A storefront menu.
+        * Retrieve a [navigation menu](https://help.shopify.com/manual/online-store/menus-and-links) by its
+        * handle.
         */
 
         public Menu getMenu() {
@@ -61385,6 +62967,19 @@ public class Storefront {
         }
 
         /**
+        * List of the predictive search results.
+        */
+
+        public PredictiveSearchResult getPredictiveSearch() {
+            return (PredictiveSearchResult) get("predictiveSearch");
+        }
+
+        public QueryRoot setPredictiveSearch(PredictiveSearchResult arg) {
+            optimisticData.put(getKey("predictiveSearch"), arg);
+            return this;
+        }
+
+        /**
         * Fetch a specific `Product` by one of its unique attributes.
         */
 
@@ -61483,6 +63078,19 @@ public class Storefront {
         }
 
         /**
+        * List of the search results.
+        */
+
+        public SearchResultItemConnection getSearch() {
+            return (SearchResultItemConnection) get("search");
+        }
+
+        public QueryRoot setSearch(SearchResultItemConnection arg) {
+            optimisticData.put(getKey("search"), arg);
+            return this;
+        }
+
+        /**
         * The shop associated with the storefront access token.
         */
 
@@ -61552,6 +63160,8 @@ public class Storefront {
 
                 case "pages": return true;
 
+                case "predictiveSearch": return true;
+
                 case "product": return true;
 
                 case "productByHandle": return true;
@@ -61565,6 +63175,8 @@ public class Storefront {
                 case "products": return true;
 
                 case "publicApiVersions": return true;
+
+                case "search": return true;
 
                 case "shop": return true;
 
@@ -61895,6 +63507,961 @@ public class Storefront {
         }
     }
 
+    /**
+    * Specifies whether to perform a partial word match on the last search term.
+    */
+    public enum SearchPrefixQueryType {
+        /**
+        * Perform a partial word match on the last search term.
+        */
+        LAST,
+
+        /**
+        * Don't perform a partial word match on the last search term.
+        */
+        NONE,
+
+        UNKNOWN_VALUE;
+
+        public static SearchPrefixQueryType fromGraphQl(String value) {
+            if (value == null) {
+                return null;
+            }
+
+            switch (value) {
+                case "LAST": {
+                    return LAST;
+                }
+
+                case "NONE": {
+                    return NONE;
+                }
+
+                default: {
+                    return UNKNOWN_VALUE;
+                }
+            }
+        }
+        public String toString() {
+            switch (this) {
+                case LAST: {
+                    return "LAST";
+                }
+
+                case NONE: {
+                    return "NONE";
+                }
+
+                default: {
+                    return "";
+                }
+            }
+        }
+    }
+
+    public interface SearchQuerySuggestionQueryDefinition {
+        void define(SearchQuerySuggestionQuery _queryBuilder);
+    }
+
+    /**
+    * A search query suggestion.
+    */
+    public static class SearchQuerySuggestionQuery extends Query<SearchQuerySuggestionQuery> {
+        SearchQuerySuggestionQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * The text of the search query suggestion with highlighted HTML tags.
+        */
+        public SearchQuerySuggestionQuery styledText() {
+            startField("styledText");
+
+            return this;
+        }
+
+        /**
+        * The text of the search query suggestion.
+        */
+        public SearchQuerySuggestionQuery text() {
+            startField("text");
+
+            return this;
+        }
+
+        /**
+        * A URL parameters to be added to a page URL when it is linked from a GraphQL result. This allows for
+        * tracking the origin of the traffic.
+        */
+        public SearchQuerySuggestionQuery trackingParameters() {
+            startField("trackingParameters");
+
+            return this;
+        }
+    }
+
+    /**
+    * A search query suggestion.
+    */
+    public static class SearchQuerySuggestion extends AbstractResponse<SearchQuerySuggestion> implements Trackable {
+        public SearchQuerySuggestion() {
+        }
+
+        public SearchQuerySuggestion(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "styledText": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "text": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "trackingParameters": {
+                        String optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = jsonAsString(field.getValue(), key);
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "SearchQuerySuggestion";
+        }
+
+        /**
+        * The text of the search query suggestion with highlighted HTML tags.
+        */
+
+        public String getStyledText() {
+            return (String) get("styledText");
+        }
+
+        public SearchQuerySuggestion setStyledText(String arg) {
+            optimisticData.put(getKey("styledText"), arg);
+            return this;
+        }
+
+        /**
+        * The text of the search query suggestion.
+        */
+
+        public String getText() {
+            return (String) get("text");
+        }
+
+        public SearchQuerySuggestion setText(String arg) {
+            optimisticData.put(getKey("text"), arg);
+            return this;
+        }
+
+        /**
+        * A URL parameters to be added to a page URL when it is linked from a GraphQL result. This allows for
+        * tracking the origin of the traffic.
+        */
+
+        public String getTrackingParameters() {
+            return (String) get("trackingParameters");
+        }
+
+        public SearchQuerySuggestion setTrackingParameters(String arg) {
+            optimisticData.put(getKey("trackingParameters"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "styledText": return false;
+
+                case "text": return false;
+
+                case "trackingParameters": return false;
+
+                default: return false;
+            }
+        }
+    }
+
+    public interface SearchResultItemQueryDefinition {
+        void define(SearchResultItemQuery _queryBuilder);
+    }
+
+    /**
+    * A search result that matches the search query.
+    */
+    public static class SearchResultItemQuery extends Query<SearchResultItemQuery> {
+        SearchResultItemQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+
+            startField("__typename");
+        }
+
+        public SearchResultItemQuery onArticle(ArticleQueryDefinition queryDef) {
+            startInlineFragment("Article");
+            queryDef.define(new ArticleQuery(_queryBuilder));
+            _queryBuilder.append('}');
+            return this;
+        }
+
+        public SearchResultItemQuery onPage(PageQueryDefinition queryDef) {
+            startInlineFragment("Page");
+            queryDef.define(new PageQuery(_queryBuilder));
+            _queryBuilder.append('}');
+            return this;
+        }
+
+        public SearchResultItemQuery onProduct(ProductQueryDefinition queryDef) {
+            startInlineFragment("Product");
+            queryDef.define(new ProductQuery(_queryBuilder));
+            _queryBuilder.append('}');
+            return this;
+        }
+    }
+
+    public interface SearchResultItem {
+        String getGraphQlTypeName();
+    }
+
+    /**
+    * A search result that matches the search query.
+    */
+    public static class UnknownSearchResultItem extends AbstractResponse<UnknownSearchResultItem> implements SearchResultItem {
+        public UnknownSearchResultItem() {
+        }
+
+        public UnknownSearchResultItem(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public static SearchResultItem create(JsonObject fields) throws SchemaViolationError {
+            String typeName = fields.getAsJsonPrimitive("__typename").getAsString();
+            switch (typeName) {
+                case "Article": {
+                    return new Article(fields);
+                }
+
+                case "Page": {
+                    return new Page(fields);
+                }
+
+                case "Product": {
+                    return new Product(fields);
+                }
+
+                default: {
+                    return new UnknownSearchResultItem(fields);
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return (String) get("__typename");
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                default: return false;
+            }
+        }
+    }
+
+    public interface SearchResultItemConnectionQueryDefinition {
+        void define(SearchResultItemConnectionQuery _queryBuilder);
+    }
+
+    /**
+    * An auto-generated type for paginating through multiple SearchResultItems.
+    */
+    public static class SearchResultItemConnectionQuery extends Query<SearchResultItemConnectionQuery> {
+        SearchResultItemConnectionQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * A list of edges.
+        */
+        public SearchResultItemConnectionQuery edges(SearchResultItemEdgeQueryDefinition queryDef) {
+            startField("edges");
+
+            _queryBuilder.append('{');
+            queryDef.define(new SearchResultItemEdgeQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * A list of the nodes contained in SearchResultItemEdge.
+        */
+        public SearchResultItemConnectionQuery nodes(SearchResultItemQueryDefinition queryDef) {
+            startField("nodes");
+
+            _queryBuilder.append('{');
+            queryDef.define(new SearchResultItemQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * Information to aid in pagination.
+        */
+        public SearchResultItemConnectionQuery pageInfo(PageInfoQueryDefinition queryDef) {
+            startField("pageInfo");
+
+            _queryBuilder.append('{');
+            queryDef.define(new PageInfoQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * A list of available filters.
+        */
+        public SearchResultItemConnectionQuery productFilters(FilterQueryDefinition queryDef) {
+            startField("productFilters");
+
+            _queryBuilder.append('{');
+            queryDef.define(new FilterQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * The total number of results.
+        */
+        public SearchResultItemConnectionQuery totalCount() {
+            startField("totalCount");
+
+            return this;
+        }
+    }
+
+    /**
+    * An auto-generated type for paginating through multiple SearchResultItems.
+    */
+    public static class SearchResultItemConnection extends AbstractResponse<SearchResultItemConnection> {
+        public SearchResultItemConnection() {
+        }
+
+        public SearchResultItemConnection(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "edges": {
+                        List<SearchResultItemEdge> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new SearchResultItemEdge(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "nodes": {
+                        List<SearchResultItem> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(UnknownSearchResultItem.create(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "pageInfo": {
+                        responseData.put(key, new PageInfo(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "productFilters": {
+                        List<Filter> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new Filter(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "totalCount": {
+                        responseData.put(key, jsonAsInteger(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "SearchResultItemConnection";
+        }
+
+        /**
+        * A list of edges.
+        */
+
+        public List<SearchResultItemEdge> getEdges() {
+            return (List<SearchResultItemEdge>) get("edges");
+        }
+
+        public SearchResultItemConnection setEdges(List<SearchResultItemEdge> arg) {
+            optimisticData.put(getKey("edges"), arg);
+            return this;
+        }
+
+        /**
+        * A list of the nodes contained in SearchResultItemEdge.
+        */
+
+        public List<SearchResultItem> getNodes() {
+            return (List<SearchResultItem>) get("nodes");
+        }
+
+        public SearchResultItemConnection setNodes(List<SearchResultItem> arg) {
+            optimisticData.put(getKey("nodes"), arg);
+            return this;
+        }
+
+        /**
+        * Information to aid in pagination.
+        */
+
+        public PageInfo getPageInfo() {
+            return (PageInfo) get("pageInfo");
+        }
+
+        public SearchResultItemConnection setPageInfo(PageInfo arg) {
+            optimisticData.put(getKey("pageInfo"), arg);
+            return this;
+        }
+
+        /**
+        * A list of available filters.
+        */
+
+        public List<Filter> getProductFilters() {
+            return (List<Filter>) get("productFilters");
+        }
+
+        public SearchResultItemConnection setProductFilters(List<Filter> arg) {
+            optimisticData.put(getKey("productFilters"), arg);
+            return this;
+        }
+
+        /**
+        * The total number of results.
+        */
+
+        public Integer getTotalCount() {
+            return (Integer) get("totalCount");
+        }
+
+        public SearchResultItemConnection setTotalCount(Integer arg) {
+            optimisticData.put(getKey("totalCount"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "edges": return true;
+
+                case "nodes": return false;
+
+                case "pageInfo": return true;
+
+                case "productFilters": return true;
+
+                case "totalCount": return false;
+
+                default: return false;
+            }
+        }
+    }
+
+    public interface SearchResultItemEdgeQueryDefinition {
+        void define(SearchResultItemEdgeQuery _queryBuilder);
+    }
+
+    /**
+    * An auto-generated type which holds one SearchResultItem and a cursor during pagination.
+    */
+    public static class SearchResultItemEdgeQuery extends Query<SearchResultItemEdgeQuery> {
+        SearchResultItemEdgeQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * A cursor for use in pagination.
+        */
+        public SearchResultItemEdgeQuery cursor() {
+            startField("cursor");
+
+            return this;
+        }
+
+        /**
+        * The item at the end of SearchResultItemEdge.
+        */
+        public SearchResultItemEdgeQuery node(SearchResultItemQueryDefinition queryDef) {
+            startField("node");
+
+            _queryBuilder.append('{');
+            queryDef.define(new SearchResultItemQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+    }
+
+    /**
+    * An auto-generated type which holds one SearchResultItem and a cursor during pagination.
+    */
+    public static class SearchResultItemEdge extends AbstractResponse<SearchResultItemEdge> {
+        public SearchResultItemEdge() {
+        }
+
+        public SearchResultItemEdge(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "cursor": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "node": {
+                        responseData.put(key, UnknownSearchResultItem.create(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "SearchResultItemEdge";
+        }
+
+        /**
+        * A cursor for use in pagination.
+        */
+
+        public String getCursor() {
+            return (String) get("cursor");
+        }
+
+        public SearchResultItemEdge setCursor(String arg) {
+            optimisticData.put(getKey("cursor"), arg);
+            return this;
+        }
+
+        /**
+        * The item at the end of SearchResultItemEdge.
+        */
+
+        public SearchResultItem getNode() {
+            return (SearchResultItem) get("node");
+        }
+
+        public SearchResultItemEdge setNode(SearchResultItem arg) {
+            optimisticData.put(getKey("node"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "cursor": return false;
+
+                case "node": return false;
+
+                default: return false;
+            }
+        }
+    }
+
+    /**
+    * The set of valid sort keys for the search query.
+    */
+    public enum SearchSortKeys {
+        /**
+        * Sort by the `price` value.
+        */
+        PRICE,
+
+        /**
+        * Sort by relevance to the search terms.
+        */
+        RELEVANCE,
+
+        UNKNOWN_VALUE;
+
+        public static SearchSortKeys fromGraphQl(String value) {
+            if (value == null) {
+                return null;
+            }
+
+            switch (value) {
+                case "PRICE": {
+                    return PRICE;
+                }
+
+                case "RELEVANCE": {
+                    return RELEVANCE;
+                }
+
+                default: {
+                    return UNKNOWN_VALUE;
+                }
+            }
+        }
+        public String toString() {
+            switch (this) {
+                case PRICE: {
+                    return "PRICE";
+                }
+
+                case RELEVANCE: {
+                    return "RELEVANCE";
+                }
+
+                default: {
+                    return "";
+                }
+            }
+        }
+    }
+
+    /**
+    * The types of search items to perform search within.
+    */
+    public enum SearchType {
+        /**
+        * Returns matching articles.
+        */
+        ARTICLE,
+
+        /**
+        * Returns matching pages.
+        */
+        PAGE,
+
+        /**
+        * Returns matching products.
+        */
+        PRODUCT,
+
+        UNKNOWN_VALUE;
+
+        public static SearchType fromGraphQl(String value) {
+            if (value == null) {
+                return null;
+            }
+
+            switch (value) {
+                case "ARTICLE": {
+                    return ARTICLE;
+                }
+
+                case "PAGE": {
+                    return PAGE;
+                }
+
+                case "PRODUCT": {
+                    return PRODUCT;
+                }
+
+                default: {
+                    return UNKNOWN_VALUE;
+                }
+            }
+        }
+        public String toString() {
+            switch (this) {
+                case ARTICLE: {
+                    return "ARTICLE";
+                }
+
+                case PAGE: {
+                    return "PAGE";
+                }
+
+                case PRODUCT: {
+                    return "PRODUCT";
+                }
+
+                default: {
+                    return "";
+                }
+            }
+        }
+    }
+
+    /**
+    * Specifies whether to display results for unavailable products.
+    */
+    public enum SearchUnavailableProductsType {
+        /**
+        * Exclude unavailable products.
+        */
+        HIDE,
+
+        /**
+        * Show unavailable products after all other matching results. This is the default.
+        */
+        LAST,
+
+        /**
+        * Show unavailable products in the order that they're found.
+        */
+        SHOW,
+
+        UNKNOWN_VALUE;
+
+        public static SearchUnavailableProductsType fromGraphQl(String value) {
+            if (value == null) {
+                return null;
+            }
+
+            switch (value) {
+                case "HIDE": {
+                    return HIDE;
+                }
+
+                case "LAST": {
+                    return LAST;
+                }
+
+                case "SHOW": {
+                    return SHOW;
+                }
+
+                default: {
+                    return UNKNOWN_VALUE;
+                }
+            }
+        }
+        public String toString() {
+            switch (this) {
+                case HIDE: {
+                    return "HIDE";
+                }
+
+                case LAST: {
+                    return "LAST";
+                }
+
+                case SHOW: {
+                    return "SHOW";
+                }
+
+                default: {
+                    return "";
+                }
+            }
+        }
+    }
+
+    /**
+    * Specifies the list of resource fields to search.
+    */
+    public enum SearchableField {
+        /**
+        * Author of the page or article.
+        */
+        AUTHOR,
+
+        /**
+        * Body of the page or article or product description or collection description.
+        */
+        BODY,
+
+        /**
+        * Product type.
+        */
+        PRODUCT_TYPE,
+
+        /**
+        * Tag associated with the product or article.
+        */
+        TAG,
+
+        /**
+        * Title of the page or article or product title or collection title.
+        */
+        TITLE,
+
+        /**
+        * Variant barcode.
+        */
+        VARIANTS_BARCODE,
+
+        /**
+        * Variant SKU.
+        */
+        VARIANTS_SKU,
+
+        /**
+        * Variant title.
+        */
+        VARIANTS_TITLE,
+
+        /**
+        * Product vendor.
+        */
+        VENDOR,
+
+        UNKNOWN_VALUE;
+
+        public static SearchableField fromGraphQl(String value) {
+            if (value == null) {
+                return null;
+            }
+
+            switch (value) {
+                case "AUTHOR": {
+                    return AUTHOR;
+                }
+
+                case "BODY": {
+                    return BODY;
+                }
+
+                case "PRODUCT_TYPE": {
+                    return PRODUCT_TYPE;
+                }
+
+                case "TAG": {
+                    return TAG;
+                }
+
+                case "TITLE": {
+                    return TITLE;
+                }
+
+                case "VARIANTS_BARCODE": {
+                    return VARIANTS_BARCODE;
+                }
+
+                case "VARIANTS_SKU": {
+                    return VARIANTS_SKU;
+                }
+
+                case "VARIANTS_TITLE": {
+                    return VARIANTS_TITLE;
+                }
+
+                case "VENDOR": {
+                    return VENDOR;
+                }
+
+                default: {
+                    return UNKNOWN_VALUE;
+                }
+            }
+        }
+        public String toString() {
+            switch (this) {
+                case AUTHOR: {
+                    return "AUTHOR";
+                }
+
+                case BODY: {
+                    return "BODY";
+                }
+
+                case PRODUCT_TYPE: {
+                    return "PRODUCT_TYPE";
+                }
+
+                case TAG: {
+                    return "TAG";
+                }
+
+                case TITLE: {
+                    return "TITLE";
+                }
+
+                case VARIANTS_BARCODE: {
+                    return "VARIANTS_BARCODE";
+                }
+
+                case VARIANTS_SKU: {
+                    return "VARIANTS_SKU";
+                }
+
+                case VARIANTS_TITLE: {
+                    return "VARIANTS_TITLE";
+                }
+
+                case VENDOR: {
+                    return "VENDOR";
+                }
+
+                default: {
+                    return "";
+                }
+            }
+        }
+    }
+
     public interface SelectedOptionQueryDefinition {
         void define(SelectedOptionQuery _queryBuilder);
     }
@@ -62086,7 +64653,7 @@ public class Storefront {
         }
 
         /**
-        * A globally-unique identifier.
+        * A globally-unique ID.
         */
         public SellingPlanQuery id() {
             startField("id");
@@ -62255,7 +64822,7 @@ public class Storefront {
         }
 
         /**
-        * A globally-unique identifier.
+        * A globally-unique ID.
         */
 
         public ID getId() {
@@ -65446,7 +68013,7 @@ public class Storefront {
         }
 
         /**
-        * A globally-unique identifier.
+        * A globally-unique ID.
         */
 
         public ID getId() {
@@ -65747,7 +68314,7 @@ public class Storefront {
     /**
     * Policy that a merchant has configured for their store, such as their refund or privacy policy.
     */
-    public static class ShopPolicy extends AbstractResponse<ShopPolicy> implements Node {
+    public static class ShopPolicy extends AbstractResponse<ShopPolicy> implements MenuItemResource, Node {
         public ShopPolicy() {
         }
 
@@ -65833,7 +68400,7 @@ public class Storefront {
         }
 
         /**
-        * A globally-unique identifier.
+        * A globally-unique ID.
         */
 
         public ID getId() {
@@ -65917,7 +68484,7 @@ public class Storefront {
         }
 
         /**
-        * The unique identifier of the policy. A default policy doesn't have an ID.
+        * The unique ID of the policy. A default policy doesn't have an ID.
         */
         public ShopPolicyWithDefaultQuery id() {
             startField("id");
@@ -66036,7 +68603,7 @@ public class Storefront {
         }
 
         /**
-        * The unique identifier of the policy. A default policy doesn't have an ID.
+        * The unique ID of the policy. A default policy doesn't have an ID.
         */
 
         public ID getId() {
@@ -66136,6 +68703,15 @@ public class Storefront {
 
             return this;
         }
+
+        /**
+        * The quantity of the product variant in-stock at this location.
+        */
+        public StoreAvailabilityQuery quantityAvailable() {
+            startField("quantityAvailable");
+
+            return this;
+        }
     }
 
     /**
@@ -66166,6 +68742,12 @@ public class Storefront {
 
                     case "pickUpTime": {
                         responseData.put(key, jsonAsString(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "quantityAvailable": {
+                        responseData.put(key, jsonAsInteger(field.getValue(), key));
 
                         break;
                     }
@@ -66225,6 +68807,19 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * The quantity of the product variant in-stock at this location.
+        */
+
+        public Integer getQuantityAvailable() {
+            return (Integer) get("quantityAvailable");
+        }
+
+        public StoreAvailability setQuantityAvailable(Integer arg) {
+            optimisticData.put(getKey("quantityAvailable"), arg);
+            return this;
+        }
+
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "available": return false;
@@ -66232,6 +68827,8 @@ public class Storefront {
                 case "location": return true;
 
                 case "pickUpTime": return false;
+
+                case "quantityAvailable": return false;
 
                 default: return false;
             }
@@ -67816,7 +70413,7 @@ public class Storefront {
         }
 
         /**
-        * The id of the cart completion attempt that will be used for polling for the result.
+        * The ID of the cart completion attempt that will be used for polling for the result.
         */
         public SubmitAlreadyAcceptedQuery attemptId() {
             startField("attemptId");
@@ -67859,7 +70456,7 @@ public class Storefront {
         }
 
         /**
-        * The id of the cart completion attempt that will be used for polling for the result.
+        * The ID of the cart completion attempt that will be used for polling for the result.
         */
 
         public String getAttemptId() {
@@ -68014,7 +70611,7 @@ public class Storefront {
         }
 
         /**
-        * The id of the cart completion attempt that will be used for polling for the result.
+        * The ID of the cart completion attempt that will be used for polling for the result.
         */
         public SubmitSuccessQuery attemptId() {
             startField("attemptId");
@@ -68057,7 +70654,7 @@ public class Storefront {
         }
 
         /**
-        * The id of the cart completion attempt that will be used for polling for the result.
+        * The ID of the cart completion attempt that will be used for polling for the result.
         */
 
         public String getAttemptId() {
@@ -68327,6 +70924,162 @@ public class Storefront {
             }
 
             _queryBuilder.append('}');
+        }
+    }
+
+    public interface TrackableQueryDefinition {
+        void define(TrackableQuery _queryBuilder);
+    }
+
+    /**
+    * Represents a resource that you can track the origin of the search traffic.
+    */
+    public static class TrackableQuery extends Query<TrackableQuery> {
+        TrackableQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+
+            startField("__typename");
+        }
+
+        /**
+        * A URL parameters to be added to a page URL when it is linked from a GraphQL result. This allows for
+        * tracking the origin of the traffic.
+        */
+        public TrackableQuery trackingParameters() {
+            startField("trackingParameters");
+
+            return this;
+        }
+
+        public TrackableQuery onArticle(ArticleQueryDefinition queryDef) {
+            startInlineFragment("Article");
+            queryDef.define(new ArticleQuery(_queryBuilder));
+            _queryBuilder.append('}');
+            return this;
+        }
+
+        public TrackableQuery onCollection(CollectionQueryDefinition queryDef) {
+            startInlineFragment("Collection");
+            queryDef.define(new CollectionQuery(_queryBuilder));
+            _queryBuilder.append('}');
+            return this;
+        }
+
+        public TrackableQuery onPage(PageQueryDefinition queryDef) {
+            startInlineFragment("Page");
+            queryDef.define(new PageQuery(_queryBuilder));
+            _queryBuilder.append('}');
+            return this;
+        }
+
+        public TrackableQuery onProduct(ProductQueryDefinition queryDef) {
+            startInlineFragment("Product");
+            queryDef.define(new ProductQuery(_queryBuilder));
+            _queryBuilder.append('}');
+            return this;
+        }
+
+        public TrackableQuery onSearchQuerySuggestion(SearchQuerySuggestionQueryDefinition queryDef) {
+            startInlineFragment("SearchQuerySuggestion");
+            queryDef.define(new SearchQuerySuggestionQuery(_queryBuilder));
+            _queryBuilder.append('}');
+            return this;
+        }
+    }
+
+    public interface Trackable {
+        String getGraphQlTypeName();
+
+        String getTrackingParameters();
+    }
+
+    /**
+    * Represents a resource that you can track the origin of the search traffic.
+    */
+    public static class UnknownTrackable extends AbstractResponse<UnknownTrackable> implements Trackable {
+        public UnknownTrackable() {
+        }
+
+        public UnknownTrackable(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "trackingParameters": {
+                        String optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = jsonAsString(field.getValue(), key);
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public static Trackable create(JsonObject fields) throws SchemaViolationError {
+            String typeName = fields.getAsJsonPrimitive("__typename").getAsString();
+            switch (typeName) {
+                case "Article": {
+                    return new Article(fields);
+                }
+
+                case "Collection": {
+                    return new Collection(fields);
+                }
+
+                case "Page": {
+                    return new Page(fields);
+                }
+
+                case "Product": {
+                    return new Product(fields);
+                }
+
+                case "SearchQuerySuggestion": {
+                    return new SearchQuerySuggestion(fields);
+                }
+
+                default: {
+                    return new UnknownTrackable(fields);
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return (String) get("__typename");
+        }
+
+        /**
+        * A URL parameters to be added to a page URL when it is linked from a GraphQL result. This allows for
+        * tracking the origin of the traffic.
+        */
+
+        public String getTrackingParameters() {
+            return (String) get("trackingParameters");
+        }
+
+        public UnknownTrackable setTrackingParameters(String arg) {
+            optimisticData.put(getKey("trackingParameters"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "trackingParameters": return false;
+
+                default: return false;
+            }
         }
     }
 
@@ -70001,7 +72754,7 @@ public class Storefront {
         }
 
         /**
-        * A globally-unique identifier.
+        * A globally-unique ID.
         */
 
         public ID getId() {
