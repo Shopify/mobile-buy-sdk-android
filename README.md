@@ -1,7 +1,7 @@
 ![Mobile Buy SDK](https://cloud.githubusercontent.com/assets/5244861/26374751/6895a582-3fd4-11e7-80c4-2c1632262d66.png)
 
-[![Build Status](https://travis-ci.org/Shopify/mobile-buy-sdk-android.svg?branch=develop-v3)](https://travis-ci.org/Shopify/mobile-buy-sdk-android)
-[![GitHub license](https://img.shields.io/badge/license-MIT-lightgrey.svg)](https://github.com/Shopify/mobile-buy-sdk-ios/blob/master/LICENSE)
+[![Tests](https://github.com/Shopify/mobile-buy-sdk-android/actions/workflows/test.yml/badge.svg)](https://github.com/Shopify/mobile-buy-sdk-android/actions/workflows/test.yml)
+[![GitHub license](https://img.shields.io/badge/license-MIT-lightgrey.svg)](https://github.com/Shopify/mobile-buy-sdk-ios/blob/main/LICENSE)
 [![GitHub release](https://img.shields.io/github/release/shopify/mobile-buy-sdk-android.svg)](https://github.com/Shopify/mobile-buy-sdk-android/releases)
 
 # Mobile Buy SDK
@@ -13,21 +13,24 @@ The Mobile Buy SDK makes it easy to create custom storefronts in your mobile app
 - [Installation](#installation-)
 - [Getting started](#getting-started-)
 - [Code generation](#code-generation-)
+
   - [Request models](#request-models-)
   - [Response models](#response-models-)
   - [The `Node` protocol](#the-node-protocol-)
   - [Aliases](#aliases-)
 
 - [GraphClient](#graphclient-)
+
   - [Queries](#queries-)
   - [Mutations](#mutations-)
   - [Retry and polling](#retry-)
   - [Caching](#caching-)
   - [Errors](#errors-)
-      - [GraphQL Error](#graphql-error-)
-      - [GraphError](#grapherror-)
+    - [GraphQL Error](#graphql-error-)
+    - [GraphError](#grapherror-)
 
 - [Search](#search-)
+
   - [Fuzzy matching](#fuzzy-matching-)
   - [Field matching](#field-matching-)
   - [Negating field matching](#negating-field-matching-)
@@ -36,32 +39,35 @@ The Mobile Buy SDK makes it easy to create custom storefronts in your mobile app
   - [Exists operator](#exists-operator-)
 
 - [Card vaulting](#card-vaulting-)
+
   - [Card client](#card-client-)
 
 - [Case studies](#case-studies-)
+
   - [Fetch shop](#fetch-shop-)
   - [Fetch collections and products](#fetch-collections-and-products-)
   - [Pagination](#pagination-)
   - [Fetch product details](#fetch-product-details-)
   - [Checkout](#checkout-)
-      - [Creating a checkout](#checkout-)
-      - [Updating a checkout](#updating-a-checkout-)
-      - [Polling for shipping rates](#polling-for-shipping-rates-)
-      - [Updating shipping line](#updating-shipping-line-)
-      - [Completing a checkout](#completing-a-checkout-)
-          - [Web](#web-checkout-)
-          - [Credit card](#credit-card-checkout-)
-          - [Google Pay](#google-pay-checkout-)
-      - [Polling for checkout completion](#polling-for-checkout-completion-)
+    - [Creating a checkout](#checkout-)
+    - [Updating a checkout](#updating-a-checkout-)
+    - [Polling for checkout readiness](#polling-for-checkout-readiness-)
+    - [Polling for shipping rates](#polling-for-shipping-rates-)
+    - [Updating shipping line](#updating-shipping-line-)
+    - [Completing a checkout](#completing-a-checkout-)
+      - [Web](#web-checkout-)
+      - [Credit card](#credit-card-checkout-)
+      - [Google Pay](#google-pay-checkout-)
+    - [Polling for checkout completion](#polling-for-checkout-completion-)
   - [Customer Accounts](#customer-accounts-)
-      - [Creating a customer](#creating-a-customer-)
-      - [Customer login](#customer-login-)
-      - [Password reset](#password-reset-)
-      - [Create, update and delete address](#create-update-and-delete-address-)
-      - [Customer information](#customer-information-)
-      - [Customer Addresses](#customer-addresses-)
-      - [Customer Orders](#customer-orders-)
-      - [Customer Update](#customer-update-)
+    - [Creating a customer](#creating-a-customer-)
+    - [Customer login](#customer-login-)
+    - [Password reset](#password-reset-)
+    - [Create, update and delete address](#create-update-and-delete-address-)
+    - [Customer information](#customer-information-)
+    - [Customer Addresses](#customer-addresses-)
+    - [Customer Orders](#customer-orders-)
+    - [Customer Update](#customer-update-)
 
 - [Sample application](#sample-application-)
 - [Contributions](#contributions-)
@@ -88,7 +94,6 @@ implementation 'com.shopify.mobilebuysdk:buy3:3.2.3'
 </dependency>
 ```
 
-
 ## Getting started [⤴](#table-of-contents)
 
 The Buy SDK is built on [GraphQL](http://graphql.org/). The SDK handles all the query generation and response parsing, exposing only typed models and compile-time checked query structures. It doesn't require you to write stringed queries, or parse JSON responses.
@@ -104,7 +109,6 @@ Unfortunately, the specifics of generation GraphQL models make it almost impossi
 ## Code Generation [⤴](#table-of-contents)
 
 The Buy SDK is built on a hierarchy of generated classes that construct and parse GraphQL queries and response. These classes are generated manually by running a custom Ruby script that relies on the [GraphQL Java Generation](https://github.com/Shopify/graphql_java_gen) library. Most of the generation functionality and supporting classes live inside the library. It works by downloading the GraphQL schema, generating Java class hierarchy, and saving the generated files to the specified folder path. In addition, it provides overrides for custom GraphQL scalar types like `DateTime`.
-
 
 ### Request Models [⤴](#table-of-contents)
 
@@ -126,9 +130,9 @@ QueryRootQuery query = Storefront.query(new Storefront.QueryRootQueryDefinition(
 
 In this example:
 
--  `Storefront.query` is the entry point for building GraphQL queries.
--  `Storefront.QueryRootQueryDefinition` represents the root of the query where we ask for the shop's `rootQueryBuilder.shop`.
--  `Storefront.ShopQueryDefinition` represents the subquery definition for shop field, where we request the shop's `shopQueryBuilder.name`.
+- `Storefront.query` is the entry point for building GraphQL queries.
+- `Storefront.QueryRootQueryDefinition` represents the root of the query where we ask for the shop's `rootQueryBuilder.shop`.
+- `Storefront.ShopQueryDefinition` represents the subquery definition for shop field, where we request the shop's `shopQueryBuilder.name`.
 
 Request models are generated in such way where lambda expressions can come in handy. We can use lambda expressions to make the initial query more concise:
 
@@ -444,13 +448,12 @@ QueryGraphCall queryCall = client.queryGraph(query)
 
 In this example, the `queryCall` cache policy changes to `NETWORK_FIRST`, which means that the cached response will be valid for 5 minutes from the time the response is received.
 
-
 ### Errors [⤴](#table-of-contents)
 
 There are two types of errors that you need to handle in the response callback:
 
-* `Error` returns a list of errors inside `GraphResponse`, which represent errors related to GraphQL query itself. These should be used for debugging purposes only.
-* `GraphError` represents more critical errors related to the GraphQL query execution and processing response.
+- `Error` returns a list of errors inside `GraphResponse`, which represent errors related to GraphQL query itself. These should be used for debugging purposes only.
+- `GraphError` represents more critical errors related to the GraphQL query execution and processing response.
 
 #### GraphQL Error [⤴](#table-of-contents)
 
@@ -498,9 +501,7 @@ The following example shows a GraphQL error response:
           "column": 90
         }
       ],
-      "fields": [
-        "Shop"
-      ]
+      "fields": ["Shop"]
     }
   ]
 }
@@ -683,6 +684,7 @@ cardClient.vault(creditCard, cardVaultUrl).enqueue(new CreditCardVaultCall.Callb
   }
 });
 ```
+
 **IMPORTANT:** The credit card vaulting service does **not** provide any validation for submitted credit cards. As a result, submitting invalid credit card numbers or even missing fields will always yield a vault `token`. Any errors related to invalid credit card information will be surfaced only when the provided `token` is used to complete a checkout.
 
 ## Case studies [⤴](#table-of-contents)
@@ -1032,7 +1034,7 @@ Since we'll need to update the checkout with additional information later, all w
 
 #### Updating a checkout [⤴](#table-of-contents)
 
-A customer's information might not be available when a checkout is created. The Buy SDK provides mutations for updating the specific checkout fields that are required for completion: the `email`, `shippingAddress` and  `shippingLine` fields.
+A customer's information might not be available when a checkout is created. The Buy SDK provides mutations for updating the specific checkout fields that are required for completion: the `email`, `shippingAddress` and `shippingLine` fields.
 
 Note that if your checkout contains a line item that requires shipping, you must provide a shipping address and a shipping line as part of your checkout.
 
@@ -1085,6 +1087,64 @@ Storefront.MutationQuery query = Storefront.mutation((mutationQuery -> mutationQ
   )
 );
 ```
+
+##### Polling for checkout readiness [⤴](#table-of-contents)
+
+Checkouts may have asynchronous operations that can take time to finish. If you want to complete a checkout or ensure all the fields are populated and up to date, polling is required until the `ready` value is `true`. Fields that are populated asynchronously include duties and taxes.
+
+All asynchronous computations are completed and the checkout is updated accordingly once the `checkout.ready` flag is `true`.
+This flag should be checked (and polled if it is `false`) after every update to the checkout to ensure there are no asynchronous processes running that could affect the fields of the checkout.
+Common examples would be after updating the shipping address or adjusting the line items of a checkout.
+
+```java
+Storefront.QueryRootQuery query = Storefront.query(rootQuery -> rootQuery
+  .node(checkoutId, nodeQuery -> nodeQuery
+    .onCheckout(checkoutQuery -> checkoutQuery
+      .ready() // <- Indicates that all fields are up to date after asynchronous operations completed.
+      .totalDuties(totalDuties -> totalDuties
+        .amount()
+        .currencyCode()
+      )
+      .totalTaxV2(totalTax -> totalTax
+        .amount()
+        .currencyCode()
+      )
+      .totalPriceV2(totalPrice -> totalPrice
+        .amount()
+        .currencyCode()
+      )
+    )
+  )
+);
+```
+
+It is your application's responsibility to continue retrying this query until `checkout.ready == true`. The Buy SDK has [built-in support for retrying requests](#retry-), so we'll create a retry handler and perform the query:
+
+```java
+GraphClient client = ...;
+Storefront.QueryRootQuery query = ...;
+...
+
+client.queryGraph(query).enqueue(
+      new GraphCall.Callback<Storefront.QueryRoot>() {
+        @Override public void onResponse(@NonNull final GraphResponse<Storefront.QueryRoot> response) {
+          Storefront.Checkout checkout = (Storefront.Checkout) response.data().getNode();
+        }
+
+        @Override public void onFailure(@NonNull final GraphError error) {
+        }
+      },
+      null,
+      RetryHandler.exponentialBackoff(800, TimeUnit.MILLISECONDS, 1.2f)
+        .whenResponse(
+          response -> ((Storefront.Checkout) response.data().getNode()).getReady() == false
+        )
+        .maxCount(10)
+        .build()
+    );
+```
+
+The callback `onResponse` will be called only if `checkout.ready == true` or the retry count reaches 10.
 
 ##### Polling for shipping rates [⤴](#table-of-contents)
 
@@ -1212,7 +1272,6 @@ client.mutateGraph(query).enqueue(new GraphCall.Callback<Storefront.Mutation>() 
   }
 });
 ```
-**IMPORTANT**: Before completing the checkout with a credit card, you need to have the `write_checkouts_payments` scope enabled for your app. This can be done by [requesting payment process for native mobile apps](https://docs.google.com/forms/d/e/1FAIpQLSfaiwWJwTsMKKi6Sl-qfiLMwKRKyZ9TxBuutumkk6ThisFTUg/viewform). Alternatively, if this will be a [Sales Channel](https://shopify.dev/tutorials/build-a-sales-channel), you can request through [payment processing for Sales Channels](https://shopify.dev/tutorials/authenticate-a-public-app-with-oauth#request-payment-processing).
 
 ##### Google Pay checkout [⤴](#table-of-contents)
 
@@ -1315,7 +1374,7 @@ Again, just like when [polling for available shipping rates](#polling-for-shippi
 
 If you are located in an area impacted by [PSD2](https://help.shopify.com/en/api/guides/3d-secure), then you need to implement 3D Secure payment processing into your app. To implement 3D Secure, Shopify has added the `next_action` property to the `Payment` resource. This property returns a URL that you can use to redirect the customer to for 3D secure authentication. To complete the redirect your app needs to implement a WebView interface. Your app also needs to poll the checkout until the payment is complete and the `ready` field on the `Payment` resource returns `true`.
 
-For a detailed guide, see [*Authenticating payments with 3D Secure*](https://help.shopify.com/en/api/guides/3d-secure).
+For a detailed guide, see [_Authenticating payments with 3D Secure_](https://help.shopify.com/en/api/guides/3d-secure).
 
 ## Customer Accounts [⤴](#table-of-contents)
 
@@ -1324,7 +1383,6 @@ Using the Buy SDK, you can build custom storefronts that let your customers crea
 ### Creating a customer [⤴](#table-of-contents)
 
 Before a customer can log in, they must first create an account. In your application, you can provide a sign-up form that runs the following `mutation` request. In this example, the `input` for the mutation is some basic customer information that will create an account on your shop.
-
 
 ```java
 Storefront.CustomerCreateInput input = new Storefront.CustomerCreateInput("john.smith@gmail.com", "123456")
@@ -1506,9 +1564,10 @@ The `Storefront.CustomerUpdateInput` object also includes other fields besides t
 
 ```graphql
 mutation {
-  customerUpdate(customer: {
-    phone: "+16471234567"
-  }, customerAccessToken: "...") {
+  customerUpdate(
+    customer: { phone: "+16471234567" }
+    customerAccessToken: "..."
+  ) {
     customer {
       phone
     }
@@ -1527,9 +1586,7 @@ The result is a mutation that updates a customer's phone number to `null`:
 
 ```graphql
 mutation {
-  customerUpdate(customer: {
-    phone: null
-  }, customerAccessToken: "...") {
+  customerUpdate(customer: { phone: null }, customerAccessToken: "...") {
     customer {
       phone
     }

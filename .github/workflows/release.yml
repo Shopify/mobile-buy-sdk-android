@@ -1,46 +1,32 @@
-name: Create SDK release
+name: Draft GitHub Release
 
-on: 
-  push:
-    branches:
-      - master
+on:
+  workflow_dispatch:
 
 jobs:
   build:
-    runs-on: macOS-latest
-    
+    runs-on: ubuntu-latest
+
     steps:
-    
-    - uses: actions/checkout@master
-      with:
-        ref: 'master'
-    
-    - uses: actions/setup-ruby@v1
-      with:
-        ruby-version: '2.6' 
+      - name: Checkout Repository
+        uses: actions/checkout@v2
 
-    - uses: actions/checkout@v1
-    - name: set up JDK 1.8
-      uses: actions/setup-java@v1
-      with:
-        java-version: 1.8    
-
-    - name: Create a draft release
-      uses: actions/github-script@0.9.0
-      with:
-        script: |
-          const today = new Date();
-          const yyyy = today.getFullYear();
-          const mm = String(today.getMonth() + 1).padStart(2, '0');
-          const api_version = yyyy + '-' + mm;
-          github.repos.createRelease({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            name: "X.X.X",
-            body: "Release notes:" +
-              "\n- https://shopify.dev/concepts/about-apis/versioning/release-notes/" + api_version + "#storefront-api-changes",
-            tag_name: 'x.x.x',
-            target_commitish: 'master',
-            draft: true,
-            prerelease: false,
-          })
+      - name: Create Draft Release
+        uses: actions/github-script@0.9.0
+        with:
+          script: |
+            const today = new Date();
+            const yyyy = today.getFullYear();
+            const mm = String(today.getMonth() + 1).padStart(2, '0');
+            const api_version = yyyy + '-' + mm;
+            const notes = `Updates the Mobile Buy SDK for Android with support for the \`${api_version}\` version of the Shopify Storefront API.\n\nFor more details about the changes, please see the [release notes](https://shopify.dev/api/release-notes/${api_version}#graphql-storefront-api-changes).`
+            github.repos.createRelease({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              name: `X.X.X [${api_version}]`,
+              body: notes,
+              tag_name: 'x.x.x',
+              target_commitish: 'main',
+              draft: true,
+              prerelease: false,
+            })

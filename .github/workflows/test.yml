@@ -1,50 +1,38 @@
-name: Run tests
+name: Run Tests
 
-on: 
-  pull_request
+on: pull_request
 
 jobs:
   build:
-
-    runs-on: macOS-latest
+    runs-on: ubuntu-latest
 
     steps:
-    - name: Get API Version
-      id: version
-      run: |
-        API_VERSION="$(date +'%Y-%m')"
-        echo "API_VERSION=$API_VERSION" >> $GITHUB_ENV
+      - name: Get API Version
+        id: version
+        run: |
+          API_VERSION="$(date +'%Y-%m')"
+          echo "API_VERSION=$API_VERSION" >> $GITHUB_ENV
 
-    - uses: actions/checkout@v2
-    - name: Set up Ruby 2.6
-      uses: actions/setup-ruby@v1
-      with:
-        ruby-version: '2.6'
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+        with:
+          submodules: true
 
-    - uses: actions/checkout@v2
-    - name: Set up JDK 1.8
-      uses: actions/setup-java@v1
-      with:
-        java-version: 1.8
-        server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
-        settings-path: ${{ github.workspace }} # location for the settings.xml file
+      - name: Install Ruby
+        uses: ruby/setup-ruby@v1
 
-    - uses: actions/checkout@master
-      with:
-        ref: 'master' # This should change to master after 2020-04
+      - name: Install JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+          server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
+          settings-path: ${{ github.workspace }} # location for the settings.xml file
 
-    - name: Checkout submodule
-      uses: actions/checkout@v2.0.0
-      with:
-        repository: Shopify/graphql_java_gen
-        path: MobileBuy/libs/graphql_java_gen
-        ref: 'master'
+      - name: Install Bundler
+        run: |
+          gem install bundler
+          BUNDLE_GEMFILE="MobileBuy/buy3/Gemfile" bundle install --verbose
 
-    - name: Install bundler
-      run: |
-        gem install bundler
-        BUNDLE_GEMFILE="MobileBuy/buy3/Gemfile" bundle install --verbose
-
-    - name: Run Test
-      working-directory: MobileBuy
-      run: ./gradlew clean build connectedCheck -PdisablePreDex --console=plain
+      - name: Run Test
+        working-directory: MobileBuy
+        run: ./gradlew clean build connectedCheck -PdisablePreDex --console=plain
