@@ -17,32 +17,27 @@
  */
 package com.shopify.buy3.internal.cache
 
+import com.shopify.buy3.internal.cache.DiskLruCache.Editor
+import okhttp3.internal.Util
+import okhttp3.internal.io.FileSystem
+import okhttp3.internal.platform.Platform
+import okio.BufferedSink
+import okio.Okio
+import okio.Sink
+import okio.Source
 import java.io.Closeable
 import java.io.EOFException
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.Flushable
 import java.io.IOException
-import java.util.ArrayList
 import java.util.Arrays
-import java.util.Iterator
-import java.util.LinkedHashMap
-import java.util.NoSuchElementException
 import java.util.concurrent.Executor
 import java.util.concurrent.LinkedBlockingQueue
 import java.util.concurrent.ThreadPoolExecutor
 import java.util.concurrent.TimeUnit
-import java.util.regex.Matcher
 import java.util.regex.Pattern
-import okhttp3.internal.Util
-import okhttp3.internal.io.FileSystem
-import okhttp3.internal.platform.Platform
-import okio.BufferedSink
-import okio.BufferedSource
-import okio.Okio
-import okio.Sink
-import okio.Source
-import okhttp3.internal.platform.Platform.WARN
+
 
 /**
  * A cache that uses a bounded amount of space on a filesystem. Each cache entry has a string key
@@ -88,11 +83,7 @@ import okhttp3.internal.platform.Platform.WARN
  * corresponding entries will be dropped from the cache. If an error occurs while writing a cache
  * value, the edit will fail silently. Callers should handle other problems by catching `IOException` and responding appropriately.
  */
-class DiskLruCache internal constructor(
-    fileSystem: FileSystem, directory: File, appVersion: Int, valueCount: Int, maxSize: Long,
-    executor: Executor
-) : Closeable, Flushable {
-    /*
+class DiskLruCache internal constructor(/*
      * This cache uses a journal file named "journal". A typical journal file
      * looks like this:
      *     libcore.io.DiskLruCache
@@ -131,17 +122,21 @@ class DiskLruCache internal constructor(
      * "journal.tmp" will be used during compaction; that file should be deleted if
      * it exists when the cache is opened.
      */
-    val fileSystem: FileSystem
-    val directory: File
+                                        val fileSystem: FileSystem,
+                                        /** Returns the directory where this cache stores its data.  */
+                                        val directory: File,
+                                        private val appVersion: Int,
+                                        val valueCount: Int,
+                                        private var maxSize: Long,
+                                        /** Used to run 'cleanupRunnable' for journal rebuilds.  */
+                                        private val executor: Executor
+) : Closeable, Flushable {
     private val journalFile: File
     private val journalFileTmp: File
     private val journalFileBackup: File
-    private val appVersion: Int
-    private var maxSize: Long
-    val valueCount: Int
     private var size: Long = 0
     var journalWriter: BufferedSink? = null
-    val lruEntries: LinkedHashMap<String, Entry> = LinkedHashMap(0, 0.75f, true)
+    val lruEntries = LinkedHashMap<String, Entry?>(0, 0.75f, true)
     var redundantOpCount = 0
     var hasJournalErrors = false
 
@@ -149,7 +144,7 @@ class DiskLruCache internal constructor(
     var initialized = false
 
     /** Returns true if this cache has been closed.  */
-    @get:kotlin.jvm.Synchronized
+    @get:Synchronized
     var isClosed = false
     var mostRecentTrimFailed = false
     var mostRecentRebuildFailed = false
@@ -160,11 +155,8 @@ class DiskLruCache internal constructor(
      * entry's sequence number.
      */
     private var nextSequenceNumber: Long = 0
-
-    /** Used to run 'cleanupRunnable' for journal rebuilds.  */
-    private val executor: Executor
-    private val cleanupRunnable: Runnable = object : Runnable() {
-        fun run() {
+    private val cleanupRunnable: Runnable = object : Runnable {
+        override fun run() {
             synchronized(this@DiskLruCache) {
                 if (!initialized or isClosed) {
                     return  // Nothing to do
@@ -188,19 +180,13 @@ class DiskLruCache internal constructor(
     }
 
     init {
-        this.fileSystem = fileSystem
-        this.directory = directory
-        this.appVersion = appVersion
         journalFile = File(directory, JOURNAL_FILE)
         journalFileTmp = File(directory, JOURNAL_FILE_TEMP)
         journalFileBackup = File(directory, JOURNAL_FILE_BACKUP)
-        this.valueCount = valueCount
-        this.maxSize = maxSize
-        this.executor = executor
     }
 
-    @kotlin.jvm.Synchronized
-    @kotlin.Throws(IOException::class)
+    @Synchronized
+    @Throws(IOException::class)
     fun initialize() {
         assert(Thread.holdsLock(this))
         if (initialized) {
@@ -226,10 +212,9 @@ class DiskLruCache internal constructor(
                 return
             } catch (journalIsCorrupt: IOException) {
                 Platform.get().log(
-                    WARN,
-                    ("DiskLruCache " + directory + " is corrupt: "
-                            + journalIsCorrupt.getMessage()).toString() + ", removing",
-                    journalIsCorrupt
+                    Platform.WARN,
+                    "DiskLruCache " + directory + " is corrupt: "
+                            + journalIsCorrupt.message + ", removing", journalIsCorrupt
                 )
             }
 
@@ -245,24 +230,24 @@ class DiskLruCache internal constructor(
         initialized = true
     }
 
-    @kotlin.Throws(IOException::class)
+    @Throws(IOException::class)
     private fun readJournal() {
-        val source: BufferedSource = Okio.buffer(fileSystem.source(journalFile))
+        val source = Okio.buffer(fileSystem.source(journalFile))
         try {
-            val magic: String = source.readUtf8LineStrict()
-            val version: String = source.readUtf8LineStrict()
-            val appVersionString: String = source.readUtf8LineStrict()
-            val valueCountString: String = source.readUtf8LineStrict()
-            val blank: String = source.readUtf8LineStrict()
-            if (!MAGIC.equals(magic)
-                || !VERSION_1.equals(version)
-                || !Integer.toString(appVersion).equals(appVersionString)
-                || !Integer.toString(valueCount).equals(valueCountString)
-                || !"".equals(blank)
+            val magic = source.readUtf8LineStrict()
+            val version = source.readUtf8LineStrict()
+            val appVersionString = source.readUtf8LineStrict()
+            val valueCountString = source.readUtf8LineStrict()
+            val blank = source.readUtf8LineStrict()
+            if ((MAGIC != magic
+                        || VERSION_1 != version
+                        || Integer.toString(appVersion) != appVersionString
+                        || Integer.toString(valueCount) != valueCountString
+                        || "" != blank)
             ) {
                 throw IOException(
-                    "unexpected journal header: [" + magic + ", " + version + ", "
-                            + valueCountString + ", " + blank + "]"
+                    ("unexpected journal header: [" + magic + ", " + version + ", "
+                            + valueCountString + ", " + blank + "]")
                 )
             }
             var lineCount = 0
@@ -274,7 +259,7 @@ class DiskLruCache internal constructor(
                     break
                 }
             }
-            redundantOpCount = lineCount - lruEntries.size()
+            redundantOpCount = lineCount - lruEntries.size
 
             // If we ended on a truncated line, rebuild the journal before appending to it.
             if (!source.exhausted()) {
@@ -287,11 +272,10 @@ class DiskLruCache internal constructor(
         }
     }
 
-    @kotlin.Throws(FileNotFoundException::class)
+    @Throws(FileNotFoundException::class)
     private fun newJournalWriter(): BufferedSink {
-        val fileSink: Sink = fileSystem.appendingSink(journalFile)
+        val fileSink = fileSystem.appendingSink(journalFile)
         val faultHidingSink: Sink = object : FaultHidingSink(fileSink) {
-            @Override
             protected fun onException(e: IOException?) {
                 assert((Thread.holdsLock(this@DiskLruCache)))
                 hasJournalErrors = true
@@ -300,37 +284,39 @@ class DiskLruCache internal constructor(
         return Okio.buffer(faultHidingSink)
     }
 
-    @kotlin.Throws(IOException::class)
+    @Throws(IOException::class)
     private fun readJournalLine(line: String) {
-        val firstSpace: Int = line.indexOf(' ')
+        val firstSpace = line.indexOf(' ')
         if (firstSpace == -1) {
             throw IOException("unexpected journal line: $line")
         }
         val keyBegin = firstSpace + 1
-        val secondSpace: Int = line.indexOf(' ', keyBegin)
+        val secondSpace = line.indexOf(' ', keyBegin)
         val key: String
         if (secondSpace == -1) {
             key = line.substring(keyBegin)
-            if (firstSpace == REMOVE.length() && line.startsWith(REMOVE)) {
+            if (firstSpace == REMOVE.length && line.startsWith(REMOVE)) {
                 lruEntries.remove(key)
                 return
             }
         } else {
             key = line.substring(keyBegin, secondSpace)
         }
-        var entry: Entry? = lruEntries.get(key)
+        var entry = lruEntries[key]
         if (entry == null) {
             entry = Entry(key)
-            lruEntries.put(key, entry)
+            lruEntries[key] = entry
         }
-        if ((secondSpace != -1) && (firstSpace == CLEAN.length()) && line.startsWith(CLEAN)) {
-            val parts: Array<String?> = line.substring(secondSpace + 1).split(" ")
+        if ((secondSpace != -1) && (firstSpace == CLEAN.length) && line.startsWith(CLEAN)) {
+            val parts =
+                line.substring(secondSpace + 1).split(" ".toRegex()).dropLastWhile { it.isEmpty() }
+                    .toTypedArray()
             entry!!.readable = true
             entry.currentEditor = null
             entry.setLengths(parts)
-        } else if ((secondSpace == -1) && (firstSpace == DIRTY.length()) && line.startsWith(DIRTY)) {
+        } else if ((secondSpace == -1) && (firstSpace == DIRTY.length) && line.startsWith(DIRTY)) {
             entry!!.currentEditor = Editor(entry)
-        } else if ((secondSpace == -1) && (firstSpace == READ.length()) && line.startsWith(READ)) {
+        } else if ((secondSpace == -1) && (firstSpace == READ.length) && line.startsWith(READ)) {
             // This work was already done by calling lruEntries.get().
         } else {
             throw IOException("unexpected journal line: $line")
@@ -341,13 +327,13 @@ class DiskLruCache internal constructor(
      * Computes the initial size and collects garbage as a part of opening the cache. Dirty entries
      * are assumed to be inconsistent and will be deleted.
      */
-    @kotlin.Throws(IOException::class)
+    @Throws(IOException::class)
     private fun processJournal() {
         fileSystem.delete(journalFileTmp)
-        val i: Iterator<Entry> = lruEntries.values().iterator()
+        val i = lruEntries.values.iterator()
         while (i.hasNext()) {
             val entry = i.next()
-            if (entry.currentEditor == null) {
+            if (entry!!.currentEditor == null) {
                 for (t in 0 until valueCount) {
                     size += entry.lengths[t]
                 }
@@ -366,29 +352,29 @@ class DiskLruCache internal constructor(
      * Creates a new journal that omits redundant information. This replaces the current journal if it
      * exists.
      */
-    @kotlin.jvm.Synchronized
-    @kotlin.Throws(IOException::class)
+    @Synchronized
+    @Throws(IOException::class)
     fun rebuildJournal() {
         if (journalWriter != null) {
-            journalWriter.close()
+            journalWriter!!.close()
         }
-        val writer: BufferedSink = Okio.buffer(fileSystem.sink(journalFileTmp))
+        val writer = Okio.buffer(fileSystem.sink(journalFileTmp))
         try {
-            writer.writeUtf8(MAGIC).writeByte('\n')
-            writer.writeUtf8(VERSION_1).writeByte('\n')
-            writer.writeDecimalLong(appVersion).writeByte('\n')
-            writer.writeDecimalLong(valueCount).writeByte('\n')
-            writer.writeByte('\n')
-            for (entry: Entry in lruEntries.values()) {
-                if (entry.currentEditor != null) {
-                    writer.writeUtf8(DIRTY).writeByte(' ')
+            writer.writeUtf8(MAGIC).writeByte('\n'.toInt())
+            writer.writeUtf8(VERSION_1).writeByte('\n'.toInt())
+            writer.writeDecimalLong(appVersion.toLong()).writeByte('\n'.toInt())
+            writer.writeDecimalLong(valueCount.toLong()).writeByte('\n'.toInt())
+            writer.writeByte('\n'.toInt())
+            for (entry: Entry? in lruEntries.values) {
+                if (entry!!.currentEditor != null) {
+                    writer.writeUtf8(DIRTY).writeByte(' '.toInt())
                     writer.writeUtf8(entry.key)
-                    writer.writeByte('\n')
+                    writer.writeByte('\n'.toInt())
                 } else {
-                    writer.writeUtf8(CLEAN).writeByte(' ')
+                    writer.writeUtf8(CLEAN).writeByte(' '.toInt())
                     writer.writeUtf8(entry.key)
                     entry.writeLengths(writer)
-                    writer.writeByte('\n')
+                    writer.writeByte('\n'.toInt())
                 }
             }
         } finally {
@@ -408,17 +394,18 @@ class DiskLruCache internal constructor(
      * Returns a snapshot of the entry named `key`, or null if it doesn't exist is not currently
      * readable. If a value is returned, it is moved to the head of the LRU queue.
      */
-    @kotlin.jvm.Synchronized
-    @kotlin.Throws(IOException::class)
+    @Synchronized
+    @Throws(IOException::class)
     operator fun get(key: String): Snapshot? {
         initialize()
         checkNotClosed()
         validateKey(key)
-        val entry: Entry = lruEntries.get(key)
+        val entry = lruEntries[key]
         if (entry == null || !entry.readable) return null
         val snapshot = entry.snapshot() ?: return null
         redundantOpCount++
-        journalWriter.writeUtf8(READ).writeByte(' ').writeUtf8(key).writeByte('\n')
+        journalWriter!!.writeUtf8(READ).writeByte(' '.toInt()).writeUtf8(key)
+            .writeByte('\n'.toInt())
         if (journalRebuildRequired()) {
             executor.execute(cleanupRunnable)
         }
@@ -429,18 +416,18 @@ class DiskLruCache internal constructor(
      * Returns an editor for the entry named `key`, or null if another edit is in progress.
      */
     @Nullable
-    @kotlin.Throws(IOException::class)
+    @Throws(IOException::class)
     fun edit(key: String): Editor? {
         return edit(key, ANY_SEQUENCE_NUMBER)
     }
 
-    @kotlin.jvm.Synchronized
-    @kotlin.Throws(IOException::class)
+    @Synchronized
+    @Throws(IOException::class)
     fun edit(key: String, expectedSequenceNumber: Long): Editor? {
         initialize()
         checkNotClosed()
         validateKey(key)
-        var entry: Entry? = lruEntries.get(key)
+        var entry = lruEntries[key]
         if (expectedSequenceNumber != ANY_SEQUENCE_NUMBER && ((entry == null
                     || entry.sequenceNumber != expectedSequenceNumber))
         ) {
@@ -460,29 +447,25 @@ class DiskLruCache internal constructor(
         }
 
         // Flush the journal before creating files to prevent file leaks.
-        journalWriter.writeUtf8(DIRTY).writeByte(' ').writeUtf8(key).writeByte('\n')
-        journalWriter.flush()
+        journalWriter!!.writeUtf8(DIRTY).writeByte(' '.toInt()).writeUtf8(key)
+            .writeByte('\n'.toInt())
+        journalWriter!!.flush()
         if (hasJournalErrors) {
             return null // Don't edit; the journal can't be written.
         }
         if (entry == null) {
             entry = Entry(key)
-            lruEntries.put(key, entry)
+            lruEntries[key] = entry
         }
         val editor: Editor = Editor(entry)
         entry!!.currentEditor = editor
         return editor
     }
 
-    /** Returns the directory where this cache stores its data.  */
-    fun getDirectory(): File {
-        return directory
-    }
-
     /**
      * Returns the maximum number of bytes that this cache should use to store its data.
      */
-    @kotlin.jvm.Synchronized
+    @Synchronized
     fun getMaxSize(): Long {
         return maxSize
     }
@@ -491,7 +474,7 @@ class DiskLruCache internal constructor(
      * Changes the maximum number of bytes the cache can store and queues a job to trim the existing
      * store, if necessary.
      */
-    @kotlin.jvm.Synchronized
+    @Synchronized
     fun setMaxSize(maxSize: Long) {
         this.maxSize = maxSize
         if (initialized) {
@@ -503,15 +486,15 @@ class DiskLruCache internal constructor(
      * Returns the number of bytes currently being used to store the values in this cache. This may be
      * greater than the max size if a background deletion is pending.
      */
-    @kotlin.jvm.Synchronized
-    @kotlin.Throws(IOException::class)
+    @Synchronized
+    @Throws(IOException::class)
     fun size(): Long {
         initialize()
         return size
     }
 
-    @kotlin.jvm.Synchronized
-    @kotlin.Throws(IOException::class)
+    @Synchronized
+    @Throws(IOException::class)
     fun completeEdit(editor: Editor, success: Boolean) {
         val entry = editor.entry
         if (entry.currentEditor != editor) {
@@ -532,13 +515,13 @@ class DiskLruCache internal constructor(
             }
         }
         for (i in 0 until valueCount) {
-            val dirty: File = entry.dirtyFiles[i]
+            val dirty = entry.dirtyFiles[i]
             if (success) {
                 if (fileSystem.exists(dirty)) {
-                    val clean: File = entry.cleanFiles[i]
+                    val clean = entry.cleanFiles[i]
                     fileSystem.rename(dirty, clean)
                     val oldLength = entry.lengths[i]
-                    val newLength: Long = fileSystem.size(clean)
+                    val newLength = fileSystem.size(clean)
                     entry.lengths[i] = newLength
                     size = size - oldLength + newLength
                 }
@@ -550,20 +533,20 @@ class DiskLruCache internal constructor(
         entry.currentEditor = null
         if (entry.readable or success) {
             entry.readable = true
-            journalWriter.writeUtf8(CLEAN).writeByte(' ')
-            journalWriter.writeUtf8(entry.key)
+            journalWriter!!.writeUtf8(CLEAN).writeByte(' '.toInt())
+            journalWriter!!.writeUtf8(entry.key)
             entry.writeLengths(journalWriter)
-            journalWriter.writeByte('\n')
+            journalWriter!!.writeByte('\n'.toInt())
             if (success) {
                 entry.sequenceNumber = nextSequenceNumber++
             }
         } else {
             lruEntries.remove(entry.key)
-            journalWriter.writeUtf8(REMOVE).writeByte(' ')
-            journalWriter.writeUtf8(entry.key)
-            journalWriter.writeByte('\n')
+            journalWriter!!.writeUtf8(REMOVE).writeByte(' '.toInt())
+            journalWriter!!.writeUtf8(entry.key)
+            journalWriter!!.writeByte('\n'.toInt())
         }
-        journalWriter.flush()
+        journalWriter!!.flush()
         if (size > maxSize || journalRebuildRequired()) {
             executor.execute(cleanupRunnable)
         }
@@ -576,7 +559,7 @@ class DiskLruCache internal constructor(
     fun journalRebuildRequired(): Boolean {
         val redundantOpCompactThreshold = 2000
         return (redundantOpCount >= redundantOpCompactThreshold
-                && redundantOpCount >= lruEntries.size())
+                && redundantOpCount >= lruEntries.size)
     }
 
     /**
@@ -585,21 +568,21 @@ class DiskLruCache internal constructor(
      *
      * @return true if an entry was removed.
      */
-    @kotlin.jvm.Synchronized
-    @kotlin.Throws(IOException::class)
+    @Synchronized
+    @Throws(IOException::class)
     fun remove(key: String): Boolean {
         initialize()
         checkNotClosed()
         validateKey(key)
-        val entry: Entry = lruEntries.get(key) ?: return false
+        val entry = lruEntries.get(key) ?: return false
         val removed = removeEntry(entry)
         if (removed && size <= maxSize) mostRecentTrimFailed = false
         return removed
     }
 
-    @kotlin.Throws(IOException::class)
-    fun removeEntry(entry: Entry): Boolean {
-        if (entry.currentEditor != null) {
+    @Throws(IOException::class)
+    fun removeEntry(entry: Entry?): Boolean {
+        if (entry!!.currentEditor != null) {
             entry.currentEditor!!.detach() // Prevent the edit from completing normally.
         }
         for (i in 0 until valueCount) {
@@ -608,7 +591,9 @@ class DiskLruCache internal constructor(
             entry.lengths[i] = 0
         }
         redundantOpCount++
-        journalWriter.writeUtf8(REMOVE).writeByte(' ').writeUtf8(entry.key).writeByte('\n')
+        journalWriter!!.writeUtf8(REMOVE).writeByte(' '.toInt()).writeUtf8(
+            entry.key
+        ).writeByte('\n'.toInt())
         lruEntries.remove(entry.key)
         if (journalRebuildRequired()) {
             executor.execute(cleanupRunnable)
@@ -616,7 +601,7 @@ class DiskLruCache internal constructor(
         return true
     }
 
-    @kotlin.jvm.Synchronized
+    @Synchronized
     private fun checkNotClosed() {
         if (isClosed) {
             throw IllegalStateException("cache is closed")
@@ -624,41 +609,39 @@ class DiskLruCache internal constructor(
     }
 
     /** Force buffered operations to the filesystem.  */
-    @Override
-    @kotlin.jvm.Synchronized
-    @kotlin.Throws(IOException::class)
-    fun flush() {
+    @Synchronized
+    @Throws(IOException::class)
+    override fun flush() {
         if (!initialized) return
         checkNotClosed()
         trimToSize()
-        journalWriter.flush()
+        journalWriter!!.flush()
     }
 
     /** Closes this cache. Stored values will remain on the filesystem.  */
-    @Override
-    @kotlin.jvm.Synchronized
-    @kotlin.Throws(IOException::class)
-    fun close() {
+    @Synchronized
+    @Throws(IOException::class)
+    override fun close() {
         if (!initialized || isClosed) {
             isClosed = true
             return
         }
         // Copying for safe iteration.
-        for (entry: Entry in lruEntries.values().toArray(arrayOfNulls<Entry>(lruEntries.size()))) {
+        for (entry: Entry in lruEntries.values.toTypedArray()) {
             if (entry.currentEditor != null) {
                 entry.currentEditor!!.abort()
             }
         }
         trimToSize()
-        journalWriter.close()
+        journalWriter!!.close()
         journalWriter = null
         isClosed = true
     }
 
-    @kotlin.Throws(IOException::class)
+    @Throws(IOException::class)
     fun trimToSize() {
         while (size > maxSize) {
-            val toEvict: Entry = lruEntries.values().iterator().next()
+            val toEvict = lruEntries.values.iterator().next()
             removeEntry(toEvict)
         }
         mostRecentTrimFailed = false
@@ -668,7 +651,7 @@ class DiskLruCache internal constructor(
      * Closes the cache and deletes all of its stored values. This will delete all files in the cache
      * directory including files that weren't created by the cache.
      */
-    @kotlin.Throws(IOException::class)
+    @Throws(IOException::class)
     fun delete() {
         close()
         fileSystem.deleteContents(directory)
@@ -678,19 +661,19 @@ class DiskLruCache internal constructor(
      * Deletes all stored values from the cache. In-flight edits will complete normally but their
      * values will not be stored.
      */
-    @kotlin.jvm.Synchronized
-    @kotlin.Throws(IOException::class)
+    @Synchronized
+    @Throws(IOException::class)
     fun evictAll() {
         initialize()
         // Copying for safe iteration.
-        for (entry: Entry in lruEntries.values().toArray(arrayOfNulls<Entry>(lruEntries.size()))) {
+        for (entry: Entry? in lruEntries.values.toTypedArray()) {
             removeEntry(entry)
         }
         mostRecentTrimFailed = false
     }
 
     private fun validateKey(key: String) {
-        val matcher: Matcher = LEGAL_KEY_PATTERN.matcher(key)
+        val matcher = LEGAL_KEY_PATTERN.matcher(key)
         if (!matcher.matches()) {
             throw IllegalArgumentException(
                 "keys must match regex [a-z0-9_-]{1,120}: \"$key\""
@@ -715,21 +698,19 @@ class DiskLruCache internal constructor(
      *
      * The returned iterator supports [Iterator.remove].
      */
-    @kotlin.jvm.Synchronized
-    @kotlin.Throws(IOException::class)
+    @Synchronized
+    @Throws(IOException::class)
     fun snapshots(): Iterator<Snapshot> {
         initialize()
-        return object : Iterator<Snapshot?>() {
+        return object : MutableIterator<Snapshot?> {
             /** Iterate a copy of the entries to defend against concurrent modification errors.  */
-            val delegate: Iterator<Entry> = ArrayList(lruEntries.values()).iterator()
+            val delegate: Iterator<Entry?> = ArrayList(lruEntries.values).iterator()
 
             /** The snapshot to return from [.next]. Null if we haven't computed that yet.  */
             var nextSnapshot: Snapshot? = null
 
             /** The snapshot to remove with [.remove]. Null if removal is illegal.  */
             var removeSnapshot: Snapshot? = null
-
-            @Override
             override fun hasNext(): Boolean {
                 if (nextSnapshot != null) return true
                 synchronized(this@DiskLruCache) {
@@ -737,9 +718,8 @@ class DiskLruCache internal constructor(
                     // If the cache is closed, truncate the iterator.
                     if (isClosed) return false
                     while (delegate.hasNext()) {
-                        val entry: Entry = delegate.next()
-                        val snapshot: Snapshot? =
-                            entry.snapshot()
+                        val entry: Entry? = delegate.next()
+                        val snapshot: Snapshot? = entry!!.snapshot()
                         if (snapshot == null) continue  // Evicted since we copied the entries.
                         nextSnapshot = snapshot
                         return true
@@ -748,16 +728,14 @@ class DiskLruCache internal constructor(
                 return false
             }
 
-            @Override
-            override fun next(): Snapshot? {
+            override fun next(): Snapshot {
                 if (!hasNext()) throw NoSuchElementException()
                 removeSnapshot = nextSnapshot
                 nextSnapshot = null
-                return removeSnapshot
+                return (removeSnapshot)!!
             }
 
-            @Override
-            fun remove() {
+            override fun remove() {
                 if (removeSnapshot == null) throw IllegalStateException("remove() before next()")
                 try {
                     this@DiskLruCache.remove(removeSnapshot!!.key)
@@ -773,20 +751,12 @@ class DiskLruCache internal constructor(
 
     /** A snapshot of the values for an entry.  */
     inner class Snapshot internal constructor(
-        val key: String,
+        private val key: String,
         private val sequenceNumber: Long,
-        sources: Array<Source>,
-        lengths: LongArray
+        private val sources: Array<Source>,
+        private val lengths: LongArray
     ) :
         Closeable {
-        private val sources: Array<Source>
-        private val lengths: LongArray
-
-        init {
-            this.sources = sources
-            this.lengths = lengths
-        }
-
         fun key(): String {
             return key
         }
@@ -796,7 +766,7 @@ class DiskLruCache internal constructor(
          * this snapshot was created or if another edit is in progress.
          */
         @Nullable
-        @kotlin.Throws(IOException::class)
+        @Throws(IOException::class)
         fun edit(): Editor? {
             return this@DiskLruCache.edit(key, sequenceNumber)
         }
@@ -811,7 +781,7 @@ class DiskLruCache internal constructor(
             return lengths[index]
         }
 
-        fun close() {
+        override fun close() {
             for (`in`: Source? in sources) {
                 Util.closeQuietly(`in`)
             }
@@ -882,7 +852,7 @@ class DiskLruCache internal constructor(
                 if (!entry.readable) {
                     written!!.get(index) = true
                 }
-                val dirtyFile: File = entry.dirtyFiles.get(index)
+                val dirtyFile: File? = entry.dirtyFiles.get(index)
                 val sink: Sink
                 try {
                     sink = fileSystem.sink(dirtyFile)
@@ -890,7 +860,6 @@ class DiskLruCache internal constructor(
                     return Okio.blackhole()
                 }
                 return object : FaultHidingSink(sink) {
-                    @Override
                     protected fun onException(e: IOException?) {
                         synchronized(this@DiskLruCache) { detach() }
                     }
@@ -902,7 +871,7 @@ class DiskLruCache internal constructor(
          * Commits this edit so it is visible to readers.  This releases the edit lock so another edit
          * may be started on the same key.
          */
-        @kotlin.Throws(IOException::class)
+        @Throws(IOException::class)
         fun commit() {
             synchronized(this@DiskLruCache) {
                 if (done) {
@@ -919,7 +888,7 @@ class DiskLruCache internal constructor(
          * Aborts this edit. This releases the edit lock so another edit may be started on the same
          * key.
          */
-        @kotlin.Throws(IOException::class)
+        @Throws(IOException::class)
         fun abort() {
             synchronized(this@DiskLruCache) {
                 if (done) {
@@ -944,11 +913,11 @@ class DiskLruCache internal constructor(
         }
     }
 
-    inner class Entry internal constructor(val key: String) {
+    private inner class Entry internal constructor(val key: String) {
         /** Lengths of this entry's files.  */
         val lengths: LongArray
-        val cleanFiles: Array<File>
-        val dirtyFiles: Array<File>
+        val cleanFiles: Array<File?>
+        val dirtyFiles: Array<File?>
 
         /** True if this entry has ever been published.  */
         var readable = false
@@ -961,12 +930,12 @@ class DiskLruCache internal constructor(
 
         init {
             lengths = LongArray(valueCount)
-            cleanFiles = arrayOfNulls<File>(valueCount)
-            dirtyFiles = arrayOfNulls<File>(valueCount)
+            cleanFiles = arrayOfNulls(valueCount)
+            dirtyFiles = arrayOfNulls(valueCount)
 
             // The names are repetitive so re-use the same builder to avoid allocations.
-            val fileBuilder: StringBuilder = StringBuilder(key).append('.')
-            val truncateTo: Int = fileBuilder.length()
+            val fileBuilder = StringBuilder(key).append('.')
+            val truncateTo = fileBuilder.length
             for (i in 0 until valueCount) {
                 fileBuilder.append(i)
                 cleanFiles[i] = File(directory, fileBuilder.toString())
@@ -977,14 +946,14 @@ class DiskLruCache internal constructor(
         }
 
         /** Set lengths using decimal numbers like "10123".  */
-        @kotlin.Throws(IOException::class)
-        fun setLengths(strings: Array<String?>) {
+        @Throws(IOException::class)
+        fun setLengths(strings: Array<String>) {
             if (strings.size != valueCount) {
                 throw invalidLengths(strings)
             }
             try {
                 for (i in strings.indices) {
-                    lengths[i] = Long.parseLong(strings[i])
+                    lengths[i] = strings[i].toLong()
                 }
             } catch (e: NumberFormatException) {
                 throw invalidLengths(strings)
@@ -992,15 +961,15 @@ class DiskLruCache internal constructor(
         }
 
         /** Append space-prefixed lengths to `writer`.  */
-        @kotlin.Throws(IOException::class)
+        @Throws(IOException::class)
         fun writeLengths(writer: BufferedSink?) {
             for (length: Long in lengths) {
-                writer.writeByte(' ').writeDecimalLong(length)
+                writer!!.writeByte(' '.toInt()).writeDecimalLong(length)
             }
         }
 
-        @kotlin.Throws(IOException::class)
-        private fun invalidLengths(strings: Array<String?>): IOException {
+        @Throws(IOException::class)
+        private fun invalidLengths(strings: Array<String>): IOException {
             throw IOException("unexpected journal line: " + Arrays.toString(strings))
         }
 
@@ -1011,9 +980,8 @@ class DiskLruCache internal constructor(
          */
         fun snapshot(): Snapshot? {
             if (!Thread.holdsLock(this@DiskLruCache)) throw AssertionError()
-            val sources: Array<Source?> = arrayOfNulls<Source?>(valueCount)
-            val lengths: LongArray =
-                lengths.clone() // Defensive copy since these can be zeroed out.
+            val sources = arrayOfNulls<Source>(valueCount)
+            val lengths = lengths.clone() // Defensive copy since these can be zeroed out.
             try {
                 for (i in 0 until valueCount) {
                     sources[i] = fileSystem.source(cleanFiles[i])
@@ -1048,7 +1016,7 @@ class DiskLruCache internal constructor(
         val MAGIC = "libcore.io.DiskLruCache"
         val VERSION_1 = "1"
         val ANY_SEQUENCE_NUMBER: Long = -1
-        val LEGAL_KEY_PATTERN: Pattern = Pattern.compile("[a-z0-9_-]{1,120}")
+        val LEGAL_KEY_PATTERN = Pattern.compile("[a-z0-9_-]{1,120}")
         private val CLEAN = "CLEAN"
         private val DIRTY = "DIRTY"
         private val REMOVE = "REMOVE"
@@ -1076,7 +1044,7 @@ class DiskLruCache internal constructor(
             // Use a single background thread to evict entries.
             val executor: Executor = ThreadPoolExecutor(
                 0, 1, 60L, TimeUnit.SECONDS,
-                LinkedBlockingQueue<Runnable>(), Util.threadFactory("OkHttp DiskLruCache", true)
+                LinkedBlockingQueue(), Util.threadFactory("OkHttp DiskLruCache", true)
             )
             return DiskLruCache(fileSystem, directory, appVersion, valueCount, maxSize, executor)
         }
