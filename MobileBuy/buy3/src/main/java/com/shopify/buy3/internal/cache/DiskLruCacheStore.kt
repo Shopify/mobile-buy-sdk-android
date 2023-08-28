@@ -23,7 +23,7 @@
  */
 package com.shopify.buy3.internal.cache
 
-import okhttp3.internal.cache.DiskLruCache
+import com.shopify.buy3.internal.cache.DiskLruCache
 import okhttp3.internal.io.FileSystem
 import okio.Sink
 import okio.Source
