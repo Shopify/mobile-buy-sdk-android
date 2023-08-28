@@ -42,9 +42,9 @@ internal interface ResponseCacheStore {
 }
 
 internal interface ResponseCacheRecord {
-    fun headerSource(): Source
+    fun headerSource(): Source?
 
-    fun bodySource(): Source
+    fun bodySource(): Source?
 
     fun close()
 }

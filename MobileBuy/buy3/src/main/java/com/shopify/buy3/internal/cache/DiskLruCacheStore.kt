@@ -51,11 +51,11 @@ internal class DiskLruCacheStore : ResponseCacheStore {
     override fun cacheRecord(cacheKey: String): ResponseCacheRecord? {
         val snapshot = cache.get(cacheKey) ?: return null
         return object : ResponseCacheRecord {
-            override fun headerSource(): Source {
+            override fun headerSource(): Source? {
                 return snapshot.getSource(ENTRY_HEADERS)
             }
 
-            override fun bodySource(): Source {
+            override fun bodySource(): Source? {
                 return snapshot.getSource(ENTRY_BODY)
             }
 

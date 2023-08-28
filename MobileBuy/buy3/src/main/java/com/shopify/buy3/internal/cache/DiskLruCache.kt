@@ -277,7 +277,7 @@ class DiskLruCache internal constructor(/*
     private fun newJournalWriter(): BufferedSink {
         val fileSink = fileSystem.appendingSink(journalFile)
         val faultHidingSink: Sink = object : FaultHidingSink(fileSink) {
-            protected fun onException(e: IOException?) {
+            protected override fun onException(e: IOException?) {
                 assert((Thread.holdsLock(this@DiskLruCache)))
                 hasJournalErrors = true
             }
@@ -773,7 +773,7 @@ class DiskLruCache internal constructor(/*
         }
 
         /** Returns the unbuffered stream with the value for `index`.  */
-        fun getSource(index: Int): Source {
+        fun getSource(index: Int): Source? {
             return sources[index]
         }
 
@@ -851,7 +851,7 @@ class DiskLruCache internal constructor(/*
                     return Okio.blackhole()
                 }
                 if (!entry.readable) {
-                    written!!.get(index) = true
+                    written?.set(index, true)
                 }
                 val dirtyFile: File? = entry.dirtyFiles.get(index)
                 val sink: Sink
@@ -861,7 +861,7 @@ class DiskLruCache internal constructor(/*
                     return Okio.blackhole()
                 }
                 return object : FaultHidingSink(sink) {
-                    protected fun onException(e: IOException?) {
+                    protected override fun onException(e: IOException?) {
                         synchronized(this@DiskLruCache) { detach() }
                     }
                 }
