@@ -17,6 +17,7 @@
  */
 package com.shopify.buy3.internal.cache
 
+import android.support.annotation.Nullable
 import com.shopify.buy3.internal.cache.DiskLruCache.Editor
 import okhttp3.internal.Util
 import okhttp3.internal.io.FileSystem
@@ -627,8 +628,8 @@ class DiskLruCache internal constructor(/*
             return
         }
         // Copying for safe iteration.
-        for (entry: Entry in lruEntries.values.toTypedArray()) {
-            if (entry.currentEditor != null) {
+        for (entry: Entry? in lruEntries.values.toTypedArray()) {
+            if (entry?.currentEditor != null) {
                 entry.currentEditor!!.abort()
             }
         }
@@ -700,7 +701,7 @@ class DiskLruCache internal constructor(/*
      */
     @Synchronized
     @Throws(IOException::class)
-    fun snapshots(): Iterator<Snapshot> {
+    fun snapshots(): MutableIterator<Snapshot?> {
         initialize()
         return object : MutableIterator<Snapshot?> {
             /** Iterate a copy of the entries to defend against concurrent modification errors.  */
@@ -751,9 +752,9 @@ class DiskLruCache internal constructor(/*
 
     /** A snapshot of the values for an entry.  */
     inner class Snapshot internal constructor(
-        private val key: String,
+        val key: String,
         private val sequenceNumber: Long,
-        private val sources: Array<Source>,
+        private val sources: Array<Source?>,
         private val lengths: LongArray
     ) :
         Closeable {
@@ -913,7 +914,7 @@ class DiskLruCache internal constructor(/*
         }
     }
 
-    private inner class Entry internal constructor(val key: String) {
+    inner class Entry internal constructor(val key: String) {
         /** Lengths of this entry's files.  */
         val lengths: LongArray
         val cleanFiles: Array<File?>
