@@ -5,7 +5,7 @@ require 'graphql_java_gen'
 require 'graphql_schema'
 require 'json'
 require 'optparse'
-require 'net/http'
+require 'faraday'
 require 'fileutils'
 
 target_filename = '../buy3/src/main/java/com/shopify/buy3/Storefront.java'
@@ -15,17 +15,29 @@ OptionParser.new do |opts|
   end
 end.parse!
 
-shared_storefront_api_key = "4a6c829ec3cb12ef9004bf8ed27adf12"
+storefront_domain = "graphql.myshopify.com"
+storefront_access_token = "3a109d5ebb8117f935adc1df233f3dfc"
 storefront_api_version = ARGV[0]
 
-abort("Error: API Version not specified") if storefront_api_version.nil? or storefront_api_version.empty?
+introspection_query = File.read(File.join(__dir__, 'introspection.graphql'))
 
-uri = URI("https://app.shopify.com/services/graphql/introspection/storefront?api_client_api_key=#{shared_storefront_api_key}&api_version=#{storefront_api_version}")
+conn = Faraday.new(
+  url: "https://#{storefront_domain}/api/#{storefront_api_version}/",
+  headers: {
+    'Accept' => 'application/json',
+    'Content-Type' => 'application/graphql',
+    'X-Shopify-Storefront-Access-Token' => storefront_access_token
+  }
+)
 
-response = Net::HTTP.get_response(uri)
-abort("Error fetching details for the api version #{storefront_api_version}") unless response.kind_of? Net::HTTPSuccess
+res = conn.post('graphql') do |req|
+  req.body = introspection_query
+end
 
-schema = GraphQLSchema.new(JSON.parse(response.body))
+abort "failed to introspect schema" unless res.success?
+
+schema = GraphQLSchema.new(JSON.parse(res.body))
+
 custom_scalars = [
   GraphQLJavaGen::Scalar.new(
     type_name: 'Money',

@@ -7,13 +7,21 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
+    base64 (0.1.1)
+    faraday (2.7.11)
+      base64
+      faraday-net_http (>= 2.0, < 3.1)
+      ruby2_keywords (>= 0.0.4)
+    faraday-net_http (3.0.2)
     graphql_schema (0.1.8)
+    ruby2_keywords (0.0.5)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
+  faraday
   graphql_java_gen!
 
 BUNDLED WITH
-   2.2.28
+   2.3.4
