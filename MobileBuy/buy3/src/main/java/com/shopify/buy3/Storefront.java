@@ -25,7 +25,7 @@ import java.io.Serializable;
 import java.util.*;
 
 public class Storefront {
-    public static final String API_VERSION = "2023-07";
+    public static final String API_VERSION = "2023-10";
 
     public static QueryRootQuery query(QueryRootQueryDefinition queryDef) {
         return query(Collections.emptyList(), queryDef);
@@ -1097,17 +1097,44 @@ public class Storefront {
             return this;
         }
 
+        public class MetafieldArguments extends Arguments {
+            MetafieldArguments(StringBuilder _queryBuilder) {
+                super(_queryBuilder, false);
+            }
+
+            /**
+            * The container the metafield belongs to. If omitted, the app-reserved namespace will be used.
+            */
+            public MetafieldArguments namespace(String value) {
+                if (value != null) {
+                    startArgument("namespace");
+                    Query.appendQuotedString(_queryBuilder, value.toString());
+                }
+                return this;
+            }
+        }
+
+        public interface MetafieldArgumentsDefinition {
+            void define(MetafieldArguments args);
+        }
+
         /**
         * Returns a metafield found by namespace and key.
         */
-        public ArticleQuery metafield(String namespace, String key, MetafieldQueryDefinition queryDef) {
+        public ArticleQuery metafield(String key, MetafieldQueryDefinition queryDef) {
+            return metafield(key, args -> {}, queryDef);
+        }
+
+        /**
+        * Returns a metafield found by namespace and key.
+        */
+        public ArticleQuery metafield(String key, MetafieldArgumentsDefinition argsDef, MetafieldQueryDefinition queryDef) {
             startField("metafield");
 
-            _queryBuilder.append("(namespace:");
-            Query.appendQuotedString(_queryBuilder, namespace.toString());
-
-            _queryBuilder.append(",key:");
+            _queryBuilder.append("(key:");
             Query.appendQuotedString(_queryBuilder, key.toString());
+
+            argsDef.define(new MetafieldArguments(_queryBuilder));
 
             _queryBuilder.append(')');
 
@@ -3652,17 +3679,44 @@ public class Storefront {
             return this;
         }
 
+        public class MetafieldArguments extends Arguments {
+            MetafieldArguments(StringBuilder _queryBuilder) {
+                super(_queryBuilder, false);
+            }
+
+            /**
+            * The container the metafield belongs to. If omitted, the app-reserved namespace will be used.
+            */
+            public MetafieldArguments namespace(String value) {
+                if (value != null) {
+                    startArgument("namespace");
+                    Query.appendQuotedString(_queryBuilder, value.toString());
+                }
+                return this;
+            }
+        }
+
+        public interface MetafieldArgumentsDefinition {
+            void define(MetafieldArguments args);
+        }
+
         /**
         * Returns a metafield found by namespace and key.
         */
-        public BlogQuery metafield(String namespace, String key, MetafieldQueryDefinition queryDef) {
+        public BlogQuery metafield(String key, MetafieldQueryDefinition queryDef) {
+            return metafield(key, args -> {}, queryDef);
+        }
+
+        /**
+        * Returns a metafield found by namespace and key.
+        */
+        public BlogQuery metafield(String key, MetafieldArgumentsDefinition argsDef, MetafieldQueryDefinition queryDef) {
             startField("metafield");
 
-            _queryBuilder.append("(namespace:");
-            Query.appendQuotedString(_queryBuilder, namespace.toString());
-
-            _queryBuilder.append(",key:");
+            _queryBuilder.append("(key:");
             Query.appendQuotedString(_queryBuilder, key.toString());
+
+            argsDef.define(new MetafieldArguments(_queryBuilder));
 
             _queryBuilder.append(')');
 
@@ -5028,7 +5082,7 @@ public class Storefront {
         }
 
         /**
-        * Information about the buyer that is interacting with the cart.
+        * Information about the buyer that's interacting with the cart.
         */
         public CartQuery buyerIdentity(CartBuyerIdentityQueryDefinition queryDef) {
             startField("buyerIdentity");
@@ -5192,10 +5246,9 @@ public class Storefront {
         }
 
         /**
-        * The estimated costs that the buyer will pay at checkout.
-        * The estimated costs are subject to change and changes will be reflected at checkout.
-        * The `estimatedCost` field uses the `buyerIdentity` field to determine
-        * [international
+        * The estimated costs that the buyer will pay at checkout. The estimated costs are subject to change
+        * and changes will be reflected at checkout. The `estimatedCost` field uses the `buyerIdentity` field
+        * to determine [international
         * pricing](https://shopify.dev/custom-storefronts/internationalization/international-pricing).
         *
         * @deprecated Use `cost` instead.
@@ -5300,17 +5353,44 @@ public class Storefront {
             return this;
         }
 
+        public class MetafieldArguments extends Arguments {
+            MetafieldArguments(StringBuilder _queryBuilder) {
+                super(_queryBuilder, false);
+            }
+
+            /**
+            * The container the metafield belongs to. If omitted, the app-reserved namespace will be used.
+            */
+            public MetafieldArguments namespace(String value) {
+                if (value != null) {
+                    startArgument("namespace");
+                    Query.appendQuotedString(_queryBuilder, value.toString());
+                }
+                return this;
+            }
+        }
+
+        public interface MetafieldArgumentsDefinition {
+            void define(MetafieldArguments args);
+        }
+
         /**
         * Returns a metafield found by namespace and key.
         */
-        public CartQuery metafield(String namespace, String key, MetafieldQueryDefinition queryDef) {
+        public CartQuery metafield(String key, MetafieldQueryDefinition queryDef) {
+            return metafield(key, args -> {}, queryDef);
+        }
+
+        /**
+        * Returns a metafield found by namespace and key.
+        */
+        public CartQuery metafield(String key, MetafieldArgumentsDefinition argsDef, MetafieldQueryDefinition queryDef) {
             startField("metafield");
 
-            _queryBuilder.append("(namespace:");
-            Query.appendQuotedString(_queryBuilder, namespace.toString());
-
-            _queryBuilder.append(",key:");
+            _queryBuilder.append("(key:");
             Query.appendQuotedString(_queryBuilder, key.toString());
+
+            argsDef.define(new MetafieldArguments(_queryBuilder));
 
             _queryBuilder.append(')');
 
@@ -5349,7 +5429,7 @@ public class Storefront {
         }
 
         /**
-        * A note that is associated with the cart. For example, the note can be a personalized message to the
+        * A note that's associated with the cart. For example, the note can be a personalized message to the
         * buyer.
         */
         public CartQuery note() {
@@ -5582,7 +5662,7 @@ public class Storefront {
         }
 
         /**
-        * Information about the buyer that is interacting with the cart.
+        * Information about the buyer that's interacting with the cart.
         */
 
         public CartBuyerIdentity getBuyerIdentity() {
@@ -5677,10 +5757,9 @@ public class Storefront {
         }
 
         /**
-        * The estimated costs that the buyer will pay at checkout.
-        * The estimated costs are subject to change and changes will be reflected at checkout.
-        * The `estimatedCost` field uses the `buyerIdentity` field to determine
-        * [international
+        * The estimated costs that the buyer will pay at checkout. The estimated costs are subject to change
+        * and changes will be reflected at checkout. The `estimatedCost` field uses the `buyerIdentity` field
+        * to determine [international
         * pricing](https://shopify.dev/custom-storefronts/internationalization/international-pricing).
         *
         * @deprecated Use `cost` instead.
@@ -5743,7 +5822,7 @@ public class Storefront {
         }
 
         /**
-        * A note that is associated with the cart. For example, the note can be a personalized message to the
+        * A note that's associated with the cart. For example, the note can be a personalized message to the
         * buyer.
         */
 
@@ -6109,7 +6188,7 @@ public class Storefront {
         }
 
         /**
-        * The email address of the buyer that is interacting with the cart.
+        * The email address of the buyer that's interacting with the cart.
         */
         public CartBuyerIdentityQuery email() {
             startField("email");
@@ -6118,7 +6197,7 @@ public class Storefront {
         }
 
         /**
-        * The phone number of the buyer that is interacting with the cart.
+        * The phone number of the buyer that's interacting with the cart.
         */
         public CartBuyerIdentityQuery phone() {
             startField("phone");
@@ -6272,7 +6351,7 @@ public class Storefront {
         }
 
         /**
-        * The email address of the buyer that is interacting with the cart.
+        * The email address of the buyer that's interacting with the cart.
         */
 
         public String getEmail() {
@@ -6285,7 +6364,7 @@ public class Storefront {
         }
 
         /**
-        * The phone number of the buyer that is interacting with the cart.
+        * The phone number of the buyer that's interacting with the cart.
         */
 
         public String getPhone() {
@@ -9444,6 +9523,11 @@ public class Storefront {
         */
         PAYMENT_METHOD_NOT_SUPPORTED,
 
+        /**
+        * Validation failed.
+        */
+        VALIDATION_CUSTOM,
+
         UNKNOWN_VALUE;
 
         public static CartErrorCode fromGraphQl(String value) {
@@ -9494,6 +9578,10 @@ public class Storefront {
 
                 case "PAYMENT_METHOD_NOT_SUPPORTED": {
                     return PAYMENT_METHOD_NOT_SUPPORTED;
+                }
+
+                case "VALIDATION_CUSTOM": {
+                    return VALIDATION_CUSTOM;
                 }
 
                 default: {
@@ -9547,6 +9635,10 @@ public class Storefront {
                     return "PAYMENT_METHOD_NOT_SUPPORTED";
                 }
 
+                case VALIDATION_CUSTOM: {
+                    return "VALIDATION_CUSTOM";
+                }
+
                 default: {
                     return "";
                 }
@@ -9559,11 +9651,9 @@ public class Storefront {
     }
 
     /**
-    * The estimated costs that the buyer will pay at checkout.
-    * The estimated cost uses
-    * [`CartBuyerIdentity`](https://shopify.dev/api/storefront/reference/cart/cartbuyeridentity)
-    * to determine
-    * [international
+    * The estimated costs that the buyer will pay at checkout. The estimated cost uses
+    * [`CartBuyerIdentity`](https://shopify.dev/api/storefront/reference/cart/cartbuyeridentity) to
+    * determine [international
     * pricing](https://shopify.dev/custom-storefronts/internationalization/international-pricing).
     */
     public static class CartEstimatedCostQuery extends Query<CartEstimatedCostQuery> {
@@ -9640,11 +9730,9 @@ public class Storefront {
     }
 
     /**
-    * The estimated costs that the buyer will pay at checkout.
-    * The estimated cost uses
-    * [`CartBuyerIdentity`](https://shopify.dev/api/storefront/reference/cart/cartbuyeridentity)
-    * to determine
-    * [international
+    * The estimated costs that the buyer will pay at checkout. The estimated cost uses
+    * [`CartBuyerIdentity`](https://shopify.dev/api/storefront/reference/cart/cartbuyeridentity) to
+    * determine [international
     * pricing](https://shopify.dev/custom-storefronts/internationalization/international-pricing).
     */
     public static class CartEstimatedCost extends AbstractResponse<CartEstimatedCost> {
@@ -13088,7 +13176,7 @@ public class Storefront {
         }
 
         /**
-        * A list of extra information that is added to the checkout.
+        * A list of extra information that's added to the checkout.
         */
         public CheckoutQuery customAttributes(AttributeQueryDefinition queryDef) {
             startField("customAttributes");
@@ -13324,7 +13412,7 @@ public class Storefront {
         }
 
         /**
-        * The Order Status Page for this Checkout, null when checkout is not completed.
+        * The Order Status Page for this Checkout, null when checkout isn't completed.
         */
         public CheckoutQuery orderStatusUrl() {
             startField("orderStatusUrl");
@@ -13411,7 +13499,7 @@ public class Storefront {
         }
 
         /**
-        * Once a shipping rate is selected by the customer it is transitioned to a `shipping_line` object.
+        * Once a shipping rate is selected by the customer it's transitioned to a `shipping_line` object.
         */
         public CheckoutQuery shippingLine(ShippingRateQueryDefinition queryDef) {
             startField("shippingLine");
@@ -13931,7 +14019,7 @@ public class Storefront {
         }
 
         /**
-        * A list of extra information that is added to the checkout.
+        * A list of extra information that's added to the checkout.
         */
 
         public List<Attribute> getCustomAttributes() {
@@ -14031,7 +14119,7 @@ public class Storefront {
         }
 
         /**
-        * The Order Status Page for this Checkout, null when checkout is not completed.
+        * The Order Status Page for this Checkout, null when checkout isn't completed.
         */
 
         public String getOrderStatusUrl() {
@@ -14129,7 +14217,7 @@ public class Storefront {
         }
 
         /**
-        * Once a shipping rate is selected by the customer it is transitioned to a `shipping_line` object.
+        * Once a shipping rate is selected by the customer it's transitioned to a `shipping_line` object.
         */
 
         public ShippingRate getShippingLine() {
@@ -19624,8 +19712,8 @@ public class Storefront {
     }
 
     /**
-    * A collection represents a grouping of products that a shop owner can create to organize them or make
-    * their shops easier to browse.
+    * A collection represents a grouping of products that a shop owner can create to
+    * organize them or make their shops easier to browse.
     */
     public static class CollectionQuery extends Query<CollectionQuery> {
         CollectionQuery(StringBuilder _queryBuilder) {
@@ -19707,17 +19795,44 @@ public class Storefront {
             return this;
         }
 
+        public class MetafieldArguments extends Arguments {
+            MetafieldArguments(StringBuilder _queryBuilder) {
+                super(_queryBuilder, false);
+            }
+
+            /**
+            * The container the metafield belongs to. If omitted, the app-reserved namespace will be used.
+            */
+            public MetafieldArguments namespace(String value) {
+                if (value != null) {
+                    startArgument("namespace");
+                    Query.appendQuotedString(_queryBuilder, value.toString());
+                }
+                return this;
+            }
+        }
+
+        public interface MetafieldArgumentsDefinition {
+            void define(MetafieldArguments args);
+        }
+
         /**
         * Returns a metafield found by namespace and key.
         */
-        public CollectionQuery metafield(String namespace, String key, MetafieldQueryDefinition queryDef) {
+        public CollectionQuery metafield(String key, MetafieldQueryDefinition queryDef) {
+            return metafield(key, args -> {}, queryDef);
+        }
+
+        /**
+        * Returns a metafield found by namespace and key.
+        */
+        public CollectionQuery metafield(String key, MetafieldArgumentsDefinition argsDef, MetafieldQueryDefinition queryDef) {
             startField("metafield");
 
-            _queryBuilder.append("(namespace:");
-            Query.appendQuotedString(_queryBuilder, namespace.toString());
-
-            _queryBuilder.append(",key:");
+            _queryBuilder.append("(key:");
             Query.appendQuotedString(_queryBuilder, key.toString());
+
+            argsDef.define(new MetafieldArguments(_queryBuilder));
 
             _queryBuilder.append(')');
 
@@ -19928,8 +20043,8 @@ public class Storefront {
     }
 
     /**
-    * A collection represents a grouping of products that a shop owner can create to organize them or make
-    * their shops easier to browse.
+    * A collection represents a grouping of products that a shop owner can create to
+    * organize them or make their shops easier to browse.
     */
     public static class Collection extends AbstractResponse<Collection> implements HasMetafields, MenuItemResource, MetafieldParentResource, MetafieldReference, Node, OnlineStorePublishable, Trackable {
         public Collection() {
@@ -26122,8 +26237,8 @@ public class Storefront {
     }
 
     /**
-    * The three-letter currency codes that represent the world currencies used in stores. These include
-    * standard ISO 4217 codes, legacy codes,
+    * The three-letter currency codes that represent the world currencies used in
+    * stores. These include standard ISO 4217 codes, legacy codes,
     * and non-standard codes.
     */
     public enum CurrencyCode {
@@ -26882,7 +26997,7 @@ public class Storefront {
         VEF,
 
         /**
-        * Venezuelan Bolivares (VES).
+        * Venezuelan Bolivares Soberanos (VES).
         */
         VES,
 
@@ -28418,17 +28533,44 @@ public class Storefront {
             return this;
         }
 
+        public class MetafieldArguments extends Arguments {
+            MetafieldArguments(StringBuilder _queryBuilder) {
+                super(_queryBuilder, false);
+            }
+
+            /**
+            * The container the metafield belongs to. If omitted, the app-reserved namespace will be used.
+            */
+            public MetafieldArguments namespace(String value) {
+                if (value != null) {
+                    startArgument("namespace");
+                    Query.appendQuotedString(_queryBuilder, value.toString());
+                }
+                return this;
+            }
+        }
+
+        public interface MetafieldArgumentsDefinition {
+            void define(MetafieldArguments args);
+        }
+
         /**
         * Returns a metafield found by namespace and key.
         */
-        public CustomerQuery metafield(String namespace, String key, MetafieldQueryDefinition queryDef) {
+        public CustomerQuery metafield(String key, MetafieldQueryDefinition queryDef) {
+            return metafield(key, args -> {}, queryDef);
+        }
+
+        /**
+        * Returns a metafield found by namespace and key.
+        */
+        public CustomerQuery metafield(String key, MetafieldArgumentsDefinition argsDef, MetafieldQueryDefinition queryDef) {
             startField("metafield");
 
-            _queryBuilder.append("(namespace:");
-            Query.appendQuotedString(_queryBuilder, namespace.toString());
-
-            _queryBuilder.append(",key:");
+            _queryBuilder.append("(key:");
             Query.appendQuotedString(_queryBuilder, key.toString());
+
+            argsDef.define(new MetafieldArguments(_queryBuilder));
 
             _queryBuilder.append(')');
 
@@ -34951,9 +35093,9 @@ public class Storefront {
 
         /**
         * An input object that can be used to filter by this value on the parent field.
-        * The value is provided as a helper for building dynamic filtering UI. For example, if you have a list
-        * of selected `FilterValue` objects, you can combine their respective `input` values to use in a
-        * subsequent query.
+        * The value is provided as a helper for building dynamic filtering UI. For
+        * example, if you have a list of selected `FilterValue` objects, you can combine
+        * their respective `input` values to use in a subsequent query.
         */
         public FilterValueQuery input() {
             startField("input");
@@ -35050,9 +35192,9 @@ public class Storefront {
 
         /**
         * An input object that can be used to filter by this value on the parent field.
-        * The value is provided as a helper for building dynamic filtering UI. For example, if you have a list
-        * of selected `FilterValue` objects, you can combine their respective `input` values to use in a
-        * subsequent query.
+        * The value is provided as a helper for building dynamic filtering UI. For
+        * example, if you have a list of selected `FilterValue` objects, you can combine
+        * their respective `input` values to use in a subsequent query.
         */
 
         public String getInput() {
@@ -36170,17 +36312,44 @@ public class Storefront {
             startField("__typename");
         }
 
+        public class MetafieldArguments extends Arguments {
+            MetafieldArguments(StringBuilder _queryBuilder) {
+                super(_queryBuilder, false);
+            }
+
+            /**
+            * The container the metafield belongs to. If omitted, the app-reserved namespace will be used.
+            */
+            public MetafieldArguments namespace(String value) {
+                if (value != null) {
+                    startArgument("namespace");
+                    Query.appendQuotedString(_queryBuilder, value.toString());
+                }
+                return this;
+            }
+        }
+
+        public interface MetafieldArgumentsDefinition {
+            void define(MetafieldArguments args);
+        }
+
         /**
         * Returns a metafield found by namespace and key.
         */
-        public HasMetafieldsQuery metafield(String namespace, String key, MetafieldQueryDefinition queryDef) {
+        public HasMetafieldsQuery metafield(String key, MetafieldQueryDefinition queryDef) {
+            return metafield(key, args -> {}, queryDef);
+        }
+
+        /**
+        * Returns a metafield found by namespace and key.
+        */
+        public HasMetafieldsQuery metafield(String key, MetafieldArgumentsDefinition argsDef, MetafieldQueryDefinition queryDef) {
             startField("metafield");
 
-            _queryBuilder.append("(namespace:");
-            Query.appendQuotedString(_queryBuilder, namespace.toString());
-
-            _queryBuilder.append(",key:");
+            _queryBuilder.append("(key:");
             Query.appendQuotedString(_queryBuilder, key.toString());
+
+            argsDef.define(new MetafieldArguments(_queryBuilder));
 
             _queryBuilder.append(')');
 
@@ -36460,23 +36629,12 @@ public class Storefront {
     }
 
     public static class HasMetafieldsIdentifier implements Serializable {
-        private String namespace;
-
         private String key;
 
-        public HasMetafieldsIdentifier(String namespace, String key) {
-            this.namespace = namespace;
+        private Input<String> namespace = Input.undefined();
 
+        public HasMetafieldsIdentifier(String key) {
             this.key = key;
-        }
-
-        public String getNamespace() {
-            return namespace;
-        }
-
-        public HasMetafieldsIdentifier setNamespace(String namespace) {
-            this.namespace = namespace;
-            return this;
         }
 
         public String getKey() {
@@ -36488,19 +36646,46 @@ public class Storefront {
             return this;
         }
 
+        public String getNamespace() {
+            return namespace.getValue();
+        }
+
+        public Input<String> getNamespaceInput() {
+            return namespace;
+        }
+
+        public HasMetafieldsIdentifier setNamespace(String namespace) {
+            this.namespace = Input.optional(namespace);
+            return this;
+        }
+
+        public HasMetafieldsIdentifier setNamespaceInput(Input<String> namespace) {
+            if (namespace == null) {
+                throw new IllegalArgumentException("Input can not be null");
+            }
+            this.namespace = namespace;
+            return this;
+        }
+
         public void appendTo(StringBuilder _queryBuilder) {
             String separator = "";
             _queryBuilder.append('{');
 
             _queryBuilder.append(separator);
             separator = ",";
-            _queryBuilder.append("namespace:");
-            Query.appendQuotedString(_queryBuilder, namespace.toString());
-
-            _queryBuilder.append(separator);
-            separator = ",";
             _queryBuilder.append("key:");
             Query.appendQuotedString(_queryBuilder, key.toString());
+
+            if (this.namespace.isDefined()) {
+                _queryBuilder.append(separator);
+                separator = ",";
+                _queryBuilder.append("namespace:");
+                if (namespace.getValue() != null) {
+                    Query.appendQuotedString(_queryBuilder, namespace.getValue().toString());
+                } else {
+                    _queryBuilder.append("null");
+                }
+            }
 
             _queryBuilder.append('}');
         }
@@ -36528,7 +36713,7 @@ public class Storefront {
         }
 
         /**
-        * The original height of the image in pixels. Returns `null` if the image is not hosted by Shopify.
+        * The original height of the image in pixels. Returns `null` if the image isn't hosted by Shopify.
         */
         public ImageQuery height() {
             startField("height");
@@ -36641,7 +36826,7 @@ public class Storefront {
         * The location of the transformed image as a URL.
         * All transformation arguments are considered "best-effort". If they can be applied to an image, they
         * will be.
-        * Otherwise any transformations which an image type does not support will be ignored.
+        * Otherwise any transformations which an image type doesn't support will be ignored.
         *
         * @deprecated Use `url(transform:)` instead
         */
@@ -36653,7 +36838,7 @@ public class Storefront {
         * The location of the transformed image as a URL.
         * All transformation arguments are considered "best-effort". If they can be applied to an image, they
         * will be.
-        * Otherwise any transformations which an image type does not support will be ignored.
+        * Otherwise any transformations which an image type doesn't support will be ignored.
         *
         * @deprecated Use `url(transform:)` instead
         */
@@ -36722,7 +36907,7 @@ public class Storefront {
         }
 
         /**
-        * The original width of the image in pixels. Returns `null` if the image is not hosted by Shopify.
+        * The original width of the image in pixels. Returns `null` if the image isn't hosted by Shopify.
         */
         public ImageQuery width() {
             startField("width");
@@ -36840,7 +37025,7 @@ public class Storefront {
         }
 
         /**
-        * The original height of the image in pixels. Returns `null` if the image is not hosted by Shopify.
+        * The original height of the image in pixels. Returns `null` if the image isn't hosted by Shopify.
         */
 
         public Integer getHeight() {
@@ -36901,7 +37086,7 @@ public class Storefront {
         * The location of the transformed image as a URL.
         * All transformation arguments are considered "best-effort". If they can be applied to an image, they
         * will be.
-        * Otherwise any transformations which an image type does not support will be ignored.
+        * Otherwise any transformations which an image type doesn't support will be ignored.
         *
         * @deprecated Use `url(transform:)` instead
         */
@@ -36935,7 +37120,7 @@ public class Storefront {
         }
 
         /**
-        * The original width of the image in pixels. Returns `null` if the image is not hosted by Shopify.
+        * The original width of the image in pixels. Returns `null` if the image isn't hosted by Shopify.
         */
 
         public Integer getWidth() {
@@ -37703,6 +37888,11 @@ public class Storefront {
         CE,
 
         /**
+        * Central Kurdish.
+        */
+        CKB,
+
+        /**
         * Czech.
         */
         CS,
@@ -37781,6 +37971,11 @@ public class Storefront {
         * Finnish.
         */
         FI,
+
+        /**
+        * Filipino.
+        */
+        FIL,
 
         /**
         * Faroese.
@@ -37948,6 +38143,11 @@ public class Storefront {
         KY,
 
         /**
+        * Latin.
+        */
+        LA,
+
+        /**
         * Luxembourgish.
         */
         LB,
@@ -38006,6 +38206,11 @@ public class Storefront {
         * Mongolian.
         */
         MN,
+
+        /**
+        * Moldavian.
+        */
+        MO,
 
         /**
         * Marathi.
@@ -38133,6 +38338,16 @@ public class Storefront {
         RW,
 
         /**
+        * Sanskrit.
+        */
+        SA,
+
+        /**
+        * Sardinian.
+        */
+        SC,
+
+        /**
         * Sindhi.
         */
         SD,
@@ -38146,6 +38361,11 @@ public class Storefront {
         * Sango.
         */
         SG,
+
+        /**
+        * Serbo-Croatian.
+        */
+        SH,
 
         /**
         * Sinhala.
@@ -38380,6 +38600,10 @@ public class Storefront {
                     return CE;
                 }
 
+                case "CKB": {
+                    return CKB;
+                }
+
                 case "CS": {
                     return CS;
                 }
@@ -38442,6 +38666,10 @@ public class Storefront {
 
                 case "FI": {
                     return FI;
+                }
+
+                case "FIL": {
+                    return FIL;
                 }
 
                 case "FO": {
@@ -38576,6 +38804,10 @@ public class Storefront {
                     return KY;
                 }
 
+                case "LA": {
+                    return LA;
+                }
+
                 case "LB": {
                     return LB;
                 }
@@ -38622,6 +38854,10 @@ public class Storefront {
 
                 case "MN": {
                     return MN;
+                }
+
+                case "MO": {
+                    return MO;
                 }
 
                 case "MR": {
@@ -38724,6 +38960,14 @@ public class Storefront {
                     return RW;
                 }
 
+                case "SA": {
+                    return SA;
+                }
+
+                case "SC": {
+                    return SC;
+                }
+
                 case "SD": {
                     return SD;
                 }
@@ -38734,6 +38978,10 @@ public class Storefront {
 
                 case "SG": {
                     return SG;
+                }
+
+                case "SH": {
+                    return SH;
                 }
 
                 case "SI": {
@@ -38935,6 +39183,10 @@ public class Storefront {
                     return "CE";
                 }
 
+                case CKB: {
+                    return "CKB";
+                }
+
                 case CS: {
                     return "CS";
                 }
@@ -38997,6 +39249,10 @@ public class Storefront {
 
                 case FI: {
                     return "FI";
+                }
+
+                case FIL: {
+                    return "FIL";
                 }
 
                 case FO: {
@@ -39131,6 +39387,10 @@ public class Storefront {
                     return "KY";
                 }
 
+                case LA: {
+                    return "LA";
+                }
+
                 case LB: {
                     return "LB";
                 }
@@ -39177,6 +39437,10 @@ public class Storefront {
 
                 case MN: {
                     return "MN";
+                }
+
+                case MO: {
+                    return "MO";
                 }
 
                 case MR: {
@@ -39279,6 +39543,14 @@ public class Storefront {
                     return "RW";
                 }
 
+                case SA: {
+                    return "SA";
+                }
+
+                case SC: {
+                    return "SC";
+                }
+
                 case SD: {
                     return "SD";
                 }
@@ -39289,6 +39561,10 @@ public class Storefront {
 
                 case SG: {
                     return "SG";
+                }
+
+                case SH: {
+                    return "SH";
                 }
 
                 case SI: {
@@ -39688,17 +39964,44 @@ public class Storefront {
             return this;
         }
 
+        public class MetafieldArguments extends Arguments {
+            MetafieldArguments(StringBuilder _queryBuilder) {
+                super(_queryBuilder, false);
+            }
+
+            /**
+            * The container the metafield belongs to. If omitted, the app-reserved namespace will be used.
+            */
+            public MetafieldArguments namespace(String value) {
+                if (value != null) {
+                    startArgument("namespace");
+                    Query.appendQuotedString(_queryBuilder, value.toString());
+                }
+                return this;
+            }
+        }
+
+        public interface MetafieldArgumentsDefinition {
+            void define(MetafieldArguments args);
+        }
+
         /**
         * Returns a metafield found by namespace and key.
         */
-        public LocationQuery metafield(String namespace, String key, MetafieldQueryDefinition queryDef) {
+        public LocationQuery metafield(String key, MetafieldQueryDefinition queryDef) {
+            return metafield(key, args -> {}, queryDef);
+        }
+
+        /**
+        * Returns a metafield found by namespace and key.
+        */
+        public LocationQuery metafield(String key, MetafieldArgumentsDefinition argsDef, MetafieldQueryDefinition queryDef) {
             startField("metafield");
 
-            _queryBuilder.append("(namespace:");
-            Query.appendQuotedString(_queryBuilder, namespace.toString());
-
-            _queryBuilder.append(",key:");
+            _queryBuilder.append("(key:");
             Query.appendQuotedString(_queryBuilder, key.toString());
+
+            argsDef.define(new MetafieldArguments(_queryBuilder));
 
             _queryBuilder.append(')');
 
@@ -42350,17 +42653,44 @@ public class Storefront {
             return this;
         }
 
+        public class MetafieldArguments extends Arguments {
+            MetafieldArguments(StringBuilder _queryBuilder) {
+                super(_queryBuilder, false);
+            }
+
+            /**
+            * The container the metafield belongs to. If omitted, the app-reserved namespace will be used.
+            */
+            public MetafieldArguments namespace(String value) {
+                if (value != null) {
+                    startArgument("namespace");
+                    Query.appendQuotedString(_queryBuilder, value.toString());
+                }
+                return this;
+            }
+        }
+
+        public interface MetafieldArgumentsDefinition {
+            void define(MetafieldArguments args);
+        }
+
         /**
         * Returns a metafield found by namespace and key.
         */
-        public MarketQuery metafield(String namespace, String key, MetafieldQueryDefinition queryDef) {
+        public MarketQuery metafield(String key, MetafieldQueryDefinition queryDef) {
+            return metafield(key, args -> {}, queryDef);
+        }
+
+        /**
+        * Returns a metafield found by namespace and key.
+        */
+        public MarketQuery metafield(String key, MetafieldArgumentsDefinition argsDef, MetafieldQueryDefinition queryDef) {
             startField("metafield");
 
-            _queryBuilder.append("(namespace:");
-            Query.appendQuotedString(_queryBuilder, namespace.toString());
-
-            _queryBuilder.append(",key:");
+            _queryBuilder.append("(key:");
             Query.appendQuotedString(_queryBuilder, key.toString());
+
+            argsDef.define(new MetafieldArguments(_queryBuilder));
 
             _queryBuilder.append(')');
 
@@ -46259,6 +46589,30 @@ public class Storefront {
         }
 
         /**
+        * The URL used for viewing the metaobject on the shop's Online Store. Returns `null` if the metaobject
+        * definition doesn't have the `online_store` capability.
+        */
+        public MetaobjectQuery onlineStoreUrl() {
+            startField("onlineStoreUrl");
+
+            return this;
+        }
+
+        /**
+        * The metaobject's SEO information. Returns `null` if the metaobject definition
+        * doesn't have the `renderable` capability.
+        */
+        public MetaobjectQuery seo(MetaobjectSEOQueryDefinition queryDef) {
+            startField("seo");
+
+            _queryBuilder.append('{');
+            queryDef.define(new MetaobjectSEOQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
         * The type of the metaobject. Defines the namespace of its associated metafields.
         */
         public MetaobjectQuery type() {
@@ -46280,7 +46634,7 @@ public class Storefront {
     /**
     * An instance of a user-defined model based on a MetaobjectDefinition.
     */
-    public static class Metaobject extends AbstractResponse<Metaobject> implements MetafieldReference, Node {
+    public static class Metaobject extends AbstractResponse<Metaobject> implements MetafieldReference, Node, OnlineStorePublishable {
         public Metaobject() {
         }
 
@@ -46319,6 +46673,28 @@ public class Storefront {
 
                     case "id": {
                         responseData.put(key, new ID(jsonAsString(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "onlineStoreUrl": {
+                        String optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = jsonAsString(field.getValue(), key);
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "seo": {
+                        MetaobjectSEO optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new MetaobjectSEO(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
 
                         break;
                     }
@@ -46404,6 +46780,34 @@ public class Storefront {
         }
 
         /**
+        * The URL used for viewing the metaobject on the shop's Online Store. Returns `null` if the metaobject
+        * definition doesn't have the `online_store` capability.
+        */
+
+        public String getOnlineStoreUrl() {
+            return (String) get("onlineStoreUrl");
+        }
+
+        public Metaobject setOnlineStoreUrl(String arg) {
+            optimisticData.put(getKey("onlineStoreUrl"), arg);
+            return this;
+        }
+
+        /**
+        * The metaobject's SEO information. Returns `null` if the metaobject definition
+        * doesn't have the `renderable` capability.
+        */
+
+        public MetaobjectSEO getSeo() {
+            return (MetaobjectSEO) get("seo");
+        }
+
+        public Metaobject setSeo(MetaobjectSEO arg) {
+            optimisticData.put(getKey("seo"), arg);
+            return this;
+        }
+
+        /**
         * The type of the metaobject. Defines the namespace of its associated metafields.
         */
 
@@ -46438,6 +46842,10 @@ public class Storefront {
                 case "handle": return false;
 
                 case "id": return false;
+
+                case "onlineStoreUrl": return false;
+
+                case "seo": return true;
 
                 case "type": return false;
 
@@ -47049,6 +47457,131 @@ public class Storefront {
             Query.appendQuotedString(_queryBuilder, type.toString());
 
             _queryBuilder.append('}');
+        }
+    }
+
+    public interface MetaobjectSEOQueryDefinition {
+        void define(MetaobjectSEOQuery _queryBuilder);
+    }
+
+    /**
+    * SEO information for a metaobject.
+    */
+    public static class MetaobjectSEOQuery extends Query<MetaobjectSEOQuery> {
+        MetaobjectSEOQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * The meta description.
+        */
+        public MetaobjectSEOQuery description(MetaobjectFieldQueryDefinition queryDef) {
+            startField("description");
+
+            _queryBuilder.append('{');
+            queryDef.define(new MetaobjectFieldQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * The SEO title.
+        */
+        public MetaobjectSEOQuery title(MetaobjectFieldQueryDefinition queryDef) {
+            startField("title");
+
+            _queryBuilder.append('{');
+            queryDef.define(new MetaobjectFieldQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+    }
+
+    /**
+    * SEO information for a metaobject.
+    */
+    public static class MetaobjectSEO extends AbstractResponse<MetaobjectSEO> {
+        public MetaobjectSEO() {
+        }
+
+        public MetaobjectSEO(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "description": {
+                        MetaobjectField optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new MetaobjectField(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "title": {
+                        MetaobjectField optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new MetaobjectField(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "MetaobjectSEO";
+        }
+
+        /**
+        * The meta description.
+        */
+
+        public MetaobjectField getDescription() {
+            return (MetaobjectField) get("description");
+        }
+
+        public MetaobjectSEO setDescription(MetaobjectField arg) {
+            optimisticData.put(getKey("description"), arg);
+            return this;
+        }
+
+        /**
+        * The SEO title.
+        */
+
+        public MetaobjectField getTitle() {
+            return (MetaobjectField) get("title");
+        }
+
+        public MetaobjectSEO setTitle(MetaobjectField arg) {
+            optimisticData.put(getKey("title"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "description": return true;
+
+                case "title": return true;
+
+                default: return false;
+            }
         }
     }
 
@@ -48729,10 +49262,11 @@ public class Storefront {
         * [`customerReset`](https://shopify.dev/api/storefront/latest/mutations/customerReset) mutation to
         * reset the
         * customer password.
-        * This mutation is throttled by IP. With authenticated access,
+        * This mutation is throttled by IP. With private access,
         * you can provide a
         * [`Shopify-Storefront-Buyer-IP`](https://shopify.dev/api/usage/authentication#optional-ip-header)
         * instead of the request IP.
+        * The header is case-sensitive and must be sent as `Shopify-Storefront-Buyer-IP`.
         * Make sure that the value provided to `Shopify-Storefront-Buyer-IP` is trusted. Unthrottled access to
         * this
         * mutation presents a security risk.
@@ -49927,10 +50461,11 @@ public class Storefront {
         * [`customerReset`](https://shopify.dev/api/storefront/latest/mutations/customerReset) mutation to
         * reset the
         * customer password.
-        * This mutation is throttled by IP. With authenticated access,
+        * This mutation is throttled by IP. With private access,
         * you can provide a
         * [`Shopify-Storefront-Buyer-IP`](https://shopify.dev/api/usage/authentication#optional-ip-header)
         * instead of the request IP.
+        * The header is case-sensitive and must be sent as `Shopify-Storefront-Buyer-IP`.
         * Make sure that the value provided to `Shopify-Storefront-Buyer-IP` is trusted. Unthrottled access to
         * this
         * mutation presents a security risk.
@@ -50584,6 +51119,13 @@ public class Storefront {
             return this;
         }
 
+        public OnlineStorePublishableQuery onMetaobject(MetaobjectQueryDefinition queryDef) {
+            startInlineFragment("Metaobject");
+            queryDef.define(new MetaobjectQuery(_queryBuilder));
+            _queryBuilder.append('}');
+            return this;
+        }
+
         public OnlineStorePublishableQuery onPage(PageQueryDefinition queryDef) {
             startInlineFragment("Page");
             queryDef.define(new PageQuery(_queryBuilder));
@@ -50652,6 +51194,10 @@ public class Storefront {
 
                 case "Collection": {
                     return new Collection(fields);
+                }
+
+                case "Metaobject": {
+                    return new Metaobject(fields);
                 }
 
                 case "Page": {
@@ -50753,7 +51299,7 @@ public class Storefront {
 
         /**
         * The subtotal of line items and their discounts, excluding line items that have been removed. Does
-        * not contain order-level discounts, duties, shipping costs, or shipping discounts. Taxes are not
+        * not contain order-level discounts, duties, shipping costs, or shipping discounts. Taxes aren't
         * included unless the order is a taxes-included order.
         */
         public OrderQuery currentSubtotalPrice(MoneyV2QueryDefinition queryDef) {
@@ -51051,17 +51597,44 @@ public class Storefront {
             return this;
         }
 
+        public class MetafieldArguments extends Arguments {
+            MetafieldArguments(StringBuilder _queryBuilder) {
+                super(_queryBuilder, false);
+            }
+
+            /**
+            * The container the metafield belongs to. If omitted, the app-reserved namespace will be used.
+            */
+            public MetafieldArguments namespace(String value) {
+                if (value != null) {
+                    startArgument("namespace");
+                    Query.appendQuotedString(_queryBuilder, value.toString());
+                }
+                return this;
+            }
+        }
+
+        public interface MetafieldArgumentsDefinition {
+            void define(MetafieldArguments args);
+        }
+
         /**
         * Returns a metafield found by namespace and key.
         */
-        public OrderQuery metafield(String namespace, String key, MetafieldQueryDefinition queryDef) {
+        public OrderQuery metafield(String key, MetafieldQueryDefinition queryDef) {
+            return metafield(key, args -> {}, queryDef);
+        }
+
+        /**
+        * Returns a metafield found by namespace and key.
+        */
+        public OrderQuery metafield(String key, MetafieldArgumentsDefinition argsDef, MetafieldQueryDefinition queryDef) {
             startField("metafield");
 
-            _queryBuilder.append("(namespace:");
-            Query.appendQuotedString(_queryBuilder, namespace.toString());
-
-            _queryBuilder.append(",key:");
+            _queryBuilder.append("(key:");
             Query.appendQuotedString(_queryBuilder, key.toString());
+
+            argsDef.define(new MetafieldArguments(_queryBuilder));
 
             _queryBuilder.append(')');
 
@@ -51830,7 +52403,7 @@ public class Storefront {
 
         /**
         * The subtotal of line items and their discounts, excluding line items that have been removed. Does
-        * not contain order-level discounts, duties, shipping costs, or shipping discounts. Taxes are not
+        * not contain order-level discounts, duties, shipping costs, or shipping discounts. Taxes aren't
         * included unless the order is a taxes-included order.
         */
 
@@ -52425,6 +52998,11 @@ public class Storefront {
         */
         OTHER,
 
+        /**
+        * Staff made an error.
+        */
+        STAFF,
+
         UNKNOWN_VALUE;
 
         public static OrderCancelReason fromGraphQl(String value) {
@@ -52453,6 +53031,10 @@ public class Storefront {
                     return OTHER;
                 }
 
+                case "STAFF": {
+                    return STAFF;
+                }
+
                 default: {
                     return UNKNOWN_VALUE;
                 }
@@ -52478,6 +53060,10 @@ public class Storefront {
 
                 case OTHER: {
                     return "OTHER";
+                }
+
+                case STAFF: {
+                    return "STAFF";
                 }
 
                 default: {
@@ -53114,7 +53700,7 @@ public class Storefront {
 
         /**
         * The total price of the line item, not including any discounts. The total price is calculated using
-        * the original unit price multiplied by the quantity, and it is displayed in the presentment currency.
+        * the original unit price multiplied by the quantity, and it's displayed in the presentment currency.
         */
         public OrderLineItemQuery originalTotalPrice(MoneyV2QueryDefinition queryDef) {
             startField("originalTotalPrice");
@@ -53302,7 +53888,7 @@ public class Storefront {
 
         /**
         * The total price of the line item, not including any discounts. The total price is calculated using
-        * the original unit price multiplied by the quantity, and it is displayed in the presentment currency.
+        * the original unit price multiplied by the quantity, and it's displayed in the presentment currency.
         */
 
         public MoneyV2 getOriginalTotalPrice() {
@@ -53776,17 +54362,44 @@ public class Storefront {
             return this;
         }
 
+        public class MetafieldArguments extends Arguments {
+            MetafieldArguments(StringBuilder _queryBuilder) {
+                super(_queryBuilder, false);
+            }
+
+            /**
+            * The container the metafield belongs to. If omitted, the app-reserved namespace will be used.
+            */
+            public MetafieldArguments namespace(String value) {
+                if (value != null) {
+                    startArgument("namespace");
+                    Query.appendQuotedString(_queryBuilder, value.toString());
+                }
+                return this;
+            }
+        }
+
+        public interface MetafieldArgumentsDefinition {
+            void define(MetafieldArguments args);
+        }
+
         /**
         * Returns a metafield found by namespace and key.
         */
-        public PageQuery metafield(String namespace, String key, MetafieldQueryDefinition queryDef) {
+        public PageQuery metafield(String key, MetafieldQueryDefinition queryDef) {
+            return metafield(key, args -> {}, queryDef);
+        }
+
+        /**
+        * Returns a metafield found by namespace and key.
+        */
+        public PageQuery metafield(String key, MetafieldArgumentsDefinition argsDef, MetafieldQueryDefinition queryDef) {
             startField("metafield");
 
-            _queryBuilder.append("(namespace:");
-            Query.appendQuotedString(_queryBuilder, namespace.toString());
-
-            _queryBuilder.append(",key:");
+            _queryBuilder.append("(key:");
             Query.appendQuotedString(_queryBuilder, key.toString());
+
+            argsDef.define(new MetafieldArguments(_queryBuilder));
 
             _queryBuilder.append(')');
 
@@ -55239,8 +55852,8 @@ public class Storefront {
         }
 
         /**
-        * A list of enabled currencies (ISO 4217 format) that the shop accepts. Merchants can enable
-        * currencies from their Shopify Payments settings in the Shopify admin.
+        * A list of enabled currencies (ISO 4217 format) that the shop accepts.
+        * Merchants can enable currencies from their Shopify Payments settings in the Shopify admin.
         */
         public PaymentSettingsQuery enabledPresentmentCurrencies() {
             startField("enabledPresentmentCurrencies");
@@ -55409,8 +56022,8 @@ public class Storefront {
         }
 
         /**
-        * A list of enabled currencies (ISO 4217 format) that the shop accepts. Merchants can enable
-        * currencies from their Shopify Payments settings in the Shopify admin.
+        * A list of enabled currencies (ISO 4217 format) that the shop accepts.
+        * Merchants can enable currencies from their Shopify Payments settings in the Shopify admin.
         */
 
         public List<CurrencyCode> getEnabledPresentmentCurrencies() {
@@ -56194,9 +56807,9 @@ public class Storefront {
     /**
     * A product represents an individual item for sale in a Shopify store. Products are often physical,
     * but they don't have to be.
-    * For example, a digital download (such as a movie, music or ebook file) also qualifies as a product,
-    * as do services (such as equipment rental, work for hire, customization of another product or an
-    * extended warranty).
+    * For example, a digital download (such as a movie, music or ebook file) also
+    * qualifies as a product, as do services (such as equipment rental, work for hire,
+    * customization of another product or an extended warranty).
     */
     public static class ProductQuery extends Query<ProductQuery> {
         ProductQuery(StringBuilder _queryBuilder) {
@@ -56608,17 +57221,44 @@ public class Storefront {
             return this;
         }
 
+        public class MetafieldArguments extends Arguments {
+            MetafieldArguments(StringBuilder _queryBuilder) {
+                super(_queryBuilder, false);
+            }
+
+            /**
+            * The container the metafield belongs to. If omitted, the app-reserved namespace will be used.
+            */
+            public MetafieldArguments namespace(String value) {
+                if (value != null) {
+                    startArgument("namespace");
+                    Query.appendQuotedString(_queryBuilder, value.toString());
+                }
+                return this;
+            }
+        }
+
+        public interface MetafieldArgumentsDefinition {
+            void define(MetafieldArguments args);
+        }
+
         /**
         * Returns a metafield found by namespace and key.
         */
-        public ProductQuery metafield(String namespace, String key, MetafieldQueryDefinition queryDef) {
+        public ProductQuery metafield(String key, MetafieldQueryDefinition queryDef) {
+            return metafield(key, args -> {}, queryDef);
+        }
+
+        /**
+        * Returns a metafield found by namespace and key.
+        */
+        public ProductQuery metafield(String key, MetafieldArgumentsDefinition argsDef, MetafieldQueryDefinition queryDef) {
             startField("metafield");
 
-            _queryBuilder.append("(namespace:");
-            Query.appendQuotedString(_queryBuilder, namespace.toString());
-
-            _queryBuilder.append(",key:");
+            _queryBuilder.append("(key:");
             Query.appendQuotedString(_queryBuilder, key.toString());
+
+            argsDef.define(new MetafieldArguments(_queryBuilder));
 
             _queryBuilder.append(')');
 
@@ -57049,9 +57689,9 @@ public class Storefront {
     /**
     * A product represents an individual item for sale in a Shopify store. Products are often physical,
     * but they don't have to be.
-    * For example, a digital download (such as a movie, music or ebook file) also qualifies as a product,
-    * as do services (such as equipment rental, work for hire, customization of another product or an
-    * extended warranty).
+    * For example, a digital download (such as a movie, music or ebook file) also
+    * qualifies as a product, as do services (such as equipment rental, work for hire,
+    * customization of another product or an extended warranty).
     */
     public static class Product extends AbstractResponse<Product> implements HasMetafields, MenuItemResource, MetafieldParentResource, MetafieldReference, Node, OnlineStorePublishable, SearchResultItem, Trackable {
         public Product() {
@@ -59183,17 +59823,44 @@ public class Storefront {
             return this;
         }
 
+        public class MetafieldArguments extends Arguments {
+            MetafieldArguments(StringBuilder _queryBuilder) {
+                super(_queryBuilder, false);
+            }
+
+            /**
+            * The container the metafield belongs to. If omitted, the app-reserved namespace will be used.
+            */
+            public MetafieldArguments namespace(String value) {
+                if (value != null) {
+                    startArgument("namespace");
+                    Query.appendQuotedString(_queryBuilder, value.toString());
+                }
+                return this;
+            }
+        }
+
+        public interface MetafieldArgumentsDefinition {
+            void define(MetafieldArguments args);
+        }
+
         /**
         * Returns a metafield found by namespace and key.
         */
-        public ProductVariantQuery metafield(String namespace, String key, MetafieldQueryDefinition queryDef) {
+        public ProductVariantQuery metafield(String key, MetafieldQueryDefinition queryDef) {
+            return metafield(key, args -> {}, queryDef);
+        }
+
+        /**
+        * Returns a metafield found by namespace and key.
+        */
+        public ProductVariantQuery metafield(String key, MetafieldArgumentsDefinition argsDef, MetafieldQueryDefinition queryDef) {
             startField("metafield");
 
-            _queryBuilder.append("(namespace:");
-            Query.appendQuotedString(_queryBuilder, namespace.toString());
-
-            _queryBuilder.append(",key:");
+            _queryBuilder.append("(key:");
             Query.appendQuotedString(_queryBuilder, key.toString());
+
+            argsDef.define(new MetafieldArguments(_queryBuilder));
 
             _queryBuilder.append(')');
 
@@ -59411,6 +60078,17 @@ public class Storefront {
             }
 
             /**
+            * Used to sort results based on proximity to the provided location.
+            */
+            public StoreAvailabilityArguments near(GeoCoordinateInput value) {
+                if (value != null) {
+                    startArgument("near");
+                    value.appendTo(_queryBuilder);
+                }
+                return this;
+            }
+
+            /**
             * Returns up to the first `n` elements from the list.
             */
             public StoreAvailabilityArguments first(Integer value) {
@@ -59461,17 +60139,6 @@ public class Storefront {
                 if (value != null) {
                     startArgument("reverse");
                     _queryBuilder.append(value);
-                }
-                return this;
-            }
-
-            /**
-            * Used to sort results based on proximity to the provided location.
-            */
-            public StoreAvailabilityArguments near(GeoCoordinateInput value) {
-                if (value != null) {
-                    startArgument("near");
-                    value.appendTo(_queryBuilder);
                 }
                 return this;
             }
@@ -62075,90 +62742,6 @@ public class Storefront {
             }
 
             /**
-            * Specifies whether to perform a partial word match on the last search term.
-            */
-            public SearchArguments prefix(SearchPrefixQueryType value) {
-                if (value != null) {
-                    startArgument("prefix");
-                    _queryBuilder.append(value.toString());
-                }
-                return this;
-            }
-
-            /**
-            * Returns a subset of products matching all product filters.
-            */
-            public SearchArguments productFilters(List<ProductFilter> value) {
-                if (value != null) {
-                    startArgument("productFilters");
-                    _queryBuilder.append('[');
-                    {
-                        String listSeperator1 = "";
-                        for (ProductFilter item1 : value) {
-                            _queryBuilder.append(listSeperator1);
-                            listSeperator1 = ",";
-                            item1.appendTo(_queryBuilder);
-                        }
-                    }
-                    _queryBuilder.append(']');
-                }
-                return this;
-            }
-
-            /**
-            * Reverse the order of the underlying list.
-            */
-            public SearchArguments reverse(Boolean value) {
-                if (value != null) {
-                    startArgument("reverse");
-                    _queryBuilder.append(value);
-                }
-                return this;
-            }
-
-            /**
-            * Sort the underlying list by the given key.
-            */
-            public SearchArguments sortKey(SearchSortKeys value) {
-                if (value != null) {
-                    startArgument("sortKey");
-                    _queryBuilder.append(value.toString());
-                }
-                return this;
-            }
-
-            /**
-            * The types of resrouces to search for.
-            */
-            public SearchArguments types(List<SearchType> value) {
-                if (value != null) {
-                    startArgument("types");
-                    _queryBuilder.append('[');
-                    {
-                        String listSeperator1 = "";
-                        for (SearchType item1 : value) {
-                            _queryBuilder.append(listSeperator1);
-                            listSeperator1 = ",";
-                            _queryBuilder.append(item1.toString());
-                        }
-                    }
-                    _queryBuilder.append(']');
-                }
-                return this;
-            }
-
-            /**
-            * Specifies how unavailable products are displayed in the search results.
-            */
-            public SearchArguments unavailableProducts(SearchUnavailableProductsType value) {
-                if (value != null) {
-                    startArgument("unavailableProducts");
-                    _queryBuilder.append(value.toString());
-                }
-                return this;
-            }
-
-            /**
             * Returns up to the first `n` elements from the list.
             */
             public SearchArguments first(Integer value) {
@@ -62198,6 +62781,90 @@ public class Storefront {
                 if (value != null) {
                     startArgument("before");
                     Query.appendQuotedString(_queryBuilder, value.toString());
+                }
+                return this;
+            }
+
+            /**
+            * Reverse the order of the underlying list.
+            */
+            public SearchArguments reverse(Boolean value) {
+                if (value != null) {
+                    startArgument("reverse");
+                    _queryBuilder.append(value);
+                }
+                return this;
+            }
+
+            /**
+            * Sort the underlying list by the given key.
+            */
+            public SearchArguments sortKey(SearchSortKeys value) {
+                if (value != null) {
+                    startArgument("sortKey");
+                    _queryBuilder.append(value.toString());
+                }
+                return this;
+            }
+
+            /**
+            * Specifies whether to perform a partial word match on the last search term.
+            */
+            public SearchArguments prefix(SearchPrefixQueryType value) {
+                if (value != null) {
+                    startArgument("prefix");
+                    _queryBuilder.append(value.toString());
+                }
+                return this;
+            }
+
+            /**
+            * Returns a subset of products matching all product filters.
+            */
+            public SearchArguments productFilters(List<ProductFilter> value) {
+                if (value != null) {
+                    startArgument("productFilters");
+                    _queryBuilder.append('[');
+                    {
+                        String listSeperator1 = "";
+                        for (ProductFilter item1 : value) {
+                            _queryBuilder.append(listSeperator1);
+                            listSeperator1 = ",";
+                            item1.appendTo(_queryBuilder);
+                        }
+                    }
+                    _queryBuilder.append(']');
+                }
+                return this;
+            }
+
+            /**
+            * The types of resources to search for.
+            */
+            public SearchArguments types(List<SearchType> value) {
+                if (value != null) {
+                    startArgument("types");
+                    _queryBuilder.append('[');
+                    {
+                        String listSeperator1 = "";
+                        for (SearchType item1 : value) {
+                            _queryBuilder.append(listSeperator1);
+                            listSeperator1 = ",";
+                            _queryBuilder.append(item1.toString());
+                        }
+                    }
+                    _queryBuilder.append(']');
+                }
+                return this;
+            }
+
+            /**
+            * Specifies how unavailable products are displayed in the search results.
+            */
+            public SearchArguments unavailableProducts(SearchUnavailableProductsType value) {
+                if (value != null) {
+                    startArgument("unavailableProducts");
+                    _queryBuilder.append(value.toString());
                 }
                 return this;
             }
@@ -67642,17 +68309,44 @@ public class Storefront {
             return this;
         }
 
+        public class MetafieldArguments extends Arguments {
+            MetafieldArguments(StringBuilder _queryBuilder) {
+                super(_queryBuilder, false);
+            }
+
+            /**
+            * The container the metafield belongs to. If omitted, the app-reserved namespace will be used.
+            */
+            public MetafieldArguments namespace(String value) {
+                if (value != null) {
+                    startArgument("namespace");
+                    Query.appendQuotedString(_queryBuilder, value.toString());
+                }
+                return this;
+            }
+        }
+
+        public interface MetafieldArgumentsDefinition {
+            void define(MetafieldArguments args);
+        }
+
         /**
         * Returns a metafield found by namespace and key.
         */
-        public ShopQuery metafield(String namespace, String key, MetafieldQueryDefinition queryDef) {
+        public ShopQuery metafield(String key, MetafieldQueryDefinition queryDef) {
+            return metafield(key, args -> {}, queryDef);
+        }
+
+        /**
+        * Returns a metafield found by namespace and key.
+        */
+        public ShopQuery metafield(String key, MetafieldArgumentsDefinition argsDef, MetafieldQueryDefinition queryDef) {
             startField("metafield");
 
-            _queryBuilder.append("(namespace:");
-            Query.appendQuotedString(_queryBuilder, namespace.toString());
-
-            _queryBuilder.append(",key:");
+            _queryBuilder.append("(key:");
             Query.appendQuotedString(_queryBuilder, key.toString());
+
+            argsDef.define(new MetafieldArguments(_queryBuilder));
 
             _queryBuilder.append(')');
 
