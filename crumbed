@@ -1,0 +1,20 @@
+import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.widget.TextView;
+
+public class MainActivity extends AppCompatActivity {
+    private TextView productInfo;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        productInfo = findViewById(R.id.product_info);
+        ShopifyClient client = new ShopifyClient("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", "crumbed.co.za");
+
+        // Fetch product information from the Shopify store
+        Product product = client.getProductInfo("your_product_id");
+        productInfo.setText("Product Name: " + product.getName() + "\nProduct Price: " + product.getPrice());
+    }
+}
