@@ -25,7 +25,7 @@ import java.io.Serializable;
 import java.util.*;
 
 public class Storefront {
-    public static final String API_VERSION = "2023-10";
+    public static final String API_VERSION = "2024-01";
 
     public static QueryRootQuery query(QueryRootQueryDefinition queryDef) {
         return query(Collections.emptyList(), queryDef);
@@ -3610,15 +3610,17 @@ public class Storefront {
             }
 
             /**
-            * Supported filter parameters:
-            * - `author`
-            * - `blog_title`
-            * - `created_at`
-            * - `tag`
-            * - `tag_not`
-            * - `updated_at`
-            * See the detailed [search syntax](https://shopify.dev/api/usage/search-syntax)
-            * for more information about using filters.
+            * Apply one or multiple filters to the query.
+            * | name | description | acceptable_values | default_value | example_use |
+            * | ---- | ---- | ---- | ---- | ---- |
+            * | author |
+            * | blog_title |
+            * | created_at |
+            * | tag |
+            * | tag_not |
+            * | updated_at |
+            * Refer to the detailed [search syntax](https://shopify.dev/api/usage/search-syntax) for more
+            * information about using filters.
             */
             public ArticlesArguments query(String value) {
                 if (value != null) {
@@ -13412,7 +13414,7 @@ public class Storefront {
         }
 
         /**
-        * The Order Status Page for this Checkout, null when checkout isn't completed.
+        * The <b>Order status</b> page for this Checkout, null when checkout isn't completed.
         */
         public CheckoutQuery orderStatusUrl() {
             startField("orderStatusUrl");
@@ -14119,7 +14121,7 @@ public class Storefront {
         }
 
         /**
-        * The Order Status Page for this Checkout, null when checkout isn't completed.
+        * The <b>Order status</b> page for this Checkout, null when checkout isn't completed.
         */
 
         public String getOrderStatusUrl() {
@@ -19953,6 +19955,7 @@ public class Storefront {
 
             /**
             * Returns a subset of products matching all product filters.
+            * The input must not contain more than `250` values.
             */
             public ProductsArguments filters(List<ProductFilter> value) {
                 if (value != null) {
@@ -23453,7 +23456,7 @@ public class Storefront {
         TO,
 
         /**
-        * Turkey.
+        * Türkiye.
         */
         TR,
 
@@ -28689,10 +28692,12 @@ public class Storefront {
             }
 
             /**
-            * Supported filter parameters:
-            * - `processed_at`
-            * See the detailed [search syntax](https://shopify.dev/api/usage/search-syntax)
-            * for more information about using filters.
+            * Apply one or multiple filters to the query.
+            * | name | description | acceptable_values | default_value | example_use |
+            * | ---- | ---- | ---- | ---- | ---- |
+            * | processed_at |
+            * Refer to the detailed [search syntax](https://shopify.dev/api/usage/search-syntax) for more
+            * information about using filters.
             */
             public OrdersArguments query(String value) {
                 if (value != null) {
@@ -44517,6 +44522,13 @@ public class Storefront {
             return this;
         }
 
+        public MenuItemResourceQuery onMetaobject(MetaobjectQueryDefinition queryDef) {
+            startInlineFragment("Metaobject");
+            queryDef.define(new MetaobjectQuery(_queryBuilder));
+            _queryBuilder.append('}');
+            return this;
+        }
+
         public MenuItemResourceQuery onPage(PageQueryDefinition queryDef) {
             startInlineFragment("Page");
             queryDef.define(new PageQuery(_queryBuilder));
@@ -44579,6 +44591,10 @@ public class Storefront {
 
                 case "Collection": {
                     return new Collection(fields);
+                }
+
+                case "Metaobject": {
+                    return new Metaobject(fields);
                 }
 
                 case "Page": {
@@ -44650,6 +44666,11 @@ public class Storefront {
         HTTP,
 
         /**
+        * A metaobject page link.
+        */
+        METAOBJECT,
+
+        /**
         * A page link.
         */
         PAGE,
@@ -44705,6 +44726,10 @@ public class Storefront {
                     return HTTP;
                 }
 
+                case "METAOBJECT": {
+                    return METAOBJECT;
+                }
+
                 case "PAGE": {
                     return PAGE;
                 }
@@ -44754,6 +44779,10 @@ public class Storefront {
 
                 case HTTP: {
                     return "HTTP";
+                }
+
+                case METAOBJECT: {
+                    return "METAOBJECT";
                 }
 
                 case PAGE: {
@@ -46634,7 +46663,7 @@ public class Storefront {
     /**
     * An instance of a user-defined model based on a MetaobjectDefinition.
     */
-    public static class Metaobject extends AbstractResponse<Metaobject> implements MetafieldReference, Node, OnlineStorePublishable {
+    public static class Metaobject extends AbstractResponse<Metaobject> implements MenuItemResource, MetafieldReference, Node, OnlineStorePublishable {
         public Metaobject() {
         }
 
@@ -48278,6 +48307,7 @@ public class Storefront {
 
             /**
             * The case-insensitive discount codes that the customer added at checkout.
+            * The input must not contain more than `250` values.
             */
             public CartDiscountCodesUpdateArguments discountCodes(List<String> value) {
                 if (value != null) {
@@ -57547,12 +57577,53 @@ public class Storefront {
             return this;
         }
 
+        public class VariantBySelectedOptionsArguments extends Arguments {
+            VariantBySelectedOptionsArguments(StringBuilder _queryBuilder) {
+                super(_queryBuilder, false);
+            }
+
+            /**
+            * Whether to ignore unknown product options.
+            */
+            public VariantBySelectedOptionsArguments ignoreUnknownOptions(Boolean value) {
+                if (value != null) {
+                    startArgument("ignoreUnknownOptions");
+                    _queryBuilder.append(value);
+                }
+                return this;
+            }
+
+            /**
+            * Whether to perform case insensitive match on option names and values.
+            */
+            public VariantBySelectedOptionsArguments caseInsensitiveMatch(Boolean value) {
+                if (value != null) {
+                    startArgument("caseInsensitiveMatch");
+                    _queryBuilder.append(value);
+                }
+                return this;
+            }
+        }
+
+        public interface VariantBySelectedOptionsArgumentsDefinition {
+            void define(VariantBySelectedOptionsArguments args);
+        }
+
         /**
         * Find a product’s variant based on its selected options.
         * This is useful for converting a user’s selection of product options into a single matching variant.
         * If there is not a variant for the selected options, `null` will be returned.
         */
         public ProductQuery variantBySelectedOptions(List<SelectedOptionInput> selectedOptions, ProductVariantQueryDefinition queryDef) {
+            return variantBySelectedOptions(selectedOptions, args -> {}, queryDef);
+        }
+
+        /**
+        * Find a product’s variant based on its selected options.
+        * This is useful for converting a user’s selection of product options into a single matching variant.
+        * If there is not a variant for the selected options, `null` will be returned.
+        */
+        public ProductQuery variantBySelectedOptions(List<SelectedOptionInput> selectedOptions, VariantBySelectedOptionsArgumentsDefinition argsDef, ProductVariantQueryDefinition queryDef) {
             startField("variantBySelectedOptions");
 
             _queryBuilder.append("(selectedOptions:");
@@ -57566,6 +57637,8 @@ public class Storefront {
                 }
             }
             _queryBuilder.append(']');
+
+            argsDef.define(new VariantBySelectedOptionsArguments(_queryBuilder));
 
             _queryBuilder.append(')');
 
@@ -60173,6 +60246,15 @@ public class Storefront {
         }
 
         /**
+        * Whether tax is charged when the product variant is sold.
+        */
+        public ProductVariantQuery taxable() {
+            startField("taxable");
+
+            return this;
+        }
+
+        /**
         * The product variant’s title.
         */
         public ProductVariantQuery title() {
@@ -60393,6 +60475,12 @@ public class Storefront {
 
                     case "storeAvailability": {
                         responseData.put(key, new StoreAvailabilityConnection(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "taxable": {
+                        responseData.put(key, jsonAsBoolean(field.getValue(), key));
 
                         break;
                     }
@@ -60701,6 +60789,19 @@ public class Storefront {
         }
 
         /**
+        * Whether tax is charged when the product variant is sold.
+        */
+
+        public Boolean getTaxable() {
+            return (Boolean) get("taxable");
+        }
+
+        public ProductVariant setTaxable(Boolean arg) {
+            optimisticData.put(getKey("taxable"), arg);
+            return this;
+        }
+
+        /**
         * The product variant’s title.
         */
 
@@ -60802,6 +60903,8 @@ public class Storefront {
                 case "sku": return false;
 
                 case "storeAvailability": return true;
+
+                case "taxable": return false;
 
                 case "title": return false;
 
@@ -61283,15 +61386,17 @@ public class Storefront {
             }
 
             /**
-            * Supported filter parameters:
-            * - `author`
-            * - `blog_title`
-            * - `created_at`
-            * - `tag`
-            * - `tag_not`
-            * - `updated_at`
-            * See the detailed [search syntax](https://shopify.dev/api/usage/search-syntax)
-            * for more information about using filters.
+            * Apply one or multiple filters to the query.
+            * | name | description | acceptable_values | default_value | example_use |
+            * | ---- | ---- | ---- | ---- | ---- |
+            * | author |
+            * | blog_title |
+            * | created_at |
+            * | tag |
+            * | tag_not |
+            * | updated_at |
+            * Refer to the detailed [search syntax](https://shopify.dev/api/usage/search-syntax) for more
+            * information about using filters.
             */
             public ArticlesArguments query(String value) {
                 if (value != null) {
@@ -61479,13 +61584,15 @@ public class Storefront {
             }
 
             /**
-            * Supported filter parameters:
-            * - `created_at`
-            * - `handle`
-            * - `title`
-            * - `updated_at`
-            * See the detailed [search syntax](https://shopify.dev/api/usage/search-syntax)
-            * for more information about using filters.
+            * Apply one or multiple filters to the query.
+            * | name | description | acceptable_values | default_value | example_use |
+            * | ---- | ---- | ---- | ---- | ---- |
+            * | created_at |
+            * | handle |
+            * | title |
+            * | updated_at |
+            * Refer to the detailed [search syntax](https://shopify.dev/api/usage/search-syntax) for more
+            * information about using filters.
             */
             public BlogsArguments query(String value) {
                 if (value != null) {
@@ -61710,12 +61817,14 @@ public class Storefront {
             }
 
             /**
-            * Supported filter parameters:
-            * - `collection_type`
-            * - `title`
-            * - `updated_at`
-            * See the detailed [search syntax](https://shopify.dev/api/usage/search-syntax)
-            * for more information about using filters.
+            * Apply one or multiple filters to the query.
+            * | name | description | acceptable_values | default_value | example_use |
+            * | ---- | ---- | ---- | ---- | ---- |
+            * | collection_type |
+            * | title |
+            * | updated_at |
+            * Refer to the detailed [search syntax](https://shopify.dev/api/usage/search-syntax) for more
+            * information about using filters.
             */
             public CollectionsArguments query(String value) {
                 if (value != null) {
@@ -62272,13 +62381,15 @@ public class Storefront {
             }
 
             /**
-            * Supported filter parameters:
-            * - `created_at`
-            * - `handle`
-            * - `title`
-            * - `updated_at`
-            * See the detailed [search syntax](https://shopify.dev/api/usage/search-syntax)
-            * for more information about using filters.
+            * Apply one or multiple filters to the query.
+            * | name | description | acceptable_values | default_value | example_use |
+            * | ---- | ---- | ---- | ---- | ---- |
+            * | created_at |
+            * | handle |
+            * | title |
+            * | updated_at |
+            * Refer to the detailed [search syntax](https://shopify.dev/api/usage/search-syntax) for more
+            * information about using filters.
             */
             public PagesArguments query(String value) {
                 if (value != null) {
@@ -62349,6 +62460,7 @@ public class Storefront {
             * Specifies the list of resource fields to use for search. The default fields searched on are TITLE,
             * PRODUCT_TYPE, VARIANT_TITLE, and VENDOR. For the best search experience, you should search on the
             * default field set.
+            * The input must not contain more than `250` values.
             */
             public PredictiveSearchArguments searchableFields(List<SearchableField> value) {
                 if (value != null) {
@@ -62369,6 +62481,7 @@ public class Storefront {
 
             /**
             * The types of resources to search for.
+            * The input must not contain more than `250` values.
             */
             public PredictiveSearchArguments types(List<PredictiveSearchType> value) {
                 if (value != null) {
@@ -62672,18 +62785,20 @@ public class Storefront {
             }
 
             /**
-            * Supported filter parameters:
-            * - `available_for_sale`
-            * - `created_at`
-            * - `product_type`
-            * - `tag`
-            * - `tag_not`
-            * - `title`
-            * - `updated_at`
-            * - `variants.price`
-            * - `vendor`
-            * See the detailed [search syntax](https://shopify.dev/api/usage/search-syntax)
-            * for more information about using filters.
+            * Apply one or multiple filters to the query.
+            * | name | description | acceptable_values | default_value | example_use |
+            * | ---- | ---- | ---- | ---- | ---- |
+            * | available_for_sale |
+            * | created_at |
+            * | product_type |
+            * | tag |
+            * | tag_not |
+            * | title |
+            * | updated_at |
+            * | variants.price |
+            * | vendor |
+            * Refer to the detailed [search syntax](https://shopify.dev/api/usage/search-syntax) for more
+            * information about using filters.
             */
             public ProductsArguments query(String value) {
                 if (value != null) {
@@ -62699,14 +62814,16 @@ public class Storefront {
         }
 
         /**
-        * List of the shop’s products.
+        * List of the shop’s products. For storefront search, use [`search`
+        * query](https://shopify.dev/docs/api/storefront/latest/queries/search).
         */
         public QueryRootQuery products(ProductConnectionQueryDefinition queryDef) {
             return products(args -> {}, queryDef);
         }
 
         /**
-        * List of the shop’s products.
+        * List of the shop’s products. For storefront search, use [`search`
+        * query](https://shopify.dev/docs/api/storefront/latest/queries/search).
         */
         public QueryRootQuery products(ProductsArgumentsDefinition argsDef, ProductConnectionQueryDefinition queryDef) {
             startField("products");
@@ -62820,6 +62937,7 @@ public class Storefront {
 
             /**
             * Returns a subset of products matching all product filters.
+            * The input must not contain more than `250` values.
             */
             public SearchArguments productFilters(List<ProductFilter> value) {
                 if (value != null) {
@@ -62840,6 +62958,7 @@ public class Storefront {
 
             /**
             * The types of resources to search for.
+            * The input must not contain more than `250` values.
             */
             public SearchArguments types(List<SearchType> value) {
                 if (value != null) {
@@ -62975,12 +63094,14 @@ public class Storefront {
             }
 
             /**
-            * Supported filter parameters:
-            * - `created_at`
-            * - `path`
-            * - `target`
-            * See the detailed [search syntax](https://shopify.dev/api/usage/search-syntax)
-            * for more information about using filters.
+            * Apply one or multiple filters to the query.
+            * | name | description | acceptable_values | default_value | example_use |
+            * | ---- | ---- | ---- | ---- | ---- |
+            * | created_at |
+            * | path |
+            * | target |
+            * Refer to the detailed [search syntax](https://shopify.dev/api/usage/search-syntax) for more
+            * information about using filters.
             */
             public UrlRedirectsArguments query(String value) {
                 if (value != null) {
@@ -63718,7 +63839,8 @@ public class Storefront {
         }
 
         /**
-        * List of the shop’s products.
+        * List of the shop’s products. For storefront search, use [`search`
+        * query](https://shopify.dev/docs/api/storefront/latest/queries/search).
         */
 
         public ProductConnection getProducts() {
