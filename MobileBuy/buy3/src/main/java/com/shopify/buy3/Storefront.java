@@ -25,7 +25,7 @@ import java.io.Serializable;
 import java.util.*;
 
 public class Storefront {
-    public static final String API_VERSION = "2024-01";
+    public static final String API_VERSION = "2024-04";
 
     public static QueryRootQuery query(QueryRootQueryDefinition queryDef) {
         return query(Collections.emptyList(), queryDef);
@@ -136,6 +136,8 @@ public class Storefront {
 
         public ID preferredLocationId;
 
+        public BuyerInput buyer;
+
         public InContextDirective() {
             super("inContext");
         }
@@ -160,6 +162,12 @@ public class Storefront {
                 _queryBuilder.append(", ");
                 _queryBuilder.append("preferredLocationId:");
                 Query.appendQuotedString(_queryBuilder, preferredLocationId.toString());
+            }
+
+            if (buyer != null) {
+                _queryBuilder.append(", ");
+                _queryBuilder.append("buyer:");
+                buyer.appendTo(_queryBuilder);
             }
 
             _queryBuilder.append(")");
@@ -4930,6 +4938,69 @@ public class Storefront {
         }
     }
 
+    public static class BuyerInput implements Serializable {
+        private String customerAccessToken;
+
+        private Input<ID> companyLocationId = Input.undefined();
+
+        public BuyerInput(String customerAccessToken) {
+            this.customerAccessToken = customerAccessToken;
+        }
+
+        public String getCustomerAccessToken() {
+            return customerAccessToken;
+        }
+
+        public BuyerInput setCustomerAccessToken(String customerAccessToken) {
+            this.customerAccessToken = customerAccessToken;
+            return this;
+        }
+
+        public ID getCompanyLocationId() {
+            return companyLocationId.getValue();
+        }
+
+        public Input<ID> getCompanyLocationIdInput() {
+            return companyLocationId;
+        }
+
+        public BuyerInput setCompanyLocationId(ID companyLocationId) {
+            this.companyLocationId = Input.optional(companyLocationId);
+            return this;
+        }
+
+        public BuyerInput setCompanyLocationIdInput(Input<ID> companyLocationId) {
+            if (companyLocationId == null) {
+                throw new IllegalArgumentException("Input can not be null");
+            }
+            this.companyLocationId = companyLocationId;
+            return this;
+        }
+
+        public void appendTo(StringBuilder _queryBuilder) {
+            String separator = "";
+            _queryBuilder.append('{');
+
+            _queryBuilder.append(separator);
+            separator = ",";
+            _queryBuilder.append("customerAccessToken:");
+            Query.appendQuotedString(_queryBuilder, customerAccessToken.toString());
+
+            if (this.companyLocationId.isDefined()) {
+                _queryBuilder.append(separator);
+                separator = ",";
+                _queryBuilder.append("companyLocationId:");
+                if (companyLocationId.getValue() != null) {
+                    Query.appendQuotedString(_queryBuilder, companyLocationId.getValue().toString());
+                } else {
+                    _queryBuilder.append("null");
+                }
+            }
+
+            _queryBuilder.append('}');
+        }
+    }
+
     /**
     * Card brand, such as Visa or Mastercard, which can be used for payments.
     */
@@ -6208,6 +6279,19 @@ public class Storefront {
         }
 
         /**
+        * The purchasing company associated with the cart.
+        */
+        public CartBuyerIdentityQuery purchasingCompany(PurchasingCompanyQueryDefinition queryDef) {
+            startField("purchasingCompany");
+
+            _queryBuilder.append('{');
+            queryDef.define(new PurchasingCompanyQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
         * A set of wallet preferences tied to the buyer that is interacting with the cart.
         * Preferences can be used to populate relevant payment fields in the checkout flow.
         */
@@ -6278,6 +6362,17 @@ public class Storefront {
                         String optional1 = null;
                         if (!field.getValue().isJsonNull()) {
                             optional1 = jsonAsString(field.getValue(), key);
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "purchasingCompany": {
+                        PurchasingCompany optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new PurchasingCompany(jsonAsObject(field.getValue(), key));
                         }
 
                         responseData.put(key, optional1);
@@ -6379,6 +6474,19 @@ public class Storefront {
         }
 
         /**
+        * The purchasing company associated with the cart.
+        */
+
+        public PurchasingCompany getPurchasingCompany() {
+            return (PurchasingCompany) get("purchasingCompany");
+        }
+
+        public CartBuyerIdentity setPurchasingCompany(PurchasingCompany arg) {
+            optimisticData.put(getKey("purchasingCompany"), arg);
+            return this;
+        }
+
+        /**
         * A set of wallet preferences tied to the buyer that is interacting with the cart.
         * Preferences can be used to populate relevant payment fields in the checkout flow.
         */
@@ -6404,6 +6512,8 @@ public class Storefront {
 
                 case "phone": return false;
 
+                case "purchasingCompany": return true;
+
                 case "walletPreferences": return false;
 
                 default: return false;
@@ -6415,6 +6525,8 @@ public class Storefront {
         private Input<String> email = Input.undefined();
 
         private Input<String> phone = Input.undefined();
+
+        private Input<ID> companyLocationId = Input.undefined();
 
         private Input<CountryCode> countryCode = Input.undefined();
 
@@ -6463,6 +6575,27 @@ public class Storefront {
                 throw new IllegalArgumentException("Input can not be null");
             }
             this.phone = phone;
+            return this;
+        }
+
+        public ID getCompanyLocationId() {
+            return companyLocationId.getValue();
+        }
+
+        public Input<ID> getCompanyLocationIdInput() {
+            return companyLocationId;
+        }
+
+        public CartBuyerIdentityInput setCompanyLocationId(ID companyLocationId) {
+            this.companyLocationId = Input.optional(companyLocationId);
+            return this;
+        }
+
+        public CartBuyerIdentityInput setCompanyLocationIdInput(Input<ID> companyLocationId) {
+            if (companyLocationId == null) {
+                throw new IllegalArgumentException("Input can not be null");
+            }
+            this.companyLocationId = companyLocationId;
             return this;
         }
 
@@ -6571,6 +6704,17 @@ public class Storefront {
                 _queryBuilder.append("phone:");
                 if (phone.getValue() != null) {
                     Query.appendQuotedString(_queryBuilder, phone.getValue().toString());
+                } else {
+                    _queryBuilder.append("null");
+                }
+            }
+
+            if (this.companyLocationId.isDefined()) {
+                _queryBuilder.append(separator);
+                separator = ",";
+                _queryBuilder.append("companyLocationId:");
+                if (companyLocationId.getValue() != null) {
+                    Query.appendQuotedString(_queryBuilder, companyLocationId.getValue().toString());
                 } else {
                     _queryBuilder.append("null");
                 }
@@ -8334,6 +8478,15 @@ public class Storefront {
         }
 
         /**
+        * The type of merchandise in the delivery group.
+        */
+        public CartDeliveryGroupQuery groupType() {
+            startField("groupType");
+
+            return this;
+        }
+
+        /**
         * The ID for the delivery group.
         */
         public CartDeliveryGroupQuery id() {
@@ -8388,6 +8541,12 @@ public class Storefront {
                         }
 
                         responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "groupType": {
+                        responseData.put(key, CartDeliveryGroupType.fromGraphQl(jsonAsString(field.getValue(), key)));
 
                         break;
                     }
@@ -8464,6 +8623,19 @@ public class Storefront {
         }
 
         /**
+        * The type of merchandise in the delivery group.
+        */
+
+        public CartDeliveryGroupType getGroupType() {
+            return (CartDeliveryGroupType) get("groupType");
+        }
+
+        public CartDeliveryGroup setGroupType(CartDeliveryGroupType arg) {
+            optimisticData.put(getKey("groupType"), arg);
+            return this;
+        }
+
+        /**
         * The ID for the delivery group.
         */
 
@@ -8496,6 +8668,8 @@ public class Storefront {
                 case "deliveryAddress": return true;
 
                 case "deliveryOptions": return true;
+
+                case "groupType": return false;
 
                 case "id": return false;
 
@@ -8772,6 +8946,60 @@ public class Storefront {
                 case "node": return true;
 
                 default: return false;
+            }
+        }
+    }
+
+    /**
+    * Defines what type of merchandise is in the delivery group.
+    */
+    public enum CartDeliveryGroupType {
+        /**
+        * The delivery group only contains merchandise that is either a one time purchase or a first delivery
+        * of
+        * subscription merchandise.
+        */
+        ONE_TIME_PURCHASE,
+
+        /**
+        * The delivery group only contains subscription merchandise.
+        */
+        SUBSCRIPTION,
+
+        UNKNOWN_VALUE;
+
+        public static CartDeliveryGroupType fromGraphQl(String value) {
+            if (value == null) {
+                return null;
+            }
+
+            switch (value) {
+                case "ONE_TIME_PURCHASE": {
+                    return ONE_TIME_PURCHASE;
+                }
+
+                case "SUBSCRIPTION": {
+                    return SUBSCRIPTION;
+                }
+
+                default: {
+                    return UNKNOWN_VALUE;
+                }
+            }
+        }
+        public String toString() {
+            switch (this) {
+                case ONE_TIME_PURCHASE: {
+                    return "ONE_TIME_PURCHASE";
+                }
+
+                case SUBSCRIPTION: {
+                    return "SUBSCRIPTION";
+                }
+
+                default: {
+                    return "";
+                }
             }
         }
     }
@@ -9471,9 +9699,44 @@ public class Storefront {
     */
     public enum CartErrorCode {
         /**
+        * The specified address field contains emojis.
+        */
+        ADDRESS_FIELD_CONTAINS_EMOJIS,
+
+        /**
+        * The specified address field contains HTML tags.
+        */
+        ADDRESS_FIELD_CONTAINS_HTML_TAGS,
+
+        /**
+        * The specified address field contains a URL.
+        */
+        ADDRESS_FIELD_CONTAINS_URL,
+
+        /**
+        * The specified address field does not match the expected pattern.
+        */
+        ADDRESS_FIELD_DOES_NOT_MATCH_EXPECTED_PATTERN,
+
+        /**
+        * The specified address field is required.
+        */
+        ADDRESS_FIELD_IS_REQUIRED,
+
+        /**
+        * The specified address field is too long.
+        */
+        ADDRESS_FIELD_IS_TOO_LONG,
+
+        /**
         * The input value is invalid.
         */
         INVALID,
+
+        /**
+        * Company location not found or not allowed.
+        */
+        INVALID_COMPANY_LOCATION,
 
         /**
         * Delivery group was not found in cart.
@@ -9484,6 +9747,11 @@ public class Storefront {
         * Delivery option was not valid.
         */
         INVALID_DELIVERY_OPTION,
+
+        /**
+        * The quantity must be a multiple of the specified increment.
+        */
+        INVALID_INCREMENT,
 
         /**
         * Merchandise line was not found in cart.
@@ -9506,9 +9774,34 @@ public class Storefront {
         INVALID_PAYMENT_EMPTY_CART,
 
         /**
+        * The given zip code is invalid for the provided country.
+        */
+        INVALID_ZIP_CODE_FOR_COUNTRY,
+
+        /**
+        * The given zip code is invalid for the provided province.
+        */
+        INVALID_ZIP_CODE_FOR_PROVINCE,
+
+        /**
         * The input value should be less than the maximum value allowed.
         */
         LESS_THAN,
+
+        /**
+        * The quantity must be below the specified maximum for the item.
+        */
+        MAXIMUM_EXCEEDED,
+
+        /**
+        * The quantity must be above the specified minimum for the item.
+        */
+        MINIMUM_NOT_MET,
+
+        /**
+        * The customer access token is required when setting a company location.
+        */
+        MISSING_CUSTOMER_ACCESS_TOKEN,
 
         /**
         * Missing discount code.
@@ -9526,9 +9819,24 @@ public class Storefront {
         PAYMENT_METHOD_NOT_SUPPORTED,
 
         /**
+        * The given province cannot be found.
+        */
+        PROVINCE_NOT_FOUND,
+
+        /**
+        * A general error occurred during address validation.
+        */
+        UNSPECIFIED_ADDRESS_ERROR,
+
+        /**
         * Validation failed.
         */
         VALIDATION_CUSTOM,
+
+        /**
+        * The given zip code is unsupported.
+        */
+        ZIP_CODE_NOT_SUPPORTED,
 
         UNKNOWN_VALUE;
 
@@ -9538,8 +9846,36 @@ public class Storefront {
             }
 
             switch (value) {
+                case "ADDRESS_FIELD_CONTAINS_EMOJIS": {
+                    return ADDRESS_FIELD_CONTAINS_EMOJIS;
+                }
+
+                case "ADDRESS_FIELD_CONTAINS_HTML_TAGS": {
+                    return ADDRESS_FIELD_CONTAINS_HTML_TAGS;
+                }
+
+                case "ADDRESS_FIELD_CONTAINS_URL": {
+                    return ADDRESS_FIELD_CONTAINS_URL;
+                }
+
+                case "ADDRESS_FIELD_DOES_NOT_MATCH_EXPECTED_PATTERN": {
+                    return ADDRESS_FIELD_DOES_NOT_MATCH_EXPECTED_PATTERN;
+                }
+
+                case "ADDRESS_FIELD_IS_REQUIRED": {
+                    return ADDRESS_FIELD_IS_REQUIRED;
+                }
+
+                case "ADDRESS_FIELD_IS_TOO_LONG": {
+                    return ADDRESS_FIELD_IS_TOO_LONG;
+                }
+
                 case "INVALID": {
                     return INVALID;
+                }
+
+                case "INVALID_COMPANY_LOCATION": {
+                    return INVALID_COMPANY_LOCATION;
                 }
 
                 case "INVALID_DELIVERY_GROUP": {
@@ -9548,6 +9884,10 @@ public class Storefront {
 
                 case "INVALID_DELIVERY_OPTION": {
                     return INVALID_DELIVERY_OPTION;
+                }
+
+                case "INVALID_INCREMENT": {
+                    return INVALID_INCREMENT;
                 }
 
                 case "INVALID_MERCHANDISE_LINE": {
@@ -9566,8 +9906,28 @@ public class Storefront {
                     return INVALID_PAYMENT_EMPTY_CART;
                 }
 
+                case "INVALID_ZIP_CODE_FOR_COUNTRY": {
+                    return INVALID_ZIP_CODE_FOR_COUNTRY;
+                }
+
+                case "INVALID_ZIP_CODE_FOR_PROVINCE": {
+                    return INVALID_ZIP_CODE_FOR_PROVINCE;
+                }
+
                 case "LESS_THAN": {
                     return LESS_THAN;
+                }
+
+                case "MAXIMUM_EXCEEDED": {
+                    return MAXIMUM_EXCEEDED;
+                }
+
+                case "MINIMUM_NOT_MET": {
+                    return MINIMUM_NOT_MET;
+                }
+
+                case "MISSING_CUSTOMER_ACCESS_TOKEN": {
+                    return MISSING_CUSTOMER_ACCESS_TOKEN;
                 }
 
                 case "MISSING_DISCOUNT_CODE": {
@@ -9582,8 +9942,20 @@ public class Storefront {
                     return PAYMENT_METHOD_NOT_SUPPORTED;
                 }
 
+                case "PROVINCE_NOT_FOUND": {
+                    return PROVINCE_NOT_FOUND;
+                }
+
+                case "UNSPECIFIED_ADDRESS_ERROR": {
+                    return UNSPECIFIED_ADDRESS_ERROR;
+                }
+
                 case "VALIDATION_CUSTOM": {
                     return VALIDATION_CUSTOM;
+                }
+
+                case "ZIP_CODE_NOT_SUPPORTED": {
+                    return ZIP_CODE_NOT_SUPPORTED;
                 }
 
                 default: {
@@ -9593,8 +9965,36 @@ public class Storefront {
         }
         public String toString() {
             switch (this) {
+                case ADDRESS_FIELD_CONTAINS_EMOJIS: {
+                    return "ADDRESS_FIELD_CONTAINS_EMOJIS";
+                }
+
+                case ADDRESS_FIELD_CONTAINS_HTML_TAGS: {
+                    return "ADDRESS_FIELD_CONTAINS_HTML_TAGS";
+                }
+
+                case ADDRESS_FIELD_CONTAINS_URL: {
+                    return "ADDRESS_FIELD_CONTAINS_URL";
+                }
+
+                case ADDRESS_FIELD_DOES_NOT_MATCH_EXPECTED_PATTERN: {
+                    return "ADDRESS_FIELD_DOES_NOT_MATCH_EXPECTED_PATTERN";
+                }
+
+                case ADDRESS_FIELD_IS_REQUIRED: {
+                    return "ADDRESS_FIELD_IS_REQUIRED";
+                }
+
+                case ADDRESS_FIELD_IS_TOO_LONG: {
+                    return "ADDRESS_FIELD_IS_TOO_LONG";
+                }
+
                 case INVALID: {
                     return "INVALID";
+                }
+
+                case INVALID_COMPANY_LOCATION: {
+                    return "INVALID_COMPANY_LOCATION";
                 }
 
                 case INVALID_DELIVERY_GROUP: {
@@ -9603,6 +10003,10 @@ public class Storefront {
 
                 case INVALID_DELIVERY_OPTION: {
                     return "INVALID_DELIVERY_OPTION";
+                }
+
+                case INVALID_INCREMENT: {
+                    return "INVALID_INCREMENT";
                 }
 
                 case INVALID_MERCHANDISE_LINE: {
@@ -9621,8 +10025,28 @@ public class Storefront {
                     return "INVALID_PAYMENT_EMPTY_CART";
                 }
 
+                case INVALID_ZIP_CODE_FOR_COUNTRY: {
+                    return "INVALID_ZIP_CODE_FOR_COUNTRY";
+                }
+
+                case INVALID_ZIP_CODE_FOR_PROVINCE: {
+                    return "INVALID_ZIP_CODE_FOR_PROVINCE";
+                }
+
                 case LESS_THAN: {
                     return "LESS_THAN";
+                }
+
+                case MAXIMUM_EXCEEDED: {
+                    return "MAXIMUM_EXCEEDED";
+                }
+
+                case MINIMUM_NOT_MET: {
+                    return "MINIMUM_NOT_MET";
+                }
+
+                case MISSING_CUSTOMER_ACCESS_TOKEN: {
+                    return "MISSING_CUSTOMER_ACCESS_TOKEN";
                 }
 
                 case MISSING_DISCOUNT_CODE: {
@@ -9637,8 +10061,20 @@ public class Storefront {
                     return "PAYMENT_METHOD_NOT_SUPPORTED";
                 }
 
+                case PROVINCE_NOT_FOUND: {
+                    return "PROVINCE_NOT_FOUND";
+                }
+
+                case UNSPECIFIED_ADDRESS_ERROR: {
+                    return "UNSPECIFIED_ADDRESS_ERROR";
+                }
+
                 case VALIDATION_CUSTOM: {
                     return "VALIDATION_CUSTOM";
+                }
+
+                case ZIP_CODE_NOT_SUPPORTED: {
+                    return "ZIP_CODE_NOT_SUPPORTED";
                 }
 
                 default: {
@@ -13101,6 +13537,8 @@ public class Storefront {
 
     /**
     * A container for all the information required to checkout items and pay.
+    * The Storefront GraphQL Checkout API is deprecated and will be removed in a future version. Please
+    * see https://shopify.dev/changelog/deprecation-of-checkout-apis for more information.
     */
     public static class CheckoutQuery extends Query<CheckoutQuery> {
         CheckoutQuery(StringBuilder _queryBuilder) {
@@ -13652,6 +14090,8 @@ public class Storefront {
 
     /**
     * A container for all the information required to checkout items and pay.
+    * The Storefront GraphQL Checkout API is deprecated and will be removed in a future version. Please
+    * see https://shopify.dev/changelog/deprecation-of-checkout-apis for more information.
     */
     public static class Checkout extends AbstractResponse<Checkout> implements Node {
         public Checkout() {
@@ -21338,6 +21778,907 @@ public class Storefront {
         }
     }
 
+    public interface CompanyQueryDefinition {
+        void define(CompanyQuery _queryBuilder);
+    }
+
+    /**
+    * Represents information about a company which is also a customer of the shop.
+    */
+    public static class CompanyQuery extends Query<CompanyQuery> {
+        CompanyQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+
+            startField("id");
+        }
+
+        /**
+        * The date and time ([ISO 8601 format](http://en.wikipedia.org/wiki/ISO_8601)) at which the company
+        * was created in Shopify.
+        */
+        public CompanyQuery createdAt() {
+            startField("createdAt");
+
+            return this;
+        }
+
+        /**
+        * A unique externally-supplied ID for the company.
+        */
+        public CompanyQuery externalId() {
+            startField("externalId");
+
+            return this;
+        }
+
+        public class MetafieldArguments extends Arguments {
+            MetafieldArguments(StringBuilder _queryBuilder) {
+                super(_queryBuilder, false);
+            }
+
+            /**
+            * The container the metafield belongs to. If omitted, the app-reserved namespace will be used.
+            */
+            public MetafieldArguments namespace(String value) {
+                if (value != null) {
+                    startArgument("namespace");
+                    Query.appendQuotedString(_queryBuilder, value.toString());
+                }
+                return this;
+            }
+        }
+
+        public interface MetafieldArgumentsDefinition {
+            void define(MetafieldArguments args);
+        }
+
+        /**
+        * Returns a metafield found by namespace and key.
+        */
+        public CompanyQuery metafield(String key, MetafieldQueryDefinition queryDef) {
+            return metafield(key, args -> {}, queryDef);
+        }
+
+        /**
+        * Returns a metafield found by namespace and key.
+        */
+        public CompanyQuery metafield(String key, MetafieldArgumentsDefinition argsDef, MetafieldQueryDefinition queryDef) {
+            startField("metafield");
+
+            _queryBuilder.append("(key:");
+            Query.appendQuotedString(_queryBuilder, key.toString());
+
+            argsDef.define(new MetafieldArguments(_queryBuilder));
+
+            _queryBuilder.append(')');
+
+            _queryBuilder.append('{');
+            queryDef.define(new MetafieldQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * The metafields associated with the resource matching the supplied list of namespaces and keys.
+        */
+        public CompanyQuery metafields(List<HasMetafieldsIdentifier> identifiers, MetafieldQueryDefinition queryDef) {
+            startField("metafields");
+
+            _queryBuilder.append("(identifiers:");
+            _queryBuilder.append('[');
+            {
+                String listSeperator1 = "";
+                for (HasMetafieldsIdentifier item1 : identifiers) {
+                    _queryBuilder.append(listSeperator1);
+                    listSeperator1 = ",";
+                    item1.appendTo(_queryBuilder);
+                }
+            }
+            _queryBuilder.append(']');
+
+            _queryBuilder.append(')');
+
+            _queryBuilder.append('{');
+            queryDef.define(new MetafieldQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * The name of the company.
+        */
+        public CompanyQuery name() {
+            startField("name");
+
+            return this;
+        }
+
+        /**
+        * The date and time ([ISO 8601 format](http://en.wikipedia.org/wiki/ISO_8601)) at which the company
+        * was last modified.
+        */
+        public CompanyQuery updatedAt() {
+            startField("updatedAt");
+
+            return this;
+        }
+    }
+
+    /**
+    * Represents information about a company which is also a customer of the shop.
+    */
+    public static class Company extends AbstractResponse<Company> implements HasMetafields, MetafieldParentResource, Node {
+        public Company() {
+        }
+
+        public Company(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "createdAt": {
+                        responseData.put(key, Utils.parseDateTime(jsonAsString(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "externalId": {
+                        String optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = jsonAsString(field.getValue(), key);
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "id": {
+                        responseData.put(key, new ID(jsonAsString(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "metafield": {
+                        Metafield optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new Metafield(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "metafields": {
+                        List<Metafield> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            Metafield optional2 = null;
+                            if (!element1.isJsonNull()) {
+                                optional2 = new Metafield(jsonAsObject(element1, key));
+                            }
+
+                            list1.add(optional2);
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "name": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "updatedAt": {
+                        responseData.put(key, Utils.parseDateTime(jsonAsString(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public Company(ID id) {
+            this();
+            optimisticData.put("id", id);
+        }
+
+        public String getGraphQlTypeName() {
+            return "Company";
+        }
+
+        /**
+        * The date and time ([ISO 8601 format](http://en.wikipedia.org/wiki/ISO_8601)) at which the company
+        * was created in Shopify.
+        */
+
+        public DateTime getCreatedAt() {
+            return (DateTime) get("createdAt");
+        }
+
+        public Company setCreatedAt(DateTime arg) {
+            optimisticData.put(getKey("createdAt"), arg);
+            return this;
+        }
+
+        /**
+        * A unique externally-supplied ID for the company.
+        */
+
+        public String getExternalId() {
+            return (String) get("externalId");
+        }
+
+        public Company setExternalId(String arg) {
+            optimisticData.put(getKey("externalId"), arg);
+            return this;
+        }
+
+        /**
+        * A globally-unique ID.
+        */
+
+        public ID getId() {
+            return (ID) get("id");
+        }
+
+        /**
+        * Returns a metafield found by namespace and key.
+        */
+
+        public Metafield getMetafield() {
+            return (Metafield) get("metafield");
+        }
+
+        public Company setMetafield(Metafield arg) {
+            optimisticData.put(getKey("metafield"), arg);
+            return this;
+        }
+
+        /**
+        * The metafields associated with the resource matching the supplied list of namespaces and keys.
+        */
+
+        public List<Metafield> getMetafields() {
+            return (List<Metafield>) get("metafields");
+        }
+
+        public Company setMetafields(List<Metafield> arg) {
+            optimisticData.put(getKey("metafields"), arg);
+            return this;
+        }
+
+        /**
+        * The name of the company.
+        */
+
+        public String getName() {
+            return (String) get("name");
+        }
+
+        public Company setName(String arg) {
+            optimisticData.put(getKey("name"), arg);
+            return this;
+        }
+
+        /**
+        * The date and time ([ISO 8601 format](http://en.wikipedia.org/wiki/ISO_8601)) at which the company
+        * was last modified.
+        */
+
+        public DateTime getUpdatedAt() {
+            return (DateTime) get("updatedAt");
+        }
+
+        public Company setUpdatedAt(DateTime arg) {
+            optimisticData.put(getKey("updatedAt"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "createdAt": return false;
+
+                case "externalId": return false;
+
+                case "id": return false;
+
+                case "metafield": return true;
+
+                case "metafields": return true;
+
+                case "name": return false;
+
+                case "updatedAt": return false;
+
+                default: return false;
+            }
+        }
+    }
+
+    public interface CompanyContactQueryDefinition {
+        void define(CompanyContactQuery _queryBuilder);
+    }
+
+    /**
+    * A company's main point of contact.
+    */
+    public static class CompanyContactQuery extends Query<CompanyContactQuery> {
+        CompanyContactQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+
+            startField("id");
+        }
+
+        /**
+        * The date and time ([ISO 8601 format](http://en.wikipedia.org/wiki/ISO_8601)) at which the company
+        * contact was created in Shopify.
+        */
+        public CompanyContactQuery createdAt() {
+            startField("createdAt");
+
+            return this;
+        }
+
+        /**
+        * The company contact's locale (language).
+        */
+        public CompanyContactQuery locale() {
+            startField("locale");
+
+            return this;
+        }
+
+        /**
+        * The company contact's job title.
+        */
+        public CompanyContactQuery title() {
+            startField("title");
+
+            return this;
+        }
+
+        /**
+        * The date and time ([ISO 8601 format](http://en.wikipedia.org/wiki/ISO_8601)) at which the company
+        * contact was last modified.
+        */
+        public CompanyContactQuery updatedAt() {
+            startField("updatedAt");
+
+            return this;
+        }
+    }
+
+    /**
+    * A company's main point of contact.
+    */
+    public static class CompanyContact extends AbstractResponse<CompanyContact> implements Node {
+        public CompanyContact() {
+        }
+
+        public CompanyContact(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "createdAt": {
+                        responseData.put(key, Utils.parseDateTime(jsonAsString(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "id": {
+                        responseData.put(key, new ID(jsonAsString(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "locale": {
+                        String optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = jsonAsString(field.getValue(), key);
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "title": {
+                        String optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = jsonAsString(field.getValue(), key);
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "updatedAt": {
+                        responseData.put(key, Utils.parseDateTime(jsonAsString(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public CompanyContact(ID id) {
+            this();
+            optimisticData.put("id", id);
+        }
+
+        public String getGraphQlTypeName() {
+            return "CompanyContact";
+        }
+
+        /**
+        * The date and time ([ISO 8601 format](http://en.wikipedia.org/wiki/ISO_8601)) at which the company
+        * contact was created in Shopify.
+        */
+
+        public DateTime getCreatedAt() {
+            return (DateTime) get("createdAt");
+        }
+
+        public CompanyContact setCreatedAt(DateTime arg) {
+            optimisticData.put(getKey("createdAt"), arg);
+            return this;
+        }
+
+        /**
+        * A globally-unique ID.
+        */
+
+        public ID getId() {
+            return (ID) get("id");
+        }
+
+        /**
+        * The company contact's locale (language).
+        */
+
+        public String getLocale() {
+            return (String) get("locale");
+        }
+
+        public CompanyContact setLocale(String arg) {
+            optimisticData.put(getKey("locale"), arg);
+            return this;
+        }
+
+        /**
+        * The company contact's job title.
+        */
+
+        public String getTitle() {
+            return (String) get("title");
+        }
+
+        public CompanyContact setTitle(String arg) {
+            optimisticData.put(getKey("title"), arg);
+            return this;
+        }
+
+        /**
+        * The date and time ([ISO 8601 format](http://en.wikipedia.org/wiki/ISO_8601)) at which the company
+        * contact was last modified.
+        */
+
+        public DateTime getUpdatedAt() {
+            return (DateTime) get("updatedAt");
+        }
+
+        public CompanyContact setUpdatedAt(DateTime arg) {
+            optimisticData.put(getKey("updatedAt"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "createdAt": return false;
+
+                case "id": return false;
+
+                case "locale": return false;
+
+                case "title": return false;
+
+                case "updatedAt": return false;
+
+                default: return false;
+            }
+        }
+    }
+
+    public interface CompanyLocationQueryDefinition {
+        void define(CompanyLocationQuery _queryBuilder);
+    }
+
+    /**
+    * A company's location.
+    */
+    public static class CompanyLocationQuery extends Query<CompanyLocationQuery> {
+        CompanyLocationQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+
+            startField("id");
+        }
+
+        /**
+        * The date and time ([ISO 8601 format](http://en.wikipedia.org/wiki/ISO_8601)) at which the company
+        * location was created in Shopify.
+        */
+        public CompanyLocationQuery createdAt() {
+            startField("createdAt");
+
+            return this;
+        }
+
+        /**
+        * A unique externally-supplied ID for the company.
+        */
+        public CompanyLocationQuery externalId() {
+            startField("externalId");
+
+            return this;
+        }
+
+        /**
+        * The preferred locale of the company location.
+        */
+        public CompanyLocationQuery locale() {
+            startField("locale");
+
+            return this;
+        }
+
+        public class MetafieldArguments extends Arguments {
+            MetafieldArguments(StringBuilder _queryBuilder) {
+                super(_queryBuilder, false);
+            }
+
+            /**
+            * The container the metafield belongs to. If omitted, the app-reserved namespace will be used.
+            */
+            public MetafieldArguments namespace(String value) {
+                if (value != null) {
+                    startArgument("namespace");
+                    Query.appendQuotedString(_queryBuilder, value.toString());
+                }
+                return this;
+            }
+        }
+
+        public interface MetafieldArgumentsDefinition {
+            void define(MetafieldArguments args);
+        }
+
+        /**
+        * Returns a metafield found by namespace and key.
+        */
+        public CompanyLocationQuery metafield(String key, MetafieldQueryDefinition queryDef) {
+            return metafield(key, args -> {}, queryDef);
+        }
+
+        /**
+        * Returns a metafield found by namespace and key.
+        */
+        public CompanyLocationQuery metafield(String key, MetafieldArgumentsDefinition argsDef, MetafieldQueryDefinition queryDef) {
+            startField("metafield");
+
+            _queryBuilder.append("(key:");
+            Query.appendQuotedString(_queryBuilder, key.toString());
+
+            argsDef.define(new MetafieldArguments(_queryBuilder));
+
+            _queryBuilder.append(')');
+
+            _queryBuilder.append('{');
+            queryDef.define(new MetafieldQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * The metafields associated with the resource matching the supplied list of namespaces and keys.
+        */
+        public CompanyLocationQuery metafields(List<HasMetafieldsIdentifier> identifiers, MetafieldQueryDefinition queryDef) {
+            startField("metafields");
+
+            _queryBuilder.append("(identifiers:");
+            _queryBuilder.append('[');
+            {
+                String listSeperator1 = "";
+                for (HasMetafieldsIdentifier item1 : identifiers) {
+                    _queryBuilder.append(listSeperator1);
+                    listSeperator1 = ",";
+                    item1.appendTo(_queryBuilder);
+                }
+            }
+            _queryBuilder.append(']');
+
+            _queryBuilder.append(')');
+
+            _queryBuilder.append('{');
+            queryDef.define(new MetafieldQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * The name of the company location.
+        */
+        public CompanyLocationQuery name() {
+            startField("name");
+
+            return this;
+        }
+
+        /**
+        * The date and time ([ISO 8601 format](http://en.wikipedia.org/wiki/ISO_8601)) at which the company
+        * location was last modified.
+        */
+        public CompanyLocationQuery updatedAt() {
+            startField("updatedAt");
+
+            return this;
+        }
+    }
+
+    /**
+    * A company's location.
+    */
+    public static class CompanyLocation extends AbstractResponse<CompanyLocation> implements HasMetafields, MetafieldParentResource, Node {
+        public CompanyLocation() {
+        }
+
+        public CompanyLocation(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "createdAt": {
+                        responseData.put(key, Utils.parseDateTime(jsonAsString(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "externalId": {
+                        String optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = jsonAsString(field.getValue(), key);
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "id": {
+                        responseData.put(key, new ID(jsonAsString(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "locale": {
+                        String optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = jsonAsString(field.getValue(), key);
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "metafield": {
+                        Metafield optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new Metafield(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "metafields": {
+                        List<Metafield> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            Metafield optional2 = null;
+                            if (!element1.isJsonNull()) {
+                                optional2 = new Metafield(jsonAsObject(element1, key));
+                            }
+
+                            list1.add(optional2);
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "name": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "updatedAt": {
+                        responseData.put(key, Utils.parseDateTime(jsonAsString(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public CompanyLocation(ID id) {
+            this();
+            optimisticData.put("id", id);
+        }
+
+        public String getGraphQlTypeName() {
+            return "CompanyLocation";
+        }
+
+        /**
+        * The date and time ([ISO 8601 format](http://en.wikipedia.org/wiki/ISO_8601)) at which the company
+        * location was created in Shopify.
+        */
+
+        public DateTime getCreatedAt() {
+            return (DateTime) get("createdAt");
+        }
+
+        public CompanyLocation setCreatedAt(DateTime arg) {
+            optimisticData.put(getKey("createdAt"), arg);
+            return this;
+        }
+
+        /**
+        * A unique externally-supplied ID for the company.
+        */
+
+        public String getExternalId() {
+            return (String) get("externalId");
+        }
+
+        public CompanyLocation setExternalId(String arg) {
+            optimisticData.put(getKey("externalId"), arg);
+            return this;
+        }
+
+        /**
+        * A globally-unique ID.
+        */
+
+        public ID getId() {
+            return (ID) get("id");
+        }
+
+        /**
+        * The preferred locale of the company location.
+        */
+
+        public String getLocale() {
+            return (String) get("locale");
+        }
+
+        public CompanyLocation setLocale(String arg) {
+            optimisticData.put(getKey("locale"), arg);
+            return this;
+        }
+
+        /**
+        * Returns a metafield found by namespace and key.
+        */
+
+        public Metafield getMetafield() {
+            return (Metafield) get("metafield");
+        }
+
+        public CompanyLocation setMetafield(Metafield arg) {
+            optimisticData.put(getKey("metafield"), arg);
+            return this;
+        }
+
+        /**
+        * The metafields associated with the resource matching the supplied list of namespaces and keys.
+        */
+
+        public List<Metafield> getMetafields() {
+            return (List<Metafield>) get("metafields");
+        }
+
+        public CompanyLocation setMetafields(List<Metafield> arg) {
+            optimisticData.put(getKey("metafields"), arg);
+            return this;
+        }
+
+        /**
+        * The name of the company location.
+        */
+
+        public String getName() {
+            return (String) get("name");
+        }
+
+        public CompanyLocation setName(String arg) {
+            optimisticData.put(getKey("name"), arg);
+            return this;
+        }
+
+        /**
+        * The date and time ([ISO 8601 format](http://en.wikipedia.org/wiki/ISO_8601)) at which the company
+        * location was last modified.
+        */
+
+        public DateTime getUpdatedAt() {
+            return (DateTime) get("updatedAt");
+        }
+
+        public CompanyLocation setUpdatedAt(DateTime arg) {
+            optimisticData.put(getKey("updatedAt"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "createdAt": return false;
+
+                case "externalId": return false;
+
+                case "id": return false;
+
+                case "locale": return false;
+
+                case "metafield": return true;
+
+                case "metafields": return true;
+
+                case "name": return false;
+
+                case "updatedAt": return false;
+
+                default: return false;
+            }
+        }
+    }
+
     public interface CompletePaymentChallengeQueryDefinition {
         void define(CompletePaymentChallengeQuery _queryBuilder);
     }
@@ -28516,7 +29857,10 @@ public class Storefront {
 
         /**
         * The customer's most recently updated, incomplete checkout.
+        *
+        * @deprecated The Storefront GraphQL Checkout API is deprecated and will be removed in a future version. Please see https://shopify.dev/changelog/deprecation-of-checkout-apis for more information.
         */
+        @Deprecated
         public CustomerQuery lastIncompleteCheckout(CheckoutQueryDefinition queryDef) {
             startField("lastIncompleteCheckout");
 
@@ -29051,6 +30395,8 @@ public class Storefront {
 
         /**
         * The customer's most recently updated, incomplete checkout.
+        *
+        * @deprecated The Storefront GraphQL Checkout API is deprecated and will be removed in a future version. Please see https://shopify.dev/changelog/deprecation-of-checkout-apis for more information.
         */
 
         public Checkout getLastIncompleteCheckout() {
@@ -32849,6 +34195,8 @@ public class Storefront {
     public static class DeliveryAddressInput implements Serializable {
         private Input<MailingAddressInput> deliveryAddress = Input.undefined();
 
+        private Input<DeliveryAddressValidationStrategy> deliveryAddressValidationStrategy = Input.undefined();
+
         private Input<ID> customerAddressId = Input.undefined();
 
         public MailingAddressInput getDeliveryAddress() {
@@ -32869,6 +34217,27 @@ public class Storefront {
                 throw new IllegalArgumentException("Input can not be null");
             }
             this.deliveryAddress = deliveryAddress;
+            return this;
+        }
+
+        public DeliveryAddressValidationStrategy getDeliveryAddressValidationStrategy() {
+            return deliveryAddressValidationStrategy.getValue();
+        }
+
+        public Input<DeliveryAddressValidationStrategy> getDeliveryAddressValidationStrategyInput() {
+            return deliveryAddressValidationStrategy;
+        }
+
+        public DeliveryAddressInput setDeliveryAddressValidationStrategy(DeliveryAddressValidationStrategy deliveryAddressValidationStrategy) {
+            this.deliveryAddressValidationStrategy = Input.optional(deliveryAddressValidationStrategy);
+            return this;
+        }
+
+        public DeliveryAddressInput setDeliveryAddressValidationStrategyInput(Input<DeliveryAddressValidationStrategy> deliveryAddressValidationStrategy) {
+            if (deliveryAddressValidationStrategy == null) {
+                throw new IllegalArgumentException("Input can not be null");
+            }
+            this.deliveryAddressValidationStrategy = deliveryAddressValidationStrategy;
             return this;
         }
 
@@ -32908,6 +34277,17 @@ public class Storefront {
                 }
             }
 
+            if (this.deliveryAddressValidationStrategy.isDefined()) {
+                _queryBuilder.append(separator);
+                separator = ",";
+                _queryBuilder.append("deliveryAddressValidationStrategy:");
+                if (deliveryAddressValidationStrategy.getValue() != null) {
+                    _queryBuilder.append(deliveryAddressValidationStrategy.getValue().toString());
+                } else {
+                    _queryBuilder.append("null");
+                }
+            }
+
             if (this.customerAddressId.isDefined()) {
                 _queryBuilder.append(separator);
                 separator = ",";
@@ -32920,6 +34300,60 @@ public class Storefront {
             }
 
             _queryBuilder.append('}');
+        }
+    }
+
+    /**
+    * Defines the types of available validation strategies for delivery addresses.
+    */
+    public enum DeliveryAddressValidationStrategy {
+        /**
+        * Only the country code is validated.
+        */
+        COUNTRY_CODE_ONLY,
+
+        /**
+        * Strict validation is performed, i.e. all fields in the address are validated
+        * according to Shopify's checkout rules. If the address fails validation, the cart will not be
+        * updated.
+        */
+        STRICT,
+
+        UNKNOWN_VALUE;
+
+        public static DeliveryAddressValidationStrategy fromGraphQl(String value) {
+            if (value == null) {
+                return null;
+            }
+
+            switch (value) {
+                case "COUNTRY_CODE_ONLY": {
+                    return COUNTRY_CODE_ONLY;
+                }
+
+                case "STRICT": {
+                    return STRICT;
+                }
+
+                default: {
+                    return UNKNOWN_VALUE;
+                }
+            }
+        }
+        public String toString() {
+            switch (this) {
+                case COUNTRY_CODE_ONLY: {
+                    return "COUNTRY_CODE_ONLY";
+                }
+
+                case STRICT: {
+                    return "STRICT";
+                }
+
+                default: {
+                    return "";
+                }
+            }
         }
     }
 
@@ -34854,6 +36288,16 @@ public class Storefront {
         }
 
         /**
+        * Describes how to present the filter values.
+        * Returns a value only for filters of type `LIST`. Returns null for other types.
+        */
+        public FilterQuery presentation() {
+            startField("presentation");
+
+            return this;
+        }
+
+        /**
         * An enumeration that denotes the type of data this filter represents.
         */
         public FilterQuery type() {
@@ -34896,6 +36340,17 @@ public class Storefront {
 
                     case "label": {
                         responseData.put(key, jsonAsString(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "presentation": {
+                        FilterPresentation optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = FilterPresentation.fromGraphQl(jsonAsString(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
 
                         break;
                     }
@@ -34959,6 +36414,20 @@ public class Storefront {
         }
 
         /**
+        * Describes how to present the filter values.
+        * Returns a value only for filters of type `LIST`. Returns null for other types.
+        */
+
+        public FilterPresentation getPresentation() {
+            return (FilterPresentation) get("presentation");
+        }
+
+        public Filter setPresentation(FilterPresentation arg) {
+            optimisticData.put(getKey("presentation"), arg);
+            return this;
+        }
+
+        /**
         * An enumeration that denotes the type of data this filter represents.
         */
 
@@ -34990,11 +36459,78 @@ public class Storefront {
 
                 case "label": return false;
 
+                case "presentation": return false;
+
                 case "type": return false;
 
                 case "values": return true;
 
                 default: return false;
+            }
+        }
+    }
+
+    /**
+    * Defines how to present the filter values, specifies the presentation of the filter.
+    */
+    public enum FilterPresentation {
+        /**
+        * Image presentation, filter values display an image.
+        */
+        IMAGE,
+
+        /**
+        * Swatch presentation, filter values display color or image patterns.
+        */
+        SWATCH,
+
+        /**
+        * Text presentation, no additional visual display for filter values.
+        */
+        TEXT,
+
+        UNKNOWN_VALUE;
+
+        public static FilterPresentation fromGraphQl(String value) {
+            if (value == null) {
+                return null;
+            }
+
+            switch (value) {
+                case "IMAGE": {
+                    return IMAGE;
+                }
+
+                case "SWATCH": {
+                    return SWATCH;
+                }
+
+                case "TEXT": {
+                    return TEXT;
+                }
+
+                default: {
+                    return UNKNOWN_VALUE;
+                }
+            }
+        }
+        public String toString() {
+            switch (this) {
+                case IMAGE: {
+                    return "IMAGE";
+                }
+
+                case SWATCH: {
+                    return "SWATCH";
+                }
+
+                case TEXT: {
+                    return "TEXT";
+                }
+
+                default: {
+                    return "";
+                }
             }
         }
     }
@@ -35097,6 +36633,19 @@ public class Storefront {
         }
 
         /**
+        * The visual representation when the filter's presentation is `IMAGE`.
+        */
+        public FilterValueQuery image(MediaImageQueryDefinition queryDef) {
+            startField("image");
+
+            _queryBuilder.append('{');
+            queryDef.define(new MediaImageQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
         * An input object that can be used to filter by this value on the parent field.
         * The value is provided as a helper for building dynamic filtering UI. For
         * example, if you have a list of selected `FilterValue` objects, you can combine
@@ -35113,6 +36662,19 @@ public class Storefront {
         */
         public FilterValueQuery label() {
             startField("label");
+
+            return this;
+        }
+
+        /**
+        * The visual representation when the filter's presentation is `SWATCH`.
+        */
+        public FilterValueQuery swatch(SwatchQueryDefinition queryDef) {
+            startField("swatch");
+
+            _queryBuilder.append('{');
+            queryDef.define(new SwatchQuery(_queryBuilder));
+            _queryBuilder.append('}');
 
             return this;
         }
@@ -35142,6 +36704,17 @@ public class Storefront {
                         break;
                     }
 
+                    case "image": {
+                        MediaImage optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new MediaImage(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
                     case "input": {
                         responseData.put(key, jsonAsString(field.getValue(), key));
 
@@ -35150,6 +36723,17 @@ public class Storefront {
 
                     case "label": {
                         responseData.put(key, jsonAsString(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "swatch": {
+                        Swatch optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new Swatch(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
 
                         break;
                     }
@@ -35196,6 +36780,19 @@ public class Storefront {
         }
 
         /**
+        * The visual representation when the filter's presentation is `IMAGE`.
+        */
+
+        public MediaImage getImage() {
+            return (MediaImage) get("image");
+        }
+
+        public FilterValue setImage(MediaImage arg) {
+            optimisticData.put(getKey("image"), arg);
+            return this;
+        }
+
+        /**
         * An input object that can be used to filter by this value on the parent field.
         * The value is provided as a helper for building dynamic filtering UI. For
         * example, if you have a list of selected `FilterValue` objects, you can combine
@@ -35224,15 +36821,32 @@ public class Storefront {
             return this;
         }
 
+        /**
+        * The visual representation when the filter's presentation is `SWATCH`.
+        */
+
+        public Swatch getSwatch() {
+            return (Swatch) get("swatch");
+        }
+
+        public FilterValue setSwatch(Swatch arg) {
+            optimisticData.put(getKey("swatch"), arg);
+            return this;
+        }
+
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "count": return false;
 
                 case "id": return false;
 
+                case "image": return true;
+
                 case "input": return false;
 
                 case "label": return false;
+
+                case "swatch": return true;
 
                 default: return false;
             }
@@ -36420,6 +38034,20 @@ public class Storefront {
             return this;
         }
 
+        public HasMetafieldsQuery onCompany(CompanyQueryDefinition queryDef) {
+            startInlineFragment("Company");
+            queryDef.define(new CompanyQuery(_queryBuilder));
+            _queryBuilder.append('}');
+            return this;
+        }
+
+        public HasMetafieldsQuery onCompanyLocation(CompanyLocationQueryDefinition queryDef) {
+            startInlineFragment("CompanyLocation");
+            queryDef.define(new CompanyLocationQuery(_queryBuilder));
+            _queryBuilder.append('}');
+            return this;
+        }
+
         public HasMetafieldsQuery onCustomer(CustomerQueryDefinition queryDef) {
             startInlineFragment("Customer");
             queryDef.define(new CustomerQuery(_queryBuilder));
@@ -36552,6 +38180,14 @@ public class Storefront {
 
                 case "Collection": {
                     return new Collection(fields);
+                }
+
+                case "Company": {
+                    return new Company(fields);
+                }
+
+                case "CompanyLocation": {
+                    return new CompanyLocation(fields);
                 }
 
                 case "Customer": {
@@ -45660,6 +47296,20 @@ public class Storefront {
             return this;
         }
 
+        public MetafieldParentResourceQuery onCompany(CompanyQueryDefinition queryDef) {
+            startInlineFragment("Company");
+            queryDef.define(new CompanyQuery(_queryBuilder));
+            _queryBuilder.append('}');
+            return this;
+        }
+
+        public MetafieldParentResourceQuery onCompanyLocation(CompanyLocationQueryDefinition queryDef) {
+            startInlineFragment("CompanyLocation");
+            queryDef.define(new CompanyLocationQuery(_queryBuilder));
+            _queryBuilder.append('}');
+            return this;
+        }
+
         public MetafieldParentResourceQuery onCustomer(CustomerQueryDefinition queryDef) {
             startInlineFragment("Customer");
             queryDef.define(new CustomerQuery(_queryBuilder));
@@ -45763,6 +47413,14 @@ public class Storefront {
                     return new Collection(fields);
                 }
 
+                case "Company": {
+                    return new Company(fields);
+                }
+
+                case "CompanyLocation": {
+                    return new CompanyLocation(fields);
+                }
+
                 case "Customer": {
                     return new Customer(fields);
                 }
@@ -45854,6 +47512,13 @@ public class Storefront {
             return this;
         }
 
+        public MetafieldReferenceQuery onModel3d(Model3dQueryDefinition queryDef) {
+            startInlineFragment("Model3d");
+            queryDef.define(new Model3dQuery(_queryBuilder));
+            _queryBuilder.append('}');
+            return this;
+        }
+
         public MetafieldReferenceQuery onPage(PageQueryDefinition queryDef) {
             startInlineFragment("Page");
             queryDef.define(new PageQuery(_queryBuilder));
@@ -45927,6 +47592,10 @@ public class Storefront {
 
                 case "Metaobject": {
                     return new Metaobject(fields);
+                }
+
+                case "Model3d": {
+                    return new Model3d(fields);
                 }
 
                 case "Page": {
@@ -47689,7 +49358,7 @@ public class Storefront {
     /**
     * Represents a Shopify hosted 3D model.
     */
-    public static class Model3d extends AbstractResponse<Model3d> implements Media, Node {
+    public static class Model3d extends AbstractResponse<Model3d> implements Media, MetafieldReference, Node {
         public Model3d() {
         }
 
@@ -48495,44 +50164,17 @@ public class Storefront {
             return this;
         }
 
-        public class CartNoteUpdateArguments extends Arguments {
-            CartNoteUpdateArguments(StringBuilder _queryBuilder) {
-                super(_queryBuilder, false);
-            }
-
-            /**
-            * The note on the cart.
-            */
-            public CartNoteUpdateArguments note(String value) {
-                if (value != null) {
-                    startArgument("note");
-                    Query.appendQuotedString(_queryBuilder, value.toString());
-                }
-                return this;
-            }
-        }
-
-        public interface CartNoteUpdateArgumentsDefinition {
-            void define(CartNoteUpdateArguments args);
-        }
-
         /**
         * Updates the note on the cart.
         */
-        public MutationQuery cartNoteUpdate(ID cartId, CartNoteUpdatePayloadQueryDefinition queryDef) {
-            return cartNoteUpdate(cartId, args -> {}, queryDef);
-        }
-
-        /**
-        * Updates the note on the cart.
-        */
-        public MutationQuery cartNoteUpdate(ID cartId, CartNoteUpdateArgumentsDefinition argsDef, CartNoteUpdatePayloadQueryDefinition queryDef) {
+        public MutationQuery cartNoteUpdate(ID cartId, String note, CartNoteUpdatePayloadQueryDefinition queryDef) {
             startField("cartNoteUpdate");
 
             _queryBuilder.append("(cartId:");
             Query.appendQuotedString(_queryBuilder, cartId.toString());
 
-            argsDef.define(new CartNoteUpdateArguments(_queryBuilder));
+            _queryBuilder.append(",note:");
+            Query.appendQuotedString(_queryBuilder, note.toString());
 
             _queryBuilder.append(')');
 
@@ -48617,7 +50259,10 @@ public class Storefront {
 
         /**
         * Updates the attributes of a checkout if `allowPartialAddresses` is `true`.
+        *
+        * @deprecated The Storefront GraphQL Checkout API is deprecated and will be removed in a future version. Please see https://shopify.dev/changelog/deprecation-of-checkout-apis for more information.
         */
+        @Deprecated
         public MutationQuery checkoutAttributesUpdateV2(ID checkoutId, CheckoutAttributesUpdateV2Input input, CheckoutAttributesUpdateV2PayloadQueryDefinition queryDef) {
             startField("checkoutAttributesUpdateV2");
 
@@ -48639,7 +50284,10 @@ public class Storefront {
         /**
         * Completes a checkout without providing payment information. You can use this mutation for free items
         * or items whose purchase price is covered by a gift card.
+        *
+        * @deprecated The Storefront GraphQL Checkout API is deprecated and will be removed in a future version. Please see https://shopify.dev/changelog/deprecation-of-checkout-apis for more information.
         */
+        @Deprecated
         public MutationQuery checkoutCompleteFree(ID checkoutId, CheckoutCompleteFreePayloadQueryDefinition queryDef) {
             startField("checkoutCompleteFree");
 
@@ -48659,7 +50307,10 @@ public class Storefront {
         * Completes a checkout using a credit card token from Shopify's card vault. Before you can complete
         * checkouts using CheckoutCompleteWithCreditCardV2, you need to  [_request payment
         * processing_](https://shopify.dev/apps/channels/getting-started#request-payment-processing).
+        *
+        * @deprecated The Storefront GraphQL Checkout API is deprecated and will be removed in a future version. Please see https://shopify.dev/changelog/deprecation-of-checkout-apis for more information.
         */
+        @Deprecated
         public MutationQuery checkoutCompleteWithCreditCardV2(ID checkoutId, CreditCardPaymentInputV2 payment, CheckoutCompleteWithCreditCardV2PayloadQueryDefinition queryDef) {
             startField("checkoutCompleteWithCreditCardV2");
 
@@ -48680,7 +50331,10 @@ public class Storefront {
 
         /**
         * Completes a checkout with a tokenized payment.
+        *
+        * @deprecated The Storefront GraphQL Checkout API is deprecated and will be removed in a future version. Please see https://shopify.dev/changelog/deprecation-of-checkout-apis for more information.
         */
+        @Deprecated
         public MutationQuery checkoutCompleteWithTokenizedPaymentV3(ID checkoutId, TokenizedPaymentInputV3 payment, CheckoutCompleteWithTokenizedPaymentV3PayloadQueryDefinition queryDef) {
             startField("checkoutCompleteWithTokenizedPaymentV3");
 
@@ -48722,6 +50376,8 @@ public class Storefront {
 
         /**
         * Creates a new checkout.
+        *
+        * @deprecated The Storefront GraphQL Checkout API is deprecated and will be removed in a future version. Please see https://shopify.dev/changelog/deprecation-of-checkout-apis for more information.
         */
         public MutationQuery checkoutCreate(CheckoutCreateInput input, CheckoutCreatePayloadQueryDefinition queryDef) {
             return checkoutCreate(input, args -> {}, queryDef);
@@ -48729,7 +50385,10 @@ public class Storefront {
 
         /**
         * Creates a new checkout.
+        *
+        * @deprecated The Storefront GraphQL Checkout API is deprecated and will be removed in a future version. Please see https://shopify.dev/changelog/deprecation-of-checkout-apis for more information.
         */
+        @Deprecated
         public MutationQuery checkoutCreate(CheckoutCreateInput input, CheckoutCreateArgumentsDefinition argsDef, CheckoutCreatePayloadQueryDefinition queryDef) {
             startField("checkoutCreate");
 
@@ -48749,7 +50408,10 @@ public class Storefront {
 
         /**
         * Associates a customer to the checkout.
+        *
+        * @deprecated The Storefront GraphQL Checkout API is deprecated and will be removed in a future version. Please see https://shopify.dev/changelog/deprecation-of-checkout-apis for more information.
         */
+        @Deprecated
         public MutationQuery checkoutCustomerAssociateV2(ID checkoutId, String customerAccessToken, CheckoutCustomerAssociateV2PayloadQueryDefinition queryDef) {
             startField("checkoutCustomerAssociateV2");
 
@@ -48770,7 +50432,10 @@ public class Storefront {
 
         /**
         * Disassociates the current checkout customer from the checkout.
+        *
+        * @deprecated The Storefront GraphQL Checkout API is deprecated and will be removed in a future version. Please see https://shopify.dev/changelog/deprecation-of-checkout-apis for more information.
         */
+        @Deprecated
         public MutationQuery checkoutCustomerDisassociateV2(ID checkoutId, CheckoutCustomerDisassociateV2PayloadQueryDefinition queryDef) {
             startField("checkoutCustomerDisassociateV2");
 
@@ -48788,7 +50453,10 @@ public class Storefront {
 
         /**
         * Applies a discount to an existing checkout using a discount code.
+        *
+        * @deprecated The Storefront GraphQL Checkout API is deprecated and will be removed in a future version. Please see https://shopify.dev/changelog/deprecation-of-checkout-apis for more information.
         */
+        @Deprecated
         public MutationQuery checkoutDiscountCodeApplyV2(String discountCode, ID checkoutId, CheckoutDiscountCodeApplyV2PayloadQueryDefinition queryDef) {
             startField("checkoutDiscountCodeApplyV2");
 
@@ -48809,7 +50477,10 @@ public class Storefront {
 
         /**
         * Removes the applied discounts from an existing checkout.
+        *
+        * @deprecated The Storefront GraphQL Checkout API is deprecated and will be removed in a future version. Please see https://shopify.dev/changelog/deprecation-of-checkout-apis for more information.
         */
+        @Deprecated
         public MutationQuery checkoutDiscountCodeRemove(ID checkoutId, CheckoutDiscountCodeRemovePayloadQueryDefinition queryDef) {
             startField("checkoutDiscountCodeRemove");
 
@@ -48827,7 +50498,10 @@ public class Storefront {
 
         /**
         * Updates the email on an existing checkout.
+        *
+        * @deprecated The Storefront GraphQL Checkout API is deprecated and will be removed in a future version. Please see https://shopify.dev/changelog/deprecation-of-checkout-apis for more information.
         */
+        @Deprecated
         public MutationQuery checkoutEmailUpdateV2(ID checkoutId, String email, CheckoutEmailUpdateV2PayloadQueryDefinition queryDef) {
             startField("checkoutEmailUpdateV2");
 
@@ -48848,7 +50522,10 @@ public class Storefront {
 
         /**
         * Removes an applied gift card from the checkout.
+        *
+        * @deprecated The Storefront GraphQL Checkout API is deprecated and will be removed in a future version. Please see https://shopify.dev/changelog/deprecation-of-checkout-apis for more information.
         */
+        @Deprecated
         public MutationQuery checkoutGiftCardRemoveV2(ID appliedGiftCardId, ID checkoutId, CheckoutGiftCardRemoveV2PayloadQueryDefinition queryDef) {
             startField("checkoutGiftCardRemoveV2");
 
@@ -48869,7 +50546,10 @@ public class Storefront {
 
         /**
         * Appends gift cards to an existing checkout.
+        *
+        * @deprecated The Storefront GraphQL Checkout API is deprecated and will be removed in a future version. Please see https://shopify.dev/changelog/deprecation-of-checkout-apis for more information.
         */
+        @Deprecated
         public MutationQuery checkoutGiftCardsAppend(List<String> giftCardCodes, ID checkoutId, CheckoutGiftCardsAppendPayloadQueryDefinition queryDef) {
             startField("checkoutGiftCardsAppend");
 
@@ -48899,7 +50579,10 @@ public class Storefront {
 
         /**
         * Adds a list of line items to a checkout.
+        *
+        * @deprecated The Storefront GraphQL Checkout API is deprecated and will be removed in a future version. Please see https://shopify.dev/changelog/deprecation-of-checkout-apis for more information.
         */
+        @Deprecated
         public MutationQuery checkoutLineItemsAdd(List<CheckoutLineItemInput> lineItems, ID checkoutId, CheckoutLineItemsAddPayloadQueryDefinition queryDef) {
             startField("checkoutLineItemsAdd");
 
@@ -48929,7 +50612,10 @@ public class Storefront {
 
         /**
         * Removes line items from an existing checkout.
+        *
+        * @deprecated The Storefront GraphQL Checkout API is deprecated and will be removed in a future version. Please see https://shopify.dev/changelog/deprecation-of-checkout-apis for more information.
         */
+        @Deprecated
         public MutationQuery checkoutLineItemsRemove(ID checkoutId, List<ID> lineItemIds, CheckoutLineItemsRemovePayloadQueryDefinition queryDef) {
             startField("checkoutLineItemsRemove");
 
@@ -48959,7 +50645,10 @@ public class Storefront {
 
         /**
         * Sets a list of line items to a checkout.
+        *
+        * @deprecated The Storefront GraphQL Checkout API is deprecated and will be removed in a future version. Please see https://shopify.dev/changelog/deprecation-of-checkout-apis for more information.
         */
+        @Deprecated
         public MutationQuery checkoutLineItemsReplace(List<CheckoutLineItemInput> lineItems, ID checkoutId, CheckoutLineItemsReplacePayloadQueryDefinition queryDef) {
             startField("checkoutLineItemsReplace");
 
@@ -48989,7 +50678,10 @@ public class Storefront {
 
         /**
         * Updates line items on a checkout.
+        *
+        * @deprecated The Storefront GraphQL Checkout API is deprecated and will be removed in a future version. Please see https://shopify.dev/changelog/deprecation-of-checkout-apis for more information.
         */
+        @Deprecated
         public MutationQuery checkoutLineItemsUpdate(ID checkoutId, List<CheckoutLineItemUpdateInput> lineItems, CheckoutLineItemsUpdatePayloadQueryDefinition queryDef) {
             startField("checkoutLineItemsUpdate");
 
@@ -49019,7 +50711,10 @@ public class Storefront {
 
         /**
         * Updates the shipping address of an existing checkout.
+        *
+        * @deprecated The Storefront GraphQL Checkout API is deprecated and will be removed in a future version. Please see https://shopify.dev/changelog/deprecation-of-checkout-apis for more information.
         */
+        @Deprecated
         public MutationQuery checkoutShippingAddressUpdateV2(MailingAddressInput shippingAddress, ID checkoutId, CheckoutShippingAddressUpdateV2PayloadQueryDefinition queryDef) {
             startField("checkoutShippingAddressUpdateV2");
 
@@ -49040,7 +50735,10 @@ public class Storefront {
 
         /**
         * Updates the shipping lines on an existing checkout.
+        *
+        * @deprecated The Storefront GraphQL Checkout API is deprecated and will be removed in a future version. Please see https://shopify.dev/changelog/deprecation-of-checkout-apis for more information.
         */
+        @Deprecated
         public MutationQuery checkoutShippingLineUpdate(ID checkoutId, String shippingRateHandle, CheckoutShippingLineUpdatePayloadQueryDefinition queryDef) {
             startField("checkoutShippingLineUpdate");
 
@@ -50099,6 +51797,8 @@ public class Storefront {
 
         /**
         * Updates the attributes of a checkout if `allowPartialAddresses` is `true`.
+        *
+        * @deprecated The Storefront GraphQL Checkout API is deprecated and will be removed in a future version. Please see https://shopify.dev/changelog/deprecation-of-checkout-apis for more information.
         */
 
         public CheckoutAttributesUpdateV2Payload getCheckoutAttributesUpdateV2() {
@@ -50113,6 +51813,8 @@ public class Storefront {
         /**
         * Completes a checkout without providing payment information. You can use this mutation for free items
         * or items whose purchase price is covered by a gift card.
+        *
+        * @deprecated The Storefront GraphQL Checkout API is deprecated and will be removed in a future version. Please see https://shopify.dev/changelog/deprecation-of-checkout-apis for more information.
         */
 
         public CheckoutCompleteFreePayload getCheckoutCompleteFree() {
@@ -50128,6 +51830,8 @@ public class Storefront {
         * Completes a checkout using a credit card token from Shopify's card vault. Before you can complete
         * checkouts using CheckoutCompleteWithCreditCardV2, you need to  [_request payment
         * processing_](https://shopify.dev/apps/channels/getting-started#request-payment-processing).
+        *
+        * @deprecated The Storefront GraphQL Checkout API is deprecated and will be removed in a future version. Please see https://shopify.dev/changelog/deprecation-of-checkout-apis for more information.
         */
 
         public CheckoutCompleteWithCreditCardV2Payload getCheckoutCompleteWithCreditCardV2() {
@@ -50141,6 +51845,8 @@ public class Storefront {
 
         /**
         * Completes a checkout with a tokenized payment.
+        *
+        * @deprecated The Storefront GraphQL Checkout API is deprecated and will be removed in a future version. Please see https://shopify.dev/changelog/deprecation-of-checkout-apis for more information.
         */
 
         public CheckoutCompleteWithTokenizedPaymentV3Payload getCheckoutCompleteWithTokenizedPaymentV3() {
@@ -50154,6 +51860,8 @@ public class Storefront {
 
         /**
         * Creates a new checkout.
+        *
+        * @deprecated The Storefront GraphQL Checkout API is deprecated and will be removed in a future version. Please see https://shopify.dev/changelog/deprecation-of-checkout-apis for more information.
         */
 
         public CheckoutCreatePayload getCheckoutCreate() {
@@ -50167,6 +51875,8 @@ public class Storefront {
 
         /**
         * Associates a customer to the checkout.
+        *
+        * @deprecated The Storefront GraphQL Checkout API is deprecated and will be removed in a future version. Please see https://shopify.dev/changelog/deprecation-of-checkout-apis for more information.
         */
 
         public CheckoutCustomerAssociateV2Payload getCheckoutCustomerAssociateV2() {
@@ -50180,6 +51890,8 @@ public class Storefront {
 
         /**
         * Disassociates the current checkout customer from the checkout.
+        *
+        * @deprecated The Storefront GraphQL Checkout API is deprecated and will be removed in a future version. Please see https://shopify.dev/changelog/deprecation-of-checkout-apis for more information.
         */
 
         public CheckoutCustomerDisassociateV2Payload getCheckoutCustomerDisassociateV2() {
@@ -50193,6 +51905,8 @@ public class Storefront {
 
         /**
         * Applies a discount to an existing checkout using a discount code.
+        *
+        * @deprecated The Storefront GraphQL Checkout API is deprecated and will be removed in a future version. Please see https://shopify.dev/changelog/deprecation-of-checkout-apis for more information.
         */
 
         public CheckoutDiscountCodeApplyV2Payload getCheckoutDiscountCodeApplyV2() {
@@ -50206,6 +51920,8 @@ public class Storefront {
 
         /**
         * Removes the applied discounts from an existing checkout.
+        *
+        * @deprecated The Storefront GraphQL Checkout API is deprecated and will be removed in a future version. Please see https://shopify.dev/changelog/deprecation-of-checkout-apis for more information.
         */
 
         public CheckoutDiscountCodeRemovePayload getCheckoutDiscountCodeRemove() {
@@ -50219,6 +51935,8 @@ public class Storefront {
 
         /**
         * Updates the email on an existing checkout.
+        *
+        * @deprecated The Storefront GraphQL Checkout API is deprecated and will be removed in a future version. Please see https://shopify.dev/changelog/deprecation-of-checkout-apis for more information.
         */
 
         public CheckoutEmailUpdateV2Payload getCheckoutEmailUpdateV2() {
@@ -50232,6 +51950,8 @@ public class Storefront {
 
         /**
         * Removes an applied gift card from the checkout.
+        *
+        * @deprecated The Storefront GraphQL Checkout API is deprecated and will be removed in a future version. Please see https://shopify.dev/changelog/deprecation-of-checkout-apis for more information.
         */
 
         public CheckoutGiftCardRemoveV2Payload getCheckoutGiftCardRemoveV2() {
@@ -50245,6 +51965,8 @@ public class Storefront {
 
         /**
         * Appends gift cards to an existing checkout.
+        *
+        * @deprecated The Storefront GraphQL Checkout API is deprecated and will be removed in a future version. Please see https://shopify.dev/changelog/deprecation-of-checkout-apis for more information.
         */
 
         public CheckoutGiftCardsAppendPayload getCheckoutGiftCardsAppend() {
@@ -50258,6 +51980,8 @@ public class Storefront {
 
         /**
         * Adds a list of line items to a checkout.
+        *
+        * @deprecated The Storefront GraphQL Checkout API is deprecated and will be removed in a future version. Please see https://shopify.dev/changelog/deprecation-of-checkout-apis for more information.
         */
 
         public CheckoutLineItemsAddPayload getCheckoutLineItemsAdd() {
@@ -50271,6 +51995,8 @@ public class Storefront {
 
         /**
         * Removes line items from an existing checkout.
+        *
+        * @deprecated The Storefront GraphQL Checkout API is deprecated and will be removed in a future version. Please see https://shopify.dev/changelog/deprecation-of-checkout-apis for more information.
         */
 
         public CheckoutLineItemsRemovePayload getCheckoutLineItemsRemove() {
@@ -50284,6 +52010,8 @@ public class Storefront {
 
         /**
         * Sets a list of line items to a checkout.
+        *
+        * @deprecated The Storefront GraphQL Checkout API is deprecated and will be removed in a future version. Please see https://shopify.dev/changelog/deprecation-of-checkout-apis for more information.
         */
 
         public CheckoutLineItemsReplacePayload getCheckoutLineItemsReplace() {
@@ -50297,6 +52025,8 @@ public class Storefront {
 
         /**
         * Updates line items on a checkout.
+        *
+        * @deprecated The Storefront GraphQL Checkout API is deprecated and will be removed in a future version. Please see https://shopify.dev/changelog/deprecation-of-checkout-apis for more information.
         */
 
         public CheckoutLineItemsUpdatePayload getCheckoutLineItemsUpdate() {
@@ -50310,6 +52040,8 @@ public class Storefront {
 
         /**
         * Updates the shipping address of an existing checkout.
+        *
+        * @deprecated The Storefront GraphQL Checkout API is deprecated and will be removed in a future version. Please see https://shopify.dev/changelog/deprecation-of-checkout-apis for more information.
         */
 
         public CheckoutShippingAddressUpdateV2Payload getCheckoutShippingAddressUpdateV2() {
@@ -50323,6 +52055,8 @@ public class Storefront {
 
         /**
         * Updates the shipping lines on an existing checkout.
+        *
+        * @deprecated The Storefront GraphQL Checkout API is deprecated and will be removed in a future version. Please see https://shopify.dev/changelog/deprecation-of-checkout-apis for more information.
         */
 
         public CheckoutShippingLineUpdatePayload getCheckoutShippingLineUpdate() {
@@ -50741,6 +52475,27 @@ public class Storefront {
             return this;
         }
 
+        public NodeQuery onCompany(CompanyQueryDefinition queryDef) {
+            startInlineFragment("Company");
+            queryDef.define(new CompanyQuery(_queryBuilder));
+            _queryBuilder.append('}');
+            return this;
+        }
+
+        public NodeQuery onCompanyContact(CompanyContactQueryDefinition queryDef) {
+            startInlineFragment("CompanyContact");
+            queryDef.define(new CompanyContactQuery(_queryBuilder));
+            _queryBuilder.append('}');
+            return this;
+        }
+
+        public NodeQuery onCompanyLocation(CompanyLocationQueryDefinition queryDef) {
+            startInlineFragment("CompanyLocation");
+            queryDef.define(new CompanyLocationQuery(_queryBuilder));
+            _queryBuilder.append('}');
+            return this;
+        }
+
         public NodeQuery onComponentizableCartLine(ComponentizableCartLineQueryDefinition queryDef) {
             startInlineFragment("ComponentizableCartLine");
             queryDef.define(new ComponentizableCartLineQuery(_queryBuilder));
@@ -50978,6 +52733,18 @@ public class Storefront {
 
                 case "Comment": {
                     return new Comment(fields);
+                }
+
+                case "Company": {
+                    return new Company(fields);
+                }
+
+                case "CompanyContact": {
+                    return new CompanyContact(fields);
+                }
+
+                case "CompanyLocation": {
+                    return new CompanyLocation(fields);
                 }
 
                 case "ComponentizableCartLine": {
@@ -60022,6 +61789,97 @@ public class Storefront {
             return this;
         }
 
+        public class QuantityPriceBreaksArguments extends Arguments {
+            QuantityPriceBreaksArguments(StringBuilder _queryBuilder) {
+                super(_queryBuilder, true);
+            }
+
+            /**
+            * Returns up to the first `n` elements from the list.
+            */
+            public QuantityPriceBreaksArguments first(Integer value) {
+                if (value != null) {
+                    startArgument("first");
+                    _queryBuilder.append(value);
+                }
+                return this;
+            }
+
+            /**
+            * Returns the elements that come after the specified cursor.
+            */
+            public QuantityPriceBreaksArguments after(String value) {
+                if (value != null) {
+                    startArgument("after");
+                    Query.appendQuotedString(_queryBuilder, value.toString());
+                }
+                return this;
+            }
+
+            /**
+            * Returns up to the last `n` elements from the list.
+            */
+            public QuantityPriceBreaksArguments last(Integer value) {
+                if (value != null) {
+                    startArgument("last");
+                    _queryBuilder.append(value);
+                }
+                return this;
+            }
+
+            /**
+            * Returns the elements that come before the specified cursor.
+            */
+            public QuantityPriceBreaksArguments before(String value) {
+                if (value != null) {
+                    startArgument("before");
+                    Query.appendQuotedString(_queryBuilder, value.toString());
+                }
+                return this;
+            }
+        }
+
+        public interface QuantityPriceBreaksArgumentsDefinition {
+            void define(QuantityPriceBreaksArguments args);
+        }
+
+        /**
+        * A list of quantity breaks for the product variant.
+        */
+        public ProductVariantQuery quantityPriceBreaks(QuantityPriceBreakConnectionQueryDefinition queryDef) {
+            return quantityPriceBreaks(args -> {}, queryDef);
+        }
+
+        /**
+        * A list of quantity breaks for the product variant.
+        */
+        public ProductVariantQuery quantityPriceBreaks(QuantityPriceBreaksArgumentsDefinition argsDef, QuantityPriceBreakConnectionQueryDefinition queryDef) {
+            startField("quantityPriceBreaks");
+
+            QuantityPriceBreaksArguments args = new QuantityPriceBreaksArguments(_queryBuilder);
+            argsDef.define(args);
+            QuantityPriceBreaksArguments.end(args);
+
+            _queryBuilder.append('{');
+            queryDef.define(new QuantityPriceBreakConnectionQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * The quantity rule for the product variant in a given context.
+        */
+        public ProductVariantQuery quantityRule(QuantityRuleQueryDefinition queryDef) {
+            startField("quantityRule");
+
+            _queryBuilder.append('{');
+            queryDef.define(new QuantityRuleQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
         /**
         * Whether a customer needs to provide a shipping address when placing an order for the product
         * variant.
@@ -60439,6 +62297,18 @@ public class Storefront {
                         break;
                     }
 
+                    case "quantityPriceBreaks": {
+                        responseData.put(key, new QuantityPriceBreakConnection(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "quantityRule": {
+                        responseData.put(key, new QuantityRule(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
                     case "requiresShipping": {
                         responseData.put(key, jsonAsBoolean(field.getValue(), key));
 
@@ -60722,6 +62592,32 @@ public class Storefront {
         }
 
         /**
+        * A list of quantity breaks for the product variant.
+        */
+
+        public QuantityPriceBreakConnection getQuantityPriceBreaks() {
+            return (QuantityPriceBreakConnection) get("quantityPriceBreaks");
+        }
+
+        public ProductVariant setQuantityPriceBreaks(QuantityPriceBreakConnection arg) {
+            optimisticData.put(getKey("quantityPriceBreaks"), arg);
+            return this;
+        }
+
+        /**
+        * The quantity rule for the product variant in a given context.
+        */
+
+        public QuantityRule getQuantityRule() {
+            return (QuantityRule) get("quantityRule");
+        }
+
+        public ProductVariant setQuantityRule(QuantityRule arg) {
+            optimisticData.put(getKey("quantityRule"), arg);
+            return this;
+        }
+
+        /**
         * Whether a customer needs to provide a shipping address when placing an order for the product
         * variant.
         */
@@ -60893,6 +62789,10 @@ public class Storefront {
                 case "product": return true;
 
                 case "quantityAvailable": return false;
+
+                case "quantityPriceBreaks": return true;
+
+                case "quantityRule": return true;
 
                 case "requiresShipping": return false;
 
@@ -61279,6 +63179,699 @@ public class Storefront {
                 default: {
                     return "";
                 }
+            }
+        }
+    }
+
+    public interface PurchasingCompanyQueryDefinition {
+        void define(PurchasingCompanyQuery _queryBuilder);
+    }
+
+    /**
+    * Represents information about the buyer that is interacting with the cart.
+    */
+    public static class PurchasingCompanyQuery extends Query<PurchasingCompanyQuery> {
+        PurchasingCompanyQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * The company associated to the order or draft order.
+        */
+        public PurchasingCompanyQuery company(CompanyQueryDefinition queryDef) {
+            startField("company");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CompanyQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * The company contact associated to the order or draft order.
+        */
+        public PurchasingCompanyQuery contact(CompanyContactQueryDefinition queryDef) {
+            startField("contact");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CompanyContactQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * The company location associated to the order or draft order.
+        */
+        public PurchasingCompanyQuery location(CompanyLocationQueryDefinition queryDef) {
+            startField("location");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CompanyLocationQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+    }
+
+    /**
+    * Represents information about the buyer that is interacting with the cart.
+    */
+    public static class PurchasingCompany extends AbstractResponse<PurchasingCompany> {
+        public PurchasingCompany() {
+        }
+
+        public PurchasingCompany(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "company": {
+                        responseData.put(key, new Company(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "contact": {
+                        CompanyContact optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new CompanyContact(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "location": {
+                        responseData.put(key, new CompanyLocation(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "PurchasingCompany";
+        }
+
+        /**
+        * The company associated to the order or draft order.
+        */
+
+        public Company getCompany() {
+            return (Company) get("company");
+        }
+
+        public PurchasingCompany setCompany(Company arg) {
+            optimisticData.put(getKey("company"), arg);
+            return this;
+        }
+
+        /**
+        * The company contact associated to the order or draft order.
+        */
+
+        public CompanyContact getContact() {
+            return (CompanyContact) get("contact");
+        }
+
+        public PurchasingCompany setContact(CompanyContact arg) {
+            optimisticData.put(getKey("contact"), arg);
+            return this;
+        }
+
+        /**
+        * The company location associated to the order or draft order.
+        */
+
+        public CompanyLocation getLocation() {
+            return (CompanyLocation) get("location");
+        }
+
+        public PurchasingCompany setLocation(CompanyLocation arg) {
+            optimisticData.put(getKey("location"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "company": return true;
+
+                case "contact": return true;
+
+                case "location": return true;
+
+                default: return false;
+            }
+        }
+    }
+
+    public interface QuantityPriceBreakQueryDefinition {
+        void define(QuantityPriceBreakQuery _queryBuilder);
+    }
+
+    /**
+    * Quantity price breaks lets you offer different rates that are based on the
+    * amount of a specific variant being ordered.
+    */
+    public static class QuantityPriceBreakQuery extends Query<QuantityPriceBreakQuery> {
+        QuantityPriceBreakQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * Minimum quantity required to reach new quantity break price.
+        */
+        public QuantityPriceBreakQuery minimumQuantity() {
+            startField("minimumQuantity");
+
+            return this;
+        }
+
+        /**
+        * The price of variant after reaching the minimum quanity.
+        */
+        public QuantityPriceBreakQuery price(MoneyV2QueryDefinition queryDef) {
+            startField("price");
+
+            _queryBuilder.append('{');
+            queryDef.define(new MoneyV2Query(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+    }
+
+    /**
+    * Quantity price breaks lets you offer different rates that are based on the
+    * amount of a specific variant being ordered.
+    */
+    public static class QuantityPriceBreak extends AbstractResponse<QuantityPriceBreak> {
+        public QuantityPriceBreak() {
+        }
+
+        public QuantityPriceBreak(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "minimumQuantity": {
+                        responseData.put(key, jsonAsInteger(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "price": {
+                        responseData.put(key, new MoneyV2(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "QuantityPriceBreak";
+        }
+
+        /**
+        * Minimum quantity required to reach new quantity break price.
+        */
+
+        public Integer getMinimumQuantity() {
+            return (Integer) get("minimumQuantity");
+        }
+
+        public QuantityPriceBreak setMinimumQuantity(Integer arg) {
+            optimisticData.put(getKey("minimumQuantity"), arg);
+            return this;
+        }
+
+        /**
+        * The price of variant after reaching the minimum quanity.
+        */
+
+        public MoneyV2 getPrice() {
+            return (MoneyV2) get("price");
+        }
+
+        public QuantityPriceBreak setPrice(MoneyV2 arg) {
+            optimisticData.put(getKey("price"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "minimumQuantity": return false;
+
+                case "price": return true;
+
+                default: return false;
+            }
+        }
+    }
+
+    public interface QuantityPriceBreakConnectionQueryDefinition {
+        void define(QuantityPriceBreakConnectionQuery _queryBuilder);
+    }
+
+    /**
+    * An auto-generated type for paginating through multiple QuantityPriceBreaks.
+    */
+    public static class QuantityPriceBreakConnectionQuery extends Query<QuantityPriceBreakConnectionQuery> {
+        QuantityPriceBreakConnectionQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * A list of edges.
+        */
+        public QuantityPriceBreakConnectionQuery edges(QuantityPriceBreakEdgeQueryDefinition queryDef) {
+            startField("edges");
+
+            _queryBuilder.append('{');
+            queryDef.define(new QuantityPriceBreakEdgeQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * A list of the nodes contained in QuantityPriceBreakEdge.
+        */
+        public QuantityPriceBreakConnectionQuery nodes(QuantityPriceBreakQueryDefinition queryDef) {
+            startField("nodes");
+
+            _queryBuilder.append('{');
+            queryDef.define(new QuantityPriceBreakQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * Information to aid in pagination.
+        */
+        public QuantityPriceBreakConnectionQuery pageInfo(PageInfoQueryDefinition queryDef) {
+            startField("pageInfo");
+
+            _queryBuilder.append('{');
+            queryDef.define(new PageInfoQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+    }
+
+    /**
+    * An auto-generated type for paginating through multiple QuantityPriceBreaks.
+    */
+    public static class QuantityPriceBreakConnection extends AbstractResponse<QuantityPriceBreakConnection> {
+        public QuantityPriceBreakConnection() {
+        }
+
+        public QuantityPriceBreakConnection(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "edges": {
+                        List<QuantityPriceBreakEdge> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new QuantityPriceBreakEdge(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "nodes": {
+                        List<QuantityPriceBreak> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new QuantityPriceBreak(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "pageInfo": {
+                        responseData.put(key, new PageInfo(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "QuantityPriceBreakConnection";
+        }
+
+        /**
+        * A list of edges.
+        */
+
+        public List<QuantityPriceBreakEdge> getEdges() {
+            return (List<QuantityPriceBreakEdge>) get("edges");
+        }
+
+        public QuantityPriceBreakConnection setEdges(List<QuantityPriceBreakEdge> arg) {
+            optimisticData.put(getKey("edges"), arg);
+            return this;
+        }
+
+        /**
+        * A list of the nodes contained in QuantityPriceBreakEdge.
+        */
+
+        public List<QuantityPriceBreak> getNodes() {
+            return (List<QuantityPriceBreak>) get("nodes");
+        }
+
+        public QuantityPriceBreakConnection setNodes(List<QuantityPriceBreak> arg) {
+            optimisticData.put(getKey("nodes"), arg);
+            return this;
+        }
+
+        /**
+        * Information to aid in pagination.
+        */
+
+        public PageInfo getPageInfo() {
+            return (PageInfo) get("pageInfo");
+        }
+
+        public QuantityPriceBreakConnection setPageInfo(PageInfo arg) {
+            optimisticData.put(getKey("pageInfo"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "edges": return true;
+
+                case "nodes": return true;
+
+                case "pageInfo": return true;
+
+                default: return false;
+            }
+        }
+    }
+
+    public interface QuantityPriceBreakEdgeQueryDefinition {
+        void define(QuantityPriceBreakEdgeQuery _queryBuilder);
+    }
+
+    /**
+    * An auto-generated type which holds one QuantityPriceBreak and a cursor during pagination.
+    */
+    public static class QuantityPriceBreakEdgeQuery extends Query<QuantityPriceBreakEdgeQuery> {
+        QuantityPriceBreakEdgeQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * A cursor for use in pagination.
+        */
+        public QuantityPriceBreakEdgeQuery cursor() {
+            startField("cursor");
+
+            return this;
+        }
+
+        /**
+        * The item at the end of QuantityPriceBreakEdge.
+        */
+        public QuantityPriceBreakEdgeQuery node(QuantityPriceBreakQueryDefinition queryDef) {
+            startField("node");
+
+            _queryBuilder.append('{');
+            queryDef.define(new QuantityPriceBreakQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+    }
+
+    /**
+    * An auto-generated type which holds one QuantityPriceBreak and a cursor during pagination.
+    */
+    public static class QuantityPriceBreakEdge extends AbstractResponse<QuantityPriceBreakEdge> {
+        public QuantityPriceBreakEdge() {
+        }
+
+        public QuantityPriceBreakEdge(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "cursor": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "node": {
+                        responseData.put(key, new QuantityPriceBreak(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "QuantityPriceBreakEdge";
+        }
+
+        /**
+        * A cursor for use in pagination.
+        */
+
+        public String getCursor() {
+            return (String) get("cursor");
+        }
+
+        public QuantityPriceBreakEdge setCursor(String arg) {
+            optimisticData.put(getKey("cursor"), arg);
+            return this;
+        }
+
+        /**
+        * The item at the end of QuantityPriceBreakEdge.
+        */
+
+        public QuantityPriceBreak getNode() {
+            return (QuantityPriceBreak) get("node");
+        }
+
+        public QuantityPriceBreakEdge setNode(QuantityPriceBreak arg) {
+            optimisticData.put(getKey("node"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "cursor": return false;
+
+                case "node": return true;
+
+                default: return false;
+            }
+        }
+    }
+
+    public interface QuantityRuleQueryDefinition {
+        void define(QuantityRuleQuery _queryBuilder);
+    }
+
+    /**
+    * The quantity rule for the product variant in a given context.
+    */
+    public static class QuantityRuleQuery extends Query<QuantityRuleQuery> {
+        QuantityRuleQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * The value that specifies the quantity increment between minimum and maximum of the rule.
+        * Only quantities divisible by this value will be considered valid.
+        * The increment must be lower than or equal to the minimum and the maximum, and both minimum and
+        * maximum
+        * must be divisible by this value.
+        */
+        public QuantityRuleQuery increment() {
+            startField("increment");
+
+            return this;
+        }
+
+        /**
+        * An optional value that defines the highest allowed quantity purchased by the customer.
+        * If defined, maximum must be lower than or equal to the minimum and must be a multiple of the
+        * increment.
+        */
+        public QuantityRuleQuery maximum() {
+            startField("maximum");
+
+            return this;
+        }
+
+        /**
+        * The value that defines the lowest allowed quantity purchased by the customer.
+        * The minimum must be a multiple of the quantity rule's increment.
+        */
+        public QuantityRuleQuery minimum() {
+            startField("minimum");
+
+            return this;
+        }
+    }
+
+    /**
+    * The quantity rule for the product variant in a given context.
+    */
+    public static class QuantityRule extends AbstractResponse<QuantityRule> {
+        public QuantityRule() {
+        }
+
+        public QuantityRule(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "increment": {
+                        responseData.put(key, jsonAsInteger(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "maximum": {
+                        Integer optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = jsonAsInteger(field.getValue(), key);
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "minimum": {
+                        responseData.put(key, jsonAsInteger(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "QuantityRule";
+        }
+
+        /**
+        * The value that specifies the quantity increment between minimum and maximum of the rule.
+        * Only quantities divisible by this value will be considered valid.
+        * The increment must be lower than or equal to the minimum and the maximum, and both minimum and
+        * maximum
+        * must be divisible by this value.
+        */
+
+        public Integer getIncrement() {
+            return (Integer) get("increment");
+        }
+
+        public QuantityRule setIncrement(Integer arg) {
+            optimisticData.put(getKey("increment"), arg);
+            return this;
+        }
+
+        /**
+        * An optional value that defines the highest allowed quantity purchased by the customer.
+        * If defined, maximum must be lower than or equal to the minimum and must be a multiple of the
+        * increment.
+        */
+
+        public Integer getMaximum() {
+            return (Integer) get("maximum");
+        }
+
+        public QuantityRule setMaximum(Integer arg) {
+            optimisticData.put(getKey("maximum"), arg);
+            return this;
+        }
+
+        /**
+        * The value that defines the lowest allowed quantity purchased by the customer.
+        * The minimum must be a multiple of the quantity rule's increment.
+        */
+
+        public Integer getMinimum() {
+            return (Integer) get("minimum");
+        }
+
+        public QuantityRule setMinimum(Integer arg) {
+            optimisticData.put(getKey("minimum"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "increment": return false;
+
+                case "maximum": return false;
+
+                case "minimum": return false;
+
+                default: return false;
             }
         }
     }
@@ -62978,7 +65571,7 @@ public class Storefront {
             }
 
             /**
-            * Specifies how unavailable products are displayed in the search results.
+            * Specifies how unavailable products or variants are displayed in the search results.
             */
             public SearchArguments unavailableProducts(SearchUnavailableProductsType value) {
                 if (value != null) {
@@ -71568,6 +74161,127 @@ public class Storefront {
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "pollAfter": return false;
+
+                default: return false;
+            }
+        }
+    }
+
+    public interface SwatchQueryDefinition {
+        void define(SwatchQuery _queryBuilder);
+    }
+
+    /**
+    * Color and image for visual representation.
+    */
+    public static class SwatchQuery extends Query<SwatchQuery> {
+        SwatchQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * The swatch color.
+        */
+        public SwatchQuery color() {
+            startField("color");
+
+            return this;
+        }
+
+        /**
+        * The swatch image.
+        */
+        public SwatchQuery image(MediaImageQueryDefinition queryDef) {
+            startField("image");
+
+            _queryBuilder.append('{');
+            queryDef.define(new MediaImageQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+    }
+
+    /**
+    * Color and image for visual representation.
+    */
+    public static class Swatch extends AbstractResponse<Swatch> {
+        public Swatch() {
+        }
+
+        public Swatch(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "color": {
+                        String optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = jsonAsString(field.getValue(), key);
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "image": {
+                        MediaImage optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new MediaImage(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "Swatch";
+        }
+
+        /**
+        * The swatch color.
+        */
+
+        public String getColor() {
+            return (String) get("color");
+        }
+
+        public Swatch setColor(String arg) {
+            optimisticData.put(getKey("color"), arg);
+            return this;
+        }
+
+        /**
+        * The swatch image.
+        */
+
+        public MediaImage getImage() {
+            return (MediaImage) get("image");
+        }
+
+        public Swatch setImage(MediaImage arg) {
+            optimisticData.put(getKey("image"), arg);
+            return this;
+        }
+
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "color": return false;
+
+                case "image": return true;
 
                 default: return false;
             }
