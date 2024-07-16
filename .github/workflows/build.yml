@@ -45,8 +45,8 @@ jobs:
 
       - name: Stage and push generated files
         run: |
-          git config user.name github-actions
-          git config user.email github-actions@github.com
+          git config user.name "${GITHUB_ACTOR}"
+          git config user.email "${GITHUB_ACTOR_ID}+${GITHUB_ACTOR}@users.noreply.github.com"
           git add .
           git commit -m "Update schema (auto-generated)"
           git push --set-upstream --force origin "$API_VERSION-auto-generated"
