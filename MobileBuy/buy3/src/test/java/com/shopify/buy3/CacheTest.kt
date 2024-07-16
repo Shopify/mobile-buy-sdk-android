@@ -63,7 +63,7 @@ class CacheTest {
     private lateinit var lastHttResponse: okhttp3.Response
     private lateinit var okHttpClient: OkHttpClient
     private val mutationQuery = Storefront.mutation { root ->
-        root.checkoutCompleteFree(ID("test")) { query -> query.checkout { it.ready() } }
+        root.cartCreate() { query -> query.cart { it.note() } }
     }
 
     @Before fun setUp() {
