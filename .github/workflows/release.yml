@@ -20,7 +20,7 @@ jobs:
             const mm = String(today.getMonth() + 1).padStart(2, '0');
             const api_version = yyyy + '-' + mm;
             const notes = `Updates the Mobile Buy SDK for Android with support for the \`${api_version}\` version of the Shopify Storefront API.\n\nFor more details about the changes, please see the [release notes](https://shopify.dev/api/release-notes/${api_version}#graphql-storefront-api-changes).`
-            github.repos.createRelease({
+            github.rest.repos.createRelease({
               owner: context.repo.owner,
               repo: context.repo.repo,
               name: `X.X.X [${api_version}]`,
