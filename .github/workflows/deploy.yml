@@ -15,7 +15,7 @@ jobs:
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           submodules: true
 
@@ -23,9 +23,10 @@ jobs:
         uses: ruby/setup-ruby@v1
 
       - name: Install JDK 1.8
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v4
         with:
-          java-version: 1.8
+          java-version: 8
+          distribution: temurin
 
       - name: Publish Package
         working-directory: ./MobileBuy
