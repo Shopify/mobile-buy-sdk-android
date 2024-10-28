@@ -15,7 +15,7 @@ jobs:
           echo "API_VERSION=$API_VERSION" >> $GITHUB_ENV
 
       - name: Checkout Repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           submodules: true
 
@@ -23,7 +23,7 @@ jobs:
         uses: ruby/setup-ruby@v1
 
       - name: Install JDK 1.8
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v4
         with:
           java-version: 1.8
           server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
@@ -51,7 +51,7 @@ jobs:
           git commit -m "Update schema (auto-generated)"
           git push --set-upstream --force origin "$API_VERSION-auto-generated"
 
-      - uses: actions/github-script@0.9.0
+      - uses: actions/github-script@v7
         with:
           script: |
             const today = new Date();
