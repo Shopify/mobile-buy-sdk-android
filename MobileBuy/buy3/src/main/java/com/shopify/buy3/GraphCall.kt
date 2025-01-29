@@ -35,7 +35,7 @@ typealias GraphCallResultCallback<T> = (result: GraphCallResult<T>) -> Unit
 
 /**
  *
- * A call to the `GraphQL` server.
+ * A call to the `GraphQL` server.okhttp
  *
  * Represents `GraphQL` operation request that has been prepared for execution. Since this class represents a single
  * request/response pair, it can't be executed twice. To execute the request again, use the [GraphCall.clone] method which
@@ -213,11 +213,12 @@ sealed class GraphError(message: String? = null, cause: Throwable? = null) : Exc
     /**
      * Error when HTTP response status code is not from {@code 200} series.
      */
-    class HttpError(rawResponse: Response) : GraphError(message = "HTTP(${rawResponse.code()}) ${rawResponse.message()}") {
+    class HttpError(rawResponse: Response) :
+        GraphError(message = "HTTP(${rawResponse.code}) ${rawResponse.message}") {
         /**
          * HTTP response status code.
          */
-        val statusCode = rawResponse.code()
+        val statusCode = rawResponse.code
     }
 
     /**

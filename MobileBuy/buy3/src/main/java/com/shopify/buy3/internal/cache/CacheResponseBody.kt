@@ -24,10 +24,12 @@
 package com.shopify.buy3.internal.cache
 
 import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.ResponseBody
 import okio.BufferedSource
 import okio.Okio
 import okio.Source
+import okio.buffer
 import timber.log.Timber
 
 internal class CacheResponseBody(
@@ -35,9 +37,9 @@ internal class CacheResponseBody(
     val contentType: String?,
     val contentLength: String?
 ) : ResponseBody() {
-    private val responseBodySource = Okio.buffer(responseBodySource)
+    private val responseBodySource = responseBodySource.buffer()
 
-    override fun contentType(): MediaType? = contentType?.let { MediaType.parse(it) }
+    override fun contentType(): MediaType? = contentType?.toMediaTypeOrNull()
 
     override fun contentLength(): Long {
         return try {

@@ -59,9 +59,12 @@ internal class HttpCacheInterceptor(private val cache: HttpCache) : Interceptor 
     @Throws(IOException::class)
     private fun networkFirst(request: Request, chain: Interceptor.Chain): Response {
         val networkResponse = chain.proceed(request).withServedDateHeader()
+
         if (networkResponse.isSuccessful) {
             val cacheKey = request.header(HTTP_CACHE_KEY_HEADER)
-            return cache.proxyResponse(networkResponse, cacheKey)
+            if (!cacheKey.isNullOrBlank()) {
+                return cache.proxyResponse(networkResponse, cacheKey)
+            }
         }
 
         val cacheResponse = cachedResponse(request)
@@ -86,7 +89,9 @@ internal class HttpCacheInterceptor(private val cache: HttpCache) : Interceptor 
             val networkResponse = chain.proceed(request).withServedDateHeader()
             if (networkResponse.isSuccessful) {
                 val cacheKey = request.header(HTTP_CACHE_KEY_HEADER)
-                return cache.proxyResponse(networkResponse, cacheKey)
+                if (!cacheKey.isNullOrBlank()) {
+                    return cache.proxyResponse(networkResponse, cacheKey)
+                }
             }
             return networkResponse
         }

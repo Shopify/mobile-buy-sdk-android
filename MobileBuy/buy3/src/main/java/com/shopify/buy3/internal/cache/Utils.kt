@@ -47,7 +47,7 @@ internal val RequestBody.cacheKey: String
     }
 
 internal fun Response?.strip(): Response? {
-    return this?.body()?.let {
+    return this?.body?.let {
         newBuilder().body(null).networkResponse(null).cacheResponse(null).build()
     } ?: this
 }

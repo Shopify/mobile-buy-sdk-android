@@ -23,29 +23,22 @@
  */
 package com.shopify.buy3.internal.cache
 
+import okhttp3.Cache
 import okhttp3.internal.cache.DiskLruCache
 import okhttp3.internal.io.FileSystem
+import okio.Path
 import okio.Sink
 import okio.Source
 import java.io.File
 import java.io.IOException
+import kotlin.math.max
 
-private const val VERSION = 99991
 private const val ENTRY_HEADERS = 0
 private const val ENTRY_BODY = 1
-private const val ENTRY_COUNT = 2
 
-internal class DiskLruCacheStore : ResponseCacheStore {
+internal class DiskLruCacheStore(directory: File, maxSize: Long) : ResponseCacheStore {
 
-    private val cache: DiskLruCache
-
-    constructor(directory: File, maxSize: Long) {
-        this.cache = DiskLruCache.create(FileSystem.SYSTEM, directory, VERSION, ENTRY_COUNT, maxSize)
-    }
-
-    constructor(fileSystem: FileSystem, directory: File, maxSize: Long) {
-        this.cache = DiskLruCache.create(fileSystem, directory, VERSION, ENTRY_COUNT, maxSize)
-    }
+    private val cache: Cache = Cache(directory, maxSize)
 
     @Throws(IOException::class)
     override fun cacheRecord(cacheKey: String): ResponseCacheRecord? {

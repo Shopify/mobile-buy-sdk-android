@@ -59,7 +59,7 @@ internal class HttpResponseParser<T : AbstractResponse<T>>(private val extractRe
     @Throws(GraphError::class)
     private fun parseTopLevelResponse(response: Response): TopLevelResponse {
         try {
-            val reader = JsonReader(response.body().charStream())
+            val reader = JsonReader(response.body?.charStream())
             val root = JsonParser().parse(reader) as JsonObject
             return TopLevelResponse(root)
         } catch (e: Exception) {

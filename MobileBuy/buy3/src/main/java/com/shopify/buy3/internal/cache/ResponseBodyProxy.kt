@@ -35,14 +35,18 @@ import okio.ForwardingSink
 import okio.Okio
 import okio.Source
 import okio.Timeout
+import okio.buffer
 import timber.log.Timber
 import java.io.IOException
 import java.util.concurrent.TimeUnit
 
-internal class ResponseBodyProxy(cacheRecordEditor: ResponseCacheRecordEditor, sourceResponse: Response) : ResponseBody() {
+internal class ResponseBodyProxy(
+    cacheRecordEditor: ResponseCacheRecordEditor,
+    sourceResponse: Response
+) : ResponseBody() {
     private val contentType = sourceResponse.header("Content-Type")
     private val contentLength = sourceResponse.header("Content-Length")
-    private val responseBodySource = ProxySource(cacheRecordEditor, sourceResponse.body().source())
+    private val responseBodySource = ProxySource(cacheRecordEditor, sourceResponse.body.source())
 
     override fun contentType(): MediaType? {
         return if (contentType != null) MediaType.parse(contentType) else null
@@ -57,7 +61,7 @@ internal class ResponseBodyProxy(cacheRecordEditor: ResponseCacheRecordEditor, s
         }
     }
 
-    override fun source(): BufferedSource = Okio.buffer(responseBodySource)
+    override fun source(): BufferedSource = responseBodySource.buffer()
 }
 
 private class ProxySource internal constructor(

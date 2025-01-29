@@ -1,3 +1,0 @@
-[submodule "MobileBuy/libs/graphql_java_gen"]
-	path = MobileBuy/libs/graphql_java_gen
-	url = https://github.com/Shopify/graphql_java_gen.git

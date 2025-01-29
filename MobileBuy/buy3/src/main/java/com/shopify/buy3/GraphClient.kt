@@ -24,7 +24,7 @@
 package com.shopify.buy3
 
 import android.content.Context
-import android.support.annotation.VisibleForTesting
+import androidx.annotation.VisibleForTesting
 import com.shopify.buy3.internal.RealMutationGraphCall
 import com.shopify.buy3.internal.RealQueryGraphCall
 import com.shopify.buy3.internal.cache.DiskLruCacheStore
@@ -32,6 +32,7 @@ import com.shopify.buy3.internal.cache.HttpCache
 import com.shopify.buy3.internal.cache.ResponseCacheStore
 import okhttp3.Call
 import okhttp3.HttpUrl
+import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.OkHttpClient
 import okio.ByteString
 import java.io.File
@@ -158,7 +159,8 @@ class GraphClient private constructor(
         @VisibleForTesting
         internal var dispatcher: ScheduledThreadPoolExecutor? = null
         @VisibleForTesting
-        internal var endpointUrl = HttpUrl.parse("https://$shopDomain/api/${Storefront.API_VERSION}/graphql")
+        internal var endpointUrl =
+            "https://$shopDomain/api/${Storefront.API_VERSION}/graphql".toHttpUrl()
 
         init {
             shopDomain.checkNotBlank("shopDomain can't be empty")
@@ -195,7 +197,7 @@ class GraphClient private constructor(
             val httpCache = httpCacheConfig.let { config ->
                 when (config) {
                     is HttpCacheConfig.DiskLru -> {
-                        val version = BuildConfig.BUY_SDK_VERSION
+                        val version = BuildConfig.LIBRARY_VERSION
                         val tmp = (endpointUrl.toString() + "/" + version + "/" + accessToken + "/" + locale).toByteArray(Charset.forName("UTF-8"))
                         val httpCacheFolder = File(config.cacheFolder, ByteString.of(*tmp).md5().hex())
                         HttpCache(
@@ -274,9 +276,9 @@ private fun OkHttpClient.withHttpCacheInterceptor(httpCache: HttpCache?): OkHttp
 private fun OkHttpClient.withSdkHeaderInterceptor(applicationName: String, accessToken: String, locale: String?): OkHttpClient {
     return newBuilder().addInterceptor { chain ->
         val original = chain.request()
-        val builder = original.newBuilder().method(original.method(), original.body())
-        builder.header("User-Agent", "Mobile Buy SDK Android/" + BuildConfig.BUY_SDK_VERSION + "/" + applicationName)
-        builder.header("X-SDK-Version", BuildConfig.BUY_SDK_VERSION)
+        val builder = original.newBuilder().method(original.method, original.body)
+        builder.header("User-Agent", "Mobile Buy SDK Android/" + BuildConfig.LIBRARY_VERSION + "/" + applicationName)
+        builder.header("X-SDK-Version", BuildConfig.LIBRARY_VERSION)
         builder.header("X-SDK-Variant", "android")
         builder.header("X-Shopify-Storefront-Access-Token", accessToken)
         if (locale!= null) {
