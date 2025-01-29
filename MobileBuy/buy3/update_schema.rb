@@ -8,7 +8,9 @@ require 'optparse'
 require 'faraday'
 require 'fileutils'
 
-target_filename = '../buy3/src/main/java/com/shopify/buy3/Storefront.java'
+root = File.expand_path('..', __dir__)
+
+target_filename = "#{root}/buy3/src/main/java/com/shopify/buy3/Storefront.java"
 OptionParser.new do |opts|
   opts.on("-tFILENAME", "--target=FILENAME", "Target file name") do |filename|
     target_filename = filename
