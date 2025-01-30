@@ -2,25 +2,15 @@
 
 package com.shopify.graphql.support;
 
+import androidx.annotation.NonNull;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.shopify.graphql.support.AbstractResponse;
-import com.shopify.graphql.support.Arguments;
-import com.shopify.graphql.support.Error;
-import com.shopify.graphql.support.Query;
-import com.shopify.graphql.support.SchemaViolationError;
-import com.shopify.graphql.support.TopLevelResponse;
-import com.shopify.graphql.support.Input;
-
-import com.shopify.graphql.support.ID;
-
-import com.shopify.graphql.support.Nullable;
-
-import java.time.LocalDateTime;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -52,8 +42,8 @@ public class Generated {
     }
 
     public static class QueryResponse {
-        private TopLevelResponse response;
-        private QueryRoot data;
+        private final TopLevelResponse response;
+        private final QueryRoot data;
 
         public QueryResponse(TopLevelResponse response) throws SchemaViolationError {
             this.response = response;
@@ -100,8 +90,8 @@ public class Generated {
     }
 
     public static class MutationResponse {
-        private TopLevelResponse response;
-        private Mutation data;
+        private final TopLevelResponse response;
+        private final Mutation data;
 
         public MutationResponse(TopLevelResponse response) throws SchemaViolationError {
             this.response = response;
@@ -488,6 +478,7 @@ public class Generated {
                 }
             }
         }
+        @NonNull
         public String toString() {
             switch (this) {
                 case INTEGER: {
@@ -529,10 +520,10 @@ public class Generated {
             startField("set_string");
 
             _queryBuilder.append("(key:");
-            Query.appendQuotedString(_queryBuilder, key.toString());
+            Query.appendQuotedString(_queryBuilder, key);
 
             _queryBuilder.append(",value:");
-            Query.appendQuotedString(_queryBuilder, value.toString());
+            Query.appendQuotedString(_queryBuilder, value);
 
             _queryBuilder.append(')');
 
@@ -547,7 +538,7 @@ public class Generated {
             public SetStringWithDefaultArguments value(String value) {
                 if (value != null) {
                     startArgument("value");
-                    Query.appendQuotedString(_queryBuilder, value.toString());
+                    Query.appendQuotedString(_queryBuilder, value);
                 }
                 return this;
             }
@@ -565,7 +556,7 @@ public class Generated {
             startField("set_string_with_default");
 
             _queryBuilder.append("(key:");
-            Query.appendQuotedString(_queryBuilder, key.toString());
+            Query.appendQuotedString(_queryBuilder, key);
 
             argsDef.define(new SetStringWithDefaultArguments(_queryBuilder));
 
@@ -678,7 +669,7 @@ public class Generated {
             public EntriesArguments after(String value) {
                 if (value != null) {
                     startArgument("after");
-                    Query.appendQuotedString(_queryBuilder, value.toString());
+                    Query.appendQuotedString(_queryBuilder, value);
                 }
                 return this;
             }
@@ -716,7 +707,7 @@ public class Generated {
             startField("entry");
 
             _queryBuilder.append("(key:");
-            Query.appendQuotedString(_queryBuilder, key.toString());
+            Query.appendQuotedString(_queryBuilder, key);
 
             _queryBuilder.append(')');
 
@@ -734,7 +725,7 @@ public class Generated {
             startField("entry_union");
 
             _queryBuilder.append("(key:");
-            Query.appendQuotedString(_queryBuilder, key.toString());
+            Query.appendQuotedString(_queryBuilder, key);
 
             _queryBuilder.append(')');
 
@@ -752,7 +743,7 @@ public class Generated {
             startField("integer");
 
             _queryBuilder.append("(key:");
-            Query.appendQuotedString(_queryBuilder, key.toString());
+            Query.appendQuotedString(_queryBuilder, key);
 
             _queryBuilder.append(')');
 
@@ -767,7 +758,7 @@ public class Generated {
             public KeysArguments after(String value) {
                 if (value != null) {
                     startArgument("after");
-                    Query.appendQuotedString(_queryBuilder, value.toString());
+                    Query.appendQuotedString(_queryBuilder, value);
                 }
                 return this;
             }
@@ -775,7 +766,7 @@ public class Generated {
             public KeysArguments type(KeyType value) {
                 if (value != null) {
                     startArgument("type");
-                    _queryBuilder.append(value.toString());
+                    _queryBuilder.append(value);
                 }
                 return this;
             }
@@ -809,7 +800,7 @@ public class Generated {
             startField("string");
 
             _queryBuilder.append("(key:");
-            Query.appendQuotedString(_queryBuilder, key.toString());
+            Query.appendQuotedString(_queryBuilder, key);
 
             _queryBuilder.append(')');
 
@@ -820,7 +811,7 @@ public class Generated {
             startField("ttl");
 
             _queryBuilder.append("(key:");
-            Query.appendQuotedString(_queryBuilder, key.toString());
+            Query.appendQuotedString(_queryBuilder, key);
 
             _queryBuilder.append(')');
 
@@ -831,7 +822,7 @@ public class Generated {
             startField("type");
 
             _queryBuilder.append("(key:");
-            Query.appendQuotedString(_queryBuilder, key.toString());
+            Query.appendQuotedString(_queryBuilder, key);
 
             _queryBuilder.append(')');
 
@@ -1205,7 +1196,7 @@ public class Generated {
             _queryBuilder.append(separator);
             separator = ",";
             _queryBuilder.append("key:");
-            Query.appendQuotedString(_queryBuilder, key.toString());
+            Query.appendQuotedString(_queryBuilder, key);
 
             _queryBuilder.append(separator);
             separator = ",";
@@ -1236,10 +1227,9 @@ public class Generated {
 
             if (this.apiClient.isDefined()) {
                 _queryBuilder.append(separator);
-                separator = ",";
                 _queryBuilder.append("api_client:");
                 if (apiClient.getValue() != null) {
-                    Query.appendQuotedString(_queryBuilder, apiClient.getValue().toString());
+                    Query.appendQuotedString(_queryBuilder, apiClient.getValue());
                 } else {
                     _queryBuilder.append("null");
                 }
