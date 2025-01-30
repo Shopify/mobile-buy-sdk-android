@@ -43,7 +43,7 @@ jobs:
       - name: Generate Schema
         run: |
           echo "Generating schema for $API_VERSION"
-          ./MobileBuy/buy3/update_schema.rb "$API_VERSION"
+          ./bin/update-schema $API_VERSION
           ./bin/update-version $API_VERSION
           git add .
           git config user.name "${GITHUB_ACTOR}"
