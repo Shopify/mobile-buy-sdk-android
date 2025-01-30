@@ -7,12 +7,19 @@ end
 
 root = File.expand_path("..", __dir__)
 
+readme = File.join(root, "README.md")
+
+unless File.exist?(readme) && File.writable?(readme)
+  raise "unable to open #{readme}"
+end
+
 build_config = File.join(root, "MobileBuy", "buy3", "build.gradle.kts")
 
 unless File.exist?(build_config) && File.writable?(build_config)
   raise "unable to open #{build_config}"
 end
 
+readme_src = File.read(readme)
 build_config_src = File.read(build_config)
 
 version_components = new_version.split("-").map(&:to_i)
@@ -33,7 +40,14 @@ updated_components = [
 
 new_version = updated_components.join(".")
 
+readme_src.gsub!(/'com.shopify.mobilebuysdk:buy3:.*'/, "'com.shopify.mobilebuysdk:buy3:#{new_version}'")
+readme_src.gsub!(%r{<version>.*</version>}, "<version>#{new_version}</version>")
+
 build_config_src.gsub!(/^version.*$/, "version = \"#{new_version}\"")
+
+File.open(readme, "w") do |file|
+  file.puts readme_src
+end
 
 File.open(build_config, "w") do |file|
   file.puts build_config_src
