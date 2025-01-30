@@ -25,8 +25,6 @@ package com.shopify.buy3
 
 import android.content.Context
 import com.google.common.truth.Truth.assertThat
-import com.nhaarman.mockito_kotlin.doReturn
-import com.nhaarman.mockito_kotlin.whenever
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.intellij.lang.annotations.Language
@@ -34,7 +32,9 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
+import org.mockito.Mockito.doReturn
 import org.mockito.junit.MockitoJUnitRunner
+import org.mockito.kotlin.whenever
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicReference
 
@@ -68,7 +68,7 @@ class RetryTest {
         """.trimIndent()
 
     @Before fun setUp() {
-        doReturn(PACKAGE_NAME).whenever(mockContext).getPackageName()
+        doReturn(PACKAGE_NAME).whenever(mockContext).packageName
         graphClient = GraphClient.build(context = mockContext, shopDomain = "shopDomain", accessToken = "accessToken", configure = {
             endpointUrl = server.url("/")
         })

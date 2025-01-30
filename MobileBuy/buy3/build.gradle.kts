@@ -29,7 +29,7 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
 
-        buildConfigField("String", "LIBRARY_VERSION", "\"${project.version}\"")
+        buildConfigField("String", "BUY_SDK_VERSION", "\"${project.version}\"")
     }
 
     buildTypes {
@@ -52,10 +52,22 @@ android {
 dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
-    implementation(libs.okhttp)
+
+    implementation(
+        platform(libs.okhttp.bom)
+    )
+    implementation(libs.okhttp.core)
+    implementation(libs.okhttp.logging)
+
     implementation(libs.gson)
     implementation(libs.timber)
+
     testImplementation(libs.junit)
+    testImplementation(libs.mockito)
+    testImplementation(libs.mockito.kotlin)
+    testImplementation(libs.truth)
+    testImplementation(libs.okhttp.mockwebserver)
+
     androidTestImplementation(libs.androidx.junit)
 }
 

@@ -25,26 +25,28 @@ package com.shopify.buy3
 
 import android.content.Context
 import com.google.common.truth.Truth.assertThat
-import com.nhaarman.mockito_kotlin.doReturn
-import com.nhaarman.mockito_kotlin.whenever
-import okhttp3.HttpUrl
+import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
+import org.mockito.Mockito.doReturn
 import org.mockito.junit.MockitoJUnitRunner
-import java.io.File
+import org.mockito.kotlin.whenever
 
 private const val PACKAGE_NAME = "com.shopify.buy3.test"
 private const val SHOP_DOMAIN = "shopDomain"
 private const val ACCESS_TOKEN = "access_token"
-private val ENDPOINT_URL = HttpUrl.parse(String.format("https://%s/api/%s/graphql", SHOP_DOMAIN, Storefront.API_VERSION))
+private val ENDPOINT_URL = String.format(
+    "https://%s/api/%s/graphql", SHOP_DOMAIN, Storefront.API_VERSION
+).toHttpUrl()
 
 @RunWith(MockitoJUnitRunner::class)
 class GraphClientBuilderTest {
-    @Mock lateinit var mockContext: Context
+    @Mock
+    lateinit var mockContext: Context
 
     @Before fun setUp() {
         doReturn(PACKAGE_NAME).whenever(mockContext).packageName
@@ -64,7 +66,7 @@ class GraphClientBuilderTest {
             assertThat(serverUrl).isEqualTo(ENDPOINT_URL)
             assertThat(httpCallFactory).isNotNull()
             assertThat(httpCallFactory).isInstanceOf(OkHttpClient::class.java)
-            assertThat((httpCallFactory as OkHttpClient).networkInterceptors()).contains(networkInterceptor)
+            assertThat((httpCallFactory as OkHttpClient).networkInterceptors).contains(networkInterceptor)
         }
     }
 
@@ -81,19 +83,5 @@ class GraphClientBuilderTest {
     @Test fun buildFailWithPreconditions() {
         checkForIllegalArgumentException { GraphClient.build(context = mockContext, shopDomain = "", accessToken = ACCESS_TOKEN) }
         checkForIllegalArgumentException { GraphClient.build(context = mockContext, shopDomain = SHOP_DOMAIN, accessToken = "") }
-        checkForIllegalArgumentException {
-            GraphClient.build(context = mockContext, shopDomain = SHOP_DOMAIN, accessToken = ACCESS_TOKEN, configure = {
-                httpCache(cacheFolder = File("")) {
-                    cacheMaxSizeBytes = 0
-                }
-            })
-        }
-        checkForIllegalArgumentException {
-            GraphClient.build(context = mockContext, shopDomain = SHOP_DOMAIN, accessToken = ACCESS_TOKEN, configure = {
-                httpCache(cacheFolder = File("")) {
-                    cacheMaxSizeBytes = -1
-                }
-            })
-        }
     }
 }

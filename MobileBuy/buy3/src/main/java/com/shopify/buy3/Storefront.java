@@ -19,8 +19,6 @@ import com.shopify.graphql.support.ID;
 
 import java.math.BigDecimal;
 
-import org.joda.time.DateTime;
-
 import java.io.Serializable;
 import java.util.*;
 
@@ -1631,11 +1629,11 @@ public class Storefront {
         * The date and time when the article was published.
         */
 
-        public DateTime getPublishedAt() {
-            return (DateTime) get("publishedAt");
+        public Date getPublishedAt() {
+            return (Date) get("publishedAt");
         }
 
-        public Article setPublishedAt(DateTime arg) {
+        public Article setPublishedAt(Date arg) {
             optimisticData.put(getKey("publishedAt"), arg);
             return this;
         }
@@ -5720,11 +5718,11 @@ public class Storefront {
         * The date and time when the cart was created.
         */
 
-        public DateTime getCreatedAt() {
-            return (DateTime) get("createdAt");
+        public Date getCreatedAt() {
+            return (Date) get("createdAt");
         }
 
-        public Cart setCreatedAt(DateTime arg) {
+        public Cart setCreatedAt(Date arg) {
             optimisticData.put(getKey("createdAt"), arg);
             return this;
         }
@@ -5865,11 +5863,11 @@ public class Storefront {
         * The date and time when the cart was updated.
         */
 
-        public DateTime getUpdatedAt() {
-            return (DateTime) get("updatedAt");
+        public Date getUpdatedAt() {
+            return (Date) get("updatedAt");
         }
 
-        public Cart setUpdatedAt(DateTime arg) {
+        public Cart setUpdatedAt(Date arg) {
             optimisticData.put(getKey("updatedAt"), arg);
             return this;
         }
@@ -7883,7 +7881,7 @@ public class Storefront {
                 String fieldName = getFieldName(key);
                 switch (fieldName) {
                     case "completedAt": {
-                        DateTime optional1 = null;
+                        Date optional1 = null;
                         if (!field.getValue().isJsonNull()) {
                             optional1 = Utils.parseDateTime(jsonAsString(field.getValue(), key));
                         }
@@ -7930,11 +7928,11 @@ public class Storefront {
         * The date and time when the job completed.
         */
 
-        public DateTime getCompletedAt() {
-            return (DateTime) get("completedAt");
+        public Date getCompletedAt() {
+            return (Date) get("completedAt");
         }
 
-        public CartCompletionSuccess setCompletedAt(DateTime arg) {
+        public CartCompletionSuccess setCompletedAt(Date arg) {
             optimisticData.put(getKey("completedAt"), arg);
             return this;
         }
@@ -15932,11 +15930,11 @@ public class Storefront {
         * The date and time when the collection was last modified.
         */
 
-        public DateTime getUpdatedAt() {
-            return (DateTime) get("updatedAt");
+        public Date getUpdatedAt() {
+            return (Date) get("updatedAt");
         }
 
-        public Collection setUpdatedAt(DateTime arg) {
+        public Collection setUpdatedAt(Date arg) {
             optimisticData.put(getKey("updatedAt"), arg);
             return this;
         }
@@ -17153,11 +17151,11 @@ public class Storefront {
         * was created in Shopify.
         */
 
-        public DateTime getCreatedAt() {
-            return (DateTime) get("createdAt");
+        public Date getCreatedAt() {
+            return (Date) get("createdAt");
         }
 
-        public Company setCreatedAt(DateTime arg) {
+        public Company setCreatedAt(Date arg) {
             optimisticData.put(getKey("createdAt"), arg);
             return this;
         }
@@ -17227,11 +17225,11 @@ public class Storefront {
         * was last modified.
         */
 
-        public DateTime getUpdatedAt() {
-            return (DateTime) get("updatedAt");
+        public Date getUpdatedAt() {
+            return (Date) get("updatedAt");
         }
 
-        public Company setUpdatedAt(DateTime arg) {
+        public Company setUpdatedAt(Date arg) {
             optimisticData.put(getKey("updatedAt"), arg);
             return this;
         }
@@ -17387,11 +17385,11 @@ public class Storefront {
         * contact was created in Shopify.
         */
 
-        public DateTime getCreatedAt() {
-            return (DateTime) get("createdAt");
+        public Date getCreatedAt() {
+            return (Date) get("createdAt");
         }
 
-        public CompanyContact setCreatedAt(DateTime arg) {
+        public CompanyContact setCreatedAt(Date arg) {
             optimisticData.put(getKey("createdAt"), arg);
             return this;
         }
@@ -17435,11 +17433,11 @@ public class Storefront {
         * contact was last modified.
         */
 
-        public DateTime getUpdatedAt() {
-            return (DateTime) get("updatedAt");
+        public Date getUpdatedAt() {
+            return (Date) get("updatedAt");
         }
 
-        public CompanyContact setUpdatedAt(DateTime arg) {
+        public CompanyContact setUpdatedAt(Date arg) {
             optimisticData.put(getKey("updatedAt"), arg);
             return this;
         }
@@ -17708,11 +17706,11 @@ public class Storefront {
         * location was created in Shopify.
         */
 
-        public DateTime getCreatedAt() {
-            return (DateTime) get("createdAt");
+        public Date getCreatedAt() {
+            return (Date) get("createdAt");
         }
 
-        public CompanyLocation setCreatedAt(DateTime arg) {
+        public CompanyLocation setCreatedAt(Date arg) {
             optimisticData.put(getKey("createdAt"), arg);
             return this;
         }
@@ -17795,11 +17793,11 @@ public class Storefront {
         * location was last modified.
         */
 
-        public DateTime getUpdatedAt() {
-            return (DateTime) get("updatedAt");
+        public Date getUpdatedAt() {
+            return (Date) get("updatedAt");
         }
 
-        public CompanyLocation setUpdatedAt(DateTime arg) {
+        public CompanyLocation setUpdatedAt(Date arg) {
             optimisticData.put(getKey("updatedAt"), arg);
             return this;
         }
@@ -18492,7 +18490,7 @@ public class Storefront {
         *
         * @deprecated Use `cost` instead.
         */
-
+        @Deprecated
         public CartLineEstimatedCost getEstimatedCost() {
             return (CartLineEstimatedCost) get("estimatedCost");
         }
@@ -25155,11 +25153,11 @@ public class Storefront {
         * The date and time when the customer was created.
         */
 
-        public DateTime getCreatedAt() {
-            return (DateTime) get("createdAt");
+        public Date getCreatedAt() {
+            return (Date) get("createdAt");
         }
 
-        public Customer setCreatedAt(DateTime arg) {
+        public Customer setCreatedAt(Date arg) {
             optimisticData.put(getKey("createdAt"), arg);
             return this;
         }
@@ -25325,11 +25323,11 @@ public class Storefront {
         * The date and time when the customer information was updated.
         */
 
-        public DateTime getUpdatedAt() {
-            return (DateTime) get("updatedAt");
+        public Date getUpdatedAt() {
+            return (Date) get("updatedAt");
         }
 
-        public Customer setUpdatedAt(DateTime arg) {
+        public Customer setUpdatedAt(Date arg) {
             optimisticData.put(getKey("updatedAt"), arg);
             return this;
         }
@@ -25462,11 +25460,11 @@ public class Storefront {
         * The date and time when the customer access token expires.
         */
 
-        public DateTime getExpiresAt() {
-            return (DateTime) get("expiresAt");
+        public Date getExpiresAt() {
+            return (Date) get("expiresAt");
         }
 
-        public CustomerAccessToken setExpiresAt(DateTime arg) {
+        public CustomerAccessToken setExpiresAt(Date arg) {
             optimisticData.put(getKey("expiresAt"), arg);
             return this;
         }
@@ -41698,11 +41696,11 @@ public class Storefront {
         * The date and time when the storefront metafield was created.
         */
 
-        public DateTime getCreatedAt() {
-            return (DateTime) get("createdAt");
+        public Date getCreatedAt() {
+            return (Date) get("createdAt");
         }
 
-        public Metafield setCreatedAt(DateTime arg) {
+        public Metafield setCreatedAt(Date arg) {
             optimisticData.put(getKey("createdAt"), arg);
             return this;
         }
@@ -41811,11 +41809,11 @@ public class Storefront {
         * The date and time when the metafield was last updated.
         */
 
-        public DateTime getUpdatedAt() {
-            return (DateTime) get("updatedAt");
+        public Date getUpdatedAt() {
+            return (Date) get("updatedAt");
         }
 
-        public Metafield setUpdatedAt(DateTime arg) {
+        public Metafield setUpdatedAt(Date arg) {
             optimisticData.put(getKey("updatedAt"), arg);
             return this;
         }
@@ -43410,11 +43408,11 @@ public class Storefront {
         * The date and time when the metaobject was last updated.
         */
 
-        public DateTime getUpdatedAt() {
-            return (DateTime) get("updatedAt");
+        public Date getUpdatedAt() {
+            return (Date) get("updatedAt");
         }
 
-        public Metaobject setUpdatedAt(DateTime arg) {
+        public Metaobject setUpdatedAt(Date arg) {
             optimisticData.put(getKey("updatedAt"), arg);
             return this;
         }
@@ -47974,7 +47972,7 @@ public class Storefront {
                     }
 
                     case "canceledAt": {
-                        DateTime optional1 = null;
+                        Date optional1 = null;
                         if (!field.getValue().isJsonNull()) {
                             optional1 = Utils.parseDateTime(jsonAsString(field.getValue(), key));
                         }
@@ -48357,11 +48355,11 @@ public class Storefront {
         * The date and time when the order was canceled. Returns null if the order wasn't canceled.
         */
 
-        public DateTime getCanceledAt() {
-            return (DateTime) get("canceledAt");
+        public Date getCanceledAt() {
+            return (Date) get("canceledAt");
         }
 
-        public Order setCanceledAt(DateTime arg) {
+        public Order setCanceledAt(Date arg) {
             optimisticData.put(getKey("canceledAt"), arg);
             return this;
         }
@@ -48672,11 +48670,11 @@ public class Storefront {
         * If no value is provided, it will be auto-generated based on current date and time.
         */
 
-        public DateTime getProcessedAt() {
-            return (DateTime) get("processedAt");
+        public Date getProcessedAt() {
+            return (Date) get("processedAt");
         }
 
-        public Order setProcessedAt(DateTime arg) {
+        public Order setProcessedAt(Date arg) {
             optimisticData.put(getKey("processedAt"), arg);
             return this;
         }
@@ -50654,11 +50652,11 @@ public class Storefront {
         * The timestamp of the page creation.
         */
 
-        public DateTime getCreatedAt() {
-            return (DateTime) get("createdAt");
+        public Date getCreatedAt() {
+            return (Date) get("createdAt");
         }
 
-        public Page setCreatedAt(DateTime arg) {
+        public Page setCreatedAt(Date arg) {
             optimisticData.put(getKey("createdAt"), arg);
             return this;
         }
@@ -50773,11 +50771,11 @@ public class Storefront {
         * The timestamp of the latest page update.
         */
 
-        public DateTime getUpdatedAt() {
-            return (DateTime) get("updatedAt");
+        public Date getUpdatedAt() {
+            return (Date) get("updatedAt");
         }
 
-        public Page setUpdatedAt(DateTime arg) {
+        public Page setUpdatedAt(Date arg) {
             optimisticData.put(getKey("updatedAt"), arg);
             return this;
         }
@@ -54050,11 +54048,11 @@ public class Storefront {
         * The date and time when the product was created.
         */
 
-        public DateTime getCreatedAt() {
-            return (DateTime) get("createdAt");
+        public Date getCreatedAt() {
+            return (Date) get("createdAt");
         }
 
-        public Product setCreatedAt(DateTime arg) {
+        public Product setCreatedAt(Date arg) {
             optimisticData.put(getKey("createdAt"), arg);
             return this;
         }
@@ -54314,11 +54312,11 @@ public class Storefront {
         * The date and time when the product was published to the channel.
         */
 
-        public DateTime getPublishedAt() {
-            return (DateTime) get("publishedAt");
+        public Date getPublishedAt() {
+            return (Date) get("publishedAt");
         }
 
-        public Product setPublishedAt(DateTime arg) {
+        public Product setPublishedAt(Date arg) {
             optimisticData.put(getKey("publishedAt"), arg);
             return this;
         }
@@ -54446,11 +54444,11 @@ public class Storefront {
         * is counted as an update.
         */
 
-        public DateTime getUpdatedAt() {
-            return (DateTime) get("updatedAt");
+        public Date getUpdatedAt() {
+            return (Date) get("updatedAt");
         }
 
-        public Product setUpdatedAt(DateTime arg) {
+        public Product setUpdatedAt(Date arg) {
             optimisticData.put(getKey("updatedAt"), arg);
             return this;
         }
@@ -73396,11 +73394,11 @@ public class Storefront {
         * The date and time when the image was updated.
         */
 
-        public DateTime getUpdatedAt() {
-            return (DateTime) get("updatedAt");
+        public Date getUpdatedAt() {
+            return (Date) get("updatedAt");
         }
 
-        public SitemapImage setUpdatedAt(DateTime arg) {
+        public SitemapImage setUpdatedAt(Date arg) {
             optimisticData.put(getKey("updatedAt"), arg);
             return this;
         }
@@ -73575,11 +73573,11 @@ public class Storefront {
         * The date and time when the resource was updated.
         */
 
-        public DateTime getUpdatedAt() {
-            return (DateTime) get("updatedAt");
+        public Date getUpdatedAt() {
+            return (Date) get("updatedAt");
         }
 
-        public SitemapResource setUpdatedAt(DateTime arg) {
+        public SitemapResource setUpdatedAt(Date arg) {
             optimisticData.put(getKey("updatedAt"), arg);
             return this;
         }
@@ -73651,7 +73649,7 @@ public class Storefront {
 
         String getHandle();
 
-        DateTime getUpdatedAt();
+        Date getUpdatedAt();
     }
 
     /**
@@ -73727,11 +73725,11 @@ public class Storefront {
         * The date and time when the resource was updated.
         */
 
-        public DateTime getUpdatedAt() {
-            return (DateTime) get("updatedAt");
+        public Date getUpdatedAt() {
+            return (Date) get("updatedAt");
         }
 
-        public UnknownSitemapResourceInterface setUpdatedAt(DateTime arg) {
+        public UnknownSitemapResourceInterface setUpdatedAt(Date arg) {
             optimisticData.put(getKey("updatedAt"), arg);
             return this;
         }
@@ -73901,11 +73899,11 @@ public class Storefront {
         * The date and time when the resource was updated.
         */
 
-        public DateTime getUpdatedAt() {
-            return (DateTime) get("updatedAt");
+        public Date getUpdatedAt() {
+            return (Date) get("updatedAt");
         }
 
-        public SitemapResourceMetaobject setUpdatedAt(DateTime arg) {
+        public SitemapResourceMetaobject setUpdatedAt(Date arg) {
             optimisticData.put(getKey("updatedAt"), arg);
             return this;
         }
@@ -76115,11 +76113,11 @@ public class Storefront {
         * next poll request.
         */
 
-        public DateTime getPollAfter() {
-            return (DateTime) get("pollAfter");
+        public Date getPollAfter() {
+            return (Date) get("pollAfter");
         }
 
-        public SubmitThrottled setPollAfter(DateTime arg) {
+        public SubmitThrottled setPollAfter(Date arg) {
             optimisticData.put(getKey("pollAfter"), arg);
             return this;
         }

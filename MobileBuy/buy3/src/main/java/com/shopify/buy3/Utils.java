@@ -24,16 +24,20 @@
 
 package com.shopify.buy3;
 
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 final class Utils {
-  private static final String DATE_TIME_PATTERN = "yyyy-MM-dd'T'HH:mm:ssZ";
-  private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormat.forPattern(DATE_TIME_PATTERN);
+  private static final SimpleDateFormat DATE_TIME_FORMATTER = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", Locale.US);
 
-  static DateTime parseDateTime(String dateTime) {
-    return DateTime.parse(dateTime, DATE_TIME_FORMATTER);
+  static Date parseDateTime(String dateTime) {
+      try {
+          return DATE_TIME_FORMATTER.parse(dateTime);
+      } catch (ParseException e) {
+          return new Date();
+      }
   }
 
   private Utils() {

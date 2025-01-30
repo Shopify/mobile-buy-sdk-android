@@ -24,31 +24,22 @@
 package com.shopify.buy3.internal
 
 import android.os.Handler
-import androidx.annotation.VisibleForTesting
 import com.shopify.buy3.GraphCall
 import com.shopify.buy3.GraphCallResult
 import com.shopify.buy3.GraphCallResultCallback
 import com.shopify.buy3.GraphError
 import com.shopify.buy3.GraphResponse
-import com.shopify.buy3.HttpCachePolicy
 import com.shopify.buy3.MutationGraphCall
 import com.shopify.buy3.QueryGraphCall
 import com.shopify.buy3.RetryHandler
 import com.shopify.buy3.Storefront
-import com.shopify.buy3.internal.cache.HTTP_CACHE_EXPIRE_TIMEOUT_HEADER
-import com.shopify.buy3.internal.cache.HTTP_CACHE_FETCH_STRATEGY_HEADER
-import com.shopify.buy3.internal.cache.HTTP_CACHE_KEY_HEADER
-import com.shopify.buy3.internal.cache.HttpCache
-import com.shopify.buy3.internal.cache.cacheKey
 import com.shopify.graphql.support.AbstractResponse
 import com.shopify.graphql.support.Query
 import okhttp3.Call
 import okhttp3.HttpUrl
-import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.Request
-import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import java.io.IOException
 import java.util.concurrent.Future
@@ -65,16 +56,12 @@ internal class RealQueryGraphCall(
     serverUrl: HttpUrl,
     httpCallFactory: Call.Factory,
     dispatcher: ScheduledExecutorService,
-    httpCachePolicy: HttpCachePolicy,
-    httpCache: HttpCache?
 ) : RealGraphCall<Storefront.QueryRoot>(
     operation = query,
     serverUrl = serverUrl,
     httpCallFactory = httpCallFactory,
     httpResponseParser = HttpResponseParser<Storefront.QueryRoot> { Storefront.QueryRoot(it.data) },
     dispatcher = dispatcher,
-    httpCachePolicy = httpCachePolicy,
-    httpCache = httpCache
 ), QueryGraphCall {
 
     public override fun clone(): GraphCall<Storefront.QueryRoot> {
@@ -83,21 +70,6 @@ internal class RealQueryGraphCall(
             serverUrl = serverUrl,
             httpCallFactory = httpCallFactory,
             dispatcher = dispatcher,
-            httpCachePolicy = httpCachePolicy,
-            httpCache = httpCache
-        )
-    }
-
-    @Synchronized
-    override fun cachePolicy(httpCachePolicy: HttpCachePolicy): QueryGraphCall {
-        if (executed) throw IllegalStateException("Already Executed")
-        return RealQueryGraphCall(
-            query = operation as Storefront.QueryRootQuery,
-            serverUrl = serverUrl,
-            httpCallFactory = httpCallFactory,
-            dispatcher = dispatcher,
-            httpCachePolicy = httpCachePolicy,
-            httpCache = httpCache
         )
     }
 
@@ -129,8 +101,6 @@ internal class RealMutationGraphCall(
     httpCallFactory = httpCallFactory,
     httpResponseParser = HttpResponseParser<Storefront.Mutation> { Storefront.Mutation(it.data) },
     dispatcher = dispatcher,
-    httpCachePolicy = HttpCachePolicy.Default.NETWORK_ONLY,
-    httpCache = null
 ), MutationGraphCall {
 
     public override fun clone(): GraphCall<Storefront.Mutation> {
@@ -165,8 +135,6 @@ internal abstract class RealGraphCall<T : AbstractResponse<T>> protected constru
     protected val httpCallFactory: Call.Factory,
     protected val httpResponseParser: HttpResponseParser<T>,
     protected val dispatcher: ScheduledExecutorService,
-    @get:VisibleForTesting internal val httpCachePolicy: HttpCachePolicy,
-    protected val httpCache: HttpCache?
 ) : GraphCall<T>, Cloneable {
     protected var executed = false
     protected var canceled = false
@@ -209,12 +177,9 @@ internal abstract class RealGraphCall<T : AbstractResponse<T>> protected constru
         retryableGraphCall = RetryableGraphHttpCall(
             httpCall = httpCallFactory.newGraphQLHttpCall(
                 operation = operation,
-                httpCache = httpCache,
-                httpCachePolicy = httpCachePolicy,
                 serverUrl = serverUrl
             ),
             httpResponseParser = httpResponseParser,
-            httpCache = httpCache,
             retryHandler = retryHandler,
             dispatcher = dispatcher,
             callbackHandler = callbackHandler,
@@ -225,21 +190,14 @@ internal abstract class RealGraphCall<T : AbstractResponse<T>> protected constru
 
 internal fun Call.Factory.newGraphQLHttpCall(
     operation: Query<*>,
-    httpCache: HttpCache?,
     serverUrl: HttpUrl,
-    httpCachePolicy: HttpCachePolicy
 ): Call {
-    val body = RequestBody.create(GRAPHQL_MEDIA_TYPE, operation.toString())
-    val cacheKey = httpCache?.let { body.cacheKey } ?: ""
-    val cacheExpireTimeout = (httpCachePolicy as? HttpCachePolicy.ExpirePolicy)?.expireTimeoutMs?.takeIf { it > 0 } ?: Long.MAX_VALUE
+    val body = operation.toString().toRequestBody(GRAPHQL_MEDIA_TYPE)
     return newCall(
         Request.Builder()
             .url(serverUrl)
             .post(body)
             .header(ACCEPT_HEADER_NAME, ACCEPT_HEADER)
-            .header(HTTP_CACHE_KEY_HEADER, cacheKey)
-            .header(HTTP_CACHE_FETCH_STRATEGY_HEADER, httpCachePolicy.fetchStrategy.name)
-            .header(HTTP_CACHE_EXPIRE_TIMEOUT_HEADER, cacheExpireTimeout.toString())
             .build()
     )
 }
@@ -247,7 +205,6 @@ internal fun Call.Factory.newGraphQLHttpCall(
 private class RetryableGraphHttpCall<T : AbstractResponse<T>>(
     httpCall: Call,
     private val httpResponseParser: HttpResponseParser<T>,
-    private val httpCache: HttpCache?,
     private val retryHandler: RetryHandler<T>,
     private val dispatcher: ScheduledExecutorService,
     private val callbackHandler: Handler?,
@@ -263,7 +220,7 @@ private class RetryableGraphHttpCall<T : AbstractResponse<T>>(
         if (canceled) return
 
         activeHttpCall = activeHttpCall.clone().also {
-            it.enqueue(GraphHttpResultCallback(httpResponseParser = httpResponseParser, httpCache = httpCache) { result ->
+            it.enqueue(GraphHttpResultCallback(httpResponseParser = httpResponseParser) { result ->
                 if (retryHandler.retry(result)) {
                     retry(retryHandler.nextRetryDelayMs, TimeUnit.MILLISECONDS)
                 } else {
@@ -299,7 +256,6 @@ private class RetryableGraphHttpCall<T : AbstractResponse<T>>(
 
 private class GraphHttpResultCallback<T : AbstractResponse<T>> constructor(
     private val httpResponseParser: HttpResponseParser<T>,
-    private val httpCache: HttpCache?,
     private val resultCallback: GraphCallResultCallback<T>
 ) : okhttp3.Callback {
 
@@ -312,15 +268,8 @@ private class GraphHttpResultCallback<T : AbstractResponse<T>> constructor(
         val graphResponse = try {
             response.parse()
         } catch (e: GraphError) {
-            if (e is GraphError.ParseError) {
-                httpCache?.purge(response.request)
-            }
             resultCallback(GraphCallResult.Failure(e))
             return
-        }
-
-        if (graphResponse.hasErrors) {
-            httpCache?.purge(response.request)
         }
 
         resultCallback(GraphCallResult.Success(graphResponse))
@@ -332,12 +281,6 @@ private class GraphHttpResultCallback<T : AbstractResponse<T>> constructor(
 
     private fun Response.parse(): GraphResponse<T> {
         return use { httpResponseParser.parse(it) }
-    }
-
-    private fun HttpCache.purge(httpRequest: Request) {
-        httpRequest.header(HTTP_CACHE_KEY_HEADER)?.let { cacheKey ->
-            removeQuietly(cacheKey)
-        }
     }
 }
 

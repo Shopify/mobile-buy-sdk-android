@@ -8,15 +8,25 @@ appcompat = "1.7.0"
 okhttp = "4.12.0"
 gson = "2.12.0"
 timber = "5.0.1"
+mockito = "2.2.7"
+truth = "1.4.4"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
-okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
+
+okhttp-bom = { group = "com.squareup.okhttp3", name = "okhttp-bom", version.ref = "okhttp" }
+okhttp-core = { group = "com.squareup.okhttp3", name = "okhttp" }
+okhttp-logging = { group = "com.squareup.okhttp3", name = "logging-interceptor" }
+okhttp-mockwebserver = { group = "com.squareup.okhttp3", name = "mockwebserver" }
+
 gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
+mockito = { group = "org.mockito", name = "mockito-core", version.ref = "mockito" }
+mockito-kotlin = { group = "org.mockito.kotlin", name = "mockito-kotlin", version.ref = "mockito" }
+truth = { group = "com.google.truth", name = "truth", version.ref = "truth" }
 
 [plugins]
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }

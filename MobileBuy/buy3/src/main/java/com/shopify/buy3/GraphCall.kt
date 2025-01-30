@@ -106,15 +106,6 @@ interface GraphCall<T : AbstractResponse<T>> : Cloneable {
  */
 interface QueryGraphCall : GraphCall<Storefront.QueryRoot> {
 
-    /**
-     * Sets http cache policy to be used with this call.
-     *
-     * @param httpCachePolicy [HttpCachePolicy] new HTTP cache policy
-     * @return [QueryGraphCall] with updated cache policy
-     * @see HttpCachePolicy
-     */
-    fun cachePolicy(httpCachePolicy: HttpCachePolicy): QueryGraphCall
-
     override fun enqueue(callback: GraphCallResultCallback<Storefront.QueryRoot>): QueryGraphCall
 
     override fun enqueue(callbackHandler: Handler?, callback: GraphCallResultCallback<Storefront.QueryRoot>): QueryGraphCall

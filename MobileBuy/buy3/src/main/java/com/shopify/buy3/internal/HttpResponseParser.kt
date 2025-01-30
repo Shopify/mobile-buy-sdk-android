@@ -60,7 +60,7 @@ internal class HttpResponseParser<T : AbstractResponse<T>>(private val extractRe
     private fun parseTopLevelResponse(response: Response): TopLevelResponse {
         try {
             val reader = JsonReader(response.body?.charStream())
-            val root = JsonParser().parse(reader) as JsonObject
+            val root = JsonParser.parseReader(reader) as JsonObject
             return TopLevelResponse(root)
         } catch (e: Exception) {
             Timber.w(e, "failed to parse GraphQL response")
