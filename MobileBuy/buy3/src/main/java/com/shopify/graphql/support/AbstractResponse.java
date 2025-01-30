@@ -129,5 +129,7 @@ public abstract class AbstractResponse<T extends AbstractResponse> implements Se
         }
     }
 
-    public abstract boolean unwrapsToObject(String key);
+    public boolean unwrapsToObject(String key) {
+        return false;
+    }
 }

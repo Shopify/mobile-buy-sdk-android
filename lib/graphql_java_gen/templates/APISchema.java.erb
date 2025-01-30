@@ -293,14 +293,18 @@ public class <%= schema_name %> {
                     }
                 <% end %>
 
+                  <% object_fields = fields.select { |f| f.type.unwrap.object? } %>
+                  <% unless object_fields.empty? %>
+                  @Override
                   public boolean unwrapsToObject(String key) {
                     switch (getFieldName(key)) {
-                      <% fields.each do |field| %>
-                        case "<%= field.name %>": return <%= field.type.unwrap.object? %>;
+                      <% object_fields.each do |field| %>
+                        case "<%= field.name %>": return true;
                       <% end %>
                       default: return false;
                     }
                   }
+                  <% end %>
             }
         <% when 'INPUT_OBJECT' %>
             public static class <%= type.name %> implements Serializable {

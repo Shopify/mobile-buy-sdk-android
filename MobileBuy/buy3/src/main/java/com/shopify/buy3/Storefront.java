@@ -308,18 +308,6 @@ public class Storefront {
             optimisticData.put(getKey("supported"), arg);
             return this;
         }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "displayName": return false;
-
-                case "handle": return false;
-
-                case "supported": return false;
-
-                default: return false;
-            }
-        }
     }
 
     public static class ApplePayWalletContentInput implements Serializable {
@@ -817,6 +805,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "amountUsed": return true;
@@ -826,10 +815,6 @@ public class Storefront {
                 case "balance": return true;
 
                 case "balanceV2": return true;
-
-                case "id": return false;
-
-                case "lastCharacters": return false;
 
                 case "presentmentAmountUsed": return true;
 
@@ -1707,6 +1692,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "author": return true;
@@ -1717,35 +1703,13 @@ public class Storefront {
 
                 case "comments": return true;
 
-                case "content": return false;
-
-                case "contentHtml": return false;
-
-                case "excerpt": return false;
-
-                case "excerptHtml": return false;
-
-                case "handle": return false;
-
-                case "id": return false;
-
                 case "image": return true;
 
                 case "metafield": return true;
 
                 case "metafields": return true;
 
-                case "onlineStoreUrl": return false;
-
-                case "publishedAt": return false;
-
                 case "seo": return true;
-
-                case "tags": return false;
-
-                case "title": return false;
-
-                case "trackingParameters": return false;
 
                 default: return false;
             }
@@ -1936,22 +1900,6 @@ public class Storefront {
             optimisticData.put(getKey("name"), arg);
             return this;
         }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "bio": return false;
-
-                case "email": return false;
-
-                case "firstName": return false;
-
-                case "lastName": return false;
-
-                case "name": return false;
-
-                default: return false;
-            }
-        }
     }
 
     public interface ArticleConnectionQueryDefinition {
@@ -2100,6 +2048,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "edges": return true;
@@ -2213,10 +2162,9 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "cursor": return false;
-
                 case "node": return true;
 
                 default: return false;
@@ -2441,16 +2389,6 @@ public class Storefront {
         public Attribute setValue(String arg) {
             optimisticData.put(getKey("value"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "key": return false;
-
-                case "value": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -2683,22 +2621,6 @@ public class Storefront {
         public AutomaticDiscountApplication setValue(PricingValue arg) {
             optimisticData.put(getKey("value"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "allocationMethod": return false;
-
-                case "targetSelection": return false;
-
-                case "targetType": return false;
-
-                case "title": return false;
-
-                case "value": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -3114,6 +3036,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "attribute": return true;
@@ -3122,15 +3045,7 @@ public class Storefront {
 
                 case "cost": return true;
 
-                case "discountAllocations": return false;
-
                 case "estimatedCost": return true;
-
-                case "id": return false;
-
-                case "merchandise": return false;
-
-                case "quantity": return false;
 
                 case "sellingPlanAllocation": return true;
 
@@ -3285,11 +3200,10 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "edges": return true;
-
-                case "nodes": return false;
 
                 case "pageInfo": return true;
 
@@ -3396,16 +3310,6 @@ public class Storefront {
         public BaseCartLineEdge setNode(BaseCartLine arg) {
             optimisticData.put(getKey("node"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "cursor": return false;
-
-                case "node": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -3953,6 +3857,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "articleByHandle": return true;
@@ -3961,19 +3866,11 @@ public class Storefront {
 
                 case "authors": return true;
 
-                case "handle": return false;
-
-                case "id": return false;
-
                 case "metafield": return true;
 
                 case "metafields": return true;
 
-                case "onlineStoreUrl": return false;
-
                 case "seo": return true;
-
-                case "title": return false;
 
                 default: return false;
             }
@@ -4126,6 +4023,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "edges": return true;
@@ -4239,10 +4137,9 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "cursor": return false;
-
                 case "node": return true;
 
                 default: return false;
@@ -4580,6 +4477,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "colors": return true;
@@ -4587,10 +4485,6 @@ public class Storefront {
                 case "coverImage": return true;
 
                 case "logo": return true;
-
-                case "shortDescription": return false;
-
-                case "slogan": return false;
 
                 case "squareLogo": return true;
 
@@ -4703,16 +4597,6 @@ public class Storefront {
         public BrandColorGroup setForeground(String arg) {
             optimisticData.put(getKey("foreground"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "background": return false;
-
-                case "foreground": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -4830,6 +4714,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "primary": return true;
@@ -5901,6 +5786,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "appliedGiftCards": return true;
@@ -5911,33 +5797,19 @@ public class Storefront {
 
                 case "buyerIdentity": return true;
 
-                case "checkoutUrl": return false;
-
                 case "cost": return true;
 
-                case "createdAt": return false;
-
                 case "deliveryGroups": return true;
-
-                case "discountAllocations": return false;
 
                 case "discountCodes": return true;
 
                 case "estimatedCost": return true;
-
-                case "id": return false;
 
                 case "lines": return true;
 
                 case "metafield": return true;
 
                 case "metafields": return true;
-
-                case "note": return false;
-
-                case "totalQuantity": return false;
-
-                case "updatedAt": return false;
 
                 default: return false;
             }
@@ -6095,6 +5967,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "cart": return true;
@@ -6236,13 +6109,10 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "discountedAmount": return true;
-
-                case "targetType": return false;
-
-                case "title": return false;
 
                 default: return false;
             }
@@ -6400,6 +6270,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "cart": return true;
@@ -6724,17 +6595,10 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "countryCode": return false;
-
                 case "customer": return true;
-
-                case "deliveryAddressPreferences": return false;
-
-                case "email": return false;
-
-                case "phone": return false;
 
                 case "preferences": return true;
 
@@ -7152,6 +7016,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "cart": return true;
@@ -7333,13 +7198,10 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "code": return false;
-
                 case "discountedAmount": return true;
-
-                case "targetType": return false;
 
                 default: return false;
             }
@@ -7410,12 +7272,6 @@ public class Storefront {
 
         public String getGraphQlTypeName() {
             return (String) get("__typename");
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                default: return false;
-            }
         }
     }
 
@@ -7523,16 +7379,6 @@ public class Storefront {
             optimisticData.put(getKey("id"), arg);
             return this;
         }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "action": return false;
-
-                case "id": return false;
-
-                default: return false;
-            }
-        }
     }
 
     public interface CartCompletionAttemptResultQueryDefinition {
@@ -7632,12 +7478,6 @@ public class Storefront {
 
         public String getGraphQlTypeName() {
             return (String) get("__typename");
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                default: return false;
-            }
         }
     }
 
@@ -7746,11 +7586,10 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "errors": return true;
-
-                case "id": return false;
 
                 default: return false;
             }
@@ -7851,16 +7690,6 @@ public class Storefront {
         public CartCompletionProcessing setPollDelay(Integer arg) {
             optimisticData.put(getKey("pollDelay"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "id": return false;
-
-                case "pollDelay": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -8019,20 +7848,6 @@ public class Storefront {
         public CartCompletionSuccess setOrderUrl(String arg) {
             optimisticData.put(getKey("orderUrl"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "completedAt": return false;
-
-                case "id": return false;
-
-                case "orderId": return false;
-
-                case "orderUrl": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -8420,25 +8235,18 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "checkoutChargeAmount": return true;
 
                 case "subtotalAmount": return true;
 
-                case "subtotalAmountEstimated": return false;
-
                 case "totalAmount": return true;
-
-                case "totalAmountEstimated": return false;
 
                 case "totalDutyAmount": return true;
 
-                case "totalDutyAmountEstimated": return false;
-
                 case "totalTaxAmount": return true;
-
-                case "totalTaxAmountEstimated": return false;
 
                 default: return false;
             }
@@ -8596,6 +8404,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "cart": return true;
@@ -8737,13 +8546,10 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "discountedAmount": return true;
-
-                case "targetType": return false;
-
-                case "title": return false;
 
                 default: return false;
             }
@@ -8878,18 +8684,6 @@ public class Storefront {
         public CartDeliveryCoordinatesPreference setLongitude(Double arg) {
             optimisticData.put(getKey("longitude"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "countryCode": return false;
-
-                case "latitude": return false;
-
-                case "longitude": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -9270,6 +9064,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "cartLines": return true;
@@ -9277,10 +9072,6 @@ public class Storefront {
                 case "deliveryAddress": return true;
 
                 case "deliveryOptions": return true;
-
-                case "groupType": return false;
-
-                case "id": return false;
 
                 case "selectedDeliveryOption": return true;
 
@@ -9435,6 +9226,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "edges": return true;
@@ -9548,10 +9340,9 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "cursor": return false;
-
                 case "node": return true;
 
                 default: return false;
@@ -9840,19 +9631,10 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "code": return false;
-
-                case "deliveryMethodType": return false;
-
-                case "description": return false;
-
                 case "estimatedCost": return true;
-
-                case "handle": return false;
-
-                case "title": return false;
 
                 default: return false;
             }
@@ -10010,13 +9792,10 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "coordinates": return true;
-
-                case "deliveryMethod": return false;
-
-                case "pickupHandle": return false;
 
                 default: return false;
             }
@@ -10385,11 +10164,10 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "discountedAmount": return true;
-
-                case "targetType": return false;
 
                 default: return false;
             }
@@ -10490,16 +10268,6 @@ public class Storefront {
         public CartDiscountCode setCode(String arg) {
             optimisticData.put(getKey("code"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "applicable": return false;
-
-                case "code": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -10654,6 +10422,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "cart": return true;
@@ -11290,6 +11059,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "checkoutChargeAmount": return true;
@@ -11487,6 +11257,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "cart": return true;
@@ -12207,6 +11978,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "attribute": return true;
@@ -12215,15 +11987,7 @@ public class Storefront {
 
                 case "cost": return true;
 
-                case "discountAllocations": return false;
-
                 case "estimatedCost": return true;
-
-                case "id": return false;
-
-                case "merchandise": return false;
-
-                case "quantity": return false;
 
                 case "sellingPlanAllocation": return true;
 
@@ -12405,6 +12169,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "amountPerQuantity": return true;
@@ -12593,6 +12358,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "amount": return true;
@@ -13073,6 +12839,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "cart": return true;
@@ -13237,6 +13004,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "cart": return true;
@@ -13401,6 +13169,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "cart": return true;
@@ -13571,10 +13340,9 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "deletedId": return false;
-
                 case "userErrors": return true;
 
                 default: return false;
@@ -13784,6 +13552,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "metafields": return true;
@@ -13946,6 +13715,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "cart": return true;
@@ -14275,6 +14045,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "cart": return true;
@@ -14409,11 +14180,10 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "delivery": return true;
-
-                case "wallet": return false;
 
                 default: return false;
             }
@@ -14704,6 +14474,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "cart": return true;
@@ -14831,10 +14602,9 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "result": return false;
-
                 case "userErrors": return true;
 
                 default: return false;
@@ -14939,12 +14709,6 @@ public class Storefront {
 
         public String getGraphQlTypeName() {
             return (String) get("__typename");
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                default: return false;
-            }
         }
     }
 
@@ -15085,18 +14849,6 @@ public class Storefront {
         public CartUserError setMessage(String arg) {
             optimisticData.put(getKey("message"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "code": return false;
-
-                case "field": return false;
-
-                case "message": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -15299,18 +15051,6 @@ public class Storefront {
         public CartWarning setTarget(ID arg) {
             optimisticData.put(getKey("target"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "code": return false;
-
-                case "message": return false;
-
-                case "target": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -16041,33 +15781,18 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "description": return false;
-
-                case "descriptionHtml": return false;
-
-                case "handle": return false;
-
-                case "id": return false;
-
                 case "image": return true;
 
                 case "metafield": return true;
 
                 case "metafields": return true;
 
-                case "onlineStoreUrl": return false;
-
                 case "products": return true;
 
                 case "seo": return true;
-
-                case "title": return false;
-
-                case "trackingParameters": return false;
-
-                case "updatedAt": return false;
 
                 default: return false;
             }
@@ -16248,6 +15973,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "edges": return true;
@@ -16255,8 +15981,6 @@ public class Storefront {
                 case "nodes": return true;
 
                 case "pageInfo": return true;
-
-                case "totalCount": return false;
 
                 default: return false;
             }
@@ -16363,10 +16087,9 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "cursor": return false;
-
                 case "node": return true;
 
                 default: return false;
@@ -16634,15 +16357,10 @@ public class Storefront {
             return (ID) get("id");
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "author": return true;
-
-                case "content": return false;
-
-                case "contentHtml": return false;
-
-                case "id": return false;
 
                 default: return false;
             }
@@ -16743,16 +16461,6 @@ public class Storefront {
         public CommentAuthor setName(String arg) {
             optimisticData.put(getKey("name"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "email": return false;
-
-                case "name": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -16902,6 +16610,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "edges": return true;
@@ -17015,10 +16724,9 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "cursor": return false;
-
                 case "node": return true;
 
                 default: return false;
@@ -17344,21 +17052,12 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "createdAt": return false;
-
-                case "externalId": return false;
-
-                case "id": return false;
-
                 case "metafield": return true;
 
                 case "metafields": return true;
-
-                case "name": return false;
-
-                case "updatedAt": return false;
 
                 default: return false;
             }
@@ -17550,22 +17249,6 @@ public class Storefront {
         public CompanyContact setUpdatedAt(Date arg) {
             optimisticData.put(getKey("updatedAt"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "createdAt": return false;
-
-                case "id": return false;
-
-                case "locale": return false;
-
-                case "title": return false;
-
-                case "updatedAt": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -17920,23 +17603,12 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "createdAt": return false;
-
-                case "externalId": return false;
-
-                case "id": return false;
-
-                case "locale": return false;
-
                 case "metafield": return true;
 
                 case "metafields": return true;
-
-                case "name": return false;
-
-                case "updatedAt": return false;
 
                 default: return false;
             }
@@ -18014,14 +17686,6 @@ public class Storefront {
         public CompletePaymentChallenge setRedirectUrl(String arg) {
             optimisticData.put(getKey("redirectUrl"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "redirectUrl": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -18124,16 +17788,6 @@ public class Storefront {
         public CompletionError setMessage(String arg) {
             optimisticData.put(getKey("message"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "code": return false;
-
-                case "message": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -18680,6 +18334,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "attribute": return true;
@@ -18688,17 +18343,9 @@ public class Storefront {
 
                 case "cost": return true;
 
-                case "discountAllocations": return false;
-
                 case "estimatedCost": return true;
 
-                case "id": return false;
-
                 case "lineComponents": return true;
-
-                case "merchandise": return false;
-
-                case "quantity": return false;
 
                 case "sellingPlanAllocation": return true;
 
@@ -18801,16 +18448,6 @@ public class Storefront {
         public Count setPrecision(CountPrecision arg) {
             optimisticData.put(getKey("precision"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "count": return false;
-
-                case "precision": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -19096,19 +18733,14 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "availableLanguages": return true;
 
                 case "currency": return true;
 
-                case "isoCode": return false;
-
                 case "market": return true;
-
-                case "name": return false;
-
-                case "unitSystem": return false;
 
                 default: return false;
             }
@@ -22546,18 +22178,6 @@ public class Storefront {
             optimisticData.put(getKey("symbol"), arg);
             return this;
         }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "isoCode": return false;
-
-                case "name": return false;
-
-                case "symbol": return false;
-
-                default: return false;
-            }
-        }
     }
 
     /**
@@ -25459,39 +25079,18 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "acceptsMarketing": return false;
-
                 case "addresses": return true;
 
-                case "createdAt": return false;
-
                 case "defaultAddress": return true;
-
-                case "displayName": return false;
-
-                case "email": return false;
-
-                case "firstName": return false;
-
-                case "id": return false;
-
-                case "lastName": return false;
 
                 case "metafield": return true;
 
                 case "metafields": return true;
 
-                case "numberOfOrders": return false;
-
                 case "orders": return true;
-
-                case "phone": return false;
-
-                case "tags": return false;
-
-                case "updatedAt": return false;
 
                 default: return false;
             }
@@ -25594,16 +25193,6 @@ public class Storefront {
         public CustomerAccessToken setExpiresAt(Date arg) {
             optimisticData.put(getKey("expiresAt"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "accessToken": return false;
-
-                case "expiresAt": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -25811,6 +25400,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "customerAccessToken": return true;
@@ -25938,6 +25528,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "customerAccessToken": return true;
@@ -26092,12 +25683,9 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "deletedAccessToken": return false;
-
-                case "deletedCustomerAccessTokenId": return false;
-
                 case "userErrors": return true;
 
                 default: return false;
@@ -26219,6 +25807,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "customerAccessToken": return true;
@@ -26381,6 +25970,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "customer": return true;
@@ -26635,6 +26225,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "customer": return true;
@@ -26807,6 +26398,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "customerAddress": return true;
@@ -26973,11 +26565,10 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "customerUserErrors": return true;
-
-                case "deletedCustomerAddressId": return false;
 
                 case "userErrors": return true;
 
@@ -27143,6 +26734,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "customerAddress": return true;
@@ -27496,6 +27088,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "customer": return true;
@@ -27666,6 +27259,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "customer": return true;
@@ -28020,6 +27614,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "customerUserErrors": return true;
@@ -28225,6 +27820,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "customer": return true;
@@ -28481,6 +28077,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "customer": return true;
@@ -28907,6 +28504,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "customer": return true;
@@ -29060,18 +28658,6 @@ public class Storefront {
             optimisticData.put(getKey("message"), arg);
             return this;
         }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "code": return false;
-
-                case "field": return false;
-
-                case "message": return false;
-
-                default: return false;
-            }
-        }
     }
 
     public interface DeliveryAddressQueryDefinition {
@@ -29138,12 +28724,6 @@ public class Storefront {
 
         public String getGraphQlTypeName() {
             return (String) get("__typename");
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                default: return false;
-            }
         }
     }
 
@@ -29632,11 +29212,10 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "allocatedAmount": return true;
-
-                case "discountApplication": return false;
 
                 default: return false;
             }
@@ -29867,20 +29446,6 @@ public class Storefront {
             optimisticData.put(getKey("value"), arg);
             return this;
         }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "allocationMethod": return false;
-
-                case "targetSelection": return false;
-
-                case "targetType": return false;
-
-                case "value": return false;
-
-                default: return false;
-            }
-        }
     }
 
     /**
@@ -30089,11 +29654,10 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "edges": return true;
-
-                case "nodes": return false;
 
                 case "pageInfo": return true;
 
@@ -30200,16 +29764,6 @@ public class Storefront {
         public DiscountApplicationEdge setNode(DiscountApplication arg) {
             optimisticData.put(getKey("node"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "cursor": return false;
-
-                case "node": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -30549,24 +30103,6 @@ public class Storefront {
             optimisticData.put(getKey("value"), arg);
             return this;
         }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "allocationMethod": return false;
-
-                case "applicable": return false;
-
-                case "code": return false;
-
-                case "targetSelection": return false;
-
-                case "targetType": return false;
-
-                case "value": return false;
-
-                default: return false;
-            }
-        }
     }
 
     public interface DisplayableErrorQueryDefinition {
@@ -30759,16 +30295,6 @@ public class Storefront {
             optimisticData.put(getKey("message"), arg);
             return this;
         }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "field": return false;
-
-                case "message": return false;
-
-                default: return false;
-            }
-        }
     }
 
     public interface DomainQueryDefinition {
@@ -30893,18 +30419,6 @@ public class Storefront {
         public Domain setUrl(String arg) {
             optimisticData.put(getKey("url"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "host": return false;
-
-                case "sslEnabled": return false;
-
-                case "url": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -31222,22 +30736,9 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "alt": return false;
-
-                case "embedUrl": return false;
-
-                case "embeddedUrl": return false;
-
-                case "host": return false;
-
-                case "id": return false;
-
-                case "mediaContentType": return false;
-
-                case "originUrl": return false;
-
                 case "presentation": return true;
 
                 case "previewImage": return true;
@@ -31443,16 +30944,9 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "id": return false;
-
-                case "label": return false;
-
-                case "presentation": return false;
-
-                case "type": return false;
-
                 case "values": return true;
 
                 default: return false;
@@ -31824,17 +31318,10 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "count": return false;
-
-                case "id": return false;
-
                 case "image": return true;
-
-                case "input": return false;
-
-                case "label": return false;
 
                 case "swatch": return true;
 
@@ -32096,11 +31583,10 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "fulfillmentLineItems": return true;
-
-                case "trackingCompany": return false;
 
                 case "trackingInfo": return true;
 
@@ -32211,11 +31697,10 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "lineItem": return true;
-
-                case "quantity": return false;
 
                 default: return false;
             }
@@ -32368,6 +31853,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "edges": return true;
@@ -32481,10 +31967,9 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "cursor": return false;
-
                 case "node": return true;
 
                 default: return false;
@@ -32596,16 +32081,6 @@ public class Storefront {
         public FulfillmentTrackingInfo setUrl(String arg) {
             optimisticData.put(getKey("url"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "number": return false;
-
-                case "url": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -32841,19 +32316,10 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "alt": return false;
-
-                case "id": return false;
-
-                case "mimeType": return false;
-
-                case "originalFileSize": return false;
-
                 case "previewImage": return true;
-
-                case "url": return false;
 
                 default: return false;
             }
@@ -33267,6 +32733,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "metafield": return true;
@@ -33785,28 +33252,6 @@ public class Storefront {
             optimisticData.put(getKey("width"), arg);
             return this;
         }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "altText": return false;
-
-                case "height": return false;
-
-                case "id": return false;
-
-                case "originalSrc": return false;
-
-                case "src": return false;
-
-                case "transformedSrc": return false;
-
-                case "url": return false;
-
-                case "width": return false;
-
-                default: return false;
-            }
-        }
     }
 
     public interface ImageConnectionQueryDefinition {
@@ -33955,6 +33400,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "edges": return true;
@@ -34133,10 +33579,9 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "cursor": return false;
-
                 case "node": return true;
 
                 default: return false;
@@ -34447,18 +33892,6 @@ public class Storefront {
         public Language setName(String arg) {
             optimisticData.put(getKey("name"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "endonymName": return false;
-
-                case "isoCode": return false;
-
-                case "name": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -36574,6 +36007,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "availableCountries": return true;
@@ -36848,17 +36282,14 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "address": return true;
 
-                case "id": return false;
-
                 case "metafield": return true;
 
                 case "metafields": return true;
-
-                case "name": return false;
 
                 default: return false;
             }
@@ -37300,36 +36731,6 @@ public class Storefront {
             optimisticData.put(getKey("zip"), arg);
             return this;
         }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "address1": return false;
-
-                case "address2": return false;
-
-                case "city": return false;
-
-                case "country": return false;
-
-                case "countryCode": return false;
-
-                case "formatted": return false;
-
-                case "latitude": return false;
-
-                case "longitude": return false;
-
-                case "phone": return false;
-
-                case "province": return false;
-
-                case "provinceCode": return false;
-
-                case "zip": return false;
-
-                default: return false;
-            }
-        }
     }
 
     public interface LocationConnectionQueryDefinition {
@@ -37478,6 +36879,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "edges": return true;
@@ -37591,10 +36993,9 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "cursor": return false;
-
                 case "node": return true;
 
                 default: return false;
@@ -38391,50 +37792,6 @@ public class Storefront {
             optimisticData.put(getKey("zip"), arg);
             return this;
         }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "address1": return false;
-
-                case "address2": return false;
-
-                case "city": return false;
-
-                case "company": return false;
-
-                case "country": return false;
-
-                case "countryCode": return false;
-
-                case "countryCodeV2": return false;
-
-                case "firstName": return false;
-
-                case "formatted": return false;
-
-                case "formattedArea": return false;
-
-                case "id": return false;
-
-                case "lastName": return false;
-
-                case "latitude": return false;
-
-                case "longitude": return false;
-
-                case "name": return false;
-
-                case "phone": return false;
-
-                case "province": return false;
-
-                case "provinceCode": return false;
-
-                case "zip": return false;
-
-                default: return false;
-            }
-        }
     }
 
     public interface MailingAddressConnectionQueryDefinition {
@@ -38583,6 +37940,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "edges": return true;
@@ -38696,10 +38054,9 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "cursor": return false;
-
                 case "node": return true;
 
                 default: return false;
@@ -39272,24 +38629,6 @@ public class Storefront {
             optimisticData.put(getKey("value"), arg);
             return this;
         }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "allocationMethod": return false;
-
-                case "description": return false;
-
-                case "targetSelection": return false;
-
-                case "targetType": return false;
-
-                case "title": return false;
-
-                case "value": return false;
-
-                default: return false;
-            }
-        }
     }
 
     public interface MarketQueryDefinition {
@@ -39519,12 +38858,9 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "handle": return false;
-
-                case "id": return false;
-
                 case "metafield": return true;
 
                 case "metafields": return true;
@@ -39806,14 +39142,9 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "alt": return false;
-
-                case "id": return false;
-
-                case "mediaContentType": return false;
-
                 case "presentation": return true;
 
                 case "previewImage": return true;
@@ -39969,11 +39300,10 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "edges": return true;
-
-                case "nodes": return false;
 
                 case "pageInfo": return true;
 
@@ -40158,16 +39488,6 @@ public class Storefront {
         public MediaEdge setNode(Media arg) {
             optimisticData.put(getKey("node"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "cursor": return false;
-
-                case "node": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -40456,15 +39776,10 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "alt": return false;
-
-                case "id": return false;
-
                 case "image": return true;
-
-                case "mediaContentType": return false;
 
                 case "presentation": return true;
 
@@ -40572,16 +39887,6 @@ public class Storefront {
 
         public ID getId() {
             return (ID) get("id");
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "asJson": return false;
-
-                case "id": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -40823,17 +40128,10 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "handle": return false;
-
-                case "id": return false;
-
                 case "items": return true;
-
-                case "itemsCount": return false;
-
-                case "title": return false;
 
                 default: return false;
             }
@@ -41130,23 +40428,10 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "id": return false;
-
                 case "items": return true;
-
-                case "resource": return false;
-
-                case "resourceId": return false;
-
-                case "tags": return false;
-
-                case "title": return false;
-
-                case "type": return false;
-
-                case "url": return false;
 
                 default: return false;
             }
@@ -41283,12 +40568,6 @@ public class Storefront {
 
         public String getGraphQlTypeName() {
             return (String) get("__typename");
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                default: return false;
-            }
         }
     }
 
@@ -41551,12 +40830,6 @@ public class Storefront {
 
         public String getGraphQlTypeName() {
             return (String) get("__typename");
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                default: return false;
-            }
         }
     }
 
@@ -41999,29 +41272,10 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "createdAt": return false;
-
-                case "description": return false;
-
-                case "id": return false;
-
-                case "key": return false;
-
-                case "namespace": return false;
-
-                case "parentResource": return false;
-
-                case "reference": return false;
-
                 case "references": return true;
-
-                case "type": return false;
-
-                case "updatedAt": return false;
-
-                case "value": return false;
 
                 default: return false;
             }
@@ -42217,18 +41471,6 @@ public class Storefront {
         public MetafieldDeleteUserError setMessage(String arg) {
             optimisticData.put(getKey("message"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "code": return false;
-
-                case "field": return false;
-
-                case "message": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -42516,12 +41758,6 @@ public class Storefront {
         public String getGraphQlTypeName() {
             return (String) get("__typename");
         }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                default: return false;
-            }
-        }
     }
 
     public interface MetafieldReferenceQueryDefinition {
@@ -42677,12 +41913,6 @@ public class Storefront {
         public String getGraphQlTypeName() {
             return (String) get("__typename");
         }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                default: return false;
-            }
-        }
     }
 
     public interface MetafieldReferenceConnectionQueryDefinition {
@@ -42831,11 +42061,10 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "edges": return true;
-
-                case "nodes": return false;
 
                 case "pageInfo": return true;
 
@@ -42942,16 +42171,6 @@ public class Storefront {
         public MetafieldReferenceEdge setNode(MetafieldReference arg) {
             optimisticData.put(getKey("node"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "cursor": return false;
-
-                case "node": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -43125,20 +42344,6 @@ public class Storefront {
         public MetafieldsSetUserError setMessage(String arg) {
             optimisticData.put(getKey("message"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "code": return false;
-
-                case "elementIndex": return false;
-
-                case "field": return false;
-
-                case "message": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -43585,23 +42790,14 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "field": return true;
 
                 case "fields": return true;
 
-                case "handle": return false;
-
-                case "id": return false;
-
-                case "onlineStoreUrl": return false;
-
                 case "seo": return true;
-
-                case "type": return false;
-
-                case "updatedAt": return false;
 
                 default: return false;
             }
@@ -43754,6 +42950,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "edges": return true;
@@ -43867,10 +43064,9 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "cursor": return false;
-
                 case "node": return true;
 
                 default: return false;
@@ -44148,17 +43344,10 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "key": return false;
-
-                case "reference": return false;
-
                 case "references": return true;
-
-                case "type": return false;
-
-                case "value": return false;
 
                 default: return false;
             }
@@ -44326,6 +43515,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "description": return true;
@@ -44570,14 +43760,9 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "alt": return false;
-
-                case "id": return false;
-
-                case "mediaContentType": return false;
-
                 case "presentation": return true;
 
                 case "previewImage": return true;
@@ -44740,20 +43925,6 @@ public class Storefront {
             optimisticData.put(getKey("url"), arg);
             return this;
         }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "filesize": return false;
-
-                case "format": return false;
-
-                case "mimeType": return false;
-
-                case "url": return false;
-
-                default: return false;
-            }
-        }
     }
 
     public static class MoneyInput implements Serializable {
@@ -44897,16 +44068,6 @@ public class Storefront {
         public MoneyV2 setCurrencyCode(CurrencyCode arg) {
             optimisticData.put(getKey("currencyCode"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "amount": return false;
-
-                case "currencyCode": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -46619,6 +45780,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "cartAttributesUpdate": return true;
@@ -47187,14 +46349,6 @@ public class Storefront {
             optimisticData.put(getKey("id"), arg);
             return this;
         }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "id": return false;
-
-                default: return false;
-            }
-        }
     }
 
     public interface OnlineStorePublishableQueryDefinition {
@@ -47353,14 +46507,6 @@ public class Storefront {
         public UnknownOnlineStorePublishable setOnlineStoreUrl(String arg) {
             optimisticData.put(getKey("onlineStoreUrl"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "onlineStoreUrl": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -49054,15 +48200,10 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "billingAddress": return true;
-
-                case "cancelReason": return false;
-
-                case "canceledAt": return false;
-
-                case "currencyCode": return false;
 
                 case "currentSubtotalPrice": return true;
 
@@ -49076,21 +48217,7 @@ public class Storefront {
 
                 case "customAttributes": return true;
 
-                case "customerLocale": return false;
-
-                case "customerUrl": return false;
-
                 case "discountApplications": return true;
-
-                case "edited": return false;
-
-                case "email": return false;
-
-                case "financialStatus": return false;
-
-                case "fulfillmentStatus": return false;
-
-                case "id": return false;
 
                 case "lineItems": return true;
 
@@ -49098,23 +48225,13 @@ public class Storefront {
 
                 case "metafields": return true;
 
-                case "name": return false;
-
-                case "orderNumber": return false;
-
                 case "originalTotalDuties": return true;
 
                 case "originalTotalPrice": return true;
 
-                case "phone": return false;
-
-                case "processedAt": return false;
-
                 case "shippingAddress": return true;
 
                 case "shippingDiscountAllocations": return true;
-
-                case "statusUrl": return false;
 
                 case "subtotalPrice": return true;
 
@@ -49421,6 +48538,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "edges": return true;
@@ -49428,8 +48546,6 @@ public class Storefront {
                 case "nodes": return true;
 
                 case "pageInfo": return true;
-
-                case "totalCount": return false;
 
                 default: return false;
             }
@@ -49536,10 +48652,9 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "cursor": return false;
-
                 case "node": return true;
 
                 default: return false;
@@ -50113,10 +49228,9 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "currentQuantity": return false;
-
                 case "customAttributes": return true;
 
                 case "discountAllocations": return true;
@@ -50124,10 +49238,6 @@ public class Storefront {
                 case "discountedTotalPrice": return true;
 
                 case "originalTotalPrice": return true;
-
-                case "quantity": return false;
-
-                case "title": return false;
 
                 case "variant": return true;
 
@@ -50282,6 +49392,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "edges": return true;
@@ -50395,10 +49506,9 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "cursor": return false;
-
                 case "node": return true;
 
                 default: return false;
@@ -50969,31 +50079,14 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "body": return false;
-
-                case "bodySummary": return false;
-
-                case "createdAt": return false;
-
-                case "handle": return false;
-
-                case "id": return false;
-
                 case "metafield": return true;
 
                 case "metafields": return true;
 
-                case "onlineStoreUrl": return false;
-
                 case "seo": return true;
-
-                case "title": return false;
-
-                case "trackingParameters": return false;
-
-                case "updatedAt": return false;
 
                 default: return false;
             }
@@ -51146,6 +50239,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "edges": return true;
@@ -51259,10 +50353,9 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "cursor": return false;
-
                 case "node": return true;
 
                 default: return false;
@@ -51436,20 +50529,6 @@ public class Storefront {
         public PageInfo setStartCursor(String arg) {
             optimisticData.put(getKey("startCursor"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "endCursor": return false;
-
-                case "hasNextPage": return false;
-
-                case "hasPreviousPage": return false;
-
-                case "startCursor": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -51637,16 +50716,6 @@ public class Storefront {
         public PaginatedSitemapResources setItems(List<SitemapResourceInterface> arg) {
             optimisticData.put(getKey("items"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "hasNextPage": return false;
-
-                case "items": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -51908,26 +50977,6 @@ public class Storefront {
         public PaymentSettings setSupportedDigitalWallets(List<DigitalWallet> arg) {
             optimisticData.put(getKey("supportedDigitalWallets"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "acceptedCardBrands": return false;
-
-                case "cardVaultUrl": return false;
-
-                case "countryCode": return false;
-
-                case "currencyCode": return false;
-
-                case "enabledPresentmentCurrencies": return false;
-
-                case "shopifyPaymentsAccountId": return false;
-
-                case "supportedDigitalWallets": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -52212,6 +51261,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "articles": return true;
@@ -52529,14 +51579,6 @@ public class Storefront {
             optimisticData.put(getKey("percentage"), arg);
             return this;
         }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "percentage": return false;
-
-                default: return false;
-            }
-        }
     }
 
     public interface PricingValueQueryDefinition {
@@ -52614,12 +51656,6 @@ public class Storefront {
 
         public String getGraphQlTypeName() {
             return (String) get("__typename");
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                default: return false;
-            }
         }
     }
 
@@ -54777,11 +53813,10 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "adjacentVariants": return true;
-
-                case "availableForSale": return false;
 
                 case "category": return true;
 
@@ -54789,25 +53824,9 @@ public class Storefront {
 
                 case "compareAtPriceRange": return true;
 
-                case "createdAt": return false;
-
-                case "description": return false;
-
-                case "descriptionHtml": return false;
-
-                case "encodedVariantAvailability": return false;
-
-                case "encodedVariantExistence": return false;
-
                 case "featuredImage": return true;
 
-                case "handle": return false;
-
-                case "id": return false;
-
                 case "images": return true;
-
-                case "isGiftCard": return false;
 
                 case "media": return true;
 
@@ -54815,17 +53834,9 @@ public class Storefront {
 
                 case "metafields": return true;
 
-                case "onlineStoreUrl": return false;
-
                 case "options": return true;
 
                 case "priceRange": return true;
-
-                case "productType": return false;
-
-                case "publishedAt": return false;
-
-                case "requiresSellingPlan": return false;
 
                 case "selectedOrFirstAvailableVariant": return true;
 
@@ -54833,23 +53844,11 @@ public class Storefront {
 
                 case "seo": return true;
 
-                case "tags": return false;
-
-                case "title": return false;
-
-                case "totalInventory": return false;
-
-                case "trackingParameters": return false;
-
-                case "updatedAt": return false;
-
                 case "variantBySelectedOptions": return true;
 
                 case "variants": return true;
 
                 case "variantsCount": return true;
-
-                case "vendor": return false;
 
                 default: return false;
             }
@@ -55170,6 +54169,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "edges": return true;
@@ -55285,10 +54285,9 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "cursor": return false;
-
                 case "node": return true;
 
                 default: return false;
@@ -55891,15 +54890,10 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "id": return false;
-
-                case "name": return false;
-
                 case "optionValues": return true;
-
-                case "values": return false;
 
                 default: return false;
             }
@@ -56073,13 +55067,10 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "firstSelectableVariant": return true;
-
-                case "id": return false;
-
-                case "name": return false;
 
                 case "swatch": return true;
 
@@ -56197,16 +55188,6 @@ public class Storefront {
             optimisticData.put(getKey("image"), arg);
             return this;
         }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "color": return false;
-
-                case "image": return false;
-
-                default: return false;
-            }
-        }
     }
 
     public interface ProductPriceRangeQueryDefinition {
@@ -56313,6 +55294,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "maxVariantPrice": return true;
@@ -57981,23 +56963,16 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "availableForSale": return false;
-
-                case "barcode": return false;
-
                 case "compareAtPrice": return true;
 
                 case "compareAtPriceV2": return true;
 
                 case "components": return true;
 
-                case "currentlyNotInStock": return false;
-
                 case "groupedBy": return true;
-
-                case "id": return false;
 
                 case "image": return true;
 
@@ -58011,15 +56986,9 @@ public class Storefront {
 
                 case "product": return true;
 
-                case "quantityAvailable": return false;
-
                 case "quantityPriceBreaks": return true;
 
                 case "quantityRule": return true;
-
-                case "requiresComponents": return false;
-
-                case "requiresShipping": return false;
 
                 case "selectedOptions": return true;
 
@@ -58027,21 +56996,11 @@ public class Storefront {
 
                 case "shopPayInstallmentsPricing": return true;
 
-                case "sku": return false;
-
                 case "storeAvailability": return true;
-
-                case "taxable": return false;
-
-                case "title": return false;
 
                 case "unitPrice": return true;
 
                 case "unitPriceMeasurement": return true;
-
-                case "weight": return false;
-
-                case "weightUnit": return false;
 
                 default: return false;
             }
@@ -58148,11 +57107,10 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "productVariant": return true;
-
-                case "quantity": return false;
 
                 default: return false;
             }
@@ -58305,6 +57263,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "edges": return true;
@@ -58418,10 +57377,9 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "cursor": return false;
-
                 case "node": return true;
 
                 default: return false;
@@ -58575,6 +57533,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "edges": return true;
@@ -58688,10 +57647,9 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "cursor": return false;
-
                 case "node": return true;
 
                 default: return false;
@@ -58932,6 +57890,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "company": return true;
@@ -59047,10 +58006,9 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "minimumQuantity": return false;
-
                 case "price": return true;
 
                 default: return false;
@@ -59204,6 +58162,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "edges": return true;
@@ -59317,10 +58276,9 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "cursor": return false;
-
                 case "node": return true;
 
                 default: return false;
@@ -59469,18 +58427,6 @@ public class Storefront {
         public QuantityRule setMinimum(Integer arg) {
             optimisticData.put(getKey("minimum"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "increment": return false;
-
-                case "maximum": return false;
-
-                case "minimum": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -62210,6 +61156,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "article": return true;
@@ -62223,8 +61170,6 @@ public class Storefront {
                 case "blogs": return true;
 
                 case "cart": return true;
-
-                case "cartCompletionAttempt": return false;
 
                 case "collection": return true;
 
@@ -62243,10 +61188,6 @@ public class Storefront {
                 case "metaobject": return true;
 
                 case "metaobjects": return true;
-
-                case "node": return false;
-
-                case "nodes": return false;
 
                 case "page": return true;
 
@@ -62389,16 +61330,6 @@ public class Storefront {
         public SEO setTitle(String arg) {
             optimisticData.put(getKey("title"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "description": return false;
-
-                case "title": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -62586,22 +61517,6 @@ public class Storefront {
         public ScriptDiscountApplication setValue(PricingValue arg) {
             optimisticData.put(getKey("value"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "allocationMethod": return false;
-
-                case "targetSelection": return false;
-
-                case "targetType": return false;
-
-                case "title": return false;
-
-                case "value": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -62797,18 +61712,6 @@ public class Storefront {
             optimisticData.put(getKey("trackingParameters"), arg);
             return this;
         }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "styledText": return false;
-
-                case "text": return false;
-
-                case "trackingParameters": return false;
-
-                default: return false;
-            }
-        }
     }
 
     public interface SearchResultItemQueryDefinition {
@@ -62897,12 +61800,6 @@ public class Storefront {
 
         public String getGraphQlTypeName() {
             return (String) get("__typename");
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                default: return false;
-            }
         }
     }
 
@@ -63117,17 +62014,14 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "edges": return true;
 
-                case "nodes": return false;
-
                 case "pageInfo": return true;
 
                 case "productFilters": return true;
-
-                case "totalCount": return false;
 
                 default: return false;
             }
@@ -63232,16 +62126,6 @@ public class Storefront {
         public SearchResultItemEdge setNode(SearchResultItem arg) {
             optimisticData.put(getKey("node"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "cursor": return false;
-
-                case "node": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -63666,16 +62550,6 @@ public class Storefront {
         public SelectedOption setValue(String arg) {
             optimisticData.put(getKey("value"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "name": return false;
-
-                case "value": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -64209,29 +63083,18 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "billingPolicy": return false;
-
                 case "checkoutCharge": return true;
-
-                case "deliveryPolicy": return false;
-
-                case "description": return false;
-
-                case "id": return false;
 
                 case "metafield": return true;
 
                 case "metafields": return true;
 
-                case "name": return false;
-
                 case "options": return true;
 
                 case "priceAdjustments": return true;
-
-                case "recurringDeliveries": return false;
 
                 default: return false;
             }
@@ -64423,6 +63286,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "checkoutChargeAmount": return true;
@@ -64584,6 +63448,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "edges": return true;
@@ -64697,10 +63562,9 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "cursor": return false;
-
                 case "node": return true;
 
                 default: return false;
@@ -64893,6 +63757,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "compareAtPrice": return true;
@@ -64972,12 +63837,6 @@ public class Storefront {
 
         public String getGraphQlTypeName() {
             return (String) get("__typename");
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                default: return false;
-            }
         }
     }
 
@@ -65080,16 +63939,6 @@ public class Storefront {
             optimisticData.put(getKey("value"), arg);
             return this;
         }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "type": return false;
-
-                case "value": return false;
-
-                default: return false;
-            }
-        }
     }
 
     public interface SellingPlanCheckoutChargePercentageValueQueryDefinition {
@@ -65158,14 +64007,6 @@ public class Storefront {
         public SellingPlanCheckoutChargePercentageValue setPercentage(Double arg) {
             optimisticData.put(getKey("percentage"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "percentage": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -65296,12 +64137,6 @@ public class Storefront {
 
         public String getGraphQlTypeName() {
             return (String) get("__typename");
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                default: return false;
-            }
         }
     }
 
@@ -65451,6 +64286,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "edges": return true;
@@ -65528,12 +64364,6 @@ public class Storefront {
 
         public String getGraphQlTypeName() {
             return (String) get("__typename");
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                default: return false;
-            }
         }
     }
 
@@ -65637,10 +64467,9 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "cursor": return false;
-
                 case "node": return true;
 
                 default: return false;
@@ -65720,6 +64549,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "adjustmentAmount": return true;
@@ -65801,6 +64631,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "price": return true;
@@ -66068,12 +64899,9 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "appName": return false;
-
-                case "name": return false;
-
                 case "options": return true;
 
                 case "sellingPlans": return true;
@@ -66229,6 +65057,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "edges": return true;
@@ -66342,10 +65171,9 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "cursor": return false;
-
                 case "node": return true;
 
                 default: return false;
@@ -66464,16 +65292,6 @@ public class Storefront {
         public SellingPlanGroupOption setValues(List<String> arg) {
             optimisticData.put(getKey("values"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "name": return false;
-
-                case "values": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -66660,16 +65478,6 @@ public class Storefront {
             optimisticData.put(getKey("value"), arg);
             return this;
         }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "name": return false;
-
-                case "value": return false;
-
-                default: return false;
-            }
-        }
     }
 
     public interface SellingPlanPercentagePriceAdjustmentQueryDefinition {
@@ -66738,14 +65546,6 @@ public class Storefront {
         public SellingPlanPercentagePriceAdjustment setAdjustmentPercentage(Integer arg) {
             optimisticData.put(getKey("adjustmentPercentage"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "adjustmentPercentage": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -66867,16 +65667,6 @@ public class Storefront {
             optimisticData.put(getKey("orderCount"), arg);
             return this;
         }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "adjustmentValue": return false;
-
-                case "orderCount": return false;
-
-                default: return false;
-            }
-        }
     }
 
     public interface SellingPlanPriceAdjustmentValueQueryDefinition {
@@ -66967,12 +65757,6 @@ public class Storefront {
 
         public String getGraphQlTypeName() {
             return (String) get("__typename");
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                default: return false;
-            }
         }
     }
 
@@ -67071,16 +65855,6 @@ public class Storefront {
             optimisticData.put(getKey("intervalCount"), arg);
             return this;
         }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "interval": return false;
-
-                case "intervalCount": return false;
-
-                default: return false;
-            }
-        }
     }
 
     public interface SellingPlanRecurringDeliveryPolicyQueryDefinition {
@@ -67177,16 +65951,6 @@ public class Storefront {
         public SellingPlanRecurringDeliveryPolicy setIntervalCount(Integer arg) {
             optimisticData.put(getKey("intervalCount"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "interval": return false;
-
-                case "intervalCount": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -67832,21 +66596,14 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "brand": return true;
 
-                case "description": return false;
-
-                case "id": return false;
-
                 case "metafield": return true;
 
                 case "metafields": return true;
-
-                case "moneyFormat": return false;
-
-                case "name": return false;
 
                 case "paymentSettings": return true;
 
@@ -67857,8 +66614,6 @@ public class Storefront {
                 case "refundPolicy": return true;
 
                 case "shippingPolicy": return true;
-
-                case "shipsToCountries": return false;
 
                 case "shopPayInstallmentsPricing": return true;
 
@@ -68033,10 +66788,9 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "id": return false;
-
                 case "maxPrice": return true;
 
                 case "minPrice": return true;
@@ -68282,17 +67036,10 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "apr": return false;
-
-                case "frequency": return false;
-
-                case "id": return false;
-
                 case "installmentsCount": return true;
-
-                case "loanType": return false;
 
                 default: return false;
             }
@@ -68505,6 +67252,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "financingPlans": return true;
@@ -68736,15 +67484,10 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "available": return false;
-
-                case "eligible": return false;
-
                 case "fullPrice": return true;
-
-                case "id": return false;
 
                 case "installmentsCount": return true;
 
@@ -69240,21 +67983,14 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "deliveryMethods": return true;
 
-                case "discountCodes": return false;
-
                 case "discounts": return true;
 
                 case "lineItems": return true;
-
-                case "locale": return false;
-
-                case "presentmentCurrency": return false;
-
-                case "selectedDeliveryMethodType": return false;
 
                 case "shippingAddress": return true;
 
@@ -69650,34 +68386,6 @@ public class Storefront {
             optimisticData.put(getKey("provinceCode"), arg);
             return this;
         }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "address1": return false;
-
-                case "address2": return false;
-
-                case "city": return false;
-
-                case "companyName": return false;
-
-                case "countryCode": return false;
-
-                case "email": return false;
-
-                case "firstName": return false;
-
-                case "lastName": return false;
-
-                case "phone": return false;
-
-                case "postalCode": return false;
-
-                case "provinceCode": return false;
-
-                default: return false;
-            }
-        }
     }
 
     public interface ShopPayPaymentRequestDeliveryMethodQueryDefinition {
@@ -69940,21 +68648,10 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "amount": return true;
-
-                case "code": return false;
-
-                case "deliveryExpectationLabel": return false;
-
-                case "detail": return false;
-
-                case "label": return false;
-
-                case "maxDeliveryDate": return false;
-
-                case "minDeliveryDate": return false;
 
                 default: return false;
             }
@@ -70360,11 +69057,10 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "amount": return true;
-
-                case "label": return false;
 
                 default: return false;
             }
@@ -70547,16 +69243,6 @@ public class Storefront {
         public ShopPayPaymentRequestImage setUrl(String arg) {
             optimisticData.put(getKey("url"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "alt": return false;
-
-                case "url": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -71478,6 +70164,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "finalItemPrice": return true;
@@ -71488,19 +70175,11 @@ public class Storefront {
 
                 case "itemDiscounts": return true;
 
-                case "label": return false;
-
                 case "lineDiscounts": return true;
 
                 case "originalItemPrice": return true;
 
                 case "originalLinePrice": return true;
-
-                case "quantity": return false;
-
-                case "requiresShipping": return false;
-
-                case "sku": return false;
 
                 default: return false;
             }
@@ -72022,13 +70701,10 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "paymentRequest": return true;
-
-                case "processingStatusType": return false;
-
-                case "token": return false;
 
                 default: return false;
             }
@@ -72191,15 +70867,10 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "checkoutUrl": return false;
-
                 case "paymentRequest": return true;
-
-                case "sourceIdentifier": return false;
-
-                case "token": return false;
 
                 default: return false;
             }
@@ -72320,6 +70991,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "shopPayPaymentRequestSession": return true;
@@ -72445,6 +71117,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "paymentRequestReceipt": return true;
@@ -72584,13 +71257,10 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "amount": return true;
-
-                case "code": return false;
-
-                case "label": return false;
 
                 default: return false;
             }
@@ -72854,6 +71524,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "discounts": return true;
@@ -73206,22 +71877,6 @@ public class Storefront {
             optimisticData.put(getKey("url"), arg);
             return this;
         }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "body": return false;
-
-                case "handle": return false;
-
-                case "id": return false;
-
-                case "title": return false;
-
-                case "url": return false;
-
-                default: return false;
-            }
-        }
     }
 
     public interface ShopPolicyWithDefaultQueryDefinition {
@@ -73414,22 +72069,6 @@ public class Storefront {
             optimisticData.put(getKey("url"), arg);
             return this;
         }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "body": return false;
-
-                case "handle": return false;
-
-                case "id": return false;
-
-                case "title": return false;
-
-                case "url": return false;
-
-                default: return false;
-            }
-        }
     }
 
     public interface SitemapQueryDefinition {
@@ -73559,6 +72198,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "pagesCount": return true;
@@ -73702,18 +72342,6 @@ public class Storefront {
         public SitemapImage setUpdatedAt(Date arg) {
             optimisticData.put(getKey("updatedAt"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "alt": return false;
-
-                case "filepath": return false;
-
-                case "updatedAt": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -73883,15 +72511,10 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "handle": return false;
-
                 case "image": return true;
-
-                case "title": return false;
-
-                case "updatedAt": return false;
 
                 default: return false;
             }
@@ -74033,16 +72656,6 @@ public class Storefront {
         public UnknownSitemapResourceInterface setUpdatedAt(Date arg) {
             optimisticData.put(getKey("updatedAt"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "handle": return false;
-
-                case "updatedAt": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -74207,20 +72820,6 @@ public class Storefront {
         public SitemapResourceMetaobject setUpdatedAt(Date arg) {
             optimisticData.put(getKey("updatedAt"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "handle": return false;
-
-                case "onlineStoreUrlHandle": return false;
-
-                case "type": return false;
-
-                case "updatedAt": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -74494,15 +73093,10 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "available": return false;
-
                 case "location": return true;
-
-                case "pickUpTime": return false;
-
-                case "quantityAvailable": return false;
 
                 default: return false;
             }
@@ -74655,6 +73249,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "edges": return true;
@@ -74768,10 +73363,9 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "cursor": return false;
-
                 case "node": return true;
 
                 default: return false;
@@ -74888,6 +73482,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "edges": return true;
@@ -74994,16 +73589,6 @@ public class Storefront {
             optimisticData.put(getKey("node"), arg);
             return this;
         }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "cursor": return false;
-
-                case "node": return false;
-
-                default: return false;
-            }
-        }
     }
 
     public interface SubmissionErrorQueryDefinition {
@@ -75105,16 +73690,6 @@ public class Storefront {
         public SubmissionError setMessage(String arg) {
             optimisticData.put(getKey("message"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "code": return false;
-
-                case "message": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -76141,14 +74716,6 @@ public class Storefront {
             optimisticData.put(getKey("attemptId"), arg);
             return this;
         }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "attemptId": return false;
-
-                default: return false;
-            }
-        }
     }
 
     public interface SubmitFailedQueryDefinition {
@@ -76261,10 +74828,9 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "checkoutUrl": return false;
-
                 case "errors": return true;
 
                 default: return false;
@@ -76338,14 +74904,6 @@ public class Storefront {
         public SubmitSuccess setAttemptId(String arg) {
             optimisticData.put(getKey("attemptId"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "attemptId": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -76421,14 +74979,6 @@ public class Storefront {
         public SubmitThrottled setPollAfter(Date arg) {
             optimisticData.put(getKey("pollAfter"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "pollAfter": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -76542,10 +75092,9 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "color": return false;
-
                 case "image": return true;
 
                 default: return false;
@@ -76679,13 +75228,10 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "ancestors": return true;
-
-                case "id": return false;
-
-                case "name": return false;
 
                 default: return false;
             }
@@ -76847,14 +75393,6 @@ public class Storefront {
         public UnknownTrackable setTrackingParameters(String arg) {
             optimisticData.put(getKey("trackingParameters"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "trackingParameters": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -77051,22 +75589,6 @@ public class Storefront {
         public UnitPriceMeasurement setReferenceValue(Integer arg) {
             optimisticData.put(getKey("referenceValue"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "measuredType": return false;
-
-                case "quantityUnit": return false;
-
-                case "quantityValue": return false;
-
-                case "referenceUnit": return false;
-
-                case "referenceValue": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -77487,18 +76009,6 @@ public class Storefront {
             optimisticData.put(getKey("target"), arg);
             return this;
         }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "id": return false;
-
-                case "path": return false;
-
-                case "target": return false;
-
-                default: return false;
-            }
-        }
     }
 
     public interface UrlRedirectConnectionQueryDefinition {
@@ -77647,6 +76157,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "edges": return true;
@@ -77760,10 +76271,9 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "cursor": return false;
-
                 case "node": return true;
 
                 default: return false;
@@ -77875,16 +76385,6 @@ public class Storefront {
         public UserError setMessage(String arg) {
             optimisticData.put(getKey("message"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "field": return false;
-
-                case "message": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -78025,18 +76525,6 @@ public class Storefront {
         public UserErrorsShopPayPaymentRequestSessionUserErrors setMessage(String arg) {
             optimisticData.put(getKey("message"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "code": return false;
-
-                case "field": return false;
-
-                case "message": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -78385,14 +76873,9 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "alt": return false;
-
-                case "id": return false;
-
-                case "mediaContentType": return false;
-
                 case "presentation": return true;
 
                 case "previewImage": return true;
@@ -78582,22 +77065,6 @@ public class Storefront {
         public VideoSource setWidth(Integer arg) {
             optimisticData.put(getKey("width"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "format": return false;
-
-                case "height": return false;
-
-                case "mimeType": return false;
-
-                case "url": return false;
-
-                case "width": return false;
-
-                default: return false;
-            }
         }
     }
 
