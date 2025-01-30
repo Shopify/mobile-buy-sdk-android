@@ -9,7 +9,7 @@ on:
 jobs:
   deploy:
     environment:
-      name: Central Repository Deployment
+      name: Maven Central
 
     runs-on: ubuntu-latest
 
