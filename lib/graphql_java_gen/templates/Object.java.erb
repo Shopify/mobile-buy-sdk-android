@@ -25,6 +25,7 @@ import java.util.Map;
             <% fields = type.fields(include_deprecated: include_deprecated) || [] %>
             <% class_name = type.object? ? type.name : "Unknown#{type.name}" %>
             <%= java_doc(type) %>
+            <%= type.deprecated? ? "@Deprecated\n" : '' -%>
             public class <%= class_name %> extends AbstractResponse<<%= class_name %>> <%= java_implements(type) %>{
                 public <%= class_name %>() {
                 }

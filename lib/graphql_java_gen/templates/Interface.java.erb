@@ -25,6 +25,7 @@ import java.util.Map;
 
 <% fields = type.fields(include_deprecated: include_deprecated) || [] %>
 <%= java_doc(type) %>
+<%= type.deprecated? ? "@Deprecated\n" : '' -%>
 <% unless type.object? %>
     <% if type.name == 'Node' %>
       public interface <%= type.name %> extends com.shopify.graphql.support.Node {

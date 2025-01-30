@@ -26,6 +26,7 @@ import java.util.Map;
     <% when 'INPUT_OBJECT' %>
     <% when 'ENUM' %>
         <%= java_doc(type) %>
+        <%= type.deprecated? ? "@Deprecated\n" : '' -%>
         public enum <%= type.name %> {
           <% type.enum_values(include_deprecated: include_deprecated).each do |value| %>
             <%= java_doc(value) %>

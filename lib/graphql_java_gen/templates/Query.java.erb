@@ -25,6 +25,7 @@ import java.util.Map;
 
 <% fields = type.fields(include_deprecated: include_deprecated) || [] %>
 <%= java_doc(type) %>
+<%= type.deprecated? ? "@Deprecated\n" : '' -%>
 public class <%= type.name %>Query extends Query<<%= type.name %>Query> {
     <%= type.name %>Query(StringBuilder _queryBuilder) {
         super(_queryBuilder);
@@ -46,6 +47,7 @@ public class <%= type.name %>Query extends Query<<%= type.name %>Query> {
 
                 <% field.optional_args.each do |arg| %>
                     <%= java_doc(arg) %>
+                    <%= arg.deprecated? ? "@Deprecated\n" : '' -%>
                     public <%= field.classify_name %>Arguments <%= escape_reserved_word(arg.camelize_name) %>(<%= java_input_type(arg.type) %> value) {
                         if (value != null) {
                             startArgument("<%= arg.name %>");
@@ -61,6 +63,7 @@ public class <%= type.name %>Query extends Query<<%= type.name %>Query> {
             }
 
             <%= java_doc(field) %>
+            <%= field.deprecated? ? "@Deprecated\n" : '' -%>
             public <%= type.name %>Query <%= escape_reserved_word(field.camelize_name) %>(<%= java_arg_defs(field, skip_optional: true) %>) {
                 return <%= escape_reserved_word(field.camelize_name) %>(<%= java_arg_expresions_with_empty_optional_args(field) %>);
             }

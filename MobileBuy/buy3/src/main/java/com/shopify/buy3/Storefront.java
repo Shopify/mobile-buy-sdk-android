@@ -744,6 +744,7 @@ public class Storefront {
         * @deprecated Use `amountUsed` instead.
         */
 
+        @Deprecated
         public MoneyV2 getAmountUsedV2() {
             return (MoneyV2) get("amountUsedV2");
         }
@@ -772,6 +773,7 @@ public class Storefront {
         * @deprecated Use `balance` instead.
         */
 
+        @Deprecated
         public MoneyV2 getBalanceV2() {
             return (MoneyV2) get("balanceV2");
         }
@@ -1456,6 +1458,7 @@ public class Storefront {
         * @deprecated Use `authorV2` instead.
         */
 
+        @Deprecated
         public ArticleAuthor getAuthor() {
             return (ArticleAuthor) get("author");
         }
@@ -3048,6 +3051,7 @@ public class Storefront {
         * @deprecated Use `cost` instead.
         */
 
+        @Deprecated
         public CartLineEstimatedCost getEstimatedCost() {
             return (CartLineEstimatedCost) get("estimatedCost");
         }
@@ -5797,6 +5801,7 @@ public class Storefront {
         * @deprecated Use `cost` instead.
         */
 
+        @Deprecated
         public CartEstimatedCost getEstimatedCost() {
             return (CartEstimatedCost) get("estimatedCost");
         }
@@ -6655,6 +6660,7 @@ public class Storefront {
         * @deprecated Use `cart.delivery` instead.
         */
 
+        @Deprecated
         public List<DeliveryAddress> getDeliveryAddressPreferences() {
             return (List<DeliveryAddress>) get("deliveryAddressPreferences");
         }
@@ -8347,6 +8353,7 @@ public class Storefront {
 
         */
 
+        @Deprecated
         public MoneyV2 getTotalDutyAmount() {
             return (MoneyV2) get("totalDutyAmount");
         }
@@ -8365,6 +8372,7 @@ public class Storefront {
 
         */
 
+        @Deprecated
         public Boolean getTotalDutyAmountEstimated() {
             return (Boolean) get("totalDutyAmountEstimated");
         }
@@ -8383,6 +8391,7 @@ public class Storefront {
 
         */
 
+        @Deprecated
         public MoneyV2 getTotalTaxAmount() {
             return (MoneyV2) get("totalTaxAmount");
         }
@@ -8401,6 +8410,7 @@ public class Storefront {
 
         */
 
+        @Deprecated
         public Boolean getTotalTaxAmountEstimated() {
             return (Boolean) get("totalTaxAmountEstimated");
         }
@@ -12139,6 +12149,7 @@ public class Storefront {
         * @deprecated Use `cost` instead.
         */
 
+        @Deprecated
         public CartLineEstimatedCost getEstimatedCost() {
             return (CartLineEstimatedCost) get("estimatedCost");
         }
@@ -18598,6 +18609,7 @@ public class Storefront {
         * @deprecated Use `cost` instead.
         */
 
+        @Deprecated
         public CartLineEstimatedCost getEstimatedCost() {
             return (CartLineEstimatedCost) get("estimatedCost");
         }
@@ -25789,6 +25801,7 @@ public class Storefront {
         * @deprecated Use `customerUserErrors` instead.
         */
 
+        @Deprecated
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -26612,6 +26625,7 @@ public class Storefront {
         * @deprecated Use `customerUserErrors` instead.
         */
 
+        @Deprecated
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -26783,6 +26797,7 @@ public class Storefront {
         * @deprecated Use `customerUserErrors` instead.
         */
 
+        @Deprecated
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -26948,6 +26963,7 @@ public class Storefront {
         * @deprecated Use `customerUserErrors` instead.
         */
 
+        @Deprecated
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -27117,6 +27133,7 @@ public class Storefront {
         * @deprecated Use `customerUserErrors` instead.
         */
 
+        @Deprecated
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -27469,6 +27486,7 @@ public class Storefront {
         * @deprecated Use `customerUserErrors` instead.
         */
 
+        @Deprecated
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -27638,6 +27656,7 @@ public class Storefront {
         * @deprecated Use `customerUserErrors` instead.
         */
 
+        @Deprecated
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -27991,6 +28010,7 @@ public class Storefront {
         * @deprecated Use `customerUserErrors` instead.
         */
 
+        @Deprecated
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -28195,6 +28215,7 @@ public class Storefront {
         * @deprecated Use `customerUserErrors` instead.
         */
 
+        @Deprecated
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -28450,6 +28471,7 @@ public class Storefront {
         * @deprecated Use `customerUserErrors` instead.
         */
 
+        @Deprecated
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -28875,6 +28897,7 @@ public class Storefront {
         * @deprecated Use `customerUserErrors` instead.
         */
 
+        @Deprecated
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -31116,6 +31139,7 @@ public class Storefront {
         * @deprecated Use `originUrl` instead.
         */
 
+        @Deprecated
         public String getEmbeddedUrl() {
             return (String) get("embeddedUrl");
         }
@@ -33456,6 +33480,7 @@ public class Storefront {
         *
         * @deprecated Use `url(transform:)` instead
         */
+        @Deprecated
         public ImageQuery transformedSrc() {
             return transformedSrc(args -> {});
         }
@@ -33684,6 +33709,7 @@ public class Storefront {
         * @deprecated Use `url` instead.
         */
 
+        @Deprecated
         public String getOriginalSrc() {
             return (String) get("originalSrc");
         }
@@ -33699,6 +33725,7 @@ public class Storefront {
         * @deprecated Use `url` instead.
         */
 
+        @Deprecated
         public String getSrc() {
             return (String) get("src");
         }
@@ -33717,6 +33744,7 @@ public class Storefront {
         * @deprecated Use `url(transform:)` instead
         */
 
+        @Deprecated
         public String getTransformedSrc() {
             return (String) get("transformedSrc");
         }
@@ -38187,6 +38215,7 @@ public class Storefront {
         * @deprecated Use `countryCodeV2` instead.
         */
 
+        @Deprecated
         public String getCountryCode() {
             return (String) get("countryCode");
         }
@@ -48884,6 +48913,7 @@ public class Storefront {
         * @deprecated Use `subtotalPrice` instead.
         */
 
+        @Deprecated
         public MoneyV2 getSubtotalPriceV2() {
             return (MoneyV2) get("subtotalPriceV2");
         }
@@ -48927,6 +48957,7 @@ public class Storefront {
         * @deprecated Use `totalPrice` instead.
         */
 
+        @Deprecated
         public MoneyV2 getTotalPriceV2() {
             return (MoneyV2) get("totalPriceV2");
         }
@@ -48955,6 +48986,7 @@ public class Storefront {
         * @deprecated Use `totalRefunded` instead.
         */
 
+        @Deprecated
         public MoneyV2 getTotalRefundedV2() {
             return (MoneyV2) get("totalRefundedV2");
         }
@@ -48983,6 +49015,7 @@ public class Storefront {
         * @deprecated Use `totalShippingPrice` instead.
         */
 
+        @Deprecated
         public MoneyV2 getTotalShippingPriceV2() {
             return (MoneyV2) get("totalShippingPriceV2");
         }
@@ -49011,6 +49044,7 @@ public class Storefront {
         * @deprecated Use `totalTax` instead.
         */
 
+        @Deprecated
         public MoneyV2 getTotalTaxV2() {
             return (MoneyV2) get("totalTaxV2");
         }
@@ -55847,6 +55881,7 @@ public class Storefront {
         * @deprecated Use `optionValues` instead.
         */
 
+        @Deprecated
         public List<String> getValues() {
             return (List<String>) get("values");
         }
@@ -57593,6 +57628,7 @@ public class Storefront {
         * @deprecated Use `compareAtPrice` instead.
         */
 
+        @Deprecated
         public MoneyV2 getCompareAtPriceV2() {
             return (MoneyV2) get("compareAtPriceV2");
         }
@@ -57711,6 +57747,7 @@ public class Storefront {
         * @deprecated Use `price` instead.
         */
 
+        @Deprecated
         public MoneyV2 getPriceV2() {
             return (MoneyV2) get("priceV2");
         }
@@ -61753,6 +61790,7 @@ public class Storefront {
         * @deprecated Use `blog` instead.
         */
 
+        @Deprecated
         public Blog getBlogByHandle() {
             return (Blog) get("blogByHandle");
         }
@@ -61821,6 +61859,7 @@ public class Storefront {
         * @deprecated Use `collection` instead.
         */
 
+        @Deprecated
         public Collection getCollectionByHandle() {
             return (Collection) get("collectionByHandle");
         }
@@ -61970,6 +62009,7 @@ public class Storefront {
         * @deprecated Use `page` instead.
         */
 
+        @Deprecated
         public Page getPageByHandle() {
             return (Page) get("pageByHandle");
         }
@@ -62037,6 +62077,7 @@ public class Storefront {
         * @deprecated Use `product` instead.
         */
 
+        @Deprecated
         public Product getProductByHandle() {
             return (Product) get("productByHandle");
         }
