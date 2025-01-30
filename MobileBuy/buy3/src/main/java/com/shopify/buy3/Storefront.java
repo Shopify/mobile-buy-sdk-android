@@ -19,8 +19,6 @@ import com.shopify.graphql.support.ID;
 
 import java.math.BigDecimal;
 
-import org.joda.time.DateTime;
-
 import java.io.Serializable;
 import java.util.*;
 
@@ -309,18 +307,6 @@ public class Storefront {
         public ApiVersion setSupported(Boolean arg) {
             optimisticData.put(getKey("supported"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "displayName": return false;
-
-                case "handle": return false;
-
-                case "supported": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -746,6 +732,7 @@ public class Storefront {
         * @deprecated Use `amountUsed` instead.
         */
 
+        @Deprecated
         public MoneyV2 getAmountUsedV2() {
             return (MoneyV2) get("amountUsedV2");
         }
@@ -774,6 +761,7 @@ public class Storefront {
         * @deprecated Use `balance` instead.
         */
 
+        @Deprecated
         public MoneyV2 getBalanceV2() {
             return (MoneyV2) get("balanceV2");
         }
@@ -817,6 +805,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "amountUsed": return true;
@@ -826,10 +815,6 @@ public class Storefront {
                 case "balance": return true;
 
                 case "balanceV2": return true;
-
-                case "id": return false;
-
-                case "lastCharacters": return false;
 
                 case "presentmentAmountUsed": return true;
 
@@ -989,7 +974,7 @@ public class Storefront {
             }
 
             /**
-            * Truncates string after the given length.
+            * Truncates a string after the given length.
             */
             public ContentArguments truncateAt(Integer value) {
                 if (value != null) {
@@ -1039,7 +1024,7 @@ public class Storefront {
             }
 
             /**
-            * Truncates string after the given length.
+            * Truncates a string after the given length.
             */
             public ExcerptArguments truncateAt(Integer value) {
                 if (value != null) {
@@ -1127,14 +1112,18 @@ public class Storefront {
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
         public ArticleQuery metafield(String key, MetafieldQueryDefinition queryDef) {
             return metafield(key, args -> {}, queryDef);
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
         public ArticleQuery metafield(String key, MetafieldArgumentsDefinition argsDef, MetafieldQueryDefinition queryDef) {
             startField("metafield");
@@ -1154,7 +1143,8 @@ public class Storefront {
         }
 
         /**
-        * The metafields associated with the resource matching the supplied list of namespaces and keys.
+        * A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify
+        * resource.
         */
         public ArticleQuery metafields(List<HasMetafieldsIdentifier> identifiers, MetafieldQueryDefinition queryDef) {
             startField("metafields");
@@ -1453,6 +1443,7 @@ public class Storefront {
         * @deprecated Use `authorV2` instead.
         */
 
+        @Deprecated
         public ArticleAuthor getAuthor() {
             return (ArticleAuthor) get("author");
         }
@@ -1588,7 +1579,9 @@ public class Storefront {
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
 
         public Metafield getMetafield() {
@@ -1601,7 +1594,8 @@ public class Storefront {
         }
 
         /**
-        * The metafields associated with the resource matching the supplied list of namespaces and keys.
+        * A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify
+        * resource.
         */
 
         public List<Metafield> getMetafields() {
@@ -1631,11 +1625,11 @@ public class Storefront {
         * The date and time when the article was published.
         */
 
-        public DateTime getPublishedAt() {
-            return (DateTime) get("publishedAt");
+        public Date getPublishedAt() {
+            return (Date) get("publishedAt");
         }
 
-        public Article setPublishedAt(DateTime arg) {
+        public Article setPublishedAt(Date arg) {
             optimisticData.put(getKey("publishedAt"), arg);
             return this;
         }
@@ -1698,6 +1692,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "author": return true;
@@ -1708,35 +1703,13 @@ public class Storefront {
 
                 case "comments": return true;
 
-                case "content": return false;
-
-                case "contentHtml": return false;
-
-                case "excerpt": return false;
-
-                case "excerptHtml": return false;
-
-                case "handle": return false;
-
-                case "id": return false;
-
                 case "image": return true;
 
                 case "metafield": return true;
 
                 case "metafields": return true;
 
-                case "onlineStoreUrl": return false;
-
-                case "publishedAt": return false;
-
                 case "seo": return true;
-
-                case "tags": return false;
-
-                case "title": return false;
-
-                case "trackingParameters": return false;
 
                 default: return false;
             }
@@ -1927,22 +1900,6 @@ public class Storefront {
             optimisticData.put(getKey("name"), arg);
             return this;
         }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "bio": return false;
-
-                case "email": return false;
-
-                case "firstName": return false;
-
-                case "lastName": return false;
-
-                case "name": return false;
-
-                default: return false;
-            }
-        }
     }
 
     public interface ArticleConnectionQueryDefinition {
@@ -2091,6 +2048,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "edges": return true;
@@ -2204,10 +2162,9 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "cursor": return false;
-
                 case "node": return true;
 
                 default: return false;
@@ -2432,16 +2389,6 @@ public class Storefront {
         public Attribute setValue(String arg) {
             optimisticData.put(getKey("value"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "key": return false;
-
-                case "value": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -2674,22 +2621,6 @@ public class Storefront {
         public AutomaticDiscountApplication setValue(PricingValue arg) {
             optimisticData.put(getKey("value"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "allocationMethod": return false;
-
-                case "targetSelection": return false;
-
-                case "targetType": return false;
-
-                case "title": return false;
-
-                case "value": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -3042,6 +2973,7 @@ public class Storefront {
         * @deprecated Use `cost` instead.
         */
 
+        @Deprecated
         public CartLineEstimatedCost getEstimatedCost() {
             return (CartLineEstimatedCost) get("estimatedCost");
         }
@@ -3104,6 +3036,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "attribute": return true;
@@ -3112,15 +3045,7 @@ public class Storefront {
 
                 case "cost": return true;
 
-                case "discountAllocations": return false;
-
                 case "estimatedCost": return true;
-
-                case "id": return false;
-
-                case "merchandise": return false;
-
-                case "quantity": return false;
 
                 case "sellingPlanAllocation": return true;
 
@@ -3275,11 +3200,10 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "edges": return true;
-
-                case "nodes": return false;
 
                 case "pageInfo": return true;
 
@@ -3386,16 +3310,6 @@ public class Storefront {
         public BaseCartLineEdge setNode(BaseCartLine arg) {
             optimisticData.put(getKey("node"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "cursor": return false;
-
-                case "node": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -3596,14 +3510,18 @@ public class Storefront {
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
         public BlogQuery metafield(String key, MetafieldQueryDefinition queryDef) {
             return metafield(key, args -> {}, queryDef);
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
         public BlogQuery metafield(String key, MetafieldArgumentsDefinition argsDef, MetafieldQueryDefinition queryDef) {
             startField("metafield");
@@ -3623,7 +3541,8 @@ public class Storefront {
         }
 
         /**
-        * The metafields associated with the resource matching the supplied list of namespaces and keys.
+        * A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify
+        * resource.
         */
         public BlogQuery metafields(List<HasMetafieldsIdentifier> identifiers, MetafieldQueryDefinition queryDef) {
             startField("metafields");
@@ -3870,7 +3789,9 @@ public class Storefront {
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
 
         public Metafield getMetafield() {
@@ -3883,7 +3804,8 @@ public class Storefront {
         }
 
         /**
-        * The metafields associated with the resource matching the supplied list of namespaces and keys.
+        * A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify
+        * resource.
         */
 
         public List<Metafield> getMetafields() {
@@ -3935,6 +3857,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "articleByHandle": return true;
@@ -3943,19 +3866,11 @@ public class Storefront {
 
                 case "authors": return true;
 
-                case "handle": return false;
-
-                case "id": return false;
-
                 case "metafield": return true;
 
                 case "metafields": return true;
 
-                case "onlineStoreUrl": return false;
-
                 case "seo": return true;
-
-                case "title": return false;
 
                 default: return false;
             }
@@ -4108,6 +4023,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "edges": return true;
@@ -4221,10 +4137,9 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "cursor": return false;
-
                 case "node": return true;
 
                 default: return false;
@@ -4562,6 +4477,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "colors": return true;
@@ -4569,10 +4485,6 @@ public class Storefront {
                 case "coverImage": return true;
 
                 case "logo": return true;
-
-                case "shortDescription": return false;
-
-                case "slogan": return false;
 
                 case "squareLogo": return true;
 
@@ -4685,16 +4597,6 @@ public class Storefront {
         public BrandColorGroup setForeground(String arg) {
             optimisticData.put(getKey("foreground"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "background": return false;
-
-                case "foreground": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -4812,6 +4714,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "primary": return true;
@@ -5364,14 +5267,18 @@ public class Storefront {
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
         public CartQuery metafield(String key, MetafieldQueryDefinition queryDef) {
             return metafield(key, args -> {}, queryDef);
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
         public CartQuery metafield(String key, MetafieldArgumentsDefinition argsDef, MetafieldQueryDefinition queryDef) {
             startField("metafield");
@@ -5391,7 +5298,8 @@ public class Storefront {
         }
 
         /**
-        * The metafields associated with the resource matching the supplied list of namespaces and keys.
+        * A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify
+        * resource.
         */
         public CartQuery metafields(List<HasMetafieldsIdentifier> identifiers, MetafieldQueryDefinition queryDef) {
             startField("metafields");
@@ -5720,11 +5628,11 @@ public class Storefront {
         * The date and time when the cart was created.
         */
 
-        public DateTime getCreatedAt() {
-            return (DateTime) get("createdAt");
+        public Date getCreatedAt() {
+            return (Date) get("createdAt");
         }
 
-        public Cart setCreatedAt(DateTime arg) {
+        public Cart setCreatedAt(Date arg) {
             optimisticData.put(getKey("createdAt"), arg);
             return this;
         }
@@ -5778,6 +5686,7 @@ public class Storefront {
         * @deprecated Use `cost` instead.
         */
 
+        @Deprecated
         public CartEstimatedCost getEstimatedCost() {
             return (CartEstimatedCost) get("estimatedCost");
         }
@@ -5809,7 +5718,9 @@ public class Storefront {
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
 
         public Metafield getMetafield() {
@@ -5822,7 +5733,8 @@ public class Storefront {
         }
 
         /**
-        * The metafields associated with the resource matching the supplied list of namespaces and keys.
+        * A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify
+        * resource.
         */
 
         public List<Metafield> getMetafields() {
@@ -5865,15 +5777,16 @@ public class Storefront {
         * The date and time when the cart was updated.
         */
 
-        public DateTime getUpdatedAt() {
-            return (DateTime) get("updatedAt");
+        public Date getUpdatedAt() {
+            return (Date) get("updatedAt");
         }
 
-        public Cart setUpdatedAt(DateTime arg) {
+        public Cart setUpdatedAt(Date arg) {
             optimisticData.put(getKey("updatedAt"), arg);
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "appliedGiftCards": return true;
@@ -5884,33 +5797,19 @@ public class Storefront {
 
                 case "buyerIdentity": return true;
 
-                case "checkoutUrl": return false;
-
                 case "cost": return true;
 
-                case "createdAt": return false;
-
                 case "deliveryGroups": return true;
-
-                case "discountAllocations": return false;
 
                 case "discountCodes": return true;
 
                 case "estimatedCost": return true;
-
-                case "id": return false;
 
                 case "lines": return true;
 
                 case "metafield": return true;
 
                 case "metafields": return true;
-
-                case "note": return false;
-
-                case "totalQuantity": return false;
-
-                case "updatedAt": return false;
 
                 default: return false;
             }
@@ -6068,6 +5967,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "cart": return true;
@@ -6209,13 +6109,10 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "discountedAmount": return true;
-
-                case "targetType": return false;
-
-                case "title": return false;
 
                 default: return false;
             }
@@ -6373,6 +6270,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "cart": return true;
@@ -6424,7 +6322,15 @@ public class Storefront {
         * An ordered set of delivery addresses tied to the buyer that is interacting with the cart.
         * The rank of the preferences is determined by the order of the addresses in the array. Preferences
         * can be used to populate relevant fields in the checkout flow.
+        * As of the `2025-01` release, `buyerIdentity.deliveryAddressPreferences` is deprecated.
+        * Delivery addresses are now part of the `CartDelivery` object and managed with three new mutations:
+        * - `cartDeliveryAddressAdd`
+        * - `cartDeliveryAddressUpdate`
+        * - `cartDeliveryAddressDelete`
+        *
+        * @deprecated Use `cart.delivery` instead.
         */
+        @Deprecated
         public CartBuyerIdentityQuery deliveryAddressPreferences(DeliveryAddressQueryDefinition queryDef) {
             startField("deliveryAddressPreferences");
 
@@ -6455,7 +6361,7 @@ public class Storefront {
 
         /**
         * A set of preferences tied to the buyer interacting with the cart. Preferences are used to prefill
-        * fields in at checkout to streamline information collection. 
+        * fields in at checkout to streamline information collection.
         * Preferences are not synced back to the cart if they are overwritten.
         */
         public CartBuyerIdentityQuery preferences(CartPreferencesQueryDefinition queryDef) {
@@ -6616,8 +6522,16 @@ public class Storefront {
         * An ordered set of delivery addresses tied to the buyer that is interacting with the cart.
         * The rank of the preferences is determined by the order of the addresses in the array. Preferences
         * can be used to populate relevant fields in the checkout flow.
+        * As of the `2025-01` release, `buyerIdentity.deliveryAddressPreferences` is deprecated.
+        * Delivery addresses are now part of the `CartDelivery` object and managed with three new mutations:
+        * - `cartDeliveryAddressAdd`
+        * - `cartDeliveryAddressUpdate`
+        * - `cartDeliveryAddressDelete`
+        *
+        * @deprecated Use `cart.delivery` instead.
         */
 
+        @Deprecated
         public List<DeliveryAddress> getDeliveryAddressPreferences() {
             return (List<DeliveryAddress>) get("deliveryAddressPreferences");
         }
@@ -6655,7 +6569,7 @@ public class Storefront {
 
         /**
         * A set of preferences tied to the buyer interacting with the cart. Preferences are used to prefill
-        * fields in at checkout to streamline information collection. 
+        * fields in at checkout to streamline information collection.
         * Preferences are not synced back to the cart if they are overwritten.
         */
 
@@ -6681,17 +6595,10 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "countryCode": return false;
-
                 case "customer": return true;
-
-                case "deliveryAddressPreferences": return false;
-
-                case "email": return false;
-
-                case "phone": return false;
 
                 case "preferences": return true;
 
@@ -7109,6 +7016,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "cart": return true;
@@ -7290,13 +7198,10 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "code": return false;
-
                 case "discountedAmount": return true;
-
-                case "targetType": return false;
 
                 default: return false;
             }
@@ -7367,12 +7272,6 @@ public class Storefront {
 
         public String getGraphQlTypeName() {
             return (String) get("__typename");
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                default: return false;
-            }
         }
     }
 
@@ -7480,16 +7379,6 @@ public class Storefront {
             optimisticData.put(getKey("id"), arg);
             return this;
         }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "action": return false;
-
-                case "id": return false;
-
-                default: return false;
-            }
-        }
     }
 
     public interface CartCompletionAttemptResultQueryDefinition {
@@ -7589,12 +7478,6 @@ public class Storefront {
 
         public String getGraphQlTypeName() {
             return (String) get("__typename");
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                default: return false;
-            }
         }
     }
 
@@ -7703,11 +7586,10 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "errors": return true;
-
-                case "id": return false;
 
                 default: return false;
             }
@@ -7809,16 +7691,6 @@ public class Storefront {
             optimisticData.put(getKey("pollDelay"), arg);
             return this;
         }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "id": return false;
-
-                case "pollDelay": return false;
-
-                default: return false;
-            }
-        }
     }
 
     public interface CartCompletionSuccessQueryDefinition {
@@ -7883,7 +7755,7 @@ public class Storefront {
                 String fieldName = getFieldName(key);
                 switch (fieldName) {
                     case "completedAt": {
-                        DateTime optional1 = null;
+                        Date optional1 = null;
                         if (!field.getValue().isJsonNull()) {
                             optional1 = Utils.parseDateTime(jsonAsString(field.getValue(), key));
                         }
@@ -7930,11 +7802,11 @@ public class Storefront {
         * The date and time when the job completed.
         */
 
-        public DateTime getCompletedAt() {
-            return (DateTime) get("completedAt");
+        public Date getCompletedAt() {
+            return (Date) get("completedAt");
         }
 
-        public CartCompletionSuccess setCompletedAt(DateTime arg) {
+        public CartCompletionSuccess setCompletedAt(Date arg) {
             optimisticData.put(getKey("completedAt"), arg);
             return this;
         }
@@ -7976,20 +7848,6 @@ public class Storefront {
         public CartCompletionSuccess setOrderUrl(String arg) {
             optimisticData.put(getKey("orderUrl"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "completedAt": return false;
-
-                case "id": return false;
-
-                case "orderId": return false;
-
-                case "orderUrl": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -8071,7 +7929,13 @@ public class Storefront {
 
         /**
         * The duty amount for the customer to pay at checkout.
+        *
+        * @deprecated Tax and duty amounts are no longer available and will be removed in a future version.
+        Please see [the changelog](https://shopify.dev/changelog/tax-and-duties-are-deprecated-in-storefront-cart-api)
+        for more information.
+
         */
+        @Deprecated
         public CartCostQuery totalDutyAmount(MoneyV2QueryDefinition queryDef) {
             startField("totalDutyAmount");
 
@@ -8084,7 +7948,13 @@ public class Storefront {
 
         /**
         * Whether the total duty amount is estimated.
+        *
+        * @deprecated Tax and duty amounts are no longer available and will be removed in a future version.
+        Please see [the changelog](https://shopify.dev/changelog/tax-and-duties-are-deprecated-in-storefront-cart-api)
+        for more information.
+
         */
+        @Deprecated
         public CartCostQuery totalDutyAmountEstimated() {
             startField("totalDutyAmountEstimated");
 
@@ -8093,7 +7963,13 @@ public class Storefront {
 
         /**
         * The tax amount for the customer to pay at checkout.
+        *
+        * @deprecated Tax and duty amounts are no longer available and will be removed in a future version.
+        Please see [the changelog](https://shopify.dev/changelog/tax-and-duties-are-deprecated-in-storefront-cart-api)
+        for more information.
+
         */
+        @Deprecated
         public CartCostQuery totalTaxAmount(MoneyV2QueryDefinition queryDef) {
             startField("totalTaxAmount");
 
@@ -8106,7 +7982,13 @@ public class Storefront {
 
         /**
         * Whether the total tax amount is estimated.
+        *
+        * @deprecated Tax and duty amounts are no longer available and will be removed in a future version.
+        Please see [the changelog](https://shopify.dev/changelog/tax-and-duties-are-deprecated-in-storefront-cart-api)
+        for more information.
+
         */
+        @Deprecated
         public CartCostQuery totalTaxAmountEstimated() {
             startField("totalTaxAmountEstimated");
 
@@ -8279,8 +8161,14 @@ public class Storefront {
 
         /**
         * The duty amount for the customer to pay at checkout.
+        *
+        * @deprecated Tax and duty amounts are no longer available and will be removed in a future version.
+        Please see [the changelog](https://shopify.dev/changelog/tax-and-duties-are-deprecated-in-storefront-cart-api)
+        for more information.
+
         */
 
+        @Deprecated
         public MoneyV2 getTotalDutyAmount() {
             return (MoneyV2) get("totalDutyAmount");
         }
@@ -8292,8 +8180,14 @@ public class Storefront {
 
         /**
         * Whether the total duty amount is estimated.
+        *
+        * @deprecated Tax and duty amounts are no longer available and will be removed in a future version.
+        Please see [the changelog](https://shopify.dev/changelog/tax-and-duties-are-deprecated-in-storefront-cart-api)
+        for more information.
+
         */
 
+        @Deprecated
         public Boolean getTotalDutyAmountEstimated() {
             return (Boolean) get("totalDutyAmountEstimated");
         }
@@ -8305,8 +8199,14 @@ public class Storefront {
 
         /**
         * The tax amount for the customer to pay at checkout.
+        *
+        * @deprecated Tax and duty amounts are no longer available and will be removed in a future version.
+        Please see [the changelog](https://shopify.dev/changelog/tax-and-duties-are-deprecated-in-storefront-cart-api)
+        for more information.
+
         */
 
+        @Deprecated
         public MoneyV2 getTotalTaxAmount() {
             return (MoneyV2) get("totalTaxAmount");
         }
@@ -8318,8 +8218,14 @@ public class Storefront {
 
         /**
         * Whether the total tax amount is estimated.
+        *
+        * @deprecated Tax and duty amounts are no longer available and will be removed in a future version.
+        Please see [the changelog](https://shopify.dev/changelog/tax-and-duties-are-deprecated-in-storefront-cart-api)
+        for more information.
+
         */
 
+        @Deprecated
         public Boolean getTotalTaxAmountEstimated() {
             return (Boolean) get("totalTaxAmountEstimated");
         }
@@ -8329,25 +8235,18 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "checkoutChargeAmount": return true;
 
                 case "subtotalAmount": return true;
 
-                case "subtotalAmountEstimated": return false;
-
                 case "totalAmount": return true;
-
-                case "totalAmountEstimated": return false;
 
                 case "totalDutyAmount": return true;
 
-                case "totalDutyAmountEstimated": return false;
-
                 case "totalTaxAmount": return true;
-
-                case "totalTaxAmountEstimated": return false;
 
                 default: return false;
             }
@@ -8505,6 +8404,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "cart": return true;
@@ -8646,13 +8546,10 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "discountedAmount": return true;
-
-                case "targetType": return false;
-
-                case "title": return false;
 
                 default: return false;
             }
@@ -8787,18 +8684,6 @@ public class Storefront {
         public CartDeliveryCoordinatesPreference setLongitude(Double arg) {
             optimisticData.put(getKey("longitude"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "countryCode": return false;
-
-                case "latitude": return false;
-
-                case "longitude": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -9179,6 +9064,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "cartLines": return true;
@@ -9186,10 +9072,6 @@ public class Storefront {
                 case "deliveryAddress": return true;
 
                 case "deliveryOptions": return true;
-
-                case "groupType": return false;
-
-                case "id": return false;
 
                 case "selectedDeliveryOption": return true;
 
@@ -9344,6 +9226,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "edges": return true;
@@ -9457,10 +9340,9 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "cursor": return false;
-
                 case "node": return true;
 
                 default: return false;
@@ -9749,19 +9631,10 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "code": return false;
-
-                case "deliveryMethodType": return false;
-
-                case "description": return false;
-
                 case "estimatedCost": return true;
-
-                case "handle": return false;
-
-                case "title": return false;
 
                 default: return false;
             }
@@ -9919,13 +9792,10 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "coordinates": return true;
-
-                case "deliveryMethod": return false;
-
-                case "pickupHandle": return false;
 
                 default: return false;
             }
@@ -10294,11 +10164,10 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "discountedAmount": return true;
-
-                case "targetType": return false;
 
                 default: return false;
             }
@@ -10399,16 +10268,6 @@ public class Storefront {
         public CartDiscountCode setCode(String arg) {
             optimisticData.put(getKey("code"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "applicable": return false;
-
-                case "code": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -10563,6 +10422,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "cart": return true;
@@ -11199,6 +11059,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "checkoutChargeAmount": return true;
@@ -11396,6 +11257,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "cart": return true;
@@ -12058,6 +11920,7 @@ public class Storefront {
         * @deprecated Use `cost` instead.
         */
 
+        @Deprecated
         public CartLineEstimatedCost getEstimatedCost() {
             return (CartLineEstimatedCost) get("estimatedCost");
         }
@@ -12115,6 +11978,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "attribute": return true;
@@ -12123,15 +11987,7 @@ public class Storefront {
 
                 case "cost": return true;
 
-                case "discountAllocations": return false;
-
                 case "estimatedCost": return true;
-
-                case "id": return false;
-
-                case "merchandise": return false;
-
-                case "quantity": return false;
 
                 case "sellingPlanAllocation": return true;
 
@@ -12313,6 +12169,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "amountPerQuantity": return true;
@@ -12501,6 +12358,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "amount": return true;
@@ -12981,6 +12839,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "cart": return true;
@@ -13145,6 +13004,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "cart": return true;
@@ -13309,6 +13169,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "cart": return true;
@@ -13479,10 +13340,9 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "deletedId": return false;
-
                 case "userErrors": return true;
 
                 default: return false;
@@ -13692,6 +13552,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "metafields": return true;
@@ -13854,6 +13715,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "cart": return true;
@@ -14183,6 +14045,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "cart": return true;
@@ -14317,11 +14180,10 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "delivery": return true;
-
-                case "wallet": return false;
 
                 default: return false;
             }
@@ -14612,6 +14474,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "cart": return true;
@@ -14739,10 +14602,9 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "result": return false;
-
                 case "userErrors": return true;
 
                 default: return false;
@@ -14847,12 +14709,6 @@ public class Storefront {
 
         public String getGraphQlTypeName() {
             return (String) get("__typename");
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                default: return false;
-            }
         }
     }
 
@@ -14993,18 +14849,6 @@ public class Storefront {
         public CartUserError setMessage(String arg) {
             optimisticData.put(getKey("message"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "code": return false;
-
-                case "field": return false;
-
-                case "message": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -15208,18 +15052,6 @@ public class Storefront {
             optimisticData.put(getKey("target"), arg);
             return this;
         }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "code": return false;
-
-                case "message": return false;
-
-                case "target": return false;
-
-                default: return false;
-            }
-        }
     }
 
     /**
@@ -15308,7 +15140,7 @@ public class Storefront {
             }
 
             /**
-            * Truncates string after the given length.
+            * Truncates a string after the given length.
             */
             public DescriptionArguments truncateAt(Integer value) {
                 if (value != null) {
@@ -15397,14 +15229,18 @@ public class Storefront {
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
         public CollectionQuery metafield(String key, MetafieldQueryDefinition queryDef) {
             return metafield(key, args -> {}, queryDef);
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
         public CollectionQuery metafield(String key, MetafieldArgumentsDefinition argsDef, MetafieldQueryDefinition queryDef) {
             startField("metafield");
@@ -15424,7 +15260,8 @@ public class Storefront {
         }
 
         /**
-        * The metafields associated with the resource matching the supplied list of namespaces and keys.
+        * A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify
+        * resource.
         */
         public CollectionQuery metafields(List<HasMetafieldsIdentifier> identifiers, MetafieldQueryDefinition queryDef) {
             startField("metafields");
@@ -15831,7 +15668,9 @@ public class Storefront {
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
 
         public Metafield getMetafield() {
@@ -15844,7 +15683,8 @@ public class Storefront {
         }
 
         /**
-        * The metafields associated with the resource matching the supplied list of namespaces and keys.
+        * A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify
+        * resource.
         */
 
         public List<Metafield> getMetafields() {
@@ -15932,42 +15772,27 @@ public class Storefront {
         * The date and time when the collection was last modified.
         */
 
-        public DateTime getUpdatedAt() {
-            return (DateTime) get("updatedAt");
+        public Date getUpdatedAt() {
+            return (Date) get("updatedAt");
         }
 
-        public Collection setUpdatedAt(DateTime arg) {
+        public Collection setUpdatedAt(Date arg) {
             optimisticData.put(getKey("updatedAt"), arg);
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "description": return false;
-
-                case "descriptionHtml": return false;
-
-                case "handle": return false;
-
-                case "id": return false;
-
                 case "image": return true;
 
                 case "metafield": return true;
 
                 case "metafields": return true;
 
-                case "onlineStoreUrl": return false;
-
                 case "products": return true;
 
                 case "seo": return true;
-
-                case "title": return false;
-
-                case "trackingParameters": return false;
-
-                case "updatedAt": return false;
 
                 default: return false;
             }
@@ -16148,6 +15973,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "edges": return true;
@@ -16155,8 +15981,6 @@ public class Storefront {
                 case "nodes": return true;
 
                 case "pageInfo": return true;
-
-                case "totalCount": return false;
 
                 default: return false;
             }
@@ -16263,10 +16087,9 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "cursor": return false;
-
                 case "node": return true;
 
                 default: return false;
@@ -16386,7 +16209,7 @@ public class Storefront {
             }
 
             /**
-            * Truncates string after the given length.
+            * Truncates a string after the given length.
             */
             public ContentArguments truncateAt(Integer value) {
                 if (value != null) {
@@ -16534,15 +16357,10 @@ public class Storefront {
             return (ID) get("id");
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "author": return true;
-
-                case "content": return false;
-
-                case "contentHtml": return false;
-
-                case "id": return false;
 
                 default: return false;
             }
@@ -16643,16 +16461,6 @@ public class Storefront {
         public CommentAuthor setName(String arg) {
             optimisticData.put(getKey("name"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "email": return false;
-
-                case "name": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -16802,6 +16610,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "edges": return true;
@@ -16915,10 +16724,9 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "cursor": return false;
-
                 case "node": return true;
 
                 default: return false;
@@ -16981,14 +16789,18 @@ public class Storefront {
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
         public CompanyQuery metafield(String key, MetafieldQueryDefinition queryDef) {
             return metafield(key, args -> {}, queryDef);
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
         public CompanyQuery metafield(String key, MetafieldArgumentsDefinition argsDef, MetafieldQueryDefinition queryDef) {
             startField("metafield");
@@ -17008,7 +16820,8 @@ public class Storefront {
         }
 
         /**
-        * The metafields associated with the resource matching the supplied list of namespaces and keys.
+        * A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify
+        * resource.
         */
         public CompanyQuery metafields(List<HasMetafieldsIdentifier> identifiers, MetafieldQueryDefinition queryDef) {
             startField("metafields");
@@ -17153,11 +16966,11 @@ public class Storefront {
         * was created in Shopify.
         */
 
-        public DateTime getCreatedAt() {
-            return (DateTime) get("createdAt");
+        public Date getCreatedAt() {
+            return (Date) get("createdAt");
         }
 
-        public Company setCreatedAt(DateTime arg) {
+        public Company setCreatedAt(Date arg) {
             optimisticData.put(getKey("createdAt"), arg);
             return this;
         }
@@ -17184,7 +16997,9 @@ public class Storefront {
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
 
         public Metafield getMetafield() {
@@ -17197,7 +17012,8 @@ public class Storefront {
         }
 
         /**
-        * The metafields associated with the resource matching the supplied list of namespaces and keys.
+        * A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify
+        * resource.
         */
 
         public List<Metafield> getMetafields() {
@@ -17227,30 +17043,21 @@ public class Storefront {
         * was last modified.
         */
 
-        public DateTime getUpdatedAt() {
-            return (DateTime) get("updatedAt");
+        public Date getUpdatedAt() {
+            return (Date) get("updatedAt");
         }
 
-        public Company setUpdatedAt(DateTime arg) {
+        public Company setUpdatedAt(Date arg) {
             optimisticData.put(getKey("updatedAt"), arg);
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "createdAt": return false;
-
-                case "externalId": return false;
-
-                case "id": return false;
-
                 case "metafield": return true;
 
                 case "metafields": return true;
-
-                case "name": return false;
-
-                case "updatedAt": return false;
 
                 default: return false;
             }
@@ -17387,11 +17194,11 @@ public class Storefront {
         * contact was created in Shopify.
         */
 
-        public DateTime getCreatedAt() {
-            return (DateTime) get("createdAt");
+        public Date getCreatedAt() {
+            return (Date) get("createdAt");
         }
 
-        public CompanyContact setCreatedAt(DateTime arg) {
+        public CompanyContact setCreatedAt(Date arg) {
             optimisticData.put(getKey("createdAt"), arg);
             return this;
         }
@@ -17435,29 +17242,13 @@ public class Storefront {
         * contact was last modified.
         */
 
-        public DateTime getUpdatedAt() {
-            return (DateTime) get("updatedAt");
+        public Date getUpdatedAt() {
+            return (Date) get("updatedAt");
         }
 
-        public CompanyContact setUpdatedAt(DateTime arg) {
+        public CompanyContact setUpdatedAt(Date arg) {
             optimisticData.put(getKey("updatedAt"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "createdAt": return false;
-
-                case "id": return false;
-
-                case "locale": return false;
-
-                case "title": return false;
-
-                case "updatedAt": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -17525,14 +17316,18 @@ public class Storefront {
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
         public CompanyLocationQuery metafield(String key, MetafieldQueryDefinition queryDef) {
             return metafield(key, args -> {}, queryDef);
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
         public CompanyLocationQuery metafield(String key, MetafieldArgumentsDefinition argsDef, MetafieldQueryDefinition queryDef) {
             startField("metafield");
@@ -17552,7 +17347,8 @@ public class Storefront {
         }
 
         /**
-        * The metafields associated with the resource matching the supplied list of namespaces and keys.
+        * A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify
+        * resource.
         */
         public CompanyLocationQuery metafields(List<HasMetafieldsIdentifier> identifiers, MetafieldQueryDefinition queryDef) {
             startField("metafields");
@@ -17708,11 +17504,11 @@ public class Storefront {
         * location was created in Shopify.
         */
 
-        public DateTime getCreatedAt() {
-            return (DateTime) get("createdAt");
+        public Date getCreatedAt() {
+            return (Date) get("createdAt");
         }
 
-        public CompanyLocation setCreatedAt(DateTime arg) {
+        public CompanyLocation setCreatedAt(Date arg) {
             optimisticData.put(getKey("createdAt"), arg);
             return this;
         }
@@ -17752,7 +17548,9 @@ public class Storefront {
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
 
         public Metafield getMetafield() {
@@ -17765,7 +17563,8 @@ public class Storefront {
         }
 
         /**
-        * The metafields associated with the resource matching the supplied list of namespaces and keys.
+        * A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify
+        * resource.
         */
 
         public List<Metafield> getMetafields() {
@@ -17795,32 +17594,21 @@ public class Storefront {
         * location was last modified.
         */
 
-        public DateTime getUpdatedAt() {
-            return (DateTime) get("updatedAt");
+        public Date getUpdatedAt() {
+            return (Date) get("updatedAt");
         }
 
-        public CompanyLocation setUpdatedAt(DateTime arg) {
+        public CompanyLocation setUpdatedAt(Date arg) {
             optimisticData.put(getKey("updatedAt"), arg);
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "createdAt": return false;
-
-                case "externalId": return false;
-
-                case "id": return false;
-
-                case "locale": return false;
-
                 case "metafield": return true;
 
                 case "metafields": return true;
-
-                case "name": return false;
-
-                case "updatedAt": return false;
 
                 default: return false;
             }
@@ -17898,14 +17686,6 @@ public class Storefront {
         public CompletePaymentChallenge setRedirectUrl(String arg) {
             optimisticData.put(getKey("redirectUrl"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "redirectUrl": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -18008,16 +17788,6 @@ public class Storefront {
         public CompletionError setMessage(String arg) {
             optimisticData.put(getKey("message"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "code": return false;
-
-                case "message": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -18493,6 +18263,7 @@ public class Storefront {
         * @deprecated Use `cost` instead.
         */
 
+        @Deprecated
         public CartLineEstimatedCost getEstimatedCost() {
             return (CartLineEstimatedCost) get("estimatedCost");
         }
@@ -18563,6 +18334,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "attribute": return true;
@@ -18571,17 +18343,9 @@ public class Storefront {
 
                 case "cost": return true;
 
-                case "discountAllocations": return false;
-
                 case "estimatedCost": return true;
 
-                case "id": return false;
-
                 case "lineComponents": return true;
-
-                case "merchandise": return false;
-
-                case "quantity": return false;
 
                 case "sellingPlanAllocation": return true;
 
@@ -18684,16 +18448,6 @@ public class Storefront {
         public Count setPrecision(CountPrecision arg) {
             optimisticData.put(getKey("precision"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "count": return false;
-
-                case "precision": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -18979,19 +18733,14 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "availableLanguages": return true;
 
                 case "currency": return true;
 
-                case "isoCode": return false;
-
                 case "market": return true;
-
-                case "name": return false;
-
-                case "unitSystem": return false;
 
                 default: return false;
             }
@@ -22429,18 +22178,6 @@ public class Storefront {
             optimisticData.put(getKey("symbol"), arg);
             return this;
         }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "isoCode": return false;
-
-                case "name": return false;
-
-                case "symbol": return false;
-
-                default: return false;
-            }
-        }
     }
 
     /**
@@ -24749,14 +24486,18 @@ public class Storefront {
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
         public CustomerQuery metafield(String key, MetafieldQueryDefinition queryDef) {
             return metafield(key, args -> {}, queryDef);
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
         public CustomerQuery metafield(String key, MetafieldArgumentsDefinition argsDef, MetafieldQueryDefinition queryDef) {
             startField("metafield");
@@ -24776,7 +24517,8 @@ public class Storefront {
         }
 
         /**
-        * The metafields associated with the resource matching the supplied list of namespaces and keys.
+        * A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify
+        * resource.
         */
         public CustomerQuery metafields(List<HasMetafieldsIdentifier> identifiers, MetafieldQueryDefinition queryDef) {
             startField("metafields");
@@ -25155,11 +24897,11 @@ public class Storefront {
         * The date and time when the customer was created.
         */
 
-        public DateTime getCreatedAt() {
-            return (DateTime) get("createdAt");
+        public Date getCreatedAt() {
+            return (Date) get("createdAt");
         }
 
-        public Customer setCreatedAt(DateTime arg) {
+        public Customer setCreatedAt(Date arg) {
             optimisticData.put(getKey("createdAt"), arg);
             return this;
         }
@@ -25243,7 +24985,9 @@ public class Storefront {
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
 
         public Metafield getMetafield() {
@@ -25256,7 +25000,8 @@ public class Storefront {
         }
 
         /**
-        * The metafields associated with the resource matching the supplied list of namespaces and keys.
+        * A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify
+        * resource.
         */
 
         public List<Metafield> getMetafields() {
@@ -25325,48 +25070,27 @@ public class Storefront {
         * The date and time when the customer information was updated.
         */
 
-        public DateTime getUpdatedAt() {
-            return (DateTime) get("updatedAt");
+        public Date getUpdatedAt() {
+            return (Date) get("updatedAt");
         }
 
-        public Customer setUpdatedAt(DateTime arg) {
+        public Customer setUpdatedAt(Date arg) {
             optimisticData.put(getKey("updatedAt"), arg);
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "acceptsMarketing": return false;
-
                 case "addresses": return true;
 
-                case "createdAt": return false;
-
                 case "defaultAddress": return true;
-
-                case "displayName": return false;
-
-                case "email": return false;
-
-                case "firstName": return false;
-
-                case "id": return false;
-
-                case "lastName": return false;
 
                 case "metafield": return true;
 
                 case "metafields": return true;
 
-                case "numberOfOrders": return false;
-
                 case "orders": return true;
-
-                case "phone": return false;
-
-                case "tags": return false;
-
-                case "updatedAt": return false;
 
                 default: return false;
             }
@@ -25462,23 +25186,13 @@ public class Storefront {
         * The date and time when the customer access token expires.
         */
 
-        public DateTime getExpiresAt() {
-            return (DateTime) get("expiresAt");
+        public Date getExpiresAt() {
+            return (Date) get("expiresAt");
         }
 
-        public CustomerAccessToken setExpiresAt(DateTime arg) {
+        public CustomerAccessToken setExpiresAt(Date arg) {
             optimisticData.put(getKey("expiresAt"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "accessToken": return false;
-
-                case "expiresAt": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -25676,6 +25390,7 @@ public class Storefront {
         * @deprecated Use `customerUserErrors` instead.
         */
 
+        @Deprecated
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -25685,6 +25400,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "customerAccessToken": return true;
@@ -25812,6 +25528,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "customerAccessToken": return true;
@@ -25966,12 +25683,9 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "deletedAccessToken": return false;
-
-                case "deletedCustomerAccessTokenId": return false;
-
                 case "userErrors": return true;
 
                 default: return false;
@@ -26093,6 +25807,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "customerAccessToken": return true;
@@ -26255,6 +25970,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "customer": return true;
@@ -26499,6 +26215,7 @@ public class Storefront {
         * @deprecated Use `customerUserErrors` instead.
         */
 
+        @Deprecated
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -26508,6 +26225,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "customer": return true;
@@ -26670,6 +26388,7 @@ public class Storefront {
         * @deprecated Use `customerUserErrors` instead.
         */
 
+        @Deprecated
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -26679,6 +26398,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "customerAddress": return true;
@@ -26835,6 +26555,7 @@ public class Storefront {
         * @deprecated Use `customerUserErrors` instead.
         */
 
+        @Deprecated
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -26844,11 +26565,10 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "customerUserErrors": return true;
-
-                case "deletedCustomerAddressId": return false;
 
                 case "userErrors": return true;
 
@@ -27004,6 +26724,7 @@ public class Storefront {
         * @deprecated Use `customerUserErrors` instead.
         */
 
+        @Deprecated
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -27013,6 +26734,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "customerAddress": return true;
@@ -27356,6 +27078,7 @@ public class Storefront {
         * @deprecated Use `customerUserErrors` instead.
         */
 
+        @Deprecated
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -27365,6 +27088,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "customer": return true;
@@ -27525,6 +27249,7 @@ public class Storefront {
         * @deprecated Use `customerUserErrors` instead.
         */
 
+        @Deprecated
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -27534,6 +27259,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "customer": return true;
@@ -27878,6 +27604,7 @@ public class Storefront {
         * @deprecated Use `customerUserErrors` instead.
         */
 
+        @Deprecated
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -27887,6 +27614,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "customerUserErrors": return true;
@@ -28082,6 +27810,7 @@ public class Storefront {
         * @deprecated Use `customerUserErrors` instead.
         */
 
+        @Deprecated
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -28091,6 +27820,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "customer": return true;
@@ -28337,6 +28067,7 @@ public class Storefront {
         * @deprecated Use `customerUserErrors` instead.
         */
 
+        @Deprecated
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -28346,6 +28077,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "customer": return true;
@@ -28762,6 +28494,7 @@ public class Storefront {
         * @deprecated Use `customerUserErrors` instead.
         */
 
+        @Deprecated
         public List<UserError> getUserErrors() {
             return (List<UserError>) get("userErrors");
         }
@@ -28771,6 +28504,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "customer": return true;
@@ -28924,18 +28658,6 @@ public class Storefront {
             optimisticData.put(getKey("message"), arg);
             return this;
         }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "code": return false;
-
-                case "field": return false;
-
-                case "message": return false;
-
-                default: return false;
-            }
-        }
     }
 
     public interface DeliveryAddressQueryDefinition {
@@ -29002,12 +28724,6 @@ public class Storefront {
 
         public String getGraphQlTypeName() {
             return (String) get("__typename");
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                default: return false;
-            }
         }
     }
 
@@ -29496,11 +29212,10 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "allocatedAmount": return true;
-
-                case "discountApplication": return false;
 
                 default: return false;
             }
@@ -29731,20 +29446,6 @@ public class Storefront {
             optimisticData.put(getKey("value"), arg);
             return this;
         }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "allocationMethod": return false;
-
-                case "targetSelection": return false;
-
-                case "targetType": return false;
-
-                case "value": return false;
-
-                default: return false;
-            }
-        }
     }
 
     /**
@@ -29953,11 +29654,10 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "edges": return true;
-
-                case "nodes": return false;
 
                 case "pageInfo": return true;
 
@@ -30064,16 +29764,6 @@ public class Storefront {
         public DiscountApplicationEdge setNode(DiscountApplication arg) {
             optimisticData.put(getKey("node"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "cursor": return false;
-
-                case "node": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -30413,24 +30103,6 @@ public class Storefront {
             optimisticData.put(getKey("value"), arg);
             return this;
         }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "allocationMethod": return false;
-
-                case "applicable": return false;
-
-                case "code": return false;
-
-                case "targetSelection": return false;
-
-                case "targetType": return false;
-
-                case "value": return false;
-
-                default: return false;
-            }
-        }
     }
 
     public interface DisplayableErrorQueryDefinition {
@@ -30623,16 +30295,6 @@ public class Storefront {
             optimisticData.put(getKey("message"), arg);
             return this;
         }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "field": return false;
-
-                case "message": return false;
-
-                default: return false;
-            }
-        }
     }
 
     public interface DomainQueryDefinition {
@@ -30757,18 +30419,6 @@ public class Storefront {
         public Domain setUrl(String arg) {
             optimisticData.put(getKey("url"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "host": return false;
-
-                case "sslEnabled": return false;
-
-                case "url": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -31003,6 +30653,7 @@ public class Storefront {
         * @deprecated Use `originUrl` instead.
         */
 
+        @Deprecated
         public String getEmbeddedUrl() {
             return (String) get("embeddedUrl");
         }
@@ -31085,22 +30736,9 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "alt": return false;
-
-                case "embedUrl": return false;
-
-                case "embeddedUrl": return false;
-
-                case "host": return false;
-
-                case "id": return false;
-
-                case "mediaContentType": return false;
-
-                case "originUrl": return false;
-
                 case "presentation": return true;
 
                 case "previewImage": return true;
@@ -31306,16 +30944,9 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "id": return false;
-
-                case "label": return false;
-
-                case "presentation": return false;
-
-                case "type": return false;
-
                 case "values": return true;
 
                 default: return false;
@@ -31687,17 +31318,10 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "count": return false;
-
-                case "id": return false;
-
                 case "image": return true;
-
-                case "input": return false;
-
-                case "label": return false;
 
                 case "swatch": return true;
 
@@ -31959,11 +31583,10 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "fulfillmentLineItems": return true;
-
-                case "trackingCompany": return false;
 
                 case "trackingInfo": return true;
 
@@ -32074,11 +31697,10 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "lineItem": return true;
-
-                case "quantity": return false;
 
                 default: return false;
             }
@@ -32231,6 +31853,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "edges": return true;
@@ -32344,10 +31967,9 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "cursor": return false;
-
                 case "node": return true;
 
                 default: return false;
@@ -32459,16 +32081,6 @@ public class Storefront {
         public FulfillmentTrackingInfo setUrl(String arg) {
             optimisticData.put(getKey("url"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "number": return false;
-
-                case "url": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -32704,19 +32316,10 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "alt": return false;
-
-                case "id": return false;
-
-                case "mimeType": return false;
-
-                case "originalFileSize": return false;
-
                 case "previewImage": return true;
-
-                case "url": return false;
 
                 default: return false;
             }
@@ -32806,14 +32409,18 @@ public class Storefront {
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
         public HasMetafieldsQuery metafield(String key, MetafieldQueryDefinition queryDef) {
             return metafield(key, args -> {}, queryDef);
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
         public HasMetafieldsQuery metafield(String key, MetafieldArgumentsDefinition argsDef, MetafieldQueryDefinition queryDef) {
             startField("metafield");
@@ -32833,7 +32440,8 @@ public class Storefront {
         }
 
         /**
-        * The metafields associated with the resource matching the supplied list of namespaces and keys.
+        * A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify
+        * resource.
         */
         public HasMetafieldsQuery metafields(List<HasMetafieldsIdentifier> identifiers, MetafieldQueryDefinition queryDef) {
             startField("metafields");
@@ -33097,7 +32705,9 @@ public class Storefront {
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
 
         public Metafield getMetafield() {
@@ -33110,7 +32720,8 @@ public class Storefront {
         }
 
         /**
-        * The metafields associated with the resource matching the supplied list of namespaces and keys.
+        * A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify
+        * resource.
         */
 
         public List<Metafield> getMetafields() {
@@ -33122,6 +32733,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "metafield": return true;
@@ -33335,6 +32947,7 @@ public class Storefront {
         *
         * @deprecated Use `url(transform:)` instead
         */
+        @Deprecated
         public ImageQuery transformedSrc() {
             return transformedSrc(args -> {});
         }
@@ -33563,6 +33176,7 @@ public class Storefront {
         * @deprecated Use `url` instead.
         */
 
+        @Deprecated
         public String getOriginalSrc() {
             return (String) get("originalSrc");
         }
@@ -33578,6 +33192,7 @@ public class Storefront {
         * @deprecated Use `url` instead.
         */
 
+        @Deprecated
         public String getSrc() {
             return (String) get("src");
         }
@@ -33596,6 +33211,7 @@ public class Storefront {
         * @deprecated Use `url(transform:)` instead
         */
 
+        @Deprecated
         public String getTransformedSrc() {
             return (String) get("transformedSrc");
         }
@@ -33635,28 +33251,6 @@ public class Storefront {
         public Image setWidth(Integer arg) {
             optimisticData.put(getKey("width"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "altText": return false;
-
-                case "height": return false;
-
-                case "id": return false;
-
-                case "originalSrc": return false;
-
-                case "src": return false;
-
-                case "transformedSrc": return false;
-
-                case "url": return false;
-
-                case "width": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -33806,6 +33400,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "edges": return true;
@@ -33984,10 +33579,9 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "cursor": return false;
-
                 case "node": return true;
 
                 default: return false;
@@ -34298,18 +33892,6 @@ public class Storefront {
         public Language setName(String arg) {
             optimisticData.put(getKey("name"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "endonymName": return false;
-
-                case "isoCode": return false;
-
-                case "name": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -36425,6 +36007,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "availableCountries": return true;
@@ -36491,14 +36074,18 @@ public class Storefront {
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
         public LocationQuery metafield(String key, MetafieldQueryDefinition queryDef) {
             return metafield(key, args -> {}, queryDef);
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
         public LocationQuery metafield(String key, MetafieldArgumentsDefinition argsDef, MetafieldQueryDefinition queryDef) {
             startField("metafield");
@@ -36518,7 +36105,8 @@ public class Storefront {
         }
 
         /**
-        * The metafields associated with the resource matching the supplied list of namespaces and keys.
+        * A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify
+        * resource.
         */
         public LocationQuery metafields(List<HasMetafieldsIdentifier> identifiers, MetafieldQueryDefinition queryDef) {
             startField("metafields");
@@ -36653,7 +36241,9 @@ public class Storefront {
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
 
         public Metafield getMetafield() {
@@ -36666,7 +36256,8 @@ public class Storefront {
         }
 
         /**
-        * The metafields associated with the resource matching the supplied list of namespaces and keys.
+        * A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify
+        * resource.
         */
 
         public List<Metafield> getMetafields() {
@@ -36691,17 +36282,14 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "address": return true;
 
-                case "id": return false;
-
                 case "metafield": return true;
 
                 case "metafields": return true;
-
-                case "name": return false;
 
                 default: return false;
             }
@@ -37143,36 +36731,6 @@ public class Storefront {
             optimisticData.put(getKey("zip"), arg);
             return this;
         }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "address1": return false;
-
-                case "address2": return false;
-
-                case "city": return false;
-
-                case "country": return false;
-
-                case "countryCode": return false;
-
-                case "formatted": return false;
-
-                case "latitude": return false;
-
-                case "longitude": return false;
-
-                case "phone": return false;
-
-                case "province": return false;
-
-                case "provinceCode": return false;
-
-                case "zip": return false;
-
-                default: return false;
-            }
-        }
     }
 
     public interface LocationConnectionQueryDefinition {
@@ -37321,6 +36879,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "edges": return true;
@@ -37434,10 +36993,9 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "cursor": return false;
-
                 case "node": return true;
 
                 default: return false;
@@ -38058,6 +37616,7 @@ public class Storefront {
         * @deprecated Use `countryCodeV2` instead.
         */
 
+        @Deprecated
         public String getCountryCode() {
             return (String) get("countryCode");
         }
@@ -38233,50 +37792,6 @@ public class Storefront {
             optimisticData.put(getKey("zip"), arg);
             return this;
         }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "address1": return false;
-
-                case "address2": return false;
-
-                case "city": return false;
-
-                case "company": return false;
-
-                case "country": return false;
-
-                case "countryCode": return false;
-
-                case "countryCodeV2": return false;
-
-                case "firstName": return false;
-
-                case "formatted": return false;
-
-                case "formattedArea": return false;
-
-                case "id": return false;
-
-                case "lastName": return false;
-
-                case "latitude": return false;
-
-                case "longitude": return false;
-
-                case "name": return false;
-
-                case "phone": return false;
-
-                case "province": return false;
-
-                case "provinceCode": return false;
-
-                case "zip": return false;
-
-                default: return false;
-            }
-        }
     }
 
     public interface MailingAddressConnectionQueryDefinition {
@@ -38425,6 +37940,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "edges": return true;
@@ -38538,10 +38054,9 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "cursor": return false;
-
                 case "node": return true;
 
                 default: return false;
@@ -39114,24 +38629,6 @@ public class Storefront {
             optimisticData.put(getKey("value"), arg);
             return this;
         }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "allocationMethod": return false;
-
-                case "description": return false;
-
-                case "targetSelection": return false;
-
-                case "targetType": return false;
-
-                case "title": return false;
-
-                case "value": return false;
-
-                default: return false;
-            }
-        }
     }
 
     public interface MarketQueryDefinition {
@@ -39180,14 +38677,18 @@ public class Storefront {
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
         public MarketQuery metafield(String key, MetafieldQueryDefinition queryDef) {
             return metafield(key, args -> {}, queryDef);
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
         public MarketQuery metafield(String key, MetafieldArgumentsDefinition argsDef, MetafieldQueryDefinition queryDef) {
             startField("metafield");
@@ -39207,7 +38708,8 @@ public class Storefront {
         }
 
         /**
-        * The metafields associated with the resource matching the supplied list of namespaces and keys.
+        * A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify
+        * resource.
         */
         public MarketQuery metafields(List<HasMetafieldsIdentifier> identifiers, MetafieldQueryDefinition queryDef) {
             startField("metafields");
@@ -39328,7 +38830,9 @@ public class Storefront {
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
 
         public Metafield getMetafield() {
@@ -39341,7 +38845,8 @@ public class Storefront {
         }
 
         /**
-        * The metafields associated with the resource matching the supplied list of namespaces and keys.
+        * A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify
+        * resource.
         */
 
         public List<Metafield> getMetafields() {
@@ -39353,12 +38858,9 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "handle": return false;
-
-                case "id": return false;
-
                 case "metafield": return true;
 
                 case "metafields": return true;
@@ -39640,14 +39142,9 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "alt": return false;
-
-                case "id": return false;
-
-                case "mediaContentType": return false;
-
                 case "presentation": return true;
 
                 case "previewImage": return true;
@@ -39803,11 +39300,10 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "edges": return true;
-
-                case "nodes": return false;
 
                 case "pageInfo": return true;
 
@@ -39992,16 +39488,6 @@ public class Storefront {
         public MediaEdge setNode(Media arg) {
             optimisticData.put(getKey("node"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "cursor": return false;
-
-                case "node": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -40290,15 +39776,10 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "alt": return false;
-
-                case "id": return false;
-
                 case "image": return true;
-
-                case "mediaContentType": return false;
 
                 case "presentation": return true;
 
@@ -40406,16 +39887,6 @@ public class Storefront {
 
         public ID getId() {
             return (ID) get("id");
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "asJson": return false;
-
-                case "id": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -40657,17 +40128,10 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "handle": return false;
-
-                case "id": return false;
-
                 case "items": return true;
-
-                case "itemsCount": return false;
-
-                case "title": return false;
 
                 default: return false;
             }
@@ -40964,23 +40428,10 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "id": return false;
-
                 case "items": return true;
-
-                case "resource": return false;
-
-                case "resourceId": return false;
-
-                case "tags": return false;
-
-                case "title": return false;
-
-                case "type": return false;
-
-                case "url": return false;
 
                 default: return false;
             }
@@ -41117,12 +40568,6 @@ public class Storefront {
 
         public String getGraphQlTypeName() {
             return (String) get("__typename");
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                default: return false;
-            }
         }
     }
 
@@ -41385,12 +40830,6 @@ public class Storefront {
 
         public String getGraphQlTypeName() {
             return (String) get("__typename");
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                default: return false;
-            }
         }
     }
 
@@ -41698,11 +41137,11 @@ public class Storefront {
         * The date and time when the storefront metafield was created.
         */
 
-        public DateTime getCreatedAt() {
-            return (DateTime) get("createdAt");
+        public Date getCreatedAt() {
+            return (Date) get("createdAt");
         }
 
-        public Metafield setCreatedAt(DateTime arg) {
+        public Metafield setCreatedAt(Date arg) {
             optimisticData.put(getKey("createdAt"), arg);
             return this;
         }
@@ -41811,11 +41250,11 @@ public class Storefront {
         * The date and time when the metafield was last updated.
         */
 
-        public DateTime getUpdatedAt() {
-            return (DateTime) get("updatedAt");
+        public Date getUpdatedAt() {
+            return (Date) get("updatedAt");
         }
 
-        public Metafield setUpdatedAt(DateTime arg) {
+        public Metafield setUpdatedAt(Date arg) {
             optimisticData.put(getKey("updatedAt"), arg);
             return this;
         }
@@ -41833,29 +41272,10 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "createdAt": return false;
-
-                case "description": return false;
-
-                case "id": return false;
-
-                case "key": return false;
-
-                case "namespace": return false;
-
-                case "parentResource": return false;
-
-                case "reference": return false;
-
                 case "references": return true;
-
-                case "type": return false;
-
-                case "updatedAt": return false;
-
-                case "value": return false;
 
                 default: return false;
             }
@@ -42051,18 +41471,6 @@ public class Storefront {
         public MetafieldDeleteUserError setMessage(String arg) {
             optimisticData.put(getKey("message"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "code": return false;
-
-                case "field": return false;
-
-                case "message": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -42350,12 +41758,6 @@ public class Storefront {
         public String getGraphQlTypeName() {
             return (String) get("__typename");
         }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                default: return false;
-            }
-        }
     }
 
     public interface MetafieldReferenceQueryDefinition {
@@ -42511,12 +41913,6 @@ public class Storefront {
         public String getGraphQlTypeName() {
             return (String) get("__typename");
         }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                default: return false;
-            }
-        }
     }
 
     public interface MetafieldReferenceConnectionQueryDefinition {
@@ -42665,11 +42061,10 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "edges": return true;
-
-                case "nodes": return false;
 
                 case "pageInfo": return true;
 
@@ -42776,16 +42171,6 @@ public class Storefront {
         public MetafieldReferenceEdge setNode(MetafieldReference arg) {
             optimisticData.put(getKey("node"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "cursor": return false;
-
-                case "node": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -42959,20 +42344,6 @@ public class Storefront {
         public MetafieldsSetUserError setMessage(String arg) {
             optimisticData.put(getKey("message"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "code": return false;
-
-                case "elementIndex": return false;
-
-                case "field": return false;
-
-                case "message": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -43410,32 +42781,23 @@ public class Storefront {
         * The date and time when the metaobject was last updated.
         */
 
-        public DateTime getUpdatedAt() {
-            return (DateTime) get("updatedAt");
+        public Date getUpdatedAt() {
+            return (Date) get("updatedAt");
         }
 
-        public Metaobject setUpdatedAt(DateTime arg) {
+        public Metaobject setUpdatedAt(Date arg) {
             optimisticData.put(getKey("updatedAt"), arg);
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "field": return true;
 
                 case "fields": return true;
 
-                case "handle": return false;
-
-                case "id": return false;
-
-                case "onlineStoreUrl": return false;
-
                 case "seo": return true;
-
-                case "type": return false;
-
-                case "updatedAt": return false;
 
                 default: return false;
             }
@@ -43588,6 +42950,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "edges": return true;
@@ -43701,10 +43064,9 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "cursor": return false;
-
                 case "node": return true;
 
                 default: return false;
@@ -43982,17 +43344,10 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "key": return false;
-
-                case "reference": return false;
-
                 case "references": return true;
-
-                case "type": return false;
-
-                case "value": return false;
 
                 default: return false;
             }
@@ -44160,6 +43515,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "description": return true;
@@ -44404,14 +43760,9 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "alt": return false;
-
-                case "id": return false;
-
-                case "mediaContentType": return false;
-
                 case "presentation": return true;
 
                 case "previewImage": return true;
@@ -44574,20 +43925,6 @@ public class Storefront {
             optimisticData.put(getKey("url"), arg);
             return this;
         }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "filesize": return false;
-
-                case "format": return false;
-
-                case "mimeType": return false;
-
-                case "url": return false;
-
-                default: return false;
-            }
-        }
     }
 
     public static class MoneyInput implements Serializable {
@@ -44731,16 +44068,6 @@ public class Storefront {
         public MoneyV2 setCurrencyCode(CurrencyCode arg) {
             optimisticData.put(getKey("currencyCode"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "amount": return false;
-
-                case "currencyCode": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -46453,6 +45780,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "cartAttributesUpdate": return true;
@@ -47021,14 +46349,6 @@ public class Storefront {
             optimisticData.put(getKey("id"), arg);
             return this;
         }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "id": return false;
-
-                default: return false;
-            }
-        }
     }
 
     public interface OnlineStorePublishableQueryDefinition {
@@ -47187,14 +46507,6 @@ public class Storefront {
         public UnknownOnlineStorePublishable setOnlineStoreUrl(String arg) {
             optimisticData.put(getKey("onlineStoreUrl"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "onlineStoreUrl": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -47591,14 +46903,18 @@ public class Storefront {
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
         public OrderQuery metafield(String key, MetafieldQueryDefinition queryDef) {
             return metafield(key, args -> {}, queryDef);
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
         public OrderQuery metafield(String key, MetafieldArgumentsDefinition argsDef, MetafieldQueryDefinition queryDef) {
             startField("metafield");
@@ -47618,7 +46934,8 @@ public class Storefront {
         }
 
         /**
-        * The metafields associated with the resource matching the supplied list of namespaces and keys.
+        * A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify
+        * resource.
         */
         public OrderQuery metafields(List<HasMetafieldsIdentifier> identifiers, MetafieldQueryDefinition queryDef) {
             startField("metafields");
@@ -47974,7 +47291,7 @@ public class Storefront {
                     }
 
                     case "canceledAt": {
-                        DateTime optional1 = null;
+                        Date optional1 = null;
                         if (!field.getValue().isJsonNull()) {
                             optional1 = Utils.parseDateTime(jsonAsString(field.getValue(), key));
                         }
@@ -48357,11 +47674,11 @@ public class Storefront {
         * The date and time when the order was canceled. Returns null if the order wasn't canceled.
         */
 
-        public DateTime getCanceledAt() {
-            return (DateTime) get("canceledAt");
+        public Date getCanceledAt() {
+            return (Date) get("canceledAt");
         }
 
-        public Order setCanceledAt(DateTime arg) {
+        public Order setCanceledAt(Date arg) {
             optimisticData.put(getKey("canceledAt"), arg);
             return this;
         }
@@ -48575,7 +47892,9 @@ public class Storefront {
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
 
         public Metafield getMetafield() {
@@ -48588,7 +47907,8 @@ public class Storefront {
         }
 
         /**
-        * The metafields associated with the resource matching the supplied list of namespaces and keys.
+        * A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify
+        * resource.
         */
 
         public List<Metafield> getMetafields() {
@@ -48672,11 +47992,11 @@ public class Storefront {
         * If no value is provided, it will be auto-generated based on current date and time.
         */
 
-        public DateTime getProcessedAt() {
-            return (DateTime) get("processedAt");
+        public Date getProcessedAt() {
+            return (Date) get("processedAt");
         }
 
-        public Order setProcessedAt(DateTime arg) {
+        public Order setProcessedAt(Date arg) {
             optimisticData.put(getKey("processedAt"), arg);
             return this;
         }
@@ -48739,6 +48059,7 @@ public class Storefront {
         * @deprecated Use `subtotalPrice` instead.
         */
 
+        @Deprecated
         public MoneyV2 getSubtotalPriceV2() {
             return (MoneyV2) get("subtotalPriceV2");
         }
@@ -48782,6 +48103,7 @@ public class Storefront {
         * @deprecated Use `totalPrice` instead.
         */
 
+        @Deprecated
         public MoneyV2 getTotalPriceV2() {
             return (MoneyV2) get("totalPriceV2");
         }
@@ -48810,6 +48132,7 @@ public class Storefront {
         * @deprecated Use `totalRefunded` instead.
         */
 
+        @Deprecated
         public MoneyV2 getTotalRefundedV2() {
             return (MoneyV2) get("totalRefundedV2");
         }
@@ -48838,6 +48161,7 @@ public class Storefront {
         * @deprecated Use `totalShippingPrice` instead.
         */
 
+        @Deprecated
         public MoneyV2 getTotalShippingPriceV2() {
             return (MoneyV2) get("totalShippingPriceV2");
         }
@@ -48866,6 +48190,7 @@ public class Storefront {
         * @deprecated Use `totalTax` instead.
         */
 
+        @Deprecated
         public MoneyV2 getTotalTaxV2() {
             return (MoneyV2) get("totalTaxV2");
         }
@@ -48875,15 +48200,10 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "billingAddress": return true;
-
-                case "cancelReason": return false;
-
-                case "canceledAt": return false;
-
-                case "currencyCode": return false;
 
                 case "currentSubtotalPrice": return true;
 
@@ -48897,21 +48217,7 @@ public class Storefront {
 
                 case "customAttributes": return true;
 
-                case "customerLocale": return false;
-
-                case "customerUrl": return false;
-
                 case "discountApplications": return true;
-
-                case "edited": return false;
-
-                case "email": return false;
-
-                case "financialStatus": return false;
-
-                case "fulfillmentStatus": return false;
-
-                case "id": return false;
 
                 case "lineItems": return true;
 
@@ -48919,23 +48225,13 @@ public class Storefront {
 
                 case "metafields": return true;
 
-                case "name": return false;
-
-                case "orderNumber": return false;
-
                 case "originalTotalDuties": return true;
 
                 case "originalTotalPrice": return true;
 
-                case "phone": return false;
-
-                case "processedAt": return false;
-
                 case "shippingAddress": return true;
 
                 case "shippingDiscountAllocations": return true;
-
-                case "statusUrl": return false;
 
                 case "subtotalPrice": return true;
 
@@ -49242,6 +48538,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "edges": return true;
@@ -49249,8 +48546,6 @@ public class Storefront {
                 case "nodes": return true;
 
                 case "pageInfo": return true;
-
-                case "totalCount": return false;
 
                 default: return false;
             }
@@ -49357,10 +48652,9 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "cursor": return false;
-
                 case "node": return true;
 
                 default: return false;
@@ -49934,10 +49228,9 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "currentQuantity": return false;
-
                 case "customAttributes": return true;
 
                 case "discountAllocations": return true;
@@ -49945,10 +49238,6 @@ public class Storefront {
                 case "discountedTotalPrice": return true;
 
                 case "originalTotalPrice": return true;
-
-                case "quantity": return false;
-
-                case "title": return false;
 
                 case "variant": return true;
 
@@ -50103,6 +49392,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "edges": return true;
@@ -50216,10 +49506,9 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "cursor": return false;
-
                 case "node": return true;
 
                 default: return false;
@@ -50379,14 +49668,18 @@ public class Storefront {
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
         public PageQuery metafield(String key, MetafieldQueryDefinition queryDef) {
             return metafield(key, args -> {}, queryDef);
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
         public PageQuery metafield(String key, MetafieldArgumentsDefinition argsDef, MetafieldQueryDefinition queryDef) {
             startField("metafield");
@@ -50406,7 +49699,8 @@ public class Storefront {
         }
 
         /**
-        * The metafields associated with the resource matching the supplied list of namespaces and keys.
+        * A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify
+        * resource.
         */
         public PageQuery metafields(List<HasMetafieldsIdentifier> identifiers, MetafieldQueryDefinition queryDef) {
             startField("metafields");
@@ -50654,11 +49948,11 @@ public class Storefront {
         * The timestamp of the page creation.
         */
 
-        public DateTime getCreatedAt() {
-            return (DateTime) get("createdAt");
+        public Date getCreatedAt() {
+            return (Date) get("createdAt");
         }
 
-        public Page setCreatedAt(DateTime arg) {
+        public Page setCreatedAt(Date arg) {
             optimisticData.put(getKey("createdAt"), arg);
             return this;
         }
@@ -50685,7 +49979,9 @@ public class Storefront {
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
 
         public Metafield getMetafield() {
@@ -50698,7 +49994,8 @@ public class Storefront {
         }
 
         /**
-        * The metafields associated with the resource matching the supplied list of namespaces and keys.
+        * A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify
+        * resource.
         */
 
         public List<Metafield> getMetafields() {
@@ -50773,40 +50070,23 @@ public class Storefront {
         * The timestamp of the latest page update.
         */
 
-        public DateTime getUpdatedAt() {
-            return (DateTime) get("updatedAt");
+        public Date getUpdatedAt() {
+            return (Date) get("updatedAt");
         }
 
-        public Page setUpdatedAt(DateTime arg) {
+        public Page setUpdatedAt(Date arg) {
             optimisticData.put(getKey("updatedAt"), arg);
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "body": return false;
-
-                case "bodySummary": return false;
-
-                case "createdAt": return false;
-
-                case "handle": return false;
-
-                case "id": return false;
-
                 case "metafield": return true;
 
                 case "metafields": return true;
 
-                case "onlineStoreUrl": return false;
-
                 case "seo": return true;
-
-                case "title": return false;
-
-                case "trackingParameters": return false;
-
-                case "updatedAt": return false;
 
                 default: return false;
             }
@@ -50959,6 +50239,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "edges": return true;
@@ -51072,10 +50353,9 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "cursor": return false;
-
                 case "node": return true;
 
                 default: return false;
@@ -51249,20 +50529,6 @@ public class Storefront {
         public PageInfo setStartCursor(String arg) {
             optimisticData.put(getKey("startCursor"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "endCursor": return false;
-
-                case "hasNextPage": return false;
-
-                case "hasPreviousPage": return false;
-
-                case "startCursor": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -51450,16 +50716,6 @@ public class Storefront {
         public PaginatedSitemapResources setItems(List<SitemapResourceInterface> arg) {
             optimisticData.put(getKey("items"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "hasNextPage": return false;
-
-                case "items": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -51721,26 +50977,6 @@ public class Storefront {
         public PaymentSettings setSupportedDigitalWallets(List<DigitalWallet> arg) {
             optimisticData.put(getKey("supportedDigitalWallets"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "acceptedCardBrands": return false;
-
-                case "cardVaultUrl": return false;
-
-                case "countryCode": return false;
-
-                case "currencyCode": return false;
-
-                case "enabledPresentmentCurrencies": return false;
-
-                case "shopifyPaymentsAccountId": return false;
-
-                case "supportedDigitalWallets": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -52025,6 +51261,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "articles": return true;
@@ -52342,14 +51579,6 @@ public class Storefront {
             optimisticData.put(getKey("percentage"), arg);
             return this;
         }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "percentage": return false;
-
-                default: return false;
-            }
-        }
     }
 
     public interface PricingValueQueryDefinition {
@@ -52428,12 +51657,6 @@ public class Storefront {
         public String getGraphQlTypeName() {
             return (String) get("__typename");
         }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                default: return false;
-            }
-        }
     }
 
     public interface ProductQueryDefinition {
@@ -52441,11 +51664,17 @@ public class Storefront {
     }
 
     /**
-    * A product represents an individual item for sale in a Shopify store. Products are often physical,
-    * but they don't have to be.
-    * For example, a digital download (such as a movie, music or ebook file) also
-    * qualifies as a product, as do services (such as equipment rental, work for hire,
-    * customization of another product or an extended warranty).
+    * The `Product` object lets you manage products in a merchant’s store.
+    * Products are the goods and services that merchants offer to customers.
+    * They can include various details such as title, description, price, images, and options such as size
+    * or color.
+    * You can use [product variants](/docs/api/storefront/latest/objects/ProductVariant)
+    * to create or update different versions of the same product.
+    * You can also add or update product [media](/docs/api/storefront/latest/interfaces/Media).
+    * Products can be organized by grouping them into a
+    * [collection](/docs/api/storefront/latest/objects/Collection).
+    * Learn more about working with [products and
+    * collections](/docs/storefronts/headless/building-with-the-storefront-api/products-collections).
     */
     public static class ProductQuery extends Query<ProductQuery> {
         ProductQuery(StringBuilder _queryBuilder) {
@@ -52561,7 +51790,8 @@ public class Storefront {
         }
 
         /**
-        * The taxonomy category for the product.
+        * The category of a product from [Shopify's Standard Product
+        * Taxonomy](https://shopify.github.io/product-taxonomy/releases/unstable/?categoryId=sg-4-17-2-17).
         */
         public ProductQuery category(TaxonomyCategoryQueryDefinition queryDef) {
             startField("category");
@@ -52639,14 +51869,14 @@ public class Storefront {
         }
 
         /**
-        * List of collections a product belongs to.
+        * A list of [collections](/docs/api/storefront/latest/objects/Collection) that include the product.
         */
         public ProductQuery collections(CollectionConnectionQueryDefinition queryDef) {
             return collections(args -> {}, queryDef);
         }
 
         /**
-        * List of collections a product belongs to.
+        * A list of [collections](/docs/api/storefront/latest/objects/Collection) that include the product.
         */
         public ProductQuery collections(CollectionsArgumentsDefinition argsDef, CollectionConnectionQueryDefinition queryDef) {
             startField("collections");
@@ -52663,7 +51893,9 @@ public class Storefront {
         }
 
         /**
-        * The compare at price of the product across all variants.
+        * The [compare-at price
+        * range](https://help.shopify.com/manual/products/details/product-pricing/sale-pricing) of the product
+        * in the shop's default currency.
         */
         public ProductQuery compareAtPriceRange(ProductPriceRangeQueryDefinition queryDef) {
             startField("compareAtPriceRange");
@@ -52690,7 +51922,7 @@ public class Storefront {
             }
 
             /**
-            * Truncates string after the given length.
+            * Truncates a string after the given length.
             */
             public DescriptionArguments truncateAt(Integer value) {
                 if (value != null) {
@@ -52706,14 +51938,16 @@ public class Storefront {
         }
 
         /**
-        * Stripped description of the product, single line with HTML tags removed.
+        * A single-line description of the product, with [HTML
+        * tags](https://developer.mozilla.org/en-US/docs/Web/HTML) removed.
         */
         public ProductQuery description() {
             return description(args -> {});
         }
 
         /**
-        * Stripped description of the product, single line with HTML tags removed.
+        * A single-line description of the product, with [HTML
+        * tags](https://developer.mozilla.org/en-US/docs/Web/HTML) removed.
         */
         public ProductQuery description(DescriptionArgumentsDefinition argsDef) {
             startField("description");
@@ -52726,7 +51960,9 @@ public class Storefront {
         }
 
         /**
-        * The description of the product, complete with HTML formatting.
+        * The description of the product, with
+        * HTML tags. For example, the description might include
+        * bold `<strong></strong>` and italic `<i></i>` text.
         */
         public ProductQuery descriptionHtml() {
             startField("descriptionHtml");
@@ -52812,8 +52048,9 @@ public class Storefront {
         }
 
         /**
-        * A human-friendly unique string for the Product automatically generated from its title.
-        * They are used by the Liquid templating language to refer to objects.
+        * A unique, human-readable string of the product's title.
+        * A handle can contain letters, hyphens (`-`), and numbers, but no spaces.
+        * The handle is used in the online store URL for the product.
         */
         public ProductQuery handle() {
             startField("handle");
@@ -53007,14 +52244,16 @@ public class Storefront {
         }
 
         /**
-        * The media associated with the product.
+        * The [media](/docs/apps/build/online-store/product-media) that are associated with the product. Valid
+        * media are images, 3D models, videos.
         */
         public ProductQuery media(MediaConnectionQueryDefinition queryDef) {
             return media(args -> {}, queryDef);
         }
 
         /**
-        * The media associated with the product.
+        * The [media](/docs/apps/build/online-store/product-media) that are associated with the product. Valid
+        * media are images, 3D models, videos.
         */
         public ProductQuery media(MediaArgumentsDefinition argsDef, MediaConnectionQueryDefinition queryDef) {
             startField("media");
@@ -53052,14 +52291,18 @@ public class Storefront {
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
         public ProductQuery metafield(String key, MetafieldQueryDefinition queryDef) {
             return metafield(key, args -> {}, queryDef);
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
         public ProductQuery metafield(String key, MetafieldArgumentsDefinition argsDef, MetafieldQueryDefinition queryDef) {
             startField("metafield");
@@ -53079,7 +52322,8 @@ public class Storefront {
         }
 
         /**
-        * The metafields associated with the resource matching the supplied list of namespaces and keys.
+        * A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify
+        * resource.
         */
         public ProductQuery metafields(List<HasMetafieldsIdentifier> identifiers, MetafieldQueryDefinition queryDef) {
             startField("metafields");
@@ -53106,8 +52350,8 @@ public class Storefront {
         }
 
         /**
-        * The URL used for viewing the resource on the shop's Online Store. Returns
-        * `null` if the resource is currently not published to the Online Store sales channel.
+        * The product's URL on the online store.
+        * If `null`, then the product isn't published to the online store sales channel.
         */
         public ProductQuery onlineStoreUrl() {
             startField("onlineStoreUrl");
@@ -53137,14 +52381,18 @@ public class Storefront {
         }
 
         /**
-        * List of product options.
+        * A list of product options. The limit is defined by the [shop's resource limits for product
+        * options](/docs/api/admin-graphql/latest/objects/Shop#field-resourcelimits)
+        * (`Shop.resourceLimits.maxProductOptions`).
         */
         public ProductQuery options(ProductOptionQueryDefinition queryDef) {
             return options(args -> {}, queryDef);
         }
 
         /**
-        * List of product options.
+        * A list of product options. The limit is defined by the [shop's resource limits for product
+        * options](/docs/api/admin-graphql/latest/objects/Shop#field-resourcelimits)
+        * (`Shop.resourceLimits.maxProductOptions`).
         */
         public ProductQuery options(OptionsArgumentsDefinition argsDef, ProductOptionQueryDefinition queryDef) {
             startField("options");
@@ -53161,7 +52409,9 @@ public class Storefront {
         }
 
         /**
-        * The price range.
+        * The minimum and maximum prices of a product, expressed in decimal numbers.
+        * For example, if the product is priced between $10.00 and $50.00,
+        * then the price range is $10.00 - $50.00.
         */
         public ProductQuery priceRange(ProductPriceRangeQueryDefinition queryDef) {
             startField("priceRange");
@@ -53174,7 +52424,8 @@ public class Storefront {
         }
 
         /**
-        * A categorization that a product can be tagged with, commonly used for filtering and searching.
+        * The [product type](https://help.shopify.com/manual/products/details/product-type)
+        * that merchants define.
         */
         public ProductQuery productType() {
             startField("productType");
@@ -53192,7 +52443,11 @@ public class Storefront {
         }
 
         /**
-        * Whether the product can only be purchased with a selling plan.
+        * Whether the product can only be purchased with a [selling
+        * plan](/docs/apps/build/purchase-options/subscriptions/selling-plans). Products that are sold on
+        * subscription (`requiresSellingPlan: true`) can be updated only for online stores. If you update a
+        * product to be subscription-only (`requiresSellingPlan:false`), then the product is unpublished from
+        * all channels, except the online store.
         */
         public ProductQuery requiresSellingPlan() {
             startField("requiresSellingPlan");
@@ -53349,18 +52604,18 @@ public class Storefront {
         }
 
         /**
-        * A list of a product's available selling plan groups. A selling plan group represents a selling
-        * method. For example, 'Subscribe and save' is a selling method where customers pay for goods or
-        * services per delivery. A selling plan group contains individual selling plans.
+        * A list of all [selling plan
+        * groups](/docs/apps/build/purchase-options/subscriptions/selling-plans/build-a-selling-plan) that are
+        * associated with the product either directly, or through the product's variants.
         */
         public ProductQuery sellingPlanGroups(SellingPlanGroupConnectionQueryDefinition queryDef) {
             return sellingPlanGroups(args -> {}, queryDef);
         }
 
         /**
-        * A list of a product's available selling plan groups. A selling plan group represents a selling
-        * method. For example, 'Subscribe and save' is a selling method where customers pay for goods or
-        * services per delivery. A selling plan group contains individual selling plans.
+        * A list of all [selling plan
+        * groups](/docs/apps/build/purchase-options/subscriptions/selling-plans/build-a-selling-plan) that are
+        * associated with the product either directly, or through the product's variants.
         */
         public ProductQuery sellingPlanGroups(SellingPlanGroupsArgumentsDefinition argsDef, SellingPlanGroupConnectionQueryDefinition queryDef) {
             startField("sellingPlanGroups");
@@ -53377,7 +52632,9 @@ public class Storefront {
         }
 
         /**
-        * The product's SEO information.
+        * The [SEO title and
+        * description](https://help.shopify.com/manual/promoting-marketing/seo/adding-keywords)
+        * that are associated with a product.
         */
         public ProductQuery seo(SEOQueryDefinition queryDef) {
             startField("seo");
@@ -53390,8 +52647,13 @@ public class Storefront {
         }
 
         /**
-        * A comma separated list of tags that have been added to the product.
-        * Additional access scope required for private apps: unauthenticated_read_product_tags.
+        * A comma-separated list of searchable keywords that are
+        * associated with the product. For example, a merchant might apply the `sports`
+        * and `summer` tags to products that are associated with sportwear for summer.
+        * Updating `tags` overwrites any existing tags that were previously added to the product.
+        * To add new tags without overwriting existing tags,
+        * use the GraphQL Admin API's [`tagsAdd`](/docs/api/admin-graphql/latest/mutations/tagsadd)
+        * mutation.
         */
         public ProductQuery tags() {
             startField("tags");
@@ -53400,7 +52662,9 @@ public class Storefront {
         }
 
         /**
-        * The product’s title.
+        * The name for the product that displays to customers. The title is used to construct the product's
+        * handle.
+        * For example, if a product is titled "Black Sunglasses", then the handle is `black-sunglasses`.
         */
         public ProductQuery title() {
             startField("title");
@@ -53409,7 +52673,7 @@ public class Storefront {
         }
 
         /**
-        * The total quantity of inventory in stock for this Product.
+        * The quantity of inventory that's in stock.
         */
         public ProductQuery totalInventory() {
             startField("totalInventory");
@@ -53593,14 +52857,16 @@ public class Storefront {
         }
 
         /**
-        * List of the product’s variants.
+        * A list of [variants](/docs/api/storefront/latest/objects/ProductVariant) that are associated with
+        * the product.
         */
         public ProductQuery variants(ProductVariantConnectionQueryDefinition queryDef) {
             return variants(args -> {}, queryDef);
         }
 
         /**
-        * List of the product’s variants.
+        * A list of [variants](/docs/api/storefront/latest/objects/ProductVariant) that are associated with
+        * the product.
         */
         public ProductQuery variants(VariantsArgumentsDefinition argsDef, ProductVariantConnectionQueryDefinition queryDef) {
             startField("variants");
@@ -53617,7 +52883,8 @@ public class Storefront {
         }
 
         /**
-        * The total count of variants for this product.
+        * The number of [variants](/docs/api/storefront/latest/objects/ProductVariant) that are associated
+        * with the product.
         */
         public ProductQuery variantsCount(CountQueryDefinition queryDef) {
             startField("variantsCount");
@@ -53630,7 +52897,7 @@ public class Storefront {
         }
 
         /**
-        * The product’s vendor name.
+        * The name of the product's vendor.
         */
         public ProductQuery vendor() {
             startField("vendor");
@@ -53640,11 +52907,17 @@ public class Storefront {
     }
 
     /**
-    * A product represents an individual item for sale in a Shopify store. Products are often physical,
-    * but they don't have to be.
-    * For example, a digital download (such as a movie, music or ebook file) also
-    * qualifies as a product, as do services (such as equipment rental, work for hire,
-    * customization of another product or an extended warranty).
+    * The `Product` object lets you manage products in a merchant’s store.
+    * Products are the goods and services that merchants offer to customers.
+    * They can include various details such as title, description, price, images, and options such as size
+    * or color.
+    * You can use [product variants](/docs/api/storefront/latest/objects/ProductVariant)
+    * to create or update different versions of the same product.
+    * You can also add or update product [media](/docs/api/storefront/latest/interfaces/Media).
+    * Products can be organized by grouping them into a
+    * [collection](/docs/api/storefront/latest/objects/Collection).
+    * Learn more about working with [products and
+    * collections](/docs/storefronts/headless/building-with-the-storefront-api/products-collections).
     */
     public static class Product extends AbstractResponse<Product> implements HasMetafields, MenuItemResource, MetafieldParentResource, MetafieldReference, Node, OnlineStorePublishable, SearchResultItem, Trackable {
         public Product() {
@@ -54008,7 +53281,8 @@ public class Storefront {
         }
 
         /**
-        * The taxonomy category for the product.
+        * The category of a product from [Shopify's Standard Product
+        * Taxonomy](https://shopify.github.io/product-taxonomy/releases/unstable/?categoryId=sg-4-17-2-17).
         */
 
         public TaxonomyCategory getCategory() {
@@ -54021,7 +53295,7 @@ public class Storefront {
         }
 
         /**
-        * List of collections a product belongs to.
+        * A list of [collections](/docs/api/storefront/latest/objects/Collection) that include the product.
         */
 
         public CollectionConnection getCollections() {
@@ -54034,7 +53308,9 @@ public class Storefront {
         }
 
         /**
-        * The compare at price of the product across all variants.
+        * The [compare-at price
+        * range](https://help.shopify.com/manual/products/details/product-pricing/sale-pricing) of the product
+        * in the shop's default currency.
         */
 
         public ProductPriceRange getCompareAtPriceRange() {
@@ -54050,17 +53326,18 @@ public class Storefront {
         * The date and time when the product was created.
         */
 
-        public DateTime getCreatedAt() {
-            return (DateTime) get("createdAt");
+        public Date getCreatedAt() {
+            return (Date) get("createdAt");
         }
 
-        public Product setCreatedAt(DateTime arg) {
+        public Product setCreatedAt(Date arg) {
             optimisticData.put(getKey("createdAt"), arg);
             return this;
         }
 
         /**
-        * Stripped description of the product, single line with HTML tags removed.
+        * A single-line description of the product, with [HTML
+        * tags](https://developer.mozilla.org/en-US/docs/Web/HTML) removed.
         */
 
         public String getDescription() {
@@ -54073,7 +53350,9 @@ public class Storefront {
         }
 
         /**
-        * The description of the product, complete with HTML formatting.
+        * The description of the product, with
+        * HTML tags. For example, the description might include
+        * bold `<strong></strong>` and italic `<i></i>` text.
         */
 
         public String getDescriptionHtml() {
@@ -54171,8 +53450,9 @@ public class Storefront {
         }
 
         /**
-        * A human-friendly unique string for the Product automatically generated from its title.
-        * They are used by the Liquid templating language to refer to objects.
+        * A unique, human-readable string of the product's title.
+        * A handle can contain letters, hyphens (`-`), and numbers, but no spaces.
+        * The handle is used in the online store URL for the product.
         */
 
         public String getHandle() {
@@ -54219,7 +53499,8 @@ public class Storefront {
         }
 
         /**
-        * The media associated with the product.
+        * The [media](/docs/apps/build/online-store/product-media) that are associated with the product. Valid
+        * media are images, 3D models, videos.
         */
 
         public MediaConnection getMedia() {
@@ -54232,7 +53513,9 @@ public class Storefront {
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
 
         public Metafield getMetafield() {
@@ -54245,7 +53528,8 @@ public class Storefront {
         }
 
         /**
-        * The metafields associated with the resource matching the supplied list of namespaces and keys.
+        * A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify
+        * resource.
         */
 
         public List<Metafield> getMetafields() {
@@ -54258,8 +53542,8 @@ public class Storefront {
         }
 
         /**
-        * The URL used for viewing the resource on the shop's Online Store. Returns
-        * `null` if the resource is currently not published to the Online Store sales channel.
+        * The product's URL on the online store.
+        * If `null`, then the product isn't published to the online store sales channel.
         */
 
         public String getOnlineStoreUrl() {
@@ -54272,7 +53556,9 @@ public class Storefront {
         }
 
         /**
-        * List of product options.
+        * A list of product options. The limit is defined by the [shop's resource limits for product
+        * options](/docs/api/admin-graphql/latest/objects/Shop#field-resourcelimits)
+        * (`Shop.resourceLimits.maxProductOptions`).
         */
 
         public List<ProductOption> getOptions() {
@@ -54285,7 +53571,9 @@ public class Storefront {
         }
 
         /**
-        * The price range.
+        * The minimum and maximum prices of a product, expressed in decimal numbers.
+        * For example, if the product is priced between $10.00 and $50.00,
+        * then the price range is $10.00 - $50.00.
         */
 
         public ProductPriceRange getPriceRange() {
@@ -54298,7 +53586,8 @@ public class Storefront {
         }
 
         /**
-        * A categorization that a product can be tagged with, commonly used for filtering and searching.
+        * The [product type](https://help.shopify.com/manual/products/details/product-type)
+        * that merchants define.
         */
 
         public String getProductType() {
@@ -54314,17 +53603,21 @@ public class Storefront {
         * The date and time when the product was published to the channel.
         */
 
-        public DateTime getPublishedAt() {
-            return (DateTime) get("publishedAt");
+        public Date getPublishedAt() {
+            return (Date) get("publishedAt");
         }
 
-        public Product setPublishedAt(DateTime arg) {
+        public Product setPublishedAt(Date arg) {
             optimisticData.put(getKey("publishedAt"), arg);
             return this;
         }
 
         /**
-        * Whether the product can only be purchased with a selling plan.
+        * Whether the product can only be purchased with a [selling
+        * plan](/docs/apps/build/purchase-options/subscriptions/selling-plans). Products that are sold on
+        * subscription (`requiresSellingPlan: true`) can be updated only for online stores. If you update a
+        * product to be subscription-only (`requiresSellingPlan:false`), then the product is unpublished from
+        * all channels, except the online store.
         */
 
         public Boolean getRequiresSellingPlan() {
@@ -54353,9 +53646,9 @@ public class Storefront {
         }
 
         /**
-        * A list of a product's available selling plan groups. A selling plan group represents a selling
-        * method. For example, 'Subscribe and save' is a selling method where customers pay for goods or
-        * services per delivery. A selling plan group contains individual selling plans.
+        * A list of all [selling plan
+        * groups](/docs/apps/build/purchase-options/subscriptions/selling-plans/build-a-selling-plan) that are
+        * associated with the product either directly, or through the product's variants.
         */
 
         public SellingPlanGroupConnection getSellingPlanGroups() {
@@ -54368,7 +53661,9 @@ public class Storefront {
         }
 
         /**
-        * The product's SEO information.
+        * The [SEO title and
+        * description](https://help.shopify.com/manual/promoting-marketing/seo/adding-keywords)
+        * that are associated with a product.
         */
 
         public SEO getSeo() {
@@ -54381,8 +53676,13 @@ public class Storefront {
         }
 
         /**
-        * A comma separated list of tags that have been added to the product.
-        * Additional access scope required for private apps: unauthenticated_read_product_tags.
+        * A comma-separated list of searchable keywords that are
+        * associated with the product. For example, a merchant might apply the `sports`
+        * and `summer` tags to products that are associated with sportwear for summer.
+        * Updating `tags` overwrites any existing tags that were previously added to the product.
+        * To add new tags without overwriting existing tags,
+        * use the GraphQL Admin API's [`tagsAdd`](/docs/api/admin-graphql/latest/mutations/tagsadd)
+        * mutation.
         */
 
         public List<String> getTags() {
@@ -54395,7 +53695,9 @@ public class Storefront {
         }
 
         /**
-        * The product’s title.
+        * The name for the product that displays to customers. The title is used to construct the product's
+        * handle.
+        * For example, if a product is titled "Black Sunglasses", then the handle is `black-sunglasses`.
         */
 
         public String getTitle() {
@@ -54408,7 +53710,7 @@ public class Storefront {
         }
 
         /**
-        * The total quantity of inventory in stock for this Product.
+        * The quantity of inventory that's in stock.
         */
 
         public Integer getTotalInventory() {
@@ -54446,11 +53748,11 @@ public class Storefront {
         * is counted as an update.
         */
 
-        public DateTime getUpdatedAt() {
-            return (DateTime) get("updatedAt");
+        public Date getUpdatedAt() {
+            return (Date) get("updatedAt");
         }
 
-        public Product setUpdatedAt(DateTime arg) {
+        public Product setUpdatedAt(Date arg) {
             optimisticData.put(getKey("updatedAt"), arg);
             return this;
         }
@@ -54471,7 +53773,8 @@ public class Storefront {
         }
 
         /**
-        * List of the product’s variants.
+        * A list of [variants](/docs/api/storefront/latest/objects/ProductVariant) that are associated with
+        * the product.
         */
 
         public ProductVariantConnection getVariants() {
@@ -54484,7 +53787,8 @@ public class Storefront {
         }
 
         /**
-        * The total count of variants for this product.
+        * The number of [variants](/docs/api/storefront/latest/objects/ProductVariant) that are associated
+        * with the product.
         */
 
         public Count getVariantsCount() {
@@ -54497,7 +53801,7 @@ public class Storefront {
         }
 
         /**
-        * The product’s vendor name.
+        * The name of the product's vendor.
         */
 
         public String getVendor() {
@@ -54509,11 +53813,10 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "adjacentVariants": return true;
-
-                case "availableForSale": return false;
 
                 case "category": return true;
 
@@ -54521,25 +53824,9 @@ public class Storefront {
 
                 case "compareAtPriceRange": return true;
 
-                case "createdAt": return false;
-
-                case "description": return false;
-
-                case "descriptionHtml": return false;
-
-                case "encodedVariantAvailability": return false;
-
-                case "encodedVariantExistence": return false;
-
                 case "featuredImage": return true;
 
-                case "handle": return false;
-
-                case "id": return false;
-
                 case "images": return true;
-
-                case "isGiftCard": return false;
 
                 case "media": return true;
 
@@ -54547,17 +53834,9 @@ public class Storefront {
 
                 case "metafields": return true;
 
-                case "onlineStoreUrl": return false;
-
                 case "options": return true;
 
                 case "priceRange": return true;
-
-                case "productType": return false;
-
-                case "publishedAt": return false;
-
-                case "requiresSellingPlan": return false;
 
                 case "selectedOrFirstAvailableVariant": return true;
 
@@ -54565,23 +53844,11 @@ public class Storefront {
 
                 case "seo": return true;
 
-                case "tags": return false;
-
-                case "title": return false;
-
-                case "totalInventory": return false;
-
-                case "trackingParameters": return false;
-
-                case "updatedAt": return false;
-
                 case "variantBySelectedOptions": return true;
 
                 case "variants": return true;
 
                 case "variantsCount": return true;
-
-                case "vendor": return false;
 
                 default: return false;
             }
@@ -54902,6 +54169,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "edges": return true;
@@ -55017,10 +54285,9 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "cursor": return false;
-
                 case "node": return true;
 
                 default: return false;
@@ -55613,6 +54880,7 @@ public class Storefront {
         * @deprecated Use `optionValues` instead.
         */
 
+        @Deprecated
         public List<String> getValues() {
             return (List<String>) get("values");
         }
@@ -55622,15 +54890,10 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "id": return false;
-
-                case "name": return false;
-
                 case "optionValues": return true;
-
-                case "values": return false;
 
                 default: return false;
             }
@@ -55804,13 +55067,10 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "firstSelectableVariant": return true;
-
-                case "id": return false;
-
-                case "name": return false;
 
                 case "swatch": return true;
 
@@ -55928,16 +55188,6 @@ public class Storefront {
             optimisticData.put(getKey("image"), arg);
             return this;
         }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "color": return false;
-
-                case "image": return false;
-
-                default: return false;
-            }
-        }
     }
 
     public interface ProductPriceRangeQueryDefinition {
@@ -56044,6 +55294,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "maxVariantPrice": return true;
@@ -56520,14 +55771,18 @@ public class Storefront {
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
         public ProductVariantQuery metafield(String key, MetafieldQueryDefinition queryDef) {
             return metafield(key, args -> {}, queryDef);
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
         public ProductVariantQuery metafield(String key, MetafieldArgumentsDefinition argsDef, MetafieldQueryDefinition queryDef) {
             startField("metafield");
@@ -56547,7 +55802,8 @@ public class Storefront {
         }
 
         /**
-        * The metafields associated with the resource matching the supplied list of namespaces and keys.
+        * A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify
+        * resource.
         */
         public ProductVariantQuery metafields(List<HasMetafieldsIdentifier> identifiers, MetafieldQueryDefinition queryDef) {
             startField("metafields");
@@ -57354,6 +56610,7 @@ public class Storefront {
         * @deprecated Use `compareAtPrice` instead.
         */
 
+        @Deprecated
         public MoneyV2 getCompareAtPriceV2() {
             return (MoneyV2) get("compareAtPriceV2");
         }
@@ -57425,7 +56682,9 @@ public class Storefront {
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
 
         public Metafield getMetafield() {
@@ -57438,7 +56697,8 @@ public class Storefront {
         }
 
         /**
-        * The metafields associated with the resource matching the supplied list of namespaces and keys.
+        * A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify
+        * resource.
         */
 
         public List<Metafield> getMetafields() {
@@ -57469,6 +56729,7 @@ public class Storefront {
         * @deprecated Use `price` instead.
         */
 
+        @Deprecated
         public MoneyV2 getPriceV2() {
             return (MoneyV2) get("priceV2");
         }
@@ -57702,23 +56963,16 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "availableForSale": return false;
-
-                case "barcode": return false;
-
                 case "compareAtPrice": return true;
 
                 case "compareAtPriceV2": return true;
 
                 case "components": return true;
 
-                case "currentlyNotInStock": return false;
-
                 case "groupedBy": return true;
-
-                case "id": return false;
 
                 case "image": return true;
 
@@ -57732,15 +56986,9 @@ public class Storefront {
 
                 case "product": return true;
 
-                case "quantityAvailable": return false;
-
                 case "quantityPriceBreaks": return true;
 
                 case "quantityRule": return true;
-
-                case "requiresComponents": return false;
-
-                case "requiresShipping": return false;
 
                 case "selectedOptions": return true;
 
@@ -57748,21 +56996,11 @@ public class Storefront {
 
                 case "shopPayInstallmentsPricing": return true;
 
-                case "sku": return false;
-
                 case "storeAvailability": return true;
-
-                case "taxable": return false;
-
-                case "title": return false;
 
                 case "unitPrice": return true;
 
                 case "unitPriceMeasurement": return true;
-
-                case "weight": return false;
-
-                case "weightUnit": return false;
 
                 default: return false;
             }
@@ -57869,11 +57107,10 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "productVariant": return true;
-
-                case "quantity": return false;
 
                 default: return false;
             }
@@ -58026,6 +57263,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "edges": return true;
@@ -58139,10 +57377,9 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "cursor": return false;
-
                 case "node": return true;
 
                 default: return false;
@@ -58296,6 +57533,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "edges": return true;
@@ -58409,10 +57647,9 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "cursor": return false;
-
                 case "node": return true;
 
                 default: return false;
@@ -58653,6 +57890,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "company": return true;
@@ -58768,10 +58006,9 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "minimumQuantity": return false;
-
                 case "price": return true;
 
                 default: return false;
@@ -58925,6 +58162,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "edges": return true;
@@ -59038,10 +58276,9 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "cursor": return false;
-
                 case "node": return true;
 
                 default: return false;
@@ -59190,18 +58427,6 @@ public class Storefront {
         public QuantityRule setMinimum(Integer arg) {
             optimisticData.put(getKey("minimum"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "increment": return false;
-
-                case "maximum": return false;
-
-                case "minimum": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -61511,6 +60736,7 @@ public class Storefront {
         * @deprecated Use `blog` instead.
         */
 
+        @Deprecated
         public Blog getBlogByHandle() {
             return (Blog) get("blogByHandle");
         }
@@ -61579,6 +60805,7 @@ public class Storefront {
         * @deprecated Use `collection` instead.
         */
 
+        @Deprecated
         public Collection getCollectionByHandle() {
             return (Collection) get("collectionByHandle");
         }
@@ -61728,6 +60955,7 @@ public class Storefront {
         * @deprecated Use `page` instead.
         */
 
+        @Deprecated
         public Page getPageByHandle() {
             return (Page) get("pageByHandle");
         }
@@ -61795,6 +61023,7 @@ public class Storefront {
         * @deprecated Use `product` instead.
         */
 
+        @Deprecated
         public Product getProductByHandle() {
             return (Product) get("productByHandle");
         }
@@ -61927,6 +61156,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "article": return true;
@@ -61940,8 +61170,6 @@ public class Storefront {
                 case "blogs": return true;
 
                 case "cart": return true;
-
-                case "cartCompletionAttempt": return false;
 
                 case "collection": return true;
 
@@ -61960,10 +61188,6 @@ public class Storefront {
                 case "metaobject": return true;
 
                 case "metaobjects": return true;
-
-                case "node": return false;
-
-                case "nodes": return false;
 
                 case "page": return true;
 
@@ -62106,16 +61330,6 @@ public class Storefront {
         public SEO setTitle(String arg) {
             optimisticData.put(getKey("title"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "description": return false;
-
-                case "title": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -62303,22 +61517,6 @@ public class Storefront {
         public ScriptDiscountApplication setValue(PricingValue arg) {
             optimisticData.put(getKey("value"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "allocationMethod": return false;
-
-                case "targetSelection": return false;
-
-                case "targetType": return false;
-
-                case "title": return false;
-
-                case "value": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -62514,18 +61712,6 @@ public class Storefront {
             optimisticData.put(getKey("trackingParameters"), arg);
             return this;
         }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "styledText": return false;
-
-                case "text": return false;
-
-                case "trackingParameters": return false;
-
-                default: return false;
-            }
-        }
     }
 
     public interface SearchResultItemQueryDefinition {
@@ -62614,12 +61800,6 @@ public class Storefront {
 
         public String getGraphQlTypeName() {
             return (String) get("__typename");
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                default: return false;
-            }
         }
     }
 
@@ -62834,17 +62014,14 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "edges": return true;
 
-                case "nodes": return false;
-
                 case "pageInfo": return true;
 
                 case "productFilters": return true;
-
-                case "totalCount": return false;
 
                 default: return false;
             }
@@ -62949,16 +62126,6 @@ public class Storefront {
         public SearchResultItemEdge setNode(SearchResultItem arg) {
             optimisticData.put(getKey("node"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "cursor": return false;
-
-                case "node": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -63384,16 +62551,6 @@ public class Storefront {
             optimisticData.put(getKey("value"), arg);
             return this;
         }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "name": return false;
-
-                case "value": return false;
-
-                default: return false;
-            }
-        }
     }
 
     public static class SelectedOptionInput implements Serializable {
@@ -63534,14 +62691,18 @@ public class Storefront {
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
         public SellingPlanQuery metafield(String key, MetafieldQueryDefinition queryDef) {
             return metafield(key, args -> {}, queryDef);
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
         public SellingPlanQuery metafield(String key, MetafieldArgumentsDefinition argsDef, MetafieldQueryDefinition queryDef) {
             startField("metafield");
@@ -63561,7 +62722,8 @@ public class Storefront {
         }
 
         /**
-        * The metafields associated with the resource matching the supplied list of namespaces and keys.
+        * A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify
+        * resource.
         */
         public SellingPlanQuery metafields(List<HasMetafieldsIdentifier> identifiers, MetafieldQueryDefinition queryDef) {
             startField("metafields");
@@ -63836,7 +62998,9 @@ public class Storefront {
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
 
         public Metafield getMetafield() {
@@ -63849,7 +63013,8 @@ public class Storefront {
         }
 
         /**
-        * The metafields associated with the resource matching the supplied list of namespaces and keys.
+        * A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify
+        * resource.
         */
 
         public List<Metafield> getMetafields() {
@@ -63918,29 +63083,18 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "billingPolicy": return false;
-
                 case "checkoutCharge": return true;
-
-                case "deliveryPolicy": return false;
-
-                case "description": return false;
-
-                case "id": return false;
 
                 case "metafield": return true;
 
                 case "metafields": return true;
 
-                case "name": return false;
-
                 case "options": return true;
 
                 case "priceAdjustments": return true;
-
-                case "recurringDeliveries": return false;
 
                 default: return false;
             }
@@ -64132,6 +63286,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "checkoutChargeAmount": return true;
@@ -64293,6 +63448,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "edges": return true;
@@ -64406,10 +63562,9 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "cursor": return false;
-
                 case "node": return true;
 
                 default: return false;
@@ -64602,6 +63757,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "compareAtPrice": return true;
@@ -64681,12 +63837,6 @@ public class Storefront {
 
         public String getGraphQlTypeName() {
             return (String) get("__typename");
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                default: return false;
-            }
         }
     }
 
@@ -64789,16 +63939,6 @@ public class Storefront {
             optimisticData.put(getKey("value"), arg);
             return this;
         }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "type": return false;
-
-                case "value": return false;
-
-                default: return false;
-            }
-        }
     }
 
     public interface SellingPlanCheckoutChargePercentageValueQueryDefinition {
@@ -64867,14 +64007,6 @@ public class Storefront {
         public SellingPlanCheckoutChargePercentageValue setPercentage(Double arg) {
             optimisticData.put(getKey("percentage"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "percentage": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -65005,12 +64137,6 @@ public class Storefront {
 
         public String getGraphQlTypeName() {
             return (String) get("__typename");
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                default: return false;
-            }
         }
     }
 
@@ -65160,6 +64286,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "edges": return true;
@@ -65237,12 +64364,6 @@ public class Storefront {
 
         public String getGraphQlTypeName() {
             return (String) get("__typename");
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                default: return false;
-            }
         }
     }
 
@@ -65346,10 +64467,9 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "cursor": return false;
-
                 case "node": return true;
 
                 default: return false;
@@ -65429,6 +64549,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "adjustmentAmount": return true;
@@ -65510,6 +64631,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "price": return true;
@@ -65777,12 +64899,9 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "appName": return false;
-
-                case "name": return false;
-
                 case "options": return true;
 
                 case "sellingPlans": return true;
@@ -65938,6 +65057,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "edges": return true;
@@ -66051,10 +65171,9 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "cursor": return false;
-
                 case "node": return true;
 
                 default: return false;
@@ -66173,16 +65292,6 @@ public class Storefront {
         public SellingPlanGroupOption setValues(List<String> arg) {
             optimisticData.put(getKey("values"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "name": return false;
-
-                case "values": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -66369,16 +65478,6 @@ public class Storefront {
             optimisticData.put(getKey("value"), arg);
             return this;
         }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "name": return false;
-
-                case "value": return false;
-
-                default: return false;
-            }
-        }
     }
 
     public interface SellingPlanPercentagePriceAdjustmentQueryDefinition {
@@ -66447,14 +65546,6 @@ public class Storefront {
         public SellingPlanPercentagePriceAdjustment setAdjustmentPercentage(Integer arg) {
             optimisticData.put(getKey("adjustmentPercentage"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "adjustmentPercentage": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -66576,16 +65667,6 @@ public class Storefront {
             optimisticData.put(getKey("orderCount"), arg);
             return this;
         }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "adjustmentValue": return false;
-
-                case "orderCount": return false;
-
-                default: return false;
-            }
-        }
     }
 
     public interface SellingPlanPriceAdjustmentValueQueryDefinition {
@@ -66676,12 +65757,6 @@ public class Storefront {
 
         public String getGraphQlTypeName() {
             return (String) get("__typename");
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                default: return false;
-            }
         }
     }
 
@@ -66780,16 +65855,6 @@ public class Storefront {
             optimisticData.put(getKey("intervalCount"), arg);
             return this;
         }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "interval": return false;
-
-                case "intervalCount": return false;
-
-                default: return false;
-            }
-        }
     }
 
     public interface SellingPlanRecurringDeliveryPolicyQueryDefinition {
@@ -66887,16 +65952,6 @@ public class Storefront {
             optimisticData.put(getKey("intervalCount"), arg);
             return this;
         }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "interval": return false;
-
-                case "intervalCount": return false;
-
-                default: return false;
-            }
-        }
     }
 
     public interface ShopQueryDefinition {
@@ -66957,14 +66012,18 @@ public class Storefront {
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
         public ShopQuery metafield(String key, MetafieldQueryDefinition queryDef) {
             return metafield(key, args -> {}, queryDef);
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
         public ShopQuery metafield(String key, MetafieldArgumentsDefinition argsDef, MetafieldQueryDefinition queryDef) {
             startField("metafield");
@@ -66984,7 +66043,8 @@ public class Storefront {
         }
 
         /**
-        * The metafields associated with the resource matching the supplied list of namespaces and keys.
+        * A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify
+        * resource.
         */
         public ShopQuery metafields(List<HasMetafieldsIdentifier> identifiers, MetafieldQueryDefinition queryDef) {
             startField("metafields");
@@ -67365,7 +66425,9 @@ public class Storefront {
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
 
         public Metafield getMetafield() {
@@ -67378,7 +66440,8 @@ public class Storefront {
         }
 
         /**
-        * The metafields associated with the resource matching the supplied list of namespaces and keys.
+        * A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify
+        * resource.
         */
 
         public List<Metafield> getMetafields() {
@@ -67533,21 +66596,14 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "brand": return true;
 
-                case "description": return false;
-
-                case "id": return false;
-
                 case "metafield": return true;
 
                 case "metafields": return true;
-
-                case "moneyFormat": return false;
-
-                case "name": return false;
 
                 case "paymentSettings": return true;
 
@@ -67558,8 +66614,6 @@ public class Storefront {
                 case "refundPolicy": return true;
 
                 case "shippingPolicy": return true;
-
-                case "shipsToCountries": return false;
 
                 case "shopPayInstallmentsPricing": return true;
 
@@ -67734,10 +66788,9 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "id": return false;
-
                 case "maxPrice": return true;
 
                 case "minPrice": return true;
@@ -67983,17 +67036,10 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "apr": return false;
-
-                case "frequency": return false;
-
-                case "id": return false;
-
                 case "installmentsCount": return true;
-
-                case "loanType": return false;
 
                 default: return false;
             }
@@ -68206,6 +67252,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "financingPlans": return true;
@@ -68437,15 +67484,10 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "available": return false;
-
-                case "eligible": return false;
-
                 case "fullPrice": return true;
-
-                case "id": return false;
 
                 case "installmentsCount": return true;
 
@@ -68941,21 +67983,14 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "deliveryMethods": return true;
 
-                case "discountCodes": return false;
-
                 case "discounts": return true;
 
                 case "lineItems": return true;
-
-                case "locale": return false;
-
-                case "presentmentCurrency": return false;
-
-                case "selectedDeliveryMethodType": return false;
 
                 case "shippingAddress": return true;
 
@@ -69351,34 +68386,6 @@ public class Storefront {
             optimisticData.put(getKey("provinceCode"), arg);
             return this;
         }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "address1": return false;
-
-                case "address2": return false;
-
-                case "city": return false;
-
-                case "companyName": return false;
-
-                case "countryCode": return false;
-
-                case "email": return false;
-
-                case "firstName": return false;
-
-                case "lastName": return false;
-
-                case "phone": return false;
-
-                case "postalCode": return false;
-
-                case "provinceCode": return false;
-
-                default: return false;
-            }
-        }
     }
 
     public interface ShopPayPaymentRequestDeliveryMethodQueryDefinition {
@@ -69641,21 +68648,10 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "amount": return true;
-
-                case "code": return false;
-
-                case "deliveryExpectationLabel": return false;
-
-                case "detail": return false;
-
-                case "label": return false;
-
-                case "maxDeliveryDate": return false;
-
-                case "minDeliveryDate": return false;
 
                 default: return false;
             }
@@ -70061,11 +69057,10 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "amount": return true;
-
-                case "label": return false;
 
                 default: return false;
             }
@@ -70248,16 +69243,6 @@ public class Storefront {
         public ShopPayPaymentRequestImage setUrl(String arg) {
             optimisticData.put(getKey("url"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "alt": return false;
-
-                case "url": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -71179,6 +70164,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "finalItemPrice": return true;
@@ -71189,19 +70175,11 @@ public class Storefront {
 
                 case "itemDiscounts": return true;
 
-                case "label": return false;
-
                 case "lineDiscounts": return true;
 
                 case "originalItemPrice": return true;
 
                 case "originalLinePrice": return true;
-
-                case "quantity": return false;
-
-                case "requiresShipping": return false;
-
-                case "sku": return false;
 
                 default: return false;
             }
@@ -71723,13 +70701,10 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "paymentRequest": return true;
-
-                case "processingStatusType": return false;
-
-                case "token": return false;
 
                 default: return false;
             }
@@ -71892,15 +70867,10 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "checkoutUrl": return false;
-
                 case "paymentRequest": return true;
-
-                case "sourceIdentifier": return false;
-
-                case "token": return false;
 
                 default: return false;
             }
@@ -72021,6 +70991,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "shopPayPaymentRequestSession": return true;
@@ -72146,6 +71117,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "paymentRequestReceipt": return true;
@@ -72285,13 +71257,10 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "amount": return true;
-
-                case "code": return false;
-
-                case "label": return false;
 
                 default: return false;
             }
@@ -72555,6 +71524,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "discounts": return true;
@@ -72907,22 +71877,6 @@ public class Storefront {
             optimisticData.put(getKey("url"), arg);
             return this;
         }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "body": return false;
-
-                case "handle": return false;
-
-                case "id": return false;
-
-                case "title": return false;
-
-                case "url": return false;
-
-                default: return false;
-            }
-        }
     }
 
     public interface ShopPolicyWithDefaultQueryDefinition {
@@ -73115,22 +72069,6 @@ public class Storefront {
             optimisticData.put(getKey("url"), arg);
             return this;
         }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "body": return false;
-
-                case "handle": return false;
-
-                case "id": return false;
-
-                case "title": return false;
-
-                case "url": return false;
-
-                default: return false;
-            }
-        }
     }
 
     public interface SitemapQueryDefinition {
@@ -73260,6 +72198,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "pagesCount": return true;
@@ -73396,25 +72335,13 @@ public class Storefront {
         * The date and time when the image was updated.
         */
 
-        public DateTime getUpdatedAt() {
-            return (DateTime) get("updatedAt");
+        public Date getUpdatedAt() {
+            return (Date) get("updatedAt");
         }
 
-        public SitemapImage setUpdatedAt(DateTime arg) {
+        public SitemapImage setUpdatedAt(Date arg) {
             optimisticData.put(getKey("updatedAt"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "alt": return false;
-
-                case "filepath": return false;
-
-                case "updatedAt": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -73575,24 +72502,19 @@ public class Storefront {
         * The date and time when the resource was updated.
         */
 
-        public DateTime getUpdatedAt() {
-            return (DateTime) get("updatedAt");
+        public Date getUpdatedAt() {
+            return (Date) get("updatedAt");
         }
 
-        public SitemapResource setUpdatedAt(DateTime arg) {
+        public SitemapResource setUpdatedAt(Date arg) {
             optimisticData.put(getKey("updatedAt"), arg);
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "handle": return false;
-
                 case "image": return true;
-
-                case "title": return false;
-
-                case "updatedAt": return false;
 
                 default: return false;
             }
@@ -73651,7 +72573,7 @@ public class Storefront {
 
         String getHandle();
 
-        DateTime getUpdatedAt();
+        Date getUpdatedAt();
     }
 
     /**
@@ -73727,23 +72649,13 @@ public class Storefront {
         * The date and time when the resource was updated.
         */
 
-        public DateTime getUpdatedAt() {
-            return (DateTime) get("updatedAt");
+        public Date getUpdatedAt() {
+            return (Date) get("updatedAt");
         }
 
-        public UnknownSitemapResourceInterface setUpdatedAt(DateTime arg) {
+        public UnknownSitemapResourceInterface setUpdatedAt(Date arg) {
             optimisticData.put(getKey("updatedAt"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "handle": return false;
-
-                case "updatedAt": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -73901,27 +72813,13 @@ public class Storefront {
         * The date and time when the resource was updated.
         */
 
-        public DateTime getUpdatedAt() {
-            return (DateTime) get("updatedAt");
+        public Date getUpdatedAt() {
+            return (Date) get("updatedAt");
         }
 
-        public SitemapResourceMetaobject setUpdatedAt(DateTime arg) {
+        public SitemapResourceMetaobject setUpdatedAt(Date arg) {
             optimisticData.put(getKey("updatedAt"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "handle": return false;
-
-                case "onlineStoreUrlHandle": return false;
-
-                case "type": return false;
-
-                case "updatedAt": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -74195,15 +73093,10 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "available": return false;
-
                 case "location": return true;
-
-                case "pickUpTime": return false;
-
-                case "quantityAvailable": return false;
 
                 default: return false;
             }
@@ -74356,6 +73249,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "edges": return true;
@@ -74469,10 +73363,9 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "cursor": return false;
-
                 case "node": return true;
 
                 default: return false;
@@ -74589,6 +73482,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "edges": return true;
@@ -74695,16 +73589,6 @@ public class Storefront {
             optimisticData.put(getKey("node"), arg);
             return this;
         }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "cursor": return false;
-
-                case "node": return false;
-
-                default: return false;
-            }
-        }
     }
 
     public interface SubmissionErrorQueryDefinition {
@@ -74806,16 +73690,6 @@ public class Storefront {
         public SubmissionError setMessage(String arg) {
             optimisticData.put(getKey("message"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "code": return false;
-
-                case "message": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -75842,14 +74716,6 @@ public class Storefront {
             optimisticData.put(getKey("attemptId"), arg);
             return this;
         }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "attemptId": return false;
-
-                default: return false;
-            }
-        }
     }
 
     public interface SubmitFailedQueryDefinition {
@@ -75962,10 +74828,9 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "checkoutUrl": return false;
-
                 case "errors": return true;
 
                 default: return false;
@@ -76040,14 +74905,6 @@ public class Storefront {
             optimisticData.put(getKey("attemptId"), arg);
             return this;
         }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "attemptId": return false;
-
-                default: return false;
-            }
-        }
     }
 
     public interface SubmitThrottledQueryDefinition {
@@ -76115,21 +74972,13 @@ public class Storefront {
         * next poll request.
         */
 
-        public DateTime getPollAfter() {
-            return (DateTime) get("pollAfter");
+        public Date getPollAfter() {
+            return (Date) get("pollAfter");
         }
 
-        public SubmitThrottled setPollAfter(DateTime arg) {
+        public SubmitThrottled setPollAfter(Date arg) {
             optimisticData.put(getKey("pollAfter"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "pollAfter": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -76243,10 +75092,9 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "color": return false;
-
                 case "image": return true;
 
                 default: return false;
@@ -76380,13 +75228,10 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "ancestors": return true;
-
-                case "id": return false;
-
-                case "name": return false;
 
                 default: return false;
             }
@@ -76548,14 +75393,6 @@ public class Storefront {
         public UnknownTrackable setTrackingParameters(String arg) {
             optimisticData.put(getKey("trackingParameters"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "trackingParameters": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -76752,22 +75589,6 @@ public class Storefront {
         public UnitPriceMeasurement setReferenceValue(Integer arg) {
             optimisticData.put(getKey("referenceValue"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "measuredType": return false;
-
-                case "quantityUnit": return false;
-
-                case "quantityValue": return false;
-
-                case "referenceUnit": return false;
-
-                case "referenceValue": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -77188,18 +76009,6 @@ public class Storefront {
             optimisticData.put(getKey("target"), arg);
             return this;
         }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "id": return false;
-
-                case "path": return false;
-
-                case "target": return false;
-
-                default: return false;
-            }
-        }
     }
 
     public interface UrlRedirectConnectionQueryDefinition {
@@ -77348,6 +76157,7 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
                 case "edges": return true;
@@ -77461,10 +76271,9 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "cursor": return false;
-
                 case "node": return true;
 
                 default: return false;
@@ -77576,16 +76385,6 @@ public class Storefront {
         public UserError setMessage(String arg) {
             optimisticData.put(getKey("message"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "field": return false;
-
-                case "message": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -77726,18 +76525,6 @@ public class Storefront {
         public UserErrorsShopPayPaymentRequestSessionUserErrors setMessage(String arg) {
             optimisticData.put(getKey("message"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "code": return false;
-
-                case "field": return false;
-
-                case "message": return false;
-
-                default: return false;
-            }
         }
     }
 
@@ -78086,14 +76873,9 @@ public class Storefront {
             return this;
         }
 
+        @Override
         public boolean unwrapsToObject(String key) {
             switch (getFieldName(key)) {
-                case "alt": return false;
-
-                case "id": return false;
-
-                case "mediaContentType": return false;
-
                 case "presentation": return true;
 
                 case "previewImage": return true;
@@ -78283,22 +77065,6 @@ public class Storefront {
         public VideoSource setWidth(Integer arg) {
             optimisticData.put(getKey("width"), arg);
             return this;
-        }
-
-        public boolean unwrapsToObject(String key) {
-            switch (getFieldName(key)) {
-                case "format": return false;
-
-                case "height": return false;
-
-                case "mimeType": return false;
-
-                case "url": return false;
-
-                case "width": return false;
-
-                default: return false;
-            }
         }
     }
 

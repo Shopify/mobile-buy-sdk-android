@@ -1,36 +1,40 @@
 #! /usr/bin/env ruby
+# frozen_string_literal: true
 
 unless (new_version = ARGV[0])
   raise "missing version argument"
 end
 
-root = File.expand_path('..', __dir__)
+root = File.expand_path("..", __dir__)
 
-gradle_properties = File.join(root, "MobileBuy", "buy3", "gradle.properties")
+build_config = File.join(root, "MobileBuy", "buy3", "build.gradle.kts")
 
-unless File.exist?(gradle_properties) && File.writable?(gradle_properties)
-  raise "unable to open #{gradle_properties}"
+unless File.exist?(build_config) && File.writable?(build_config)
+  raise "unable to open #{build_config}"
 end
 
-gradle_properties_src = File.read(gradle_properties)
+build_config_src = File.read(build_config)
 
-version_components = new_version.split('-').map(&:to_i)
-current_components = gradle_properties_src
-    .match(/VERSION_NAME=([0-9.]+)/i)
-    .captures[0].split('.').map(&:to_i)
+version_components = new_version.split("-").map(&:to_i)
+current_components = build_config_src
+  .match(/version = \"([0-9.]+)\"/i)
+  .captures[0].split(".").map(&:to_i)
 
-patch = (version_components[0] > current_components[0]) || (version_components[1] > current_components[1]) ? 0 : current_components[2] + 1
+patch = 0
+if (version_components[0] <= current_components[0]) && (version_components[1] <= current_components[1])
+  patch = current_components[2] + 1
+end
 
 updated_components = [
-    version_components[0],
-    version_components[1],
-    patch
+  version_components[0],
+  version_components[1],
+  patch,
 ]
 
-new_version = updated_components.join('.')
+new_version = updated_components.join(".")
 
-gradle_properties_src.gsub!(/VERSION_NAME=.*$/, "VERSION_NAME=#{new_version}")
+build_config_src.gsub!(/^version.*$/, "version = \"#{new_version}\"")
 
-File.open(gradle_properties, "w") do |file|
-    file.puts gradle_properties_src
+File.open(build_config, "w") do |file|
+  file.puts build_config_src
 end

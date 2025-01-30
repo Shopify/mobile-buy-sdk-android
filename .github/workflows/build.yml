@@ -14,26 +14,15 @@ jobs:
     env:
       API_VERSION: ${{ github.event.inputs.version }}
       BRANCH_NAME: release/${{ github.event.inputs.version }}
-      BUNDLE_GEMFILE: ${{ github.workspace }}/MobileBuy/buy3/Gemfile
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-        with:
-          submodules: true
 
       - name: Install Ruby
         uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
-
-      - name: Install JDK 1.8
-        uses: actions/setup-java@v4
-        with:
-          java-version: 8
-          distribution: temurin
-          server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
-          settings-path: ${{ github.workspace }} # location for the settings.xml file
 
       - name: Create Release Branch
         run: |
@@ -43,7 +32,7 @@ jobs:
       - name: Generate Schema
         run: |
           echo "Generating schema for $API_VERSION"
-          ./MobileBuy/buy3/update_schema.rb "$API_VERSION"
+          ./bin/update-schema $API_VERSION
           ./bin/update-version $API_VERSION
           git add .
           git config user.name "${GITHUB_ACTOR}"

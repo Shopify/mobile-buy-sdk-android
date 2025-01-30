@@ -106,15 +106,6 @@ interface GraphCall<T : AbstractResponse<T>> : Cloneable {
  */
 interface QueryGraphCall : GraphCall<Storefront.QueryRoot> {
 
-    /**
-     * Sets http cache policy to be used with this call.
-     *
-     * @param httpCachePolicy [HttpCachePolicy] new HTTP cache policy
-     * @return [QueryGraphCall] with updated cache policy
-     * @see HttpCachePolicy
-     */
-    fun cachePolicy(httpCachePolicy: HttpCachePolicy): QueryGraphCall
-
     override fun enqueue(callback: GraphCallResultCallback<Storefront.QueryRoot>): QueryGraphCall
 
     override fun enqueue(callbackHandler: Handler?, callback: GraphCallResultCallback<Storefront.QueryRoot>): QueryGraphCall
@@ -213,11 +204,12 @@ sealed class GraphError(message: String? = null, cause: Throwable? = null) : Exc
     /**
      * Error when HTTP response status code is not from {@code 200} series.
      */
-    class HttpError(rawResponse: Response) : GraphError(message = "HTTP(${rawResponse.code()}) ${rawResponse.message()}") {
+    class HttpError(rawResponse: Response) :
+        GraphError(message = "HTTP(${rawResponse.code}) ${rawResponse.message}") {
         /**
          * HTTP response status code.
          */
-        val statusCode = rawResponse.code()
+        val statusCode = rawResponse.code
     }
 
     /**

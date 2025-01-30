@@ -8,65 +8,20 @@
 
 The Mobile Buy SDK makes it easy to create custom storefronts in your mobile app. The SDK connects to the Shopify platform using GraphQL, and supports a wide range of native storefront experiences.
 
-## Table of contents
-
-- [Installation](#installation-)
-- [Getting started](#getting-started-)
-- [Code generation](#code-generation-)
-
-  - [Request models](#request-models-)
-  - [Response models](#response-models-)
-  - [The `Node` protocol](#the-node-protocol-)
-  - [Aliases](#aliases-)
-
-- [GraphClient](#graphclient-)
-
-  - [Queries](#queries-)
-  - [Mutations](#mutations-)
-  - [Retry and polling](#retry-)
-  - [Caching](#caching-)
-  - [Errors](#errors-)
-    - [GraphQL Error](#graphql-error-)
-    - [GraphError](#grapherror-)
-
-- [Search](#search-)
-
-  - [Fuzzy matching](#fuzzy-matching-)
-  - [Field matching](#field-matching-)
-  - [Negating field matching](#negating-field-matching-)
-  - [Boolean operators](#boolean-operators-)
-  - [Comparison operators](#comparison-operators-)
-  - [Exists operator](#exists-operator-)
-
-- [Case studies](#case-studies-)
-
-  - [Fetch shop](#fetch-shop-)
-  - [Fetch collections and products](#fetch-collections-and-products-)
-  - [Pagination](#pagination-)
-  - [Fetch product details](#fetch-product-details-)
-  - [Customer Accounts](#customer-accounts-)
-    - [Creating a customer](#creating-a-customer-)
-    - [Customer login](#customer-login-)
-    - [Password reset](#password-reset-)
-    - [Create, update and delete address](#create-update-and-delete-address-)
-    - [Customer information](#customer-information-)
-    - [Customer Addresses](#customer-addresses-)
-    - [Customer Orders](#customer-orders-)
-    - [Customer Update](#customer-update-)
-
-- [Sample application](#sample-application-)
-- [Contributions](#contributions-)
-- [Help](#help-)
-- [License](#license-)
-
-## Installation [⤴](#table-of-contents)
+## Installation
 
 Mobile Buy SDK for Android is represented by runtime module that provides support to build and execute GraphQL queries.
+
+### Versioning
+
+As of the `2025.1.0` release, the Mobile Buy SDK now uses a modified [CalVer](https://calver.org/) versioning scheme. This was done to align with the quarterly Storefront GraphQL API releases and bring clarity to what version a library release corresponds to.
+
+The format is `yyyy.mm.patch`, where the first two components match the API version, and the last component corresponds to non-breaking bug fixes within an API version cycle. In practice, this means that unlike SemVer, there may be breaking GraphQL schema changes between "minor" versions. Learn more about API [release schedules](https://shopify.dev/api/usage/versioning#release-schedule) at Shopify.
 
 ##### Gradle:
 
 ```gradle
-implementation 'com.shopify.mobilebuysdk:buy3:3.2.3'
+implementation 'com.shopify.mobilebuysdk:buy3:x.x.x'
 ```
 
 ##### or Maven:
@@ -75,27 +30,21 @@ implementation 'com.shopify.mobilebuysdk:buy3:3.2.3'
 <dependency>
   <groupId>com.shopify.mobilebuysdk</groupId>
   <artifactId>buy3</artifactId>
-  <version>3.2.3</version>
+  <version>x.x.x</version>
 </dependency>
 ```
 
-## Getting started [⤴](#table-of-contents)
+## Getting started
 
 The Buy SDK is built on [GraphQL](http://graphql.org/). The SDK handles all the query generation and response parsing, exposing only typed models and compile-time checked query structures. It doesn't require you to write stringed queries, or parse JSON responses.
 
 You don't need to be an expert in GraphQL to start using it with the Buy SDK (but it helps if you've used it before). The sections below provide a brief introduction to this system, and some examples of how you can use it to build secure custom storefronts.
 
-## Migration from SDK v2.0 [⤴](#table-of-contents)
+## Code Generation
 
-The previous version of the Mobile SDK (version 2.0) is based on a REST API. With version 3.0, Shopify is migrating from REST to GraphQL.
+The Buy SDK is built on a hierarchy of generated classes that construct and parse GraphQL queries and response. These classes are generated manually by running a custom Ruby script. Most of the generation functionality and supporting classes live inside the library. It works by downloading the GraphQL schema, generating Java class hierarchy, and saving the generated files to the specified folder path. In addition, it provides overrides for custom GraphQL scalar types like `Date`.
 
-Unfortunately, the specifics of generation GraphQL models make it almost impossible to create a migration path from v2.0 to v3.0 (domains models are not backward compatible). However, the main concepts are the same across the two versions, such as collections, products, checkouts, and orders.
-
-## Code Generation [⤴](#table-of-contents)
-
-The Buy SDK is built on a hierarchy of generated classes that construct and parse GraphQL queries and response. These classes are generated manually by running a custom Ruby script that relies on the [GraphQL Java Generation](https://github.com/Shopify/graphql_java_gen) library. Most of the generation functionality and supporting classes live inside the library. It works by downloading the GraphQL schema, generating Java class hierarchy, and saving the generated files to the specified folder path. In addition, it provides overrides for custom GraphQL scalar types like `DateTime`.
-
-### Request Models [⤴](#table-of-contents)
+### Request Models
 
 All generated request models are represented by interfaces with one method `define` that takes single argument, generated query builder. Every query starts with generated `Storefront.QueryRootQueryDefinition` interface that defines the root of your query.
 
@@ -141,7 +90,7 @@ query {
 }
 ```
 
-### Response models [⤴](#table-of-contents)
+### Response models
 
 All generated response models are derived from the `AbstractResponse` type. This abstract class provides a similar key-value type interface to a `Map` for accessing field values in GraphQL responses. You should never use these accessors directly, and instead rely on typed, derived properties in generated subclasses.
 
@@ -168,7 +117,7 @@ String name = (String) shop.get("name");
 
 Again, both of the approaches produce the same result, but the former case is safe and requires no casting since it already knows about the expected type.
 
-### The `Node` protocol [⤴](#table-of-contents)
+### The `Node` protocol
 
 GraphQL schema defines a `Node` interface that declares an `id` field on any conforming type. This makes it convenient to query for any object in the schema given only its `id`. The concept is carried across to the Buy SDK as well, but requires a cast to the correct type. You need to make sure that the `Node` type is of the correct type, otherwise casting to an incorrect type will return a runtime exception.
 
@@ -197,7 +146,7 @@ Storefront.QueryRoot response = ...;
 String title = ((Storefront.Product)response.getNode()).getTitle();
 ```
 
-#### Aliases [⤴](#table-of-contents)
+#### Aliases
 
 Aliases are useful when a single query requests multiple fields with the same names at the same nesting level, since GraphQL allows only unique field names. Multiple nodes can be queried by using a unique alias for each one:
 
@@ -238,29 +187,25 @@ Storefront.Product product = (Storefront.Product) response.withAlias("product").
 
 Learn more about [GraphQL aliases](http://graphql.org/learn/queries/#aliases).
 
-## GraphClient [⤴](#table-of-contents)
+## GraphClient
 
 The `GraphClient` is a network layer built on top of Square's [**OkHttp**](https://github.com/square/okhttp/) client that prepares `GraphCall` to execute `query` and `mutation` requests. It also simplifies polling and retrying requests. To get started with `GraphClient`, you need the following:
 
 - Your shop's `.myshopify.com` domain
 - Your API key, which you can find in your shop's admin
 - `OkHttpClient` (optional), if you want to customize the configuration used for network requests or share your existing `OkHttpClient` with the `GraphClient`
-- Settings for HTTP cache (optional), like the path to the cache folder and maximum allowed size in bytes
-- HTTP cache policy (optional), to be used as default for all GraphQL **query** operations (it be ignored for mutation operations, which aren't supported). By default, the HTTP cache policy is set to `NETWORK_ONLY`.
 
 ```java
 GraphClient.builder(this)
   .shopDomain(BuildConfig.SHOP_DOMAIN)
   .accessToken(BuildConfig.API_KEY)
   .httpClient(httpClient) // optional
-  .httpCache(new File(getApplicationContext().getCacheDir(), "/http"), 10 * 1024 * 1024) // 10mb for http cache
-  .defaultHttpCachePolicy(HttpCachePolicy.CACHE_FIRST.expireAfter(5, TimeUnit.MINUTES)) // cached response valid by default for 5 minutes
   .build()
 ```
 
 GraphQL specifies two types of operations: queries and mutations. The `GraphClient` exposes these as two type-safe operations, while also offering some conveniences for retrying and polling in each.
 
-### Queries [⤴](#table-of-contents)
+### Queries
 
 Semantically, a GraphQL `query` operation is equivalent to a `GET` RESTful call. It guarantees that no resources will be mutated on the server. With `GraphClient`, you can perform a query operation using:
 
@@ -300,7 +245,7 @@ call.enqueue(new GraphCall.Callback<Storefront.QueryRoot>() {
 
 Learn more about [GraphQL queries](http://graphql.org/learn/queries/).
 
-### Mutations [⤴](#table-of-contents)
+### Mutations
 
 Semantically a GraphQL `mutation` operation is equivalent to a `PUT`, `POST` or `DELETE` RESTful call. A mutation is almost always accompanied by an input that represents values to be updated and a query to fetch fields of the updated resource. You can think of a `mutation` as a two-step operation where the resource is first modified, and then queried using the provided `query`. The second half of the operation is identical to a regular `query` request.
 
@@ -360,7 +305,7 @@ A mutation will often rely on some kind of user input. Although you should alway
 
 Learn more about [GraphQL mutations](http://graphql.org/learn/queries/#mutations).
 
-### Retry [⤴](#table-of-contents)
+### Retry
 
 Both `QueryGraphCall` and `MutationGraphCall` have an `enqueue` function that accepts `RetryHandler`. This object encapsulates the retry state and customization parameters for how the `GraphCall` will retry subsequent requests (such as after a delay, or a number of retries).
 
@@ -395,52 +340,14 @@ call.enqueue(new GraphCall.Callback<Storefront.QueryRoot>() {
 
 The retry handler is generic, and can handle both `QueryGraphCall` and `MutationGraphCall` requests equally well.
 
-### Caching [⤴](#table-of-contents)
-
-Network queries and mutations can be both slow and expensive. For resources that change infrequently, you might want to use caching to help reduce both bandwidth and latency. Since GraphQL relies on `POST` requests, we can't easily take advantage of the HTTP caching that's available in `OkHttp`. For this reason, the `GraphClient` is equipped with an opt-in caching layer that can be enabled client-wide or on a per-request basis.
-
-**IMPORTANT:** Caching is provided only for `query` operations. It isn't available for `mutation` operations.
-
-There are four available cache policies `HttpCachePolicy`:
-
-- `CACHE_ONLY` - Fetch a response from the cache only, ignoring the network. If the cached response doesn't exist or is expired, then return an error.
-- `NETWORK_ONLY` - Fetch a response from the network only, ignoring any cached responses.
-- `CACHE_FIRST` - Fetch a response from the cache first. If the response doesn't exist or is expired, then fetch a response from the network.
-- `NETWORK_FIRST` - Fetch a response from the network first. If the network fails and the cached response isn't expired, then return cached data instead.
-
-For `CACHE_ONLY`, `CACHE_FIRST` and `NETWORK_FIRST` policies you can define the timeout after what cached response is treated as expired and will be evicted from the http cache, `expireAfter(expireTimeout, timeUnit)`.
-
-#### Enable client-wide caching
-
-You can enable client-wide caching by providing a default `defaultHttpCachePolicy` for any instance of `GraphClient`. This sets all `query` operations to use your default cache policy, unless you specify an alternate policy for an individual request.
-
-In this example, we set the client's `defaultHttpCachePolicy` property to `CACHE_FIRST `:
-
-```java
-GraphClient.Builder builder = ...;
-builder.defaultHttpCachePolicy(HttpCachePolicy.CACHE_FIRST)
-```
-
-Now, all calls to `queryGraph` will yield a `QueryGraphCall` with a `CACHE_FIRST` cache policy.
-
-If you want to override a client-wide cache policy for an individual request, then specify an alternate cache policy as a parameter of `QueryGraphCall`:
-
-```java
-GraphClient client = ...;
-QueryGraphCall queryCall = client.queryGraph(query)
-  .cachePolicy(HttpCachePolicy.NETWORK_FIRST.expireAfter(5, TimeUnit.MINUTES))
-```
-
-In this example, the `queryCall` cache policy changes to `NETWORK_FIRST`, which means that the cached response will be valid for 5 minutes from the time the response is received.
-
-### Errors [⤴](#table-of-contents)
+### Errors
 
 There are two types of errors that you need to handle in the response callback:
 
 - `Error` returns a list of errors inside `GraphResponse`, which represent errors related to GraphQL query itself. These should be used for debugging purposes only.
 - `GraphError` represents more critical errors related to the GraphQL query execution and processing response.
 
-#### GraphQL Error [⤴](#table-of-contents)
+#### GraphQL Error
 
 The `GraphResponse` class represents a GraphQL response for either a `QueryGraphCall` or `MutationGraphCall` request. It can also contain a value for `Error`, which represents the current error state of the GraphQL query.
 
@@ -494,7 +401,7 @@ The following example shows a GraphQL error response:
 
 Learn more about [GraphQL errors](http://graphql.org/learn/validation/)
 
-#### GraphError [⤴](#table-of-contents)
+#### GraphError
 
 Errors for either a `QueryGraphCall` or `MutationGraphCall` request are defined by the hierarchy of the `GraphError` abstraction, which represents critical errors for query execution. These errors appear in the `GraphCall.Callback#onFailure` callback call. The error codes include:
 
@@ -535,7 +442,7 @@ call.enqueue(new GraphCall.Callback<Storefront.QueryRoot>() {
 
 ```
 
-## Search [⤴](#table-of-contents)
+## Search
 
 Some `Storefront` models accept search terms via the `query` parameter. For example, you can provide a `query` to search for collections that contain a specific search term in any of their fields.
 
@@ -560,11 +467,11 @@ Storefront.query(root -> root
 )
 ```
 
-#### Fuzzy matching [⤴](#table-of-contents)
+#### Fuzzy matching
 
 In the example above, the query is `shoes`. This will match collections that contain "shoes" in the description, title, and other fields. This is the simplest form of query. It provides fuzzy matching of search terms on all fields of a collection.
 
-#### Field matching [⤴](#table-of-contents)
+#### Field matching
 
 As an alternative to object-wide fuzzy matches, you can also specify individual fields to include in your search. For example, if you want to match collections of particular type, you can do so by specifying a field directly:
 
@@ -576,7 +483,7 @@ The format for specifying fields and search parameters is the following: `field:
 
 **IMPORTANT:** If you specify a field in a search (as in the example above), then the `search_term` will be an **exact match** instead of a fuzzy match. For example, based on the query above, a collection with the type `blue_runners` will not match the query for `runners`.
 
-#### Negating field matching [⤴](#table-of-contents)
+#### Negating field matching
 
 Each search field can also be negated. Building on the example above, if you want to match all collections that were **not** of the type `runners`, then you can append a `-` to the relevant field:
 
@@ -584,7 +491,7 @@ Each search field can also be negated. Building on the example above, if you wan
 .collections(arg -> arg.query("-collection_type:runners"), ...
 ```
 
-#### Boolean operators [⤴](#table-of-contents)
+#### Boolean operators
 
 In addition to single field searches, you can build more complex searches using boolean operators. They very much like ordinary SQL operators.
 
@@ -600,7 +507,7 @@ You can also group search terms:
 .products(arg -> arg.query("(tag:blue AND product_type:sneaker) OR tag:red"), ...
 ```
 
-#### Comparison operators [⤴](#table-of-contents)
+#### Comparison operators
 
 The search syntax also allows for comparing values that aren't exact matches. For example, you might want to get products that were updated only after a certain a date. You can do that as well:
 
@@ -620,7 +527,7 @@ The SDK supports the following comparison operators:
 
 **IMPORTANT:** `:=` is not a valid operator.
 
-#### Exists operator [⤴](#table-of-contents)
+#### Exists operator
 
 There is one special operator that can be used for checking `null` or empty values.
 
@@ -630,13 +537,13 @@ The following example shows how you can find products that don't have any tags. 
 .products(arg -> arg.query("-tag:*"), ...
 ```
 
-## Case studies [⤴](#table-of-contents)
+## Case studies
 
 Getting started with any SDK can be confusing. The purpose of this section is to explore all areas of the Buy SDK that may be necessary to build a custom storefront on Android and provide a solid starting point for your own implementation.
 
 In this section we're going to assume that you've [setup a client](#graphclient-) somewhere in your source code. While it's possible to have multiple instances of `GraphClient`, reusing a single instance offers many behind-the-scenes performance improvements.
 
-### Fetch shop [⤴](#table-of-contents)
+### Fetch shop
 
 Before you display products to the user, you typically need to obtain various metadata about your shop. This can be anything from a currency code to your shop's name:
 
@@ -683,7 +590,7 @@ query {
 }
 ```
 
-### Fetch collections and products [⤴](#table-of-contents)
+### Fetch collections and products
 
 In our custom storefront, we want to display collection with a preview of several products. With a conventional RESTful service, this would require one network call for collections and another network call for each collection in that array. This is often referred to as the `n + 1` problem.
 
@@ -764,7 +671,7 @@ Since it retrieves only a small subset of properties for each resource, this Gra
 
 But what if you need to get more than 10 products in each collection?
 
-### Pagination [⤴](#table-of-contents)
+### Pagination
 
 Although it might be convenient to assume that a single network request will suffice for loading all collections and products, in many cases a single request . The best practice is to paginate results. Since the Buy SDK is built on top of GraphQL, it inherits the concept of `edges` and `nodes`.
 
@@ -844,7 +751,7 @@ query {
 
 Since we know exactly what collection we want to fetch products for, we'll use the [`node` interface](#the-node-protocol-) to query the collection by `id`. You might notice that we're fetching a couple of additional fields and objects: `pageInfo` and `cursor`. We can then use a `cursor` of any product edge to fetch more products `before` it or `after` it. Likewise, the `pageInfo` object provides additional metadata about whether the next page (and potentially previous page) is available or not.
 
-### Fetch product details [⤴](#table-of-contents)
+### Fetch product details
 
 In our sample app we likely want to have a detailed product page with images, variants, and descriptions. Conventionally, we'd need multiple `REST` calls to fetch all the required information. But with Buy SDK, we can do it with a single query:
 
@@ -926,11 +833,11 @@ The corresponding GraphQL query looks like this:
 }
 ```
 
-## Customer Accounts [⤴](#table-of-contents)
+## Customer Accounts
 
 Using the Buy SDK, you can build custom storefronts that let your customers create accounts, browse previously completed orders, and manage their information. Since most customer-related actions modify states on the server, they are performed using various `mutation` requests. Let's take a look at a few examples.
 
-### Creating a customer [⤴](#table-of-contents)
+### Creating a customer
 
 Before a customer can log in, they must first create an account. In your application, you can provide a sign-up form that runs the following `mutation` request. In this example, the `input` for the mutation is some basic customer information that will create an account on your shop.
 
@@ -959,7 +866,7 @@ Storefront.MutationQuery mutationQuery = Storefront.mutation(mutation -> mutatio
 
 Keep in mind that this mutation returns a `Storefront.Customer` object, **not** an access token. After a successful mutation, the customer will still be required to [log in using their credentials](#customer-login-).
 
-### Customer login [⤴](#table-of-contents)
+### Customer login
 
 Any customer who has an account can log in to your shop. All log-in operations are `mutation` requests that exchange customer credentials for an access token. You can log in your customers using the `customerAccessTokenCreate` mutation. Keep in mind that the return access token will eventually expire. The expiry `Date` is provided by the `expiresAt` property of the returned payload.
 
@@ -983,7 +890,7 @@ Optionally, you can refresh the custom access token periodically using the `cust
 
 **IMPORTANT:** It is your responsibility to securely store the customer access token.
 
-### Password reset [⤴](#table-of-contents)
+### Password reset
 
 Occasionally, a customer might forget their account password. The SDK provides a way for your application to reset a customer's password. A minimalistic implementation can simply call the recover mutation, at which point the customer will receive an email with instructions on how to reset their password in a web browser.
 
@@ -1000,7 +907,7 @@ Storefront.MutationQuery mutationQuery = Storefront.mutation(mutation -> mutatio
 );
 ```
 
-### Create, update, and delete address [⤴](#table-of-contents)
+### Create, update, and delete address
 
 You can create, update, and delete addresses on the customer's behalf using the appropriate `mutation`. Keep in mind that these mutations require customer authentication. Each query requires a customer access token as a parameter to perform the mutation.
 
@@ -1034,7 +941,7 @@ Storefront.MutationQuery mutationQuery = Storefront.mutation(mutation -> mutatio
 );
 ```
 
-### Customer information [⤴](#table-of-contents)
+### Customer information
 
 Up to this point, our interaction with customer information has been through `mutation` requests. At some point, we'll also need to show the customer their information. We can do this using customer `query` operations.
 
@@ -1052,7 +959,7 @@ Storefront.QueryRootQuery query = Storefront.query(root -> root
 );
 ```
 
-#### Customer Addresses [⤴](#table-of-contents)
+#### Customer Addresses
 
 You can obtain the addresses associated with the customer's account:
 
@@ -1076,7 +983,7 @@ Storefront.QueryRootQuery query = Storefront.query(root -> root
 );
 ```
 
-#### Customer Orders [⤴](#table-of-contents)
+#### Customer Orders
 
 You can also obtain a customer's order history:
 
@@ -1097,7 +1004,7 @@ Storefront.QueryRootQuery query = Storefront.query(root -> root
 );
 ```
 
-#### Customer Update [⤴](#table-of-contents)
+#### Customer Update
 
 Input objects, like `Storefront.CustomerUpdateInput`, use `Input<T>` (where `T` is the type of value) to represent optional fields and distinguish `null` values from `undefined` values (eg. phone: `Input<String>`).
 
@@ -1144,18 +1051,18 @@ mutation {
 }
 ```
 
-## Sample application [⤴](#table-of-contents)
+## Sample application
 
 To help get started, have a look at the [Storefront Sample android app](https://github.com/Shopify/mobile-buy-android-sample). It covers the most common use cases of the SDK and how to integrate with it. You can also use the [Storefront sample android app](https://github.com/Shopify/mobile-buy-android-sample) as a template, a starting point, or a place to cherrypick components as needed. Check out the [sample app's readme](https://github.com/Shopify/mobile-buy-android-sample) for more details.
 
-## Contributions [⤴](#table-of-contents)
+## Contributions
 
 We welcome contributions. Please follow the steps in our [contributing guidelines](CONTRIBUTING.md).
 
-## Help [⤴](#table-of-contents)
+## Help
 
 For help, see the [Android Buy SDK documentation](https://help.shopify.com/en/api/storefront-api/tools/android-buy-sdk) or post questions on [our forum](https://ecommerce.shopify.com/c/shopify-apis-and-technology), in `Shopify APIs & SDKs` section.
 
-## License [⤴](#table-of-contents)
+## License
 
 The Mobile Buy SDK is provided under an [MIT License](LICENSE).

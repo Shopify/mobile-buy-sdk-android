@@ -1,0 +1,431 @@
+// Generated from <%= script_name %>
+
+package <%= package_name %>;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.shopify.graphql.support.AbstractResponse;
+import com.shopify.graphql.support.Arguments;
+import com.shopify.graphql.support.Directive;
+import com.shopify.graphql.support.Error;
+import com.shopify.graphql.support.Query;
+import com.shopify.graphql.support.SchemaViolationError;
+import com.shopify.graphql.support.TopLevelResponse;
+import com.shopify.graphql.support.Input;
+<% imports.each do |import| %>
+  import <%= import %>;
+<% end %>
+
+import java.io.Serializable;
+import java.util.*;
+
+public class <%= schema_name %> {
+    public static final String API_VERSION = "<%= version %>";
+
+    <% [[:query, schema.query_root_name], [:mutation, schema.mutation_root_name]].each do |operation_type, root_name| %>
+        <% next unless root_name %>
+        public static <%= root_name %>Query <%= operation_type %>(<%= root_name %>QueryDefinition queryDef) {
+            return <%= operation_type %>(Collections.emptyList(), queryDef);
+        }
+
+        public static <%= root_name %>Query <%= operation_type %>(List<Directive> directives, <%= root_name %>QueryDefinition queryDef) {
+          StringBuilder queryString = new StringBuilder("<%= operation_type %>");
+          for (Directive directive : directives) {
+            queryString.append(" " + directive.toString());
+          }
+          queryString.append(" {");
+          <%= root_name %>Query query = new <%= root_name %>Query(queryString);
+          queryDef.define(query);
+          queryString.append('}');
+          return query;
+        }
+
+        public static class <%= operation_type.capitalize %>Response {
+            private TopLevelResponse response;
+            private <%= root_name %> data;
+
+            public <%= operation_type.capitalize %>Response(TopLevelResponse response) throws SchemaViolationError {
+                this.response = response;
+                this.data = response.getData() != null ? new <%= root_name %>(response.getData()) : null;
+            }
+
+            public <%= root_name %> getData() {
+                return data;
+            }
+
+            public List<Error> getErrors() {
+                return response.getErrors();
+            }
+
+            public String toJson() {
+                return new Gson().toJson(response);
+            }
+
+            public String prettyPrintJson() {
+              final Gson gson = new GsonBuilder().setPrettyPrinting().create();
+              return gson.toJson(response);
+            }
+
+            public static <%= operation_type.capitalize %>Response fromJson(String json) throws SchemaViolationError {
+                final TopLevelResponse response = new Gson().fromJson(json, TopLevelResponse.class);
+                return new <%= operation_type.capitalize %>Response(response);
+            }
+        }
+    <% end %>
+
+    <% schema.directives.select { |directive| !(directive.locations & %w{QUERY MUTATION}).empty? }.each do |directive| %>
+      <%= java_doc(directive) %>
+      public static class <%= directive.classify_name %>Directive extends Directive {
+        <% directive.args.each do |arg| %>
+          public <%= java_input_type(arg.type) %> <%= escape_reserved_word(arg.camelize_name) %>;
+        <% end %>
+
+        public <%= directive.classify_name %>Directive(<%= java_directive_required_arg_defs(directive) %>) {
+          super("<%= directive.name %>");
+        }
+
+        <% unless directive.args.empty? %>
+          @Override
+          public String toString() {
+            StringBuilder _queryBuilder = new StringBuilder(super.toString());
+            _queryBuilder.append("(");
+            <% first_arg = true %>
+            <% directive.args.each do |arg| %>
+              if (<%= escape_reserved_word(arg.camelize_name) %> != null) {
+                <% unless first_arg %>_queryBuilder.append(", ");<% end %>
+                _queryBuilder.append("<%= arg.name %>:");
+                <%= generate_build_input_code(escape_reserved_word(arg.camelize_name), arg.type) %>
+              }
+              <% first_arg = false %>
+            <% end %>
+            _queryBuilder.append(")");
+            return _queryBuilder.toString();
+          }
+        <% end %>
+      }
+    <% end %>
+
+    <% schema.types.reject{ |type| skip_type?(type) }.each do |type| %>
+        <% case type.kind when 'OBJECT', 'INTERFACE', 'UNION' %>
+            <% fields = type.fields(include_deprecated: include_deprecated) || [] %>
+            public interface <%= type.name %>QueryDefinition {
+                void define(<%= type.name %>Query _queryBuilder);
+            }
+
+            <%= java_doc(type) %>
+            public static class <%= type.name %>Query extends Query<<%= type.name %>Query> {
+                <%= type.name %>Query(StringBuilder _queryBuilder) {
+                    super(_queryBuilder);
+                    <% if type.object? && type.implement?("Node") %>
+                        startField("id");
+                    <% end %>
+                    <% unless type.object? %>
+                        startField("__typename");
+                    <% end %>
+                }
+
+                <% fields.each do |field| %>
+                    <% next if field.name == "id" && type.object? && type.implement?("Node") %>
+                    <% unless field.optional_args.empty? %>
+                        public class <%= field.classify_name %>Arguments extends Arguments {
+                            <%= field.classify_name %>Arguments(StringBuilder _queryBuilder) {
+                                super(_queryBuilder, <%= !!field.required_args.empty? %>);
+                            }
+
+                            <% field.optional_args.each do |arg| %>
+                                <%= java_doc(arg) %>
+                                public <%= field.classify_name %>Arguments <%= escape_reserved_word(arg.camelize_name) %>(<%= java_input_type(arg.type) %> value) {
+                                    if (value != null) {
+                                        startArgument("<%= arg.name %>");
+                                        <%= generate_build_input_code('value', arg.type) %>
+                                    }
+                                    return this;
+                                }
+                            <% end %>
+                        }
+
+                        public interface <%= field.classify_name %>ArgumentsDefinition {
+                            void define(<%= field.classify_name %>Arguments args);
+                        }
+
+                        <%= java_doc(field) %>
+                        <%= field.deprecated? ? "@Deprecated\n" : '' -%>
+                        public <%= type.name %>Query <%= escape_reserved_word(field.camelize_name) %>(<%= java_arg_defs(field, skip_optional: true) %>) {
+                            return <%= escape_reserved_word(field.camelize_name) %>(<%= java_arg_expresions_with_empty_optional_args(field) %>);
+                        }
+                    <% end %>
+
+                    <%= java_doc(field) %>
+                    <%= field.deprecated? ? "@Deprecated\n" : '' -%>
+                    public <%= type.name %>Query <%= escape_reserved_word(field.camelize_name) %>(<%= java_arg_defs(field) %>) {
+                        startField("<%= field.name %>");
+                        <% unless field.args.empty? %>
+                            <% if field.required_args.empty? %>
+                                <%= field.classify_name %>Arguments args = new <%= field.classify_name %>Arguments(_queryBuilder);
+                                argsDef.define(args);
+                                <%= field.classify_name %>Arguments.end(args);
+                            <% else %>
+                                <% field.required_args.each_with_index do |arg, i| %>
+                                  _queryBuilder.append("<%= i == 0 ? "(" : "," %><%= arg.name %>:");
+                                  <%= generate_build_input_code(escape_reserved_word(arg.camelize_name), arg.type) %>
+                                <% end %>
+                                <% unless field.optional_args.empty? %>
+                                    argsDef.define(new <%= field.classify_name %>Arguments(_queryBuilder));
+                                <% end %>
+                                _queryBuilder.append(')');
+                            <% end %>
+                        <% end %>
+                        <% if field.subfields? %>
+                            _queryBuilder.append('{');
+                            queryDef.define(new <%= field.type.unwrap.name %>Query(_queryBuilder));
+                            _queryBuilder.append('}');
+                        <% end %>
+                        return this;
+                    }
+                <% end %>
+                <% unless type.object? %>
+                    <% type.possible_types.each do |possible_type| %>
+                        public <%= type.name %>Query on<%= possible_type.name %>(<%= possible_type.name %>QueryDefinition queryDef) {
+                            startInlineFragment("<%= possible_type.name %>");
+                            queryDef.define(new <%= possible_type.name %>Query(_queryBuilder));
+                            _queryBuilder.append('}');
+                            return this;
+                        }
+                    <% end %>
+                <% end %>
+
+                <% if schema.root_name?(type.name) %>
+                  public String toString() {
+                      return _queryBuilder.toString();
+                  }
+                <% end %>
+            }
+
+            <% unless type.object? %>
+                <% if type.name == 'Node' %>
+                  public interface <%= type.name %> extends com.shopify.graphql.support.Node {
+                <% else %>
+                  public interface <%= type.name %> {
+                <% end %>
+                    String getGraphQlTypeName();
+                    <% fields.each do |field| %>
+                        <%= java_output_type(field.type) %> get<%= field.classify_name %>();
+                    <% end %>
+                }
+            <% end %>
+
+            <% class_name = type.object? ? type.name : "Unknown#{type.name}" %>
+            <%= java_doc(type) %>
+            public static class <%= class_name %> extends AbstractResponse<<%= class_name %>> <%= java_implements(type) %>{
+                public <%= class_name %>() {
+                }
+
+                public <%= class_name %>(JsonObject fields) throws SchemaViolationError {
+                  for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                    String key = field.getKey();
+                    String fieldName = getFieldName(key);
+                    switch (fieldName) {
+                      <% fields.each do |field| %>
+                        case "<%= field.name %>": {
+                          <% generate_build_output_code("field.getValue()", field.type) do |statements, expr| %>
+                            <%= statements %>
+                            responseData.put(key, <%= expr %>);
+                          <% end %>
+                          break;
+                        }
+                      <% end %>
+                      case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                      }
+                      default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                      }
+                    }
+                  }
+                }
+
+                <% if type.object? && type.implement?("Node") %>
+                    public <%= class_name %>(<%= scalars['ID'].non_nullable_type %> id) {
+                      this();
+                      optimisticData.put("id", id);
+                    }
+                <% end %>
+
+                <% if type.object? %>
+                    public String getGraphQlTypeName() {
+                        return "<%= type.name %>";
+                    }
+                <% else %>
+                    public static <%= type.name %> create(JsonObject fields) throws SchemaViolationError {
+                        String typeName = fields.getAsJsonPrimitive("__typename").getAsString();
+                        switch (typeName) {
+                            <% type.possible_types.each do |possible_type| %>
+                                case "<%= possible_type.name %>": {
+                                    return new <%= possible_type.name %>(fields);
+                                }
+                            <% end %>
+                            default: {
+                                return new <%= class_name %>(fields);
+                            }
+                        }
+                    }
+
+                    public String getGraphQlTypeName() {
+                        return (String) get("__typename");
+                    }
+                <% end %>
+
+                <% fields.each do |field| %>
+                    <%= java_doc(field) %>
+                    <%= java_annotations(field) %>
+                    <%= field.deprecated? ? "@Deprecated\n" : '' -%>
+                    public <%= java_output_type(field.type) %> get<%= field.classify_name %>() {
+                      return (<%= java_output_type(field.type) %>) get("<%= field.name %>");
+                    }
+
+                    <% next if field.name == "id" && type.object? && type.implement?("Node") %>
+                    public <%= class_name %> set<%= field.classify_name %>(<%= java_output_type(field.type) %> arg) {
+                      optimisticData.put(getKey("<%= field.name %>"), arg);
+                      return this;
+                    }
+                <% end %>
+
+                  <% object_fields = fields.select { |f| f.type.unwrap.object? } %>
+                  <% unless object_fields.empty? %>
+                  @Override
+                  public boolean unwrapsToObject(String key) {
+                    switch (getFieldName(key)) {
+                      <% object_fields.each do |field| %>
+                        case "<%= field.name %>": return true;
+                      <% end %>
+                      default: return false;
+                    }
+                  }
+                  <% end %>
+            }
+        <% when 'INPUT_OBJECT' %>
+            public static class <%= type.name %> implements Serializable {
+                <% type.required_input_fields.each do |field| %>
+                  private <%= java_input_type(field.type) %> <%= escape_reserved_word(field.camelize_name) %>;
+                <% end %>
+                <% type.optional_input_fields.each do |field| %>
+                  private Input<<%= java_input_type(field.type) %>> <%= escape_reserved_word(field.camelize_name) %> = Input.undefined();
+                <% end %>
+
+                <% unless type.required_input_fields.empty? %>
+                  public <%= type.name %>(<%= type.required_input_fields.map{ |field| "#{java_input_type(field.type)} #{escape_reserved_word(field.camelize_name)}" }.join(', ') %>) {
+                      <% type.required_input_fields.each do |field| %>
+                          this.<%= escape_reserved_word(field.camelize_name) %> = <%= escape_reserved_word(field.camelize_name) %>;
+                      <% end %>
+                  }
+                <% end %>
+
+                <% type.required_input_fields.each do |field| %>
+                  <%= java_annotations(field) %>
+                  public <%= java_input_type(field.type) %> get<%= field.classify_name %>() {
+                      return <%= escape_reserved_word(field.camelize_name) %>;
+                  }
+
+                  public <%= type.name %> set<%= field.classify_name %>(<%= java_annotations(field, in_argument: true) %><%= java_input_type(field.type) %> <%= escape_reserved_word(field.camelize_name) %>) {
+                      this.<%= escape_reserved_word(field.camelize_name) %> = <%= escape_reserved_word(field.camelize_name) %>;
+                      return this;
+                  }
+
+                <% end %>
+                <% type.optional_input_fields.each do |field| %>
+                  <%= java_annotations(field) %>
+                  public <%= java_input_type(field.type) %> get<%= field.classify_name %>() {
+                      return <%= escape_reserved_word(field.camelize_name) %>.getValue();
+                  }
+
+                  public Input<<%= java_input_type(field.type) %>> get<%= field.classify_name %>Input() {
+                      return <%= escape_reserved_word(field.camelize_name) %>;
+                  }
+
+                  public <%= type.name %> set<%= field.classify_name %>(<%= java_annotations(field, in_argument: true) %><%= java_input_type(field.type) %> <%= escape_reserved_word(field.camelize_name) %>) {
+                      this.<%= escape_reserved_word(field.camelize_name) %> = Input.optional(<%= escape_reserved_word(field.camelize_name) %>);
+                      return this;
+                  }
+
+                  public <%= type.name %> set<%= field.classify_name %>Input(Input<<%= java_input_type(field.type) %>> <%= escape_reserved_word(field.camelize_name) %>) {
+                      if (<%= escape_reserved_word(field.camelize_name) %> == null) {
+                          throw new IllegalArgumentException("Input can not be null");
+                      }
+                      this.<%= escape_reserved_word(field.camelize_name) %> = <%= escape_reserved_word(field.camelize_name) %>;
+                      return this;
+                  }
+
+                <% end %>
+
+                public void appendTo(StringBuilder _queryBuilder) {
+                  String separator = "";
+                  _queryBuilder.append('{');
+                  <% type.required_input_fields.each do |field| %>
+                    _queryBuilder.append(separator);
+                    separator = ",";
+                    _queryBuilder.append("<%= field.name %>:");
+                    <%= generate_build_input_code(escape_reserved_word(field.camelize_name), field.type) %>
+                  <% end %>
+                  <% type.optional_input_fields.each do |field| %>
+                    if (this.<%= escape_reserved_word(field.camelize_name) %>.isDefined()) {
+                      _queryBuilder.append(separator);
+                      separator = ",";
+                      _queryBuilder.append("<%= field.name %>:");
+                      if (<%= escape_reserved_word(field.camelize_name) %>.getValue() != null) {
+                        <%= generate_build_input_code(escape_reserved_word(field.camelize_name).concat(".getValue()"), field.type) %>
+                      } else {
+                        _queryBuilder.append("null");
+                      }
+                    }
+                  <% end %>
+                  _queryBuilder.append('}');
+                }
+            }
+        <% when 'ENUM' %>
+            <%= java_doc(type) %>
+            public enum <%= type.name %> {
+              <% type.enum_values(include_deprecated: include_deprecated).each do |value| %>
+                <%= java_doc(value) %>
+                <%= value.deprecated? ? "@Deprecated\n" : '' -%>
+                <%= value.upcase_name %>,
+              <% end %>
+
+              UNKNOWN_VALUE;
+
+              public static <%= type.name %> fromGraphQl(String value) {
+                if (value == null) {
+                  return null;
+                }
+
+                switch (value) {
+                  <% type.enum_values.each do |value| %>
+                    case "<%= value.name %>": {
+                      return <%= value.upcase_name %>;
+                    }
+                  <% end %>
+                    default: {
+                      return UNKNOWN_VALUE;
+                    }
+                }
+              }
+              public String toString() {
+                switch (this) {
+                  <% type.enum_values.each do |value| %>
+                    case <%= value.upcase_name %>: {
+                      return "<%= value.name %>";
+                    }
+                  <% end %>
+                    default: {
+                      return "";
+                    }
+                }
+              }
+            }
+        <% else %>
+            <% raise NotImplementedError, "unhandled #{type.kind} type #{type.name}" %>
+        <% end %>
+    <% end %>
+}
