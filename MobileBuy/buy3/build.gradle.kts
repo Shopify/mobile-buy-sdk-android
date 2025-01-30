@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    signing
     `maven-publish`
 }
 
@@ -77,9 +78,48 @@ publishing {
             groupId = "com.shopify.mobilebuysdk"
             artifactId = "buy3"
 
+            pom {
+                name = "Mobile Buy SDK"
+                url = "https://github.com/Shopify/mobile-buy-sdk-android.git"
+                developers {
+                    developer {
+                        name = "Shopify Inc."
+                    }
+                }
+            }
+
             afterEvaluate {
                 from(components["release"])
             }
         }
     }
+    repositories {
+        maven {
+            name = "Staging"
+
+            url = uri("https://oss.sonatype.org/service/local/staging/deploy/maven2/")
+
+            val ossrhUsername: String? by project
+            val ossrhPassword: String? by project
+
+            credentials {
+                username = ossrhUsername
+                password = ossrhPassword
+            }
+       }
+    }
+}
+
+signing {
+    setRequired({
+        gradle.taskGraph.hasTask("publish")
+    })
+
+    val signingKeyId: String? by project
+    val signingKey: String? by project
+    val signingPassword: String? by project
+
+    useInMemoryPgpKeys(signingKeyId, signingKey, signingPassword)
+
+    sign(publishing.publications["release"])
 }
