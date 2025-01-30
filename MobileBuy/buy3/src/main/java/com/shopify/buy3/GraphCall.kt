@@ -35,7 +35,7 @@ typealias GraphCallResultCallback<T> = (result: GraphCallResult<T>) -> Unit
 
 /**
  *
- * A call to the `GraphQL` server.okhttp
+ * A call to the `GraphQL` server.
  *
  * Represents `GraphQL` operation request that has been prepared for execution. Since this class represents a single
  * request/response pair, it can't be executed twice. To execute the request again, use the [GraphCall.clone] method which
