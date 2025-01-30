@@ -1,0 +1,111 @@
+// Generated from <%= script_name %>
+
+package <%= package_name %>;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.shopify.graphql.support.AbstractResponse;
+import com.shopify.graphql.support.Arguments;
+import com.shopify.graphql.support.Error;
+import com.shopify.graphql.support.Query;
+import com.shopify.graphql.support.SchemaViolationError;
+import com.shopify.graphql.support.TopLevelResponse;
+import com.shopify.graphql.support.Input;
+<% imports.each do |import| %>
+  import <%= import %>;
+<% end %>
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+            <% fields = type.fields(include_deprecated: include_deprecated) || [] %>
+            <% class_name = type.object? ? type.name : "Unknown#{type.name}" %>
+            <%= java_doc(type) %>
+            public class <%= class_name %> extends AbstractResponse<<%= class_name %>> <%= java_implements(type) %>{
+                public <%= class_name %>() {
+                }
+
+                public <%= class_name %>(JsonObject fields) throws SchemaViolationError {
+                  for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                    String key = field.getKey();
+                    String fieldName = getFieldName(key);
+                    switch (fieldName) {
+                      <% fields.each do |field| %>
+                        case "<%= field.name %>": {
+                          <% generate_build_output_code("field.getValue()", field.type) do |statements, expr| %>
+                            <%= statements %>
+                            responseData.put(key, <%= expr %>);
+                          <% end %>
+                          break;
+                        }
+                      <% end %>
+                      case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                      }
+                      default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                      }
+                    }
+                  }
+                }
+
+                <% if type.object? && type.implement?("Node") %>
+                    public <%= class_name %>(<%= scalars['ID'].non_nullable_type %> id) {
+                      this();
+                      optimisticData.put("id", id);
+                    }
+                <% end %>
+
+                <% if type.object? %>
+                    public String getGraphQlTypeName() {
+                        return "<%= type.name %>";
+                    }
+                <% else %>
+                    public static <%= type.name %> create(JsonObject fields) throws SchemaViolationError {
+                        String typeName = fields.getAsJsonPrimitive("__typename").getAsString();
+                        switch (typeName) {
+                            <% type.possible_types.each do |possible_type| %>
+                                case "<%= possible_type.name %>": {
+                                    return new <%= possible_type.name %>(fields);
+                                }
+                            <% end %>
+                            default: {
+                                return new <%= class_name %>(fields);
+                            }
+                        }
+                    }
+
+                    public String getGraphQlTypeName() {
+                        return (String) get("__typename");
+                    }
+                <% end %>
+
+                <% fields.each do |field| %>
+                    <%= java_doc(field) %>
+                    <%= java_annotations(field) %>
+                    <%= field.deprecated? ? "@Deprecated\n" : '' -%>
+                    public <%= java_output_type(field.type) %> get<%= field.classify_name %>() {
+                      return (<%= java_output_type(field.type) %>) get("<%= field.name %>");
+                    }
+
+                    <% next if field.name == "id" && type.object? && type.implement?("Node") %>
+                    public <%= class_name %> set<%= field.classify_name %>(<%= java_output_type(field.type) %> arg) {
+                      optimisticData.put(getKey("<%= field.name %>"), arg);
+                      return this;
+                    }
+                <% end %>
+
+                  public boolean unwrapsToObject(String key) {
+                    switch (getFieldName(key)) {
+                      <% fields.each do |field| %>
+                        case "<%= field.name %>": return <%= field.type.unwrap.object? %>;
+                      <% end %>
+                      default: return false;
+                    }
+                  }
+            }

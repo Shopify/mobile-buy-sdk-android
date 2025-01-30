@@ -987,7 +987,7 @@ public class Storefront {
             }
 
             /**
-            * Truncates string after the given length.
+            * Truncates a string after the given length.
             */
             public ContentArguments truncateAt(Integer value) {
                 if (value != null) {
@@ -1037,7 +1037,7 @@ public class Storefront {
             }
 
             /**
-            * Truncates string after the given length.
+            * Truncates a string after the given length.
             */
             public ExcerptArguments truncateAt(Integer value) {
                 if (value != null) {
@@ -1125,14 +1125,18 @@ public class Storefront {
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
         public ArticleQuery metafield(String key, MetafieldQueryDefinition queryDef) {
             return metafield(key, args -> {}, queryDef);
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
         public ArticleQuery metafield(String key, MetafieldArgumentsDefinition argsDef, MetafieldQueryDefinition queryDef) {
             startField("metafield");
@@ -1152,7 +1156,8 @@ public class Storefront {
         }
 
         /**
-        * The metafields associated with the resource matching the supplied list of namespaces and keys.
+        * A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify
+        * resource.
         */
         public ArticleQuery metafields(List<HasMetafieldsIdentifier> identifiers, MetafieldQueryDefinition queryDef) {
             startField("metafields");
@@ -1586,7 +1591,9 @@ public class Storefront {
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
 
         public Metafield getMetafield() {
@@ -1599,7 +1606,8 @@ public class Storefront {
         }
 
         /**
-        * The metafields associated with the resource matching the supplied list of namespaces and keys.
+        * A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify
+        * resource.
         */
 
         public List<Metafield> getMetafields() {
@@ -3594,14 +3602,18 @@ public class Storefront {
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
         public BlogQuery metafield(String key, MetafieldQueryDefinition queryDef) {
             return metafield(key, args -> {}, queryDef);
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
         public BlogQuery metafield(String key, MetafieldArgumentsDefinition argsDef, MetafieldQueryDefinition queryDef) {
             startField("metafield");
@@ -3621,7 +3633,8 @@ public class Storefront {
         }
 
         /**
-        * The metafields associated with the resource matching the supplied list of namespaces and keys.
+        * A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify
+        * resource.
         */
         public BlogQuery metafields(List<HasMetafieldsIdentifier> identifiers, MetafieldQueryDefinition queryDef) {
             startField("metafields");
@@ -3868,7 +3881,9 @@ public class Storefront {
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
 
         public Metafield getMetafield() {
@@ -3881,7 +3896,8 @@ public class Storefront {
         }
 
         /**
-        * The metafields associated with the resource matching the supplied list of namespaces and keys.
+        * A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify
+        * resource.
         */
 
         public List<Metafield> getMetafields() {
@@ -5362,14 +5378,18 @@ public class Storefront {
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
         public CartQuery metafield(String key, MetafieldQueryDefinition queryDef) {
             return metafield(key, args -> {}, queryDef);
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
         public CartQuery metafield(String key, MetafieldArgumentsDefinition argsDef, MetafieldQueryDefinition queryDef) {
             startField("metafield");
@@ -5389,7 +5409,8 @@ public class Storefront {
         }
 
         /**
-        * The metafields associated with the resource matching the supplied list of namespaces and keys.
+        * A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify
+        * resource.
         */
         public CartQuery metafields(List<HasMetafieldsIdentifier> identifiers, MetafieldQueryDefinition queryDef) {
             startField("metafields");
@@ -5807,7 +5828,9 @@ public class Storefront {
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
 
         public Metafield getMetafield() {
@@ -5820,7 +5843,8 @@ public class Storefront {
         }
 
         /**
-        * The metafields associated with the resource matching the supplied list of namespaces and keys.
+        * A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify
+        * resource.
         */
 
         public List<Metafield> getMetafields() {
@@ -6422,7 +6446,15 @@ public class Storefront {
         * An ordered set of delivery addresses tied to the buyer that is interacting with the cart.
         * The rank of the preferences is determined by the order of the addresses in the array. Preferences
         * can be used to populate relevant fields in the checkout flow.
+        * As of the `2025-01` release, `buyerIdentity.deliveryAddressPreferences` is deprecated.
+        * Delivery addresses are now part of the `CartDelivery` object and managed with three new mutations:
+        * - `cartDeliveryAddressAdd`
+        * - `cartDeliveryAddressUpdate`
+        * - `cartDeliveryAddressDelete`
+        *
+        * @deprecated Use `cart.delivery` instead.
         */
+        @Deprecated
         public CartBuyerIdentityQuery deliveryAddressPreferences(DeliveryAddressQueryDefinition queryDef) {
             startField("deliveryAddressPreferences");
 
@@ -6453,7 +6485,7 @@ public class Storefront {
 
         /**
         * A set of preferences tied to the buyer interacting with the cart. Preferences are used to prefill
-        * fields in at checkout to streamline information collection. 
+        * fields in at checkout to streamline information collection.
         * Preferences are not synced back to the cart if they are overwritten.
         */
         public CartBuyerIdentityQuery preferences(CartPreferencesQueryDefinition queryDef) {
@@ -6614,6 +6646,13 @@ public class Storefront {
         * An ordered set of delivery addresses tied to the buyer that is interacting with the cart.
         * The rank of the preferences is determined by the order of the addresses in the array. Preferences
         * can be used to populate relevant fields in the checkout flow.
+        * As of the `2025-01` release, `buyerIdentity.deliveryAddressPreferences` is deprecated.
+        * Delivery addresses are now part of the `CartDelivery` object and managed with three new mutations:
+        * - `cartDeliveryAddressAdd`
+        * - `cartDeliveryAddressUpdate`
+        * - `cartDeliveryAddressDelete`
+        *
+        * @deprecated Use `cart.delivery` instead.
         */
 
         public List<DeliveryAddress> getDeliveryAddressPreferences() {
@@ -6653,7 +6692,7 @@ public class Storefront {
 
         /**
         * A set of preferences tied to the buyer interacting with the cart. Preferences are used to prefill
-        * fields in at checkout to streamline information collection. 
+        * fields in at checkout to streamline information collection.
         * Preferences are not synced back to the cart if they are overwritten.
         */
 
@@ -8069,7 +8108,13 @@ public class Storefront {
 
         /**
         * The duty amount for the customer to pay at checkout.
+        *
+        * @deprecated Tax and duty amounts are no longer available and will be removed in a future version.
+        Please see [the changelog](https://shopify.dev/changelog/tax-and-duties-are-deprecated-in-storefront-cart-api)
+        for more information.
+
         */
+        @Deprecated
         public CartCostQuery totalDutyAmount(MoneyV2QueryDefinition queryDef) {
             startField("totalDutyAmount");
 
@@ -8082,7 +8127,13 @@ public class Storefront {
 
         /**
         * Whether the total duty amount is estimated.
+        *
+        * @deprecated Tax and duty amounts are no longer available and will be removed in a future version.
+        Please see [the changelog](https://shopify.dev/changelog/tax-and-duties-are-deprecated-in-storefront-cart-api)
+        for more information.
+
         */
+        @Deprecated
         public CartCostQuery totalDutyAmountEstimated() {
             startField("totalDutyAmountEstimated");
 
@@ -8091,7 +8142,13 @@ public class Storefront {
 
         /**
         * The tax amount for the customer to pay at checkout.
+        *
+        * @deprecated Tax and duty amounts are no longer available and will be removed in a future version.
+        Please see [the changelog](https://shopify.dev/changelog/tax-and-duties-are-deprecated-in-storefront-cart-api)
+        for more information.
+
         */
+        @Deprecated
         public CartCostQuery totalTaxAmount(MoneyV2QueryDefinition queryDef) {
             startField("totalTaxAmount");
 
@@ -8104,7 +8161,13 @@ public class Storefront {
 
         /**
         * Whether the total tax amount is estimated.
+        *
+        * @deprecated Tax and duty amounts are no longer available and will be removed in a future version.
+        Please see [the changelog](https://shopify.dev/changelog/tax-and-duties-are-deprecated-in-storefront-cart-api)
+        for more information.
+
         */
+        @Deprecated
         public CartCostQuery totalTaxAmountEstimated() {
             startField("totalTaxAmountEstimated");
 
@@ -8277,6 +8340,11 @@ public class Storefront {
 
         /**
         * The duty amount for the customer to pay at checkout.
+        *
+        * @deprecated Tax and duty amounts are no longer available and will be removed in a future version.
+        Please see [the changelog](https://shopify.dev/changelog/tax-and-duties-are-deprecated-in-storefront-cart-api)
+        for more information.
+
         */
 
         public MoneyV2 getTotalDutyAmount() {
@@ -8290,6 +8358,11 @@ public class Storefront {
 
         /**
         * Whether the total duty amount is estimated.
+        *
+        * @deprecated Tax and duty amounts are no longer available and will be removed in a future version.
+        Please see [the changelog](https://shopify.dev/changelog/tax-and-duties-are-deprecated-in-storefront-cart-api)
+        for more information.
+
         */
 
         public Boolean getTotalDutyAmountEstimated() {
@@ -8303,6 +8376,11 @@ public class Storefront {
 
         /**
         * The tax amount for the customer to pay at checkout.
+        *
+        * @deprecated Tax and duty amounts are no longer available and will be removed in a future version.
+        Please see [the changelog](https://shopify.dev/changelog/tax-and-duties-are-deprecated-in-storefront-cart-api)
+        for more information.
+
         */
 
         public MoneyV2 getTotalTaxAmount() {
@@ -8316,6 +8394,11 @@ public class Storefront {
 
         /**
         * Whether the total tax amount is estimated.
+        *
+        * @deprecated Tax and duty amounts are no longer available and will be removed in a future version.
+        Please see [the changelog](https://shopify.dev/changelog/tax-and-duties-are-deprecated-in-storefront-cart-api)
+        for more information.
+
         */
 
         public Boolean getTotalTaxAmountEstimated() {
@@ -15306,7 +15389,7 @@ public class Storefront {
             }
 
             /**
-            * Truncates string after the given length.
+            * Truncates a string after the given length.
             */
             public DescriptionArguments truncateAt(Integer value) {
                 if (value != null) {
@@ -15395,14 +15478,18 @@ public class Storefront {
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
         public CollectionQuery metafield(String key, MetafieldQueryDefinition queryDef) {
             return metafield(key, args -> {}, queryDef);
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
         public CollectionQuery metafield(String key, MetafieldArgumentsDefinition argsDef, MetafieldQueryDefinition queryDef) {
             startField("metafield");
@@ -15422,7 +15509,8 @@ public class Storefront {
         }
 
         /**
-        * The metafields associated with the resource matching the supplied list of namespaces and keys.
+        * A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify
+        * resource.
         */
         public CollectionQuery metafields(List<HasMetafieldsIdentifier> identifiers, MetafieldQueryDefinition queryDef) {
             startField("metafields");
@@ -15829,7 +15917,9 @@ public class Storefront {
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
 
         public Metafield getMetafield() {
@@ -15842,7 +15932,8 @@ public class Storefront {
         }
 
         /**
-        * The metafields associated with the resource matching the supplied list of namespaces and keys.
+        * A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify
+        * resource.
         */
 
         public List<Metafield> getMetafields() {
@@ -16384,7 +16475,7 @@ public class Storefront {
             }
 
             /**
-            * Truncates string after the given length.
+            * Truncates a string after the given length.
             */
             public ContentArguments truncateAt(Integer value) {
                 if (value != null) {
@@ -16979,14 +17070,18 @@ public class Storefront {
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
         public CompanyQuery metafield(String key, MetafieldQueryDefinition queryDef) {
             return metafield(key, args -> {}, queryDef);
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
         public CompanyQuery metafield(String key, MetafieldArgumentsDefinition argsDef, MetafieldQueryDefinition queryDef) {
             startField("metafield");
@@ -17006,7 +17101,8 @@ public class Storefront {
         }
 
         /**
-        * The metafields associated with the resource matching the supplied list of namespaces and keys.
+        * A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify
+        * resource.
         */
         public CompanyQuery metafields(List<HasMetafieldsIdentifier> identifiers, MetafieldQueryDefinition queryDef) {
             startField("metafields");
@@ -17182,7 +17278,9 @@ public class Storefront {
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
 
         public Metafield getMetafield() {
@@ -17195,7 +17293,8 @@ public class Storefront {
         }
 
         /**
-        * The metafields associated with the resource matching the supplied list of namespaces and keys.
+        * A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify
+        * resource.
         */
 
         public List<Metafield> getMetafields() {
@@ -17523,14 +17622,18 @@ public class Storefront {
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
         public CompanyLocationQuery metafield(String key, MetafieldQueryDefinition queryDef) {
             return metafield(key, args -> {}, queryDef);
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
         public CompanyLocationQuery metafield(String key, MetafieldArgumentsDefinition argsDef, MetafieldQueryDefinition queryDef) {
             startField("metafield");
@@ -17550,7 +17653,8 @@ public class Storefront {
         }
 
         /**
-        * The metafields associated with the resource matching the supplied list of namespaces and keys.
+        * A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify
+        * resource.
         */
         public CompanyLocationQuery metafields(List<HasMetafieldsIdentifier> identifiers, MetafieldQueryDefinition queryDef) {
             startField("metafields");
@@ -17750,7 +17854,9 @@ public class Storefront {
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
 
         public Metafield getMetafield() {
@@ -17763,7 +17869,8 @@ public class Storefront {
         }
 
         /**
-        * The metafields associated with the resource matching the supplied list of namespaces and keys.
+        * A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify
+        * resource.
         */
 
         public List<Metafield> getMetafields() {
@@ -18490,7 +18597,7 @@ public class Storefront {
         *
         * @deprecated Use `cost` instead.
         */
-        @Deprecated
+
         public CartLineEstimatedCost getEstimatedCost() {
             return (CartLineEstimatedCost) get("estimatedCost");
         }
@@ -24747,14 +24854,18 @@ public class Storefront {
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
         public CustomerQuery metafield(String key, MetafieldQueryDefinition queryDef) {
             return metafield(key, args -> {}, queryDef);
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
         public CustomerQuery metafield(String key, MetafieldArgumentsDefinition argsDef, MetafieldQueryDefinition queryDef) {
             startField("metafield");
@@ -24774,7 +24885,8 @@ public class Storefront {
         }
 
         /**
-        * The metafields associated with the resource matching the supplied list of namespaces and keys.
+        * A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify
+        * resource.
         */
         public CustomerQuery metafields(List<HasMetafieldsIdentifier> identifiers, MetafieldQueryDefinition queryDef) {
             startField("metafields");
@@ -25241,7 +25353,9 @@ public class Storefront {
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
 
         public Metafield getMetafield() {
@@ -25254,7 +25368,8 @@ public class Storefront {
         }
 
         /**
-        * The metafields associated with the resource matching the supplied list of namespaces and keys.
+        * A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify
+        * resource.
         */
 
         public List<Metafield> getMetafields() {
@@ -32804,14 +32919,18 @@ public class Storefront {
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
         public HasMetafieldsQuery metafield(String key, MetafieldQueryDefinition queryDef) {
             return metafield(key, args -> {}, queryDef);
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
         public HasMetafieldsQuery metafield(String key, MetafieldArgumentsDefinition argsDef, MetafieldQueryDefinition queryDef) {
             startField("metafield");
@@ -32831,7 +32950,8 @@ public class Storefront {
         }
 
         /**
-        * The metafields associated with the resource matching the supplied list of namespaces and keys.
+        * A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify
+        * resource.
         */
         public HasMetafieldsQuery metafields(List<HasMetafieldsIdentifier> identifiers, MetafieldQueryDefinition queryDef) {
             startField("metafields");
@@ -33095,7 +33215,9 @@ public class Storefront {
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
 
         public Metafield getMetafield() {
@@ -33108,7 +33230,8 @@ public class Storefront {
         }
 
         /**
-        * The metafields associated with the resource matching the supplied list of namespaces and keys.
+        * A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify
+        * resource.
         */
 
         public List<Metafield> getMetafields() {
@@ -36489,14 +36612,18 @@ public class Storefront {
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
         public LocationQuery metafield(String key, MetafieldQueryDefinition queryDef) {
             return metafield(key, args -> {}, queryDef);
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
         public LocationQuery metafield(String key, MetafieldArgumentsDefinition argsDef, MetafieldQueryDefinition queryDef) {
             startField("metafield");
@@ -36516,7 +36643,8 @@ public class Storefront {
         }
 
         /**
-        * The metafields associated with the resource matching the supplied list of namespaces and keys.
+        * A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify
+        * resource.
         */
         public LocationQuery metafields(List<HasMetafieldsIdentifier> identifiers, MetafieldQueryDefinition queryDef) {
             startField("metafields");
@@ -36651,7 +36779,9 @@ public class Storefront {
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
 
         public Metafield getMetafield() {
@@ -36664,7 +36794,8 @@ public class Storefront {
         }
 
         /**
-        * The metafields associated with the resource matching the supplied list of namespaces and keys.
+        * A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify
+        * resource.
         */
 
         public List<Metafield> getMetafields() {
@@ -39178,14 +39309,18 @@ public class Storefront {
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
         public MarketQuery metafield(String key, MetafieldQueryDefinition queryDef) {
             return metafield(key, args -> {}, queryDef);
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
         public MarketQuery metafield(String key, MetafieldArgumentsDefinition argsDef, MetafieldQueryDefinition queryDef) {
             startField("metafield");
@@ -39205,7 +39340,8 @@ public class Storefront {
         }
 
         /**
-        * The metafields associated with the resource matching the supplied list of namespaces and keys.
+        * A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify
+        * resource.
         */
         public MarketQuery metafields(List<HasMetafieldsIdentifier> identifiers, MetafieldQueryDefinition queryDef) {
             startField("metafields");
@@ -39326,7 +39462,9 @@ public class Storefront {
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
 
         public Metafield getMetafield() {
@@ -39339,7 +39477,8 @@ public class Storefront {
         }
 
         /**
-        * The metafields associated with the resource matching the supplied list of namespaces and keys.
+        * A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify
+        * resource.
         */
 
         public List<Metafield> getMetafields() {
@@ -47589,14 +47728,18 @@ public class Storefront {
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
         public OrderQuery metafield(String key, MetafieldQueryDefinition queryDef) {
             return metafield(key, args -> {}, queryDef);
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
         public OrderQuery metafield(String key, MetafieldArgumentsDefinition argsDef, MetafieldQueryDefinition queryDef) {
             startField("metafield");
@@ -47616,7 +47759,8 @@ public class Storefront {
         }
 
         /**
-        * The metafields associated with the resource matching the supplied list of namespaces and keys.
+        * A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify
+        * resource.
         */
         public OrderQuery metafields(List<HasMetafieldsIdentifier> identifiers, MetafieldQueryDefinition queryDef) {
             startField("metafields");
@@ -48573,7 +48717,9 @@ public class Storefront {
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
 
         public Metafield getMetafield() {
@@ -48586,7 +48732,8 @@ public class Storefront {
         }
 
         /**
-        * The metafields associated with the resource matching the supplied list of namespaces and keys.
+        * A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify
+        * resource.
         */
 
         public List<Metafield> getMetafields() {
@@ -50377,14 +50524,18 @@ public class Storefront {
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
         public PageQuery metafield(String key, MetafieldQueryDefinition queryDef) {
             return metafield(key, args -> {}, queryDef);
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
         public PageQuery metafield(String key, MetafieldArgumentsDefinition argsDef, MetafieldQueryDefinition queryDef) {
             startField("metafield");
@@ -50404,7 +50555,8 @@ public class Storefront {
         }
 
         /**
-        * The metafields associated with the resource matching the supplied list of namespaces and keys.
+        * A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify
+        * resource.
         */
         public PageQuery metafields(List<HasMetafieldsIdentifier> identifiers, MetafieldQueryDefinition queryDef) {
             startField("metafields");
@@ -50683,7 +50835,9 @@ public class Storefront {
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
 
         public Metafield getMetafield() {
@@ -50696,7 +50850,8 @@ public class Storefront {
         }
 
         /**
-        * The metafields associated with the resource matching the supplied list of namespaces and keys.
+        * A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify
+        * resource.
         */
 
         public List<Metafield> getMetafields() {
@@ -52439,11 +52594,17 @@ public class Storefront {
     }
 
     /**
-    * A product represents an individual item for sale in a Shopify store. Products are often physical,
-    * but they don't have to be.
-    * For example, a digital download (such as a movie, music or ebook file) also
-    * qualifies as a product, as do services (such as equipment rental, work for hire,
-    * customization of another product or an extended warranty).
+    * The `Product` object lets you manage products in a merchant’s store.
+    * Products are the goods and services that merchants offer to customers.
+    * They can include various details such as title, description, price, images, and options such as size
+    * or color.
+    * You can use [product variants](/docs/api/storefront/latest/objects/ProductVariant)
+    * to create or update different versions of the same product.
+    * You can also add or update product [media](/docs/api/storefront/latest/interfaces/Media).
+    * Products can be organized by grouping them into a
+    * [collection](/docs/api/storefront/latest/objects/Collection).
+    * Learn more about working with [products and
+    * collections](/docs/storefronts/headless/building-with-the-storefront-api/products-collections).
     */
     public static class ProductQuery extends Query<ProductQuery> {
         ProductQuery(StringBuilder _queryBuilder) {
@@ -52559,7 +52720,8 @@ public class Storefront {
         }
 
         /**
-        * The taxonomy category for the product.
+        * The category of a product from [Shopify's Standard Product
+        * Taxonomy](https://shopify.github.io/product-taxonomy/releases/unstable/?categoryId=sg-4-17-2-17).
         */
         public ProductQuery category(TaxonomyCategoryQueryDefinition queryDef) {
             startField("category");
@@ -52637,14 +52799,14 @@ public class Storefront {
         }
 
         /**
-        * List of collections a product belongs to.
+        * A list of [collections](/docs/api/storefront/latest/objects/Collection) that include the product.
         */
         public ProductQuery collections(CollectionConnectionQueryDefinition queryDef) {
             return collections(args -> {}, queryDef);
         }
 
         /**
-        * List of collections a product belongs to.
+        * A list of [collections](/docs/api/storefront/latest/objects/Collection) that include the product.
         */
         public ProductQuery collections(CollectionsArgumentsDefinition argsDef, CollectionConnectionQueryDefinition queryDef) {
             startField("collections");
@@ -52661,7 +52823,9 @@ public class Storefront {
         }
 
         /**
-        * The compare at price of the product across all variants.
+        * The [compare-at price
+        * range](https://help.shopify.com/manual/products/details/product-pricing/sale-pricing) of the product
+        * in the shop's default currency.
         */
         public ProductQuery compareAtPriceRange(ProductPriceRangeQueryDefinition queryDef) {
             startField("compareAtPriceRange");
@@ -52688,7 +52852,7 @@ public class Storefront {
             }
 
             /**
-            * Truncates string after the given length.
+            * Truncates a string after the given length.
             */
             public DescriptionArguments truncateAt(Integer value) {
                 if (value != null) {
@@ -52704,14 +52868,16 @@ public class Storefront {
         }
 
         /**
-        * Stripped description of the product, single line with HTML tags removed.
+        * A single-line description of the product, with [HTML
+        * tags](https://developer.mozilla.org/en-US/docs/Web/HTML) removed.
         */
         public ProductQuery description() {
             return description(args -> {});
         }
 
         /**
-        * Stripped description of the product, single line with HTML tags removed.
+        * A single-line description of the product, with [HTML
+        * tags](https://developer.mozilla.org/en-US/docs/Web/HTML) removed.
         */
         public ProductQuery description(DescriptionArgumentsDefinition argsDef) {
             startField("description");
@@ -52724,7 +52890,9 @@ public class Storefront {
         }
 
         /**
-        * The description of the product, complete with HTML formatting.
+        * The description of the product, with
+        * HTML tags. For example, the description might include
+        * bold `<strong></strong>` and italic `<i></i>` text.
         */
         public ProductQuery descriptionHtml() {
             startField("descriptionHtml");
@@ -52810,8 +52978,9 @@ public class Storefront {
         }
 
         /**
-        * A human-friendly unique string for the Product automatically generated from its title.
-        * They are used by the Liquid templating language to refer to objects.
+        * A unique, human-readable string of the product's title.
+        * A handle can contain letters, hyphens (`-`), and numbers, but no spaces.
+        * The handle is used in the online store URL for the product.
         */
         public ProductQuery handle() {
             startField("handle");
@@ -53005,14 +53174,16 @@ public class Storefront {
         }
 
         /**
-        * The media associated with the product.
+        * The [media](/docs/apps/build/online-store/product-media) that are associated with the product. Valid
+        * media are images, 3D models, videos.
         */
         public ProductQuery media(MediaConnectionQueryDefinition queryDef) {
             return media(args -> {}, queryDef);
         }
 
         /**
-        * The media associated with the product.
+        * The [media](/docs/apps/build/online-store/product-media) that are associated with the product. Valid
+        * media are images, 3D models, videos.
         */
         public ProductQuery media(MediaArgumentsDefinition argsDef, MediaConnectionQueryDefinition queryDef) {
             startField("media");
@@ -53050,14 +53221,18 @@ public class Storefront {
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
         public ProductQuery metafield(String key, MetafieldQueryDefinition queryDef) {
             return metafield(key, args -> {}, queryDef);
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
         public ProductQuery metafield(String key, MetafieldArgumentsDefinition argsDef, MetafieldQueryDefinition queryDef) {
             startField("metafield");
@@ -53077,7 +53252,8 @@ public class Storefront {
         }
 
         /**
-        * The metafields associated with the resource matching the supplied list of namespaces and keys.
+        * A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify
+        * resource.
         */
         public ProductQuery metafields(List<HasMetafieldsIdentifier> identifiers, MetafieldQueryDefinition queryDef) {
             startField("metafields");
@@ -53104,8 +53280,8 @@ public class Storefront {
         }
 
         /**
-        * The URL used for viewing the resource on the shop's Online Store. Returns
-        * `null` if the resource is currently not published to the Online Store sales channel.
+        * The product's URL on the online store.
+        * If `null`, then the product isn't published to the online store sales channel.
         */
         public ProductQuery onlineStoreUrl() {
             startField("onlineStoreUrl");
@@ -53135,14 +53311,18 @@ public class Storefront {
         }
 
         /**
-        * List of product options.
+        * A list of product options. The limit is defined by the [shop's resource limits for product
+        * options](/docs/api/admin-graphql/latest/objects/Shop#field-resourcelimits)
+        * (`Shop.resourceLimits.maxProductOptions`).
         */
         public ProductQuery options(ProductOptionQueryDefinition queryDef) {
             return options(args -> {}, queryDef);
         }
 
         /**
-        * List of product options.
+        * A list of product options. The limit is defined by the [shop's resource limits for product
+        * options](/docs/api/admin-graphql/latest/objects/Shop#field-resourcelimits)
+        * (`Shop.resourceLimits.maxProductOptions`).
         */
         public ProductQuery options(OptionsArgumentsDefinition argsDef, ProductOptionQueryDefinition queryDef) {
             startField("options");
@@ -53159,7 +53339,9 @@ public class Storefront {
         }
 
         /**
-        * The price range.
+        * The minimum and maximum prices of a product, expressed in decimal numbers.
+        * For example, if the product is priced between $10.00 and $50.00,
+        * then the price range is $10.00 - $50.00.
         */
         public ProductQuery priceRange(ProductPriceRangeQueryDefinition queryDef) {
             startField("priceRange");
@@ -53172,7 +53354,8 @@ public class Storefront {
         }
 
         /**
-        * A categorization that a product can be tagged with, commonly used for filtering and searching.
+        * The [product type](https://help.shopify.com/manual/products/details/product-type)
+        * that merchants define.
         */
         public ProductQuery productType() {
             startField("productType");
@@ -53190,7 +53373,11 @@ public class Storefront {
         }
 
         /**
-        * Whether the product can only be purchased with a selling plan.
+        * Whether the product can only be purchased with a [selling
+        * plan](/docs/apps/build/purchase-options/subscriptions/selling-plans). Products that are sold on
+        * subscription (`requiresSellingPlan: true`) can be updated only for online stores. If you update a
+        * product to be subscription-only (`requiresSellingPlan:false`), then the product is unpublished from
+        * all channels, except the online store.
         */
         public ProductQuery requiresSellingPlan() {
             startField("requiresSellingPlan");
@@ -53347,18 +53534,18 @@ public class Storefront {
         }
 
         /**
-        * A list of a product's available selling plan groups. A selling plan group represents a selling
-        * method. For example, 'Subscribe and save' is a selling method where customers pay for goods or
-        * services per delivery. A selling plan group contains individual selling plans.
+        * A list of all [selling plan
+        * groups](/docs/apps/build/purchase-options/subscriptions/selling-plans/build-a-selling-plan) that are
+        * associated with the product either directly, or through the product's variants.
         */
         public ProductQuery sellingPlanGroups(SellingPlanGroupConnectionQueryDefinition queryDef) {
             return sellingPlanGroups(args -> {}, queryDef);
         }
 
         /**
-        * A list of a product's available selling plan groups. A selling plan group represents a selling
-        * method. For example, 'Subscribe and save' is a selling method where customers pay for goods or
-        * services per delivery. A selling plan group contains individual selling plans.
+        * A list of all [selling plan
+        * groups](/docs/apps/build/purchase-options/subscriptions/selling-plans/build-a-selling-plan) that are
+        * associated with the product either directly, or through the product's variants.
         */
         public ProductQuery sellingPlanGroups(SellingPlanGroupsArgumentsDefinition argsDef, SellingPlanGroupConnectionQueryDefinition queryDef) {
             startField("sellingPlanGroups");
@@ -53375,7 +53562,9 @@ public class Storefront {
         }
 
         /**
-        * The product's SEO information.
+        * The [SEO title and
+        * description](https://help.shopify.com/manual/promoting-marketing/seo/adding-keywords)
+        * that are associated with a product.
         */
         public ProductQuery seo(SEOQueryDefinition queryDef) {
             startField("seo");
@@ -53388,8 +53577,13 @@ public class Storefront {
         }
 
         /**
-        * A comma separated list of tags that have been added to the product.
-        * Additional access scope required for private apps: unauthenticated_read_product_tags.
+        * A comma-separated list of searchable keywords that are
+        * associated with the product. For example, a merchant might apply the `sports`
+        * and `summer` tags to products that are associated with sportwear for summer.
+        * Updating `tags` overwrites any existing tags that were previously added to the product.
+        * To add new tags without overwriting existing tags,
+        * use the GraphQL Admin API's [`tagsAdd`](/docs/api/admin-graphql/latest/mutations/tagsadd)
+        * mutation.
         */
         public ProductQuery tags() {
             startField("tags");
@@ -53398,7 +53592,9 @@ public class Storefront {
         }
 
         /**
-        * The product’s title.
+        * The name for the product that displays to customers. The title is used to construct the product's
+        * handle.
+        * For example, if a product is titled "Black Sunglasses", then the handle is `black-sunglasses`.
         */
         public ProductQuery title() {
             startField("title");
@@ -53407,7 +53603,7 @@ public class Storefront {
         }
 
         /**
-        * The total quantity of inventory in stock for this Product.
+        * The quantity of inventory that's in stock.
         */
         public ProductQuery totalInventory() {
             startField("totalInventory");
@@ -53591,14 +53787,16 @@ public class Storefront {
         }
 
         /**
-        * List of the product’s variants.
+        * A list of [variants](/docs/api/storefront/latest/objects/ProductVariant) that are associated with
+        * the product.
         */
         public ProductQuery variants(ProductVariantConnectionQueryDefinition queryDef) {
             return variants(args -> {}, queryDef);
         }
 
         /**
-        * List of the product’s variants.
+        * A list of [variants](/docs/api/storefront/latest/objects/ProductVariant) that are associated with
+        * the product.
         */
         public ProductQuery variants(VariantsArgumentsDefinition argsDef, ProductVariantConnectionQueryDefinition queryDef) {
             startField("variants");
@@ -53615,7 +53813,8 @@ public class Storefront {
         }
 
         /**
-        * The total count of variants for this product.
+        * The number of [variants](/docs/api/storefront/latest/objects/ProductVariant) that are associated
+        * with the product.
         */
         public ProductQuery variantsCount(CountQueryDefinition queryDef) {
             startField("variantsCount");
@@ -53628,7 +53827,7 @@ public class Storefront {
         }
 
         /**
-        * The product’s vendor name.
+        * The name of the product's vendor.
         */
         public ProductQuery vendor() {
             startField("vendor");
@@ -53638,11 +53837,17 @@ public class Storefront {
     }
 
     /**
-    * A product represents an individual item for sale in a Shopify store. Products are often physical,
-    * but they don't have to be.
-    * For example, a digital download (such as a movie, music or ebook file) also
-    * qualifies as a product, as do services (such as equipment rental, work for hire,
-    * customization of another product or an extended warranty).
+    * The `Product` object lets you manage products in a merchant’s store.
+    * Products are the goods and services that merchants offer to customers.
+    * They can include various details such as title, description, price, images, and options such as size
+    * or color.
+    * You can use [product variants](/docs/api/storefront/latest/objects/ProductVariant)
+    * to create or update different versions of the same product.
+    * You can also add or update product [media](/docs/api/storefront/latest/interfaces/Media).
+    * Products can be organized by grouping them into a
+    * [collection](/docs/api/storefront/latest/objects/Collection).
+    * Learn more about working with [products and
+    * collections](/docs/storefronts/headless/building-with-the-storefront-api/products-collections).
     */
     public static class Product extends AbstractResponse<Product> implements HasMetafields, MenuItemResource, MetafieldParentResource, MetafieldReference, Node, OnlineStorePublishable, SearchResultItem, Trackable {
         public Product() {
@@ -54006,7 +54211,8 @@ public class Storefront {
         }
 
         /**
-        * The taxonomy category for the product.
+        * The category of a product from [Shopify's Standard Product
+        * Taxonomy](https://shopify.github.io/product-taxonomy/releases/unstable/?categoryId=sg-4-17-2-17).
         */
 
         public TaxonomyCategory getCategory() {
@@ -54019,7 +54225,7 @@ public class Storefront {
         }
 
         /**
-        * List of collections a product belongs to.
+        * A list of [collections](/docs/api/storefront/latest/objects/Collection) that include the product.
         */
 
         public CollectionConnection getCollections() {
@@ -54032,7 +54238,9 @@ public class Storefront {
         }
 
         /**
-        * The compare at price of the product across all variants.
+        * The [compare-at price
+        * range](https://help.shopify.com/manual/products/details/product-pricing/sale-pricing) of the product
+        * in the shop's default currency.
         */
 
         public ProductPriceRange getCompareAtPriceRange() {
@@ -54058,7 +54266,8 @@ public class Storefront {
         }
 
         /**
-        * Stripped description of the product, single line with HTML tags removed.
+        * A single-line description of the product, with [HTML
+        * tags](https://developer.mozilla.org/en-US/docs/Web/HTML) removed.
         */
 
         public String getDescription() {
@@ -54071,7 +54280,9 @@ public class Storefront {
         }
 
         /**
-        * The description of the product, complete with HTML formatting.
+        * The description of the product, with
+        * HTML tags. For example, the description might include
+        * bold `<strong></strong>` and italic `<i></i>` text.
         */
 
         public String getDescriptionHtml() {
@@ -54169,8 +54380,9 @@ public class Storefront {
         }
 
         /**
-        * A human-friendly unique string for the Product automatically generated from its title.
-        * They are used by the Liquid templating language to refer to objects.
+        * A unique, human-readable string of the product's title.
+        * A handle can contain letters, hyphens (`-`), and numbers, but no spaces.
+        * The handle is used in the online store URL for the product.
         */
 
         public String getHandle() {
@@ -54217,7 +54429,8 @@ public class Storefront {
         }
 
         /**
-        * The media associated with the product.
+        * The [media](/docs/apps/build/online-store/product-media) that are associated with the product. Valid
+        * media are images, 3D models, videos.
         */
 
         public MediaConnection getMedia() {
@@ -54230,7 +54443,9 @@ public class Storefront {
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
 
         public Metafield getMetafield() {
@@ -54243,7 +54458,8 @@ public class Storefront {
         }
 
         /**
-        * The metafields associated with the resource matching the supplied list of namespaces and keys.
+        * A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify
+        * resource.
         */
 
         public List<Metafield> getMetafields() {
@@ -54256,8 +54472,8 @@ public class Storefront {
         }
 
         /**
-        * The URL used for viewing the resource on the shop's Online Store. Returns
-        * `null` if the resource is currently not published to the Online Store sales channel.
+        * The product's URL on the online store.
+        * If `null`, then the product isn't published to the online store sales channel.
         */
 
         public String getOnlineStoreUrl() {
@@ -54270,7 +54486,9 @@ public class Storefront {
         }
 
         /**
-        * List of product options.
+        * A list of product options. The limit is defined by the [shop's resource limits for product
+        * options](/docs/api/admin-graphql/latest/objects/Shop#field-resourcelimits)
+        * (`Shop.resourceLimits.maxProductOptions`).
         */
 
         public List<ProductOption> getOptions() {
@@ -54283,7 +54501,9 @@ public class Storefront {
         }
 
         /**
-        * The price range.
+        * The minimum and maximum prices of a product, expressed in decimal numbers.
+        * For example, if the product is priced between $10.00 and $50.00,
+        * then the price range is $10.00 - $50.00.
         */
 
         public ProductPriceRange getPriceRange() {
@@ -54296,7 +54516,8 @@ public class Storefront {
         }
 
         /**
-        * A categorization that a product can be tagged with, commonly used for filtering and searching.
+        * The [product type](https://help.shopify.com/manual/products/details/product-type)
+        * that merchants define.
         */
 
         public String getProductType() {
@@ -54322,7 +54543,11 @@ public class Storefront {
         }
 
         /**
-        * Whether the product can only be purchased with a selling plan.
+        * Whether the product can only be purchased with a [selling
+        * plan](/docs/apps/build/purchase-options/subscriptions/selling-plans). Products that are sold on
+        * subscription (`requiresSellingPlan: true`) can be updated only for online stores. If you update a
+        * product to be subscription-only (`requiresSellingPlan:false`), then the product is unpublished from
+        * all channels, except the online store.
         */
 
         public Boolean getRequiresSellingPlan() {
@@ -54351,9 +54576,9 @@ public class Storefront {
         }
 
         /**
-        * A list of a product's available selling plan groups. A selling plan group represents a selling
-        * method. For example, 'Subscribe and save' is a selling method where customers pay for goods or
-        * services per delivery. A selling plan group contains individual selling plans.
+        * A list of all [selling plan
+        * groups](/docs/apps/build/purchase-options/subscriptions/selling-plans/build-a-selling-plan) that are
+        * associated with the product either directly, or through the product's variants.
         */
 
         public SellingPlanGroupConnection getSellingPlanGroups() {
@@ -54366,7 +54591,9 @@ public class Storefront {
         }
 
         /**
-        * The product's SEO information.
+        * The [SEO title and
+        * description](https://help.shopify.com/manual/promoting-marketing/seo/adding-keywords)
+        * that are associated with a product.
         */
 
         public SEO getSeo() {
@@ -54379,8 +54606,13 @@ public class Storefront {
         }
 
         /**
-        * A comma separated list of tags that have been added to the product.
-        * Additional access scope required for private apps: unauthenticated_read_product_tags.
+        * A comma-separated list of searchable keywords that are
+        * associated with the product. For example, a merchant might apply the `sports`
+        * and `summer` tags to products that are associated with sportwear for summer.
+        * Updating `tags` overwrites any existing tags that were previously added to the product.
+        * To add new tags without overwriting existing tags,
+        * use the GraphQL Admin API's [`tagsAdd`](/docs/api/admin-graphql/latest/mutations/tagsadd)
+        * mutation.
         */
 
         public List<String> getTags() {
@@ -54393,7 +54625,9 @@ public class Storefront {
         }
 
         /**
-        * The product’s title.
+        * The name for the product that displays to customers. The title is used to construct the product's
+        * handle.
+        * For example, if a product is titled "Black Sunglasses", then the handle is `black-sunglasses`.
         */
 
         public String getTitle() {
@@ -54406,7 +54640,7 @@ public class Storefront {
         }
 
         /**
-        * The total quantity of inventory in stock for this Product.
+        * The quantity of inventory that's in stock.
         */
 
         public Integer getTotalInventory() {
@@ -54469,7 +54703,8 @@ public class Storefront {
         }
 
         /**
-        * List of the product’s variants.
+        * A list of [variants](/docs/api/storefront/latest/objects/ProductVariant) that are associated with
+        * the product.
         */
 
         public ProductVariantConnection getVariants() {
@@ -54482,7 +54717,8 @@ public class Storefront {
         }
 
         /**
-        * The total count of variants for this product.
+        * The number of [variants](/docs/api/storefront/latest/objects/ProductVariant) that are associated
+        * with the product.
         */
 
         public Count getVariantsCount() {
@@ -54495,7 +54731,7 @@ public class Storefront {
         }
 
         /**
-        * The product’s vendor name.
+        * The name of the product's vendor.
         */
 
         public String getVendor() {
@@ -56518,14 +56754,18 @@ public class Storefront {
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
         public ProductVariantQuery metafield(String key, MetafieldQueryDefinition queryDef) {
             return metafield(key, args -> {}, queryDef);
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
         public ProductVariantQuery metafield(String key, MetafieldArgumentsDefinition argsDef, MetafieldQueryDefinition queryDef) {
             startField("metafield");
@@ -56545,7 +56785,8 @@ public class Storefront {
         }
 
         /**
-        * The metafields associated with the resource matching the supplied list of namespaces and keys.
+        * A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify
+        * resource.
         */
         public ProductVariantQuery metafields(List<HasMetafieldsIdentifier> identifiers, MetafieldQueryDefinition queryDef) {
             startField("metafields");
@@ -57423,7 +57664,9 @@ public class Storefront {
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
 
         public Metafield getMetafield() {
@@ -57436,7 +57679,8 @@ public class Storefront {
         }
 
         /**
-        * The metafields associated with the resource matching the supplied list of namespaces and keys.
+        * A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify
+        * resource.
         */
 
         public List<Metafield> getMetafields() {
@@ -63532,14 +63776,18 @@ public class Storefront {
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
         public SellingPlanQuery metafield(String key, MetafieldQueryDefinition queryDef) {
             return metafield(key, args -> {}, queryDef);
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
         public SellingPlanQuery metafield(String key, MetafieldArgumentsDefinition argsDef, MetafieldQueryDefinition queryDef) {
             startField("metafield");
@@ -63559,7 +63807,8 @@ public class Storefront {
         }
 
         /**
-        * The metafields associated with the resource matching the supplied list of namespaces and keys.
+        * A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify
+        * resource.
         */
         public SellingPlanQuery metafields(List<HasMetafieldsIdentifier> identifiers, MetafieldQueryDefinition queryDef) {
             startField("metafields");
@@ -63834,7 +64083,9 @@ public class Storefront {
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
 
         public Metafield getMetafield() {
@@ -63847,7 +64098,8 @@ public class Storefront {
         }
 
         /**
-        * The metafields associated with the resource matching the supplied list of namespaces and keys.
+        * A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify
+        * resource.
         */
 
         public List<Metafield> getMetafields() {
@@ -66955,14 +67207,18 @@ public class Storefront {
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
         public ShopQuery metafield(String key, MetafieldQueryDefinition queryDef) {
             return metafield(key, args -> {}, queryDef);
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
         public ShopQuery metafield(String key, MetafieldArgumentsDefinition argsDef, MetafieldQueryDefinition queryDef) {
             startField("metafield");
@@ -66982,7 +67238,8 @@ public class Storefront {
         }
 
         /**
-        * The metafields associated with the resource matching the supplied list of namespaces and keys.
+        * A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify
+        * resource.
         */
         public ShopQuery metafields(List<HasMetafieldsIdentifier> identifiers, MetafieldQueryDefinition queryDef) {
             startField("metafields");
@@ -67363,7 +67620,9 @@ public class Storefront {
         }
 
         /**
-        * Returns a metafield found by namespace and key.
+        * A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and
+        * `key`, that's associated with a Shopify resource for the purposes of adding and storing additional
+        * information.
         */
 
         public Metafield getMetafield() {
@@ -67376,7 +67635,8 @@ public class Storefront {
         }
 
         /**
-        * The metafields associated with the resource matching the supplied list of namespaces and keys.
+        * A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify
+        * resource.
         */
 
         public List<Metafield> getMetafields() {

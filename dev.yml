@@ -1,3 +1,10 @@
 up:
   - ruby
   - bundler
+
+commands:
+  style:
+    run: bundle exec rubocop -A
+
+check:
+  rubocop: xargs bundle exec rubocop --only-recognized-file-types --force-exclusion

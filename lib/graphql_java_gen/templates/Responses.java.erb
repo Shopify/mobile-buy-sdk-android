@@ -1,0 +1,55 @@
+// Generated from <%= script_name %>
+
+package <%= package_name %>;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.shopify.graphql.support.AbstractResponse;
+import com.shopify.graphql.support.Arguments;
+import com.shopify.graphql.support.Error;
+import com.shopify.graphql.support.Query;
+import com.shopify.graphql.support.SchemaViolationError;
+import com.shopify.graphql.support.TopLevelResponse;
+import com.shopify.graphql.support.Input;
+<% imports.each do |import| %>
+    import <%= import %>;
+<% end %>
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+public class <%= response_type %>Response {
+    private TopLevelResponse response;
+    private <%= root_name %> data;
+
+    public <%= response_type %>Response(TopLevelResponse response) throws SchemaViolationError {
+        this.response = response;
+        this.data = response.getData() != null ? new <%= root_name %>(response.getData()) : null;
+    }
+
+    public <%= root_name %> getData() {
+        return data;
+    }
+
+    public List<Error> getErrors() {
+        return response.getErrors();
+    }
+
+    public String toJson() {
+        return new Gson().toJson(response);
+    }
+
+    public String prettyPrintJson() {
+        final Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        return gson.toJson(response);
+    }
+
+    public static <%= response_type %>Response fromJson(String json) throws SchemaViolationError {
+        final TopLevelResponse response = new Gson().fromJson(json, TopLevelResponse.class);
+        return new <%= response_type %>Response(response);
+    }
+}

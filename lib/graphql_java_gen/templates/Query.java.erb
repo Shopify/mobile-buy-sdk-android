@@ -1,0 +1,113 @@
+// Generated from <%= script_name %>
+
+package <%= package_name %>;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.shopify.graphql.support.AbstractResponse;
+import com.shopify.graphql.support.Arguments;
+import com.shopify.graphql.support.Error;
+import com.shopify.graphql.support.Query;
+import com.shopify.graphql.support.SchemaViolationError;
+import com.shopify.graphql.support.TopLevelResponse;
+import com.shopify.graphql.support.Input;
+<% imports.each do |import| %>
+  import <%= import %>;
+<% end %>
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+
+<% fields = type.fields(include_deprecated: include_deprecated) || [] %>
+<%= java_doc(type) %>
+public class <%= type.name %>Query extends Query<<%= type.name %>Query> {
+    <%= type.name %>Query(StringBuilder _queryBuilder) {
+        super(_queryBuilder);
+        <% if type.object? && type.implement?("Node") %>
+            startField("id");
+        <% end %>
+        <% unless type.object? %>
+            startField("__typename");
+        <% end %>
+    }
+
+    <% fields.each do |field| %>
+        <% next if field.name == "id" && type.object? && type.implement?("Node") %>
+        <% unless field.optional_args.empty? %>
+            public class <%= field.classify_name %>Arguments extends Arguments {
+                <%= field.classify_name %>Arguments(StringBuilder _queryBuilder) {
+                    super(_queryBuilder, <%= !!field.required_args.empty? %>);
+                }
+
+                <% field.optional_args.each do |arg| %>
+                    <%= java_doc(arg) %>
+                    public <%= field.classify_name %>Arguments <%= escape_reserved_word(arg.camelize_name) %>(<%= java_input_type(arg.type) %> value) {
+                        if (value != null) {
+                            startArgument("<%= arg.name %>");
+                            <%= generate_build_input_code('value', arg.type) %>
+                        }
+                        return this;
+                    }
+                <% end %>
+            }
+
+            public interface <%= field.classify_name %>ArgumentsDefinition {
+                void define(<%= field.classify_name %>Arguments args);
+            }
+
+            <%= java_doc(field) %>
+            public <%= type.name %>Query <%= escape_reserved_word(field.camelize_name) %>(<%= java_arg_defs(field, skip_optional: true) %>) {
+                return <%= escape_reserved_word(field.camelize_name) %>(<%= java_arg_expresions_with_empty_optional_args(field) %>);
+            }
+        <% end %>
+
+        <%= java_doc(field) %>
+        <%= field.deprecated? ? "@Deprecated\n" : '' -%>
+        public <%= type.name %>Query <%= escape_reserved_word(field.camelize_name) %>(<%= java_arg_defs(field) %>) {
+            startField("<%= field.name %>");
+            <% unless field.args.empty? %>
+                <% if field.required_args.empty? %>
+                    <%= field.classify_name %>Arguments args = new <%= field.classify_name %>Arguments(_queryBuilder);
+                    argsDef.define(args);
+                    <%= field.classify_name %>Arguments.end(args);
+                <% else %>
+                    <% field.required_args.each_with_index do |arg, i| %>
+                      _queryBuilder.append("<%= i == 0 ? "(" : "," %><%= arg.name %>:");
+                      <%= generate_build_input_code(escape_reserved_word(arg.camelize_name), arg.type) %>
+                    <% end %>
+                    <% unless field.optional_args.empty? %>
+                        argsDef.define(new <%= field.classify_name %>Arguments(_queryBuilder));
+                    <% end %>
+                    _queryBuilder.append(')');
+                <% end %>
+            <% end %>
+            <% if field.subfields? %>
+                _queryBuilder.append('{');
+                queryDef.define(new <%= field.type.unwrap.name %>Query(_queryBuilder));
+                _queryBuilder.append('}');
+            <% end %>
+            return this;
+        }
+    <% end %>
+    <% unless type.object? %>
+        <% type.possible_types.each do |possible_type| %>
+            public <%= type.name %>Query on<%= possible_type.name %>(<%= possible_type.name %>QueryDefinition queryDef) {
+                startInlineFragment("<%= possible_type.name %>");
+                queryDef.define(new <%= possible_type.name %>Query(_queryBuilder));
+                _queryBuilder.append('}');
+                return this;
+            }
+        <% end %>
+    <% end %>
+
+    <% if schema.root_name?(type.name) %>
+      public String toString() {
+          return _queryBuilder.toString();
+      }
+    <% end %>
+}
