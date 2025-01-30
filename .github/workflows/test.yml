@@ -20,9 +20,9 @@ jobs:
         with:
           java-version: 17
           distribution: temurin
-          server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
-          settings-path: ${{ github.workspace }} # location for the settings.xml file
-          cache: gradle
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
 
       - name: Run Test
         working-directory: MobileBuy
