@@ -80,11 +80,21 @@ publishing {
 
             pom {
                 name = "Mobile Buy SDK"
-                url = "https://github.com/Shopify/mobile-buy-sdk-android.git"
+                description = "Shopify's Mobile Buy SDK makes it simple to sell physical products inside your mobile app."
+                url = "https://github.com/Shopify/mobile-buy-sdk-android"
                 developers {
                     developer {
                         name = "Shopify Inc."
                     }
+                }
+                licenses {
+                    license {
+                        name = "MIT"
+                        url = "https://opensource.org/licenses/MIT"
+                    }
+                }
+                scm {
+                    url = "https://github.com/Shopify/mobile-buy-sdk-android"
                 }
             }
 
