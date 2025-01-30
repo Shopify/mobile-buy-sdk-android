@@ -14,7 +14,6 @@ jobs:
     env:
       API_VERSION: ${{ github.event.inputs.version }}
       BRANCH_NAME: release/${{ github.event.inputs.version }}
-      BUNDLE_GEMFILE: ${{ github.workspace }}/MobileBuy/buy3/Gemfile
 
     steps:
       - name: Checkout Repository
