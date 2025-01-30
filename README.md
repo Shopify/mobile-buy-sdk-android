@@ -21,7 +21,7 @@ The format is `yyyy.mm.patch`, where the first two components match the API vers
 ##### Gradle:
 
 ```gradle
-implementation 'com.shopify.mobilebuysdk:buy3:x.x.x'
+implementation 'com.shopify.mobilebuysdk:buy3:2025.1.0'
 ```
 
 ##### or Maven:
@@ -30,7 +30,7 @@ implementation 'com.shopify.mobilebuysdk:buy3:x.x.x'
 <dependency>
   <groupId>com.shopify.mobilebuysdk</groupId>
   <artifactId>buy3</artifactId>
-  <version>x.x.x</version>
+  <version>2025.1.0</version>
 </dependency>
 ```
 
