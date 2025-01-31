@@ -22,13 +22,13 @@ The format is `yyyy.mm.patch`, where the first two components match the API vers
 
 As of the `2025.1.0` release, the library is published both to [Maven Central](https://central.sonatype.com/artifact/com.shopify.mobilebuysdk/buy3) as well as [GitHub Packages](https://github.com/Shopify/mobile-buy-sdk-android/packages/).
 
-##### Gradle:
+#### Gradle:
 
 ```gradle
-implementation 'com.shopify.mobilebuysdk:buy3:2025.1.0'
+implementation("com.shopify.mobilebuysdk:buy3:2025.1.0")
 ```
 
-##### or Maven:
+#### Maven:
 
 ```
 <dependency>

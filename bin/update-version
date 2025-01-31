@@ -40,7 +40,7 @@ updated_components = [
 
 new_version = updated_components.join(".")
 
-readme_src.gsub!(/'com.shopify.mobilebuysdk:buy3:.*'/, "'com.shopify.mobilebuysdk:buy3:#{new_version}'")
+readme_src.gsub!(/"com.shopify.mobilebuysdk:buy3:.*"/, "\"com.shopify.mobilebuysdk:buy3:#{new_version}\"")
 readme_src.gsub!(%r{<version>.*</version>}, "<version>#{new_version}</version>")
 
 build_config_src.gsub!(/^version.*$/, "version = \"#{new_version}\"")
