@@ -10,13 +10,17 @@ The Mobile Buy SDK makes it easy to create custom storefronts in your mobile app
 
 ## Installation
 
-Mobile Buy SDK for Android is represented by runtime module that provides support to build and execute GraphQL queries.
+Mobile Buy SDK for Android is represented by a runtime module that provides support to build and execute GraphQL queries.
 
 ### Versioning
 
 As of the `2025.1.0` release, the Mobile Buy SDK now uses a modified [CalVer](https://calver.org/) versioning scheme. This was done to align with the quarterly Storefront GraphQL API releases and bring clarity to what version a library release corresponds to.
 
 The format is `yyyy.mm.patch`, where the first two components match the API version, and the last component corresponds to non-breaking bug fixes within an API version cycle. In practice, this means that unlike SemVer, there may be breaking GraphQL schema changes between "minor" versions. Learn more about API [release schedules](https://shopify.dev/api/usage/versioning#release-schedule) at Shopify.
+
+### Repositories
+
+As of the `2025.1.0` release, the library is published both to [Maven Central](https://central.sonatype.com/artifact/com.shopify.mobilebuysdk/buy3) as well as [GitHub Packages](https://github.com/Shopify/mobile-buy-sdk-android/packages/).
 
 ##### Gradle:
 
