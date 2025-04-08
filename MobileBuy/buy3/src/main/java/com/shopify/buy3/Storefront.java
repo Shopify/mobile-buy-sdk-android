@@ -23,7 +23,7 @@ import java.io.Serializable;
 import java.util.*;
 
 public class Storefront {
-    public static final String API_VERSION = "2025-01";
+    public static final String API_VERSION = "2025-04";
 
     public static QueryRootQuery query(QueryRootQueryDefinition queryDef) {
         return query(Collections.emptyList(), queryDef);
@@ -12680,6 +12680,56 @@ public class Storefront {
         ONLY_ONE_DELIVERY_ADDRESS_CAN_BE_SELECTED,
 
         /**
+        * Credit card has expired.
+        */
+        PAYMENTS_CREDIT_CARD_BASE_EXPIRED,
+
+        /**
+        * Credit card gateway is not supported.
+        */
+        PAYMENTS_CREDIT_CARD_BASE_GATEWAY_NOT_SUPPORTED,
+
+        /**
+        * Credit card error.
+        */
+        PAYMENTS_CREDIT_CARD_GENERIC,
+
+        /**
+        * Credit card month is invalid.
+        */
+        PAYMENTS_CREDIT_CARD_MONTH_INCLUSION,
+
+        /**
+        * Credit card number is invalid.
+        */
+        PAYMENTS_CREDIT_CARD_NUMBER_INVALID,
+
+        /**
+        * Credit card number format is invalid.
+        */
+        PAYMENTS_CREDIT_CARD_NUMBER_INVALID_FORMAT,
+
+        /**
+        * Credit card verification value is blank.
+        */
+        PAYMENTS_CREDIT_CARD_VERIFICATION_VALUE_BLANK,
+
+        /**
+        * Credit card verification value is invalid for card type.
+        */
+        PAYMENTS_CREDIT_CARD_VERIFICATION_VALUE_INVALID_FOR_CARD_TYPE,
+
+        /**
+        * Credit card has expired.
+        */
+        PAYMENTS_CREDIT_CARD_YEAR_EXPIRED,
+
+        /**
+        * Credit card expiry year is invalid.
+        */
+        PAYMENTS_CREDIT_CARD_YEAR_INVALID_EXPIRY_YEAR,
+
+        /**
         * The payment method is not supported.
         */
         PAYMENT_METHOD_NOT_SUPPORTED,
@@ -12821,6 +12871,46 @@ public class Storefront {
                     return ONLY_ONE_DELIVERY_ADDRESS_CAN_BE_SELECTED;
                 }
 
+                case "PAYMENTS_CREDIT_CARD_BASE_EXPIRED": {
+                    return PAYMENTS_CREDIT_CARD_BASE_EXPIRED;
+                }
+
+                case "PAYMENTS_CREDIT_CARD_BASE_GATEWAY_NOT_SUPPORTED": {
+                    return PAYMENTS_CREDIT_CARD_BASE_GATEWAY_NOT_SUPPORTED;
+                }
+
+                case "PAYMENTS_CREDIT_CARD_GENERIC": {
+                    return PAYMENTS_CREDIT_CARD_GENERIC;
+                }
+
+                case "PAYMENTS_CREDIT_CARD_MONTH_INCLUSION": {
+                    return PAYMENTS_CREDIT_CARD_MONTH_INCLUSION;
+                }
+
+                case "PAYMENTS_CREDIT_CARD_NUMBER_INVALID": {
+                    return PAYMENTS_CREDIT_CARD_NUMBER_INVALID;
+                }
+
+                case "PAYMENTS_CREDIT_CARD_NUMBER_INVALID_FORMAT": {
+                    return PAYMENTS_CREDIT_CARD_NUMBER_INVALID_FORMAT;
+                }
+
+                case "PAYMENTS_CREDIT_CARD_VERIFICATION_VALUE_BLANK": {
+                    return PAYMENTS_CREDIT_CARD_VERIFICATION_VALUE_BLANK;
+                }
+
+                case "PAYMENTS_CREDIT_CARD_VERIFICATION_VALUE_INVALID_FOR_CARD_TYPE": {
+                    return PAYMENTS_CREDIT_CARD_VERIFICATION_VALUE_INVALID_FOR_CARD_TYPE;
+                }
+
+                case "PAYMENTS_CREDIT_CARD_YEAR_EXPIRED": {
+                    return PAYMENTS_CREDIT_CARD_YEAR_EXPIRED;
+                }
+
+                case "PAYMENTS_CREDIT_CARD_YEAR_INVALID_EXPIRY_YEAR": {
+                    return PAYMENTS_CREDIT_CARD_YEAR_INVALID_EXPIRY_YEAR;
+                }
+
                 case "PAYMENT_METHOD_NOT_SUPPORTED": {
                     return PAYMENT_METHOD_NOT_SUPPORTED;
                 }
@@ -12954,6 +13044,46 @@ public class Storefront {
 
                 case ONLY_ONE_DELIVERY_ADDRESS_CAN_BE_SELECTED: {
                     return "ONLY_ONE_DELIVERY_ADDRESS_CAN_BE_SELECTED";
+                }
+
+                case PAYMENTS_CREDIT_CARD_BASE_EXPIRED: {
+                    return "PAYMENTS_CREDIT_CARD_BASE_EXPIRED";
+                }
+
+                case PAYMENTS_CREDIT_CARD_BASE_GATEWAY_NOT_SUPPORTED: {
+                    return "PAYMENTS_CREDIT_CARD_BASE_GATEWAY_NOT_SUPPORTED";
+                }
+
+                case PAYMENTS_CREDIT_CARD_GENERIC: {
+                    return "PAYMENTS_CREDIT_CARD_GENERIC";
+                }
+
+                case PAYMENTS_CREDIT_CARD_MONTH_INCLUSION: {
+                    return "PAYMENTS_CREDIT_CARD_MONTH_INCLUSION";
+                }
+
+                case PAYMENTS_CREDIT_CARD_NUMBER_INVALID: {
+                    return "PAYMENTS_CREDIT_CARD_NUMBER_INVALID";
+                }
+
+                case PAYMENTS_CREDIT_CARD_NUMBER_INVALID_FORMAT: {
+                    return "PAYMENTS_CREDIT_CARD_NUMBER_INVALID_FORMAT";
+                }
+
+                case PAYMENTS_CREDIT_CARD_VERIFICATION_VALUE_BLANK: {
+                    return "PAYMENTS_CREDIT_CARD_VERIFICATION_VALUE_BLANK";
+                }
+
+                case PAYMENTS_CREDIT_CARD_VERIFICATION_VALUE_INVALID_FOR_CARD_TYPE: {
+                    return "PAYMENTS_CREDIT_CARD_VERIFICATION_VALUE_INVALID_FOR_CARD_TYPE";
+                }
+
+                case PAYMENTS_CREDIT_CARD_YEAR_EXPIRED: {
+                    return "PAYMENTS_CREDIT_CARD_YEAR_EXPIRED";
+                }
+
+                case PAYMENTS_CREDIT_CARD_YEAR_INVALID_EXPIRY_YEAR: {
+                    return "PAYMENTS_CREDIT_CARD_YEAR_INVALID_EXPIRY_YEAR";
                 }
 
                 case PAYMENT_METHOD_NOT_SUPPORTED: {
@@ -18054,6 +18184,19 @@ public class Storefront {
         }
 
         /**
+        * The result of cart preparation for completion.
+        */
+        public CartThrottledQuery cart(CartQueryDefinition queryDef) {
+            startField("cart");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CartQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
         * The polling delay.
         */
         public CartThrottledQuery pollAfter() {
@@ -18076,6 +18219,17 @@ public class Storefront {
                 String key = field.getKey();
                 String fieldName = getFieldName(key);
                 switch (fieldName) {
+                    case "cart": {
+                        Cart optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new Cart(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
                     case "pollAfter": {
                         responseData.put(key, Utils.parseDateTime(jsonAsString(field.getValue(), key)));
 
@@ -18098,6 +18252,19 @@ public class Storefront {
         }
 
         /**
+        * The result of cart preparation for completion.
+        */
+
+        public Cart getCart() {
+            return (Cart) get("cart");
+        }
+
+        public CartThrottled setCart(Cart arg) {
+            optimisticData.put(getKey("cart"), arg);
+            return this;
+        }
+
+        /**
         * The polling delay.
         */
 
@@ -18108,6 +18275,15 @@ public class Storefront {
         public CartThrottled setPollAfter(Date arg) {
             optimisticData.put(getKey("pollAfter"), arg);
             return this;
+        }
+
+        @Override
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "cart": return true;
+
+                default: return false;
+            }
         }
     }
 
@@ -21983,6 +22159,19 @@ public class Storefront {
         }
 
         /**
+        * The default language for the country.
+        */
+        public CountryQuery defaultLanguage(LanguageQueryDefinition queryDef) {
+            startField("defaultLanguage");
+
+            _queryBuilder.append('{');
+            queryDef.define(new LanguageQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
         * The ISO code of the country.
         */
         public CountryQuery isoCode() {
@@ -21993,7 +22182,10 @@ public class Storefront {
 
         /**
         * The market that includes this country.
+        *
+        * @deprecated This `market` field will be removed in a future version of the API.
         */
+        @Deprecated
         public CountryQuery market(MarketQueryDefinition queryDef) {
             startField("market");
 
@@ -22048,6 +22240,12 @@ public class Storefront {
 
                     case "currency": {
                         responseData.put(key, new Currency(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "defaultLanguage": {
+                        responseData.put(key, new Language(jsonAsObject(field.getValue(), key)));
 
                         break;
                     }
@@ -22123,6 +22321,19 @@ public class Storefront {
         }
 
         /**
+        * The default language for the country.
+        */
+
+        public Language getDefaultLanguage() {
+            return (Language) get("defaultLanguage");
+        }
+
+        public Country setDefaultLanguage(Language arg) {
+            optimisticData.put(getKey("defaultLanguage"), arg);
+            return this;
+        }
+
+        /**
         * The ISO code of the country.
         */
 
@@ -22137,8 +22348,11 @@ public class Storefront {
 
         /**
         * The market that includes this country.
+        *
+        * @deprecated This `market` field will be removed in a future version of the API.
         */
 
+        @Deprecated
         public Market getMarket() {
             return (Market) get("market");
         }
@@ -22180,6 +22394,8 @@ public class Storefront {
                 case "availableLanguages": return true;
 
                 case "currency": return true;
+
+                case "defaultLanguage": return true;
 
                 case "market": return true;
 
@@ -39302,7 +39518,10 @@ public class Storefront {
         /**
         * The market including the country of the active localized experience. Use the `@inContext` directive
         * to change this value.
+        *
+        * @deprecated This `market` field will be removed in a future version of the API.
         */
+        @Deprecated
         public LocalizationQuery market(MarketQueryDefinition queryDef) {
             startField("market");
 
@@ -39437,8 +39656,11 @@ public class Storefront {
         /**
         * The market including the country of the active localized experience. Use the `@inContext` directive
         * to change this value.
+        *
+        * @deprecated This `market` field will be removed in a future version of the API.
         */
 
+        @Deprecated
         public Market getMarket() {
             return (Market) get("market");
         }
@@ -49568,8 +49790,8 @@ public class Storefront {
     /**
     * An object with an ID field to support global identification, in accordance with the
     * [Relay specification](https://relay.dev/graphql/objectidentification.htm#sec-Node-Interface).
-    * This interface is used by the [node](https://shopify.dev/api/admin-graphql/unstable/queries/node)
-    * and [nodes](https://shopify.dev/api/admin-graphql/unstable/queries/nodes) queries.
+    * This interface is used by the [node](/docs/api/storefront/latest/queries/node)
+    * and [nodes](/docs/api/storefront/latest/queries/nodes) queries.
     */
     public static class NodeQuery extends Query<NodeQuery> {
         NodeQuery(StringBuilder _queryBuilder) {
@@ -49856,8 +50078,8 @@ public class Storefront {
     /**
     * An object with an ID field to support global identification, in accordance with the
     * [Relay specification](https://relay.dev/graphql/objectidentification.htm#sec-Node-Interface).
-    * This interface is used by the [node](https://shopify.dev/api/admin-graphql/unstable/queries/node)
-    * and [nodes](https://shopify.dev/api/admin-graphql/unstable/queries/nodes) queries.
+    * This interface is used by the [node](/docs/api/storefront/latest/queries/node)
+    * and [nodes](/docs/api/storefront/latest/queries/nodes) queries.
     */
     public static class UnknownNode extends AbstractResponse<UnknownNode> implements Node {
         public UnknownNode() {
@@ -77687,11 +77909,21 @@ public class Storefront {
 
         PAYMENTS_WALLET_CONTENT_MISSING,
 
+        /**
+        * Redirect to checkout required to complete this action.
+        */
+        REDIRECT_TO_CHECKOUT_REQUIRED,
+
         TAXES_DELIVERY_GROUP_ID_NOT_FOUND,
 
         TAXES_LINE_ID_NOT_FOUND,
 
         TAXES_MUST_BE_DEFINED,
+
+        /**
+        * Validation failed.
+        */
+        VALIDATION_CUSTOM,
 
         UNKNOWN_VALUE;
 
@@ -78061,6 +78293,10 @@ public class Storefront {
                     return PAYMENTS_WALLET_CONTENT_MISSING;
                 }
 
+                case "REDIRECT_TO_CHECKOUT_REQUIRED": {
+                    return REDIRECT_TO_CHECKOUT_REQUIRED;
+                }
+
                 case "TAXES_DELIVERY_GROUP_ID_NOT_FOUND": {
                     return TAXES_DELIVERY_GROUP_ID_NOT_FOUND;
                 }
@@ -78071,6 +78307,10 @@ public class Storefront {
 
                 case "TAXES_MUST_BE_DEFINED": {
                     return TAXES_MUST_BE_DEFINED;
+                }
+
+                case "VALIDATION_CUSTOM": {
+                    return VALIDATION_CUSTOM;
                 }
 
                 default: {
@@ -78440,6 +78680,10 @@ public class Storefront {
                     return "PAYMENTS_WALLET_CONTENT_MISSING";
                 }
 
+                case REDIRECT_TO_CHECKOUT_REQUIRED: {
+                    return "REDIRECT_TO_CHECKOUT_REQUIRED";
+                }
+
                 case TAXES_DELIVERY_GROUP_ID_NOT_FOUND: {
                     return "TAXES_DELIVERY_GROUP_ID_NOT_FOUND";
                 }
@@ -78450,6 +78694,10 @@ public class Storefront {
 
                 case TAXES_MUST_BE_DEFINED: {
                     return "TAXES_MUST_BE_DEFINED";
+                }
+
+                case VALIDATION_CUSTOM: {
+                    return "VALIDATION_CUSTOM";
                 }
 
                 default: {

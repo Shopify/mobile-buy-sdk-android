@@ -25,7 +25,7 @@ As of the `2025.1.0` release, the library is published both to [Maven Central](h
 #### Gradle:
 
 ```gradle
-implementation("com.shopify.mobilebuysdk:buy3:2025.1.0")
+implementation("com.shopify.mobilebuysdk:buy3:2025.4.0")
 ```
 
 #### Maven:
@@ -34,7 +34,7 @@ implementation("com.shopify.mobilebuysdk:buy3:2025.1.0")
 <dependency>
   <groupId>com.shopify.mobilebuysdk</groupId>
   <artifactId>buy3</artifactId>
-  <version>2025.1.0</version>
+  <version>2025.4.0</version>
 </dependency>
 ```
 
