@@ -26,6 +26,7 @@ package com.shopify.buy3;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.Date;
 import java.util.Locale;
 
@@ -33,11 +34,17 @@ final class Utils {
   private static final SimpleDateFormat DATE_TIME_FORMATTER = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", Locale.US);
 
   static Date parseDateTime(String dateTime) {
-      try {
+    try {
+        Instant instant = Instant.parse(dateTime);
+        return Date.from(instant);
+    } catch(Exception e1) {
+        // Fallback to legacy parsing in case of exception
+        try {
           return DATE_TIME_FORMATTER.parse(dateTime);
-      } catch (ParseException e) {
+        } catch (ParseException e2) {
           return new Date();
-      }
+        }
+    }
   }
 
   private Utils() {
