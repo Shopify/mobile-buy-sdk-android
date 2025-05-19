@@ -29,25 +29,29 @@ import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 
 final class Utils {
-    private static final SimpleDateFormat Z_DATE_TIME_FORMATTER = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", Locale.US);
+    private static final SimpleDateFormat Z_DATE_TIME_FORMATTER = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US);
     private static final SimpleDateFormat DATE_TIME_FORMATTER = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US);
+    private static final TimeZone timeZone = TimeZone.getTimeZone("UTC");
 
     static Date parseDateTime(String dateTime) {
-        try {
-            return Z_DATE_TIME_FORMATTER.parse(dateTime);
-        } catch (Exception ignored) {}
+        DATE_TIME_FORMATTER.setTimeZone(timeZone);
+        Z_DATE_TIME_FORMATTER.setTimeZone(timeZone);
 
         try {
-            // Fixes: https://github.com/Shopify/mobile-buy-sdk-android/issues/773
+            return Z_DATE_TIME_FORMATTER.parse(dateTime);
+        } catch (Exception ignored) { }
+
+        try {
             return DATE_TIME_FORMATTER.parse(dateTime);
-        } catch (ParseException ignored) {}
+        } catch (ParseException ignored) { }
 
         try {
             return DATE_TIME_FORMATTER.parse(new Date().toString());
         } catch (ParseException e) {
-           return new Date() ;
+            return new Date();
         }
     }
 
