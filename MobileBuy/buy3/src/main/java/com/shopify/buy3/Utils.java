@@ -31,22 +31,27 @@ import java.util.Date;
 import java.util.Locale;
 
 final class Utils {
-  private static final SimpleDateFormat DATE_TIME_FORMATTER = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", Locale.US);
+    private static final SimpleDateFormat Z_DATE_TIME_FORMATTER = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", Locale.US);
+    private static final SimpleDateFormat DATE_TIME_FORMATTER = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US);
 
-  static Date parseDateTime(String dateTime) {
-    try {
-        Instant instant = Instant.parse(dateTime);
-        return Date.from(instant);
-    } catch(Exception e1) {
-        // Fallback to legacy parsing in case of exception
+    static Date parseDateTime(String dateTime) {
         try {
-          return DATE_TIME_FORMATTER.parse(dateTime);
-        } catch (ParseException e2) {
-          return new Date();
+            return Z_DATE_TIME_FORMATTER.parse(dateTime);
+        } catch (Exception ignored) {}
+
+        try {
+            // Fixes: https://github.com/Shopify/mobile-buy-sdk-android/issues/773
+            return DATE_TIME_FORMATTER.parse(dateTime);
+        } catch (ParseException ignored) {}
+
+        try {
+
+        return DATE_TIME_FORMATTER.parse(new Date().toString());
+        } catch (ParseException e) {
+           return new Date() ;
         }
     }
-  }
 
-  private Utils() {
-  }
+    private Utils() {
+    }
 }

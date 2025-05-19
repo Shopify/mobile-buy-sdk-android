@@ -24,6 +24,13 @@
 package com.shopify.buy3
 
 import org.junit.Assert
+import org.junit.Test
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Date
+import java.util.TimeZone
+import java.util.concurrent.TimeUnit
+import kotlin.math.abs
 
 internal fun checkForIllegalArgumentException(action: () -> Unit) {
     try {
@@ -31,5 +38,28 @@ internal fun checkForIllegalArgumentException(action: () -> Unit) {
         Assert.fail("expected IllegalArgumentException")
     } catch (e: IllegalArgumentException) {
         // ignore
+    }
+}
+
+class UtilsTest {
+    @Test
+    fun testDateTimeParsingWithZFormat() {
+        val parsedDate = Utils.parseDateTime("2022-07-06T12:51:06Z")
+        Assert.assertEquals(
+            "Parsing returns current time instead of actual date", 
+            "Wed Jul 06 12:51:06 BST 2022",
+             parsedDate.toString()
+        )
+    }
+
+    @Test
+    fun testDateTimeParsingWithoutZFormat() {
+        val testDateStr = "2023-02-03T15:11:06"
+
+        Assert.assertEquals(
+            "Parsed date should match expected timestamp",
+            1675437066000,
+            Utils.parseDateTime(testDateStr).time
+        )
     }
 }
