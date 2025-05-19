@@ -45,8 +45,7 @@ final class Utils {
         } catch (ParseException ignored) {}
 
         try {
-
-        return DATE_TIME_FORMATTER.parse(new Date().toString());
+            return DATE_TIME_FORMATTER.parse(new Date().toString());
         } catch (ParseException e) {
            return new Date() ;
         }
