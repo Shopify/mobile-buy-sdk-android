@@ -24,6 +24,8 @@
 package com.shopify.buy3
 
 import org.junit.Assert
+import org.junit.Test
+import java.time.ZoneOffset
 
 internal fun checkForIllegalArgumentException(action: () -> Unit) {
     try {
@@ -31,5 +33,29 @@ internal fun checkForIllegalArgumentException(action: () -> Unit) {
         Assert.fail("expected IllegalArgumentException")
     } catch (e: IllegalArgumentException) {
         // ignore
+    }
+}
+
+class UtilsTest {
+    @Test
+    fun testDateTimeParsingFormat() {
+        val dateTimeStr = "2023-02-03T15:11:06"
+
+        Assert.assertEquals(
+            "Parsed date should match expected timestamp",
+            "2023-02-03T15:11:06Z",
+            Utils.parseDateTime(dateTimeStr).toInstant().atZone(ZoneOffset.UTC).toString()
+        )
+    }
+
+    @Test
+    fun test_Z_DateTimeParsingFormat() {
+        val dateTimeStr = "2022-07-06T00:51:06Z"
+        val dateTime = Utils.parseDateTime(dateTimeStr)
+        Assert.assertEquals(
+            "Parsing returns current time instead of actual date",
+            dateTimeStr,
+            dateTime.toInstant().atZone(ZoneOffset.UTC).toString()
+        )
     }
 }
