@@ -23,7 +23,7 @@ import java.io.Serializable;
 import java.util.*;
 
 public class Storefront {
-    public static final String API_VERSION = "2025-07";
+    public static final String API_VERSION = "2025-10";
 
     public static QueryRootQuery query(QueryRootQueryDefinition queryDef) {
         return query(Collections.emptyList(), queryDef);
@@ -136,6 +136,8 @@ public class Storefront {
 
         public BuyerInput buyer;
 
+        public VisitorConsent visitorConsent;
+
         public InContextDirective() {
             super("inContext");
         }
@@ -168,6 +170,12 @@ public class Storefront {
                 buyer.appendTo(_queryBuilder);
             }
 
+            if (visitorConsent != null) {
+                _queryBuilder.append(", ");
+                _queryBuilder.append("visitorConsent:");
+                visitorConsent.appendTo(_queryBuilder);
+            }
+
             _queryBuilder.append(")");
             return _queryBuilder.toString();
         }
@@ -178,9 +186,13 @@ public class Storefront {
     }
 
     /**
-    * A version of the API, as defined by [Shopify API
-    * versioning](https://shopify.dev/api/usage/versioning).
-    * Versions are commonly referred to by their handle (for example, `2021-10`).
+    * A version of the Shopify API. Each version has a unique handle in date-based format (YYYY-MM) or
+    * `unstable` for the development version.
+    * Shopify guarantees supported versions are stable. Unsupported versions include unstable and release
+    * candidate versions. Use the
+    * [`publicApiVersions`](https://shopify.dev/docs/api/storefront/current/queries/publicApiVersions)
+    * query to retrieve all available versions. Learn more about [Shopify API
+    * versioning](https://shopify.dev/docs/api/usage/versioning).
     */
     public static class ApiVersionQuery extends Query<ApiVersionQuery> {
         ApiVersionQuery(StringBuilder _queryBuilder) {
@@ -220,9 +232,13 @@ public class Storefront {
     }
 
     /**
-    * A version of the API, as defined by [Shopify API
-    * versioning](https://shopify.dev/api/usage/versioning).
-    * Versions are commonly referred to by their handle (for example, `2021-10`).
+    * A version of the Shopify API. Each version has a unique handle in date-based format (YYYY-MM) or
+    * `unstable` for the development version.
+    * Shopify guarantees supported versions are stable. Unsupported versions include unstable and release
+    * candidate versions. Use the
+    * [`publicApiVersions`](https://shopify.dev/docs/api/storefront/current/queries/publicApiVersions)
+    * query to retrieve all available versions. Learn more about [Shopify API
+    * versioning](https://shopify.dev/docs/api/usage/versioning).
     */
     public static class ApiVersion extends AbstractResponse<ApiVersion> {
         public ApiVersion() {
@@ -828,7 +844,15 @@ public class Storefront {
     }
 
     /**
-    * An article in an online store blog.
+    * A post that belongs to a [`Blog`](https://shopify.dev/docs/api/storefront/current/objects/Blog).
+    * Each article includes content with optional HTML formatting, an excerpt for previews,
+    * [`ArticleAuthor`](https://shopify.dev/docs/api/storefront/current/objects/ArticleAuthor)
+    * information, and an associated
+    * [`Image`](https://shopify.dev/docs/api/storefront/current/objects/Image).
+    * Articles can be organized with tags and include
+    * [`SEO`](https://shopify.dev/docs/api/storefront/current/objects/SEO) metadata. You can manage
+    * [comments](https://shopify.dev/docs/api/storefront/current/objects/Comment) when the blog's comment
+    * policy enables them.
     */
     public static class ArticleQuery extends Query<ArticleQuery> {
         ArticleQuery(StringBuilder _queryBuilder) {
@@ -1237,9 +1261,17 @@ public class Storefront {
     }
 
     /**
-    * An article in an online store blog.
+    * A post that belongs to a [`Blog`](https://shopify.dev/docs/api/storefront/current/objects/Blog).
+    * Each article includes content with optional HTML formatting, an excerpt for previews,
+    * [`ArticleAuthor`](https://shopify.dev/docs/api/storefront/current/objects/ArticleAuthor)
+    * information, and an associated
+    * [`Image`](https://shopify.dev/docs/api/storefront/current/objects/Image).
+    * Articles can be organized with tags and include
+    * [`SEO`](https://shopify.dev/docs/api/storefront/current/objects/SEO) metadata. You can manage
+    * [comments](https://shopify.dev/docs/api/storefront/current/objects/Comment) when the blog's comment
+    * policy enables them.
     */
-    public static class Article extends AbstractResponse<Article> implements HasMetafields, MenuItemResource, MetafieldParentResource, Node, OnlineStorePublishable, SearchResultItem, Trackable {
+    public static class Article extends AbstractResponse<Article> implements HasMetafields, MenuItemResource, MetafieldParentResource, MetafieldReference, Node, OnlineStorePublishable, SearchResultItem, Trackable {
         public Article() {
         }
 
@@ -2295,7 +2327,17 @@ public class Storefront {
     }
 
     /**
-    * Represents a generic custom attribute, such as whether an order is a customer's first.
+    * A custom key-value pair for storing additional information on
+    * [carts](https://shopify.dev/docs/api/storefront/current/objects/Cart), [cart
+    * lines](https://shopify.dev/docs/api/storefront/current/objects/CartLine),
+    * [orders](https://shopify.dev/docs/api/storefront/current/objects/Order), and [order line
+    * items](https://shopify.dev/docs/api/storefront/current/objects/OrderLineItem). Common uses include
+    * gift wrapping requests, customer notes, and tracking whether a customer is a first-time buyer.
+    * Attributes set on a cart carry over to the resulting order after checkout. Use the
+    * [`cartAttributesUpdate`](https://shopify.dev/docs/api/storefront/current/mutations/cartAttributesUpd
+    * ate) mutation to add or modify cart attributes. For a step-by-step guide, see [managing carts with
+    * the Storefront
+    * API](https://shopify.dev/docs/storefronts/headless/building-with-the-storefront-api/cart/manage).
     */
     public static class AttributeQuery extends Query<AttributeQuery> {
         AttributeQuery(StringBuilder _queryBuilder) {
@@ -2322,7 +2364,17 @@ public class Storefront {
     }
 
     /**
-    * Represents a generic custom attribute, such as whether an order is a customer's first.
+    * A custom key-value pair for storing additional information on
+    * [carts](https://shopify.dev/docs/api/storefront/current/objects/Cart), [cart
+    * lines](https://shopify.dev/docs/api/storefront/current/objects/CartLine),
+    * [orders](https://shopify.dev/docs/api/storefront/current/objects/Order), and [order line
+    * items](https://shopify.dev/docs/api/storefront/current/objects/OrderLineItem). Common uses include
+    * gift wrapping requests, customer notes, and tracking whether a customer is a first-time buyer.
+    * Attributes set on a cart carry over to the resulting order after checkout. Use the
+    * [`cartAttributesUpdate`](https://shopify.dev/docs/api/storefront/current/mutations/cartAttributesUpd
+    * ate) mutation to add or modify cart attributes. For a step-by-step guide, see [managing carts with
+    * the Storefront
+    * API](https://shopify.dev/docs/storefronts/headless/building-with-the-storefront-api/cart/manage).
     */
     public static class Attribute extends AbstractResponse<Attribute> {
         public Attribute() {
@@ -2444,7 +2496,13 @@ public class Storefront {
     }
 
     /**
-    * Automatic discount applications capture the intentions of a discount that was automatically applied.
+    * An [automatic
+    * discount](https://help.shopify.com/manual/discounts/discount-methods/automatic-discounts) applied to
+    * a cart or checkout without requiring a discount code. Implements the
+    * [`DiscountApplication`](https://shopify.dev/docs/api/storefront/current/interfaces/DiscountApplicati
+    * on) interface.
+    * Includes the discount's title, value, and allocation details that specify how the discount amount
+    * distributes across entitled line items or shipping lines.
     */
     public static class AutomaticDiscountApplicationQuery extends Query<AutomaticDiscountApplicationQuery> {
         AutomaticDiscountApplicationQuery(StringBuilder _queryBuilder) {
@@ -2502,7 +2560,13 @@ public class Storefront {
     }
 
     /**
-    * Automatic discount applications capture the intentions of a discount that was automatically applied.
+    * An [automatic
+    * discount](https://help.shopify.com/manual/discounts/discount-methods/automatic-discounts) applied to
+    * a cart or checkout without requiring a discount code. Implements the
+    * [`DiscountApplication`](https://shopify.dev/docs/api/storefront/current/interfaces/DiscountApplicati
+    * on) interface.
+    * Includes the discount's title, value, and allocation details that specify how the discount amount
+    * distributes across entitled line items or shipping lines.
     */
     public static class AutomaticDiscountApplication extends AbstractResponse<AutomaticDiscountApplication> implements DiscountApplication {
         public AutomaticDiscountApplication() {
@@ -2629,7 +2693,14 @@ public class Storefront {
     }
 
     /**
-    * Represents a cart line common fields.
+    * Defines the shared fields for items in a shopping cart. Implemented by
+    * [`CartLine`](https://shopify.dev/docs/api/storefront/current/objects/CartLine) for individual
+    * merchandise and
+    * [`ComponentizableCartLine`](https://shopify.dev/docs/api/storefront/current/objects/ComponentizableC
+    * artLine) for grouped merchandise like bundles.
+    * Each implementation includes the merchandise being purchased, quantity, cost breakdown, applied
+    * discounts, custom attributes, and any associated
+    * [`SellingPlan`](https://shopify.dev/docs/api/storefront/current/objects/SellingPlan).
     */
     public static class BaseCartLineQuery extends Query<BaseCartLineQuery> {
         BaseCartLineQuery(StringBuilder _queryBuilder) {
@@ -2796,7 +2867,14 @@ public class Storefront {
     }
 
     /**
-    * Represents a cart line common fields.
+    * Defines the shared fields for items in a shopping cart. Implemented by
+    * [`CartLine`](https://shopify.dev/docs/api/storefront/current/objects/CartLine) for individual
+    * merchandise and
+    * [`ComponentizableCartLine`](https://shopify.dev/docs/api/storefront/current/objects/ComponentizableC
+    * artLine) for grouped merchandise like bundles.
+    * Each implementation includes the merchandise being purchased, quantity, cost breakdown, applied
+    * discounts, custom attributes, and any associated
+    * [`SellingPlan`](https://shopify.dev/docs/api/storefront/current/objects/SellingPlan).
     */
     public static class UnknownBaseCartLine extends AbstractResponse<UnknownBaseCartLine> implements BaseCartLine {
         public UnknownBaseCartLine() {
@@ -3318,7 +3396,15 @@ public class Storefront {
     }
 
     /**
-    * An online store blog.
+    * A blog container for [`Article`](https://shopify.dev/docs/api/storefront/current/objects/Article)
+    * objects. Stores can have multiple blogs, for example to organize content by topic or purpose.
+    * Each blog provides access to its articles, contributing
+    * [`ArticleAuthor`](https://shopify.dev/docs/api/storefront/current/objects/ArticleAuthor) objects,
+    * and [`SEO`](https://shopify.dev/docs/api/storefront/current/objects/SEO) information. You can
+    * retrieve articles individually [by
+    * handle](https://shopify.dev/docs/api/storefront/current/objects/Blog#field-Blog.fields.articleByHand
+    * le) or as a [paginated
+    * list](https://shopify.dev/docs/api/storefront/current/objects/Blog#field-Blog.fields.articles).
     */
     public static class BlogQuery extends Query<BlogQuery> {
         BlogQuery(StringBuilder _queryBuilder) {
@@ -3602,7 +3688,15 @@ public class Storefront {
     }
 
     /**
-    * An online store blog.
+    * A blog container for [`Article`](https://shopify.dev/docs/api/storefront/current/objects/Article)
+    * objects. Stores can have multiple blogs, for example to organize content by topic or purpose.
+    * Each blog provides access to its articles, contributing
+    * [`ArticleAuthor`](https://shopify.dev/docs/api/storefront/current/objects/ArticleAuthor) objects,
+    * and [`SEO`](https://shopify.dev/docs/api/storefront/current/objects/SEO) information. You can
+    * retrieve articles individually [by
+    * handle](https://shopify.dev/docs/api/storefront/current/objects/Blog#field-Blog.fields.articleByHand
+    * le) or as a [paginated
+    * list](https://shopify.dev/docs/api/storefront/current/objects/Blog#field-Blog.fields.articles).
     */
     public static class Blog extends AbstractResponse<Blog> implements HasMetafields, MenuItemResource, MetafieldParentResource, Node, OnlineStorePublishable {
         public Blog() {
@@ -4232,7 +4326,10 @@ public class Storefront {
 
     /**
     * The store's [branding
-    * configuration](https://help.shopify.com/en/manual/promoting-marketing/managing-brand-assets).
+    * configuration](https://help.shopify.com/manual/promoting-marketing/managing-brand-assets), such as
+    * logos, colors, and slogan. Access this through the
+    * [`Shop`](https://shopify.dev/docs/api/storefront/current/objects/Shop#field-Shop.fields.brand)
+    * object to display consistent brand assets across your storefront.
     */
     public static class BrandQuery extends Query<BrandQuery> {
         BrandQuery(StringBuilder _queryBuilder) {
@@ -4312,7 +4409,10 @@ public class Storefront {
 
     /**
     * The store's [branding
-    * configuration](https://help.shopify.com/en/manual/promoting-marketing/managing-brand-assets).
+    * configuration](https://help.shopify.com/manual/promoting-marketing/managing-brand-assets), such as
+    * logos, colors, and slogan. Access this through the
+    * [`Shop`](https://shopify.dev/docs/api/storefront/current/objects/Shop#field-Shop.fields.brand)
+    * object to display consistent brand assets across your storefront.
     */
     public static class Brand extends AbstractResponse<Brand> {
         public Brand() {
@@ -4898,11 +4998,13 @@ public class Storefront {
     }
 
     /**
-    * A cart represents the merchandise that a buyer intends to purchase,
-    * and the estimated cost associated with the cart. Learn how to
-    * [interact with a
-    * cart](https://shopify.dev/custom-storefronts/internationalization/international-pricing)
-    * during a customer's session.
+    * A cart represents the merchandise that a buyer intends to purchase, and the estimated cost
+    * associated with the cart, throughout a customer's session.
+    * Use the
+    * [`checkoutUrl`](https://shopify.dev/docs/api/storefront/current/objects/Cart#field-checkoutUrl)
+    * field to direct buyers to Shopify's web checkout to complete their purchase.
+    * Learn more about [interacting with
+    * carts](https://shopify.dev/docs/storefronts/headless/building-with-the-storefront-api/cart/manage).
     */
     public static class CartQuery extends Query<CartQuery> {
         CartQuery(StringBuilder _queryBuilder) {
@@ -5126,7 +5228,10 @@ public class Storefront {
 
         /**
         * The discounts that have been applied to the entire cart.
+        *
+        * @deprecated Use `cart.lines[].discountAllocations(lineLevelOnly: false)` and `cart.deliveryGroups[].discountAllocations` instead.
         */
+        @Deprecated
         public CartQuery discountAllocations(CartDiscountAllocationQueryDefinition queryDef) {
             startField("discountAllocations");
 
@@ -5368,11 +5473,13 @@ public class Storefront {
     }
 
     /**
-    * A cart represents the merchandise that a buyer intends to purchase,
-    * and the estimated cost associated with the cart. Learn how to
-    * [interact with a
-    * cart](https://shopify.dev/custom-storefronts/internationalization/international-pricing)
-    * during a customer's session.
+    * A cart represents the merchandise that a buyer intends to purchase, and the estimated cost
+    * associated with the cart, throughout a customer's session.
+    * Use the
+    * [`checkoutUrl`](https://shopify.dev/docs/api/storefront/current/objects/Cart#field-checkoutUrl)
+    * field to direct buyers to Shopify's web checkout to complete their purchase.
+    * Learn more about [interacting with
+    * carts](https://shopify.dev/docs/storefronts/headless/building-with-the-storefront-api/cart/manage).
     */
     public static class Cart extends AbstractResponse<Cart> implements HasMetafields, MetafieldParentResource, Node {
         public Cart() {
@@ -5685,8 +5792,11 @@ public class Storefront {
 
         /**
         * The discounts that have been applied to the entire cart.
+        *
+        * @deprecated Use `cart.lines[].discountAllocations(lineLevelOnly: false)` and `cart.deliveryGroups[].discountAllocations` instead.
         */
 
+        @Deprecated
         public List<CartDiscountAllocation> getDiscountAllocations() {
             return (List<CartDiscountAllocation>) get("discountAllocations");
         }
@@ -6164,7 +6274,11 @@ public class Storefront {
     }
 
     /**
-    * The discounts automatically applied to the cart line based on prerequisites that have been met.
+    * A discount allocation [that applies
+    * automatically](https://help.shopify.com/manual/discounts/discount-methods/automatic-discounts) to a
+    * cart line when configured conditions are met. Unlike
+    * [`CartCodeDiscountAllocation`](https://shopify.dev/docs/api/storefront/current/objects/CartCodeDisco
+    * untAllocation), automatic discounts don't require customers to enter a code.
     */
     public static class CartAutomaticDiscountAllocationQuery extends Query<CartAutomaticDiscountAllocationQuery> {
         CartAutomaticDiscountAllocationQuery(StringBuilder _queryBuilder) {
@@ -6173,7 +6287,10 @@ public class Storefront {
 
         /**
         * The discount that have been applied on the cart line.
+        *
+        * @deprecated Use `sourceDiscountApplication` instead.
         */
+        @Deprecated
         public CartAutomaticDiscountAllocationQuery discountApplication(CartDiscountApplicationQueryDefinition queryDef) {
             startField("discountApplication");
 
@@ -6217,7 +6334,11 @@ public class Storefront {
     }
 
     /**
-    * The discounts automatically applied to the cart line based on prerequisites that have been met.
+    * A discount allocation [that applies
+    * automatically](https://help.shopify.com/manual/discounts/discount-methods/automatic-discounts) to a
+    * cart line when configured conditions are met. Unlike
+    * [`CartCodeDiscountAllocation`](https://shopify.dev/docs/api/storefront/current/objects/CartCodeDisco
+    * untAllocation), automatic discounts don't require customers to enter a code.
     */
     public static class CartAutomaticDiscountAllocation extends AbstractResponse<CartAutomaticDiscountAllocation> implements CartDiscountAllocation {
         public CartAutomaticDiscountAllocation() {
@@ -6269,8 +6390,11 @@ public class Storefront {
 
         /**
         * The discount that have been applied on the cart line.
+        *
+        * @deprecated Use `sourceDiscountApplication` instead.
         */
 
+        @Deprecated
         public CartDiscountApplication getDiscountApplication() {
             return (CartDiscountApplication) get("discountApplication");
         }
@@ -6501,7 +6625,18 @@ public class Storefront {
     }
 
     /**
-    * Represents information about the buyer that is interacting with the cart.
+    * Contact information about the buyer interacting with a
+    * [cart](https://shopify.dev/docs/api/storefront/current/objects/Cart). The buyer's country determines
+    * [international
+    * pricing](https://shopify.dev/docs/storefronts/headless/building-with-the-storefront-api/markets/inte
+    * rnational-pricing) and should match their shipping address.
+    * For B2B scenarios, the
+    * [`purchasingCompany`](https://shopify.dev/docs/api/storefront/current/objects/CartBuyerIdentity#fiel
+    * d-CartBuyerIdentity.fields.purchasingCompany) field identifies the company and location on whose
+    * behalf a business customer purchases. The
+    * [`preferences`](https://shopify.dev/docs/api/storefront/current/objects/CartBuyerIdentity#field-Cart
+    * BuyerIdentity.fields.preferences) field stores delivery and wallet settings that prefill checkout
+    * fields to streamline the buying process.
     */
     public static class CartBuyerIdentityQuery extends Query<CartBuyerIdentityQuery> {
         CartBuyerIdentityQuery(StringBuilder _queryBuilder) {
@@ -6601,7 +6736,18 @@ public class Storefront {
     }
 
     /**
-    * Represents information about the buyer that is interacting with the cart.
+    * Contact information about the buyer interacting with a
+    * [cart](https://shopify.dev/docs/api/storefront/current/objects/Cart). The buyer's country determines
+    * [international
+    * pricing](https://shopify.dev/docs/storefronts/headless/building-with-the-storefront-api/markets/inte
+    * rnational-pricing) and should match their shipping address.
+    * For B2B scenarios, the
+    * [`purchasingCompany`](https://shopify.dev/docs/api/storefront/current/objects/CartBuyerIdentity#fiel
+    * d-CartBuyerIdentity.fields.purchasingCompany) field identifies the company and location on whose
+    * behalf a business customer purchases. The
+    * [`preferences`](https://shopify.dev/docs/api/storefront/current/objects/CartBuyerIdentity#field-Cart
+    * BuyerIdentity.fields.preferences) field stores delivery and wallet settings that prefill checkout
+    * fields to streamline the buying process.
     */
     public static class CartBuyerIdentity extends AbstractResponse<CartBuyerIdentity> {
         public CartBuyerIdentity() {
@@ -7282,12 +7428,178 @@ public class Storefront {
         }
     }
 
+    public interface CartClonePayloadQueryDefinition {
+        void define(CartClonePayloadQuery _queryBuilder);
+    }
+
+    /**
+    * Return type for `cartClone` mutation.
+    */
+    public static class CartClonePayloadQuery extends Query<CartClonePayloadQuery> {
+        CartClonePayloadQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * The newly created cart without PII. This is a different cart from the source.
+        */
+        public CartClonePayloadQuery cart(CartQueryDefinition queryDef) {
+            startField("cart");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CartQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * The list of errors that occurred from executing the mutation.
+        */
+        public CartClonePayloadQuery userErrors(CartUserErrorQueryDefinition queryDef) {
+            startField("userErrors");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CartUserErrorQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * A list of warnings that occurred during the mutation.
+        */
+        public CartClonePayloadQuery warnings(CartWarningQueryDefinition queryDef) {
+            startField("warnings");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CartWarningQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+    }
+
+    /**
+    * Return type for `cartClone` mutation.
+    */
+    public static class CartClonePayload extends AbstractResponse<CartClonePayload> {
+        public CartClonePayload() {
+        }
+
+        public CartClonePayload(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "cart": {
+                        Cart optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new Cart(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "userErrors": {
+                        List<CartUserError> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new CartUserError(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "warnings": {
+                        List<CartWarning> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new CartWarning(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "CartClonePayload";
+        }
+
+        /**
+        * The newly created cart without PII. This is a different cart from the source.
+        */
+
+        public Cart getCart() {
+            return (Cart) get("cart");
+        }
+
+        public CartClonePayload setCart(Cart arg) {
+            optimisticData.put(getKey("cart"), arg);
+            return this;
+        }
+
+        /**
+        * The list of errors that occurred from executing the mutation.
+        */
+
+        public List<CartUserError> getUserErrors() {
+            return (List<CartUserError>) get("userErrors");
+        }
+
+        public CartClonePayload setUserErrors(List<CartUserError> arg) {
+            optimisticData.put(getKey("userErrors"), arg);
+            return this;
+        }
+
+        /**
+        * A list of warnings that occurred during the mutation.
+        */
+
+        public List<CartWarning> getWarnings() {
+            return (List<CartWarning>) get("warnings");
+        }
+
+        public CartClonePayload setWarnings(List<CartWarning> arg) {
+            optimisticData.put(getKey("warnings"), arg);
+            return this;
+        }
+
+        @Override
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "cart": return true;
+
+                case "userErrors": return true;
+
+                case "warnings": return true;
+
+                default: return false;
+            }
+        }
+    }
+
     public interface CartCodeDiscountAllocationQueryDefinition {
         void define(CartCodeDiscountAllocationQuery _queryBuilder);
     }
 
     /**
-    * The discount that has been applied to the cart line using a discount code.
+    * A discount allocation applied to a cart line when a customer enters a [discount
+    * code](https://help.shopify.com/manual/discounts/discount-methods/discount-codes).
     */
     public static class CartCodeDiscountAllocationQuery extends Query<CartCodeDiscountAllocationQuery> {
         CartCodeDiscountAllocationQuery(StringBuilder _queryBuilder) {
@@ -7305,7 +7617,10 @@ public class Storefront {
 
         /**
         * The discount that have been applied on the cart line.
+        *
+        * @deprecated Use `sourceDiscountApplication` instead.
         */
+        @Deprecated
         public CartCodeDiscountAllocationQuery discountApplication(CartDiscountApplicationQueryDefinition queryDef) {
             startField("discountApplication");
 
@@ -7340,7 +7655,8 @@ public class Storefront {
     }
 
     /**
-    * The discount that has been applied to the cart line using a discount code.
+    * A discount allocation applied to a cart line when a customer enters a [discount
+    * code](https://help.shopify.com/manual/discounts/discount-methods/discount-codes).
     */
     public static class CartCodeDiscountAllocation extends AbstractResponse<CartCodeDiscountAllocation> implements CartDiscountAllocation {
         public CartCodeDiscountAllocation() {
@@ -7405,8 +7721,11 @@ public class Storefront {
 
         /**
         * The discount that have been applied on the cart line.
+        *
+        * @deprecated Use `sourceDiscountApplication` instead.
         */
 
+        @Deprecated
         public CartDiscountApplication getDiscountApplication() {
             return (CartDiscountApplication) get("discountApplication");
         }
@@ -8102,12 +8421,15 @@ public class Storefront {
     }
 
     /**
-    * The costs that the buyer will pay at checkout.
-    * The cart cost uses
-    * [`CartBuyerIdentity`](https://shopify.dev/api/storefront/reference/cart/cartbuyeridentity) to
-    * determine
-    * [international
-    * pricing](https://shopify.dev/custom-storefronts/internationalization/international-pricing).
+    * The estimated costs that a buyer will pay at checkout. The `Cart` object's
+    * [`cost`](https://shopify.dev/docs/api/storefront/current/objects/Cart#field-Cart.fields.cost) field
+    * returns this. The costs are subject to change and changes will be reflected at checkout. Costs
+    * reflect [international
+    * pricing](https://shopify.dev/docs/storefronts/headless/building-with-the-storefront-api/markets/inte
+    * rnational-pricing) based on the buyer's context.
+    * Amounts include the subtotal before taxes and cart-level discounts, the checkout charge amount
+    * excluding deferred payments, and the total. The subtotal and total amounts each include a
+    * corresponding boolean field indicating whether the value is an estimate.
     */
     public static class CartCostQuery extends Query<CartCostQuery> {
         CartCostQuery(StringBuilder _queryBuilder) {
@@ -8243,12 +8565,15 @@ public class Storefront {
     }
 
     /**
-    * The costs that the buyer will pay at checkout.
-    * The cart cost uses
-    * [`CartBuyerIdentity`](https://shopify.dev/api/storefront/reference/cart/cartbuyeridentity) to
-    * determine
-    * [international
-    * pricing](https://shopify.dev/custom-storefronts/internationalization/international-pricing).
+    * The estimated costs that a buyer will pay at checkout. The `Cart` object's
+    * [`cost`](https://shopify.dev/docs/api/storefront/current/objects/Cart#field-Cart.fields.cost) field
+    * returns this. The costs are subject to change and changes will be reflected at checkout. Costs
+    * reflect [international
+    * pricing](https://shopify.dev/docs/storefronts/headless/building-with-the-storefront-api/markets/inte
+    * rnational-pricing) based on the buyer's context.
+    * Amounts include the subtotal before taxes and cart-level discounts, the checkout charge amount
+    * excluding deferred payments, and the total. The subtotal and total amounts each include a
+    * corresponding boolean field indicating whether the value is an estimate.
     */
     public static class CartCost extends AbstractResponse<CartCost> {
         public CartCost() {
@@ -8678,7 +9003,10 @@ public class Storefront {
 
         /**
         * The discount that have been applied on the cart line.
+        *
+        * @deprecated Use `sourceDiscountApplication` instead.
         */
+        @Deprecated
         public CartCustomDiscountAllocationQuery discountApplication(CartDiscountApplicationQueryDefinition queryDef) {
             startField("discountApplication");
 
@@ -8774,8 +9102,11 @@ public class Storefront {
 
         /**
         * The discount that have been applied on the cart line.
+        *
+        * @deprecated Use `sourceDiscountApplication` instead.
         */
 
+        @Deprecated
         public CartDiscountApplication getDiscountApplication() {
             return (CartDiscountApplication) get("discountApplication");
         }
@@ -10219,6 +10550,171 @@ public class Storefront {
         }
     }
 
+    public interface CartDeliveryAddressesReplacePayloadQueryDefinition {
+        void define(CartDeliveryAddressesReplacePayloadQuery _queryBuilder);
+    }
+
+    /**
+    * Return type for `cartDeliveryAddressesReplace` mutation.
+    */
+    public static class CartDeliveryAddressesReplacePayloadQuery extends Query<CartDeliveryAddressesReplacePayloadQuery> {
+        CartDeliveryAddressesReplacePayloadQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * The updated cart.
+        */
+        public CartDeliveryAddressesReplacePayloadQuery cart(CartQueryDefinition queryDef) {
+            startField("cart");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CartQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * The list of errors that occurred from executing the mutation.
+        */
+        public CartDeliveryAddressesReplacePayloadQuery userErrors(CartUserErrorQueryDefinition queryDef) {
+            startField("userErrors");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CartUserErrorQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * A list of warnings that occurred during the mutation.
+        */
+        public CartDeliveryAddressesReplacePayloadQuery warnings(CartWarningQueryDefinition queryDef) {
+            startField("warnings");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CartWarningQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+    }
+
+    /**
+    * Return type for `cartDeliveryAddressesReplace` mutation.
+    */
+    public static class CartDeliveryAddressesReplacePayload extends AbstractResponse<CartDeliveryAddressesReplacePayload> {
+        public CartDeliveryAddressesReplacePayload() {
+        }
+
+        public CartDeliveryAddressesReplacePayload(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "cart": {
+                        Cart optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new Cart(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "userErrors": {
+                        List<CartUserError> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new CartUserError(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "warnings": {
+                        List<CartWarning> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new CartWarning(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "CartDeliveryAddressesReplacePayload";
+        }
+
+        /**
+        * The updated cart.
+        */
+
+        public Cart getCart() {
+            return (Cart) get("cart");
+        }
+
+        public CartDeliveryAddressesReplacePayload setCart(Cart arg) {
+            optimisticData.put(getKey("cart"), arg);
+            return this;
+        }
+
+        /**
+        * The list of errors that occurred from executing the mutation.
+        */
+
+        public List<CartUserError> getUserErrors() {
+            return (List<CartUserError>) get("userErrors");
+        }
+
+        public CartDeliveryAddressesReplacePayload setUserErrors(List<CartUserError> arg) {
+            optimisticData.put(getKey("userErrors"), arg);
+            return this;
+        }
+
+        /**
+        * A list of warnings that occurred during the mutation.
+        */
+
+        public List<CartWarning> getWarnings() {
+            return (List<CartWarning>) get("warnings");
+        }
+
+        public CartDeliveryAddressesReplacePayload setWarnings(List<CartWarning> arg) {
+            optimisticData.put(getKey("warnings"), arg);
+            return this;
+        }
+
+        @Override
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "cart": return true;
+
+                case "userErrors": return true;
+
+                case "warnings": return true;
+
+                default: return false;
+            }
+        }
+    }
+
     public interface CartDeliveryAddressesUpdatePayloadQueryDefinition {
         void define(CartDeliveryAddressesUpdatePayloadQuery _queryBuilder);
     }
@@ -10585,8 +11081,12 @@ public class Storefront {
     }
 
     /**
-    * Information about the options available for one or more line items to be delivered to a specific
-    * address.
+    * Groups cart line items that share the same delivery destination. Each group provides the available
+    * [`CartDeliveryOption`](https://shopify.dev/docs/api/storefront/current/objects/CartDeliveryOption)
+    * choices for that address, along with the customer's selected option.
+    * Access through the [`Cart`](https://shopify.dev/docs/api/storefront/current/objects/Cart) object's
+    * `deliveryGroups` field. Items are grouped by merchandise type (one-time purchase vs subscription),
+    * allowing different delivery methods for each.
     */
     public static class CartDeliveryGroupQuery extends Query<CartDeliveryGroupQuery> {
         CartDeliveryGroupQuery(StringBuilder _queryBuilder) {
@@ -10741,8 +11241,12 @@ public class Storefront {
     }
 
     /**
-    * Information about the options available for one or more line items to be delivered to a specific
-    * address.
+    * Groups cart line items that share the same delivery destination. Each group provides the available
+    * [`CartDeliveryOption`](https://shopify.dev/docs/api/storefront/current/objects/CartDeliveryOption)
+    * choices for that address, along with the customer's selected option.
+    * Access through the [`Cart`](https://shopify.dev/docs/api/storefront/current/objects/Cart) object's
+    * `deliveryGroups` field. Items are grouped by merchandise type (one-time purchase vs subscription),
+    * allowing different delivery methods for each.
     */
     public static class CartDeliveryGroup extends AbstractResponse<CartDeliveryGroup> {
         public CartDeliveryGroup() {
@@ -11289,7 +11793,15 @@ public class Storefront {
     }
 
     /**
-    * Information about a delivery option.
+    * A shipping or delivery choice available to customers during checkout. Each option includes a title,
+    * estimated cost, and delivery method type such as shipping or local pickup.
+    * Returned by the
+    * [`CartDeliveryGroup`](https://shopify.dev/docs/api/storefront/current/objects/CartDeliveryGroup)
+    * object's
+    * [`deliveryOptions`](https://shopify.dev/docs/api/storefront/current/objects/CartDeliveryGroup#field-
+    * CartDeliveryGroup.fields.deliveryOptions) field and
+    * [`selectedDeliveryOption`](https://shopify.dev/docs/api/storefront/current/objects/CartDeliveryGroup
+    * #field-CartDeliveryGroup.fields.selectedDeliveryOption) field.
     */
     public static class CartDeliveryOptionQuery extends Query<CartDeliveryOptionQuery> {
         CartDeliveryOptionQuery(StringBuilder _queryBuilder) {
@@ -11356,7 +11868,15 @@ public class Storefront {
     }
 
     /**
-    * Information about a delivery option.
+    * A shipping or delivery choice available to customers during checkout. Each option includes a title,
+    * estimated cost, and delivery method type such as shipping or local pickup.
+    * Returned by the
+    * [`CartDeliveryGroup`](https://shopify.dev/docs/api/storefront/current/objects/CartDeliveryGroup)
+    * object's
+    * [`deliveryOptions`](https://shopify.dev/docs/api/storefront/current/objects/CartDeliveryGroup#field-
+    * CartDeliveryGroup.fields.deliveryOptions) field and
+    * [`selectedDeliveryOption`](https://shopify.dev/docs/api/storefront/current/objects/CartDeliveryGroup
+    * #field-CartDeliveryGroup.fields.selectedDeliveryOption) field.
     */
     public static class CartDeliveryOption extends AbstractResponse<CartDeliveryOption> {
         public CartDeliveryOption() {
@@ -11931,7 +12451,15 @@ public class Storefront {
     }
 
     /**
-    * The discounts that have been applied to the cart line.
+    * A common interface for querying discount allocations regardless of how the discount was applied
+    * ([automatic](https://help.shopify.com/manual/discounts/discount-methods/automatic-discounts),
+    * [code](https://help.shopify.com/manual/discounts/discount-methods/discount-codes), or custom). Each
+    * implementation represents a different discount source.
+    * Tracks how a discount distributes across [cart
+    * lines](https://shopify.dev/docs/api/storefront/current/objects/CartLine). Each allocation includes
+    * the
+    * [`CartDiscountApplication`](https://shopify.dev/docs/api/storefront/current/objects/CartDiscountAppl
+    * ication) details, the discounted amount, and whether the discount targets line items or shipping.
     */
     public static class CartDiscountAllocationQuery extends Query<CartDiscountAllocationQuery> {
         CartDiscountAllocationQuery(StringBuilder _queryBuilder) {
@@ -11942,7 +12470,10 @@ public class Storefront {
 
         /**
         * The discount that have been applied on the cart line.
+        *
+        * @deprecated Use `sourceDiscountApplication` instead.
         */
+        @Deprecated
         public CartDiscountAllocationQuery discountApplication(CartDiscountApplicationQueryDefinition queryDef) {
             startField("discountApplication");
 
@@ -12008,7 +12539,15 @@ public class Storefront {
     }
 
     /**
-    * The discounts that have been applied to the cart line.
+    * A common interface for querying discount allocations regardless of how the discount was applied
+    * ([automatic](https://help.shopify.com/manual/discounts/discount-methods/automatic-discounts),
+    * [code](https://help.shopify.com/manual/discounts/discount-methods/discount-codes), or custom). Each
+    * implementation represents a different discount source.
+    * Tracks how a discount distributes across [cart
+    * lines](https://shopify.dev/docs/api/storefront/current/objects/CartLine). Each allocation includes
+    * the
+    * [`CartDiscountApplication`](https://shopify.dev/docs/api/storefront/current/objects/CartDiscountAppl
+    * ication) details, the discounted amount, and whether the discount targets line items or shipping.
     */
     public static class UnknownCartDiscountAllocation extends AbstractResponse<UnknownCartDiscountAllocation> implements CartDiscountAllocation {
         public UnknownCartDiscountAllocation() {
@@ -12075,8 +12614,11 @@ public class Storefront {
 
         /**
         * The discount that have been applied on the cart line.
+        *
+        * @deprecated Use `sourceDiscountApplication` instead.
         */
 
+        @Deprecated
         public CartDiscountApplication getDiscountApplication() {
             return (CartDiscountApplication) get("discountApplication");
         }
@@ -12129,8 +12671,11 @@ public class Storefront {
     }
 
     /**
-    * The discount application capture the intentions of a discount source at
-    * the time of application.
+    * Captures the intent of a discount source at the time it was applied to a cart. This includes the
+    * discount value, how it's allocated across entitled items, and which line types it targets.
+    * The actual discounted amounts on specific cart lines are represented by
+    * [`CartDiscountAllocation`](https://shopify.dev/docs/api/storefront/current/interfaces/CartDiscountAl
+    * location) objects, which reference this application.
     */
     public static class CartDiscountApplicationQuery extends Query<CartDiscountApplicationQuery> {
         CartDiscountApplicationQuery(StringBuilder _queryBuilder) {
@@ -12179,8 +12724,11 @@ public class Storefront {
     }
 
     /**
-    * The discount application capture the intentions of a discount source at
-    * the time of application.
+    * Captures the intent of a discount source at the time it was applied to a cart. This includes the
+    * discount value, how it's allocated across entitled items, and which line types it targets.
+    * The actual discounted amounts on specific cart lines are represented by
+    * [`CartDiscountAllocation`](https://shopify.dev/docs/api/storefront/current/interfaces/CartDiscountAl
+    * location) objects, which reference this application.
     */
     public static class CartDiscountApplication extends AbstractResponse<CartDiscountApplication> {
         public CartDiscountApplication() {
@@ -12288,7 +12836,14 @@ public class Storefront {
     }
 
     /**
-    * The discount codes applied to the cart.
+    * A discount code applied to a [`Cart`](https://shopify.dev/docs/api/storefront/current/objects/Cart).
+    * Discount codes are case-insensitive and can be added using the
+    * [`cartDiscountCodesUpdate`](https://shopify.dev/docs/api/storefront/current/mutations/cartDiscountCo
+    * desUpdate) mutation.
+    * The
+    * [`applicable`](https://shopify.dev/docs/api/storefront/current/objects/CartDiscountCode#field-CartDi
+    * scountCode.fields.applicable) field indicates whether the code applies to the cart's current
+    * contents, which might change as items are added or removed.
     */
     public static class CartDiscountCodeQuery extends Query<CartDiscountCodeQuery> {
         CartDiscountCodeQuery(StringBuilder _queryBuilder) {
@@ -12315,7 +12870,14 @@ public class Storefront {
     }
 
     /**
-    * The discount codes applied to the cart.
+    * A discount code applied to a [`Cart`](https://shopify.dev/docs/api/storefront/current/objects/Cart).
+    * Discount codes are case-insensitive and can be added using the
+    * [`cartDiscountCodesUpdate`](https://shopify.dev/docs/api/storefront/current/mutations/cartDiscountCo
+    * desUpdate) mutation.
+    * The
+    * [`applicable`](https://shopify.dev/docs/api/storefront/current/objects/CartDiscountCode#field-CartDi
+    * scountCode.fields.applicable) field indicates whether the code applies to the cart's current
+    * contents, which might change as items are added or removed.
     */
     public static class CartDiscountCode extends AbstractResponse<CartDiscountCode> {
         public CartDiscountCode() {
@@ -12546,7 +13108,10 @@ public class Storefront {
     }
 
     /**
-    * Possible error codes that can be returned by `CartUserError`.
+    * Error codes returned by
+    * [`CartUserError`](https://shopify.dev/docs/api/storefront/current/objects/CartUserError) during cart
+    * mutations. Covers validation failures for addresses, quantities, delivery options, merchandise
+    * lines, discount codes, and metafields.
     */
     public enum CartErrorCode {
         /**
@@ -12578,6 +13143,16 @@ public class Storefront {
         * The specified address field is too long.
         */
         ADDRESS_FIELD_IS_TOO_LONG,
+
+        /**
+        * Bundles and addons cannot be mixed.
+        */
+        BUNDLES_AND_ADDONS_CANNOT_BE_MIXED,
+
+        /**
+        * Buyer cannot purchase for company location.
+        */
+        BUYER_CANNOT_PURCHASE_FOR_COMPANY_LOCATION,
 
         /**
         * The cart is too large to save.
@@ -12660,6 +13235,11 @@ public class Storefront {
         MAXIMUM_EXCEEDED,
 
         /**
+        * Item cannot be purchased as configured.
+        */
+        MERCHANDISE_NOT_APPLICABLE,
+
+        /**
         * The quantity must be above the specified minimum for the item.
         */
         MINIMUM_NOT_MET,
@@ -12688,6 +13268,21 @@ public class Storefront {
         * Only one delivery address can be selected.
         */
         ONLY_ONE_DELIVERY_ADDRESS_CAN_BE_SELECTED,
+
+        /**
+        * Parent line nesting is too deep or circular.
+        */
+        PARENT_LINE_NESTING_TOO_DEEP,
+
+        /**
+        * Parent line not found.
+        */
+        PARENT_LINE_NOT_FOUND,
+
+        /**
+        * Nested cartlines are blocked due to an incompatibility.
+        */
+        PARENT_LINE_OPERATION_BLOCKED,
 
         /**
         * Credit card has expired.
@@ -12826,6 +13421,14 @@ public class Storefront {
                     return ADDRESS_FIELD_IS_TOO_LONG;
                 }
 
+                case "BUNDLES_AND_ADDONS_CANNOT_BE_MIXED": {
+                    return BUNDLES_AND_ADDONS_CANNOT_BE_MIXED;
+                }
+
+                case "BUYER_CANNOT_PURCHASE_FOR_COMPANY_LOCATION": {
+                    return BUYER_CANNOT_PURCHASE_FOR_COMPANY_LOCATION;
+                }
+
                 case "CART_TOO_LARGE": {
                     return CART_TOO_LARGE;
                 }
@@ -12890,6 +13493,10 @@ public class Storefront {
                     return MAXIMUM_EXCEEDED;
                 }
 
+                case "MERCHANDISE_NOT_APPLICABLE": {
+                    return MERCHANDISE_NOT_APPLICABLE;
+                }
+
                 case "MINIMUM_NOT_MET": {
                     return MINIMUM_NOT_MET;
                 }
@@ -12912,6 +13519,18 @@ public class Storefront {
 
                 case "ONLY_ONE_DELIVERY_ADDRESS_CAN_BE_SELECTED": {
                     return ONLY_ONE_DELIVERY_ADDRESS_CAN_BE_SELECTED;
+                }
+
+                case "PARENT_LINE_NESTING_TOO_DEEP": {
+                    return PARENT_LINE_NESTING_TOO_DEEP;
+                }
+
+                case "PARENT_LINE_NOT_FOUND": {
+                    return PARENT_LINE_NOT_FOUND;
+                }
+
+                case "PARENT_LINE_OPERATION_BLOCKED": {
+                    return PARENT_LINE_OPERATION_BLOCKED;
                 }
 
                 case "PAYMENTS_CREDIT_CARD_BASE_EXPIRED": {
@@ -13029,6 +13648,14 @@ public class Storefront {
                     return "ADDRESS_FIELD_IS_TOO_LONG";
                 }
 
+                case BUNDLES_AND_ADDONS_CANNOT_BE_MIXED: {
+                    return "BUNDLES_AND_ADDONS_CANNOT_BE_MIXED";
+                }
+
+                case BUYER_CANNOT_PURCHASE_FOR_COMPANY_LOCATION: {
+                    return "BUYER_CANNOT_PURCHASE_FOR_COMPANY_LOCATION";
+                }
+
                 case CART_TOO_LARGE: {
                     return "CART_TOO_LARGE";
                 }
@@ -13093,6 +13720,10 @@ public class Storefront {
                     return "MAXIMUM_EXCEEDED";
                 }
 
+                case MERCHANDISE_NOT_APPLICABLE: {
+                    return "MERCHANDISE_NOT_APPLICABLE";
+                }
+
                 case MINIMUM_NOT_MET: {
                     return "MINIMUM_NOT_MET";
                 }
@@ -13115,6 +13746,18 @@ public class Storefront {
 
                 case ONLY_ONE_DELIVERY_ADDRESS_CAN_BE_SELECTED: {
                     return "ONLY_ONE_DELIVERY_ADDRESS_CAN_BE_SELECTED";
+                }
+
+                case PARENT_LINE_NESTING_TOO_DEEP: {
+                    return "PARENT_LINE_NESTING_TOO_DEEP";
+                }
+
+                case PARENT_LINE_NOT_FOUND: {
+                    return "PARENT_LINE_NOT_FOUND";
+                }
+
+                case PARENT_LINE_OPERATION_BLOCKED: {
+                    return "PARENT_LINE_OPERATION_BLOCKED";
                 }
 
                 case PAYMENTS_CREDIT_CARD_BASE_EXPIRED: {
@@ -13213,10 +13856,14 @@ public class Storefront {
     }
 
     /**
-    * The estimated costs that the buyer will pay at checkout. The estimated cost uses
-    * [`CartBuyerIdentity`](https://shopify.dev/api/storefront/reference/cart/cartbuyeridentity) to
+    * The estimated costs that the buyer pays at checkout. Uses
+    * [`CartBuyerIdentity`](https://shopify.dev/docs/api/storefront/current/objects/CartBuyerIdentity) to
     * determine [international
-    * pricing](https://shopify.dev/custom-storefronts/internationalization/international-pricing).
+    * pricing](https://shopify.dev/docs/custom-storefronts/internationalization/international-pricing).
+    * Includes the subtotal, total amount, duties, and taxes. The
+    * [`checkoutChargeAmount`](https://shopify.dev/docs/api/storefront/current/objects/CartEstimatedCost#f
+    * ield-CartEstimatedCost.fields.checkoutChargeAmount) field excludes deferred payments that are
+    * charged later, making it useful for displaying what the customer pays immediately.
     */
     public static class CartEstimatedCostQuery extends Query<CartEstimatedCostQuery> {
         CartEstimatedCostQuery(StringBuilder _queryBuilder) {
@@ -13292,10 +13939,14 @@ public class Storefront {
     }
 
     /**
-    * The estimated costs that the buyer will pay at checkout. The estimated cost uses
-    * [`CartBuyerIdentity`](https://shopify.dev/api/storefront/reference/cart/cartbuyeridentity) to
+    * The estimated costs that the buyer pays at checkout. Uses
+    * [`CartBuyerIdentity`](https://shopify.dev/docs/api/storefront/current/objects/CartBuyerIdentity) to
     * determine [international
-    * pricing](https://shopify.dev/custom-storefronts/internationalization/international-pricing).
+    * pricing](https://shopify.dev/docs/custom-storefronts/internationalization/international-pricing).
+    * Includes the subtotal, total amount, duties, and taxes. The
+    * [`checkoutChargeAmount`](https://shopify.dev/docs/api/storefront/current/objects/CartEstimatedCost#f
+    * ield-CartEstimatedCost.fields.checkoutChargeAmount) field excludes deferred payments that are
+    * charged later, making it useful for displaying what the customer pays immediately.
     */
     public static class CartEstimatedCost extends AbstractResponse<CartEstimatedCost> {
         public CartEstimatedCost() {
@@ -13472,6 +14123,171 @@ public class Storefront {
             billingAddress.appendTo(_queryBuilder);
 
             _queryBuilder.append('}');
+        }
+    }
+
+    public interface CartGiftCardCodesAddPayloadQueryDefinition {
+        void define(CartGiftCardCodesAddPayloadQuery _queryBuilder);
+    }
+
+    /**
+    * Return type for `cartGiftCardCodesAdd` mutation.
+    */
+    public static class CartGiftCardCodesAddPayloadQuery extends Query<CartGiftCardCodesAddPayloadQuery> {
+        CartGiftCardCodesAddPayloadQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * The updated cart.
+        */
+        public CartGiftCardCodesAddPayloadQuery cart(CartQueryDefinition queryDef) {
+            startField("cart");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CartQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * The list of errors that occurred from executing the mutation.
+        */
+        public CartGiftCardCodesAddPayloadQuery userErrors(CartUserErrorQueryDefinition queryDef) {
+            startField("userErrors");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CartUserErrorQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * A list of warnings that occurred during the mutation.
+        */
+        public CartGiftCardCodesAddPayloadQuery warnings(CartWarningQueryDefinition queryDef) {
+            startField("warnings");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CartWarningQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+    }
+
+    /**
+    * Return type for `cartGiftCardCodesAdd` mutation.
+    */
+    public static class CartGiftCardCodesAddPayload extends AbstractResponse<CartGiftCardCodesAddPayload> {
+        public CartGiftCardCodesAddPayload() {
+        }
+
+        public CartGiftCardCodesAddPayload(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "cart": {
+                        Cart optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new Cart(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "userErrors": {
+                        List<CartUserError> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new CartUserError(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "warnings": {
+                        List<CartWarning> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new CartWarning(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "CartGiftCardCodesAddPayload";
+        }
+
+        /**
+        * The updated cart.
+        */
+
+        public Cart getCart() {
+            return (Cart) get("cart");
+        }
+
+        public CartGiftCardCodesAddPayload setCart(Cart arg) {
+            optimisticData.put(getKey("cart"), arg);
+            return this;
+        }
+
+        /**
+        * The list of errors that occurred from executing the mutation.
+        */
+
+        public List<CartUserError> getUserErrors() {
+            return (List<CartUserError>) get("userErrors");
+        }
+
+        public CartGiftCardCodesAddPayload setUserErrors(List<CartUserError> arg) {
+            optimisticData.put(getKey("userErrors"), arg);
+            return this;
+        }
+
+        /**
+        * A list of warnings that occurred during the mutation.
+        */
+
+        public List<CartWarning> getWarnings() {
+            return (List<CartWarning>) get("warnings");
+        }
+
+        public CartGiftCardCodesAddPayload setWarnings(List<CartWarning> arg) {
+            optimisticData.put(getKey("warnings"), arg);
+            return this;
+        }
+
+        @Override
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "cart": return true;
+
+                case "userErrors": return true;
+
+                case "warnings": return true;
+
+                default: return false;
+            }
         }
     }
 
@@ -14201,7 +15017,15 @@ public class Storefront {
     }
 
     /**
-    * Represents information about the merchandise in the cart.
+    * An item in a customer's [`Cart`](https://shopify.dev/docs/api/storefront/current/objects/Cart)
+    * representing a product variant they intend to purchase. Each cart line tracks the merchandise,
+    * quantity, cost breakdown, and any applied discounts.
+    * Cart lines can include custom attributes for additional information like gift wrapping requests, and
+    * can be associated with a
+    * [`SellingPlanAllocation`](https://shopify.dev/docs/api/storefront/current/objects/SellingPlanAllocat
+    * ion) for purchase options like subscriptions, pre-orders, or try-before-you-buy. The
+    * [`instructions`](https://shopify.dev/docs/api/storefront/current/objects/CartLine#field-CartLine.fie
+    * lds.instructions) field indicates whether the line can be removed or have its quantity updated.
     */
     public static class CartLineQuery extends Query<CartLineQuery> {
         CartLineQuery(StringBuilder _queryBuilder) {
@@ -14286,6 +15110,19 @@ public class Storefront {
         }
 
         /**
+        * The instructions for the line item.
+        */
+        public CartLineQuery instructions(CartLineInstructionsQueryDefinition queryDef) {
+            startField("instructions");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CartLineInstructionsQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
         * The merchandise that the buyer intends to purchase.
         */
         public CartLineQuery merchandise(MerchandiseQueryDefinition queryDef) {
@@ -14293,6 +15130,19 @@ public class Storefront {
 
             _queryBuilder.append('{');
             queryDef.define(new MerchandiseQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * The parent of the line item.
+        */
+        public CartLineQuery parentRelationship(CartLineParentRelationshipQueryDefinition queryDef) {
+            startField("parentRelationship");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CartLineParentRelationshipQuery(_queryBuilder));
             _queryBuilder.append('}');
 
             return this;
@@ -14323,7 +15173,15 @@ public class Storefront {
     }
 
     /**
-    * Represents information about the merchandise in the cart.
+    * An item in a customer's [`Cart`](https://shopify.dev/docs/api/storefront/current/objects/Cart)
+    * representing a product variant they intend to purchase. Each cart line tracks the merchandise,
+    * quantity, cost breakdown, and any applied discounts.
+    * Cart lines can include custom attributes for additional information like gift wrapping requests, and
+    * can be associated with a
+    * [`SellingPlanAllocation`](https://shopify.dev/docs/api/storefront/current/objects/SellingPlanAllocat
+    * ion) for purchase options like subscriptions, pre-orders, or try-before-you-buy. The
+    * [`instructions`](https://shopify.dev/docs/api/storefront/current/objects/CartLine#field-CartLine.fie
+    * lds.instructions) field indicates whether the line can be removed or have its quantity updated.
     */
     public static class CartLine extends AbstractResponse<CartLine> implements BaseCartLine, Node {
         public CartLine() {
@@ -14385,8 +15243,25 @@ public class Storefront {
                         break;
                     }
 
+                    case "instructions": {
+                        responseData.put(key, new CartLineInstructions(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
                     case "merchandise": {
                         responseData.put(key, UnknownMerchandise.create(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "parentRelationship": {
+                        CartLineParentRelationship optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new CartLineParentRelationship(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
 
                         break;
                     }
@@ -14507,6 +15382,19 @@ public class Storefront {
         }
 
         /**
+        * The instructions for the line item.
+        */
+
+        public CartLineInstructions getInstructions() {
+            return (CartLineInstructions) get("instructions");
+        }
+
+        public CartLine setInstructions(CartLineInstructions arg) {
+            optimisticData.put(getKey("instructions"), arg);
+            return this;
+        }
+
+        /**
         * The merchandise that the buyer intends to purchase.
         */
 
@@ -14516,6 +15404,19 @@ public class Storefront {
 
         public CartLine setMerchandise(Merchandise arg) {
             optimisticData.put(getKey("merchandise"), arg);
+            return this;
+        }
+
+        /**
+        * The parent of the line item.
+        */
+
+        public CartLineParentRelationship getParentRelationship() {
+            return (CartLineParentRelationship) get("parentRelationship");
+        }
+
+        public CartLine setParentRelationship(CartLineParentRelationship arg) {
+            optimisticData.put(getKey("parentRelationship"), arg);
             return this;
         }
 
@@ -14557,6 +15458,10 @@ public class Storefront {
 
                 case "estimatedCost": return true;
 
+                case "instructions": return true;
+
+                case "parentRelationship": return true;
+
                 case "sellingPlanAllocation": return true;
 
                 default: return false;
@@ -14569,7 +15474,13 @@ public class Storefront {
     }
 
     /**
-    * The cost of the merchandise line that the buyer will pay at checkout.
+    * Cost breakdown for a single line item in a
+    * [cart](https://shopify.dev/docs/api/storefront/current/objects/Cart). Includes the per-unit price,
+    * the subtotal before line-level discounts, and the final total amount the buyer pays.
+    * The
+    * [`compareAtAmountPerQuantity`](https://shopify.dev/docs/api/storefront/current/objects/CartLineCost#
+    * field-CartLineCost.fields.compareAtAmountPerQuantity) field shows the original price when the item
+    * is on sale, enabling the display of savings to customers.
     */
     public static class CartLineCostQuery extends Query<CartLineCostQuery> {
         CartLineCostQuery(StringBuilder _queryBuilder) {
@@ -14630,7 +15541,13 @@ public class Storefront {
     }
 
     /**
-    * The cost of the merchandise line that the buyer will pay at checkout.
+    * Cost breakdown for a single line item in a
+    * [cart](https://shopify.dev/docs/api/storefront/current/objects/Cart). Includes the per-unit price,
+    * the subtotal before line-level discounts, and the final total amount the buyer pays.
+    * The
+    * [`compareAtAmountPerQuantity`](https://shopify.dev/docs/api/storefront/current/objects/CartLineCost#
+    * field-CartLineCost.fields.compareAtAmountPerQuantity) field shows the original price when the item
+    * is on sale, enabling the display of savings to customers.
     */
     public static class CartLineCost extends AbstractResponse<CartLineCost> {
         public CartLineCost() {
@@ -14951,6 +15868,8 @@ public class Storefront {
 
         private Input<ID> sellingPlanId = Input.undefined();
 
+        private Input<CartLineParentInput> parent = Input.undefined();
+
         public CartLineInput(ID merchandiseId) {
             this.merchandiseId = merchandiseId;
         }
@@ -15027,6 +15946,27 @@ public class Storefront {
             return this;
         }
 
+        public CartLineParentInput getParent() {
+            return parent.getValue();
+        }
+
+        public Input<CartLineParentInput> getParentInput() {
+            return parent;
+        }
+
+        public CartLineInput setParent(CartLineParentInput parent) {
+            this.parent = Input.optional(parent);
+            return this;
+        }
+
+        public CartLineInput setParentInput(Input<CartLineParentInput> parent) {
+            if (parent == null) {
+                throw new IllegalArgumentException("Input can not be null");
+            }
+            this.parent = parent;
+            return this;
+        }
+
         public void appendTo(StringBuilder _queryBuilder) {
             String separator = "";
             _queryBuilder.append('{');
@@ -15078,7 +16018,274 @@ public class Storefront {
                 }
             }
 
+            if (this.parent.isDefined()) {
+                _queryBuilder.append(separator);
+                separator = ",";
+                _queryBuilder.append("parent:");
+                if (parent.getValue() != null) {
+                    parent.getValue().appendTo(_queryBuilder);
+                } else {
+                    _queryBuilder.append("null");
+                }
+            }
+
             _queryBuilder.append('}');
+        }
+    }
+
+    public interface CartLineInstructionsQueryDefinition {
+        void define(CartLineInstructionsQuery _queryBuilder);
+    }
+
+    /**
+    * Represents instructions for a cart line item.
+    */
+    public static class CartLineInstructionsQuery extends Query<CartLineInstructionsQuery> {
+        CartLineInstructionsQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * Whether the line item can be removed from the cart.
+        */
+        public CartLineInstructionsQuery canRemove() {
+            startField("canRemove");
+
+            return this;
+        }
+
+        /**
+        * Whether the line item quantity can be updated.
+        */
+        public CartLineInstructionsQuery canUpdateQuantity() {
+            startField("canUpdateQuantity");
+
+            return this;
+        }
+    }
+
+    /**
+    * Represents instructions for a cart line item.
+    */
+    public static class CartLineInstructions extends AbstractResponse<CartLineInstructions> {
+        public CartLineInstructions() {
+        }
+
+        public CartLineInstructions(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "canRemove": {
+                        responseData.put(key, jsonAsBoolean(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "canUpdateQuantity": {
+                        responseData.put(key, jsonAsBoolean(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "CartLineInstructions";
+        }
+
+        /**
+        * Whether the line item can be removed from the cart.
+        */
+
+        public Boolean getCanRemove() {
+            return (Boolean) get("canRemove");
+        }
+
+        public CartLineInstructions setCanRemove(Boolean arg) {
+            optimisticData.put(getKey("canRemove"), arg);
+            return this;
+        }
+
+        /**
+        * Whether the line item quantity can be updated.
+        */
+
+        public Boolean getCanUpdateQuantity() {
+            return (Boolean) get("canUpdateQuantity");
+        }
+
+        public CartLineInstructions setCanUpdateQuantity(Boolean arg) {
+            optimisticData.put(getKey("canUpdateQuantity"), arg);
+            return this;
+        }
+    }
+
+    public static class CartLineParentInput implements Serializable {
+        private Input<ID> lineId = Input.undefined();
+
+        private Input<ID> merchandiseId = Input.undefined();
+
+        public ID getLineId() {
+            return lineId.getValue();
+        }
+
+        public Input<ID> getLineIdInput() {
+            return lineId;
+        }
+
+        public CartLineParentInput setLineId(ID lineId) {
+            this.lineId = Input.optional(lineId);
+            return this;
+        }
+
+        public CartLineParentInput setLineIdInput(Input<ID> lineId) {
+            if (lineId == null) {
+                throw new IllegalArgumentException("Input can not be null");
+            }
+            this.lineId = lineId;
+            return this;
+        }
+
+        public ID getMerchandiseId() {
+            return merchandiseId.getValue();
+        }
+
+        public Input<ID> getMerchandiseIdInput() {
+            return merchandiseId;
+        }
+
+        public CartLineParentInput setMerchandiseId(ID merchandiseId) {
+            this.merchandiseId = Input.optional(merchandiseId);
+            return this;
+        }
+
+        public CartLineParentInput setMerchandiseIdInput(Input<ID> merchandiseId) {
+            if (merchandiseId == null) {
+                throw new IllegalArgumentException("Input can not be null");
+            }
+            this.merchandiseId = merchandiseId;
+            return this;
+        }
+
+        public void appendTo(StringBuilder _queryBuilder) {
+            String separator = "";
+            _queryBuilder.append('{');
+
+            if (this.lineId.isDefined()) {
+                _queryBuilder.append(separator);
+                separator = ",";
+                _queryBuilder.append("lineId:");
+                if (lineId.getValue() != null) {
+                    Query.appendQuotedString(_queryBuilder, lineId.getValue().toString());
+                } else {
+                    _queryBuilder.append("null");
+                }
+            }
+
+            if (this.merchandiseId.isDefined()) {
+                _queryBuilder.append(separator);
+                separator = ",";
+                _queryBuilder.append("merchandiseId:");
+                if (merchandiseId.getValue() != null) {
+                    Query.appendQuotedString(_queryBuilder, merchandiseId.getValue().toString());
+                } else {
+                    _queryBuilder.append("null");
+                }
+            }
+
+            _queryBuilder.append('}');
+        }
+    }
+
+    public interface CartLineParentRelationshipQueryDefinition {
+        void define(CartLineParentRelationshipQuery _queryBuilder);
+    }
+
+    /**
+    * Represents the parent relationship of a cart line.
+    */
+    public static class CartLineParentRelationshipQuery extends Query<CartLineParentRelationshipQuery> {
+        CartLineParentRelationshipQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * The parent cart line.
+        */
+        public CartLineParentRelationshipQuery parent(CartLineQueryDefinition queryDef) {
+            startField("parent");
+
+            _queryBuilder.append('{');
+            queryDef.define(new CartLineQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+    }
+
+    /**
+    * Represents the parent relationship of a cart line.
+    */
+    public static class CartLineParentRelationship extends AbstractResponse<CartLineParentRelationship> {
+        public CartLineParentRelationship() {
+        }
+
+        public CartLineParentRelationship(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "parent": {
+                        responseData.put(key, new CartLine(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "CartLineParentRelationship";
+        }
+
+        /**
+        * The parent cart line.
+        */
+
+        public CartLine getParent() {
+            return (CartLine) get("parent");
+        }
+
+        public CartLineParentRelationship setParent(CartLine arg) {
+            optimisticData.put(getKey("parent"), arg);
+            return this;
+        }
+
+        @Override
+        public boolean unwrapsToObject(String key) {
+            switch (getFieldName(key)) {
+                case "parent": return true;
+
+                default: return false;
+            }
         }
     }
 
@@ -18765,7 +19972,10 @@ public class Storefront {
     }
 
     /**
-    * A warning that occurred during a cart mutation.
+    * A non-blocking issue that occurred during a cart mutation. Unlike errors, warnings don't prevent the
+    * mutation from completing but indicate potential problems that may affect the buyer's experience.
+    * Each warning includes a code identifying the issue type, a human-readable message, and a target ID
+    * pointing to the affected resource.
     */
     public static class CartWarningQuery extends Query<CartWarningQuery> {
         CartWarningQuery(StringBuilder _queryBuilder) {
@@ -18801,7 +20011,10 @@ public class Storefront {
     }
 
     /**
-    * A warning that occurred during a cart mutation.
+    * A non-blocking issue that occurred during a cart mutation. Unlike errors, warnings don't prevent the
+    * mutation from completing but indicate potential problems that may affect the buyer's experience.
+    * Each warning includes a code identifying the issue type, a human-readable message, and a target ID
+    * pointing to the affected resource.
     */
     public static class CartWarning extends AbstractResponse<CartWarning> {
         public CartWarning() {
@@ -18965,6 +20178,11 @@ public class Storefront {
         MERCHANDISE_OUT_OF_STOCK,
 
         /**
+        * Only one-time purchase is available for B2B orders.
+        */
+        MERCHANDISE_SELLING_PLAN_NOT_APPLICABLE_ON_COMPANY_LOCATION,
+
+        /**
         * Gift cards are not available as a payment method.
         */
         PAYMENTS_GIFT_CARDS_UNAVAILABLE,
@@ -19035,6 +20253,10 @@ public class Storefront {
 
                 case "MERCHANDISE_OUT_OF_STOCK": {
                     return MERCHANDISE_OUT_OF_STOCK;
+                }
+
+                case "MERCHANDISE_SELLING_PLAN_NOT_APPLICABLE_ON_COMPANY_LOCATION": {
+                    return MERCHANDISE_SELLING_PLAN_NOT_APPLICABLE_ON_COMPANY_LOCATION;
                 }
 
                 case "PAYMENTS_GIFT_CARDS_UNAVAILABLE": {
@@ -19108,6 +20330,10 @@ public class Storefront {
                     return "MERCHANDISE_OUT_OF_STOCK";
                 }
 
+                case MERCHANDISE_SELLING_PLAN_NOT_APPLICABLE_ON_COMPANY_LOCATION: {
+                    return "MERCHANDISE_SELLING_PLAN_NOT_APPLICABLE_ON_COMPANY_LOCATION";
+                }
+
                 case PAYMENTS_GIFT_CARDS_UNAVAILABLE: {
                     return "PAYMENTS_GIFT_CARDS_UNAVAILABLE";
                 }
@@ -19153,8 +20379,15 @@ public class Storefront {
     }
 
     /**
-    * A collection represents a grouping of products that a shop owner can create to
-    * organize them or make their shops easier to browse.
+    * A group of products [organized by a merchant](https://help.shopify.com/manual/products/collections)
+    * to make their store easier to browse. Collections can help customers discover related products by
+    * category, season, promotion, or other criteria.
+    * Query a collection's products with [filtering
+    * options](https://shopify.dev/docs/storefronts/headless/building-with-the-storefront-api/products-col
+    * lections/filter-products) like availability, price range, vendor, and tags. Each collection includes
+    * [`SEO`](https://shopify.dev/docs/api/storefront/current/objects/SEO) information, an optional
+    * [`Image`](https://shopify.dev/docs/api/storefront/current/objects/Image), and supports custom data
+    * through [`metafields`](https://shopify.dev/docs/api/storefront/current/objects/Metafield).
     */
     public static class CollectionQuery extends Query<CollectionQuery> {
         CollectionQuery(StringBuilder _queryBuilder) {
@@ -19495,8 +20728,15 @@ public class Storefront {
     }
 
     /**
-    * A collection represents a grouping of products that a shop owner can create to
-    * organize them or make their shops easier to browse.
+    * A group of products [organized by a merchant](https://help.shopify.com/manual/products/collections)
+    * to make their store easier to browse. Collections can help customers discover related products by
+    * category, season, promotion, or other criteria.
+    * Query a collection's products with [filtering
+    * options](https://shopify.dev/docs/storefronts/headless/building-with-the-storefront-api/products-col
+    * lections/filter-products) like availability, price range, vendor, and tags. Each collection includes
+    * [`SEO`](https://shopify.dev/docs/api/storefront/current/objects/SEO) information, an optional
+    * [`Image`](https://shopify.dev/docs/api/storefront/current/objects/Image), and supports custom data
+    * through [`metafields`](https://shopify.dev/docs/api/storefront/current/objects/Metafield).
     */
     public static class Collection extends AbstractResponse<Collection> implements HasMetafields, MenuItemResource, MetafieldParentResource, MetafieldReference, Node, OnlineStorePublishable, Trackable {
         public Collection() {
@@ -20768,7 +22008,13 @@ public class Storefront {
     }
 
     /**
-    * Represents information about a company which is also a customer of the shop.
+    * A B2B organization that purchases from the shop. In the Storefront API, company information is
+    * accessed through the
+    * [`PurchasingCompany`](https://shopify.dev/docs/api/storefront/current/objects/PurchasingCompany)
+    * object on
+    * [`CartBuyerIdentity`](https://shopify.dev/docs/api/storefront/current/objects/CartBuyerIdentity),
+    * which provides the associated location and contact for the current purchasing context.
+    * You can store custom data using [metafields](https://shopify.dev/docs/apps/build/metafields).
     */
     public static class CompanyQuery extends Query<CompanyQuery> {
         CompanyQuery(StringBuilder _queryBuilder) {
@@ -20897,7 +22143,13 @@ public class Storefront {
     }
 
     /**
-    * Represents information about a company which is also a customer of the shop.
+    * A B2B organization that purchases from the shop. In the Storefront API, company information is
+    * accessed through the
+    * [`PurchasingCompany`](https://shopify.dev/docs/api/storefront/current/objects/PurchasingCompany)
+    * object on
+    * [`CartBuyerIdentity`](https://shopify.dev/docs/api/storefront/current/objects/CartBuyerIdentity),
+    * which provides the associated location and contact for the current purchasing context.
+    * You can store custom data using [metafields](https://shopify.dev/docs/apps/build/metafields).
     */
     public static class Company extends AbstractResponse<Company> implements HasMetafields, MetafieldParentResource, Node {
         public Company() {
@@ -21286,7 +22538,14 @@ public class Storefront {
     }
 
     /**
-    * A company's location.
+    * A branch or office of a [`Company`](https://shopify.dev/docs/api/storefront/current/objects/Company)
+    * where B2B customers can place orders. When a B2B customer selects a location after logging in, the
+    * Storefront API contextualizes product queries to return location-specific pricing and quantity
+    * rules.
+    * Access through the
+    * [`PurchasingCompany`](https://shopify.dev/docs/api/storefront/current/objects/PurchasingCompany)
+    * object, which associates the location with the buyer's
+    * [`Cart`](https://shopify.dev/docs/api/storefront/current/objects/Cart).
     */
     public static class CompanyLocationQuery extends Query<CompanyLocationQuery> {
         CompanyLocationQuery(StringBuilder _queryBuilder) {
@@ -21424,7 +22683,14 @@ public class Storefront {
     }
 
     /**
-    * A company's location.
+    * A branch or office of a [`Company`](https://shopify.dev/docs/api/storefront/current/objects/Company)
+    * where B2B customers can place orders. When a B2B customer selects a location after logging in, the
+    * Storefront API contextualizes product queries to return location-specific pricing and quantity
+    * rules.
+    * Access through the
+    * [`PurchasingCompany`](https://shopify.dev/docs/api/storefront/current/objects/PurchasingCompany)
+    * object, which associates the location with the buyer's
+    * [`Cart`](https://shopify.dev/docs/api/storefront/current/objects/Cart).
     */
     public static class CompanyLocation extends AbstractResponse<CompanyLocation> implements HasMetafields, MetafieldParentResource, Node {
         public CompanyLocation() {
@@ -22537,7 +23803,13 @@ public class Storefront {
     }
 
     /**
-    * A country.
+    * A country with localization settings for a storefront. Includes the country's currency, available
+    * languages, default language, and unit system (metric or imperial).
+    * Access countries through the
+    * [localization](https://shopify.dev/docs/api/storefront/current/queries/localization) query, which
+    * returns both the list of available countries and the currently active country. Use the
+    * [`@inContext`](https://shopify.dev/docs/storefronts/headless/building-with-the-storefront-api/in-con
+    * text) directive to change the active country context.
     */
     public static class CountryQuery extends Query<CountryQuery> {
         CountryQuery(StringBuilder _queryBuilder) {
@@ -22628,7 +23900,13 @@ public class Storefront {
     }
 
     /**
-    * A country.
+    * A country with localization settings for a storefront. Includes the country's currency, available
+    * languages, default language, and unit system (metric or imperial).
+    * Access countries through the
+    * [localization](https://shopify.dev/docs/api/storefront/current/queries/localization) query, which
+    * returns both the list of available countries and the currently active country. Use the
+    * [`@inContext`](https://shopify.dev/docs/storefronts/headless/building-with-the-storefront-api/in-con
+    * text) directive to change the active country context.
     */
     public static class Country extends AbstractResponse<Country> {
         public Country() {
@@ -28360,8 +29638,18 @@ public class Storefront {
     }
 
     /**
-    * A customer represents a customer account with the shop. Customer accounts store contact information
-    * for the customer, saving logged-in customers the trouble of having to provide it at every checkout.
+    * A customer account with the shop. Includes data such as contact information,
+    * [addresses](https://shopify.dev/docs/api/storefront/current/objects/MailingAddress) and marketing
+    * preferences for logged-in customers, so they don't have to provide these details at every checkout.
+    * Access the customer through the
+    * [`customer`](https://shopify.dev/docs/api/storefront/current/queries/customer) query using a
+    * customer access token obtained from the
+    * [`customerAccessTokenCreate`](https://shopify.dev/docs/api/storefront/current/mutations/customerAcce
+    * ssTokenCreate) mutation.
+    * The object implements the
+    * [`HasMetafields`](https://shopify.dev/docs/api/storefront/current/interfaces/HasMetafields)
+    * interface, enabling retrieval of [custom data](https://shopify.dev/docs/apps/build/custom-data)
+    * associated with the customer.
     */
     public static class CustomerQuery extends Query<CustomerQuery> {
         CustomerQuery(StringBuilder _queryBuilder) {
@@ -28768,8 +30056,18 @@ public class Storefront {
     }
 
     /**
-    * A customer represents a customer account with the shop. Customer accounts store contact information
-    * for the customer, saving logged-in customers the trouble of having to provide it at every checkout.
+    * A customer account with the shop. Includes data such as contact information,
+    * [addresses](https://shopify.dev/docs/api/storefront/current/objects/MailingAddress) and marketing
+    * preferences for logged-in customers, so they don't have to provide these details at every checkout.
+    * Access the customer through the
+    * [`customer`](https://shopify.dev/docs/api/storefront/current/queries/customer) query using a
+    * customer access token obtained from the
+    * [`customerAccessTokenCreate`](https://shopify.dev/docs/api/storefront/current/mutations/customerAcce
+    * ssTokenCreate) mutation.
+    * The object implements the
+    * [`HasMetafields`](https://shopify.dev/docs/api/storefront/current/interfaces/HasMetafields)
+    * interface, enabling retrieval of [custom data](https://shopify.dev/docs/apps/build/custom-data)
+    * associated with the customer.
     */
     public static class Customer extends AbstractResponse<Customer> implements HasMetafields, MetafieldParentResource {
         public Customer() {
@@ -29171,8 +30469,17 @@ public class Storefront {
     }
 
     /**
-    * A CustomerAccessToken represents the unique token required to make modifications to the customer
-    * object.
+    * A unique authentication token that identifies a logged-in customer and authorizes modifications to
+    * the [`Customer`](https://shopify.dev/docs/api/storefront/current/objects/Customer) object. The token
+    * is required for customer-specific operations like updating profile information or managing
+    * addresses.
+    * Tokens have an expiration date and must be renewed using
+    * [`customerAccessTokenRenew`](https://shopify.dev/docs/api/storefront/current/mutations/customerAcces
+    * sTokenRenew) before they expire. Create tokens with
+    * [`customerAccessTokenCreate`](https://shopify.dev/docs/api/storefront/current/mutations/customerAcce
+    * ssTokenCreate) using legacy customer account authentication (email and password), or with
+    * [`customerAccessTokenCreateWithMultipass`](https://shopify.dev/docs/api/storefront/current/mutations
+    * /customerAccessTokenCreateWithMultipass) for single sign-on flows.
     */
     public static class CustomerAccessTokenQuery extends Query<CustomerAccessTokenQuery> {
         CustomerAccessTokenQuery(StringBuilder _queryBuilder) {
@@ -29199,8 +30506,17 @@ public class Storefront {
     }
 
     /**
-    * A CustomerAccessToken represents the unique token required to make modifications to the customer
-    * object.
+    * A unique authentication token that identifies a logged-in customer and authorizes modifications to
+    * the [`Customer`](https://shopify.dev/docs/api/storefront/current/objects/Customer) object. The token
+    * is required for customer-specific operations like updating profile information or managing
+    * addresses.
+    * Tokens have an expiration date and must be renewed using
+    * [`customerAccessTokenRenew`](https://shopify.dev/docs/api/storefront/current/mutations/customerAcces
+    * sTokenRenew) before they expire. Create tokens with
+    * [`customerAccessTokenCreate`](https://shopify.dev/docs/api/storefront/current/mutations/customerAcce
+    * ssTokenCreate) using legacy customer account authentication (email and password), or with
+    * [`customerAccessTokenCreateWithMultipass`](https://shopify.dev/docs/api/storefront/current/mutations
+    * /customerAccessTokenCreateWithMultipass) for single sign-on flows.
     */
     public static class CustomerAccessToken extends AbstractResponse<CustomerAccessToken> {
         public CustomerAccessToken() {
@@ -31343,7 +32659,10 @@ public class Storefront {
     }
 
     /**
-    * Possible error codes that can be returned by `CustomerUserError`.
+    * Error codes returned by the
+    * [`CustomerUserError`](https://shopify.dev/docs/api/storefront/current/objects/CustomerUserError)
+    * object. These codes identify specific validation and processing failures for customer-related
+    * mutations, including account creation, updates, password resets, and address management.
     */
     public enum CustomerErrorCode {
         /**
@@ -32942,7 +34261,16 @@ public class Storefront {
     }
 
     /**
-    * Defines the types of available validation strategies for delivery addresses.
+    * Controls how delivery addresses are validated during cart operations. The default validation checks
+    * only the country code, while strict validation verifies all address fields against Shopify's
+    * checkout rules and rejects invalid addresses.
+    * Used by
+    * [`DeliveryAddressInput`](https://shopify.dev/docs/api/storefront/current/input-objects/DeliveryAddre
+    * ssInput) when setting buyer identity preferences, and by
+    * [`CartSelectableAddressInput`](https://shopify.dev/docs/api/storefront/current/input-objects/CartSel
+    * ectableAddressInput) and
+    * [`CartSelectableAddressUpdateInput`](https://shopify.dev/docs/api/storefront/current/input-objects/C
+    * artSelectableAddressUpdateInput) when managing cart delivery addresses.
     */
     public enum DeliveryAddressValidationStrategy {
         /**
@@ -33182,7 +34510,12 @@ public class Storefront {
     }
 
     /**
-    * An amount discounting the line that has been allocated by a discount.
+    * The calculated discount amount applied to a line item or shipping line. While a
+    * [`DiscountApplication`](https://shopify.dev/docs/api/storefront/current/interfaces/DiscountApplicati
+    * on) captures the discount's rules and intentions, the allocation shows how much was actually
+    * deducted.
+    * Each allocation includes the discounted amount and a reference to the originating discount
+    * application.
     */
     public static class DiscountAllocationQuery extends Query<DiscountAllocationQuery> {
         DiscountAllocationQuery(StringBuilder _queryBuilder) {
@@ -33217,7 +34550,12 @@ public class Storefront {
     }
 
     /**
-    * An amount discounting the line that has been allocated by a discount.
+    * The calculated discount amount applied to a line item or shipping line. While a
+    * [`DiscountApplication`](https://shopify.dev/docs/api/storefront/current/interfaces/DiscountApplicati
+    * on) captures the discount's rules and intentions, the allocation shows how much was actually
+    * deducted.
+    * Each allocation includes the discounted amount and a reference to the originating discount
+    * application.
     */
     public static class DiscountAllocation extends AbstractResponse<DiscountAllocation> {
         public DiscountAllocation() {
@@ -33296,8 +34634,14 @@ public class Storefront {
     }
 
     /**
-    * Discount applications capture the intentions of a discount source at
-    * the time of application.
+    * Captures the intent of a discount at the time it was applied. Each implementation represents a
+    * different discount source, such as [automatic
+    * discounts](https://help.shopify.com/manual/discounts/discount-methods/automatic-discounts),
+    * [discount codes](https://help.shopify.com/manual/discounts/discount-methods/discount-codes), and
+    * manual discounts.
+    * The actual discounted amount on a line item or shipping line is represented by the
+    * [`DiscountAllocation`](https://shopify.dev/docs/api/storefront/current/objects/DiscountAllocation)
+    * object, which references the discount application it originated from.
     */
     public static class DiscountApplicationQuery extends Query<DiscountApplicationQuery> {
         DiscountApplicationQuery(StringBuilder _queryBuilder) {
@@ -33388,8 +34732,14 @@ public class Storefront {
     }
 
     /**
-    * Discount applications capture the intentions of a discount source at
-    * the time of application.
+    * Captures the intent of a discount at the time it was applied. Each implementation represents a
+    * different discount source, such as [automatic
+    * discounts](https://help.shopify.com/manual/discounts/discount-methods/automatic-discounts),
+    * [discount codes](https://help.shopify.com/manual/discounts/discount-methods/discount-codes), and
+    * manual discounts.
+    * The actual discounted amount on a line item or shipping line is represented by the
+    * [`DiscountAllocation`](https://shopify.dev/docs/api/storefront/current/objects/DiscountAllocation)
+    * object, which references the discount application it originated from.
     */
     public static class UnknownDiscountApplication extends AbstractResponse<UnknownDiscountApplication> implements DiscountApplication {
         public UnknownDiscountApplication() {
@@ -33518,7 +34868,12 @@ public class Storefront {
     }
 
     /**
-    * The method by which the discount's value is allocated onto its entitled lines.
+    * Controls how a discount's value is distributed across entitled lines. A discount can either spread
+    * its value across all entitled lines or apply the full value to each line individually.
+    * Used by the
+    * [`DiscountApplication`](https://shopify.dev/docs/api/storefront/current/interfaces/DiscountApplicati
+    * on) interface and its implementations to capture the intentions of a discount source at the time of
+    * application.
     */
     public enum DiscountApplicationAllocationMethod {
         /**
@@ -33964,8 +35319,17 @@ public class Storefront {
     }
 
     /**
-    * Discount code applications capture the intentions of a discount code at
-    * the time that it is applied.
+    * Records the configuration and intent of a [discount
+    * code](https://help.shopify.com/manual/discounts/discount-methods/discount-codes) when a customer
+    * applies it. This includes the code string, allocation method, target type, and discount value at the
+    * time of application. The
+    * [`applicable`](https://shopify.dev/docs/api/storefront/latest/objects/DiscountCodeApplication#field-
+    * DiscountCodeApplication.fields.applicable) field indicates whether the code was successfully
+    * applied.
+    * > Note:
+    * > To see the actual amounts discounted on specific line items or shipping lines, use the
+    * [`DiscountAllocation`](https://shopify.dev/docs/api/storefront/current/objects/DiscountAllocation)
+    * object instead.
     */
     public static class DiscountCodeApplicationQuery extends Query<DiscountCodeApplicationQuery> {
         DiscountCodeApplicationQuery(StringBuilder _queryBuilder) {
@@ -34032,8 +35396,17 @@ public class Storefront {
     }
 
     /**
-    * Discount code applications capture the intentions of a discount code at
-    * the time that it is applied.
+    * Records the configuration and intent of a [discount
+    * code](https://help.shopify.com/manual/discounts/discount-methods/discount-codes) when a customer
+    * applies it. This includes the code string, allocation method, target type, and discount value at the
+    * time of application. The
+    * [`applicable`](https://shopify.dev/docs/api/storefront/latest/objects/DiscountCodeApplication#field-
+    * DiscountCodeApplication.fields.applicable) field indicates whether the code was successfully
+    * applied.
+    * > Note:
+    * > To see the actual amounts discounted on specific line items or shipping lines, use the
+    * [`DiscountAllocation`](https://shopify.dev/docs/api/storefront/current/objects/DiscountAllocation)
+    * object instead.
     */
     public static class DiscountCodeApplication extends AbstractResponse<DiscountCodeApplication> implements DiscountApplication {
         public DiscountCodeApplication() {
@@ -34371,7 +35744,10 @@ public class Storefront {
     }
 
     /**
-    * Represents a web address.
+    * A web address associated with a shop. The
+    * [`Shop`](https://shopify.dev/docs/api/storefront/current/objects/Shop) object's
+    * [`primaryDomain`](https://shopify.dev/docs/api/storefront/current/objects/Shop#field-Shop.fields.pri
+    * maryDomain) field returns this to identify the shop's online store URL.
     */
     public static class DomainQuery extends Query<DomainQuery> {
         DomainQuery(StringBuilder _queryBuilder) {
@@ -34407,7 +35783,10 @@ public class Storefront {
     }
 
     /**
-    * Represents a web address.
+    * A web address associated with a shop. The
+    * [`Shop`](https://shopify.dev/docs/api/storefront/current/objects/Shop) object's
+    * [`primaryDomain`](https://shopify.dev/docs/api/storefront/current/objects/Shop#field-Shop.fields.pri
+    * maryDomain) field returns this to identify the shop's online store URL.
     */
     public static class Domain extends AbstractResponse<Domain> {
         public Domain() {
@@ -34822,7 +36201,16 @@ public class Storefront {
     }
 
     /**
-    * A filter that is supported on the parent field.
+    * A filter option available on collection and search results pages. Each filter includes a type,
+    * display label, and selectable values that customers can use to narrow down products.
+    * The [`FilterValue`](https://shopify.dev/docs/api/storefront/current/objects/FilterValue) objects
+    * contain an
+    * [`input`](https://shopify.dev/docs/api/storefront/current/objects/FilterValue#field-FilterValue.fiel
+    * ds.input) field that you can combine to [build dynamic filtering
+    * queries](https://shopify.dev/docs/storefronts/headless/building-with-the-storefront-api/products-col
+    * lections/filter-products). Merchants [configure available
+    * filters](https://help.shopify.com/manual/online-store/search-and-discovery/filters) using the
+    * Shopify Search & Discovery app.
     */
     public static class FilterQuery extends Query<FilterQuery> {
         FilterQuery(StringBuilder _queryBuilder) {
@@ -34881,7 +36269,16 @@ public class Storefront {
     }
 
     /**
-    * A filter that is supported on the parent field.
+    * A filter option available on collection and search results pages. Each filter includes a type,
+    * display label, and selectable values that customers can use to narrow down products.
+    * The [`FilterValue`](https://shopify.dev/docs/api/storefront/current/objects/FilterValue) objects
+    * contain an
+    * [`input`](https://shopify.dev/docs/api/storefront/current/objects/FilterValue#field-FilterValue.fiel
+    * ds.input) field that you can combine to [build dynamic filtering
+    * queries](https://shopify.dev/docs/storefronts/headless/building-with-the-storefront-api/products-col
+    * lections/filter-products). Merchants [configure available
+    * filters](https://help.shopify.com/manual/online-store/search-and-discovery/filters) using the
+    * Shopify Search & Discovery app.
     */
     public static class Filter extends AbstractResponse<Filter> {
         public Filter() {
@@ -35160,7 +36557,20 @@ public class Storefront {
     }
 
     /**
-    * A selectable value within a filter.
+    * A selectable option within a
+    * [`Filter`](https://shopify.dev/docs/api/storefront/current/objects/Filter), such as a specific
+    * color, size, or product type. Each value includes a count of matching results and a human-readable
+    * label for display.
+    * The
+    * [`input`](https://shopify.dev/docs/api/storefront/current/objects/FilterValue#field-FilterValue.fiel
+    * ds.input) field provides ready-to-use JSON for building dynamic filtering interfaces. You can
+    * combine the `input` values from multiple selected
+    * [`FilterValue`](https://shopify.dev/docs/api/storefront/current/objects/FilterValue) objects to
+    * construct filter queries. Visual representations are available through the
+    * [`image`](https://shopify.dev/docs/api/storefront/current/objects/FilterValue#field-FilterValue.fiel
+    * ds.image) or
+    * [`swatch`](https://shopify.dev/docs/api/storefront/current/objects/FilterValue#field-FilterValue.fie
+    * lds.swatch) fields when the parent filter's presentation type supports them.
     */
     public static class FilterValueQuery extends Query<FilterValueQuery> {
         FilterValueQuery(StringBuilder _queryBuilder) {
@@ -35234,7 +36644,20 @@ public class Storefront {
     }
 
     /**
-    * A selectable value within a filter.
+    * A selectable option within a
+    * [`Filter`](https://shopify.dev/docs/api/storefront/current/objects/Filter), such as a specific
+    * color, size, or product type. Each value includes a count of matching results and a human-readable
+    * label for display.
+    * The
+    * [`input`](https://shopify.dev/docs/api/storefront/current/objects/FilterValue#field-FilterValue.fiel
+    * ds.input) field provides ready-to-use JSON for building dynamic filtering interfaces. You can
+    * combine the `input` values from multiple selected
+    * [`FilterValue`](https://shopify.dev/docs/api/storefront/current/objects/FilterValue) objects to
+    * construct filter queries. Visual representations are available through the
+    * [`image`](https://shopify.dev/docs/api/storefront/current/objects/FilterValue#field-FilterValue.fiel
+    * ds.image) or
+    * [`swatch`](https://shopify.dev/docs/api/storefront/current/objects/FilterValue#field-FilterValue.fie
+    * lds.swatch) fields when the parent filter's presentation type supports them.
     */
     public static class FilterValue extends AbstractResponse<FilterValue> {
         public FilterValue() {
@@ -35404,7 +36827,13 @@ public class Storefront {
     }
 
     /**
-    * Represents a single fulfillment in an order.
+    * A shipment of one or more items in an order. Accessed through the
+    * [`Order`](https://shopify.dev/docs/api/storefront/current/objects/Order) object's
+    * [`successfulFulfillments`](https://shopify.dev/docs/api/storefront/current/objects/Order#field-Order
+    * .fields.successfulFulfillments) field.
+    * Each fulfillment includes the line items that shipped, the tracking company name, and tracking
+    * details like numbers and URLs. An order can have multiple fulfillments when items ship separately or
+    * from different locations.
     */
     public static class FulfillmentQuery extends Query<FulfillmentQuery> {
         FulfillmentQuery(StringBuilder _queryBuilder) {
@@ -35558,7 +36987,13 @@ public class Storefront {
     }
 
     /**
-    * Represents a single fulfillment in an order.
+    * A shipment of one or more items in an order. Accessed through the
+    * [`Order`](https://shopify.dev/docs/api/storefront/current/objects/Order) object's
+    * [`successfulFulfillments`](https://shopify.dev/docs/api/storefront/current/objects/Order#field-Order
+    * .fields.successfulFulfillments) field.
+    * Each fulfillment includes the line items that shipped, the tracking company name, and tracking
+    * details like numbers and URLs. An order can have multiple fulfillments when items ship separately or
+    * from different locations.
     */
     public static class Fulfillment extends AbstractResponse<Fulfillment> {
         public Fulfillment() {
@@ -35669,8 +37104,10 @@ public class Storefront {
     }
 
     /**
-    * Represents a single line item in a fulfillment. There is at most one fulfillment line item for each
-    * order line item.
+    * Records how many units of an
+    * [`OrderLineItem`](https://shopify.dev/docs/api/storefront/current/objects/OrderLineItem) were
+    * included in a [`Fulfillment`](https://shopify.dev/docs/api/storefront/current/objects/Fulfillment).
+    * Each order line item has at most one fulfillment line item per fulfillment.
     */
     public static class FulfillmentLineItemQuery extends Query<FulfillmentLineItemQuery> {
         FulfillmentLineItemQuery(StringBuilder _queryBuilder) {
@@ -35701,8 +37138,10 @@ public class Storefront {
     }
 
     /**
-    * Represents a single line item in a fulfillment. There is at most one fulfillment line item for each
-    * order line item.
+    * Records how many units of an
+    * [`OrderLineItem`](https://shopify.dev/docs/api/storefront/current/objects/OrderLineItem) were
+    * included in a [`Fulfillment`](https://shopify.dev/docs/api/storefront/current/objects/Fulfillment).
+    * Each order line item has at most one fulfillment line item per fulfillment.
     */
     public static class FulfillmentLineItem extends AbstractResponse<FulfillmentLineItem> {
         public FulfillmentLineItem() {
@@ -36158,8 +37597,14 @@ public class Storefront {
     }
 
     /**
-    * The generic file resource lets you manage files in a merchant’s store. Generic files include any
-    * file that doesn’t fit into a designated type such as image or video. Example: PDF, JSON.
+    * Any file that doesn't fit into a designated type like image or video. For example, a PDF or JSON
+    * document. Use this object to manage files in a merchant's store.
+    * Generic files are commonly referenced through [file reference
+    * metafields](https://shopify.dev/docs/apps/build/metafields/list-of-data-types) and returned as part
+    * of the
+    * [`MetafieldReference`](https://shopify.dev/docs/api/storefront/current/unions/MetafieldReference)
+    * union.
+    * Includes the file's URL, MIME type, size in bytes, and an optional preview image.
     */
     public static class GenericFileQuery extends Query<GenericFileQuery> {
         GenericFileQuery(StringBuilder _queryBuilder) {
@@ -36219,8 +37664,14 @@ public class Storefront {
     }
 
     /**
-    * The generic file resource lets you manage files in a merchant’s store. Generic files include any
-    * file that doesn’t fit into a designated type such as image or video. Example: PDF, JSON.
+    * Any file that doesn't fit into a designated type like image or video. For example, a PDF or JSON
+    * document. Use this object to manage files in a merchant's store.
+    * Generic files are commonly referenced through [file reference
+    * metafields](https://shopify.dev/docs/apps/build/metafields/list-of-data-types) and returned as part
+    * of the
+    * [`MetafieldReference`](https://shopify.dev/docs/api/storefront/current/unions/MetafieldReference)
+    * union.
+    * Includes the file's URL, MIME type, size in bytes, and an optional preview image.
     */
     public static class GenericFile extends AbstractResponse<GenericFile> implements MetafieldReference, Node {
         public GenericFile() {
@@ -36447,7 +37898,18 @@ public class Storefront {
     }
 
     /**
-    * Represents information about the metafields associated to the specified resource.
+    * Implemented by resources that support custom metadata through
+    * [`Metafield`](https://shopify.dev/docs/api/storefront/current/objects/Metafield) objects. Types like
+    * [`Product`](https://shopify.dev/docs/api/storefront/current/objects/Product),
+    * [`Collection`](https://shopify.dev/docs/api/storefront/current/objects/Collection), and
+    * [`Customer`](https://shopify.dev/docs/api/storefront/current/objects/Customer) implement this
+    * interface to provide consistent access to metafields.
+    * You can retrieve a [single
+    * metafield](https://shopify.dev/docs/api/storefront/current/interfaces/HasMetafields#fields-metafield
+    * ) by namespace and key, or fetch [multiple
+    * metafields](https://shopify.dev/docs/api/storefront/current/interfaces/HasMetafields#fields-metafiel
+    * ds) in a single request. If you omit the namespace, then the [app-reserved
+    * namespace](https://shopify.dev/docs/apps/build/metafields#app-owned-metafields) is used by default.
     */
     public static class HasMetafieldsQuery extends Query<HasMetafieldsQuery> {
         HasMetafieldsQuery(StringBuilder _queryBuilder) {
@@ -36651,7 +38113,18 @@ public class Storefront {
     }
 
     /**
-    * Represents information about the metafields associated to the specified resource.
+    * Implemented by resources that support custom metadata through
+    * [`Metafield`](https://shopify.dev/docs/api/storefront/current/objects/Metafield) objects. Types like
+    * [`Product`](https://shopify.dev/docs/api/storefront/current/objects/Product),
+    * [`Collection`](https://shopify.dev/docs/api/storefront/current/objects/Collection), and
+    * [`Customer`](https://shopify.dev/docs/api/storefront/current/objects/Customer) implement this
+    * interface to provide consistent access to metafields.
+    * You can retrieve a [single
+    * metafield](https://shopify.dev/docs/api/storefront/current/interfaces/HasMetafields#fields-metafield
+    * ) by namespace and key, or fetch [multiple
+    * metafields](https://shopify.dev/docs/api/storefront/current/interfaces/HasMetafields#fields-metafiel
+    * ds) in a single request. If you omit the namespace, then the [app-reserved
+    * namespace](https://shopify.dev/docs/apps/build/metafields#app-owned-metafields) is used by default.
     */
     public static class UnknownHasMetafields extends AbstractResponse<UnknownHasMetafields> implements HasMetafields {
         public UnknownHasMetafields() {
@@ -36882,7 +38355,15 @@ public class Storefront {
     }
 
     /**
-    * Represents an image resource.
+    * An image resource with URL, dimensions, and transformation options. Used for product images,
+    * collection images, media previews, and other visual content throughout the storefront.
+    * The [`url`](https://shopify.dev/docs/api/storefront/current/objects/Image#field-Image.fields.url)
+    * field accepts an
+    * [`ImageTransformInput`](https://shopify.dev/docs/api/storefront/current/input-objects/ImageTransform
+    * Input) argument for resizing, cropping, scaling for retina displays, and converting between image
+    * formats. Use the
+    * [`thumbhash`](https://shopify.dev/docs/api/storefront/current/objects/Image#field-Image.fields.thumb
+    * hash) field to display lightweight placeholders while images load.
     */
     public static class ImageQuery extends Query<ImageQuery> {
         ImageQuery(StringBuilder _queryBuilder) {
@@ -37115,7 +38596,15 @@ public class Storefront {
     }
 
     /**
-    * Represents an image resource.
+    * An image resource with URL, dimensions, and transformation options. Used for product images,
+    * collection images, media previews, and other visual content throughout the storefront.
+    * The [`url`](https://shopify.dev/docs/api/storefront/current/objects/Image#field-Image.fields.url)
+    * field accepts an
+    * [`ImageTransformInput`](https://shopify.dev/docs/api/storefront/current/input-objects/ImageTransform
+    * Input) argument for resizing, cropping, scaling for retina displays, and converting between image
+    * formats. Use the
+    * [`thumbhash`](https://shopify.dev/docs/api/storefront/current/objects/Image#field-Image.fields.thumb
+    * hash) field to display lightweight placeholders while images load.
     */
     public static class Image extends AbstractResponse<Image> {
         public Image() {
@@ -37879,7 +39368,15 @@ public class Storefront {
     }
 
     /**
-    * A language.
+    * A language available for a localized storefront experience. Provides the language name in both its
+    * native form (endonym) and translated into the current language, along with its
+    * [`LanguageCode`](https://shopify.dev/docs/api/storefront/current/enums/LanguageCode).
+    * Returned by the
+    * [`Localization`](https://shopify.dev/docs/api/storefront/current/objects/Localization) and
+    * [`Country`](https://shopify.dev/docs/api/storefront/current/objects/Country) objects to indicate
+    * available and active languages. Pass the `isoCode` to the
+    * [`@inContext`](https://shopify.dev/docs/storefronts/headless/building-with-the-storefront-api/in-con
+    * text) directive to retrieve translated content in that language.
     */
     public static class LanguageQuery extends Query<LanguageQuery> {
         LanguageQuery(StringBuilder _queryBuilder) {
@@ -37916,7 +39413,15 @@ public class Storefront {
     }
 
     /**
-    * A language.
+    * A language available for a localized storefront experience. Provides the language name in both its
+    * native form (endonym) and translated into the current language, along with its
+    * [`LanguageCode`](https://shopify.dev/docs/api/storefront/current/enums/LanguageCode).
+    * Returned by the
+    * [`Localization`](https://shopify.dev/docs/api/storefront/current/objects/Localization) and
+    * [`Country`](https://shopify.dev/docs/api/storefront/current/objects/Country) objects to indicate
+    * available and active languages. Pass the `isoCode` to the
+    * [`@inContext`](https://shopify.dev/docs/storefronts/headless/building-with-the-storefront-api/in-con
+    * text) directive to retrieve translated content in that language.
     */
     public static class Language extends AbstractResponse<Language> {
         public Language() {
@@ -38002,7 +39507,15 @@ public class Storefront {
     }
 
     /**
-    * Language codes supported by Shopify.
+    * Supported languages for retrieving translated storefront content. Pass a language code to the
+    * [`@inContext`](https://shopify.dev/docs/storefronts/headless/building-with-the-storefront-api/in-con
+    * text) directive to return product titles, descriptions, and other translatable fields in that
+    * language. 
+    * The [`Localization`](https://shopify.dev/docs/api/storefront/current/objects/Localization) object
+    * provides the list of available languages for the active country, and each
+    * [`Country`](https://shopify.dev/docs/api/storefront/current/objects/Country) in
+    * [`availableCountries`](https://shopify.dev/docs/api/storefront/current/objects/Localization#field-Lo
+    * calization.fields.availableCountries) includes its own available languages.
     */
     public enum LanguageCode {
         /**
@@ -39904,7 +41417,20 @@ public class Storefront {
     }
 
     /**
-    * Information about the localized experiences configured for the shop.
+    * Information about the shop's configured localized experiences, including available countries and
+    * languages. The
+    * [`country`](https://shopify.dev/docs/api/storefront/current/objects/Localization#field-Localization.
+    * fields.country) and
+    * [`language`](https://shopify.dev/docs/api/storefront/current/objects/Localization#field-Localization
+    * .fields.language) fields reflect the active localization context, which you can change using the
+    * `@inContext` directive on queries.
+    * Use
+    * [`availableCountries`](https://shopify.dev/docs/api/storefront/current/objects/Localization#field-Lo
+    * calization.fields.availableCountries) to list all countries with enabled localized experiences, and
+    * [`availableLanguages`](https://shopify.dev/docs/api/storefront/current/objects/Localization#field-Lo
+    * calization.fields.availableLanguages) to get languages available for the currently active country.
+    * Each [`Country`](https://shopify.dev/docs/api/storefront/current/objects/Country) includes its own
+    * currency, unit system, and available languages.
     */
     public static class LocalizationQuery extends Query<LocalizationQuery> {
         LocalizationQuery(StringBuilder _queryBuilder) {
@@ -39983,7 +41509,20 @@ public class Storefront {
     }
 
     /**
-    * Information about the localized experiences configured for the shop.
+    * Information about the shop's configured localized experiences, including available countries and
+    * languages. The
+    * [`country`](https://shopify.dev/docs/api/storefront/current/objects/Localization#field-Localization.
+    * fields.country) and
+    * [`language`](https://shopify.dev/docs/api/storefront/current/objects/Localization#field-Localization
+    * .fields.language) fields reflect the active localization context, which you can change using the
+    * `@inContext` directive on queries.
+    * Use
+    * [`availableCountries`](https://shopify.dev/docs/api/storefront/current/objects/Localization#field-Lo
+    * calization.fields.availableCountries) to list all countries with enabled localized experiences, and
+    * [`availableLanguages`](https://shopify.dev/docs/api/storefront/current/objects/Localization#field-Lo
+    * calization.fields.availableLanguages) to get languages available for the currently active country.
+    * Each [`Country`](https://shopify.dev/docs/api/storefront/current/objects/Country) includes its own
+    * currency, unit system, and available languages.
     */
     public static class Localization extends AbstractResponse<Localization> {
         public Localization() {
@@ -40142,7 +41681,16 @@ public class Storefront {
     }
 
     /**
-    * Represents a location where product inventory is held.
+    * A physical store location where product inventory is held and that supports in-store pickup.
+    * Provides the location's name, address, and geographic coordinates for proximity-based sorting. Use
+    * with
+    * [`StoreAvailability`](https://shopify.dev/docs/api/storefront/current/objects/StoreAvailability) to
+    * show customers where a
+    * [`ProductVariant`](https://shopify.dev/docs/api/storefront/current/objects/ProductVariant) is
+    * available for pickup. 
+    * Learn more about [supporting local pickup on
+    * storefronts](https://shopify.dev/docs/storefronts/headless/building-with-the-storefront-api/products
+    * -collections/local-pickup).
     */
     public static class LocationQuery extends Query<LocationQuery> {
         LocationQuery(StringBuilder _queryBuilder) {
@@ -40255,7 +41803,16 @@ public class Storefront {
     }
 
     /**
-    * Represents a location where product inventory is held.
+    * A physical store location where product inventory is held and that supports in-store pickup.
+    * Provides the location's name, address, and geographic coordinates for proximity-based sorting. Use
+    * with
+    * [`StoreAvailability`](https://shopify.dev/docs/api/storefront/current/objects/StoreAvailability) to
+    * show customers where a
+    * [`ProductVariant`](https://shopify.dev/docs/api/storefront/current/objects/ProductVariant) is
+    * available for pickup. 
+    * Learn more about [supporting local pickup on
+    * storefronts](https://shopify.dev/docs/storefronts/headless/building-with-the-storefront-api/products
+    * -collections/local-pickup).
     */
     public static class Location extends AbstractResponse<Location> implements HasMetafields, MetafieldParentResource, Node {
         public Location() {
@@ -41198,7 +42755,14 @@ public class Storefront {
     }
 
     /**
-    * Represents a mailing address for customers and shipping.
+    * A physical mailing address associated with a
+    * [`Customer`](https://shopify.dev/docs/api/storefront/current/objects/Customer) or
+    * [`Order`](https://shopify.dev/docs/api/storefront/current/objects/Order). Stores standard address
+    * components including street address, city, province, country, and postal code, along with customer
+    * name and company information.
+    * The address includes geographic coordinates and provides pre-formatted output through the
+    * [`formatted`](https://shopify.dev/docs/api/storefront/current/objects/MailingAddress#field-MailingAd
+    * dress.fields.formatted) field, which can optionally include or exclude name and company details.
     */
     public static class MailingAddressQuery extends Query<MailingAddressQuery> {
         MailingAddressQuery(StringBuilder _queryBuilder) {
@@ -41421,7 +42985,14 @@ public class Storefront {
     }
 
     /**
-    * Represents a mailing address for customers and shipping.
+    * A physical mailing address associated with a
+    * [`Customer`](https://shopify.dev/docs/api/storefront/current/objects/Customer) or
+    * [`Order`](https://shopify.dev/docs/api/storefront/current/objects/Order). Stores standard address
+    * components including street address, city, province, country, and postal code, along with customer
+    * name and company information.
+    * The address includes geographic coordinates and provides pre-formatted output through the
+    * [`formatted`](https://shopify.dev/docs/api/storefront/current/objects/MailingAddress#field-MailingAd
+    * dress.fields.formatted) field, which can optionally include or exclude name and company details.
     */
     public static class MailingAddress extends AbstractResponse<MailingAddress> implements DeliveryAddress, Node {
         public MailingAddress() {
@@ -42530,7 +44101,13 @@ public class Storefront {
     }
 
     /**
-    * Manual discount applications capture the intentions of a discount that was manually created.
+    * A discount created manually by a merchant, as opposed to [automatic
+    * discounts](https://help.shopify.com/manual/discounts/discount-methods/automatic-discounts) or
+    * [discount codes](https://help.shopify.com/manual/discounts/discount-methods/discount-codes).
+    * Implements the
+    * [`DiscountApplication`](https://shopify.dev/docs/api/storefront/current/interfaces/DiscountApplicati
+    * on) interface and includes a title, optional description, and the discount value as either a fixed
+    * amount or percentage.
     */
     public static class ManualDiscountApplicationQuery extends Query<ManualDiscountApplicationQuery> {
         ManualDiscountApplicationQuery(StringBuilder _queryBuilder) {
@@ -42597,7 +44174,13 @@ public class Storefront {
     }
 
     /**
-    * Manual discount applications capture the intentions of a discount that was manually created.
+    * A discount created manually by a merchant, as opposed to [automatic
+    * discounts](https://help.shopify.com/manual/discounts/discount-methods/automatic-discounts) or
+    * [discount codes](https://help.shopify.com/manual/discounts/discount-methods/discount-codes).
+    * Implements the
+    * [`DiscountApplication`](https://shopify.dev/docs/api/storefront/current/interfaces/DiscountApplicati
+    * on) interface and includes a title, optional description, and the discount value as either a fixed
+    * amount or percentage.
     */
     public static class ManualDiscountApplication extends AbstractResponse<ManualDiscountApplication> implements DiscountApplication {
         public ManualDiscountApplication() {
@@ -42748,8 +44331,15 @@ public class Storefront {
     }
 
     /**
-    * A group of one or more regions of the world that a merchant is targeting for sales. To learn more
-    * about markets, refer to [the Shopify Markets conceptual overview](/docs/apps/markets).
+    * An audience of buyers that a merchant targets for sales. Audiences can include geographic regions,
+    * company locations, and retail locations. Markets enable localized shopping experiences with
+    * region-specific languages, currencies, and pricing.
+    * Each market has a unique
+    * [`handle`](https://shopify.dev/docs/api/storefront/current/objects/Market#field-Market.fields.handle
+    * ) for identification and supports custom data through
+    * [`metafields`](https://shopify.dev/docs/api/storefront/current/objects/Metafield). Learn more about
+    * [building localized experiences with Shopify
+    * Markets](https://shopify.dev/docs/storefronts/headless/building-with-the-storefront-api/markets).
     */
     public static class MarketQuery extends Query<MarketQuery> {
         MarketQuery(StringBuilder _queryBuilder) {
@@ -42849,8 +44439,15 @@ public class Storefront {
     }
 
     /**
-    * A group of one or more regions of the world that a merchant is targeting for sales. To learn more
-    * about markets, refer to [the Shopify Markets conceptual overview](/docs/apps/markets).
+    * An audience of buyers that a merchant targets for sales. Audiences can include geographic regions,
+    * company locations, and retail locations. Markets enable localized shopping experiences with
+    * region-specific languages, currencies, and pricing.
+    * Each market has a unique
+    * [`handle`](https://shopify.dev/docs/api/storefront/current/objects/Market#field-Market.fields.handle
+    * ) for identification and supports custom data through
+    * [`metafields`](https://shopify.dev/docs/api/storefront/current/objects/Metafield). Learn more about
+    * [building localized experiences with Shopify
+    * Markets](https://shopify.dev/docs/storefronts/headless/building-with-the-storefront-api/markets).
     */
     public static class Market extends AbstractResponse<Market> implements HasMetafields, MetafieldParentResource, Node {
         public Market() {
@@ -42987,7 +44584,16 @@ public class Storefront {
     }
 
     /**
-    * Represents a media interface.
+    * A common set of fields for media content associated with
+    * [products](https://shopify.dev/docs/api/storefront/current/objects/Product). Implementations include
+    * [`MediaImage`](https://shopify.dev/docs/api/storefront/current/objects/MediaImage) for
+    * Shopify-hosted images, [`Video`](https://shopify.dev/docs/api/storefront/current/objects/Video) for
+    * Shopify-hosted videos,
+    * [`ExternalVideo`](https://shopify.dev/docs/api/storefront/current/objects/ExternalVideo) for videos
+    * hosted on platforms like YouTube or Vimeo, and
+    * [`Model3d`](https://shopify.dev/docs/api/storefront/current/objects/Model3d) for 3D models.
+    * Each implementation shares fields for alt text, content type, and preview images, while adding
+    * type-specific fields like embed URLs for external videos or source files for 3D models.
     */
     public static class MediaQuery extends Query<MediaQuery> {
         MediaQuery(StringBuilder _queryBuilder) {
@@ -43093,7 +44699,16 @@ public class Storefront {
     }
 
     /**
-    * Represents a media interface.
+    * A common set of fields for media content associated with
+    * [products](https://shopify.dev/docs/api/storefront/current/objects/Product). Implementations include
+    * [`MediaImage`](https://shopify.dev/docs/api/storefront/current/objects/MediaImage) for
+    * Shopify-hosted images, [`Video`](https://shopify.dev/docs/api/storefront/current/objects/Video) for
+    * Shopify-hosted videos,
+    * [`ExternalVideo`](https://shopify.dev/docs/api/storefront/current/objects/ExternalVideo) for videos
+    * hosted on platforms like YouTube or Vimeo, and
+    * [`Model3d`](https://shopify.dev/docs/api/storefront/current/objects/Model3d) for 3D models.
+    * Each implementation shares fields for alt text, content type, and preview images, while adding
+    * type-specific fields like embed URLs for external videos or source files for 3D models.
     */
     public static class UnknownMedia extends AbstractResponse<UnknownMedia> implements Media {
         public UnknownMedia() {
@@ -43660,7 +45275,14 @@ public class Storefront {
     }
 
     /**
-    * Represents a Shopify hosted image.
+    * An image hosted on Shopify's content delivery network (CDN). Used for product images, brand logos,
+    * and other visual content across the storefront.
+    * The
+    * [`image`](https://shopify.dev/docs/api/storefront/current/objects/MediaImage#field-MediaImage.fields
+    * .image) field provides the actual image data with transformation options. Implements the
+    * [`Media`](https://shopify.dev/docs/api/storefront/current/interfaces/Media) interface alongside
+    * other media types like [`Video`](https://shopify.dev/docs/api/storefront/current/objects/Video) and
+    * [`Model3d`](https://shopify.dev/docs/api/storefront/current/objects/Model3d).
     */
     public static class MediaImageQuery extends Query<MediaImageQuery> {
         MediaImageQuery(StringBuilder _queryBuilder) {
@@ -43728,7 +45350,14 @@ public class Storefront {
     }
 
     /**
-    * Represents a Shopify hosted image.
+    * An image hosted on Shopify's content delivery network (CDN). Used for product images, brand logos,
+    * and other visual content across the storefront.
+    * The
+    * [`image`](https://shopify.dev/docs/api/storefront/current/objects/MediaImage#field-MediaImage.fields
+    * .image) field provides the actual image data with transformation options. Implements the
+    * [`Media`](https://shopify.dev/docs/api/storefront/current/interfaces/Media) interface alongside
+    * other media types like [`Video`](https://shopify.dev/docs/api/storefront/current/objects/Video) and
+    * [`Model3d`](https://shopify.dev/docs/api/storefront/current/objects/Model3d).
     */
     public static class MediaImage extends AbstractResponse<MediaImage> implements Media, MetafieldReference, Node {
         public MediaImage() {
@@ -43995,8 +45624,11 @@ public class Storefront {
 
         /**
         * A globally-unique ID.
+        *
+        * @deprecated MediaPresentation IDs are being deprecated. Access the data directly via the asJson field on the Media type.
         */
 
+        @Deprecated
         public ID getId() {
             return (ID) get("id");
         }
@@ -44059,9 +45691,17 @@ public class Storefront {
     }
 
     /**
-    * A [navigation menu](https://help.shopify.com/manual/online-store/menus-and-links) representing a
-    * hierarchy
-    * of hyperlinks (items).
+    * A navigation structure for building store
+    * [menus](https://help.shopify.com/manual/online-store/menus-and-links). Each menu contains
+    * [`MenuItem`](https://shopify.dev/docs/api/storefront/current/objects/MenuItem) objects that can be
+    * nested to create multi-level navigation hierarchies.
+    * Menu items can link to
+    * [collections](https://shopify.dev/docs/api/storefront/current/objects/Collection),
+    * [products](https://shopify.dev/docs/api/storefront/current/objects/Product),
+    * [pages](https://shopify.dev/docs/api/storefront/current/objects/Page),
+    * [blogs](https://shopify.dev/docs/api/storefront/current/objects/Blog), or external URLs. Use the
+    * [`menu`](https://shopify.dev/docs/api/storefront/current/queries/menu) query to retrieve a menu by
+    * its handle.
     */
     public static class MenuQuery extends Query<MenuQuery> {
         MenuQuery(StringBuilder _queryBuilder) {
@@ -44112,9 +45752,17 @@ public class Storefront {
     }
 
     /**
-    * A [navigation menu](https://help.shopify.com/manual/online-store/menus-and-links) representing a
-    * hierarchy
-    * of hyperlinks (items).
+    * A navigation structure for building store
+    * [menus](https://help.shopify.com/manual/online-store/menus-and-links). Each menu contains
+    * [`MenuItem`](https://shopify.dev/docs/api/storefront/current/objects/MenuItem) objects that can be
+    * nested to create multi-level navigation hierarchies.
+    * Menu items can link to
+    * [collections](https://shopify.dev/docs/api/storefront/current/objects/Collection),
+    * [products](https://shopify.dev/docs/api/storefront/current/objects/Product),
+    * [pages](https://shopify.dev/docs/api/storefront/current/objects/Page),
+    * [blogs](https://shopify.dev/docs/api/storefront/current/objects/Blog), or external URLs. Use the
+    * [`menu`](https://shopify.dev/docs/api/storefront/current/queries/menu) query to retrieve a menu by
+    * its handle.
     */
     public static class Menu extends AbstractResponse<Menu> implements Node {
         public Menu() {
@@ -44255,7 +45903,17 @@ public class Storefront {
     }
 
     /**
-    * A menu item within a parent menu.
+    * A navigation link within a [`Menu`](https://shopify.dev/docs/api/storefront/current/objects/Menu).
+    * Each item has a title, URL, and can link to store resources like
+    * [products](https://shopify.dev/docs/api/storefront/current/objects/Product),
+    * [collections](https://shopify.dev/docs/api/storefront/current/objects/Collection),
+    * [pages](https://shopify.dev/docs/api/storefront/current/objects/Page),
+    * [blogs](https://shopify.dev/docs/api/storefront/current/objects/Blog), or external URLs.
+    * Menu items support nested hierarchies through the
+    * [`items`](https://shopify.dev/docs/api/storefront/current/objects/MenuItem#field-MenuItem.fields.ite
+    * ms) field, enabling dropdown or multi-level navigation structures. The
+    * [`tags`](https://shopify.dev/docs/api/storefront/current/objects/MenuItem#field-MenuItem.fields.tags
+    * ) field filters results when the item links to a collection specifically.
     */
     public static class MenuItemQuery extends Query<MenuItemQuery> {
         MenuItemQuery(StringBuilder _queryBuilder) {
@@ -44337,7 +45995,17 @@ public class Storefront {
     }
 
     /**
-    * A menu item within a parent menu.
+    * A navigation link within a [`Menu`](https://shopify.dev/docs/api/storefront/current/objects/Menu).
+    * Each item has a title, URL, and can link to store resources like
+    * [products](https://shopify.dev/docs/api/storefront/current/objects/Product),
+    * [collections](https://shopify.dev/docs/api/storefront/current/objects/Collection),
+    * [pages](https://shopify.dev/docs/api/storefront/current/objects/Page),
+    * [blogs](https://shopify.dev/docs/api/storefront/current/objects/Blog), or external URLs.
+    * Menu items support nested hierarchies through the
+    * [`items`](https://shopify.dev/docs/api/storefront/current/objects/MenuItem#field-MenuItem.fields.ite
+    * ms) field, enabling dropdown or multi-level navigation structures. The
+    * [`tags`](https://shopify.dev/docs/api/storefront/current/objects/MenuItem#field-MenuItem.fields.tags
+    * ) field filters results when the item links to a collection specifically.
     */
     public static class MenuItem extends AbstractResponse<MenuItem> implements Node {
         public MenuItem() {
@@ -44883,7 +46551,8 @@ public class Storefront {
     }
 
     /**
-    * The merchandise to be purchased at checkout.
+    * A [`ProductVariant`](https://shopify.dev/docs/api/storefront/current/objects/ProductVariant) that a
+    * buyer intends to purchase at checkout.
     */
     public static class MerchandiseQuery extends Query<MerchandiseQuery> {
         MerchandiseQuery(StringBuilder _queryBuilder) {
@@ -44905,7 +46574,8 @@ public class Storefront {
     }
 
     /**
-    * The merchandise to be purchased at checkout.
+    * A [`ProductVariant`](https://shopify.dev/docs/api/storefront/current/objects/ProductVariant) that a
+    * buyer intends to purchase at checkout.
     */
     public static class UnknownMerchandise extends AbstractResponse<UnknownMerchandise> implements Merchandise {
         public UnknownMerchandise() {
@@ -44950,9 +46620,22 @@ public class Storefront {
     }
 
     /**
-    * Metafields represent custom metadata attached to a resource. Metafields can be sorted into
-    * namespaces and are
-    * comprised of keys, values, and value types.
+    * [Custom metadata](https://shopify.dev/docs/apps/build/metafields) attached to a Shopify resource
+    * such as a [`Product`](https://shopify.dev/docs/api/storefront/current/objects/Product),
+    * [`Collection`](https://shopify.dev/docs/api/storefront/current/objects/Collection), or
+    * [`Customer`](https://shopify.dev/docs/api/storefront/current/objects/Customer). Each metafield is
+    * identified by a namespace and key, and stores a value with an associated type.
+    * Values are always stored as strings, but the
+    * [`type`](https://shopify.dev/docs/api/storefront/current/objects/Metafield#field-Metafield.fields.ty
+    * pe) field indicates how to interpret the data. When a metafield's type is a resource reference, use
+    * the
+    * [`reference`](https://shopify.dev/docs/api/storefront/current/objects/Metafield#field-Metafield.fiel
+    * ds.reference) or
+    * [`references`](https://shopify.dev/docs/api/storefront/current/objects/Metafield#field-Metafield.fie
+    * lds.references) fields to retrieve the linked objects. Access metafields on any resource that
+    * implements the
+    * [`HasMetafields`](https://shopify.dev/docs/api/storefront/current/interfaces/HasMetafields)
+    * interface.
     */
     public static class MetafieldQuery extends Query<MetafieldQuery> {
         MetafieldQuery(StringBuilder _queryBuilder) {
@@ -44984,6 +46667,16 @@ public class Storefront {
         */
         public MetafieldQuery key() {
             startField("key");
+
+            return this;
+        }
+
+        /**
+        * Whether the metafield's type is a list type. Returns `true` for types like `list.color` or
+        * `list.single_line_text_field`.
+        */
+        public MetafieldQuery list() {
+            startField("list");
 
             return this;
         }
@@ -45131,9 +46824,22 @@ public class Storefront {
     }
 
     /**
-    * Metafields represent custom metadata attached to a resource. Metafields can be sorted into
-    * namespaces and are
-    * comprised of keys, values, and value types.
+    * [Custom metadata](https://shopify.dev/docs/apps/build/metafields) attached to a Shopify resource
+    * such as a [`Product`](https://shopify.dev/docs/api/storefront/current/objects/Product),
+    * [`Collection`](https://shopify.dev/docs/api/storefront/current/objects/Collection), or
+    * [`Customer`](https://shopify.dev/docs/api/storefront/current/objects/Customer). Each metafield is
+    * identified by a namespace and key, and stores a value with an associated type.
+    * Values are always stored as strings, but the
+    * [`type`](https://shopify.dev/docs/api/storefront/current/objects/Metafield#field-Metafield.fields.ty
+    * pe) field indicates how to interpret the data. When a metafield's type is a resource reference, use
+    * the
+    * [`reference`](https://shopify.dev/docs/api/storefront/current/objects/Metafield#field-Metafield.fiel
+    * ds.reference) or
+    * [`references`](https://shopify.dev/docs/api/storefront/current/objects/Metafield#field-Metafield.fie
+    * lds.references) fields to retrieve the linked objects. Access metafields on any resource that
+    * implements the
+    * [`HasMetafields`](https://shopify.dev/docs/api/storefront/current/interfaces/HasMetafields)
+    * interface.
     */
     public static class Metafield extends AbstractResponse<Metafield> implements Node {
         public Metafield() {
@@ -45169,6 +46875,12 @@ public class Storefront {
 
                     case "key": {
                         responseData.put(key, jsonAsString(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "list": {
+                        responseData.put(key, jsonAsBoolean(field.getValue(), key));
 
                         break;
                     }
@@ -45293,6 +47005,20 @@ public class Storefront {
         }
 
         /**
+        * Whether the metafield's type is a list type. Returns `true` for types like `list.color` or
+        * `list.single_line_text_field`.
+        */
+
+        public Boolean getList() {
+            return (Boolean) get("list");
+        }
+
+        public Metafield setList(Boolean arg) {
+            optimisticData.put(getKey("list"), arg);
+            return this;
+        }
+
+        /**
         * The container for a group of metafields that the metafield is associated with.
         */
 
@@ -45399,6 +47125,11 @@ public class Storefront {
     */
     public enum MetafieldDeleteErrorCode {
         /**
+        * The current app is not authorized to perform this action.
+        */
+        APP_NOT_AUTHORIZED,
+
+        /**
         * The owner ID is invalid.
         */
         INVALID_OWNER,
@@ -45416,6 +47147,10 @@ public class Storefront {
             }
 
             switch (value) {
+                case "APP_NOT_AUTHORIZED": {
+                    return APP_NOT_AUTHORIZED;
+                }
+
                 case "INVALID_OWNER": {
                     return INVALID_OWNER;
                 }
@@ -45431,6 +47166,10 @@ public class Storefront {
         }
         public String toString() {
             switch (this) {
+                case APP_NOT_AUTHORIZED: {
+                    return "APP_NOT_AUTHORIZED";
+                }
+
                 case INVALID_OWNER: {
                     return "INVALID_OWNER";
                 }
@@ -45656,7 +47395,10 @@ public class Storefront {
     }
 
     /**
-    * A resource that the metafield belongs to.
+    * The Shopify resource that owns a metafield. Returned by the `Metafield` object's
+    * [`parentResource`](https://shopify.dev/docs/api/storefront/current/objects/Metafield#field-Metafield
+    * .fields.parentResource) field, enabling traversal from a metafield back to the resource it's
+    * attached to.
     */
     public static class MetafieldParentResourceQuery extends Query<MetafieldParentResourceQuery> {
         MetafieldParentResourceQuery(StringBuilder _queryBuilder) {
@@ -45776,7 +47518,10 @@ public class Storefront {
     }
 
     /**
-    * A resource that the metafield belongs to.
+    * The Shopify resource that owns a metafield. Returned by the `Metafield` object's
+    * [`parentResource`](https://shopify.dev/docs/api/storefront/current/objects/Metafield#field-Metafield
+    * .fields.parentResource) field, enabling traversal from a metafield back to the resource it's
+    * attached to.
     */
     public static class UnknownMetafieldParentResource extends AbstractResponse<UnknownMetafieldParentResource> implements MetafieldParentResource {
         public UnknownMetafieldParentResource() {
@@ -45877,13 +47622,27 @@ public class Storefront {
     }
 
     /**
-    * Returns the resource which is being referred to by a metafield.
+    * The resource that a metafield points to when its type is a resource reference. Metafields can store
+    * references to other Shopify resources, and this union provides access to the actual referenced
+    * object.
+    * Returned by the `Metafield` object's
+    * [`reference`](https://shopify.dev/docs/api/storefront/current/objects/Metafield#field-Metafield.fiel
+    * ds.reference) field for single references or the
+    * [`references`](https://shopify.dev/docs/api/storefront/current/objects/Metafield#field-Metafield.fie
+    * lds.references) field for lists.
     */
     public static class MetafieldReferenceQuery extends Query<MetafieldReferenceQuery> {
         MetafieldReferenceQuery(StringBuilder _queryBuilder) {
             super(_queryBuilder);
 
             startField("__typename");
+        }
+
+        public MetafieldReferenceQuery onArticle(ArticleQueryDefinition queryDef) {
+            startInlineFragment("Article");
+            queryDef.define(new ArticleQuery(_queryBuilder));
+            _queryBuilder.append('}');
+            return this;
         }
 
         public MetafieldReferenceQuery onCollection(CollectionQueryDefinition queryDef) {
@@ -45955,7 +47714,14 @@ public class Storefront {
     }
 
     /**
-    * Returns the resource which is being referred to by a metafield.
+    * The resource that a metafield points to when its type is a resource reference. Metafields can store
+    * references to other Shopify resources, and this union provides access to the actual referenced
+    * object.
+    * Returned by the `Metafield` object's
+    * [`reference`](https://shopify.dev/docs/api/storefront/current/objects/Metafield#field-Metafield.fiel
+    * ds.reference) field for single references or the
+    * [`references`](https://shopify.dev/docs/api/storefront/current/objects/Metafield#field-Metafield.fie
+    * lds.references) field for lists.
     */
     public static class UnknownMetafieldReference extends AbstractResponse<UnknownMetafieldReference> implements MetafieldReference {
         public UnknownMetafieldReference() {
@@ -45980,6 +47746,10 @@ public class Storefront {
         public static MetafieldReference create(JsonObject fields) throws SchemaViolationError {
             String typeName = fields.getAsJsonPrimitive("__typename").getAsString();
             switch (typeName) {
+                case "Article": {
+                    return new Article(fields);
+                }
+
                 case "Collection": {
                     return new Collection(fields);
                 }
@@ -46464,6 +48234,11 @@ public class Storefront {
     */
     public enum MetafieldsSetUserErrorCode {
         /**
+        * The current app is not authorized to perform this action.
+        */
+        APP_NOT_AUTHORIZED,
+
+        /**
         * The input value is blank.
         */
         BLANK,
@@ -46516,6 +48291,10 @@ public class Storefront {
             }
 
             switch (value) {
+                case "APP_NOT_AUTHORIZED": {
+                    return APP_NOT_AUTHORIZED;
+                }
+
                 case "BLANK": {
                     return BLANK;
                 }
@@ -46559,6 +48338,10 @@ public class Storefront {
         }
         public String toString() {
             switch (this) {
+                case APP_NOT_AUTHORIZED: {
+                    return "APP_NOT_AUTHORIZED";
+                }
+
                 case BLANK: {
                     return "BLANK";
                 }
@@ -46607,7 +48390,17 @@ public class Storefront {
     }
 
     /**
-    * An instance of a user-defined model based on a MetaobjectDefinition.
+    * An instance of [custom structured data](https://shopify.dev/docs/apps/build/metaobjects) defined by
+    * a metaobject definition. Metaobjects store reusable content that extends beyond standard Shopify
+    * resources, such as size charts, author profiles, or custom content sections.
+    * Each metaobject contains fields that match the types and validation rules specified in its
+    * definition. [`Metafield`](https://shopify.dev/docs/api/storefront/current/objects/Metafield)
+    * references can point to metaobjects, connecting custom data with products, collections, and other
+    * resources. If the definition has the `renderable` capability, then the
+    * [`seo`](https://shopify.dev/docs/api/storefront/current/objects/Metaobject#field-Metaobject.fields.s
+    * eo) field provides SEO metadata. If it has the `online_store` capability, then the
+    * [`onlineStoreUrl`](https://shopify.dev/docs/api/storefront/current/objects/Metaobject#field-Metaobje
+    * ct.fields.onlineStoreUrl) field returns the public URL.
     */
     public static class MetaobjectQuery extends Query<MetaobjectQuery> {
         MetaobjectQuery(StringBuilder _queryBuilder) {
@@ -46682,7 +48475,7 @@ public class Storefront {
         }
 
         /**
-        * The type of the metaobject. Defines the namespace of its associated metafields.
+        * The type of the metaobject.
         */
         public MetaobjectQuery type() {
             startField("type");
@@ -46701,7 +48494,17 @@ public class Storefront {
     }
 
     /**
-    * An instance of a user-defined model based on a MetaobjectDefinition.
+    * An instance of [custom structured data](https://shopify.dev/docs/apps/build/metaobjects) defined by
+    * a metaobject definition. Metaobjects store reusable content that extends beyond standard Shopify
+    * resources, such as size charts, author profiles, or custom content sections.
+    * Each metaobject contains fields that match the types and validation rules specified in its
+    * definition. [`Metafield`](https://shopify.dev/docs/api/storefront/current/objects/Metafield)
+    * references can point to metaobjects, connecting custom data with products, collections, and other
+    * resources. If the definition has the `renderable` capability, then the
+    * [`seo`](https://shopify.dev/docs/api/storefront/current/objects/Metaobject#field-Metaobject.fields.s
+    * eo) field provides SEO metadata. If it has the `online_store` capability, then the
+    * [`onlineStoreUrl`](https://shopify.dev/docs/api/storefront/current/objects/Metaobject#field-Metaobje
+    * ct.fields.onlineStoreUrl) field returns the public URL.
     */
     public static class Metaobject extends AbstractResponse<Metaobject> implements MenuItemResource, MetafieldReference, Node, OnlineStorePublishable {
         public Metaobject() {
@@ -46877,7 +48680,7 @@ public class Storefront {
         }
 
         /**
-        * The type of the metaobject. Defines the namespace of its associated metafields.
+        * The type of the metaobject.
         */
 
         public String getType() {
@@ -47191,7 +48994,13 @@ public class Storefront {
     }
 
     /**
-    * Provides the value of a Metaobject field.
+    * The value of a field within a
+    * [`Metaobject`](https://shopify.dev/docs/api/storefront/current/objects/Metaobject). For fields that
+    * reference other resources, use the
+    * [`reference`](https://shopify.dev/docs/api/storefront/current/objects/MetaobjectField#field-Metaobje
+    * ctField.fields.reference) field for single references or
+    * [`references`](https://shopify.dev/docs/api/storefront/current/objects/MetaobjectField#field-Metaobj
+    * ectField.fields.references) for lists.
     */
     public static class MetaobjectFieldQuery extends Query<MetaobjectFieldQuery> {
         MetaobjectFieldQuery(StringBuilder _queryBuilder) {
@@ -47319,7 +49128,13 @@ public class Storefront {
     }
 
     /**
-    * Provides the value of a Metaobject field.
+    * The value of a field within a
+    * [`Metaobject`](https://shopify.dev/docs/api/storefront/current/objects/Metaobject). For fields that
+    * reference other resources, use the
+    * [`reference`](https://shopify.dev/docs/api/storefront/current/objects/MetaobjectField#field-Metaobje
+    * ctField.fields.reference) field for single references or
+    * [`references`](https://shopify.dev/docs/api/storefront/current/objects/MetaobjectField#field-Metaobj
+    * ectField.fields.references) for lists.
     */
     public static class MetaobjectField extends AbstractResponse<MetaobjectField> {
         public MetaobjectField() {
@@ -48091,7 +49906,9 @@ public class Storefront {
     }
 
     /**
-    * A monetary value with currency.
+    * A precise monetary value with its associated currency. Combines a decimal amount with a three-letter
+    * [`CurrencyCode`](https://shopify.dev/docs/api/storefront/current/enums/CurrencyCode) to express
+    * prices, costs, and other financial values. For example, 12.99 USD.
     */
     public static class MoneyV2Query extends Query<MoneyV2Query> {
         MoneyV2Query(StringBuilder _queryBuilder) {
@@ -48118,7 +49935,9 @@ public class Storefront {
     }
 
     /**
-    * A monetary value with currency.
+    * A precise monetary value with its associated currency. Combines a decimal amount with a three-letter
+    * [`CurrencyCode`](https://shopify.dev/docs/api/storefront/current/enums/CurrencyCode) to express
+    * prices, costs, and other financial values. For example, 12.99 USD.
     */
     public static class MoneyV2 extends AbstractResponse<MoneyV2> implements PricingValue, SellingPlanCheckoutChargeValue {
         public MoneyV2() {
@@ -48197,7 +50016,9 @@ public class Storefront {
         }
 
         /**
-        * Updates the attributes on a cart.
+        * Updates the attributes on a [`Cart`](https://shopify.dev/docs/api/storefront/current/objects/Cart).
+        * Attributes are custom key-value pairs that store additional information, such as gift messages,
+        * special instructions, or order notes.
         */
         public MutationQuery cartAttributesUpdate(List<AttributeInput> attributes, ID cartId, CartAttributesUpdatePayloadQueryDefinition queryDef) {
             startField("cartAttributesUpdate");
@@ -48275,11 +50096,14 @@ public class Storefront {
         }
 
         /**
-        * Updates customer information associated with a cart.
-        * Buyer identity is used to determine
-        * [international
-        * pricing](https://shopify.dev/custom-storefronts/internationalization/international-pricing)
-        * and should match the customer's shipping address.
+        * Updates the buyer identity on a
+        * [`Cart`](https://shopify.dev/docs/api/storefront/current/objects/Cart), including contact
+        * information, location, and checkout preferences. The buyer's country determines [international
+        * pricing](https://shopify.dev/docs/storefronts/headless/building-with-the-storefront-api/markets/inte
+        * rnational-pricing) and should match their shipping address.
+        * Use this mutation to associate a logged-in customer via access token, set a B2B company location, or
+        * configure checkout preferences like delivery method. Preferences prefill checkout fields but don't
+        * sync back to the cart if overwritten at checkout.
         */
         public MutationQuery cartBuyerIdentityUpdate(ID cartId, CartBuyerIdentityInput buyerIdentity, CartBuyerIdentityUpdatePayloadQueryDefinition queryDef) {
             startField("cartBuyerIdentityUpdate");
@@ -48294,6 +50118,24 @@ public class Storefront {
 
             _queryBuilder.append('{');
             queryDef.define(new CartBuyerIdentityUpdatePayloadQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * Creates a clone of the specified cart with all personally identifiable information removed.
+        */
+        public MutationQuery cartClone(ID cartId, CartClonePayloadQueryDefinition queryDef) {
+            startField("cartClone");
+
+            _queryBuilder.append("(cartId:");
+            Query.appendQuotedString(_queryBuilder, cartId.toString());
+
+            _queryBuilder.append(')');
+
+            _queryBuilder.append('{');
+            queryDef.define(new CartClonePayloadQuery(_queryBuilder));
             _queryBuilder.append('}');
 
             return this;
@@ -48321,14 +50163,20 @@ public class Storefront {
         }
 
         /**
-        * Creates a new cart.
+        * Creates a new [`Cart`](https://shopify.dev/docs/api/storefront/current/objects/Cart) for a buyer
+        * session. You can optionally initialize the cart with merchandise lines, discount codes, gift card
+        * codes, buyer identity for international pricing, and custom attributes.
+        * The returned cart includes a `checkoutUrl` that directs the buyer to complete their purchase.
         */
         public MutationQuery cartCreate(CartCreatePayloadQueryDefinition queryDef) {
             return cartCreate(args -> {}, queryDef);
         }
 
         /**
-        * Creates a new cart.
+        * Creates a new [`Cart`](https://shopify.dev/docs/api/storefront/current/objects/Cart) for a buyer
+        * session. You can optionally initialize the cart with merchandise lines, discount codes, gift card
+        * codes, buyer identity for international pricing, and custom attributes.
+        * The returned cart includes a `checkoutUrl` that directs the buyer to complete their purchase.
         */
         public MutationQuery cartCreate(CartCreateArgumentsDefinition argsDef, CartCreatePayloadQueryDefinition queryDef) {
             startField("cartCreate");
@@ -48345,7 +50193,9 @@ public class Storefront {
         }
 
         /**
-        * Adds delivery addresses to the cart.
+        * Adds delivery addresses to a [`Cart`](https://shopify.dev/docs/api/storefront/current/objects/Cart).
+        * A cart can have up to 20 delivery addresses. One address can be marked as selected for checkout, and
+        * addresses can optionally be marked as one-time use so they aren't saved to the customer's account.
         */
         public MutationQuery cartDeliveryAddressesAdd(ID cartId, List<CartSelectableAddressInput> addresses, CartDeliveryAddressesAddPayloadQueryDefinition queryDef) {
             startField("cartDeliveryAddressesAdd");
@@ -48375,7 +50225,9 @@ public class Storefront {
         }
 
         /**
-        * Removes delivery addresses from the cart.
+        * Removes delivery addresses from a
+        * [`Cart`](https://shopify.dev/docs/api/storefront/current/objects/Cart) by their IDs, allowing batch
+        * removal in a single request.
         */
         public MutationQuery cartDeliveryAddressesRemove(ID cartId, List<ID> addressIds, CartDeliveryAddressesRemovePayloadQueryDefinition queryDef) {
             startField("cartDeliveryAddressesRemove");
@@ -48405,7 +50257,47 @@ public class Storefront {
         }
 
         /**
-        * Updates one or more delivery addresses on a cart.
+        * Replaces all delivery addresses on a
+        * [`Cart`](https://shopify.dev/docs/api/storefront/current/objects/Cart) with a new set of addresses
+        * in a single operation. Unlike
+        * [`cartDeliveryAddressesUpdate`](https://shopify.dev/docs/api/storefront/current/mutations/cartDelive
+        * ryAddressesUpdate), which modifies existing addresses, this mutation removes all current addresses
+        * and sets the provided list as the new delivery addresses.
+        * One address can be marked as selected, and each address can be flagged for one-time use or
+        * configured with a specific validation strategy.
+        */
+        public MutationQuery cartDeliveryAddressesReplace(ID cartId, List<CartSelectableAddressInput> addresses, CartDeliveryAddressesReplacePayloadQueryDefinition queryDef) {
+            startField("cartDeliveryAddressesReplace");
+
+            _queryBuilder.append("(cartId:");
+            Query.appendQuotedString(_queryBuilder, cartId.toString());
+
+            _queryBuilder.append(",addresses:");
+            _queryBuilder.append('[');
+            {
+                String listSeperator1 = "";
+                for (CartSelectableAddressInput item1 : addresses) {
+                    _queryBuilder.append(listSeperator1);
+                    listSeperator1 = ",";
+                    item1.appendTo(_queryBuilder);
+                }
+            }
+            _queryBuilder.append(']');
+
+            _queryBuilder.append(')');
+
+            _queryBuilder.append('{');
+            queryDef.define(new CartDeliveryAddressesReplacePayloadQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * Updates one or more delivery addresses on a
+        * [`Cart`](https://shopify.dev/docs/api/storefront/current/objects/Cart). Each address can be modified
+        * to change its details, set it as the pre-selected address for checkout, or mark it for one-time use
+        * so it isn't saved to the customer's account.
         */
         public MutationQuery cartDeliveryAddressesUpdate(ID cartId, List<CartSelectableAddressUpdateInput> addresses, CartDeliveryAddressesUpdatePayloadQueryDefinition queryDef) {
             startField("cartDeliveryAddressesUpdate");
@@ -48466,14 +50358,30 @@ public class Storefront {
         }
 
         /**
-        * Updates the discount codes applied to the cart.
+        * Updates the discount codes applied to a
+        * [`Cart`](https://shopify.dev/docs/api/storefront/current/objects/Cart). This mutation replaces all
+        * existing discount codes with the provided list, so pass an empty array to remove all codes. Discount
+        * codes are case-insensitive.
+        * After updating, check each
+        * [`CartDiscountCode`](https://shopify.dev/docs/api/storefront/current/objects/CartDiscountCode) in
+        * the cart's
+        * [`discountCodes`](https://shopify.dev/docs/api/storefront/current/objects/Cart#field-Cart.fields.dis
+        * countCodes) field to see whether the code is applicable to the cart's current contents.
         */
         public MutationQuery cartDiscountCodesUpdate(ID cartId, CartDiscountCodesUpdatePayloadQueryDefinition queryDef) {
             return cartDiscountCodesUpdate(cartId, args -> {}, queryDef);
         }
 
         /**
-        * Updates the discount codes applied to the cart.
+        * Updates the discount codes applied to a
+        * [`Cart`](https://shopify.dev/docs/api/storefront/current/objects/Cart). This mutation replaces all
+        * existing discount codes with the provided list, so pass an empty array to remove all codes. Discount
+        * codes are case-insensitive.
+        * After updating, check each
+        * [`CartDiscountCode`](https://shopify.dev/docs/api/storefront/current/objects/CartDiscountCode) in
+        * the cart's
+        * [`discountCodes`](https://shopify.dev/docs/api/storefront/current/objects/Cart#field-Cart.fields.dis
+        * countCodes) field to see whether the code is applicable to the cart's current contents.
         */
         public MutationQuery cartDiscountCodesUpdate(ID cartId, CartDiscountCodesUpdateArgumentsDefinition argsDef, CartDiscountCodesUpdatePayloadQueryDefinition queryDef) {
             startField("cartDiscountCodesUpdate");
@@ -48493,7 +50401,44 @@ public class Storefront {
         }
 
         /**
-        * Removes the gift card codes applied to the cart.
+        * Adds gift card codes to a [`Cart`](https://shopify.dev/docs/api/storefront/current/objects/Cart)
+        * without replacing any codes already applied. Gift card codes are case-insensitive.
+        * To replace all gift card codes instead of adding to them, use
+        * [`cartGiftCardCodesUpdate`](https://shopify.dev/docs/api/storefront/current/mutations/cartGiftCardCo
+        * desUpdate).
+        */
+        public MutationQuery cartGiftCardCodesAdd(ID cartId, List<String> giftCardCodes, CartGiftCardCodesAddPayloadQueryDefinition queryDef) {
+            startField("cartGiftCardCodesAdd");
+
+            _queryBuilder.append("(cartId:");
+            Query.appendQuotedString(_queryBuilder, cartId.toString());
+
+            _queryBuilder.append(",giftCardCodes:");
+            _queryBuilder.append('[');
+            {
+                String listSeperator1 = "";
+                for (String item1 : giftCardCodes) {
+                    _queryBuilder.append(listSeperator1);
+                    listSeperator1 = ",";
+                    Query.appendQuotedString(_queryBuilder, item1.toString());
+                }
+            }
+            _queryBuilder.append(']');
+
+            _queryBuilder.append(')');
+
+            _queryBuilder.append('{');
+            queryDef.define(new CartGiftCardCodesAddPayloadQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
+        * Removes gift cards from a [`Cart`](https://shopify.dev/docs/api/storefront/current/objects/Cart)
+        * using their IDs. You can retrieve the IDs of applied gift cards from the cart's
+        * [`appliedGiftCards`](https://shopify.dev/docs/api/storefront/current/objects/Cart#field-Cart.fields.
+        * appliedGiftCards) field.
         */
         public MutationQuery cartGiftCardCodesRemove(ID cartId, List<ID> appliedGiftCardIds, CartGiftCardCodesRemovePayloadQueryDefinition queryDef) {
             startField("cartGiftCardCodesRemove");
@@ -48523,7 +50468,10 @@ public class Storefront {
         }
 
         /**
-        * Updates the gift card codes applied to the cart.
+        * Updates the gift card codes applied to the cart. Unlike
+        * [`cartGiftCardCodesAdd`](https://shopify.dev/docs/api/storefront/current/mutations/cartGiftCardCodes
+        * Add), which adds codes without replacing existing ones, this mutation sets the gift card codes for
+        * the cart. Gift card codes are case-insensitive.
         */
         public MutationQuery cartGiftCardCodesUpdate(ID cartId, List<String> giftCardCodes, CartGiftCardCodesUpdatePayloadQueryDefinition queryDef) {
             startField("cartGiftCardCodesUpdate");
@@ -48553,7 +50501,14 @@ public class Storefront {
         }
 
         /**
-        * Adds a merchandise line to the cart.
+        * Adds one or more merchandise lines to an existing
+        * [`Cart`](https://shopify.dev/docs/api/storefront/current/objects/Cart). Each line specifies the
+        * [product variant](https://shopify.dev/docs/api/storefront/current/objects/ProductVariant) to
+        * purchase. Quantity defaults to `1` if not provided.
+        * You can add up to 250 lines in a single request. Use
+        * [`CartLineInput`](https://shopify.dev/docs/api/storefront/current/input-objects/CartLineInput) to
+        * configure each line's merchandise, quantity, selling plan, custom attributes, and any parent
+        * relationships for nested line items such as warranties or add-ons.
         */
         public MutationQuery cartLinesAdd(ID cartId, List<CartLineInput> lines, CartLinesAddPayloadQueryDefinition queryDef) {
             startField("cartLinesAdd");
@@ -48583,7 +50538,9 @@ public class Storefront {
         }
 
         /**
-        * Removes one or more merchandise lines from the cart.
+        * Removes one or more merchandise lines from a
+        * [`Cart`](https://shopify.dev/docs/api/storefront/current/objects/Cart). Accepts up to 250 line IDs
+        * per request. Returns the updated cart along with any errors or warnings.
         */
         public MutationQuery cartLinesRemove(ID cartId, List<ID> lineIds, CartLinesRemovePayloadQueryDefinition queryDef) {
             startField("cartLinesRemove");
@@ -48613,7 +50570,14 @@ public class Storefront {
         }
 
         /**
-        * Updates one or more merchandise lines on a cart.
+        * Updates one or more merchandise lines on a
+        * [`Cart`](https://shopify.dev/docs/api/storefront/current/objects/Cart). You can modify the quantity,
+        * swap the merchandise, change custom attributes, or update the selling plan for each line. You can
+        * update a maximum of 250 lines per request.
+        * Omitting the
+        * [`attributes`](https://shopify.dev/docs/api/storefront/current/mutations/cartLinesUpdate#arguments-l
+        * ines.fields.attributes) field or setting it to null preserves existing line attributes. Pass an
+        * empty array to clear all attributes from a line.
         */
         public MutationQuery cartLinesUpdate(ID cartId, List<CartLineUpdateInput> lines, CartLinesUpdatePayloadQueryDefinition queryDef) {
             startField("cartLinesUpdate");
@@ -48644,6 +50608,10 @@ public class Storefront {
 
         /**
         * Deletes a cart metafield.
+        * > Note:
+        * > This mutation won't trigger [Shopify Functions](https://shopify.dev/docs/api/functions). The
+        * changes won't be available to Shopify Functions until the buyer goes to checkout or performs another
+        * cart interaction that triggers the functions.
         */
         public MutationQuery cartMetafieldDelete(CartMetafieldDeleteInput input, CartMetafieldDeletePayloadQueryDefinition queryDef) {
             startField("cartMetafieldDelete");
@@ -48661,9 +50629,16 @@ public class Storefront {
         }
 
         /**
-        * Sets cart metafield values. Cart metafield values will be set regardless if they were previously
-        * created or not.
-        * Allows a maximum of 25 cart metafields to be set at a time.
+        * Sets [`Metafield`](https://shopify.dev/docs/api/storefront/current/objects/Metafield) values on a
+        * cart, creating new metafields or updating existing ones. Accepts up to 25 metafields per request.
+        * Cart metafields can automatically copy to order metafields when an order is created, if there's a
+        * matching order metafield definition with the [cart to order
+        * copyable](https://shopify.dev/docs/apps/build/metafields/use-metafield-capabilities#cart-to-order-co
+        * pyable) capability enabled.
+        * > Note:
+        * > This mutation doesn't trigger [Shopify Functions](https://shopify.dev/docs/api/functions). Changes
+        * aren't available to Shopify Functions until the buyer goes to checkout or performs another cart
+        * interaction that triggers the functions.
         */
         public MutationQuery cartMetafieldsSet(List<CartMetafieldsSetInput> metafields, CartMetafieldsSetPayloadQueryDefinition queryDef) {
             startField("cartMetafieldsSet");
@@ -48690,7 +50665,9 @@ public class Storefront {
         }
 
         /**
-        * Updates the note on the cart.
+        * Updates the note on a [`Cart`](https://shopify.dev/docs/api/storefront/current/objects/Cart). The
+        * note is a text field that stores additional information, such as a personalized message from the
+        * buyer or special instructions for the order.
         */
         public MutationQuery cartNoteUpdate(ID cartId, String note, CartNoteUpdatePayloadQueryDefinition queryDef) {
             startField("cartNoteUpdate");
@@ -48768,7 +50745,16 @@ public class Storefront {
         }
 
         /**
-        * Update the selected delivery options for a delivery group.
+        * Updates the selected delivery option for one or more
+        * [`CartDeliveryGroup`](https://shopify.dev/docs/api/storefront/current/objects/CartDeliveryGroup)
+        * objects in a cart. Each delivery group represents items shipping to a specific address and offers
+        * multiple delivery options with different costs and methods.
+        * Use this mutation when a customer chooses their preferred shipping method during checkout. The
+        * [`deliveryOptionHandle`](https://shopify.dev/docs/api/storefront/current/input-objects/CartSelectedD
+        * eliveryOptionInput#field-CartSelectedDeliveryOptionInput.fields.deliveryOptionHandle) identifies
+        * which
+        * [`CartDeliveryOption`](https://shopify.dev/docs/api/storefront/current/objects/CartDeliveryOption)
+        * to select for each delivery group.
         */
         public MutationQuery cartSelectedDeliveryOptionsUpdate(ID cartId, List<CartSelectedDeliveryOptionInput> selectedDeliveryOptions, CartSelectedDeliveryOptionsUpdatePayloadQueryDefinition queryDef) {
             startField("cartSelectedDeliveryOptionsUpdate");
@@ -48819,8 +50805,18 @@ public class Storefront {
         }
 
         /**
-        * Creates a customer access token.
-        * The customer access token is required to modify the customer object in any way.
+        * For legacy customer accounts only.
+        * Creates a
+        * [`CustomerAccessToken`](https://shopify.dev/docs/api/storefront/current/objects/CustomerAccessToken)
+        * using the customer's email and password. The access token is required to read or modify the
+        * [`Customer`](https://shopify.dev/docs/api/storefront/current/objects/Customer) object, such as
+        * updating account information or managing addresses.
+        * The token has an expiration time. Use
+        * [`customerAccessTokenRenew`](https://shopify.dev/docs/api/storefront/current/mutations/customerAcces
+        * sTokenRenew) to extend the token before it expires, or create a new token if it's already expired.
+        * > Caution:
+        * > This mutation handles customer credentials. Always transmit requests over HTTPS and never log or
+        * expose the password.
         */
         public MutationQuery customerAccessTokenCreate(CustomerAccessTokenCreateInput input, CustomerAccessTokenCreatePayloadQueryDefinition queryDef) {
             startField("customerAccessTokenCreate");
@@ -48838,10 +50834,15 @@ public class Storefront {
         }
 
         /**
-        * Creates a customer access token using a
-        * [multipass token](https://shopify.dev/api/multipass) instead of email and
-        * password. A customer record is created if the customer doesn't exist. If a customer
-        * record already exists but the record is disabled, then the customer record is enabled.
+        * Creates a
+        * [`CustomerAccessToken`](https://shopify.dev/docs/api/storefront/current/objects/CustomerAccessToken)
+        * using a [multipass token](https://shopify.dev/docs/api/multipass) instead of email and password.
+        * This enables single sign-on for customers who authenticate through an external system.
+        * If the customer doesn't exist in Shopify, then a new customer record is created automatically. If
+        * the customer exists but the record is disabled, then the customer record is re-enabled.
+        * > Caution:
+        * > Multipass tokens are only valid for 15 minutes and can only be used once. Generate tokens
+        * on-the-fly when needed rather than in advance.
         */
         public MutationQuery customerAccessTokenCreateWithMultipass(String multipassToken, CustomerAccessTokenCreateWithMultipassPayloadQueryDefinition queryDef) {
             startField("customerAccessTokenCreateWithMultipass");
@@ -48859,7 +50860,13 @@ public class Storefront {
         }
 
         /**
-        * Permanently destroys a customer access token.
+        * Permanently destroys a
+        * [`CustomerAccessToken`](https://shopify.dev/docs/api/storefront/current/objects/CustomerAccessToken)
+        * . Use this mutation when a customer explicitly signs out or when you need to revoke the token. Use
+        * [`customerAccessTokenCreate`](https://shopify.dev/docs/api/storefront/current/mutations/customerAcce
+        * ssTokenCreate) to generate a new token with the customer's credentials.
+        * > Caution:
+        * > This action is irreversible. The customer needs to sign in again to obtain a new access token.
         */
         public MutationQuery customerAccessTokenDelete(String customerAccessToken, CustomerAccessTokenDeletePayloadQueryDefinition queryDef) {
             startField("customerAccessTokenDelete");
@@ -48877,9 +50884,17 @@ public class Storefront {
         }
 
         /**
-        * Renews a customer access token.
-        * Access token renewal must happen *before* a token expires.
-        * If a token has already expired, a new one should be created instead via `customerAccessTokenCreate`.
+        * Extends the validity of a
+        * [`CustomerAccessToken`](https://shopify.dev/docs/api/storefront/current/objects/CustomerAccessToken)
+        * before it expires. The renewed token maintains authenticated access to customer operations.
+        * Renewal must happen before the token's
+        * [`expiresAt`](https://shopify.dev/docs/api/storefront/current/objects/CustomerAccessToken#field-Cust
+        * omerAccessToken.fields.expiresAt) time. If a token has already expired, then use
+        * [`customerAccessTokenCreate`](https://shopify.dev/docs/api/storefront/current/mutations/customerAcce
+        * ssTokenCreate) to generate a new token with the customer's credentials.
+        * > Caution:
+        * > Store access tokens securely. Never store tokens in plain text or insecure locations, and avoid
+        * exposing them in URLs or logs.
         */
         public MutationQuery customerAccessTokenRenew(String customerAccessToken, CustomerAccessTokenRenewPayloadQueryDefinition queryDef) {
             startField("customerAccessTokenRenew");
@@ -48897,7 +50912,17 @@ public class Storefront {
         }
 
         /**
-        * Activates a customer.
+        * Activates a customer account using an activation token received from the
+        * [`customerCreate`](https://shopify.dev/docs/api/storefront/current/mutations/customerCreate)
+        * mutation. The customer sets their password during activation and receives a
+        * [`CustomerAccessToken`](https://shopify.dev/docs/api/storefront/current/objects/CustomerAccessToken)
+        * for authenticated access.
+        * For a simpler approach that doesn't require parsing the activation URL, use
+        * [`customerActivateByUrl`](https://shopify.dev/docs/api/storefront/current/mutations/customerActivate
+        * ByUrl) instead.
+        * > Caution:
+        * > This mutation handles customer credentials. Always use HTTPS and never log or expose the password
+        * or access token.
         */
         public MutationQuery customerActivate(ID id, CustomerActivateInput input, CustomerActivatePayloadQueryDefinition queryDef) {
             startField("customerActivate");
@@ -48918,7 +50943,14 @@ public class Storefront {
         }
 
         /**
-        * Activates a customer with the activation url received from `customerCreate`.
+        * Activates a customer account using the full activation URL from the
+        * [`customerCreate`](https://shopify.dev/docs/api/storefront/current/mutations/customerCreate)
+        * mutation. This approach simplifies activation by accepting the complete URL directly, eliminating
+        * the need to parse it for the customer ID and activation token. Returns a
+        * [`CustomerAccessToken`](https://shopify.dev/docs/api/storefront/current/objects/CustomerAccessToken)
+        * for authenticating subsequent requests.
+        * > Caution:
+        * > Store the returned access token securely. It grants access to the customer's account data.
         */
         public MutationQuery customerActivateByUrl(String activationUrl, String password, CustomerActivateByUrlPayloadQueryDefinition queryDef) {
             startField("customerActivateByUrl");
@@ -48939,7 +50971,13 @@ public class Storefront {
         }
 
         /**
-        * Creates a new address for a customer.
+        * Creates a new
+        * [`MailingAddress`](https://shopify.dev/docs/api/storefront/current/objects/MailingAddress) for a
+        * [`Customer`](https://shopify.dev/docs/api/storefront/current/objects/Customer). Use the customer's
+        * [access
+        * token](https://shopify.dev/docs/api/storefront/current/mutations/customerAddressCreate#arguments-cus
+        * tomerAccessToken) to identify them. Successful creation returns the new address. 
+        * Each customer can have multiple addresses.
         */
         public MutationQuery customerAddressCreate(String customerAccessToken, MailingAddressInput address, CustomerAddressCreatePayloadQueryDefinition queryDef) {
             startField("customerAddressCreate");
@@ -48960,7 +50998,14 @@ public class Storefront {
         }
 
         /**
-        * Permanently deletes the address of an existing customer.
+        * Permanently deletes a specific
+        * [`MailingAddress`](https://shopify.dev/docs/api/storefront/current/objects/MailingAddress) for a
+        * [`Customer`](https://shopify.dev/docs/api/storefront/current/objects/Customer). Requires a valid
+        * [customer access
+        * token](https://shopify.dev/docs/api/storefront/current/mutations/customerAddressDelete#arguments-cus
+        * tomerAccessToken) to authenticate the request.
+        * > Caution:
+        * > This action is irreversible. You can't recover the deleted address.
         */
         public MutationQuery customerAddressDelete(ID id, String customerAccessToken, CustomerAddressDeletePayloadQueryDefinition queryDef) {
             startField("customerAddressDelete");
@@ -48981,7 +51026,16 @@ public class Storefront {
         }
 
         /**
-        * Updates the address of an existing customer.
+        * Updates an existing
+        * [`MailingAddress`](https://shopify.dev/docs/api/storefront/current/objects/MailingAddress) for a
+        * [`Customer`](https://shopify.dev/docs/api/storefront/current/objects/Customer). Requires a [customer
+        * access
+        * token](https://shopify.dev/docs/api/storefront/current/mutations/customerAddressUpdate#arguments-cus
+        * tomerAccessToken) to identify the customer, an ID to specify which address to modify, and an
+        * [`address`](https://shopify.dev/docs/api/storefront/current/input-objects/MailingAddressInput) with
+        * the updated fields.
+        * Successful update returns the updated
+        * [`MailingAddress`](https://shopify.dev/docs/api/storefront/current/objects/MailingAddress).
         */
         public MutationQuery customerAddressUpdate(String customerAccessToken, ID id, MailingAddressInput address, CustomerAddressUpdatePayloadQueryDefinition queryDef) {
             startField("customerAddressUpdate");
@@ -49005,7 +51059,12 @@ public class Storefront {
         }
 
         /**
-        * Creates a new customer.
+        * Creates a new [`Customer`](https://shopify.dev/docs/api/storefront/current/objects/Customer) account
+        * with the provided contact information and login credentials. The customer can then sign in for
+        * things such as accessing their account, viewing order history, and managing saved addresses.
+        * > Caution:
+        * > This mutation creates customer credentials. Ensure passwords are collected securely and never
+        * logged or exposed in client-side code.
         */
         public MutationQuery customerCreate(CustomerCreateInput input, CustomerCreatePayloadQueryDefinition queryDef) {
             startField("customerCreate");
@@ -49023,7 +51082,12 @@ public class Storefront {
         }
 
         /**
-        * Updates the default address of an existing customer.
+        * Updates the default address of an existing
+        * [`Customer`](https://shopify.dev/docs/api/storefront/current/objects/Customer). Requires a [customer
+        * access
+        * token](https://shopify.dev/docs/api/storefront/current/mutations/customerDefaultAddressUpdate#argume
+        * nts-customerAccessToken) to identify the customer and an address ID to specify which address to set
+        * as the new default.
         */
         public MutationQuery customerDefaultAddressUpdate(String customerAccessToken, ID addressId, CustomerDefaultAddressUpdatePayloadQueryDefinition queryDef) {
             startField("customerDefaultAddressUpdate");
@@ -49044,20 +51108,17 @@ public class Storefront {
         }
 
         /**
-        * Sends a reset password email to the customer. The reset password
-        * email contains a reset password URL and token that you can pass to
-        * the [`customerResetByUrl`](https://shopify.dev/api/storefront/latest/mutations/customerResetByUrl)
-        * or
-        * [`customerReset`](https://shopify.dev/api/storefront/latest/mutations/customerReset) mutation to
-        * reset the
-        * customer password.
-        * This mutation is throttled by IP. With private access,
-        * you can provide a
-        * [`Shopify-Storefront-Buyer-IP`](https://shopify.dev/api/usage/authentication#optional-ip-header)
-        * instead of the request IP.
-        * The header is case-sensitive and must be sent as `Shopify-Storefront-Buyer-IP`.
-        * Make sure that the value provided to `Shopify-Storefront-Buyer-IP` is trusted. Unthrottled access to
-        * this
+        * Sends a reset password email to the customer. The email contains a reset password URL and token that
+        * you can pass to the
+        * [`customerResetByUrl`](https://shopify.dev/docs/api/storefront/current/mutations/customerResetByUrl)
+        * or [`customerReset`](https://shopify.dev/docs/api/storefront/current/mutations/customerReset)
+        * mutation to reset the customer's password.
+        * This mutation is throttled by IP. With private access, you can provide a
+        * [`Shopify-Storefront-Buyer-IP`
+        * header](https://shopify.dev/docs/api/usage/authentication#optional-ip-header) instead of the request
+        * IP. The header is case-sensitive.
+        * > Caution:
+        * > Ensure the value provided to `Shopify-Storefront-Buyer-IP` is trusted. Unthrottled access to this
         * mutation presents a security risk.
         */
         public MutationQuery customerRecover(String email, CustomerRecoverPayloadQueryDefinition queryDef) {
@@ -49076,9 +51137,19 @@ public class Storefront {
         }
 
         /**
-        * "Resets a customer’s password with the token received from a reset password email. You can send a
-        * reset password email with the
-        * [`customerRecover`](https://shopify.dev/api/storefront/latest/mutations/customerRecover) mutation."
+        * Resets a customer's password using the reset token from a password recovery email. On success,
+        * returns the updated [`Customer`](https://shopify.dev/docs/api/storefront/current/objects/Customer)
+        * and a new
+        * [`CustomerAccessToken`](https://shopify.dev/docs/api/storefront/current/objects/CustomerAccessToken)
+        * for immediate authentication.
+        * Use the
+        * [`customerRecover`](https://shopify.dev/docs/api/storefront/current/mutations/customerRecover)
+        * mutation to send the password recovery email that provides the reset token. Alternatively, use
+        * [`customerResetByUrl`](https://shopify.dev/docs/api/storefront/current/mutations/customerResetByUrl)
+        * if you have the full reset URL instead of the customer ID and token.
+        * > Caution:
+        * > This mutation handles sensitive customer credentials. Validate password requirements on the client
+        * before submission.
         */
         public MutationQuery customerReset(ID id, CustomerResetInput input, CustomerResetPayloadQueryDefinition queryDef) {
             startField("customerReset");
@@ -49099,9 +51170,17 @@ public class Storefront {
         }
 
         /**
-        * "Resets a customer’s password with the reset password URL received from a reset password email. You
-        * can send a reset password email with the
-        * [`customerRecover`](https://shopify.dev/api/storefront/latest/mutations/customerRecover) mutation."
+        * Resets a customer's password using the reset URL from a password recovery email. The reset URL is
+        * generated by the
+        * [`customerRecover`](https://shopify.dev/docs/api/storefront/current/mutations/customerRecover)
+        * mutation.
+        * On success, returns the updated
+        * [`Customer`](https://shopify.dev/docs/api/storefront/current/objects/Customer) and a new
+        * [`CustomerAccessToken`](https://shopify.dev/docs/api/storefront/current/objects/CustomerAccessToken)
+        * for immediate authentication.
+        * > Caution:
+        * > This mutation handles customer credentials. Ensure the new password is transmitted securely and
+        * never logged or exposed in client-side code.
         */
         public MutationQuery customerResetByUrl(String resetUrl, String password, CustomerResetByUrlPayloadQueryDefinition queryDef) {
             startField("customerResetByUrl");
@@ -49122,7 +51201,15 @@ public class Storefront {
         }
 
         /**
-        * Updates an existing customer.
+        * Updates a [customer's](https://shopify.dev/docs/api/storefront/current/objects/Customer) personal
+        * information such as name, password, and marketing preferences. Requires a valid
+        * [`CustomerAccessToken`](https://shopify.dev/docs/api/storefront/current/objects/CustomerAccessToken)
+        * to authenticate the customer making the update.
+        * If the customer's password is updated, then all previous access tokens become invalid. The mutation
+        * returns a new access token in the payload to maintain the customer's session.
+        * > Caution:
+        * > Password changes invalidate all existing access tokens. Ensure your app handles the new token
+        * returned in the response to avoid logging the customer out.
         */
         public MutationQuery customerUpdate(String customerAccessToken, CustomerUpdateInput customer, CustomerUpdatePayloadQueryDefinition queryDef) {
             startField("customerUpdate");
@@ -49143,7 +51230,17 @@ public class Storefront {
         }
 
         /**
-        * Create a new Shop Pay payment request session.
+        * Creates a [Shop Pay payment request
+        * session](https://shopify.dev/docs/api/storefront/current/objects/ShopPayPaymentRequestSession) for
+        * processing payments. The session includes a checkout URL where customers complete their purchase and
+        * a token for subsequent operations like submitting the payment.
+        * The `sourceIdentifier` must be unique across all orders to ensure accurate reconciliation.
+        * For a complete integration guide including the JavaScript SDK setup and checkout flow, refer to the
+        * [Shop Component API documentation](https://shopify.dev/docs/api/commerce-components/pay). For
+        * implementation steps, see the [development journey
+        * guide](https://shopify.dev/docs/api/commerce-components/pay/development-journey). For common error
+        * scenarios, see the [troubleshooting
+        * guide](https://shopify.dev/docs/api/commerce-components/pay/troubleshooting-guide).
         */
         public MutationQuery shopPayPaymentRequestSessionCreate(String sourceIdentifier, ShopPayPaymentRequestInput paymentRequest, ShopPayPaymentRequestSessionCreatePayloadQueryDefinition queryDef) {
             startField("shopPayPaymentRequestSessionCreate");
@@ -49185,14 +51282,46 @@ public class Storefront {
         }
 
         /**
-        * Submits a Shop Pay payment request session.
+        * Finalizes a [Shop Pay payment request
+        * session](https://shopify.dev/docs/api/storefront/current/objects/ShopPayPaymentRequestSession). Call
+        * this mutation after creating a session with
+        * [`shopPayPaymentRequestSessionCreate`](https://shopify.dev/docs/api/storefront/current/mutations/sho
+        * pPayPaymentRequestSessionCreate).
+        * The
+        * [`idempotencyKey`](https://shopify.dev/docs/api/storefront/current/mutations/shopPayPaymentRequestSe
+        * ssionSubmit#arguments-idempotencyKey) argument ensures the payment transaction occurs only once,
+        * preventing duplicate charges. On success, returns a
+        * [`ShopPayPaymentRequestReceipt`](https://shopify.dev/docs/api/storefront/current/objects/ShopPayPaym
+        * entRequestReceipt) with the processing status and a receipt token.
+        * For a complete integration guide including the JavaScript SDK setup and checkout flow, refer to the
+        * [Shop Component API documentation](https://shopify.dev/docs/api/commerce-components/pay). For
+        * implementation steps, see the [development journey
+        * guide](https://shopify.dev/docs/api/commerce-components/pay/development-journey). For common error
+        * scenarios, see the [troubleshooting
+        * guide](https://shopify.dev/docs/api/commerce-components/pay/troubleshooting-guide).
         */
         public MutationQuery shopPayPaymentRequestSessionSubmit(String token, ShopPayPaymentRequestInput paymentRequest, String idempotencyKey, ShopPayPaymentRequestSessionSubmitPayloadQueryDefinition queryDef) {
             return shopPayPaymentRequestSessionSubmit(token, paymentRequest, idempotencyKey, args -> {}, queryDef);
         }
 
         /**
-        * Submits a Shop Pay payment request session.
+        * Finalizes a [Shop Pay payment request
+        * session](https://shopify.dev/docs/api/storefront/current/objects/ShopPayPaymentRequestSession). Call
+        * this mutation after creating a session with
+        * [`shopPayPaymentRequestSessionCreate`](https://shopify.dev/docs/api/storefront/current/mutations/sho
+        * pPayPaymentRequestSessionCreate).
+        * The
+        * [`idempotencyKey`](https://shopify.dev/docs/api/storefront/current/mutations/shopPayPaymentRequestSe
+        * ssionSubmit#arguments-idempotencyKey) argument ensures the payment transaction occurs only once,
+        * preventing duplicate charges. On success, returns a
+        * [`ShopPayPaymentRequestReceipt`](https://shopify.dev/docs/api/storefront/current/objects/ShopPayPaym
+        * entRequestReceipt) with the processing status and a receipt token.
+        * For a complete integration guide including the JavaScript SDK setup and checkout flow, refer to the
+        * [Shop Component API documentation](https://shopify.dev/docs/api/commerce-components/pay). For
+        * implementation steps, see the [development journey
+        * guide](https://shopify.dev/docs/api/commerce-components/pay/development-journey). For common error
+        * scenarios, see the [troubleshooting
+        * guide](https://shopify.dev/docs/api/commerce-components/pay/troubleshooting-guide).
         */
         public MutationQuery shopPayPaymentRequestSessionSubmit(String token, ShopPayPaymentRequestInput paymentRequest, String idempotencyKey, ShopPayPaymentRequestSessionSubmitArgumentsDefinition argsDef, ShopPayPaymentRequestSessionSubmitPayloadQueryDefinition queryDef) {
             startField("shopPayPaymentRequestSessionSubmit");
@@ -49268,6 +51397,17 @@ public class Storefront {
                         break;
                     }
 
+                    case "cartClone": {
+                        CartClonePayload optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new CartClonePayload(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
                     case "cartCreate": {
                         CartCreatePayload optional1 = null;
                         if (!field.getValue().isJsonNull()) {
@@ -49301,6 +51441,17 @@ public class Storefront {
                         break;
                     }
 
+                    case "cartDeliveryAddressesReplace": {
+                        CartDeliveryAddressesReplacePayload optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new CartDeliveryAddressesReplacePayload(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
                     case "cartDeliveryAddressesUpdate": {
                         CartDeliveryAddressesUpdatePayload optional1 = null;
                         if (!field.getValue().isJsonNull()) {
@@ -49316,6 +51467,17 @@ public class Storefront {
                         CartDiscountCodesUpdatePayload optional1 = null;
                         if (!field.getValue().isJsonNull()) {
                             optional1 = new CartDiscountCodesUpdatePayload(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "cartGiftCardCodesAdd": {
+                        CartGiftCardCodesAddPayload optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new CartGiftCardCodesAddPayload(jsonAsObject(field.getValue(), key));
                         }
 
                         responseData.put(key, optional1);
@@ -49669,7 +51831,9 @@ public class Storefront {
         }
 
         /**
-        * Updates the attributes on a cart.
+        * Updates the attributes on a [`Cart`](https://shopify.dev/docs/api/storefront/current/objects/Cart).
+        * Attributes are custom key-value pairs that store additional information, such as gift messages,
+        * special instructions, or order notes.
         */
 
         public CartAttributesUpdatePayload getCartAttributesUpdate() {
@@ -49695,11 +51859,14 @@ public class Storefront {
         }
 
         /**
-        * Updates customer information associated with a cart.
-        * Buyer identity is used to determine
-        * [international
-        * pricing](https://shopify.dev/custom-storefronts/internationalization/international-pricing)
-        * and should match the customer's shipping address.
+        * Updates the buyer identity on a
+        * [`Cart`](https://shopify.dev/docs/api/storefront/current/objects/Cart), including contact
+        * information, location, and checkout preferences. The buyer's country determines [international
+        * pricing](https://shopify.dev/docs/storefronts/headless/building-with-the-storefront-api/markets/inte
+        * rnational-pricing) and should match their shipping address.
+        * Use this mutation to associate a logged-in customer via access token, set a B2B company location, or
+        * configure checkout preferences like delivery method. Preferences prefill checkout fields but don't
+        * sync back to the cart if overwritten at checkout.
         */
 
         public CartBuyerIdentityUpdatePayload getCartBuyerIdentityUpdate() {
@@ -49712,7 +51879,23 @@ public class Storefront {
         }
 
         /**
-        * Creates a new cart.
+        * Creates a clone of the specified cart with all personally identifiable information removed.
+        */
+
+        public CartClonePayload getCartClone() {
+            return (CartClonePayload) get("cartClone");
+        }
+
+        public Mutation setCartClone(CartClonePayload arg) {
+            optimisticData.put(getKey("cartClone"), arg);
+            return this;
+        }
+
+        /**
+        * Creates a new [`Cart`](https://shopify.dev/docs/api/storefront/current/objects/Cart) for a buyer
+        * session. You can optionally initialize the cart with merchandise lines, discount codes, gift card
+        * codes, buyer identity for international pricing, and custom attributes.
+        * The returned cart includes a `checkoutUrl` that directs the buyer to complete their purchase.
         */
 
         public CartCreatePayload getCartCreate() {
@@ -49725,7 +51908,9 @@ public class Storefront {
         }
 
         /**
-        * Adds delivery addresses to the cart.
+        * Adds delivery addresses to a [`Cart`](https://shopify.dev/docs/api/storefront/current/objects/Cart).
+        * A cart can have up to 20 delivery addresses. One address can be marked as selected for checkout, and
+        * addresses can optionally be marked as one-time use so they aren't saved to the customer's account.
         */
 
         public CartDeliveryAddressesAddPayload getCartDeliveryAddressesAdd() {
@@ -49738,7 +51923,9 @@ public class Storefront {
         }
 
         /**
-        * Removes delivery addresses from the cart.
+        * Removes delivery addresses from a
+        * [`Cart`](https://shopify.dev/docs/api/storefront/current/objects/Cart) by their IDs, allowing batch
+        * removal in a single request.
         */
 
         public CartDeliveryAddressesRemovePayload getCartDeliveryAddressesRemove() {
@@ -49751,7 +51938,30 @@ public class Storefront {
         }
 
         /**
-        * Updates one or more delivery addresses on a cart.
+        * Replaces all delivery addresses on a
+        * [`Cart`](https://shopify.dev/docs/api/storefront/current/objects/Cart) with a new set of addresses
+        * in a single operation. Unlike
+        * [`cartDeliveryAddressesUpdate`](https://shopify.dev/docs/api/storefront/current/mutations/cartDelive
+        * ryAddressesUpdate), which modifies existing addresses, this mutation removes all current addresses
+        * and sets the provided list as the new delivery addresses.
+        * One address can be marked as selected, and each address can be flagged for one-time use or
+        * configured with a specific validation strategy.
+        */
+
+        public CartDeliveryAddressesReplacePayload getCartDeliveryAddressesReplace() {
+            return (CartDeliveryAddressesReplacePayload) get("cartDeliveryAddressesReplace");
+        }
+
+        public Mutation setCartDeliveryAddressesReplace(CartDeliveryAddressesReplacePayload arg) {
+            optimisticData.put(getKey("cartDeliveryAddressesReplace"), arg);
+            return this;
+        }
+
+        /**
+        * Updates one or more delivery addresses on a
+        * [`Cart`](https://shopify.dev/docs/api/storefront/current/objects/Cart). Each address can be modified
+        * to change its details, set it as the pre-selected address for checkout, or mark it for one-time use
+        * so it isn't saved to the customer's account.
         */
 
         public CartDeliveryAddressesUpdatePayload getCartDeliveryAddressesUpdate() {
@@ -49764,7 +51974,15 @@ public class Storefront {
         }
 
         /**
-        * Updates the discount codes applied to the cart.
+        * Updates the discount codes applied to a
+        * [`Cart`](https://shopify.dev/docs/api/storefront/current/objects/Cart). This mutation replaces all
+        * existing discount codes with the provided list, so pass an empty array to remove all codes. Discount
+        * codes are case-insensitive.
+        * After updating, check each
+        * [`CartDiscountCode`](https://shopify.dev/docs/api/storefront/current/objects/CartDiscountCode) in
+        * the cart's
+        * [`discountCodes`](https://shopify.dev/docs/api/storefront/current/objects/Cart#field-Cart.fields.dis
+        * countCodes) field to see whether the code is applicable to the cart's current contents.
         */
 
         public CartDiscountCodesUpdatePayload getCartDiscountCodesUpdate() {
@@ -49777,7 +51995,27 @@ public class Storefront {
         }
 
         /**
-        * Removes the gift card codes applied to the cart.
+        * Adds gift card codes to a [`Cart`](https://shopify.dev/docs/api/storefront/current/objects/Cart)
+        * without replacing any codes already applied. Gift card codes are case-insensitive.
+        * To replace all gift card codes instead of adding to them, use
+        * [`cartGiftCardCodesUpdate`](https://shopify.dev/docs/api/storefront/current/mutations/cartGiftCardCo
+        * desUpdate).
+        */
+
+        public CartGiftCardCodesAddPayload getCartGiftCardCodesAdd() {
+            return (CartGiftCardCodesAddPayload) get("cartGiftCardCodesAdd");
+        }
+
+        public Mutation setCartGiftCardCodesAdd(CartGiftCardCodesAddPayload arg) {
+            optimisticData.put(getKey("cartGiftCardCodesAdd"), arg);
+            return this;
+        }
+
+        /**
+        * Removes gift cards from a [`Cart`](https://shopify.dev/docs/api/storefront/current/objects/Cart)
+        * using their IDs. You can retrieve the IDs of applied gift cards from the cart's
+        * [`appliedGiftCards`](https://shopify.dev/docs/api/storefront/current/objects/Cart#field-Cart.fields.
+        * appliedGiftCards) field.
         */
 
         public CartGiftCardCodesRemovePayload getCartGiftCardCodesRemove() {
@@ -49790,7 +52028,10 @@ public class Storefront {
         }
 
         /**
-        * Updates the gift card codes applied to the cart.
+        * Updates the gift card codes applied to the cart. Unlike
+        * [`cartGiftCardCodesAdd`](https://shopify.dev/docs/api/storefront/current/mutations/cartGiftCardCodes
+        * Add), which adds codes without replacing existing ones, this mutation sets the gift card codes for
+        * the cart. Gift card codes are case-insensitive.
         */
 
         public CartGiftCardCodesUpdatePayload getCartGiftCardCodesUpdate() {
@@ -49803,7 +52044,14 @@ public class Storefront {
         }
 
         /**
-        * Adds a merchandise line to the cart.
+        * Adds one or more merchandise lines to an existing
+        * [`Cart`](https://shopify.dev/docs/api/storefront/current/objects/Cart). Each line specifies the
+        * [product variant](https://shopify.dev/docs/api/storefront/current/objects/ProductVariant) to
+        * purchase. Quantity defaults to `1` if not provided.
+        * You can add up to 250 lines in a single request. Use
+        * [`CartLineInput`](https://shopify.dev/docs/api/storefront/current/input-objects/CartLineInput) to
+        * configure each line's merchandise, quantity, selling plan, custom attributes, and any parent
+        * relationships for nested line items such as warranties or add-ons.
         */
 
         public CartLinesAddPayload getCartLinesAdd() {
@@ -49816,7 +52064,9 @@ public class Storefront {
         }
 
         /**
-        * Removes one or more merchandise lines from the cart.
+        * Removes one or more merchandise lines from a
+        * [`Cart`](https://shopify.dev/docs/api/storefront/current/objects/Cart). Accepts up to 250 line IDs
+        * per request. Returns the updated cart along with any errors or warnings.
         */
 
         public CartLinesRemovePayload getCartLinesRemove() {
@@ -49829,7 +52079,14 @@ public class Storefront {
         }
 
         /**
-        * Updates one or more merchandise lines on a cart.
+        * Updates one or more merchandise lines on a
+        * [`Cart`](https://shopify.dev/docs/api/storefront/current/objects/Cart). You can modify the quantity,
+        * swap the merchandise, change custom attributes, or update the selling plan for each line. You can
+        * update a maximum of 250 lines per request.
+        * Omitting the
+        * [`attributes`](https://shopify.dev/docs/api/storefront/current/mutations/cartLinesUpdate#arguments-l
+        * ines.fields.attributes) field or setting it to null preserves existing line attributes. Pass an
+        * empty array to clear all attributes from a line.
         */
 
         public CartLinesUpdatePayload getCartLinesUpdate() {
@@ -49843,6 +52100,10 @@ public class Storefront {
 
         /**
         * Deletes a cart metafield.
+        * > Note:
+        * > This mutation won't trigger [Shopify Functions](https://shopify.dev/docs/api/functions). The
+        * changes won't be available to Shopify Functions until the buyer goes to checkout or performs another
+        * cart interaction that triggers the functions.
         */
 
         public CartMetafieldDeletePayload getCartMetafieldDelete() {
@@ -49855,9 +52116,16 @@ public class Storefront {
         }
 
         /**
-        * Sets cart metafield values. Cart metafield values will be set regardless if they were previously
-        * created or not.
-        * Allows a maximum of 25 cart metafields to be set at a time.
+        * Sets [`Metafield`](https://shopify.dev/docs/api/storefront/current/objects/Metafield) values on a
+        * cart, creating new metafields or updating existing ones. Accepts up to 25 metafields per request.
+        * Cart metafields can automatically copy to order metafields when an order is created, if there's a
+        * matching order metafield definition with the [cart to order
+        * copyable](https://shopify.dev/docs/apps/build/metafields/use-metafield-capabilities#cart-to-order-co
+        * pyable) capability enabled.
+        * > Note:
+        * > This mutation doesn't trigger [Shopify Functions](https://shopify.dev/docs/api/functions). Changes
+        * aren't available to Shopify Functions until the buyer goes to checkout or performs another cart
+        * interaction that triggers the functions.
         */
 
         public CartMetafieldsSetPayload getCartMetafieldsSet() {
@@ -49870,7 +52138,9 @@ public class Storefront {
         }
 
         /**
-        * Updates the note on the cart.
+        * Updates the note on a [`Cart`](https://shopify.dev/docs/api/storefront/current/objects/Cart). The
+        * note is a text field that stores additional information, such as a personalized message from the
+        * buyer or special instructions for the order.
         */
 
         public CartNoteUpdatePayload getCartNoteUpdate() {
@@ -49922,7 +52192,16 @@ public class Storefront {
         }
 
         /**
-        * Update the selected delivery options for a delivery group.
+        * Updates the selected delivery option for one or more
+        * [`CartDeliveryGroup`](https://shopify.dev/docs/api/storefront/current/objects/CartDeliveryGroup)
+        * objects in a cart. Each delivery group represents items shipping to a specific address and offers
+        * multiple delivery options with different costs and methods.
+        * Use this mutation when a customer chooses their preferred shipping method during checkout. The
+        * [`deliveryOptionHandle`](https://shopify.dev/docs/api/storefront/current/input-objects/CartSelectedD
+        * eliveryOptionInput#field-CartSelectedDeliveryOptionInput.fields.deliveryOptionHandle) identifies
+        * which
+        * [`CartDeliveryOption`](https://shopify.dev/docs/api/storefront/current/objects/CartDeliveryOption)
+        * to select for each delivery group.
         */
 
         public CartSelectedDeliveryOptionsUpdatePayload getCartSelectedDeliveryOptionsUpdate() {
@@ -49948,8 +52227,18 @@ public class Storefront {
         }
 
         /**
-        * Creates a customer access token.
-        * The customer access token is required to modify the customer object in any way.
+        * For legacy customer accounts only.
+        * Creates a
+        * [`CustomerAccessToken`](https://shopify.dev/docs/api/storefront/current/objects/CustomerAccessToken)
+        * using the customer's email and password. The access token is required to read or modify the
+        * [`Customer`](https://shopify.dev/docs/api/storefront/current/objects/Customer) object, such as
+        * updating account information or managing addresses.
+        * The token has an expiration time. Use
+        * [`customerAccessTokenRenew`](https://shopify.dev/docs/api/storefront/current/mutations/customerAcces
+        * sTokenRenew) to extend the token before it expires, or create a new token if it's already expired.
+        * > Caution:
+        * > This mutation handles customer credentials. Always transmit requests over HTTPS and never log or
+        * expose the password.
         */
 
         public CustomerAccessTokenCreatePayload getCustomerAccessTokenCreate() {
@@ -49962,10 +52251,15 @@ public class Storefront {
         }
 
         /**
-        * Creates a customer access token using a
-        * [multipass token](https://shopify.dev/api/multipass) instead of email and
-        * password. A customer record is created if the customer doesn't exist. If a customer
-        * record already exists but the record is disabled, then the customer record is enabled.
+        * Creates a
+        * [`CustomerAccessToken`](https://shopify.dev/docs/api/storefront/current/objects/CustomerAccessToken)
+        * using a [multipass token](https://shopify.dev/docs/api/multipass) instead of email and password.
+        * This enables single sign-on for customers who authenticate through an external system.
+        * If the customer doesn't exist in Shopify, then a new customer record is created automatically. If
+        * the customer exists but the record is disabled, then the customer record is re-enabled.
+        * > Caution:
+        * > Multipass tokens are only valid for 15 minutes and can only be used once. Generate tokens
+        * on-the-fly when needed rather than in advance.
         */
 
         public CustomerAccessTokenCreateWithMultipassPayload getCustomerAccessTokenCreateWithMultipass() {
@@ -49978,7 +52272,13 @@ public class Storefront {
         }
 
         /**
-        * Permanently destroys a customer access token.
+        * Permanently destroys a
+        * [`CustomerAccessToken`](https://shopify.dev/docs/api/storefront/current/objects/CustomerAccessToken)
+        * . Use this mutation when a customer explicitly signs out or when you need to revoke the token. Use
+        * [`customerAccessTokenCreate`](https://shopify.dev/docs/api/storefront/current/mutations/customerAcce
+        * ssTokenCreate) to generate a new token with the customer's credentials.
+        * > Caution:
+        * > This action is irreversible. The customer needs to sign in again to obtain a new access token.
         */
 
         public CustomerAccessTokenDeletePayload getCustomerAccessTokenDelete() {
@@ -49991,9 +52291,17 @@ public class Storefront {
         }
 
         /**
-        * Renews a customer access token.
-        * Access token renewal must happen *before* a token expires.
-        * If a token has already expired, a new one should be created instead via `customerAccessTokenCreate`.
+        * Extends the validity of a
+        * [`CustomerAccessToken`](https://shopify.dev/docs/api/storefront/current/objects/CustomerAccessToken)
+        * before it expires. The renewed token maintains authenticated access to customer operations.
+        * Renewal must happen before the token's
+        * [`expiresAt`](https://shopify.dev/docs/api/storefront/current/objects/CustomerAccessToken#field-Cust
+        * omerAccessToken.fields.expiresAt) time. If a token has already expired, then use
+        * [`customerAccessTokenCreate`](https://shopify.dev/docs/api/storefront/current/mutations/customerAcce
+        * ssTokenCreate) to generate a new token with the customer's credentials.
+        * > Caution:
+        * > Store access tokens securely. Never store tokens in plain text or insecure locations, and avoid
+        * exposing them in URLs or logs.
         */
 
         public CustomerAccessTokenRenewPayload getCustomerAccessTokenRenew() {
@@ -50006,7 +52314,17 @@ public class Storefront {
         }
 
         /**
-        * Activates a customer.
+        * Activates a customer account using an activation token received from the
+        * [`customerCreate`](https://shopify.dev/docs/api/storefront/current/mutations/customerCreate)
+        * mutation. The customer sets their password during activation and receives a
+        * [`CustomerAccessToken`](https://shopify.dev/docs/api/storefront/current/objects/CustomerAccessToken)
+        * for authenticated access.
+        * For a simpler approach that doesn't require parsing the activation URL, use
+        * [`customerActivateByUrl`](https://shopify.dev/docs/api/storefront/current/mutations/customerActivate
+        * ByUrl) instead.
+        * > Caution:
+        * > This mutation handles customer credentials. Always use HTTPS and never log or expose the password
+        * or access token.
         */
 
         public CustomerActivatePayload getCustomerActivate() {
@@ -50019,7 +52337,14 @@ public class Storefront {
         }
 
         /**
-        * Activates a customer with the activation url received from `customerCreate`.
+        * Activates a customer account using the full activation URL from the
+        * [`customerCreate`](https://shopify.dev/docs/api/storefront/current/mutations/customerCreate)
+        * mutation. This approach simplifies activation by accepting the complete URL directly, eliminating
+        * the need to parse it for the customer ID and activation token. Returns a
+        * [`CustomerAccessToken`](https://shopify.dev/docs/api/storefront/current/objects/CustomerAccessToken)
+        * for authenticating subsequent requests.
+        * > Caution:
+        * > Store the returned access token securely. It grants access to the customer's account data.
         */
 
         public CustomerActivateByUrlPayload getCustomerActivateByUrl() {
@@ -50032,7 +52357,13 @@ public class Storefront {
         }
 
         /**
-        * Creates a new address for a customer.
+        * Creates a new
+        * [`MailingAddress`](https://shopify.dev/docs/api/storefront/current/objects/MailingAddress) for a
+        * [`Customer`](https://shopify.dev/docs/api/storefront/current/objects/Customer). Use the customer's
+        * [access
+        * token](https://shopify.dev/docs/api/storefront/current/mutations/customerAddressCreate#arguments-cus
+        * tomerAccessToken) to identify them. Successful creation returns the new address. 
+        * Each customer can have multiple addresses.
         */
 
         public CustomerAddressCreatePayload getCustomerAddressCreate() {
@@ -50045,7 +52376,14 @@ public class Storefront {
         }
 
         /**
-        * Permanently deletes the address of an existing customer.
+        * Permanently deletes a specific
+        * [`MailingAddress`](https://shopify.dev/docs/api/storefront/current/objects/MailingAddress) for a
+        * [`Customer`](https://shopify.dev/docs/api/storefront/current/objects/Customer). Requires a valid
+        * [customer access
+        * token](https://shopify.dev/docs/api/storefront/current/mutations/customerAddressDelete#arguments-cus
+        * tomerAccessToken) to authenticate the request.
+        * > Caution:
+        * > This action is irreversible. You can't recover the deleted address.
         */
 
         public CustomerAddressDeletePayload getCustomerAddressDelete() {
@@ -50058,7 +52396,16 @@ public class Storefront {
         }
 
         /**
-        * Updates the address of an existing customer.
+        * Updates an existing
+        * [`MailingAddress`](https://shopify.dev/docs/api/storefront/current/objects/MailingAddress) for a
+        * [`Customer`](https://shopify.dev/docs/api/storefront/current/objects/Customer). Requires a [customer
+        * access
+        * token](https://shopify.dev/docs/api/storefront/current/mutations/customerAddressUpdate#arguments-cus
+        * tomerAccessToken) to identify the customer, an ID to specify which address to modify, and an
+        * [`address`](https://shopify.dev/docs/api/storefront/current/input-objects/MailingAddressInput) with
+        * the updated fields.
+        * Successful update returns the updated
+        * [`MailingAddress`](https://shopify.dev/docs/api/storefront/current/objects/MailingAddress).
         */
 
         public CustomerAddressUpdatePayload getCustomerAddressUpdate() {
@@ -50071,7 +52418,12 @@ public class Storefront {
         }
 
         /**
-        * Creates a new customer.
+        * Creates a new [`Customer`](https://shopify.dev/docs/api/storefront/current/objects/Customer) account
+        * with the provided contact information and login credentials. The customer can then sign in for
+        * things such as accessing their account, viewing order history, and managing saved addresses.
+        * > Caution:
+        * > This mutation creates customer credentials. Ensure passwords are collected securely and never
+        * logged or exposed in client-side code.
         */
 
         public CustomerCreatePayload getCustomerCreate() {
@@ -50084,7 +52436,12 @@ public class Storefront {
         }
 
         /**
-        * Updates the default address of an existing customer.
+        * Updates the default address of an existing
+        * [`Customer`](https://shopify.dev/docs/api/storefront/current/objects/Customer). Requires a [customer
+        * access
+        * token](https://shopify.dev/docs/api/storefront/current/mutations/customerDefaultAddressUpdate#argume
+        * nts-customerAccessToken) to identify the customer and an address ID to specify which address to set
+        * as the new default.
         */
 
         public CustomerDefaultAddressUpdatePayload getCustomerDefaultAddressUpdate() {
@@ -50097,20 +52454,17 @@ public class Storefront {
         }
 
         /**
-        * Sends a reset password email to the customer. The reset password
-        * email contains a reset password URL and token that you can pass to
-        * the [`customerResetByUrl`](https://shopify.dev/api/storefront/latest/mutations/customerResetByUrl)
-        * or
-        * [`customerReset`](https://shopify.dev/api/storefront/latest/mutations/customerReset) mutation to
-        * reset the
-        * customer password.
-        * This mutation is throttled by IP. With private access,
-        * you can provide a
-        * [`Shopify-Storefront-Buyer-IP`](https://shopify.dev/api/usage/authentication#optional-ip-header)
-        * instead of the request IP.
-        * The header is case-sensitive and must be sent as `Shopify-Storefront-Buyer-IP`.
-        * Make sure that the value provided to `Shopify-Storefront-Buyer-IP` is trusted. Unthrottled access to
-        * this
+        * Sends a reset password email to the customer. The email contains a reset password URL and token that
+        * you can pass to the
+        * [`customerResetByUrl`](https://shopify.dev/docs/api/storefront/current/mutations/customerResetByUrl)
+        * or [`customerReset`](https://shopify.dev/docs/api/storefront/current/mutations/customerReset)
+        * mutation to reset the customer's password.
+        * This mutation is throttled by IP. With private access, you can provide a
+        * [`Shopify-Storefront-Buyer-IP`
+        * header](https://shopify.dev/docs/api/usage/authentication#optional-ip-header) instead of the request
+        * IP. The header is case-sensitive.
+        * > Caution:
+        * > Ensure the value provided to `Shopify-Storefront-Buyer-IP` is trusted. Unthrottled access to this
         * mutation presents a security risk.
         */
 
@@ -50124,9 +52478,19 @@ public class Storefront {
         }
 
         /**
-        * "Resets a customer’s password with the token received from a reset password email. You can send a
-        * reset password email with the
-        * [`customerRecover`](https://shopify.dev/api/storefront/latest/mutations/customerRecover) mutation."
+        * Resets a customer's password using the reset token from a password recovery email. On success,
+        * returns the updated [`Customer`](https://shopify.dev/docs/api/storefront/current/objects/Customer)
+        * and a new
+        * [`CustomerAccessToken`](https://shopify.dev/docs/api/storefront/current/objects/CustomerAccessToken)
+        * for immediate authentication.
+        * Use the
+        * [`customerRecover`](https://shopify.dev/docs/api/storefront/current/mutations/customerRecover)
+        * mutation to send the password recovery email that provides the reset token. Alternatively, use
+        * [`customerResetByUrl`](https://shopify.dev/docs/api/storefront/current/mutations/customerResetByUrl)
+        * if you have the full reset URL instead of the customer ID and token.
+        * > Caution:
+        * > This mutation handles sensitive customer credentials. Validate password requirements on the client
+        * before submission.
         */
 
         public CustomerResetPayload getCustomerReset() {
@@ -50139,9 +52503,17 @@ public class Storefront {
         }
 
         /**
-        * "Resets a customer’s password with the reset password URL received from a reset password email. You
-        * can send a reset password email with the
-        * [`customerRecover`](https://shopify.dev/api/storefront/latest/mutations/customerRecover) mutation."
+        * Resets a customer's password using the reset URL from a password recovery email. The reset URL is
+        * generated by the
+        * [`customerRecover`](https://shopify.dev/docs/api/storefront/current/mutations/customerRecover)
+        * mutation.
+        * On success, returns the updated
+        * [`Customer`](https://shopify.dev/docs/api/storefront/current/objects/Customer) and a new
+        * [`CustomerAccessToken`](https://shopify.dev/docs/api/storefront/current/objects/CustomerAccessToken)
+        * for immediate authentication.
+        * > Caution:
+        * > This mutation handles customer credentials. Ensure the new password is transmitted securely and
+        * never logged or exposed in client-side code.
         */
 
         public CustomerResetByUrlPayload getCustomerResetByUrl() {
@@ -50154,7 +52526,15 @@ public class Storefront {
         }
 
         /**
-        * Updates an existing customer.
+        * Updates a [customer's](https://shopify.dev/docs/api/storefront/current/objects/Customer) personal
+        * information such as name, password, and marketing preferences. Requires a valid
+        * [`CustomerAccessToken`](https://shopify.dev/docs/api/storefront/current/objects/CustomerAccessToken)
+        * to authenticate the customer making the update.
+        * If the customer's password is updated, then all previous access tokens become invalid. The mutation
+        * returns a new access token in the payload to maintain the customer's session.
+        * > Caution:
+        * > Password changes invalidate all existing access tokens. Ensure your app handles the new token
+        * returned in the response to avoid logging the customer out.
         */
 
         public CustomerUpdatePayload getCustomerUpdate() {
@@ -50167,7 +52547,17 @@ public class Storefront {
         }
 
         /**
-        * Create a new Shop Pay payment request session.
+        * Creates a [Shop Pay payment request
+        * session](https://shopify.dev/docs/api/storefront/current/objects/ShopPayPaymentRequestSession) for
+        * processing payments. The session includes a checkout URL where customers complete their purchase and
+        * a token for subsequent operations like submitting the payment.
+        * The `sourceIdentifier` must be unique across all orders to ensure accurate reconciliation.
+        * For a complete integration guide including the JavaScript SDK setup and checkout flow, refer to the
+        * [Shop Component API documentation](https://shopify.dev/docs/api/commerce-components/pay). For
+        * implementation steps, see the [development journey
+        * guide](https://shopify.dev/docs/api/commerce-components/pay/development-journey). For common error
+        * scenarios, see the [troubleshooting
+        * guide](https://shopify.dev/docs/api/commerce-components/pay/troubleshooting-guide).
         */
 
         public ShopPayPaymentRequestSessionCreatePayload getShopPayPaymentRequestSessionCreate() {
@@ -50180,7 +52570,23 @@ public class Storefront {
         }
 
         /**
-        * Submits a Shop Pay payment request session.
+        * Finalizes a [Shop Pay payment request
+        * session](https://shopify.dev/docs/api/storefront/current/objects/ShopPayPaymentRequestSession). Call
+        * this mutation after creating a session with
+        * [`shopPayPaymentRequestSessionCreate`](https://shopify.dev/docs/api/storefront/current/mutations/sho
+        * pPayPaymentRequestSessionCreate).
+        * The
+        * [`idempotencyKey`](https://shopify.dev/docs/api/storefront/current/mutations/shopPayPaymentRequestSe
+        * ssionSubmit#arguments-idempotencyKey) argument ensures the payment transaction occurs only once,
+        * preventing duplicate charges. On success, returns a
+        * [`ShopPayPaymentRequestReceipt`](https://shopify.dev/docs/api/storefront/current/objects/ShopPayPaym
+        * entRequestReceipt) with the processing status and a receipt token.
+        * For a complete integration guide including the JavaScript SDK setup and checkout flow, refer to the
+        * [Shop Component API documentation](https://shopify.dev/docs/api/commerce-components/pay). For
+        * implementation steps, see the [development journey
+        * guide](https://shopify.dev/docs/api/commerce-components/pay/development-journey). For common error
+        * scenarios, see the [troubleshooting
+        * guide](https://shopify.dev/docs/api/commerce-components/pay/troubleshooting-guide).
         */
 
         public ShopPayPaymentRequestSessionSubmitPayload getShopPayPaymentRequestSessionSubmit() {
@@ -50201,15 +52607,21 @@ public class Storefront {
 
                 case "cartBuyerIdentityUpdate": return true;
 
+                case "cartClone": return true;
+
                 case "cartCreate": return true;
 
                 case "cartDeliveryAddressesAdd": return true;
 
                 case "cartDeliveryAddressesRemove": return true;
 
+                case "cartDeliveryAddressesReplace": return true;
+
                 case "cartDeliveryAddressesUpdate": return true;
 
                 case "cartDiscountCodesUpdate": return true;
+
+                case "cartGiftCardCodesAdd": return true;
 
                 case "cartGiftCardCodesRemove": return true;
 
@@ -50281,10 +52693,11 @@ public class Storefront {
     }
 
     /**
-    * An object with an ID field to support global identification, in accordance with the
-    * [Relay specification](https://relay.dev/graphql/objectidentification.htm#sec-Node-Interface).
-    * This interface is used by the [node](/docs/api/storefront/latest/queries/node)
-    * and [nodes](/docs/api/storefront/latest/queries/nodes) queries.
+    * Enables global object identification following the [Relay
+    * specification](https://relay.dev/graphql/objectidentification.htm#sec-Node-Interface). Any type
+    * implementing this interface has a globally-unique `id` field and can be fetched directly using the
+    * [`node`](https://shopify.dev/docs/api/storefront/current/queries/node) or
+    * [`nodes`](https://shopify.dev/docs/api/storefront/current/queries/nodes) queries.
     */
     public static class NodeQuery extends Query<NodeQuery> {
         NodeQuery(StringBuilder _queryBuilder) {
@@ -50569,10 +52982,11 @@ public class Storefront {
     }
 
     /**
-    * An object with an ID field to support global identification, in accordance with the
-    * [Relay specification](https://relay.dev/graphql/objectidentification.htm#sec-Node-Interface).
-    * This interface is used by the [node](/docs/api/storefront/latest/queries/node)
-    * and [nodes](/docs/api/storefront/latest/queries/nodes) queries.
+    * Enables global object identification following the [Relay
+    * specification](https://relay.dev/graphql/objectidentification.htm#sec-Node-Interface). Any type
+    * implementing this interface has a globally-unique `id` field and can be fetched directly using the
+    * [`node`](https://shopify.dev/docs/api/storefront/current/queries/node) or
+    * [`nodes`](https://shopify.dev/docs/api/storefront/current/queries/nodes) queries.
     */
     public static class UnknownNode extends AbstractResponse<UnknownNode> implements Node {
         public UnknownNode() {
@@ -53204,7 +55618,13 @@ public class Storefront {
     }
 
     /**
-    * Represents the order's aggregated fulfillment status for display purposes.
+    * The aggregated fulfillment status of an
+    * [`Order`](https://shopify.dev/docs/api/storefront/current/objects/Order), summarizing the state of
+    * all line items. Used for display purposes. 
+    * Statuses range from unfulfilled to fully fulfilled, with intermediate states such as in progress and
+    * on hold.
+    * Learn more about [order
+    * statuses](https://help.shopify.com/manual/fulfillment/managing-orders/order-status).
     */
     public enum OrderFulfillmentStatus {
         /**
@@ -54024,8 +56444,14 @@ public class Storefront {
     }
 
     /**
-    * Shopify merchants can create pages to hold static HTML content. Each Page object represents a custom
-    * page on the online store.
+    * A [custom content page](https://help.shopify.com/manual/online-store/add-edit-pages) on a merchant's
+    * store. Pages display HTML-formatted content, such as "About Us", contact details, or store policies.
+    * Each page has a unique
+    * [`handle`](https://shopify.dev/docs/api/storefront/current/objects/Page#field-Page.fields.handle)
+    * for URL routing and includes [`SEO`](https://shopify.dev/docs/api/storefront/current/objects/SEO)
+    * information for search engine optimization. Pages support
+    * [`Metafield`](https://shopify.dev/docs/api/storefront/current/objects/Metafield) attachments for
+    * storing additional custom data.
     */
     public static class PageQuery extends Query<PageQuery> {
         PageQuery(StringBuilder _queryBuilder) {
@@ -54208,8 +56634,14 @@ public class Storefront {
     }
 
     /**
-    * Shopify merchants can create pages to hold static HTML content. Each Page object represents a custom
-    * page on the online store.
+    * A [custom content page](https://help.shopify.com/manual/online-store/add-edit-pages) on a merchant's
+    * store. Pages display HTML-formatted content, such as "About Us", contact details, or store policies.
+    * Each page has a unique
+    * [`handle`](https://shopify.dev/docs/api/storefront/current/objects/Page#field-Page.fields.handle)
+    * for URL routing and includes [`SEO`](https://shopify.dev/docs/api/storefront/current/objects/SEO)
+    * information for search engine optimization. Pages support
+    * [`Metafield`](https://shopify.dev/docs/api/storefront/current/objects/Metafield) attachments for
+    * storing additional custom data.
     */
     public static class Page extends AbstractResponse<Page> implements HasMetafields, MenuItemResource, MetafieldParentResource, MetafieldReference, Node, OnlineStorePublishable, SearchResultItem, Trackable {
         public Page() {
@@ -55461,9 +57893,14 @@ public class Storefront {
     }
 
     /**
-    * A predictive search result represents a list of products, collections, pages, articles, and query
-    * suggestions
-    * that matches the predictive search query.
+    * Returned by the
+    * [`predictiveSearch`](https://shopify.dev/docs/api/storefront/current/queries/predictiveSearch) query
+    * to power type-ahead search experiences. Includes matching
+    * [`Product`](https://shopify.dev/docs/api/storefront/current/objects/Product),
+    * [`Collection`](https://shopify.dev/docs/api/storefront/current/objects/Collection),
+    * [`Page`](https://shopify.dev/docs/api/storefront/current/objects/Page), and
+    * [`Article`](https://shopify.dev/docs/api/storefront/current/objects/Article) objects, along with
+    * query suggestions that help customers refine their search.
     */
     public static class PredictiveSearchResultQuery extends Query<PredictiveSearchResultQuery> {
         PredictiveSearchResultQuery(StringBuilder _queryBuilder) {
@@ -55537,9 +57974,14 @@ public class Storefront {
     }
 
     /**
-    * A predictive search result represents a list of products, collections, pages, articles, and query
-    * suggestions
-    * that matches the predictive search query.
+    * Returned by the
+    * [`predictiveSearch`](https://shopify.dev/docs/api/storefront/current/queries/predictiveSearch) query
+    * to power type-ahead search experiences. Includes matching
+    * [`Product`](https://shopify.dev/docs/api/storefront/current/objects/Product),
+    * [`Collection`](https://shopify.dev/docs/api/storefront/current/objects/Collection),
+    * [`Page`](https://shopify.dev/docs/api/storefront/current/objects/Page), and
+    * [`Article`](https://shopify.dev/docs/api/storefront/current/objects/Article) objects, along with
+    * query suggestions that help customers refine their search.
     */
     public static class PredictiveSearchResult extends AbstractResponse<PredictiveSearchResult> {
         public PredictiveSearchResult() {
@@ -55941,7 +58383,12 @@ public class Storefront {
     }
 
     /**
-    * The value of the percentage pricing object.
+    * A percentage discount value applied to cart items or orders. Returned as part of the
+    * [`PricingValue`](https://shopify.dev/docs/api/storefront/current/unions/PricingValue) union on
+    * [discount
+    * applications](https://shopify.dev/docs/api/storefront/current/interfaces/DiscountApplication), where
+    * it represents discounts calculated as a percentage off rather than a [fixed
+    * amount](https://shopify.dev/docs/api/storefront/current/objects/MoneyV2).
     */
     public static class PricingPercentageValueQuery extends Query<PricingPercentageValueQuery> {
         PricingPercentageValueQuery(StringBuilder _queryBuilder) {
@@ -55959,7 +58406,12 @@ public class Storefront {
     }
 
     /**
-    * The value of the percentage pricing object.
+    * A percentage discount value applied to cart items or orders. Returned as part of the
+    * [`PricingValue`](https://shopify.dev/docs/api/storefront/current/unions/PricingValue) union on
+    * [discount
+    * applications](https://shopify.dev/docs/api/storefront/current/interfaces/DiscountApplication), where
+    * it represents discounts calculated as a percentage off rather than a [fixed
+    * amount](https://shopify.dev/docs/api/storefront/current/objects/MoneyV2).
     */
     public static class PricingPercentageValue extends AbstractResponse<PricingPercentageValue> implements PricingValue {
         public PricingPercentageValue() {
@@ -56088,17 +58540,24 @@ public class Storefront {
     }
 
     /**
-    * The `Product` object lets you manage products in a merchant’s store.
-    * Products are the goods and services that merchants offer to customers.
-    * They can include various details such as title, description, price, images, and options such as size
-    * or color.
-    * You can use [product variants](/docs/api/storefront/latest/objects/ProductVariant)
-    * to create or update different versions of the same product.
-    * You can also add or update product [media](/docs/api/storefront/latest/interfaces/Media).
-    * Products can be organized by grouping them into a
-    * [collection](/docs/api/storefront/latest/objects/Collection).
+    * Represents an item listed in a shop's catalog.
+    * Products support multiple [product
+    * variants](https://shopify.dev/docs/api/storefront/current/objects/ProductVariant), representing
+    * different versions of the same product, and can include various
+    * [media](https://shopify.dev/docs/api/storefront/current/interfaces/Media) types. Use the
+    * [`selectedOrFirstAvailableVariant`](https://shopify.dev/docs/api/storefront/current/objects/Product#
+    * field-Product.fields.selectedOrFirstAvailableVariant) or
+    * [`variantBySelectedOptions`](https://shopify.dev/docs/api/storefront/current/objects/Product#field-P
+    * roduct.fields.variantBySelectedOptions) fields to help customers find the right variant based on
+    * their selections.
+    * Products can be organized into
+    * [collections](https://shopify.dev/docs/api/storefront/current/objects/Collection), associated with
+    * [selling plans](https://shopify.dev/docs/api/storefront/current/objects/SellingPlanGroup) for
+    * subscriptions, and extended with custom data through
+    * [metafields](https://shopify.dev/docs/api/storefront/current/objects/Metafield).
     * Learn more about working with [products and
-    * collections](/docs/storefronts/headless/building-with-the-storefront-api/products-collections).
+    * collections](https://shopify.dev/docs/storefronts/headless/building-with-the-storefront-api/products
+    * -collections).
     */
     public static class ProductQuery extends Query<ProductQuery> {
         ProductQuery(StringBuilder _queryBuilder) {
@@ -57331,17 +59790,24 @@ public class Storefront {
     }
 
     /**
-    * The `Product` object lets you manage products in a merchant’s store.
-    * Products are the goods and services that merchants offer to customers.
-    * They can include various details such as title, description, price, images, and options such as size
-    * or color.
-    * You can use [product variants](/docs/api/storefront/latest/objects/ProductVariant)
-    * to create or update different versions of the same product.
-    * You can also add or update product [media](/docs/api/storefront/latest/interfaces/Media).
-    * Products can be organized by grouping them into a
-    * [collection](/docs/api/storefront/latest/objects/Collection).
+    * Represents an item listed in a shop's catalog.
+    * Products support multiple [product
+    * variants](https://shopify.dev/docs/api/storefront/current/objects/ProductVariant), representing
+    * different versions of the same product, and can include various
+    * [media](https://shopify.dev/docs/api/storefront/current/interfaces/Media) types. Use the
+    * [`selectedOrFirstAvailableVariant`](https://shopify.dev/docs/api/storefront/current/objects/Product#
+    * field-Product.fields.selectedOrFirstAvailableVariant) or
+    * [`variantBySelectedOptions`](https://shopify.dev/docs/api/storefront/current/objects/Product#field-P
+    * roduct.fields.variantBySelectedOptions) fields to help customers find the right variant based on
+    * their selections.
+    * Products can be organized into
+    * [collections](https://shopify.dev/docs/api/storefront/current/objects/Collection), associated with
+    * [selling plans](https://shopify.dev/docs/api/storefront/current/objects/SellingPlanGroup) for
+    * subscriptions, and extended with custom data through
+    * [metafields](https://shopify.dev/docs/api/storefront/current/objects/Metafield).
     * Learn more about working with [products and
-    * collections](/docs/storefronts/headless/building-with-the-storefront-api/products-collections).
+    * collections](https://shopify.dev/docs/storefronts/headless/building-with-the-storefront-api/products
+    * -collections).
     */
     public static class Product extends AbstractResponse<Product> implements HasMetafields, MenuItemResource, MetafieldParentResource, MetafieldReference, Node, OnlineStorePublishable, SearchResultItem, Trackable {
         public Product() {
@@ -58280,7 +60746,14 @@ public class Storefront {
     }
 
     /**
-    * The set of valid sort keys for the ProductCollection query.
+    * Sort options for products within a
+    * [`Collection`](https://shopify.dev/docs/api/storefront/current/objects/Collection). Used by the
+    * [`products`](https://shopify.dev/docs/api/storefront/current/objects/Collection#field-Collection.fie
+    * lds.products) connection to order results by best-selling, price, title, creation date, or the
+    * collection's default and manual ordering.
+    * > Note: The
+    * [`RELEVANCE`](https://shopify.dev/docs/api/storefront/current/enums/ProductCollectionSortKeys#enums-
+    * RELEVANCE) key applies only when you specify a search query.
     */
     public enum ProductCollectionSortKeys {
         /**
@@ -59218,9 +61691,16 @@ public class Storefront {
     }
 
     /**
-    * Product property names like "Size", "Color", and "Material" that the customers can select.
-    * Variants are selected based on permutations of these options.
-    * 255 characters limit each.
+    * A customizable product attribute that customers select when purchasing, such as "Size", "Color", or
+    * "Material". Each option has a name and a set of
+    * [`ProductOptionValue`](https://shopify.dev/docs/api/storefront/current/objects/ProductOptionValue)
+    * objects representing the available choices.
+    * Different combinations of option values create distinct
+    * [`ProductVariant`](https://shopify.dev/docs/api/storefront/current/objects/ProductVariant) objects.
+    * Option values can include visual swatches that display colors or images to help customers make
+    * selections. Option names have a 255-character limit.
+    * Learn more about [Shopify's product
+    * model](https://shopify.dev/docs/apps/build/product-merchandising/products-and-collections).
     */
     public static class ProductOptionQuery extends Query<ProductOptionQuery> {
         ProductOptionQuery(StringBuilder _queryBuilder) {
@@ -59265,9 +61745,16 @@ public class Storefront {
     }
 
     /**
-    * Product property names like "Size", "Color", and "Material" that the customers can select.
-    * Variants are selected based on permutations of these options.
-    * 255 characters limit each.
+    * A customizable product attribute that customers select when purchasing, such as "Size", "Color", or
+    * "Material". Each option has a name and a set of
+    * [`ProductOptionValue`](https://shopify.dev/docs/api/storefront/current/objects/ProductOptionValue)
+    * objects representing the available choices.
+    * Different combinations of option values create distinct
+    * [`ProductVariant`](https://shopify.dev/docs/api/storefront/current/objects/ProductVariant) objects.
+    * Option values can include visual swatches that display colors or images to help customers make
+    * selections. Option names have a 255-character limit.
+    * Learn more about [Shopify's product
+    * model](https://shopify.dev/docs/apps/build/product-merchandising/products-and-collections).
     */
     public static class ProductOption extends AbstractResponse<ProductOption> implements Node {
         public ProductOption() {
@@ -59397,7 +61884,17 @@ public class Storefront {
     }
 
     /**
-    * The product option value names. For example, "Red", "Blue", and "Green" for a "Color" option.
+    * A specific value for a
+    * [`ProductOption`](https://shopify.dev/docs/api/storefront/current/objects/ProductOption), such as
+    * "Red" or "Blue" for a "Color" option. Option values combine across different options to create
+    * [`ProductVariant`](https://shopify.dev/docs/api/storefront/current/objects/ProductVariant) objects.
+    * Each value can include a visual swatch that displays a color or image. The
+    * [`firstSelectableVariant`](https://shopify.dev/docs/api/storefront/current/objects/ProductOptionValu
+    * e#field-ProductOptionValue.fields.firstSelectableVariant) field returns the variant that combines
+    * this option value with the lowest-position values for all other options. This is useful for building
+    * product selection interfaces.
+    * Learn more about [Shopify's product
+    * model](https://shopify.dev/docs/apps/build/product-merchandising/products-and-collections).
     */
     public static class ProductOptionValueQuery extends Query<ProductOptionValueQuery> {
         ProductOptionValueQuery(StringBuilder _queryBuilder) {
@@ -59445,7 +61942,17 @@ public class Storefront {
     }
 
     /**
-    * The product option value names. For example, "Red", "Blue", and "Green" for a "Color" option.
+    * A specific value for a
+    * [`ProductOption`](https://shopify.dev/docs/api/storefront/current/objects/ProductOption), such as
+    * "Red" or "Blue" for a "Color" option. Option values combine across different options to create
+    * [`ProductVariant`](https://shopify.dev/docs/api/storefront/current/objects/ProductVariant) objects.
+    * Each value can include a visual swatch that displays a color or image. The
+    * [`firstSelectableVariant`](https://shopify.dev/docs/api/storefront/current/objects/ProductOptionValu
+    * e#field-ProductOptionValue.fields.firstSelectableVariant) field returns the variant that combines
+    * this option value with the lowest-position values for all other options. This is useful for building
+    * product selection interfaces.
+    * Learn more about [Shopify's product
+    * model](https://shopify.dev/docs/apps/build/product-merchandising/products-and-collections).
     */
     public static class ProductOptionValue extends AbstractResponse<ProductOptionValue> implements Node {
         public ProductOptionValue() {
@@ -59576,7 +62083,10 @@ public class Storefront {
     }
 
     /**
-    * The product option value swatch.
+    * A visual representation for a
+    * [`ProductOptionValue`](https://shopify.dev/docs/api/storefront/current/objects/ProductOptionValue),
+    * such as a color or image. Swatches help customers visualize options like "Red" or "Blue" without
+    * relying solely on text labels.
     */
     public static class ProductOptionValueSwatchQuery extends Query<ProductOptionValueSwatchQuery> {
         ProductOptionValueSwatchQuery(StringBuilder _queryBuilder) {
@@ -59607,7 +62117,10 @@ public class Storefront {
     }
 
     /**
-    * The product option value swatch.
+    * A visual representation for a
+    * [`ProductOptionValue`](https://shopify.dev/docs/api/storefront/current/objects/ProductOptionValue),
+    * such as a color or image. Swatches help customers visualize options like "Red" or "Blue" without
+    * relying solely on text labels.
     */
     public static class ProductOptionValueSwatch extends AbstractResponse<ProductOptionValueSwatch> {
         public ProductOptionValueSwatch() {
@@ -59687,7 +62200,8 @@ public class Storefront {
     }
 
     /**
-    * The price range of the product.
+    * The minimum and maximum prices across all variants of a
+    * [`Product`](https://shopify.dev/docs/api/storefront/current/objects/Product).
     */
     public static class ProductPriceRangeQuery extends Query<ProductPriceRangeQuery> {
         ProductPriceRangeQuery(StringBuilder _queryBuilder) {
@@ -59722,7 +62236,8 @@ public class Storefront {
     }
 
     /**
-    * The price range of the product.
+    * The minimum and maximum prices across all variants of a
+    * [`Product`](https://shopify.dev/docs/api/storefront/current/objects/Product).
     */
     public static class ProductPriceRange extends AbstractResponse<ProductPriceRange> {
         public ProductPriceRange() {
@@ -59855,7 +62370,13 @@ public class Storefront {
     }
 
     /**
-    * The set of valid sort keys for the Product query.
+    * Sorting options for the
+    * [`products`](https://shopify.dev/docs/api/storefront/current/queries/products) query. Supports
+    * sorting products by criteria such as best-selling and price, and by product attributes such as type,
+    * and vendor. 
+    * > Note: Use the
+    * [`RELEVANCE`](https://shopify.dev/docs/api/storefront/current/enums/ProductSortKeys#enums-RELEVANCE)
+    * key only when a search query is specified.
     */
     public enum ProductSortKeys {
         /**
@@ -60003,8 +62524,20 @@ public class Storefront {
     }
 
     /**
-    * A product variant represents a different version of a product, such as differing sizes or differing
-    * colors.
+    * A specific version of a [product](https://shopify.dev/docs/api/storefront/current/objects/Product)
+    * available for sale, differentiated by options like size or color. For example, a small blue t-shirt
+    * and a large blue t-shirt are separate variants of the same product. For more information, see the
+    * docs on [Shopify's product
+    * model](https://shopify.dev/docs/apps/build/product-merchandising/products-and-collections).
+    * For products with quantity rules, variants enforce minimum, maximum, and increment constraints on
+    * purchases.
+    * Variants also support subscriptions and pre-orders through [selling plan
+    * allocations](https://shopify.dev/docs/api/storefront/current/objects/SellingPlanAllocation) objects,
+    * bundle configurations through [product variant
+    * components](https://shopify.dev/docs/api/storefront/current/objects/ProductVariantComponent)
+    * objects, and [shop pay installments
+    * pricing](https://shopify.dev/docs/api/storefront/current/objects/ShopPayInstallmentsPricing) for
+    * flexible payment options.
     */
     public static class ProductVariantQuery extends Query<ProductVariantQuery> {
         ProductVariantQuery(StringBuilder _queryBuilder) {
@@ -60773,8 +63306,20 @@ public class Storefront {
     }
 
     /**
-    * A product variant represents a different version of a product, such as differing sizes or differing
-    * colors.
+    * A specific version of a [product](https://shopify.dev/docs/api/storefront/current/objects/Product)
+    * available for sale, differentiated by options like size or color. For example, a small blue t-shirt
+    * and a large blue t-shirt are separate variants of the same product. For more information, see the
+    * docs on [Shopify's product
+    * model](https://shopify.dev/docs/apps/build/product-merchandising/products-and-collections).
+    * For products with quantity rules, variants enforce minimum, maximum, and increment constraints on
+    * purchases.
+    * Variants also support subscriptions and pre-orders through [selling plan
+    * allocations](https://shopify.dev/docs/api/storefront/current/objects/SellingPlanAllocation) objects,
+    * bundle configurations through [product variant
+    * components](https://shopify.dev/docs/api/storefront/current/objects/ProductVariantComponent)
+    * objects, and [shop pay installments
+    * pricing](https://shopify.dev/docs/api/storefront/current/objects/ShopPayInstallmentsPricing) for
+    * flexible payment options.
     */
     public static class ProductVariant extends AbstractResponse<ProductVariant> implements HasMetafields, Merchandise, MetafieldParentResource, MetafieldReference, Node {
         public ProductVariant() {
@@ -61504,7 +64049,13 @@ public class Storefront {
     }
 
     /**
-    * Represents a component of a bundle variant.
+    * An individual product variant included in a [fixed
+    * bundle](https://shopify.dev/docs/apps/build/product-merchandising/bundles). Fixed bundles group
+    * multiple products together and sell them as a single unit, with the bundle's inventory determined by
+    * its components.
+    * Access components through the `ProductVariant` object's
+    * [`components`](https://shopify.dev/docs/api/storefront/current/objects/ProductVariant#field-ProductV
+    * ariant.fields.components) field.
     */
     public static class ProductVariantComponentQuery extends Query<ProductVariantComponentQuery> {
         ProductVariantComponentQuery(StringBuilder _queryBuilder) {
@@ -61535,7 +64086,13 @@ public class Storefront {
     }
 
     /**
-    * Represents a component of a bundle variant.
+    * An individual product variant included in a [fixed
+    * bundle](https://shopify.dev/docs/apps/build/product-merchandising/bundles). Fixed bundles group
+    * multiple products together and sell them as a single unit, with the bundle's inventory determined by
+    * its components.
+    * Access components through the `ProductVariant` object's
+    * [`components`](https://shopify.dev/docs/api/storefront/current/objects/ProductVariant#field-ProductV
+    * ariant.fields.components) field.
     */
     public static class ProductVariantComponent extends AbstractResponse<ProductVariantComponent> {
         public ProductVariantComponent() {
@@ -62927,8 +65484,22 @@ public class Storefront {
     }
 
     /**
-    * The schema’s entry-point for queries. This acts as the public, top-level API from which all queries
-    * must start.
+    * The entry point for all Storefront API queries. Provides access to shop resources including
+    * products, collections, carts, and customer data, as well as content like articles and pages. This
+    * query acts as the public, top-level type from which all queries must start.
+    * Use individual queries like
+    * [`product`](https://shopify.dev/docs/api/storefront/current/queries/product) or
+    * [`collection`](https://shopify.dev/docs/api/storefront/current/queries/collection) to fetch specific
+    * resources by ID or handle. Use plural queries like
+    * [`products`](https://shopify.dev/docs/api/storefront/current/queries/products) or
+    * [`collections`](https://shopify.dev/docs/api/storefront/current/queries/collections) to retrieve
+    * paginated lists with optional filtering and sorting. The
+    * [`search`](https://shopify.dev/docs/api/storefront/current/queries/search) and
+    * [`predictiveSearch`](https://shopify.dev/docs/api/storefront/current/queries/predictiveSearch)
+    * queries enable storefront search functionality.
+    * Explore queries interactively with the [GraphiQL explorer and sample query
+    * kit](https://shopify.dev/docs/storefronts/headless/building-with-the-storefront-api/api-exploration)
+    * .
     */
     public static class QueryRootQuery extends Query<QueryRootQuery> {
         QueryRootQuery(StringBuilder _queryBuilder) {
@@ -62936,7 +65507,12 @@ public class Storefront {
         }
 
         /**
-        * Fetch a specific Article by its ID.
+        * Returns an [`Article`](https://shopify.dev/docs/api/storefront/current/objects/Article) by its ID.
+        * Each article belongs to a [`Blog`](https://shopify.dev/docs/api/storefront/current/objects/Blog) and
+        * includes content in both plain text and HTML formats,
+        * [`ArticleAuthor`](https://shopify.dev/docs/api/storefront/current/objects/ArticleAuthor)
+        * information, [`Comment`](https://shopify.dev/docs/api/storefront/current/objects/Comment) objects,
+        * tags, and [`SEO`](https://shopify.dev/docs/api/storefront/current/objects/SEO) data.
         */
         public QueryRootQuery article(ID id, ArticleQueryDefinition queryDef) {
             startField("article");
@@ -63051,14 +65627,24 @@ public class Storefront {
         }
 
         /**
-        * List of the shop's articles.
+        * Returns a paginated list of
+        * [`Article`](https://shopify.dev/docs/api/storefront/current/objects/Article) objects from the shop's
+        * [`Blog`](https://shopify.dev/docs/api/storefront/current/objects/Blog) objects. Each article is a
+        * blog post containing content, author information, tags, and optional images.
+        * Use the `query` argument to filter results by author, blog title, tags, or date fields. Sort results
+        * using the `sortKey` argument and reverse them with the `reverse` argument.
         */
         public QueryRootQuery articles(ArticleConnectionQueryDefinition queryDef) {
             return articles(args -> {}, queryDef);
         }
 
         /**
-        * List of the shop's articles.
+        * Returns a paginated list of
+        * [`Article`](https://shopify.dev/docs/api/storefront/current/objects/Article) objects from the shop's
+        * [`Blog`](https://shopify.dev/docs/api/storefront/current/objects/Blog) objects. Each article is a
+        * blog post containing content, author information, tags, and optional images.
+        * Use the `query` argument to filter results by author, blog title, tags, or date fields. Sort results
+        * using the `sortKey` argument and reverse them with the `reverse` argument.
         */
         public QueryRootQuery articles(ArticlesArgumentsDefinition argsDef, ArticleConnectionQueryDefinition queryDef) {
             startField("articles");
@@ -63107,14 +65693,22 @@ public class Storefront {
         }
 
         /**
-        * Fetch a specific `Blog` by one of its unique attributes.
+        * Retrieves a [`Blog`](https://shopify.dev/docs/api/storefront/current/objects/Blog) by its handle or
+        * ID. A blog organizes [`Article`](https://shopify.dev/docs/api/storefront/current/objects/Article)
+        * objects for the online store and includes author information,
+        * [`SEO`](https://shopify.dev/docs/api/storefront/current/objects/SEO) settings, and custom
+        * [`Metafield`](https://shopify.dev/docs/api/storefront/current/objects/Metafield) objects.
         */
         public QueryRootQuery blog(BlogQueryDefinition queryDef) {
             return blog(args -> {}, queryDef);
         }
 
         /**
-        * Fetch a specific `Blog` by one of its unique attributes.
+        * Retrieves a [`Blog`](https://shopify.dev/docs/api/storefront/current/objects/Blog) by its handle or
+        * ID. A blog organizes [`Article`](https://shopify.dev/docs/api/storefront/current/objects/Article)
+        * objects for the online store and includes author information,
+        * [`SEO`](https://shopify.dev/docs/api/storefront/current/objects/SEO) settings, and custom
+        * [`Metafield`](https://shopify.dev/docs/api/storefront/current/objects/Metafield) objects.
         */
         public QueryRootQuery blog(BlogArgumentsDefinition argsDef, BlogQueryDefinition queryDef) {
             startField("blog");
@@ -63131,7 +65725,11 @@ public class Storefront {
         }
 
         /**
-        * Find a blog by its handle.
+        * Retrieves a [`Blog`](https://shopify.dev/docs/api/storefront/current/objects/Blog) by its handle. A
+        * blog organizes [`Article`](https://shopify.dev/docs/api/storefront/current/objects/Article) objects
+        * for the online store and includes author information,
+        * [`SEO`](https://shopify.dev/docs/api/storefront/current/objects/SEO) settings, and custom
+        * [`Metafield`](https://shopify.dev/docs/api/storefront/current/objects/Metafield) objects.
         *
         * @deprecated Use `blog` instead.
         */
@@ -63247,14 +65845,20 @@ public class Storefront {
         }
 
         /**
-        * List of the shop's blogs.
+        * Returns a paginated list of the shop's
+        * [`Blog`](https://shopify.dev/docs/api/storefront/current/objects/Blog) objects. Each blog serves as
+        * a container for [`Article`](https://shopify.dev/docs/api/storefront/current/objects/Article)
+        * objects.
         */
         public QueryRootQuery blogs(BlogConnectionQueryDefinition queryDef) {
             return blogs(args -> {}, queryDef);
         }
 
         /**
-        * List of the shop's blogs.
+        * Returns a paginated list of the shop's
+        * [`Blog`](https://shopify.dev/docs/api/storefront/current/objects/Blog) objects. Each blog serves as
+        * a container for [`Article`](https://shopify.dev/docs/api/storefront/current/objects/Article)
+        * objects.
         */
         public QueryRootQuery blogs(BlogsArgumentsDefinition argsDef, BlogConnectionQueryDefinition queryDef) {
             startField("blogs");
@@ -63271,8 +65875,14 @@ public class Storefront {
         }
 
         /**
-        * Retrieve a cart by its ID. For more information, refer to
-        * [Manage a cart with the Storefront API](https://shopify.dev/custom-storefronts/cart/manage).
+        * Returns a [`Cart`](https://shopify.dev/docs/api/storefront/current/objects/Cart) by its ID. The cart
+        * contains the merchandise lines a buyer intends to purchase, along with estimated costs, applied
+        * discounts, gift cards, and delivery options.
+        * Use the
+        * [`checkoutUrl`](https://shopify.dev/docs/api/storefront/latest/queries/cart#returns-Cart.fields.chec
+        * koutUrl) field to redirect buyers to Shopify's web checkout when they're ready to complete their
+        * purchase. For more information, refer to [Manage a cart with the Storefront
+        * API](https://shopify.dev/docs/storefronts/headless/building-with-the-storefront-api/cart/manage).
         */
         public QueryRootQuery cart(ID id, CartQueryDefinition queryDef) {
             startField("cart");
@@ -63340,14 +65950,22 @@ public class Storefront {
         }
 
         /**
-        * Fetch a specific `Collection` by one of its unique attributes.
+        * Retrieves a single
+        * [`Collection`](https://shopify.dev/docs/api/storefront/current/objects/Collection) by its ID or
+        * handle. Use the
+        * [`products`](https://shopify.dev/docs/api/storefront/current/objects/Collection#field-Collection.fie
+        * lds.products) field to access items in the collection.
         */
         public QueryRootQuery collection(CollectionQueryDefinition queryDef) {
             return collection(args -> {}, queryDef);
         }
 
         /**
-        * Fetch a specific `Collection` by one of its unique attributes.
+        * Retrieves a single
+        * [`Collection`](https://shopify.dev/docs/api/storefront/current/objects/Collection) by its ID or
+        * handle. Use the
+        * [`products`](https://shopify.dev/docs/api/storefront/current/objects/Collection#field-Collection.fie
+        * lds.products) field to access items in the collection.
         */
         public QueryRootQuery collection(CollectionArgumentsDefinition argsDef, CollectionQueryDefinition queryDef) {
             startField("collection");
@@ -63364,7 +65982,9 @@ public class Storefront {
         }
 
         /**
-        * Find a collection by its handle.
+        * Retrieves a [`Collection`](https://shopify.dev/docs/api/storefront/current/objects/Collection) by
+        * its URL-friendly handle. Handles are automatically generated from collection titles but merchants
+        * can customize them.
         *
         * @deprecated Use `collection` instead.
         */
@@ -63479,14 +66099,22 @@ public class Storefront {
         }
 
         /**
-        * List of the shop’s collections.
+        * Returns a paginated list of the shop's
+        * [collections](https://shopify.dev/docs/api/storefront/current/objects/Collection). Each `Collection`
+        * object includes a nested connection to its
+        * [products](https://shopify.dev/docs/api/storefront/current/objects/Collection#field-Collection.field
+        * s.products).
         */
         public QueryRootQuery collections(CollectionConnectionQueryDefinition queryDef) {
             return collections(args -> {}, queryDef);
         }
 
         /**
-        * List of the shop’s collections.
+        * Returns a paginated list of the shop's
+        * [collections](https://shopify.dev/docs/api/storefront/current/objects/Collection). Each `Collection`
+        * object includes a nested connection to its
+        * [products](https://shopify.dev/docs/api/storefront/current/objects/Collection#field-Collection.field
+        * s.products).
         */
         public QueryRootQuery collections(CollectionsArgumentsDefinition argsDef, CollectionConnectionQueryDefinition queryDef) {
             startField("collections");
@@ -63503,9 +66131,15 @@ public class Storefront {
         }
 
         /**
-        * The customer associated with the given access token. Tokens are obtained by using the
-        * [`customerAccessTokenCreate`
-        * mutation](https://shopify.dev/docs/api/storefront/latest/mutations/customerAccessTokenCreate).
+        * Retrieves the [`Customer`](https://shopify.dev/docs/api/storefront/current/objects/Customer)
+        * associated with the provided access token. Use the
+        * [`customerAccessTokenCreate`](https://shopify.dev/docs/api/storefront/current/mutations/customerAcce
+        * ssTokenCreate) mutation to obtain an access token using legacy customer account authentication
+        * (email and password).
+        * The returned customer includes data such as contact information,
+        * [addresses](https://shopify.dev/docs/api/storefront/current/objects/MailingAddress),
+        * [orders](https://shopify.dev/docs/api/storefront/current/objects/Order), and [custom
+        * data](https://shopify.dev/docs/apps/build/custom-data) associated with the customer.
         */
         public QueryRootQuery customer(String customerAccessToken, CustomerQueryDefinition queryDef) {
             startField("customer");
@@ -63523,7 +66157,16 @@ public class Storefront {
         }
 
         /**
-        * Returns the localized experiences configured for the shop.
+        * Returns the shop's localization settings. Use this query to build [country and language
+        * selectors](https://shopify.dev/docs/storefronts/headless/building-with-the-storefront-api/markets)
+        * for your storefront.
+        * The
+        * [`country`](https://shopify.dev/docs/api/storefront/latest/queries/localization#returns-Localization
+        * .fields.country) and
+        * [`language`](https://shopify.dev/docs/api/storefront/latest/queries/localization#returns-Localizatio
+        * n.fields.language) fields reflect the active localized experience. To change the context, use the
+        * [`@inContext`](https://shopify.dev/docs/api/storefront#directives) directive with your desired
+        * country or language code.
         */
         public QueryRootQuery localization(LocalizationQueryDefinition queryDef) {
             startField("localization");
@@ -63623,16 +66266,32 @@ public class Storefront {
         }
 
         /**
-        * List of the shop's locations that support in-store pickup.
-        * When sorting by distance, you must specify a location via the `near` argument.
+        * Returns shop locations that support in-store pickup. Use the `near` argument with
+        * [`GeoCoordinateInput`](https://shopify.dev/docs/api/storefront/current/input-objects/GeoCoordinateIn
+        * put) to sort results by proximity to the customer's location.
+        * When sorting by distance, set `sortKey` to
+        * [`DISTANCE`](https://shopify.dev/docs/api/storefront/current/queries/locations#arguments-sortKey.enu
+        * ms.DISTANCE) and provide coordinates using the
+        * [`near`](https://shopify.dev/docs/api/storefront/current/queries/locations#arguments-near) argument.
+        * Learn more about [supporting local pickup on
+        * storefronts](https://shopify.dev/docs/storefronts/headless/building-with-the-storefront-api/products
+        * -collections/local-pickup).
         */
         public QueryRootQuery locations(LocationConnectionQueryDefinition queryDef) {
             return locations(args -> {}, queryDef);
         }
 
         /**
-        * List of the shop's locations that support in-store pickup.
-        * When sorting by distance, you must specify a location via the `near` argument.
+        * Returns shop locations that support in-store pickup. Use the `near` argument with
+        * [`GeoCoordinateInput`](https://shopify.dev/docs/api/storefront/current/input-objects/GeoCoordinateIn
+        * put) to sort results by proximity to the customer's location.
+        * When sorting by distance, set `sortKey` to
+        * [`DISTANCE`](https://shopify.dev/docs/api/storefront/current/queries/locations#arguments-sortKey.enu
+        * ms.DISTANCE) and provide coordinates using the
+        * [`near`](https://shopify.dev/docs/api/storefront/current/queries/locations#arguments-near) argument.
+        * Learn more about [supporting local pickup on
+        * storefronts](https://shopify.dev/docs/storefronts/headless/building-with-the-storefront-api/products
+        * -collections/local-pickup).
         */
         public QueryRootQuery locations(LocationsArgumentsDefinition argsDef, LocationConnectionQueryDefinition queryDef) {
             startField("locations");
@@ -63649,8 +66308,16 @@ public class Storefront {
         }
 
         /**
-        * Retrieve a [navigation menu](https://help.shopify.com/manual/online-store/menus-and-links) by its
-        * handle.
+        * Retrieves a [`Menu`](https://shopify.dev/docs/api/storefront/current/objects/Menu) by its handle.
+        * Menus are [hierarchical navigation
+        * structures](https://help.shopify.com/manual/online-store/menus-and-links) that merchants configure
+        * for their storefront, such as header and footer navigation.
+        * Each menu contains [`MenuItem`](https://shopify.dev/docs/api/storefront/current/objects/MenuItem)
+        * objects that can nest up to three levels deep, with each item linking to
+        * [collections](https://shopify.dev/docs/api/storefront/current/objects/Collection),
+        * [products](https://shopify.dev/docs/api/storefront/current/objects/Product),
+        * [pages](https://shopify.dev/docs/api/storefront/current/objects/Page),
+        * [blogs](https://shopify.dev/docs/api/storefront/current/objects/Blog), or external URLs.
         */
         public QueryRootQuery menu(String handle, MenuQueryDefinition queryDef) {
             startField("menu");
@@ -63700,14 +66367,26 @@ public class Storefront {
         }
 
         /**
-        * Fetch a specific Metaobject by one of its unique identifiers.
+        * Retrieves a single
+        * [`Metaobject`](https://shopify.dev/docs/api/storefront/current/objects/Metaobject) by either its
+        * [`global ID`](https://shopify.dev/docs/api/storefront/current/queries/metaobject#arguments-id) or
+        * its [`handle`](https://shopify.dev/docs/api/storefront/current/queries/metaobject#arguments-handle).
+        * > Note:
+        * > When using the handle, you must also provide the metaobject type because handles are only unique
+        * within a type.
         */
         public QueryRootQuery metaobject(MetaobjectQueryDefinition queryDef) {
             return metaobject(args -> {}, queryDef);
         }
 
         /**
-        * Fetch a specific Metaobject by one of its unique identifiers.
+        * Retrieves a single
+        * [`Metaobject`](https://shopify.dev/docs/api/storefront/current/objects/Metaobject) by either its
+        * [`global ID`](https://shopify.dev/docs/api/storefront/current/queries/metaobject#arguments-id) or
+        * its [`handle`](https://shopify.dev/docs/api/storefront/current/queries/metaobject#arguments-handle).
+        * > Note:
+        * > When using the handle, you must also provide the metaobject type because handles are only unique
+        * within a type.
         */
         public QueryRootQuery metaobject(MetaobjectArgumentsDefinition argsDef, MetaobjectQueryDefinition queryDef) {
             startField("metaobject");
@@ -63800,14 +66479,26 @@ public class Storefront {
         }
 
         /**
-        * All active metaobjects for the shop.
+        * Returns a paginated list of
+        * [`Metaobject`](https://shopify.dev/docs/api/storefront/current/objects/Metaobject) entries for a
+        * specific type. Metaobjects are [custom data
+        * structures](https://shopify.dev/docs/apps/build/metaobjects) that extend Shopify's data model with
+        * merchant-defined or app-defined content like size charts, product highlights, or custom sections.
+        * The required `type` argument specifies which metaobject type to retrieve. You can sort results by
+        * `id` or `updated_at` using the `sortKey` argument.
         */
         public QueryRootQuery metaobjects(String type, MetaobjectConnectionQueryDefinition queryDef) {
             return metaobjects(type, args -> {}, queryDef);
         }
 
         /**
-        * All active metaobjects for the shop.
+        * Returns a paginated list of
+        * [`Metaobject`](https://shopify.dev/docs/api/storefront/current/objects/Metaobject) entries for a
+        * specific type. Metaobjects are [custom data
+        * structures](https://shopify.dev/docs/apps/build/metaobjects) that extend Shopify's data model with
+        * merchant-defined or app-defined content like size charts, product highlights, or custom sections.
+        * The required `type` argument specifies which metaobject type to retrieve. You can sort results by
+        * `id` or `updated_at` using the `sortKey` argument.
         */
         public QueryRootQuery metaobjects(String type, MetaobjectsArgumentsDefinition argsDef, MetaobjectConnectionQueryDefinition queryDef) {
             startField("metaobjects");
@@ -63827,7 +66518,12 @@ public class Storefront {
         }
 
         /**
-        * Returns a specific node by ID.
+        * Retrieves any object that implements the
+        * [`Node`](https://shopify.dev/docs/api/storefront/current/interfaces/Node) interface by its
+        * globally-unique ID. Use inline fragments to access type-specific fields on the returned object.
+        * This query follows the [Relay
+        * specification](https://relay.dev/graphql/objectidentification.htm#sec-Node-Interface) and is
+        * commonly used for refetching objects when you have their ID but need updated data.
         */
         public QueryRootQuery node(ID id, NodeQueryDefinition queryDef) {
             startField("node");
@@ -63845,7 +66541,13 @@ public class Storefront {
         }
 
         /**
-        * Returns the list of nodes with the given IDs.
+        * Retrieves multiple objects by their global IDs in a single request. Any object that implements the
+        * [`Node`](https://shopify.dev/docs/api/storefront/current/interfaces/Node) interface can be fetched,
+        * including [products](https://shopify.dev/docs/api/storefront/current/objects/Product),
+        * [collections](https://shopify.dev/docs/api/storefront/current/objects/Collection), and
+        * [pages](https://shopify.dev/docs/api/storefront/current/objects/Page).
+        * Use inline fragments to access type-specific fields on the returned objects. The input accepts up to
+        * 250 IDs.
         */
         public QueryRootQuery nodes(List<ID> ids, NodeQueryDefinition queryDef) {
             startField("nodes");
@@ -63904,14 +66606,30 @@ public class Storefront {
         }
 
         /**
-        * Fetch a specific `Page` by one of its unique attributes.
+        * Retrieves a [`Page`](https://shopify.dev/docs/api/storefront/current/objects/Page) by its
+        * [`handle`](https://shopify.dev/docs/api/storefront/current/queries/page#arguments-handle) or
+        * [`id`](https://shopify.dev/docs/api/storefront/current/queries/page#arguments-id). Pages are static
+        * content pages that merchants display outside their product catalog, such as "About Us," "Contact,"
+        * or policy pages.
+        * The returned page includes information such as the [HTML body
+        * content](https://shopify.dev/docs/api/storefront/current/queries/page#returns-Page.fields.body),
+        * [`SEO`](https://shopify.dev/docs/api/storefront/current/objects/SEO) information, and any associated
+        * [`Metafield`](https://shopify.dev/docs/api/storefront/current/objects/Metafield) objects.
         */
         public QueryRootQuery page(PageQueryDefinition queryDef) {
             return page(args -> {}, queryDef);
         }
 
         /**
-        * Fetch a specific `Page` by one of its unique attributes.
+        * Retrieves a [`Page`](https://shopify.dev/docs/api/storefront/current/objects/Page) by its
+        * [`handle`](https://shopify.dev/docs/api/storefront/current/queries/page#arguments-handle) or
+        * [`id`](https://shopify.dev/docs/api/storefront/current/queries/page#arguments-id). Pages are static
+        * content pages that merchants display outside their product catalog, such as "About Us," "Contact,"
+        * or policy pages.
+        * The returned page includes information such as the [HTML body
+        * content](https://shopify.dev/docs/api/storefront/current/queries/page#returns-Page.fields.body),
+        * [`SEO`](https://shopify.dev/docs/api/storefront/current/objects/SEO) information, and any associated
+        * [`Metafield`](https://shopify.dev/docs/api/storefront/current/objects/Metafield) objects.
         */
         public QueryRootQuery page(PageArgumentsDefinition argsDef, PageQueryDefinition queryDef) {
             startField("page");
@@ -63928,7 +66646,7 @@ public class Storefront {
         }
 
         /**
-        * Find a page by its handle.
+        * Retrieves a [`Page`](https://shopify.dev/docs/api/storefront/current/objects/Page) by its handle.
         *
         * @deprecated Use `page` instead.
         */
@@ -64044,14 +66762,20 @@ public class Storefront {
         }
 
         /**
-        * List of the shop's pages.
+        * Returns a paginated list of the shop's content
+        * [pages](https://shopify.dev/docs/api/storefront/current/objects/Page). Pages are custom HTML content
+        * like "About Us", "Contact", or policy information that merchants display outside their product
+        * catalog.
         */
         public QueryRootQuery pages(PageConnectionQueryDefinition queryDef) {
             return pages(args -> {}, queryDef);
         }
 
         /**
-        * List of the shop's pages.
+        * Returns a paginated list of the shop's content
+        * [pages](https://shopify.dev/docs/api/storefront/current/objects/Page). Pages are custom HTML content
+        * like "About Us", "Contact", or policy information that merchants display outside their product
+        * catalog.
         */
         public QueryRootQuery pages(PagesArgumentsDefinition argsDef, PageConnectionQueryDefinition queryDef) {
             startField("pages");
@@ -64169,14 +66893,40 @@ public class Storefront {
         }
 
         /**
-        * List of the predictive search results.
+        * Returns suggested results as customers type in a search field, enabling type-ahead search
+        * experiences. The query matches
+        * [products](https://shopify.dev/docs/api/storefront/current/objects/Product),
+        * [collections](https://shopify.dev/docs/api/storefront/current/objects/Collection),
+        * [pages](https://shopify.dev/docs/api/storefront/current/objects/Page), and
+        * [articles](https://shopify.dev/docs/api/storefront/current/objects/Article) based on partial search
+        * terms, and also provides [search query
+        * suggestions](https://shopify.dev/docs/api/storefront/current/objects/SearchQuerySuggestion) to help
+        * customers refine their search.
+        * You can filter results by resource type and limit the quantity. The
+        * [`limitScope`](https://shopify.dev/docs/api/storefront/current/queries/predictiveSearch#arguments-li
+        * mitScope) argument controls whether limits apply across all result types or per type. Use
+        * [`unavailableProducts`](https://shopify.dev/docs/api/storefront/current/queries/predictiveSearch#arg
+        * uments-unavailableProducts) to control how out-of-stock products appear in results.
         */
         public QueryRootQuery predictiveSearch(String query, PredictiveSearchResultQueryDefinition queryDef) {
             return predictiveSearch(query, args -> {}, queryDef);
         }
 
         /**
-        * List of the predictive search results.
+        * Returns suggested results as customers type in a search field, enabling type-ahead search
+        * experiences. The query matches
+        * [products](https://shopify.dev/docs/api/storefront/current/objects/Product),
+        * [collections](https://shopify.dev/docs/api/storefront/current/objects/Collection),
+        * [pages](https://shopify.dev/docs/api/storefront/current/objects/Page), and
+        * [articles](https://shopify.dev/docs/api/storefront/current/objects/Article) based on partial search
+        * terms, and also provides [search query
+        * suggestions](https://shopify.dev/docs/api/storefront/current/objects/SearchQuerySuggestion) to help
+        * customers refine their search.
+        * You can filter results by resource type and limit the quantity. The
+        * [`limitScope`](https://shopify.dev/docs/api/storefront/current/queries/predictiveSearch#arguments-li
+        * mitScope) argument controls whether limits apply across all result types or per type. Use
+        * [`unavailableProducts`](https://shopify.dev/docs/api/storefront/current/queries/predictiveSearch#arg
+        * uments-unavailableProducts) to control how out-of-stock products appear in results.
         */
         public QueryRootQuery predictiveSearch(String query, PredictiveSearchArgumentsDefinition argsDef, PredictiveSearchResultQueryDefinition queryDef) {
             startField("predictiveSearch");
@@ -64228,14 +66978,26 @@ public class Storefront {
         }
 
         /**
-        * Fetch a specific `Product` by one of its unique attributes.
+        * Retrieves a single [`Product`](https://shopify.dev/docs/api/storefront/current/objects/Product) by
+        * its ID or handle. Use this query to build product detail pages, access variant and pricing
+        * information, or fetch product media and
+        * [metafields](https://shopify.dev/docs/api/storefront/current/objects/Metafield). See some [examples
+        * of querying
+        * products](https://shopify.dev/docs/storefronts/headless/building-with-the-storefront-api/products-co
+        * llections/getting-started).
         */
         public QueryRootQuery product(ProductQueryDefinition queryDef) {
             return product(args -> {}, queryDef);
         }
 
         /**
-        * Fetch a specific `Product` by one of its unique attributes.
+        * Retrieves a single [`Product`](https://shopify.dev/docs/api/storefront/current/objects/Product) by
+        * its ID or handle. Use this query to build product detail pages, access variant and pricing
+        * information, or fetch product media and
+        * [metafields](https://shopify.dev/docs/api/storefront/current/objects/Metafield). See some [examples
+        * of querying
+        * products](https://shopify.dev/docs/storefronts/headless/building-with-the-storefront-api/products-co
+        * llections/getting-started).
         */
         public QueryRootQuery product(ProductArgumentsDefinition argsDef, ProductQueryDefinition queryDef) {
             startField("product");
@@ -64252,7 +67014,9 @@ public class Storefront {
         }
 
         /**
-        * Find a product by its handle.
+        * Retrieves a [`Product`](https://shopify.dev/docs/api/storefront/current/objects/Product) by its
+        * handle. The handle is a URL-friendly identifier that's automatically generated from the product's
+        * title. If no product exists with the specified handle, returns `null`.
         *
         * @deprecated Use `product` instead.
         */
@@ -64318,20 +67082,32 @@ public class Storefront {
         }
 
         /**
-        * Find recommended products related to a given `product_id`.
-        * To learn more about how recommendations are generated, see
-        * [*Showing product recommendations on product
-        * pages*](https://help.shopify.com/themes/development/recommended-products).
+        * Returns recommended products for a given product, identified by either ID or handle. Use the
+        * [`intent`](https://shopify.dev/docs/api/storefront/current/enums/ProductRecommendationIntent)
+        * argument to control the recommendation strategy.
+        * Shopify [auto-generates related
+        * recommendations](https://shopify.dev/docs/storefronts/themes/product-merchandising/recommendations)
+        * based on sales data, product descriptions, and collection relationships. Complementary
+        * recommendations require [manual
+        * configuration](https://help.shopify.com/manual/online-store/storefront-search/search-and-discovery-r
+        * ecommendations) through the Shopify Search & Discovery app. Returns up to ten
+        * [`Product`](https://shopify.dev/docs/api/storefront/current/objects/Product) objects.
         */
         public QueryRootQuery productRecommendations(ProductQueryDefinition queryDef) {
             return productRecommendations(args -> {}, queryDef);
         }
 
         /**
-        * Find recommended products related to a given `product_id`.
-        * To learn more about how recommendations are generated, see
-        * [*Showing product recommendations on product
-        * pages*](https://help.shopify.com/themes/development/recommended-products).
+        * Returns recommended products for a given product, identified by either ID or handle. Use the
+        * [`intent`](https://shopify.dev/docs/api/storefront/current/enums/ProductRecommendationIntent)
+        * argument to control the recommendation strategy.
+        * Shopify [auto-generates related
+        * recommendations](https://shopify.dev/docs/storefronts/themes/product-merchandising/recommendations)
+        * based on sales data, product descriptions, and collection relationships. Complementary
+        * recommendations require [manual
+        * configuration](https://help.shopify.com/manual/online-store/storefront-search/search-and-discovery-r
+        * ecommendations) through the Shopify Search & Discovery app. Returns up to ten
+        * [`Product`](https://shopify.dev/docs/api/storefront/current/objects/Product) objects.
         */
         public QueryRootQuery productRecommendations(ProductRecommendationsArgumentsDefinition argsDef, ProductQueryDefinition queryDef) {
             startField("productRecommendations");
@@ -64348,8 +67124,9 @@ public class Storefront {
         }
 
         /**
-        * Tags added to products.
-        * Additional access scope required: unauthenticated_read_product_tags.
+        * Returns a paginated list of all tags that have been added to
+        * [products](https://shopify.dev/docs/api/storefront/current/objects/Product) in the shop. Useful for
+        * building tag-based product filtering or navigation in a storefront.
         */
         public QueryRootQuery productTags(int first, StringConnectionQueryDefinition queryDef) {
             startField("productTags");
@@ -64367,7 +67144,11 @@ public class Storefront {
         }
 
         /**
-        * List of product types for the shop's products that are published to your app.
+        * Returns a list of product types from the shop's
+        * [`Product`](https://shopify.dev/docs/api/storefront/current/objects/Product) objects that are
+        * published to your app. Use this query to build [filtering
+        * interfaces](https://shopify.dev/docs/storefronts/headless/building-with-the-storefront-api/products-
+        * collections/filter-products) or navigation menus based on product categorization.
         */
         public QueryRootQuery productTypes(int first, StringConnectionQueryDefinition queryDef) {
             startField("productTypes");
@@ -64497,16 +67278,20 @@ public class Storefront {
         }
 
         /**
-        * Returns a list of the shop's products. For storefront search, use the
-        * [`search`](https://shopify.dev/docs/api/storefront/latest/queries/search) query.
+        * Returns a paginated list of the shop's
+        * [products](https://shopify.dev/docs/api/storefront/current/objects/Product).
+        * For full-text storefront search, use the
+        * [`search`](https://shopify.dev/docs/api/storefront/current/queries/search) query instead.
         */
         public QueryRootQuery products(ProductConnectionQueryDefinition queryDef) {
             return products(args -> {}, queryDef);
         }
 
         /**
-        * Returns a list of the shop's products. For storefront search, use the
-        * [`search`](https://shopify.dev/docs/api/storefront/latest/queries/search) query.
+        * Returns a paginated list of the shop's
+        * [products](https://shopify.dev/docs/api/storefront/current/objects/Product).
+        * For full-text storefront search, use the
+        * [`search`](https://shopify.dev/docs/api/storefront/current/queries/search) query instead.
         */
         public QueryRootQuery products(ProductsArgumentsDefinition argsDef, ProductConnectionQueryDefinition queryDef) {
             startField("products");
@@ -64523,8 +67308,9 @@ public class Storefront {
         }
 
         /**
-        * The list of public Storefront API versions, including supported, release candidate and unstable
-        * versions.
+        * Returns all public Storefront [API
+        * versions](https://shopify.dev/docs/api/storefront/current/objects/ApiVersion), including supported,
+        * release candidate, and unstable versions.
         */
         public QueryRootQuery publicApiVersions(ApiVersionQueryDefinition queryDef) {
             startField("publicApiVersions");
@@ -64677,14 +67463,36 @@ public class Storefront {
         }
 
         /**
-        * List of the search results.
+        * Returns paginated search results for
+        * [`Product`](https://shopify.dev/docs/api/storefront/current/objects/Product),
+        * [`Page`](https://shopify.dev/docs/api/storefront/current/objects/Page), and
+        * [`Article`](https://shopify.dev/docs/api/storefront/current/objects/Article) resources based on a
+        * query string. Results are sorted by relevance by default.
+        * The response includes the total result count and available product filters for building [faceted
+        * search
+        * interfaces](https://shopify.dev/docs/storefronts/headless/building-with-the-storefront-api/products-
+        * collections/filter-products). Use the
+        * [`prefix`](https://shopify.dev/docs/api/storefront/current/enums/SearchPrefixQueryType) argument to
+        * enable partial word matching on the last search term, allowing queries like "winter snow" to match
+        * "snowboard" or "snowshoe".
         */
         public QueryRootQuery search(String query, SearchResultItemConnectionQueryDefinition queryDef) {
             return search(query, args -> {}, queryDef);
         }
 
         /**
-        * List of the search results.
+        * Returns paginated search results for
+        * [`Product`](https://shopify.dev/docs/api/storefront/current/objects/Product),
+        * [`Page`](https://shopify.dev/docs/api/storefront/current/objects/Page), and
+        * [`Article`](https://shopify.dev/docs/api/storefront/current/objects/Article) resources based on a
+        * query string. Results are sorted by relevance by default.
+        * The response includes the total result count and available product filters for building [faceted
+        * search
+        * interfaces](https://shopify.dev/docs/storefronts/headless/building-with-the-storefront-api/products-
+        * collections/filter-products). Use the
+        * [`prefix`](https://shopify.dev/docs/api/storefront/current/enums/SearchPrefixQueryType) argument to
+        * enable partial word matching on the last search term, allowing queries like "winter snow" to match
+        * "snowboard" or "snowshoe".
         */
         public QueryRootQuery search(String query, SearchArgumentsDefinition argsDef, SearchResultItemConnectionQueryDefinition queryDef) {
             startField("search");
@@ -64704,7 +67512,17 @@ public class Storefront {
         }
 
         /**
-        * The shop associated with the storefront access token.
+        * Returns the [`Shop`](https://shopify.dev/docs/api/storefront/current/objects/Shop) associated with
+        * the storefront access token. The `Shop` object provides general store information such as the shop
+        * name, description, and primary domain.
+        * Use this query to access data like store policies,
+        * [`PaymentSettings`](https://shopify.dev/docs/api/storefront/current/objects/PaymentSettings),
+        * [`Brand`](https://shopify.dev/docs/api/storefront/current/objects/Brand) configuration, and shipping
+        * destinations. It also exposes
+        * [`ShopPayInstallmentsPricing`](https://shopify.dev/docs/api/storefront/current/objects/ShopPayInstal
+        * lmentsPricing) and
+        * [`SocialLoginProvider`](https://shopify.dev/docs/api/storefront/current/objects/SocialLoginProvider)
+        * options for customer accounts.
         */
         public QueryRootQuery shop(ShopQueryDefinition queryDef) {
             startField("shop");
@@ -64717,7 +67535,16 @@ public class Storefront {
         }
 
         /**
-        * Contains all fields required to generate sitemaps.
+        * Returns sitemap data for a specific resource type, enabling headless storefronts to generate XML
+        * sitemaps for search engine optimization. The query provides a page count and paginated access to
+        * resources like [`Product`](https://shopify.dev/docs/api/storefront/current/objects/Product),
+        * [`Collection`](https://shopify.dev/docs/api/storefront/current/objects/Collection),
+        * [`Page`](https://shopify.dev/docs/api/storefront/current/objects/Page), and
+        * [`Blog`](https://shopify.dev/docs/api/storefront/current/objects/Blog) objects.
+        * When paginating through resources, the number of items per page varies from 0 to 250, and empty
+        * pages can occur without indicating the end of results. Always check
+        * [`hasNextPage`](https://shopify.dev/docs/api/storefront/current/objects/PaginatedSitemapResources#fi
+        * eld-PaginatedSitemapResources.fields.hasNextPage) to determine if more pages are available.
         */
         public QueryRootQuery sitemap(SitemapType type, SitemapQueryDefinition queryDef) {
             startField("sitemap");
@@ -64818,14 +67645,18 @@ public class Storefront {
         }
 
         /**
-        * A list of redirects for a shop.
+        * Returns a paginated list of
+        * [`UrlRedirect`](https://shopify.dev/docs/api/storefront/current/objects/UrlRedirect) objects
+        * configured for the shop. Each redirect maps an old path to a target location.
         */
         public QueryRootQuery urlRedirects(UrlRedirectConnectionQueryDefinition queryDef) {
             return urlRedirects(args -> {}, queryDef);
         }
 
         /**
-        * A list of redirects for a shop.
+        * Returns a paginated list of
+        * [`UrlRedirect`](https://shopify.dev/docs/api/storefront/current/objects/UrlRedirect) objects
+        * configured for the shop. Each redirect maps an old path to a target location.
         */
         public QueryRootQuery urlRedirects(UrlRedirectsArgumentsDefinition argsDef, UrlRedirectConnectionQueryDefinition queryDef) {
             startField("urlRedirects");
@@ -64847,8 +67678,22 @@ public class Storefront {
     }
 
     /**
-    * The schema’s entry-point for queries. This acts as the public, top-level API from which all queries
-    * must start.
+    * The entry point for all Storefront API queries. Provides access to shop resources including
+    * products, collections, carts, and customer data, as well as content like articles and pages. This
+    * query acts as the public, top-level type from which all queries must start.
+    * Use individual queries like
+    * [`product`](https://shopify.dev/docs/api/storefront/current/queries/product) or
+    * [`collection`](https://shopify.dev/docs/api/storefront/current/queries/collection) to fetch specific
+    * resources by ID or handle. Use plural queries like
+    * [`products`](https://shopify.dev/docs/api/storefront/current/queries/products) or
+    * [`collections`](https://shopify.dev/docs/api/storefront/current/queries/collections) to retrieve
+    * paginated lists with optional filtering and sorting. The
+    * [`search`](https://shopify.dev/docs/api/storefront/current/queries/search) and
+    * [`predictiveSearch`](https://shopify.dev/docs/api/storefront/current/queries/predictiveSearch)
+    * queries enable storefront search functionality.
+    * Explore queries interactively with the [GraphiQL explorer and sample query
+    * kit](https://shopify.dev/docs/storefronts/headless/building-with-the-storefront-api/api-exploration)
+    * .
     */
     public static class QueryRoot extends AbstractResponse<QueryRoot> {
         public QueryRoot() {
@@ -65184,7 +68029,12 @@ public class Storefront {
         }
 
         /**
-        * Fetch a specific Article by its ID.
+        * Returns an [`Article`](https://shopify.dev/docs/api/storefront/current/objects/Article) by its ID.
+        * Each article belongs to a [`Blog`](https://shopify.dev/docs/api/storefront/current/objects/Blog) and
+        * includes content in both plain text and HTML formats,
+        * [`ArticleAuthor`](https://shopify.dev/docs/api/storefront/current/objects/ArticleAuthor)
+        * information, [`Comment`](https://shopify.dev/docs/api/storefront/current/objects/Comment) objects,
+        * tags, and [`SEO`](https://shopify.dev/docs/api/storefront/current/objects/SEO) data.
         */
 
         public Article getArticle() {
@@ -65197,7 +68047,12 @@ public class Storefront {
         }
 
         /**
-        * List of the shop's articles.
+        * Returns a paginated list of
+        * [`Article`](https://shopify.dev/docs/api/storefront/current/objects/Article) objects from the shop's
+        * [`Blog`](https://shopify.dev/docs/api/storefront/current/objects/Blog) objects. Each article is a
+        * blog post containing content, author information, tags, and optional images.
+        * Use the `query` argument to filter results by author, blog title, tags, or date fields. Sort results
+        * using the `sortKey` argument and reverse them with the `reverse` argument.
         */
 
         public ArticleConnection getArticles() {
@@ -65210,7 +68065,11 @@ public class Storefront {
         }
 
         /**
-        * Fetch a specific `Blog` by one of its unique attributes.
+        * Retrieves a [`Blog`](https://shopify.dev/docs/api/storefront/current/objects/Blog) by its handle or
+        * ID. A blog organizes [`Article`](https://shopify.dev/docs/api/storefront/current/objects/Article)
+        * objects for the online store and includes author information,
+        * [`SEO`](https://shopify.dev/docs/api/storefront/current/objects/SEO) settings, and custom
+        * [`Metafield`](https://shopify.dev/docs/api/storefront/current/objects/Metafield) objects.
         */
 
         public Blog getBlog() {
@@ -65223,7 +68082,11 @@ public class Storefront {
         }
 
         /**
-        * Find a blog by its handle.
+        * Retrieves a [`Blog`](https://shopify.dev/docs/api/storefront/current/objects/Blog) by its handle. A
+        * blog organizes [`Article`](https://shopify.dev/docs/api/storefront/current/objects/Article) objects
+        * for the online store and includes author information,
+        * [`SEO`](https://shopify.dev/docs/api/storefront/current/objects/SEO) settings, and custom
+        * [`Metafield`](https://shopify.dev/docs/api/storefront/current/objects/Metafield) objects.
         *
         * @deprecated Use `blog` instead.
         */
@@ -65239,7 +68102,10 @@ public class Storefront {
         }
 
         /**
-        * List of the shop's blogs.
+        * Returns a paginated list of the shop's
+        * [`Blog`](https://shopify.dev/docs/api/storefront/current/objects/Blog) objects. Each blog serves as
+        * a container for [`Article`](https://shopify.dev/docs/api/storefront/current/objects/Article)
+        * objects.
         */
 
         public BlogConnection getBlogs() {
@@ -65252,8 +68118,14 @@ public class Storefront {
         }
 
         /**
-        * Retrieve a cart by its ID. For more information, refer to
-        * [Manage a cart with the Storefront API](https://shopify.dev/custom-storefronts/cart/manage).
+        * Returns a [`Cart`](https://shopify.dev/docs/api/storefront/current/objects/Cart) by its ID. The cart
+        * contains the merchandise lines a buyer intends to purchase, along with estimated costs, applied
+        * discounts, gift cards, and delivery options.
+        * Use the
+        * [`checkoutUrl`](https://shopify.dev/docs/api/storefront/latest/queries/cart#returns-Cart.fields.chec
+        * koutUrl) field to redirect buyers to Shopify's web checkout when they're ready to complete their
+        * purchase. For more information, refer to [Manage a cart with the Storefront
+        * API](https://shopify.dev/docs/storefronts/headless/building-with-the-storefront-api/cart/manage).
         */
 
         public Cart getCart() {
@@ -65279,7 +68151,11 @@ public class Storefront {
         }
 
         /**
-        * Fetch a specific `Collection` by one of its unique attributes.
+        * Retrieves a single
+        * [`Collection`](https://shopify.dev/docs/api/storefront/current/objects/Collection) by its ID or
+        * handle. Use the
+        * [`products`](https://shopify.dev/docs/api/storefront/current/objects/Collection#field-Collection.fie
+        * lds.products) field to access items in the collection.
         */
 
         public Collection getCollection() {
@@ -65292,7 +68168,9 @@ public class Storefront {
         }
 
         /**
-        * Find a collection by its handle.
+        * Retrieves a [`Collection`](https://shopify.dev/docs/api/storefront/current/objects/Collection) by
+        * its URL-friendly handle. Handles are automatically generated from collection titles but merchants
+        * can customize them.
         *
         * @deprecated Use `collection` instead.
         */
@@ -65308,7 +68186,11 @@ public class Storefront {
         }
 
         /**
-        * List of the shop’s collections.
+        * Returns a paginated list of the shop's
+        * [collections](https://shopify.dev/docs/api/storefront/current/objects/Collection). Each `Collection`
+        * object includes a nested connection to its
+        * [products](https://shopify.dev/docs/api/storefront/current/objects/Collection#field-Collection.field
+        * s.products).
         */
 
         public CollectionConnection getCollections() {
@@ -65321,9 +68203,15 @@ public class Storefront {
         }
 
         /**
-        * The customer associated with the given access token. Tokens are obtained by using the
-        * [`customerAccessTokenCreate`
-        * mutation](https://shopify.dev/docs/api/storefront/latest/mutations/customerAccessTokenCreate).
+        * Retrieves the [`Customer`](https://shopify.dev/docs/api/storefront/current/objects/Customer)
+        * associated with the provided access token. Use the
+        * [`customerAccessTokenCreate`](https://shopify.dev/docs/api/storefront/current/mutations/customerAcce
+        * ssTokenCreate) mutation to obtain an access token using legacy customer account authentication
+        * (email and password).
+        * The returned customer includes data such as contact information,
+        * [addresses](https://shopify.dev/docs/api/storefront/current/objects/MailingAddress),
+        * [orders](https://shopify.dev/docs/api/storefront/current/objects/Order), and [custom
+        * data](https://shopify.dev/docs/apps/build/custom-data) associated with the customer.
         */
 
         public Customer getCustomer() {
@@ -65336,7 +68224,16 @@ public class Storefront {
         }
 
         /**
-        * Returns the localized experiences configured for the shop.
+        * Returns the shop's localization settings. Use this query to build [country and language
+        * selectors](https://shopify.dev/docs/storefronts/headless/building-with-the-storefront-api/markets)
+        * for your storefront.
+        * The
+        * [`country`](https://shopify.dev/docs/api/storefront/latest/queries/localization#returns-Localization
+        * .fields.country) and
+        * [`language`](https://shopify.dev/docs/api/storefront/latest/queries/localization#returns-Localizatio
+        * n.fields.language) fields reflect the active localized experience. To change the context, use the
+        * [`@inContext`](https://shopify.dev/docs/api/storefront#directives) directive with your desired
+        * country or language code.
         */
 
         public Localization getLocalization() {
@@ -65349,8 +68246,16 @@ public class Storefront {
         }
 
         /**
-        * List of the shop's locations that support in-store pickup.
-        * When sorting by distance, you must specify a location via the `near` argument.
+        * Returns shop locations that support in-store pickup. Use the `near` argument with
+        * [`GeoCoordinateInput`](https://shopify.dev/docs/api/storefront/current/input-objects/GeoCoordinateIn
+        * put) to sort results by proximity to the customer's location.
+        * When sorting by distance, set `sortKey` to
+        * [`DISTANCE`](https://shopify.dev/docs/api/storefront/current/queries/locations#arguments-sortKey.enu
+        * ms.DISTANCE) and provide coordinates using the
+        * [`near`](https://shopify.dev/docs/api/storefront/current/queries/locations#arguments-near) argument.
+        * Learn more about [supporting local pickup on
+        * storefronts](https://shopify.dev/docs/storefronts/headless/building-with-the-storefront-api/products
+        * -collections/local-pickup).
         */
 
         public LocationConnection getLocations() {
@@ -65363,8 +68268,16 @@ public class Storefront {
         }
 
         /**
-        * Retrieve a [navigation menu](https://help.shopify.com/manual/online-store/menus-and-links) by its
-        * handle.
+        * Retrieves a [`Menu`](https://shopify.dev/docs/api/storefront/current/objects/Menu) by its handle.
+        * Menus are [hierarchical navigation
+        * structures](https://help.shopify.com/manual/online-store/menus-and-links) that merchants configure
+        * for their storefront, such as header and footer navigation.
+        * Each menu contains [`MenuItem`](https://shopify.dev/docs/api/storefront/current/objects/MenuItem)
+        * objects that can nest up to three levels deep, with each item linking to
+        * [collections](https://shopify.dev/docs/api/storefront/current/objects/Collection),
+        * [products](https://shopify.dev/docs/api/storefront/current/objects/Product),
+        * [pages](https://shopify.dev/docs/api/storefront/current/objects/Page),
+        * [blogs](https://shopify.dev/docs/api/storefront/current/objects/Blog), or external URLs.
         */
 
         public Menu getMenu() {
@@ -65377,7 +68290,13 @@ public class Storefront {
         }
 
         /**
-        * Fetch a specific Metaobject by one of its unique identifiers.
+        * Retrieves a single
+        * [`Metaobject`](https://shopify.dev/docs/api/storefront/current/objects/Metaobject) by either its
+        * [`global ID`](https://shopify.dev/docs/api/storefront/current/queries/metaobject#arguments-id) or
+        * its [`handle`](https://shopify.dev/docs/api/storefront/current/queries/metaobject#arguments-handle).
+        * > Note:
+        * > When using the handle, you must also provide the metaobject type because handles are only unique
+        * within a type.
         */
 
         public Metaobject getMetaobject() {
@@ -65390,7 +68309,13 @@ public class Storefront {
         }
 
         /**
-        * All active metaobjects for the shop.
+        * Returns a paginated list of
+        * [`Metaobject`](https://shopify.dev/docs/api/storefront/current/objects/Metaobject) entries for a
+        * specific type. Metaobjects are [custom data
+        * structures](https://shopify.dev/docs/apps/build/metaobjects) that extend Shopify's data model with
+        * merchant-defined or app-defined content like size charts, product highlights, or custom sections.
+        * The required `type` argument specifies which metaobject type to retrieve. You can sort results by
+        * `id` or `updated_at` using the `sortKey` argument.
         */
 
         public MetaobjectConnection getMetaobjects() {
@@ -65403,7 +68328,12 @@ public class Storefront {
         }
 
         /**
-        * Returns a specific node by ID.
+        * Retrieves any object that implements the
+        * [`Node`](https://shopify.dev/docs/api/storefront/current/interfaces/Node) interface by its
+        * globally-unique ID. Use inline fragments to access type-specific fields on the returned object.
+        * This query follows the [Relay
+        * specification](https://relay.dev/graphql/objectidentification.htm#sec-Node-Interface) and is
+        * commonly used for refetching objects when you have their ID but need updated data.
         */
 
         public Node getNode() {
@@ -65416,7 +68346,13 @@ public class Storefront {
         }
 
         /**
-        * Returns the list of nodes with the given IDs.
+        * Retrieves multiple objects by their global IDs in a single request. Any object that implements the
+        * [`Node`](https://shopify.dev/docs/api/storefront/current/interfaces/Node) interface can be fetched,
+        * including [products](https://shopify.dev/docs/api/storefront/current/objects/Product),
+        * [collections](https://shopify.dev/docs/api/storefront/current/objects/Collection), and
+        * [pages](https://shopify.dev/docs/api/storefront/current/objects/Page).
+        * Use inline fragments to access type-specific fields on the returned objects. The input accepts up to
+        * 250 IDs.
         */
 
         public List<Node> getNodes() {
@@ -65429,7 +68365,15 @@ public class Storefront {
         }
 
         /**
-        * Fetch a specific `Page` by one of its unique attributes.
+        * Retrieves a [`Page`](https://shopify.dev/docs/api/storefront/current/objects/Page) by its
+        * [`handle`](https://shopify.dev/docs/api/storefront/current/queries/page#arguments-handle) or
+        * [`id`](https://shopify.dev/docs/api/storefront/current/queries/page#arguments-id). Pages are static
+        * content pages that merchants display outside their product catalog, such as "About Us," "Contact,"
+        * or policy pages.
+        * The returned page includes information such as the [HTML body
+        * content](https://shopify.dev/docs/api/storefront/current/queries/page#returns-Page.fields.body),
+        * [`SEO`](https://shopify.dev/docs/api/storefront/current/objects/SEO) information, and any associated
+        * [`Metafield`](https://shopify.dev/docs/api/storefront/current/objects/Metafield) objects.
         */
 
         public Page getPage() {
@@ -65442,7 +68386,7 @@ public class Storefront {
         }
 
         /**
-        * Find a page by its handle.
+        * Retrieves a [`Page`](https://shopify.dev/docs/api/storefront/current/objects/Page) by its handle.
         *
         * @deprecated Use `page` instead.
         */
@@ -65458,7 +68402,10 @@ public class Storefront {
         }
 
         /**
-        * List of the shop's pages.
+        * Returns a paginated list of the shop's content
+        * [pages](https://shopify.dev/docs/api/storefront/current/objects/Page). Pages are custom HTML content
+        * like "About Us", "Contact", or policy information that merchants display outside their product
+        * catalog.
         */
 
         public PageConnection getPages() {
@@ -65484,7 +68431,20 @@ public class Storefront {
         }
 
         /**
-        * List of the predictive search results.
+        * Returns suggested results as customers type in a search field, enabling type-ahead search
+        * experiences. The query matches
+        * [products](https://shopify.dev/docs/api/storefront/current/objects/Product),
+        * [collections](https://shopify.dev/docs/api/storefront/current/objects/Collection),
+        * [pages](https://shopify.dev/docs/api/storefront/current/objects/Page), and
+        * [articles](https://shopify.dev/docs/api/storefront/current/objects/Article) based on partial search
+        * terms, and also provides [search query
+        * suggestions](https://shopify.dev/docs/api/storefront/current/objects/SearchQuerySuggestion) to help
+        * customers refine their search.
+        * You can filter results by resource type and limit the quantity. The
+        * [`limitScope`](https://shopify.dev/docs/api/storefront/current/queries/predictiveSearch#arguments-li
+        * mitScope) argument controls whether limits apply across all result types or per type. Use
+        * [`unavailableProducts`](https://shopify.dev/docs/api/storefront/current/queries/predictiveSearch#arg
+        * uments-unavailableProducts) to control how out-of-stock products appear in results.
         */
 
         public PredictiveSearchResult getPredictiveSearch() {
@@ -65497,7 +68457,13 @@ public class Storefront {
         }
 
         /**
-        * Fetch a specific `Product` by one of its unique attributes.
+        * Retrieves a single [`Product`](https://shopify.dev/docs/api/storefront/current/objects/Product) by
+        * its ID or handle. Use this query to build product detail pages, access variant and pricing
+        * information, or fetch product media and
+        * [metafields](https://shopify.dev/docs/api/storefront/current/objects/Metafield). See some [examples
+        * of querying
+        * products](https://shopify.dev/docs/storefronts/headless/building-with-the-storefront-api/products-co
+        * llections/getting-started).
         */
 
         public Product getProduct() {
@@ -65510,7 +68476,9 @@ public class Storefront {
         }
 
         /**
-        * Find a product by its handle.
+        * Retrieves a [`Product`](https://shopify.dev/docs/api/storefront/current/objects/Product) by its
+        * handle. The handle is a URL-friendly identifier that's automatically generated from the product's
+        * title. If no product exists with the specified handle, returns `null`.
         *
         * @deprecated Use `product` instead.
         */
@@ -65526,10 +68494,16 @@ public class Storefront {
         }
 
         /**
-        * Find recommended products related to a given `product_id`.
-        * To learn more about how recommendations are generated, see
-        * [*Showing product recommendations on product
-        * pages*](https://help.shopify.com/themes/development/recommended-products).
+        * Returns recommended products for a given product, identified by either ID or handle. Use the
+        * [`intent`](https://shopify.dev/docs/api/storefront/current/enums/ProductRecommendationIntent)
+        * argument to control the recommendation strategy.
+        * Shopify [auto-generates related
+        * recommendations](https://shopify.dev/docs/storefronts/themes/product-merchandising/recommendations)
+        * based on sales data, product descriptions, and collection relationships. Complementary
+        * recommendations require [manual
+        * configuration](https://help.shopify.com/manual/online-store/storefront-search/search-and-discovery-r
+        * ecommendations) through the Shopify Search & Discovery app. Returns up to ten
+        * [`Product`](https://shopify.dev/docs/api/storefront/current/objects/Product) objects.
         */
 
         public List<Product> getProductRecommendations() {
@@ -65542,8 +68516,9 @@ public class Storefront {
         }
 
         /**
-        * Tags added to products.
-        * Additional access scope required: unauthenticated_read_product_tags.
+        * Returns a paginated list of all tags that have been added to
+        * [products](https://shopify.dev/docs/api/storefront/current/objects/Product) in the shop. Useful for
+        * building tag-based product filtering or navigation in a storefront.
         */
 
         public StringConnection getProductTags() {
@@ -65556,7 +68531,11 @@ public class Storefront {
         }
 
         /**
-        * List of product types for the shop's products that are published to your app.
+        * Returns a list of product types from the shop's
+        * [`Product`](https://shopify.dev/docs/api/storefront/current/objects/Product) objects that are
+        * published to your app. Use this query to build [filtering
+        * interfaces](https://shopify.dev/docs/storefronts/headless/building-with-the-storefront-api/products-
+        * collections/filter-products) or navigation menus based on product categorization.
         */
 
         public StringConnection getProductTypes() {
@@ -65569,8 +68548,10 @@ public class Storefront {
         }
 
         /**
-        * Returns a list of the shop's products. For storefront search, use the
-        * [`search`](https://shopify.dev/docs/api/storefront/latest/queries/search) query.
+        * Returns a paginated list of the shop's
+        * [products](https://shopify.dev/docs/api/storefront/current/objects/Product).
+        * For full-text storefront search, use the
+        * [`search`](https://shopify.dev/docs/api/storefront/current/queries/search) query instead.
         */
 
         public ProductConnection getProducts() {
@@ -65583,8 +68564,9 @@ public class Storefront {
         }
 
         /**
-        * The list of public Storefront API versions, including supported, release candidate and unstable
-        * versions.
+        * Returns all public Storefront [API
+        * versions](https://shopify.dev/docs/api/storefront/current/objects/ApiVersion), including supported,
+        * release candidate, and unstable versions.
         */
 
         public List<ApiVersion> getPublicApiVersions() {
@@ -65597,7 +68579,18 @@ public class Storefront {
         }
 
         /**
-        * List of the search results.
+        * Returns paginated search results for
+        * [`Product`](https://shopify.dev/docs/api/storefront/current/objects/Product),
+        * [`Page`](https://shopify.dev/docs/api/storefront/current/objects/Page), and
+        * [`Article`](https://shopify.dev/docs/api/storefront/current/objects/Article) resources based on a
+        * query string. Results are sorted by relevance by default.
+        * The response includes the total result count and available product filters for building [faceted
+        * search
+        * interfaces](https://shopify.dev/docs/storefronts/headless/building-with-the-storefront-api/products-
+        * collections/filter-products). Use the
+        * [`prefix`](https://shopify.dev/docs/api/storefront/current/enums/SearchPrefixQueryType) argument to
+        * enable partial word matching on the last search term, allowing queries like "winter snow" to match
+        * "snowboard" or "snowshoe".
         */
 
         public SearchResultItemConnection getSearch() {
@@ -65610,7 +68603,17 @@ public class Storefront {
         }
 
         /**
-        * The shop associated with the storefront access token.
+        * Returns the [`Shop`](https://shopify.dev/docs/api/storefront/current/objects/Shop) associated with
+        * the storefront access token. The `Shop` object provides general store information such as the shop
+        * name, description, and primary domain.
+        * Use this query to access data like store policies,
+        * [`PaymentSettings`](https://shopify.dev/docs/api/storefront/current/objects/PaymentSettings),
+        * [`Brand`](https://shopify.dev/docs/api/storefront/current/objects/Brand) configuration, and shipping
+        * destinations. It also exposes
+        * [`ShopPayInstallmentsPricing`](https://shopify.dev/docs/api/storefront/current/objects/ShopPayInstal
+        * lmentsPricing) and
+        * [`SocialLoginProvider`](https://shopify.dev/docs/api/storefront/current/objects/SocialLoginProvider)
+        * options for customer accounts.
         */
 
         public Shop getShop() {
@@ -65623,7 +68626,16 @@ public class Storefront {
         }
 
         /**
-        * Contains all fields required to generate sitemaps.
+        * Returns sitemap data for a specific resource type, enabling headless storefronts to generate XML
+        * sitemaps for search engine optimization. The query provides a page count and paginated access to
+        * resources like [`Product`](https://shopify.dev/docs/api/storefront/current/objects/Product),
+        * [`Collection`](https://shopify.dev/docs/api/storefront/current/objects/Collection),
+        * [`Page`](https://shopify.dev/docs/api/storefront/current/objects/Page), and
+        * [`Blog`](https://shopify.dev/docs/api/storefront/current/objects/Blog) objects.
+        * When paginating through resources, the number of items per page varies from 0 to 250, and empty
+        * pages can occur without indicating the end of results. Always check
+        * [`hasNextPage`](https://shopify.dev/docs/api/storefront/current/objects/PaginatedSitemapResources#fi
+        * eld-PaginatedSitemapResources.fields.hasNextPage) to determine if more pages are available.
         */
 
         public Sitemap getSitemap() {
@@ -65636,7 +68648,9 @@ public class Storefront {
         }
 
         /**
-        * A list of redirects for a shop.
+        * Returns a paginated list of
+        * [`UrlRedirect`](https://shopify.dev/docs/api/storefront/current/objects/UrlRedirect) objects
+        * configured for the shop. Each redirect maps an old path to a target location.
         */
 
         public UrlRedirectConnection getUrlRedirects() {
@@ -65723,7 +68737,8 @@ public class Storefront {
     }
 
     /**
-    * SEO information.
+    * Search engine optimization metadata for a resource. The title and description appear in search
+    * engine results and browser tabs.
     */
     public static class SEOQuery extends Query<SEOQuery> {
         SEOQuery(StringBuilder _queryBuilder) {
@@ -65750,7 +68765,8 @@ public class Storefront {
     }
 
     /**
-    * SEO information.
+    * Search engine optimization metadata for a resource. The title and description appear in search
+    * engine results and browser tabs.
     */
     public static class SEO extends AbstractResponse<SEO> {
         public SEO() {
@@ -65830,8 +68846,10 @@ public class Storefront {
     }
 
     /**
-    * Script discount applications capture the intentions of a discount that
-    * was created by a Shopify Script.
+    * A discount application created by a Shopify Script. Implements the
+    * [`DiscountApplication`](https://shopify.dev/docs/api/storefront/current/interfaces/DiscountApplicati
+    * on) interface and captures the discount's value, allocation method, and targeting rules at the time
+    * the script applied it.
     */
     public static class ScriptDiscountApplicationQuery extends Query<ScriptDiscountApplicationQuery> {
         ScriptDiscountApplicationQuery(StringBuilder _queryBuilder) {
@@ -65889,8 +68907,10 @@ public class Storefront {
     }
 
     /**
-    * Script discount applications capture the intentions of a discount that
-    * was created by a Shopify Script.
+    * A discount application created by a Shopify Script. Implements the
+    * [`DiscountApplication`](https://shopify.dev/docs/api/storefront/current/interfaces/DiscountApplicati
+    * on) interface and captures the discount's value, allocation method, and targeting rules at the time
+    * the script applied it.
     */
     public static class ScriptDiscountApplication extends AbstractResponse<ScriptDiscountApplication> implements DiscountApplication {
         public ScriptDiscountApplication() {
@@ -66069,7 +69089,17 @@ public class Storefront {
     }
 
     /**
-    * A search query suggestion.
+    * A suggested search term returned by the
+    * [`predictiveSearch`](https://shopify.dev/docs/api/storefront/current/queries/predictiveSearch)
+    * query. Query suggestions help customers refine their searches by showing relevant terms as they
+    * type.
+    * The
+    * [`text`](https://shopify.dev/docs/api/storefront/current/objects/SearchQuerySuggestion#field-SearchQ
+    * uerySuggestion.fields.text) field provides the plain suggestion, while
+    * [`styledText`](https://shopify.dev/docs/api/storefront/current/objects/SearchQuerySuggestion#field-S
+    * earchQuerySuggestion.fields.styledText) includes HTML tags to highlight matching portions.
+    * Implements [`Trackable`](https://shopify.dev/docs/api/storefront/current/interfaces/Trackable) for
+    * analytics reporting on search traffic origins.
     */
     public static class SearchQuerySuggestionQuery extends Query<SearchQuerySuggestionQuery> {
         SearchQuerySuggestionQuery(StringBuilder _queryBuilder) {
@@ -66111,7 +69141,17 @@ public class Storefront {
     }
 
     /**
-    * A search query suggestion.
+    * A suggested search term returned by the
+    * [`predictiveSearch`](https://shopify.dev/docs/api/storefront/current/queries/predictiveSearch)
+    * query. Query suggestions help customers refine their searches by showing relevant terms as they
+    * type.
+    * The
+    * [`text`](https://shopify.dev/docs/api/storefront/current/objects/SearchQuerySuggestion#field-SearchQ
+    * uerySuggestion.fields.text) field provides the plain suggestion, while
+    * [`styledText`](https://shopify.dev/docs/api/storefront/current/objects/SearchQuerySuggestion#field-S
+    * earchQuerySuggestion.fields.styledText) includes HTML tags to highlight matching portions.
+    * Implements [`Trackable`](https://shopify.dev/docs/api/storefront/current/interfaces/Trackable) for
+    * analytics reporting on search traffic origins.
     */
     public static class SearchQuerySuggestion extends AbstractResponse<SearchQuerySuggestion> implements Trackable {
         public SearchQuerySuggestion() {
@@ -66951,8 +69991,11 @@ public class Storefront {
     }
 
     /**
-    * Properties used by customers to select a product variant.
-    * Products can have multiple options, like different sizes or colors.
+    * A name/value pair representing a product option selection on a variant. The
+    * [`ProductVariant`](https://shopify.dev/docs/api/storefront/current/objects/ProductVariant) object's
+    * [`selectedOptions`](https://shopify.dev/docs/api/storefront/current/objects/ProductVariant#field-Pro
+    * ductVariant.fields.selectedOptions) field returns this to indicate which options define that
+    * variant, such as "Size: Large" or "Color: Red".
     */
     public static class SelectedOptionQuery extends Query<SelectedOptionQuery> {
         SelectedOptionQuery(StringBuilder _queryBuilder) {
@@ -66979,8 +70022,11 @@ public class Storefront {
     }
 
     /**
-    * Properties used by customers to select a product variant.
-    * Products can have multiple options, like different sizes or colors.
+    * A name/value pair representing a product option selection on a variant. The
+    * [`ProductVariant`](https://shopify.dev/docs/api/storefront/current/objects/ProductVariant) object's
+    * [`selectedOptions`](https://shopify.dev/docs/api/storefront/current/objects/ProductVariant#field-Pro
+    * ductVariant.fields.selectedOptions) field returns this to indicate which options define that
+    * variant, such as "Size: Large" or "Color: Red".
     */
     public static class SelectedOption extends AbstractResponse<SelectedOption> {
         public SelectedOption() {
@@ -67097,7 +70143,12 @@ public class Storefront {
     }
 
     /**
-    * Represents how products and variants can be sold and purchased.
+    * Represents deferred or recurring purchase options for
+    * [products](https://shopify.dev/docs/api/storefront/current/objects/Product) and [product
+    * variants](https://shopify.dev/docs/api/storefront/current/objects/ProductVariant), such as
+    * subscriptions, pre-orders, or try-before-you-buy. Each selling plan belongs to a
+    * [`SellingPlanGroup`](https://shopify.dev/docs/api/storefront/current/objects/SellingPlanGroup) and
+    * defines billing, pricing, inventory, and delivery policies.
     */
     public static class SellingPlanQuery extends Query<SellingPlanQuery> {
         SellingPlanQuery(StringBuilder _queryBuilder) {
@@ -67292,7 +70343,12 @@ public class Storefront {
     }
 
     /**
-    * Represents how products and variants can be sold and purchased.
+    * Represents deferred or recurring purchase options for
+    * [products](https://shopify.dev/docs/api/storefront/current/objects/Product) and [product
+    * variants](https://shopify.dev/docs/api/storefront/current/objects/ProductVariant), such as
+    * subscriptions, pre-orders, or try-before-you-buy. Each selling plan belongs to a
+    * [`SellingPlanGroup`](https://shopify.dev/docs/api/storefront/current/objects/SellingPlanGroup) and
+    * defines billing, pricing, inventory, and delivery policies.
     */
     public static class SellingPlan extends AbstractResponse<SellingPlan> implements HasMetafields, MetafieldParentResource {
         public SellingPlan() {
@@ -67598,9 +70654,14 @@ public class Storefront {
     }
 
     /**
-    * Represents an association between a variant and a selling plan. Selling plan allocations describe
-    * the options offered for each variant, and the price of the variant when purchased with a selling
-    * plan.
+    * Links a [`ProductVariant`](https://shopify.dev/docs/api/storefront/current/objects/ProductVariant)
+    * to a [`SellingPlan`](https://shopify.dev/docs/api/storefront/current/objects/SellingPlan), providing
+    * the pricing details for that specific combination. Each allocation includes the checkout charge
+    * amount, any remaining balance due for the purchase, and up to two price adjustments that show how
+    * the selling plan affects the variant's price.
+    * Selling plan allocations are available on product variants and [cart
+    * lines](https://shopify.dev/docs/api/storefront/current/objects/CartLine), enabling storefronts to
+    * display information such as subscription or purchase option pricing before and during checkout.
     */
     public static class SellingPlanAllocationQuery extends Query<SellingPlanAllocationQuery> {
         SellingPlanAllocationQuery(StringBuilder _queryBuilder) {
@@ -67665,9 +70726,14 @@ public class Storefront {
     }
 
     /**
-    * Represents an association between a variant and a selling plan. Selling plan allocations describe
-    * the options offered for each variant, and the price of the variant when purchased with a selling
-    * plan.
+    * Links a [`ProductVariant`](https://shopify.dev/docs/api/storefront/current/objects/ProductVariant)
+    * to a [`SellingPlan`](https://shopify.dev/docs/api/storefront/current/objects/SellingPlan), providing
+    * the pricing details for that specific combination. Each allocation includes the checkout charge
+    * amount, any remaining balance due for the purchase, and up to two price adjustments that show how
+    * the selling plan affects the variant's price.
+    * Selling plan allocations are available on product variants and [cart
+    * lines](https://shopify.dev/docs/api/storefront/current/objects/CartLine), enabling storefronts to
+    * display information such as subscription or purchase option pricing before and during checkout.
     */
     public static class SellingPlanAllocation extends AbstractResponse<SellingPlanAllocation> {
         public SellingPlanAllocation() {
@@ -69138,8 +72204,13 @@ public class Storefront {
     }
 
     /**
-    * Represents a selling method. For example, 'Subscribe and save' is a selling method where customers
-    * pay for goods or services per delivery. A selling plan group contains individual selling plans.
+    * A selling method that defines how products can be sold through purchase options like subscriptions,
+    * pre-orders, or try-before-you-buy. Groups one or more
+    * [`SellingPlan`](https://shopify.dev/docs/api/storefront/current/objects/SellingPlan) objects that
+    * share the same selling method and options.
+    * The `SellingPlanGroup` acts as a container for one or more individual `SellingPlan` objects,
+    * enabling merchants to offer multiple options (like weekly or monthly deliveries) under one, unified
+    * category on a product page.
     */
     public static class SellingPlanGroupQuery extends Query<SellingPlanGroupQuery> {
         SellingPlanGroupQuery(StringBuilder _queryBuilder) {
@@ -69274,8 +72345,13 @@ public class Storefront {
     }
 
     /**
-    * Represents a selling method. For example, 'Subscribe and save' is a selling method where customers
-    * pay for goods or services per delivery. A selling plan group contains individual selling plans.
+    * A selling method that defines how products can be sold through purchase options like subscriptions,
+    * pre-orders, or try-before-you-buy. Groups one or more
+    * [`SellingPlan`](https://shopify.dev/docs/api/storefront/current/objects/SellingPlan) objects that
+    * share the same selling method and options.
+    * The `SellingPlanGroup` acts as a container for one or more individual `SellingPlan` objects,
+    * enabling merchants to offer multiple options (like weekly or monthly deliveries) under one, unified
+    * category on a product page.
     */
     public static class SellingPlanGroup extends AbstractResponse<SellingPlanGroup> {
         public SellingPlanGroup() {
@@ -70451,7 +73527,22 @@ public class Storefront {
     }
 
     /**
-    * Shop represents a collection of the general settings and information about the shop.
+    * The central hub for store-wide settings and information accessible through the Storefront API.
+    * Provides the shop's name, description, and branding configuration including logos and colors through
+    * the [`Brand`](https://shopify.dev/docs/api/storefront/current/objects/Brand) object.
+    * Access store policies such as privacy, refund, shipping, and terms of service via
+    * [`ShopPolicy`](https://shopify.dev/docs/api/storefront/current/objects/ShopPolicy), and the
+    * subscription policy via
+    * [`ShopPolicyWithDefault`](https://shopify.dev/docs/api/storefront/current/objects/ShopPolicyWithDefa
+    * ult). [`PaymentSettings`](https://shopify.dev/docs/api/storefront/current/objects/PaymentSettings)
+    * expose accepted card brands, supported digital wallets, and enabled presentment currencies. The
+    * object also includes the primary
+    * [`Domain`](https://shopify.dev/docs/api/storefront/current/objects/Domain), countries the shop ships
+    * to,
+    * [`ShopPayInstallmentsPricing`](https://shopify.dev/docs/api/storefront/current/objects/ShopPayInstal
+    * lmentsPricing), and
+    * [`SocialLoginProvider`](https://shopify.dev/docs/api/storefront/current/objects/SocialLoginProvider)
+    * options for customer accounts.
     */
     public static class ShopQuery extends Query<ShopQuery> {
         ShopQuery(StringBuilder _queryBuilder) {
@@ -70704,7 +73795,22 @@ public class Storefront {
     }
 
     /**
-    * Shop represents a collection of the general settings and information about the shop.
+    * The central hub for store-wide settings and information accessible through the Storefront API.
+    * Provides the shop's name, description, and branding configuration including logos and colors through
+    * the [`Brand`](https://shopify.dev/docs/api/storefront/current/objects/Brand) object.
+    * Access store policies such as privacy, refund, shipping, and terms of service via
+    * [`ShopPolicy`](https://shopify.dev/docs/api/storefront/current/objects/ShopPolicy), and the
+    * subscription policy via
+    * [`ShopPolicyWithDefault`](https://shopify.dev/docs/api/storefront/current/objects/ShopPolicyWithDefa
+    * ult). [`PaymentSettings`](https://shopify.dev/docs/api/storefront/current/objects/PaymentSettings)
+    * expose accepted card brands, supported digital wallets, and enabled presentment currencies. The
+    * object also includes the primary
+    * [`Domain`](https://shopify.dev/docs/api/storefront/current/objects/Domain), countries the shop ships
+    * to,
+    * [`ShopPayInstallmentsPricing`](https://shopify.dev/docs/api/storefront/current/objects/ShopPayInstal
+    * lmentsPricing), and
+    * [`SocialLoginProvider`](https://shopify.dev/docs/api/storefront/current/objects/SocialLoginProvider)
+    * options for customer accounts.
     */
     public static class Shop extends AbstractResponse<Shop> implements HasMetafields, MetafieldParentResource, Node {
         public Shop() {
@@ -77218,7 +80324,7 @@ public class Storefront {
         }
 
         /**
-        * The type of the metaobject. Defines the namespace of its associated metafields.
+        * The type of the metaobject.
         */
         public SitemapResourceMetaobjectQuery type() {
             startField("type");
@@ -77322,7 +80428,7 @@ public class Storefront {
         }
 
         /**
-        * The type of the metaobject. Defines the namespace of its associated metafields.
+        * The type of the metaobject.
         */
 
         public String getType() {
@@ -77461,9 +80567,17 @@ public class Storefront {
     }
 
     /**
-    * The availability of a product variant at a particular location.
-    * Local pick-up must be enabled in the  store's shipping settings, otherwise this will return an empty
-    * result.
+    * Inventory information for a product variant at a physical store location that offers local pickup.
+    * Includes stock availability, quantity on hand, and estimated pickup readiness time.
+    * Local pickup must be [enabled in the store's shipping
+    * settings](https://help.shopify.com/manual/shipping/setting-up-and-managing-your-shipping/local-metho
+    * ds/local-pickup) for this data to be returned. Results can be sorted by proximity to a customer's
+    * location using the `near` argument on the
+    * [`ProductVariant.storeAvailability`](https://shopify.dev/docs/api/storefront/current/objects/Product
+    * Variant#field-ProductVariant.fields.storeAvailability) connection. 
+    * Learn more about [supporting local pickup on
+    * storefronts](https://shopify.dev/docs/storefronts/headless/building-with-the-storefront-api/products
+    * -collections/local-pickup).
     */
     public static class StoreAvailabilityQuery extends Query<StoreAvailabilityQuery> {
         StoreAvailabilityQuery(StringBuilder _queryBuilder) {
@@ -77513,9 +80627,17 @@ public class Storefront {
     }
 
     /**
-    * The availability of a product variant at a particular location.
-    * Local pick-up must be enabled in the  store's shipping settings, otherwise this will return an empty
-    * result.
+    * Inventory information for a product variant at a physical store location that offers local pickup.
+    * Includes stock availability, quantity on hand, and estimated pickup readiness time.
+    * Local pickup must be [enabled in the store's shipping
+    * settings](https://help.shopify.com/manual/shipping/setting-up-and-managing-your-shipping/local-metho
+    * ds/local-pickup) for this data to be returned. Results can be sorted by proximity to a customer's
+    * location using the `near` argument on the
+    * [`ProductVariant.storeAvailability`](https://shopify.dev/docs/api/storefront/current/objects/Product
+    * Variant#field-ProductVariant.fields.storeAvailability) connection. 
+    * Learn more about [supporting local pickup on
+    * storefronts](https://shopify.dev/docs/storefronts/headless/building-with-the-storefront-api/products
+    * -collections/local-pickup).
     */
     public static class StoreAvailability extends AbstractResponse<StoreAvailability> {
         public StoreAvailability() {
@@ -79599,7 +82721,10 @@ public class Storefront {
     }
 
     /**
-    * Color and image for visual representation.
+    * A visual representation for filter values, containing a color, an image, or both. The
+    * [`FilterValue`](https://shopify.dev/docs/api/storefront/current/objects/FilterValue) object's
+    * [`swatch`](https://shopify.dev/docs/api/storefront/current/objects/FilterValue#field-FilterValue.fie
+    * lds.swatch) field returns this when the filter's presentation is set to `SWATCH`.
     */
     public static class SwatchQuery extends Query<SwatchQuery> {
         SwatchQuery(StringBuilder _queryBuilder) {
@@ -79630,7 +82755,10 @@ public class Storefront {
     }
 
     /**
-    * Color and image for visual representation.
+    * A visual representation for filter values, containing a color, an image, or both. The
+    * [`FilterValue`](https://shopify.dev/docs/api/storefront/current/objects/FilterValue) object's
+    * [`swatch`](https://shopify.dev/docs/api/storefront/current/objects/FilterValue#field-FilterValue.fie
+    * lds.swatch) field returns this when the filter's presentation is set to `SWATCH`.
     */
     public static class Swatch extends AbstractResponse<Swatch> {
         public Swatch() {
@@ -79719,7 +82847,19 @@ public class Storefront {
     }
 
     /**
-    * The taxonomy category for the product.
+    * A category from Shopify's [Standard Product
+    * Taxonomy](https://shopify.github.io/product-taxonomy/releases/unstable/?categoryId=sg-4-17-2-17)
+    * assigned to a [`Product`](https://shopify.dev/docs/api/storefront/current/objects/Product).
+    * Categories provide hierarchical classification through the `ancestors` field.
+    * The
+    * [`ancestors`](https://shopify.dev/docs/api/storefront/current/objects/TaxonomyCategory#field-Taxonom
+    * yCategory.fields.ancestors) field returns the parent chain from the immediate parent up to the root.
+    * Each ancestor category also includes its own `ancestors`.
+    * The
+    * [`name`](https://shopify.dev/docs/api/storefront/latest/objects/TaxonomyCategory#field-TaxonomyCateg
+    * ory.fields.name) field returns the localized category name based on the storefront's request
+    * language with shop locale fallbacks. If a translation isn't available for the resolved locale, the
+    * English taxonomy name is returned.
     */
     public static class TaxonomyCategoryQuery extends Query<TaxonomyCategoryQuery> {
         TaxonomyCategoryQuery(StringBuilder _queryBuilder) {
@@ -79752,7 +82892,19 @@ public class Storefront {
     }
 
     /**
-    * The taxonomy category for the product.
+    * A category from Shopify's [Standard Product
+    * Taxonomy](https://shopify.github.io/product-taxonomy/releases/unstable/?categoryId=sg-4-17-2-17)
+    * assigned to a [`Product`](https://shopify.dev/docs/api/storefront/current/objects/Product).
+    * Categories provide hierarchical classification through the `ancestors` field.
+    * The
+    * [`ancestors`](https://shopify.dev/docs/api/storefront/current/objects/TaxonomyCategory#field-Taxonom
+    * yCategory.fields.ancestors) field returns the parent chain from the immediate parent up to the root.
+    * Each ancestor category also includes its own `ancestors`.
+    * The
+    * [`name`](https://shopify.dev/docs/api/storefront/latest/objects/TaxonomyCategory#field-TaxonomyCateg
+    * ory.fields.name) field returns the localized category name based on the storefront's request
+    * language with shop locale fallbacks. If a translation isn't available for the resolved locale, the
+    * English taxonomy name is returned.
     */
     public static class TaxonomyCategory extends AbstractResponse<TaxonomyCategory> implements Node {
         public TaxonomyCategory() {
@@ -80078,7 +83230,14 @@ public class Storefront {
     }
 
     /**
-    * The measurement used to calculate a unit price for a product variant (e.g. $9.99 / 100ml).
+    * The measurement data used to calculate unit prices for a
+    * [`ProductVariant`](https://shopify.dev/docs/api/storefront/current/objects/ProductVariant). Unit
+    * pricing helps customers compare costs across different package sizes by showing a standardized
+    * price, such as "$9.99 / 100ml".
+    * The object includes the quantity being sold (value and unit) and the reference measurement used for
+    * price comparison. Use this alongside the variant's
+    * [`unitPrice`](https://shopify.dev/docs/api/storefront/current/objects/ProductVariant#field-ProductVa
+    * riant.fields.unitPrice) field to display complete unit pricing information.
     */
     public static class UnitPriceMeasurementQuery extends Query<UnitPriceMeasurementQuery> {
         UnitPriceMeasurementQuery(StringBuilder _queryBuilder) {
@@ -80132,7 +83291,14 @@ public class Storefront {
     }
 
     /**
-    * The measurement used to calculate a unit price for a product variant (e.g. $9.99 / 100ml).
+    * The measurement data used to calculate unit prices for a
+    * [`ProductVariant`](https://shopify.dev/docs/api/storefront/current/objects/ProductVariant). Unit
+    * pricing helps customers compare costs across different package sizes by showing a standardized
+    * price, such as "$9.99 / 100ml".
+    * The object includes the quantity being sold (value and unit) and the reference measurement used for
+    * price comparison. Use this alongside the variant's
+    * [`unitPrice`](https://shopify.dev/docs/api/storefront/current/objects/ProductVariant#field-ProductVa
+    * riant.fields.unitPrice) field to display complete unit pricing information.
     */
     public static class UnitPriceMeasurement extends AbstractResponse<UnitPriceMeasurement> {
         public UnitPriceMeasurement() {
@@ -81504,7 +84670,17 @@ public class Storefront {
     }
 
     /**
-    * Represents a Shopify hosted video.
+    * A video hosted on Shopify's servers. Implements the
+    * [`Media`](https://shopify.dev/docs/api/storefront/current/interfaces/Media) interface and provides
+    * multiple video sources through the
+    * [`sources`](https://shopify.dev/docs/api/storefront/current/objects/Video#field-Video.fields.sources
+    * ) field, each with
+    * [format](https://shopify.dev/docs/api/storefront/current/objects/Video#field-Video.fields.sources.fo
+    * rmat), dimensions, and [URL
+    * information](https://shopify.dev/docs/api/storefront/current/objects/Video#field-Video.fields.source
+    * s.url) for adaptive playback.
+    * For videos hosted on external platforms like YouTube or Vimeo, use
+    * [`ExternalVideo`](https://shopify.dev/docs/api/storefront/current/objects/ExternalVideo) instead.
     */
     public static class VideoQuery extends Query<VideoQuery> {
         VideoQuery(StringBuilder _queryBuilder) {
@@ -81572,7 +84748,17 @@ public class Storefront {
     }
 
     /**
-    * Represents a Shopify hosted video.
+    * A video hosted on Shopify's servers. Implements the
+    * [`Media`](https://shopify.dev/docs/api/storefront/current/interfaces/Media) interface and provides
+    * multiple video sources through the
+    * [`sources`](https://shopify.dev/docs/api/storefront/current/objects/Video#field-Video.fields.sources
+    * ) field, each with
+    * [format](https://shopify.dev/docs/api/storefront/current/objects/Video#field-Video.fields.sources.fo
+    * rmat), dimensions, and [URL
+    * information](https://shopify.dev/docs/api/storefront/current/objects/Video#field-Video.fields.source
+    * s.url) for adaptive playback.
+    * For videos hosted on external platforms like YouTube or Vimeo, use
+    * [`ExternalVideo`](https://shopify.dev/docs/api/storefront/current/objects/ExternalVideo) instead.
     */
     public static class Video extends AbstractResponse<Video> implements Media, MetafieldReference, Node {
         public Video() {
@@ -81927,8 +85113,155 @@ public class Storefront {
         }
     }
 
+    public static class VisitorConsent implements Serializable {
+        private Input<Boolean> preferences = Input.undefined();
+
+        private Input<Boolean> analytics = Input.undefined();
+
+        private Input<Boolean> marketing = Input.undefined();
+
+        private Input<Boolean> saleOfData = Input.undefined();
+
+        public Boolean getPreferences() {
+            return preferences.getValue();
+        }
+
+        public Input<Boolean> getPreferencesInput() {
+            return preferences;
+        }
+
+        public VisitorConsent setPreferences(Boolean preferences) {
+            this.preferences = Input.optional(preferences);
+            return this;
+        }
+
+        public VisitorConsent setPreferencesInput(Input<Boolean> preferences) {
+            if (preferences == null) {
+                throw new IllegalArgumentException("Input can not be null");
+            }
+            this.preferences = preferences;
+            return this;
+        }
+
+        public Boolean getAnalytics() {
+            return analytics.getValue();
+        }
+
+        public Input<Boolean> getAnalyticsInput() {
+            return analytics;
+        }
+
+        public VisitorConsent setAnalytics(Boolean analytics) {
+            this.analytics = Input.optional(analytics);
+            return this;
+        }
+
+        public VisitorConsent setAnalyticsInput(Input<Boolean> analytics) {
+            if (analytics == null) {
+                throw new IllegalArgumentException("Input can not be null");
+            }
+            this.analytics = analytics;
+            return this;
+        }
+
+        public Boolean getMarketing() {
+            return marketing.getValue();
+        }
+
+        public Input<Boolean> getMarketingInput() {
+            return marketing;
+        }
+
+        public VisitorConsent setMarketing(Boolean marketing) {
+            this.marketing = Input.optional(marketing);
+            return this;
+        }
+
+        public VisitorConsent setMarketingInput(Input<Boolean> marketing) {
+            if (marketing == null) {
+                throw new IllegalArgumentException("Input can not be null");
+            }
+            this.marketing = marketing;
+            return this;
+        }
+
+        public Boolean getSaleOfData() {
+            return saleOfData.getValue();
+        }
+
+        public Input<Boolean> getSaleOfDataInput() {
+            return saleOfData;
+        }
+
+        public VisitorConsent setSaleOfData(Boolean saleOfData) {
+            this.saleOfData = Input.optional(saleOfData);
+            return this;
+        }
+
+        public VisitorConsent setSaleOfDataInput(Input<Boolean> saleOfData) {
+            if (saleOfData == null) {
+                throw new IllegalArgumentException("Input can not be null");
+            }
+            this.saleOfData = saleOfData;
+            return this;
+        }
+
+        public void appendTo(StringBuilder _queryBuilder) {
+            String separator = "";
+            _queryBuilder.append('{');
+
+            if (this.preferences.isDefined()) {
+                _queryBuilder.append(separator);
+                separator = ",";
+                _queryBuilder.append("preferences:");
+                if (preferences.getValue() != null) {
+                    _queryBuilder.append(preferences.getValue());
+                } else {
+                    _queryBuilder.append("null");
+                }
+            }
+
+            if (this.analytics.isDefined()) {
+                _queryBuilder.append(separator);
+                separator = ",";
+                _queryBuilder.append("analytics:");
+                if (analytics.getValue() != null) {
+                    _queryBuilder.append(analytics.getValue());
+                } else {
+                    _queryBuilder.append("null");
+                }
+            }
+
+            if (this.marketing.isDefined()) {
+                _queryBuilder.append(separator);
+                separator = ",";
+                _queryBuilder.append("marketing:");
+                if (marketing.getValue() != null) {
+                    _queryBuilder.append(marketing.getValue());
+                } else {
+                    _queryBuilder.append("null");
+                }
+            }
+
+            if (this.saleOfData.isDefined()) {
+                _queryBuilder.append(separator);
+                separator = ",";
+                _queryBuilder.append("saleOfData:");
+                if (saleOfData.getValue() != null) {
+                    _queryBuilder.append(saleOfData.getValue());
+                } else {
+                    _queryBuilder.append("null");
+                }
+            }
+
+            _queryBuilder.append('}');
+        }
+    }
+
     /**
-    * Units of measurement for weight.
+    * Units of measurement for weight, supporting both metric and imperial systems. Used by
+    * [`ProductVariant`](https://shopify.dev/docs/api/storefront/current/objects/ProductVariant) to
+    * specify the unit for the variant's weight value.
     */
     public enum WeightUnit {
         /**
