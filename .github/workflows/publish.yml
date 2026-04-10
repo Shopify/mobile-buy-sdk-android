@@ -13,6 +13,9 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    env:
+      OSSRH_API_BASE_URL: https://ossrh-staging-api.central.sonatype.com
+
     permissions:
       contents: read
       packages: write
@@ -35,8 +38,39 @@ jobs:
         run: ./gradlew publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          ORG_GRADLE_PROJECT_ossrhUsername: ${{ secrets.OSSRH_USERNAME }}
-          ORG_GRADLE_PROJECT_ossrhPassword: ${{ secrets.OSSRH_PASSWORD }}
+          OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+          OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
           ORG_GRADLE_PROJECT_signingKeyId: ${{ secrets.OSSRH_GPG_SECRET_KEY_ID }}
           ORG_GRADLE_PROJECT_signingKey: ${{ secrets.OSSRH_GPG_SECRET_KEY }}
           ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.OSSRH_GPG_SECRET_KEY_PASSWORD }}
+
+      - name: Find OSSRH Repository
+        id: find-repo
+        run: |
+          TOKEN=$(echo -n "${{ secrets.OSSRH_USERNAME }}:${{ secrets.OSSRH_PASSWORD }}" | base64)
+          RESPONSE=$(curl -s -H "Authorization: Bearer $TOKEN" \
+            "${OSSRH_API_BASE_URL}/manual/search/repositories?ip=any&state=open")
+          echo "Response: $RESPONSE"
+
+          # Extract repository key from JSON response
+          REPO_KEY=$(echo "$RESPONSE" | jq -r \
+            '.repositories[] | .key' | head -1)
+          echo "Repository key: $REPO_KEY"
+
+          if [ -z "$REPO_KEY" ]; then
+            echo "Error: No open repository found"
+            exit 1
+          fi
+
+          echo "repo_key=$REPO_KEY" >> $GITHUB_OUTPUT
+
+      - name: Upload Repository to Central Portal
+        run: |
+          TOKEN=$(echo -n "${{ secrets.OSSRH_USERNAME }}:${{ secrets.OSSRH_PASSWORD }}" | base64)
+          REPO_KEY="${{ steps.find-repo.outputs.repo_key }}"
+
+          echo "Uploading repository: $REPO_KEY"
+          curl -v -X POST -H "Authorization: Bearer $TOKEN" \
+            "${OSSRH_API_BASE_URL}/manual/upload/repository/$REPO_KEY"
+
+          echo "Upload completed successfully"

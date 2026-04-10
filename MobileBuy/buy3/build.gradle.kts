@@ -115,18 +115,15 @@ publishing {
             }
         }
         maven {
-            name = "OSSRH-Staging"
+            name = "ossrh-staging-api"
 
-            url = uri("https://oss.sonatype.org/service/local/staging/deploy/maven2/")
-
-            val ossrhUsername: String? by project
-            val ossrhPassword: String? by project
+            url = uri("https://ossrh-staging-api.central.sonatype.com/service/local/staging/deploy/maven2/")
 
             credentials {
-                username = ossrhUsername
-                password = ossrhPassword
+                username = System.getenv("OSSRH_USERNAME")
+                password = System.getenv("OSSRH_PASSWORD")
             }
-       }
+        }
     }
 }
 
