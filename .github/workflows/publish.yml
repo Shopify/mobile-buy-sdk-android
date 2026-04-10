@@ -35,8 +35,9 @@ jobs:
 
       - name: Publish Package
         working-directory: ./MobileBuy
-        run: ./gradlew publishReleasePublicationToOssrh-staging-apiRepository
+        run: ./gradlew publish
         env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
           ORG_GRADLE_PROJECT_signingKeyId: ${{ secrets.OSSRH_GPG_SECRET_KEY_ID }}
