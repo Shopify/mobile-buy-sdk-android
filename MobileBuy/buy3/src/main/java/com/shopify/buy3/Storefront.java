@@ -23,7 +23,7 @@ import java.io.Serializable;
 import java.util.*;
 
 public class Storefront {
-    public static final String API_VERSION = "2025-10";
+    public static final String API_VERSION = "2026-01";
 
     public static QueryRootQuery query(QueryRootQueryDefinition queryDef) {
         return query(Collections.emptyList(), queryDef);
@@ -13160,6 +13160,11 @@ public class Storefront {
         CART_TOO_LARGE,
 
         /**
+        * The specified gift card recipient is invalid.
+        */
+        GIFT_CARD_RECIPIENT_INVALID,
+
+        /**
         * The input value is invalid.
         */
         INVALID,
@@ -13268,6 +13273,11 @@ public class Storefront {
         * Only one delivery address can be selected.
         */
         ONLY_ONE_DELIVERY_ADDRESS_CAN_BE_SELECTED,
+
+        /**
+        * Cannot reference existing parent lines by variant_id.
+        */
+        PARENT_LINE_INVALID_REFERENCE,
 
         /**
         * Parent line nesting is too deep or circular.
@@ -13433,6 +13443,10 @@ public class Storefront {
                     return CART_TOO_LARGE;
                 }
 
+                case "GIFT_CARD_RECIPIENT_INVALID": {
+                    return GIFT_CARD_RECIPIENT_INVALID;
+                }
+
                 case "INVALID": {
                     return INVALID;
                 }
@@ -13519,6 +13533,10 @@ public class Storefront {
 
                 case "ONLY_ONE_DELIVERY_ADDRESS_CAN_BE_SELECTED": {
                     return ONLY_ONE_DELIVERY_ADDRESS_CAN_BE_SELECTED;
+                }
+
+                case "PARENT_LINE_INVALID_REFERENCE": {
+                    return PARENT_LINE_INVALID_REFERENCE;
                 }
 
                 case "PARENT_LINE_NESTING_TOO_DEEP": {
@@ -13660,6 +13678,10 @@ public class Storefront {
                     return "CART_TOO_LARGE";
                 }
 
+                case GIFT_CARD_RECIPIENT_INVALID: {
+                    return "GIFT_CARD_RECIPIENT_INVALID";
+                }
+
                 case INVALID: {
                     return "INVALID";
                 }
@@ -13746,6 +13768,10 @@ public class Storefront {
 
                 case ONLY_ONE_DELIVERY_ADDRESS_CAN_BE_SELECTED: {
                     return "ONLY_ONE_DELIVERY_ADDRESS_CAN_BE_SELECTED";
+                }
+
+                case PARENT_LINE_INVALID_REFERENCE: {
+                    return "PARENT_LINE_INVALID_REFERENCE";
                 }
 
                 case PARENT_LINE_NESTING_TOO_DEEP: {
@@ -29755,6 +29781,15 @@ public class Storefront {
         }
 
         /**
+        * The URL of the customer's avatar image.
+        */
+        public CustomerQuery avatarUrl() {
+            startField("avatarUrl");
+
+            return this;
+        }
+
+        /**
         * The date and time when the customer was created.
         */
         public CustomerQuery createdAt() {
@@ -30036,6 +30071,19 @@ public class Storefront {
         }
 
         /**
+        * The social login provider associated with the customer.
+        */
+        public CustomerQuery socialLoginProvider(SocialLoginProviderQueryDefinition queryDef) {
+            startField("socialLoginProvider");
+
+            _queryBuilder.append('{');
+            queryDef.define(new SocialLoginProviderQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
         * A comma separated list of tags that have been added to the customer.
         * Additional access scope required: unauthenticated_read_customer_tags.
         */
@@ -30086,6 +30134,17 @@ public class Storefront {
 
                     case "addresses": {
                         responseData.put(key, new MailingAddressConnection(jsonAsObject(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "avatarUrl": {
+                        String optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = jsonAsString(field.getValue(), key);
+                        }
+
+                        responseData.put(key, optional1);
 
                         break;
                     }
@@ -30202,6 +30261,17 @@ public class Storefront {
                         break;
                     }
 
+                    case "socialLoginProvider": {
+                        SocialLoginProvider optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new SocialLoginProvider(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
                     case "tags": {
                         List<String> list1 = new ArrayList<>();
                         for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
@@ -30257,6 +30327,19 @@ public class Storefront {
 
         public Customer setAddresses(MailingAddressConnection arg) {
             optimisticData.put(getKey("addresses"), arg);
+            return this;
+        }
+
+        /**
+        * The URL of the customer's avatar image.
+        */
+
+        public String getAvatarUrl() {
+            return (String) get("avatarUrl");
+        }
+
+        public Customer setAvatarUrl(String arg) {
+            optimisticData.put(getKey("avatarUrl"), arg);
             return this;
         }
 
@@ -30420,6 +30503,19 @@ public class Storefront {
         }
 
         /**
+        * The social login provider associated with the customer.
+        */
+
+        public SocialLoginProvider getSocialLoginProvider() {
+            return (SocialLoginProvider) get("socialLoginProvider");
+        }
+
+        public Customer setSocialLoginProvider(SocialLoginProvider arg) {
+            optimisticData.put(getKey("socialLoginProvider"), arg);
+            return this;
+        }
+
+        /**
         * A comma separated list of tags that have been added to the customer.
         * Additional access scope required: unauthenticated_read_customer_tags.
         */
@@ -30458,6 +30554,8 @@ public class Storefront {
                 case "metafields": return true;
 
                 case "orders": return true;
+
+                case "socialLoginProvider": return true;
 
                 default: return false;
             }
@@ -50326,37 +50424,6 @@ public class Storefront {
             return this;
         }
 
-        public class CartDiscountCodesUpdateArguments extends Arguments {
-            CartDiscountCodesUpdateArguments(StringBuilder _queryBuilder) {
-                super(_queryBuilder, false);
-            }
-
-            /**
-            * The case-insensitive discount codes that the customer added at checkout.
-            * The input must not contain more than `250` values.
-            */
-            public CartDiscountCodesUpdateArguments discountCodes(List<String> value) {
-                if (value != null) {
-                    startArgument("discountCodes");
-                    _queryBuilder.append('[');
-                    {
-                        String listSeperator1 = "";
-                        for (String item1 : value) {
-                            _queryBuilder.append(listSeperator1);
-                            listSeperator1 = ",";
-                            Query.appendQuotedString(_queryBuilder, item1.toString());
-                        }
-                    }
-                    _queryBuilder.append(']');
-                }
-                return this;
-            }
-        }
-
-        public interface CartDiscountCodesUpdateArgumentsDefinition {
-            void define(CartDiscountCodesUpdateArguments args);
-        }
-
         /**
         * Updates the discount codes applied to a
         * [`Cart`](https://shopify.dev/docs/api/storefront/current/objects/Cart). This mutation replaces all
@@ -50368,28 +50435,23 @@ public class Storefront {
         * [`discountCodes`](https://shopify.dev/docs/api/storefront/current/objects/Cart#field-Cart.fields.dis
         * countCodes) field to see whether the code is applicable to the cart's current contents.
         */
-        public MutationQuery cartDiscountCodesUpdate(ID cartId, CartDiscountCodesUpdatePayloadQueryDefinition queryDef) {
-            return cartDiscountCodesUpdate(cartId, args -> {}, queryDef);
-        }
-
-        /**
-        * Updates the discount codes applied to a
-        * [`Cart`](https://shopify.dev/docs/api/storefront/current/objects/Cart). This mutation replaces all
-        * existing discount codes with the provided list, so pass an empty array to remove all codes. Discount
-        * codes are case-insensitive.
-        * After updating, check each
-        * [`CartDiscountCode`](https://shopify.dev/docs/api/storefront/current/objects/CartDiscountCode) in
-        * the cart's
-        * [`discountCodes`](https://shopify.dev/docs/api/storefront/current/objects/Cart#field-Cart.fields.dis
-        * countCodes) field to see whether the code is applicable to the cart's current contents.
-        */
-        public MutationQuery cartDiscountCodesUpdate(ID cartId, CartDiscountCodesUpdateArgumentsDefinition argsDef, CartDiscountCodesUpdatePayloadQueryDefinition queryDef) {
+        public MutationQuery cartDiscountCodesUpdate(ID cartId, List<String> discountCodes, CartDiscountCodesUpdatePayloadQueryDefinition queryDef) {
             startField("cartDiscountCodesUpdate");
 
             _queryBuilder.append("(cartId:");
             Query.appendQuotedString(_queryBuilder, cartId.toString());
 
-            argsDef.define(new CartDiscountCodesUpdateArguments(_queryBuilder));
+            _queryBuilder.append(",discountCodes:");
+            _queryBuilder.append('[');
+            {
+                String listSeperator1 = "";
+                for (String item1 : discountCodes) {
+                    _queryBuilder.append(listSeperator1);
+                    listSeperator1 = ",";
+                    Query.appendQuotedString(_queryBuilder, item1.toString());
+                }
+            }
+            _queryBuilder.append(']');
 
             _queryBuilder.append(')');
 
@@ -73565,6 +73627,19 @@ public class Storefront {
         }
 
         /**
+        * Translations for customer accounts.
+        */
+        public ShopQuery customerAccountTranslations(TranslationQueryDefinition queryDef) {
+            startField("customerAccountTranslations");
+
+            _queryBuilder.append('{');
+            queryDef.define(new TranslationQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
         * The URL for the customer account (only present if shop has a customer account vanity domain).
         */
         public ShopQuery customerAccountUrl() {
@@ -73768,6 +73843,19 @@ public class Storefront {
         }
 
         /**
+        * The social login providers for customer accounts.
+        */
+        public ShopQuery socialLoginProviders(SocialLoginProviderQueryDefinition queryDef) {
+            startField("socialLoginProviders");
+
+            _queryBuilder.append('{');
+            queryDef.define(new SocialLoginProviderQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
         * The shop’s subscription policy.
         */
         public ShopQuery subscriptionPolicy(ShopPolicyWithDefaultQueryDefinition queryDef) {
@@ -73825,6 +73913,22 @@ public class Storefront {
                         Brand optional1 = null;
                         if (!field.getValue().isJsonNull()) {
                             optional1 = new Brand(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
+                    case "customerAccountTranslations": {
+                        List<Translation> optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            List<Translation> list1 = new ArrayList<>();
+                            for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                                list1.add(new Translation(jsonAsObject(element1, key)));
+                            }
+
+                            optional1 = list1;
                         }
 
                         responseData.put(key, optional1);
@@ -73966,6 +74070,17 @@ public class Storefront {
                         break;
                     }
 
+                    case "socialLoginProviders": {
+                        List<SocialLoginProvider> list1 = new ArrayList<>();
+                        for (JsonElement element1 : jsonAsArray(field.getValue(), key)) {
+                            list1.add(new SocialLoginProvider(jsonAsObject(element1, key)));
+                        }
+
+                        responseData.put(key, list1);
+
+                        break;
+                    }
+
                     case "subscriptionPolicy": {
                         ShopPolicyWithDefault optional1 = null;
                         if (!field.getValue().isJsonNull()) {
@@ -74018,6 +74133,19 @@ public class Storefront {
 
         public Shop setBrand(Brand arg) {
             optimisticData.put(getKey("brand"), arg);
+            return this;
+        }
+
+        /**
+        * Translations for customer accounts.
+        */
+
+        public List<Translation> getCustomerAccountTranslations() {
+            return (List<Translation>) get("customerAccountTranslations");
+        }
+
+        public Shop setCustomerAccountTranslations(List<Translation> arg) {
+            optimisticData.put(getKey("customerAccountTranslations"), arg);
             return this;
         }
 
@@ -74202,6 +74330,19 @@ public class Storefront {
         }
 
         /**
+        * The social login providers for customer accounts.
+        */
+
+        public List<SocialLoginProvider> getSocialLoginProviders() {
+            return (List<SocialLoginProvider>) get("socialLoginProviders");
+        }
+
+        public Shop setSocialLoginProviders(List<SocialLoginProvider> arg) {
+            optimisticData.put(getKey("socialLoginProviders"), arg);
+            return this;
+        }
+
+        /**
         * The shop’s subscription policy.
         */
 
@@ -74232,6 +74373,8 @@ public class Storefront {
             switch (getFieldName(key)) {
                 case "brand": return true;
 
+                case "customerAccountTranslations": return true;
+
                 case "metafield": return true;
 
                 case "metafields": return true;
@@ -74247,6 +74390,8 @@ public class Storefront {
                 case "shippingPolicy": return true;
 
                 case "shopPayInstallmentsPricing": return true;
+
+                case "socialLoginProviders": return true;
 
                 case "subscriptionPolicy": return true;
 
@@ -80562,6 +80707,75 @@ public class Storefront {
         }
     }
 
+    public interface SocialLoginProviderQueryDefinition {
+        void define(SocialLoginProviderQuery _queryBuilder);
+    }
+
+    /**
+    * A social login provider for customer accounts.
+    */
+    public static class SocialLoginProviderQuery extends Query<SocialLoginProviderQuery> {
+        SocialLoginProviderQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * The handle of the social login provider.
+        */
+        public SocialLoginProviderQuery handle() {
+            startField("handle");
+
+            return this;
+        }
+    }
+
+    /**
+    * A social login provider for customer accounts.
+    */
+    public static class SocialLoginProvider extends AbstractResponse<SocialLoginProvider> {
+        public SocialLoginProvider() {
+        }
+
+        public SocialLoginProvider(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "handle": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "SocialLoginProvider";
+        }
+
+        /**
+        * The handle of the social login provider.
+        */
+
+        public String getHandle() {
+            return (String) get("handle");
+        }
+
+        public SocialLoginProvider setHandle(String arg) {
+            optimisticData.put(getKey("handle"), arg);
+            return this;
+        }
+    }
+
     public interface StoreAvailabilityQueryDefinition {
         void define(StoreAvailabilityQuery _queryBuilder);
     }
@@ -83221,6 +83435,103 @@ public class Storefront {
 
         public UnknownTrackable setTrackingParameters(String arg) {
             optimisticData.put(getKey("trackingParameters"), arg);
+            return this;
+        }
+    }
+
+    public interface TranslationQueryDefinition {
+        void define(TranslationQuery _queryBuilder);
+    }
+
+    /**
+    * Translation represents a translation of a key-value pair.
+    */
+    public static class TranslationQuery extends Query<TranslationQuery> {
+        TranslationQuery(StringBuilder _queryBuilder) {
+            super(_queryBuilder);
+        }
+
+        /**
+        * The key of the translation.
+        */
+        public TranslationQuery key() {
+            startField("key");
+
+            return this;
+        }
+
+        /**
+        * The value of the translation.
+        */
+        public TranslationQuery value() {
+            startField("value");
+
+            return this;
+        }
+    }
+
+    /**
+    * Translation represents a translation of a key-value pair.
+    */
+    public static class Translation extends AbstractResponse<Translation> {
+        public Translation() {
+        }
+
+        public Translation(JsonObject fields) throws SchemaViolationError {
+            for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                String key = field.getKey();
+                String fieldName = getFieldName(key);
+                switch (fieldName) {
+                    case "key": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "value": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "__typename": {
+                        responseData.put(key, jsonAsString(field.getValue(), key));
+                        break;
+                    }
+                    default: {
+                        throw new SchemaViolationError(this, key, field.getValue());
+                    }
+                }
+            }
+        }
+
+        public String getGraphQlTypeName() {
+            return "Translation";
+        }
+
+        /**
+        * The key of the translation.
+        */
+
+        public String getKey() {
+            return (String) get("key");
+        }
+
+        public Translation setKey(String arg) {
+            optimisticData.put(getKey("key"), arg);
+            return this;
+        }
+
+        /**
+        * The value of the translation.
+        */
+
+        public String getValue() {
+            return (String) get("value");
+        }
+
+        public Translation setValue(String arg) {
+            optimisticData.put(getKey("value"), arg);
             return this;
         }
     }

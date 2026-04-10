@@ -5,7 +5,7 @@ plugins {
     `maven-publish`
 }
 
-version = "2025.10.0"
+version = "2026.1.0"
 
 android {
     namespace = "com.shopify.buy3"
