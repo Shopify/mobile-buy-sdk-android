@@ -23,7 +23,7 @@ import java.io.Serializable;
 import java.util.*;
 
 public class Storefront {
-    public static final String API_VERSION = "2026-01";
+    public static final String API_VERSION = "2026-04";
 
     public static QueryRootQuery query(QueryRootQueryDefinition queryDef) {
         return query(Collections.emptyList(), queryDef);
@@ -13240,6 +13240,11 @@ public class Storefront {
         MAXIMUM_EXCEEDED,
 
         /**
+        * An error occurred while processing cart transformations.
+        */
+        MERCHANDISE_LINE_TRANSFORMERS_RUN_ERROR,
+
+        /**
         * Item cannot be purchased as configured.
         */
         MERCHANDISE_NOT_APPLICABLE,
@@ -13507,6 +13512,10 @@ public class Storefront {
                     return MAXIMUM_EXCEEDED;
                 }
 
+                case "MERCHANDISE_LINE_TRANSFORMERS_RUN_ERROR": {
+                    return MERCHANDISE_LINE_TRANSFORMERS_RUN_ERROR;
+                }
+
                 case "MERCHANDISE_NOT_APPLICABLE": {
                     return MERCHANDISE_NOT_APPLICABLE;
                 }
@@ -13740,6 +13749,10 @@ public class Storefront {
 
                 case MAXIMUM_EXCEEDED: {
                     return "MAXIMUM_EXCEEDED";
+                }
+
+                case MERCHANDISE_LINE_TRANSFORMERS_RUN_ERROR: {
+                    return "MERCHANDISE_LINE_TRANSFORMERS_RUN_ERROR";
                 }
 
                 case MERCHANDISE_NOT_APPLICABLE: {
@@ -73627,6 +73640,19 @@ public class Storefront {
         }
 
         /**
+        * The shop's contact information.
+        */
+        public ShopQuery contactInformation(ShopPolicyQueryDefinition queryDef) {
+            startField("contactInformation");
+
+            _queryBuilder.append('{');
+            queryDef.define(new ShopPolicyQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
         * Translations for customer accounts.
         */
         public ShopQuery customerAccountTranslations(TranslationQueryDefinition queryDef) {
@@ -73653,6 +73679,19 @@ public class Storefront {
         */
         public ShopQuery description() {
             startField("description");
+
+            return this;
+        }
+
+        /**
+        * The shop's legal notice.
+        */
+        public ShopQuery legalNotice(ShopPolicyQueryDefinition queryDef) {
+            startField("legalNotice");
+
+            _queryBuilder.append('{');
+            queryDef.define(new ShopPolicyQuery(_queryBuilder));
+            _queryBuilder.append('}');
 
             return this;
         }
@@ -73869,6 +73908,19 @@ public class Storefront {
         }
 
         /**
+        * The shop's terms of sale.
+        */
+        public ShopQuery termsOfSale(ShopPolicyQueryDefinition queryDef) {
+            startField("termsOfSale");
+
+            _queryBuilder.append('{');
+            queryDef.define(new ShopPolicyQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
         * The shop’s terms of service.
         */
         public ShopQuery termsOfService(ShopPolicyQueryDefinition queryDef) {
@@ -73920,6 +73972,17 @@ public class Storefront {
                         break;
                     }
 
+                    case "contactInformation": {
+                        ShopPolicy optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new ShopPolicy(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
                     case "customerAccountTranslations": {
                         List<Translation> optional1 = null;
                         if (!field.getValue().isJsonNull()) {
@@ -73960,6 +74023,17 @@ public class Storefront {
 
                     case "id": {
                         responseData.put(key, new ID(jsonAsString(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "legalNotice": {
+                        ShopPolicy optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new ShopPolicy(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
 
                         break;
                     }
@@ -74092,6 +74166,17 @@ public class Storefront {
                         break;
                     }
 
+                    case "termsOfSale": {
+                        ShopPolicy optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new ShopPolicy(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
+
+                        break;
+                    }
+
                     case "termsOfService": {
                         ShopPolicy optional1 = null;
                         if (!field.getValue().isJsonNull()) {
@@ -74133,6 +74218,19 @@ public class Storefront {
 
         public Shop setBrand(Brand arg) {
             optimisticData.put(getKey("brand"), arg);
+            return this;
+        }
+
+        /**
+        * The shop's contact information.
+        */
+
+        public ShopPolicy getContactInformation() {
+            return (ShopPolicy) get("contactInformation");
+        }
+
+        public Shop setContactInformation(ShopPolicy arg) {
+            optimisticData.put(getKey("contactInformation"), arg);
             return this;
         }
 
@@ -74181,6 +74279,19 @@ public class Storefront {
 
         public ID getId() {
             return (ID) get("id");
+        }
+
+        /**
+        * The shop's legal notice.
+        */
+
+        public ShopPolicy getLegalNotice() {
+            return (ShopPolicy) get("legalNotice");
+        }
+
+        public Shop setLegalNotice(ShopPolicy arg) {
+            optimisticData.put(getKey("legalNotice"), arg);
+            return this;
         }
 
         /**
@@ -74356,6 +74467,19 @@ public class Storefront {
         }
 
         /**
+        * The shop's terms of sale.
+        */
+
+        public ShopPolicy getTermsOfSale() {
+            return (ShopPolicy) get("termsOfSale");
+        }
+
+        public Shop setTermsOfSale(ShopPolicy arg) {
+            optimisticData.put(getKey("termsOfSale"), arg);
+            return this;
+        }
+
+        /**
         * The shop’s terms of service.
         */
 
@@ -74373,7 +74497,11 @@ public class Storefront {
             switch (getFieldName(key)) {
                 case "brand": return true;
 
+                case "contactInformation": return true;
+
                 case "customerAccountTranslations": return true;
+
+                case "legalNotice": return true;
 
                 case "metafield": return true;
 
@@ -74394,6 +74522,8 @@ public class Storefront {
                 case "socialLoginProviders": return true;
 
                 case "subscriptionPolicy": return true;
+
+                case "termsOfSale": return true;
 
                 case "termsOfService": return true;
 
