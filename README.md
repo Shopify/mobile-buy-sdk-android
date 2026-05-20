@@ -66,6 +66,15 @@ QueryRootQuery query = Storefront.query(new Storefront.QueryRootQueryDefinition(
 })
 ```
 
+**Kotlin**
+```kotlin
+val query = Storefront.query { query ->
+    query.shop { shop -> 
+        shop.name()
+    }
+}
+```
+
 In this example:
 
 - `Storefront.query` is the entry point for building GraphQL queries.
@@ -180,6 +189,22 @@ Storefront.query(rootQueryBuilder ->
 );
 ```
 
+**Kotlin**
+```kotlin
+ val query = Storefront.query { query ->
+            query.node(ID("NkZmFzZGZhc"), { nodeQuery ->
+                nodeQuery.onCollection { collectionQuery ->
+                    collectionQuery.withAlias("collection").title().description()
+                }
+            }).node(ID("GZhc2Rm"), { nodeQuery ->
+                nodeQuery.onCollection { collectionQuery ->
+                    collectionQuery.withAlias("product").title().description()
+                }
+            })
+        }
+```
+
+
 Accessing the aliased nodes is similar to a plain node:
 
 ```java
@@ -206,6 +231,22 @@ GraphClient.builder(this)
   .httpClient(httpClient) // optional
   .build()
 ```
+
+**Kotlin**
+```kotlin
+val okHttpClient = OkHttpClient.Builder()
+            .addNetworkInterceptor(HttpLoggingInterceptor().setLevel(BuildConfig.OKHTTP_LOG_LEVEL))
+            .build()
+
+GraphClient.build(context, BuildConfig.SHOP_DOMAIN, BuildConfig.API_KEY) {
+                this.httpClient = okHttpClient
+                httpCache(context.cacheDir, configure = {
+                  cacheMaxSizeBytes = 1024 * 1024 * 10
+                defaultCachePolicy = CACHE_FIRST.expireAfter(20, TimeUnit.MINUTES)
+          })
+}
+```
+
 
 GraphQL specifies two types of operations: queries and mutations. The `GraphClient` exposes these as two type-safe operations, while also offering some conveniences for retrying and polling in each.
 
@@ -247,6 +288,30 @@ call.enqueue(new GraphCall.Callback<Storefront.QueryRoot>() {
 });
 ```
 
+**Kotlin**
+```kotlin
+val graphClient = .... 
+
+val query = Storefront.query { query ->
+        query.shop { shopQuery ->
+            shopQuery.name()
+        }
+}
+
+graphClient.queryGraph(query)
+            .enqueue {
+                loaderVisibility = true
+                when(it) {
+                    is GraphCallResult.Failure -> {
+                        Log.e(TAG, "Failed to execute", it.error)
+                    }
+
+                    is GraphCallResult.Success -> {
+                        val name = it.response.data!!.shop.name
+                    }
+                }
+}
+```
 Learn more about [GraphQL queries](http://graphql.org/learn/queries/).
 
 ### Mutations
@@ -303,6 +368,46 @@ call.enqueue(new GraphCall.Callback<Storefront.Mutation>() {
     Log.e(TAG, "Failed to execute query", error);
   }
 });
+```
+
+**Kotlin**
+```kotlin
+val input = CustomerResetInput("c29tZSB0b2tlbiB2YWx1ZQ", "abc123")
+        val query = mutation { rootQuery: MutationQuery ->
+            rootQuery
+                .customerReset(
+                    ID("YSBjdXN0b21lciBpZA"), input
+                ) { payloadQuery: CustomerResetPayloadQuery ->
+                    payloadQuery
+                        .customer { customerQuery: CustomerQuery ->
+                            customerQuery
+                                .firstName()
+                                .lastName()
+                        }
+                        .customerUserErrors { userErrorQuery: CustomerUserErrorQuery ->
+                            userErrorQuery
+                                .field()
+                                .message()
+                        }
+                }
+        }
+
+        val call: MutationGraphCall = graphClient.mutateGraph(query)
+
+        call.enqueue { result -> 
+            if (result is GraphCallResult.Failure) {
+                Log.e(TAG, "Failed to execute query", result.error)
+            } else if (result is GraphCallResult.Success) {
+                if (result.response.data!!.getCustomerReset().getUserErrors().isEmpty()) {
+                    val firstName: String =
+                        result.response.data!!.getCustomerReset().getCustomer().getFirstName()
+                    val lastName: String =
+                        result.response.data!!.getCustomerReset().getCustomer().getLastName()
+                } else {
+                    Log.e(TAG, "Failed to reset customer")
+                }
+            }
+        }
 ```
 
 A mutation will often rely on some kind of user input. Although you should always validate user input before posting a mutation, there are never guarantees when it comes to dynamic data. For this reason, you should always request the `userErrors` field on mutations (where available) to provide useful feedback in your UI regarding any issues that were encountered in the mutation query. These errors can include anything from `Invalid email address` to `Password is too short`.
